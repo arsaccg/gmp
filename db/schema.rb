@@ -11,7 +11,60 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140226220350) do
+ActiveRecord::Schema.define(version: 20140227193027) do
+
+  create_table "articles", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "cost_centers", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_order_details", force: true do |t|
+    t.integer  "deliver_order_id"
+    t.integer  "phase_id"
+    t.integer  "sector_id"
+    t.integer  "person_id"
+    t.integer  "article_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_orders", force: true do |t|
+    t.string   "state"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "people", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "phases", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sectors", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "state_per_order_details", force: true do |t|
+    t.integer  "delivery_order_id"
+    t.string   "state"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
