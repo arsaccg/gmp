@@ -10,9 +10,12 @@ gem 'sqlite3'
 gem 'mysql2'
 
 # use Bootstrap
-gem 'therubyracer'
+gem 'therubyracer', platforms: :ruby
 gem 'less-rails' #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem 'twitter-bootstrap-rails'
+
+# erb to haml
+gem "erb2haml", :group => :development
 
 # Use state machine
 gem 'state_machine'
