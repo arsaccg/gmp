@@ -1,2 +1,16 @@
-%h1 UnitOfMeasurement#index
-%p Find me in app/views/unit_of_measurement/index.html.haml
+- if flash[:notice] != nil
+  .alert.alert-success.fade.in
+    %button.close{"data-dismiss" => "alert"}
+      ×
+    %i.fa-fw.fa.fa-check
+    %strong Éxito
+    = flash[:notice]
+- if flash[:error] != nil
+  .alert.alert-danger.fade.in
+    %button.close{"data-dismiss" => "alert"}
+      ×
+    %i.fa-fw.fa.fa-times
+    %strong Error!
+    = flash[:error]
+
+=link_to 'Crear nueva unidad de medida', new_unit_of_measurement_path
