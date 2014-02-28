@@ -1,5 +1,7 @@
 class UnitOfMeasurementController < ApplicationController
   def index
+    @unitOfMeasures = UnitOfMeasure.all
+    render layout: false
   end
 
   def create

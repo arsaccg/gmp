@@ -1,19 +1,12 @@
 ArsacLogistica::Application.routes.draw do
   
-  get "unit_of_measurement/index"
-  get "unit_of_measurement/create"
-  get "unit_of_measurement/edit"
-  get "unit_of_measurement/show"
-  get "unit_of_measurement/update"
-  get "unit_of_measurement/new"
-  get "unit_of_measurement/destroy"
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
   root 'main#index'
-
+  resources :unit_of_measurement
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
