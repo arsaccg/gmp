@@ -1,0 +1,27 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Unidad de Medida
+  %div
+    .jarviswidget-editbox
+    .widget-body
+      = simple_form_for(@Article, url: logistics_article_index_path, html: {class: 'form-horizontal' }) do |f|
+        %fieldset
+          %legend Ingrese Articulo
+          .form-group
+            %label.col-md-2.control-label{for: "text-field"} Nombre
+            .col-md-10
+              = f.input :name, placeholder: "Nombre del articulo", html: { class: 'form-control' }, label: false
+            %label.col-md-2.control-label{for: "text-field"} Descripcion
+            .col-md-10
+              = f.input :description, placeholder: "Descripcion del articulo", html: { class: 'form-control' }, label: false
+            %label.col-md-2.control-label{for: "text-field"} Unidad de medida
+            .col-md-10
+              = f.input :unit_of_measure_id, placeholder: "Unidad de Medida", html: { class: 'form-control' }, label: false
+        .form-actions
+          .row
+            .col-md-12
+              %button.btn.btn-primary{type: "submit"}
+                %i.fa.fa-save
+                  Submit

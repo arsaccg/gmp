@@ -53,5 +53,7 @@ ArsacLogistica::Application.routes.draw do
   namespace :logistics do
     resources :unit_of_measurement
     resources :user
+    resources :article
   end
+
 end

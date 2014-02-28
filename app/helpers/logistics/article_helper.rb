@@ -1,0 +1,2 @@
+module Logistics::ArticleHelper
+end
