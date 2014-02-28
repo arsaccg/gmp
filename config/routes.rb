@@ -6,7 +6,7 @@ ArsacLogistica::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'main#index'
-  resources :unit_of_measurement
+  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
@@ -50,9 +50,7 @@ ArsacLogistica::Application.routes.draw do
   #   resources :photos, concerns: :toggleable
 
   # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
+  namespace :logistics do
+    resources :unit_of_measurement
+  end
 end
