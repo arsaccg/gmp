@@ -26,7 +26,7 @@ class UnitOfMeasurementController < ApplicationController
 
   def new
     @unitOfMeasure = UnitOfMeasurement.new
-    render :layout => 'dashboard'
+    render :layout => false
   end
 
   def destroy
