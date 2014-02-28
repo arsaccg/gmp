@@ -82,26 +82,6 @@
           / end footer
         / END AJAX-DROPDOWN
       / projects dropdown
-      #project-context
-        %span.label Projects:
-        %span#project-selector.popover-trigger-element.dropdown-toggle{"data-toggle" => "dropdown"}
-          Recent projects
-          %i.fa.fa-angle-down
-        / Suggestion: populate this list with fetch and push technique
-        %ul.dropdown-menu
-          %li
-            %a{href: "javascript:void(0);"} Online e-merchant management system - attaching integration with the iOS
-          %li
-            %a{href: "javascript:void(0);"} Notes on pipeline upgradee
-          %li
-            %a{href: "javascript:void(0);"} Assesment Report for merchant account
-          %li.divider
-          %li
-            %a{href: "javascript:void(0);"}
-              %i.fa.fa-power-off
-              Clear
-        / end dropdown-menu
-      / end projects dropdown
       / pulled right: nav area
       .pull-right
         / collapse menu button
@@ -123,34 +103,6 @@
               %i.fa.fa-search
         / end search mobile button
         / input: search field
-        %form.header-search.pull-right{action: "#ajax/search.html"}
-          %input#search-fld{placeholder: "Find reports and more", type: "text"}/
-          %button{type: "submit"}
-            %i.fa.fa-search
-          %a#cancel-search-js{href: "javascript:void(0);", title: "Cancel Search"}
-            %i.fa.fa-times
-        / end input: search field
-        / multiple lang dropdown : find all flags in the image folder
-        %ul.header-dropdown-list.hidden-xs
-          %li
-            %a.dropdown-toggle{"data-toggle" => "dropdown", href: "#"}
-              = image_tag 'flags/us.png', alt: "us"
-              %span US
-              %i.fa.fa-angle-down
-            %ul.dropdown-menu.pull-right
-              %li.active
-                %a{href: "javascript:void(0);"}
-                  = image_tag 'flags/us.png', alt: "us"
-                  US
-              %li
-                %a{href: "javascript:void(0);"}
-                  = image_tag 'flags/es.png', alt: "es"
-                  Spanish
-              %li
-                %a{href: "javascript:void(0);"}
-                  = image_tag 'flags/de.png', alt: "de"
-                  German
-        / end multiple lang
       / end pulled right: nav area
     / END HEADER
     / Left panel : Navigation area
