@@ -26,6 +26,9 @@ gem 'devise'
 # gem simple form
 gem 'simple_form'
 
+# gen paperclip
+gem 'paperclip'
+
 # gem nested_form
 gem "nested_form"
 

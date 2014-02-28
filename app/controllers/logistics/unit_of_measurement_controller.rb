@@ -17,18 +17,21 @@ class Logistics::UnitOfMeasurementController < ApplicationController
   end
 
   def edit
-    unitOfMeasure = UnitOfMeasurement.find(params[:id])
+    @unitOfMeasure = UnitOfMeasurement.find(params[:id])
+    @action = 'edit'
     render :edit
   end
 
   def show
-    unitOfMeasure = UnitOfMeasurement.find(params[:id])
+    @unitOfMeasure = UnitOfMeasurement.find(params[:id])
     render :show
   end
 
   def update
     unitOfMeasure = UnitOfMeasurement.find(params[:id])
-    
+    unitOfMeasure.update_attributes(unit_of_measure_parameters)
+    flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index
   end
 
   def new
