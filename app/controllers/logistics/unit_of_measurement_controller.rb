@@ -1,4 +1,4 @@
-class UnitOfMeasurementController < ApplicationController
+class Logistics::UnitOfMeasurementController < ApplicationController
   def index
     @unitOfMeasures = UnitOfMeasure.all
     render layout: false
