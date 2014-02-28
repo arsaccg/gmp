@@ -23,6 +23,12 @@ gem 'state_machine'
 # Use devise
 gem 'devise'
 
+# gem simple form
+gem 'simple_form'
+
+# gem nested_form
+gem "nested_form"
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 
