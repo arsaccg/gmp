@@ -1,6 +1,6 @@
 class UnitOfMeasurementController < ApplicationController
-  # GET /anhos
-  # GET /anhos.json
+  # GET /UnitOfMeasurement
+  # GET /UnitOfMeasurement.json
   def index
     @UnitOfMeasurement = UnitOfMeasurement.all
 
@@ -13,7 +13,7 @@ class UnitOfMeasurementController < ApplicationController
   # GET /anhos/1
   # GET /anhos/1.json
   def show
-    @@UnitOfMeasurement = UnitOfMeasurement.find(params[:id])
+    @UnitOfMeasurement = UnitOfMeasurement.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
