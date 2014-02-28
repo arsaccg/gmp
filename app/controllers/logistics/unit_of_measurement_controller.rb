@@ -1,11 +1,11 @@
 class Logistics::UnitOfMeasurementController < ApplicationController
   def index
-    @unitOfMeasures = UnitOfMeasure.all
+    @unitOfMeasures = UnitOfMeasurement.all
     render layout: false
   end
 
   def create
-    unitOfMeasure = UnitOfMeasure.new(unit_of_measure_parameters)
+    unitOfMeasure = UnitOfMeasurement.new(unit_of_measure_parameters)
     if unitOfMeasure.save?
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
       redirec_to :index
@@ -17,22 +17,22 @@ class Logistics::UnitOfMeasurementController < ApplicationController
   end
 
   def edit
-    unitOfMeasure = unitOfMeasure.find(params[:id])
+    unitOfMeasure = UnitOfMeasurement.find(params[:id])
     render :edit
   end
 
   def show
-    unitOfMeasure = unitOfMeasure.find(params[:id])
+    unitOfMeasure = UnitOfMeasurement.find(params[:id])
     render :show
   end
 
   def update
-    unitOfMeasure = unitOfMeasure.find(params[:id])
+    unitOfMeasure = UnitOfMeasurement.find(params[:id])
     
   end
 
   def new
-    unitOfMeasure = UnitOfMeasure.new
+    @unitOfMeasure = UnitOfMeasurement.new
     render :new
   end
 
