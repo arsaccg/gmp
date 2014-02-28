@@ -1,18 +1,49 @@
-- if flash[:notice] != nil
-  .alert.alert-success.fade.in
-    %button.close{"data-dismiss" => "alert"}
-      ×
-    %i.fa-fw.fa.fa-check
-    %strong Éxito
-    = flash[:notice]
-- if flash[:error] != nil
-  .alert.alert-danger.fade.in
-    %button.close{"data-dismiss" => "alert"}
-      ×
-    %i.fa-fw.fa.fa-times
-    %strong Error!
-    = flash[:error]
+%html
+  %head
+    %title Sample WebApp
+
+  %body
+    - if flash[:notice] != nil
+      .alert.alert-success.fade.in
+        %button.close{"data-dismiss" => "alert"}
+          ×
+        %i.fa-fw.fa.fa-check
+        %strong Éxito
+        = flash[:notice]
+    - if flash[:error] != nil
+      .alert.alert-danger.fade.in
+        %button.close{"data-dismiss" => "alert"}
+          ×
+        %i.fa-fw.fa.fa-times
+        %strong Error!
+        = flash[:error]
+
+  %h1 Unidad de Medida
+
+  // widget content
+  %div.widget-body-no-padding
+    %div.widget-body-toolbar          
+
+      %table#TblUOM.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            - ["Nombre","Descripcion"].each do |f|
+              %td= f
+        %tbody
+          - @unitOfMeasures.each do |row|
+            %tr
+              %td= row.name
+              %td= row.name
 
 =link_to 'Crear nueva unidad de medida', new_logistics_unit_of_measurement_path
 
 = render :partial => 'table'
+
+= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min' 
+= javascript_include_tag 'plugin/datatables/DT_bootstrap' 
+= javascript_include_tag 'plugin/datatables/ColReorder.min' 
+= javascript_include_tag 'plugin/datatables/FixedColumns.min' 
+= javascript_include_tag 'plugin/datatables/ColVis.min' 
+= javascript_include_tag 'plugin/datatables/media/js/TableTools.min' 
+= javascript_include_tag 'plugin/datatables/DT_bootstrap.js' 
+= javascript_include_tag 'uom'

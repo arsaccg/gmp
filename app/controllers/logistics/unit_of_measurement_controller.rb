@@ -6,9 +6,9 @@ class Logistics::UnitOfMeasurementController < ApplicationController
 
   def create
     unitOfMeasure = UnitOfMeasurement.new(unit_of_measure_parameters)
-    if unitOfMeasure.save?
+    if unitOfMeasure.save
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
-      redirec_to :index
+      redirect_to :action => :index
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
       render :new
@@ -41,7 +41,7 @@ class Logistics::UnitOfMeasurementController < ApplicationController
 
   private
   def unit_of_measure_parameters
-    params.require(:unit_of_measure).permit(:name)
+    params.require(:unit_of_measurement).permit(:name)
   end
 
 end
