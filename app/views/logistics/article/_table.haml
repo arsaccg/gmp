@@ -34,8 +34,8 @@
               %tr
                 %th Id
                 %th Nombre
-                %th Descripcion
                 %th Unidad de Medida
+                %th Descripcion
                 %th Acciones
             %tbody
               - @Article.each do |unit|
@@ -45,13 +45,13 @@
                   %td
                     = unit.name
                   %td
-                    = unit.description
-                  %td
                     = unit.unit_of_measurement.name
                   %td
-                    %a.btn.btn-warning.btn-xs{:href => "#{edit_logistics_article_path(unit.id)}"}
+                    = unit.description
+                  %td
+                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_article_path(unit.id)}"}
                       Editar
-                    %a.btn.btn-warning.btn-xs{:href => "#{edit_logistics_article_path(unit.id)}"}
+                    %a.btn.btn-warning.btn-xs{:href => "#{logistics_article_path(unit.id)}", :method => "delete"}
                       Eliminar
                                       
 

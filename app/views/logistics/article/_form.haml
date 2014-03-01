@@ -2,26 +2,59 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Unidad de Medida
+    %h2 Artículos
   %div
     .jarviswidget-editbox
     .widget-body
-      = simple_form_for(@Article, url: logistics_article_index_path, html: {class: 'form-horizontal' }) do |f|
-        %fieldset
-          %legend Ingrese Articulo
-          .form-group
-            %label.col-md-2.control-label{for: "text-field"} Nombre
-            .col-md-10
-              = f.input :name, placeholder: "Nombre del articulo", html: { class: 'form-control' }, label: false
-            %label.col-md-2.control-label{for: "text-field"} Descripcion
-            .col-md-10
-              = f.input :description, placeholder: "Descripcion del articulo", html: { class: 'form-control' }, label: false
-            %label.col-md-2.control-label{for: "text-field"} Unidad de medida
-            .col-md-10
-              = f.input :unit_of_measure_id, placeholder: "Unidad de Medida", html: { class: 'form-control' }, label: false
-        .form-actions
-          .row
-            .col-md-12
-              %button.btn.btn-primary{type: "submit"}
-                %i.fa.fa-save
-                  Submit
+      - if @action == 'edit'
+        = simple_form_for(@article, url: logistics_article_path, method: 'patch', html: {class: 'form-horizontal' }) do |f|
+          %fieldset
+            %legend Ingrese Articulo
+            .form-group
+              %label.col-md-2.control-label{for: "name"} Nombre
+              .col-md-10
+                = f.input :name, placeholder: "Nombre del articulo", :input_html => {:class => 'form-control'}, label: false
+            .form-group
+              %label.col-md-2.control-label{for: "unit_of_measurement_id"} Unidad de medida
+              .col-md-10
+                %select.form-control{:name =>"article[unit_of_measurement_id]"}
+                  - @unitOfMeasurement.each do |unit|
+                    %option{:value => "#{unit.id}"}
+                      = unit.name
+                  
+            .form-group
+              %label.col-md-2.control-label{for: "description"} Descripcion
+              .col-md-10
+                = f.input :description, placeholder: "Descripcion del articulo", :input_html => {:class => 'form-control'}, label: false, rows: 4
+          .form-actions
+            .row
+              .col-md-12
+                %button.btn.btn-primary{type: "submit"}
+                  %i.fa.fa-save
+                    Guardar
+      - else
+        = simple_form_for(@article, url: logistics_article_index_path, html: {class: 'form-horizontal' }) do |f|
+          %fieldset
+            %legend Ingrese Articulo
+            .form-group
+              %label.col-md-2.control-label{for: "name"} Nombre
+              .col-md-10
+                = f.input :name, placeholder: "Nombre del articulo", :input_html => {:class => 'form-control'}, label: false
+            .form-group
+              %label.col-md-2.control-label{for: "unit_of_measurement_id"} Unidad de medida
+              .col-md-10
+                %select.form-control{:name =>"article[unit_of_measurement_id]"}
+                  - @unitOfMeasurement.each do |unit|
+                    %option{:value => "#{unit.id}"}
+                      = unit.name
+                  
+            .form-group
+              %label.col-md-2.control-label{for: "description"} Descripcion
+              .col-md-10
+                = f.input :description, placeholder: "Descripcion del articulo", :input_html => {:class => 'form-control'}, label: false, rows: 4
+          .form-actions
+            .row
+              .col-md-12
+                %button.btn.btn-primary{type: "submit"}
+                  %i.fa.fa-save
+                    Guardar

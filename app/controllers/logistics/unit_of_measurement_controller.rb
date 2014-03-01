@@ -1,17 +1,22 @@
 class Logistics::UnitOfMeasurementController < ApplicationController
+  before_filter :authenticate_user!
   def index
     @unitOfMeasures = UnitOfMeasurement.all
-    render layout: false
+    if params[:task] == 'created' || params[:task] == 'edited'
+      render layout: 'dashboard'
+    else
+      render layout: false
+    end
   end
 
   def create
     unitOfMeasure = UnitOfMeasurement.new(unit_of_measure_parameters)
     if unitOfMeasure.save
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
-      redirect_to :action => :index
+      redirect_to :action => :index, :task => 'created'
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      render :new
+      render layout: false
     end
 
   end
@@ -19,7 +24,7 @@ class Logistics::UnitOfMeasurementController < ApplicationController
   def edit
     @unitOfMeasure = UnitOfMeasurement.find(params[:id])
     @action = 'edit'
-    render :edit
+    render layout: false
   end
 
   def show
@@ -31,12 +36,12 @@ class Logistics::UnitOfMeasurementController < ApplicationController
     unitOfMeasure = UnitOfMeasurement.find(params[:id])
     unitOfMeasure.update_attributes(unit_of_measure_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    redirect_to :action => :index, :task => 'edited'
   end
 
   def new
     @unitOfMeasure = UnitOfMeasurement.new
-    render :new
+    render :new, layout: false
   end
 
   def destroy
