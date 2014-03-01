@@ -12,9 +12,9 @@
 
 development:
   adapter: mysql2
-  database: ASDev2
+  database: arsac_logistica
   username: root
-  password: giancarlo
+  password: root
   host: localhost
 
 # Warning: The database defined as "test" will be erased and

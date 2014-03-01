@@ -11,14 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140228150547) do
+ActiveRecord::Schema.define(version: 20140301150430) do
 
   create_table "articles", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "unit_of_measure_id"
-    t.integer  "description"
+    t.integer  "unit_of_measurement_id"
+    t.text     "description"
   end
 
   create_table "cost_centers", force: true do |t|
@@ -43,16 +43,24 @@ ActiveRecord::Schema.define(version: 20140228150547) do
     t.datetime "updated_at"
   end
 
+  create_table "people", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "phases", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "code"
   end
 
   create_table "sectors", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "code"
   end
 
   create_table "state_per_order_details", force: true do |t|
@@ -62,7 +70,7 @@ ActiveRecord::Schema.define(version: 20140228150547) do
     t.datetime "updated_at"
   end
 
-  create_table "unit_of_measures", force: true do |t|
+  create_table "unit_of_measurements", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -81,6 +89,15 @@ ActiveRecord::Schema.define(version: 20140228150547) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "surname"
+    t.date     "date_of_birth"
+    t.string   "avatar"
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size"
+    t.datetime "avatar_updated_at"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
