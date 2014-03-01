@@ -4,7 +4,7 @@ class Logistics::SectorsController < ApplicationController
   end
 
   def new
-
+    @sector = Sector.new
   end
 
   def create
