@@ -52,7 +52,7 @@ ArsacLogistica::Application.routes.draw do
   # Example resource route within a namespace:
   namespace :logistics do
     resources :unit_of_measurements
-    resources :user
+    resources :users
     resources :articles
     resources :sectors
   end

@@ -49,7 +49,7 @@ class Logistics::UnitOfMeasurementsController < ApplicationController
 
   private
   def unit_of_measure_parameters
-    params.require(:unit_of_measurement).permit(:name)
+    params.require(:unit_of_measurement).permit(:name, :symbol)
   end
 
 end
