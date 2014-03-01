@@ -52,11 +52,7 @@
           = image_tag 'logo.png', alt: "SmartAdmin"
         / END LOGO PLACEHOLDER
         /
-          Note: The activity badge color changes when clicked and resets the number to 0
-          Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications
-        %span#activity.activity-dropdown
-          %i.fa.fa-user
-          %b.badge 21
+
         / AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file
         .ajax-dropdown
           / the ID links are fetched via AJAX to the ajax container "ajax-notifications"
@@ -117,7 +113,7 @@
           / User image size is adjusted inside CSS, it should stay as it
           = image_tag current_user.avatar.url(:thumb), alt: "me", class: 'online'
           %a#show-shortcut{href: "javascript:void(0);"}
-            john.doe
+            = "#{current_user.first_name} #{current_user.last_name}"
             %i.fa.fa-angle-down
       / end user info
       /
