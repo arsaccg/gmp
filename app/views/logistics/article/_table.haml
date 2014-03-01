@@ -51,9 +51,8 @@
                   %td
                     %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_article_path(unit.id)}"}
                       Editar
-                    %a.btn.btn-warning.btn-xs{:href => "#{logistics_article_path(unit.id)}", :method => "delete"}
-                      Eliminar
-                                      
+                    /%a{:href=>"javascript:delete_to_url('"+logistics_article_path(unit.id).to_s+ "','" + logistics_article_index_path.to_s + "', 'content')", data: { confirm: "¿Esta seguro de eliminar este articulo?" }}(class="btn btn-warning btn-xs")
+                    = link_to "Eliminar", logistics_article_path(unit.id), class: "btn btn-warning btn-xs", method: :delete                                      
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

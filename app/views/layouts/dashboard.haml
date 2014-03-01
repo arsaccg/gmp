@@ -31,7 +31,10 @@
       <link rel="stylesheet" type="text/css" media="screen" href="css/demo.css">
     / Demo purpose only: goes with demo.js, you can delete this css when designing your own WebApp
     = stylesheet_link_tag "demo", media: "screen", rel: "stylesheet", type: "text/css"
-
+    /JS
+    = javascript_include_tag 'application'
+    / TOKEN
+    = csrf_meta_tag
     / FAVICONS
     =# stylesheet_link_tag "smartadmin-production.min", media: "screen", rel: "stylesheet", type: "text/css"
     =# stylesheet_link_tag "smartadmin-production.min", media: "screen", rel: "stylesheet", type: "text/css"
@@ -112,7 +115,7 @@
       .login-info
         %span
           / User image size is adjusted inside CSS, it should stay as it
-          = image_tag 'avatars/sunny.png', alt: "me", class: 'online'
+          = image_tag current_user.avatar.url(:thumb), alt: "me", class: 'online'
           %a#show-shortcut{href: "javascript:void(0);"}
             john.doe
             %i.fa.fa-angle-down
@@ -135,7 +138,7 @@
               %span.menu-item-parent Unidades de Medida
           %li
             %a{href: "#{logistics_article_index_path}", title: "Articulos"}
-              %i.fa.fa-lg.fa-fw.fa-home
+              %i.fa.fa-lg.fa-fw.fa-desktop
               %span.menu-item-parent Articulos
           %li
             %a{href: "#{logistics_user_path(current_user.id)}", title: "Usuario"}

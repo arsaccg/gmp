@@ -7,7 +7,7 @@
     .jarviswidget-editbox
     .widget-body
       - if @action == 'edit'
-        = simple_form_for(@article, url: logistics_article_path, method: 'patch', html: {class: 'form-horizontal' }) do |f|
+        = simple_form_for(@article, url: logistics_article_path, :method => :patch, html: {class: 'form-horizontal' }) do |f|
           %fieldset
             %legend Ingrese Articulo
             .form-group

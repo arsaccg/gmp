@@ -4,4 +4,9 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
   has_many :deliver_orders
-end
+  has_attached_file :avatar, :styles => { :medium => "300x300>", :thumb => "28x25>" }, :default_url => "/images/avatars/male.png"
+  validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
+
+  
+
+end 

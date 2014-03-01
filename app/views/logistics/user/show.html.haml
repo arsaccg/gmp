@@ -7,9 +7,7 @@
             %span.widget-icon
               %i.fa.fa-edit
             %h2
-              Información de
-              %strong
-                = @user.first_name
+              Información de Usuario
           / widget div
           %div
             / widget edit box
@@ -18,7 +16,7 @@
             / end widget edit box
             / widget content
             .widget-body.no-padding
-              = simple_form_for(@user, url: logistics_user_path, :method => :patch, html: {class: 'smart-form' }) do |f|
+              = simple_form_for(@user, url: logistics_user_path, :method => :patch, html: {multipart: true,class: 'smart-form' }) do |f|
                 %header
                   = @user.first_name
                 %fieldset
@@ -54,8 +52,26 @@
                       %input{placeholder: "Include some files", readonly: "readonly", type: "text"}/
                 %footer
                   %button.btn.btn-primary{type: "submit"}
-                    Guardar
-
+                    %i.fa.fa-save
+                    Actualizar Datos
+      %article.col-sm-12.col-md-12.col-lg-6
+        #wid-id-3.jarviswidget{"data-widget-custombutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-edit
+            %h2
+              Imagen del Usuario
+          / widget div
+          %div{role: 'content'}
+            / widget edit box
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            / end widget edit box
+            / widget content
+            .widget-body.no-padding
+              .smart-form
+                %fieldset{style: 'text-align:center'}
+                  = image_tag current_user.avatar.url, alt: "me"
 = javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
 = javascript_include_tag 'plugin/jquery-form/jquery-form.min'
 = javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'

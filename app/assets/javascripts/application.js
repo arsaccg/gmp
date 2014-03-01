@@ -12,5 +12,17 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
-//= require_tree .
+
+function delete_to_url(url, url_target, div_name)
+{
+	var url_str = url;
+	var div_name = div_name;
+
+  	$.ajax({
+	  url: url_str,
+	  type: 'DELETE',
+	  beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
+	}).done(function( data ) {
+	  location.reload();
+	});
+}
