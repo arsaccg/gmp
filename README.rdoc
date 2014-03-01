@@ -1,26 +1,15 @@
-== README
+== SISTEMA GMP
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Repositorio Oficial del ERP
 
-Things you may want to cover:
+Integrantes del Grupo:
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
+* elnaufrago2009@gmail.com (cel. 952631806)
+* mail@joelibaceta.com (cel. 979625987)
+* giancarlo.paredes.prieto@gmail.com  (cel. 989186666)
+* lc.contreras09@gmail.com  (cel. 984119657)
+* pelaezarras@gmail.com  (cel. 991697278)
+* dvex.cabrera@gmail.com (cel. 943272480)
 * ...
 
 
