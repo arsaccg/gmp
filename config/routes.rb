@@ -54,6 +54,7 @@ ArsacLogistica::Application.routes.draw do
     resources :unit_of_measurement
     resources :user
     resources :article
+    resources :sectors
   end
 
 end
