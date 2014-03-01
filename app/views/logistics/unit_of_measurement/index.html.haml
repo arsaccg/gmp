@@ -2,7 +2,7 @@
   .row
     .col-xs-12.col-sm-7.col-md-7.col-lg-4
       %h1.page-title.txt-color-blueDark
-        %i.fa.fa-pencil-square-o.fa-fw 
+        %i.fa.fa-pencil-square-o.fa-fw
         Unidades de Medida
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
@@ -19,7 +19,7 @@
         %strong Error!
         = flash[:error]
   .row
-    .col-sm-4{:style => "width: 30.333333%;"}
+    .col-sm-4
       .well
         %a.btn.btn-primary.btn-lg{:href => "##{new_logistics_unit_of_measurement_path}"}
           Agregar Nueva Unidad de Medida

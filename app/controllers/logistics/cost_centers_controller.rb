@@ -1,10 +1,8 @@
-class Logistics::SectorsController < ApplicationController
+class Logistics::CostCentersController < ApplicationController
   def index
-    @sectors = Sector.all
   end
 
   def new
-
   end
 
   def create
@@ -14,6 +12,9 @@ class Logistics::SectorsController < ApplicationController
   end
 
   def update
+  end
+
+  def show
   end
 
   def destroy
