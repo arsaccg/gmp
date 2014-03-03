@@ -27,7 +27,7 @@
             .input-group
               %span.input-group-addon
                 %i.fa.fa-search
-              %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
+              %input.form-control#filter-search{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
         .dt-wrapper
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
@@ -103,20 +103,20 @@
     /* END BASIC */
 
     /* Add the events etc before DataTables hides a column */
-    $("#datatable_fixed_column thead input").keyup(function() {
+    $("#dt_basic thead input").keyup(function() {
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
     });
 
-    $("#datatable_fixed_column thead input").each(function(i) {
+    $("#dt_basic thead input").each(function(i) {
       this.initVal = this.value;
     });
-    $("#datatable_fixed_column thead input").focus(function() {
+    $("#dt_basic thead input").focus(function() {
       if (this.className == "search_init") {
         this.className = "";
         this.value = "";
       }
     });
-    $("#datatable_fixed_column thead input").blur(function(i) {
+    $("#dt_basic thead input").blur(function(i) {
       if (this.value == "") {
         this.className = "search_init";
         this.value = this.initVal;
