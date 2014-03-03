@@ -1,5 +1,12 @@
 ArsacLogistica::Application.routes.draw do
 
+  get "cost_centers/index"
+  get "cost_centers/create"
+  get "cost_centers/edit"
+  get "cost_centers/show"
+  get "cost_centers/update"
+  get "cost_centers/new"
+  get "cost_centers/destroy"
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
