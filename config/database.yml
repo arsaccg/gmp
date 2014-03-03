@@ -12,22 +12,24 @@
 
 development:
   adapter: mysql2
-  database: ASDev2
+  database: arsac_logistica_develop
   username: root
-  password: giancarlo
+  password: root
   host: localhost
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  adapter: sqlite3
-  database: db/test3.sqlite3
-  pool: 5
-  timeout: 5000
+  adapter: mysql2
+  database: arsac_logistica_testing
+  username: root
+  password: root
+  host: localhost
 
 production:
-  adapter: sqlite4
-  database: db/production.sqlite3
-  pool: 5
-  timeout: 5000
+  adapter: mysql2
+  database: arsac_logistica_production
+  username: root
+  password: root
+  host: localhost
