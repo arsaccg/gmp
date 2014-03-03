@@ -57,6 +57,7 @@ ArsacLogistica::Application.routes.draw do
     resources :sectors
     resources :phases
     resources :subphases
+    resources :cost_centers
   end
 
 end
