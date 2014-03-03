@@ -10,7 +10,6 @@ Integrantes del Grupo:
 * lc.contreras09@gmail.com  (cel. 984119657)
 * pelaezarras@gmail.com  (cel. 991697278)
 * dvex.cabrera@gmail.com (cel. 943272480)
-* ...
 
 
 Please feel free to use a different markup language if you do not plan to run
