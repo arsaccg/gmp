@@ -13,16 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 
-function delete_to_url(url, url_target, div_name)
-{
-	var url_str = url;
-	var div_name = div_name;
+$(document).ready(function(){
 
-  	$.ajax({
-	  url: url_str,
-	  type: 'DELETE',
-	  beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
-	}).done(function( data ) {
-	  location.reload();
-	});
-}
+});

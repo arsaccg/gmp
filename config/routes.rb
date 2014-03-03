@@ -1,5 +1,5 @@
 ArsacLogistica::Application.routes.draw do
-  
+
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -49,12 +49,14 @@ ArsacLogistica::Application.routes.draw do
   #   resources :posts, concerns: :toggleable
   #   resources :photos, concerns: :toggleable
 
-  # Example resource route within a namespace:
+  # Example resource route within a namespace:,
   namespace :logistics do
     resources :unit_of_measurement
     resources :user
     resources :article
     resources :sectors
+    resources :phases
+    resources :subphases
   end
 
 end
