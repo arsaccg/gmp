@@ -1,6 +1,6 @@
 class Logistics::PhasesController < ApplicationController
   def index
-    @phases = Phase.all
+    @phases = Phase.where("category LIKE 'phase'")
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
       render layout: 'dashboard'
     else
