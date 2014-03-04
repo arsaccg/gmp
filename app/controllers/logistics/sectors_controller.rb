@@ -1,12 +1,20 @@
 class Logistics::SectorsController < ApplicationController
   #before_filter :authenticate_user!
   def index
+<<<<<<< HEAD
+    @sectors = Sector.all
+  end
+
+  def new
+    @sector = Sector.new
+=======
     @Sectors = Sector.all
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
       render layout: 'dashboard'
     else
       render layout: false
     end
+>>>>>>> 011f18f2cde719433daf750feba7edcf41f7938a
   end
 
   def create

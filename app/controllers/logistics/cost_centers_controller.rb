@@ -1,4 +1,5 @@
 class Logistics::CostCentersController < ApplicationController
+ 
   before_filter :authenticate_user!
   def index
     @costCenters = CostCenter.all
@@ -46,6 +47,7 @@ class Logistics::CostCentersController < ApplicationController
     cost_center = CostCenter.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
     redirect_to :action => :index, :task => 'deleted'
+ 
   end
 
   private

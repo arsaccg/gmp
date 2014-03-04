@@ -1,0 +1,22 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Unidad de Medida
+  .widget-body
+    = simple_form_for([:logistics, @unitOfMeasure], html: {class: 'form-horizontal' }) do |f|
+      %fieldset
+        .form-group
+          %label.col-md-2.control-label{for: "text-field"} Nombre
+          .col-md-10
+            = f.input :name, placeholder: "Nombre de la unidad", input_html: { class: 'form-control' }, label: false
+        .form-group
+          %label.col-md-2.control-label{for: "text-field"} Simbolo
+          .col-md-10
+            = f.input :symbol, placeholder: "Simbolo", input_html: { class: 'form-control' }, label: false
+      .form-actions
+        .row
+          .col-md-12
+            %button.btn.btn-primary{type: "submit"}
+              %i.fa.fa-save 
+              Guardar

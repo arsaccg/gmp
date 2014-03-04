@@ -2,10 +2,9 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de las unidades de medida
+    %h2 Lista de Articulos
   / widget div
   %div
-  
     / widget edit box
     .jarviswidget-editbox
       / This area used as dropdown edit box
@@ -35,18 +34,25 @@
               %tr
                 %th Id
                 %th Nombre
+                %th Unidad de Medida
+                %th Descripcion
                 %th Acciones
             %tbody
-              - @unitOfMeasures.each do |unit|
+              - @Article.each do |unit|
                 %tr
                   %td 
                     = unit.id
                   %td
                     = unit.name
                   %td
-                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_unit_of_measurement_path(unit.id)}"}
+                    = unit.unit_of_measurement.name
+                  %td
+                    = unit.description
+                  %td
+                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_article_path(unit.id)}"}
                       Editar
-                    
+                    /%a{:href=>"javascript:delete_to_url('"+logistics_article_path(unit.id).to_s+ "','" + logistics_article_index_path.to_s + "', 'content')", data: { confirm: "¿Esta seguro de eliminar este articulo?" }}(class="btn btn-warning btn-xs")
+                    = link_to "Eliminar", logistics_article_path(unit.id), class: "btn btn-warning btn-xs", method: :delete                                      
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -97,11 +103,11 @@
     /* END BASIC */
 
     /* Add the events etc before DataTables hides a column */
-    $("#dt_basic thead input").keyup(function() {
+    $("#datatable_fixed_column thead input").keyup(function() {
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
     });
 
-    $("#dt_basic thead input").each(function(i) {
+    $("#datatable_fixed_column thead input").each(function(i) {
       this.initVal = this.value;
     });
     $("#datatable_fixed_column thead input").focus(function() {
@@ -110,7 +116,7 @@
         this.value = "";
       }
     });
-    $("#dt_basic thead input").blur(function(i) {
+    $("#datatable_fixed_column thead input").blur(function(i) {
       if (this.value == "") {
         this.className = "search_init";
         this.value = this.initVal;

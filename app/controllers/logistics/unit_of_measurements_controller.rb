@@ -1,4 +1,4 @@
-class Logistics::UnitOfMeasurementController < ApplicationController
+class Logistics::UnitOfMeasurementsController < ApplicationController
   before_filter :authenticate_user!
   def index
     @unitOfMeasures = UnitOfMeasurement.all
@@ -15,7 +15,7 @@ class Logistics::UnitOfMeasurementController < ApplicationController
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
       redirect_to :action => :index, :task => 'created'
     else
-      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
+      flash[:error] = "Ha ocurrido un problema. "
       render layout: false
     end
 
@@ -49,7 +49,7 @@ class Logistics::UnitOfMeasurementController < ApplicationController
 
   private
   def unit_of_measure_parameters
-    params.require(:unit_of_measurement).permit(:name)
+    params.require(:unit_of_measurement).permit(:name, :symbol)
   end
 
 end

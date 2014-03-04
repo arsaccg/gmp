@@ -5,7 +5,6 @@
     %h2 Lista de las unidades de medida
   / widget div
   %div
-  
     / widget edit box
     .jarviswidget-editbox
       / This area used as dropdown edit box
@@ -39,13 +38,10 @@
             %tbody
               - @unitOfMeasures.each do |unit|
                 %tr
-                  %td 
-                    = unit.id
+                  %td= unit.id
+                  %td= unit.name
                   %td
-                    = unit.name
-                  %td
-                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_unit_of_measurement_path(unit.id)}"}
-                      Editar
+                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_unit_of_measurement_path(unit.id)}"} Editar
                     
 
 :javascript
@@ -97,11 +93,11 @@
     /* END BASIC */
 
     /* Add the events etc before DataTables hides a column */
-    $("#dt_basic thead input").keyup(function() {
+    $("#datatable_fixed_column thead input").keyup(function() {
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
     });
 
-    $("#dt_basic thead input").each(function(i) {
+    $("#datatable_fixed_column thead input").each(function(i) {
       this.initVal = this.value;
     });
     $("#datatable_fixed_column thead input").focus(function() {
@@ -110,7 +106,7 @@
         this.value = "";
       }
     });
-    $("#dt_basic thead input").blur(function(i) {
+    $("#datatable_fixed_column thead input").blur(function(i) {
       if (this.value == "") {
         this.className = "search_init";
         this.value = this.initVal;

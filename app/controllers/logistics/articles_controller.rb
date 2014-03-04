@@ -1,4 +1,4 @@
-class Logistics::ArticleController < ApplicationController
+class Logistics::ArticlesController < ApplicationController
   before_filter :authenticate_user!
   def index
     @Article = Article.all
