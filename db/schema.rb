@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140304161951) do
+ActiveRecord::Schema.define(version: 20140304210737) do
 
   create_table "articles", force: true do |t|
     t.string   "name"
@@ -19,6 +19,13 @@ ActiveRecord::Schema.define(version: 20140304161951) do
     t.datetime "updated_at"
     t.integer  "unit_of_measurement_id"
     t.text     "description"
+  end
+
+  create_table "categories", force: true do |t|
+    t.string   "code"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "cost_centers", force: true do |t|
@@ -36,6 +43,9 @@ ActiveRecord::Schema.define(version: 20140304161951) do
     t.integer  "article_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "unit_of_measurement_id"
+    t.integer  "amount"
+    t.text     "description"
   end
 
   create_table "delivery_orders", force: true do |t|
@@ -46,6 +56,12 @@ ActiveRecord::Schema.define(version: 20140304161951) do
     t.date     "date_of_issue"
     t.date     "scheduled"
     t.text     "description"
+  end
+
+  create_table "people", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "phases", force: true do |t|
@@ -68,6 +84,14 @@ ActiveRecord::Schema.define(version: 20140304161951) do
     t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "subcategories", force: true do |t|
+    t.string   "code"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "category_id"
   end
 
   create_table "unit_of_measurements", force: true do |t|
