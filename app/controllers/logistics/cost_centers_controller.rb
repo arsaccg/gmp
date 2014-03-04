@@ -1,41 +1,5 @@
 class Logistics::CostCentersController < ApplicationController
-<<<<<<< HEAD
-  def index
-    @costcenters = CostCenter.all
-  end
-
-  def new
-    @costcenter = CostCenter.new
-  end
-
-  def create
-    @costcenter = CostCenter.new(cost_center_parameters)
-    if @costcenter.save?
-      flash[:notice] = "Se ha creado correctamente el nuevo centro de costos"
-      redirect_to :action => :index
-    else
-      flash[:error] = "Ha ocurrido un problema."
-      render :new
-    end
-  end
-
-  def edit
-    @costcenter = CostCenter.find(params[:id])
-    
-  end
-
-  def update
-    @costcenter = CostCenter.find(params[:id])
-    @costcenter.update_attributes(cost_center_parameters)
-
-  end
-
-  def show
-    @costcenter = CostCenter.find(params[:id])
-  end
-
-  def destroy
-=======
+ 
   before_filter :authenticate_user!
   def index
     @costCenters = CostCenter.all
@@ -83,7 +47,7 @@ class Logistics::CostCentersController < ApplicationController
     cost_center = CostCenter.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
     redirect_to :action => :index, :task => 'deleted'
->>>>>>> 011f18f2cde719433daf750feba7edcf41f7938a
+ 
   end
 
   private
