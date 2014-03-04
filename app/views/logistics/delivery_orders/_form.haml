@@ -14,7 +14,8 @@
             .col-md-9= f.input :id, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.id.to_s.rjust(5, '0')}, label: false, readonly: true
           .form-group
             %label.col-md-3.control-label{for: "state"} Estado
-            .col-md-9= f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state), label: false, readonly: true
+            .col-md-9
+              = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true
           .form-group
             %label.col-md-3.control-label{for: "date_of_issue"} Fecha de Requerimiento
             .col-md-9= f.input :date_of_issue, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date"}, label: false
