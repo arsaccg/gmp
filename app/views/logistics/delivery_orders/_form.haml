@@ -2,36 +2,72 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Fase
+    %h2 Orden de Suministro
   %div
     .jarviswidget-editbox
     .widget-body 
       = simple_form_for([:logistics, @deliveryOrder], html: {class: 'form-horizontal' }) do |f|
-        %fieldset
-          %legend Editar Orden de Suministro
-          - if @deliveryOrder.id != nil
+        .col-sm-6
+          %fieldset
+            %legend Orden de Suministro
+            - if @deliveryOrder.id != nil
+              .form-group
+                %label.col-md-3.control-label{for: "id"} Código
+                .col-md-9= f.input :id, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.id.to_s.rjust(5, '0')}, label: false, readonly: true
             .form-group
-              %label.col-md-3.control-label{for: "id"} Código
-              .col-md-9= f.input :id, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.id.to_s.rjust(5, '0')}, label: false, readonly: true
-          .form-group
-            %label.col-md-3.control-label{for: "state"} Estado
-            .col-md-9
-              = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true
-          .form-group
-            %label.col-md-3.control-label{for: "date_of_issue"} Fecha de Requerimiento
-            .col-md-9
-              = f.input :date_of_issue, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date"}, label: false
-          .form-group
-            %label.col-md-3.control-label{for: "scheduled"} Fecha Programada
-            .col-md-9
-              = f.input :scheduled, placeholder: "Fecha Programada", as: :string, :input_html => {:class => 'form-control', type: "date"}, label: false
-          .form-group
-            %label.col-md-3.control-label{for: "liable"} Responsable
-            .col-md-9
-              = text_field(:deliveryOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}")
-          .form-group
-            %label.col-md-3.control-label{for: "description"} Glosa
-            .col-md-9= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+              %label.col-md-3.control-label{for: "state"} Estado
+              .col-md-9
+                = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true
+            .form-group
+              %label.col-md-3.control-label{for: "date_of_issue"} Fecha de Requerimiento
+              .col-md-9
+                = f.input :date_of_issue, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date"}, label: false
+            .form-group
+              %label.col-md-3.control-label{for: "scheduled"} Fecha Programada
+              .col-md-9
+                = f.input :scheduled, placeholder: "Fecha Programada", as: :string, :input_html => {:class => 'form-control', type: "date"}, label: false
+            .form-group
+              %label.col-md-3.control-label{for: "liable"} Responsable
+              .col-md-9
+                = text_field(:deliveryOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}")
+            .form-group
+              %label.col-md-3.control-label{for: "description"} Glosa
+              .col-md-9= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+
+        .col-sm-12
+          %fieldset
+            %legend Detalle de Orden de Suministro
+            .form-group
+              %label.col-md-3.control-label{for: "article_id"} Artículos
+              .col-md-9
+                %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][article_id]"}
+                  - @articles.each do |article|
+                    %option{:value => "#{article.id}"}
+                      = article.name
+            .form-group
+              %label.col-md-3.control-label{for: "unit_of_measurement_id"} Unidad de Medida
+              .col-md-9
+                %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][unit_of_measurement_id]"}
+                  - @unitMeasure.each do |unit|
+                    %option{:value => "#{unit.id}"}
+                      = unit.name
+            .form-group
+              %label.col-md-3.control-label{for: "sector_id"} Sector
+              .col-md-9
+                %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][sector_id]"}
+                  - @sectors.each do |sector|
+                    %option{:value => "#{sector.id}"}
+                      = sector.name
+            .form-group
+              %label.col-md-3.control-label{for: "phase_id"} Fases
+              .col-md-9
+                %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][phase_id]"}
+                  - @phases.each do |phase|
+                    %option{:value => "#{phase.id}"}
+                      = phase.name
+            .form-group
+              %label.col-md-3.control-label{for: "description"} Glosa
+              .col-md-9= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
         .form-actions
           .row
             .col-md-12

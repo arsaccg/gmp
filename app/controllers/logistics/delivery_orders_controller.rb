@@ -10,6 +10,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   def new
     @deliveryOrder = DeliveryOrder.new
+    @articles = Article.all
+    @unitMeasure = UnitOfMeasurement.all
+    @sectors = Sector.all
+    @phases = Phase.where("category LIKE 'phase'")
     render layout: false
   end
 
@@ -57,6 +61,6 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   private
   def delivery_order_parameters
-    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description)
+    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, delivery_order_details_attributes: [:article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount])
   end
 end

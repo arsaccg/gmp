@@ -32,14 +32,14 @@
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
-                %th Id
+                %th Código
                 %th Nombre
                 %th Acciones
             %tbody
               - @categories.each do |category|
                 %tr
                   %td 
-                    = category.id
+                    = category.code
                   %td
                     = category.name
                   %td

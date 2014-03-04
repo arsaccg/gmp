@@ -20,7 +20,7 @@ class Logistics::CategoriesController < ApplicationController
   def create
     category = Category.new(category_parameters)
     if category.save
-      flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
+      flash[:notice] = "Se ha creado correctamente la nueva categoria."
       redirect_to :action => :index, :task => 'created'
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
@@ -49,6 +49,6 @@ class Logistics::CategoriesController < ApplicationController
 
   private
   def category_parameters
-    params.require(:category).permit(:name)
+    params.require(:category).permit(:code, :name)
   end
 end
