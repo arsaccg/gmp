@@ -97,11 +97,11 @@
     /* END BASIC */
 
     /* Add the events etc before DataTables hides a column */
-    $("#datatable_fixed_column thead input").keyup(function() {
+    $("#dt_basic thead input").keyup(function() {
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
     });
 
-    $("#datatable_fixed_column thead input").each(function(i) {
+    $("#dt_basic thead input").each(function(i) {
       this.initVal = this.value;
     });
     $("#datatable_fixed_column thead input").focus(function() {
@@ -110,7 +110,7 @@
         this.value = "";
       }
     });
-    $("#datatable_fixed_column thead input").blur(function(i) {
+    $("#dt_basic thead input").blur(function(i) {
       if (this.value == "") {
         this.className = "search_init";
         this.value = this.initVal;

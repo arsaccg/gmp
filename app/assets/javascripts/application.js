@@ -13,16 +13,33 @@
 //= require jquery
 //= require jquery_ujs
 
-function delete_to_url(url, url_target, div_name)
-{
-	var url_str = url;
-	var div_name = div_name;
+function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
 
-  	$.ajax({
-	  url: url_str,
-	  type: 'DELETE',
-	  beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
-	}).done(function( data ) {
-	  location.reload();
-	});
+  var url_str = url;
+  var div_name = div_id; 
+
+  $.ajax({
+    type: "POST",
+    url: url_str,
+    async: false,
+    data: parameters
+  }).done(function( msg ) {
+    $("#" + div_name).append(msg);
+  });
+  return false
+}
+
+function delete_to_url(url, div_name){ /* Method DELETE */
+  var url_str = url;
+  var div_name = div_name;
+
+  $.ajax({
+    url: url_str,
+    type: 'DELETE',
+    async: false,
+    context: document.body,
+    success: function(data){
+      alert(data);
+    }
+  });
 }
