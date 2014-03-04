@@ -52,11 +52,7 @@
           = image_tag 'logo.png', alt: "SmartAdmin"
         / END LOGO PLACEHOLDER
         /
-          Note: The activity badge color changes when clicked and resets the number to 0
-          Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications
-        %span#activity.activity-dropdown
-          %i.fa.fa-user
-          %b.badge 21
+
         / AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file
         .ajax-dropdown
           / the ID links are fetched via AJAX to the ajax container "ajax-notifications"
@@ -117,7 +113,7 @@
           / User image size is adjusted inside CSS, it should stay as it
           = image_tag current_user.avatar.url(:thumb), alt: "me", class: 'online'
           %a#show-shortcut{href: "javascript:void(0);"}
-            john.doe
+            = "#{current_user.first_name} #{current_user.last_name}"
             %i.fa.fa-angle-down
       / end user info
       /
@@ -133,21 +129,40 @@
           traditional href="" links. See documentation for details.
         %ul
           %li
-            %a{href: "#{logistics_unit_of_measurement_index_path}", title: "Unidad de Medida"}
-              %i.fa.fa-lg.fa-fw.fa-home
-              %span.menu-item-parent Unidades de Medida
-          %li
-            %a{href: "#{logistics_article_index_path}", title: "Articulos"}
-              %i.fa.fa-lg.fa-fw.fa-desktop
-              %span.menu-item-parent Articulos
-          %li
-            %a{href: "#", title: "Sectores"}
-              %i.fa.fa-lg.fa-fw.fa-map-marker
-              %span.menu-item-parent Sectores
-          %li
-            %a{href: "#{logistics_user_path(current_user.id)}", title: "Usuario"}
-              %i.fa.fa-lg.fa-fw.fa-user
-              %span.menu-item-parent Usuario
+            %a{href: '#'}
+              %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+              %span.menu-item-parent Logística
+            %ul
+              %li
+                %a{href: '#'}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Mantenimientos
+                %ul
+                  %li
+                    %a{href: "#{logistics_unit_of_measurement_index_path}", title: "Unidad de Medida"}
+                      %i.fa.fa-lg.fa-fw.fa-home{'style'=>"position: relative;bottom: 11px;"}
+                      %span.menu-item-parent{'style'=>"width: 100px;"}
+                        Unidades de Medida
+                  %li
+                    %a{href: "#{logistics_article_index_path}", title: "Articulos"}
+                      %i.fa.fa-lg.fa-fw.fa-desktop
+                      %span.menu-item-parent Articulos
+                  %li
+                    %a{href: "#{logistics_sectors_path}", title: "Sectores"}
+                      %i.fa.fa-lg.fa-fw.fa-map-marker
+                      %span.menu-item-parent Sectores
+                  %li
+                    %a{href: "#{logistics_phases_path}", title: "Fases"}
+                      %i.fa.fa-lg.fa-fw.fa-map-marker
+                      %span.menu-item-parent Fases
+                  %li
+                    %a{href: "#{logistics_cost_centers_path}", title: "Centro de Costos"}
+                      %i.fa.fa-lg.fa-fw.fa-map-marker
+                      %span.menu-item-parent Centro de Costos
+              %li
+                %a{href: "#{logistics_user_path(current_user.id)}", title: "Usuario"}
+                  %i.fa.fa-lg.fa-fw.fa-user
+                  %span.menu-item-parent Usuario
       %span.minifyme
         %i.fa.fa-arrow-circle-left.hit
     / END NAVIGATION
@@ -238,6 +253,8 @@
     = javascript_include_tag 'plugin/msie-fix/jquery.mb.browser.min'
     / SmartClick: For mobile devices
     = javascript_include_tag 'plugin/smartclick/smartclick'
+    / JQUERY FORM
+    = javascript_include_tag 'plugin/jquery-form/jquery-form.min'
     /[if IE 7]
       <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
     / Demo purpose only

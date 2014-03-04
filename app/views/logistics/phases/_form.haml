@@ -1,0 +1,52 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Fase
+  %div
+    .jarviswidget-editbox
+    .widget-body
+      - if @action == 'edit'
+        = simple_form_for(@phase, url: logistics_phase_path, :method => :patch, html: {class: 'form-horizontal' }) do |f|
+          %fieldset
+            %legend Ingrese Fase
+            .form-group
+              %label.col-md-2.control-label{for: "code"} Código
+              .col-md-10
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control'}, label: false
+            .form-group
+              %label.col-md-2.control-label{for: "name"} Nombre
+              .col-md-10
+                = f.input :name, placeholder: "Nombre de la fase", :input_html => {:class => 'form-control'}, label: false
+            .form-group{style: 'display:none;'}
+              %label.col-md-2.control-label{for: "type"}
+              .col-md-10{style: 'display:none;'}
+                = f.input :category, label: false, input_html: { value: 'phase' }, readonly: true
+          .form-actions
+            .row
+              .col-md-12
+                %button.btn.btn-primary{type: "submit"}
+                  %i.fa.fa-save
+                    Guardar
+      - else
+        = simple_form_for(@phase, url: logistics_phases_path, html: {class: 'form-horizontal' }) do |f|
+          %fieldset
+            %legend Ingrese Fase
+            .form-group
+              %label.col-md-2.control-label{for: "code"} Código
+              .col-md-10
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control'}, label: false
+            .form-group
+              %label.col-md-2.control-label{for: "name"} Nombre
+              .col-md-10
+                = f.input :name, placeholder: "Nombre de la fase", :input_html => {:class => 'form-control'}, label: false
+            .form-group{style: 'display:none;'}
+              %label.col-md-2.control-label{for: "type"}
+              .col-md-10{style: 'display:none;'}
+                = f.input :category, label: false, input_html: { value: 'phase' }, readonly: true
+          .form-actions
+            .row
+              .col-md-12
+                %button.btn.btn-primary{type: "submit"}
+                  %i.fa.fa-save
+                    Guardar
