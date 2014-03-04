@@ -1,0 +1,2 @@
+module Logistics::SubcategoriesHelper
+end

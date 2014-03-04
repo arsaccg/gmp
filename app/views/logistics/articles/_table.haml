@@ -1,8 +1,8 @@
-#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Ordenes de Suministros
+    %h2 Lista de Articulos
   / widget div
   %div
     / widget edit box
@@ -27,38 +27,32 @@
             .input-group
               %span.input-group-addon
                 %i.fa.fa-search
-              %input.form-control#filter-search{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
+              %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
         .dt-wrapper
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
-                %th Código
-                %th Estado
-                %th Fecha de Emisión
-                %th Fecha Programada
-                %th Responsable
+                %th Id
+                %th Nombre
+                %th Unidad de Medida
                 %th Descripcion
                 %th Acciones
             %tbody
-              - @deliveryOrders.each do |delivery|
+              - @Article.each do |unit|
                 %tr
                   %td 
-                    = delivery.id.to_s.rjust(5, '0')
+                    = unit.id
                   %td
-                    = translate_delivery_order_state(delivery.state)
+                    = unit.name
                   %td
-                    = delivery.date_of_issue
+                    = unit.unit_of_measurement.name
                   %td
-                    = delivery.scheduled
+                    = unit.description
                   %td
-                    -
-                  %td
-                    = delivery.description
-                  %td
-                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_delivery_order_path(delivery.id)}"}
+                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_article_path(unit.id)}"}
                       Editar
                     /%a{:href=>"javascript:delete_to_url('"+logistics_article_path(unit.id).to_s+ "','" + logistics_article_index_path.to_s + "', 'content')", data: { confirm: "¿Esta seguro de eliminar este articulo?" }}(class="btn btn-warning btn-xs")
-                    = link_to "Eliminar", logistics_delivery_order_path(delivery.id), class: "btn btn-warning btn-xs", method: :delete                                      
+                    = link_to "Eliminar", logistics_article_path(unit.id), class: "btn btn-warning btn-xs", method: :delete                                      
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -109,20 +103,20 @@
     /* END BASIC */
 
     /* Add the events etc before DataTables hides a column */
-    $("#dt_basic thead input").keyup(function() {
+    $("#datatable_fixed_column thead input").keyup(function() {
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
     });
 
-    $("#dt_basic thead input").each(function(i) {
+    $("#datatable_fixed_column thead input").each(function(i) {
       this.initVal = this.value;
     });
-    $("#dt_basic thead input").focus(function() {
+    $("#datatable_fixed_column thead input").focus(function() {
       if (this.className == "search_init") {
         this.className = "";
         this.value = "";
       }
     });
-    $("#dt_basic thead input").blur(function(i) {
+    $("#datatable_fixed_column thead input").blur(function(i) {
       if (this.value == "") {
         this.className = "search_init";
         this.value = this.initVal;

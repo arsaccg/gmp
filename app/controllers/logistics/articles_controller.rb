@@ -1,7 +1,7 @@
-class Logistics::SectorsController < ApplicationController
-  #before_filter :authenticate_user!
+class Logistics::ArticlesController < ApplicationController
+  before_filter :authenticate_user!
   def index
-    @Sectors = Sector.all
+    @Article = Article.all
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
       render layout: 'dashboard'
     else
@@ -10,8 +10,8 @@ class Logistics::SectorsController < ApplicationController
   end
 
   def create
-    sector = Sector.new(sector_parameters)
-    if sector.save
+    article = Article.new(article_parameters)
+    if article.save
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
       redirect_to :action => :index, :task => 'created'
     else
@@ -21,36 +21,38 @@ class Logistics::SectorsController < ApplicationController
   end
 
   def edit
-    @Sectors = Sector.find(params[:id])
+    @article = Article.find(params[:id])
+    @unitOfMeasurement = UnitOfMeasurement.all
     @action = 'edit'
     render layout: false
   end
 
   def show
-    sector = Sector.find(params[:id])
+    article = Article.find(params[:id])
     render :show
   end
 
   def update
-    sector = Sector.find(params[:id])
-    sector.update_attributes(sector_parameters)
+    article = Article.find(params[:id])
+    article.update_attributes(article_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index, :task => 'edited'
   end
 
   def new
-    @Sectors = Sector.new
+    @article = Article.new
+    @unitOfMeasurement = UnitOfMeasurement.all
     render layout: false
   end
 
   def destroy
-    sector = Sector.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente el sector seleccionado."
+    article = Article.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente el articulo seleccionado."
     redirect_to :action => :index, :task => 'deleted'
   end
 
   private
-  def sector_parameters
-    params.require(:sector).permit(:name)
+  def article_parameters
+    params.require(:article).permit(:name, :description, :unit_of_measurement_id)
   end
 end

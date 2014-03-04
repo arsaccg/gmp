@@ -1,0 +1,36 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Formulario de Registro
+  %div
+    .jarviswidget-editbox
+    .widget-body
+      - if @action == 'edit'
+        = simple_form_for(@category, url: logistics_category_path, :method => :patch, html: {class: 'form-horizontal' }) do |f|
+          %fieldset
+            %legend Ingrese Los Datos
+            .form-group
+              %label.col-md-2.control-label{for: "name"} Nombre
+              .col-md-10
+                = f.input :name, placeholder: "Nombre del sector", :input_html => {:class => 'form-control'}, label: false
+          .form-actions
+            .row
+              .col-md-12
+                %button.btn.btn-primary{type: "submit"}
+                  %i.fa.fa-save
+                    Guardar
+      - else
+        = simple_form_for(@category, url: logistics_categories_path, html: {class: 'form-horizontal' }) do |f|
+          %fieldset
+            %legend Ingrese Los Datos
+            .form-group
+              %label.col-md-2.control-label{for: "name"} Nombre
+              .col-md-10
+                = f.input :name, placeholder: "Nombre del sector", :input_html => {:class => 'form-control'}, label: false
+          .form-actions
+            .row
+              .col-md-12
+                %button.btn.btn-primary{type: "submit"}
+                  %i.fa.fa-save
+                    Guardar

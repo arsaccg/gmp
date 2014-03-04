@@ -57,6 +57,6 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   private
   def delivery_order_parameters
-    params.require(:deliveryOrder).permit(:date_of_issue, :scheduled, :description)
+    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description)
   end
 end

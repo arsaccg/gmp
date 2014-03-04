@@ -5,80 +5,37 @@
     %h2 Fase
   %div
     .jarviswidget-editbox
-    .widget-body
-      - if @action == 'edit'
-        = simple_form_for(@deliveryOrder, url: logistics_delivery_order_path, :method => :patch, html: {class: 'form-horizontal' }) do |f|
-          %fieldset
-            %legend Editar Orden de Suministro
+    .widget-body 
+      = simple_form_for([:logistics, @deliveryOrder], html: {class: 'form-horizontal' }) do |f|
+        %fieldset
+          %legend Editar Orden de Suministro
+          - if @deliveryOrder.id != nil
             .form-group
-              %label.col-md-2.control-label{for: "id"} Código
-              .col-md-10
-                = f.input :id, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.id.to_s.rjust(5, '0')}, label: false, readonly: true
-            - if @deliveryOrder.state != nil
-              .form-group
-                %label.col-md-2.control-label{for: "state"} Estado
-                .col-md-10
-                  = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => "#{@deliveryOrder.state}"}, label: false, readonly: true
-            - else
-              .form-group
-                %label.col-md-2.control-label{for: "state"} Estado
-                .col-md-10
-                  = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control'}, label: false, input_html: { value: "#{@deliveryOrder.state_name}" }, readonly: true
-            .form-group
-              %label.col-md-2.control-label{for: "date_of_issue"} Fecha de Requerimiento
-              .col-md-10
-                = f.input :date_of_issue, placeholder: "Fecha de emisión", :input_html => {:class => 'form-control'}, label: false
-            .form-group
-              %label.col-md-2.control-label{for: "scheduled"} Fecha Programada
-              .col-md-10
-                = f.input :scheduled, placeholder: "Fecha Programada", :input_html => {:class => 'form-control'}, label: false
-            .form-group
-              %label.col-md-2.control-label{for: "liable"} Responsable
-              .col-md-10
-                = text_field(:deliveryOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}")
-            .form-group
-              %label.col-md-2.control-label{for: "description"} Glosa
-              .col-md-10
-                = f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
-          .form-actions
-            .row
-              .col-md-12
-                %button.btn.btn-primary{type: "submit"}
-                  %i.fa.fa-save
-                    Guardar
-      - else
-        = simple_form_for(@deliveryOrder, url: logistics_delivery_orders_path, html: {class: 'form-horizontal' }) do |f|
-          %fieldset
-            %legend Ingresar Orden de Suministro
-            - if @deliveryOrder.state == nil
-              .form-group
-                %label.col-md-2.control-label{for: "state"} Estado
-                .col-md-10
-                  = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => "#{@deliveryOrder.state}"}, label: false, readonly: true
-            - else
-              .form-group
-                %label.col-md-2.control-label{for: "state"} Estado
-                .col-md-10
-                  = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => "Emitido"}, label: false, readonly: true
-            .form-group
-              %label.col-md-2.control-label{for: "date_of_issue"} Fecha de Requerimiento
-              .col-md-10
-                = f.input :date_of_issue, placeholder: "Fecha de emisión", :input_html => {:class => 'form-control'}, label: false
-            .form-group
-              %label.col-md-2.control-label{for: "scheduled"} Fecha Programada
-              .col-md-10
-                = f.input :scheduled, placeholder: "Fecha Programada", :input_html => {:class => 'form-control'}, label: false
-            .form-group
-              %label.col-md-2.control-label{for: "liable"} Responsable
-              .col-md-10
-                = text_field(:deliveryOrder, :liable, readonly: true, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}")
-            .form-group
-              %label.col-md-2.control-label{for: "description"} Glosa
-              .col-md-10
-                = f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
-          .form-actions
-            .row
-              .col-md-12
-                %button.btn.btn-primary{type: "submit"}
-                  %i.fa.fa-save
-                    Guardar
+              %label.col-md-3.control-label{for: "id"} Código
+              .col-md-9= f.input :id, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.id.to_s.rjust(5, '0')}, label: false, readonly: true
+          .form-group
+            %label.col-md-3.control-label{for: "state"} Estado
+            .col-md-9
+              = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true
+          .form-group
+            %label.col-md-3.control-label{for: "date_of_issue"} Fecha de Requerimiento
+            .col-md-9
+              = f.input :date_of_issue, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date"}, label: false
+          .form-group
+            %label.col-md-3.control-label{for: "scheduled"} Fecha Programada
+            .col-md-9
+              = f.input :scheduled, placeholder: "Fecha Programada", as: :string, :input_html => {:class => 'form-control', type: "date"}, label: false
+          .form-group
+            %label.col-md-3.control-label{for: "liable"} Responsable
+            .col-md-9
+              = text_field(:deliveryOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}")
+          .form-group
+            %label.col-md-3.control-label{for: "description"} Glosa
+            .col-md-9= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+        .form-actions
+          .row
+            .col-md-12
+              %button.btn.btn-primary{type: "submit"}
+                %i.fa.fa-save
+                  Guardar
+     
