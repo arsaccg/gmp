@@ -15,7 +15,7 @@ class Logistics::UnitOfMeasurementsController < ApplicationController
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
       redirect_to :action => :index, :task => 'created'
     else
-      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
+      flash[:error] = "Ha ocurrido un problema. "
       render layout: false
     end
 
