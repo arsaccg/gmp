@@ -1,12 +1,7 @@
 class Logistics::UserController < ApplicationController
   before_filter :authenticate_user!
   def index
-  	@user = current_user
-    if params[:task] == 'edited'
-      render layout: 'dashboard'
-    else
-      render layout: false
-    end
+  	
   end
 
   def edit
@@ -15,7 +10,7 @@ class Logistics::UserController < ApplicationController
   def update
     @user = User.find(params[:id])
     @user.update_attributes(user_params)
-    redirect_to :action => 'index', :task => 'edited'
+    redirect_to :action => 'show'
   end
 
   def show

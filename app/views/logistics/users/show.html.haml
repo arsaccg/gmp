@@ -1,4 +1,4 @@
-#content
+#content-inside
   #widget-grid
     .row
       %article.col-sm-12.col-md-12.col-lg-6
@@ -16,7 +16,7 @@
             / end widget edit box
             / widget content
             .widget-body.no-padding
-              = simple_form_for(@user, url: logistics_user_path, :method => :patch, html: {multipart: true,class: 'smart-form' }) do |f|
+              = simple_form_for([:logistics, @user], html: {multipart: true,class: 'smart-form' }) do |f|
                 %header
                   = @user.first_name
                 %fieldset

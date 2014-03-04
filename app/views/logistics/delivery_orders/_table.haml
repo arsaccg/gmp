@@ -45,13 +45,13 @@
                   %td 
                     = delivery.id.to_s.rjust(5, '0')
                   %td
-                    = delivery.state
+                    = translate_delivery_order_state(delivery.state)
                   %td
                     = delivery.date_of_issue
                   %td
                     = delivery.scheduled
                   %td
-                    = delivery.user.first_name + " " + delivery.user.last_name
+                    -
                   %td
                     = delivery.description
                   %td
