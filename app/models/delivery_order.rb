@@ -1,6 +1,5 @@
 class DeliveryOrder < ActiveRecord::Base
 	has_many :state_per_order_details
-
 	belongs_to :user
 	belongs_to :sector
 	belongs_to :phase
@@ -8,11 +7,11 @@ class DeliveryOrder < ActiveRecord::Base
 
 	state_machine :state, :initial => :issued do
 		event :revise do
-			transition[:issued] => :revised
+			transition :issued => :revised
 		end
 
 		event :approve do
-			transition[:revised] => :approved
+			transition :revised => :approved
 		end
 	end
 	
