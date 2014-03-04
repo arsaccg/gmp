@@ -9,7 +9,7 @@ class Logistics::CostCentersController < ApplicationController
     end
   end
 
-  def create
+  def create   
   end
 
   def edit
