@@ -1,4 +1,4 @@
-%tr(class="#{@clase}"){id: "tr" + @reg_n.to_s}
+%tr(class="order_delivery_item"){id: "tr" + @reg_n.to_s}
   %td.article-id(style="display:none")
     = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article.to_i
   %td.measurement-id(style="display:none")
@@ -11,14 +11,14 @@
     .col-xs-12
       = text_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", id: 'article-amount'
   %td.precio
-    %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][sector_id]"}
+    %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][sector_id]"}
       - @sectors.each do |sector|
         %option{:value => "#{sector.id}"}
           = sector.name
   %td
     = @unitOfMeasurement
   %td
-    %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][phase_id]"}
+    %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][phase_id]"}
       - @phases.each do |phase|
         %option{:value => "#{phase.id}"}
           = phase.name

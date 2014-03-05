@@ -55,10 +55,20 @@
                   %td
                     = delivery.description
                   %td
+                    %a.btn.btn-success.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}"}
+                      Ver Detalle
                     %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_delivery_order_path(delivery.id)}"}
                       Editar
                     /%a{:href=>"javascript:delete_to_url('"+logistics_article_path(unit.id).to_s+ "','" + logistics_article_index_path.to_s + "', 'content')", data: { confirm: "¿Esta seguro de eliminar este articulo?" }}(class="btn btn-warning btn-xs")
-                    = link_to "Eliminar", logistics_delivery_order_path(delivery.id), class: "btn btn-warning btn-xs", method: :delete                                      
+                    - case delivery.state
+                      - when 'issued'
+                        = link_to "Dar visto bueno", gorevise_logistics_delivery_order_path(delivery.id), class: "btn btn-info btn-xs"
+                        = link_to "Anular", logistics_delivery_order_path(delivery.id), class: "btn btn-danger btn-xs", method: :delete
+                      - when 'revised'
+                        = link_to "Aprobar", goapprove_logistics_delivery_order_path(delivery.id), class: "btn btn-primary btn-xs"
+                      - when 'canceled'
+                      - when 'approved'
+                    
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

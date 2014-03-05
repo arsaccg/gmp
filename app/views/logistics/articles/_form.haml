@@ -76,4 +76,8 @@
       var sub_code = $(this).val();
       $('#input-code-article').val(sub_code);
     });
+
+    $('#category-select').change(function(){
+      $('#input-code-article').val('');
+    });
   });

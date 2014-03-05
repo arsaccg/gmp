@@ -66,6 +66,38 @@
                       %th Glosa
                       %th 
                   %tbody(id="article_items_table")
+                    - if @action != nil && @action == 'edit'
+                      - @deliveryOrder.delivery_order_details.each do |dod|
+                        %tr(class="order_delivery_item"){id: "tr" + dod.id.to_s}
+                          %td.article-id(style="display:none")
+                            = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][article_id]', dod.article_id.to_i
+                          %td.measurement-id(style="display:none")
+                            = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][unit_of_measurement_id]', dod.unit_of_measurement_id.to_i
+                          %td
+                            = dod.article.code
+                          %td
+                            = dod.article.name
+                          %td.col-xs-2
+                            .col-xs-12
+                              = text_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][amount]', dod.amount.to_i , class: "form-control quantity", id: 'article-amount'
+                          %td.precio
+                            %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][sector_id]"}
+                              - @sectors.each do |sector|
+                                %option{:value => "#{sector.id}"}
+                                  = sector.name
+                          %td
+                            = dod.unit_of_measurement.name
+                          %td
+                            %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
+                              - @phases.each do |phase|
+                                %option{:value => "#{phase.id}"}
+                                  = phase.name
+                          %td
+                            = text_area_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][description]', dod.description, class: "form-control description"
+                          %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][id]', dod.id
+                          %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][delivery_order_id]', @deliveryOrder.id
+                          %td
+                            %i.fa.fa-check{style: "color: green;text-align:center"}
         .form-actions
           .row
             .col-md-12

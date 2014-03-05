@@ -1,7 +1,7 @@
 class Logistics::DeliveryOrdersController < ApplicationController
   def index
     @deliveryOrders = DeliveryOrder.where("user_id = ?", "#{current_user.id}")
-    if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
+    if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'canceled' || params[:task] == 'approved' || params[:task] == 'revised'
       render layout: 'dashboard'
     else
       render layout: false
@@ -33,12 +33,16 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def show
-    deliveryOrder = DeliveryOrder.find(params[:id])
+    @deliveryOrder = DeliveryOrder.find(params[:id])
+    @deliveryOrderDetails = DeliveryOrderDetail.where("delivery_order_id = ?", @deliveryOrder.id)
     render :show
   end
 
   def edit
     @deliveryOrder = DeliveryOrder.find(params[:id])
+    @articles = Article.all
+    @sectors = Sector.all
+    @phases = Phase.where("category LIKE 'phase'")
     @action = 'edit'
     render layout: false
   end
@@ -62,10 +66,23 @@ class Logistics::DeliveryOrdersController < ApplicationController
     render(partial: 'delivery_order_items', :layout => false)
   end
 
+  # Este es el cambio de estado
   def destroy
-    deliveryOrder = DeliveryOrder.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente la orden de suministro."
-    redirect_to :action => :index, :task => 'deleted'
+    @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
+    @deliveryOrder.update_attributes(:state => "canceled")
+    redirect_to :action => :index, :task => 'canceled'
+  end
+
+  def gorevise
+    @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
+    @deliveryOrder.update_attributes(:state => "revised")
+    redirect_to :action => :index, :task => 'revised'
+  end
+
+  def goapprove
+    @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
+    @deliveryOrder.update_attributes(:state => "approved")
+    redirect_to :action => :index, :task => 'approved'
   end
 
   private
