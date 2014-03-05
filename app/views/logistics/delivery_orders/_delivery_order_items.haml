@@ -14,16 +14,13 @@
         %option{:value => "#{sector.id}"}
           = sector.name
   %td
-    %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][unit_of_measurement_id]"}
-      - @unitMeasure.each do |unit|
-        %option{:value => "#{unit.id}"}
-          = unit.name
+    = @unitOfMeasurement
   %td
     %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][phase_id]"}
       - @phases.each do |phase|
         %option{:value => "#{phase.id}"}
           = phase.name
   %td
-    = text_field_tag 'delivery_order[delivery_order_items_attributes][' + @reg_n.to_s + '][description]', class: "form-control description"
+    = text_area_tag 'delivery_order[delivery_order_items_attributes][' + @reg_n.to_s + '][description]', nil,class: "form-control description"
   %td
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

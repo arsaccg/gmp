@@ -38,21 +38,22 @@
           %fieldset
             %legend Detalle de Orden de Suministro
             .form-group
-              %label(for="article_id" class="col-lg-3 control-label") Insumos
-              .col-lg-6 
-                %select(name='article_id' class = 'form-control' id = 'article-select')
-                  - @articles.each do |article|
-                    %option(value = "#{article.id}")
-                      = article.name
-              .col-lg-1 
-                = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
-              .col-lg-2 
-                %div(class="col-lg-3")
-                  %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
-                    Agregar Insumo
+              .col-lg-12
+                %label(for="article_id" class="col-lg-2 control-label") Insumos
+                .col-lg-6 
+                  %select(name='article_id' class = 'form-control' id = 'article-select')
+                    - @articles.each do |article|
+                      %option(value = "#{article.id}")
+                        = article.name
+                .col-lg-1
+                  = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
+                .col-lg-2 
+                  %div(class="col-lg-3")
+                    %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
+                      Agregar Insumo
             .form-group
               .col-lg-3
-              .col-lg-9
+              .col-lg-12
                 %table(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-articles" aria-describedby="data-table_info")
                   %thead
                     %tr
