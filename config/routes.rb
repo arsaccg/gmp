@@ -59,8 +59,16 @@ ArsacLogistica::Application.routes.draw do
     resources :phases
     resources :subphases
     resources :cost_centers
-    resources :delivery_orders
-    resources :subcategories
+    resources :delivery_orders do
+      collection do
+        post 'add_delivery_order_item_field'
+      end
+    end
+    resources :subcategories do
+      collection do
+        post 'get_subcategory_form_category'
+      end
+    end
     resources :categories
   end
 

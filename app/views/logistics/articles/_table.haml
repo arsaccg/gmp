@@ -32,27 +32,27 @@
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
-                %th Id
+                %th Código
                 %th Nombre
                 %th Unidad de Medida
                 %th Descripcion
                 %th Acciones
             %tbody
-              - @Article.each do |unit|
+              - @Article.each do |article|
                 %tr
                   %td 
-                    = unit.id
+                    = article.code
                   %td
-                    = unit.name
+                    = article.name
                   %td
-                    = unit.unit_of_measurement.name
+                    = article.unit_of_measurement.name
                   %td
-                    = unit.description
+                    = article.description
                   %td
-                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_article_path(unit.id)}"}
+                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_article_path(article.id)}"}
                       Editar
                     /%a{:href=>"javascript:delete_to_url('"+logistics_article_path(unit.id).to_s+ "','" + logistics_article_index_path.to_s + "', 'content')", data: { confirm: "¿Esta seguro de eliminar este articulo?" }}(class="btn btn-warning btn-xs")
-                    = link_to "Eliminar", logistics_article_path(unit.id), class: "btn btn-warning btn-xs", method: :delete                                      
+                    = link_to "Eliminar", logistics_article_path(article.id), class: "btn btn-warning btn-xs", method: :delete                                      
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

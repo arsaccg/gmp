@@ -144,6 +144,14 @@
                       %span.menu-item-parent{'style'=>"width: 100px;"}
                         Unidades de Medida
                   %li
+                    %a{href: "#{logistics_categories_path}", title: "Fases"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Categorias
+                  %li
+                    %a{href: "#{logistics_subcategories_path}", title: "Sub-Categorias"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Sub-Categorias
+                  %li
                     %a{href: "#{logistics_articles_path}", title: "Articulos"}
                       %i.fa.fa-lg.fa-fw.fa-desktop
                       %span.menu-item-parent Articulos
@@ -155,15 +163,6 @@
                     %a{href: "#{logistics_phases_path}", title: "Fases"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Fases
-                  %li
-                    %a{href: "#{logistics_categories_path}", title: "Fases"}
-                      %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Categorias
-                  %li
-                    %a{href: "#{logistics_subcategories_path}", title: "Sub-Categorias"}
-                      %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Sub-Categorias
-
               %li
                 %a{href: "#{logistics_delivery_orders_path}", title: "Usuario"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard

@@ -52,6 +52,11 @@ class Logistics::SubcategoriesController < ApplicationController
     redirect_to :action => :index, :task => 'deleted'
   end
 
+  def get_subcategory_form_category
+    @subcategories = Subcategory.where("category_id = ?", params[:category_id])
+    render json: {:subcategories => @subcategories}  
+  end
+
   private
   def subcategory_parameters
     params.require(:subcategory).permit(:category_id, :code, :name)
