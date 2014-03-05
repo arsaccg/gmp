@@ -6,7 +6,7 @@
   %div
     .jarviswidget-editbox
     .widget-body
-      = simple_form_for([:logistics, @category], :method => :patch, html: {class: 'form-horizontal' }) do |f|
+      = simple_form_for([:logistics, @category], html: {class: 'form-horizontal' }) do |f|
         %fieldset
           %legend Ingrese Los Datos
           .form-group

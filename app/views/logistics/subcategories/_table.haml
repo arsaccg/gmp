@@ -37,19 +37,19 @@
                 %th Nombre
                 %th Acciones
             %tbody
-              - @SubCategories.each do |unit|
+              - @SubCategories.each do |subcategory|
                 %tr
                   %td
-                    = unit.category.name
+                    = subcategory.category.name
                   %td
-                    = unit.code
+                    = subcategory.code
                   %td
-                    = unit.name
+                    = subcategory.name
                   %td
-                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_subcategory_path(unit.id)}"}
+                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_subcategory_path(subcategory.id)}"}
                       Editar
                     /%a{:href=>"javascript:delete_to_url('"+logistics_article_path(unit.id).to_s+ "','" + logistics_article_index_path.to_s + "', 'content')", data: { confirm: "¿Esta seguro de eliminar este articulo?" }}(class="btn btn-warning btn-xs")
-                    = link_to "Eliminar", logistics_subcategory_path(unit.id), class: "btn btn-warning btn-xs", method: :delete                                      
+                    = link_to "Eliminar", logistics_subcategory_path(subcategory.id), class: "btn btn-warning btn-xs", method: :delete                                      
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

@@ -6,51 +6,34 @@
   %div
     .jarviswidget-editbox
     .widget-body
-      - if @action == 'edit'
-        = simple_form_for(@SubCategories, url: logistics_subcategory_path, :method => :patch, html: {class: 'form-horizontal' }) do |f|
-          %fieldset
-            .form-group
-              %label.col-md-2.control-label{for: "category_id"} Categoria
-              .col-md-10
-                %select.form-control#category-select{:name =>"subcategory[category_id]"}
-                  - @Categories.each do |category|
-                    %option{:value => "#{category.id}"}
-                      = category.name
-            .form-group
-              %label.col-md-2.control-label{for: "code"} Código
-              .col-md-10
-                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-subcategory'}, label: false
-            .form-group
-              %label.col-md-2.control-label{for: "name"} Nombre
-              .col-md-10
-                = f.input :name, placeholder: "Nombre de la Sub-Categoria", :input_html => {:class => 'form-control'}, label: false
-          .form-actions
-            .row
-              .col-md-12
-                %button.btn.btn-primary{type: "submit"}
-                  %i.fa.fa-save
-                    Guardar
-      - else
-        = simple_form_for(@SubCategories, url: logistics_subcategories_path, html: {class: 'form-horizontal' }) do |f|
-          %fieldset
-            .form-group
-              %label.col-md-2.control-label{for: "category_id"} Categoria
-              .col-md-10
-                %select.form-control#category-select{:name =>"subcategory[category_id]"}
-                  - @Categories.each do |category|
-                    %option{:value => "#{category.id}"}
-                      = category.name
-            .form-group
-              %label.col-md-2.control-label{for: "code"} Código
-              .col-md-10
-                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-subcategory'}, label: false
-            .form-group
-              %label.col-md-2.control-label{for: "name"} Nombre
-              .col-md-10
-                = f.input :name, placeholder: "Nombre de la Sub-Categoria", :input_html => {:class => 'form-control'}, label: false
-          .form-actions
-            .row
-              .col-md-12
-                %button.btn.btn-primary{type: "submit"}
-                  %i.fa.fa-save
-                    Guardar
+      = simple_form_for([:logistics, @SubCategories], html: {class: 'form-horizontal' }) do |f|
+        %fieldset
+          .form-group
+            %label.col-md-2.control-label{for: "category_id"} Categoria
+            .col-md-10
+              %select.form-control#category-select{:name =>"subcategory[category_id]"}
+                - @Categories.each do |category|
+                  %option{:value => "#{category.code}"}
+                    = category.name
+          .form-group
+            %label.col-md-2.control-label{for: "code"} Código
+            .col-md-10
+              = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category'}, label: false
+          .form-group
+            %label.col-md-2.control-label{for: "name"} Nombre
+            .col-md-10
+              = f.input :name, placeholder: "Nombre de la Sub-Categoria", :input_html => {:class => 'form-control'}, label: false
+        .form-actions
+          .row
+            .col-md-12
+              %button.btn.btn-primary{type: "submit"}
+                %i.fa.fa-save
+                  Guardar
+:javascript
+  
+  $(document).ready(function(){
+    $('#category-select').change(function(){
+      var code = $(this).val();
+      $('#code-category').val(code);
+    });
+  });
