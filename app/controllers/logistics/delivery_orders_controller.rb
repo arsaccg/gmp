@@ -57,7 +57,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @phases = Phase.where("category LIKE 'phase'")
     @amount = params[:amount].to_f
 
-    @code_article, @name_article, @id_article, @unitOfMeasurement = @article.code, @article.name, @article.id, @article.unit_of_measurement.name
+    @code_article, @name_article, @id_article, @unitOfMeasurement, @unitOfMeasurementId = @article.code, @article.name, @article.id, @article.unit_of_measurement.name, @article.unit_of_measurement.id
     
     render(partial: 'delivery_order_items', :layout => false)
   end
@@ -70,6 +70,6 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   private
   def delivery_order_parameters
-    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, delivery_order_details_attributes: [:article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount])
+    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount])
   end
 end

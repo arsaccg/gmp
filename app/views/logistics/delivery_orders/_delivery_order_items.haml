@@ -1,26 +1,28 @@
 %tr(class="#{@clase}"){id: "tr" + @reg_n.to_s}
   %td.article-id(style="display:none")
-    = hidden_field_tag 'purchase_order[purchase_order_items_attributes][' + @reg_n.to_s + '][product_id]', @id_article.to_f.to_s 
+    = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article.to_i
+  %td.measurement-id(style="display:none")
+    = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][unit_of_measurement_id]', @unitOfMeasurementId.to_i
   %td
     = @code_article
   %td
     = @name_article
   %td.col-xs-2
     .col-xs-12
-      = text_field_tag 'delivery_order[delivery_order_items_attributes][' + @reg_n.to_s + '][amount]', @amount.to_f.to_s , class: "form-control quantity", id: 'article-amount'
+      = text_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", id: 'article-amount'
   %td.precio
-    %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][sector_id]"}
+    %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][sector_id]"}
       - @sectors.each do |sector|
         %option{:value => "#{sector.id}"}
           = sector.name
   %td
     = @unitOfMeasurement
   %td
-    %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][phase_id]"}
+    %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][phase_id]"}
       - @phases.each do |phase|
         %option{:value => "#{phase.id}"}
           = phase.name
   %td
-    = text_area_tag 'delivery_order[delivery_order_items_attributes][' + @reg_n.to_s + '][description]', nil,class: "form-control description"
+    = text_area_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][description]', nil,class: "form-control description"
   %td
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
