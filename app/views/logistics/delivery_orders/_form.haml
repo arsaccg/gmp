@@ -41,7 +41,7 @@
               .col-lg-12
                 %label(for="article_id" class="col-lg-2 control-label") Insumos
                 .col-lg-6 
-                  %select(name='article_id' class = 'form-control' id = 'article-select')
+                  %select(name='article_id' class = 'select2 form-control' id = 'article-select' style='width:100%;padding: 0;border: none;')
                     - @articles.each do |article|
                       %option(value = "#{article.id}")
                         = article.name
@@ -59,9 +59,9 @@
                     %tr
                       %th Codigo
                       %th Insumo
+                      %th Unidad de Medida
                       %th Cantidad
                       %th Sector
-                      %th Unidad de Medida
                       %th Fases
                       %th Glosa
                       %th 
@@ -77,6 +77,8 @@
                             = dod.article.code
                           %td
                             = dod.article.name
+                          %td
+                            = dod.unit_of_measurement.name
                           %td.col-xs-2
                             .col-xs-12
                               = text_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][amount]', dod.amount.to_i , class: "form-control quantity", id: 'article-amount'
@@ -85,8 +87,6 @@
                               - @sectors.each do |sector|
                                 %option{:value => "#{sector.id}"}
                                   = sector.name
-                          %td
-                            = dod.unit_of_measurement.name
                           %td
                             %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
                               - @phases.each do |phase|
@@ -104,8 +104,11 @@
               %button.btn.btn-primary{type: "submit"}
                 %i.fa.fa-save
                   Guardar
+
 :javascript
 
+  loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
+  $('#article-select').select2();
   function add_article_item(){
 
     var article_id = $("#article-select").val();

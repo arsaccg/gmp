@@ -19,12 +19,13 @@
         %strong Error!
         = flash[:error]
   .row
-    .col-sm-4{:style => "width: 27.333333%;"}
-      .well
-        %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_phase_path}"}
-          Agregar Fase
-        %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_subphase_path}"}
-          Agregar Sub-Fase
+    .col-sm-4
+      %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_phase_path}"}
+        Agregar Fase
+      %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_subphase_path}"}
+        Agregar Sub-Fase
+  %br
+  .row
   #widget-grid
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12

@@ -17,7 +17,9 @@
                     = category.name
           .form-group
             %label.col-md-2.control-label{for: "code"} Código
-            .col-md-10
+            .col-md-2
+              = text_field(:subcategory, :first_code, class: "form-control", readonly: true)
+            .col-md-2
               = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category'}, label: false
           .form-group
             %label.col-md-2.control-label{for: "name"} Nombre
@@ -32,8 +34,18 @@
 :javascript
   
   $(document).ready(function(){
+    var clicknum = 0;
+    $("#category-select").click(function(){
+     clicknum++;
+     if(clicknum == 1){
+      var code = $('option:selected', this).attr('rel');
+      $('#subcategory_first_code').val(code);
+      clicknum = 4;
+     }
+    });
+
     $('#category-select').change(function(){
       var code = $('option:selected', this).attr('rel');
-      $('#code-category').val(code);
+      $('#subcategory_first_code').val(code);
     });
   });

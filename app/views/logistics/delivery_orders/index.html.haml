@@ -19,10 +19,11 @@
         %strong Error!
         = flash[:error]
   .row
-    .col-sm-4{:style => "width: 30.333333%;"}
-      .well
-        %a.btn.btn-primary.btn-lg{:href => "##{new_logistics_delivery_order_path}"}
-          Agregar Nueva Orden de Suministro
+    .col-sm-4
+      %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_delivery_order_path}"}
+        Agregar Nueva Orden de Suministro
+  %br
+  .row
   #widget-grid
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
