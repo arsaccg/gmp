@@ -11,6 +11,7 @@ class Logistics::ArticlesController < ApplicationController
 
   def create
     article = Article.new(article_parameters)
+    article.code = params[:extrafield]['first_code'].to_s + params[:article]['code'].to_s
     if article.save
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
       redirect_to :action => :index, :task => 'created'

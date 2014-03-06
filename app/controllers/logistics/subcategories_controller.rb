@@ -23,6 +23,7 @@ class Logistics::SubcategoriesController < ApplicationController
 
   def create
     subcategory = Subcategory.new(subcategory_parameters)
+    subcategory.code = params[:extrafield]['first_code'].to_s + params[:subcategory]['code'].to_s
     if subcategory.save
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
       redirect_to :action => :index, :task => 'created'
