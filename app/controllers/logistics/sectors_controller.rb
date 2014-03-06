@@ -1,7 +1,8 @@
 class Logistics::SectorsController < ApplicationController
-  before_filter :authenticate_user!
+  #before_filter :authenticate_user!
   #skip_before_filter :verify_authenticity_token, :only => :create
   #protect_from_forgery with: :null_session, :only => [:index, :show, :create]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @Sectors = Sector.all
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
@@ -48,7 +49,8 @@ class Logistics::SectorsController < ApplicationController
   def destroy
     sector = Sector.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el sector seleccionado."
-    redirect_to :action => :index
+    render :json => sector
+    #redirect_to :action => :index
   end
 
   private

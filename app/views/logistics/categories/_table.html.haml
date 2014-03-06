@@ -33,15 +33,17 @@
                 %span
                   %i.fa.fa-lg.fa-folder-open
                   = category.name + " (cod. " + category.code + ")"
-                  %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_category_path(category.id)}"}
+                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_category_path(category.id)}', 'content', null, null, 'GET')"}
                     Editar
-                  = link_to "Eliminar", logistics_category_path(category.id), class: "btn btn-danger btn-xs", method: :delete
+                  %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{logistics_category_path(category.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_categories_path}')"}
+                    Eliminar
                 %ul
                   - category.subcategories.each do |subcategory|
                     %li
                       %span
                         %i.icon-leaf
                         = subcategory.name + " (cod. " + subcategory.code + ")"
+                        %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_sector_path(subcategory.id)}', 'content', null, null, 'GET')"}
                         %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_subcategory_path(subcategory.id)}"}
                           Editar
                         = link_to "Eliminar", logistics_subcategory_path(subcategory.id), class: "btn btn-danger btn-xs", method: :delete
