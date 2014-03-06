@@ -10,14 +10,14 @@
         %fieldset
           %legend Ingrese Articulo
           .form-group
-            %label.col-md-2.control-label{for: "category_id"} Categoria
+            %label.col-md-2.control-label{for: "category_id"} Grupo
             .col-md-10
               %select(name='category_id' class = 'form-control' id = 'category-select')
                 - @categories.each do |cat|
                   %option(value = "#{cat.id}" rel= "#{cat.code}")
                     = cat.name
           .form-group
-            %label.col-md-2.control-label{for: "subcategory_id"} Sub-Categoria
+            %label.col-md-2.control-label{for: "subcategory_id"} Sub-Grupo
             .col-md-10
               %select(name='subcategory_id' class = 'form-control' id = 'subcategory-select')
           .form-group
