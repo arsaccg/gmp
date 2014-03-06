@@ -1,0 +1,2 @@
+module Logistics::PersonsHelper
+end

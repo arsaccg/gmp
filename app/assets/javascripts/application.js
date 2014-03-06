@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery_nested_form
 
 function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
 

@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.3'
 
+
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 
@@ -10,8 +11,8 @@ gem 'sqlite3'
 gem 'mysql2'
 
 # use Bootstrap
-gem 'therubyracer', platforms: :ruby
-gem 'less-rails' #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
+#gem 'therubyracer', platforms: :ruby
+#gem 'less-rails' #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem 'twitter-bootstrap-rails'
 
 # erb to haml

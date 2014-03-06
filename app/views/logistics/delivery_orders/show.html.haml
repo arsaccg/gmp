@@ -1,0 +1,91 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Orden de Suministro #
+        = @deliveryOrder.id.to_s.rjust(5, '0')
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-1.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-eye-slash
+            %h2 Disabled Elements
+          %div
+            .widget-body
+              %form.form-horizontal{action: ""}
+                %fieldset
+                  %legend Orden de Suministro
+                  .form-group
+                    %label.col-md-2.control-label Código
+                    .col-md-10
+                      %input.form-control{disabled: "disabled", placeholder: "Default Text Field", type: "text", value: "#{@deliveryOrder.id.to_s.rjust(5, '0')}"}
+                  .form-group
+                    %label.col-md-2.control-label Estado
+                    .col-md-10
+                      %input.form-control{disabled: "disabled", placeholder: "Default Text Field", type: "text", value: "#{translate_delivery_order_state(@deliveryOrder.state)}"}
+                  .form-group
+                    %label.col-md-2.control-label Fecha de Requerimiento
+                    .col-md-10
+                      %input.form-control{disabled: "disabled", placeholder: "Default Text Field", type: "text", value: "#{@deliveryOrder.date_of_issue}"}
+                  .form-group
+                    %label.col-md-2.control-label Fecha Programada
+                    .col-md-10
+                      %input.form-control{disabled: "disabled", placeholder: "Default Text Field", type: "text", value: "#{@deliveryOrder.scheduled}"}
+                  .form-group
+                    %label.col-md-2.control-label Responsable
+                    .col-md-10
+                      %input.form-control{disabled: "disabled", placeholder: "Default Text Field", type: "text", value: "#{@deliveryOrder.user.first_name} #{@deliveryOrder.user.last_name}"}
+                  .form-group
+                    %label.col-md-2.control-label Glosa
+                    .col-md-10
+                      %textarea.form-control{disabled: "disabled", placeholder: "Textarea", rows: "4", value: "#{@deliveryOrder.description}"}
+                .col-sm-12
+                  %fieldset
+                    %legend Detalle de Orden de Suministro
+                    .form-group
+                      .col-lg-3
+                      .col-lg-12
+                        %table(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-articles" aria-describedby="data-table_info")
+                          %thead
+                            %tr
+                              %th Codigo
+                              %th Insumo
+                              %th Cantidad
+                              %th Sector
+                              %th Unidad de Medida
+                              %th Fases
+                              %th Glosa
+                          %tbody(id="article_items_table")
+                            - @deliveryOrderDetails.each do |deliverydetail|
+                              %tr
+                                %td
+                                  = deliverydetail.article.code
+                                %td
+                                  = deliverydetail.article.name
+                                %td
+                                  = deliverydetail.amount
+                                %td
+                                  = deliverydetail.sector.name
+                                %td
+                                  = deliverydetail.unit_of_measurement.name
+                                %td
+                                  = deliverydetail.phase.name
+                                %td
+                                  = deliverydetail.description
+
+= javascript_include_tag 'plugin/flot/jquery.flot.cust'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
+= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
+= javascript_include_tag 'plugin/flot/jquery.flot.resize'
+= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
+= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
+= javascript_include_tag 'plugin/datatables/ColReorder.min'
+= javascript_include_tag 'plugin/datatables/FixedColumns.min'
+= javascript_include_tag 'plugin/datatables/ColVis.min'
+= javascript_include_tag 'plugin/datatables/ZeroClipboard'
+= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
+= javascript_include_tag 'plugin/datatables/DT_bootstrap'

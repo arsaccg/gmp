@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140303171810) do
+ActiveRecord::Schema.define(version: 20140305194917) do
 
   create_table "articles", force: true do |t|
     t.string   "name"
@@ -19,28 +19,43 @@ ActiveRecord::Schema.define(version: 20140303171810) do
     t.datetime "updated_at"
     t.integer  "unit_of_measurement_id"
     t.text     "description"
+    t.string   "code"
+  end
+
+  create_table "categories", force: true do |t|
+    t.string   "code"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "cost_centers", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "code"
   end
 
   create_table "delivery_order_details", force: true do |t|
-    t.integer  "deliver_order_id"
     t.integer  "phase_id"
     t.integer  "sector_id"
-    t.integer  "person_id"
     t.integer  "article_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "unit_of_measurement_id"
+    t.integer  "amount"
+    t.text     "description"
+    t.integer  "delivery_order_id"
   end
 
   create_table "delivery_orders", force: true do |t|
     t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
+    t.date     "date_of_issue"
+    t.date     "scheduled"
+    t.text     "description"
   end
 
   create_table "phases", force: true do |t|
@@ -65,10 +80,19 @@ ActiveRecord::Schema.define(version: 20140303171810) do
     t.datetime "updated_at"
   end
 
+  create_table "subcategories", force: true do |t|
+    t.string   "code"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "category_id"
+  end
+
   create_table "unit_of_measurements", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "symbol"
   end
 
   create_table "users", force: true do |t|

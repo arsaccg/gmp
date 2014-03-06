@@ -4,7 +4,7 @@
 #   Ensure the SQLite 3 gem is defined in your Gemfile
 #   gem 'sqlite3'
 
-#development:
+#development:   
 #  adapter: sqlite3
 #  database: db/development.sqlite3
 #  pool: 5
@@ -15,7 +15,7 @@ development:
   database: arsac_logistica_develop
   #database: arsac_logistica
   username: root
-  password: root
+  password: moises
   host: localhost
 
 # Warning: The database defined as "test" will be erased and
