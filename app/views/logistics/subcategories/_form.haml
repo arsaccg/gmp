@@ -13,7 +13,7 @@
             .col-md-10
               %select.form-control#category-select{:name =>"subcategory[category_id]"}
                 - @Categories.each do |category|
-                  %option{:value => "#{category.code}"}
+                  %option{:value => "#{category.id}", :rel => "#{category.code}"}
                     = category.name
           .form-group
             %label.col-md-2.control-label{for: "code"} Código
@@ -33,7 +33,7 @@
   
   $(document).ready(function(){
     $('#category-select').change(function(){
-      var code = $(this).val();
+      var code = $('option:selected', this).attr('rel');
       $('#code-category').val(code);
     });
   });

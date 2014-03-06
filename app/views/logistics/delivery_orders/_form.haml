@@ -38,40 +38,82 @@
           %fieldset
             %legend Detalle de Orden de Suministro
             .form-group
-              %label.col-md-3.control-label{for: "article_id"} Artículos
-              .col-md-9
-                %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][article_id]"}
-                  - @articles.each do |article|
-                    %option{:value => "#{article.id}"}
-                      = article.name
+              .col-lg-12
+                %label(for="article_id" class="col-lg-2 control-label") Insumos
+                .col-lg-6 
+                  %select(name='article_id' class = 'form-control' id = 'article-select')
+                    - @articles.each do |article|
+                      %option(value = "#{article.id}")
+                        = article.name
+                .col-lg-1
+                  = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
+                .col-lg-2 
+                  %div(class="col-lg-3")
+                    %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
+                      Agregar Insumo
             .form-group
-              %label.col-md-3.control-label{for: "unit_of_measurement_id"} Unidad de Medida
-              .col-md-9
-                %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][unit_of_measurement_id]"}
-                  - @unitMeasure.each do |unit|
-                    %option{:value => "#{unit.id}"}
-                      = unit.name
-            .form-group
-              %label.col-md-3.control-label{for: "sector_id"} Sector
-              .col-md-9
-                %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][sector_id]"}
-                  - @sectors.each do |sector|
-                    %option{:value => "#{sector.id}"}
-                      = sector.name
-            .form-group
-              %label.col-md-3.control-label{for: "phase_id"} Fases
-              .col-md-9
-                %select.form-control{:name =>"delivery_order[purchase_order_items_attributes][phase_id]"}
-                  - @phases.each do |phase|
-                    %option{:value => "#{phase.id}"}
-                      = phase.name
-            .form-group
-              %label.col-md-3.control-label{for: "description"} Glosa
-              .col-md-9= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+              .col-lg-3
+              .col-lg-12
+                %table(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-articles" aria-describedby="data-table_info")
+                  %thead
+                    %tr
+                      %th Codigo
+                      %th Insumo
+                      %th Cantidad
+                      %th Sector
+                      %th Unidad de Medida
+                      %th Fases
+                      %th Glosa
+                      %th 
+                  %tbody(id="article_items_table")
+                    - if @action != nil && @action == 'edit'
+                      - @deliveryOrder.delivery_order_details.each do |dod|
+                        %tr(class="order_delivery_item"){id: "tr" + dod.id.to_s}
+                          %td.article-id(style="display:none")
+                            = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][article_id]', dod.article_id.to_i
+                          %td.measurement-id(style="display:none")
+                            = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][unit_of_measurement_id]', dod.unit_of_measurement_id.to_i
+                          %td
+                            = dod.article.code
+                          %td
+                            = dod.article.name
+                          %td.col-xs-2
+                            .col-xs-12
+                              = text_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][amount]', dod.amount.to_i , class: "form-control quantity", id: 'article-amount'
+                          %td.precio
+                            %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][sector_id]"}
+                              - @sectors.each do |sector|
+                                %option{:value => "#{sector.id}"}
+                                  = sector.name
+                          %td
+                            = dod.unit_of_measurement.name
+                          %td
+                            %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
+                              - @phases.each do |phase|
+                                %option{:value => "#{phase.id}"}
+                                  = phase.name
+                          %td
+                            = text_area_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][description]', dod.description, class: "form-control description"
+                          %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][id]', dod.id
+                          %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][delivery_order_id]', @deliveryOrder.id
+                          %td
+                            %i.fa.fa-check{style: "color: green;text-align:center"}
         .form-actions
           .row
             .col-md-12
               %button.btn.btn-primary{type: "submit"}
                 %i.fa.fa-save
                   Guardar
-     
+:javascript
+
+  function add_article_item(){
+
+    var article_id = $("#article-select").val();
+    str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), amount: $("#article-amount").val()};
+
+    load_url_ajax('#{add_delivery_order_item_field_logistics_delivery_orders_path}', 'article_items_table', str_item, 0, null);
+  }
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }

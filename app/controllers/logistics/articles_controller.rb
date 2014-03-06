@@ -22,6 +22,7 @@ class Logistics::ArticlesController < ApplicationController
 
   def edit
     @article = Article.find(params[:id])
+    @categories = Category.all
     @unitOfMeasurement = UnitOfMeasurement.all
     @action = 'edit'
     render layout: false
@@ -41,6 +42,7 @@ class Logistics::ArticlesController < ApplicationController
 
   def new
     @article = Article.new
+    @categories = Category.all
     @unitOfMeasurement = UnitOfMeasurement.all
     render layout: false
   end
@@ -53,6 +55,6 @@ class Logistics::ArticlesController < ApplicationController
 
   private
   def article_parameters
-    params.require(:article).permit(:name, :description, :unit_of_measurement_id)
+    params.require(:article).permit(:code, :name, :description, :unit_of_measurement_id)
   end
 end

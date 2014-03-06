@@ -16,9 +16,9 @@
             / end widget edit box
             / widget content
             .widget-body.no-padding
-              = simple_form_for([:logistics, @user], html: {multipart: true,class: 'smart-form' }) do |f|
+              = simple_form_for([:logistics, @person], url: logistics_person_path, method: 'PATCH', html: {multipart: true,class: 'smart-form' }) do |f|
                 %header
-                  = @user.first_name
+                  = @person.first_name
                 %fieldset
                   .row
                     %section.col.col-6
@@ -43,7 +43,7 @@
                     %section.col.col-6
                       %label.input
                         %i.fa.fa-calendar.icon-append
-                        %input#dateBirth.form-control.datepicker.hasDatepicker{"data-dateformat" => "dd/mm/yy", name: "user[date_of_birth]", placeholder: "Fecha de Nacimiento", type: "text", value: "#{@user.date_of_birth}"}
+                        %input#dateBirth.form-control.datepicker.hasDatepicker{"data-dateformat" => "dd/mm/yy", name: "user[date_of_birth]", placeholder: "Fecha de Nacimiento", type: "text", value: "#{@person.date_of_birth}"}
                   %section
                     %label.input.input-file{for: "avatar"}
                       .button

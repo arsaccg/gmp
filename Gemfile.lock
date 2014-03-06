@@ -28,7 +28,10 @@ GEM
     arel (4.0.2)
     atomic (1.1.14)
     bcrypt (3.1.7)
+    bcrypt (3.1.7-x86-mingw32)
     bcrypt-ruby (3.1.5)
+      bcrypt (>= 3.1.3)
+    bcrypt-ruby (3.1.5-x86-mingw32)
       bcrypt (>= 3.1.3)
     builder (3.1.4)
     climate_control (0.0.3)
@@ -42,7 +45,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.7.0)
-    commonjs (0.2.7)
     devise (3.2.3)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
@@ -75,12 +77,6 @@ GEM
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.8.1)
-    less (2.4.0)
-      commonjs (~> 0.2.7)
-    less-rails (2.4.2)
-      actionpack (>= 3.1)
-      less (~> 2.4.0)
-    libv8 (3.16.14.3)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -115,7 +111,6 @@ GEM
     rake (10.1.1)
     rdoc (4.1.1)
       json (~> 1.4)
-    ref (1.0.5)
     ruby_parser (3.1.3)
       sexp_processor (~> 4.1)
     sass (3.2.14)
@@ -140,10 +135,8 @@ GEM
       activesupport (>= 3.0)
       sprockets (~> 2.8)
     sqlite3 (1.3.9)
+    sqlite3 (1.3.9-x86-mingw32)
     state_machine (1.2.0)
-    therubyracer (0.12.1)
-      libv8 (~> 3.16.14.0)
-      ref
     thor (0.18.1)
     thread_safe (0.1.3)
       atomic
@@ -167,6 +160,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86-mingw32
 
 DEPENDENCIES
   coffee-rails (~> 4.0.0)
@@ -175,7 +169,6 @@ DEPENDENCIES
   haml-rails
   jbuilder (~> 1.2)
   jquery-rails
-  less-rails
   mysql2
   nested_form
   paperclip
@@ -185,7 +178,6 @@ DEPENDENCIES
   simple_form
   sqlite3
   state_machine
-  therubyracer
   turbolinks
   twitter-bootstrap-rails
   uglifier (>= 1.3.0)
