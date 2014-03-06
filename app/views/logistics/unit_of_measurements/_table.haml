@@ -41,7 +41,7 @@
                   %td= unit.id
                   %td= unit.name
                   %td
-                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_unit_of_measurement_path(unit.id)}"} Editar
+                    %button.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_unit_of_measurement_path(unit.id)}', 'content', null, null, 'GET')"} Editar
                     
 
 :javascript
