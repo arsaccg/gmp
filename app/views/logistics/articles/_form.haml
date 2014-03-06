@@ -48,6 +48,45 @@
 
 :javascript
   $(document).ready(function(){
+    var clicknum = 0;
+    var clicknum2 = 0;
+    $("#category-select").click(function(){
+     clicknum++;
+     if(clicknum == 1){
+      var category_id = $('#category-select').val();
+      $.ajax({
+        type: "POST",
+        url: "#{get_subcategory_form_category_logistics_subcategories_path}",
+        async: false,
+        data: { category_id: category_id, authenticity_token: "#{form_authenticity_token}"}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.subcategories, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          newOptions.push(item);
+        });
+        $('#subcategory-select').empty();
+        $.each(newOptions, function(key,value){
+          $('#subcategory-select').append(
+            $("<option></option>").attr("value", value.code).text(value.name)
+          )
+        });
+      });
+      clicknum = 4;
+     }
+    });
+
+    $('#subcategory-select').click(function(){
+      clicknum2++;
+      if(clicknum2 == 1){
+        var sub_code = $(this).val();
+        $('#input-code-article').val(sub_code);
+        clicknum2 = 0;
+      }
+    });
+
     $('#category-select').change(function(){
       var category_id = $(this).val();
       $.ajax({
