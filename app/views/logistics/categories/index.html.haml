@@ -20,7 +20,7 @@
           = flash[:error]
   .row
     .col-sm-4
-      %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_category_path}"}
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', null, null, 'GET')"}
         Agregar Grupo
       %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_subcategory_path}"}
         Agregar Subgrupo

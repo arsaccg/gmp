@@ -31,7 +31,7 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
   return false;
 }
 
-function delete_to_url(url, div_name){ /* Method DELETE */
+function delete_to_url(url, div_name, url_index){ /* Method DELETE */
   var url_str = url;
   var div_name = div_name;
 
@@ -41,7 +41,8 @@ function delete_to_url(url, div_name){ /* Method DELETE */
     async: false,
     context: document.body,
     success: function(data){
-      $("#" + div_name).html(data);
+      load_url_ajax(url_index,'content', null, null, 'GET')
+      //$("#" + div_name).html(data);
     }
   });
   return false;
