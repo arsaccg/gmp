@@ -11,8 +11,8 @@ gem 'sqlite3'
 gem 'mysql2'
 
 # use Bootstrap
-#gem 'therubyracer', platforms: :ruby
-#gem 'less-rails' #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
+gem 'therubyracer', platforms: :ruby
+gem 'less-rails' #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem 'twitter-bootstrap-rails'
 
 # erb to haml
@@ -61,6 +61,8 @@ group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
 end
+
+gem 'roo'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
