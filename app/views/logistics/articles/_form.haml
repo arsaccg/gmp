@@ -39,7 +39,7 @@
           .form-group
             %label.col-md-2.control-label{for: "unit_of_measurement_id"} Unidad de medida
             .col-md-10
-              %select#unit-select-measure.form-control.select2{:name =>"article[article_unit_of_measurements_attributes][#{@reg_n.to_s}][unit_of_measurement_id]", :style => "width:100%;;padding: 0;border: none;", :multiple => true}
+              %select#unit-select-measure.form-control.select2{:name =>"article_unit_of_measurements[unit_of_measurement_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true}
                 - @unitOfMeasurement.each do |unit|
                   %option{:value => "#{unit.id}"}
                     = unit.name

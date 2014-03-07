@@ -1,11 +1,9 @@
 #content-inside
   .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+    .col-xs-12.col-sm-7.col-md-7.col-lg-5
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-eye
-        Insumo
-        = @article.name
-        = @article.code
+        = "Insumo " + @article.name + " con código " + @article.code
   %section#widget-grid
     .row
       %article.col-sm-12.col-md-12.col-lg-6
@@ -29,10 +27,16 @@
                   %tr
                     %th Codigo
                     %th Unidad de Medida
+                    %th Simbolo
                 %tbody(id="unit_measurement_table")
-                  - @article.unit_of_measurement.each do |unit|
+                  - @article.article_unit_of_measurements.each do |aunit|
                     %tr
                       %td
-                        = unit.id.to_s.rjust(2, '0')
+                        = aunit.unit_of_measurement.id.to_s.rjust(2, '0')
                       %td
-                        = unit.name + " (" + unit.symbol + ")"
+                        = aunit.unit_of_measurement.name
+                      %td
+                        - if aunit.unit_of_measurement.symbol != nil
+                          = aunit.unit_of_measurement.symbol
+                        - else
+                          No tiene simbolo
