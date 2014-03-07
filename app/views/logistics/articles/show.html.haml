@@ -32,7 +32,7 @@
                   - @article.article_unit_of_measurements.each do |aunit|
                     %tr
                       %td
-                        = aunit.unit_of_measurement.id.to_s.rjust(2, '0')
+                        = aunit.code_article_unit
                       %td
                         = aunit.unit_of_measurement.name
                       %td

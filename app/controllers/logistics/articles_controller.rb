@@ -20,10 +20,10 @@ class Logistics::ArticlesController < ApplicationController
     article.code = params[:extrafield]['first_code'].to_s + params[:article]['code'].to_s
     if article.save
       params[:article_unit_of_measurements]['unit_of_measurement_id'].each.with_index(1) do |unit_id, i|
-        puts unit_id
         article_per_unit = ArticleUnitOfMeasurement.new
         article_per_unit.article_id = article.id
         article_per_unit.unit_of_measurement_id = unit_id
+        article_per_unit.code_article_unit = article.code.to_s + UnitOfMeasurement.find(unit_id).code.to_s
         article_per_unit.save
       end
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
