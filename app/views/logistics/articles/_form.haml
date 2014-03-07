@@ -10,20 +10,28 @@
         %fieldset
           %legend Ingrese Articulo
           .form-group
-            %label.col-md-2.control-label{for: "category_id"} Categoria
+            %label.col-md-2.control-label{for: "category_id"} Grupo
             .col-md-10
               %select(name='category_id' class = 'form-control' id = 'category-select')
                 - @categories.each do |cat|
                   %option(value = "#{cat.id}" rel= "#{cat.code}")
                     = cat.name
           .form-group
-            %label.col-md-2.control-label{for: "subcategory_id"} Sub-Categoria
+            %label.col-md-2.control-label{for: "subcategory_id"} Sub-Grupo
             .col-md-10
               %select(name='subcategory_id' class = 'form-control' id = 'subcategory-select')
           .form-group
             %label.col-md-2.control-label{for: "name"} Código
-            .col-md-10
-              = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'input-code-article'}, label: false
+            - if @article.code != nil
+              .col-md-2
+                = text_field(:extrafield, :first_code, class: "form-control", readonly: true, value: "#{@article.code[0,4]}")
+              .col-md-2
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'input-code-article', :value => "#{@article.code[4,8]}"}, label: false
+            - else
+              .col-md-2
+                = text_field(:extrafield, :first_code, class: "form-control", readonly: true)
+              .col-md-2
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'input-code-article'}, label: false
           .form-group
             %label.col-md-2.control-label{for: "name"} Nombre
             .col-md-10
@@ -31,7 +39,7 @@
           .form-group
             %label.col-md-2.control-label{for: "unit_of_measurement_id"} Unidad de medida
             .col-md-10
-              %select.form-control{:name =>"article[unit_of_measurement_id]"}
+              %select#unit-select-measure.form-control.select2{:name =>"article_unit_of_measurements[unit_of_measurement_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true}
                 - @unitOfMeasurement.each do |unit|
                   %option{:value => "#{unit.id}"}
                     = unit.name
@@ -54,26 +62,7 @@
      clicknum++;
      if(clicknum == 1){
       var category_id = $('#category-select').val();
-      $.ajax({
-        type: "POST",
-        url: "#{get_subcategory_form_category_logistics_subcategories_path}",
-        async: false,
-        data: { category_id: category_id, authenticity_token: "#{form_authenticity_token}"}
-      }).done(function( data ) {
-        newOptions = [];
-        $.each(data.subcategories, function(key, value){
-          item = {};
-          item['name'] = value.name;
-          item['code'] = value.code;
-          newOptions.push(item);
-        });
-        $('#subcategory-select').empty();
-        $.each(newOptions, function(key,value){
-          $('#subcategory-select').append(
-            $("<option></option>").attr("value", value.code).text(value.name)
-          )
-        });
-      });
+      complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}");
       clicknum = 4;
      }
     });
@@ -82,18 +71,34 @@
       clicknum2++;
       if(clicknum2 == 1){
         var sub_code = $(this).val();
-        $('#input-code-article').val(sub_code);
+        $('#extrafield_first_code').val(sub_code);
         clicknum2 = 0;
       }
     });
 
+    $('#unit-select-measure').select2();
+
     $('#category-select').change(function(){
       var category_id = $(this).val();
-      $.ajax({
+      complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}");
+    });
+
+    $('#subcategory-select').change(function(){
+      var sub_code = $(this).val();
+      $('#extrafield_first_code').val(sub_code);
+    });
+
+    $('#category-select').change(function(){
+      $('#extrafield_first_code').val('');
+    });
+  });
+
+  function complete_infocombo(url, category_id, form_token){
+    $.ajax({
         type: "POST",
-        url: "#{get_subcategory_form_category_logistics_subcategories_path}",
+        url: url,
         async: false,
-        data: { category_id: category_id, authenticity_token: "#{form_authenticity_token}"}
+        data: { category_id: category_id, authenticity_token: form_token}
       }).done(function( data ) {
         newOptions = [];
         $.each(data.subcategories, function(key, value){
@@ -109,14 +114,4 @@
           )
         });
       });
-    });
-
-    $('#subcategory-select').change(function(){
-      var sub_code = $(this).val();
-      $('#input-code-article').val(sub_code);
-    });
-
-    $('#category-select').change(function(){
-      $('#input-code-article').val('');
-    });
-  });
+  }

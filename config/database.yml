@@ -15,7 +15,7 @@ development:
   database: arsac_logistica_develop
   #database: arsac_logistica
   username: root
-  password: moises
+  password: root
   host: localhost
 
 # Warning: The database defined as "test" will be erased and

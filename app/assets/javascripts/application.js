@@ -18,19 +18,20 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
 
   var url_str = url;
   var div_name = div_id; 
+  var type_call = render_type;
 
   $.ajax({
-    type: "POST",
+    type: type_call,
     url: url_str,
     async: false,
     data: parameters
   }).done(function( msg ) {
-    $("#" + div_name).append(msg);
+    $("#" + div_name).html(msg);
   });
-  return false
+  return false;
 }
 
-function delete_to_url(url, div_name){ /* Method DELETE */
+function delete_to_url(url, div_name, url_index){ /* Method DELETE */
   var url_str = url;
   var div_name = div_name;
 
@@ -40,7 +41,26 @@ function delete_to_url(url, div_name){ /* Method DELETE */
     async: false,
     context: document.body,
     success: function(data){
-      alert(data);
+      load_url_ajax(url_index,'content', null, null, 'GET')
+      //$("#" + div_name).html(data);
     }
   });
+  return false;
+}
+
+function append_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
+
+  var url_str = url;
+  var div_name = div_id; 
+  var type_call = render_type;
+
+  $.ajax({
+    type: type_call,
+    url: url_str,
+    async: false,
+    data: parameters
+  }).done(function( msg ) {
+    $("#" + div_name).append(msg);
+  });
+  return false;
 }

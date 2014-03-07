@@ -44,8 +44,23 @@
                 %tr
                   %td 
                     = delivery.id.to_s.rjust(5, '0')
-                  %td
-                    = translate_delivery_order_state(delivery.state)
+                  - case delivery.state
+                    - when 'issued'
+                      %td
+                        %span.label.label-warning{:style => "background-color: #FF7A00;"}
+                          = translate_delivery_order_state(delivery.state)
+                    - when 'revised'
+                      %td
+                        %span.label.label-warning
+                          = translate_delivery_order_state(delivery.state)
+                    - when 'canceled'
+                      %td
+                        %span.label.label-error
+                          = translate_delivery_order_state(delivery.state)
+                    - when 'approved'
+                      %td
+                        %span.label.label-success{:style => "background-color: #25CA25;"}
+                          = translate_delivery_order_state(delivery.state)
                   %td
                     = delivery.date_of_issue
                   %td
@@ -62,10 +77,13 @@
                     /%a{:href=>"javascript:delete_to_url('"+logistics_article_path(unit.id).to_s+ "','" + logistics_article_index_path.to_s + "', 'content')", data: { confirm: "¿Esta seguro de eliminar este articulo?" }}(class="btn btn-warning btn-xs")
                     - case delivery.state
                       - when 'issued'
-                        = link_to "Dar visto bueno", gorevise_logistics_delivery_order_path(delivery.id), class: "btn btn-info btn-xs"
-                        = link_to "Anular", logistics_delivery_order_path(delivery.id), class: "btn btn-danger btn-xs", method: :delete
+                        %a.btn.btn-info.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=revised"}
+                          Dar visto bueno
+                        %a.btn.btn-danger.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=canceled"}
+                          Anular
                       - when 'revised'
-                        = link_to "Aprobar", goapprove_logistics_delivery_order_path(delivery.id), class: "btn btn-primary btn-xs"
+                        %a.btn.btn-primary.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=approved"}
+                          Aprobar
                       - when 'canceled'
                       - when 'approved'
                     

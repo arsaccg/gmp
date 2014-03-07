@@ -34,6 +34,9 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   def show
     @deliveryOrder = DeliveryOrder.find(params[:id])
+    if params[:state_change] != nil
+      @state_change = params[:state_change]
+    end
     @deliveryOrderDetails = DeliveryOrderDetail.where("delivery_order_id = ?", @deliveryOrder.id)
     render :show
   end
@@ -61,7 +64,16 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @phases = Phase.where("category LIKE 'phase'")
     @amount = params[:amount].to_f
 
-    @code_article, @name_article, @id_article, @unitOfMeasurement, @unitOfMeasurementId = @article.code, @article.name, @article.id, @article.unit_of_measurement.name, @article.unit_of_measurement.id
+    @code_article, @name_article, @id_article = @article.code, @article.name, @article.id
+
+    # ESTO HAY QUE CAMBIAR!
+    @article.article_unit_of_measurements.each_with_index do |aunit, index|
+      if index == 0
+        @unitOfMeasurement = aunit.unit_of_measurement.name
+        @unitOfMeasurementId = aunit.unit_of_measurement.id
+        break
+      end
+    end
     
     render(partial: 'delivery_order_items', :layout => false)
   end

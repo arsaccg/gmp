@@ -20,9 +20,9 @@
         = flash[:error]
   .row
     .col-sm-4
-      %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_phase_path}"}
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_phase_path}', 'content', null, null, 'GET')"}
         Agregar Fase
-      %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_subphase_path}"}
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_subphase_path}', 'content', null, null, 'GET')"}
         Agregar Sub-Fase
   %br
   .row

@@ -7,20 +7,22 @@
     .jarviswidget-editbox
     .widget-body
       - if @action == 'edit'
-        = simple_form_for(@subphase, url: logistics_subphase_path, :method => :patch, html: {class: 'form-horizontal' }) do |f|
+        = simple_form_for(@subphase, url: logistics_subphase_path, method: 'PATCH', html: {class: 'form-horizontal' }) do |f|
           %fieldset
             %legend Ingrese Sub-Fase
             .form-group
-              %label.col-md-2.control-label{for: "phase_id"} Unidad de medida
+              %label.col-md-2.control-label{for: "phase_id"} Fase
               .col-md-10
-                %select.form-control#phase-select{:name =>"phase[phase_id]"}
+                %select.form-control#phase-select{:name =>"extra_field[phase_id]"}
                   - @phases.each do |phase|
-                    %option{:value => "#{phase.id}"}
+                    %option{:value => "#{phase.id}", :rel => "#{phase.code}", :selected => @subphase.code.to_s[0,2] == phase.code}
                       = phase.name
             .form-group
               %label.col-md-2.control-label#code-subphase{for: "code"} Código
-              .col-md-10
-                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control'}, label: false
+              .col-md-2
+                = text_field(:extra_field, :first_code, class: "form-control", readonly: true)
+              .col-md-2
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-subphase'}, label: false
             .form-group
               %label.col-md-2.control-label{for: "name"} Nombre
               .col-md-10
@@ -40,20 +42,22 @@
           %fieldset
             %legend Ingrese Sub-Fase
             .form-group
-              %label.col-md-2.control-label{for: "phase_id"} Unidad de medida
+              %label.col-md-2.control-label{for: "phase_id"} Fase
               .col-md-10
-                %select.form-control#phase-select{:name =>"phase[phase_id]"}
+                %select.form-control#phase-select{:name =>"extra_field[phase_id]"}
                   - @phases.each do |phase|
-                    %option{:value => "#{phase.code}"}
+                    %option{:value => "#{phase.id}", :rel => "#{phase.code}"}
                       = phase.name
             .form-group
-              %label.col-md-2.control-label{for: "code"} Código
-              .col-md-10
+              %label.col-md-2.control-label#code-subphase{for: "code"} Código
+              .col-md-2
+                = text_field(:extra_field, :first_code, class: "form-control", readonly: true)
+              .col-md-2
                 = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-subphase'}, label: false
             .form-group
               %label.col-md-2.control-label{for: "name"} Nombre
               .col-md-10
-                = f.input :name, placeholder: "Nombre de la fase", :input_html => {:class => 'form-control'}, label: false
+                = f.input :name, placeholder: "Nombre de la fase", :input_html => {:class => 'form-control', :id => 'code-subphase'}, label: false
             .form-group{style: 'display:none;'}
               %label.col-md-2.control-label{for: "type"}
               .col-md-10{style: 'display:none;'}
@@ -66,9 +70,28 @@
                     Guardar
 
 :javascript
+
+  $('#new_phase').ajaxForm({
+    target: '#content'
+  });
+
+  $('form[id^="edit_"]').ajaxForm({
+    target: '#content'
+  });
+
   $(document).ready(function(){
+    var clicknum = 0;
+    $("#phase-select").click(function(){
+     clicknum++;
+     if(clicknum == 1){
+      var code = $('option:selected', this).attr('rel');
+      $('#extra_field_first_code').val(code);
+      clicknum = 4;
+     }
+    });
+
     $('#phase-select').change(function(){
-      var code = $(this).val();
-      $('#code-subphase').val(code);
+      var code = $('option:selected', this).attr('rel');
+      $('#extra_field_first_code').val(code);
     });
   });

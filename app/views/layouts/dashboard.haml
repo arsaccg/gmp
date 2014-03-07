@@ -20,17 +20,11 @@
     / SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables
     = stylesheet_link_tag "smartadmin-production", media: "screen", rel: "stylesheet", type: "text/css"
     = stylesheet_link_tag "smartadmin-skins", media: "screen", rel: "stylesheet", type: "text/css"
-
     /
       SmartAdmin RTL Support is under construction
       <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-rtl.css">
-    /
-      We recommend you use "custom.css" to override SmartAdmin
-      specific styles this will also ensure you retrain your customization
-      with each SmartAdmin update.
-      <link rel="stylesheet" type="text/css" media="screen" href="css/demo.css">
     / Demo purpose only: goes with demo.js, you can delete this css when designing your own WebApp
-    = stylesheet_link_tag "demo", media: "screen", rel: "stylesheet", type: "text/css"
+    = stylesheet_link_tag "custom", media: "screen", rel: "stylesheet", type: "text/css"
     /JS
     = javascript_include_tag 'application'
     / TOKEN
@@ -144,13 +138,13 @@
                       %span.menu-item-parent{'style'=>"width: 100px;"}
                         Unidades de Medida
                   %li
+                    %a{href: "#{logistics_cost_centers_path}", title: "Centro de Costos"}
+                      %i.fa.fa-lg.fa-fw.fa-desktop
+                      %span.menu-item-parent Centro de Costos
+                  %li
                     %a{href: "#{logistics_categories_path}", title: "Fases"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Categorias
-                  %li
-                    %a{href: "#{logistics_subcategories_path}", title: "Sub-Categorias"}
-                      %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Sub-Categorias
+                      %span.menu-item-parent Grupos
                   %li
                     %a{href: "#{logistics_articles_path}", title: "Articulos"}
                       %i.fa.fa-lg.fa-fw.fa-desktop

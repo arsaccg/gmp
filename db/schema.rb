@@ -11,13 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140307212842) do
+ActiveRecord::Schema.define(version: 20140307213422) do
+
+  create_table "article_unit_of_measurements", force: true do |t|
+    t.integer  "article_id"
+    t.integer  "unit_of_measurement_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "code_article_unit"
+  end
 
   create_table "articles", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "unit_of_measurement_id"
     t.text     "description"
     t.string   "code"
   end
@@ -27,7 +34,6 @@ ActiveRecord::Schema.define(version: 20140307212842) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "article_id"
   end
 
   create_table "cost_centers", force: true do |t|
@@ -57,6 +63,12 @@ ActiveRecord::Schema.define(version: 20140307212842) do
     t.date     "date_of_issue"
     t.date     "scheduled"
     t.text     "description"
+  end
+
+  create_table "people", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "phases", force: true do |t|
@@ -94,6 +106,7 @@ ActiveRecord::Schema.define(version: 20140307212842) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "symbol"
+    t.string   "code"
   end
 
   create_table "users", force: true do |t|
@@ -124,3 +137,4 @@ ActiveRecord::Schema.define(version: 20140307212842) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
 end
+>>>>>>> 1de8f518f0694a506690a0d968eeb0a938cbf5b4

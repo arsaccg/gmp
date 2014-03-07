@@ -3,16 +3,15 @@
     = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article.to_i
   %td.measurement-id(style="display:none")
     = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][unit_of_measurement_id]', @unitOfMeasurementId.to_i
-  %td
+  %td.col-md-1
     = @code_article
-  %td
+  %td.col-md-1
     = @name_article
-  %td
+  %td.col-md-1
     = @unitOfMeasurement
-  %td.col-xs-2
-    .col-xs-12
-      = text_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", id: 'article-amount'
-  %td.precio
+  %td.col-md-1
+    = text_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", id: 'article-amount'
+  %td.sector.col-md-1
     %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][sector_id]"}
       - @sectors.each do |sector|
         %option{:value => "#{sector.id}"}
@@ -20,9 +19,11 @@
   %td
     %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][phase_id]"}
       - @phases.each do |phase|
-        %option{:value => "#{phase.id}"}
-          = phase.name
+        %optgroup{:label => "#{phase.name}"}
+          - Phase.get_subphases(phase.code).each do |subphase|
+            %option{:value => "#{subphase.id}"}
+              = subphase.name
   %td
     = text_area_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][description]', nil,class: "form-control description"
-  %td
+  %td{:style => "width: 1%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

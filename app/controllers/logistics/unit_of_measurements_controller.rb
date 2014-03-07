@@ -13,7 +13,7 @@ class Logistics::UnitOfMeasurementsController < ApplicationController
     unitOfMeasure = UnitOfMeasurement.new(unit_of_measure_parameters)
     if unitOfMeasure.save
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
-      redirect_to :action => :index, :task => 'created'
+      redirect_to :action => :index
     else
       flash[:error] = "Ha ocurrido un problema. "
       render layout: false
@@ -36,7 +36,7 @@ class Logistics::UnitOfMeasurementsController < ApplicationController
     unitOfMeasure = UnitOfMeasurement.find(params[:id])
     unitOfMeasure.update_attributes(unit_of_measure_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index, :task => 'edited'
+    redirect_to :action => :index
   end
 
   def new
@@ -49,7 +49,7 @@ class Logistics::UnitOfMeasurementsController < ApplicationController
 
   private
   def unit_of_measure_parameters
-    params.require(:unit_of_measurement).permit(:name, :symbol)
+    params.require(:unit_of_measurement).permit(:name, :symbol, :code)
   end
 
 end
