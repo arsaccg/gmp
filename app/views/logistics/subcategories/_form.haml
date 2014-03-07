@@ -13,7 +13,7 @@
             .col-md-10
               %select.form-control#category-select{:name =>"subcategory[category_id]"}
                 - @Categories.each do |category|
-                  %option{:value => "#{category.id}", :rel => "#{category.code}"}
+                  %option{:value => "#{category.id}", :rel => "#{category.code}", :selected => @SubCategories.category_id == category.id}
                     = category.name
           .form-group
             %label.col-md-2.control-label{for: "code"} Código
@@ -39,6 +39,14 @@
                   Guardar
 :javascript
   
+  $('#new_subcategory').ajaxForm({
+    target: '#content'
+  });
+
+  $('form[id^="edit_"]').ajaxForm({
+    target: '#content'
+  });
+
   $(document).ready(function(){
     var clicknum = 0;
     $("#category-select").click(function(){
