@@ -8,12 +8,13 @@ class Logistics::SubphasesController < ApplicationController
   def new
     @subphase = Phase.new
     @phases = Phase.all.where(category: 'phase')
+    @action = 'create'
     render :new, layout: false
   end
 
   def create
     subphase = Phase.new(subphase_parameters)
-    subphase.code = params[:extrafield]['first_code'].to_s + params[:phase]['code'].to_s
+    subphase.code = params[:extra_field]['first_code'].to_s + params[:phase]['code'].to_s
     if subphase.save
       flash[:notice] = "Se ha creado correctamente la nueva subfase."
       redirect_to url_for(:controller => :phases, :action => :index)
