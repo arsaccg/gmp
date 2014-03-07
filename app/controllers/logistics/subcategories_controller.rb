@@ -1,13 +1,9 @@
 class Logistics::SubcategoriesController < ApplicationController
-  before_filter :authenticate_user!
-
+  #before_filter :authenticate_user!
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+  
   def index
-    @SubCategories = Subcategory.all
-    if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
-      render layout: 'dashboard'
-    else
-      render layout: false
-    end
+
   end
 
   def show
@@ -18,17 +14,18 @@ class Logistics::SubcategoriesController < ApplicationController
   def new
     @SubCategories = Subcategory.new
     @Categories = Category.all
-    render layout: false
+    render :new, layout: false
   end
 
   def create
     subcategory = Subcategory.new(subcategory_parameters)
+    subcategory.code = params[:extrafield]['first_code'].to_s + params[:subcategory]['code'].to_s
     if subcategory.save
-      flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
-      redirect_to :action => :index, :task => 'created'
+      flash[:notice] = "Se ha creado correctamente la nueva sub-categoria."
+      redirect_to url_for(:controller => :categories, :action => :index)
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index, :task => 'failed'
+      render layout: false
     end
   end
 
@@ -41,15 +38,20 @@ class Logistics::SubcategoriesController < ApplicationController
 
   def update
     subcategory = Subcategory.find(params[:id])
-    subcategory.update_attributes(subcategory_parameters)
+    subcategory.category_id = params[:subcategory]['category_id'].to_s
+    subcategory.code = params[:extrafield]['first_code'].to_s + params[:subcategory]['code'].to_s
+    subcategory.name = params[:subcategory]['name'].to_s
+    subcategory.save #update_attributes(subcategory_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index, :task => 'edited'
+    redirect_to url_for(:controller => :categories, :action => :index)
+    #redirect_to :action => :index
   end
 
   def destroy
     subcategory = Subcategory.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente la sub-categoria seleccionado."
-    redirect_to :action => :index, :task => 'deleted'
+    render :json => subcategory
+    #redirect_to url_for(:controller => :categories, :action => :index, :task => 'deleted')
   end
 
   def get_subcategory_form_category

@@ -4,6 +4,7 @@
       %h2.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Unidades de Medida
+    .row
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:buttonoth"}
         %button.close{"data-dismiss" => "alert"} ×
@@ -18,7 +19,7 @@
         = flash[:error]
   .row
     .col-sm-4{:style => "width: 30.333333%;"}
-      %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_unit_of_measurement_path}"}
+      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_unit_of_measurement_path}', 'content', null, null, 'GET')"}
         Agregar Nueva Unidad de Medida
   %br
   .row

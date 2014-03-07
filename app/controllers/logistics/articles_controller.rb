@@ -1,7 +1,7 @@
 class Logistics::ArticlesController < ApplicationController
   before_filter :authenticate_user!
   def index
-    @Article = Article.all
+    @Article = Article.order("id DESC").group("name")
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
       render layout: 'dashboard'
     else
@@ -9,8 +9,14 @@ class Logistics::ArticlesController < ApplicationController
     end
   end
 
+  def show_article
+    @article = Article.find(params[:id])
+    render :show, layout: false
+  end
+
   def create
     article = Article.new(article_parameters)
+    article.code = params[:extrafield]['first_code'].to_s + params[:article]['code'].to_s
     if article.save
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
       redirect_to :action => :index, :task => 'created'
@@ -44,6 +50,7 @@ class Logistics::ArticlesController < ApplicationController
     @article = Article.new
     @categories = Category.all
     @unitOfMeasurement = UnitOfMeasurement.all
+    @reg_n = Time.now.to_i
     render layout: false
   end
 
@@ -55,6 +62,6 @@ class Logistics::ArticlesController < ApplicationController
 
   private
   def article_parameters
-    params.require(:article).permit(:code, :name, :description, :unit_of_measurement_id)
+    params.require(:article).permit(:code, :name, :description, :unit_of_measurement_id, article_unit_of_measurements_attributes: [:id, :article_id, :unit_of_measurement_id])
   end
 end

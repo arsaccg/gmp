@@ -20,3 +20,11 @@
             %button.btn.btn-primary{type: "submit"}
               %i.fa.fa-save 
               Guardar
+:javascript
+  $('#new_unit_of_measurement').ajaxForm({
+    target: '#content'
+  });
+
+  $('form[id^="edit_"]').ajaxForm({
+    target: '#content'
+  });

@@ -34,7 +34,6 @@
               %tr
                 %th Código
                 %th Nombre
-                %th Unidad de Medida
                 %th Descripcion
                 %th Acciones
             %tbody
@@ -45,14 +44,14 @@
                   %td
                     = article.name
                   %td
-                    = article.unit_of_measurement.name
-                  %td
                     = article.description
                   %td
+                    %a.btn.btn-success.btn-xs{:href => "##{show_article_logistics_article_path(article.id)}"}
+                      Ver Detalle
                     %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_article_path(article.id)}"}
                       Editar
                     /%a{:href=>"javascript:delete_to_url('"+logistics_article_path(unit.id).to_s+ "','" + logistics_article_index_path.to_s + "', 'content')", data: { confirm: "¿Esta seguro de eliminar este articulo?" }}(class="btn btn-warning btn-xs")
-                    = link_to "Eliminar", logistics_article_path(article.id), class: "btn btn-warning btn-xs", method: :delete                                      
+                    = link_to "Eliminar", logistics_article_path(article.id), class: "btn btn-danger btn-xs", method: :delete                                      
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -101,39 +100,6 @@
     });
 
     /* END BASIC */
-
-    /* Add the events etc before DataTables hides a column */
-    $("#datatable_fixed_column thead input").keyup(function() {
-      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
-    });
-
-    $("#datatable_fixed_column thead input").each(function(i) {
-      this.initVal = this.value;
-    });
-    $("#datatable_fixed_column thead input").focus(function() {
-      if (this.className == "search_init") {
-        this.className = "";
-        this.value = "";
-      }
-    });
-    $("#datatable_fixed_column thead input").blur(function(i) {
-      if (this.value == "") {
-        this.className = "search_init";
-        this.value = this.initVal;
-      }
-    });   
-    
-
-    var oTable = $('#datatable_fixed_column').dataTable({
-      "sDom" : "<'dt-top-row'><'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
-      //"sDom" : "t<'row dt-wrapper'<'col-sm-6'i><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'>>",
-      "oLanguage" : {
-        "sSearch" : "Search all columns:"
-      },
-      "bSortCellsTop" : true
-    });   
-    
-
 
     /*
      * COL ORDER

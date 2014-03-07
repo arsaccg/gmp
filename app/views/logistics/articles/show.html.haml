@@ -1,2 +1,38 @@
-%h1 Logistics::Article#show
-%p Find me in app/views/logistics/article/show.html.haml
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        Insumo
+        = @article.name
+        = @article.code
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-6
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = 'Insumo ' + @article.name
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Unidades de Medida del Insumo
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Codigo
+                    %th Unidad de Medida
+                %tbody(id="unit_measurement_table")
+                  - @article.unit_of_measurement.each do |unit|
+                    %tr
+                      %td
+                        = unit.id.to_s.rjust(2, '0')
+                      %td
+                        = unit.name + " (" + unit.symbol + ")"

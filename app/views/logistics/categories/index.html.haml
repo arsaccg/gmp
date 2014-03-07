@@ -3,7 +3,7 @@
     .col-xs-12
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw
-        Categorias
+        Lista de Grupos
       - if flash[:notice] !=nil
         .alert.alert-success.fade.in{"style" => "clear:both"}
           %button.close{"data-dismiss" => "alert"}
@@ -20,8 +20,10 @@
           = flash[:error]
   .row
     .col-sm-4
-      %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_category_path}"}
-        Agregar Categoria
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', null, null, 'GET')"}
+        Agregar Grupo
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_subcategory_path}', 'content', null, null, 'GET')"}
+        Agregar Subgrupo
   %br
   .row
   #widget-grid

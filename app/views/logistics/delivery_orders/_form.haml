@@ -29,7 +29,7 @@
             .form-group
               %label.col-md-3.control-label{for: "liable"} Responsable
               .col-md-9
-                = text_field(:deliveryOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}")
+                = text_field(:deliveryOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}", readonly: true)
             .form-group
               %label.col-md-3.control-label{for: "description"} Glosa
               .col-md-9= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false

@@ -1,5 +1,8 @@
 class Logistics::SectorsController < ApplicationController
   #before_filter :authenticate_user!
+  #skip_before_filter :verify_authenticity_token, :only => :create
+  #protect_from_forgery with: :null_session, :only => [:index, :show, :create]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @Sectors = Sector.all
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
@@ -13,10 +16,10 @@ class Logistics::SectorsController < ApplicationController
     sector = Sector.new(sector_parameters)
     if sector.save
       flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
-      redirect_to :action => :index, :task => 'created'
+      redirect_to :action => :index
     else
-      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index, :task => 'failed'
+      flash[:error] = "Ha ocurrido un problema. "
+      render layout: false
     end
   end
 
@@ -35,18 +38,19 @@ class Logistics::SectorsController < ApplicationController
     sector = Sector.find(params[:id])
     sector.update_attributes(sector_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index, :task => 'edited'
+    redirect_to :action => :index
   end
 
   def new
     @Sectors = Sector.new
-    render layout: false
+    render :new, layout: false
   end
 
   def destroy
     sector = Sector.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el sector seleccionado."
-    redirect_to :action => :index, :task => 'deleted'
+    render :json => sector
+    #redirect_to :action => :index
   end
 
   private

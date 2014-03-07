@@ -2,25 +2,31 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Sub-Categorias
+    %h2 Sub-Grupos
   %div
     .jarviswidget-editbox
     .widget-body
       = simple_form_for([:logistics, @SubCategories], html: {class: 'form-horizontal' }) do |f|
         %fieldset
           .form-group
-            %label.col-md-2.control-label{for: "category_id"} Categoria
+            %label.col-md-2.control-label{for: "category_id"} Grupo
             .col-md-10
               %select.form-control#category-select{:name =>"subcategory[category_id]"}
                 - @Categories.each do |category|
-                  %option{:value => "#{category.id}", :rel => "#{category.code}"}
+                  %option{:value => "#{category.id}", :rel => "#{category.code}", :selected => @SubCategories.category_id == category.id}
                     = category.name
           .form-group
             %label.col-md-2.control-label{for: "code"} Código
-            .col-md-2
-              = text_field(:subcategory, :first_code, class: "form-control", readonly: true)
-            .col-md-2
-              = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category'}, label: false
+            - if @SubCategories.code != nil
+              .col-md-2
+                = text_field(:extrafield, :first_code, class: "form-control", readonly: true, value: "#{@SubCategories.code[0,2]}")
+              .col-md-2
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category', :value => "#{@SubCategories.code[2,4]}"}, label: false
+            - else
+              .col-md-2
+                = text_field(:extrafield, :first_code, class: "form-control", readonly: true)
+              .col-md-2
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category'}, label: false
           .form-group
             %label.col-md-2.control-label{for: "name"} Nombre
             .col-md-10
@@ -33,19 +39,27 @@
                   Guardar
 :javascript
   
+  $('#new_subcategory').ajaxForm({
+    target: '#content'
+  });
+
+  $('form[id^="edit_"]').ajaxForm({
+    target: '#content'
+  });
+
   $(document).ready(function(){
     var clicknum = 0;
     $("#category-select").click(function(){
      clicknum++;
      if(clicknum == 1){
       var code = $('option:selected', this).attr('rel');
-      $('#subcategory_first_code').val(code);
+      $('#extrafield_first_code').val(code);
       clicknum = 4;
      }
     });
 
     $('#category-select').change(function(){
       var code = $('option:selected', this).attr('rel');
-      $('#subcategory_first_code').val(code);
+      $('#extrafield_first_code').val(code);
     });
   });
