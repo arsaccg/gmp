@@ -95,7 +95,10 @@
                       %td
                         = deliverydetail.sector.name
                       %td
-                        = deliverydetail.unit_of_measurement.name
+                        - if deliverydetail.unit_of_measurement != nil
+                          = deliverydetail.unit_of_measurement.name
+                        - else
+                          = "No tiene Unidad de Medida"
                       %td
                         = deliverydetail.phase.name
                       %td

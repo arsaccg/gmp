@@ -47,3 +47,20 @@ function delete_to_url(url, div_name, url_index){ /* Method DELETE */
   });
   return false;
 }
+
+function append_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
+
+  var url_str = url;
+  var div_name = div_id; 
+  var type_call = render_type;
+
+  $.ajax({
+    type: type_call,
+    url: url_str,
+    async: false,
+    data: parameters
+  }).done(function( msg ) {
+    $("#" + div_name).append(msg);
+  });
+  return false;
+}
