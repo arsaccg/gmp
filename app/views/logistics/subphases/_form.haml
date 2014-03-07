@@ -15,7 +15,7 @@
               .col-md-10
                 %select.form-control#phase-select{:name =>"phase[phase_id]"}
                   - @phases.each do |phase|
-                    %option{:value => "#{phase.id}"}
+                    %option{:value => "#{phase.id}", :selected => @subphase.code.to_s[0,2] == phase.code}
                       = phase.name
             .form-group
               %label.col-md-2.control-label#code-subphase{for: "code"} Código
