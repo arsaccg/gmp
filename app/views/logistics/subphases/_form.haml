@@ -40,7 +40,7 @@
           %fieldset
             %legend Ingrese Sub-Fase
             .form-group
-              %label.col-md-2.control-label{for: "phase_id"} Unidad de medida
+              %label.col-md-2.control-label{for: "phase_id"} Fase
               .col-md-10
                 %select.form-control#phase-select{:name =>"phase[phase_id]"}
                   - @phases.each do |phase|
@@ -66,6 +66,15 @@
                     Guardar
 
 :javascript
+
+  $('#new_phase').ajaxForm({
+    target: '#content'
+  });
+
+  $('form[id^="edit_"]').ajaxForm({
+    target: '#content'
+  });
+
   $(document).ready(function(){
     $('#phase-select').change(function(){
       var code = $(this).val();

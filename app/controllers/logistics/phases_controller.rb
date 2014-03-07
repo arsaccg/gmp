@@ -1,4 +1,6 @@
 class Logistics::PhasesController < ApplicationController
+  #before_filter :authenticate_user!
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @phases = Phase.where("category LIKE 'phase'")
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
@@ -12,10 +14,10 @@ class Logistics::PhasesController < ApplicationController
     phase = Phase.new(phase_parameters)
     if phase.save
       flash[:notice] = "Se ha creado correctamente la nueva fase."
-      redirect_to :action => :index, :task => 'created'
+      redirect_to :action => :index
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index, :task => 'failed'
+      render layout: false
     end
   end
 
@@ -34,7 +36,7 @@ class Logistics::PhasesController < ApplicationController
     phase = Phase.find(params[:id])
     phase.update_attributes(phase_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index, :task => 'edited'
+    redirect_to :action => :index
   end
 
   def new
@@ -45,7 +47,8 @@ class Logistics::PhasesController < ApplicationController
   def destroy
     phase = Phase.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente la fase seleccionado."
-    redirect_to :action => :index, :task => 'deleted'
+    render :json => phase
+    #redirect_to :action => :index, :task => 'deleted'
   end
 
   private

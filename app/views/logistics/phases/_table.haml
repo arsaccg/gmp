@@ -33,19 +33,21 @@
                 %span
                   %i.fa.fa-lg.fa-folder-open
                   = phase.name + " (cod. " + phase.code + ")"
-                  %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_phase_path(phase.id)}"}
+                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_phase_path(phase.id)}', 'content', null, null, 'GET')"}
                     Editar
-                  = link_to "Eliminar", logistics_phase_path(phase.id), class: "btn btn-danger btn-xs", method: :delete
+                  %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{logistics_phase_path(phase.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_phases_path}')"}
+                    Eliminar
                 %ul
                   - Phase.get_subphases(phase.code).each do |subphase|
                     %li
                       %span
                         %i.icon-leaf
                         = subphase.name + " (cod. " + subphase.code + ")"
-                        %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_phase_path(subphase.id)}"}
+                        %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_subphase_path(subphase.id)}', 'content', null, null, 'GET')"}
                           Editar
-                        = link_to "Eliminar", logistics_phase_path(subphase.id), class: "btn btn-danger btn-xs", method: :delete
-      / end widget content
+                        %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{logistics_subphase_path(subphase.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_phases_path}')"}
+                          Eliminar
+    / end widget content
     / end widget div
   / end widget
 / WIDGET END
