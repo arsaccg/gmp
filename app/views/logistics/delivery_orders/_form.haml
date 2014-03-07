@@ -43,8 +43,10 @@
                 .col-lg-6 
                   %select(name='article_id' class = 'select2 form-control' id = 'article-select' style='width:100%;padding: 0;border: none;')
                     - @articles.each do |article|
-                      %option(value = "#{article.id}")
-                        = article.name
+                      %optgroup{:label => "#{article.name}"}
+                        - article.article_unit_of_measurements.each do |aunit|
+                          %option(value = "#{article.id}-#{aunit.unit_of_measurement.id}")
+                            = article.name + " (" + aunit.unit_of_measurement.symbol + ")"
                 .col-lg-1
                   = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
                 .col-lg-2 
