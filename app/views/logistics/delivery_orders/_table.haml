@@ -70,23 +70,28 @@
                   %td
                     = delivery.description
                   %td
-                    %a.btn.btn-success.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}"}
-                      Ver Detalle
-                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_delivery_order_path(delivery.id)}"}
-                      Editar
                     /%a{:href=>"javascript:delete_to_url('"+logistics_article_path(unit.id).to_s+ "','" + logistics_article_index_path.to_s + "', 'content')", data: { confirm: "¿Esta seguro de eliminar este articulo?" }}(class="btn btn-warning btn-xs")
                     - case delivery.state
                       - when 'issued'
+                        %a.btn.btn-success.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}"}
+                          Ver Detalle
+                        %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_delivery_order_path(delivery.id)}"}
+                          Editar
                         %a.btn.btn-info.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=revised"}
                           Dar visto bueno
                         %a.btn.btn-danger.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=canceled"}
                           Anular
                       - when 'revised'
+                        %a.btn.btn-success.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}"}
+                          Ver Detalle
                         %a.btn.btn-primary.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=approved"}
                           Aprobar
                       - when 'canceled'
+                        %a.btn.btn-success.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}"}
+                          Ver Detalle
                       - when 'approved'
-                    
+                        %a.btn.btn-success.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}"}
+                          Ver Detalle
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
