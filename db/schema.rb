@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20140307213422) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "article_id"
   end
 
   create_table "cost_centers", force: true do |t|
@@ -137,4 +138,3 @@ ActiveRecord::Schema.define(version: 20140307213422) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
 end
->>>>>>> 1de8f518f0694a506690a0d968eeb0a938cbf5b4
