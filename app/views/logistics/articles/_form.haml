@@ -12,14 +12,30 @@
           .form-group
             %label.col-md-2.control-label{for: "category_id"} Grupo
             .col-md-10
-              %select(name='category_id' class = 'form-control' id = 'category-select')
-                - @categories.each do |cat|
-                  %option(value = "#{cat.id}" rel= "#{cat.code}")
-                    = cat.name
+              - if @action != nil && @action == 'edit'
+                %select{:name => 'article[category_id]', :class => 'form-control', :id => 'category-select'}
+                  - @categories.each do |cat|
+                    %option{:value => "#{cat.id}", :rel => "#{cat.code}", :selected => @category_article}
+                      = cat.name
+              - else
+                %select(name='article[category_id]' class = 'form-control' id = 'category-select')
+                  - @categories.each do |cat|
+                    %option(value = "#{cat.id}" rel= "#{cat.code}")
+                      = cat.name
           .form-group
             %label.col-md-2.control-label{for: "subcategory_id"} Sub-Grupo
             .col-md-10
-              %select(name='subcategory_id' class = 'form-control' id = 'subcategory-select')
+              - if @action != nil && @action == 'edit'
+                %select{:name => 'subcategory_id', :class => 'form-control', :id => 'subcategory-select'}
+                  - @subcategories.each do |subcat|
+                    - if subcat.code == @subcategory_article
+                      %option{:value => "#{subcat.code}", :selected => true}
+                        = subcat.name
+                    - else
+                      %option{:value => "#{subcat.code}"}
+                        = subcat.name
+              - else
+                %select(name='subcategory_id' class = 'form-control' id = 'subcategory-select')
           .form-group
             %label.col-md-2.control-label{for: "name"} Código
             - if @article.code != nil
@@ -40,9 +56,19 @@
             %label.col-md-2.control-label{for: "unit_of_measurement_id"} Unidad de medida
             .col-md-10
               %select#unit-select-measure.form-control.select2{:name =>"article_unit_of_measurements[unit_of_measurement_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true}
-                - @unitOfMeasurement.each do |unit|
-                  %option{:value => "#{unit.id}"}
-                    = unit.name
+                - if @action != nil && @action == 'edit'
+                  - @unitOfMeasurement.each do |unito|
+                    - @units.each_with_index do |unit, index|
+                      - if unito.id == unit[0]
+                        %option{:value => "#{unito.id}", :selected => true}
+                          = unito.name
+                        - break
+                    %option{:value => "#{unito.id}"}
+                      = unito.name
+                - else
+                  - @unitOfMeasurement.each do |unit|
+                    %option{:value => "#{unit.id}"}
+                      = unit.name
           .form-group
             %label.col-md-2.control-label{for: "description"} Descripcion
             .col-md-10

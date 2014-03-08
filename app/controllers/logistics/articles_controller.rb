@@ -41,7 +41,22 @@ class Logistics::ArticlesController < ApplicationController
 
   def edit
     @article = Article.find(params[:id])
+    # Todas las categorias
     @categories = Category.all
+    # La categoria al que pertenece
+    @category_article = @article.category.id
+    # Traemos las SubCategorias
+    @subcategories = @article.category.subcategories
+    # Traemos la subcategoria
+    @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(4)}")
+    @subcategory_article.each do |sub|
+      @subcategory_article = sub.code
+    end
+    # Traemos las Unidades de Medida
+    @units = Array.new
+    @article.article_unit_of_measurements.each do |aunit|
+      @units << [aunit.unit_of_measurement.id]
+    end
     @unitOfMeasurement = UnitOfMeasurement.all
     @action = 'edit'
     render layout: false
@@ -54,7 +69,11 @@ class Logistics::ArticlesController < ApplicationController
 
   def update
     article = Article.find(params[:id])
-    article.update_attributes(article_parameters)
+    article.code = params[:extrafield]['first_code'].to_s + params[:article]['code'].to_s
+    article.name = params[:article]['name']
+    article.description = params[:article]['description']
+    article.category_id = params[:article]['category_id']
+    article.save
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index, :task => 'edited'
   end
@@ -120,6 +139,6 @@ class Logistics::ArticlesController < ApplicationController
 
   private
   def article_parameters
-    params.require(:article).permit(:code, :name, :description)
+    params.require(:article).permit(:code, :name, :description, :category_id)
   end
 end
