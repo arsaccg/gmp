@@ -22,7 +22,7 @@
               .col-md-2
                 = text_field(:extra_field, :first_code, class: "form-control", readonly: true)
               .col-md-2
-                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-subphase'}, label: false
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-subphase', :value => "#{@subphase.code[2,4]}"}, label: false
             .form-group
               %label.col-md-2.control-label{for: "name"} Nombre
               .col-md-10
@@ -70,6 +70,11 @@
                     Guardar
 
 :javascript
+  $(document).ready(function () {
+    $("#phase-select").focus();
+    var code = $("#phase-select option:selected").attr('rel');;
+    $("#extra_field_first_code").val(code);
+  });
 
   $('#new_phase').ajaxForm({
     target: '#content'
@@ -91,6 +96,11 @@
     });
 
     $('#phase-select').change(function(){
+      var code = $('option:selected', this).attr('rel');
+      $('#extra_field_first_code').val(code);
+    });
+
+    $('#phase-select').keyup(function(){
       var code = $('option:selected', this).attr('rel');
       $('#extra_field_first_code').val(code);
     });

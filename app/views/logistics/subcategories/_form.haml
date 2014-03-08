@@ -40,6 +40,8 @@
 :javascript
   $(document).ready(function () {
     $("#category-select").focus();
+    var code = $("#category-select option:selected").attr('rel');;
+    $("#extrafield_first_code").val(code);
   });
 
   $('#new_subcategory').ajaxForm({

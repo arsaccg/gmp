@@ -52,6 +52,10 @@
                     Guardar
 
 :javascript
+  $(document).ready(function () {
+    $("#phase_code").focus();
+  });
+
   $('#new_phase').ajaxForm({
     target: '#content'
   });

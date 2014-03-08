@@ -14,7 +14,7 @@
             .col-md-10
               %select(name='category_id' class = 'form-control' id = 'category-select')
                 - @categories.each do |cat|
-                  %option(value = "#{cat.id}" rel= "#{cat.code}")
+                  %option{:value => "#{cat.id}", :rel => "#{cat.code}"}
                     = cat.name
           .form-group
             %label.col-md-2.control-label{for: "subcategory_id"} Sub-Grupo
@@ -55,6 +55,22 @@
                   Guardar
 
 :javascript
+  $(document).ready(function () {
+    $("#category-select").focus();
+
+    var category_id = $("#category-select").val();
+      complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}");
+  
+  });
+
+  $('#new_article').ajaxForm({
+    target: '#content'
+  });
+
+  $('form[id^="edit_"]').ajaxForm({
+    target: '#content'
+  });
+
   $(document).ready(function(){
     var clicknum = 0;
     var clicknum2 = 0;
@@ -65,7 +81,7 @@
       complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}");
       clicknum = 4;
      }
-    });
+  });
 
     $('#subcategory-select').click(function(){
       clicknum2++;
@@ -83,7 +99,17 @@
       complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}");
     });
 
+    $('#category-select').keyup(function(){
+      var category_id = $(this).val();
+      complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}");
+    });
+
     $('#subcategory-select').change(function(){
+      var sub_code = $(this).val();
+      $('#extrafield_first_code').val(sub_code);
+    });
+
+    $('#subcategory-select').keyup(function(){
       var sub_code = $(this).val();
       $('#extrafield_first_code').val(sub_code);
     });
