@@ -16,6 +16,10 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
+  .row
+    .col-sm-4
+      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_article_path}', 'content', null, null, 'GET')"}
+        Agregar Articulo
   - if @unitOfMeasurement != nil && @phase != nil && @sector != nil && @group != nil && @subgroup != nil
     .row
       .col-sm-4

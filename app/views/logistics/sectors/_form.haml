@@ -36,6 +36,10 @@
                     Guardar
 
 :javascript
+  $(document).ready(function () {
+    $("#sector_name").focus();
+  });
+  
   $('#new_sector').ajaxForm({
     target: '#content'
   });

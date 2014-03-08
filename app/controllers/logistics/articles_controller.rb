@@ -31,11 +31,11 @@ class Logistics::ArticlesController < ApplicationController
         article_per_unit.code_article_unit = article.code.to_s + UnitOfMeasurement.find(unit_id).code.to_s
         article_per_unit.save
       end
-      flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
-      redirect_to :action => :index, :task => 'created'
+      flash[:notice] = "Se ha creado correctamente el articulo."
+      redirect_to :action => :index
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index, :task => 'failed'
+      redirect_to :action => :index
     end
   end
 
@@ -75,7 +75,7 @@ class Logistics::ArticlesController < ApplicationController
     article.category_id = params[:article]['category_id']
     article.save
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index, :task => 'edited'
+    redirect_to :action => :index
   end
 
   def new
@@ -89,7 +89,7 @@ class Logistics::ArticlesController < ApplicationController
   def destroy
     article = Article.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el articulo seleccionado."
-    redirect_to :action => :index, :task => 'deleted'
+    render :json => article
   end
 
   def import
