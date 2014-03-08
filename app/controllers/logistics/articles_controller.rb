@@ -1,5 +1,6 @@
 class Logistics::ArticlesController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     #@Article = Article.order("id DESC").group("name")
     @Article = Article.order("id DESC")
@@ -44,7 +45,7 @@ class Logistics::ArticlesController < ApplicationController
     # Todas las categorias
     @categories = Category.all
     # La categoria al que pertenece
-    @category_article = @article.category.idgit ag
+    @category_article = @article.category.id
     # Traemos las SubCategorias
     @subcategories = @article.category.subcategories
     # Traemos la subcategoria
@@ -139,6 +140,6 @@ class Logistics::ArticlesController < ApplicationController
 
   private
   def article_parameters
-    params.require(:article).permit(:code, :name, :description)
+    params.require(:article).permit(:code, :name, :description, :category_id)
   end
 end
