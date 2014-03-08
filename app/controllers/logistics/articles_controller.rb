@@ -44,7 +44,7 @@ class Logistics::ArticlesController < ApplicationController
     # Todas las categorias
     @categories = Category.all
     # La categoria al que pertenece
-    @category_article = @article.category.id
+    @category_article = @article.category.idgit ag
     # Traemos las SubCategorias
     @subcategories = @article.category.subcategories
     # Traemos la subcategoria
