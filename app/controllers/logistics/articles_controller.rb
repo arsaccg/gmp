@@ -139,6 +139,6 @@ class Logistics::ArticlesController < ApplicationController
 
   private
   def article_parameters
-    params.require(:article).permit(:code, :name, :description, :category_id)
+    params.require(:article).permit(:code, :name, :description)
   end
 end
