@@ -1,6 +1,7 @@
 class Logistics::DeliveryOrdersController < ApplicationController
   def index
     @deliveryOrders = DeliveryOrder.where("user_id = ?", "#{current_user.id}")
+    @article = Article.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'canceled' || params[:task] == 'approved' || params[:task] == 'revised'
       render layout: 'dashboard'
     else

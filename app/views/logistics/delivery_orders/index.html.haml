@@ -18,10 +18,20 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
-  .row
-    .col-sm-4
-      %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_delivery_order_path}"}
-        Agregar Nueva Orden de Suministro
+  - if @article != nil
+    .row
+      .col-sm-4
+        %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_delivery_order_path}"}
+          Agregar Nueva Orden de Suministro
+  - else
+    .alert.alert-block.alert-danger
+      %a.close(data-dismiss="alert" href="#")
+        ×
+      %h4.alert-heading
+        %i.fa.fa-lock
+          No puedes crear Ordenes de Suministro!
+      %p
+        Verifica si tienes, por lo menos, 1 insumo del cual hacer la orden.
   %br
   .row
   #widget-grid

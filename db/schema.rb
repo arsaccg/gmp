@@ -66,12 +66,6 @@ ActiveRecord::Schema.define(version: 20140307213422) do
     t.text     "description"
   end
 
-  create_table "people", force: true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "phases", force: true do |t|
     t.string   "name"
     t.datetime "created_at"

@@ -4,6 +4,32 @@
       %h2.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Lista de Grupos
+<<<<<<< HEAD
+=======
+    - if flash[:notice] !=nil
+      .alert.alert-success.fade.in{"style" => "clear:both"}
+        %button.close{"data-dismiss" => "alert"}
+          x
+        %i.fa-fw.fa.fa-check
+        %strong Exito
+        = flash[:notice]
+    - if flash[:error] != nil
+      .alert.alert-danger.fade.in
+        %button.close{"data-dismiss" => "alert"}
+          x
+        %i.fa-fw.fa.fa-check
+        %strong Error!
+        = flash[:error]
+  .row
+    .col-sm-4
+      .well
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', null, null, 'GET')"}
+          Agregar Grupo
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_subcategory_path}', 'content', null, null, 'GET')"}
+          Agregar Subgrupo
+  
+  #widget-grid
+>>>>>>> 81d15157bb684dc83bc61b504f9707135e06a2e2
     .row
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:buttonoth"}

@@ -20,6 +20,20 @@
     .col-sm-4
       %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_article_path}', 'content', null, null, 'GET')"}
         Agregar Articulo
+  - if @unitOfMeasurement != nil && @phase != nil && @sector != nil && @group != nil && @subgroup != nil
+    .row
+      .col-sm-4
+        %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_article_path}"}
+          Agregar Articulo
+  - else
+    .alert.alert-block.alert-danger
+      %a.close(data-dismiss="alert" href="#")
+        ×
+      %h4.alert-heading
+        %i.fa.fa-lock
+          No puedes crear Artículos!
+      %p
+        Verifica si tienes, por lo menos, 1 unidad de medida, Grupo y Subgrupo, Fase y Subfase, Sectores.
   %br
   .row
   #widget-grid
