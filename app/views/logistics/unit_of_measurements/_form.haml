@@ -25,6 +25,10 @@
               %i.fa.fa-save 
               Guardar
 :javascript
+  $(document).ready(function () {
+    $("#unit_of_measurement_code").focus();
+  });
+  
   $('#new_unit_of_measurement').ajaxForm({
     target: '#content'
   });

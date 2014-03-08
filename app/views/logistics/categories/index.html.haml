@@ -4,28 +4,28 @@
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw
         Lista de Grupos
-      - if flash[:notice] !=nil
+        - if flash[:notice] !=nil
         .alert.alert-success.fade.in{"style" => "clear:both"}
-          %button.close{"data-dismiss" => "alert"}
-            x
-          %i.fa-fw.fa.fa-check
-          %strong Exito
-          = flash[:notice]
-      - if flash[:error] != nil
-        .alert.alert-danger.fade.in
-          %button.close{"data-dismiss" => "alert"}
-            x
-          %i.fa-fw.fa.fa-check
-          %strong Error!
-          = flash[:error]
+            %button.close{"data-dismiss" => "alert"}
+              x
+            %i.fa-fw.fa.fa-check
+            %strong Exito
+            = flash[:notice]
+        - if flash[:error] != nil
+          .alert.alert-danger.fade.in
+            %button.close{"data-dismiss" => "alert"}
+              x
+            %i.fa-fw.fa.fa-check
+            %strong Error!
+            = flash[:error]
   .row
     .col-sm-4
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', null, null, 'GET')"}
-        Agregar Grupo
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_subcategory_path}', 'content', null, null, 'GET')"}
-        Agregar Subgrupo
-  %br
-  .row
+      .well
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', null, null, 'GET')"}
+          Agregar Grupo
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_subcategory_path}', 'content', null, null, 'GET')"}
+          Agregar Subgrupo
+  
   #widget-grid
     .row
       %article.col-xs-12

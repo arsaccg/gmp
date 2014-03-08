@@ -9,7 +9,10 @@
       - if @action == 'edit'
         = simple_form_for(@costCenter, url: logistics_cost_center_path, :method => :patch, html: {class: 'form-horizontal' }) do |f|
           %fieldset
-            %legend Ingrese Los Datos
+            .form-group
+              %label.col-md-2.control-label{for: "code"} Código
+              .col-md-10
+                = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false        
             .form-group
               %label.col-md-2.control-label{for: "name"} Nombre
               .col-md-10
@@ -23,7 +26,10 @@
       - else
         = simple_form_for(@costCenter, url: logistics_cost_centers_path, html: {class: 'form-horizontal' }) do |f|
           %fieldset
-            %legend Ingrese Los Datos
+            .form-group
+              %label.col-md-2.control-label{for: "code"} Código
+              .col-md-10
+                = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false        
             .form-group
               %label.col-md-2.control-label{for: "name"} Nombre
               .col-md-10
@@ -34,3 +40,16 @@
                 %button.btn.btn-primary{type: "submit"}
                   %i.fa.fa-save
                     Guardar
+
+:javascript
+  $(document).ready(function () {
+    $("#cost_center_code").focus();
+  });
+
+  $('#new_cost_center').ajaxForm({
+    target: '#content'
+  });
+
+  $('form[id^="edit_"]').ajaxForm({
+    target: '#content'
+  });
