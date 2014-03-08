@@ -1,8 +1,7 @@
 class Logistics::SectorsController < ApplicationController
-  #before_filter :authenticate_user!
-  #skip_before_filter :verify_authenticity_token, :only => :create
-  #protect_from_forgery with: :null_session, :only => [:index, :show, :create]
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+  
   def index
     @Sectors = Sector.all
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
@@ -15,7 +14,7 @@ class Logistics::SectorsController < ApplicationController
   def create
     sector = Sector.new(sector_parameters)
     if sector.save
-      flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
+      flash[:notice] = "Se ha creado correctamente el sector."
       redirect_to :action => :index
     else
       flash[:error] = "Ha ocurrido un problema. "
