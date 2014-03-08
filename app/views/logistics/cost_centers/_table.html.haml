@@ -33,20 +33,23 @@
             %thead
               %tr
                 %th Id
+                %th Codigo
                 %th Nombre
                 %th Acciones
             %tbody
-              - @costCenters.each do |costCenter|
+              - @costCenters.each do |unit|
                 %tr
                   %td 
-                    = costCenter.id
+                    = unit.id
+                  %td 
+                    = unit.code
                   %td
-                    = costCenter.name
+                    = unit.name
                   %td
-                    %a.btn.btn-warning.btn-xs{:href => "##{edit_logistics_cost_center_path(costCenter.id)}"}
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_cost_center_path(unit.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    = link_to "Eliminar", logistics_cost_center_path(costCenter.id), class: "btn btn-warning btn-xs", method: :delete
-                    
+                    %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{logistics_cost_center_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_cost_centers_path}')"}
+                      Eliminar                   
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

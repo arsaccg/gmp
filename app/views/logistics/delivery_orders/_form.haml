@@ -3,35 +3,35 @@
     %span.widget-icon
       %i.fa.fa-eye
     %h2 Orden de Suministro
-  %div
+  %div{:style => "padding-top: 0"}
     .jarviswidget-editbox
     .widget-body 
       = simple_form_for([:logistics, @deliveryOrder], html: {class: 'form-horizontal' }) do |f|
-        .col-sm-6
+        .col-sm-12
           %fieldset
-            %legend Orden de Suministro
+            %legend{:style => "border:none"}
             - if @deliveryOrder.id != nil
-              .form-group
-                %label.col-md-3.control-label{for: "id"} Código
+              .form-group.col-md-4
+                %label.col-md-3{for: "id"} Código
                 .col-md-9= f.input :id, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.id.to_s.rjust(5, '0')}, label: false, readonly: true
-            .form-group
-              %label.col-md-3.control-label{for: "state"} Estado
+            .form-group.col-md-4
+              %label.col-md-3{for: "state"} Estado
               .col-md-9
                 = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true
-            .form-group
-              %label.col-md-3.control-label{for: "date_of_issue"} Fecha de Requerimiento
+            .form-group.col-md-4
+              %label.col-md-3{for: "date_of_issue"} Fecha de Requerimiento
               .col-md-9
                 = f.input :date_of_issue, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date"}, label: false
-            .form-group
-              %label.col-md-3.control-label{for: "scheduled"} Fecha Programada
+            .form-group.col-md-4
+              %label.col-md-3{for: "scheduled"} Fecha Programada
               .col-md-9
                 = f.input :scheduled, placeholder: "Fecha Programada", as: :string, :input_html => {:class => 'form-control', type: "date"}, label: false
-            .form-group
-              %label.col-md-3.control-label{for: "liable"} Responsable
+            .form-group.col-md-4
+              %label.col-md-3{for: "liable"} Responsable
               .col-md-9
                 = text_field(:deliveryOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}", readonly: true)
-            .form-group
-              %label.col-md-3.control-label{for: "description"} Glosa
+            .form-group.col-md-8
+              %label.col-md-1{for: "description", style: "margin-right: 4%;"} Glosa
               .col-md-9= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
 
         .col-sm-12
@@ -43,8 +43,10 @@
                 .col-lg-6 
                   %select(name='article_id' class = 'select2 form-control' id = 'article-select' style='width:100%;padding: 0;border: none;')
                     - @articles.each do |article|
-                      %option(value = "#{article.id}")
-                        = article.name
+                      %optgroup{:label => "#{article.name}"}
+                        - article.article_unit_of_measurements.each do |aunit|
+                          %option(value = "#{article.id}-#{aunit.unit_of_measurement.id}")
+                            = article.code + " - " + article.name + " - " + aunit.unit_of_measurement.symbol
                 .col-lg-1
                   = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
                 .col-lg-2 
@@ -59,10 +61,10 @@
                     %tr
                       %th Codigo
                       %th Insumo
-                      %th Unidad de Medida
+                      %th Unidad
                       %th Cantidad
                       %th Sector
-                      %th Fases
+                      %th Fases/Subfases
                       %th Glosa
                       %th 
                   %tbody(id="article_items_table")
@@ -98,7 +100,7 @@
                           %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][delivery_order_id]', @deliveryOrder.id
                           %td
                             %i.fa.fa-check{style: "color: green;text-align:center"}
-        .form-actions
+        .form-actions{:style => "margin-top: 0;"}
           .row
             .col-md-12
               %button.btn.btn-primary{type: "submit"}
@@ -109,12 +111,13 @@
 
   loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
   $('#article-select').select2();
+
   function add_article_item(){
 
     var article_id = $("#article-select").val();
     str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), amount: $("#article-amount").val()};
 
-    load_url_ajax('#{add_delivery_order_item_field_logistics_delivery_orders_path}', 'article_items_table', str_item, 0, null);
+    append_url_ajax('#{add_delivery_order_item_field_logistics_delivery_orders_path}', 'article_items_table', str_item, 0, 'POST');
   }
 
   function delete_item(code){

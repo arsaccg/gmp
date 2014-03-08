@@ -1,5 +1,7 @@
 class Logistics::UnitOfMeasurementsController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+  
   def index
     @unitOfMeasures = UnitOfMeasurement.all
     if params[:task] == 'created' || params[:task] == 'edited'
@@ -7,6 +9,16 @@ class Logistics::UnitOfMeasurementsController < ApplicationController
     else
       render layout: false
     end
+  end
+
+  def show
+    @unitOfMeasure = UnitOfMeasurement.find(params[:id])
+    render :show
+  end
+
+  def new
+    @unitOfMeasure = UnitOfMeasurement.new
+    render :new, layout: false
   end
 
   def create
@@ -27,11 +39,6 @@ class Logistics::UnitOfMeasurementsController < ApplicationController
     render layout: false
   end
 
-  def show
-    @unitOfMeasure = UnitOfMeasurement.find(params[:id])
-    render :show
-  end
-
   def update
     unitOfMeasure = UnitOfMeasurement.find(params[:id])
     unitOfMeasure.update_attributes(unit_of_measure_parameters)
@@ -39,17 +46,12 @@ class Logistics::UnitOfMeasurementsController < ApplicationController
     redirect_to :action => :index
   end
 
-  def new
-    @unitOfMeasure = UnitOfMeasurement.new
-    render :new, layout: false
-  end
-
   def destroy
   end
 
   private
   def unit_of_measure_parameters
-    params.require(:unit_of_measurement).permit(:name, :symbol)
+    params.require(:unit_of_measurement).permit(:name, :symbol, :code)
   end
 
 end

@@ -32,14 +32,16 @@
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
-                %th Id
+                %th Código
                 %th Nombre
+                %th Simbolo
                 %th Acciones
             %tbody
               - @unitOfMeasures.each do |unit|
                 %tr
-                  %td= unit.id
+                  %td= unit.code
                   %td= unit.name
+                  %td= unit.symbol
                   %td
                     %button.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_unit_of_measurement_path(unit.id)}', 'content', null, null, 'GET')"} Editar
                     

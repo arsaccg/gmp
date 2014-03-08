@@ -38,7 +38,10 @@
                 %i.fa.fa-save
                   Guardar
 :javascript
-  
+  $(document).ready(function () {
+    $("#category-select").focus();
+  });
+
   $('#new_subcategory').ajaxForm({
     target: '#content'
   });
@@ -59,6 +62,11 @@
     });
 
     $('#category-select').change(function(){
+      var code = $('option:selected', this).attr('rel');
+      $('#extrafield_first_code').val(code);
+    });
+
+    $('#category-select').keyup(function(){
       var code = $('option:selected', this).attr('rel');
       $('#extrafield_first_code').val(code);
     });

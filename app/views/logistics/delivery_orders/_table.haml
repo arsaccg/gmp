@@ -44,8 +44,23 @@
                 %tr
                   %td 
                     = delivery.id.to_s.rjust(5, '0')
-                  %td
-                    = translate_delivery_order_state(delivery.state)
+                  - case delivery.state
+                    - when 'issued'
+                      %td
+                        %span.label.label-warning{:style => "background-color: #FF7A00;"}
+                          = translate_delivery_order_state(delivery.state)
+                    - when 'revised'
+                      %td
+                        %span.label.label-warning
+                          = translate_delivery_order_state(delivery.state)
+                    - when 'canceled'
+                      %td
+                        %span.label.label-error
+                          = translate_delivery_order_state(delivery.state)
+                    - when 'approved'
+                      %td
+                        %span.label.label-success{:style => "background-color: #25CA25;"}
+                          = translate_delivery_order_state(delivery.state)
                   %td
                     = delivery.date_of_issue
                   %td
