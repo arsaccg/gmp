@@ -78,19 +78,20 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def destroy
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
     @deliveryOrder.update_attributes(:state => "canceled")
-    redirect_to :action => :index, :task => 'canceled'
+    #redirect_to :action => :index
+    render :json => @deliveryOrder
   end
 
   def gorevise
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
     @deliveryOrder.update_attributes(:state => "revised")
-    redirect_to :action => :index, :task => 'revised'
+    redirect_to :action => :index
   end
 
   def goapprove
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
     @deliveryOrder.update_attributes(:state => "approved")
-    redirect_to :action => :index, :task => 'approved'
+    redirect_to :action => :index
   end
 
   private

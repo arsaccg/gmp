@@ -77,14 +77,12 @@
                           Ver Detalle
                         %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
                           Editar
-                        %a.btn.btn-info.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=revised"}
-                          Dar visto bueno
-                        %a.btn.btn-danger.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=canceled"}
-                          Anular
+                        %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=revised', 'content', null, null, 'GET')"}
+                          Dar visto bueno   
                       - when 'revised'
                         %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
                           Ver Detalle
-                        %a.btn.btn-primary.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=approved"}
+                        %a.btn.btn-primary.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=approved', 'content', null, null, 'GET')"}
                           Aprobar
                       - when 'canceled'
                         %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
@@ -92,6 +90,8 @@
                       - when 'approved'
                         %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
                           Ver Detalle
+                    %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=canceled', 'content', null, null, 'GET')"}
+                      Anular
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
