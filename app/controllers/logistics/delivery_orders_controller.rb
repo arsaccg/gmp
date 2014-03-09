@@ -2,6 +2,8 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def index
     @deliveryOrders = DeliveryOrder.where("user_id = ?", "#{current_user.id}")
     @article = Article.first
+    @phase = Phase.first
+    @sector = Sector.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'canceled' || params[:task] == 'approved' || params[:task] == 'revised'
       render layout: 'dashboard'
     else
@@ -26,10 +28,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
       stateOrderDetail.delivery_order_id = deliveryOrder.id
       stateOrderDetail.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
-      redirect_to :action => :index, :task => 'created'
+      redirect_to :action => :index
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index, :task => 'failed'
+      redirect_to :action => :index
     end
   end
 
@@ -55,7 +57,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     deliveryOrder = DeliveryOrder.find(params[:id])
     deliveryOrder.update_attributes(delivery_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index, :task => 'edited'
+    redirect_to :action => :index
   end
 
   def add_delivery_order_item_field

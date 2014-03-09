@@ -5,8 +5,8 @@ class Logistics::ArticlesController < ApplicationController
     #@Article = Article.order("id DESC").group("name")
     @Article = Article.order("id DESC")
     @unitOfMeasurement = UnitOfMeasurement.first
-    @phase = Phase.first
-    @sector = Sector.first
+    #@phase = Phase.first
+    #@sector = Sector.first
     @group = Category.first
     @subgroup = Subcategory.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
