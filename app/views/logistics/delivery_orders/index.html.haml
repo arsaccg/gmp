@@ -18,7 +18,7 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
-  - if @article != nil && @sector != nil && @phase != nil
+  - if @article != nil && @sector != nil && @phase != nil && @centerOfAttention != nil
     .row
       .col-sm-4
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_delivery_order_path}', 'content', null, null, 'GET')"}
@@ -31,7 +31,7 @@
         %i.fa.fa-lock
           No puedes crear Ordenes de Suministro!
       %p
-        Verifica si tienes, por lo menos, 1 insumo, 1 fase y 1 sector.
+        Verifica si tienes, por lo menos, 1 insumo, 1 fase, 1 centro de atención y 1 sector
   %br
   .row
   #widget-grid

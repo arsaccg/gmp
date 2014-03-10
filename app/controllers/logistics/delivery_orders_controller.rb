@@ -4,6 +4,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @article = Article.first
     @phase = Phase.first
     @sector = Sector.first
+    @centerOfAttention = CenterOfAttention.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'canceled' || params[:task] == 'approved' || params[:task] == 'revised'
       render layout: 'dashboard'
     else
