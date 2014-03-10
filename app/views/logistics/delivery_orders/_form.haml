@@ -108,6 +108,13 @@
                   Guardar
 
 :javascript
+  $('#new_delivery_order').ajaxForm({
+    target: '#content'
+  });
+
+  $('form[id^="edit_"]').ajaxForm({
+    target: '#content'
+  });
 
   loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
   $('#article-select').select2();
