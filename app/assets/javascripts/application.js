@@ -18,7 +18,8 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
   var url_str = url;
   var div_name = div_id; 
   var type_call = render_type;
-
+  //title = current_element.attr('title');
+  //document.title = (title || document.title);
   $.ajax({
     type: type_call,
     url: url_str,
@@ -26,7 +27,7 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
     data: parameters,
     dataType : 'html',
     beforeSend : function() {
-      $("#" + div_name).html('<h1><i class="fa fa-cog fa-spin"></i> Loading...</h1>');
+      $("#" + div_name).html('<h1><i class="fa fa-cog fa-spin"></i> Cargando...</h1>');
     },
     success: function(data) {
       $("#" + div_name).css({
