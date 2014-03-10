@@ -68,7 +68,7 @@
                   %td
                     = delivery.user.first_name + " " + delivery.user.last_name
                   %td
-                    = delivery.description
+                    = truncate(delivery.description, :length => 60, :omission => '...')
                   %td
                     /%a{:href=>"javascript:delete_to_url('"+logistics_article_path(unit.id).to_s+ "','" + logistics_article_index_path.to_s + "', 'content')", data: { confirm: "¿Esta seguro de eliminar este articulo?" }}(class="btn btn-warning btn-xs")
                     - case delivery.state
@@ -92,6 +92,8 @@
                       - when 'approved'
                         %a.btn.btn-success.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}"}
                           Ver Detalle
+                        %a.btn.btn-info.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=revised"}
+                          Volver a Emitido
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
