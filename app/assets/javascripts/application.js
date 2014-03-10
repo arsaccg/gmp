@@ -15,7 +15,6 @@
 //= require jquery_nested_form
 
 function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
-
   var url_str = url;
   var div_name = div_id; 
   var type_call = render_type;
@@ -24,11 +23,22 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
     type: type_call,
     url: url_str,
     async: false,
-    data: parameters
-  }).done(function( msg ) {
-    $("#" + div_name).html(msg);
+    data: parameters,
+    dataType : 'html',
+    beforeSend : function() {
+      $("#" + div_name).html('<h1><i class="fa fa-cog fa-spin"></i> Loading...</h1>');
+    },
+    success: function(data) {
+      $("#" + div_name).css({
+        opacity : '0.0'
+      }).html(data).delay(50).animate({
+        opacity : '1.0'
+      }, 300);
+    },
+    error : function(xhr, ajaxOptions, thrownError) {
+      container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+    }
   });
-  return false;
 }
 
 function delete_to_url(url, div_name, url_index){ /* Method DELETE */

@@ -70,7 +70,6 @@ ActiveRecord::Schema.define(version: 20140307213422) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "code"
     t.string   "category"
   end
 
@@ -78,7 +77,6 @@ ActiveRecord::Schema.define(version: 20140307213422) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "code"
   end
 
   create_table "state_per_order_details", force: true do |t|
