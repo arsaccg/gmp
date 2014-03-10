@@ -67,6 +67,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @sectors = Sector.all
     @phases = Phase.where("category LIKE 'phase'")
     @amount = params[:amount].to_f
+    @centerOfAttention = CenterOfAttention.all
     @code_article, @name_article, @id_article = @article.code, @article.name, @article.id
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).name
     @unitOfMeasurementId = data_article_unit[1]

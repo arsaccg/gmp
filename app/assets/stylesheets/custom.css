@@ -17,3 +17,5 @@
  * - BODY
  * - CUSTOM STYLES
  */
+
+#summary-articles tbody tr td { vertical-align: inherit; }
