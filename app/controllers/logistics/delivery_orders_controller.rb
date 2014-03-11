@@ -84,6 +84,12 @@ class Logistics::DeliveryOrdersController < ApplicationController
     render :json => @deliveryOrder
   end
 
+  def goissue
+    @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
+    @deliveryOrder.update_attributes(:state => "issued")
+    redirect_to :action => :index
+  end
+
   def gorevise
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
     @deliveryOrder.update_attributes(:state => "revised")

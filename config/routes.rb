@@ -76,6 +76,7 @@ ArsacLogistica::Application.routes.draw do
       member do
         get 'gorevise'
         get 'goapprove'
+        get 'goissue'
       end
     end
     resources :subcategories do
