@@ -42,7 +42,7 @@
                   %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_center_of_attention_path(centerAttention.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{centerAttention.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_center_of_attention_path(centerAttention.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_center_of_attentions_path}')"}}
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{centerAttention.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_center_of_attention_path(centerAttention.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_center_of_attentions_path}')"}}
                       Eliminar
 
 :javascript

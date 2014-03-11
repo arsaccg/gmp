@@ -14,6 +14,7 @@ class Logistics::SubphasesController < ApplicationController
 
   def create
     subphase = Phase.new(subphase_parameters)
+    subphase.category = "subphase"
     subphase.code = params[:extra_field]['first_code'].to_s + params[:phase]['code'].to_s
     if subphase.save
       flash[:notice] = "Se ha creado correctamente la nueva subfase."
@@ -34,7 +35,7 @@ class Logistics::SubphasesController < ApplicationController
   def update
     subphase = Phase.find(params[:id])
     subphase.category = "subphase"
-    subphase.code = params[:extra_field]['first_code'].to_s + params[:phase]['code'].to_s
+    subphase.code = params[:extrafield]['first_code'].to_s + params[:phase]['code'].to_s
     subphase.name = params[:phase]['name'].to_s
     subphase.save #update_attributes(subphase_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."

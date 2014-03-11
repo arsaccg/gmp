@@ -2,54 +2,73 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Formulario de Registro
-  %div
-    .jarviswidget-editbox
-    .widget-body
-      - if @action == 'edit'
-        = simple_form_for(@costCenter, url: logistics_cost_center_path, :method => :patch, html: {class: 'form-horizontal' }) do |f|
-          %fieldset
-            .form-group
-              %label.col-md-2.control-label{for: "code"} Código
-              .col-md-10
-                = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false        
-            .form-group
-              %label.col-md-2.control-label{for: "name"} Nombre
-              .col-md-10
-                = f.input :name, placeholder: "Nombre del sector", :input_html => {:class => 'form-control'}, label: false
-          .form-actions
-            .row
-              .col-md-12
-                %button.btn.btn-primary{type: "submit"}
-                  %i.fa.fa-save
-                    Guardar
-      - else
-        = simple_form_for(@costCenter, url: logistics_cost_centers_path, html: {class: 'form-horizontal' }) do |f|
-          %fieldset
-            .form-group
-              %label.col-md-2.control-label{for: "code"} Código
-              .col-md-10
-                = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false        
-            .form-group
-              %label.col-md-2.control-label{for: "name"} Nombre
-              .col-md-10
-                = f.input :name, placeholder: "Nombre del sector", :input_html => {:class => 'form-control'}, label: false
-          .form-actions
-            .row
-              .col-md-12
-                %button.btn.btn-primary{type: "submit"}
-                  %i.fa.fa-save
-                    Guardar
+    %h2 Centro de Costo
+  .widget-body
+    = simple_form_for([:logistics, @costCenter], html: {class: 'form-horizontal smart-form' }) do |f|
+      %fieldset
+        .row
+          %section.col.col-6
+            %label.label Código
+            %label.input{for: "code"}
+              %i.icon-append.fa.fa-superscript
+              = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Nombre
+            %label.input{for: "text-field"}
+              %i.icon-append.fa.fa-user
+              = f.input :name, placeholder: "Nombre del sector", input_html: { class: 'form-control' }, label: false
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save
+            Guardar
 
 :javascript
   $(document).ready(function () {
     $("#cost_center_code").focus();
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_cost_center'));
+    }
   });
 
-  $('#new_cost_center').ajaxForm({
-    target: '#content'
-  });
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'cost_center[code]' : {
+              required : true,
+              minlength : 2,
+              maxlength : 2
+            },
+            'cost_center[name]' : {
+              required : true
+            }
+          },
 
-  $('form[id^="edit_"]').ajaxForm({
-    target: '#content'
-  });
+          // Messages for form validation
+          messages : {
+            'cost_center[code]' : {
+              required : 'Porfavor, ingresar el código del Centro de Costo.',
+              minlength : "Como mínimo debe tener 2 dígitos.",
+              maxlength : "Como máximo debe tener 2 dígitos.",
+             },
+            'cost_center[name]' : {
+              required : 'Porfavor, ingresar el nombre del Centro de Costo.'
+             }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        return $(form['selector']).valid();
+      },
+      target: '#content'
+    });
+  }
