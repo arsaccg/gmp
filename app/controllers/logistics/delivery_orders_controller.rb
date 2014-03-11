@@ -137,6 +137,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
     redirect_to :action => :index
   end
 
+  def delivery_order_pdf
+    
+  end
+
   private
   def delivery_order_parameters
     params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount, :scheduled_date, :center_of_attention_id])
