@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140307213422) do
+ActiveRecord::Schema.define(version: 20140310212357) do
 
   create_table "article_unit_of_measurements", force: true do |t|
     t.integer  "article_id"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20140307213422) do
     t.datetime "updated_at"
     t.text     "description"
     t.string   "code"
+    t.integer  "category_id", null: false
   end
 
   create_table "categories", force: true do |t|
@@ -34,7 +35,12 @@ ActiveRecord::Schema.define(version: 20140307213422) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "article_id"
+  end
+
+  create_table "center_of_attentions", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "cost_centers", force: true do |t|
@@ -54,6 +60,8 @@ ActiveRecord::Schema.define(version: 20140307213422) do
     t.integer  "amount"
     t.text     "description"
     t.integer  "delivery_order_id"
+    t.date     "scheduled_date"
+    t.integer  "center_of_attention_id"
   end
 
   create_table "delivery_orders", force: true do |t|
@@ -71,6 +79,7 @@ ActiveRecord::Schema.define(version: 20140307213422) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "category"
+    t.string   "code",       null: false
   end
 
   create_table "sectors", force: true do |t|
@@ -92,6 +101,13 @@ ActiveRecord::Schema.define(version: 20140307213422) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "category_id"
+  end
+
+  create_table "type_of_articles", force: true do |t|
+    t.string   "code"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "unit_of_measurements", force: true do |t|
