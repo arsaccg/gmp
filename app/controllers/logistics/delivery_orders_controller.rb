@@ -2,6 +2,9 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def index
     @deliveryOrders = DeliveryOrder.where("user_id = ?", "#{current_user.id}")
     @article = Article.first
+    @phase = Phase.first
+    @sector = Sector.first
+    @centerOfAttention = CenterOfAttention.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'canceled' || params[:task] == 'approved' || params[:task] == 'revised'
       render layout: 'dashboard'
     else
@@ -26,10 +29,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
       stateOrderDetail.delivery_order_id = deliveryOrder.id
       stateOrderDetail.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
-      redirect_to :action => :index, :task => 'created'
+      redirect_to :action => :index
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index, :task => 'failed'
+      redirect_to :action => :index
     end
   end
 
@@ -55,7 +58,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     deliveryOrder = DeliveryOrder.find(params[:id])
     deliveryOrder.update_attributes(delivery_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index, :task => 'edited'
+    redirect_to :action => :index
   end
 
   def add_delivery_order_item_field
@@ -65,6 +68,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @sectors = Sector.all
     @phases = Phase.where("category LIKE 'phase'")
     @amount = params[:amount].to_f
+    @centerOfAttention = CenterOfAttention.all
     @code_article, @name_article, @id_article = @article.code, @article.name, @article.id
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).name
     @unitOfMeasurementId = data_article_unit[1]
@@ -76,23 +80,24 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def destroy
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
     @deliveryOrder.update_attributes(:state => "canceled")
-    redirect_to :action => :index, :task => 'canceled'
+    #redirect_to :action => :index
+    render :json => @deliveryOrder
   end
 
   def gorevise
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
     @deliveryOrder.update_attributes(:state => "revised")
-    redirect_to :action => :index, :task => 'revised'
+    redirect_to :action => :index
   end
 
   def goapprove
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
     @deliveryOrder.update_attributes(:state => "approved")
-    redirect_to :action => :index, :task => 'approved'
+    redirect_to :action => :index
   end
 
   private
   def delivery_order_parameters
-    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount])
+    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount, :scheduled_date, :center_of_attention_id])
   end
 end

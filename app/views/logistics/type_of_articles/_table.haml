@@ -1,8 +1,8 @@
-#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Ordenes de Suministros
+    %h2 Lista de Tipo de Insumos
   / widget div
   %div
     / widget edit box
@@ -27,77 +27,35 @@
             .input-group
               %span.input-group-addon
                 %i.fa.fa-search
-              %input.form-control#filter-search{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
+              %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
         .dt-wrapper
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
                 %th Código
-                %th Estado
-                %th Fecha de Emisión
-                %th Fecha Programada
-                %th Responsable
-                %th Descripcion
+                %th Nombre
                 %th Acciones
             %tbody
-              - @deliveryOrders.each do |delivery|
+              - @typeOfArticles.each do |typeOfArticle|
                 %tr
-                  %td 
-                    = delivery.id.to_s.rjust(5, '0')
-                  - case delivery.state
-                    - when 'issued'
-                      %td
-                        %span.label.label-warning{:style => "background-color: #FF7A00;"}
-                          = translate_delivery_order_state(delivery.state)
-                    - when 'revised'
-                      %td
-                        %span.label.label-warning
-                          = translate_delivery_order_state(delivery.state)
-                    - when 'canceled'
-                      %td
-                        %span.label.label-error
-                          = translate_delivery_order_state(delivery.state)
-                    - when 'approved'
-                      %td
-                        %span.label.label-success{:style => "background-color: #25CA25;"}
-                          = translate_delivery_order_state(delivery.state)
                   %td
-                    = delivery.date_of_issue
+                    = typeOfArticle.code
                   %td
-                    = delivery.scheduled
+                    = typeOfArticle.name
                   %td
-                    = delivery.user.first_name + " " + delivery.user.last_name
-                  %td
-                    = truncate(delivery.description, :length => 60, :omission => '...')
-                  %td
-                    - case delivery.state
-                      - when 'issued'
-                        %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
-                          Ver Detalle
-                        %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
-                          Editar
-                        %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=revised', 'content', null, null, 'GET')"}
-                          Dar visto bueno
-                        %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=canceled', 'content', null, null, 'GET')"}
-                          Anular
-                      - when 'revised'
-                        %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
-                          Ver Detalle
-                        %a.btn.btn-primary.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=approved', 'content', null, null, 'GET')"}
-                          Aprobar
-                      - when 'canceled'
-                        %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
-                          Ver Detalle
-                      - when 'approved'
-                        %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
-                          Ver Detalle
-                        %a.btn.btn-info.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=revised"}
-                          Volver a Emitido
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_type_of_article_path(typeOfArticle.id)}', 'content', null, null, 'GET')"}
+                      Editar
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{typeOfArticle.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_type_of_article_path(typeOfArticle.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_type_of_articles_path}')"}}
+                      Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
-  
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });
+
   // PAGE RELATED SCRIPTS
 
   loadDataTableScripts();
@@ -150,7 +108,7 @@
     $("#dt_basic thead input").each(function(i) {
       this.initVal = this.value;
     });
-    $("#dt_basic thead input").focus(function() {
+    $("#datatable_fixed_column thead input").focus(function() {
       if (this.className == "search_init") {
         this.className = "";
         this.value = "";

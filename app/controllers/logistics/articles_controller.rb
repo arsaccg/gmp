@@ -1,11 +1,10 @@
 class Logistics::ArticlesController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     #@Article = Article.order("id DESC").group("name")
     @Article = Article.order("id DESC")
     @unitOfMeasurement = UnitOfMeasurement.first
-    @phase = Phase.first
-    @sector = Sector.first
     @group = Category.first
     @subgroup = Subcategory.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'

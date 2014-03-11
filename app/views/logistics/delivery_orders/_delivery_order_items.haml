@@ -23,6 +23,18 @@
           - Phase.get_subphases(phase.code).each do |subphase|
             %option{:value => "#{subphase.id}"}
               = subphase.name
+  %td.order_delivery_centro_atencion
+    %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][center_of_attention_id]"}
+      - @centerOfAttention.each do |centerAttention|
+        %option{:value => "#{centerAttention.id}"}
+          = centerAttention.name
+  %td.order_delivery_fecha_programada.col-md-2
+    %fieldset
+      %section.col.col-6
+        %label.input.state-success
+          %i.icon-append.fa.fa-calendar
+          %input.scheduled-date{:type => "text", :name => "delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][scheduled_date]", :onclick => "javascript:go_datepicker(this)"}
+  %td(class="order_delivery_equipos")
   %td
     = text_area_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][description]', nil,class: "form-control description"
   %td{:style => "width: 1%;"}

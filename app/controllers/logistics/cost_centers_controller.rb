@@ -12,7 +12,7 @@ class Logistics::CostCentersController < ApplicationController
   end
 
   def show
-
+    render :json => nil
   end
 
   def new

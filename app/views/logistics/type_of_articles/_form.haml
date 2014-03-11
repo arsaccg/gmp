@@ -2,9 +2,9 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Unidad de Medida
+    %h2 Tipo de Insumos
   .widget-body
-    = simple_form_for([:logistics, @unitOfMeasure], html: {class: 'form-horizontal smart-form' }) do |f|
+    = simple_form_for([:logistics, @typeOfArticle], html: {class: 'form-horizontal smart-form' }) do |f|
       %fieldset
         .row
           %section.col.col-6
@@ -14,15 +14,9 @@
               = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
           %section.col.col-6
             %label.label Nombre
-            %label.input{for: "text-field"}
+            %label.input{for: "name"}
               %i.icon-append.fa.fa-user
-              = f.input :name, placeholder: "Nombre de la unidad", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-6
-            %label.label Símbolo
-            %label.input{for: "text-field"}
-              %i.icon-append.fa.fa-sort-alpha-asc
-              = f.input :symbol, placeholder: "Simbolo", input_html: { class: 'form-control' }, label: false
+              = f.input :name, placeholder: "Nombre del Tipo de Insumo", input_html: { class: 'form-control' }, label: false
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -30,47 +24,38 @@
 
 :javascript
   $(document).ready(function () {
-    $("#unit_of_measurement_code").focus();
-    
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
-      submit_validate($('#new_unit_of_measurement'));
+      submit_validate($('#new_type_of_article'));
     }
-
   });
-
+  
   function submit_validate(form){
     $(form['selector']).ajaxForm({
       beforeSubmit: function() {
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'unit_of_measurement[code]' : {
+            'type_of_article[code]' : {
               required : true,
               minlength : 2,
               maxlength : 2
             },
-            'unit_of_measurement[name]' : {
-              required : true,
-            },
-            'unit_of_measurement[symbol]' : {
+            'type_of_article[name]' : {
               required : true,
             }
           },
 
           // Messages for form validation
           messages : {
-            'unit_of_measurement[code]' : {
-              required : 'Porfavor, ingresar el código de la Unidad',
+            'type_of_article[code]' : {
+              required : 'Porfavor, ingresar el código del tipo de Insumos.',
               minlength : "Como mínimo debe tener 2 dígitos.",
               maxlength : "Como máximo debe tener 2 dígitos.",
             },
-            'unit_of_measurement[name]' : {
-              required : 'Porfavor, ingresar el nombre de la Unidad.'
-            },
-            'unit_of_measurement[symbol]' : {
-              required : 'Porfavor, ingresar el símbolo de la Unidad.'
+            'type_of_article[name]' : {
+              required : 'Porfavor, ingresar el nombre del tipo de Insumos.'
             }
           },
 

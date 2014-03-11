@@ -1,13 +1,9 @@
 class Logistics::CategoriesController < ApplicationController
-  #before_filter :authenticate_user!
+  before_filter :authenticate_user!, :only => [:update, :index, :new, :create, :edit]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @categories = Category.all
-    if params[:task] == 'created' || params[:task] == 'edited'
-      render layout: 'dashboard'
-    else
-      render layout: false
-    end
+    render layout: false
   end
 
   def show
@@ -25,7 +21,7 @@ class Logistics::CategoriesController < ApplicationController
       redirect_to :action => :index
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      render layout: false
+      redirect_to :action => :index
     end
   end
 

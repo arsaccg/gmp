@@ -65,6 +65,9 @@
                       %th Cantidad
                       %th Sector
                       %th Fases/Subfases
+                      %th Centro de Atención
+                      %th Fecha Programada
+                      %th Equipos
                       %th Glosa
                       %th 
                   %tbody(id="article_items_table")
@@ -92,8 +95,17 @@
                           %td
                             %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
                               - @phases.each do |phase|
-                                %option{:value => "#{phase.id}"}
-                                  = phase.name
+                                %optgroup{:label => "#{phase.name}"}
+                                  - Phase.get_subphases(phase.code).each do |subphase|
+                                    %option{:value => "#{subphase.id}"}
+                                      = subphase.name
+                          %td(class="order_delivery_centro_atencion")
+                          %td(class="order_delivery_fecha_programada")
+                            %section.col.col-6
+                              %label.input.state-success
+                                %i.icon-append.fa.fa-calendar
+                                %input.scheduled-date.hasDatepicker.valid{:type => "text", :name => "delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][scheduled_date]", :onclick => "javascript:go_datepicker(this)"}
+                          %td(class="order_delivery_equipos")
                           %td
                             = text_area_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][description]', dod.description, class: "form-control description"
                           %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][id]', dod.id
@@ -108,9 +120,24 @@
                   Guardar
 
 :javascript
+  
+  $(document).ready(function(){
+    loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
+    $('#article-select').select2();
 
-  loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
-  $('#article-select').select2();
+    $('#new_delivery_order').ajaxForm({
+      target: '#content'
+    });
+
+    $('form[id^="edit_"]').ajaxForm({
+      target: '#content'
+    });
+
+  });
+
+  function go_datepicker(element){
+    $(element).datepicker();
+  }
 
   function add_article_item(){
 
@@ -123,3 +150,5 @@
   function delete_item(code){
     $("#tr" + code).remove();
   }
+
+  

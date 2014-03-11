@@ -16,14 +16,10 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
-  .row
-    .col-sm-4
-      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_article_path}', 'content', null, null, 'GET')"}
-        Agregar Articulo
-  - if @unitOfMeasurement != nil && @phase != nil && @sector != nil && @group != nil && @subgroup != nil
+  - if @unitOfMeasurement != nil && @group != nil && @subgroup != nil
     .row
       .col-sm-4
-        %a.btn.btn-primary.btn-mini{:href => "##{new_logistics_article_path}"}
+        %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_article_path}', 'content', null, null, 'GET')"}
           Agregar Articulo
   - else
     .alert.alert-block.alert-danger
@@ -33,7 +29,7 @@
         %i.fa.fa-lock
           No puedes crear Artículos!
       %p
-        Verifica si tienes, por lo menos, 1 unidad de medida, Grupo y Subgrupo, Fase y Subfase, Sectores.
+        Verifica si tienes, por lo menos, 1 unidad de medida, Grupo y Subgrupo.
   %br
   .row
   #widget-grid
