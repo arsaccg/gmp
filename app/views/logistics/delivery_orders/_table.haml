@@ -45,6 +45,10 @@
                   %td 
                     = delivery.id.to_s.rjust(5, '0')
                   - case delivery.state
+                    - when 'pre_issued'
+                      %td
+                        %span.label.label-primary
+                          = translate_delivery_order_state(delivery.state)
                     - when 'issued'
                       %td
                         %span.label.label-warning{:style => "background-color: #FF7A00;"}
@@ -55,7 +59,7 @@
                           = translate_delivery_order_state(delivery.state)
                     - when 'canceled'
                       %td
-                        %span.label.label-error
+                        %span.label.label-danger
                           = translate_delivery_order_state(delivery.state)
                     - when 'approved'
                       %td
@@ -70,10 +74,10 @@
                   %td
                     = truncate(delivery.description, :length => 60, :omission => '...')
                   %td
+                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
+                      Ver Detalle
                     - case delivery.state
                       - when 'pre_issued'
-                        %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
-                          Ver Detalle
                         %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
                           Editar
                         %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=issued', 'content', null, null, 'GET')"}
@@ -81,27 +85,27 @@
                         %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=canceled', 'content', null, null, 'GET')"}
                           Anular
                       - when 'issued'
-                        %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
-                          Ver Detalle
-                        %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
-                          Editar
                         %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=revised', 'content', null, null, 'GET')"}
                           Dar visto bueno
+                        %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=observed', 'content', null, null, 'GET')"}
+                          Observar
                         %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=canceled', 'content', null, null, 'GET')"}
                           Anular
                       - when 'revised'
-                        %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
-                          Ver Detalle
+                        %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=issued', 'content', null, null, 'GET')"}
+                          Volver a Emitir
                         %a.btn.btn-primary.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=approved', 'content', null, null, 'GET')"}
                           Aprobar
+                        %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=canceled', 'content', null, null, 'GET')"}
+                          Anular
                       - when 'canceled'
-                        %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
-                          Ver Detalle
+
                       - when 'approved'
-                        %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
-                          Ver Detalle
                         %a.btn.btn-info.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=revised"}
-                          Volver a Emitido
+                          Volver a Visto Bueno
+                        %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=canceled', 'content', null, null, 'GET')"}
+                          Anular
+
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

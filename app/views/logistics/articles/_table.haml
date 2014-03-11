@@ -33,6 +33,7 @@
             %thead
               %tr
                 %th Código
+                %th Tipo de Artículo
                 %th Nombre
                 %th Descripcion
                 %th Acciones
@@ -41,6 +42,8 @@
                 %tr
                   %td 
                     = article.code
+                  %td
+                    = article.type_of_article.name
                   %td
                     = article.name
                   %td

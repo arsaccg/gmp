@@ -27,6 +27,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
       stateOrderDetail = StatePerOrderDetail.new
       stateOrderDetail.state = deliveryOrder.state
       stateOrderDetail.delivery_order_id = deliveryOrder.id
+      stateOrderDetail.user_id = current_user.id
       stateOrderDetail.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
       redirect_to :action => :index
@@ -40,9 +41,11 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @deliveryOrder = DeliveryOrder.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
+    else
+      @deliverPerState = @deliveryOrder.state_per_order_details
     end
-    @deliveryOrderDetails = DeliveryOrderDetail.where("delivery_order_id = ?", @deliveryOrder.id)
-    render :show
+    @deliveryOrderDetails = @deliveryOrder.delivery_order_details
+    render layout: false
   end
 
   def edit
@@ -50,6 +53,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @articles = Article.all
     @sectors = Sector.all
     @phases = Phase.where("category LIKE 'phase'")
+    @centerOfAttentions = CenterOfAttention.all
     @action = 'edit'
     render layout: false
   end
@@ -79,26 +83,57 @@ class Logistics::DeliveryOrdersController < ApplicationController
   # Este es el cambio de estado
   def destroy
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
-    @deliveryOrder.update_attributes(:state => "canceled")
+    @deliveryOrder.cancel
+    stateOrderDetail = StatePerOrderDetail.new
+    stateOrderDetail.state = @deliveryOrder.human_state_name
+    stateOrderDetail.delivery_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
     #redirect_to :action => :index
     render :json => @deliveryOrder
   end
 
   def goissue
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
-    @deliveryOrder.update_attributes(:state => "issued")
+    @deliveryOrder.issue
+    stateOrderDetail = StatePerOrderDetail.new
+    stateOrderDetail.state = @deliveryOrder.human_state_name
+    stateOrderDetail.delivery_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
     redirect_to :action => :index
   end
 
   def gorevise
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
-    @deliveryOrder.update_attributes(:state => "revised")
+    @deliveryOrder.revise
+    stateOrderDetail = StatePerOrderDetail.new
+    stateOrderDetail.state = @deliveryOrder.human_state_name
+    stateOrderDetail.delivery_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
     redirect_to :action => :index
   end
 
   def goapprove
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
-    @deliveryOrder.update_attributes(:state => "approved")
+    @deliveryOrder.approve
+    stateOrderDetail = StatePerOrderDetail.new
+    stateOrderDetail.state = @deliveryOrder.human_state_name
+    stateOrderDetail.delivery_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
+    redirect_to :action => :index
+  end
+
+  def goobserve
+    @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
+    @deliveryOrder.observe
+    stateOrderDetail = StatePerOrderDetail.new
+    stateOrderDetail.state = @deliveryOrder.human_state_name
+    stateOrderDetail.delivery_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
     redirect_to :action => :index
   end
 

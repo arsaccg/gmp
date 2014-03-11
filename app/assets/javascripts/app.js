@@ -365,6 +365,10 @@ $(document).ready(function() {
 // Fix page and nav height
 function nav_page_height() {
 	setHeight = $('#main').height();
+	if(typeof $.left_panel === 'undefined'){
+	  $.left_panel = $('#left-panel');
+	}
+	
 	menuHeight = $.left_panel.height();
 	windowHeight = $(window).height() - $.navbar_height;
 	//set height

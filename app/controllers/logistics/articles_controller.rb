@@ -39,7 +39,12 @@ class Logistics::ArticlesController < ApplicationController
   end
 
   def edit
+    # Todos los tipos de insumos
+    @typeOfArticles = TypeOfArticle.all
+    # El Insumo
     @article = Article.find(params[:id])
+    # El tipo especifico de Insumo
+    @typeOfArticle = @article.type_of_article.id
     # Todas las categorias
     @categories = Category.all
     # La categoria al que pertenece
@@ -72,6 +77,7 @@ class Logistics::ArticlesController < ApplicationController
     article.name = params[:article]['name']
     article.description = params[:article]['description']
     article.category_id = params[:article]['category_id']
+    article.type_of_article_id = params[:article]['type_of_article_id']
     article.save
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index
@@ -81,6 +87,7 @@ class Logistics::ArticlesController < ApplicationController
     @article = Article.new
     @categories = Category.all
     @unitOfMeasurement = UnitOfMeasurement.all
+    @typeOfArticle = TypeOfArticle.all
     @reg_n = Time.now.to_i
     render layout: false
   end
@@ -138,6 +145,6 @@ class Logistics::ArticlesController < ApplicationController
 
   private
   def article_parameters
-    params.require(:article).permit(:code, :name, :description, :category_id)
+    params.require(:article).permit(:code, :name, :description, :category_id, :type_of_article_id)
   end
 end

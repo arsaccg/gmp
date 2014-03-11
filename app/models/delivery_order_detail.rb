@@ -1,4 +1,4 @@
-class DeliveryOrderDetail < ActiveRecord::BaseDeliveryOrderDetail
+class DeliveryOrderDetail < ActiveRecord::Base
 	belongs_to :delivery_order
 	belongs_to :sector
 	belongs_to :phase
