@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140310212357) do
+ActiveRecord::Schema.define(version: 20140308050257) do
 
   create_table "article_unit_of_measurements", force: true do |t|
     t.integer  "article_id"

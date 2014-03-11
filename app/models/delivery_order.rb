@@ -6,7 +6,12 @@ class DeliveryOrder < ActiveRecord::Base
 
 	accepts_nested_attributes_for :delivery_order_details
 
-	state_machine :state, :initial => :issued do
+	state_machine :state, :initial => :pre_issued do
+
+		event :issue do
+			transition :pre_issued => :issued
+		end
+
 		event :revise do
 			transition :issued => :revised
 		end

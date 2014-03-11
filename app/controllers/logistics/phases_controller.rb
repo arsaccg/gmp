@@ -12,6 +12,9 @@ class Logistics::PhasesController < ApplicationController
 
   def create
     phase = Phase.new(phase_parameters)
+    if phase.category == "subphase"
+      phase.code = params[:extrafield]['first_code'].to_s + params[:phase]['code'].to_s
+    end
     if phase.save
       flash[:notice] = "Se ha creado correctamente la nueva fase."
       redirect_to :action => :index
@@ -34,6 +37,9 @@ class Logistics::PhasesController < ApplicationController
 
   def update
     phase = Phase.find(params[:id])
+    if phase.category == "subphase"
+      params[:phase]['code'] = params[:extrafield]['first_code'].to_s + params[:phase]['code'].to_s
+    end
     phase.update_attributes(phase_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index

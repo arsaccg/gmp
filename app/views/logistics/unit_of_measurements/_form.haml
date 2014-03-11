@@ -34,10 +34,10 @@
     
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
-    }else{
+    }
+    else{
       submit_validate($('#new_unit_of_measurement'));
     }
-
   });
 
   function submit_validate(form){
