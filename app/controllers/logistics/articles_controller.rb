@@ -52,7 +52,7 @@ class Logistics::ArticlesController < ApplicationController
     # Traemos las SubCategorias
     @subcategories = @article.category.subcategories
     # Traemos la subcategoria
-    @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(4)}")
+    @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
     @subcategory_article.each do |sub|
       @subcategory_article = sub.code
     end
@@ -87,7 +87,7 @@ class Logistics::ArticlesController < ApplicationController
     @article = Article.new
     @categories = Category.all
     @unitOfMeasurement = UnitOfMeasurement.all
-    @typeOfArticle = TypeOfArticle.all
+    @typeOfArticles = TypeOfArticle.all
     @reg_n = Time.now.to_i
     render layout: false
   end

@@ -15,7 +15,7 @@ class Logistics::TypeOfArticlesController < ApplicationController
   def create
     typeOfArticle = TypeOfArticle.new(type_of_article_parameters)
     if typeOfArticle.save
-      flash[:notice] = "Se ha creado correctamente la nueva categoria."
+      flash[:notice] = "Se ha creado correctamente el tipo de insumo."
       redirect_to :action => :index
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."

@@ -35,7 +35,7 @@
                   = phase.name + " (cod. " + phase.code + ")"
                   %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_phase_path(phase.id)}', 'content', null, null, 'GET')"}
                     Editar
-                  %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{logistics_phase_path(phase.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_phases_path}')"}
+                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{phase.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_phase_path(phase.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_phases_path}')"}}
                     Eliminar
                 %ul
                   - Phase.get_subphases(phase.code).each do |subphase|
@@ -45,13 +45,16 @@
                         = subphase.name + " (cod. " + subphase.code + ")"
                         %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_subphase_path(subphase.id)}', 'content', null, null, 'GET')"}
                           Editar
-                        %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{logistics_subphase_path(subphase.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_phases_path}')"}
+                        %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{subphase.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_subphase_path(subphase.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_phases_path}')"}}
                           Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
 
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });
   // PAGE RELATED SCRIPTS
 
   $('.tree > ul').attr('role', 'tree').find('ul').attr('role', 'group');
