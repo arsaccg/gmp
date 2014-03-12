@@ -138,7 +138,8 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def delivery_order_pdf
-    
+    @deliveryOrder = DeliveryOrder.find(params[:id])
+    @deliveryOrderDetails = @deliveryOrder.delivery_order_details
   end
 
   private
