@@ -84,7 +84,7 @@
                           Emitir
                         %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=canceled', 'content', null, null, 'GET')"}
                           Anular
-                        %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf"}
+                        %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
                           Ver PDF
                       - when 'issued'
                         %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=revised', 'content', null, null, 'GET')"}
@@ -93,7 +93,7 @@
                           Observar
                         %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=canceled', 'content', null, null, 'GET')"}
                           Anular
-                        %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf"}
+                        %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
                           Ver PDF
                       - when 'revised'
                         %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=issued', 'content', null, null, 'GET')"}
@@ -102,18 +102,18 @@
                           Aprobar
                         %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=canceled', 'content', null, null, 'GET')"}
                           Anular
-                        %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf"}
+                        %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
                           Ver PDF
                       - when 'canceled'
-                        %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf"}
+                        %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
                           Ver PDF
                       - when 'approved'
                         %a.btn.btn-info.btn-xs{:href => "##{logistics_delivery_order_path(delivery.id)}?state_change=revised"}
                           Volver a Visto Bueno
-                        %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf"}
-                          Ver PDF
                         %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=canceled', 'content', null, null, 'GET')"}
                           Anular
+                        %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
+                          Ver PDF
 
 
 :javascript
