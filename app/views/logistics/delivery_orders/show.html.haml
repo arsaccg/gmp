@@ -123,6 +123,7 @@
                     %th Sector
                     %th Unidad de Medida
                     %th Fases
+                    %th Centro de Atención
                     %th Glosa
                 %tbody(id="article_items_table")
                   - @deliveryOrderDetails.each do |deliverydetail|
@@ -142,6 +143,8 @@
                           = "No tiene Unidad de Medida"
                       %td
                         = deliverydetail.phase.name
+                      %td
+                        = deliverydetail.center_of_attention.name
                       %td
                         = deliverydetail.description
 

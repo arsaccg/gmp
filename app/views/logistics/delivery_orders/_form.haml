@@ -107,7 +107,7 @@
                                       = subphase.name
                           %td(class="order_delivery_centro_atencion")
                             %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][center_of_attention_id]"}
-                              - @centerOfAttentions .each do |centerOfAttention|
+                              - @centerOfAttentions.each do |centerOfAttention|
                                 - if centerOfAttention.id == dod.center_of_attention.id
                                   %option{:value => "#{centerOfAttention.id}", :selected => true}
                                     = centerOfAttention.name

@@ -44,6 +44,6 @@ class Logistics::CenterOfAttentionsController < ApplicationController
 
   private
   def center_of_attentions_parameters
-    params.require(:center_of_attention).permit(:name)
+    params.require(:center_of_attention).permit(:name, :abbreviation)
   end
 end

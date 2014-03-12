@@ -9,9 +9,15 @@
         .row
           %section.col.col-10
             %label.label Nombre
-            %label.input{for: "text-field"}
+            %label.input{for: "name"}
               %i.icon-append.fa.fa-user
               = f.input :name, placeholder: "Nombre del Centro de Atención", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Abreviación
+            %label.input{for: "abbreviation"}
+              %i.icon-append.fa.fa-user
+              = f.input :abbreviation, placeholder: "Abreviación", input_html: { class: 'form-control' }, label: false
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -36,6 +42,9 @@
           rules : {
             'center_of_attention[name]' : {
               required : true,
+            },
+            'center_of_attention[abbreviation]' : {
+              required : true
             }
           },
 
@@ -43,6 +52,9 @@
           messages : {
             'center_of_attention[name]' : {
               required : 'Porfavor, ingresar el nombre del Centro de Atención.'
+            },
+            'center_of_attention[abbreviation]' : {
+              required : 'Porfavor, ingresar la abreviacion del centro de atención.'
             }
           },
 

@@ -54,6 +54,6 @@ class Logistics::SectorsController < ApplicationController
 
   private
   def sector_parameters
-    params.require(:sector).permit(:name)
+    params.require(:sector).permit(:name, :code)
   end
 end

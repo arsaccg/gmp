@@ -5,4 +5,5 @@ class DeliveryOrderDetail < ActiveRecord::Base
 	belongs_to :article
 	belongs_to :unit_of_measurement
 	belongs_to :center_of_attention
+	belongs_to :cost_center
 end

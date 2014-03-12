@@ -140,6 +140,42 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def delivery_order_pdf
     @deliveryOrder = DeliveryOrder.find(params[:id])
     @deliveryOrderDetails = @deliveryOrder.delivery_order_details
+
+    if @deliveryOrder.state == 'pre_issued'
+      @state_per_order_details_approved = @deliveryOrder.state_per_order_details.where("state LIKE 'pre_issued'").last
+      @state_per_order_details_revised = @deliveryOrder.state_per_order_details.where("state LIKE 'pre_issued'").last
+      @first_state = "Pre-Emitido"
+      @second_state = "Pre-Emitido"
+    end
+
+    if @deliveryOrder.state == 'issued'
+      @state_per_order_details_approved = @deliveryOrder.state_per_order_details.where("state LIKE 'issued'").last
+      @state_per_order_details_revised = @deliveryOrder.state_per_order_details.where("state LIKE 'issued'").last
+      @first_state = "Emitido"
+      @second_state = "Emitido"
+    end
+
+    if @deliveryOrder.state == 'revised'
+      @state_per_order_details_approved = @deliveryOrder.state_per_order_details.where("state LIKE 'revised'").last
+      @state_per_order_details_revised = @deliveryOrder.state_per_order_details.where("state LIKE 'revised'").last
+      @first_state = "Revisado"
+      @second_state = "Revisado"
+    end
+
+    if @deliveryOrder.state == 'approved'
+      @state_per_order_details_approved = @deliveryOrder.state_per_order_details.where("state LIKE 'approved'").last
+      @state_per_order_details_revised = @deliveryOrder.state_per_order_details.where("state LIKE 'revised'").last
+      @first_state = "Aprobado"
+      @second_state = "Revisado"
+    end
+
+    if @deliveryOrder.state == 'canceled'
+      @state_per_order_details_approved = @deliveryOrder.state_per_order_details.where("state LIKE 'canceled'").last
+      @state_per_order_details_revised = @deliveryOrder.state_per_order_details.where("state LIKE 'canceled'").last
+      @first_state = "Cancelado"
+      @second_state = "Cancelado"
+    end
+    
   end
 
   private
