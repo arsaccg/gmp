@@ -39,9 +39,9 @@
                     %td
                       = translate_delivery_order_state(@deliveryOrder.state)
                     %td
-                      = @deliveryOrder.date_of_issue
+                      = @deliveryOrder.date_of_issue.strftime("%d/%m/%Y")
                     %td
-                      = @deliveryOrder.scheduled
+                      = @deliveryOrder.scheduled.strftime("%d/%m/%Y")
                     %td
                       = @deliveryOrder.user.first_name + ' ' + @deliveryOrder.user.last_name
                     %td
