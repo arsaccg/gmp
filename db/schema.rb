@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140311194742) do
+ActiveRecord::Schema.define(version: 20140310212357) do
 
   create_table "article_unit_of_measurements", force: true do |t|
     t.integer  "article_id"
@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 20140311194742) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "code"
     t.string   "category"
     t.string   "code"
   end
@@ -87,6 +88,7 @@ ActiveRecord::Schema.define(version: 20140311194742) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "code"
   end
 
   create_table "state_per_order_details", force: true do |t|
