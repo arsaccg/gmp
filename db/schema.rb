@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 20140310212357) do
     t.datetime "updated_at"
     t.text     "description"
     t.string   "code"
-    t.integer  "category_id"
+    t.integer  "category_id", null: false
   end
 
   create_table "categories", force: true do |t|
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 20140310212357) do
     t.datetime "updated_at"
     t.string   "code"
     t.string   "category"
+    t.string   "code",       null: false
   end
 
   create_table "sectors", force: true do |t|

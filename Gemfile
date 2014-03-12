@@ -10,6 +10,9 @@ gem 'sqlite3'
 # Use mysql2
 gem 'mysql2'
 
+# Gem PrawnTo
+gem "prawnto_2", :require => "prawnto"
+
 # use Bootstrap
 gem 'therubyracer', platforms: :ruby
 gem 'less-rails' #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS

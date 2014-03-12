@@ -84,27 +84,40 @@
                             = dod.article.name
                           %td
                             = dod.unit_of_measurement.name
-                          %td.col-xs-2
-                            .col-xs-12
+                          %td.col-md-1
+                            .col-md-9
                               = text_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][amount]', dod.amount.to_i , class: "form-control quantity", id: 'article-amount'
                           %td.precio
                             %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][sector_id]"}
-                              - @sectors.each do |sector|
-                                %option{:value => "#{sector.id}"}
-                                  = sector.name
+                              - @sectors.each do |sect|
+                                - if sect.id == dod.sector.id
+                                  %option{:value => "#{sect.id}", :selected => true}
+                                    = sect.name
+                                %option{:value => "#{sect.id}"}
+                                  = sect.name
                           %td
                             %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
-                              - @phases.each do |phase|
-                                %optgroup{:label => "#{phase.name}"}
-                                  - Phase.get_subphases(phase.code).each do |subphase|
+                              - @phases.each do |phas|
+                                %optgroup{:label => "#{phas.name}"}
+                                  - Phase.get_subphases(phas.code).each do |subphase|
+                                    - if subphase.id == dod.phase.id
+                                      %option{:value => "#{subphase.id}", :selected => true}
+                                        = subphase.name
                                     %option{:value => "#{subphase.id}"}
                                       = subphase.name
                           %td(class="order_delivery_centro_atencion")
+                            %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][center_of_attention_id]"}
+                              - @centerOfAttentions .each do |centerOfAttention|
+                                - if centerOfAttention.id == dod.center_of_attention.id
+                                  %option{:value => "#{centerOfAttention.id}", :selected => true}
+                                    = centerOfAttention.name
+                                %option{:value => "#{centerOfAttention.id}"}
+                                  = centerOfAttention.name
                           %td(class="order_delivery_fecha_programada")
                             %section.col.col-6
                               %label.input.state-success
                                 %i.icon-append.fa.fa-calendar
-                                %input.scheduled-date.hasDatepicker.valid{:type => "text", :name => "delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][scheduled_date]", :onclick => "javascript:go_datepicker(this)"}
+                                %input.scheduled-date{:type => "date", :name => "delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][scheduled_date]", :value => dod.scheduled_date}
                           %td(class="order_delivery_equipos")
                           %td
                             = text_area_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][description]', dod.description, class: "form-control description"

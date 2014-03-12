@@ -72,7 +72,7 @@
             .widget-body.no-padding
               .smart-form
                 %fieldset{style: 'text-align:center'}
-                  = image_tag current_user.avatar.url, alt: "me"
+                  = image_tag current_user.avatar.url(:medium), alt: "me"
 = javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
 = javascript_include_tag 'plugin/jquery-form/jquery-form.min'
 = javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'

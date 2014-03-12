@@ -77,6 +77,9 @@ ArsacLogistica::Application.routes.draw do
         get 'gorevise'
         get 'goapprove'
         get 'goissue'
+        get 'goobserve'
+        get 'delivery_order_pdf'
+        post 'delivery_order_pdf'
       end
     end
     resources :subcategories do
