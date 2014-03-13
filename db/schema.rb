@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140310212357) do
+ActiveRecord::Schema.define(version: 20140311194742) do
 
   create_table "article_unit_of_measurements", force: true do |t|
     t.integer  "article_id"
@@ -27,7 +27,8 @@ ActiveRecord::Schema.define(version: 20140310212357) do
     t.datetime "updated_at"
     t.text     "description"
     t.string   "code"
-    t.integer  "category_id", null: false
+    t.integer  "category_id"
+    t.integer  "type_of_article_id"
   end
 
   create_table "categories", force: true do |t|
@@ -78,9 +79,8 @@ ActiveRecord::Schema.define(version: 20140310212357) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "code"
     t.string   "category"
-    t.string   "code",       null: false
+    t.string   "code"
   end
 
   create_table "sectors", force: true do |t|
@@ -95,6 +95,7 @@ ActiveRecord::Schema.define(version: 20140310212357) do
     t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "subcategories", force: true do |t|
