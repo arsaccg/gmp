@@ -1,6 +1,6 @@
 # encoding: utf-8
 class Logistics::CenterOfAttentionsController < ApplicationController
-  before_filter :authenticate_user!, :only => [:update, :index, :new, :create, :edit]
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @centerOfAttention = CenterOfAttention.all

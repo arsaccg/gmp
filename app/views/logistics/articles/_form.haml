@@ -4,7 +4,7 @@
       %i.fa.fa-eye
     %h2 Artículos
   .widget-body
-    = simple_form_for([:logistics, @article], html: {class: 'form-horizontal smart-form' }) do |f|
+    = simple_form_for([:logistics, @article], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         = f.hidden_field :subcategory_id_edit, :value => @subcategory_article
         .row
@@ -111,18 +111,24 @@
             },
             'article[name]' : {
               required : true,
+            },
+            'article_unit_of_measurements[unit_of_measurement_id][]': {
+              required : true,
             }
           },
 
           // Messages for form validation
           messages : {
             'article[code]' : {
-              required : 'Porfavor, ingresar el código del Artículo',
+              required : 'Por favor, ingresar el código del Artículo',
               minlength : "Como mínimo debe tener 4 dígitos.",
               maxlength : "Como máximo debe tener 4 dígitos.",
             },
             'article[name]' : {
-              required : 'Porfavor, ingresar el nombre del artículo.'
+              required : 'Por favor, ingresar el nombre del artículo.'
+            },
+            'article_unit_of_measurements[unit_of_measurement_id][]' : {
+              required : '</br>Por favor, ingresar la unidad de medida.'
             }
           },
 

@@ -24,7 +24,10 @@ class Logistics::UnitOfMeasurementsController < ApplicationController
   def create
     unitOfMeasure = UnitOfMeasurement.new(unit_of_measure_parameters)
     if unitOfMeasure.save
-      flash[:notice] = "Se ha creado correctamente la nueva unidad de medida."
+      #"Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
+      unitOfMeasure.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
       redirect_to :action => :index
     else
       flash[:error] = "Ha ocurrido un problema. "
@@ -47,6 +50,15 @@ class Logistics::UnitOfMeasurementsController < ApplicationController
   end
 
   def destroy
+  end
+
+  def save
+    if valid?
+      #save method implementation
+      true
+    else
+      false
+    end
   end
 
   private

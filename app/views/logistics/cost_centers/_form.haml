@@ -4,7 +4,7 @@
       %i.fa.fa-eye
     %h2 Centro de Costo
   .widget-body
-    = simple_form_for([:logistics, @costCenter], html: {class: 'form-horizontal smart-form' }) do |f|
+    = simple_form_for([:logistics, @costCenter], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-6
@@ -69,6 +69,15 @@
         });
         return $(form['selector']).valid();
       },
-      target: '#content'
+      target: '#content',
+      success: function (data){
+        //alert(data);
+      },
+      error: function(xhr, status, error) {
+        //console.dir(xhr);
+        //console.dir(xhr.responseText);
+        //console.dir(status);
+        //console.dir(error);
+      }
     });
   }
