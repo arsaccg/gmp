@@ -4,7 +4,7 @@
       %i.fa.fa-eye
     %h2 Grupo
   .widget-body
-    = simple_form_for([:logistics, @category], html: {class: 'form-horizontal smart-form' }) do |f|
+    = simple_form_for([:logistics, @category], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-6

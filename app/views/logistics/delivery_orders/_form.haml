@@ -6,7 +6,7 @@
   %div{:style => "padding-top: 0"}
     .jarviswidget-editbox
     .widget-body 
-      = simple_form_for([:logistics, @deliveryOrder], html: {class: 'form-horizontal' }) do |f|
+      = simple_form_for([:logistics, @deliveryOrder], html: {class: 'form-horizontal', autocomplete: 'off' }) do |f|
         .col-sm-12
           %fieldset
             %legend{:style => "border:none"}

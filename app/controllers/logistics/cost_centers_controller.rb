@@ -23,12 +23,18 @@ class Logistics::CostCentersController < ApplicationController
   def create
     costCenter = CostCenter.new(cost_center_parameters)
     if costCenter.save
-      flash[:notice] = "Se ha creado correctamente."
+      flash[:notice] = "Se ha creado correctamente el centro de costo."
       redirect_to :action => :index
     else
-      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      render layout: false
-    end      
+      #"Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
+      costCenter.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      #render :json => flash[:error]
+      #render layout: false
+      redirect_to :action => :index
+    end
+        
   end
 
   def edit
@@ -48,6 +54,15 @@ class Logistics::CostCentersController < ApplicationController
     cost_center = CostCenter.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
     render :json => cost_center
+  end
+
+  def save
+    if valid?
+      #save method implementation
+      true
+    else
+      false
+    end
   end
 
   private
