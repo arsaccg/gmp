@@ -131,6 +131,7 @@ GEM
     rdoc (4.1.1)
       json (~> 1.4)
     ref (1.0.5)
+    role_model (0.8.1)
     roo (1.13.2)
       nokogiri
       rubyzip
@@ -207,6 +208,7 @@ DEPENDENCIES
   paperclip
   prawnto_2
   rails (= 4.0.3)
+  role_model
   roo
   sass-rails (~> 4.0.0)
   sdoc

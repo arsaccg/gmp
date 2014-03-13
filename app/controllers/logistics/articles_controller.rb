@@ -7,6 +7,7 @@ class Logistics::ArticlesController < ApplicationController
     @unitOfMeasurement = UnitOfMeasurement.first
     @group = Category.first
     @subgroup = Subcategory.first
+    @typeOfArticle = TypeOfArticle.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
       render layout: 'dashboard'
     else

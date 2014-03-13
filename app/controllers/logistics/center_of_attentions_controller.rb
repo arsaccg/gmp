@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Logistics::CenterOfAttentionsController < ApplicationController
   before_filter :authenticate_user!, :only => [:update, :index, :new, :create, :edit]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]

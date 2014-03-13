@@ -1,6 +1,6 @@
 class Logistics::DeliveryOrdersController < ApplicationController
   def index
-    @deliveryOrders = DeliveryOrder.where("user_id = ?", "#{current_user.id}")
+    @deliveryOrders = DeliveryOrder.all
     @article = Article.first
     @phase = Phase.first
     @sector = Sector.first

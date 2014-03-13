@@ -21,6 +21,9 @@ gem 'twitter-bootstrap-rails'
 # erb to haml
 gem "erb2haml", :group => :development
 
+# Roles
+gem "role_model"
+
 # Use state machine
 gem 'state_machine'
 

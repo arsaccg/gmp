@@ -1,6 +1,20 @@
 #content-inside
   #widget-grid
     .row
+      - if flash[:notice] != nil
+        .alert.alert-success.fade.in{"style" => "clear:both"}
+          %button.close{"data-dismiss" => "alert"}
+            ×
+          %i.fa-fw.fa.fa-check
+          %strong Éxito
+          = flash[:notice]
+      - if flash[:error] != nil
+        .alert.alert-danger.fade.in
+          %button.close{"data-dismiss" => "alert"}
+            ×
+          %i.fa-fw.fa.fa-times
+          %strong Error!
+          = flash[:error]
       %article.col-sm-12.col-md-12.col-lg-6
         #wid-id-3.jarviswidget{"data-widget-custombutton" => "false", "data-widget-editbutton" => "false"}
           %header
@@ -43,7 +57,7 @@
                     %section.col.col-6
                       %label.input
                         %i.fa.fa-calendar.icon-append
-                        %input#dateBirth.form-control.datepicker.hasDatepicker{"data-dateformat" => "dd/mm/yy", name: "user[date_of_birth]", placeholder: "Fecha de Nacimiento", type: "text", value: "#{@person.date_of_birth}"}
+                        %input#dateBirth.form-control{"data-dateformat" => "dd/mm/yy", name: "user[date_of_birth]", placeholder: "Fecha de Nacimiento", type: "text", value: "#{@person.date_of_birth}"}
                   %section
                     %label.input.input-file{for: "avatar"}
                       .button
@@ -86,7 +100,9 @@
   
   
   // PAGE RELATED SCRIPTS
-
+  $($('form[id^="edit_user_"]')).ajaxForm({
+    target: '#content'
+  });
   // Load form valisation dependency 
   loadScript("#{ asset_path 'plugin/jquery-form/jquery-form.min', type: :javascript }", runFormValidation);
   
@@ -148,8 +164,4 @@
         error.insertAfter(element.parent());
       }
     });
-
-    // START AND FINISH DATE
-    $('#dateBirth').datepicker();
-
   };

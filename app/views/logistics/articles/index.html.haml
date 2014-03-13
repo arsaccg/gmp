@@ -16,7 +16,7 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
-  - if @unitOfMeasurement != nil && @group != nil && @subgroup != nil
+  - if @unitOfMeasurement != nil && @group != nil && @subgroup != nil && @typeOfArticle != nil
     .row
       .col-sm-4
         %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_article_path}', 'content', null, null, 'GET')"}
@@ -29,7 +29,7 @@
         %i.fa.fa-lock
           No puedes crear Artículos!
       %p
-        Verifica si tienes, por lo menos, 1 unidad de medida, Grupo y Subgrupo.
+        Verifica si tienes, por lo menos, 1 unidad de medida, 1 tipo de insumo, Grupo y Subgrupo.
   %br
   .row
   #widget-grid

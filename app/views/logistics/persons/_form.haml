@@ -1,0 +1,94 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Usuario
+  .widget-body
+    = simple_form_for([:logistics, @user], html: {class: 'form-horizontal smart-form' }) do |f|
+      %fieldset
+        .row
+          %section.col.col-10
+            %label.label Primer Nombre
+            %label.input{for: "first_name"}
+              %i.icon-append.fa.fa-user
+              = f.input :first_name, placeholder: "Primer Nombre", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Segundo Nombre
+            %label.input{for: "last_name"}
+              %i.icon-append.fa.fa-user
+              = f.input :last_name, placeholder: "Segundo Nombre", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Apellidos
+            %label.input{for: "surname"}
+              %i.icon-append.fa.fa-user
+              = f.input :surname, placeholder: "Apellidos", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Email
+            %label.input{for: "email"}
+              %i.icon-append.fa.fa-user
+              = f.input :email, placeholder: "Email", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Contraseña
+            %label.input{for: "email"}
+              %i.icon-append.fa.fa-user
+              = f.input :password, placeholder: "Email", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Rol
+            %label.input{for: "abbreviation"}
+              %i.icon-append.fa.fa-user
+              = f.input :roles_mask, placeholder: "Abreviación", input_html: { class: 'form-control' }, label: false
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    $("#user_name").focus();
+    
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_user'));
+    }
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'center_of_attention[name]' : {
+              required : true,
+            },
+            'center_of_attention[abbreviation]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'center_of_attention[name]' : {
+              required : 'Porfavor, ingresar el nombre del Centro de Atención.'
+            },
+            'center_of_attention[abbreviation]' : {
+              required : 'Porfavor, ingresar la abreviacion del centro de atención.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        return $(form['selector']).valid();
+      },
+      target: '#content'
+    });
+  }
