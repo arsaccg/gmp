@@ -14,7 +14,7 @@ class Logistics::CenterOfAttentionsController < ApplicationController
   def create
     centerOfAttention = CenterOfAttention.new(center_of_attentions_parameters)
     if centerOfAttention.save
-      flash[:notice] = "Se ha creado correctamente la nueva categoria."
+      flash[:notice] = "Se ha creado correctamente el centro de atención."
       redirect_to :action => :index
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
@@ -44,6 +44,6 @@ class Logistics::CenterOfAttentionsController < ApplicationController
 
   private
   def center_of_attentions_parameters
-    params.require(:center_of_attention).permit(:name)
+    params.require(:center_of_attention).permit(:name, :abbreviation)
   end
 end

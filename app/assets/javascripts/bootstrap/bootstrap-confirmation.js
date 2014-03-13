@@ -87,7 +87,7 @@
 					, btnCancelLabel = this.getBtnCancelLabel()
 					, o = this.options
 
-				$tip.find('.popover-title').text(title);
+				$tip.find('.popover-title').text(title).css('color', '#000000');
 
 				var btnOk = $tip.find('.popover-content > div > a:not([data-dismiss="confirmation"])');
 				var btnCancel = $tip.find('.popover-content > div > a[data-dismiss="confirmation"]');
