@@ -124,13 +124,13 @@
         %ul
           - if current_user.has_role? :director
             %li
-              %a{href: '#'}
+              %a{href: "#", title: "Gestión de Compañias"}
                 %i.fa.fa-lg.fa-fw.fa-gears
-                %span.menu-item-parent Crear Companias
+                %span.menu-item-parent Gestión de Companias
             %li
-              %a{href: '#'}
+              %a{href: "#{logistics_persons_path}", title: "Gestión de Usuarios"}
                 %i.fa.fa-lg.fa-fw.fa-group
-                %span.menu-item-parent Crear Usuarios
+                %span.menu-item-parent Gestión de Usuarios
           - else
             %li
               %a{href: '#'}

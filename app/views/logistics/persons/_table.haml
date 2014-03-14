@@ -36,6 +36,7 @@
                 %th Segundo Nombre
                 %th Apellidos
                 %th Email
+                %th Rol del Usuario
             %tbody
               - @persons.each do |person|
                 %tr
@@ -47,6 +48,8 @@
                     = person.surname
                   %td
                     = person.email
+                  %td
+                    = person.role_symbols[0]
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();

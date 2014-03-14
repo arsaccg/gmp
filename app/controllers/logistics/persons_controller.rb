@@ -30,12 +30,12 @@ class Logistics::PersonsController < ApplicationController
   def update
     @person = User.find(params[:id])
     @person.update_attributes(user_params)
-    flash[:notice] = "Se ha actualizado correctamente al usuario #{@user.first_name + ' ' + @user.last_name}."
+    flash[:notice] = "Se ha actualizado correctamente al usuario #{@person.first_name + ' ' + @person.last_name}."
     redirect_to :action => 'show'
   end
 
   private
     def user_params
-    	params.require(:user).permit(:first_name, :last_name, :surname, :email, :date_of_birth, :avatar, :password, :roles_mask)
+    	params.require(:user).permit(:first_name, :last_name, :surname, :email, :date_of_birth, :avatar, :password)
     end
 end
