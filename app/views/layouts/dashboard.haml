@@ -188,7 +188,7 @@
               %li
                 %a{href: "#{logistics_person_path(current_user.id)}", title: "Usuario"}
                   %i.fa.fa-lg.fa-fw.fa-user
-                  %span.menu-item-parent Yo
+                  %span.menu-item-parent Mi Perfil
       %span.minifyme
         %i.fa.fa-arrow-circle-left.hit
     / END NAVIGATION
@@ -205,39 +205,10 @@
     #shortcut
       %ul
         %li
-          %a.jarvismetro-tile.big-cubes.bg-color-blue{href: "#ajax/inbox.html"}
-            %span.iconbox
-              %i.fa.fa-envelope.fa-4x
-              %span
-                Mail
-                %span.label.pull-right.bg-color-darken 14
-        %li
-          %a.jarvismetro-tile.big-cubes.bg-color-orangeDark{href: "#ajax/calendar.html"}
-            %span.iconbox
-              %i.fa.fa-calendar.fa-4x
-              %span Calendar
-        %li
-          %a.jarvismetro-tile.big-cubes.bg-color-purple{href: "#ajax/gmap-xml.html"}
-            %span.iconbox
-              %i.fa.fa-map-marker.fa-4x
-              %span Maps
-        %li
-          %a.jarvismetro-tile.big-cubes.bg-color-blueDark{href: "#ajax/invoice.html"}
-            %span.iconbox
-              %i.fa.fa-book.fa-4x
-              %span
-                Invoice
-                %span.label.pull-right.bg-color-darken 99
-        %li
-          %a.jarvismetro-tile.big-cubes.bg-color-greenLight{href: "#ajax/gallery.html"}
-            %span.iconbox
-              %i.fa.fa-picture-o.fa-4x
-              %span Gallery
-        %li
-          %a.jarvismetro-tile.big-cubes.selected.bg-color-pinkDark{href: "javascript:void(0);"}
+          %a.jarvismetro-tile.big-cubes.selected.bg-color-pinkDark{href: "##{logistics_person_path(current_user.id)}"}
             %span.iconbox
               %i.fa.fa-user.fa-4x
-              %span My Profile
+              %span Mi Perfil
     / END SHORTCUT AREA
     / ==================================================
     /

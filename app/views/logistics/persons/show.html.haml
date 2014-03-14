@@ -89,8 +89,6 @@
                   = image_tag current_user.avatar.url(:medium), alt: "me"
 = javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
 = javascript_include_tag 'plugin/jquery-form/jquery-form.min'
-= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
-= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
 = javascript_include_tag 'plugin/bootstrap-timepicker/bootstrap-timepicker.min'
 = javascript_include_tag 'plugin/colorpicker/bootstrap-colorpicker.min'
 
@@ -101,8 +99,66 @@
   
   // PAGE RELATED SCRIPTS
   $($('form[id^="edit_user_"]')).ajaxForm({
+    beforeSubmit: function() {
+      $("form[id^=edit_user]").validate({
+        // Rules for form validation
+        rules : {
+          'user[first_name]' : {
+            required : true
+          },
+          'user[last_name]' : {
+            required : true
+          },
+          'user[surname]' : {
+            required : true
+          },
+          'user[email]' : {
+            required : true,
+            email : true
+          }
+        },
+
+        // Messages for form validation
+        messages : {
+          login : {
+            required : 'Please enter your login'
+          },
+          email : {
+            required : 'Please enter your email address',
+            email : 'Please enter a VALID email address'
+          },
+          password : {
+            required : 'Please enter your password'
+          },
+          passwordConfirm : {
+            required : 'Please enter your password one more time',
+            equalTo : 'Please enter the same password as above'
+          },
+          firstname : {
+            required : 'Please select your first name'
+          },
+          lastname : {
+            required : 'Please select your last name'
+          },
+          gender : {
+            required : 'Please select your gender'
+          },
+          terms : {
+            required : 'You must agree with Terms and Conditions'
+          }
+        },
+
+        // Do not change code below
+        errorPlacement : function(error, element) {
+          error.insertAfter(element.parent());
+        }
+      });
+      return $("form[id^=edit_user]").valid();
+    },
     target: '#content'
   });
+
+  $('#dateBirth').click(function(){ $(this).datepicker() })
   // Load form valisation dependency 
   loadScript("#{ asset_path 'plugin/jquery-form/jquery-form.min', type: :javascript }", runFormValidation);
   
@@ -110,58 +166,4 @@
   // Registration validation script
   function runFormValidation() {
         
-    var $registerForm = $("form[id^=edit_user]").validate({
-
-      // Rules for form validation
-      rules : {
-        'user[first_name]' : {
-          required : true
-        },
-        'user[last_name]' : {
-          required : true
-        },
-        'user[surname]' : {
-          required : true
-        },
-        'user[email]' : {
-          required : true,
-          email : true
-        }
-      },
-
-      // Messages for form validation
-      messages : {
-        login : {
-          required : 'Please enter your login'
-        },
-        email : {
-          required : 'Please enter your email address',
-          email : 'Please enter a VALID email address'
-        },
-        password : {
-          required : 'Please enter your password'
-        },
-        passwordConfirm : {
-          required : 'Please enter your password one more time',
-          equalTo : 'Please enter the same password as above'
-        },
-        firstname : {
-          required : 'Please select your first name'
-        },
-        lastname : {
-          required : 'Please select your last name'
-        },
-        gender : {
-          required : 'Please select your gender'
-        },
-        terms : {
-          required : 'You must agree with Terms and Conditions'
-        }
-      },
-
-      // Do not change code below
-      errorPlacement : function(error, element) {
-        error.insertAfter(element.parent());
-      }
-    });
   };
