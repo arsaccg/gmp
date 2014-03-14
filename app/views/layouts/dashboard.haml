@@ -122,21 +122,21 @@
           Please note that these links work a bit different than
           traditional href="" links. See documentation for details.
         %ul
-          - if current_user.has_role? :director
-            %li
-              %a{href: "#", title: "Gestión de Compañias"}
-                %i.fa.fa-lg.fa-fw.fa-gears
-                %span.menu-item-parent Gestión de Companias
-            %li
-              %a{href: "#{logistics_persons_path}", title: "Gestión de Usuarios"}
-                %i.fa.fa-lg.fa-fw.fa-group
-                %span.menu-item-parent Gestión de Usuarios
-          - else
-            %li
-              %a{href: '#'}
-                %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                %span.menu-item-parent Logística
-              %ul
+          %li
+            %a{href: '#'}
+              %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+              %span.menu-item-parent Logística
+            %ul
+              - if current_user.has_role? :director
+                %li
+                  %a{href: "#", title: "Gestión de Compañias"}
+                    %i.fa.fa-lg.fa-fw.fa-gears
+                    %span.menu-item-parent Gestión de Companias
+                %li
+                  %a{href: "#{logistics_persons_path}", title: "Gestión de Usuarios"}
+                    %i.fa.fa-lg.fa-fw.fa-group
+                    %span.menu-item-parent Gestión de Usuarios
+              - else
                 %li
                   %a{href: '#'}
                     %i.fa.fa-lg.fa-fw.fa-list-alt
@@ -180,15 +180,15 @@
                       %a{href: "#{import_logistics_articles_path}", title: "Importar Artículos"}
                         %i.fa.fa-lg.fa-fw.fa-tasks
                         %span.menu-item-parent Import Articulos
-          %li
-            %a{href: "#{logistics_delivery_orders_path}", title: "Ordenes de Suministro"}
-              %i.fa.fa-lg.fa-fw.fa-clipboard
-              %span.menu-item-parent{'style' => 'width: 100px;display: inline-table;'}
-                Ordenes de Suministro
-          %li
-            %a{href: "#{logistics_person_path(current_user.id)}", title: "Usuario"}
-              %i.fa.fa-lg.fa-fw.fa-user
-              %span.menu-item-parent Yo
+              %li
+                %a{href: "#{logistics_delivery_orders_path}", title: "Ordenes de Suministro"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent{'style' => 'width: 100px;display: inline-table;'}
+                    Ordenes de Suministro
+              %li
+                %a{href: "#{logistics_person_path(current_user.id)}", title: "Usuario"}
+                  %i.fa.fa-lg.fa-fw.fa-user
+                  %span.menu-item-parent Yo
       %span.minifyme
         %i.fa.fa-arrow-circle-left.hit
     / END NAVIGATION
