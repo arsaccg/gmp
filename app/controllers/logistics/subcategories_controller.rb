@@ -47,10 +47,18 @@ class Logistics::SubcategoriesController < ApplicationController
     subcategory.category_id = params[:subcategory]['category_id'].to_s
     subcategory.code = params[:extrafield]['first_code'].to_s + params[:subcategory]['code'].to_s
     subcategory.name = params[:subcategory]['name'].to_s
-    subcategory.save #update_attributes(subcategory_parameters)
-    flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to url_for(:controller => :categories, :action => :index)
-    #redirect_to :action => :index
+    if subcategory.save #update_attributes(subcategory_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to url_for(:controller => :categories, :action => :index)
+    else
+      subcategory.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @SubCategories = subcategory
+      @Categories = Category.all
+      render :edit, layout: false
+    end
   end
 
   def destroy

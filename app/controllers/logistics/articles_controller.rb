@@ -105,9 +105,37 @@ class Logistics::ArticlesController < ApplicationController
     article.description = params[:article]['description']
     article.category_id = params[:article]['category_id']
     article.type_of_article_id = params[:article]['type_of_article_id']
-    article.save
-    flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    if article.save
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index
+    else
+      article.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @article = article
+      # El tipo especifico de Insumo
+      @typeOfArticle = @article.type_of_article.id
+      @categories = Category.all
+      # La categoria al que pertenece
+      @category_article = @article.category.id
+      # Traemos las SubCategorias
+      @subcategories = @article.category.subcategories
+      # Traemos la subcategoria
+      @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
+      @subcategory_article.each do |sub|
+        @subcategory_article = sub.code
+      end
+      # Traemos las Unidades de Medida
+      @units = Array.new
+      article.article_unit_of_measurements.each do |aunit|
+        @units << [aunit.unit_of_measurement.id]
+      end
+      @unitOfMeasurement = UnitOfMeasurement.all
+      @typeOfArticles = TypeOfArticle.all
+      @reg_n = Time.now.to_i
+      render :edit, layout: false
+    end
   end
 
   def new

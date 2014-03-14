@@ -40,9 +40,17 @@ class Logistics::SectorsController < ApplicationController
 
   def update
     sector = Sector.find(params[:id])
-    sector.update_attributes(sector_parameters)
-    flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    if sector.update_attributes(sector_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index
+    else
+      sector.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @Sectors = sector
+      render :edit, layout: false
+    end
   end
 
   def new

@@ -3,6 +3,7 @@ class Logistics::CostCentersController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   
   def index
+    flash[:error] = nil
     @costCenters = CostCenter.all
     if params[:task] == 'created' || params[:task] == 'edited'
       render layout: 'dashboard'
@@ -28,7 +29,6 @@ class Logistics::CostCentersController < ApplicationController
       redirect_to :action => :index
     else
       #"Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      flash[:error] = ""
       costCenter.errors.messages.each do |attribute, error|
         flash[:error] =  flash[:error].to_s + error.to_s + "  "
       end
@@ -45,10 +45,18 @@ class Logistics::CostCentersController < ApplicationController
   end
 
   def update
+    flash[:error] = nil
     cost_center = CostCenter.find(params[:id])
-    cost_center.update_attributes(cost_center_parameters)
-    flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    if cost_center.update_attributes(cost_center_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index
+    else
+      cost_center.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      @costCenter = cost_center
+      render :edit, layout: false
+    end
   end
 
   def destroy

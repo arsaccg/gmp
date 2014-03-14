@@ -33,9 +33,17 @@ class Logistics::CategoriesController < ApplicationController
 
   def update
     category = Category.find(params[:id])
-    category.update_attributes(category_parameters)
-    flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    if category.update_attributes(category_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index
+    else
+      category.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @category = category
+      render :edit, layout: false
+    end
   end
 
   def edit

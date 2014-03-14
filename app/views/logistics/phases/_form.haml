@@ -19,6 +19,7 @@
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-user
               = f.input :name, placeholder: "Nombre de la Fase", input_html: { class: 'form-control' }, label: false
+
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save
@@ -69,8 +70,16 @@
             error.insertAfter(element.parent());
           }
         });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
         return $(form['selector']).valid();
       },
-      target: '#content'
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
     });
   }
