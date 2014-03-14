@@ -36,9 +36,16 @@ class Logistics::TypeOfArticlesController < ApplicationController
 
   def update
     typeOfArticle = TypeOfArticle.find(params[:id])
-    typeOfArticle.update_attributes(type_of_article_parameters)
-    flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    if typeOfArticle.update_attributes(type_of_article_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index
+    else
+      typeOfArticle.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      @typeOfArticle = typeOfArticle
+      render :edit, layout: false
+    end
   end
 
   def destroy

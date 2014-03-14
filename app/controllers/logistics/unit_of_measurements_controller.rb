@@ -53,9 +53,16 @@ class Logistics::UnitOfMeasurementsController < ApplicationController
   def update
     flash[:error] = nil
     unitOfMeasure = UnitOfMeasurement.find(params[:id])
-    unitOfMeasure.update_attributes(unit_of_measure_parameters)
-    flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    if unitOfMeasure.update_attributes(unit_of_measure_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index
+    else
+      unitOfMeasure.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      @unitOfMeasure = unitOfMeasure
+      render :edit, layout: false
+    end
   end
 
   def destroy
