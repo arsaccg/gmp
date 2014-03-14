@@ -209,8 +209,8 @@ $(document).ready(function() {
 
 		// ask verification
 		$.SmartMessageBox({
-			title : "<i class='fa fa-sign-out txt-color-orangeDark'></i> Logout <span class='txt-color-orangeDark'><strong>" + $('#show-shortcut').text() + "</strong></span> ?",
-			content : "You can improve your security further after logging out by closing this opened browser",
+			title : "<i class='fa fa-sign-out txt-color-orangeDark'></i> Deseas cerrar sesión <span class='txt-color-orangeDark'><strong>" + $('#show-shortcut').text() + "</strong></span> ?",
+			content : "Verifica si no tienes nada pendiente en hacer. Si es asi, presiona el boton YES para salir del sistema.",
 			buttons : '[No][Yes]'
 
 		}, function(ButtonPressed) {
@@ -228,7 +228,24 @@ $(document).ready(function() {
 	 */
 
 	function logout() {
-		window.location = $.loginURL;
+		$.ajax({
+			url: $.loginURL,
+			type: 'DELETE',
+			dataType : 'html',
+			beforeSend: function( xhr ) {
+	            var token = $('meta[name="csrf-token"]').attr('content');
+	            if (token) xhr.setRequestHeader('X-CSRF-Token', token);
+	        },
+			success: function(data) {
+				console.log(data);
+			},
+			error: function(xhr, ajaxOptions, thrownError){
+				/* Si hace logout pero nunca va al success */
+				/* Siempre va a la raiz */
+				window.location = "/users/sign_in";
+				/*container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');*/
+			}
+		});
 	}
 
 	/*
