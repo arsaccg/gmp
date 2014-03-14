@@ -4,7 +4,7 @@
       %i.fa.fa-eye
     %h2 Usuario
   .widget-body
-    = simple_form_for([:logistics, @user], html: {class: 'form-horizontal smart-form' }) do |f|
+    = simple_form_for([:logistics, @user], url: logistics_persons_path, html: {class: 'form-horizontal smart-form' }) do |f|
       %fieldset
         .row
           %section.col.col-10
@@ -38,10 +38,13 @@
               = f.input :password, placeholder: "Email", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
-            %label.label Rol
-            %label.input{for: "abbreviation"}
-              %i.icon-append.fa.fa-user
-              = f.input :roles_mask, placeholder: "Abreviación", input_html: { class: 'form-control' }, label: false
+            %label.label Rol de Usuario
+            %label.select
+              %select{id: "role-user", name: "role"}
+                %option{value: "approver"} Aprueba ordenes de Suministro
+                %option{value: "reviser"} Dar visto bueno a las ordenes de suministro
+                %option{value: "canceller"} Anular ordenes suministro
+              %i
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -64,21 +67,49 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'center_of_attention[name]' : {
+            'user[first_name]' : {
               required : true,
             },
-            'center_of_attention[abbreviation]' : {
+            'user[last_name]' : {
+              required : true
+            },
+            'user[surname]' : {
+              required : true
+            },
+            'user[email]' : {
+              required : true,
+              email: true
+            },
+            'user[password]' : {
+              required : true,
+              minlength : 8
+            },
+            'role' : {
               required : true
             }
           },
 
           // Messages for form validation
           messages : {
-            'center_of_attention[name]' : {
-              required : 'Porfavor, ingresar el nombre del Centro de Atención.'
+            'user[first_name]' : {
+              required : 'El primer nombre es requerido.'
             },
-            'center_of_attention[abbreviation]' : {
-              required : 'Porfavor, ingresar la abreviacion del centro de atención.'
+            'user[last_name]' : {
+              required : 'El segundo nombre es requerido.'
+            },
+            'user[surname]' : {
+              required : 'El apellido es requerido.'
+            },
+            'user[email]' : {
+              required : 'El email es requerido.',
+              email: 'Por favor, ingrese un email válido.'
+            },
+            'user[password]' : {
+              required : 'La contraseña es requerida.',
+              minlength : 'La contraseña debe ser, por lo menos, de 8 caracteres.'
+            },
+            'role' : {
+              required : 'Por favor, defina el rol de usuario.'
             }
           },
 

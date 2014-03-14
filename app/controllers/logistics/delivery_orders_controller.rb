@@ -150,16 +150,16 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
     if @deliveryOrder.state == 'issued'
       @state_per_order_details_approved = @deliveryOrder.state_per_order_details.where("state LIKE 'issued'").last
-      @state_per_order_details_revised = @deliveryOrder.state_per_order_details.where("state LIKE 'issued'").last
+      @state_per_order_details_revised = @deliveryOrder.state_per_order_details.where("state LIKE 'pre_issued'").last
       @first_state = "Emitido"
-      @second_state = "Emitido"
+      @second_state = "Pre-Emitido"
     end
 
     if @deliveryOrder.state == 'revised'
       @state_per_order_details_approved = @deliveryOrder.state_per_order_details.where("state LIKE 'revised'").last
-      @state_per_order_details_revised = @deliveryOrder.state_per_order_details.where("state LIKE 'revised'").last
+      @state_per_order_details_revised = @deliveryOrder.state_per_order_details.where("state LIKE 'issued'").last
       @first_state = "Revisado"
-      @second_state = "Revisado"
+      @second_state = "Emitido"
     end
 
     if @deliveryOrder.state == 'approved'

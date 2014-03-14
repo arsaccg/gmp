@@ -14,4 +14,18 @@ module ApplicationHelper
         str_spanish="APROBADO"
     end
   end
+
+  def translate_user_role(str_role)
+    str_spanish = ""
+    case str_role
+      when "director"
+        str_spanish="DIRECTOR"
+      when "approver"
+        str_spanish="APROBAR ORDENES DE SUMINISTRO"
+      when "reviser"
+        str_spanish="DAR VISTO BUENO A LAS ORDENES DE SUMINISTRO"
+      when "canceller"
+        str_spanish="CANCELAR ORDENES DE SUMINISTRO"
+    end
+  end
 end
