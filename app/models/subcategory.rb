@@ -1,3 +1,4 @@
+# enconding: urf-8
 class Subcategory < ActiveRecord::Base
 	belongs_to :category
 

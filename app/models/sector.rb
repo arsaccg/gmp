@@ -1,3 +1,4 @@
+# enconding: urf-8
 class Sector < ActiveRecord::Base
 	has_many :deliver_orders
 

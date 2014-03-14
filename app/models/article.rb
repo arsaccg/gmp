@@ -1,3 +1,4 @@
+# enconding: urf-8
 class Article < ActiveRecord::Base
 	has_many :deliver_orders
 	belongs_to :category
