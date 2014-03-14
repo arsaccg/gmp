@@ -21,18 +21,19 @@ class Logistics::CostCentersController < ApplicationController
   end
 
   def create
+    flash[:error] = nil
     costCenter = CostCenter.new(cost_center_parameters)
     if costCenter.save
       flash[:notice] = "Se ha creado correctamente el centro de costo."
       redirect_to :action => :index
     else
       #"Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
+      flash[:error] = ""
       costCenter.errors.messages.each do |attribute, error|
         flash[:error] =  flash[:error].to_s + error.to_s + "  "
       end
-      #render :json => flash[:error]
-      #render layout: false
-      redirect_to :action => :index
+      @costCenter = costCenter
+      render :new, layout: false
     end
         
   end
@@ -59,6 +60,14 @@ class Logistics::CostCentersController < ApplicationController
   def save
     if valid?
       #save method implementation
+      true
+    else
+      false
+    end
+  end
+
+  def check
+    if save.valid?
       true
     else
       false

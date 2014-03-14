@@ -66,8 +66,16 @@
             error.insertAfter(element.parent());
           }
         });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
         return $(form['selector']).valid();
       },
-      target: '#content'
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
     });
   }

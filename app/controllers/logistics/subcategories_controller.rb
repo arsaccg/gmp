@@ -18,14 +18,20 @@ class Logistics::SubcategoriesController < ApplicationController
   end
 
   def create
+    flash[:error] = nil
     subcategory = Subcategory.new(subcategory_parameters)
     subcategory.code = params[:extrafield]['first_code'].to_s + params[:subcategory]['code'].to_s
     if subcategory.save
       flash[:notice] = "Se ha creado correctamente la nueva sub-categoria."
       redirect_to url_for(:controller => :categories, :action => :index)
     else
-      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      render layout: false
+      subcategory.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @SubCategories = subcategory
+      @Categories = Category.all
+      render :new, layout: false
     end
   end
 

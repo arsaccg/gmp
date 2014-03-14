@@ -5,5 +5,7 @@ class UnitOfMeasurement < ActiveRecord::Base
 	#accepts_nested_attributes_for :articles
 
 	# Validaciones
-	validates :code, :uniqueness => { :message => "El código debe ser único"}
+	include ActiveModel::Validations
+	#validates :code, :uniqueness => { :scope => :name, :message => "El código debe ser único" }
+	validates :code, :uniqueness => { :message => "El código debe ser único."}
 end

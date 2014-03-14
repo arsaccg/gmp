@@ -2,6 +2,7 @@ class Logistics::CategoriesController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
+    flash[:error] = nil
     @categories = Category.all
     render layout: false
   end
@@ -15,13 +16,18 @@ class Logistics::CategoriesController < ApplicationController
   end
 
   def create
+    flash[:error] = nil
     category = Category.new(category_parameters)
     if category.save
       flash[:notice] = "Se ha creado correctamente la nueva categoria."
       redirect_to :action => :index
     else
-      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index
+      category.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @category = category
+      render :new, layout: false
     end
   end
 

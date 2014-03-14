@@ -3,6 +3,7 @@ class Logistics::SectorsController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   
   def index
+    flash[:error] = nil
     @Sectors = Sector.all
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
       render layout: 'dashboard'
@@ -17,8 +18,12 @@ class Logistics::SectorsController < ApplicationController
       flash[:notice] = "Se ha creado correctamente el sector."
       redirect_to :action => :index
     else
-      flash[:error] = "Ha ocurrido un problema. "
-      render layout: false
+      sector.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @Sectors = sector
+      render :new, layout: false
     end
   end
 

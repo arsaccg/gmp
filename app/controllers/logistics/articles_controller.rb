@@ -2,6 +2,7 @@ class Logistics::ArticlesController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
+    flash[:error] = nil
     #@Article = Article.order("id DESC").group("name")
     @Article = Article.order("id DESC")
     @unitOfMeasurement = UnitOfMeasurement.first
@@ -21,6 +22,7 @@ class Logistics::ArticlesController < ApplicationController
   end
 
   def create
+    flash[:error] = nil
     article = Article.new(article_parameters)
     article.code = params[:extrafield]['first_code'].to_s + params[:article]['code'].to_s
     if article.save
@@ -34,8 +36,32 @@ class Logistics::ArticlesController < ApplicationController
       flash[:notice] = "Se ha creado correctamente el articulo."
       redirect_to :action => :index
     else
-      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index
+      article.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @article = article
+      # El tipo especifico de Insumo
+      @typeOfArticle = @article.type_of_article.id
+      @categories = Category.all
+      # La categoria al que pertenece
+      @category_article = @article.category.id
+      # Traemos las SubCategorias
+      @subcategories = @article.category.subcategories
+      # Traemos la subcategoria
+      @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
+      @subcategory_article.each do |sub|
+        @subcategory_article = sub.code
+      end
+      # Traemos las Unidades de Medida
+      @units = Array.new
+      article.article_unit_of_measurements.each do |aunit|
+        @units << [aunit.unit_of_measurement.id]
+      end
+      @unitOfMeasurement = UnitOfMeasurement.all
+      @typeOfArticles = TypeOfArticle.all
+      @reg_n = Time.now.to_i
+      render :new, layout: false
     end
   end
 

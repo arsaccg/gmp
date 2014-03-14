@@ -3,6 +3,7 @@ class Logistics::TypeOfArticlesController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 
   def index
+    flash[:error] = nil
     @typeOfArticles = TypeOfArticle.all
     render layout: false
   end
@@ -13,13 +14,17 @@ class Logistics::TypeOfArticlesController < ApplicationController
   end
 
   def create
+    flash[:error] = nil
     typeOfArticle = TypeOfArticle.new(type_of_article_parameters)
     if typeOfArticle.save
       flash[:notice] = "Se ha creado correctamente el tipo de insumo."
       redirect_to :action => :index
     else
-      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index
+      typeOfArticle.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      @typeOfArticle = typeOfArticle
+      render :new, layout: false
     end
   end
 
