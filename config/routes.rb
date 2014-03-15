@@ -65,8 +65,14 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :sectors
-    resources :phases
+    resources :phases do
+      collection do
+        get 'addsub'
+        get 'editsub/:id', :to => "phases#editsub"
+      end
+    end
     resources :subphases
+    resources :companies
     resources :cost_centers
     resources :type_of_articles
     resources :delivery_orders do

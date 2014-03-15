@@ -4,7 +4,7 @@
       %i.fa.fa-eye
     %h2 Centro de Atención
   .widget-body
-    = simple_form_for([:logistics, @centerOfAttention], html: {class: 'form-horizontal smart-form' }) do |f|
+    = simple_form_for([:logistics, @centerOfAttention], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-10

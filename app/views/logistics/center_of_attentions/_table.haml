@@ -33,12 +33,15 @@
             %thead
               %tr
                 %th Nombre
+                %th Abreviación
                 %th Acciones
             %tbody
               - @centerOfAttention.each do |centerAttention|
                 %tr
                   %td
                     = centerAttention.name
+                  %TD
+                    = centerAttention.abbreviation
                   %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_center_of_attention_path(centerAttention.id)}', 'content', null, null, 'GET')"}
                       Editar

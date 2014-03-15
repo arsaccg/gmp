@@ -1,5 +1,5 @@
 class Logistics::SubcategoriesController < ApplicationController
-  #before_filter :authenticate_user!
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   
   def index
@@ -18,14 +18,20 @@ class Logistics::SubcategoriesController < ApplicationController
   end
 
   def create
+    flash[:error] = nil
     subcategory = Subcategory.new(subcategory_parameters)
     subcategory.code = params[:extrafield]['first_code'].to_s + params[:subcategory]['code'].to_s
     if subcategory.save
       flash[:notice] = "Se ha creado correctamente la nueva sub-categoria."
       redirect_to url_for(:controller => :categories, :action => :index)
     else
-      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      render layout: false
+      subcategory.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @SubCategories = subcategory
+      @Categories = Category.all
+      render :new, layout: false
     end
   end
 
@@ -41,10 +47,18 @@ class Logistics::SubcategoriesController < ApplicationController
     subcategory.category_id = params[:subcategory]['category_id'].to_s
     subcategory.code = params[:extrafield]['first_code'].to_s + params[:subcategory]['code'].to_s
     subcategory.name = params[:subcategory]['name'].to_s
-    subcategory.save #update_attributes(subcategory_parameters)
-    flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to url_for(:controller => :categories, :action => :index)
-    #redirect_to :action => :index
+    if subcategory.save #update_attributes(subcategory_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to url_for(:controller => :categories, :action => :index)
+    else
+      subcategory.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @SubCategories = subcategory
+      @Categories = Category.all
+      render :edit, layout: false
+    end
   end
 
   def destroy

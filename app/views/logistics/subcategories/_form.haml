@@ -4,7 +4,7 @@
       %i.fa.fa-eye
     %h2 Sub-Grupo
   .widget-body
-    = simple_form_for([:logistics, @SubCategories], html: {class: 'form-horizontal smart-form' }) do |f|
+    = simple_form_for([:logistics, @SubCategories], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-10
@@ -89,9 +89,17 @@
             error.insertAfter(element.parent());
           }
         });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
         return $(form['selector']).valid();
       },
-      target: '#content'
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
     });
   }
 
