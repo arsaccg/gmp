@@ -3,7 +3,7 @@
     .col-xs-12.col-sm-7.col-md-7.col-lg-4
       %h2.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
-        Lista de CIAS
+        Lista de Compañias
     - if flash[:notice] !=nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"}
@@ -19,11 +19,11 @@
         %strong Error!
         = flash[:error]
   .row
-    .col-sm-4{:style => "width: 30.333333%;"}
+    .col-sm-4
       %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_company_path}', 'content', null, null, 'GET')"}
-        Agregar CIAS
+        Agregar Compañia
   %br
   .row
     #widget-grid 
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
-        =# render :partial => 'table'
+        = render :partial => 'table'

@@ -129,7 +129,7 @@
             %ul
               - if current_user.has_role? :director
                 %li
-                  %a{href: "#", title: "Gestión de Compañias"}
+                  %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
                     %i.fa.fa-lg.fa-fw.fa-gears
                     %span.menu-item-parent Gestión de Companias
                 %li
