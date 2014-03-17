@@ -23,12 +23,6 @@ class Logistics::DeliveryOrdersController < ApplicationController
     deliveryOrder.state
     deliveryOrder.user_id = current_user.id
     if deliveryOrder.save
-      # Agregando el detalle de estados
-      stateOrderDetail = StatePerOrderDetail.new
-      stateOrderDetail.state = deliveryOrder.state
-      stateOrderDetail.delivery_order_id = deliveryOrder.id
-      stateOrderDetail.user_id = current_user.id
-      stateOrderDetail.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
       redirect_to :action => :index
     else

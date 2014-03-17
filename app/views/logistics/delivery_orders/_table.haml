@@ -81,7 +81,7 @@
 
                         %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')"}
                           Editar
-                        - if current_user.id == delivery.user_id
+                        - if current_user.has_role? :issuer
                           %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=issued', 'content', null, null, 'GET')"}
                             Emitir
                         - if current_user.has_role? :canceller
@@ -95,7 +95,7 @@
                         - if current_user.has_role? :reviser
                           %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=revised', 'content', null, null, 'GET')"}
                             Dar visto bueno
-                        - if current_user.id == delivery.user_id
+                        - if current_user.has_role? :issuer
                           %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=observed', 'content', null, null, 'GET')"}
                             Observar
                         - if current_user.has_role? :canceller
@@ -106,7 +106,7 @@
 
                       - when 'revised'
 
-                        - if current_user.id == delivery.user_id
+                        - if current_user.has_role? :issuer
                           %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=issued', 'content', null, null, 'GET')"}
                             Volver a Emitir
                         - if current_user.has_role? :approver
