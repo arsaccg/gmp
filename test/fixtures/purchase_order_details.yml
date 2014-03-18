@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  delivery_order_detail_id: 1
+  unit_price: 1.5
+  igv: false
+  unit_price_igv: 1.5
+  description: MyText
+
+two:
+  delivery_order_detail_id: 1
+  unit_price: 1.5
+  igv: false
+  unit_price_igv: 1.5
+  description: MyText

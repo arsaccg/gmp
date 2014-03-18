@@ -4,17 +4,15 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @article = Article.first
     @phase = Phase.first
     @sector = Sector.first
+    @costcenter = CostCenter.first
     @centerOfAttention = CenterOfAttention.first
-    if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'canceled' || params[:task] == 'approved' || params[:task] == 'revised'
-      render layout: 'dashboard'
-    else
-      render layout: false
-    end
+    render layout: false
   end
 
   def new
     @deliveryOrder = DeliveryOrder.new
     @articles = Article.all
+    @costcenters = CostCenter.all
     render layout: false
   end
 
