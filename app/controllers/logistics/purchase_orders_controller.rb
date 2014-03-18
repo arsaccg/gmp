@@ -1,4 +1,4 @@
-class Logistics::PurchaseOrderController < ApplicationController
+class Logistics::PurchaseOrdersController < ApplicationController
   def index
   end
 
