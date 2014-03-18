@@ -12,10 +12,10 @@ class User < ActiveRecord::Base
 
   include RoleModel
   roles_attribute :roles_mask
-  roles :director, :approver, :reviser, :canceller
-  # Director = Can create CIA and Users (1)
-  # Anuler = Can cancel orders (8)
-  # Approver = Can approve orders (Aprobado) (2)
-  # Reviser = Can give approval (Visto Bueno) (4)
-
+  roles :director, :approver, :reviser, :issuer, :canceller
+  # Director = Can create CIA and Users
+  # Anuler = Can cancel orders
+  # Approver = Can approve orders (Aprobado)
+  # Reviser = Can give approval (Visto Bueno)
+  # Issuer = Can issue delivery orders (Emitido)
 end 

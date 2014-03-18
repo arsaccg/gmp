@@ -18,7 +18,7 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
-  - if @article != nil && @sector != nil && @phase != nil && @centerOfAttention != nil
+  - if @article != nil && @sector != nil && @phase != nil && @centerOfAttention != nil && @costcenter != nil
     .row
       .col-sm-4
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_delivery_order_path}', 'content', null, null, 'GET')"}

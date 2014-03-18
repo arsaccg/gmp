@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20140313203418) do
+=======
+ActiveRecord::Schema.define(version: 20140318200845) do
+>>>>>>> 8e58e5a3bfc0a1b5f9d7eb4ea178adf2990baa6b
 
   create_table "article_unit_of_measurements", force: true do |t|
     t.integer  "article_id"
@@ -91,6 +95,32 @@ ActiveRecord::Schema.define(version: 20140313203418) do
     t.datetime "updated_at"
     t.string   "category"
     t.string   "code"
+  end
+
+  create_table "purchase_order_details", force: true do |t|
+    t.integer  "delivery_order_detail_id"
+    t.float    "unit_price"
+    t.boolean  "igv"
+    t.float    "unit_price_igv"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "purchase_orders", force: true do |t|
+    t.string   "state"
+    t.date     "date_of_issue"
+    t.date     "expiration_date"
+    t.date     "delivery_date"
+    t.boolean  "retention"
+    t.integer  "money_id"
+    t.integer  "method_of_payment_id"
+    t.integer  "supplier_id"
+    t.integer  "user_id"
+    t.integer  "cost_center_id"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "sectors", force: true do |t|

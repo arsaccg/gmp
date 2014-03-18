@@ -5,11 +5,7 @@ class Logistics::CostCentersController < ApplicationController
   def index
     flash[:error] = nil
     @costCenters = CostCenter.all
-    if params[:task] == 'created' || params[:task] == 'edited'
-      render layout: 'dashboard'
-    else
-      render layout: false
-    end
+    render layout: false
   end
 
   def show

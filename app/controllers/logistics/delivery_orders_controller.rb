@@ -4,17 +4,15 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @article = Article.first
     @phase = Phase.first
     @sector = Sector.first
+    @costcenter = CostCenter.first
     @centerOfAttention = CenterOfAttention.first
-    if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'canceled' || params[:task] == 'approved' || params[:task] == 'revised'
-      render layout: 'dashboard'
-    else
-      render layout: false
-    end
+    render layout: false
   end
 
   def new
     @deliveryOrder = DeliveryOrder.new
     @articles = Article.all
+    @costcenters = CostCenter.all
     render layout: false
   end
 
@@ -23,12 +21,6 @@ class Logistics::DeliveryOrdersController < ApplicationController
     deliveryOrder.state
     deliveryOrder.user_id = current_user.id
     if deliveryOrder.save
-      # Agregando el detalle de estados
-      stateOrderDetail = StatePerOrderDetail.new
-      stateOrderDetail.state = deliveryOrder.state
-      stateOrderDetail.delivery_order_id = deliveryOrder.id
-      stateOrderDetail.user_id = current_user.id
-      stateOrderDetail.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
       redirect_to :action => :index
     else

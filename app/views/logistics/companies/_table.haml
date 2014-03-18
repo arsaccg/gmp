@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Usuarios
+    %h2 Lista de Compañias
   / widget div
   %div
     / widget edit box
@@ -32,30 +32,22 @@
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
-                %th Primero Nombre
-                %th Segundo Nombre
-                %th Apellidos
-                %th Email
-                %th Rol del Usuario
+                %th Nombre
+                %th RUC
                 %th Acciones
             %tbody
-              - @persons.each do |person|
+              - @companies.each do |company|
                 %tr
                   %td
-                    = person.first_name
+                    = company.name
+                  %TD
+                    = company.ruc
                   %td
-                    = person.last_name
-                  %td
-                    = person.surname
-                  %td
-                    = person.email
-                  %td
-                    = person.role_symbols
-                  %td
-                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_person_path(person.id)}', 'content', null, null, 'GET')"}
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_company_path(company.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el usuario ' + "#{person.first_name + ' ' + person.surname}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_person_path(person.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_persons_path}')"}}
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{company.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_company_path(company.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_companies_path}')"}}
                       Eliminar
+
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
