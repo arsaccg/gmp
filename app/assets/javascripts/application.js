@@ -30,11 +30,17 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
       $("#" + div_name).html('<h1><i class="fa fa-cog fa-spin"></i> Cargando...</h1>');
     },
     success: function(data) {
-      $("#" + div_name).css({
-        opacity : '0.0'
-      }).html(data).delay(50).animate({
-        opacity : '1.0'
-      }, 300);
+      if( loader_flag == 'avoid-opacity'){
+        $("#" + div_name).html(data).delay(50).animate({
+          opacity : '1.0'
+        }, 300);
+      }else{
+        $("#" + div_name).css({
+          opacity : '0.0'
+        }).html(data).delay(50).animate({
+          opacity : '1.0'
+        }, 300);
+      }
     },
     error : function(xhr, ajaxOptions, thrownError) {
       container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
