@@ -1,0 +1,2 @@
+module Logistics::MoneyHelper
+end

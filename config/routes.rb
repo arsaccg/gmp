@@ -100,6 +100,9 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :categories    
+    resources :suppliers
+    resources :method_of_payments
+    resources :money
     
   end
 
