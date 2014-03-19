@@ -68,7 +68,10 @@ ArsacLogistica::Application.routes.draw do
     resources :phases do
       collection do
         get 'addsub'
-        get 'editsub/:id', :to => "phases#editsub"
+        
+      end
+      member do
+        get 'editsub' 
       end
     end
     resources :subphases
