@@ -92,9 +92,11 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :purchase_orders do
+      collection do
+        post 'add_items_from_delivery_orders'
+      end
       member do
-        post 'show_delivery_order_item_field'
-        get 'show_delivery_order_item_field'
+        put 'show_delivery_order_item_field'
       end
     end
     resources :subcategories do

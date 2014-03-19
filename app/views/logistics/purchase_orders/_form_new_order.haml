@@ -1,0 +1,140 @@
+= simple_form_for([:logistics, @purchaseOrder], html: {class: 'form-horizontal', id: 'fuelux-wizard', autocomplete: 'off' }) do |f|
+  #step1.step-pane.active
+    %h3
+      %strong Paso 1
+      \- Seleccionar Centro de Costo y Items
+
+    %fieldset
+      .row
+        .col-xs-12.col-sm-7.col-md-7.col-lg-6
+          %div
+            .smart-form
+              %section
+                %label.select
+                  %select{ 'name' => 'cost_center_id', 'id' => 'cost-center-selected' }
+                    - @cost_center.each do |cc|
+                      %option{'value' => "#{cc.id}"}= cc.name
+                  %i
+            %button{'id' => 'search-by-cost-center', 'class' => 'btn btn-success', type: "button"}
+              %i{'class' => 'fa fa-check'}
+              Buscar Ordenes de Suministro
+      .row
+      #widget-grid-1
+        .row
+          %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+            %br
+            #items-delivery-orders
+  #step2.step-pane
+    %h3
+      %strong Paso 2
+      \- Llenar información de la Orden de Compra
+    %fieldset
+      .col-md-6
+        .form-group
+          %label.col-md-2.control-label Proveedores
+          .col-md-10
+            .input-group
+              %select.form-control#category-select{:name =>"purchase_order[supplier_id]"}
+                - @suppliers.each do |supp|
+                  %option{:value => "#{supp.id}"}
+                    = supp.name
+              %span.input-group-addon
+                %i.fa.fa-truck
+        .form-group
+          %label.col-md-2.control-label Moneda
+          .col-md-10
+            .input-group
+              %select.form-control#category-select{:name =>"purchase_order[money_id]"}
+                - @moneys.each do |money|
+                  %option{:value => "#{money.id}", :rel => "#{money.exchange_rate}"}
+                    = money.name
+              %span.input-group-addon
+                %i.fa.fa-money
+        .form-group
+          %label.col-md-2.control-label Tipo de cambio
+          .col-md-10
+            .input-group
+              = text_field(:exchange_rate, :value, class: "form-control")
+              %span.input-group-addon
+                %i.fa.fa-warning
+        .form-group
+          %label.col-md-2.control-label Forma de pago
+          .col-md-10
+            .input-group
+              %select.form-control#category-select{:name =>"purchase_order[method_of_payment_id]"}
+                - @methodOfPayments.each do |mop|
+                  %option{:value => "#{mop.id}"}
+                    = mop.name
+              %span.input-group-addon
+                %i.fa.fa-gears
+        .form-group
+          %label.col-md-2.control-label Estado
+          .col-md-10
+            .input-group
+              = f.input :state, :input_html => {:class => 'form-control', :value => translate_purchase_order_state(@purchaseOrder.state)}, label: false, readonly: true
+              %span.input-group-addon
+                %i.fa.fa-flag
+      .col-md-6
+        .form-group
+          %label.col-md-2.control-label Responsable
+          .col-md-10
+            .input-group
+              = text_field(:purchaseOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}", readonly: true)
+              %span.input-group-addon
+                %i.fa.fa-male
+        .form-group
+          %label.col-md-2.control-label Fecha de Emisión
+          .col-md-10
+            .input-group
+              = f.input :date_of_issue, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+              %span.input-group-addon
+                %i.fa.fa-calendar
+        .form-group
+          %label.col-md-2.control-label Fecha de Vencimiento
+          .col-md-10
+            .input-group
+              = f.input :expiration_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+              %span.input-group-addon
+                %i.fa.fa-calendar
+        .form-group
+          %label.col-md-2.control-label Fecha de Entrega
+          .col-md-10
+            .input-group
+              = f.input :delivery_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+              %span.input-group-addon
+                %i.fa.fa-calendar
+        .form-group
+          %label.col-md-2.control-label Glosa
+          .col-md-10
+            .input-group
+              = f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+              %span.input-group-addon
+                %i.fa.fa-align-justify
+    %fieldset
+      %table(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-delivery-orders" aria-describedby="data-table_info")
+        %thead
+          %tr
+            %th Codigo
+            %th Descripción
+            %th Unidad
+            %th Cantidad
+            %th Precio Unitario
+            %th Total antes de IGV
+            %th ¿Precio con IGV?
+            %th Total después de IGV
+        %tbody(id="order_delivery_items_table")
+  #step3.step-pane
+    %h3
+      %strong Guardado de la Información
+      \- Terminado!
+    %br/
+    %br/
+    %h1.text-center.text-success
+      %i.fa.fa-check
+      Felicidades!
+      %br/
+      %small Presiona FINALIZAR para terminar con la Orden de Compra.
+    %br/
+    %br/
+    %br/
+    %br/

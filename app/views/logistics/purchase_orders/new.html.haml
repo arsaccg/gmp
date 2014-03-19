@@ -1,2 +1,139 @@
-%h1 Logistics::PurchaseOrders#new
-%p Find me in app/views/logistics/purchase_orders/new.html.haml
+#content-inside
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-collapsed" => "false", "data-widget-fullscreenbutton" => "false"}
+          %header
+            %h2 Generar Órdenes de Compra - Paso a Paso
+          %div
+            .jarviswidget-editbox
+
+            .widget-body.fuelux
+              .wizard
+                %ul.steps
+                  %li.active{"data-target" => "#step1"}
+                    %span.badge.badge-info> 1
+                    Seleccionar los Items Ordenes de Suministro
+                    %span.chevron
+                  %li{"data-target" => "#step2"}
+                    %span.badge> 2
+                    Llenar información de la Órden de Compra
+                    %span.chevron
+                  %li{"data-target" => "#step3"}
+                    %span.badge> 3
+                    Guardar Información
+                    %span.chevron
+                .actions
+                  %button.btn.btn-sm.btn-primary.btn-prev{type: "button"}
+                    %i.fa.fa-arrow-left>
+                    Anterior
+                  %button.btn.btn-sm.btn-success.btn-next{"data-last" => "Finalizar", type: "button"}
+                    Siguiente
+                    %i.fa.fa-arrow-right
+              .step-content
+                = render :partial => 'form_new_order'
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Ordenes de Suministro
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  // PAGE RELATED SCRIPTS
+
+  $('#search-by-cost-center').click(function(){
+    cost_center_id = $('#cost-center-selected').val();
+    url = "/logistics/purchase_orders/" + cost_center_id + "/show_delivery_order_item_field";
+    data = { authenticity_token: "#{form_authenticity_token}" }
+    load_url_ajax(url, 'items-delivery-orders', data, 'avoid-opacity', 'PUT');
+  });
+
+  $('#backlist-purchase-order').click(function(){
+    load_url_ajax("#{logistics_purchase_orders_path}", 'content', null, null, 'GET');
+  });
+
+  loadScript("#{ asset_path 'plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js', type: :javascript }", runBootstrapWizard);
+  
+  //Bootstrap Wizard Validations
+
+  function runBootstrapWizard() { }
+
+  loadScript("#{ asset_path 'plugin/fuelux/wizard/wizard.js', type: :javascript }", fueluxWizard);
+  
+  function fueluxWizard() {
+    
+    var wizard = $('.wizard').wizard();
+    
+    wizard.on('finished', function (e, data) {
+      //$("#fuelux-wizard").submit();
+      //console.log("submitted!");
+      $.smallBox({
+        title: "Congratulations! Your form was submitted",
+        content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+        color: "#5F895F",
+        iconSmall: "fa fa-check bounce animated",
+        timeout: 4000
+      });
+      
+    });
+
+    wizard.on('change', function(e, data){
+
+      var status = false;
+      var data_delivery_order = new Array();
+
+      if(data.step == 1 && data.direction == 'next'){
+
+        if( $.trim($('#items-delivery-orders').html()).length ) {
+          var index = 0;
+          $('#items-delivery-orders #dt_basic tbody tr td .checkbox .order_check').each(function(){
+            if( $(this).is(':checked') ){
+              status = true
+              data_delivery_order[index] = $(this).val();
+              index++;
+            }
+          });
+
+          if(status){
+            data = { ids_delivery_order: data_delivery_order };
+            load_items_delivery_order_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'order_delivery_items_table', data);
+
+            $.smallBox({
+              title: "Ahora completa la información de la Orden de compra.",
+              content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+              color: "#c46a69",
+              iconSmall: "fa fa-check bounce animated",
+              timeout: 4000
+            });
+
+          } else {
+
+            e.preventDefault();
+            $.smallBox({
+              title: "Antes de continuar debes de haber seleccionado Items de alguna Orden de Suministro.",
+              content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+              color: "#c46a69",
+              iconSmall: "fa fa-times bounce animated",
+              timeout: 4000
+            });
+          }          
+
+        } else {
+
+          e.preventDefault();
+          $.smallBox({
+            title: "Antes de continuar debes de haber consultado alguna Orden de Suministro de algún centro de costo.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });
+
+        }
+      }
+
+    });
+    
+  }

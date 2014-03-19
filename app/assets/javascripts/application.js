@@ -81,3 +81,29 @@ function append_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*
   });
   return false;
 }
+
+function load_items_delivery_order_ajax(url, div_id, parameters){
+  var url_str = url;
+  var div_name = div_id; 
+
+  $.ajax({
+    type: 'POST',
+    url: url_str,
+    async: false,
+    data: parameters,
+    dataType : 'html',
+    beforeSend : function() {
+      $('#modalLoading').modal('toggle', {
+        keyboard: false,
+        backdrop: 'static'
+      });
+    },
+    success: function(data) {
+      $('#modalLoading').modal('hide');
+      $('#'+div_name).html(data);
+    },
+    error : function(xhr, ajaxOptions, thrownError) {
+      container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+    }
+  });
+}

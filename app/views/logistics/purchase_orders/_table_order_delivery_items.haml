@@ -1,0 +1,10 @@
+- @delivery_orders_detail.each do |dode|
+  %tr
+    %td=dode.article.code
+    %td=dode.article.description
+    %td=dode.unit_of_measurement.symbol
+    %td=dode.amount
+    %td
+    %td
+    %td
+    %td

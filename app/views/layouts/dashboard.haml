@@ -195,7 +195,7 @@
               %li
                 %a{href: "#{logistics_delivery_orders_path}", title: "Ordenes de Suministro"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
-                  %span.menu-item-parent{'style' => 'width: 100px;display: inline-table;'}
+                  %span.menu-item-parent
                     Ordenes de Suministro
               %li
                 %a{href: "#{logistics_purchase_orders_path}", title: "Ordenes de Compra"}
@@ -226,6 +226,14 @@
             %span.iconbox
               %i.fa.fa-user.fa-4x
               %span Mi Perfil
+
+    #modalLoading.modal.hide.fade{"aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
+      .modal-body
+        .row
+          .col-sm-12
+            %h3 Cargando Contenido...
+            .progress.progress-sm.progress-striped.active
+              .progress-bar.bg-color-darken{role: "progressbar", style: "width: 45%"}
     / END SHORTCUT AREA
     / ==================================================
     /

@@ -1,0 +1,186 @@
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Lista de Ordenes de Compra
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      .widget-body-toolbar
+      %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th Código
+            %th Estado
+            %th Fecha de Emisión
+            %th Fecha de Expiración
+            %th Fecha de Entrega
+            %th Responsable
+            %th Descripcion
+            %th Acciones
+        %tbody
+          - @purchaseOrders.each do |purchase|
+            %tr
+              %td 
+                = purchase.id.to_s.rjust(5, '0')
+              - case purchase.state
+                - when 'pre_issued'
+                  %td
+                    %span.label.label-primary
+                      = translate_purchase_order_state(purchase.state)
+                - when 'issued'
+                  %td
+                    %span.label.label-warning{:style => "background-color: #FF7A00;"}
+                      = translate_purchase_order_state(purchase.state)
+                - when 'revised'
+                  %td
+                    %span.label.label-warning
+                      = translate_purchase_order_state(purchase.state)
+                - when 'canceled'
+                  %td
+                    %span.label.label-danger
+                      = translate_purchase_order_state(purchase.state)
+                - when 'approved'
+                  %td
+                    %span.label.label-success{:style => "background-color: #25CA25;"}
+                      = translate_purchase_order_state(purchase.state)
+              %td
+                = purchase.date_of_issue.strftime("%d/%m/%Y")
+              %td
+                = purchase.expiration_date.strftime("%d/%m/%Y")
+              %td
+                = purchase.delivery_date.strftime("%d/%m/%Y")
+              %td
+                = purchase.user.first_name + " " + purchase.user.last_name
+              %td
+                = truncate(purchase.description, :length => 60, :omission => '...')
+              %td
+                %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
+                  Ver Detalle
+                - case purchase.state
+                  - when 'pre_issued'
+
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
+                      Editar
+                    - if current_user.has_role? :issuer
+                      %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=issued', 'content', null, null, 'GET')"}
+                        Emitir
+                    - if current_user.has_role? :canceller
+                      %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=canceled', 'content', null, null, 'GET')"}
+                        Anular
+                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
+                      Ver PDF
+
+                  - when 'issued'
+
+                    - if current_user.has_role? :reviser
+                      %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=revised', 'content', null, null, 'GET')"}
+                        Dar visto bueno
+                    - if current_user.has_role? :issuer
+                      %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=observed', 'content', null, null, 'GET')"}
+                        Observar
+                    - if current_user.has_role? :canceller
+                      %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=canceled', 'content', null, null, 'GET')"}
+                        Anular
+                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
+                      Ver PDF
+
+                  - when 'revised'
+
+                    - if current_user.has_role? :issuer
+                      %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=issued', 'content', null, null, 'GET')"}
+                        Volver a Emitir
+                    - if current_user.has_role? :approver
+                      %a.btn.btn-primary.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=approved', 'content', null, null, 'GET')"}
+                        Aprobar
+                    - if current_user.has_role? :canceller
+                      %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=canceled', 'content', null, null, 'GET')"}
+                        Anular
+                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
+                      Ver PDF
+
+                  - when 'canceled'
+
+                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
+                      Ver PDF
+
+                  - when 'approved'
+
+                    %a.btn.btn-info.btn-xs{:href => "##{logistics_purchase_order_path(purchase.id)}?state_change=revised"}
+                      Volver a Visto Bueno
+                    - if current_user.has_role? :canceller
+                      %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=canceled', 'content', null, null, 'GET')"}
+                        Anular
+                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
+                      Ver PDF
+
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+  
+  // PAGE RELATED SCRIPTS
+
+  loadDataTableScripts();
+  function loadDataTableScripts() {
+
+    loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
+
+    function dt_2() {
+      loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
+    }
+
+    function dt_3() {
+      loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
+    }
+
+    function dt_4() {
+      loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
+    }
+
+    function dt_5() {
+      loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
+    }
+
+    function dt_6() {
+      loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
+    }
+
+    function dt_7() {
+      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
+    }
+
+  }
+
+  function runDataTables() {
+
+    /*
+     * BASIC
+     */
+    $('#dt_basic').dataTable({
+      "sPaginationType" : "bootstrap_full"
+    });
+
+    /* END BASIC */
+
+    /* Add the events etc before DataTables hides a column */
+    $("#dt_basic thead input").keyup(function() {
+      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+    });
+
+    $("#dt_basic thead input").each(function(i) {
+      this.initVal = this.value;
+    });
+    $("#dt_basic thead input").focus(function() {
+      if (this.className == "search_init") {
+        this.className = "";
+        this.value = "";
+      }
+    });
+    $("#dt_basic thead input").blur(function(i) {
+      if (this.value == "") {
+        this.className = "search_init";
+        this.value = this.initVal;
+      }
+    });
+  }
