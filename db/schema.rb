@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20140313203418) do
-=======
 ActiveRecord::Schema.define(version: 20140318200845) do
->>>>>>> 8e58e5a3bfc0a1b5f9d7eb4ea178adf2990baa6b
 
   create_table "article_unit_of_measurements", force: true do |t|
     t.integer  "article_id"
