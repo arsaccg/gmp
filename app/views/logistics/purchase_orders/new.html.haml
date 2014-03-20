@@ -41,24 +41,111 @@
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
 
+  $(document).ready(function(){
+
+    $('#search-by-cost-center').click(function(){
+      cost_center_id = $('#cost-center-selected').val();
+      url = "/logistics/purchase_orders/" + cost_center_id + "/show_delivery_order_item_field";
+      data = { authenticity_token: "#{form_authenticity_token}" }
+      load_url_ajax(url, 'items-delivery-orders', data, 'avoid-opacity', 'PUT');
+    });
+
+    $('#backlist-purchase-order').click(function(){
+      load_url_ajax("#{logistics_purchase_orders_path}", 'content', null, null, 'GET');
+    });
+
+  });
+
   // PAGE RELATED SCRIPTS
+  function calculatePriceWithourIgv(element){
+    var amount = parseInt($(element).parent().siblings('.amount').html());
 
-  $('#search-by-cost-center').click(function(){
-    cost_center_id = $('#cost-center-selected').val();
-    url = "/logistics/purchase_orders/" + cost_center_id + "/show_delivery_order_item_field";
-    data = { authenticity_token: "#{form_authenticity_token}" }
-    load_url_ajax(url, 'items-delivery-orders', data, 'avoid-opacity', 'PUT');
-  });
+    var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
 
-  $('#backlist-purchase-order').click(function(){
-    load_url_ajax("#{logistics_purchase_orders_path}", 'content', null, null, 'GET');
-  });
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  /* Comentando una función que puede servir en un futuro...
+  function calculatePriceFromIgv(element){
+    var price_with_igv = parseFloat($(element).val()).toFixed(2);
+    var amount = parseInt($(element).parent().siblings('.amount').html());
+    var price_without_igv = parseFloat(price_with_igv / (1.18*amount)).toFixed(2);
+
+    $(element).parent().siblings('.unit-price').find('input').val(price_without_igv);
+
+    var price_with_amount_unit = parseFloat(amount * price_without_igv).toFixed(2);
+
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_with_amount_unit);
+  }
+  */
+
+  function enableFieldsForIgv(element){
+    if($(element).is(":checked")){
+      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
+      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*1.18).toFixed(2));
+    } else {
+      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
+      $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+    }
+  }
 
   loadScript("#{ asset_path 'plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js', type: :javascript }", runBootstrapWizard);
   
   //Bootstrap Wizard Validations
 
-  function runBootstrapWizard() { }
+  function runBootstrapWizard() {
+
+    var $validator = $("#new_purchase_order").validate({
+
+      rules: {
+        'purchase_order[supplier_id]': {
+          required: true
+        },
+        'purchase_order[money_id]': {
+          required: true
+        },
+        'purchase_order[method_of_payment_id]': {
+          required: true
+        },
+        'purchase_order[date_of_issue]': {
+          required: true
+        },
+        'purchase_order[expiration_date]': {
+          required: true
+        },
+        'purchase_order[delivery_date]': {
+          required: true
+        }
+      },
+      
+      messages: {
+        'purchase_order[supplier_id]': "Porfavor, especifica el proveedor.",
+        'purchase_order[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
+        'purchase_order[method_of_payment_id]': "Porfavor, especifica el método de págo.",
+        'purchase_order[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
+        'purchase_order[expiration_date]': "Porfavor, especifica la fecha de expiración.",
+        'purchase_order[delivery_date]': "Porfavor, especifica la fecha de entrega."
+      },
+      
+      highlight: function (element) {
+        $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+      },
+      unhighlight: function (element) {
+        $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+      },
+      errorElement: 'span',
+      errorClass: 'help-block',
+      errorPlacement: function (error, element) {
+        if (element.parent('.input-group').length) {
+          error.insertAfter(element.parent());
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    });
+
+  }
 
   loadScript("#{ asset_path 'plugin/fuelux/wizard/wizard.js', type: :javascript }", fueluxWizard);
   
@@ -67,16 +154,22 @@
     var wizard = $('.wizard').wizard();
     
     wizard.on('finished', function (e, data) {
-      //$("#fuelux-wizard").submit();
-      //console.log("submitted!");
-      $.smallBox({
-        title: "Congratulations! Your form was submitted",
-        content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-        color: "#5F895F",
-        iconSmall: "fa fa-check bounce animated",
-        timeout: 4000
+
+      $.ajax({
+        type: 'POST',
+        url: "/logistics/purchase_orders",
+        async: false,
+        data: $('#new_purchase_order').serialize(),
+        dataType : 'html',
+        success: function(data) {
+          $('#modalLoading').modal('hide');
+          $('#content').html(data);
+        },
+        error : function(xhr, ajaxOptions, thrownError) {
+          container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+        }
       });
-      
+
     });
 
     wizard.on('change', function(e, data){
@@ -103,7 +196,7 @@
             $.smallBox({
               title: "Ahora completa la información de la Orden de compra.",
               content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-              color: "#c46a69",
+              color: "#5F895F",
               iconSmall: "fa fa-check bounce animated",
               timeout: 4000
             });
@@ -134,6 +227,13 @@
         }
       }
 
+      if(data.step == 2 && data.direction == 'next') {
+        var $valid = $("#new_purchase_order").valid();
+        if (!$valid) {
+          e.preventDefault();
+        }
+      }
+
     });
-    
+
   }

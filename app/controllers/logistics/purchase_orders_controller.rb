@@ -24,6 +24,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def add_items_from_delivery_orders
+    @reg_n = Time.now.to_i
     @delivery_orders_detail = Array.new
     params[:ids_delivery_order].each do |ido|
       @delivery_orders_detail << DeliveryOrderDetail.find(ido)
@@ -32,13 +33,17 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def create
-    purchaseOrder = PurchaseOrder.new(purchase_order_parameters)
-    purchaseOrder.state
-    purchaseOrder.user_id = current_user.id
-    if purchaseOrder.save
+    @purchaseOrder = PurchaseOrder.new(purchase_order_parameters)
+    @purchaseOrder.state = 'pre_issued'
+    @purchaseOrder.user_id = current_user.id
+    if @purchaseOrder.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de compra."
       redirect_to :action => :index
     else
+      @purchaseOrder.errors.messages.each do |attribute, error|
+        puts attribute
+        puts error
+      end
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
       redirect_to :action => :index
     end
@@ -53,8 +58,12 @@ class Logistics::PurchaseOrdersController < ApplicationController
   def destroy
   end
 
+  def purchase_order_pdf
+    
+  end
+
   private
   def purchase_order_parameters
-    params.require(:purchase_order).permit(:date_of_issue, :expiration_date, :delivery_date, :retention, :money_id, :method_of_payment_id, :supplier_id, :cost_center_id, :state, :description, purchase_order_details_attributes: [:id, :puchase_order_id, :delivery_order_detail_id, :unit_price, :igv, :unit_price_igv, :description])
+    params.require(:purchase_order).permit(:exchange_of_rate, :date_of_issue, :expiration_date, :delivery_date, :retention, :money_id, :method_of_payment_id, :supplier_id, :cost_center_id, :state, :description, purchase_order_details_attributes: [:id, :puchase_order_id, :delivery_order_detail_id, :unit_price, :igv, :unit_price_igv, :description])
   end
 end

@@ -227,13 +227,17 @@
               %i.fa.fa-user.fa-4x
               %span Mi Perfil
 
-    #modalLoading.modal.hide.fade{"aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
-      .modal-body
-        .row
-          .col-sm-12
-            %h3 Cargando Contenido...
-            .progress.progress-sm.progress-striped.active
-              .progress-bar.bg-color-darken{role: "progressbar", style: "width: 45%"}
+    %a{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modalLoading"}
+
+    #modalLoading.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
+      .modal-dialog
+        .modal-content
+          .modal-body
+            .row
+              .col-sm-12
+                %h3 Cargando Contenido...
+                .progress.progress-sm.progress-striped.active
+                  .progress-bar.bg-color-darken{role: "progressbar", style: "width: 100%"}
     / END SHORTCUT AREA
     / ==================================================
     /

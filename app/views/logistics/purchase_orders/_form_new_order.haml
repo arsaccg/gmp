@@ -1,4 +1,4 @@
-= simple_form_for([:logistics, @purchaseOrder], html: {class: 'form-horizontal', id: 'fuelux-wizard', autocomplete: 'off' }) do |f|
+= simple_form_for([:logistics, @purchaseOrder], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
   #step1.step-pane.active
     %h3
       %strong Paso 1
@@ -11,7 +11,7 @@
             .smart-form
               %section
                 %label.select
-                  %select{ 'name' => 'cost_center_id', 'id' => 'cost-center-selected' }
+                  %select{ 'name' => 'purchase_order[cost_center_id]', 'id' => 'cost-center-selected' }
                     - @cost_center.each do |cc|
                       %option{'value' => "#{cc.id}"}= cc.name
                   %i
@@ -54,7 +54,7 @@
           %label.col-md-2.control-label Tipo de cambio
           .col-md-10
             .input-group
-              = text_field(:exchange_rate, :value, class: "form-control")
+              = text_field(:purchase_order, :exchange_of_rate, class: "form-control")
               %span.input-group-addon
                 %i.fa.fa-warning
         .form-group
@@ -111,17 +111,24 @@
               %span.input-group-addon
                 %i.fa.fa-align-justify
     %fieldset
-      %table(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-delivery-orders" aria-describedby="data-table_info")
+      %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-delivery-orders" aria-describedby="data-table_info")
         %thead
           %tr
             %th Codigo
             %th Descripción
-            %th Unidad
-            %th Cantidad
-            %th Precio Unitario
-            %th Total antes de IGV
-            %th ¿Precio con IGV?
-            %th Total después de IGV
+            %th{'style' => 'width: 4%;'}
+              Unidad
+            %th{'style' => 'width: 5%;'}
+              Cantidad
+            %th{'style' => 'width: 4%;'}
+              Precio Unitario
+            %th{'style' => 'width: 6%;'}
+              Total antes de IGV
+            %th{'style' => 'width: 5%;'}
+              ¿Aplica IGV?
+            %th{'style' => 'width: 8%;'}
+              Total después de IGV
+            %th Descripción
         %tbody(id="order_delivery_items_table")
   #step3.step-pane
     %h3
@@ -134,6 +141,9 @@
       Felicidades!
       %br/
       %small Presiona FINALIZAR para terminar con la Orden de Compra.
+      %button.btn.btn-primary#finish-purchase-order{'type' => 'button'}
+        %i.fa.fa-certificate
+          FINALIZAR
     %br/
     %br/
     %br/
