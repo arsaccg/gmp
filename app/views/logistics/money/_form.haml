@@ -8,22 +8,25 @@
       %fieldset
         .row
           %section.col.col-sm-12
-            %label.label Nombre
+            %label.label
+              = t('activerecord.attributes.money.name')
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-home
-              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+              = f.input :name, placeholder: t('activerecord.attributes.money.name'), input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-sm-5
-            %label.label Símbolo
+            %label.label
+              = t('activerecord.attributes.money.symbol')
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-sort-alpha-asc
-              = f.input :symbol, placeholder: "Abreviado", input_html: { class: 'form-control' }, label: false
+              = f.input :symbol, placeholder: t('activerecord.attributes.money.symbol'), input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-sm-5
-            %label.label Tipo de Cambio
+            %label.label
+              = t('activerecord.attributes.money.exchange_rate')
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-money
-              = f.input :exchange_rate, placeholder: "Tipo de Cambio", input_html: { class: 'form-control' }, label: false
+              = f.input :exchange_rate, placeholder: t('activerecord.attributes.money.exchange_rate'), input_html: { class: 'form-control' }, label: false
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -45,30 +48,6 @@
     $(form['selector']).ajaxForm({
       beforeSubmit: function() {
         $(form['selector']).validate({
-          // Rules for form validation
-          rules : {
-            'supplier[ruc]' : {
-              required : true,
-              minlength : 11,
-              maxlength : 11
-            },
-            'supplier[name]' : {
-              required : true,
-            }
-          },
-
-          // Messages for form validation
-          messages : {
-            'supplier[ruc]' : {
-              required : 'Por favor, ingresar el RUC',
-              minlength : "Como mínimo debe tener 11 dígitos.",
-              maxlength : "Como máximo debe tener 11 dígitos.",
-            },
-            'supplier[name]' : {
-              required : 'Por favor, ingresar el nombre del proveedor.'
-            }
-          },
-
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
@@ -77,7 +56,7 @@
         // Remove all Help-inLine
         $(".help-inline").remove();
         // Client Valid
-        return $(form['selector']).valid();
+        //return $(form['selector']).valid();
       },
       target: '#content',
       success: function (data){

@@ -19,5 +19,11 @@ module ArsacLogistica
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    # tell the I18n library where to find your translations
+    I18n.load_path += Dir[Rails.root.join('lib', 'locale', '*.{rb,yml}')]
+     
+    # set default locale to something other than :en
+    I18n.default_locale = :en
   end
 end

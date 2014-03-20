@@ -20,4 +20,24 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  #hello: "Hello world"
+  activerecord:
+    models: 
+      money: "Money"
+    attributes:
+      money:
+        name: "Nombre"
+        symbol: "Símbolo"
+        exchange_rate: "Tipo de cambio"
+    errors:
+      models:
+        money:
+          attributes:
+            name:
+              blank: "(*) requerido"
+              taken: "El <b>%{attribute}</b> debe ser único."
+            symbol:
+              blank: "(*) requerido"
+              taken: "El <b>%{attribute}</b> debe ser único."
+            exchange_rate:
+              blank: "(*) requerido"
