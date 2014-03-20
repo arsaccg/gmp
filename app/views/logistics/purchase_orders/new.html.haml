@@ -97,7 +97,7 @@
           });
 
           if(status){
-            data = { ids_delivery_order: data_delivery_order };
+            data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
             load_items_delivery_order_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'order_delivery_items_table', data);
 
             $.smallBox({

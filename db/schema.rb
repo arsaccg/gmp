@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140318200845) do
+ActiveRecord::Schema.define(version: 20140319162612) do
 
   create_table "article_unit_of_measurements", force: true do |t|
     t.integer  "article_id"
@@ -85,6 +85,17 @@ ActiveRecord::Schema.define(version: 20140318200845) do
     t.integer  "cost_center_id"
   end
 
+  create_table "method_of_payments", force: true do |t|
+    t.string "name"
+    t.string "symbol"
+  end
+
+  create_table "money", force: true do |t|
+    t.string  "name"
+    t.string  "symbol"
+    t.decimal "exchange_rate", precision: 10, scale: 0
+  end
+
   create_table "phases", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -101,6 +112,7 @@ ActiveRecord::Schema.define(version: 20140318200845) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "purchase_order_id"
   end
 
   create_table "purchase_orders", force: true do |t|
@@ -134,12 +146,27 @@ ActiveRecord::Schema.define(version: 20140318200845) do
     t.integer  "user_id"
   end
 
+  create_table "state_per_order_purchases", force: true do |t|
+    t.string   "state"
+    t.integer  "purchase_order_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "subcategories", force: true do |t|
     t.string   "code"
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "category_id"
+  end
+
+  create_table "suppliers", force: true do |t|
+    t.string "ruc"
+    t.string "name"
+    t.string "address"
+    t.string "phone"
   end
 
   create_table "type_of_articles", force: true do |t|
