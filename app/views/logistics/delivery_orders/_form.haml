@@ -15,6 +15,13 @@
                 %label.col-md-3{for: "id"} Código
                 .col-md-9.smart-form= f.input :id, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.id.to_s.rjust(5, '0')}, label: false, readonly: true
             .form-group.col-md-4
+              %label.col-md-3{for: "cost_center_id"} Centro de Costo
+              .col-md-9.smart-form
+                %select.form-control#delivery_order_cost_center_id{:name =>"delivery_order[cost_center_id]"}
+                  - @costcenters.each do |unit|
+                    %option{:value => "#{unit.id}", :rel => "#{unit.id}", :selected => @deliveryOrder.cost_center_id == unit.id}
+                      = unit.name
+            .form-group.col-md-4
               %label.col-md-3{for: "state"} Estado
               .col-md-9.smart-form
                 = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true

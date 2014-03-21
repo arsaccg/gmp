@@ -6,6 +6,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @sector = Sector.first
     @costcenter = CostCenter.first
     @centerOfAttention = CenterOfAttention.first
+    @costcenters = CostCenter.all
     render layout: false
   end
 
@@ -46,6 +47,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @sectors = Sector.all
     @phases = Phase.where("category LIKE 'phase'")
     @centerOfAttentions = CenterOfAttention.all
+    @costcenters = CostCenter.all
     @action = 'edit'
     render layout: false
   end
@@ -172,6 +174,6 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   private
   def delivery_order_parameters
-    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount, :scheduled_date, :center_of_attention_id])
+    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, :cost_center_id, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount, :scheduled_date, :center_of_attention_id])
   end
 end

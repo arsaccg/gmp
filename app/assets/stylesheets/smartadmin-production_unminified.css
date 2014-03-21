@@ -9374,6 +9374,30 @@ body.fd-slider-drag-horizontal * {
 .ui-state-error .ui-icon, .ui-state-error-text .ui-icon {
 	background-image: url("@{base-url}/jqueryui/ui-icons_f6cf3b_256x240.png");
 } */
+.ui-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.ui-pre_issued {
+  background-image: url("ui-icons_pre-issued.png");
+}
+
+.ui-issued {
+  background-image: url("ui-icons_issued.png");
+}
+
+.ui-revised {
+  background-image: url("ui-icons_revised.png");
+}
+
+.ui-canceled {
+  background-image: url("ui-icons_canceled.png");
+}
+
+.ui-approved {
+  background-image: url("ui-icons_approved.png");
+}
 /* positioning */
 .ui-icon-carat-1-n {
   background-position: 0 0;
