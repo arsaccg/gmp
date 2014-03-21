@@ -126,7 +126,7 @@
                     - @purchaseOrder.purchase_order_details.each do |pod|
                       %tr
                         %td(style="display:none")
-                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + pod.created_at.to_time.to_i.to_s + '][delivery_order_detail_id]', pod.delivery_order_detail.id.to_i
+                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][delivery_order_detail_id]', pod.delivery_order_detail.id.to_i
                         %td=pod.delivery_order_detail.article.code
                         %td=pod.delivery_order_detail.article.description
                         %td.unit-of-measurement
@@ -134,22 +134,23 @@
                         %td.amount
                           =pod.delivery_order_detail.amount
                         %td.unit-price
-                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + pod.created_at.to_time.to_i.to_s + '][unit_price]', pod.unit_price, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);"
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', pod.unit_price, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);"
                         %td.price-without-igv
                           - @unit_price_without_igv = pod.delivery_order_detail.amount * pod.unit_price
                           = text_field_tag 'unit_price_before_igv', "#{@unit_price_without_igv}", class: "form-control unit-price-before-igv", :readonly => true
                         %td.check-igv
                           %label.checkbox
                             - if pod.igv != nil
-                              = check_box_tag 'purchase_order[purchase_order_details_attributes][' + pod.created_at.to_time.to_i.to_s + '][igv]', nil, true, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
+                              = check_box_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', nil, true, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
                               %i
                             - else
-                              = check_box_tag 'purchase_order[purchase_order_details_attributes][' + pod.created_at.to_time.to_i.to_s + '][igv]', nil, nil, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
+                              = check_box_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', nil, nil, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
                               %i
                         %td.price-with-igv
-                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + pod.created_at.to_time.to_i.to_s + '][unit_price_igv]', pod.unit_price_igv , class: "form-control unit-price-igv", :readonly => true
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv , class: "form-control unit-price-igv", :readonly => true
                         %td
-                          = text_area_tag 'purchase_order[purchase_order_details_attributes][' + pod.created_at.to_time.to_i.to_s + '][description]', pod.description, class: "form-control description"
+                          = text_area_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][description]', pod.description, class: "form-control description"
+                      - @reg_n += 1
         .form-actions{:style => "margin-top: 0;"}
           .row
             .col-md-12
