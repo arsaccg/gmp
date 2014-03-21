@@ -38,6 +38,7 @@
                       = @deliveryOrder.id.to_s.rjust(5, '0')
                     %td
                       = translate_delivery_order_state(@deliveryOrder.state)
+                      %i{:class => "ui-#{@deliveryOrder.state} ui-icon ui-icon-flag"}
                     %td
                       = @deliveryOrder.date_of_issue.strftime("%d/%m/%Y")
                     %td
