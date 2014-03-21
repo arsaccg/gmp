@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140311194742) do
+ActiveRecord::Schema.define(version: 20140313203418) do
 
   create_table "article_unit_of_measurements", force: true do |t|
     t.integer  "article_id"
@@ -42,6 +42,14 @@ ActiveRecord::Schema.define(version: 20140311194742) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "abbreviation"
+  end
+
+  create_table "companies", force: true do |t|
+    t.string   "name"
+    t.string   "ruc"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "cost_centers", force: true do |t|
@@ -49,6 +57,7 @@ ActiveRecord::Schema.define(version: 20140311194742) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "code"
+    t.integer  "company_id"
   end
 
   create_table "delivery_order_details", force: true do |t|
@@ -73,6 +82,7 @@ ActiveRecord::Schema.define(version: 20140311194742) do
     t.date     "date_of_issue"
     t.date     "scheduled"
     t.text     "description"
+    t.integer  "cost_center_id"
   end
 
   create_table "phases", force: true do |t|
@@ -143,6 +153,7 @@ ActiveRecord::Schema.define(version: 20140311194742) do
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
+    t.integer  "roles_mask",             default: 1
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
