@@ -1,0 +1,68 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Moneda
+  .widget-body
+    = simple_form_for([:logistics, @moneys], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row
+          %section.col.col-sm-12
+            %label.label
+              = t('activerecord.attributes.money.name')
+            %label.input{for: "text-field"}
+              %i.icon-append.fa.fa-home
+              = f.input :name, placeholder: t('activerecord.attributes.money.name'), input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-sm-5
+            %label.label
+              = t('activerecord.attributes.money.symbol')
+            %label.input{for: "text-field"}
+              %i.icon-append.fa.fa-sort-alpha-asc
+              = f.input :symbol, placeholder: t('activerecord.attributes.money.symbol'), input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-sm-5
+            %label.label
+              = t('activerecord.attributes.money.exchange_rate')
+            %label.input{for: "text-field"}
+              %i.icon-append.fa.fa-money
+              = f.input :exchange_rate, placeholder: t('activerecord.attributes.money.exchange_rate'), input_html: { class: 'form-control' }, label: false
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    $("#money_name").focus();
+    
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }
+    else{
+      submit_validate($('#new_money'));
+    }
+  });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        //return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }

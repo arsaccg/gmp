@@ -2,6 +2,7 @@ class DeliveryOrder < ActiveRecord::Base
      
     has_many :state_per_order_details
     has_many :delivery_order_details
+    belongs_to :cost_center
     belongs_to :user
 
     accepts_nested_attributes_for :delivery_order_details

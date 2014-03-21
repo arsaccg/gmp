@@ -1,0 +1,94 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Proveedor
+  .widget-body
+    = simple_form_for([:logistics, @suppliers], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row
+          %section.col.col-4
+            %label.label Ruc
+            %label.input{for: "ruc"}
+              %i.icon-append.fa.fa-superscript
+              = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
+          %section.col.col-8
+            %label.label Nombre
+            %label.input{for: "text-field"}
+              %i.icon-append.fa.fa-user
+              = f.input :name, placeholder: "Nombre del provedor", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-sm-12
+            %label.label Dirección
+            %label.input{for: "text-field"}
+              %i.icon-append.fa.fa-terminal
+              = f.input :address, placeholder: "Dirección", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-sm-12
+            %label.label Teléfonos
+            %label.input{for: "text-field"}
+              %i.icon-append.fa.fa-phone
+              = f.input :phone, placeholder: "Teléfonos", input_html: { class: 'form-control' }, label: false
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    $("#supplier_ruc").focus();
+    
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }
+    else{
+      submit_validate($('#new_supplier'));
+    }
+  });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'supplier[ruc]' : {
+              required : true,
+              minlength : 11,
+              maxlength : 11
+            },
+            'supplier[name]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'supplier[ruc]' : {
+              required : 'Por favor, ingresar el RUC',
+              minlength : "Como mínimo debe tener 11 dígitos.",
+              maxlength : "Como máximo debe tener 11 dígitos.",
+            },
+            'supplier[name]' : {
+              required : 'Por favor, ingresar el nombre del proveedor.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }

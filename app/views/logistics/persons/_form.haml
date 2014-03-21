@@ -40,7 +40,8 @@
           %section.col.col-10
             %label.label Rol de Usuario
             %label.select
-              %select{id: "role-user", name: "role"}
+              %select.select2#role-user{:name => "role[]", :style => "width:100%;;padding: 0;border: none;", :multiple => true}
+                %option{value: "issuer"} Emite las ordenes de suministro
                 %option{value: "approver"} Aprueba ordenes de Suministro
                 %option{value: "reviser"} Dar visto bueno a las ordenes de suministro
                 %option{value: "canceller"} Anular ordenes suministro
@@ -52,8 +53,8 @@
 
 :javascript
   $(document).ready(function () {
-    $("#user_name").focus();
-    
+    $("#role-user").focus();
+    $('#role-user').select2();
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{

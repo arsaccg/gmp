@@ -19,6 +19,7 @@
     
     / SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables
     = stylesheet_link_tag "smartadmin-production", media: "screen", rel: "stylesheet", type: "text/css"
+    = stylesheet_link_tag "smartadmin-production_unminified", media: "screen", rel: "stylesheet", type: "text/css"
     = stylesheet_link_tag "smartadmin-skins", media: "screen", rel: "stylesheet", type: "text/css"
     /
       SmartAdmin RTL Support is under construction
@@ -131,11 +132,11 @@
                 %li
                   %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
                     %i.fa.fa-lg.fa-fw.fa-gears
-                    %span.menu-item-parent Gestión de Companias
+                    %span.menu-item-parent Companias
                 %li
                   %a{href: "#{logistics_persons_path}", title: "Gestión de Usuarios"}
                     %i.fa.fa-lg.fa-fw.fa-group
-                    %span.menu-item-parent Gestión de Usuarios
+                    %span.menu-item-parent Usuarios
               - else
                 %li
                   %a{href: '#'}
@@ -180,11 +181,28 @@
                       %a{href: "#{import_logistics_articles_path}", title: "Importar Artículos"}
                         %i.fa.fa-lg.fa-fw.fa-tasks
                         %span.menu-item-parent Import Articulos
+                    %li
+                      %a{href: "#{logistics_suppliers_path}", title: "Proveedores"}
+                        %i.fa.fa-lg.fa-fw.fa-home
+                        %span.menu-item-parent Proveedores
+                    %li
+                      %a{href: "#{logistics_method_of_payments_path}", title: "Formas de Pago"}
+                        %i.fa.fa-lg.fa-fw.fa-dot-circle-o
+                        %span.menu-item-parent Formas de Pago
+                    %li
+                      %a{href: "#{logistics_money_index_path}", title: "Tipo de Cambio"}
+                        %i.fa.fa-lg.fa-fw.fa-tasks
+                        %span.menu-item-parent Tipo de Cambio
               %li
                 %a{href: "#{logistics_delivery_orders_path}", title: "Ordenes de Suministro"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
-                  %span.menu-item-parent{'style' => 'width: 100px;display: inline-table;'}
+                  %span.menu-item-parent
                     Ordenes de Suministro
+              %li
+                %a{href: "#{logistics_purchase_orders_path}", title: "Ordenes de Compra"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Ordenes de Compra
               %li
                 %a{href: "#{logistics_person_path(current_user.id)}", title: "Usuario"}
                   %i.fa.fa-lg.fa-fw.fa-user
@@ -209,6 +227,18 @@
             %span.iconbox
               %i.fa.fa-user.fa-4x
               %span Mi Perfil
+
+    %a{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modalLoading"}
+
+    #modalLoading.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
+      .modal-dialog
+        .modal-content
+          .modal-body
+            .row
+              .col-sm-12
+                %h3 Cargando Contenido...
+                .progress.progress-sm.progress-striped.active
+                  .progress-bar.bg-color-darken{role: "progressbar", style: "width: 100%"}
     / END SHORTCUT AREA
     / ==================================================
     /

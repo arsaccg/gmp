@@ -5,7 +5,7 @@ ArsacLogistica::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'main#index'
+  root 'logistics/main#index'
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
@@ -68,7 +68,10 @@ ArsacLogistica::Application.routes.draw do
     resources :phases do
       collection do
         get 'addsub'
-        get 'editsub/:id', :to => "phases#editsub"
+        
+      end
+      member do
+        get 'editsub' 
       end
     end
     resources :subphases
@@ -88,12 +91,25 @@ ArsacLogistica::Application.routes.draw do
         post 'delivery_order_pdf'
       end
     end
+    resources :purchase_orders do
+      collection do
+        post 'add_items_from_delivery_orders'
+      end
+      member do
+        put 'show_delivery_order_item_field'
+        get 'purchase_order_pdf'
+        post 'purchase_order_pdf'
+      end
+    end
     resources :subcategories do
       collection do
         post 'get_subcategory_form_category'
       end
     end
     resources :categories    
+    resources :suppliers
+    resources :method_of_payments
+    resources :money
     
   end
 

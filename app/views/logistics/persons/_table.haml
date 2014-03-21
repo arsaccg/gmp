@@ -37,6 +37,7 @@
                 %th Apellidos
                 %th Email
                 %th Rol del Usuario
+                %th Acciones
             %tbody
               - @persons.each do |person|
                 %tr
@@ -49,7 +50,12 @@
                   %td
                     = person.email
                   %td
-                    = person.role_symbols[0]
+                    = person.role_symbols
+                  %td
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_person_path(person.id)}', 'content', null, null, 'GET')"}
+                      Editar
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el usuario ' + "#{person.first_name + ' ' + person.surname}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_person_path(person.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_persons_path}')"}}
+                      Eliminar
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
