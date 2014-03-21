@@ -12,6 +12,7 @@
           %tr
             %th Código
             %th Estado
+            %th Proveedor
             %th Fecha de Emisión
             %th Fecha de Expiración
             %th Fecha de Entrega
@@ -45,6 +46,8 @@
                     %span.label.label-success{:style => "background-color: #25CA25;"}
                       = translate_purchase_order_state(purchase.state)
               %td
+                = purchase.supplier.name
+              %td
                 = purchase.date_of_issue.strftime("%d/%m/%Y")
               %td
                 = purchase.expiration_date.strftime("%d/%m/%Y")
@@ -55,8 +58,6 @@
               %td
                 = truncate(purchase.description, :length => 60, :omission => '...')
               %td
-                %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
-                  Ver Detalle
                 - case purchase.state
                   - when 'pre_issued'
 
@@ -72,7 +73,8 @@
                       Ver PDF
 
                   - when 'issued'
-
+                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
+                      Ver Detalle
                     - if current_user.has_role? :reviser
                       %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=revised', 'content', null, null, 'GET')"}
                         Dar visto bueno
@@ -86,7 +88,8 @@
                       Ver PDF
 
                   - when 'revised'
-
+                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
+                      Ver Detalle
                     - if current_user.has_role? :issuer
                       %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=issued', 'content', null, null, 'GET')"}
                         Volver a Emitir
@@ -100,12 +103,14 @@
                       Ver PDF
 
                   - when 'canceled'
-
+                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
+                      Ver Detalle
                     %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
                       Ver PDF
 
                   - when 'approved'
-
+                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
+                      Ver Detalle
                     %a.btn.btn-info.btn-xs{:href => "##{logistics_purchase_order_path(purchase.id)}?state_change=revised"}
                       Volver a Visto Bueno
                     - if current_user.has_role? :canceller

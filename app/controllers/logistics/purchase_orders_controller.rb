@@ -6,6 +6,14 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def show
+    @purchaseOrder = PurchaseOrder.find(params[:id])
+    if params[:state_change] != nil
+      @state_change = params[:state_change]
+    else
+      @purchasePerState = @purchaseOrder.state_per_order_purchases
+    end
+    @purchaseOrderDetails = @purchaseOrder.purchase_order_details
+    render layout: false
   end
 
   def new
@@ -50,16 +58,118 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def edit
+    @reg_n = Time.now.to_i
+    @purchaseOrder = PurchaseOrder.find(params[:id])
+    @suppliers = Supplier.all
+    @cost_center = CostCenter.all
+    @moneys = Money.all
+    @methodOfPayments = MethodOfPayment.all
+    @action = 'edit'
+    render layout: false
   end
 
   def update
+    purchaseOrder = PurchaseOrder.find(params[:id])
+    purchaseOrder.update_attributes(purchase_order_parameters)
+    flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index
   end
 
+  # Este es el cambio de estado
   def destroy
+    @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
+    @purchaseOrder.cancel
+    stateOrderDetail = StatePerOrderPurchase.new
+    stateOrderDetail.state = @purchaseOrder.human_state_name
+    stateOrderDetail.purchase_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
+    #redirect_to :action => :index
+    render :json => @purchaseOrder
+  end
+
+  def goissue
+    @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
+    @purchaseOrder.issue
+    stateOrderDetail = StatePerOrderPurchase.new
+    stateOrderDetail.state = @purchaseOrder.human_state_name
+    stateOrderDetail.purchase_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
+    redirect_to :action => :index
+  end
+
+  def gorevise
+    @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
+    @purchaseOrder.revise
+    stateOrderDetail = StatePerOrderPurchase.new
+    stateOrderDetail.state = @purchaseOrder.human_state_name
+    stateOrderDetail.purchase_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
+    redirect_to :action => :index
+  end
+
+  def goapprove
+    @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
+    @purchaseOrder.approve
+    stateOrderDetail = StatePerOrderPurchase.new
+    stateOrderDetail.state = @purchaseOrder.human_state_name
+    stateOrderDetail.purchase_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
+    redirect_to :action => :index
+  end
+
+  def goobserve
+    @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
+    @purchaseOrder.observe
+    stateOrderDetail = StatePerOrderPurchase.new
+    stateOrderDetail.state = @purchaseOrder.human_state_name
+    stateOrderDetail.purchase_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
+    redirect_to :action => :index
   end
 
   def purchase_order_pdf
-    
+    @purchaseOrder = PurchaseOrder.find(params[:id])
+    @purchaseOrderDetails = @purchaseOrder.purchase_order_details
+
+    if @purchaseOrder.state == 'pre_issued'
+      @state_per_order_purchase_approved = @purchaseOrder.state_per_order_purchases.where("state LIKE 'pre_issued'").last
+      @state_per_order_purchase_revised = @purchaseOrder.state_per_order_purchases.where("state LIKE 'pre_issued'").last
+      @first_state = "Pre-Emitido"
+      @second_state = "Pre-Emitido"
+    end
+
+    if @purchaseOrder.state == 'issued'
+      @state_per_order_purchase_approved = @purchaseOrder.state_per_order_purchases.where("state LIKE 'issued'").last
+      @state_per_order_purchase_revised = @purchaseOrder.state_per_order_purchases.where("state LIKE 'pre_issued'").last
+      @first_state = "Emitido"
+      @second_state = "Pre-Emitido"
+    end
+
+    if @purchaseOrder.state == 'revised'
+      @state_per_order_purchase_approved = @purchaseOrder.state_per_order_purchases.where("state LIKE 'revised'").last
+      @state_per_order_purchase_revised = @purchaseOrder.state_per_order_purchases.where("state LIKE 'issued'").last
+      @first_state = "Revisado"
+      @second_state = "Emitido"
+    end
+
+    if @purchaseOrder.state == 'approved'
+      @state_per_order_purchase_approved = @purchaseOrder.state_per_order_purchases.where("state LIKE 'approved'").last
+      @state_per_order_purchase_revised = @purchaseOrder.state_per_order_purchases.where("state LIKE 'revised'").last
+      @first_state = "Aprobado"
+      @second_state = "Revisado"
+    end
+
+    if @purchaseOrder.state == 'canceled'
+      @state_per_order_purchase_approved = @purchaseOrder.state_per_order_purchases.where("state LIKE 'canceled'").last
+      @state_per_order_purchase_revised = @purchaseOrder.state_per_order_purchases.where("state LIKE 'canceled'").last
+      @first_state = "Cancelado"
+      @second_state = "Cancelado"
+    end
   end
 
   private

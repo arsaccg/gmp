@@ -97,6 +97,10 @@ ArsacLogistica::Application.routes.draw do
       end
       member do
         put 'show_delivery_order_item_field'
+        get 'gorevise'
+        get 'goapprove'
+        get 'goissue'
+        get 'goobserve'
         get 'purchase_order_pdf'
         post 'purchase_order_pdf'
       end

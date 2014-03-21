@@ -20,3 +20,4 @@
       = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil , class: "form-control unit-price-igv", :readonly => true
     %td
       = text_area_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
+  - @reg_n += 1

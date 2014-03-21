@@ -1,6 +1,6 @@
 # enconding: urf-8
 class Money < ActiveRecord::Base
-
+	has_many :purchase_order
 	# Validaciones
 	include ActiveModel::Validations
 	#validates :code, :uniqueness => { :scope => :name, :message => "El código debe ser único" }
