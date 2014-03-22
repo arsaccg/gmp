@@ -113,8 +113,14 @@ ArsacLogistica::Application.routes.draw do
     resources :categories    
     resources :suppliers
     resources :method_of_payments
-    resources :money
-    
+    resources :money do
+      collection do
+        get 'add_exchange_of_rate'
+        
+      end
+    end
+    resources :exchange_of_rates
+
   end
 
 end

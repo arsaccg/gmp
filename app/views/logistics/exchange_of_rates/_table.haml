@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Monedas
+    %h2 Lista de Tipo de Cambio
   / widget div
   %div
     / widget edit box
@@ -32,22 +32,20 @@
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
-                %th Nombre
-                %th Abreviado
+                %th Fecha
+                %th Moneda
                 %th Tipo de Cambio
-                %th Fecha del T/C
                 %th Acciones
             %tbody
-              - @moneys.each do |unit|
+              - @ExchangeOfRates.each do |unit|
                 %tr
-                  %td= unit.name
-                  %td= unit.symbol
-                  %td= unit.exchange_of_rate.select('value as x').order('day desc').first.x
-                  %td= unit.exchange_of_rate.select('day as x').order('day desc').first.x.strftime("%d/%m/%Y")
+                  %td= unit.day.strftime("%d/%m/%Y")
+                  %td= unit.money.name
+                  %td= unit.value
                   %td
-                    %button.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_money_path(unit.id)}', 'content', null, null, 'GET')"}
+                    %button.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_exchange_of_rate_path(unit.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_money_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_money_index_path}')"}}
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.value}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_exchange_of_rate_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_exchange_of_rates_path}')"}}
                       Eliminar
 
 :javascript
