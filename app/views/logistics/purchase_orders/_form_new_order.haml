@@ -46,7 +46,7 @@
             .input-group
               %select.form-control#category-select{:name =>"purchase_order[money_id]"}
                 - @moneys.each do |money|
-                  %option{:value => "#{money.id}", :rel => "#{money.exchange_rate}"}
+                  %option{:value => "#{money.id}"}
                     = money.name
               %span.input-group-addon
                 %i.fa.fa-money
