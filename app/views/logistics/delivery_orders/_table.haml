@@ -11,7 +11,8 @@
         %thead
           %tr
             %th Código
-            %th Estado
+            %th{'style' => 'width:110px !important;'}
+              Estado
             %th Fecha de Emisión
             %th Fecha Programada
             %th Responsable
@@ -25,22 +26,27 @@
               - case delivery.state
                 - when 'pre_issued'
                   %td
+                    %i.fa.fa-flag{:style => "color: #3276b1;"}
                     %span.label.label-primary
                       = translate_delivery_order_state(delivery.state)
                 - when 'issued'
                   %td
+                    %i.fa.fa-flag{:style => "color: #FF7A00;"}
                     %span.label.label-warning{:style => "background-color: #FF7A00;"}
                       = translate_delivery_order_state(delivery.state)
                 - when 'revised'
                   %td
+                    %i.fa.fa-flag{:style => "color: #c79121;"}
                     %span.label.label-warning
                       = translate_delivery_order_state(delivery.state)
                 - when 'canceled'
                   %td
+                    %i.fa.fa-flag{:style => "color: #a90329;"}
                     %span.label.label-danger
                       = translate_delivery_order_state(delivery.state)
                 - when 'approved'
                   %td
+                    %i.fa.fa-flag{:style => "color: #25CA25;"}
                     %span.label.label-success{:style => "background-color: #25CA25;"}
                       = translate_delivery_order_state(delivery.state)
               %td

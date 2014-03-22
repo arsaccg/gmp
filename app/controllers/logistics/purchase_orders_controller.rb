@@ -135,10 +135,25 @@ class Logistics::PurchaseOrdersController < ApplicationController
   def purchase_order_pdf
     @purchaseOrder = PurchaseOrder.find(params[:id])
     @purchaseOrderDetails = @purchaseOrder.purchase_order_details
+    aux = 0
+    @deliveryOrders = Array.new
+    @purchaseOrder.purchase_order_details.each do |pod|
+      current_id = pod.delivery_order_detail.delivery_order.id
+      if aux != current_id
+        aux = current_id
+        @deliveryOrders << current_id.to_s.rjust(5, '0')
+      end
+    end
 
     if @purchaseOrder.state == 'pre_issued'
       @state_per_order_purchase_approved = @purchaseOrder.state_per_order_purchases.where("state LIKE 'pre_issued'").last
       @state_per_order_purchase_revised = @purchaseOrder.state_per_order_purchases.where("state LIKE 'pre_issued'").last
+
+      if @state_per_order_purchase_approved == nil && @state_per_order_purchase_revised == nil
+        @state_per_order_purchase_approved = @purchaseOrder
+        @state_per_order_purchase_revised = @purchaseOrder
+      end
+
       @first_state = "Pre-Emitido"
       @second_state = "Pre-Emitido"
     end
