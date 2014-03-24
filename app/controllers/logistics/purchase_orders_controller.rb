@@ -145,6 +145,15 @@ class Logistics::PurchaseOrdersController < ApplicationController
       end
     end
 
+    # Numerics/Text values for footer
+    @total = 0
+    @igv = 0
+    @purchaseOrderDetails.each do |pod|
+      @total += pod.delivery_order_detail.amount*pod.unit_price
+    end
+    @igv = @total*0.18
+    @total_neto = @total - @igv
+
     if @purchaseOrder.state == 'pre_issued'
       @state_per_order_purchase_approved = @purchaseOrder.state_per_order_purchases.where("state LIKE 'pre_issued'").last
       @state_per_order_purchase_revised = @purchaseOrder.state_per_order_purchases.where("state LIKE 'pre_issued'").last
@@ -185,6 +194,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
       @first_state = "Cancelado"
       @second_state = "Cancelado"
     end
+
+    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape }
+
   end
 
   private
