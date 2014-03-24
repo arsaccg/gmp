@@ -41,14 +41,23 @@
   %i.fa.fa-arrow-left>
   Retornar al listado de Ordenes de Suministro
 
+#modalDeliveryItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
+  .modal-dialog
+    .modal-content
+      .modal-body#modalDeliveryItemsContent
+
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
 
   $(document).ready(function(){
 
-    $('#search-by-cost-center').click(function(){
-      
+    $('#btn-add-more-items-do').click(function(){
+      load_items_delivery_order_ajax('#{more_items_from_delivery_orders_logistics_purchase_orders_path}', 'modalDeliveryItemsContent');
+      $('#modalDeliveryItems').modal('toggle', {
+        keyboard: false,
+        backdrop: 'static'
+      });
     });
 
     $('#backlist-purchase-order').click(function(){

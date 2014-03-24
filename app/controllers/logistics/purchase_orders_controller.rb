@@ -40,6 +40,13 @@ class Logistics::PurchaseOrdersController < ApplicationController
     render(partial: 'table_order_delivery_items', :layout => false)
   end
 
+  def more_items_from_delivery_orders
+    @reg_n = Time.now.to_i
+    delivery_ids = params[:ids_delivery_order]
+    @delivery_orders_detail = CostCenter.find(params[:cost_center_id]).delivery_orders.where("state LIKE 'approved' AND NOT IN (#{delivery_ids})").delivery_order_details
+    render(partial: 'modal_more_items_delivery', :layout => false)
+  end
+
   def create
     @purchaseOrder = PurchaseOrder.new(purchase_order_parameters)
     @purchaseOrder.state = 'pre_issued'
