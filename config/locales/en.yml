@@ -24,11 +24,16 @@ en:
   activerecord:
     models: 
       money: "Money"
+      exchange_of_rate: "Tipo de Cambio"
     attributes:
       money:
         name: "Nombre"
         symbol: "Símbolo"
         exchange_rate: "Tipo de cambio"
+      exchange_of_rate:
+        day: "Fecha"
+        money_id: "Moneda"
+        value: "Valor de Cambio"
     errors:
       models:
         money:
@@ -40,4 +45,12 @@ en:
               blank: "(*) requerido"
               taken: "El <b>%{attribute}</b> debe ser único."
             exchange_rate:
+              blank: "(*) requerido"
+        exchange_of_rate:
+          attributes:
+            day:
+              blank: "(*) requerido"
+            money_id:
+              blank: "(*) requerido"
+            value:
               blank: "(*) requerido"

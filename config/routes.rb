@@ -97,6 +97,10 @@ ArsacLogistica::Application.routes.draw do
       end
       member do
         put 'show_delivery_order_item_field'
+        get 'gorevise'
+        get 'goapprove'
+        get 'goissue'
+        get 'goobserve'
         get 'purchase_order_pdf'
         post 'purchase_order_pdf'
       end
@@ -109,8 +113,14 @@ ArsacLogistica::Application.routes.draw do
     resources :categories    
     resources :suppliers
     resources :method_of_payments
-    resources :money
-    
+    resources :money do
+      collection do
+        get 'add_exchange_of_rate'
+        
+      end
+    end
+    resources :exchange_of_rates
+
   end
 
 end

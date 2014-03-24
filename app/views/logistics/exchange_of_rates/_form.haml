@@ -2,24 +2,33 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Moneda
+    %h2 Tipo de Cambio
   .widget-body
-    = simple_form_for([:logistics, @moneys], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:logistics, @ExchangeOfRates], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
-        .row
-          %section.col.col-sm-12
-            %label.label
-              = t('activerecord.attributes.money.name')
-            %label.input{for: "text-field"}
-              %i.icon-append.fa.fa-home
-              = f.input :name, placeholder: t('activerecord.attributes.money.name'), input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-sm-5
             %label.label
-              = t('activerecord.attributes.money.symbol')
+              = t('activerecord.attributes.exchange_of_rate.day')
+            %label.input{for: "day"}
+              %i
+              = f.input :day, as: :string, input_html: { class: 'form-control', value: @today, type: 'text' }, label: false, readonly: true
+        .row
+          %section.col.col-sm-5
+            %label.label
+              = t('activerecord.attributes.exchange_of_rate.money_id')
+            %label.input{for: "money_id"}
+              %select.form-control#money_id{:name =>"exchange_of_rate[money_id]"}
+                - @moneys.each do |money|
+                  %option{:value => "#{money.id}", :rel => "#{money.id}", :selected => @ExchangeOfRates.money_id == money.id}
+                    = money.name
+        .row
+          %section.col.col-sm-5
+            %label.label
+              = t('activerecord.attributes.exchange_of_rate.value')
             %label.input{for: "text-field"}
-              %i.icon-append.fa.fa-sort-alpha-asc
-              = f.input :symbol, placeholder: t('activerecord.attributes.money.symbol'), input_html: { class: 'form-control' }, label: false
+              %i.icon-append.fa.fa-money
+              = f.input :value, placeholder: t('activerecord.attributes.exchange_of_rate.value'), input_html: { class: 'form-control' }, label: false
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -27,13 +36,13 @@
 
 :javascript
   $(document).ready(function () {
-    $("#money_name").focus();
+    $("#money_id").focus();
     
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }
     else{
-      submit_validate($('#new_money'));
+      submit_validate($('#new_exchange_of_rate'));
     }
   });
 
