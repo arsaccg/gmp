@@ -25,3 +25,7 @@
 td.unit-of-measurement, td.amount, input.unit-price, input.unit-price-before-igv, input.unit-price-igv { text-align: center; }
 
 form label { text-align: left !important; }
+
+@media screen and (min-width: 768px){
+  #modalDeliveryItems .modal-dialog { width: 1260px; }
+}

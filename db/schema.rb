@@ -102,8 +102,9 @@ ActiveRecord::Schema.define(version: 20140324221610) do
   end
 
   create_table "money", force: true do |t|
-    t.string   "name"
-    t.string   "symbol"
+    t.string  "name"
+    t.string  "symbol"
+    t.decimal "exchange_rate", precision: 10, scale: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -53,7 +53,14 @@
   $(document).ready(function(){
 
     $('#btn-add-more-items-do').click(function(){
-      load_items_delivery_order_ajax('#{more_items_from_delivery_orders_logistics_purchase_orders_path}', 'modalDeliveryItemsContent');
+      var ids_delivery_order = new Array();
+
+      $('#summary-delivery-orders tbody tr td.pod-di input').each(function(index, element){
+        ids_delivery_order[index] = $(this).val();
+      });
+
+      data = { cost_center_id: $.cost_center, authenticity_token: "#{form_authenticity_token}", ids_delivery_order: ids_delivery_order };
+      load_items_delivery_order_ajax('#{more_items_from_delivery_orders_logistics_purchase_orders_path}', 'modalDeliveryItemsContent', data);
       $('#modalDeliveryItems').modal('toggle', {
         keyboard: false,
         backdrop: 'static'
@@ -75,6 +82,26 @@
     $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
     $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
   }
+
+  function add_more_items(){
+    var data_delivery_order = new Array();
+    status = false;
+    var index = 0;
+    $('#modal-more-items tbody tr td .checkbox .order_check').each(function(){
+      if( $(this).is(':checked') ){
+        status = true
+        data_delivery_order[index] = $(this).val();
+        index++;
+      }
+    });
+
+    if(status){
+      data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
+      append_url_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'order_delivery_items_table', data, '', 'POST');
+    }
+
+    $('#modalDeliveryItems').modal('hide');
+  };
 
   /* Comentando una función que puede servir en un futuro...
   function calculatePriceFromIgv(element){
@@ -202,6 +229,7 @@
           });
         } else {
           cost_center_id = $('#cost-center-selected').val();
+          $.cost_center = cost_center_id
           url = "/logistics/purchase_orders/" + cost_center_id + "/show_delivery_order_item_field";
           data = { authenticity_token: "#{form_authenticity_token}" }
           load_url_ajax(url, 'items-delivery-orders', data, 'avoid-opacity', 'PUT');
