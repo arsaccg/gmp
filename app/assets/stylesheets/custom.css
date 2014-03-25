@@ -23,3 +23,5 @@
 .help-inline { color: #D56161; font-size: 11px; }
 
 td.unit-of-measurement, td.amount, input.unit-price, input.unit-price-before-igv, input.unit-price-igv { text-align: center; }
+
+form label { text-align: left !important; }

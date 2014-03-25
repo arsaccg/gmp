@@ -40,6 +40,13 @@ class Logistics::PurchaseOrdersController < ApplicationController
     render(partial: 'table_order_delivery_items', :layout => false)
   end
 
+  def more_items_from_delivery_orders
+    @reg_n = Time.now.to_i
+    delivery_ids = params[:ids_delivery_order]
+    @delivery_orders_detail = CostCenter.find(params[:cost_center_id]).delivery_orders.where("state LIKE 'approved' AND NOT IN (#{delivery_ids})").delivery_order_details
+    render(partial: 'modal_more_items_delivery', :layout => false)
+  end
+
   def create
     @purchaseOrder = PurchaseOrder.new(purchase_order_parameters)
     @purchaseOrder.state = 'pre_issued'
@@ -145,6 +152,15 @@ class Logistics::PurchaseOrdersController < ApplicationController
       end
     end
 
+    # Numerics/Text values for footer
+    @total = 0
+    @igv = 0
+    @purchaseOrderDetails.each do |pod|
+      @total += pod.delivery_order_detail.amount*pod.unit_price
+    end
+    @igv = @total*0.18
+    @total_neto = @total - @igv
+
     if @purchaseOrder.state == 'pre_issued'
       @state_per_order_purchase_approved = @purchaseOrder.state_per_order_purchases.where("state LIKE 'pre_issued'").last
       @state_per_order_purchase_revised = @purchaseOrder.state_per_order_purchases.where("state LIKE 'pre_issued'").last
@@ -185,6 +201,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
       @first_state = "Cancelado"
       @second_state = "Cancelado"
     end
+
+    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape }
+
   end
 
   private
