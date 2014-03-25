@@ -11,6 +11,9 @@
 	// Note: You will also need to change this variable in the "variable.less" file.
 	$.navbar_height = 49; 
 
+	// Cost center
+	$.cost_center = 0;
+
 /*
  * APP DOM REFERENCES
  * Description: Obj DOM reference, please try to avoid changing these

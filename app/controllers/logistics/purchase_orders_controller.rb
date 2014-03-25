@@ -42,8 +42,14 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   def more_items_from_delivery_orders
     @reg_n = Time.now.to_i
-    delivery_ids = params[:ids_delivery_order]
-    @delivery_orders_detail = CostCenter.find(params[:cost_center_id]).delivery_orders.where("state LIKE 'approved' AND NOT IN (#{delivery_ids})").delivery_order_details
+    delivery_ids = params[:ids_delivery_order].join(",")
+    @delivery_orders_detail = Array.new
+    @cost_center = CostCenter.find(params[:cost_center_id])
+    @cost_center.delivery_orders.where("state LIKE 'approved'").each do |deo|
+      deo.delivery_order_details.where("id NOT IN (#{delivery_ids})").each do |dodw|
+        @delivery_orders_detail << dodw
+      end
+    end
     render(partial: 'modal_more_items_delivery', :layout => false)
   end
 

@@ -1,24 +1,52 @@
-%table 
-  - @delivery_orders_detail.each do |dode|
+%h2{'style' => 'text-align:center'} Lista de los Items de Ordenes de Suministro que no han sido elegidos
+%h2{'style' => 'text-align:center'} 
+  Del Centro de Costo 
+  %strong
+    = @cost_center.name
+%table#modal-more-items.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+  %thead
     %tr
-      %td(style="display:none")
-        = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][delivery_order_detail_id]', dode.id.to_i
-      %td=dode.article.code
-      %td=dode.article.description
-      %td.unit-of-measurement
-        =dode.unit_of_measurement.symbol
-      %td.amount
-        =dode.amount
-      %td.unit-price
-        = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', nil, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);"
-      %td.price-without-igv
-        = text_field_tag 'unit_price_before_igv', nil, class: "form-control unit-price-before-igv", :readonly => true
-      %td.check-igv
-        %label.checkbox
-          = check_box_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', nil, nil, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
-          %i
-      %td.price-with-igv
-        = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil , class: "form-control unit-price-igv", :readonly => true
+      %th Código de la orden de Suministro
+      %th Código del Artículo
+      %th Nombre del Artículo
+      %th Unidad de Medida
+      %th Cantidad
+      %th Sector
+      %th Fase
+      %th Centro de Atención
+      %th Fecha Programada
+      %th Seleccionar
+  - @delivery_orders_detail.each do |dod|
+    %tr
+      %td.col-md-1
+        = dod.delivery_order.id.to_s.rjust(5, '0')
+      %td.col-md-1
+        = dod.article.code
+      %td.col-md-1
+        = dod.article.name
+      %td.col-md-1
+        = dod.unit_of_measurement.symbol
+      %td.col-md-1
+        = dod.amount.to_i
+      %td.sector.col-md-1.order_delivery_sector
+        = dod.sector.name
+      %td.order_delivery_phase
+        = dod.phase.name
+      %td.order_delivery_centro_atencion
+        = dod.center_of_attention.name
+      %td.order_delivery_fecha_programada.col-md-2
+        = dod.scheduled_date
       %td
-        = text_area_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
-    - @reg_n += 1
+        %label.checkbox
+          = check_box("order_delivery", "approved", { class: 'order_check' }, dod.id)
+          %i
+
+%br
+
+%button.btn.btn-sm.btn-primary.btn-prev#add-purchase-order-items{"type" => "button", "onclick" => "javascript:add_more_items();"}
+  %i.fa.fa-plus
+  Agregar los Seleccionados
+
+%button.btn.btn-sm.btn-primary.btn-prev{"type" => "button", "data-dismiss" => "modal"}
+  %i.fa.fa-times
+  Salir
