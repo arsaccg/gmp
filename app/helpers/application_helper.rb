@@ -44,4 +44,28 @@ module ApplicationHelper
         str_spanish="APROBADO"
     end
   end
+
+  def get_next_state(str_state)
+    str_spanish = ""
+    case str_state
+      when "pre_issued"
+        str_spanish="issued"
+      when "issued"
+        str_spanish="revised"
+      when "revised"
+        str_spanish="approved"
+    end
+  end
+
+  def get_prev_state(str_state)
+    str_spanish = ""
+    case str_state
+      when "approved"
+        str_spanish="revised"
+      when "revised"
+        str_spanish="issued"
+      when "issued"
+        str_spanish="observed"
+    end
+  end
 end
