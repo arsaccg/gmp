@@ -5,6 +5,7 @@ class Logistics::CompaniesController < ApplicationController
   end
 
   def show
+
   end
 
   def new
@@ -52,6 +53,10 @@ class Logistics::CompaniesController < ApplicationController
     company = Company.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
     render :json => company
+  end
+
+  def show_all_companies
+    render :all_companies, layout: false
   end
 
   private
