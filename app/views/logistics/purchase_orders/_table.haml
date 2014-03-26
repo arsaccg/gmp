@@ -70,9 +70,6 @@
                     %a.btn.btn-warning.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{edit_logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
                       %i.fa.fa-edit
 
-                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
-                      %i.fa.fa-file
-
                   - when 'issued'
 
                     %a.btn.btn-success.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
@@ -106,7 +103,7 @@
                   %i.fa.fa-mail-reply
 
                 %a.btn.btn-info.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=#{get_next_state(purchase.state)}', 'content', null, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
-                  %i.fa.fa-mail-forward
+                  %i.fa.fa-flag
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

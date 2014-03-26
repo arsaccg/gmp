@@ -65,16 +65,13 @@
                   %i.fa.fa-mail-reply
 
                 %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=#{get_next_state(delivery.state)}', 'content', null, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
-                  %i.fa.fa-mail-forward
+                  %i.fa.fa-flag
 
                 - case delivery.state
                   - when 'pre_issued'
 
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
                       %i.fa.fa-edit
-
-                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
-                      %i.fa.fa-file
 
                   - when 'issued'
 

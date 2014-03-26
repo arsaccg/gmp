@@ -1,4 +1,4 @@
-# enconding: urf-8
+# enconding: utf-8
 class Supplier < ActiveRecord::Base
 	has_many :purchase_orders
 	# Validaciones

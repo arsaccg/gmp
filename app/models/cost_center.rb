@@ -1,4 +1,4 @@
-# enconding: urf-8
+# enconding: utf-8
 class CostCenter < ActiveRecord::Base
 	
 	has_many :delivery_orders
