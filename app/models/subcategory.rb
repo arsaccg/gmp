@@ -1,4 +1,4 @@
-# enconding: urf-8
+# enconding: utf-8
 class Subcategory < ActiveRecord::Base
 	belongs_to :category
 

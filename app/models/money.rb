@@ -1,4 +1,4 @@
-# enconding: urf-8
+# enconding: utf-8
 class Money < ActiveRecord::Base
 	has_many :purchase_order
 	has_many :exchange_of_rate

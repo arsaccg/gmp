@@ -62,20 +62,61 @@
         %article.col-sm-12.col-md-12.col-lg-4
           - case @state_change
             - when 'issued'
-              %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goissue_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
-                Emitir
+
+              - if current_user.has_role? :issuer
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goissue_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
+                  Emitir
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Emitir.
+
             - when 'observed'
-              %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goobserve_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
-                Observar
+
+              - if current_user.has_role? :issuer
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goobserve_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
+                  Observar
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para hacer una Observación.
+
             - when 'revised'
-              %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{gorevise_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
-                Dar visto bueno
+
+              - if current_user.has_role? :reviser
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{gorevise_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
+                  Dar visto bueno
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Dar el Visto Bueno.
+
             - when 'canceled'
-              %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_purchase_orders_path}')"}
-                Anular
+              - if current_user.has_role? :canceller
+                %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_purchase_orders_path}')"}
+                  Anular
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Anular.
             - when 'approved'
-              %a.btn.btn-primary.btn-lg{:onclick => "javascript:load_url_ajax('#{goapprove_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
-                Aprobar
+              - if current_user.has_role? :approver
+                %a.btn.btn-primary.btn-lg{:onclick => "javascript:load_url_ajax('#{goapprove_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
+                  Aprobar
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Aprobar.
+            - when ''
+              %p.alert.alert-danger
+                %i.fa.fa-times.fa-fw.fa-lg
+                %strong Opps!
+                Ya no puedes cambiar de estado.
       - else
         %article.col-sm-12.col-md-12.col-lg-4
           #wid-id-3.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}

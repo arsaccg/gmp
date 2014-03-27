@@ -7,18 +7,18 @@
     .jarviswidget-editbox
     .widget-body.no-padding
       .widget-body-toolbar
-      %table#dt_basic.table.table-striped.table-bordered.table-hover
+      %table#summary-purchase-orders.table.table-striped.table-bordered.table-hover
         %thead
           %tr
             %th Código
-            %th{'style' => 'width:110px !important;'}
+            %th{'style' => 'width:120px !important;'}
               Estado
+            %th Descripcion
             %th Proveedor
             %th Fecha de Emisión
             %th Fecha de Expiración
             %th Fecha de Entrega
             %th Responsable
-            %th Descripcion
             %th Acciones
         %tbody
           - @purchaseOrders.each do |purchase|
@@ -27,30 +27,32 @@
                 = purchase.id.to_s.rjust(5, '0')
               - case purchase.state
                 - when 'pre_issued'
-                  %td
-                    %i.fa.fa-flag{:style => "color: #3276b1;"}
-                    %span.label.label-primary
+                  %td.label-status
+                    %i.fa.fa-flag{:style => "visibility: hidden;"}
+                    %span.label{:style => "color: #000;"}
                       = translate_purchase_order_state(purchase.state)
                 - when 'issued'
-                  %td
+                  %td.label-status
                     %i.fa.fa-flag{:style => "color: #FF7A00;"}
                     %span.label.label-warning{:style => "background-color: #FF7A00;"}
                       = translate_purchase_order_state(purchase.state)
                 - when 'revised'
-                  %td
+                  %td.label-status
                     %i.fa.fa-flag{:style => "color: #c79121;"}
                     %span.label.label-warning
                       = translate_purchase_order_state(purchase.state)
                 - when 'canceled'
-                  %td
+                  %td.label-status
                     %i.fa.fa-flag{:style => "color: #a90329;"}
                     %span.label.label-danger
                       = translate_purchase_order_state(purchase.state)
                 - when 'approved'
-                  %td
+                  %td.label-status
                     %i.fa.fa-flag{:style => "color: #25CA25;"}
                     %span.label.label-success{:style => "background-color: #25CA25;"}
                       = translate_purchase_order_state(purchase.state)
+              %td
+                = truncate(purchase.description, :length => 35, :omission => '...')
               %td
                 = purchase.supplier.name
               %td
@@ -62,69 +64,46 @@
               %td
                 = purchase.user.first_name + " " + purchase.user.last_name
               %td
-                = truncate(purchase.description, :length => 60, :omission => '...')
-              %td
                 - case purchase.state
                   - when 'pre_issued'
 
-                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
-                      Editar
-                    - if current_user.has_role? :issuer
-                      %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=issued', 'content', null, null, 'GET')"}
-                        Emitir
-                    - if current_user.has_role? :canceller
-                      %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=canceled', 'content', null, null, 'GET')"}
-                        Anular
-                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
-                      Ver PDF
+                    %a.btn.btn-warning.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{edit_logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
+                      %i.fa.fa-edit
 
                   - when 'issued'
-                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
-                      Ver Detalle
-                    - if current_user.has_role? :reviser
-                      %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=revised', 'content', null, null, 'GET')"}
-                        Dar visto bueno
-                    - if current_user.has_role? :issuer
-                      %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=observed', 'content', null, null, 'GET')"}
-                        Observar
-                    - if current_user.has_role? :canceller
-                      %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=canceled', 'content', null, null, 'GET')"}
-                        Anular
-                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
-                      Ver PDF
+
+                    %a.btn.btn-success.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
+                      %i.fa.fa-eye
+
+                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
+                      %i.fa.fa-file
 
                   - when 'revised'
-                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
-                      Ver Detalle
-                    - if current_user.has_role? :issuer
-                      %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=issued', 'content', null, null, 'GET')"}
-                        Volver a Emitir
-                    - if current_user.has_role? :approver
-                      %a.btn.btn-primary.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=approved', 'content', null, null, 'GET')"}
-                        Aprobar
-                    - if current_user.has_role? :canceller
-                      %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=canceled', 'content', null, null, 'GET')"}
-                        Anular
-                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
-                      Ver PDF
+
+                    %a.btn.btn-success.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
+                      %i.fa.fa-eye
+
+                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
+                      %i.fa.fa-file
 
                   - when 'canceled'
-                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
-                      Ver Detalle
-                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
-                      Ver PDF
+                    %a.btn.btn-success.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
+                      %i.fa.fa-eye
+
+                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
+                      %i.fa.fa-file
 
                   - when 'approved'
-                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')"}
-                      Ver Detalle
-                    %a.btn.btn-info.btn-xs{:href => "##{logistics_purchase_order_path(purchase.id)}?state_change=revised"}
-                      Volver a Visto Bueno
-                    - if current_user.has_role? :canceller
-                      %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=canceled', 'content', null, null, 'GET')"}
-                        Anular
-                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", :style =>"background-color: #0063F7; border-color: #0063F7;"}
-                      Ver PDF
+                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
+                      %i.fa.fa-eye
+                    %a.btn.btn-danger.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
+                      %i.fa.fa-file
+                      
+                %a.btn.btn-info.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=#{get_prev_state(purchase.state)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Retroceder el estado"}
+                  %i.fa.fa-mail-reply
 
+                %a.btn.btn-info.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=#{get_next_state(purchase.state)}', 'content', null, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
+                  %i.fa.fa-flag
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -168,27 +147,29 @@
     /*
      * BASIC
      */
-    $('#dt_basic').dataTable({
+    $('#summary-purchase-orders').dataTable({
       "sPaginationType" : "bootstrap_full"
     });
 
     /* END BASIC */
 
+    $('#summary-purchase-orders_wrapper').removeClass("dataTables_wrapper");
+
     /* Add the events etc before DataTables hides a column */
-    $("#dt_basic thead input").keyup(function() {
+    $("#summary-purchase-orders thead input").keyup(function() {
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
     });
 
-    $("#dt_basic thead input").each(function(i) {
+    $("#summary-purchase-orders thead input").each(function(i) {
       this.initVal = this.value;
     });
-    $("#dt_basic thead input").focus(function() {
+    $("#summary-purchase-orders thead input").focus(function() {
       if (this.className == "search_init") {
         this.className = "";
         this.value = "";
       }
     });
-    $("#dt_basic thead input").blur(function(i) {
+    $("#summary-purchase-orders thead input").blur(function(i) {
       if (this.value == "") {
         this.className = "search_init";
         this.value = this.initVal;

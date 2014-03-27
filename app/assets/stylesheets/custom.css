@@ -29,3 +29,12 @@ form label { text-align: left !important; }
 @media screen and (min-width: 768px){
   #modalDeliveryItems .modal-dialog { width: 1260px; }
 }
+
+#summary-delivery-orders tbody tr td.label-status i, #summary-purchase-orders tbody tr td.label-status i {
+	font-size: 17px;
+	position: relative;
+	padding-right: 9px;
+	top: 2px;
+}
+
+#summary-delivery-orders tbody tr td span.label, #summary-purchase-orders tbody tr td span.label { font-size: 9px; }
