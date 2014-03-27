@@ -93,10 +93,10 @@
             %label.col-md-3.control-label Proveedores
             .col-md-9
               .input-group
-                %select.form-control#category-select{:name =>"purchase_order[supplier_id]"}
+                %select.form-control#category-select{:name =>"purchase_order[entity_id]"}
                   - @suppliers.each do |supp|
                     %option{:value => "#{supp.id}"}
-                      = supp.name
+                      = supp.name + ' ' + supp.surname
                 %span.input-group-addon
                   %i.fa.fa-truck
         .col-md-4
@@ -162,9 +162,7 @@
       Felicidades!
       %br/
       %small Presiona FINALIZAR para terminar con la Orden de Compra.
-      %button.btn.btn-primary#finish-purchase-order{'type' => 'button'}
-        %i.fa.fa-certificate
-          FINALIZAR
+      %i.fa.fa-hand-o-up
     %br/
     %br/
     %br/

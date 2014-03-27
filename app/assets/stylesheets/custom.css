@@ -18,6 +18,23 @@
  * - CUSTOM STYLES
  */
 
+ .btn-view {
+   color: #fff;
+   background-color: #62D1C8;
+   border-color: #07BEB7;
+ }
+
+  .btn-view:hover { color: #fff; }
+
+ .btn-pdf {
+   color: #fff;
+   background-color: #DD0008;
+   border-color: #EC1B56;
+ }
+
+ .btn-pdf i { font-size: 15px !important; }
+ .btn-pdf:hover { color: #fff; }
+
 #summary-articles tbody tr td { vertical-align: inherit; }
 
 .help-inline { color: #D56161; font-size: 11px; }

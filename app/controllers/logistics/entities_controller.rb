@@ -8,24 +8,50 @@ class Logistics::EntitiesController < ApplicationController
   end
 
   def new
+    @type_entities = TypeEntity.all
+    @entity = Entity.new
     render layout: false
   end
 
   def create
+    entity = Entity.new(entity_parameters)
+    if entity.save
+      params['entity']['entity_per_type_entities_attributes']['type_entity_id'].each do |value|
+        @entity_per_type_entities = EntityPerTypeEntity.new
+        @entity_per_type_entities.entity_id = entity.id
+        @entity_per_type_entities.type_entity_id = value
+        @entity_per_type_entities.save
+      end
+      flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
+      redirect_to :action => :index
+    else
+      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
+      redirect_to :action => :index
+    end
   end
 
   def edit
+    @entity = Entity.find(params[:id])
+    @type_entities = TypeEntity.all
+    @action = 'edit'
     render layout: false
   end
 
   def update
+    entity = Entity.find(params[:id])
+    entity.update_attributes(entity_parameters)
+    flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index
   end
 
   def destroy
+    @entity = Entity.destroy(params[:id])
+    render :json => @entity
   end
 
   private
   def entity_parameters
+    #params.require(:entity).permit(:name, :surname, :dni, :ruc, entity_per_type_entities_attributes: [:id, :entity_id, {:type_entity_id => []}])
     params.require(:entity).permit(:name, :surname, :dni, :ruc)
   end
 end

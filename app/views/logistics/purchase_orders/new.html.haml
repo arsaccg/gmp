@@ -192,8 +192,6 @@
     
     wizard.on('finished', function (e, data) {
     
-      console.log($('#new_purchase_order').serialize());
-
       $.ajax({
         type: 'POST',
         url: "/logistics/purchase_orders",
