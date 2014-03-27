@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140319162612) do
+ActiveRecord::Schema.define(version: 20140324221610) do
 
   create_table "article_unit_of_measurements", force: true do |t|
     t.integer  "article_id"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 20140319162612) do
     t.integer  "delivery_order_id"
     t.date     "scheduled_date"
     t.integer  "center_of_attention_id"
+    t.boolean  "requested"
   end
 
   create_table "delivery_orders", force: true do |t|
@@ -83,9 +84,17 @@ ActiveRecord::Schema.define(version: 20140319162612) do
     t.date     "scheduled"
     t.text     "description"
     t.integer  "cost_center_id"
-<<<<<<< HEAD
-=======
   end
+
+  create_table "exchange_of_rates", force: true do |t|
+    t.datetime "day"
+    t.integer  "money_id"
+    t.decimal  "value",      precision: 15, scale: 5
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "exchange_of_rates", ["money_id"], name: "index_exchange_of_rates_on_money_id", using: :btree
 
   create_table "method_of_payments", force: true do |t|
     t.string "name"
@@ -93,10 +102,10 @@ ActiveRecord::Schema.define(version: 20140319162612) do
   end
 
   create_table "money", force: true do |t|
-    t.string  "name"
-    t.string  "symbol"
-    t.decimal "exchange_rate", precision: 10, scale: 0
->>>>>>> 6d84055e56265d6880116dd69d9d6fd7519522f9
+    t.string   "name"
+    t.string   "symbol"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "phases", force: true do |t|
@@ -132,6 +141,7 @@ ActiveRecord::Schema.define(version: 20140319162612) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "exchange_of_rate"
   end
 
   create_table "sectors", force: true do |t|
