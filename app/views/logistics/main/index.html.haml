@@ -54,7 +54,7 @@
         / end logout button
     -if @company == nil
       - @companies.each do |company|
-        .col-sm-12.col-md-12.col-lg-6
+        .col-sm-8.col-md-8.col-lg-4
           .well
             .jumbotron{"style" => "overflow: hidden"}
               .col-sm-12.col-md-12.col-lg-6
@@ -63,9 +63,6 @@
                 %p
                   %a.btn.btn-primary.btn-lg{ "role" => "button", "href"=> "#{show_panel_logistics_main_path(company.id)}", "data-method"=>"post"}
                     Ver información
-              .col-sm-12.col-md-12.col-lg-6
-              =image_tag"#{company.avatar(:thumb)}"
-
 
     = javascript_include_tag '//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js'
     :javascript
