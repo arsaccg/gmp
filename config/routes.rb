@@ -76,16 +76,16 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :subphases
-    resources :main do
-      collection do
-        get 'index_app'
-      end
-    end
     resources :companies
     resources :cost_centers
     resources :type_entities
     resources :type_of_articles
     resources :entities
+    resources :main do
+      member do
+        get 'show_panel'
+      end
+    end
     resources :delivery_orders do
       collection do
         post 'add_delivery_order_item_field'
