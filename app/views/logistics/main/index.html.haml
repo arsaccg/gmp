@@ -56,7 +56,7 @@
       - @companies.each do |company|
         .col-sm-12.col-md-12.col-lg-6
           .well
-            .jumbotron
+            .jumbotron{"style" => "overflow: hidden"}
               .col-sm-12.col-md-12.col-lg-6
                 %h1= company.name
                 %p= "RUC: #{company.ruc}"
