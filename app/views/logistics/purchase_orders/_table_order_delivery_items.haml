@@ -1,5 +1,5 @@
 - @delivery_orders_detail.each do |dode|
-  %tr
+  %tr{id: "tr" + @reg_n.to_s}
     %td(style="display:none" class="pod-di")
       = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][delivery_order_detail_id]', dode.id.to_i
     %td=dode.article.code
@@ -20,4 +20,6 @@
       = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil , class: "form-control unit-price-igv", :readonly => true
     %td
       = text_area_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
+    %td{:style => "width: 1%;"}
+      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
   - @reg_n += 1

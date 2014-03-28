@@ -5,7 +5,7 @@ class DeliveryOrder < ActiveRecord::Base
     belongs_to :cost_center
     belongs_to :user
 
-    accepts_nested_attributes_for :delivery_order_details
+    accepts_nested_attributes_for :delivery_order_details, :allow_destroy => true
 
     state_machine :state, :initial => :pre_issued do
 

@@ -7,7 +7,7 @@ class PurchaseOrder < ActiveRecord::Base
   belongs_to :money
   belongs_to :method_of_payment
 
-  accepts_nested_attributes_for :purchase_order_details
+  accepts_nested_attributes_for :purchase_order_details, :allow_destroy => true
 
   state_machine :state, :initial => :pre_issued do
 

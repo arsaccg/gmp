@@ -141,6 +141,7 @@
                       %th ¿Aplica IGV?
                       %th Precio después de IGV
                       %th Glosa
+                      %th Eliminar
                   %tbody
                     - @purchaseOrder.purchase_order_details.each do |pod|
                       %tr
@@ -175,6 +176,10 @@
                           = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][id]', pod.id
                         %td(style="display:none")
                           = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][purchase_order_id]', @purchaseOrder.id
+                        %td.delete-item
+                          %label.checkbox
+                            = check_box 'purchase_order', '[purchase_order_details_attributes][' + @reg_n.to_s + '][_destroy]'
+                            %i
                       - @reg_n += 1
         .form-actions{:style => "margin-top: 0;"}
           .row
@@ -191,6 +196,8 @@
 :javascript
   
   $(document).ready(function(){
+
+    $.cost_center = "#{@purchaseOrder.cost_center_id}";
 
     $('#btn-add-more-items-do').click(function(){
       var ids_delivery_order = new Array();

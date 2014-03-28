@@ -36,7 +36,7 @@
             %label.select
               %select.select2#type-entity-select{:name => "entity[entity_per_type_entities_attributes][type_entity_id][]", :style => "width:100%;padding: 0;border: none;", :multiple => true}
                 - @type_entities.each do |tent|
-                  %option{value: "#{tent.id}"}
+                  %option{value: "#{tent.id.to_i}"}
                     = tent.name
       %footer
         %button.btn.btn-primary{type: "submit"}

@@ -73,6 +73,10 @@
 
   });
 
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
+
   // PAGE RELATED SCRIPTS
   function calculatePriceWithourIgv(element){
     var amount = parseInt($(element).parent().siblings('.amount').html());
