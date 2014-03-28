@@ -25,7 +25,7 @@
               .button
                 = f.input :avatar, html: { class: 'form-control' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
                 Browse
-              %input{placeholder: "Include some files", readonly: "readonly", type: "text"}/
+              %input{readonly: "readonly", type: "text"}/
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save
@@ -56,6 +56,9 @@
               maxlength : 11
             },
             'company[name]' : {
+              required : true,
+            },
+            'company[avatar]' : {
               required : true,
             }
           },

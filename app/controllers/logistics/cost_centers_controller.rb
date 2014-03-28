@@ -80,7 +80,7 @@ class Logistics::CostCentersController < ApplicationController
 
   private
   def cost_center_parameters
-    params.require(:cost_center).permit(:code, :name)
+    params.require(:cost_center).permit(:code, :name, :company_id)
   end
 
 end

@@ -44,7 +44,7 @@
       #logo-group
         / PLACE YOUR LOGO HERE
         %span#logo
-          = image_tag 'logo.png', alt: "SmartAdmin"
+          = image_tag @company.avatar.url, alt: "#{@company.name}"
         / END LOGO PLACEHOLDER
         /
 
@@ -268,6 +268,8 @@
       if (!window.jQuery.ui) {
       	document.write('<script src="js/libs/jquery-ui-1.10.3.min.js"><\/script>');
       }
+    :javascript
+      $.company_global_id="#{@company.id}"
     /
       JS TOUCH : include this plugin for mobile drag / drop touch events
       <script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script>
