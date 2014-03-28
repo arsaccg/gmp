@@ -60,7 +60,7 @@
               %h1= company.name
               %p= "RUC: #{company.ruc}"
               %p
-                %a.btn.btn-primary.btn-lg{ "role" => "button", "href"=> "#{show_panel_logistics_main_path(company.id)}"}
+                %a.btn.btn-primary.btn-lg{ "role" => "button", "href"=> "#{show_panel_logistics_main_path(company.id)}", "data-method"=>"post"}
                   Ver información
     = javascript_include_tag '//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js'
     :javascript
