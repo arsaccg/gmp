@@ -76,12 +76,12 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :subphases
-    resources :companies do
+    resources :main do
       collection do
-        get 'show_all_companies'
-        post 'show_all_companies'
+        get 'index_app'
       end
     end
+    resources :companies
     resources :cost_centers
     resources :type_entities
     resources :type_of_articles

@@ -55,10 +55,6 @@ class Logistics::CompaniesController < ApplicationController
     render :json => company
   end
 
-  def show_all_companies
-    render :all_companies, layout: false
-  end
-
   private
   def company_parameters
     params.require(:company).permit(:name, :ruc)
