@@ -1,7 +1,7 @@
 class PurchaseOrder < ActiveRecord::Base
 	has_many :purchase_order_details
 	has_many :state_per_order_purchases
-  belongs_to :supplier
+  belongs_to :entity
 	belongs_to :cost_center
   belongs_to :user
   belongs_to :money

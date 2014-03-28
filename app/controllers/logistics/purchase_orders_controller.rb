@@ -18,7 +18,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   def new
     @purchaseOrder = PurchaseOrder.new
-    @suppliers = Supplier.all
+    TypeEntity.where("id = 1").each do |tent|
+      @suppliers = tent.entities
+    end
     @cost_center = CostCenter.all
     @moneys = Money.all
     @methodOfPayments = MethodOfPayment.all
@@ -73,7 +75,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
   def edit
     @reg_n = Time.now.to_i
     @purchaseOrder = PurchaseOrder.find(params[:id])
-    @suppliers = Supplier.all
+    TypeEntity.where("id = 1").each do |tent|
+      @suppliers = tent.entities
+    end
     @cost_center = CostCenter.all
     @moneys = Money.all
     @methodOfPayments = MethodOfPayment.all
@@ -214,6 +218,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   private
   def purchase_order_parameters
-    params.require(:purchase_order).permit(:exchange_of_rate, :date_of_issue, :expiration_date, :delivery_date, :retention, :money_id, :method_of_payment_id, :supplier_id, :cost_center_id, :state, :description, purchase_order_details_attributes: [:id, :puchase_order_id, :delivery_order_detail_id, :unit_price, :igv, :unit_price_igv, :description])
+    params.require(:purchase_order).permit(:exchange_of_rate, :date_of_issue, :expiration_date, :delivery_date, :retention, :money_id, :method_of_payment_id, :entity_id, :cost_center_id, :state, :description, purchase_order_details_attributes: [:id, :puchase_order_id, :delivery_order_detail_id, :unit_price, :igv, :unit_price_igv, :description])
   end
 end

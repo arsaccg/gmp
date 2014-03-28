@@ -5,3 +5,17 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+TypeEntity.create(
+  [{ name: 'Proveedores' }, { preffix: 'P' }],
+  [{ name: 'Accionistas' }, { preffix: 'AC' }],
+  [{ name: 'Trabajadores' }, { preffix: 'T' }]
+)
+
+TypeOfArticle.create(
+  [{ name: 'Personal' }, { code: '01' }],
+  [{ name: 'Material' }, { code: '02' }],
+  [{ name: 'Equipos' }, { code: '03' }],
+  [{ name: 'Servicios' }, { code: '04' }],
+  [{ name: 'SubContratos' }, { code: '05' }]
+)
