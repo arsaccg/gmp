@@ -13,7 +13,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def new
     @deliveryOrder = DeliveryOrder.new
     @articles = Article.all
-    @costcenters = CostCenter.all
+    @costcenters = Company.find(params[:company_id]).cost_centers
     render layout: false
   end
 
@@ -47,7 +47,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @sectors = Sector.all
     @phases = Phase.where("category LIKE 'phase'")
     @centerOfAttentions = CenterOfAttention.all
-    @costcenters = CostCenter.all
+    @costcenters = Company.find(params[:company_id]).cost_centers
     @action = 'edit'
     render layout: false
   end

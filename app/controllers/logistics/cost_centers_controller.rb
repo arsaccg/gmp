@@ -4,7 +4,7 @@ class Logistics::CostCentersController < ApplicationController
   
   def index
     flash[:error] = nil
-    @costCenters = CostCenter.all
+    @costCenters = CostCenter.where(company_id: "#{params[:company_id]}")
     render layout: false
   end
 
