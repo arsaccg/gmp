@@ -4,7 +4,7 @@ class Logistics::CostCentersController < ApplicationController
   
   def index
     flash[:error] = nil
-    @costCenters = CostCenter.all
+    @costCenters = CostCenter.where(company_id: "#{params[:company_id]}")
     render layout: false
   end
 
@@ -80,7 +80,7 @@ class Logistics::CostCentersController < ApplicationController
 
   private
   def cost_center_parameters
-    params.require(:cost_center).permit(:code, :name)
+    params.require(:cost_center).permit(:code, :name, :company_id)
   end
 
 end

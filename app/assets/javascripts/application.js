@@ -14,6 +14,13 @@
 //= require jquery_ujs
 //= require jquery_nested_form
 
+$(document).ready(function(){
+  $("#left-panel ul li a").click(function(){
+    $.company_global_id= $(this).attr("company");
+  });
+  
+});
+
 function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
   var url_str = url;
   var div_name = div_id; 

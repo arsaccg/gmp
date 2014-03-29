@@ -3,7 +3,7 @@ class Logistics::MainController < ApplicationController
   def index
     if params[:flag]
       if params[:company] != nil
-        @company = params[:company]
+        @company = Company.find(params[:company])
       end
       render :show_panel, layout: 'dashboard' 
     else

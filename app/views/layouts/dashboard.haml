@@ -44,7 +44,7 @@
       #logo-group
         / PLACE YOUR LOGO HERE
         %span#logo
-          = image_tag 'logo.png', alt: "SmartAdmin"
+          = image_tag @company.avatar.url, alt: "#{@company.name}"
         / END LOGO PLACEHOLDER
         /
 
@@ -159,7 +159,7 @@
                         %span.menu-item-parent{'style'=>"width: 100px;"}
                           Centro de Atención
                     %li
-                      %a{href: "#{logistics_cost_centers_path}", title: "Centro de Costos"}
+                      %a{href: "#{logistics_cost_centers_path}?company_id=#{@company.id}", title: "Centro de Costos", company: "#{@company.id}"}
                         %i.fa.fa-lg.fa-fw.fa-desktop
                         %span.menu-item-parent Centro de Costos
                     %li
@@ -207,12 +207,12 @@
                         %i.fa.fa-lg.fa-fw.fa-tasks
                         %span.menu-item-parent Tipo de Cambio
               %li
-                %a{href: "#{logistics_delivery_orders_path}", title: "Ordenes de Suministro"}
+                %a{href: "#{logistics_delivery_orders_path}", title: "Ordenes de Suministro", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ordenes de Suministro
               %li
-                %a{href: "#{logistics_purchase_orders_path}", title: "Ordenes de Compra"}
+                %a{href: "#{logistics_purchase_orders_path}", title: "Ordenes de Compra", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ordenes de Compra

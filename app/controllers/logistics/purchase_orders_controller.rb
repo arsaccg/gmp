@@ -2,6 +2,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
   def index
     @purchaseOrders = PurchaseOrder.all
     @deliveryOrders = DeliveryOrder.all.where("state LIKE 'approved'")
+    @deliveryOrder = DeliveryOrder.all.first()
     render layout: false
   end
 

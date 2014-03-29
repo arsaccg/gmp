@@ -4,7 +4,7 @@
       %h1.page-title.txt-color-blueDark{ "style" => "margin-bottom: 10px;"}
         %i.fa.fa-pencil-square-o.fa-fw
         Ordenes de Compra
-    - if @deliveryOrders != nil
+    - if @deliveryOrders != nil && @deliveryOrder != nil
       .col-sm-3{ "style" => "margin-top: 10px;" }
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_purchase_order_path}', 'content', null, null, 'GET')"}
           Agregar Nueva Orden de Compra

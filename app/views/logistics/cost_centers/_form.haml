@@ -18,6 +18,9 @@
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-user
               = f.input :name, placeholder: "Nombre del sector", input_html: { class: 'form-control' }, label: false
+        = hidden_field_tag "cost_center[company_id]"
+          
+        
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save
@@ -25,6 +28,7 @@
 
 :javascript
   $(document).ready(function () {
+    $("#cost_center_company_id").val($.company_global_id);
     $("#cost_center_code").focus();
 
     if($('form[id^="edit_"]').length > 0) {
