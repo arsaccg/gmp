@@ -29,7 +29,7 @@
                     %th Unidad de Medida
                     %th Simbolo
                 %tbody(id="unit_measurement_table")
-                  - @article.article_unit_of_measurements.each do |aunit|
+                  - @article.unit_of_measurements.each do |aunit|
                     %tr
                       %td
                         = aunit.code_article_unit

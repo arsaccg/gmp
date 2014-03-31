@@ -57,11 +57,10 @@
           %section.col.col-10
             %label.label Unidad de medida
             %label.input{for: "unit_of_measurement_id"}
-            %select#unit-select-measure.form-control.select2{:name =>"article_unit_of_measurements[unit_of_measurement_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true}
-              - if @action != nil && @action == 'edit'
+            %select#unit-select-measure.form-control.select2{:name =>"article[unit_of_measurement_id]", :style => "width:100%;;padding: 0;border: none;"}
+              - if @action == 'edit'
                 - @unitOfMeasurement.each do |unito|
-                  - @units.each_with_index do |unit, index|
-                    - if unito.id == unit[0]
+                  - if @article.unit_of_measurement_id == unito.id
                       %option{:value => "#{unito.id}", :selected => true}
                         = unito.name
                       - break
@@ -112,7 +111,7 @@
             'article[name]' : {
               required : true,
             },
-            'article_unit_of_measurements[unit_of_measurement_id][]': {
+            'article[unit_of_measurement_id]': {
               required : true,
             }
           },
@@ -127,7 +126,7 @@
             'article[name]' : {
               required : 'Por favor, ingresar el nombre del artículo.'
             },
-            'article_unit_of_measurements[unit_of_measurement_id][]' : {
+            'article[unit_of_measurement_id]' : {
               required : '</br>Por favor, ingresar la unidad de medida.'
             }
           },

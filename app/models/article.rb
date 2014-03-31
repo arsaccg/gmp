@@ -5,7 +5,7 @@ class Article < ActiveRecord::Base
 	belongs_to :category  
 	belongs_to :type_of_article
   
-	has_many :article_unit_of_measurements#, :through => :article_unit_of_measurements
+	belongs_to :unit_of_measurement#, :through => :article_unit_of_measurements
 	#accepts_nested_attributes_for :unit_of_measurements
 
 	#Validaciones
