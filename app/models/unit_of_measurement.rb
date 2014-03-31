@@ -2,7 +2,7 @@
 class UnitOfMeasurement < ActiveRecord::Base
 	include ActiveModel::Validations
 
-	has_many :article_unit_of_measurements#, :through => :article_unit_of_measurements
+	has_many :articles#, :through => :article_unit_of_measurements
 	#accepts_nested_attributes_for :articles
 
 	# Validaciones
