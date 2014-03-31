@@ -21,7 +21,7 @@
             %th Seleccionar
         %tbody
           - @deliveryOrders.each do |delivery|
-            - delivery.delivery_order_details.each do |dod|
+            - delivery.delivery_order_details.where("requested IS NULL").each do |dod|
               %tr
                 %td.col-md-1
                   = delivery.id.to_s.rjust(5, '0')

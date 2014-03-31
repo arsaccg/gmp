@@ -38,7 +38,18 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @reg_n = Time.now.to_i
     @delivery_orders_detail = Array.new
     params[:ids_delivery_order].each do |ido|
-      @delivery_orders_detail << DeliveryOrderDetail.find(ido)
+      @delivery_order_detail = DeliveryOrderDetail.find(ido)
+      total = @delivery_order_detail.amount
+      sum = 0
+      @delivery_order_detail.purchase_order_details.each do |pod|
+        if pod.amount == nil
+          sum += 0
+        else
+          sum += pod.amount
+        end
+      end
+      @delivery_order_detail.amount = total - sum
+      @delivery_orders_detail << @delivery_order_detail
     end
     render(partial: 'table_order_delivery_items', :layout => false)
   end
@@ -61,6 +72,18 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @purchaseOrder.state = 'pre_issued'
     @purchaseOrder.user_id = current_user.id
     if @purchaseOrder.save
+
+      @purchaseOrder.purchase_order_details.each do |pod|
+        dod_id = pod.delivery_order_detail_id
+        sql_purchase_order_partial_amount = ActiveRecord::Base.connection.execute("SELECT SUM( amount ) AS 'sum' FROM `purchase_order_details` WHERE `delivery_order_detail_id` = #{dod_id} GROUP BY `delivery_order_detail_id`")
+        sql_delivery_order_total_amount = ActiveRecord::Base.connection.execute("SELECT amount FROM `delivery_order_details` WHERE `id` = #{dod_id}")
+
+        if sql_purchase_order_partial_amount.first == sql_delivery_order_total_amount.first
+          @deliveryOrderDetail = DeliveryOrderDetail.find(dod_id)
+          @deliveryOrderDetail.update_attributes(:requested => 1)
+        end
+      end
+
       flash[:notice] = "Se ha creado correctamente la nueva orden de compra."
       redirect_to :action => :index
     else
@@ -219,6 +242,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   private
   def purchase_order_parameters
-    params.require(:purchase_order).permit(:exchange_of_rate, :date_of_issue, :expiration_date, :delivery_date, :retention, :money_id, :method_of_payment_id, :entity_id, :cost_center_id, :state, :description, purchase_order_details_attributes: [:id, :puchase_order_id, :delivery_order_detail_id, :unit_price, :igv, :unit_price_igv, :description, :_destroy])
+    params.require(:purchase_order).permit(:exchange_of_rate, :date_of_issue, :expiration_date, :delivery_date, :retention, :money_id, :method_of_payment_id, :entity_id, :cost_center_id, :state, :description, purchase_order_details_attributes: [:id, :puchase_order_id, :delivery_order_detail_id, :unit_price, :igv, :amount, :unit_price_igv, :description, :_destroy])
   end
 end

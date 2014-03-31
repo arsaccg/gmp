@@ -152,11 +152,11 @@
                         %td.unit-of-measurement
                           =pod.delivery_order_detail.unit_of_measurement.symbol
                         %td.amount
-                          =pod.delivery_order_detail.amount
+                          =pod.amount
                         %td.unit-price
-                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', pod.unit_price, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);"
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', pod.unit_price, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);"
                         %td.price-without-igv
-                          - @unit_price_without_igv = pod.delivery_order_detail.amount * pod.unit_price
+                          - @unit_price_without_igv = pod.amount * pod.unit_price
                           = text_field_tag 'unit_price_before_igv', "#{@unit_price_without_igv}", class: "form-control unit-price-before-igv", :readonly => true
                         %td.check-igv
                           %label.checkbox
