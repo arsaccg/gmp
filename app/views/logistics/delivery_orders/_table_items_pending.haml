@@ -1,0 +1,200 @@
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Lista de Items pendientes en Atender de Ordenes Aprobadas
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      .widget-body-toolbar
+      %table#items-pending-requested.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th Código de la orden de Suministro
+            %th Código del Artículo
+            %th Nombre del Artículo
+            %th Unidad de Medida
+            %th Cantidad
+            %th Por Atender
+            %th Sector
+            %th Fase
+            %th Centro de Atención
+            %th Fecha Programada
+        %tbody
+          - @deliveryOrders.each do |deliveryOrder|
+            - deliveryOrder.each do |delivery|
+              - delivery.delivery_order_details.where("requested IS NULL").each do |dod|
+                %tr
+                  %td.col-md-1
+                    = delivery.id.to_s.rjust(5, '0')
+                  %td.col-md-1
+                    = dod.article.code
+                  %td.col-md-1
+                    = dod.article.name
+                  %td.col-md-1
+                    = dod.unit_of_measurement.symbol
+                  %td.col-md-1
+                    = dod.amount.to_i
+                  %td.col-md-1
+                    %code
+                      - if PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod.id).first != nil
+                        = dod.amount.to_i - PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod.id).first.at(0).to_i
+                      - else
+                        = dod.amount.to_i
+                  %td.sector.col-md-1.order_delivery_sector
+                    = dod.sector.name
+                  %td.order_delivery_phase
+                    = dod.phase.name
+                  %td.order_delivery_centro_atencion
+                    = dod.center_of_attention.name
+                  %td.order_delivery_fecha_programada.col-md-2
+                    = dod.scheduled_date
+
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+  
+  // PAGE RELATED SCRIPTS
+
+  loadDataTableScripts();
+  function loadDataTableScripts() {
+
+    loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
+
+    function dt_2() {
+      loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
+    }
+
+    function dt_3() {
+      loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
+    }
+
+    function dt_4() {
+      loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
+    }
+
+    function dt_5() {
+      loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
+    }
+
+    function dt_6() {
+      loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
+    }
+
+    function dt_7() {
+      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
+    }
+
+  }
+
+  function runDataTables() {
+
+    /*
+     * BASIC
+     */
+    $('#items-pending-requested').dataTable({
+      "sPaginationType" : "bootstrap_full"
+    });
+
+    /* END BASIC */
+
+    $('#items-pending-requested_wrapper').removeClass("dataTables_wrapper");
+
+    /* Add the events etc before DataTables hides a column */
+    $("#items-pending-requested thead input").keyup(function() {
+      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+    });
+
+    $("#items-pending-requested thead input").each(function(i) {
+      this.initVal = this.value;
+    });
+
+    $("#items-pending-requested thead input").focus(function() {
+      if (this.className == "search_init") {
+        this.className = "";
+        this.value = "";
+      }
+    });
+
+    $("#items-pending-requested thead input").blur(function(i) {
+      if (this.value == "") {
+        this.className = "search_init";
+        this.value = this.initVal;
+      }
+    });
+
+    $('#summary-delivery-orders').dataTable({
+      "sPaginationType" : "bootstrap_full"
+    });
+
+    /* END BASIC */
+
+    $('#summary-delivery-orders_wrapper').removeClass("dataTables_wrapper");
+
+    /* Add the events etc before DataTables hides a column */
+    $("#summary-delivery-orders thead input").keyup(function() {
+      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+    });
+
+    $("#summary-delivery-orders thead input").each(function(i) {
+      this.initVal = this.value;
+    });
+
+    $("#summary-delivery-orders thead input").focus(function() {
+      if (this.className == "search_init") {
+        this.className = "";
+        this.value = "";
+      }
+    });
+
+    $("#summary-delivery-orders thead input").blur(function(i) {
+      if (this.value == "") {
+        this.className = "search_init";
+        this.value = this.initVal;
+      }
+    });
+    
+    var oTable = $('#datatable_fixed_column').dataTable({
+      "sDom" : "<'dt-top-row'><'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+      //"sDom" : "t<'row dt-wrapper'<'col-sm-6'i><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'>>",
+      "oLanguage" : {
+        "sSearch" : "Search all columns:"
+      },
+      "bSortCellsTop" : true
+    });
+
+    /*
+     * COL ORDER
+     */
+    $('#datatable_col_reorder').dataTable({
+      "sPaginationType" : "bootstrap",
+      "sDom" : "R<'dt-top-row'Clf>r<'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+      "fnInitComplete" : function(oSettings, json) {
+        $('.ColVis_Button').addClass('btn btn-default btn-sm').html('Columns <i class="icon-arrow-down"></i>');
+      }
+    });
+    
+    /* END COL ORDER */
+
+    /* TABLE TOOLS */
+    $('#datatable_tabletools').dataTable({
+      "sDom" : "<'dt-top-row'Tlf>r<'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+      "oTableTools" : {
+        "aButtons" : ["copy", "print", {
+          "sExtends" : "collection",
+          "sButtonText" : 'Save <span class="caret" />',
+          "aButtons" : ["csv", "xls", "pdf"]
+        }],
+        "sSwfPath" : "#{ asset_path 'javascript/plugin/datatables/media/swf/copy_csv_xls_pdf.swf'}"
+      },
+      "fnInitComplete" : function(oSettings, json) {
+        $(this).closest('#dt_table_tools_wrapper').find('.DTTT.btn-group').addClass('table_tools_group').children('a.btn').each(function() {
+          $(this).addClass('btn-sm btn-default');
+        });
+      }
+    });
+    
+    /* END TABLE TOOLS */
+
+  }

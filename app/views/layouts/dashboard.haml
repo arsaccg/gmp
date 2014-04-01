@@ -207,7 +207,7 @@
                         %i.fa.fa-lg.fa-fw.fa-tasks
                         %span.menu-item-parent Tipo de Cambio
               %li
-                %a{href: "#{logistics_delivery_orders_path}", title: "Ordenes de Suministro", company: "#{@company.id}"}
+                %a{href: "#{logistics_delivery_orders_path}?company_id=#{@company.id}", title: "Ordenes de Suministro", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ordenes de Suministro

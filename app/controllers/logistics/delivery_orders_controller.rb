@@ -1,12 +1,15 @@
 class Logistics::DeliveryOrdersController < ApplicationController
   def index
-    @deliveryOrders = DeliveryOrder.all
+    @deliveryOrders = Array.new
     @article = Article.first
     @phase = Phase.first
     @sector = Sector.first
-    @costcenter = CostCenter.first
+    @costcenter = CostCenter.where("company_id = #{params[:company_id]}").first
     @centerOfAttention = CenterOfAttention.first
     @costcenters = CostCenter.all
+    Company.find(params[:company_id]).cost_centers.each do |cost_center|
+      @deliveryOrders << cost_center.delivery_orders.where("state LIKE 'approved'")
+    end
     render layout: false
   end
 
