@@ -28,10 +28,17 @@ class Logistics::PurchaseOrdersController < ApplicationController
     render layout: false
   end
 
-  def show_delivery_order_item_field
-    cost_center = CostCenter.find(params[:id])
-    @deliveryOrders = cost_center.delivery_orders.where("state LIKE 'approved'")
-    render(partial: 'table_items_order', :layout => false)
+  def edit
+    @reg_n = Time.now.to_i
+    @purchaseOrder = PurchaseOrder.find(params[:id])
+    TypeEntity.where("id = 1").each do |tent|
+      @suppliers = tent.entities
+    end
+    @cost_center = CostCenter.all
+    @moneys = Money.all
+    @methodOfPayments = MethodOfPayment.all
+    @action = 'edit'
+    render layout: false
   end
 
   def add_items_from_delivery_orders
@@ -52,6 +59,12 @@ class Logistics::PurchaseOrdersController < ApplicationController
       @delivery_orders_detail << @delivery_order_detail
     end
     render(partial: 'table_order_delivery_items', :layout => false)
+  end
+  
+  def show_delivery_order_item_field
+    cost_center = CostCenter.find(params[:id])
+    @deliveryOrders = cost_center.delivery_orders.where("state LIKE 'approved'")
+    render(partial: 'table_items_order', :layout => false)
   end
 
   def more_items_from_delivery_orders
@@ -75,8 +88,8 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
       @purchaseOrder.purchase_order_details.each do |pod|
         dod_id = pod.delivery_order_detail_id
-        sql_purchase_order_partial_amount = ActiveRecord::Base.connection.execute("SELECT SUM( amount ) AS 'sum' FROM `purchase_order_details` WHERE `delivery_order_detail_id` = #{dod_id} GROUP BY `delivery_order_detail_id`")
-        sql_delivery_order_total_amount = ActiveRecord::Base.connection.execute("SELECT amount FROM `delivery_order_details` WHERE `id` = #{dod_id}")
+        sql_purchase_order_partial_amount = PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod_id)
+        sql_delivery_order_total_amount = PurchaseOrder.get_total_amount_per_delivery_order(dod_id)
 
         if sql_purchase_order_partial_amount.first == sql_delivery_order_total_amount.first
           @deliveryOrderDetail = DeliveryOrderDetail.find(dod_id)
@@ -94,19 +107,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
       redirect_to :action => :index
     end
-  end
-
-  def edit
-    @reg_n = Time.now.to_i
-    @purchaseOrder = PurchaseOrder.find(params[:id])
-    TypeEntity.where("id = 1").each do |tent|
-      @suppliers = tent.entities
-    end
-    @cost_center = CostCenter.all
-    @moneys = Money.all
-    @methodOfPayments = MethodOfPayment.all
-    @action = 'edit'
-    render layout: false
   end
 
   def update

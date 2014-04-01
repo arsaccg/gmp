@@ -31,4 +31,12 @@ class PurchaseOrder < ActiveRecord::Base
       transition [:pre_issued, :issued, :revised, :approved] => :canceled
     end
   end
+
+  def self.get_total_amount_per_delivery_order(delivery_detail_id)
+    return ActiveRecord::Base.connection.execute("SELECT amount FROM `delivery_order_details` WHERE `id` = #{delivery_detail_id}")
+  end
+
+  def self.get_total_amount_items_requested_by_purchase_order(delivery_detail_id)
+    return ActiveRecord::Base.connection.execute("SELECT SUM( amount ) AS 'sum' FROM `purchase_order_details` WHERE `delivery_order_detail_id` = #{delivery_detail_id} GROUP BY `delivery_order_detail_id`")
+  end
 end
