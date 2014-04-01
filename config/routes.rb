@@ -97,6 +97,7 @@ ArsacLogistica::Application.routes.draw do
         get 'goobserve'
         get 'delivery_order_pdf'
         post 'delivery_order_pdf'
+        get 'show_tracking_orders'
       end
     end
     resources :purchase_orders do

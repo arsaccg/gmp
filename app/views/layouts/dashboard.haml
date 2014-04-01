@@ -217,6 +217,11 @@
                   %span.menu-item-parent
                     Ordenes de Compra
               %li
+                %a{href: "#{show_tracking_orders_logistics_delivery_order_path(@company.id)}", title: "Seguimiento de Ordenes"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Seguimiento de Ordenes
+              %li
                 %a{href: "#{logistics_person_path(current_user.id)}", title: "Usuario"}
                   %i.fa.fa-lg.fa-fw.fa-user
                   %span.menu-item-parent Mi Perfil

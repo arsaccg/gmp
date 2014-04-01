@@ -38,6 +38,40 @@
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table'
-    .row
-      %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
-        = render :partial => 'table_items_pending'
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+  
+  // PAGE RELATED SCRIPTS
+
+  loadDataTableScripts();
+  function loadDataTableScripts() {
+
+    loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
+
+    function dt_2() {
+      loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
+    }
+
+    function dt_3() {
+      loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
+    }
+
+    function dt_4() {
+      loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
+    }
+
+    function dt_5() {
+      loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
+    }
+
+    function dt_6() {
+      loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
+    }
+
+    function dt_7() {
+      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
+    }
+
+  }
