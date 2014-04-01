@@ -60,16 +60,16 @@
             %select#unit-select-measure.form-control.select2{:name =>"article[unit_of_measurement_id]", :style => "width:100%;;padding: 0;border: none;"}
               - if @action == 'edit'
                 - @unitOfMeasurement.each do |unito|
-                  - if @article.unit_of_measurement_id == unito.id
-                      %option{:value => "#{unito.id}", :selected => true}
-                        = unito.name
-                      - break
+                  - if @unitid == unito.id
+                    %option{:value => "#{unito.id}", :selected => true}
+                      =unito.name
+                    - break
                   %option{:value => "#{unito.id}"}
-                    = unito.name
+                    =unito.name
               - else
                 - @unitOfMeasurement.each do |unit|
                   %option{:value => "#{unit.id}"}
-                    = unit.name
+                    =unit.name
 
         .row
           %section.col.col-10

@@ -61,6 +61,7 @@ class Logistics::ArticlesController < ApplicationController
     end
     # Traemos las Unidades de Medida
     @unitOfMeasurement = UnitOfMeasurement.all
+    @unitid = @article.unit_of_measurement_id
     @action = 'edit'
     render layout: false
   end
