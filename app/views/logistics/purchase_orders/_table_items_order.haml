@@ -36,7 +36,10 @@
                   = dod.amount.to_i
                 %td.col-md-1
                   %code
-                    = dod.amount.to_i - PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod.id).first.at(0).to_i
+                    - if PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod.id).first != nil
+                      = dod.amount.to_i - PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod.id).first.at(0).to_i
+                    - else
+                      = dod.amount.to_i
                 %td.sector.col-md-1.order_delivery_sector
                   = dod.sector.name
                 %td.order_delivery_phase

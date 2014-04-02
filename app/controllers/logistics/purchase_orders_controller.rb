@@ -22,7 +22,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     TypeEntity.where("id = 1").each do |tent|
       @suppliers = tent.entities
     end
-    @cost_center = CostCenter.all
+    @cost_center = CostCenter.where("company_id = #{params[:company_id]}")
     @moneys = Money.all
     @methodOfPayments = MethodOfPayment.all
     render layout: false

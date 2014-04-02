@@ -6,7 +6,7 @@
         Ordenes de Compra
     - if @deliveryOrders != nil && @deliveryOrder != nil
       .col-sm-3{ "style" => "margin-top: 10px;" }
-        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_purchase_order_path}', 'content', null, null, 'GET')"}
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_purchase_order_path}', 'content', {company_id: $.company_global_id}, null, 'GET')"}
           Agregar Nueva Orden de Compra
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}

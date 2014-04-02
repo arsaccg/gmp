@@ -206,8 +206,20 @@
                       %a{href: "#{logistics_exchange_of_rates_path}", title: "Tipo de Cambio"}
                         %i.fa.fa-lg.fa-fw.fa-tasks
                         %span.menu-item-parent Tipo de Cambio
+                    %li
+                      %a{href: "#{logistics_warehouses_path}", title: "Almacenes"}
+                        %i.fa.fa-lg.fa-fw.fa-tasks
+                        %span.menu-item-parent Almacenes
+                    %li
+                      %a{href: "#{logistics_formats_path}", title: "Formatos"}
+                        %i.fa.fa-lg.fa-fw.fa-tasks
+                        %span.menu-item-parent Formatos
+                    %li
+                      %a{href: "#{logistics_documents_path}", title: "Documentos"}
+                        %i.fa.fa-lg.fa-fw.fa-tasks
+                        %span.menu-item-parent Documentos
               %li
-                %a{href: "#{logistics_delivery_orders_path}", title: "Ordenes de Suministro", company: "#{@company.id}"}
+                %a{href: "#{logistics_delivery_orders_path}?company_id=#{@company.id}", title: "Ordenes de Suministro", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ordenes de Suministro
@@ -216,6 +228,11 @@
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ordenes de Compra
+              %li
+                %a{href: "#{show_tracking_orders_logistics_delivery_order_path(@company.id)}", title: "Seguimiento de Ordenes"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Seguimiento de Ordenes
               %li
                 %a{href: "#{logistics_person_path(current_user.id)}", title: "Usuario"}
                   %i.fa.fa-lg.fa-fw.fa-user

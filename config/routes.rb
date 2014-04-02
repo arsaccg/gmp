@@ -97,6 +97,7 @@ ArsacLogistica::Application.routes.draw do
         get 'goobserve'
         get 'delivery_order_pdf'
         post 'delivery_order_pdf'
+        get 'show_tracking_orders'
       end
     end
     resources :purchase_orders do
@@ -129,6 +130,9 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :exchange_of_rates
+    resources :warehouses
+    resources :formats
+    resources :documents
 
   end
 

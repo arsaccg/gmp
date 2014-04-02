@@ -1,12 +1,14 @@
 class Logistics::DeliveryOrdersController < ApplicationController
   def index
-    @deliveryOrders = DeliveryOrder.all
+    @deliveryOrders = Array.new
     @article = Article.first
     @phase = Phase.first
     @sector = Sector.first
-    @costcenter = CostCenter.first
-    @centerOfAttention = CenterOfAttention.first
-    @costcenters = CostCenter.all
+    @costcenter = CostCenter.where("company_id = #{params[:company_id]}").first
+    @costcenters = Company.find(params[:company_id]).cost_centers
+    # do |cost_center|
+    #  @deliveryOrders << cost_center.delivery_orders
+    #end
     render layout: false
   end
 
@@ -72,6 +74,14 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @unitOfMeasurementId = data_article_unit[1]
     
     render(partial: 'delivery_order_items', :layout => false)
+  end
+
+  def show_tracking_orders
+    @deliveryOrders = Array.new
+    Company.find(params[:id]).cost_centers.each do |cost_center|
+      @deliveryOrders << cost_center.delivery_orders.where("state LIKE 'approved'")
+    end
+    render :tracing_orders, :layout => false
   end
 
   # Este es el cambio de estado

@@ -1,0 +1,76 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Documento
+  .widget-body
+    = simple_form_for([:logistics, @document], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row
+          %section.col.col-6
+            %label.label Nombre
+            %label.input{for: "name"}
+              %i.icon-append.fa.fa-superscript
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Descripción
+            %label.input{for: "text-field"}
+              %i.icon-append.fa.fa-user
+              = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false
+        = hidden_field_tag "cost_center[company_id]"
+          
+        
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save
+            Guardar
+
+:javascript
+  $(document).ready(function () {
+    $("#warehouse_company_id").val($.company_global_id);
+    $("#document_name").focus();
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_document'));
+    }
+  });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'document[name]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'document[name]' : {
+              required : '(*) requerido.'
+             }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
