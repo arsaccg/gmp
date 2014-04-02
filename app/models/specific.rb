@@ -1,8 +1,7 @@
 # enconding: utf-8
-class Subcategory < ActiveRecord::Base
+class Specific < ActiveRecord::Base
 	
-	belongs_to :category
-	has_many :specifics
+	belongs_to :subcategory
 
 	#Validaciones
 	include ActiveModel::Validations

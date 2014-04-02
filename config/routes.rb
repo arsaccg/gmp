@@ -120,6 +120,11 @@ ArsacLogistica::Application.routes.draw do
         post 'get_subcategory_form_category'
       end
     end
+    resources :specifics do
+      collection do
+        post 'get_subcategory_form_category'
+      end
+    end
     resources :categories    
     resources :suppliers
     resources :method_of_payments

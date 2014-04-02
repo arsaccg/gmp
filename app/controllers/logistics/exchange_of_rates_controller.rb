@@ -36,7 +36,6 @@ class Logistics::ExchangeOfRatesController < ApplicationController
       @today = DateTime.now.strftime("%d/%m/%Y")
       render :new, layout: false
     end
-
   end
 
   def edit
