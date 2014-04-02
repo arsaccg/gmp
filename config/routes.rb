@@ -105,6 +105,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'add_items_from_delivery_orders'
         post 'more_items_from_delivery_orders'
+        post 'show_rows_purchase_orders'
       end
       member do
         put 'show_delivery_order_item_field'

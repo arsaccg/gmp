@@ -224,7 +224,7 @@
                   %span.menu-item-parent
                     Ordenes de Suministro
               %li
-                %a{href: "#{logistics_purchase_orders_path}", title: "Ordenes de Compra", company: "#{@company.id}"}
+                %a{href: "#{logistics_purchase_orders_path}?company_id=#{@company.id}", title: "Ordenes de Compra", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ordenes de Compra
