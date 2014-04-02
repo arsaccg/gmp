@@ -1,14 +1,10 @@
 class Logistics::DeliveryOrdersController < ApplicationController
   def index
-    @deliveryOrders = Array.new
     @article = Article.first
     @phase = Phase.first
     @sector = Sector.first
-    @costcenter = CostCenter.where("company_id = #{params[:company_id]}").first
-    @costcenters = Company.find(params[:company_id]).cost_centers
-    # do |cost_center|
-    #  @deliveryOrders << cost_center.delivery_orders
-    #end
+    @costcenters = CostCenter.where("company_id = #{params[:company_id]}")
+    @centerOfAttention = CenterOfAttention.all.first
     render layout: false
   end
 
@@ -61,6 +57,21 @@ class Logistics::DeliveryOrdersController < ApplicationController
     redirect_to :action => :index
   end
 
+  def show_rows_delivery_orders
+    @deliveryOrders = Array.new
+    if !params[:pending]
+      Company.find(params[:company_id]).cost_centers.find(params[:cost_center_id]).delivery_orders.each do |delivery_order|
+        @deliveryOrders << delivery_order
+      end
+      render(partial: 'rows_delivery_orders', :layout => false)
+    else
+      Company.find(params[:company_id]).cost_centers.find(params[:cost_center_id]).delivery_orders.where("state LIKE 'approved'").each do |delivery_order|
+        @deliveryOrders << delivery_order
+      end
+      render(partial: 'rows_tracking_delivery_orders', :layout => false)
+    end
+  end
+
   def add_delivery_order_item_field
     @reg_n = Time.now.to_i
     data_article_unit = params[:article_id].split('-')
@@ -77,6 +88,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def show_tracking_orders
+    @costcenters = CostCenter.where("company_id = #{params[:id]}")
     @deliveryOrders = Array.new
     Company.find(params[:id]).cost_centers.each do |cost_center|
       @deliveryOrders << cost_center.delivery_orders.where("state LIKE 'approved'")

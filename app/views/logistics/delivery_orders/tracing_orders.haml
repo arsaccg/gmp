@@ -5,7 +5,22 @@
         %i.fa.fa-pencil-square-o.fa-fw
         Seguimiento de las Ordenes
   .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %div
+        .smart-form
+          %section
+            %label.select
+              %select{ 'name' => 'cost_center_id', 'id' => 'cost-center-selected' }
+                - @costcenters.each do |cc|
+                  %option{'value' => "#{cc.id}"}= cc.name
+              %i
   #widget-grid
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table_items_pending'
+
+:javascript
+
+  $('#cost-center-selected').change(function(){
+    load_items_delivery_order_ajax('#{show_rows_delivery_orders_logistics_delivery_orders_path}', 'body-items-pending-requested', {company_id: $.company_global_id, cost_center_id: this.value, authenticity_token: "#{form_authenticity_token}", pending: true});
+  });

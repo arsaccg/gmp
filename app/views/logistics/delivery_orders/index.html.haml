@@ -4,7 +4,7 @@
       %h1.page-title.txt-color-blueDark{ "style" => "margin-bottom: 10px;"}
         %i.fa.fa-pencil-square-o.fa-fw
         Ordenes de Suministros
-    - if @article != nil && @sector != nil && @phase != nil && @centerOfAttention != nil && @costcenter != nil
+    - if @article != nil && @sector != nil && @phase != nil && @centerOfAttention != nil && @costcenters.first != nil
       .col-sm-3{ "style" => "margin-top: 10px;" }
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_delivery_order_path}', 'content', {company_id: $.company_global_id}, null, 'GET')"}
           Agregar Nueva Orden de Suministro
@@ -23,7 +23,7 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
-  - if @article == nil && @sector == nil && @phase == nil && @centerOfAttention == nil && @costcenter == nil
+  - if @article == nil && @sector == nil && @phase == nil && @centerOfAttention == nil && @costcenters.first == nil
     .alert.alert-block.alert-danger
       %a.close(data-dismiss="alert" href="#")
         ×
@@ -34,6 +34,15 @@
         Verifica si tienes, por lo menos, 1 insumo, 1 fase, 1 centro de atención y 1 sector
   %br
   .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %div
+        .smart-form
+          %section
+            %label.select
+              %select{ 'name' => 'cost_center_id', 'id' => 'cost-center-selected' }
+                - @costcenters.each do |cc|
+                  %option{'value' => "#{cc.id}"}= cc.name
+              %i
   #widget-grid
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
@@ -44,6 +53,9 @@
   pageSetUp();
   
   // PAGE RELATED SCRIPTS
+  $('#cost-center-selected').change(function(){
+    load_items_delivery_order_ajax('#{show_rows_delivery_orders_logistics_delivery_orders_path}', 'body-summary-delivery-orders', {company_id: $.company_global_id, cost_center_id: this.value, authenticity_token: "#{form_authenticity_token}"});
+  });
 
   loadDataTableScripts();
   function loadDataTableScripts() {

@@ -89,6 +89,7 @@ ArsacLogistica::Application.routes.draw do
     resources :delivery_orders do
       collection do
         post 'add_delivery_order_item_field'
+        post 'show_rows_delivery_orders'
       end
       member do
         get 'gorevise'
