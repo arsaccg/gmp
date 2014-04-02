@@ -131,6 +131,9 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :exchange_of_rates
+    resources :warehouses
+    resources :formats
+    resources :documents
 
   end
 

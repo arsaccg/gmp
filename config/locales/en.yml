@@ -34,6 +34,15 @@ en:
         day: "Fecha"
         money_id: "Moneda"
         value: "Valor de Cambio"
+      warehouse:
+        name: "Nombre"
+        location: "Ubicación"
+      format:
+        name: "Nombre"
+        description: "Descripción"
+      document:
+        name: "Nombre"
+        description: "Descripción"
     errors:
       models:
         money:
@@ -54,3 +63,18 @@ en:
               blank: "(*) requerido"
             value:
               blank: "(*) requerido"
+        warehouse:
+          attributes:
+            name:
+              blank: "(*) requerido"
+              taken: "El <b>%{attribute}</b> debe ser único."
+        format:
+          attributes:
+            name:
+              blank: "(*) requerido"
+              taken: "El <b>%{attribute}</b> debe ser único."
+        document:
+          attributes:
+            name:
+              blank: "(*) requerido"
+              taken: "El <b>%{attribute}</b> debe ser único."
