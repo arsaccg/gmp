@@ -206,6 +206,18 @@
                       %a{href: "#{logistics_exchange_of_rates_path}", title: "Tipo de Cambio"}
                         %i.fa.fa-lg.fa-fw.fa-tasks
                         %span.menu-item-parent Tipo de Cambio
+                    %li
+                      %a{href: "#{logistics_warehouses_path}", title: "Almacenes"}
+                        %i.fa.fa-lg.fa-fw.fa-tasks
+                        %span.menu-item-parent Almacenes
+                    %li
+                      %a{href: "#{logistics_formats_path}", title: "Formatos"}
+                        %i.fa.fa-lg.fa-fw.fa-tasks
+                        %span.menu-item-parent Formatos
+                    %li
+                      %a{href: "#{logistics_documents_path}", title: "Documentos"}
+                        %i.fa.fa-lg.fa-fw.fa-tasks
+                        %span.menu-item-parent Documentos
               %li
                 %a{href: "#{logistics_delivery_orders_path}?company_id=#{@company.id}", title: "Ordenes de Suministro", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
