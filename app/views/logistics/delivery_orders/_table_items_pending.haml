@@ -20,36 +20,7 @@
             %th Fase
             %th Centro de Atención
             %th Fecha Programada
-        %tbody
-          - @deliveryOrders.each do |deliveryOrder|
-            - deliveryOrder.each do |delivery|
-              - delivery.delivery_order_details.where("requested IS NULL").each do |dod|
-                %tr
-                  %td.col-md-1
-                    = delivery.id.to_s.rjust(5, '0')
-                  %td.col-md-1
-                    = dod.article.code
-                  %td.col-md-1
-                    = dod.article.name
-                  %td.col-md-1
-                    = dod.unit_of_measurement.symbol
-                  %td.col-md-1
-                    = dod.amount.to_i
-                  %td.col-md-1
-                    %code
-                      - if PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod.id).first != nil
-                        = dod.amount.to_i - PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod.id).first.at(0).to_i
-                      - else
-                        = dod.amount.to_i
-                  %td.sector.col-md-1.order_delivery_sector
-                    = dod.sector.name
-                  %td.order_delivery_phase
-                    = dod.phase.name
-                  %td.order_delivery_centro_atencion
-                    = dod.center_of_attention.name
-                  %td.order_delivery_fecha_programada.col-md-2
-                    = dod.scheduled_date
-
+        %tbody{ :id => "body-items-pending-requested" }
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -98,8 +69,6 @@
     });
 
     /* END BASIC */
-
-    $('#items-pending-requested_wrapper').removeClass("dataTables_wrapper");
 
     /* Add the events etc before DataTables hides a column */
     $("#items-pending-requested thead input").keyup(function() {

@@ -3,6 +3,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @purchaseOrders = PurchaseOrder.all
     @deliveryOrders = DeliveryOrder.all.where("state LIKE 'approved'")
     @deliveryOrder = DeliveryOrder.all.first()
+    @costcenters = CostCenter.where("company_id = #{params[:company_id]}")
     render layout: false
   end
 
@@ -15,6 +16,14 @@ class Logistics::PurchaseOrdersController < ApplicationController
     end
     @purchaseOrderDetails = @purchaseOrder.purchase_order_details
     render layout: false
+  end
+
+  def show_rows_purchase_orders
+    @purchaseOrders = Array.new
+    Company.find(params[:company_id]).cost_centers.find(params[:cost_center_id]).purchase_orders.each do |purchase_order|
+      @purchaseOrders << purchase_order
+    end
+    render(partial: 'rows_purchase_orders', :layout => false)
   end
 
   def new

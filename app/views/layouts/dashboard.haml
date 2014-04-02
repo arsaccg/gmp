@@ -224,12 +224,12 @@
                   %span.menu-item-parent
                     Ordenes de Suministro
               %li
-                %a{href: "#{logistics_purchase_orders_path}", title: "Ordenes de Compra", company: "#{@company.id}"}
+                %a{href: "#{logistics_purchase_orders_path}?company_id=#{@company.id}", title: "Ordenes de Compra", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ordenes de Compra
               %li
-                %a{href: "#{show_tracking_orders_logistics_delivery_order_path(@company.id)}", title: "Seguimiento de Ordenes"}
+                %a{href: "#{show_tracking_orders_logistics_delivery_order_path(@company.id)}", title: "Seguimiento de Ordenes", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Seguimiento de Ordenes

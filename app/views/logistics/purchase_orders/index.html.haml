@@ -33,7 +33,94 @@
         Verifica si tienes, por lo menos, 1 Orden de Suministro generada y aprobada.
   %br
   .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %div
+        .smart-form
+          %section
+            %label.select
+              %select{ 'name' => 'cost_center_id', 'id' => 'cost-center-selected' }
+                - @costcenters.each do |cc|
+                  %option{'value' => "#{cc.id}"}= cc.name
+              %i
   #widget-grid
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table'
+
+:javascript
+
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+  
+  // PAGE RELATED SCRIPTS
+  $('#cost-center-selected').change(function(){
+    load_items_delivery_order_ajax('#{show_rows_purchase_orders_logistics_purchase_orders_path}', 'body-summary-purchase-orders', {company_id: $.company_global_id, cost_center_id: this.value, authenticity_token: "#{form_authenticity_token}"});
+
+    $('#summary-purchase-orders tr td a').tooltip('hide');
+  });
+
+  loadDataTableScripts();
+  function loadDataTableScripts() {
+
+    loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
+
+    function dt_2() {
+      loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
+    }
+
+    function dt_3() {
+      loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
+    }
+
+    function dt_4() {
+      loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
+    }
+
+    function dt_5() {
+      loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
+    }
+
+    function dt_6() {
+      loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
+    }
+
+    function dt_7() {
+      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
+    }
+
+  }
+
+  function runDataTables() {
+
+    /*
+     * BASIC
+     */
+    $('#summary-purchase-orders').dataTable({
+      "sPaginationType" : "bootstrap_full"
+    });
+
+    /* END BASIC */
+
+    $('#summary-purchase-orders_wrapper').removeClass("dataTables_wrapper");
+
+    /* Add the events etc before DataTables hides a column */
+    $("#summary-purchase-orders thead input").keyup(function() {
+      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+    });
+
+    $("#summary-purchase-orders thead input").each(function(i) {
+      this.initVal = this.value;
+    });
+    $("#summary-purchase-orders thead input").focus(function() {
+      if (this.className == "search_init") {
+        this.className = "";
+        this.value = "";
+      }
+    });
+    $("#summary-purchase-orders thead input").blur(function(i) {
+      if (this.value == "") {
+        this.className = "search_init";
+        this.value = this.initVal;
+      }
+    });
+  }
