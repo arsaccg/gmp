@@ -14,7 +14,7 @@
 	// Cost center
 	$.cost_center = 0;
 
-	$.company_global_id=0;
+	$.company_global_id = 0;
 
 /*
  * APP DOM REFERENCES

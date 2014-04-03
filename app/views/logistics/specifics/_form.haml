@@ -127,8 +127,7 @@
     $('#subcategory-select').click(function(){
       clicknum2++;
       if(clicknum2 == 1){
-        var sub_code = $(this).val();
-        var type = $('option:selected', $('#category-select')).attr('rel');
+        var sub_code = $('option:selected', $(this)).attr('code');
         $('#extrafield_first_code').val(sub_code);
         clicknum2 = 0;
       }
@@ -146,13 +145,11 @@
 
     $('#subcategory-select').change(function(){
       var sub_code = $('option:selected', $(this)).attr('code');
-      var type = $('option:selected', $('#category-select')).attr('rel');
       $('#extrafield_first_code').val(sub_code);
     });
 
     $('#subcategory-select').keyup(function(){
       var sub_code = $('option:selected', $(this)).attr('code');
-      var type = $('option:selected', $('#category-select')).attr('rel');
       $('#extrafield_first_code').val(tsub_code);
     });
 
@@ -160,11 +157,6 @@
       $('#extrafield_first_code').val('');
     });    
   });
-
-
-
-
-
 
   function complete_infocombo(url, category_id, form_token, default_value){
     $.ajax({
@@ -185,14 +177,14 @@
         $.each(newOptions, function(key,value){
           if ($("#specific_subcategory_id").val() == value.code)
             $('#subcategory-select').append(
-              $("<option></option>").attr("value", value.code).text(value.name).attr("selected", "selected").attr("id", value.id)
+              $("<option></option>").attr("value", value.id).text(value.name).attr("selected", "selected").attr("code", value.code)
             )
           else
             $('#subcategory-select').append(
-              $("<option></option>").attr("value", value.code).text(value.name).attr("id", value.id)
+              $("<option></option>").attr("value", value.id).text(value.name).attr("code", value.code)
             )
           // Default Value:
-          var code = $("#subcategory-select").val().toString();
+          var code = $('option:selected', $('#subcategory-select')).attr('code');
           $("#extrafield_first_code").val(code);
         });
       });

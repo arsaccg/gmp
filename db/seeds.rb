@@ -19,3 +19,9 @@ TypeOfArticle.create(
   [{ name: 'Servicios' }, { code: '04' }],
   [{ name: 'SubContratos' }, { code: '05' }]
 )
+
+Company.create(
+  [{ name: 'ARSAC Contratistas Generales'}, { ruc: '12345678978' }],
+  [{ name: 'Consorcio Bagua'}, { ruc: '20494052513' }],
+  [{ name: 'Consorcio San Francisco del Oriente'}, { ruc: '20567151779' }],
+)

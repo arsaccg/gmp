@@ -27,11 +27,12 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def new
+    @company = params[:company_id]
     @purchaseOrder = PurchaseOrder.new
     TypeEntity.where("id = 1").each do |tent|
       @suppliers = tent.entities
     end
-    @cost_center = CostCenter.where("company_id = #{params[:company_id]}")
+    @cost_center = CostCenter.where("company_id = #{@company}")
     @moneys = Money.all
     @methodOfPayments = MethodOfPayment.all
     render layout: false
@@ -107,14 +108,14 @@ class Logistics::PurchaseOrdersController < ApplicationController
       end
 
       flash[:notice] = "Se ha creado correctamente la nueva orden de compra."
-      redirect_to :action => :index
+      redirect_to :action => :index, company_id: params[:company_id]
     else
       @purchaseOrder.errors.messages.each do |attribute, error|
         puts attribute
         puts error
       end
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index
+      redirect_to :action => :index, company_id: params[:company_id]
     end
   end
 
