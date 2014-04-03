@@ -89,6 +89,11 @@ class Logistics::SpecificsController < ApplicationController
     @subcategories = Subcategory.where("category_id = ?", params[:category_id])
     render json: {:subcategories => @subcategories}  
   end
+
+  def get_specific_from_subcategory
+    @specific = Specific.where("subcategory_id = ?", params[:subcategory_id])
+    render json: {:specifics => @specific}
+  end  
   
   private
   def specific_parameters
