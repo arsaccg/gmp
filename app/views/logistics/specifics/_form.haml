@@ -11,7 +11,7 @@
             %label.label Grupo
             %label.input{for: "category_id"}
               %select.form-control#category-select{:name =>"category_id"}
-                - @Categories.each do |cat|
+                - @categories.each do |cat|
                   %option{:value => "#{cat.id}", :rel => "#{cat.code}", :selected => @category_specific == cat.id}
                     = cat.name
           %section.col.col-5
@@ -28,7 +28,7 @@
             %label.input{for: "code"}
               %i
               - if @Specifics.code != nil
-                = text_field(:extrafield, :first_code, class: "form-control", readonly: true, value: "#{@specific.code[0,6]}")
+                = text_field(:extrafield, :first_code, class: "form-control", readonly: true, value: "#{@Specifics.code[0,4]}")
               - else
                 = text_field(:extrafield, :first_code, class: "form-control", readonly: true)
           %section.col.col-6
@@ -36,7 +36,7 @@
             %label.input{for: "code"}
               %i.icon-append.fa.fa-superscript
               - if @Specifics.code != nil
-                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category', :value => "#{@specific.code[6,4]}"}, label: false
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category', :value => "#{@Specifics.code[4,6]}"}, label: false
               - else
                 = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
         .row
