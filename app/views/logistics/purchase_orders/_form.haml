@@ -7,6 +7,7 @@
     .jarviswidget-editbox
     .widget-body 
       = simple_form_for([:logistics, @purchaseOrder], html: {class: 'form-horizontal', autocomplete: 'off' }) do |f|
+        = hidden_field_tag "company_id", @company
         .col-sm-12
           %fieldset
             %legend{'style' => 'border:none'}

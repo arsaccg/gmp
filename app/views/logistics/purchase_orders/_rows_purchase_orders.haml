@@ -48,7 +48,7 @@
       - case purchase.state
         - when 'pre_issued'
 
-          %a.btn.btn-warning.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{edit_logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
+          %a.btn.btn-warning.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{edit_logistics_purchase_order_path(purchase.id)}', 'content', {company_id: #{@company}}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
             %i.fa.fa-edit
 
         - when 'issued'

@@ -164,7 +164,7 @@
 :javascript
   
   $(document).ready(function(){
-    $("#company_id").val($.company_global_id);
+    $("#company_id").val("#{@company}");
     loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
     $('#article-select').select2();
 

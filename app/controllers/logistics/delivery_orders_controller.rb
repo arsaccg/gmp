@@ -43,12 +43,13 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def edit
+    @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.find(params[:id])
     @articles = Article.all
     @sectors = Sector.all
     @phases = Phase.where("category LIKE 'phase'")
     @centerOfAttentions = CenterOfAttention.all
-    @costcenters = Company.find(params[:company_id]).cost_centers
+    @costcenters = Company.find(@company).cost_centers
     @action = 'edit'
     render layout: false
   end
@@ -57,7 +58,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     deliveryOrder = DeliveryOrder.find(params[:id])
     deliveryOrder.update_attributes(delivery_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def show_rows_delivery_orders

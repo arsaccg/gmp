@@ -1,9 +1,10 @@
 class Logistics::PurchaseOrdersController < ApplicationController
   def index
+    @company = params[:company_id]
     @purchaseOrders = PurchaseOrder.all
     @deliveryOrders = DeliveryOrder.all.where("state LIKE 'approved'")
     @deliveryOrder = DeliveryOrder.all.first()
-    @costcenters = CostCenter.where("company_id = #{params[:company_id]}")
+    @costcenters = CostCenter.where("company_id = #{@company}")
     render layout: false
   end
 
@@ -21,7 +22,8 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   def show_rows_purchase_orders
     @purchaseOrders = Array.new
-    Company.find(params[:company_id]).cost_centers.find(params[:cost_center_id]).purchase_orders.each do |purchase_order|
+    @company = params[:company_id]
+    Company.find(@company).cost_centers.find(params[:cost_center_id]).purchase_orders.each do |purchase_order|
       @purchaseOrders << purchase_order
     end
     render(partial: 'rows_purchase_orders', :layout => false)
@@ -40,6 +42,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def edit
+    @company = params[:company_id]
     @reg_n = Time.now.to_i
     @purchaseOrder = PurchaseOrder.find(params[:id])
     TypeEntity.where("id = 1").each do |tent|
@@ -124,7 +127,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     purchaseOrder = PurchaseOrder.find(params[:id])
     purchaseOrder.update_attributes(purchase_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   # Este es el cambio de estado
