@@ -22,7 +22,10 @@ class Logistics::SpecificsController < ApplicationController
     flash[:error] = nil
     specific = Specific.new(specific_parameters)
     specific.code = params[:extrafield]['first_code'].to_s + params[:specific]['code'].to_s
-    specific.subcategory_id = params[:specific]['subcategory_id']
+    #speSub = SubCategories.where("code = ?", params[:specific]['subcategory_id'])
+    #=speSub.id
+    #code==first_code
+    specific.subcategory_id=params[:specific]['subcategory_id.id']
     if specific.save
       flash[:notice] = "Se ha creado correctamente el nuevo específico."
       redirect_to url_for(:controller => :categories, :action => :index)
