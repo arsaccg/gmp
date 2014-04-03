@@ -18,7 +18,7 @@
           %section.col.col-5
             %label.label Grupo
             %label.input{for: "category_id"}
-              %select.form-control#category-select{:name =>"article[category_id]"}
+              %select.form-control#category-select{:name =>"category_id"}
                 - @categories.each do |cat|
                   %option{:value => "#{cat.id}", :rel => "#{cat.code}", :selected => @category_article == cat.id}
                     = cat.name
@@ -28,8 +28,16 @@
               %select.form-control#subcategory-select{:name =>"subcategory_id"}
                 - if @subcategories != nil
                   - @subcategories.each do |subcat|
-                    %option{:value => "#{subcat.code}", :rel => "#{subcat.code}", :selected => @subcategory_article == subcat.code}
+                    %option{:value => "#{subcat.id}", :rel => "#{subcat.code}", :selected => @subcategory_article == subcat.code}
                       = subcat.name
+          %section.col.col-5
+            %label.label Específico
+            %label.input{for: "specific_id"}
+              %select.form-control#specific-select{:name =>"article[specific_id]"}
+                - if @specifics != nil
+                  - @specifics.each do |es|
+                    %option{:value => "#{es.id}", :rel => "#{es.code}", :selected => @specific_article == es.code}
+                      = es.name
         .row
           %section.col.col-3
             %label.label Código
@@ -88,6 +96,9 @@
 
     var category_id = $("#category-select").val();
     complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}", "0302");
+
+    var subcategory_id = $("#subcategory-select").val();
+    complete_infocombo2("#{get_specific_from_subcategory_logistics_specifics_path}", subcategory_id, "#{form_authenticity_token}", "0302");
   
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -105,8 +116,8 @@
           rules : {
             'article[code]' : {
               required : true,
-              minlength : 4,
-              maxlength : 4
+              minlength : 2,
+              maxlength : 2
             },
             'article[name]' : {
               required : true,
@@ -120,8 +131,8 @@
           messages : {
             'article[code]' : {
               required : 'Por favor, ingresar el código del Artículo',
-              minlength : "Como mínimo debe tener 4 dígitos.",
-              maxlength : "Como máximo debe tener 4 dígitos.",
+              minlength : "Como mínimo debe tener 2 dígitos.",
+              maxlength : "Como máximo debe tener 2 dígitos.",
             },
             'article[name]' : {
               required : 'Por favor, ingresar el nombre del artículo.'
@@ -153,6 +164,7 @@
   $(document).ready(function(){
     var clicknum = 0;
     var clicknum2 = 0;
+    var clicknum3 = 0;
     $("#category-select").click(function(){
      clicknum++;
      if(clicknum == 1){
@@ -166,9 +178,21 @@
       clicknum2++;
       if(clicknum2 == 1){
         var sub_code = $(this).val();
+        var subcategory_id = $(this).val();
         var type = $('option:selected', $('#type-article-select')).attr('rel');
-        $('#extrafield_first_code').val(type + sub_code);
+        complete_infocombo2("#{get_specific_from_subcategory_logistics_specifics_path}", subcategory_id, "#{form_authenticity_token}, 0");
+        $('#extrafield_first_code').val(type+sub_code);
         clicknum2 = 0;
+      }
+    });
+
+    $('#specific-select').click(function(){
+      clicknum3++;
+      if(clicknum3 == 1){
+        var es_code = $('option:selected', $('#specific-select')).attr('code');
+        var type = $('option:selected', $('#type-article-select')).attr('rel');
+        $('#extrafield_first_code').val(type + es_code);
+        clicknum3 = 0;
       }
     });
 
@@ -176,7 +200,11 @@
 
     $('#category-select').change(function(){
       var category_id = $(this).val();
+      var code = $('option:selected', $('#category-select')).attr('rel');
+      var type = $('option:selected', $('#type-article-select')).attr('rel');
+      $('#extrafield_first_code').val(type+code);
       complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}, 0");
+
     });
 
     $('#category-select').keyup(function(){
@@ -185,15 +213,26 @@
     });
 
     $('#subcategory-select').change(function(){
-      var sub_code = $(this).val();
-      var type = $('option:selected', $('#type-article-select')).attr('rel');
-      $('#extrafield_first_code').val(type+sub_code);
+      var subcategory_id= $(this).val();
+      complete_infocombo2("#{get_specific_from_subcategory_logistics_specifics_path}", subcategory_id, "#{form_authenticity_token}, 0");
     });
 
     $('#subcategory-select').keyup(function(){
       var sub_code = $(this).val();
       var type = $('option:selected', $('#type-article-select')).attr('rel');
       $('#extrafield_first_code').val(type+sub_code);
+    });
+
+    $('#specific-select').change(function(){
+      var es_code = $(this).val();
+      var type = $('option:selected', $('#type-article-select')).attr('rel') + $('option:selected', $('#subcategory-select')).attr('rel');
+      $('#extrafield_first_code').val(type+sub_code+es_code);
+    });
+
+    $('#specific-select').keyup(function(){
+      var es_code =$(this).val();
+      var type = $('option:selected', $('#type-article-select')).attr('rel') + $('option:selected', $('#subcategory-select')).attr('rel');
+      $('#extrafield_first_code').val(type+es_code);
     });
 
     $('#category-select').change(function(){
@@ -218,20 +257,54 @@
           item = {};
           item['name'] = value.name;
           item['code'] = value.code;
+          item['id'] = value.id;
           newOptions.push(item);
         });
         $('#subcategory-select').empty();
         $.each(newOptions, function(key,value){
           if ($("#article_subcategory_id_edit").val() == value.code)
             $('#subcategory-select').append(
-              $("<option></option>").attr("value", value.code).text(value.name).attr("selected", "selected")
+              $("<option></option>").attr("value", value.id).text(value.name).attr("selected", "selected").attr("code",value.code)
             )
           else
             $('#subcategory-select').append(
-              $("<option></option>").attr("value", value.code).text(value.name)
+              $("<option></option>").attr("value", value.id).text(value.name).attr("code",value.code)
             )
           // Default Value:
           var code = $('option:selected', $('#type-article-select')).attr('rel') + $("#subcategory-select").val().toString();
+          $("#extrafield_first_code").val(code);
+        });
+      });
+  }
+
+  function complete_infocombo2(url, subcategory_id, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { subcategory_id: subcategory_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.specifics, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        $('#specific-select').empty();
+        $.each(newOptions, function(key,value){
+          if ($("#specific_article").val() == value.code){
+            $('#specific-select').append(
+              $("<option></option>").attr("value", value.id).text(value.name).attr("selected", "selected").attr("code", value.code)
+            )
+          } else {
+            $('#specific-select').append(
+              $("<option></option>").attr("value", value.id).text(value.name).attr("code", value.code)
+            )
+          }  
+          // Default Value:
+          var code = $('option:selected', $('#specific-select')).attr('code');
           $("#extrafield_first_code").val(code);
         });
       });

@@ -140,7 +140,7 @@
 
     $('#category-select').keyup(function(){
       var category_id = $(this).val();
-      complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}, 0");
+      complete_infocombo2("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}, 0");
     });
 
     $('#subcategory-select').change(function(){

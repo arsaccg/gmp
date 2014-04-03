@@ -12,6 +12,7 @@ class Logistics::ArticlesController < ApplicationController
     @group = Category.first
     @subgroup = Subcategory.first
     @typeOfArticle = TypeOfArticle.first
+    @specific = Specific.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
       render layout: 'dashboard'
     else
@@ -59,6 +60,11 @@ class Logistics::ArticlesController < ApplicationController
     @subcategory_article.each do |sub|
       @subcategory_article = sub.code
     end
+    @specific_article = Specific.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
+    @specific_article.each do |spe|
+      @specific_article = spe.code
+    end
+
     # Traemos las Unidades de Medida
     @unitOfMeasurement = UnitOfMeasurement.all
     @unitid = @article.unit_of_measurement_id
@@ -76,7 +82,7 @@ class Logistics::ArticlesController < ApplicationController
     article.code = params[:extrafield]['first_code'].to_s + params[:article]['code'].to_s
     article.name = params[:article]['name']
     article.description = params[:article]['description']
-    article.category_id = params[:article]['category_id']
+    article.specifc_id = params[:article]['specific_id']
     article.type_of_article_id = params[:article]['type_of_article_id']
     article.unit_of_measurement_id = params[:article]['unit_of_measurement_id']
     if article.save
@@ -90,15 +96,19 @@ class Logistics::ArticlesController < ApplicationController
       @article = article
       # El tipo especifico de Insumo
       @typeOfArticle = @article.type_of_article.id
-      @categories = Category.all
+      @specific = Specific.all
       # La categoria al que pertenece
-      @category_article = @article.category.id
+      @specific_article = @article.specific.id
       # Traemos las SubCategorias
       @subcategories = @article.category.subcategories
       # Traemos la subcategoria
       @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
       @subcategory_article.each do |sub|
         @subcategory_article = sub.code
+      end
+      @specific_article = Specific.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
+      @specific_article.each do |spe|
+        @specific_article = spe.code
       end
       # Traemos las Unidades de Medida
       @units = Array.new
@@ -114,6 +124,7 @@ class Logistics::ArticlesController < ApplicationController
 
   def new
     @article = Article.new
+    @specifics = Specific.all
     @categories = Category.all
     @unitOfMeasurement = UnitOfMeasurement.all
     @typeOfArticles = TypeOfArticle.all
@@ -174,6 +185,6 @@ class Logistics::ArticlesController < ApplicationController
 
   private
   def article_parameters
-    params.require(:article).permit(:code, :name, :description, :category_id, :type_of_article_id, :unit_of_measurement_id)
+    params.require(:article).permit(:code, :name, :description, :specific_id, :type_of_article_id, :unit_of_measurement_id)
   end
 end
