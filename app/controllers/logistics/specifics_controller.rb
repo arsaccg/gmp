@@ -13,8 +13,8 @@ class Logistics::SpecificsController < ApplicationController
 
   def new
     @Specifics = Specific.new
-    @SubCategories = Subcategory.all
-    @Categories = Category.all
+    @subcategories = Subcategory.all
+    @categories = Category.all
     render :new, layout: false
   end
 
@@ -39,15 +39,13 @@ class Logistics::SpecificsController < ApplicationController
   end
 
   def edit
-    @subcategory_specific = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
-    @subcategory_specific.each do |sub|
-      @subcategory_specific = sub.code
-    end
-
-
     @Specifics = Specific.find(params[:id])
-    @SubCategories = Subcategory.all
-    @Categories = Category.all
+    # Categoria y Subcategoria especifica
+    @subcategory_specific = @Specifics.subcategory
+    @category_specific = @subcategory_specific.category
+
+    @categories = Category.all
+    @subcategories = @category_specific.subcategories
     @action = 'edit'
     render layout: false
   end
@@ -55,7 +53,6 @@ class Logistics::SpecificsController < ApplicationController
   def update
     specific = Specific.find(params[:id])
     specific.subcategory_id = params[:specific]['subcategory_id'].to_s
-    specific.category_id = params[:specific]['category_id'].to_s
     specific.code = params[:extrafield]['first_code'].to_s + params[:specific]['code'].to_s
     specific.name = params[:specific]['name'].to_s
     if specific.save #update_attributes(subcategory_parameters)
@@ -66,14 +63,14 @@ class Logistics::SpecificsController < ApplicationController
         flash[:error] =  flash[:error].to_s + error.to_s + "  "
       end
 
-      @subcategory_specific = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
-      @subcategory_specific.each do |sub|
-      @subcategory_specific = sub.code
-    end
       # Load new()
       @Specifics = specific
-      @SubCategories = Subcategory.all
-      @Categories = Category.all
+      @subcategory_specific = @Specifics.subcategory
+      @category_specific = @subcategory_specific.category
+
+      @categories = Category.all
+      @subcategories = @category_specific.subcategories
+      @action = 'edit'
       render :edit, layout: false
     end
   end
