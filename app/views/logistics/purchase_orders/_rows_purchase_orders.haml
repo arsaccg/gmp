@@ -80,8 +80,8 @@
           %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{purchase_order_pdf_logistics_purchase_order_path(purchase.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
             %i.fa.fa-file
             
-      %a.btn.btn-success.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=#{get_prev_state(purchase.state)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Retroceder el estado"}
+      %a.btn.btn-success.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', {company_id: $.company_global_id, state_change: '#{get_prev_state(purchase.state)}'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Retroceder el estado"}
         %i.fa.fa-mail-reply
 
-      %a.btn.btn-info.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}?state_change=#{get_next_state(purchase.state)}', 'content', null, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
+      %a.btn.btn-info.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', {company_id: $.company_global_id, state_change: '#{get_next_state(purchase.state)}'}, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
         %i.fa.fa-flag

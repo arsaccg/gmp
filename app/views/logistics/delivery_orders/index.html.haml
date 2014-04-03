@@ -6,7 +6,7 @@
         Ordenes de Suministros
     - if @article != nil && @sector != nil && @phase != nil && @centerOfAttention != nil && @costcenters.first != nil
       .col-sm-3{ "style" => "margin-top: 10px;" }
-        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_delivery_order_path}', 'content', {company_id: $.company_global_id}, null, 'GET')"}
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_delivery_order_path}', 'content', {company_id: $.company_global_id, cost_center_id: $('#cost-center-selected').val()}, null, 'GET')"}
           Agregar Nueva Orden de Suministro
 
     - if flash[:notice] != nil
@@ -38,6 +38,7 @@
       %div
         .smart-form
           %section
+            %label.label Selecciona el centro de costo para ver su información
             %label.select
               %select{ 'name' => 'cost_center_id', 'id' => 'cost-center-selected' }
                 - @costcenters.each do |cc|

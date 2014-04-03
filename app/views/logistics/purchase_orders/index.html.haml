@@ -37,6 +37,7 @@
       %div
         .smart-form
           %section
+            %label.label Selecciona el centro de costo para ver su información
             %label.select
               %select{ 'name' => 'cost_center_id', 'id' => 'cost-center-selected' }
                 - @costcenters.each do |cc|

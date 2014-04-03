@@ -8,6 +8,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def show
+    @company = params[:company_id]
     @purchaseOrder = PurchaseOrder.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
@@ -147,7 +148,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def gorevise
@@ -158,7 +159,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goapprove
@@ -169,7 +170,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goobserve
@@ -180,7 +181,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def purchase_order_pdf

@@ -40,10 +40,10 @@
       %a.btn.btn-view.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
         %i.fa.fa-eye
 
-      %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=#{get_prev_state(delivery.state)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Retroceder el estado"}
+      %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: '#{get_prev_state(delivery.state)}'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Retroceder el estado"}
         %i.fa.fa-mail-reply
 
-      %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=#{get_next_state(delivery.state)}', 'content', null, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
+      %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: '#{get_next_state(delivery.state)}'}, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
         %i.fa.fa-flag
 
       - case delivery.state

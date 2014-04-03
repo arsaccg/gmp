@@ -10,9 +10,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   def new
     @company = params[:company_id]
+    @cost_center = CostCenter.find(params[:cost_center_id])
     @deliveryOrder = DeliveryOrder.new
     @articles = Article.all
-    @costcenters = Company.find(@company).cost_centers
+    # @costcenters = Company.find(@company).cost_centers
     render layout: false
   end
 
@@ -30,6 +31,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def show
+    @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
@@ -118,7 +120,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def gorevise
@@ -129,7 +131,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goapprove
@@ -140,7 +142,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goobserve
@@ -151,7 +153,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def delivery_order_pdf
