@@ -9,9 +9,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def new
+    @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.new
     @articles = Article.all
-    @costcenters = Company.find(params[:company_id]).cost_centers
+    @costcenters = Company.find(@company).cost_centers
     render layout: false
   end
 
@@ -21,10 +22,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
     deliveryOrder.user_id = current_user.id
     if deliveryOrder.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
-      redirect_to :action => :index
+      redirect_to :action => :index, company_id: params[:company_id]
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index
+      redirect_to :action => :index, company_id: params[:company_id]
     end
   end
 

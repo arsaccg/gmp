@@ -40,6 +40,7 @@
             .form-group.col-md-8
               %label.col-md-1{for: "description", style: "margin-right: 4%;"} Glosa
               .col-md-9.smart-form= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+            = hidden_field_tag "company_id"
 
         .col-sm-12
           %fieldset
@@ -140,6 +141,7 @@
 :javascript
   
   $(document).ready(function(){
+    $("#company_id").val($.company_global_id);
     loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
     $('#article-select').select2();
 
