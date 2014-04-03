@@ -125,6 +125,7 @@ ArsacLogistica::Application.routes.draw do
     resources :specifics do
       collection do
         post 'get_subcategory_form_category'
+        post 'get_specific_from_subcategory'
       end
     end
     resources :categories    

@@ -2,7 +2,7 @@
 class Article < ActiveRecord::Base
 	has_many :deliver_orders
   
-	belongs_to :category  
+	belongs_to :specific
 	belongs_to :type_of_article
   
 	belongs_to :unit_of_measurement#, :through => :article_unit_of_measurements
