@@ -26,6 +26,7 @@
 = javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
 = javascript_include_tag 'plugin/datatables/DT_bootstrap'
 
+:javascript
   $('#backlist-entity').click(function(){
       load_url_ajax("#{logistics_entities_path}", 'content', null, null, 'GET');
   });

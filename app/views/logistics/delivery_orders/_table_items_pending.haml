@@ -10,7 +10,7 @@
       %table#items-pending-requested.table.table-striped.table-bordered.table-hover
         %thead
           %tr
-            %th Código de la orden de Suministro
+            %th Código de la O.S
             %th Código del Artículo
             %th Nombre del Artículo
             %th Unidad de Medida
@@ -21,78 +21,3 @@
             %th Centro de Atención
             %th Fecha Programada
         %tbody{ :id => "body-items-pending-requested" }
-
-:javascript
-  // DO NOT REMOVE : GLOBAL FUNCTIONS!
-  pageSetUp();
-  
-  // PAGE RELATED SCRIPTS
-
-  loadDataTableScripts();
-  function loadDataTableScripts() {
-
-    loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
-
-    function dt_2() {
-      loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
-    }
-
-    function dt_3() {
-      loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
-    }
-
-    function dt_4() {
-      loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
-    }
-
-    function dt_5() {
-      loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
-    }
-
-    function dt_6() {
-      loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
-    }
-
-    function dt_7() {
-      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
-    }
-
-  }
-
-  function runDataTables() {
-
-    /*
-     * BASIC
-     */
-    $('#items-pending-requested').dataTable({
-      "sPaginationType" : "bootstrap_full"
-    });
-
-    /* END BASIC */
-
-    /* Add the events etc before DataTables hides a column */
-    $("#items-pending-requested thead input").keyup(function() {
-      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
-    });
-
-    $("#items-pending-requested thead input").each(function(i) {
-      this.initVal = this.value;
-    });
-
-    $("#items-pending-requested thead input").focus(function() {
-      if (this.className == "search_init") {
-        this.className = "";
-        this.value = "";
-      }
-    });
-
-    $("#items-pending-requested thead input").blur(function(i) {
-      if (this.value == "") {
-        this.className = "search_init";
-        this.value = this.initVal;
-      }
-    });
-
-    /* END TABLE TOOLS */
-
-  }

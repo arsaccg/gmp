@@ -86,7 +86,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @amount = params[:amount].to_f
     @centerOfAttention = CenterOfAttention.all
     @code_article, @name_article, @id_article = @article.code, @article.name, @article.id
-    @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).name
+    @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
     @unitOfMeasurementId = data_article_unit[1]
     
     render(partial: 'delivery_order_items', :layout => false)
@@ -216,6 +216,6 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   private
   def delivery_order_parameters
-    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, :cost_center_id, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount, :scheduled_date, :center_of_attention_id])
+    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, :cost_center_id, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount, :scheduled_date, :center_of_attention_id, :_destroy])
   end
 end

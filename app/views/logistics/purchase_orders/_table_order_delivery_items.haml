@@ -3,7 +3,7 @@
     %td(style="display:none" class="pod-di")
       = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][delivery_order_detail_id]', dode.id.to_i
     %td=dode.article.code
-    %td=dode.article.description
+    %td=dode.article.name
     %td.unit-of-measurement
       =dode.unit_of_measurement.symbol
     %td.amount
