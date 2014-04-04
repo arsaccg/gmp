@@ -139,7 +139,7 @@
   function calculatePriceFromIgv(element){
     var price_with_igv = parseFloat($(element).val()).toFixed(2);
     var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
-    var price_without_igv = parseFloat(price_with_igv / (1.18*amount)).toFixed(2);
+    var price_without_igv = parseFloat(price_with_igv / ((#{@igv})*amount)).toFixed(2);
 
     $(element).parent().siblings('.unit-price').find('input').val(price_without_igv);
 
@@ -152,7 +152,7 @@
   function enableFieldsForIgv(element){
     if($(element).is(":checked")){
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*1.18).toFixed(2));
+      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*(#{@igv})).toFixed(2));
     } else {
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
       $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);

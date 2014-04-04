@@ -52,7 +52,7 @@
             %label.input{for: "code"}
               %i.icon-append.fa.fa-superscript
               - if @article.code != nil
-                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category', :value => "#{@article.code[6,4]}"}, label: false
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category', :value => "#{@article.code[8,6]}"}, label: false
               - else
                 = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
         .row
@@ -71,9 +71,9 @@
                   - if @unitid == unito.id
                     %option{:value => "#{unito.id}", :selected => true}
                       =unito.name
-                    - break
-                  %option{:value => "#{unito.id}"}
-                    =unito.name
+                  - else
+                    %option{:value => "#{unito.id}"}
+                      =unito.name
               - else
                 - @unitOfMeasurement.each do |unit|
                   %option{:value => "#{unit.id}"}
@@ -93,6 +93,9 @@
 :javascript
   $(document).ready(function () {
     $("#type-article-select").focus();
+
+    var type = $('option:selected', $('#type-article-select')).attr('rel');
+    $('#extrafield_first_code').val(type);
 
     var category_id = $("#category-select").val();
     complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}", "0302");
@@ -172,19 +175,15 @@
       complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}, 0");
       clicknum = 4;
      }
-  });
-
-    $('#subcategory-select').click(function(){
-      clicknum2++;
+    clicknum2++;
       if(clicknum2 == 1){
-        var sub_code = $(this).val();
         var subcategory_id = $(this).val();
-        var type = $('option:selected', $('#type-article-select')).attr('rel');
         complete_infocombo2("#{get_specific_from_subcategory_logistics_specifics_path}", subcategory_id, "#{form_authenticity_token}, 0");
-        $('#extrafield_first_code').val(type+sub_code);
         clicknum2 = 0;
       }
-    });
+  });
+
+
 
     $('#specific-select').click(function(){
       clicknum3++;
@@ -200,11 +199,8 @@
 
     $('#category-select').change(function(){
       var category_id = $(this).val();
-      var code = $('option:selected', $('#category-select')).attr('rel');
-      var type = $('option:selected', $('#type-article-select')).attr('rel');
-      $('#extrafield_first_code').val(type+code);
       complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}, 0");
-
+      console.log(category_id);
     });
 
     $('#category-select').keyup(function(){
@@ -213,26 +209,26 @@
     });
 
     $('#subcategory-select').change(function(){
-      var subcategory_id= $(this).val();
+      var subcategory_id = $(this).val();
       complete_infocombo2("#{get_specific_from_subcategory_logistics_specifics_path}", subcategory_id, "#{form_authenticity_token}, 0");
+      console.log(subcategory_id);
     });
 
     $('#subcategory-select').keyup(function(){
-      var sub_code = $(this).val();
-      var type = $('option:selected', $('#type-article-select')).attr('rel');
-      $('#extrafield_first_code').val(type+sub_code);
+      var subcategory_id = $(this).val();
+      complete_infocombo2("#{get_specific_from_subcategory_logistics_specifics_path}", subcategory_id, "#{form_authenticity_token}, 0");
     });
 
     $('#specific-select').change(function(){
       var es_code = $(this).val();
-      var type = $('option:selected', $('#type-article-select')).attr('rel') + $('option:selected', $('#subcategory-select')).attr('rel');
-      $('#extrafield_first_code').val(type+sub_code+es_code);
+      var type = $('option:selected', $('#type-article-select')).attr('rel') + $('option:selected', $('#specific-select')).attr('code');
+      $('#extrafield_first_code').val(type);
     });
 
     $('#specific-select').keyup(function(){
       var es_code =$(this).val();
-      var type = $('option:selected', $('#type-article-select')).attr('rel') + $('option:selected', $('#subcategory-select')).attr('rel');
-      $('#extrafield_first_code').val(type+es_code);
+      var type = $('option:selected', $('#type-article-select')).attr('rel') + $('option:selected', $('#specific-select')).attr('code');
+      $('#extrafield_first_code').val(type);
     });
 
     $('#category-select').change(function(){
@@ -241,7 +237,8 @@
     });
 
     $('#type-article-select').change(function(){
-      $('#extrafield_first_code').val('');
+      var type = $('option:selected', $('#type-article-select')).attr('rel')
+      $('#extrafield_first_code').val(type);
     });
   });
 
@@ -304,7 +301,7 @@
             )
           }  
           // Default Value:
-          var code = $('option:selected', $('#specific-select')).attr('code');
+          var code =$('option:selected', $('#type-article-select')).attr('rel')+ $('option:selected', $('#specific-select')).attr('code');
           $("#extrafield_first_code").val(code);
         });
       });
