@@ -29,6 +29,10 @@ class Logistics::PurchaseOrdersController < ApplicationController
   def new
     @company = params[:company_id]
     @purchaseOrder = PurchaseOrder.new
+    #Calcular IGV
+    FinancialVariable.where("name LIKE '%IGV%'").each do |val|
+      @igv= val.value.to_f+1
+    end
     TypeEntity.where("id = 1").each do |tent|
       @suppliers = tent.entities
     end
@@ -41,6 +45,10 @@ class Logistics::PurchaseOrdersController < ApplicationController
   def edit
     @reg_n = Time.now.to_i
     @purchaseOrder = PurchaseOrder.find(params[:id])
+    #Calcular IGV
+    FinancialVariable.where("name LIKE '%IGV%'").each do |val|
+      @igv= val.value.to_f+1
+    end
     TypeEntity.where("id = 1").each do |tent|
       @suppliers = tent.entities
     end
