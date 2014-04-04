@@ -14,32 +14,55 @@
               .form-group.col-md-4
                 %label.col-md-3{for: "id"} Código
                 .col-md-9.smart-form= f.input :id, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.id.to_s.rjust(5, '0')}, label: false, readonly: true
-            .form-group.col-md-4
-              %label.col-md-3{for: "cost_center_id"} Centro de Costo
-              .col-md-9.smart-form
-                %select.form-control#delivery_order_cost_center_id{:name =>"delivery_order[cost_center_id]"}
-                  - @costcenters.each do |unit|
-                    %option{:value => "#{unit.id}", :rel => "#{unit.id}", :selected => @deliveryOrder.cost_center_id == unit.id}
-                      = unit.name
-            .form-group.col-md-4
-              %label.col-md-3{for: "state"} Estado
-              .col-md-9.smart-form
-                = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true
-            .form-group.col-md-4
-              %label.col-md-3{for: "date_of_issue"} Fecha de Requerimiento
-              .col-md-9.smart-form
-                = f.input :date_of_issue, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date"}, label: false
-            .form-group.col-md-4
-              %label.col-md-3{for: "scheduled"} Fecha Programada
-              .col-md-9.smart-form
-                = f.input :scheduled, placeholder: "Fecha Programada", as: :string, :input_html => {:class => 'form-control', type: "date"}, label: false
-            .form-group.col-md-4
-              %label.col-md-3{for: "liable"} Responsable
-              .col-md-9.smart-form
-                = text_field(:deliveryOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}", readonly: true)
-            .form-group.col-md-8
-              %label.col-md-1{for: "description", style: "margin-right: 4%;"} Glosa
-              .col-md-9.smart-form= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+            - if @action == 'edit'
+              .form-group.col-md-4
+                %label.col-md-3{for: "cost_center_id"} Centro de Costo
+                .col-md-9.smart-form
+                  %select.form-control#delivery_order_cost_center_id{:name =>"delivery_order[cost_center_id]"}
+                    - @costcenters.each do |unit|
+                      %option{:value => "#{unit.id}", :rel => "#{unit.id}", :selected => @deliveryOrder.cost_center_id == unit.id}
+                        = unit.name
+              .form-group.col-md-4
+                %label.col-md-3{for: "state"} Estado
+                .col-md-9.smart-form
+                  = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true
+              .form-group.col-md-4
+                %label.col-md-3{for: "date_of_issue"} Fecha de Requerimiento
+                .col-md-9.smart-form
+                  = f.input :date_of_issue, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date"}, label: false
+              .form-group.col-md-4
+                %label.col-md-3{for: "scheduled"} Fecha Programada
+                .col-md-9.smart-form
+                  = f.input :scheduled, placeholder: "Fecha Programada", as: :string, :input_html => {:class => 'form-control', type: "date"}, label: false
+              .form-group.col-md-4
+                %label.col-md-3{for: "liable"} Responsable
+                .col-md-9.smart-form
+                  = text_field(:deliveryOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}", readonly: true)
+              .form-group.col-md-8
+                %label.col-md-1{for: "description", style: "margin-right: 4%;"} Glosa
+                .col-md-9.smart-form= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+            - else
+              = hidden_field_tag "delivery_order[cost_center_id]", @cost_center.id
+              .form-group.col-md-4
+                %label.col-md-3{for: "state"} Estado
+                .col-md-9.smart-form
+                  = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true
+              .form-group.col-md-4
+                %label.col-md-3{for: "date_of_issue"} Fecha de Requerimiento
+                .col-md-9.smart-form
+                  = f.input :date_of_issue, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date"}, label: false
+              .form-group.col-md-4
+                %label.col-md-3{for: "scheduled"} Fecha Programada
+                .col-md-9.smart-form
+                  = f.input :scheduled, placeholder: "Fecha Programada", as: :string, :input_html => {:class => 'form-control', type: "date"}, label: false
+              .form-group.col-md-4
+                %label.col-md-3{for: "liable"} Responsable
+                .col-md-9.smart-form
+                  = text_field(:deliveryOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}", readonly: true)
+              .form-group.col-md-8
+                %label.col-md-1{for: "description"} Glosa
+                .col-md-11= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+            
             = hidden_field_tag "company_id"
 
         .col-sm-12
@@ -73,7 +96,7 @@
                       %th Fases/Subfases
                       %th Centro de Atención
                       %th Fecha Programada
-                      %th Equipos
+                      //%th Equipos
                       %th Glosa
                       %th 
                   %tbody(id="article_items_table")
@@ -99,8 +122,9 @@
                                 - if sect.id == dod.sector.id
                                   %option{:value => "#{sect.id}", :selected => true}
                                     = sect.name
-                                %option{:value => "#{sect.id}"}
-                                  = sect.name
+                                - else
+                                  %option{:value => "#{sect.id}"}
+                                    = sect.name
                           %td
                             %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
                               - @phases.each do |phas|
@@ -109,16 +133,18 @@
                                     - if subphase.id == dod.phase.id
                                       %option{:value => "#{subphase.id}", :selected => true}
                                         = subphase.name
-                                    %option{:value => "#{subphase.id}"}
-                                      = subphase.name
+                                    - else
+                                      %option{:value => "#{subphase.id}"}
+                                        = subphase.name
                           %td(class="order_delivery_centro_atencion")
                             %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][center_of_attention_id]"}
                               - @centerOfAttentions.each do |centerOfAttention|
                                 - if centerOfAttention.id == dod.center_of_attention.id
                                   %option{:value => "#{centerOfAttention.id}", :selected => true}
                                     = centerOfAttention.name
-                                %option{:value => "#{centerOfAttention.id}"}
-                                  = centerOfAttention.name
+                                - else
+                                  %option{:value => "#{centerOfAttention.id}"}
+                                    = centerOfAttention.name
                           %td(class="order_delivery_fecha_programada")
                             %section.col.col-6
                               %label.input.state-success
@@ -141,7 +167,7 @@
 :javascript
   
   $(document).ready(function(){
-    $("#company_id").val($.company_global_id);
+    $("#company_id").val("#{@company}");
     loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
     $('#article-select').select2();
 

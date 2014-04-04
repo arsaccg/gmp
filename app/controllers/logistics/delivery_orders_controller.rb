@@ -10,9 +10,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   def new
     @company = params[:company_id]
+    @cost_center = CostCenter.find(params[:cost_center_id])
     @deliveryOrder = DeliveryOrder.new
     @articles = Article.all
-    @costcenters = Company.find(@company).cost_centers
+    # @costcenters = Company.find(@company).cost_centers
     render layout: false
   end
 
@@ -30,6 +31,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def show
+    @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
@@ -41,12 +43,13 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def edit
+    @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.find(params[:id])
     @articles = Article.all
     @sectors = Sector.all
     @phases = Phase.where("category LIKE 'phase'")
     @centerOfAttentions = CenterOfAttention.all
-    @costcenters = Company.find(params[:company_id]).cost_centers
+    @costcenters = Company.find(@company).cost_centers
     @action = 'edit'
     render layout: false
   end
@@ -55,18 +58,19 @@ class Logistics::DeliveryOrdersController < ApplicationController
     deliveryOrder = DeliveryOrder.find(params[:id])
     deliveryOrder.update_attributes(delivery_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def show_rows_delivery_orders
     @deliveryOrders = Array.new
+    @company = params[:company_id]
     if !params[:pending]
-      Company.find(params[:company_id]).cost_centers.find(params[:cost_center_id]).delivery_orders.each do |delivery_order|
+      Company.find(@company).cost_centers.find(params[:cost_center_id]).delivery_orders.each do |delivery_order|
         @deliveryOrders << delivery_order
       end
       render(partial: 'rows_delivery_orders', :layout => false)
     else
-      Company.find(params[:company_id]).cost_centers.find(params[:cost_center_id]).delivery_orders.where("state LIKE 'approved'").each do |delivery_order|
+      Company.find(@company).cost_centers.find(params[:cost_center_id]).delivery_orders.where("state LIKE 'approved'").each do |delivery_order|
         @deliveryOrders << delivery_order
       end
       render(partial: 'rows_tracking_delivery_orders', :layout => false)
@@ -97,6 +101,15 @@ class Logistics::DeliveryOrdersController < ApplicationController
     render :tracing_orders, :layout => false
   end
 
+  # DO DELETE row
+  def delete
+    @deliveryOrder = DeliveryOrder.destroy(params[:id])
+    @deliveryOrder.delivery_order_details.each do |dod|
+      DeliveryOrderDetail.destroy(dod.id)
+    end
+    render :json => @deliveryOrder
+  end
+
   # Este es el cambio de estado
   def destroy
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
@@ -106,7 +119,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    #redirect_to :action => :index
+    #redirect_to :action => :index, company_id: params[:company_id]
     render :json => @deliveryOrder
   end
 
@@ -118,7 +131,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def gorevise
@@ -129,7 +142,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goapprove
@@ -140,7 +153,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goobserve
@@ -151,7 +164,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def delivery_order_pdf

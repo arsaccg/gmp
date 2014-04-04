@@ -1,13 +1,15 @@
 class Logistics::PurchaseOrdersController < ApplicationController
   def index
+    @company = params[:company_id]
     @purchaseOrders = PurchaseOrder.all
     @deliveryOrders = DeliveryOrder.all.where("state LIKE 'approved'")
     @deliveryOrder = DeliveryOrder.all.first()
-    @costcenters = CostCenter.where("company_id = #{params[:company_id]}")
+    @costcenters = CostCenter.where("company_id = #{@company}")
     render layout: false
   end
 
   def show
+    @company = params[:company_id]
     @purchaseOrder = PurchaseOrder.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
@@ -20,7 +22,8 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   def show_rows_purchase_orders
     @purchaseOrders = Array.new
-    Company.find(params[:company_id]).cost_centers.find(params[:cost_center_id]).purchase_orders.each do |purchase_order|
+    @company = params[:company_id]
+    Company.find(@company).cost_centers.find(params[:cost_center_id]).purchase_orders.each do |purchase_order|
       @purchaseOrders << purchase_order
     end
     render(partial: 'rows_purchase_orders', :layout => false)
@@ -43,6 +46,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def edit
+    @company = params[:company_id]
     @reg_n = Time.now.to_i
     @purchaseOrder = PurchaseOrder.find(params[:id])
     #Calcular IGV
@@ -131,7 +135,16 @@ class Logistics::PurchaseOrdersController < ApplicationController
     purchaseOrder = PurchaseOrder.find(params[:id])
     purchaseOrder.update_attributes(purchase_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
+  end
+
+  # DO DELETE row
+  def delete
+    @purchaseOrder = PurchaseOrder.destroy(params[:id])
+    @purchaseOrder.purchase_order_details.each do |pod|
+      PurchaseOrderDetail.destroy(pod.id)
+    end
+    render :json => @purchaseOrder
   end
 
   # Este es el cambio de estado
@@ -143,7 +156,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    #redirect_to :action => :index
+    #redirect_to :action => :index, company_id: params[:company_id]
     render :json => @purchaseOrder
   end
 
@@ -155,7 +168,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def gorevise
@@ -166,7 +179,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goapprove
@@ -177,7 +190,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goobserve
@@ -188,7 +201,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def purchase_order_pdf

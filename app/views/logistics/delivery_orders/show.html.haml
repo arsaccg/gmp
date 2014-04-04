@@ -55,7 +55,7 @@
           - case @state_change
             - when 'issued'
               - if current_user.has_role? :issuer
-                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goissue_logistics_delivery_order_path(@deliveryOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goissue_logistics_delivery_order_path(@deliveryOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Emitir
               - else
                 %p.alert.alert-danger
@@ -64,7 +64,7 @@
                   No tienes los privilegios para Emitir.
             - when 'observed'
               - if current_user.has_role? :issuer
-                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goobserve_logistics_delivery_order_path(@deliveryOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goobserve_logistics_delivery_order_path(@deliveryOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Observar
               - else
                 %p.alert.alert-danger
@@ -73,7 +73,7 @@
                   No tienes los privilegios para hacer una Observación.
             - when 'revised'
               - if current_user.has_role? :reviser
-                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{gorevise_logistics_delivery_order_path(@deliveryOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{gorevise_logistics_delivery_order_path(@deliveryOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Dar visto bueno
               - else
                 %p.alert.alert-danger
@@ -82,7 +82,7 @@
                   No tienes los privilegios para Dar el Visto Bueno.
             - when 'canceled'
               - if current_user.has_role? :canceller
-                %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_delivery_order_path(@deliveryOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_delivery_orders_path}')"}
+                %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_delivery_order_path(@deliveryOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_delivery_orders_path}?company_id=#{@company}')"}
                   Anular
               - else
                 %p.alert.alert-danger
@@ -91,7 +91,7 @@
                   No tienes los privilegios para Anular.
             - when 'approved'
               - if current_user.has_role? :approver
-                %a.btn.btn-primary.btn-lg{:onclick => "javascript:load_url_ajax('#{goapprove_logistics_delivery_order_path(@deliveryOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
+                %a.btn.btn-primary.btn-lg{:onclick => "javascript:load_url_ajax('#{goapprove_logistics_delivery_order_path(@deliveryOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Aprobar
               - else
                 %p.alert.alert-danger

@@ -3,21 +3,23 @@
     = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article.to_i
   %td.measurement-id(style="display:none")
     = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][unit_of_measurement_id]', @unitOfMeasurementId.to_i
-  %td.col-md-1
+  %td
     = @code_article
-  %td.col-md-1
+  %td
     = @name_article
-  %td.col-md-1
+  %td
     = @unitOfMeasurement
-  %td.col-md-1
+  %td.col-md-1{:style => "width:5%"}
     = text_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", id: 'article-amount'
   %td.sector.col-md-1
     %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][sector_id]"}
+      %option{:value => "0", :selected => true, :disabled => true} Seleccionar Sector
       - @sectors.each do |sector|
         %option{:value => "#{sector.id}"}
           = sector.name
   %td
     %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][phase_id]"}
+      %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
       - @phases.each do |phase|
         %optgroup{:label => "#{phase.name}"}
           - Phase.get_subphases(phase.code).each do |subphase|
@@ -25,6 +27,7 @@
               = subphase.name
   %td.order_delivery_centro_atencion
     %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][center_of_attention_id]"}
+      %option{:value => "0", :selected => true, :disabled => true} Seleccionar Centro de atención
       - @centerOfAttention.each do |centerAttention|
         %option{:value => "#{centerAttention.id}"}
           = centerAttention.name
@@ -34,7 +37,7 @@
         %label.input.state-success
           %i.icon-append.fa.fa-calendar
           %input.scheduled-date{:type => "date", :name => "delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][scheduled_date]"}
-  %td(class="order_delivery_equipos")
+  //%td(class="order_delivery_equipos")
   %td
     = text_area_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][description]', nil,class: "form-control description"
   %td{:style => "width: 1%;"}

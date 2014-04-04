@@ -4,9 +4,9 @@
       %h1.page-title.txt-color-blueDark{ "style" => "margin-bottom: 10px;"}
         %i.fa.fa-pencil-square-o.fa-fw
         Ordenes de Compra
-    - if @deliveryOrders != nil && @deliveryOrder != nil
+    - if @deliveryOrders != nil && @deliveryOrder != nil && @costcenters.first != nil
       .col-sm-3{ "style" => "margin-top: 10px;" }
-        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_purchase_order_path}', 'content', {company_id: $.company_global_id}, null, 'GET')"}
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_purchase_order_path}', 'content', {company_id: #{@company}}, null, 'GET')"}
           Agregar Nueva Orden de Compra
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
@@ -37,6 +37,7 @@
       %div
         .smart-form
           %section
+            %label.label Selecciona el centro de costo para ver su información
             %label.select
               %select{ 'name' => 'cost_center_id', 'id' => 'cost-center-selected' }
                 - @costcenters.each do |cc|
@@ -47,25 +48,31 @@
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table'
 
+- if @costcenters.first != nil
+  :javascript
+
+    $(document).ready(function(){
+
+      $("#cost-center-selected").focus();
+      
+      load_items_delivery_order_ajax('#{show_rows_purchase_orders_logistics_purchase_orders_path}', 'body-summary-purchase-orders', {company_id: '#{@company}', cost_center_id: $("#cost-center-selected").val(), authenticity_token: "#{form_authenticity_token}"});
+
+      $('#body-summary-purchase-orders tr td a').tooltip('hide');
+
+      $('#cost-center-selected').change(function(){
+        load_items_delivery_order_ajax('#{show_rows_purchase_orders_logistics_purchase_orders_path}', 'body-summary-purchase-orders', {company_id: '#{@company}', cost_center_id: this.value, authenticity_token: "#{form_authenticity_token}"});
+
+        $('#body-summary-purchase-orders tr td a').tooltip('hide');
+      });
+
+    });
+
 :javascript
 
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
   
   // PAGE RELATED SCRIPTS
-  $(document).ready(function(){
-
-    $("#cost-center-selected").focus();
-    
-    load_items_delivery_order_ajax('#{show_rows_purchase_orders_logistics_purchase_orders_path}', 'body-summary-purchase-orders', {company_id: $.company_global_id, cost_center_id: $("#cost-center-selected").val(), authenticity_token: "#{form_authenticity_token}"});
-
-    $('#cost-center-selected').change(function(){
-      load_items_delivery_order_ajax('#{show_rows_purchase_orders_logistics_purchase_orders_path}', 'body-summary-purchase-orders', {company_id: $.company_global_id, cost_center_id: this.value, authenticity_token: "#{form_authenticity_token}"});
-
-      $('#summary-purchase-orders tr td a').tooltip('hide');
-    });
-
-  });
 
   loadDataTableScripts();
   function loadDataTableScripts() {
