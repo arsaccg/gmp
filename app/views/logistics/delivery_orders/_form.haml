@@ -96,7 +96,7 @@
                       %th Fases/Subfases
                       %th Centro de Atención
                       %th Fecha Programada
-                      %th Equipos
+                      //%th Equipos
                       %th Glosa
                       %th 
                   %tbody(id="article_items_table")
@@ -122,8 +122,9 @@
                                 - if sect.id == dod.sector.id
                                   %option{:value => "#{sect.id}", :selected => true}
                                     = sect.name
-                                %option{:value => "#{sect.id}"}
-                                  = sect.name
+                                - else
+                                  %option{:value => "#{sect.id}"}
+                                    = sect.name
                           %td
                             %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
                               - @phases.each do |phas|
@@ -132,16 +133,18 @@
                                     - if subphase.id == dod.phase.id
                                       %option{:value => "#{subphase.id}", :selected => true}
                                         = subphase.name
-                                    %option{:value => "#{subphase.id}"}
-                                      = subphase.name
+                                    - else
+                                      %option{:value => "#{subphase.id}"}
+                                        = subphase.name
                           %td(class="order_delivery_centro_atencion")
                             %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][center_of_attention_id]"}
                               - @centerOfAttentions.each do |centerOfAttention|
                                 - if centerOfAttention.id == dod.center_of_attention.id
                                   %option{:value => "#{centerOfAttention.id}", :selected => true}
                                     = centerOfAttention.name
-                                %option{:value => "#{centerOfAttention.id}"}
-                                  = centerOfAttention.name
+                                - else
+                                  %option{:value => "#{centerOfAttention.id}"}
+                                    = centerOfAttention.name
                           %td(class="order_delivery_fecha_programada")
                             %section.col.col-6
                               %label.input.state-success
