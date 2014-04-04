@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Articulos
+    %h2 Lista de Variables Financieras
   / widget div
   %div
     / widget edit box
@@ -32,41 +32,30 @@
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
-                %th Código
-                %th Tipo de Artículo
-                %th Específico
                 %th Nombre
-                %th Descripcion
-                %th Unidad de Medida
+                %th Valor
                 %th Acciones
             %tbody
-              - @Article.each do |article|
+              - @financialVariable.each do |variable|
                 %tr
-                  %td 
-                    = article.code
                   %td
-                    = article.type_of_article.name
+                    = variable.name
+                  %TD
+                    = variable.value
                   %td
-                    =article.specific.name
-                  %td
-                    = article.name
-                  %td
-                    = article.description
-                  %td
-                    = article.unit_of_measurement.name
-                  %td
-                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_article_path(article.id)}', 'content', null, null, 'GET')"}
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_financial_variable_path(variable.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{article.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_article_path(article.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_articles_path}')"}}
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{variable.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_financial_variable_path(variable.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_financial_variables_path}')"}}
                       Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
-  
+
   $(document).ready(function () {
     $('[data-toggle="confirmation"]').confirmation();
   });
+
   // PAGE RELATED SCRIPTS
 
   loadDataTableScripts();
@@ -110,6 +99,39 @@
     });
 
     /* END BASIC */
+
+    /* Add the events etc before DataTables hides a column */
+    $("#dt_basic thead input").keyup(function() {
+      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+    });
+
+    $("#dt_basic thead input").each(function(i) {
+      this.initVal = this.value;
+    });
+    $("#datatable_fixed_column thead input").focus(function() {
+      if (this.className == "search_init") {
+        this.className = "";
+        this.value = "";
+      }
+    });
+    $("#dt_basic thead input").blur(function(i) {
+      if (this.value == "") {
+        this.className = "search_init";
+        this.value = this.initVal;
+      }
+    });   
+    
+
+    var oTable = $('#datatable_fixed_column').dataTable({
+      "sDom" : "<'dt-top-row'><'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+      //"sDom" : "t<'row dt-wrapper'<'col-sm-6'i><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'>>",
+      "oLanguage" : {
+        "sSearch" : "Search all columns:"
+      },
+      "bSortCellsTop" : true
+    });   
+    
+
 
     /*
      * COL ORDER

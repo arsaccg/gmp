@@ -25,3 +25,7 @@ Company.create(
   [{ name: 'Consorcio Bagua'}, { ruc: '20494052513' }],
   [{ name: 'Consorcio San Francisco del Oriente'}, { ruc: '20567151779' }],
 )
+
+FinancialVariables.create(
+  [{ name: 'igv'}, { value: '0.18' }]
+)
