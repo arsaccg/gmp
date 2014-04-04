@@ -50,38 +50,38 @@
             %i.fa.fa-flag
 
           - if current_user.has_role? :canceller
-            %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: 'canceled'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Anular"}
+            %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{delete_logistics_delivery_order_path(delivery.id)}?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_delivery_orders_path}?company_id=#{@company}')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Eliminar Orden"}
               %i.fa.fa-trash-o
 
         - when 'issued'
 
-          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
-            %i.fa.fa-file
-
           %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: '#{get_prev_state(delivery.state)}'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Retroceder el estado"}
             %i.fa.fa-mail-reply
 
           %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: '#{get_next_state(delivery.state)}'}, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
             %i.fa.fa-flag
 
+          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
+            %i.fa.fa-file
+
           - if current_user.has_role? :canceller
             %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: 'canceled'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Anular"}
-              %i.fa.fa-trash-o
+              %i.fa.fa-times
 
         - when 'revised'
 
-          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
-            %i.fa.fa-file
-
           %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: '#{get_prev_state(delivery.state)}'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Retroceder el estado"}
             %i.fa.fa-mail-reply
 
           %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: '#{get_next_state(delivery.state)}'}, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
             %i.fa.fa-flag
 
+          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
+            %i.fa.fa-file
+
           - if current_user.has_role? :canceller
             %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: 'canceled'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Anular"}
-              %i.fa.fa-trash-o
+              %i.fa.fa-times
 
         - when 'canceled'
 
@@ -90,15 +90,15 @@
 
         - when 'approved'
 
-          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
-            %i.fa.fa-file
-
           %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: '#{get_prev_state(delivery.state)}'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Retroceder el estado"}
             %i.fa.fa-mail-reply
 
           %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: '#{get_next_state(delivery.state)}'}, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
             %i.fa.fa-flag
 
+          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
+            %i.fa.fa-file
+
           - if current_user.has_role? :canceller
             %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', {company_id: $.company_global_id, state_change: 'canceled'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Anular"}
-              %i.fa.fa-trash-o
+              %i.fa.fa-times

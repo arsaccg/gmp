@@ -55,7 +55,7 @@
             %i.fa.fa-flag
 
           - if current_user.has_role? :canceller
-            %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', {company_id: $.company_global_id, state_change: 'canceled'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Anular"}
+            %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{delete_logistics_purchase_order_path(purchase.id)}?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_purchase_orders_path}?company_id=#{@company}')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Eliminar Orden"}
               %i.fa.fa-trash-o
 
         - when 'issued'
@@ -74,7 +74,7 @@
 
           - if current_user.has_role? :canceller
             %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', {company_id: $.company_global_id, state_change: 'canceled'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Anular"}
-              %i.fa.fa-trash-o
+              %i.fa.fa-times
 
         - when 'revised'
 
@@ -92,7 +92,7 @@
 
           - if current_user.has_role? :canceller
             %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', {company_id: $.company_global_id, state_change: 'canceled'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Anular"}
-              %i.fa.fa-trash-o
+              %i.fa.fa-times
 
         - when 'canceled'
           %a.btn.btn-view.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
@@ -113,4 +113,4 @@
 
           - if current_user.has_role? :canceller
             %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_purchase_order_path(purchase.id)}', 'content', {company_id: $.company_global_id, state_change: 'canceled'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Anular"}
-              %i.fa.fa-trash-o
+              %i.fa.fa-times

@@ -82,7 +82,7 @@
                   No tienes los privilegios para Dar el Visto Bueno.
             - when 'canceled'
               - if current_user.has_role? :canceller
-                %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_delivery_order_path(@deliveryOrder.id)}' + '?authenticity_token=#{form_authenticity_token}&&company_id=#{@company}', 'content', '#{logistics_delivery_orders_path}')"}
+                %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_delivery_order_path(@deliveryOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_delivery_orders_path}?company_id=#{@company}')"}
                   Anular
               - else
                 %p.alert.alert-danger

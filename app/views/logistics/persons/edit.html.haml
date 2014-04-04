@@ -50,14 +50,19 @@
                     %label.label Rol de Usuario
                     %label.select
                       %select.select2#role-user{:name => "role[]", :style => "width:100%;padding: 0;border: none;", :multiple => true}
+                        - status = false
                         - @all_roles.each do |rol|
                           - @roles.each_with_index do |role, i|
                             - if role.to_s == rol[0].to_s
                               %option{value: "#{rol[0]}", selected: true}
                                 = rol[1]
+                              - status = false
                               - break
-                          %option{value: "#{rol[0]}"}
-                            = rol[1]
+                            - else
+                              - status = true
+                          - if status
+                            %option{value: "#{rol[0]}"}
+                              = rol[1]
                       %i
               %footer
                 %button.btn.btn-primary{type: "submit"}

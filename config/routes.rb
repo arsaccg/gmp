@@ -99,6 +99,7 @@ ArsacLogistica::Application.routes.draw do
         get 'delivery_order_pdf'
         post 'delivery_order_pdf'
         get 'show_tracking_orders'
+        delete 'delete'
       end
     end
     resources :purchase_orders do
@@ -115,6 +116,7 @@ ArsacLogistica::Application.routes.draw do
         get 'goobserve'
         get 'purchase_order_pdf'
         post 'purchase_order_pdf'
+        delete 'delete'
       end
     end
     resources :subcategories do

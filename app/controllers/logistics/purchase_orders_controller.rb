@@ -130,6 +130,15 @@ class Logistics::PurchaseOrdersController < ApplicationController
     redirect_to :action => :index, company_id: params[:company_id]
   end
 
+  # DO DELETE row
+  def delete
+    @purchaseOrder = PurchaseOrder.destroy(params[:id])
+    @purchaseOrder.purchase_order_details.each do |pod|
+      PurchaseOrderDetail.destroy(pod.id)
+    end
+    render :json => @purchaseOrder
+  end
+
   # Este es el cambio de estado
   def destroy
     @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
@@ -139,7 +148,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    #redirect_to :action => :index
+    #redirect_to :action => :index, company_id: params[:company_id]
     render :json => @purchaseOrder
   end
 

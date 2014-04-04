@@ -19,15 +19,17 @@
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table_items_pending'
 
-:javascript
+- if @costcenters.first != nil
 
-  $(document).ready(function(){
+  :javascript
 
-    $('#cost-center-selected').focus();
+    $(document).ready(function(){
 
-    load_items_delivery_order_ajax('#{show_rows_delivery_orders_logistics_delivery_orders_path}', 'body-items-pending-requested', {company_id: $.company_global_id, cost_center_id: $("#cost-center-selected").val(), authenticity_token: "#{form_authenticity_token}", pending: true});
+      $('#cost-center-selected').focus();
 
-    $('#cost-center-selected').change(function(){
-      load_items_delivery_order_ajax('#{show_rows_delivery_orders_logistics_delivery_orders_path}', 'body-items-pending-requested', {company_id: $.company_global_id, cost_center_id: this.value, authenticity_token: "#{form_authenticity_token}", pending: true});
+      load_items_delivery_order_ajax('#{show_rows_delivery_orders_logistics_delivery_orders_path}', 'body-items-pending-requested', {company_id: $.company_global_id, cost_center_id: $("#cost-center-selected").val(), authenticity_token: "#{form_authenticity_token}", pending: true});
+
+      $('#cost-center-selected').change(function(){
+        load_items_delivery_order_ajax('#{show_rows_delivery_orders_logistics_delivery_orders_path}', 'body-items-pending-requested', {company_id: $.company_global_id, cost_center_id: this.value, authenticity_token: "#{form_authenticity_token}", pending: true});
+      });
     });
-  });
