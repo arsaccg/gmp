@@ -52,6 +52,8 @@
 
   $(document).ready(function(){
 
+    $("#company_id").val($.company_global_id);
+
     $('#btn-add-more-items-do').click(function(){
       var ids_delivery_order = new Array();
 
@@ -73,14 +75,44 @@
 
   });
 
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
+
   // PAGE RELATED SCRIPTS
   function calculatePriceWithourIgv(element){
-    var amount = parseInt($(element).parent().siblings('.amount').html());
+    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
 
     var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
 
     $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
     $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  function calculatePrice(element){
+    var amount = parseInt($(element).val());
+
+    var price_without_igv = parseFloat($(element).parent().siblings('.unit-price').find('input').val() * amount).toFixed(2);
+
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  function minmax(value, min, max){
+    if(parseInt(value) < min || isNaN(value)) 
+      return min; 
+    else if(parseInt(value) > max) 
+      return max; 
+    else return value;
   }
 
   function add_more_items(){
@@ -106,8 +138,8 @@
   /* Comentando una función que puede servir en un futuro...
   function calculatePriceFromIgv(element){
     var price_with_igv = parseFloat($(element).val()).toFixed(2);
-    var amount = parseInt($(element).parent().siblings('.amount').html());
-    var price_without_igv = parseFloat(price_with_igv / (1.18*amount)).toFixed(2);
+    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
+    var price_without_igv = parseFloat(price_with_igv / ((#{@igv})*amount)).toFixed(2);
 
     $(element).parent().siblings('.unit-price').find('input').val(price_without_igv);
 
@@ -120,7 +152,7 @@
   function enableFieldsForIgv(element){
     if($(element).is(":checked")){
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*1.18).toFixed(2));
+      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*(#{@igv})).toFixed(2));
     } else {
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
       $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);

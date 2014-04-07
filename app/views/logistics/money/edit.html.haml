@@ -8,6 +8,9 @@
     .row
       %article.col-sm-12.col-md-12.col-lg-6
         = render :partial => 'form'
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-moneyed{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado de monedas        
         
 = javascript_include_tag 'plugin/flot/jquery.flot.cust'
 = javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
@@ -22,3 +25,9 @@
 = javascript_include_tag 'plugin/datatables/ZeroClipboard'
 = javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
 = javascript_include_tag 'plugin/datatables/DT_bootstrap'
+
+:javascript
+
+  $('#backlist-moneyed').click(function(){
+      load_url_ajax("#{logistics_money_index_path}", 'content', null, null, 'GET');
+  });

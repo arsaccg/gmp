@@ -4,7 +4,8 @@ class Logistics::CostCentersController < ApplicationController
   
   def index
     flash[:error] = nil
-    @costCenters = CostCenter.all
+    @company = params[:company_id]
+    @costCenters = CostCenter.where(company_id: "#{@company}")
     render layout: false
   end
 
@@ -22,7 +23,7 @@ class Logistics::CostCentersController < ApplicationController
     costCenter = CostCenter.new(cost_center_parameters)
     if costCenter.save
       flash[:notice] = "Se ha creado correctamente el centro de costo."
-      redirect_to :action => :index
+      redirect_to :action => :index, company_id: params[:cost_center]['company_id']
     else
       #"Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
       costCenter.errors.messages.each do |attribute, error|
@@ -80,7 +81,7 @@ class Logistics::CostCentersController < ApplicationController
 
   private
   def cost_center_parameters
-    params.require(:cost_center).permit(:code, :name)
+    params.require(:cost_center).permit(:code, :name, :company_id)
   end
 
 end

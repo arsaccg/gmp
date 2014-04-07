@@ -14,10 +14,21 @@
 //= require jquery_ujs
 //= require jquery_nested_form
 
+$(document).ready(function(){
+  $("#left-panel ul li a").click(function(){
+    $.company_global_id= $(this).attr("company");
+  });
+  
+});
+
 function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
   var url_str = url;
   var div_name = div_id; 
   var type_call = render_type;
+
+  if( loader_flag == 'refresh-body'){
+    parameters = {authenticity_token: parameters}
+  }
   //title = current_element.attr('title');
   //document.title = (title || document.title);
   $.ajax({
@@ -35,11 +46,15 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
           opacity : '1.0'
         }, 300);
       }else{
-        $("#" + div_name).css({
-          opacity : '0.0'
-        }).html(data).delay(50).animate({
-          opacity : '1.0'
-        }, 300);
+        if( loader_flag == 'refresh-body'){
+          $('body').html(data);
+        } else {
+          $("#" + div_name).css({
+            opacity : '0.0'
+          }).html(data).delay(50).animate({
+            opacity : '1.0'
+          }, 300);
+        }
       }
     },
     error : function(xhr, ajaxOptions, thrownError) {
@@ -47,6 +62,8 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
     }
   });
 }
+
+
 
 function delete_to_url(url, div_name, url_index){ /* Method DELETE */
   var url_str = url;

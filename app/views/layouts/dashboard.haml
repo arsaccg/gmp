@@ -44,7 +44,7 @@
       #logo-group
         / PLACE YOUR LOGO HERE
         %span#logo
-          = image_tag 'logo.png', alt: "SmartAdmin"
+          = image_tag @company.avatar.url, alt: "#{@company.name}"
         / END LOGO PLACEHOLDER
         /
 
@@ -95,6 +95,11 @@
           %span
             %a{href: "javascript:void(0)", title: "Search"}
               %i.fa.fa-search
+
+        #return-company.btn-header.transparent.pull-right
+          %span
+            %a{href: "#{root_path}", title: "Ver Compañias"}
+              %i.fa.fa-briefcase
         / end search mobile button
         / input: search field
       / end pulled right: nav area
@@ -124,7 +129,7 @@
           traditional href="" links. See documentation for details.
         %ul
           %li
-            %a{href: "#{show_all_companies_logistics_companies_path}", title: "Compañias"}
+            %a{href: "#", title: "Compañias"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
               %span.menu-item-parent Logística
             %ul
@@ -154,7 +159,7 @@
                         %span.menu-item-parent{'style'=>"width: 100px;"}
                           Centro de Atención
                     %li
-                      %a{href: "#{logistics_cost_centers_path}", title: "Centro de Costos"}
+                      %a{href: "#{logistics_cost_centers_path}?company_id=#{@company.id}", title: "Centro de Costos", company: "#{@company.id}"}
                         %i.fa.fa-lg.fa-fw.fa-desktop
                         %span.menu-item-parent Centro de Costos
                     %li
@@ -164,7 +169,7 @@
                     %li
                       %a{href: "#{logistics_type_of_articles_path}", title: "Articulos"}
                         %i.fa.fa-lg.fa-fw.fa-filter
-                        %span.menu-item-parent Tipo de Artículos
+                        %span.menu-item-parent Tipo de Insumos
                     %li
                       %a{href: "#{logistics_articles_path}", title: "Articulos"}
                         %i.fa.fa-lg.fa-fw.fa-desktop
@@ -201,16 +206,37 @@
                       %a{href: "#{logistics_exchange_of_rates_path}", title: "Tipo de Cambio"}
                         %i.fa.fa-lg.fa-fw.fa-tasks
                         %span.menu-item-parent Tipo de Cambio
+                    %li
+                      %a{href: "#{logistics_financial_variables_path}", title: "Variables Financieras"}
+                        %i.fa.fa-lg.fa-fw.fa-tasks
+                        %span.menu-item-parent Variables Financieras
+                    %li
+                      %a{href: "#{logistics_warehouses_path}", title: "Almacenes"}
+                        %i.fa.fa-lg.fa-fw.fa-tasks
+                        %span.menu-item-parent Almacenes
+                    %li
+                      %a{href: "#{logistics_formats_path}", title: "Formatos"}
+                        %i.fa.fa-lg.fa-fw.fa-tasks
+                        %span.menu-item-parent Formatos
+                    %li
+                      %a{href: "#{logistics_documents_path}", title: "Documentos"}
+                        %i.fa.fa-lg.fa-fw.fa-tasks
+                        %span.menu-item-parent Documentos
               %li
-                %a{href: "#{logistics_delivery_orders_path}", title: "Ordenes de Suministro"}
+                %a{href: "#{logistics_delivery_orders_path}?company_id=#{@company.id}", title: "Ordenes de Suministro", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ordenes de Suministro
               %li
-                %a{href: "#{logistics_purchase_orders_path}", title: "Ordenes de Compra"}
+                %a{href: "#{logistics_purchase_orders_path}?company_id=#{@company.id}", title: "Ordenes de Compra", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ordenes de Compra
+              %li
+                %a{href: "#{show_tracking_orders_logistics_delivery_order_path(@company.id)}", title: "Seguimiento de Ordenes", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Seguimiento de Ordenes
               %li
                 %a{href: "#{logistics_person_path(current_user.id)}", title: "Usuario"}
                   %i.fa.fa-lg.fa-fw.fa-user

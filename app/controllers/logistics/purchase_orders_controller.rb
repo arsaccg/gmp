@@ -1,11 +1,15 @@
 class Logistics::PurchaseOrdersController < ApplicationController
   def index
+    @company = params[:company_id]
     @purchaseOrders = PurchaseOrder.all
     @deliveryOrders = DeliveryOrder.all.where("state LIKE 'approved'")
+    @deliveryOrder = DeliveryOrder.all.first()
+    @costcenters = CostCenter.where("company_id = #{@company}")
     render layout: false
   end
 
   def show
+    @company = params[:company_id]
     @purchaseOrder = PurchaseOrder.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
@@ -16,30 +20,73 @@ class Logistics::PurchaseOrdersController < ApplicationController
     render layout: false
   end
 
+  def show_rows_purchase_orders
+    @purchaseOrders = Array.new
+    @company = params[:company_id]
+    Company.find(@company).cost_centers.find(params[:cost_center_id]).purchase_orders.each do |purchase_order|
+      @purchaseOrders << purchase_order
+    end
+    render(partial: 'rows_purchase_orders', :layout => false)
+  end
+
   def new
+    @company = params[:company_id]
     @purchaseOrder = PurchaseOrder.new
+    #Calcular IGV
+    FinancialVariable.where("name LIKE '%IGV%'").each do |val|
+      @igv= val.value.to_f+1
+    end
+    TypeEntity.where("id = 1").each do |tent|
+      @suppliers = tent.entities
+    end
+    @cost_center = CostCenter.where("company_id = #{@company}")
+    @moneys = Money.all
+    @methodOfPayments = MethodOfPayment.all
+    render layout: false
+  end
+
+  def edit
+    @company = params[:company_id]
+    @reg_n = Time.now.to_i
+    @purchaseOrder = PurchaseOrder.find(params[:id])
+    #Calcular IGV
+    FinancialVariable.where("name LIKE '%IGV%'").each do |val|
+      @igv= val.value.to_f+1
+    end
     TypeEntity.where("id = 1").each do |tent|
       @suppliers = tent.entities
     end
     @cost_center = CostCenter.all
     @moneys = Money.all
     @methodOfPayments = MethodOfPayment.all
+    @action = 'edit'
     render layout: false
-  end
-
-  def show_delivery_order_item_field
-    cost_center = CostCenter.find(params[:id])
-    @deliveryOrders = cost_center.delivery_orders.where("state LIKE 'approved'")
-    render(partial: 'table_items_order', :layout => false)
   end
 
   def add_items_from_delivery_orders
     @reg_n = Time.now.to_i
     @delivery_orders_detail = Array.new
     params[:ids_delivery_order].each do |ido|
-      @delivery_orders_detail << DeliveryOrderDetail.find(ido)
+      @delivery_order_detail = DeliveryOrderDetail.find(ido)
+      total = @delivery_order_detail.amount
+      sum = 0
+      @delivery_order_detail.purchase_order_details.each do |pod|
+        if pod.amount == nil
+          sum += 0
+        else
+          sum += pod.amount
+        end
+      end
+      @delivery_order_detail.amount = total - sum
+      @delivery_orders_detail << @delivery_order_detail
     end
     render(partial: 'table_order_delivery_items', :layout => false)
+  end
+  
+  def show_delivery_order_item_field
+    cost_center = CostCenter.find(params[:id])
+    @deliveryOrders = cost_center.delivery_orders.where("state LIKE 'approved'")
+    render(partial: 'table_items_order', :layout => false)
   end
 
   def more_items_from_delivery_orders
@@ -60,36 +107,44 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @purchaseOrder.state = 'pre_issued'
     @purchaseOrder.user_id = current_user.id
     if @purchaseOrder.save
+
+      @purchaseOrder.purchase_order_details.each do |pod|
+        dod_id = pod.delivery_order_detail_id
+        sql_purchase_order_partial_amount = PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod_id)
+        sql_delivery_order_total_amount = PurchaseOrder.get_total_amount_per_delivery_order(dod_id)
+
+        if sql_purchase_order_partial_amount.first == sql_delivery_order_total_amount.first
+          @deliveryOrderDetail = DeliveryOrderDetail.find(dod_id)
+          @deliveryOrderDetail.update_attributes(:requested => 1)
+        end
+      end
+
       flash[:notice] = "Se ha creado correctamente la nueva orden de compra."
-      redirect_to :action => :index
+      redirect_to :action => :index, company_id: params[:company_id]
     else
       @purchaseOrder.errors.messages.each do |attribute, error|
         puts attribute
         puts error
       end
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index
+      redirect_to :action => :index, company_id: params[:company_id]
     end
-  end
-
-  def edit
-    @reg_n = Time.now.to_i
-    @purchaseOrder = PurchaseOrder.find(params[:id])
-    TypeEntity.where("id = 1").each do |tent|
-      @suppliers = tent.entities
-    end
-    @cost_center = CostCenter.all
-    @moneys = Money.all
-    @methodOfPayments = MethodOfPayment.all
-    @action = 'edit'
-    render layout: false
   end
 
   def update
     purchaseOrder = PurchaseOrder.find(params[:id])
     purchaseOrder.update_attributes(purchase_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
+  end
+
+  # DO DELETE row
+  def delete
+    @purchaseOrder = PurchaseOrder.destroy(params[:id])
+    @purchaseOrder.purchase_order_details.each do |pod|
+      PurchaseOrderDetail.destroy(pod.id)
+    end
+    render :json => @purchaseOrder
   end
 
   # Este es el cambio de estado
@@ -101,7 +156,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    #redirect_to :action => :index
+    #redirect_to :action => :index, company_id: params[:company_id]
     render :json => @purchaseOrder
   end
 
@@ -113,7 +168,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def gorevise
@@ -124,7 +179,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goapprove
@@ -135,7 +190,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goobserve
@@ -146,7 +201,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     stateOrderDetail.purchase_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def purchase_order_pdf
@@ -218,6 +273,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   private
   def purchase_order_parameters
-    params.require(:purchase_order).permit(:exchange_of_rate, :date_of_issue, :expiration_date, :delivery_date, :retention, :money_id, :method_of_payment_id, :entity_id, :cost_center_id, :state, :description, purchase_order_details_attributes: [:id, :puchase_order_id, :delivery_order_detail_id, :unit_price, :igv, :unit_price_igv, :description])
+    params.require(:purchase_order).permit(:exchange_of_rate, :date_of_issue, :expiration_date, :delivery_date, :retention, :money_id, :method_of_payment_id, :entity_id, :cost_center_id, :state, :description, purchase_order_details_attributes: [:id, :puchase_order_id, :delivery_order_detail_id, :unit_price, :igv, :amount, :unit_price_igv, :description, :_destroy])
   end
 end

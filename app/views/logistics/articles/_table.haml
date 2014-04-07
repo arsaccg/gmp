@@ -34,8 +34,10 @@
               %tr
                 %th Código
                 %th Tipo de Artículo
+                %th Específico
                 %th Nombre
                 %th Descripcion
+                %th Unidad de Medida
                 %th Acciones
             %tbody
               - @Article.each do |article|
@@ -45,12 +47,14 @@
                   %td
                     = article.type_of_article.name
                   %td
+                    =article.specific.name
+                  %td
                     = article.name
                   %td
                     = article.description
                   %td
-                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{show_article_logistics_article_path(article.id)}', 'content', null, null, 'GET')"}
-                      Ver Detalle
+                    = article.unit_of_measurement.name
+                  %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_article_path(article.id)}', 'content', null, null, 'GET')"}
                       Editar
                     %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{article.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_article_path(article.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_articles_path}')"}}

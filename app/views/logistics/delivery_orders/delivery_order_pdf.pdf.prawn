@@ -2,18 +2,20 @@ text "ORDEN DE SUMINISTRO - #{@deliveryOrder.id.to_s.rjust(5, '0')}", :align => 
 
 move_down 20
 
-table([ ["CENTRO DE COSTO", ""], ["EMITIDO POR", "#{@deliveryOrder.user.first_name + ' ' + @deliveryOrder.user.last_name}", "FECHA EMISIÓN", "#{@deliveryOrder.date_of_issue.strftime("%d/%m/%Y")}"], ["ESTADO", "#{translate_delivery_order_state(@deliveryOrder.state)}", "FECHA A ATENDER", "#{@deliveryOrder.scheduled.strftime("%d/%m/%Y")}"] ], :width => 540, :column_widths => [150])
+table([ ["CENTRO DE COSTO", "#{@deliveryOrder.cost_center.name}"], ["EMITIDO POR", "#{@deliveryOrder.user.first_name + ' ' + @deliveryOrder.user.last_name}", "FECHA EMISIÓN", "#{@deliveryOrder.date_of_issue.strftime("%d/%m/%Y")}"], ["ESTADO", "#{translate_delivery_order_state(@deliveryOrder.state)}", "FECHA A ATENDER", "#{@deliveryOrder.scheduled.strftime("%d/%m/%Y")}"] ], :width => 540, :column_widths => [150])
 
 move_down 20
 
-table([ ["ITEM", "CÓDIGO", "DESCRIPCIÓN                                      At. Sector FASE", "U.M", "CANTIDAD"] ], :width => 540)
+table([ ["ITEM", "CÓDIGO    ", "DESCRIPCIÓN                                      At. Sector FASE", "U.M", "CANTIDAD"] ], :width => 540)
 
 move_down 3
 
 @deliveryOrderDetails.each do |data|
   stroke_horizontal_rule
   pad(5) {
-    text "          #{data.id}             #{data.article.code}       #{data.article.name}                                                 #{data.center_of_attention.abbreviation}    #{data.sector.code}      #{data.phase.code}      #{data.unit_of_measurement.symbol}       #{data.amount}"
+    table([ ["#{data.id}", "#{data.article.code}", "#{data.article.name}", "#{data.center_of_attention.abbreviation}", "#{data.sector.code}", "#{data.phase.code}", "#{data.unit_of_measurement.symbol}", "#{data.amount}"] ], :width => 540, :cell_style => {:border_color=> "ffffff"}, :column_widths => [43,77,200,37,27,47,35,74]) do
+      style(columns(7), :align => :right)
+    end
     move_down 4
     text "#{data.description}"
   }

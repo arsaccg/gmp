@@ -42,8 +42,12 @@
                 %tr
                   %td= unit.name
                   %td= unit.symbol
-                  %td= unit.exchange_of_rate.select('value as x').order('day desc').first.x
-                  %td= unit.exchange_of_rate.select('day as x').order('day desc').first.x.strftime("%d/%m/%Y")
+                  %td
+                    - if unit.exchange_of_rate.select('value as x').order('day desc').first != nil
+                      = unit.exchange_of_rate.select('value as x').order('day desc').first.x
+                  %td
+                    - if unit.exchange_of_rate.select('value as x').order('day desc').first != nil
+                      = unit.exchange_of_rate.select('day as x').order('day desc').first.x.strftime("%d/%M/%y")
                   %td
                     %button.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_money_path(unit.id)}', 'content', null, null, 'GET')"}
                       Editar

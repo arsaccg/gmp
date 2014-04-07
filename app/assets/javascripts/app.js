@@ -14,6 +14,8 @@
 	// Cost center
 	$.cost_center = 0;
 
+	$.company_global_id = 0;
+
 /*
  * APP DOM REFERENCES
  * Description: Obj DOM reference, please try to avoid changing these

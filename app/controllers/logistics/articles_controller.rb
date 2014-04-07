@@ -12,6 +12,7 @@ class Logistics::ArticlesController < ApplicationController
     @group = Category.first
     @subgroup = Subcategory.first
     @typeOfArticle = TypeOfArticle.first
+    @specific = Specific.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
       render layout: 'dashboard'
     else
@@ -29,42 +30,15 @@ class Logistics::ArticlesController < ApplicationController
     article = Article.new(article_parameters)
     article.code = params[:extrafield]['first_code'].to_s + params[:article]['code'].to_s
     if article.save
-      params[:article_unit_of_measurements]['unit_of_measurement_id'].each.with_index(1) do |unit_id, i|
-        article_per_unit = ArticleUnitOfMeasurement.new
-        article_per_unit.article_id = article.id
-        article_per_unit.unit_of_measurement_id = unit_id
-        article_per_unit.code_article_unit = article.code.to_s + UnitOfMeasurement.find(unit_id).code.to_s
-        article_per_unit.save
-      end
       flash[:notice] = "Se ha creado correctamente el articulo."
       redirect_to :action => :index
     else
       article.errors.messages.each do |attribute, error|
-        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+          puts error.to_s
+          puts error
       end
-      # Load new()
-      @article = article
-      # El tipo especifico de Insumo
-      @typeOfArticle = @article.type_of_article.id
-      @categories = Category.all
-      # La categoria al que pertenece
-      @category_article = @article.category.id
-      # Traemos las SubCategorias
-      @subcategories = @article.category.subcategories
-      # Traemos la subcategoria
-      @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
-      @subcategory_article.each do |sub|
-        @subcategory_article = sub.code
-      end
-      # Traemos las Unidades de Medida
-      @units = Array.new
-      article.article_unit_of_measurements.each do |aunit|
-        @units << [aunit.unit_of_measurement.id]
-      end
-      @unitOfMeasurement = UnitOfMeasurement.all
-      @typeOfArticles = TypeOfArticle.all
-      @reg_n = Time.now.to_i
-      render :new, layout: false
+      flash[:error] =  "Ha ocurrido un error en el sistema."
+      redirect_to :action => :index
     end
   end
 
@@ -78,20 +52,21 @@ class Logistics::ArticlesController < ApplicationController
     # Todas las categorias
     @categories = Category.all
     # La categoria al que pertenece
-    @category_article = @article.category.id
+    @specific_article = @article.specific.id
     # Traemos las SubCategorias
-    @subcategories = @article.category.subcategories
     # Traemos la subcategoria
     @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
     @subcategory_article.each do |sub|
       @subcategory_article = sub.code
     end
-    # Traemos las Unidades de Medida
-    @units = Array.new
-    @article.article_unit_of_measurements.each do |aunit|
-      @units << [aunit.unit_of_measurement.id]
+    @specific_article = Specific.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
+    @specific_article.each do |spe|
+      @specific_article = spe.code
     end
+
+    # Traemos las Unidades de Medida
     @unitOfMeasurement = UnitOfMeasurement.all
+    @unitid = @article.unit_of_measurement_id
     @action = 'edit'
     render layout: false
   end
@@ -106,8 +81,9 @@ class Logistics::ArticlesController < ApplicationController
     article.code = params[:extrafield]['first_code'].to_s + params[:article]['code'].to_s
     article.name = params[:article]['name']
     article.description = params[:article]['description']
-    article.category_id = params[:article]['category_id']
+    article.specific_id = params[:article]['specific_id']
     article.type_of_article_id = params[:article]['type_of_article_id']
+    article.unit_of_measurement_id = params[:article]['unit_of_measurement_id']
     if article.save
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
@@ -119,9 +95,9 @@ class Logistics::ArticlesController < ApplicationController
       @article = article
       # El tipo especifico de Insumo
       @typeOfArticle = @article.type_of_article.id
-      @categories = Category.all
+      @specific = Specific.all
       # La categoria al que pertenece
-      @category_article = @article.category.id
+      @specific_article = @article.specific.id
       # Traemos las SubCategorias
       @subcategories = @article.category.subcategories
       # Traemos la subcategoria
@@ -129,10 +105,14 @@ class Logistics::ArticlesController < ApplicationController
       @subcategory_article.each do |sub|
         @subcategory_article = sub.code
       end
+      @specific_article = Specific.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
+      @specific_article.each do |spe|
+        @specific_article = spe.code
+      end
       # Traemos las Unidades de Medida
       @units = Array.new
-      article.article_unit_of_measurements.each do |aunit|
-        @units << [aunit.unit_of_measurement.id]
+      article.unit_of_measurements.each do |aunit|
+        @units << [aunit.id]
       end
       @unitOfMeasurement = UnitOfMeasurement.all
       @typeOfArticles = TypeOfArticle.all
@@ -143,6 +123,7 @@ class Logistics::ArticlesController < ApplicationController
 
   def new
     @article = Article.new
+    @specifics = Specific.all
     @categories = Category.all
     @unitOfMeasurement = UnitOfMeasurement.all
     @typeOfArticles = TypeOfArticle.all
@@ -203,6 +184,6 @@ class Logistics::ArticlesController < ApplicationController
 
   private
   def article_parameters
-    params.require(:article).permit(:code, :name, :description, :category_id, :type_of_article_id)
+    params.require(:article).permit(:code, :name, :description, :specific_id, :type_of_article_id, :unit_of_measurement_id)
   end
 end

@@ -5,6 +5,7 @@ class Logistics::MoneyController < ApplicationController
   def index
     flash[:error] = nil
     @moneys = Money.all
+    @ex = ExchangeOfRate.all
     render layout: false
   end
 

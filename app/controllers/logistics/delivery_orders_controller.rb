@@ -1,19 +1,19 @@
 class Logistics::DeliveryOrdersController < ApplicationController
   def index
-    @deliveryOrders = DeliveryOrder.all
     @article = Article.first
     @phase = Phase.first
     @sector = Sector.first
-    @costcenter = CostCenter.first
-    @centerOfAttention = CenterOfAttention.first
-    @costcenters = CostCenter.all
+    @costcenters = CostCenter.where("company_id = #{params[:company_id]}")
+    @centerOfAttention = CenterOfAttention.all.first
     render layout: false
   end
 
   def new
+    @company = params[:company_id]
+    @cost_center = CostCenter.find(params[:cost_center_id])
     @deliveryOrder = DeliveryOrder.new
     @articles = Article.all
-    @costcenters = CostCenter.all
+    # @costcenters = Company.find(@company).cost_centers
     render layout: false
   end
 
@@ -23,14 +23,15 @@ class Logistics::DeliveryOrdersController < ApplicationController
     deliveryOrder.user_id = current_user.id
     if deliveryOrder.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
-      redirect_to :action => :index
+      redirect_to :action => :index, company_id: params[:company_id]
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index
+      redirect_to :action => :index, company_id: params[:company_id]
     end
   end
 
   def show
+    @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
@@ -42,12 +43,13 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def edit
+    @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.find(params[:id])
     @articles = Article.all
     @sectors = Sector.all
     @phases = Phase.where("category LIKE 'phase'")
     @centerOfAttentions = CenterOfAttention.all
-    @costcenters = CostCenter.all
+    @costcenters = Company.find(@company).cost_centers
     @action = 'edit'
     render layout: false
   end
@@ -56,7 +58,23 @@ class Logistics::DeliveryOrdersController < ApplicationController
     deliveryOrder = DeliveryOrder.find(params[:id])
     deliveryOrder.update_attributes(delivery_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
+  end
+
+  def show_rows_delivery_orders
+    @deliveryOrders = Array.new
+    @company = params[:company_id]
+    if !params[:pending]
+      Company.find(@company).cost_centers.find(params[:cost_center_id]).delivery_orders.each do |delivery_order|
+        @deliveryOrders << delivery_order
+      end
+      render(partial: 'rows_delivery_orders', :layout => false)
+    else
+      Company.find(@company).cost_centers.find(params[:cost_center_id]).delivery_orders.where("state LIKE 'approved'").each do |delivery_order|
+        @deliveryOrders << delivery_order
+      end
+      render(partial: 'rows_tracking_delivery_orders', :layout => false)
+    end
   end
 
   def add_delivery_order_item_field
@@ -68,10 +86,28 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @amount = params[:amount].to_f
     @centerOfAttention = CenterOfAttention.all
     @code_article, @name_article, @id_article = @article.code, @article.name, @article.id
-    @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).name
+    @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
     @unitOfMeasurementId = data_article_unit[1]
     
     render(partial: 'delivery_order_items', :layout => false)
+  end
+
+  def show_tracking_orders
+    @costcenters = CostCenter.where("company_id = #{params[:id]}")
+    @deliveryOrders = Array.new
+    Company.find(params[:id]).cost_centers.each do |cost_center|
+      @deliveryOrders << cost_center.delivery_orders.where("state LIKE 'approved'")
+    end
+    render :tracing_orders, :layout => false
+  end
+
+  # DO DELETE row
+  def delete
+    @deliveryOrder = DeliveryOrder.destroy(params[:id])
+    @deliveryOrder.delivery_order_details.each do |dod|
+      DeliveryOrderDetail.destroy(dod.id)
+    end
+    render :json => @deliveryOrder
   end
 
   # Este es el cambio de estado
@@ -83,7 +119,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    #redirect_to :action => :index
+    #redirect_to :action => :index, company_id: params[:company_id]
     render :json => @deliveryOrder
   end
 
@@ -95,7 +131,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def gorevise
@@ -106,7 +142,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goapprove
@@ -117,7 +153,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def goobserve
@@ -128,7 +164,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     stateOrderDetail.delivery_order_id = params[:id]
     stateOrderDetail.user_id = current_user.id
     stateOrderDetail.save
-    redirect_to :action => :index
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def delivery_order_pdf
@@ -180,6 +216,6 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   private
   def delivery_order_parameters
-    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, :cost_center_id, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount, :scheduled_date, :center_of_attention_id])
+    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, :cost_center_id, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount, :scheduled_date, :center_of_attention_id, :_destroy])
   end
 end

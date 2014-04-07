@@ -7,6 +7,7 @@
     .jarviswidget-editbox
     .widget-body 
       = simple_form_for([:logistics, @purchaseOrder], html: {class: 'form-horizontal', autocomplete: 'off' }) do |f|
+        = hidden_field_tag "company_id", @company
         .col-sm-12
           %fieldset
             %legend{'style' => 'border:none'}
@@ -141,6 +142,7 @@
                       %th ¿Aplica IGV?
                       %th Precio después de IGV
                       %th Glosa
+                      %th Eliminar
                   %tbody
                     - @purchaseOrder.purchase_order_details.each do |pod|
                       %tr
@@ -151,11 +153,12 @@
                         %td.unit-of-measurement
                           =pod.delivery_order_detail.unit_of_measurement.symbol
                         %td.amount
-                          =pod.delivery_order_detail.amount
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount, class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pod.delivery_order_detail.amount})"
+                          %code= "Por atender: #{pod.delivery_order_detail.amount}"
                         %td.unit-price
-                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', pod.unit_price, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);"
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', pod.unit_price, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);"
                         %td.price-without-igv
-                          - @unit_price_without_igv = pod.delivery_order_detail.amount * pod.unit_price
+                          - @unit_price_without_igv = pod.amount * pod.unit_price
                           = text_field_tag 'unit_price_before_igv', "#{@unit_price_without_igv}", class: "form-control unit-price-before-igv", :readonly => true
                         %td.check-igv
                           %label.checkbox
@@ -175,6 +178,10 @@
                           = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][id]', pod.id
                         %td(style="display:none")
                           = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][purchase_order_id]', @purchaseOrder.id
+                        %td.delete-item
+                          %label.checkbox
+                            = check_box 'purchase_order', '[purchase_order_details_attributes][' + @reg_n.to_s + '][_destroy]'
+                            %i
                       - @reg_n += 1
         .form-actions{:style => "margin-top: 0;"}
           .row
@@ -191,6 +198,8 @@
 :javascript
   
   $(document).ready(function(){
+
+    $.cost_center = "#{@purchaseOrder.cost_center_id}";
 
     $('#btn-add-more-items-do').click(function(){
       var ids_delivery_order = new Array();
@@ -277,7 +286,7 @@
   function enableFieldsForIgv(element){
     if($(element).is(":checked")){
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*1.18).toFixed(2));
+      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*#{@igv}).toFixed(2));
     } else {
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
       $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);

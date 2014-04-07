@@ -16,12 +16,6 @@ class Logistics::EntitiesController < ApplicationController
   def create
     entity = Entity.new(entity_parameters)
     if entity.save
-      params['entity']['entity_per_type_entities_attributes']['type_entity_id'].each do |value|
-        @entity_per_type_entities = EntityPerTypeEntity.new
-        @entity_per_type_entities.entity_id = entity.id
-        @entity_per_type_entities.type_entity_id = value
-        @entity_per_type_entities.save
-      end
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
       redirect_to :action => :index
     else
@@ -51,7 +45,7 @@ class Logistics::EntitiesController < ApplicationController
 
   private
   def entity_parameters
-    #params.require(:entity).permit(:name, :surname, :dni, :ruc, entity_per_type_entities_attributes: [:id, :entity_id, {:type_entity_id => []}])
-    params.require(:entity).permit(:name, :surname, :dni, :ruc)
+    params.require(:entity).permit(:name, :surname, :dni, :ruc, entity_per_type_entities_attributes: [:id, :entity_id, {:type_entity_ids => []}])
+    #params.require(:entity).permit(:name, :surname, :dni, :ruc)
   end
 end

@@ -1,0 +1,23 @@
+.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Lista de Items pendientes en Atender de Ordenes Aprobadas
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      .widget-body-toolbar
+      %table#items-pending-requested.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th Código de la O.S
+            %th Código del Artículo
+            %th Nombre del Artículo
+            %th Unidad de Medida
+            %th Cantidad
+            %th Por Atender
+            %th Sector
+            %th Fase
+            %th Centro de Atención
+            %th Fecha Programada
+        %tbody{ :id => "body-items-pending-requested" }

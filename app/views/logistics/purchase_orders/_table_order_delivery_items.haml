@@ -1,15 +1,16 @@
 - @delivery_orders_detail.each do |dode|
-  %tr
+  %tr{id: "tr" + @reg_n.to_s}
     %td(style="display:none" class="pod-di")
       = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][delivery_order_detail_id]', dode.id.to_i
     %td=dode.article.code
-    %td=dode.article.description
+    %td=dode.article.name
     %td.unit-of-measurement
       =dode.unit_of_measurement.symbol
     %td.amount
-      =dode.amount
+      = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][amount]', dode.amount, class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{dode.amount})"
+      %code= "Por atender: #{dode.amount}"
     %td.unit-price
-      = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', nil, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);"
+      = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', nil, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);"
     %td.price-without-igv
       = text_field_tag 'unit_price_before_igv', nil, class: "form-control unit-price-before-igv", :readonly => true
     %td.check-igv
@@ -20,4 +21,6 @@
       = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil , class: "form-control unit-price-igv", :readonly => true
     %td
       = text_area_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
+    %td{:style => "width: 1%;"}
+      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
   - @reg_n += 1

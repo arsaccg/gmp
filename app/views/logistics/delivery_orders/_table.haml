@@ -2,12 +2,13 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Ordenes de Suministros
+    %h2
+      = "Lista de Ordenes de Suministros"
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
       .widget-body-toolbar
-      %table#summary-delivery-orders.table.table-striped.table-bordered.table-hover
+      %table.summary-delivery-orders.table.table-striped.table-bordered.table-hover{ :id => "summary-delivery-orders" }
         %thead
           %tr
             %th Código
@@ -18,196 +19,15 @@
             %th Fecha Programada
             %th Responsable
             %th Acciones
-        %tbody
-          - @deliveryOrders.each do |delivery|
-            %tr
-              %td 
-                = delivery.id.to_s.rjust(5, '0')
-              - case delivery.state
-                - when 'pre_issued'
-                  %td.label-status
-                    %i.fa.fa-flag{:style => "visibility: hidden;"}
-                    %span.label{:style => "color: #000;"}
-                      = translate_delivery_order_state(delivery.state)
-                - when 'issued'
-                  %td.label-status
-                    %i.fa.fa-flag{:style => "color: #FF7A00;"}
-                    %span.label.label-warning{:style => "background-color: #FF7A00;"}
-                      = translate_delivery_order_state(delivery.state)
-                - when 'revised'
-                  %td.label-status
-                    %i.fa.fa-flag{:style => "color: #c79121;"}
-                    %span.label.label-warning
-                      = translate_delivery_order_state(delivery.state)
-                - when 'canceled'
-                  %td.label-status
-                    %i.fa.fa-flag{:style => "color: #a90329;"}
-                    %span.label.label-danger
-                      = translate_delivery_order_state(delivery.state)
-                - when 'approved'
-                  %td.label-status
-                    %i.fa.fa-flag{:style => "color: #25CA25;"}
-                    %span.label.label-success{:style => "background-color: #25CA25;"}
-                      = translate_delivery_order_state(delivery.state)
-              %td
-                = truncate(delivery.description, :length => 60, :omission => '...')
-              %td
-                = delivery.date_of_issue.strftime("%d/%m/%Y")
-              %td
-                = delivery.scheduled.strftime("%d/%m/%Y")
-              %td
-                = delivery.user.first_name + " " + delivery.user.last_name
-              %td
-                %a.btn.btn-view.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
-                  %i.fa.fa-eye
-
-                %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=#{get_prev_state(delivery.state)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Retroceder el estado"}
-                  %i.fa.fa-mail-reply
-
-                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_delivery_order_path(delivery.id)}?state_change=#{get_next_state(delivery.state)}', 'content', null, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
-                  %i.fa.fa-flag
-
-                - case delivery.state
-                  - when 'pre_issued'
-
-                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_delivery_order_path(delivery.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
-                      %i.fa.fa-edit
-
-                  - when 'issued'
-
-                    %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
-                      %i.fa.fa-file
-
-                  - when 'revised'
-
-                    %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
-                      %i.fa.fa-file
-
-                  - when 'canceled'
-
-                    %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
-                      %i.fa.fa-file
-
-                  - when 'approved'
-
-                    %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{delivery_order_pdf_logistics_delivery_order_path(delivery.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
-                      %i.fa.fa-file
-
+        %tbody{ :id => "body-summary-delivery-orders" }
+          
 
 :javascript
-  // DO NOT REMOVE : GLOBAL FUNCTIONS!
-  pageSetUp();
-  
-  // PAGE RELATED SCRIPTS
-
-  loadDataTableScripts();
-  function loadDataTableScripts() {
-
-    loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
-
-    function dt_2() {
-      loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
-    }
-
-    function dt_3() {
-      loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
-    }
-
-    function dt_4() {
-      loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
-    }
-
-    function dt_5() {
-      loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
-    }
-
-    function dt_6() {
-      loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
-    }
-
-    function dt_7() {
-      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
-    }
-
-  }
-
   function runDataTables() {
-
-    /*
-     * BASIC
-     */
-    $('#summary-delivery-orders').dataTable({
+    $("#summary-delivery-orders").dataTable({
       "sPaginationType" : "bootstrap_full"
     });
 
     /* END BASIC */
-
-    $('#summary-delivery-orders_wrapper').removeClass("dataTables_wrapper");
-
-    /* Add the events etc before DataTables hides a column */
-    $("#summary-delivery-orders thead input").keyup(function() {
-      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
-    });
-
-    $("#summary-delivery-orders thead input").each(function(i) {
-      this.initVal = this.value;
-    });
-    $("#summary-delivery-orders thead input").focus(function() {
-      if (this.className == "search_init") {
-        this.className = "";
-        this.value = "";
-      }
-    });
-    $("#summary-delivery-orders thead input").blur(function(i) {
-      if (this.value == "") {
-        this.className = "search_init";
-        this.value = this.initVal;
-      }
-    });   
-    
-
-    var oTable = $('#datatable_fixed_column').dataTable({
-      "sDom" : "<'dt-top-row'><'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
-      //"sDom" : "t<'row dt-wrapper'<'col-sm-6'i><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'>>",
-      "oLanguage" : {
-        "sSearch" : "Search all columns:"
-      },
-      "bSortCellsTop" : true
-    });   
-    
-
-
-    /*
-     * COL ORDER
-     */
-    $('#datatable_col_reorder').dataTable({
-      "sPaginationType" : "bootstrap",
-      "sDom" : "R<'dt-top-row'Clf>r<'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
-      "fnInitComplete" : function(oSettings, json) {
-        $('.ColVis_Button').addClass('btn btn-default btn-sm').html('Columns <i class="icon-arrow-down"></i>');
-      }
-    });
-    
-    /* END COL ORDER */
-
-    /* TABLE TOOLS */
-    $('#datatable_tabletools').dataTable({
-      "sDom" : "<'dt-top-row'Tlf>r<'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
-      "oTableTools" : {
-        "aButtons" : ["copy", "print", {
-          "sExtends" : "collection",
-          "sButtonText" : 'Save <span class="caret" />',
-          "aButtons" : ["csv", "xls", "pdf"]
-        }],
-        "sSwfPath" : "#{ asset_path 'javascript/plugin/datatables/media/swf/copy_csv_xls_pdf.swf'}"
-      },
-      "fnInitComplete" : function(oSettings, json) {
-        $(this).closest('#dt_table_tools_wrapper').find('.DTTT.btn-group').addClass('table_tools_group').children('a.btn').each(function() {
-          $(this).addClass('btn-sm btn-default');
-        });
-      }
-    });
-    
-    /* END TABLE TOOLS */
-
+    $(".form-inline.dataTables_wrapper").removeClass("dataTables_wrapper");
   }

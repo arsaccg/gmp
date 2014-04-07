@@ -11,6 +11,7 @@
       %th Nombre del Artículo
       %th Unidad de Medida
       %th Cantidad
+      %th Por Atender
       %th Sector
       %th Fase
       %th Centro de Atención
@@ -28,6 +29,12 @@
         = dod.unit_of_measurement.symbol
       %td.col-md-1
         = dod.amount.to_i
+      %td.col-md-1
+        %code
+          - if PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod.id).first != nil
+            = dod.amount.to_i - PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod.id).first.at(0).to_i
+          - else
+            = dod.amount.to_i
       %td.sector.col-md-1.order_delivery_sector
         = dod.sector.name
       %td.order_delivery_phase

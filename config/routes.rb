@@ -1,12 +1,12 @@
 ArsacLogistica::Application.routes.draw do
-
+  
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
   root 'logistics/main#index'
-
+  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
@@ -55,6 +55,7 @@ ArsacLogistica::Application.routes.draw do
     resources :unit_of_measurements
     resources :persons
     resources :center_of_attentions
+    resources :financial_variables
     resources :articles do
       member do
         get 'show_article'
@@ -76,19 +77,20 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :subphases
-    resources :companies do
-      collection do
-        get 'show_all_companies'
-        post 'show_all_companies'
-      end
-    end
+    resources :companies
     resources :cost_centers
     resources :type_entities
     resources :type_of_articles
     resources :entities
+    resources :main do
+      member do
+        post 'show_panel'
+      end
+    end
     resources :delivery_orders do
       collection do
         post 'add_delivery_order_item_field'
+        post 'show_rows_delivery_orders'
       end
       member do
         get 'gorevise'
@@ -97,12 +99,15 @@ ArsacLogistica::Application.routes.draw do
         get 'goobserve'
         get 'delivery_order_pdf'
         post 'delivery_order_pdf'
+        get 'show_tracking_orders'
+        delete 'delete'
       end
     end
     resources :purchase_orders do
       collection do
         post 'add_items_from_delivery_orders'
         post 'more_items_from_delivery_orders'
+        post 'show_rows_purchase_orders'
       end
       member do
         put 'show_delivery_order_item_field'
@@ -112,11 +117,18 @@ ArsacLogistica::Application.routes.draw do
         get 'goobserve'
         get 'purchase_order_pdf'
         post 'purchase_order_pdf'
+        delete 'delete'
       end
     end
     resources :subcategories do
       collection do
         post 'get_subcategory_form_category'
+      end
+    end
+    resources :specifics do
+      collection do
+        post 'get_subcategory_form_category'
+        post 'get_specific_from_subcategory'
       end
     end
     resources :categories    
@@ -129,6 +141,9 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :exchange_of_rates
+    resources :warehouses
+    resources :formats
+    resources :documents
 
   end
 
