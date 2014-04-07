@@ -13,6 +13,6 @@ class Warehouse < ActiveRecord::Base
 
   # Validaciones
   include ActiveModel::Validations
-  validates :name, :uniqueness => { :case_sensitive => false }
+  validates :name, :uniqueness => { :scope => :status, :case_sensitive => false }
 	
 end

@@ -23,21 +23,19 @@
             %label.label Formatos
             %label.input{for: "format_id"}
             %select#format-select.form-control.select2{:name =>"document_format[format_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true}
-              - if @action != nil && @action == 'edit'
-                - @formats.each do |x|
-                  - @formatList.each_with_index do |unit, index|
-                    - if x.id == unit[0]
+              - @formats.each do |x|
+                - @exist = false
+                - if @formatList.count > 0
+                  - @formatList.each_with_index do |y, i|
+                    - if x.id == y[0]
                       %option{:value => "#{x.id}", :selected => true}
                         = x.name
+                      - @exist = true
                       - break
-                  %option{:value => "#{x.id}"}
-                    = x.name
-              - else
-                - @formats.each do |x|
+                - if @exist == false
                   %option{:value => "#{x.id}"}
                     = x.name
         = hidden_field_tag "document[company_id]"
-          
         
       %footer
         %button.btn.btn-primary{type: "submit"}
