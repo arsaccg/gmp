@@ -124,6 +124,7 @@ ArsacLogistica::Application.routes.draw do
     resources :order_of_services do
       collection do
         post 'add_order_service_item_field'
+        post 'show_rows_orders_service'
       end
     end
     resources :subcategories do
