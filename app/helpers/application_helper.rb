@@ -45,6 +45,22 @@ module ApplicationHelper
     end
   end
 
+  def translate_order_service_state(str_value)
+    str_spanish = ""
+    case str_value
+      when "pre_issued"
+        str_spanish="PRE-EMITIDO"
+      when "issued"
+        str_spanish="EMITIDO"
+      when "revised"
+        str_spanish="VISTO BUENO"
+      when "canceled"
+        str_spanish="CANCELADO"
+      when "approved"
+        str_spanish="APROBADO"
+    end
+  end
+
   def get_next_state(str_state)
     str_spanish = ""
     case str_state

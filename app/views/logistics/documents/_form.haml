@@ -2,25 +2,29 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Documento
+    %h2
+      = t('activerecord.modelsdescription.bill_of') + t('activerecord.modelsdescription.document')
   .widget-body
     = simple_form_for([:logistics, @document], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-6
-            %label.label Nombre
+            %label.label
+              = t('activerecord.attributes.document.name')
             %label.input{for: "name"}
               %i.icon-append.fa.fa-superscript
-              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+              = f.input :name, placeholder: t('activerecord.attributes.document.name'), input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
-            %label.label Descripción
+            %label.label
+              = t('activerecord.attributes.document.description')
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-user
-              = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false
+              = f.input :description, placeholder: t('activerecord.attributes.document.description'), input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
-            %label.label Formatos
+            %label.label
+              = t('activerecord.attributes.document.format')
             %label.input{for: "format_id"}
             %select#format-select.form-control.select2{:name =>"document_format[format_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true}
               - @formats.each do |x|
@@ -40,7 +44,7 @@
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save
-            Guardar
+            = t('activerecord.actions.save')
 
 :javascript
   $(document).ready(function () {
