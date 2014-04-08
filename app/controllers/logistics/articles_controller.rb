@@ -137,7 +137,7 @@ class Logistics::ArticlesController < ApplicationController
     render :json => article
   end
 
-  def import
+  def import    
     if !params[:file].nil?
       s = Roo::Excelx.new(params[:file].path,nil, :ignore)
       matriz_exel = []
@@ -150,17 +150,18 @@ class Logistics::ArticlesController < ApplicationController
         codigo_subcategory_extencion  =       s.cell('D',fila).to_s
         name                          =       s.cell('E',fila).to_s
 
-        ## creacion de articulos
+        ## creacion de type_of_articles
         if codigo_article != "00" and codigo_category == "00" and codigo_subcategory == '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
-          article = Article.new(:code => codigo, :name => name )
-          article.save          
+          type_of_articles = TypeOfArticle.new(:code => codigo_article, :name => name )
+          type_of_articles.save          
         end
 
         ## creacion de categoria
         if codigo_article != '00' and codigo_category != '00' and codigo_subcategory == '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
-          article_lats = Article.last
-          article_lats_id = article_lats.id
-          category = Category.new(:code => codigo, :name => name, :article_id => article_lats_id)
+          #type_of_articles_last = TypeOfArticle.last
+          #type_of_articles_last_id = type_of_articles_last.id
+          #category = Category.new(:code => codigo_category, :name => name, :article_id => type_of_articles_last_id)
+          category = Category.new(:code => codigo_category, :name => name)
           category.save
         end
 
@@ -168,13 +169,21 @@ class Logistics::ArticlesController < ApplicationController
         if codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
           category_last = Category.last
           category_last_id = category_last.id
-          subcategory = Subcategory.new(:code => codigo, :name => name, :category_id => category_last_id)
+          subcategory = Subcategory.new(:code => codigo_subcategory, :name => name, :category_id => category_last_id)
           subcategory.save
         elsif codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion != '00' and codigo.length == 8        
-          category_last = Category.last
-          category_last_id = category_last.id
-          subcategory = Subcategory.new(:code => codigo, :name => name, :category_id => category_last_id )
-          subcategory.save
+          subcategory_last = Subcategory.last
+          subcategory_last_id = subcategory_last.id
+          specific = Specific.new(:code => codigo_subcategory_extencion, :name => name, :subcategory_id => subcategory_last_id )
+          specific.save
+
+          ##### agregando articles
+          type_of_articles_last = TypeOfArticle.last
+          type_of_articles_last_id = type_of_articles_last.id
+          specific_last = Specific.last
+          specific_last_id = specific_last.id
+          article = Article.new(:name => name, :code => codigo, :type_of_article_id => type_of_articles_last_id, :specific_id => specific_last_id)
+          article.save
         end        
       end
       @temp = matriz_exel

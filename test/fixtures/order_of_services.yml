@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  state: MyString
+  date_of_issue: 2014-04-07 11:54:42
+  description: MyText
+  method_of_payment_id: 1
+  entity_id: 1
+  user_id: 1
+  cost_center_id: 1
+
+two:
+  state: MyString
+  date_of_issue: 2014-04-07 11:54:42
+  description: MyText
+  method_of_payment_id: 1
+  entity_id: 1
+  user_id: 1
+  cost_center_id: 1
