@@ -31,13 +31,28 @@
               %i.icon-append.fa.fa-credit-card
               = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
         .row
-          %section.col.col-10
+          %section
             %label.label Tipo
-            %label.select
-              %select.select2#type-entity-select{:name => "entity[entity_per_type_entities_attributes][type_entity_ids][]", :style => "width:100%;padding: 0;border: none;", :multiple => true}
-                - @type_entities.each do |tent|
-                  %option{value: "#{tent.id.to_i}"}
-                    = tent.name
+            .col.col-8.inline-group
+              -if @action == "edit"
+                -  @type_entities.each do |checkent|
+                  -@entity.type_entities.each do |enty|
+                    -if enty.id == checkent.id
+                      .fields.inline-group
+                        %input{name: "entity[entity_per_type_entities_attributes][#{@entity.created_at.to_time.to_i.to_s}][type_entity_id]", type: "checkbox", :checked=> "#{checkent.id}"}
+                          = "#{checkent.name}"
+                      -break
+                    - else
+                      .fields.inline-group
+                        %input{name: "entity[entity_per_type_entities_attributes][#{@entity.created_at.to_time.to_i.to_s}][type_entity_id]", type: "checkbox", value:"#{checkent.id}"}
+                        = "#{checkent.name}"
+                      -break
+              -else
+                - @type_entities.each do |checkent|
+                  .fields.inline-group
+                    %input{name: "entity[entity_per_type_entities_attributes][" +@reg_n.to_s + "][type_entity_id]", type: "checkbox", value:"#{checkent.id}"}
+                      = "#{checkent.name}"
+                  - @reg_n += 1
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
