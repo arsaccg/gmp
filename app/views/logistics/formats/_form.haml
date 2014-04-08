@@ -2,7 +2,8 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Formato
+    %h2
+      = t('activerecord.modelsdescription.bill_of') + t('activerecord.modelsdescription.format')
   .widget-body
     = simple_form_for([:logistics, @format], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
@@ -26,7 +27,7 @@
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save
-            Guardar
+            = t('activerecord.actions.save')
 
 :javascript
   $(document).ready(function () {

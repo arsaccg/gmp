@@ -22,9 +22,30 @@
 en:
   #hello: "Hello world"
   activerecord:
+    actions: 
+      name: "Acciones"
+      add: "Agregar"
+      edit: "Editar"
+      save: "Grabar"
+      delete: "Eliminar"
+      back: "Regresar al Listado"
+      newm: "Nuevo"
+      newf: "Nueva"
+      editm: "Editar"
+      deletem: "¿Esta seguro de eliminar el item: "
     models: 
-      money: "Money"
+      money: "Moneda"
       exchange_of_rate: "Tipo de Cambio"
+      warehouse: "Almacén"
+      format: "Formato"
+      document: "Documento"
+    modelsdescription: 
+      bill_of: "Lista de "
+      money: "Monedas"
+      exchange_of_rate: "Tipo de Cambios"
+      warehouse: "Almacenes"
+      format: "Formatos"
+      document: "Documentos"
     attributes:
       money:
         name: "Nombre"
@@ -42,6 +63,7 @@ en:
         description: "Descripción"
       document:
         name: "Nombre"
+        format: "Formato"
         description: "Descripción"
     errors:
       models:

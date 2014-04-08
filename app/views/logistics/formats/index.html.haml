@@ -3,7 +3,7 @@
     .col-xs-12.col-sm-7.col-md-7.col-lg-4
       %h2.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
-        Formatos
+        = t('activerecord.modelsdescription.format')
     .row
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:buttonoth"}
@@ -20,7 +20,7 @@
   .row
     .col-sm-4
       %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_format_path}', 'content', null, null, 'GET')"}
-        Agregar
+        = t('activerecord.actions.add')
       .row
       %br
   #widget-grid

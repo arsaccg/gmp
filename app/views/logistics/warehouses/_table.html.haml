@@ -2,7 +2,8 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Almacenes
+    %h2
+      = t('activerecord.modelsdescription.warehouse')
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
@@ -10,9 +11,12 @@
       %table#dt_basic.table.table-striped.table-bordered.table-hover
         %thead
           %tr
-            %th Nombre
-            %th Ubicación
-            %th Acciones
+            %th
+              = t('activerecord.attributes.warehouse.name')
+            %th
+              = t('activerecord.attributes.warehouse.location')
+            %th
+              = t('activerecord.actions.name')
         %tbody
           - @items.each do |unit|
             %tr
@@ -22,9 +26,9 @@
                 = unit.location
               %td
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_warehouse_path(unit.id)}', 'content', null, null, 'GET')"}
-                  Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_warehouse_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}' + '&current_user_id=#{current_user.id}', 'content', '#{logistics_warehouses_path}')"}}
-                  Eliminar
+                  = t('activerecord.actions.edit')
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => t('activerecord.actions.deletem') + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_warehouse_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}' + '&current_user_id=#{current_user.id}', 'content', '#{logistics_warehouses_path}')"}}
+                  = t('activerecord.actions.delete')
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
