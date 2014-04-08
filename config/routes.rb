@@ -126,6 +126,9 @@ ArsacLogistica::Application.routes.draw do
         post 'add_order_service_item_field'
         post 'show_rows_orders_service'
       end
+      member do
+        delete 'delete'
+      end
     end
     resources :subcategories do
       collection do

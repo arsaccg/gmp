@@ -29,7 +29,10 @@
           %span.label.label-success{:style => "background-color: #25CA25;"}
             = translate_order_service_state(orderService.state)
     %td
-      = truncate(orderService.description, :length => 60, :omission => '...')
+      - if orderService.description != ''
+        = truncate(orderService.description, :length => 60, :omission => '...')
+      - else
+        No tiene descripción alguna.
     %td
       = orderService.entity.name + ' ' + orderService.entity.surname
     %td
@@ -55,7 +58,7 @@
             %i.fa.fa-flag
 
           - if current_user.has_role? :canceller
-            %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{delete_logistics_delivery_order_path(orderService.id)}?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_delivery_orders_path}?company_id=#{@company}')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Eliminar Orden"}
+            %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{delete_logistics_order_of_service_path(orderService.id)}?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_order_of_services_path}?company_id=#{@company}')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Eliminar Orden"}
               %i.fa.fa-trash-o
 
         - when 'issued'
