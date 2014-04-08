@@ -8,16 +8,18 @@
       %fieldset
         .row
           %section.col.col-6
-            %label.label Nombre
+            %label.label
+              = t('activerecord.attributes.warehouse.name')
             %label.input{for: "name"}
               %i.icon-append.fa.fa-superscript
-              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+              = f.input :name, placeholder: t('activerecord.attributes.warehouse.name'), input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
-            %label.label Ubicación
+            %label.label
+              = t('activerecord.attributes.warehouse.location')
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-user
-              = f.input :location, placeholder: "Ubicación", input_html: { class: 'form-control' }, label: false
+              = f.input :location, placeholder: t('activerecord.attributes.warehouse.location'), input_html: { class: 'form-control' }, label: false
         = hidden_field_tag "cost_center[company_id]"
           
         
