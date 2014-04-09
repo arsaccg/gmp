@@ -1,10 +1,10 @@
 #content-inside
   .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+    .col-xs-12.col-sm-7.col-md-7.col-lg-12
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-eye
-        Orden de Servicio #
-        = @orderOfService.id.to_s.rjust(5, '0')
+        = "Orden de Servicio " + @orderOfService.id.to_s.rjust(5, '0')
+        %strong= "C.C " + @orderOfService.cost_center.name
   %section#widget-grid
     .row
       %article.col-sm-12.col-md-12.col-lg-8
@@ -22,35 +22,35 @@
                 %button.close{"data-dismiss" => "alert"}
                   ×
                 %i.fa-fw.fa.fa-info
-                Cabecera de la Orden de Compra
+                Cabecera de la Orden de Servicio
               %table.table.table-hover
                 %thead
                   %tr
                     %th Código
                     %th Estado
                     %th Proveedor
+                    %th Moneda
                     %th Forma de pago
                     %th Fecha de Emisión
-                    %th Fecha de Expiración
-                    %th Fecha de Entrega
+                    %th Fecha de Servicio
                     %th Responsable
                     %th Descripcion
-                %tbody(id="article_items_table")
+                %tbody(id="service_items_table")
                   %tr
                     %td
                       = @orderOfService.id.to_s.rjust(5, '0')
                     %td
-                      = translate_purchase_order_state(@orderOfService.state)
+                      = translate_order_service_state(@orderOfService.state)
                     %td
                       = @orderOfService.entity.name + ' ' + @orderOfService.entity.surname
+                    %td
+                      = @orderOfService.money.name
                     %td
                       = @orderOfService.method_of_payment.name
                     %td
                       = @orderOfService.date_of_issue.strftime("%d/%m/%Y")
                     %td
-                      = @orderOfService.expiration_date.strftime("%d/%m/%Y")
-                    %td
-                      = @orderOfService.delivery_date.strftime("%d/%m/%Y")
+                      = @orderOfService.date_of_service.strftime("%d/%m/%Y") rescue Time.now.strftime("%d/%m/%Y")
                     %td
                       = @orderOfService.user.first_name + ' ' + @orderOfService.user.last_name
                     %td
@@ -64,7 +64,7 @@
             - when 'issued'
 
               - if current_user.has_role? :issuer
-                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goissue_logistics_purchase_order_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goissue_logistics_order_of_service_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Emitir
               - else
                 %p.alert.alert-danger
@@ -75,7 +75,7 @@
             - when 'observed'
 
               - if current_user.has_role? :issuer
-                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goobserve_logistics_purchase_order_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goobserve_logistics_order_of_service_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Observar
               - else
                 %p.alert.alert-danger
@@ -86,7 +86,7 @@
             - when 'revised'
 
               - if current_user.has_role? :reviser
-                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{gorevise_logistics_purchase_order_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{gorevise_logistics_order_of_service_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Dar visto bueno
               - else
                 %p.alert.alert-danger
@@ -96,7 +96,7 @@
 
             - when 'canceled'
               - if current_user.has_role? :canceller
-                %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_purchase_order_path(@orderOfService.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_purchase_orders_path}?company_id=#{@company}')"}
+                %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_order_of_service_path(@orderOfService.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_order_of_services_path}?company_id=#{@company}')"}
                   Anular
               - else
                 %p.alert.alert-danger
@@ -105,7 +105,7 @@
                   No tienes los privilegios para Anular.
             - when 'approved'
               - if current_user.has_role? :approver
-                %a.btn.btn-primary.btn-lg{:onclick => "javascript:load_url_ajax('#{goapprove_logistics_purchase_order_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                %a.btn.btn-primary.btn-lg{:onclick => "javascript:load_url_ajax('#{goapprove_logistics_order_of_service_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Aprobar
               - else
                 %p.alert.alert-danger
@@ -124,7 +124,7 @@
               %span.widget-icon
                 %i.fa.fa-table
               %h2 
-              = 'Historial de Estado de la Orden de Compra N° ' + @orderOfService.id.to_s.rjust(5, '0')
+              = 'Historial de Estado de la Orden de Servicio N° ' + @orderOfService.id.to_s.rjust(5, '0')
             %div
               .jarviswidget-editbox
                 / This area used as dropdown edit box
@@ -141,20 +141,20 @@
                       %th Fecha
                       %th Quien fue
                   %tbody
-                    - @purchasePerState.each do |purchaseState|
+                    - @orderOfServicePerState.each do |serviceState|
                       %tr
                         %td
-                          = translate_purchase_order_state(purchaseState.state)
+                          = translate_order_service_state(serviceState.state)
                         %td
-                          = purchaseState.created_at.strftime("%d/%m/%Y")
+                          = serviceState.created_at.strftime("%d/%m/%Y")
                         %td
-                          = purchaseState.user.first_name + " " + purchaseState.user.last_name
+                          = serviceState.user.first_name + " " + serviceState.user.last_name
       %article.col-sm-12.col-md-12.col-lg-12
         #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
           %header
             %span.widget-icon
               %i.fa.fa-table
-            %h2 Detalle de la Orden de Compra
+            %h2 Detalle de la Orden de Servicio
           %div
             .jarviswidget-editbox
               / This area used as dropdown edit box
@@ -163,7 +163,7 @@
                 %button.close{"data-dismiss" => "alert"}
                   ×
                 %i.fa-fw.fa.fa-info
-                Detalle de la Orden de Compra
+                Detalle de la Orden de Servicio
               %table.table.table-hover
                 %thead
                   %tr
@@ -175,28 +175,28 @@
                     %th Total antes de IGV
                     %th Total después de IGV
                     %th Glosa
-                %tbody(id="purchase_detail_items_table")
-                  - @orderOfServiceDetails.each do |purchasedetail|
+                %tbody(id="service_detail_items_table")
+                  - @orderOfServiceDetails.each do |orderServiceDetail|
                     %tr
                       %td
-                        = purchasedetail.delivery_order_detail.article.code
+                        = orderServiceDetail.article.code
                       %td
-                        = purchasedetail.delivery_order_detail.article.name
+                        = orderServiceDetail.article.name
                       %td
-                        = purchasedetail.delivery_order_detail.amount
+                        = orderServiceDetail.amount
                       %td
-                        - if purchasedetail.delivery_order_detail.unit_of_measurement != nil
-                          = purchasedetail.delivery_order_detail.unit_of_measurement.name
+                        - if orderServiceDetail.unit_of_measurement != nil
+                          = orderServiceDetail.unit_of_measurement.symbol
                         - else
                           = "No tiene Unidad de Medida"
                       %td
-                        = number_to_currency(purchasedetail.unit_price.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                        = number_to_currency(orderServiceDetail.unit_price.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
                       %td
-                        = number_to_currency((purchasedetail.delivery_order_detail.amount.to_i * purchasedetail.unit_price.to_f).to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                        = number_to_currency((orderServiceDetail.amount.to_i * orderServiceDetail.unit_price.to_f).to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
                       %td
-                        = number_to_currency(purchasedetail.unit_price_igv.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                        = number_to_currency(orderServiceDetail.unit_price_igv.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
                       %td
-                        = purchasedetail.description
+                        = orderServiceDetail.description
 
 = javascript_include_tag 'plugin/flot/jquery.flot.cust'
 = javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'

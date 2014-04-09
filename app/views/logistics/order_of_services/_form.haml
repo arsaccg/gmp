@@ -9,7 +9,7 @@
       = simple_form_for([:logistics, @orderOfService], html: {class: 'form-horizontal', autocomplete: 'off' }) do |f|
         = hidden_field_tag "company_id", @company
         - if @action == 'edit'
-          = hidden_field_tag "order_of_service[date_of_issue]", @orderOfService.date_of_service.to_date rescue Time.now.to_date
+          = hidden_field_tag "order_of_service[date_of_issue]", @orderOfService.date_of_issue.to_date rescue Time.now.to_date
         - else
           = hidden_field_tag "order_of_service[date_of_issue]", DateTime.now.to_date
         = hidden_field_tag "order_of_service[cost_center_id]", @cost_center_id

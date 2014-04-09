@@ -126,6 +126,12 @@ ArsacLogistica::Application.routes.draw do
         post 'show_rows_orders_service'
       end
       member do
+        get 'gorevise'
+        get 'goapprove'
+        get 'goissue'
+        get 'goobserve'
+        get 'order_service_pdf'
+        post 'order_service_pdf'
         delete 'delete'
       end
     end

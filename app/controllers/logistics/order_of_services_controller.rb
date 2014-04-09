@@ -9,6 +9,15 @@ class Logistics::OrderOfServicesController < ApplicationController
   end
 
   def show
+    @company = params[:company_id]
+    @orderOfService = OrderOfService.find(params[:id])
+    if params[:state_change] != nil
+      @state_change = params[:state_change]
+    else
+      @orderOfServicePerState = @orderOfService.state_per_order_of_services
+    end
+    @orderOfServiceDetails = @orderOfService.order_of_service_details
+    render layout: false
   end
 
   def new
@@ -101,8 +110,61 @@ class Logistics::OrderOfServicesController < ApplicationController
     redirect_to :action => :index, company_id: params[:company_id]
   end
 
+  # Este es el cambio de estado
   def destroy
+    @OrderOfService = OrderOfService.find_by_id(params[:id])
+    @OrderOfService.cancel
+    stateOrderDetail = StatePerOrderOfService.new
+    stateOrderDetail.state = @OrderOfService.human_state_name
+    stateOrderDetail.order_of_service_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
+    #redirect_to :action => :index, company_id: params[:company_id]
+    render :json => @OrderOfService
+  end
 
+  def goissue
+    @OrderOfService = OrderOfService.find_by_id(params[:id])
+    @OrderOfService.issue
+    stateOrderDetail = StatePerOrderOfService.new
+    stateOrderDetail.state = @OrderOfService.human_state_name
+    stateOrderDetail.order_of_service_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
+    redirect_to :action => :index, company_id: params[:company_id]
+  end
+
+  def gorevise
+    @OrderOfService = OrderOfService.find_by_id(params[:id])
+    @OrderOfService.revise
+    stateOrderDetail = StatePerOrderOfService.new
+    stateOrderDetail.state = @OrderOfService.human_state_name
+    stateOrderDetail.order_of_service_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
+    redirect_to :action => :index, company_id: params[:company_id]
+  end
+
+  def goapprove
+    @OrderOfService = OrderOfService.find_by_id(params[:id])
+    @OrderOfService.approve
+    stateOrderDetail = StatePerOrderOfService.new
+    stateOrderDetail.state = @OrderOfService.human_state_name
+    stateOrderDetail.order_of_service_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
+    redirect_to :action => :index, company_id: params[:company_id]
+  end
+
+  def goobserve
+    @OrderOfService = OrderOfService.find_by_id(params[:id])
+    @OrderOfService.observe
+    stateOrderDetail = StatePerOrderOfService.new
+    stateOrderDetail.state = @OrderOfService.human_state_name
+    stateOrderDetail.order_of_service_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   # DO DELETE row
@@ -112,6 +174,72 @@ class Logistics::OrderOfServicesController < ApplicationController
       OrderOfServiceDetail.destroy(oos.id)
     end
     render :json => @orderOfService
+  end
+
+  def order_service_pdf
+    @orderOfService = OrderOfService.find(params[:id])
+    @orderServiceDetails = @orderOfService.order_of_service_details
+    
+    # Numerics/Text values for footer
+    @total = 0
+    @igv = 0
+    @igv_neto = 0
+    @orderServiceDetails.each do |osd|
+      @total += osd.amount*osd.unit_price
+    end
+    FinancialVariable.where("name LIKE '%IGV%'").each do |val|
+      if val != nil
+        @igv= val.value.to_f
+      else
+        @igv = 0.18
+      end
+    end
+    @igv_neto = @total*@igv
+    @total_neto = @total - @igv_neto
+
+    if @orderOfService.state == 'pre_issued'
+      @state_per_order_purchase_approved = @orderOfService.state_per_order_of_services.where("state LIKE 'pre_issued'").last
+      @state_per_order_purchase_revised = @orderOfService.state_per_order_of_services.where("state LIKE 'pre_issued'").last
+
+      if @state_per_order_purchase_approved == nil && @state_per_order_purchase_revised == nil
+        @state_per_order_purchase_approved = @orderOfService
+        @state_per_order_purchase_revised = @orderOfService
+      end
+
+      @first_state = "Pre-Emitido"
+      @second_state = "Pre-Emitido"
+    end
+
+    if @orderOfService.state == 'issued'
+      @state_per_order_purchase_approved = @orderOfService.state_per_order_of_services.where("state LIKE 'issued'").last
+      @state_per_order_purchase_revised = @orderOfService.state_per_order_of_services.where("state LIKE 'pre_issued'").last
+      @first_state = "Emitido"
+      @second_state = "Pre-Emitido"
+    end
+
+    if @orderOfService.state == 'revised'
+      @state_per_order_purchase_approved = @orderOfService.state_per_order_of_services.where("state LIKE 'revised'").last
+      @state_per_order_purchase_revised = @orderOfService.state_per_order_of_services.where("state LIKE 'issued'").last
+      @first_state = "Revisado"
+      @second_state = "Emitido"
+    end
+
+    if @orderOfService.state == 'approved'
+      @state_per_order_purchase_approved = @orderOfService.state_per_order_of_services.where("state LIKE 'approved'").last
+      @state_per_order_purchase_revised = @orderOfService.state_per_order_of_services.where("state LIKE 'revised'").last
+      @first_state = "Aprobado"
+      @second_state = "Revisado"
+    end
+
+    if @orderOfService.state == 'canceled'
+      @state_per_order_purchase_approved = @orderOfService.state_per_order_of_services.where("state LIKE 'canceled'").last
+      @state_per_order_purchase_revised = @orderOfService.state_per_order_of_services.where("state LIKE 'canceled'").last
+      @first_state = "Cancelado"
+      @second_state = "Cancelado"
+    end
+
+    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape }
+
   end
 
   private
