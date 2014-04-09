@@ -1,6 +1,5 @@
 ArsacLogistica::Application.routes.draw do
   
-  
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -154,6 +153,14 @@ ArsacLogistica::Application.routes.draw do
     resources :warehouses
     resources :formats
     resources :documents
+    resources :stock_inputs do
+      collection do
+        post 'add_items_from_purchase_order'
+      end
+      member do
+        put 'show_purchase_order_item_field'
+      end
+    end
 
   end
 
