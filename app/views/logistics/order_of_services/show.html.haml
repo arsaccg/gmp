@@ -3,8 +3,8 @@
     .col-xs-12.col-sm-7.col-md-7.col-lg-4
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-eye
-        Orden de Compra #
-        = @purchaseOrder.id.to_s.rjust(5, '0')
+        Orden de Servicio #
+        = @orderOfService.id.to_s.rjust(5, '0')
   %section#widget-grid
     .row
       %article.col-sm-12.col-md-12.col-lg-8
@@ -13,7 +13,7 @@
             %span.widget-icon
               %i.fa.fa-table
             %h2 
-            = 'Orden de Compra N° ' + @purchaseOrder.id.to_s.rjust(5, '0')
+            = 'Orden de Compra N° ' + @orderOfService.id.to_s.rjust(5, '0')
           %div
             .jarviswidget-editbox
               / This area used as dropdown edit box
@@ -38,23 +38,23 @@
                 %tbody(id="article_items_table")
                   %tr
                     %td
-                      = @purchaseOrder.id.to_s.rjust(5, '0')
+                      = @orderOfService.id.to_s.rjust(5, '0')
                     %td
-                      = translate_purchase_order_state(@purchaseOrder.state)
+                      = translate_purchase_order_state(@orderOfService.state)
                     %td
-                      = @purchaseOrder.entity.name + ' ' + @purchaseOrder.entity.surname
+                      = @orderOfService.entity.name + ' ' + @orderOfService.entity.surname
                     %td
-                      = @purchaseOrder.method_of_payment.name
+                      = @orderOfService.method_of_payment.name
                     %td
-                      = @purchaseOrder.date_of_issue.strftime("%d/%m/%Y")
+                      = @orderOfService.date_of_issue.strftime("%d/%m/%Y")
                     %td
-                      = @purchaseOrder.expiration_date.strftime("%d/%m/%Y")
+                      = @orderOfService.expiration_date.strftime("%d/%m/%Y")
                     %td
-                      = @purchaseOrder.delivery_date.strftime("%d/%m/%Y")
+                      = @orderOfService.delivery_date.strftime("%d/%m/%Y")
                     %td
-                      = @purchaseOrder.user.first_name + ' ' + @purchaseOrder.user.last_name
+                      = @orderOfService.user.first_name + ' ' + @orderOfService.user.last_name
                     %td
-                      = @purchaseOrder.description
+                      = @orderOfService.description
       - if @state_change != nil
         %h1.page-title.txt-color-blueDark
           %i.fa.fa-pencil-square-o.fa-fw 
@@ -64,7 +64,7 @@
             - when 'issued'
 
               - if current_user.has_role? :issuer
-                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goissue_logistics_purchase_order_path(@purchaseOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goissue_logistics_purchase_order_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Emitir
               - else
                 %p.alert.alert-danger
@@ -75,7 +75,7 @@
             - when 'observed'
 
               - if current_user.has_role? :issuer
-                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goobserve_logistics_purchase_order_path(@purchaseOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goobserve_logistics_purchase_order_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Observar
               - else
                 %p.alert.alert-danger
@@ -86,7 +86,7 @@
             - when 'revised'
 
               - if current_user.has_role? :reviser
-                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{gorevise_logistics_purchase_order_path(@purchaseOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{gorevise_logistics_purchase_order_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Dar visto bueno
               - else
                 %p.alert.alert-danger
@@ -96,7 +96,7 @@
 
             - when 'canceled'
               - if current_user.has_role? :canceller
-                %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_purchase_orders_path}?company_id=#{@company}')"}
+                %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_purchase_order_path(@orderOfService.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_purchase_orders_path}?company_id=#{@company}')"}
                   Anular
               - else
                 %p.alert.alert-danger
@@ -105,7 +105,7 @@
                   No tienes los privilegios para Anular.
             - when 'approved'
               - if current_user.has_role? :approver
-                %a.btn.btn-primary.btn-lg{:onclick => "javascript:load_url_ajax('#{goapprove_logistics_purchase_order_path(@purchaseOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                %a.btn.btn-primary.btn-lg{:onclick => "javascript:load_url_ajax('#{goapprove_logistics_purchase_order_path(@orderOfService.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
                   Aprobar
               - else
                 %p.alert.alert-danger
@@ -124,7 +124,7 @@
               %span.widget-icon
                 %i.fa.fa-table
               %h2 
-              = 'Historial de Estado de la Orden de Compra N° ' + @purchaseOrder.id.to_s.rjust(5, '0')
+              = 'Historial de Estado de la Orden de Compra N° ' + @orderOfService.id.to_s.rjust(5, '0')
             %div
               .jarviswidget-editbox
                 / This area used as dropdown edit box
@@ -176,7 +176,7 @@
                     %th Total después de IGV
                     %th Glosa
                 %tbody(id="purchase_detail_items_table")
-                  - @purchaseOrderDetails.each do |purchasedetail|
+                  - @orderOfServiceDetails.each do |purchasedetail|
                     %tr
                       %td
                         = purchasedetail.delivery_order_detail.article.code
@@ -190,11 +190,11 @@
                         - else
                           = "No tiene Unidad de Medida"
                       %td
-                        = number_to_currency(purchasedetail.unit_price.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                        = number_to_currency(purchasedetail.unit_price.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
                       %td
-                        = number_to_currency((purchasedetail.delivery_order_detail.amount.to_i * purchasedetail.unit_price.to_f).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                        = number_to_currency((purchasedetail.delivery_order_detail.amount.to_i * purchasedetail.unit_price.to_f).to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
                       %td
-                        = number_to_currency(purchasedetail.unit_price_igv.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                        = number_to_currency(purchasedetail.unit_price_igv.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
                       %td
                         = purchasedetail.description
 
