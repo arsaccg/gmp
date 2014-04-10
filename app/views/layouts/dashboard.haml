@@ -251,6 +251,46 @@
                 %a{href: "#{logistics_person_path(current_user.id)}", title: "Usuario"}
                   %i.fa.fa-lg.fa-fw.fa-user
                   %span.menu-item-parent Mi Perfil
+          %li
+            %a{href: "#", title: "Compañias"}
+              %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+              %span.menu-item-parent Licitaciones
+            %ul
+              - if current_user.has_role? :director
+                %li
+                  %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
+                    %i.fa.fa-lg.fa-fw.fa-gears
+                    %span.menu-item-parent Companias
+                %li
+                  %a{href: "#{logistics_persons_path}", title: "Gestión de Usuarios"}
+                    %i.fa.fa-lg.fa-fw.fa-group
+                    %span.menu-item-parent Usuarios
+              - else
+                %li
+                  %a{href: '#'}
+                    %i.fa.fa-lg.fa-fw.fa-list-alt
+                    %span.menu-item-parent Mantenimientos
+                  %ul
+                    %li
+                      %a{href: '#', title: "Obras"}
+                        %i.fa.fa-lg.fa-fw.fa-home
+                        %span.menu-item-parent Obras
+                    %li
+                      %a{href: '#', title: "Profesionales"}
+                        %i.fa.fa-lg.fa-fw.fa-user
+                        %span.menu-item-parent Profesionales
+                    %li
+                      %a{href: '#', title: "Certificados"}
+                        %i.fa.fa-lg.fa-fw.fa-clipboard
+                        %span.menu-item-parent Certificados
+                    %li
+                      %a{href: '#', title: "Capacitaciones"}
+                        %i.fa.fa-lg.fa-fw.fa-clipboard
+                        %span.menu-item-parent Capacitaciones
+                    %li
+                      %a{href: '#', title: "Componentes"}
+                        %i.fa.fa-lg.fa-fw.fa-clipboard
+                        %span.menu-item-parent Componentes
       %span.minifyme
         %i.fa.fa-arrow-circle-left.hit
     / END NAVIGATION

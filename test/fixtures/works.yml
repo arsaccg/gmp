@@ -1,0 +1,73 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  specialty: MyString
+  contracting_entity: MyString
+  name: MyString
+  amount_of_contract: 1.5
+  contractor: MyString
+  participation_of_arsac: MyString
+  date_signature_of_contract: 2014-04-10
+  start_date_of_work: 2014-04-10
+  real_end_date_of_work: 2014-04-10
+  date_of_receipt_of_work: 2014-04-10
+  settlement_date: 2014-04-10
+  amount_of_settlement: 1.5
+  ipc_settlement: 1.5
+  component_id: 1
+  testimony_of_consortium: MyString
+  testimony_of_consortium_file_name: MyString
+  testimony_of_consortium_content_type: MyString
+  testimony_of_consortium_file_size: 1
+  testimony_of_consortium_updated_at: 2014-04-10 11:10:55
+  contract: MyString
+  contract_file_name: MyString
+  contract_content_type: MyString
+  contract_file_size: 1
+  contract_updated_at: 2014-04-10 11:10:55
+  reception_certificate: MyString
+  reception_certificate_file_name: MyString
+  reception_certificate_content_type: MyString
+  reception_certificate_file_size: 1
+  reception_certificate_updated_at: 2014-04-10 11:10:55
+  settlement_of_work: MyString
+  settlement_of_work_file_name: MyString
+  settlement_of_work_content_type: MyString
+  settlement_of_work_file_size: 1
+  settlement_of_work_updated_at: 2014-04-10 11:10:55
+
+two:
+  specialty: MyString
+  contracting_entity: MyString
+  name: MyString
+  amount_of_contract: 1.5
+  contractor: MyString
+  participation_of_arsac: MyString
+  date_signature_of_contract: 2014-04-10
+  start_date_of_work: 2014-04-10
+  real_end_date_of_work: 2014-04-10
+  date_of_receipt_of_work: 2014-04-10
+  settlement_date: 2014-04-10
+  amount_of_settlement: 1.5
+  ipc_settlement: 1.5
+  component_id: 1
+  testimony_of_consortium: MyString
+  testimony_of_consortium_file_name: MyString
+  testimony_of_consortium_content_type: MyString
+  testimony_of_consortium_file_size: 1
+  testimony_of_consortium_updated_at: 2014-04-10 11:10:55
+  contract: MyString
+  contract_file_name: MyString
+  contract_content_type: MyString
+  contract_file_size: 1
+  contract_updated_at: 2014-04-10 11:10:55
+  reception_certificate: MyString
+  reception_certificate_file_name: MyString
+  reception_certificate_content_type: MyString
+  reception_certificate_file_size: 1
+  reception_certificate_updated_at: 2014-04-10 11:10:55
+  settlement_of_work: MyString
+  settlement_of_work_file_name: MyString
+  settlement_of_work_content_type: MyString
+  settlement_of_work_file_size: 1
+  settlement_of_work_updated_at: 2014-04-10 11:10:55
