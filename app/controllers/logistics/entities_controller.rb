@@ -28,8 +28,19 @@ class Logistics::EntitiesController < ApplicationController
   def edit
     @reg_ed = Time.now.to_i
     @entity = Entity.find(params[:id])
+    @all_entity_types = Array.new
+    @own_entity_types = Array.new
+    # Comenzando lógica
     @type_entities = TypeEntity.all
-    @ete = @entity.type_entities
+
+    @type_entities.each do |type_entity|
+      @all_entity_types << type_entity
+    end
+
+    @entity.type_entities.each do |enty|
+      @own_entity_types << enty
+    end
+
     @action = 'edit'
     render layout: false
   end
