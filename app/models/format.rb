@@ -1,6 +1,7 @@
 class Format < ActiveRecord::Base
   has_many :format_per_documents
   has_many :documents, :through => :format_per_documents
+  has_many :stock_inputs#, :foreign_key => 'format_id'
 
   default_scope { where(status: "A").order("name ASC") }
   after_validation :do_activecreate, on: [:create]

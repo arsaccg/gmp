@@ -3,10 +3,10 @@
     .col-xs-12.col-sm-7.col-md-7.col-lg-3
       %h1.page-title.txt-color-blueDark{ "style" => "margin-bottom: 10px;"}
         %i.fa.fa-pencil-square-o.fa-fw
-        Ordenes de Compra
+        Ordenes de Servicio
     - if @article != nil && @phase != nil && @sector != nil && @costcenters.first != nil
       .col-sm-3{ "style" => "margin-top: 10px;" }
-        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_order_of_service_path}', 'content', {company_id: #{@company}}, null, 'GET')"}
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_order_of_service_path}', 'content', {company_id: #{@company}, cost_center_id: $('#cost-center-selected').val()}, null, 'GET')"}
           Agregar Nueva Orden de Servicio
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
@@ -28,7 +28,7 @@
         ×
       %h4.alert-heading
         %i.fa.fa-lock
-          No puedes crear Ordenes de Compra!
+          No puedes crear Ordenes de Servicio!
       %p
         Verifica si tienes, por lo menos, 1 insumo, 1 fase, 1 centro de costo y 1 sector
   %br
@@ -55,7 +55,7 @@
 
       $("#cost-center-selected").focus();
       
-      load_items_delivery_order_ajax('#{show_rows_orders_service_logistics_order_of_services_path}', 'body-summary-purchase-orders', {company_id: '#{@company}', cost_center_id: $("#cost-center-selected").val(), authenticity_token: "#{form_authenticity_token}"});
+      load_items_delivery_order_ajax('#{show_rows_orders_service_logistics_order_of_services_path}', 'body-summary-service-orders', {company_id: '#{@company}', cost_center_id: $("#cost-center-selected").val(), authenticity_token: "#{form_authenticity_token}"});
 
       $('#body-summary-purchase-orders tr td a').tooltip('hide');
 

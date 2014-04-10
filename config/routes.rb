@@ -1,6 +1,5 @@
 ArsacLogistica::Application.routes.draw do
   
-  
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -126,6 +125,15 @@ ArsacLogistica::Application.routes.draw do
         post 'add_order_service_item_field'
         post 'show_rows_orders_service'
       end
+      member do
+        get 'gorevise'
+        get 'goapprove'
+        get 'goissue'
+        get 'goobserve'
+        get 'order_service_pdf'
+        post 'order_service_pdf'
+        delete 'delete'
+      end
     end
     resources :subcategories do
       collection do
@@ -151,6 +159,14 @@ ArsacLogistica::Application.routes.draw do
     resources :warehouses
     resources :formats
     resources :documents
+    resources :stock_inputs do
+      collection do
+        post 'add_items_from_purchase_order'
+      end
+      member do
+        put 'show_purchase_order_item_field'
+      end
+    end
 
   end
 

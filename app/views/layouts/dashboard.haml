@@ -243,6 +243,11 @@
                   %span.menu-item-parent
                     Seguimiento de Ordenes
               %li
+                %a{href: "#{logistics_stock_inputs_path}?company_id=#{@company.id}", title: "Ingreso a Almacén", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Ingreso a Almacén
+              %li
                 %a{href: "#{logistics_person_path(current_user.id)}", title: "Usuario"}
                   %i.fa.fa-lg.fa-fw.fa-user
                   %span.menu-item-parent Mi Perfil
