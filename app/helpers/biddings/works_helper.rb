@@ -1,0 +1,2 @@
+module Biddings::WorksHelper
+end

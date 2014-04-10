@@ -248,6 +248,36 @@
                   %span.menu-item-parent
                     Ingreso a Almacén
           %li
+            %a{href: "#", title: "Licitaciones"}
+              %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+              %span.menu-item-parent Licitaciones
+            %ul
+              %li
+                %a{href: '#'}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Mantenimientos
+                %ul
+                  %li
+                    %a{href: "#{biddings_works_path}?company_id=#{@company.id}", title: "Obras"}
+                      %i.fa.fa-lg.fa-fw.fa-home
+                      %span.menu-item-parent Obras
+                  %li
+                    %a{href: "#{biddings_professionals_path}?company_id=#{@company.id}", title: "Profesionales"}
+                      %i.fa.fa-lg.fa-fw.fa-user
+                      %span.menu-item-parent Profesionales
+                  %li
+                    %a{href: "#{biddings_certificates_path}?company_id=#{@company.id}", title: "Certificados"}
+                      %i.fa.fa-lg.fa-fw.fa-clipboard
+                      %span.menu-item-parent Certificados
+                  %li
+                    %a{href: "#{biddings_trainings_path}?company_id=#{@company.id}", title: "Capacitaciones"}
+                      %i.fa.fa-lg.fa-fw.fa-clipboard
+                      %span.menu-item-parent Capacitaciones
+                  %li
+                    %a{href: "#{biddings_components_path}?company_id=#{@company.id}", title: "Componentes"}
+                      %i.fa.fa-lg.fa-fw.fa-clipboard
+                      %span.menu-item-parent Componentes
+          %li
             %a{href: "##{logistics_person_path(current_user.id)}", title: "Usuario"}
               %i.fa.fa-lg.fa-fw.fa-user
               %span.menu-item-parent Mi Perfil

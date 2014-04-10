@@ -1,0 +1,2 @@
+module Biddings::ProfessionalHelper
+end

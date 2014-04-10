@@ -44,7 +44,7 @@ repeat :all do
   bounding_box [bounds.right - 150, bounds.bottom + 53], :width  => bounds.width do
     text "TOTAL                  #{number_to_currency(@total, unit: '', precision: 2)}"
     move_down 5
-    text "IGV 18%                 #{number_to_currency(@igv_neto, unit: '', precision: 2)}"
+    text "IGV #{number_to_percentage(@igv*100, precision: 0)}                 #{number_to_currency(@igv_neto, unit: '', precision: 2)}"
     move_down 5
     text "TOTAL NETO #{@orderOfService.money.symbol}     #{number_to_currency(@total_neto, unit: '', precision: 2)}"
   end

@@ -31,6 +31,7 @@
             / widget content
             .widget-body.no-padding
               = simple_form_for([:logistics, @person], url: logistics_person_path, method: 'PATCH', html: {multipart: true,class: 'smart-form' }) do |f|
+                = hidden_field_tag "profile", true
                 %header
                   = @person.first_name
                 %fieldset
@@ -57,7 +58,7 @@
                     %section.col.col-6
                       %label.input
                         %i.fa.fa-calendar.icon-append
-                        %input#dateBirth.form-control{"data-dateformat" => "dd/mm/yy", name: "user[date_of_birth]", placeholder: "Fecha de Nacimiento", type: "text", value: "#{@person.date_of_birth}"}
+                        %input#dateBirth.form-control{"data-dateformat" => "mm/dd/yy", name: "user[date_of_birth]", placeholder: "Fecha de Nacimiento", type: "text", value: "#{@person.date_of_birth}"}
                   %section
                     %label.input.input-file{for: "avatar"}
                       .button
