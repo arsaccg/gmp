@@ -16,7 +16,7 @@ move_down 3
 @orderServiceDetails.each do |data|
   stroke_horizontal_rule
   pad(5) {
-    table([ ["#{data.id}", "#{data.article.code}", "#{data.article.description}", "#{data.sector.code}", "#{data.phase.code}", "#{data.unit_of_measurement.symbol}", "#{sprintf("%.2f", data.amount)}", "#{number_to_currency(data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}", ".00", "#{number_to_currency(data.amount*data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "ffffff"}, :column_widths => [35,80,270,35,35,45,30,70,120,50,75]) do
+    table([ ["#{data.id}", "#{data.article.code}", "#{data.article.description}", "#{data.sector.code}", "#{data.phase.code}", "#{data.unit_of_measurement.symbol}", "#{sprintf("%.2f", data.amount)}", "#{number_to_currency(data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}", ".00", "#{number_to_currency(data.amount*data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "fffffff"}, :column_widths => [40,80,210,35,50,30,75,120,55,75]) do
       style(columns(7..11), :align => :right)
     end
     move_down 4
