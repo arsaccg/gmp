@@ -9,50 +9,53 @@
         .row
           %section.col.col-6
             %label.label Nombre del profesional
-            %label.input{for: "professional_id"}
-              %i.icon-append.fa.fa-superscript
-                -if @action==edit
+            %label.select
+              %select.input-sm{name: "training[professional_id]"}
+                -if @action=="edit"
                   -@professional.each do |pro|
                     -if @training.professional_id==pro.id
-                      %option{value: "#{pro.id}", selected:true} =pro.name
+                      %option{value: "#{pro.id}", selected:true}
+                        = "#{pro.name}"
                     -else
-                      %option{value: "#{pro.id}"} =pro.name
+                      %option{value: "#{pro.id}"} 
+                        ="#{pro.name}"
                 -else
                   -@professional.each do |pro|
-                    %option{value: "#{pro.id}"} =pro.name
+                    %option{value: "#{pro.id}"}
+                      = "#{pro.name}"
         .row
-          %section
+          %section.col.col-6
             %label.label Tipo de capacitación
             %label.select.type-training
-              %select.input-sm{disabled: "disabled", for: "type_training"}
-              -if @action=="edit"
-                -if @training.type_training=="Curso"
-                  %option{value: "Curso", selected:=>true} Curso
+              %select.input-sm{name: "training[type_training]"}
+                -if @action=="edit"
+                  -if @training.type_training=="Curso"
+                    %option{value: "Curso", selected:true} Curso
+                    %option{value: "Diplomado"} Diplomado
+                    %option{value: "Doctorado"} Doctorado
+                    %option{value: "Maestría"} Maestría
+                  -if @training.type_training=="Diplomado"
+                    %option{value: "Curso"} Curso
+                    %option{value: "Diplomado", selected:true} Diplomado
+                    %option{value: "Doctorado"} Doctorado
+                    %option{value: "Maestría"} Maestría
+                  -if @training.type_training=="Doctorado"
+                    %option{value: "Curso"} Curso
+                    %option{value: "Diplomado"} Diplomado
+                    %option{value: "Doctorado", selected:true} Doctorado
+                    %option{value: "Maestría"} Maestría
+                  -if @training.type_training=="Maestría"
+                    %option{value: "Curso"} Curso
+                    %option{value: "Diplomado"} Diplomado
+                    %option{value: "Doctorado"} Doctorado
+                    %option{value: "Maestría", selected:true} Maestría
+                -else
+                  %option{value: "Curso"} Curso
                   %option{value: "Diplomado"} Diplomado
                   %option{value: "Doctorado"} Doctorado
                   %option{value: "Maestría"} Maestría
-                -if @training.type_training=="Diplomado"
-                  %option{value: "Curso"} Curso
-                  %option{value: "Diplomado", selected:=>true} Diplomado
-                  %option{value: "Doctorado"} Doctorado
-                  %option{value: "Maestría"} Maestría
-                -if @training.type_training=="Doctorado"
-                  %option{value: "Curso"} Curso
-                  %option{value: "Diplomado"} Diplomado
-                  %option{value: "Doctorado", selected:=>true} Doctorado
-                  %option{value: "Maestría"} Maestría
-                -if @training.type_training=="Maestría"
-                  %option{value: "Curso"} Curso
-                  %option{value: "Diplomado"} Diplomado
-                  %option{value: "Doctorado"} Doctorado
-                  %option{value: "Maestría", selected:=>true} Maestría
-              -else
-                %option{value: "Curso"} Curso
-                %option{value: "Diplomado"} Diplomado
-                %option{value: "Doctorado"} Doctorado
-                %option{value: "Maestría"} Maestría
         .row
-          %section
+          %section.col.col-6
             %label.label Certificado de capacitación
             %label.input.input-file{for: "training"}
               .button
@@ -69,15 +72,16 @@
 //ver todo el script, no lo he domificado
 :javascript
   $(document).ready(function () {
-    $("#category_code").focus();
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }
     else{
-      submit_validate($('#new_category'));
+      submit_validate($('#new_training'));
     }
   });
+
+  console.log($('professional_id'))
   
   function submit_validate(form){
     $(form['selector']).ajaxForm({
@@ -85,25 +89,27 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'category[code]' : {
+            'training[professional_id]' : {
               required : true,
-              minlength : 2,
-              maxlength : 2
             },
-            'category[name]' : {
+            'training[type_training]' : {
+              required : true,
+            },
+            'training[training]' : {
               required : true,
             }
           },
 
           // Messages for form validation
           messages : {
-            'category[code]' : {
-              required : 'Porfavor, ingresar el código del Grupo',
-              minlength : "Como mínimo debe tener 2 dígitos.",
-              maxlength : "Como máximo debe tener 2 dígitos.",
+            'training[type_training]' : {
+              required : 'Porfavor, seleccione el tipo de capacitación',
             },
-            'category[name]' : {
-              required : 'Porfavor, ingresar el nombre del Grupo.'
+            'training[professional_id]' : {
+              required : 'Porfavor, seleccione al profesional.'
+            },
+            'training[training]' : {
+              required : 'Porfavor, adjunte su certificado de capacitación.'
             }
           },
 

@@ -9,31 +9,37 @@
         .row
           %section.col.col-6
             %label.label Nombre del profesional
-            %label.input{for: "professional_id"}
-              %i.icon-append.fa.fa-superscript
-                -if @action==edit
+            %label.input
+              %select.form-control#professional-select{:name =>"professional_id"}
+                -if @action=="edit"
                   -@professional.each do |pro|
                     -if @certificate.professional_id==pro.id
-                      %option{value: "#{pro.id}", selected:true} =pro.name
+                      %option{value: "#{pro.id}", selected:true} 
+                        = "#{pro.name}"
                     -else
-                      %option{value: "#{pro.id}"} =pro.name
+                      %option{value: "#{pro.id}"}
+                        = "#{pro.name}"
                 -else
                   -@professional.each do |pro|
-                    %option{value: "#{pro.id}"} =pro.name
+                    %option{value: "#{pro.id}"} 
+                      = "#{pro.name}"
         .row
           %section.col.col-6
             %label.label Nombre de la obra
-            %label.input{for: "work_id"}
-              %i.icon-append.fa.fa-superscript
-                -if @action==edit
+            %label.input
+              %select.form-control#work-select{:name =>"work_id"}
+                -if @action=="edit"
                   -@work.each do |wc|
                     -if @work.certificates_id==wc.id
-                      %option{value: "#{wc.id}", selected:true} =wc.name
+                      %option{value: "#{wc.id}", selected:true} 
+                        = "#{wc.name}"
                     -else
-                      %option{value: "#{wc.id}"} = wc.name
+                      %option{value: "#{wc.id}"} 
+                        = "#{wc.name}"
                 -else
-                  -@professional.each do |wc|
-                    %option{value: "#{wc.id}"} = wc.name
+                  -@work.each do |wc|
+                    %option{value: "#{wc.id}"} 
+                      = "#{wc.name}"
         
         .row
           %section.col.col-6
@@ -49,33 +55,32 @@
               = f.input :contractor, placeholder: "Contratista", input_html: { class: 'form-control' }, label: false
 
         .row
-           .col-md-4
-             %label.col-md-4.control-label Fecha de Inicio
-              .col-md-8
-                .input-group
-                  = f.input :start_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
-                  %span.input-group-addon
-                    %i.fa.fa-calendar
+          %section.col.col-6
+            %label.col-md-8.control-label Fecha de Inicio
             .col-md-4
-             %label.col-md-4.control-label Fecha de Termino
-              .col-md-8
-                .input-group
-                  = f.input :finish_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
-                  %span.input-group-addon
-                    %i.fa.fa-calendar
+              .input-group
+                = f.input :start_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar
+        .row
+          %section.col.col-6
+            %label.col-md-8.control-label Fecha de Termino
+            .col-md-4
+              .input-group
+                = f.input :finish_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar
 
         .row
-          %section
-            %label.label Componentes de la obra
+          %section.col.col-6
+            %label.label Componentes de la obra:
             %label.select.type-training
-              %select.input-sm{disabled: "disabled", for: "type_training"}
-              - @work.components_id.each do |comp|
-                .fields.inline-group
-                  %input{name: "work", type: "checkbox", :checked=> "#{comp.id}"}
-                    = "#{comp.name}"
-                
+            - @component.each do |comp|
+              .fields.inline-group
+                %input{name: "component_work", type: "checkbox", :checked=> "#{comp.id}"}
+                  = "#{comp.name}"
         .row
-          %section
+          %section.col.col-6
             %label.label Certificado
             %label.input.input-file{for: "certificate"}
               .button
@@ -88,17 +93,14 @@
           %i.fa.fa-save
             Guardar
 
-
-//ver todo el script, no lo he domificado
 :javascript
   $(document).ready(function () {
-    $("#category_code").focus();
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }
     else{
-      submit_validate($('#new_category'));
+      submit_validate($('#new_certificate'));
     }
   });
   
@@ -108,25 +110,55 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'category[code]' : {
-              required : true,
-              minlength : 2,
-              maxlength : 2
+            'certificate[professional_id]' : {
+              required : true
             },
-            'category[name]' : {
+            'certificate[work_id]' : {
               required : true,
+              digits: true
+            },
+            'certificate[charge]' : {
+              required : true
+            },
+            'certificate[start_date]' : {
+              required : true
+            },
+            'certificate[finish_date]' : {
+              required : true
+            },
+            'professional[componentes_id]' : {
+              required : true
+            },
+            'professional[certificate]' : {
+              required : true
             }
           },
 
           // Messages for form validation
           messages : {
-            'category[code]' : {
-              required : 'Porfavor, ingresar el código del Grupo',
-              minlength : "Como mínimo debe tener 2 dígitos.",
-              maxlength : "Como máximo debe tener 2 dígitos.",
+            'certificate[professional_id]' : {
+              required : 'Porfavor, ingresar el nombre del profesional'
             },
-            'category[name]' : {
-              required : 'Porfavor, ingresar el nombre del Grupo.'
+            'certificate[work_id]' : {
+              required : 'Porfavor, ingresar el nombre de la obra',
+            },
+            'certificate[charge]' : {
+              required : 'Porfavor, ingresar el cargo.'
+            },
+            'professional[start_date]' : {
+              required : 'Porfavor, ingresar la fecha de inicio de la obra.'
+            },
+            'professional[finish_date]' : {
+              required : 'Porfavor, ingresar la fecha de fin de la obra.'
+            },
+            'professional[professional_title]' : {
+              required : 'Porfavor, ingresar el archivo del título profesional'
+            },
+            'professional[tuition]' : {
+              required : 'Porfavor, ingresar el archivo de colegiatura.'
+            },
+            'professional[certificate]' : {
+              required : 'Porfavor, ingresar el certificado.'
             }
           },
 

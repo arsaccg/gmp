@@ -27,23 +27,30 @@
               = f.input :profession, placeholder: "Profesión", input_html: { class: 'form-control' }, label: false
 
         .row
-           .col-md-4
-             %label.col-md-4.control-label Fecha de Titulación
-              .col-md-8
-                .input-group
-                  = f.input :professional_title_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
-                  %span.input-group-addon
-                    %i.fa.fa-calendar
+          %section.col.col-10
+            %label.col-md-20.control-label Fecha de Titulación
+        .row
+          %section.col.col-10
+            .col-md-8
+              .input-group
+                = f.input :professional_title_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar
+        .row
+          %section.col.col-10
             .col-md-4
-             %label.col-md-4.control-label Fecha de Colegiatura
-              .col-md-8
-                .input-group
-                  = f.input :date_of_tuition, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
-                  %span.input-group-addon
-                    %i.fa.fa-calendar
+              %label.col-md-20.control-label Fecha de Colegiatura
+        .row
+          %section.col.col-10
+            .col-md-8
+              .input-group
+                = f.input :date_of_tuition, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar
 
-        .row Archivos a Adjuntar
-
+        .row 
+          %section.col.col-10
+            %label Archivos a Adjuntar
         .row
           %section.col.col-10
             %label.label Título profesional
@@ -66,18 +73,14 @@
           %i.fa.fa-save
             Guardar
 
-
-//chequear script aun no modificado
-
 :javascript
   $(document).ready(function () {
-    $("#category_code").focus();
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }
     else{
-      submit_validate($('#new_company'));
+      submit_validate($('#new_professional'));
     }
   });
   
@@ -87,33 +90,53 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'company[ruc]' : {
-              required : true,
-              digits: true,
-              minlength : 11,
-              maxlength : 11
+            'professional[name]' : {
+              required : true
             },
-            'company[name]' : {
+            'professional[dni]' : {
               required : true,
+              digits: true
             },
-            'company[avatar]' : {
-              required : true,
+            'professional[profession]' : {
+              required : true
+            },
+            'professional[professional_title_date]' : {
+              required : true
+            },
+            'professional[date_of_tuition]' : {
+              required : true
+            },
+            'professional[professional_title]' : {
+              required : true
+            },
+            'professional[tuition]' : {
+              required : true
             }
           },
 
           // Messages for form validation
           messages : {
-            'company[ruc]' : {
-              required : 'Porfavor, ingresar el RUC de la Compania',
-              digits: 'Solo se aceptan números',
-              minlength : "Como mínimo debe tener 11 dígitos.",
-              maxlength : "Como máximo debe tener 11 dígitos."
+            'professional[name]' : {
+              required : 'Porfavor, ingresar el nombre del profesional'
             },
-            'company[name]' : {
-              required : 'Porfavor, ingresar el nombre de la CIA.'
+            'professional[dni]' : {
+              required : 'Porfavor, ingresar el DNI del profesional',
+              digits: 'Solo se aceptan números'
             },
-            'company[avatar]' :{
-              required : 'Porfavor, ingresar el logo de la CIA.'
+            'professional[profession]' : {
+              required : 'Porfavor, ingresar la profesión.'
+            },
+            'professional[professional_title_date]' : {
+              required : 'Porfavor, ingresar la fecha de titulación.'
+            },
+            'professional[date_of_tuition]' : {
+              required : 'Porfavor, ingresar la fecha de colegiatura.'
+            },
+            'professional[professional_title]' : {
+              required : 'Porfavor, ingresar el archivo del título profesional'
+            },
+            'professional[tuition]' : {
+              required : 'Porfavor, ingresar el archivo de colegiatura.'
             }
           },
 
@@ -135,4 +158,3 @@
       }
     });
   }
-
