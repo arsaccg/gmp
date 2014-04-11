@@ -2,9 +2,9 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Certificados
+    %h2 Capacitaciones
   .widget-body
-    = simple_form_for([:biddings, @certificate], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:biddings, @training], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-6
@@ -13,7 +13,7 @@
               %i.icon-append.fa.fa-superscript
                 -if @action==edit
                   -@professional.each do |pro|
-                    -if @certificate.professional_id==pro.id
+                    -if @training.professional_id==pro.id
                       %option{value: "#{pro.id}", selected:true} =pro.name
                     -else
                       %option{value: "#{pro.id}"} =pro.name
@@ -21,65 +21,42 @@
                   -@professional.each do |pro|
                     %option{value: "#{pro.id}"} =pro.name
         .row
-          %section.col.col-6
-            %label.label Nombre de la obra
-            %label.input{for: "work_id"}
-              %i.icon-append.fa.fa-superscript
-                -if @action==edit
-                  -@work.each do |wc|
-                    -if @work.certificates_id==wc.id
-                      %option{value: "#{wc.id}", selected:true} =wc.name
-                    -else
-                      %option{value: "#{wc.id}"} = wc.name
-                -else
-                  -@professional.each do |wc|
-                    %option{value: "#{wc.id}"} = wc.name
-        
-        .row
-          %section.col.col-6
-            %label.label Cargo
-            %label.input{for: "charge"}
-              %i.icon-append.fa.fa-superscript
-              = f.input :charge, placeholder: "Cargo", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-6
-            %label.label Contratista
-            %label.input{for: "contractor"}
-              %i.icon-append.fa.fa-superscript
-              = f.input :contractor, placeholder: "Contratista", input_html: { class: 'form-control' }, label: false
-
-        .row
-           .col-md-4
-             %label.col-md-4.control-label Fecha de Inicio
-              .col-md-8
-                .input-group
-                  = f.input :start_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
-                  %span.input-group-addon
-                    %i.fa.fa-calendar
-            .col-md-4
-             %label.col-md-4.control-label Fecha de Termino
-              .col-md-8
-                .input-group
-                  = f.input :finish_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
-                  %span.input-group-addon
-                    %i.fa.fa-calendar
-
-        .row
           %section
-            %label.label Componentes de la obra
+            %label.label Tipo de capacitación
             %label.select.type-training
               %select.input-sm{disabled: "disabled", for: "type_training"}
-              - @work.components_id.each do |comp|
-                .fields.inline-group
-                  %input{name: "work", type: "checkbox", :checked=> "#{comp.id}"}
-                    = "#{comp.name}"
-                
+              -if @action=="edit"
+                -if @training.type_training=="Curso"
+                  %option{value: "Curso", selected:=>true} Curso
+                  %option{value: "Diplomado"} Diplomado
+                  %option{value: "Doctorado"} Doctorado
+                  %option{value: "Maestría"} Maestría
+                -if @training.type_training=="Diplomado"
+                  %option{value: "Curso"} Curso
+                  %option{value: "Diplomado", selected:=>true} Diplomado
+                  %option{value: "Doctorado"} Doctorado
+                  %option{value: "Maestría"} Maestría
+                -if @training.type_training=="Doctorado"
+                  %option{value: "Curso"} Curso
+                  %option{value: "Diplomado"} Diplomado
+                  %option{value: "Doctorado", selected:=>true} Doctorado
+                  %option{value: "Maestría"} Maestría
+                -if @training.type_training=="Maestría"
+                  %option{value: "Curso"} Curso
+                  %option{value: "Diplomado"} Diplomado
+                  %option{value: "Doctorado"} Doctorado
+                  %option{value: "Maestría", selected:=>true} Maestría
+              -else
+                %option{value: "Curso"} Curso
+                %option{value: "Diplomado"} Diplomado
+                %option{value: "Doctorado"} Doctorado
+                %option{value: "Maestría"} Maestría
         .row
           %section
-            %label.label Certificado
-            %label.input.input-file{for: "certificate"}
+            %label.label Certificado de capacitación
+            %label.input.input-file{for: "training"}
               .button
-                = f.input :certificate, html: { class: 'form-control' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                = f.input :training, html: { class: 'form-control' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
                 Browse
               %input{readonly: "readonly", type: "text"}/
 
