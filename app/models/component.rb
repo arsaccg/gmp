@@ -1,3 +1,3 @@
 class Component < ActiveRecord::Base
-	belongs_to :work
+  has_many :works
 end
