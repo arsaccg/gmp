@@ -62,6 +62,6 @@ class Biddings::ProfessionalsController < ApplicationController
 
   private
   def professional_parameters
-    params.require(:professional).permit(:name, :dni, :profession, :professional_title_date, :date_of_tuition, :professional_title, :tuition)
+    params.require(:professional).permit(:name, :dni, :profession, :professional_title_date, :date_of_tuition, :code_tuition, :professional_title, :tuition)
   end
 end

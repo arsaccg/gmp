@@ -62,9 +62,14 @@ class Biddings::CertificatesController < ApplicationController
     render :json => certificate
   end
 
-  def get_components_form_work
+  def get_component_from_work
     @components = Component.where("work_id = ?", params[:work_id])
     render json: {:components => @components}  
+  end
+
+  def get_date_from_work
+    @work = Work.find(params[:work_id])
+    render json: {:work=> @work  
   end
 
   private

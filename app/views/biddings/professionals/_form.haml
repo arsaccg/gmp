@@ -37,17 +37,25 @@
                 %span.input-group-addon
                   %i.fa.fa-calendar
         .row
-          %section.col.col-10
+          %section.col.col-6
             .col-md-4
               %label.col-md-20.control-label Fecha de Colegiatura
+          %section.col.col-6
+            .col-md-4
+              %label.col-md-20.control-label Número de Colegiatura
         .row
-          %section.col.col-10
+          %section.col.col-6
             .col-md-8
               .input-group
                 = f.input :date_of_tuition, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
                 %span.input-group-addon
                   %i.fa.fa-calendar
-
+          %section.col.col-6
+            .col-md-12
+              .input-group
+                %span.input-group-addon
+                  %i.fa N°
+                = f.input :code_tuition, placeholder: "Código", input_html: { class: 'form-control' }, label: false
         .row 
           %section.col.col-10
             %label Archivos a Adjuntar
@@ -106,6 +114,10 @@
             'professional[date_of_tuition]' : {
               required : true
             },
+            'professional[code_tuition]' : {
+              required : true,
+              digits: true
+            },
             'professional[professional_title]' : {
               required : true
             },
@@ -131,6 +143,10 @@
             },
             'professional[date_of_tuition]' : {
               required : 'Porfavor, ingresar la fecha de colegiatura.'
+            },
+            'professional[code_tuition]' : {
+              required : 'Porfavor, ingresar el número de colegiatura',
+              digits: 'Solo se aceptan números'
             },
             'professional[professional_title]' : {
               required : 'Porfavor, ingresar el archivo del título profesional'

@@ -33,7 +33,8 @@
             %thead
               %tr
                 %th Nombre del Profesional
-                %th Capacitación
+                %th Tipo de Capacitación
+                %th Nombre de Capacitación
                 %th Acciones
             %tbody
               - @training.each do |training|
@@ -44,6 +45,8 @@
                         = pro.name
                   %td
                     = training.type_training
+                  %td
+                    = training.name_training
                   %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_biddings_training_path(training.id)}', 'content', null, null, 'GET')"}
                       Editar

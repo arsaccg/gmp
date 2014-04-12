@@ -54,6 +54,12 @@
                   %option{value: "Diplomado"} Diplomado
                   %option{value: "Doctorado"} Doctorado
                   %option{value: "Maestría"} Maestría
+          
+          %section.col.col-6
+            %label.label Tipo de curso
+            %label.input{for: "name_training"}
+              %i.icon-append.fa.fa-book
+              = f.input :name_training, placeholder: "Nombre del curso", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-6
             %label.label Certificado de capacitación
@@ -97,6 +103,9 @@
             },
             'training[training]' : {
               required : true,
+            },
+            'training[name_training]' : {
+              required : true,
             }
           },
 
@@ -110,6 +119,9 @@
             },
             'training[training]' : {
               required : 'Porfavor, adjunte su certificado de capacitación.'
+            },
+            'training[name_training]' : {
+              required : 'Porfavor, ingrese el nombre de la capacitación.'
             }
           },
 

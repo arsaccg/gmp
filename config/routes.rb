@@ -174,7 +174,11 @@ ArsacLogistica::Application.routes.draw do
     resources :works
     resources :professionals
     resources :trainings
-    resources :certificates
+    resources :certificates do
+      collection do
+        post 'get_component_from_work'
+      end
+    end
     resources :components
   end
 
