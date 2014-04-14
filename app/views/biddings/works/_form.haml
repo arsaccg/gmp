@@ -151,20 +151,28 @@
                       %span.input-group-addon
                         %i.fa.fa-calendar
             .row
-              .col-md-6
-                .form-group
-                  %label.col-md-5.control-label Minuta/Testimonio de Consorcio
-                  .col-md-7
-                    = f.input :testimony_of_consortium, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
-                    %p.help-block
-                      Subir el archivo correspondiente
-              .col-md-6
-                .form-group
-                  %label.col-md-4.control-label Contrato
-                  .col-md-8
-                    = f.input :contract, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
-                    %p.help-block
-                      Subir el archivo correspondiente
+              %fieldset
+                %legend Componentes
+                .col-md-12
+                  .form-group
+                    = f.association :components, :as => :check_boxes, :label => false
+            .row
+              %fieldset
+                %legend Documentos
+                .col-md-6
+                  .form-group
+                    %label.col-md-5.control-label Minuta/Testimonio de Consorcio
+                    .col-md-7
+                      = f.input :testimony_of_consortium, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                      %p.help-block
+                        Subir el archivo correspondiente
+                .col-md-6
+                  .form-group
+                    %label.col-md-4.control-label Contrato
+                    .col-md-8
+                      = f.input :contract, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                      %p.help-block
+                        Subir el archivo correspondiente
             .row
               .col-md-6
                 .form-group

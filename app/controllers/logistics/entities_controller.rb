@@ -20,6 +20,9 @@ class Logistics::EntitiesController < ApplicationController
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
       redirect_to :action => :index
     else
+      entity.errors.messages.each do |attribute, error|
+        puts flash[:error].to_s + error.to_s + "  "
+      end
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
       redirect_to :action => :index
     end
@@ -59,8 +62,6 @@ class Logistics::EntitiesController < ApplicationController
 
   private
   def entity_parameters
-    params[:entity_per_type_entities_attributes]
-    params.require(:entity).permit(:name, :surname, :dni, :ruc, entity_per_type_entities_attributes: [:id, :entity_id, :type_entity_id, :_destroy])
-    #params.require(:entity).permit(:name, :surname, :dni, :ruc)
+    params.require(:entity).permit(:name, :surname, :dni, :ruc, {:type_entity_ids => []})
   end
 end
