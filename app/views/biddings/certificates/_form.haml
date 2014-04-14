@@ -49,6 +49,21 @@
             %label.label Termino de la obra
             %label.input
               %input{:disabled =>"disabled"}
+              
+        .row
+          %section.col.col-6
+            %label.col-md-10.control-label Entidad contratante
+        .row
+          %section.col.col-6
+            .input-group
+              %select.form-control#category-select{:name =>"work[entity_id]"}
+                - @entities.each do |entities|
+                  - entities.each do |entity|
+                    %option{:value => "#{entity.id}"}
+                      = entity.name + ' ' + entity.surname
+              %span.input-group-addon
+                %i.fa.fa-gears  
+
         .row
           %section.col.col-6
             %label.label Cargo
@@ -66,12 +81,6 @@
                   -@charge.each do |wc|
                     %option{value: "#{wc.id}"} 
                       = "#{wc.name}"
-        .row
-          %section.col.col-6
-            %label.label Contratista
-            %label.input{for: "contractor"}
-              %i.icon-append.fa.fa-user
-              = f.input :contractor, placeholder: "Contratista", input_html: { class: 'form-control' }, label: false
 
         .row
           %section.col.col-6
@@ -90,13 +99,15 @@
                 %span.input-group-addon
                   %i.fa.fa-calendar
 
+                
+
         .row
           %section.col.col-6
             %label.label Componentes de la obra:
             %label.select.type-training#comp-check
             - @component.each do |comp|
               .fields.inline-group
-                %input{name: "component_work", type: "checkbox", :checked=> "#{comp.id}"}
+                %input{name: "component_work", type: "checkbox", :value=> "#{comp.id}"}
                   = "#{comp.name}"
         .row
           %section.col.col-6
@@ -114,6 +125,7 @@
 
 :javascript
   $(document).ready(function () {
+
     var work_id = $("#work-select").val();
     complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
 
@@ -147,10 +159,10 @@
             'certificate[finish_date]' : {
               required : true
             },
-            'professional[componentes_id]' : {
+            'certificate[componentes_id]' : {
               required : true
             },
-            'professional[certificate]' : {
+            'certificate[certificate]' : {
               required : true
             }
           },
@@ -166,19 +178,16 @@
             'certificate[charge]' : {
               required : 'Porfavor, ingresar el cargo.'
             },
-            'professional[start_date]' : {
+            'certificate[start_date]' : {
               required : 'Porfavor, ingresar la fecha de inicio de la obra.'
             },
-            'professional[finish_date]' : {
+            'certificate[finish_date]' : {
               required : 'Porfavor, ingresar la fecha de fin de la obra.'
             },
-            'professional[professional_title]' : {
-              required : 'Porfavor, ingresar el archivo del título profesional'
+            'certificate[componentes_id]' : {
+              required : 'Porfavor, ingresar seleccione los componentes'
             },
-            'professional[tuition]' : {
-              required : 'Porfavor, ingresar el archivo de colegiatura.'
-            },
-            'professional[certificate]' : {
+            'certificate[certificate]' : {
               required : 'Porfavor, ingresar el certificado.'
             }
           },
@@ -201,57 +210,54 @@
       }
     });
 
-  $(document).ready(function(){
-    var clicknum = 0;
-    var clicknum2 = 0;
-    var clicknum3 = 0;
-    $("#work-select").click(function(){
-     clicknum++;
-     if(clicknum == 1){
-      var work_id = $('#work-select').val();
-      complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
-      clicknum = 4;
-     }
-  });
-
-    $('#work-select').change(function(){
-      var work_id = $(this).val();
-      complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
-    });
-
-    $('#work-select').keyup(function(){
-      var work_id = $(this).val();
-      complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
-    });
-
-
-  });
-
-  function complete_infocombo(url, work_id, form_token, default_value){
-  $.ajax({
-      type: "POST",
-      url: url,
-      async: false,
-      data: { work_id: work_id, authenticity_token: form_token}
-    }).done(function( data ) {
-      newOptions = [];
-      $.each(data.components, function(key, value){
-        item = {};
-        item['name'] = value.name;
-        item['id'] = value.id;
-        newOptions.push(item);
+    $(document).ready(function(){
+      var clicknum = 0;
+      $("#work-select").click(function(){
+        clicknum++;
+        if(clicknum == 1){
+         var work_id = $('#work-select').val();
+         complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
+         clicknum = 4;
+        }
       });
-      $('#comp-check').empty();
-      $.each(newOptions, function(key,value){
-        if ($("#comp-check").val() == value.id)
-          $('#comp-check').append(
-            $("<input></input>").attr("value", value.id).text(value.name).attr("selected", "selected")
-          )
-        else
-          $('#comp-check').append(
-            $("<input></input>").attr("value", value.id).text(value.name)
-          )
+
+      $('#work-select').change(function(){
+        var work_id = $(this).val();
+        complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
+      });
+
+      $('#work-select').keyup(function(){
+        var work_id = $(this).val();
+        complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
       });
     });
-  }
+
+    function complete_infocombo(url, work_id, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { work_id: work_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.components, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['id'] = value.id;
+          console.log("value.id");
+          newOptions.push(item);
+        });
+        $('#comp-check').empty();
+        $.each(newOptions, function(key,value){
+          if ($("#comp-check").val() == value.id)
+            $('#comp-check').append(
+              $("<input></input>").attr("value", value.id).text(value.name).attr("selected", "selected")
+            )
+          else
+            $('#comp-check').append(
+              $("<input></input>").attr("value", value.id).text(value.name)
+            )
+        });
+      });
+    }
   }
