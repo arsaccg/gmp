@@ -50,7 +50,7 @@
               .form-group.col-md-4
                 %label.col-md-3{for: "date_of_issue"} Fecha de Requerimiento
                 .col-md-9.smart-form
-                  = f.input :date_of_issue, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date"}, label: false
+                  = f.input :date_of_issue, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date", value: Time.now.to_date}, label: false, readonly: true
               .form-group.col-md-4
                 %label.col-md-3{for: "scheduled"} Fecha Programada
                 .col-md-9.smart-form
@@ -265,10 +265,6 @@
       target: '#content'
     });
   });
-
-  function go_datepicker(element){
-    $(element).datepicker();
-  }
 
   function add_article_item(){
 

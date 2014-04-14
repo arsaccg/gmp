@@ -1,0 +1,279 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Certificados
+  .widget-body
+    = simple_form_for([:biddings, @certificate], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row
+          %section.col.col-6
+            %label.label Nombre del profesional
+            %label.input
+              %select.form-control#professional-select{:name =>"professional_id"}
+                -if @action=="edit"
+                  -@professional.each do |pro|
+                    -if @certificate.professional_id==pro.id
+                      %option{value: "#{pro.id}", selected:true} 
+                        = "#{pro.name}"
+                    -else
+                      %option{value: "#{pro.id}"}
+                        = "#{pro.name}"
+                -else
+                  -@professional.each do |pro|
+                    %option{value: "#{pro.id}"} 
+                      = "#{pro.name}"
+        .row
+          %section.col.col-6
+            %label.label Nombre de la obra
+            %label.input
+              %select.form-control#work-select{:name =>"work_id"}
+                -if @action=="edit"
+                  -@work.each do |wc|
+                    -if @work.certificates_id==wc.id
+                      %option{value: "#{wc.id}", selected:true} 
+                        = "#{wc.name}"
+                    -else
+                      %option{value: "#{wc.id}"} 
+                        = "#{wc.name}"
+                -else
+                  -@work.each do |wc|
+                    %option{value: "#{wc.id}"} 
+                      = "#{wc.name}"
+        .row
+          %section.col.col-6
+            %label.label Inicio de la obra
+            %label.input
+              %input{:disabled =>"disabled"}
+          %section.col.col-6
+            %label.label Termino de la obra
+            %label.input
+              %input{:disabled =>"disabled"}
+        .row
+          %section.col.col-6
+            %label.label Cargo
+            %label.input{for: "charge"}
+              %i.icon-append.fa.fa-group
+              = f.input :charge, placeholder: "Cargo", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-6
+            %label.label Contratista
+            %label.input{for: "contractor"}
+              %i.icon-append.fa.fa-user
+              = f.input :contractor, placeholder: "Contratista", input_html: { class: 'form-control' }, label: false
+
+        .row
+          %section.col.col-6
+            %label.col-md-8.control-label Fecha de Inicio
+            .col-md-4
+              .input-group#start
+                = f.input :start_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar
+        .row
+          %section.col.col-6
+            %label.col-md-8.control-label Fecha de Termino
+            .col-md-4
+              .input-group#finish
+                = f.input :finish_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar
+
+        .row
+          %section.col.col-6
+            %label.label Componentes de la obra:
+            %label.select.type-training#comp-check
+            - @component.each do |comp|
+              .fields.inline-group
+                %input{name: "component_work", type: "checkbox", :checked=> "#{comp.id}"}
+                  = "#{comp.name}"
+        .row
+          %section.col.col-6
+            .form-group
+              %label.label Certificado
+              .col-md-10
+                = f.input :certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                %p.help-block
+                  Subir el archivo correspondiente
+
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save
+            Guardar
+
+:javascript
+  $(document).ready(function () {
+    var work_id = $("#work-select").val();
+    complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
+    complete_date("#{get_date_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }
+    else{
+      submit_validate($('#new_certificate'));
+    }
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'certificate[professional_id]' : {
+              required : true
+            },
+            'certificate[work_id]' : {
+              required : true,
+              digits: true
+            },
+            'certificate[charge]' : {
+              required : true
+            },
+            'certificate[start_date]' : {
+              required : true
+            },
+            'certificate[finish_date]' : {
+              required : true
+            },
+            'professional[componentes_id]' : {
+              required : true
+            },
+            'professional[certificate]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'certificate[professional_id]' : {
+              required : 'Porfavor, ingresar el nombre del profesional'
+            },
+            'certificate[work_id]' : {
+              required : 'Porfavor, ingresar el nombre de la obra',
+            },
+            'certificate[charge]' : {
+              required : 'Porfavor, ingresar el cargo.'
+            },
+            'professional[start_date]' : {
+              required : 'Porfavor, ingresar la fecha de inicio de la obra.'
+            },
+            'professional[finish_date]' : {
+              required : 'Porfavor, ingresar la fecha de fin de la obra.'
+            },
+            'professional[professional_title]' : {
+              required : 'Porfavor, ingresar el archivo del título profesional'
+            },
+            'professional[tuition]' : {
+              required : 'Porfavor, ingresar el archivo de colegiatura.'
+            },
+            'professional[certificate]' : {
+              required : 'Porfavor, ingresar el certificado.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+
+  $(document).ready(function(){
+    var clicknum = 0;
+    var clicknum2 = 0;
+    var clicknum3 = 0;
+    $("#work-select").click(function(){
+     clicknum++;
+     if(clicknum == 1){
+      var work_id = $('#work-select').val();
+      complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
+      complete_date("#{get_date_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0");
+      clicknum = 4;
+     }
+  });
+
+    $('#work-select').change(function(){
+      var work_id = $(this).val();
+      complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
+      complete_date("#{get_date_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0");
+    });
+
+    $('#work-select').keyup(function(){
+      var work_id = $(this).val();
+      complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
+      complete_date("#{get_date_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0");
+    });
+
+
+  });
+
+  function complete_infocombo(url, work_id, form_token, default_value){
+  $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { work_id: work_id, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.components, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#comp-check').empty();
+      $.each(newOptions, function(key,value){
+        if ($("#comp-check").val() == value.id)
+          $('#comp-check').append(
+            $("<input></input>").attr("value", value.id).text(value.name).attr("selected", "selected")
+          )
+        else
+          $('#comp-check').append(
+            $("<input></input>").attr("value", value.id).text(value.name)
+          )
+      });
+    });
+  }
+
+  function complete_date(url, work_id, form_token, default_value){
+  $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { work_id: work_id, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.components, function(key, value){
+        item = {};
+        item['start_date'] = value.start_date;
+        item['finish_date'] = value.finish_date;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#comp-check').empty();
+      $.each(newOptions, function(key,value){
+        if ($("#comp-check").val() == value.id)
+          $('#comp-check').append(
+            $("<input></input>").attr("value", value.id).text(value.name).attr("selected", "selected")
+          )
+        else
+          $('#comp-check').append(
+            $("<input></input>").attr("value", value.id).text(value.name)
+          )
+      });
+    });
+  }
+  }

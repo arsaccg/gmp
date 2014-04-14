@@ -31,13 +31,30 @@
               %i.icon-append.fa.fa-credit-card
               = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
         .row
-          %section.col.col-10
+          %section
             %label.label Tipo
-            %label.select
-              %select.select2#type-entity-select{:name => "entity[entity_per_type_entities_attributes][type_entity_ids][]", :style => "width:100%;padding: 0;border: none;", :multiple => true}
-                - @type_entities.each do |tent|
-                  %option{value: "#{tent.id.to_i}"}
-                    = tent.name
+            .col.col-8.inline-group
+              -if @action == "edit"
+                - @own_entity_types.each do |own|
+                  - @all_entity_types.each do |all|
+                    - if @own_entity_types.last
+                      - if own.id != all.id
+                        %input{name: "entity[entity_per_type_entities_attributes][#{@entity.created_at.to_time.to_i.to_s}][type_entity_id]", type: "checkbox", :value=> "#{own.id}"}
+                          = "#{own.name}"
+                      - else
+                        %input{name: "entity[entity_per_type_entities_attributes][#{@entity.created_at.to_time.to_i.to_s}][type_entity_id]", type: "checkbox", :value=> "#{own.id}", :checked=> "#{own.id}"}
+                          = "#{own.name}"
+                    - else
+                      - if own.id == all.id
+                        - @all_entity_types.delete_at(@all_entity_types.index(all))
+                        %input{name: "entity[entity_per_type_entities_attributes][#{@entity.created_at.to_time.to_i.to_s}][type_entity_id]", type: "checkbox", :value=> "#{own.id}", :checked=> "#{own.id}"}
+                          = "#{own.name}"
+              -else
+                - @type_entities.each do |checkent|
+                  .fields.inline-group
+                    %input{name: "entity[entity_per_type_entities_attributes][" +@reg_n.to_s + "][type_entity_id]", type: "checkbox", value:"#{checkent.id}"}
+                      = "#{checkent.name}"
+                  - @reg_n += 1
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 

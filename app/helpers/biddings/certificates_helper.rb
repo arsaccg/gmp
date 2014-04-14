@@ -1,0 +1,2 @@
+module Biddings::CertificatesHelper
+end

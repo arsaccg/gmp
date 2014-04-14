@@ -8,6 +8,7 @@ class Logistics::EntitiesController < ApplicationController
   end
 
   def new
+    @reg_n = Time.now.to_i
     @type_entities = TypeEntity.all
     @entity = Entity.new
     render layout: false
@@ -25,8 +26,21 @@ class Logistics::EntitiesController < ApplicationController
   end
 
   def edit
+    @reg_ed = Time.now.to_i
     @entity = Entity.find(params[:id])
+    @all_entity_types = Array.new
+    @own_entity_types = Array.new
+    # Comenzando lógica
     @type_entities = TypeEntity.all
+
+    @type_entities.each do |type_entity|
+      @all_entity_types << type_entity
+    end
+
+    @entity.type_entities.each do |enty|
+      @own_entity_types << enty
+    end
+
     @action = 'edit'
     render layout: false
   end
@@ -46,7 +60,7 @@ class Logistics::EntitiesController < ApplicationController
   private
   def entity_parameters
     params[:entity_per_type_entities_attributes]
-    params.require(:entity).permit(:name, :surname, :dni, :ruc, entity_per_type_entities_attributes: [:id, :entity_id, {:type_entity_ids => []}])
+    params.require(:entity).permit(:name, :surname, :dni, :ruc, entity_per_type_entities_attributes: [:id, :entity_id, :type_entity_id, :_destroy])
     #params.require(:entity).permit(:name, :surname, :dni, :ruc)
   end
 end

@@ -37,7 +37,7 @@
             %label.col-md-4.control-label Fecha de Emisión
             .col-md-8
               .input-group
-                = f.input :date_of_issue, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                = f.input :date_of_issue, as: :string, :input_html => {:class => 'form-control', :type => "date", value: Time.now.to_date}, label: false, readonly: true
                 %span.input-group-addon
                   %i.fa.fa-calendar
         .col-md-4

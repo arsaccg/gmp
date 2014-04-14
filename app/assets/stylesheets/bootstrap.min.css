@@ -1233,9 +1233,7 @@ output {
 textarea.form-control {
     height: auto;
 }
-.form-group {
-    margin-bottom: 15px;
-}
+.form-group { margin-bottom: 15px; }
 .radio, .checkbox {
     display: block;
     min-height: 18px;
@@ -1393,13 +1391,13 @@ textarea.input-lg {
 .form-horizontal .radio, .form-horizontal .checkbox {
     min-height: 25px;
 }
-.form-horizontal .form-group {
-    margin-left: -13px;
-    margin-right: -13px;
-}
 .form-horizontal .form-group:before, .form-horizontal .form-group:after {
     content: " ";
     display: table;
+}
+.form-horizontal .form-group {
+    margin-left: -15px;
+    margin-right: -15px;
 }
 .form-horizontal .form-group:after {
     clear: both;
