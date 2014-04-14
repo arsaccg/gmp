@@ -5,6 +5,8 @@ class Logistics::EntitiesController < ApplicationController
   end
 
   def show
+    @entity = Entity.find(params[:id])
+    render layout: false
   end
 
   def new
