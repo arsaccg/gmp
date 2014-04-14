@@ -118,6 +118,15 @@
                 %p.help-block
                   Subir el archivo correspondiente
 
+        .row
+          %section.col.col-6
+            .form-group
+              %label.label Otro
+              .col-md-10
+                = f.input :other, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                %p.help-block
+                  Subir el archivo correspondiente
+
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save

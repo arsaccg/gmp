@@ -1,9 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  professional_id: 1
-  certificate_id: 1
+  name: MyString
 
 two:
-  professional_id: 1
-  certificate_id: 1
+  name: MyString

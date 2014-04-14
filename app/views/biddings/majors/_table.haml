@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Compañias
+    %h2 Lista de Profesiones
   / widget div
   %div
     / widget edit box
@@ -32,34 +32,20 @@
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
+                %th N°
                 %th Nombre
-                %th DNI
-                %th Profesión
-                %th Código de Colegiatura
-                %th Fecha de Titulación
-                %th Fecha de Colegiatura
                 %th Acciones
             %tbody
-              - @professionals.each do |pro|
+              - @major.each do |charge|
                 %tr
                   %td
-                    = pro.name
+                    = charge.id
                   %td
-                    = pro.dni
+                    = charge.name
                   %td
-                    -pro.majors.each do |major|
-                      = major.name
-                      %br
-                  %td
-                    = pro.code_tuition
-                  %td
-                    = pro.professional_title_date 
-                  %td
-                    = pro.date_of_tuition
-                  %td
-                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_biddings_professional_path(pro.id)}', 'content', null, null, 'GET')"}
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_biddings_major_path(charge.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el profesional' , :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{biddings_professional_path(pro.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{biddings_professionals_path}')"}}
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar la profesión' , :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{biddings_major_path(charge.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{biddings_majors_path}')"}}
                       Eliminar
 
 :javascript

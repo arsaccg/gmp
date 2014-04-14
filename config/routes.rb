@@ -181,6 +181,7 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :components
     resources :charges
+    resources :majors
   end
 
 end

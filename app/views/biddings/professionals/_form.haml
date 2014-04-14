@@ -20,12 +20,10 @@
               = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
 
         .row
-          %section.col.col-6
-            %label.label Profesión
-            %label.input{for: "profession"}
-              %i.icon-append.fa.fa-superscript
-              = f.input :profession, placeholder: "Profesión", input_html: { class: 'form-control' }, label: false
-
+          %section.col.col-10
+            %label Profesiones
+            .input-group
+              = f.association :majors, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
         .row
           %section.col.col-10
             %label.col-md-20.control-label Fecha de Titulación
@@ -75,6 +73,14 @@
                 = f.input :tuition, html: { class: 'form-control' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
                 Browse
               %input{readonly: "readonly", type: "text"}/
+
+          %section.col.col-10
+            %label.label Curriculum Vitae
+            %label.input.input-file{for: "cv"}
+              .button
+                = f.input :cv, html: { class: 'form-control' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                Browse
+              %input{readonly: "readonly", type: "text"}/
               
       %footer
         %button.btn.btn-primary{type: "submit"}
@@ -83,6 +89,8 @@
 
 :javascript
   $(document).ready(function () {
+    $('#professional_major_ids').select2();
+    $('#s2id_professional_major_ids ul li input').css('width','100%');
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -118,10 +126,7 @@
               required : true,
               digits: true
             },
-            'professional[professional_title]' : {
-              required : true
-            },
-            'professional[tuition]' : {
+            'professional[professional_cv]' : {
               required : true
             }
           },
@@ -173,4 +178,6 @@
       error: function(xhr, status, error) {
       }
     });
+
+    
   }

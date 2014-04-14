@@ -60,6 +60,31 @@
             %label.input{for: "name_training"}
               %i.icon-append.fa.fa-book
               = f.input :name_training, placeholder: "Nombre del curso", input_html: { class: 'form-control' }, label: false
+
+        .row
+          %section.col.col-6
+            %label.col-md-8.control-label Fecha de Inicio
+            .col-md-4
+              .input-group#start
+                = f.input :start_training, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar
+        .row
+          %section.col.col-6
+            %label.col-md-8.control-label Fecha de Termino
+            .col-md-4
+              .input-group#finish
+                = f.input :finish_training, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar
+
+        .row
+          %section.col.col-6
+            %label.label Número de horas
+            %label.input{for: "num_hours"}
+              %i.icon-append.fa.fa-book
+              = f.input :num_hours, placeholder: "Número de horas", input_html: { class: 'form-control' }, label: false
+
         .row
           %section.col.col-6
             %label.label Certificado de capacitación
@@ -96,17 +121,28 @@
           // Rules for form validation
           rules : {
             'training[professional_id]' : {
-              required : true,
+              required : true
             },
             'training[type_training]' : {
-              required : true,
+              required : true
             },
             'training[training]' : {
-              required : true,
+              required : true
             },
             'training[name_training]' : {
+              required : true
+            },
+            'training[start_training]' : {
+              required : true
+            },
+            'training[finish_training]' : {
+              required : true
+            },
+            'training[num_hours]' : {
               required : true,
+              digits: true
             }
+
           },
 
           // Messages for form validation
@@ -122,6 +158,16 @@
             },
             'training[name_training]' : {
               required : 'Porfavor, ingrese el nombre de la capacitación.'
+            },
+            'training[start_training]' : {
+              required : 'Ingrese la fecha de inicio'
+            },
+            'training[finish_training]' : {
+              required : 'Ingrese la fecha de término'
+            },
+            'training[num_hours]' : {
+              required : 'Ingrese la cantidad de horas de la capacitación',
+              digits: 'Solo se puede ingresar números'
             }
           },
 

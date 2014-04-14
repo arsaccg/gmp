@@ -62,6 +62,6 @@ class Biddings::TrainingsController < ApplicationController
 
   private
   def training_parameters
-    params.require(:training).permit(:professional_id, :type_training, :name_training, :training)
+    params.require(:training).permit(:professional_id, :type_training, :name_training,:num_hours, :start_training, :finish_training, :training)
   end
 end

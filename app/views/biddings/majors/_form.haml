@@ -4,14 +4,14 @@
       %i.fa.fa-eye
     %h2 Componente
   .widget-body
-    = simple_form_for([:biddings, @charge], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:biddings, @major], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-10
-            %label.label Nombre
-            %label.input{for: "name"}
-              %i.icon-append.fa.fa-user
-              = f.input :name, placeholder: "Nombre del Cargo", input_html: { class: 'form-control' }, label: false
+            %label.label Nombre de la profesión
+            %label.input{for: "major"}
+              %i.icon-append.fa.fa-book
+              = f.input :name, placeholder: "Nombre de la profesión ", input_html: { class: 'form-control' }, label: false
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save
@@ -19,13 +19,13 @@
 
 :javascript
   $(document).ready(function () {
-    $("#charge_name").focus();
+    $("#major_name").focus();
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }
     else{
-      submit_validate($('#new_charge'));
+      submit_validate($('#new_major'));
     }
   });
   
@@ -35,15 +35,15 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'charge[name]' : {
+            'major[major]' : {
               required : true
             }
           },
 
           // Messages for form validation
           messages : {
-            'charge[name]' : {
-              required : 'Porfavor, ingresar el nombre del Cargo'
+            'major[major]' : {
+              required : 'Porfavor, ingresar el nombre de la profesión'
             }
           },
 

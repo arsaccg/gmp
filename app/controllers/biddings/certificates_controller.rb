@@ -15,6 +15,10 @@ class Biddings::CertificatesController < ApplicationController
     @component = Component.all
     @charge = Charge.all
     @work = Work.all
+    @entities = Array.new
+    TypeEntity.where("id IN (1,5)").each do |tent|
+      @entities << tent.entities
+    end
     render layout: false
   end
 
@@ -38,6 +42,10 @@ class Biddings::CertificatesController < ApplicationController
     @certificate = Certificate.find(params[:id])
     @profesional = Professional.all
     @charge = Charge.all
+    @entities = Array.new
+    TypeEntity.where("id IN (1,5)").each do |tent|
+      @entities << tent.entities
+    end
     @work = Work.all
     @action = 'edit'
     render layout: false
@@ -71,6 +79,6 @@ class Biddings::CertificatesController < ApplicationController
 
   private
   def certificate_parameters
-    params.require(:certificate).permit(:professional_id, :work_id, :charge, :contractor, :start_date, :finish_date, {:component_work_id => []}, :certificate)
+    params.require(:certificate).permit(:professional_id, :work_id, :charge, :contractor, :other, :start_date, :finish_date, {:component_work_id => []}, :certificate)
   end
 end

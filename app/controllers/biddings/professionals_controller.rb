@@ -5,6 +5,7 @@ class Biddings::ProfessionalsController < ApplicationController
   def index
     flash[:error] = nil
     @professionals = Professional.all
+    @major = Major.all
     render layout: false
   end
 
@@ -14,6 +15,7 @@ class Biddings::ProfessionalsController < ApplicationController
 
   def new
     @professional=Professional.new
+    @major = Major.all
     render :new, layout: false
   end
 
@@ -35,6 +37,7 @@ class Biddings::ProfessionalsController < ApplicationController
 
   def edit
     @professional = Professional.find(params[:id])
+    @major = Major.all
     @action = 'edit'
     render layout: false
   end
@@ -62,6 +65,6 @@ class Biddings::ProfessionalsController < ApplicationController
 
   private
   def professional_parameters
-    params.require(:professional).permit(:name, :dni, :profession, :professional_title_date, :date_of_tuition, :code_tuition, :professional_title, :tuition)
+    params.require(:professional).permit(:name, :dni, :professional_title_date, {:major_ids=>[]}, :date_of_tuition, :code_tuition, :professional_title, :tuition, :cv)
   end
 end
