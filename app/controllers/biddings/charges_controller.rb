@@ -31,7 +31,7 @@ class Biddings::ChargesController < ApplicationController
     end
   end
 
-  def edita
+  def edit
     @charge = Charge.find(params[:id])
     @action = 'edit'
     render layout: false
