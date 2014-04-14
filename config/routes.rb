@@ -180,6 +180,7 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :components
+    resources :charges
   end
 
 end

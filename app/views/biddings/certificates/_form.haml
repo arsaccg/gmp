@@ -53,8 +53,19 @@
           %section.col.col-6
             %label.label Cargo
             %label.input{for: "charge"}
-              %i.icon-append.fa.fa-group
-              = f.input :charge, placeholder: "Cargo", input_html: { class: 'form-control' }, label: false
+              %select.form-control#work-select{:name =>"charge_id"}
+                -if @action=="edit"
+                  -@charge.each do |wc|
+                    -if @charge.certificates_id==wc.id
+                      %option{value: "#{wc.id}", selected:true} 
+                        = "#{wc.name}"
+                    -else
+                      %option{value: "#{wc.id}"} 
+                        = "#{wc.name}"
+                -else
+                  -@charge.each do |wc|
+                    %option{value: "#{wc.id}"} 
+                      = "#{wc.name}"
         .row
           %section.col.col-6
             %label.label Contratista
@@ -105,7 +116,6 @@
   $(document).ready(function () {
     var work_id = $("#work-select").val();
     complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
-    complete_date("#{get_date_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -200,7 +210,6 @@
      if(clicknum == 1){
       var work_id = $('#work-select').val();
       complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
-      complete_date("#{get_date_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0");
       clicknum = 4;
      }
   });
@@ -208,13 +217,11 @@
     $('#work-select').change(function(){
       var work_id = $(this).val();
       complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
-      complete_date("#{get_date_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0");
     });
 
     $('#work-select').keyup(function(){
       var work_id = $(this).val();
       complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
-      complete_date("#{get_date_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0");
     });
 
 
@@ -231,35 +238,6 @@
       $.each(data.components, function(key, value){
         item = {};
         item['name'] = value.name;
-        item['id'] = value.id;
-        newOptions.push(item);
-      });
-      $('#comp-check').empty();
-      $.each(newOptions, function(key,value){
-        if ($("#comp-check").val() == value.id)
-          $('#comp-check').append(
-            $("<input></input>").attr("value", value.id).text(value.name).attr("selected", "selected")
-          )
-        else
-          $('#comp-check').append(
-            $("<input></input>").attr("value", value.id).text(value.name)
-          )
-      });
-    });
-  }
-
-  function complete_date(url, work_id, form_token, default_value){
-  $.ajax({
-      type: "POST",
-      url: url,
-      async: false,
-      data: { work_id: work_id, authenticity_token: form_token}
-    }).done(function( data ) {
-      newOptions = [];
-      $.each(data.components, function(key, value){
-        item = {};
-        item['start_date'] = value.start_date;
-        item['finish_date'] = value.finish_date;
         item['id'] = value.id;
         newOptions.push(item);
       });

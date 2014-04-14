@@ -13,6 +13,7 @@ class Biddings::CertificatesController < ApplicationController
     @certificate = Certificate.new
     @professional = Professional.all
     @component = Component.all
+    @charge = Charge.all
     @work = Work.all
     render layout: false
   end
@@ -36,13 +37,14 @@ class Biddings::CertificatesController < ApplicationController
   def edit
     @certificate = Certificate.find(params[:id])
     @profesional = Professional.all
+    @charge = Charge.all
     @work = Work.all
     @action = 'edit'
     render layout: false
   end
 
   def update
-     certificate = Certificate.find(params[:id])
+    certificate = Certificate.find(params[:id])
     if certificate.update_attributes(certificate_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
@@ -67,13 +69,8 @@ class Biddings::CertificatesController < ApplicationController
     render json: {:components => @components}  
   end
 
-  def get_date_from_work
-    @work = Work.find(params[:work_id])
-    render json: {:work=> @work  
-  end
-
   private
   def certificate_parameters
-    params.require(:certificate).permit(:professional_id, :work_id, :charge, :contractor, :start_date, :finish_date, :component_work, :certificate)
+    params.require(:certificate).permit(:professional_id, :work_id, :charge, :contractor, :start_date, :finish_date, {:component_work_id => []}, :certificate)
   end
 end

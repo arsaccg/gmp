@@ -261,6 +261,10 @@
                       %i.fa.fa-lg.fa-fw.fa-user
                       %span.menu-item-parent Profesionales
                   %li
+                    %a{href: "#{biddings_charges_path}?company_id=#{@company.id}", title: "Cargos"}
+                      %i.fa.fa-lg.fa-fw.fa-group
+                      %span.menu-item-parent Cargos
+                  %li
                     %a{href: "#{biddings_certificates_path}?company_id=#{@company.id}", title: "Certificados"}
                       %i.fa.fa-lg.fa-fw.fa-clipboard
                       %span.menu-item-parent Certificados
