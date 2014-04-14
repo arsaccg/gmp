@@ -8,7 +8,7 @@
       %fieldset
         .row
           %section.col.col-10
-            %label.label Nombre
+            %label.label Nombre o Razón Social
             %label.input{for: "name"}
               %i.icon-append.fa.fa-user
               = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
@@ -60,9 +60,6 @@
           rules : {
             'entity[name]' : {
               required : true,
-            },
-            'entity[surname]' : {
-              required : true,
             }
           },
 
@@ -70,9 +67,6 @@
           messages : {
             'entity[name]' : {
               required : 'Por favor, ingresar el nombre.'
-            },
-            'entity[surname]' : {
-              required : 'Por favor, ingresar el apellido.'
             }
           },
 
