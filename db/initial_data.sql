@@ -19,4 +19,4 @@ INSERT INTO `companies` (`name`, `ruc`, `created_at`, `updated_at`) VALUES
 ('Consorcio San Francisco del Oriente', '20567151779', NULL, NULL);
 
 -- Data for Financial Variables
-INSERT INTO `financial_variables` (`igv`, `value`, `created_at`, `updated_at`) VALUES ('IGV', '0.18', NULL, NULL);
+INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('IGV', '0.18', NULL, NULL);
