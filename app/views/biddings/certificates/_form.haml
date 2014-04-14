@@ -216,12 +216,12 @@
 
     $('#work-select').change(function(){
       var work_id = $(this).val();
-      complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
+      complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", 0);
     });
 
     $('#work-select').keyup(function(){
       var work_id = $(this).val();
-      complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}, 0");
+      complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", 0);
     });
 
 
