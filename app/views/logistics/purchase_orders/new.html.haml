@@ -52,7 +52,7 @@
 
   $(document).ready(function(){
 
-    $("#company_id").val($.company_global_id);
+    $("#company_id").val("#{@company}");
 
     $('#btn-add-more-items-do').click(function(){
       var ids_delivery_order = new Array();
@@ -70,7 +70,7 @@
     });
 
     $('#backlist-purchase-order').click(function(){
-      load_url_ajax("#{logistics_purchase_orders_path}", 'content', null, null, 'GET');
+      load_url_ajax("#{logistics_purchase_orders_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
     });
 
   });

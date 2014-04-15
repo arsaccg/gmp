@@ -1,0 +1,197 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        Obra: 
+        %strong
+          = @work.name
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+              = 'Obra: ' + @work.name
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Datos Generales
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Especialidad
+                    %th Nombre
+                    %th Entidad Contratante
+                    %th Monto del Contrato
+                    %th Contratista
+                    %th Participación de ARSAC
+                    %th Monto de Contrato
+                %tbody(id="article_items_table")
+                  %tr
+                    %td
+                      = @work.specialty
+                    %td
+                      = @work.name
+                    %td
+                      = @work.entity.name
+                    %td
+                      = number_to_currency(@work.amount_of_contract, unit: 'S/.' , precision: 2)
+                    %td
+                      = @work.contractor
+                    %td
+                      = @work.participation_of_arsac
+                    %td
+                      = number_to_currency(@work.amount_of_contract, unit: 'S/.' , precision: 2)
+
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+              = 'Obra: ' + @work.name
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Datos Generales
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Fecha de Inicio Obra
+                    %th Fecha Fin de Obra
+                    %th Fecha de Liquidación
+                    %th Monto de Liquidación
+                    %th IPC de Liquidación
+                    %th Sistema de Contratación
+                    %th Objeto de Contrato
+                %tbody(id="article_items_table")
+                  %tr
+                    %td
+                      = @work.start_date_of_work.strftime("%d/%m/%Y")
+                    %td
+                      = @work.real_end_date_of_work.strftime("%d/%m/%Y")
+                    %td
+                      - if @work.settlement_date != nil
+                        = @work.settlement_date.strftime("%d/%m/%Y")
+                      - else
+                        = "No hay Fecha de Liquidación."
+                    %td
+                      - if @work.amount_of_settlement != nil
+                        = number_to_currency(@work.amount_of_settlement, unit: 'S/.' , precision: 2)
+                      - else
+                        = "No hay Monto de Liquidación."
+                    %td
+                      - if @work.ipc_settlement != nil
+                        = @work.ipc_settlement
+                      - else
+                        = "No hay IPC de Liquidación."
+                    %td
+                      - if @work.procurement_system == 'unit_price'
+                        = 'Precio Unitario'
+                      - elsif @work.procurement_system == 'advance_sum'
+                        = 'Suma Avanzada'
+                      - elsif @work.procurement_system == 'mixto'
+                        = 'Mixto'
+                    %td
+                      - if @work.purpose_of_contract == 'obra'
+                        = "OBRA"
+                      - elsif @work.purpose_of_contract == 'expediente_obra'
+                        = "Expediente + Obra"
+                      - elsif @work.purpose_of_contract == 'llave_mano'
+                        = "Llave en mano"
+
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 Componentes
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Componentes de la Obra
+              %ul
+                - @components.each do |component|
+                  %li= component.name
+
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 Documentos
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Documentos subidos de la Obra
+              .col-sm-12
+                .row
+                  %table.table.table-bordered
+                    %thead
+                      %tr
+                        %th Nombre del Documento
+                        %th Documento
+                    %tbody
+                      - if @work.testimony_of_consortium.exists?
+                        %tr
+                          %td Minuta/Testimonio de Consorcio
+                          %td
+                            %a.btn.btn-warning.btn-xs{:href =>"#{@work.testimony_of_consortium.url}", :target => "_blank"}
+                              %i.fa.fa-caret-square-o-up
+                      - if @work.contract.exists?
+                        %tr
+                          %td Contrato
+                          %td
+                            %a.btn.btn-info.btn-xs{:href =>"#{@work.contract.url}", :target => "_blank"}
+                              %i.fa.fa-caret-square-o-up
+
+                      - if @work.reception_certificate.exists?
+                        %tr
+                          %td Acta de Recepción
+                          %td
+                            %a.btn.btn-info.btn-xs{:href =>"#{@work.reception_certificate.url}", :target => "_blank"}
+                              %i.fa.fa-caret-square-o-up
+                        
+                      - if @work.settlement_of_work.exists?
+                        %tr
+                          %td Liquidación de Obra
+                          %td
+                            %a.btn.btn-info.btn-xs{:href =>"#{@work.settlement_of_work.url}", :target => "_blank"}
+                              %i.fa.fa-caret-square-o-up
+
+= javascript_include_tag 'plugin/flot/jquery.flot.cust'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
+= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
+= javascript_include_tag 'plugin/flot/jquery.flot.resize'
+= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
+= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
+= javascript_include_tag 'plugin/datatables/ColReorder.min'
+= javascript_include_tag 'plugin/datatables/FixedColumns.min'
+= javascript_include_tag 'plugin/datatables/ColVis.min'
+= javascript_include_tag 'plugin/datatables/ZeroClipboard'
+= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
+= javascript_include_tag 'plugin/datatables/DT_bootstrap'

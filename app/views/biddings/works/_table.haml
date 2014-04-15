@@ -87,6 +87,8 @@
                       %a.btn.btn-info.btn-xs{:href =>"#{work.settlement_of_work.url}", :target => "_blank", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Liquidación de Obra"}
                         %i.fa.fa-caret-square-o-up
                   %td
+                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{biddings_work_path(work.id)}', 'content', null, null, 'GET')"}
+                      Ver Información
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_biddings_work_path(work.id)}', 'content', null, null, 'GET')"}
                       Editar
                     %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{work.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{biddings_work_path(work.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{biddings_works_path}')"}}

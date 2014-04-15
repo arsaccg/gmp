@@ -6,6 +6,7 @@ class Biddings::WorksController < ApplicationController
 
   def show
     @work = Work.find(params[:id])
+    @components = @work.components
     render layout: false
   end
 
