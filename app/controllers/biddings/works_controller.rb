@@ -38,7 +38,7 @@ class Biddings::WorksController < ApplicationController
     @work = Work.find(params[:id])
     @components = Component.all
     @entities = Array.new
-    TypeEntity.where("id IN (1,5)").each do |tent|
+    TypeEntity.where("name LIKE 'Clientes'").each do |tent|
       @entities << tent.entities
     end
     render layout: false
