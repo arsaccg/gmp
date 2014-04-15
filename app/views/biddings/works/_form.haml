@@ -140,20 +140,20 @@
                     .input-group
                       %select.form-control#syscontract-select{:name =>"work[procurement_system]"}
                         -if @action=="edit"
-                          -if @work.procurement_system=="sale_price"
-                            %option{:value => "sale_price", :selected => true} Precio de Venta
+                          -if @work.procurement_system=="unit_price"
+                            %option{:value => "unit_price", :selected => true} Precio Unitario
                             %option{:value => "advance_sum"} Suma Avanzada
                             %option{:value => "mixto"} Mixto
                           -elsif @work.procurement_system=="advance_sum"
-                            %option{:value => "sale_price"} Precio de Venta
+                            %option{:value => "unit_price"} Precio Unitario
                             %option{:value => "advance_sum", :selected => true} Suma Avanzada
                             %option{:value => "mixto"} Mixto
                           -elsif @work.procurement_system=="mixto"
-                            %option{:value => "sale_price"} Precio de Venta
+                            %option{:value => "unit_price"} Precio Unitario
                             %option{:value => "advance_sum"} Suma Avanzada
                             %option{:value => "mixto", :selected => true} Mixto
                         -else
-                          %option{:value => "sale_price"} Precio de Venta
+                          %option{:value => "unit_price"} Precio Unitario
                           %option{:value => "advance_sum"} Suma Avanzada
                           %option{:value => "mixto"} Mixto
                       %span.input-group-addon
@@ -237,9 +237,11 @@
                   .form-group
                     %label.col-md-4.control-label Contrato + Adendas + Ampliación de Plazo
                     .col-md-8
-                      = f.input :contract, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                      = f.file_field :contract, :class => 'btn btn-default', :name => 'work[contract]', :id => 'multiple_contract', label: false, :multiple => true
                       %p.help-block
                         Subir los archivos correspondientes
+                  #progress
+                    .bar{:style => "width: 0%; height: 18px; background: green;"}
             .row
               .col-md-6
                 .form-group
@@ -267,7 +269,7 @@
                 .form-group
                   %label.col-md-4.control-label Bases Integradas + Memoria Descriptiva
                   .col-md-8
-                    = f.input :integrated_bases, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                    = f.file_field :integrated_bases, :class => 'btn btn-default', :id => 'multiple_integrated_bases', :name => 'work[integrated_bases]', label: false, :multiple => true
                     %p.help-block
                       Subir los archivos correspondientes
             .row
@@ -283,8 +285,6 @@
             %i.fa.fa-save
               Guardar
 
-
-//ver todo el script, no lo he domificado
 :javascript
   $(document).ready(function () {
 
