@@ -17,24 +17,24 @@
                   %label.col-md-4.control-label Especialidad
                   .col-md-8
                     .input-group
-                      %select.form-control#category-select{:name =>"work[specialty]"}
+                      %select.form-control#specialty-select{:name =>"work[specialty]"}
                         -if @action=="edit"
-                          -if @training.type_training=="Saneamiento"
+                          -if @work.specialty=="Saneamiento"
                             %option{:value => "Saneamiento", :selected => true} Saneamiento
                             %option{:value => "Civil"} Civil
                             %option{:value => "Electromecanico"} Electromecanico
                             %option{:value => "Hidráulica"} Hidráulica
-                          -if @training.type_training=="Civil"
+                          -elsif @work.specialty=="Civil"
                             %option{:value => "Saneamiento"} Saneamiento
                             %option{:value => "Civil", :selected => true} Civil
                             %option{:value => "Electromecanico"} Electromecanico
                             %option{:value => "Hidráulica"} Hidráulica
-                          -if @training.type_training=="Electromecanico"
+                          -elsif @work.specialty=="Electromecanico"
                             %option{:value => "Saneamiento"} Saneamiento
                             %option{:value => "Civil"} Civil
                             %option{:value => "Electromecanico", :selected => true} Electromecanico
                             %option{:value => "Hidráulica"} Hidráulica
-                          -if @training.type_training=="Hidráulica"
+                          -elsif @work.specialty=="Hidráulica"
                             %option{:value => "Saneamiento"} Saneamiento
                             %option{:value => "Civil"} Civil
                             %option{:value => "Electromecanico"} Electromecanico
@@ -133,6 +133,31 @@
                       = f.input :real_end_date_of_work, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
                       %span.input-group-addon
                         %i.fa.fa-calendar
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Sistema de Contratación
+                  .col-md-8
+                    .input-group
+                      %select.form-control#syscontract-select{:name =>"work[procurement_system]"}
+                        -if @action=="edit"
+                          -if @work.procurement_system=="sale_price"
+                            %option{:value => "sale_price", :selected => true} Precio de Venta
+                            %option{:value => "advance_sum"} Suma Avanzada
+                            %option{:value => "mixto"} Mixto
+                          -elsif @work.procurement_system=="advance_sum"
+                            %option{:value => "sale_price"} Precio de Venta
+                            %option{:value => "advance_sum", :selected => true} Suma Avanzada
+                            %option{:value => "mixto"} Mixto
+                          -elsif @work.procurement_system=="mixto"
+                            %option{:value => "sale_price"} Precio de Venta
+                            %option{:value => "advance_sum"} Suma Avanzada
+                            %option{:value => "mixto", :selected => true} Mixto
+                        -else
+                          %option{:value => "sale_price"} Precio de Venta
+                          %option{:value => "advance_sum"} Suma Avanzada
+                          %option{:value => "mixto"} Mixto
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
             .row
               .col-md-4
                 .form-group
@@ -148,6 +173,48 @@
                   .col-md-8
                     .input-group
                       = f.input :date_of_receipt_of_work, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Objeto de Contrato
+                  .col-md-8
+                    .input-group
+                      %select.form-control#purposecontract-select{:name =>"work[purpose_of_contract]"}
+                        -if @action=="edit"
+                          -if @work.procurement_system=="obra"
+                            %option{:value => "obra", :selected => true} Obra
+                            %option{:value => "expediente_obra"} Exp + Obra
+                            %option{:value => "llave_mano"} Llave en mano
+                          -elsif @work.procurement_system=="expediente_obra"
+                            %option{:value => "obra"} Obra
+                            %option{:value => "expediente_obra", :selected => true} Exp + Obra
+                            %option{:value => "llave_mano"} Llave en mano
+                          -elsif @work.procurement_system=="llave_mano"
+                            %option{:value => "obra"} Obra
+                            %option{:value => "expediente_obra"} Exp + Obra
+                            %option{:value => "llave_mano", :selected => true} Llave en mano
+                        -else
+                          %option{:value => "obra"} Obra
+                          %option{:value => "expediente_obra"} Exp + Obra
+                          %option{:value => "llave_mano"} Llave en mano
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+            .row{:id => 'dates-exp', :style => 'display:none'}
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Fecha de inicio de Expediente
+                  .col-md-8
+                    .input-group
+                      = f.input :start_date_of_inquiry, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Fecha de fin de Expediente
+                  .col-md-8
+                    .input-group
+                      = f.input :end_date_of_inquiry, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
                       %span.input-group-addon
                         %i.fa.fa-calendar
             .row
@@ -168,11 +235,11 @@
                         Subir el archivo correspondiente
                 .col-md-6
                   .form-group
-                    %label.col-md-4.control-label Contrato
+                    %label.col-md-4.control-label Contrato + Adendas + Ampliación de Plazo
                     .col-md-8
                       = f.input :contract, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                       %p.help-block
-                        Subir el archivo correspondiente
+                        Subir los archivos correspondientes
             .row
               .col-md-6
                 .form-group
@@ -188,7 +255,29 @@
                     = f.input :settlement_of_work, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                     %p.help-block
                       Subir el archivo correspondiente
-
+            .row
+              .col-md-6
+                .form-group
+                  %label.col-md-5.control-label Presupuesto
+                  .col-md-7
+                    = f.input :budget, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                    %p.help-block
+                      Subir el archivo correspondiente
+              .col-md-6
+                .form-group
+                  %label.col-md-4.control-label Bases Integradas + Memoria Descriptiva
+                  .col-md-8
+                    = f.input :integrated_bases, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                    %p.help-block
+                      Subir los archivos correspondientes
+            .row
+              .col-md-6
+                .form-group
+                  %label.col-md-5.control-label Arbitraje
+                  .col-md-7
+                    = f.input :arbitration, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                    %p.help-block
+                      Subir el archivo correspondiente
         %footer
           %button.btn.btn-primary{type: "submit"}
             %i.fa.fa-save
@@ -198,6 +287,14 @@
 //ver todo el script, no lo he domificado
 :javascript
   $(document).ready(function () {
+
+    $('#purposecontract-select').change(function(){
+      if($(this).val() == 'expediente_obra'){
+        $('#dates-exp').fadeIn('fast');
+      } else {
+        $('#dates-exp').fadeOut('fast');
+      }
+    });
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));

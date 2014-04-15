@@ -64,6 +64,6 @@ class Biddings::WorksController < ApplicationController
 
   private
   def work_params
-    params.require(:work).permit(:date_signature_of_contract, :start_date_of_work, :real_end_date_of_work, :date_of_receipt_of_work, :settlement_date, :specialty, :name, :entity_id, :participation_of_arsac, :contractor, :amount_of_contract, :amount_of_settlement, :ipc_settlement, :testimony_of_consortium, :contract, :reception_certificate, :settlement_of_work, {:component_ids => []})
+    params.require(:work).permit(:arbitration, :start_date_of_inquiry, :end_date_of_inquiry, :integrated_bases, :procurement_system, :purpose_of_contract, :date_signature_of_contract, :start_date_of_work, :real_end_date_of_work, :date_of_receipt_of_work, :settlement_date, :specialty, :name, :entity_id, :participation_of_arsac, :contractor, :amount_of_contract, :amount_of_settlement, :ipc_settlement, :testimony_of_consortium, :contract, :reception_certificate, :settlement_of_work, {:component_ids => []})
   end
 end
