@@ -51,7 +51,7 @@ class Biddings::MajorsController < ApplicationController
     end
   end
 
-  def delete
+  def destroy
     major = Major.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente la profesión."
     render :json => major
