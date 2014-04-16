@@ -34,7 +34,8 @@
                     %th Contratista
                     %th Participación de ARSAC
                     %th Monto de Contrato
-                %tbody(id="article_items_table")
+                    %th Monto Participación
+                %tbody
                   %tr
                     %td
                       = @work.specialty
@@ -50,6 +51,8 @@
                       = @work.participation_of_arsac
                     %td
                       = number_to_currency(@work.amount_of_contract, unit: 'S/.' , precision: 2)
+                    %td
+                      = number_to_currency((('%.2f' % @work.participation_of_arsac.to_f).to_f/100)*@work.amount_of_contract.to_f, unit: 'S/.' , precision: 2)
 
       %article.col-sm-12.col-md-12.col-lg-12
         #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
@@ -77,7 +80,7 @@
                     %th IPC de Liquidación
                     %th Sistema de Contratación
                     %th Objeto de Contrato
-                %tbody(id="article_items_table")
+                %tbody
                   %tr
                     %td
                       = @work.start_date_of_work.strftime("%d/%m/%Y")
@@ -113,7 +116,7 @@
                       - elsif @work.purpose_of_contract == 'llave_mano'
                         = "Llave en mano"
 
-      %article.col-sm-12.col-md-12.col-lg-12
+      %article.col-sm-12.col-md-12.col-lg-6
         #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
           %header
             %span.widget-icon
@@ -132,7 +135,7 @@
                 - @components.each do |component|
                   %li= component.name
 
-      %article.col-sm-12.col-md-12.col-lg-12
+      %article.col-sm-12.col-md-12.col-lg-6
         #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
           %header
             %span.widget-icon
@@ -160,27 +163,48 @@
                           %td Minuta/Testimonio de Consorcio
                           %td
                             %a.btn.btn-warning.btn-xs{:href =>"#{@work.testimony_of_consortium.url}", :target => "_blank"}
-                              %i.fa.fa-caret-square-o-up
+                              %i.fa.fa-clipboard
                       - if @work.contract.exists?
                         %tr
                           %td Contrato
                           %td
                             %a.btn.btn-info.btn-xs{:href =>"#{@work.contract.url}", :target => "_blank"}
-                              %i.fa.fa-caret-square-o-up
+                              %i.fa.fa-clipboard
 
                       - if @work.reception_certificate.exists?
                         %tr
                           %td Acta de Recepción
                           %td
                             %a.btn.btn-info.btn-xs{:href =>"#{@work.reception_certificate.url}", :target => "_blank"}
-                              %i.fa.fa-caret-square-o-up
+                              %i.fa.fa-clipboard
                         
                       - if @work.settlement_of_work.exists?
                         %tr
                           %td Liquidación de Obra
                           %td
                             %a.btn.btn-info.btn-xs{:href =>"#{@work.settlement_of_work.url}", :target => "_blank"}
-                              %i.fa.fa-caret-square-o-up
+                              %i.fa.fa-clipboard
+
+                      - if @work.budget.exists?
+                        %tr
+                          %td Presupuesto
+                          %td
+                            %a.btn.btn-info.btn-xs{:href =>"#{@work.budget.url}", :target => "_blank"}
+                              %i.fa.fa-clipboard
+
+                      - if @work.integrated_bases.exists?
+                        %tr
+                          %td Bases Integradas
+                          %td
+                            %a.btn.btn-info.btn-xs{:href =>"#{@work.integrated_bases.url}", :target => "_blank"}
+                              %i.fa.fa-clipboard
+
+                      - if @work.arbitration.exists?
+                        %tr
+                          %td Arbitraje
+                          %td
+                            %a.btn.btn-info.btn-xs{:href =>"#{@work.arbitration.url}", :target => "_blank"}
+                              %i.fa.fa-clipboard
 
 = javascript_include_tag 'plugin/flot/jquery.flot.cust'
 = javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'

@@ -39,11 +39,9 @@
                 %th Monto del Contrato
                 %th Contratista
                 %th Participación de ARSAC
-                %th Monto de Contrato
                 %th Monto de Liquidación
                 %th Fecha de Inicio Obra
                 %th Fecha Fin de Obra
-                %th Archivos
                 %th Acciones
             %tbody
               - @works.each do |work|
@@ -59,33 +57,15 @@
                   %td
                     = number_to_currency(work.amount_of_contract, unit: 'S/.' , precision: 2)
                   %td
-                    = work.contractor
+                    = Work.getContractorName(work.contractor_id)
                   %td
                     = work.participation_of_arsac
-                  %td
-                    = number_to_currency(work.amount_of_contract, unit: 'S/.' , precision: 2)
                   %td
                     = number_to_currency(work.amount_of_settlement, unit: 'S/.' , precision: 2)
                   %td
                     = work.start_date_of_work.strftime("%d/%m/%Y")
                   %td
                     = work.real_end_date_of_work.strftime("%d/%m/%Y")
-                  %td
-                    - if work.testimony_of_consortium.exists?
-                      %a.btn.btn-warning.btn-xs{:href =>"#{work.testimony_of_consortium.url}", :target => "_blank", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Minuta/Testimonio de Consorcio"}
-                        %i.fa.fa-caret-square-o-up
-
-                    - if work.contract.exists?
-                      %a.btn.btn-info.btn-xs{:href =>"#{work.contract.url}", :target => "_blank", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Contrato"}
-                        %i.fa.fa-caret-square-o-up
-
-                    - if work.reception_certificate.exists?
-                      %a.btn.btn-info.btn-xs{:href =>"#{work.reception_certificate.url}", :target => "_blank", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Acta de Recepción"}
-                        %i.fa.fa-caret-square-o-up
-                      
-                    - if work.settlement_of_work.exists?
-                      %a.btn.btn-info.btn-xs{:href =>"#{work.settlement_of_work.url}", :target => "_blank", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Liquidación de Obra"}
-                        %i.fa.fa-caret-square-o-up
                   %td
                     %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{biddings_work_path(work.id)}', 'content', null, null, 'GET')"}
                       Ver Información

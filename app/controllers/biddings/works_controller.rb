@@ -14,8 +14,12 @@ class Biddings::WorksController < ApplicationController
     @work = Work.new
     @components = Component.all
     @entities = Array.new
+    @contractors = Array.new
     TypeEntity.where("name LIKE 'Clientes'").each do |tent|
       @entities << tent.entities
+    end
+    TypeEntity.where("name LIKE 'Contratistas'").each do |tent|
+      @contractors << tent.entities
     end
     render layout: false
   end
@@ -39,8 +43,12 @@ class Biddings::WorksController < ApplicationController
     @work = Work.find(params[:id])
     @components = Component.all
     @entities = Array.new
+    @contractors = Array.new
     TypeEntity.where("name LIKE 'Clientes'").each do |tent|
       @entities << tent.entities
+    end
+    TypeEntity.where("name LIKE 'Contratistas'").each do |tent|
+      @contractors << tent.entities
     end
     render layout: false
   end
@@ -65,6 +73,6 @@ class Biddings::WorksController < ApplicationController
 
   private
   def work_params
-    params.require(:work).permit(:budget, :arbitration, :start_date_of_inquiry, :end_date_of_inquiry, :integrated_bases, :procurement_system, :purpose_of_contract, :date_signature_of_contract, :start_date_of_work, :real_end_date_of_work, :date_of_receipt_of_work, :settlement_date, :specialty, :name, :entity_id, :participation_of_arsac, :contractor, :amount_of_contract, :amount_of_settlement, :ipc_settlement, :testimony_of_consortium, :contract, :reception_certificate, :settlement_of_work, {:component_ids => []})
+    params.require(:work).permit(:budget, :arbitration, :start_date_of_inquiry, :end_date_of_inquiry, :integrated_bases, :procurement_system, :purpose_of_contract, :date_signature_of_contract, :start_date_of_work, :real_end_date_of_work, :date_of_receipt_of_work, :settlement_date, :specialty, :name, :entity_id, :participation_of_arsac, :contractor_id, :amount_of_contract, :amount_of_settlement, :ipc_settlement, :testimony_of_consortium, :contract, :reception_certificate, :settlement_of_work, {:component_ids => []})
   end
 end

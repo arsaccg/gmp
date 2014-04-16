@@ -22,4 +22,8 @@ class Work < ActiveRecord::Base
 
   has_attached_file :arbitration
   validates_attachment_content_type :arbitration, :content_type => ['application/pdf', 'application/msword', 'text/plain']
+
+  def self.getContractorName(id_contractor)
+    return Entity.find(id_contractor).name
+  end
 end

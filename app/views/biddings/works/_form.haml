@@ -51,7 +51,7 @@
                   %label.col-md-4.control-label Participación de ARSAC
                   .col-md-8
                     .input-group
-                      = f.input :participation_of_arsac, placeholder: "Participación de ARSAC", input_html: { class: 'form-control' }, label: false
+                      = f.input :participation_of_arsac, placeholder: "Participación de ARSAC", input_html: { class: 'form-control', onkeypress: "return isNumber(event);" }, label: false
                       %span.input-group-addon
                         %i.fa.fa-flag
               .col-md-4
@@ -71,8 +71,12 @@
                       %select.form-control#category-select{:name =>"work[entity_id]"}
                         - @entities.each do |entities|
                           - entities.each do |entity|
-                            %option{:value => "#{entity.id}"}
-                              = entity.name + ' ' + entity.surname
+                            - if @work.entity_id == entity.id
+                              %option{:value => "#{entity.id}", :selected => true}
+                                = entity.name + ' ' + entity.surname
+                            - else
+                              %option{:value => "#{entity.id}"}
+                                = entity.name + ' ' + entity.surname
                       %span.input-group-addon
                         %i.fa.fa-gears
               .col-md-4
@@ -88,7 +92,7 @@
                   %label.col-md-4.control-label Monto de Liquidación
                   .col-md-8
                     .input-group
-                      = f.input :amount_of_settlement, placeholder: "Monto de Liquidación", input_html: { class: 'form-control' }, label: false
+                      = f.input :amount_of_settlement, placeholder: "Monto de Liquidación", input_html: { value: number_with_precision(f.object.amount_of_settlement, precision: 2), class: 'form-control' }, label: false
                       %span.input-group-addon
                         %i.fa.fa-flag
             .row
@@ -122,7 +126,7 @@
                   %label.col-md-4.control-label Monto de Contrato
                   .col-md-8
                     .input-group
-                      = f.input :amount_of_contract, placeholder: "Monto de Contrato", input_html: { class: 'form-control' }, label: false
+                      = f.input :amount_of_contract, placeholder: "Monto de Contrato", input_html: { value: number_with_precision(f.object.amount_of_contract, precision: 2), class: 'form-control' }, label: false
                       %span.input-group-addon
                         %i.fa.fa-male
               .col-md-4
@@ -164,7 +168,15 @@
                   %label.col-md-4.control-label Contratista
                   .col-md-8
                     .input-group
-                      = f.input :contractor, placeholder: "Contratista", input_html: { class: 'form-control' }, label: false
+                      %select.form-control#category-select{:name =>"work[contractor_id]"}
+                        - @contractors.each do |entities|
+                          - entities.each do |entity|
+                            - if @work.contractor_id == entity.id
+                              %option{:value => "#{entity.id}", :selected => true}
+                                = entity.name + ' ' + entity.surname
+                            - else
+                              %option{:value => "#{entity.id}"}
+                                = entity.name + ' ' + entity.surname
                       %span.input-group-addon
                         %i.fa.fa-flag
               .col-md-4
@@ -303,6 +315,15 @@
       submit_validate($('#new_work'));
     }
   });
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46 && charCode != 37) {
+        return false;
+    }
+    return true;
+  }
   
   function submit_validate(form){
     $(form['selector']).ajaxForm({
@@ -334,7 +355,7 @@
             'work[participation_of_arsac]': {
               required : true
             },
-            'work[contractor]': {
+            'work[contractor_id]': {
               required : true
             },
             'work[amount_of_contract]': {
@@ -368,7 +389,7 @@
             'work[participation_of_arsac]': {
               required : 'Campo requerido'
             },
-            'work[contractor]': {
+            'work[contractor_id]': {
               required : 'Campo requerido'
             },
             'work[amount_of_contract]': {
