@@ -43,13 +43,21 @@
               - @certificate.each do |com|
                 %tr
                   %td
-                    = com.professionals.name
+                    -@professional.each do |major|
+                      -if major.id==com.professional_id
+                        =major.name
                   %td
-                    = com.works.name
+                    -@work.each do |w|
+                      -if w.id==com.work_id
+                        =w.name
                   %td
-                    = com.charge
+                    -@charge.each do |w|
+                      -if w.id==com.charge_id
+                        =w.name
                   %td
-                    = com.contractor
+                    -@entity.each do |w|
+                      -if w.id==com.entity_id
+                        =w.name
                   %td
                     = com.start_date
                   %td
@@ -57,7 +65,7 @@
                   %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_biddings_certificate_path(com.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el certificado' , :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{biddings_certificate_path(company.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{biddings_certificate_path}')"}}
+                    %a.btn.btn-danger.btn-xs{}
                       Eliminar
 
 :javascript

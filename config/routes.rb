@@ -177,6 +177,7 @@ ArsacLogistica::Application.routes.draw do
     resources :certificates do
       collection do
         post 'get_component_from_work'
+        post 'dates_from_work'
       end
     end
     resources :components

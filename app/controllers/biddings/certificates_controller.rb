@@ -2,6 +2,10 @@ class Biddings::CertificatesController < ApplicationController
   def index
     flash[:error] = nil
     @certificate = Certificate.all
+    @work = Work.all
+    @professional = Professional.all
+    @charge = Charge.all
+    @entity = Entity.all
     render layout: false
   end
 
@@ -30,8 +34,8 @@ class Biddings::CertificatesController < ApplicationController
       redirect_to :action => :index
     else
       certificate.errors.messages.each do |attribute, error|
-          puts error.to_s
-          puts error
+        puts error.to_s
+        puts error
       end
       flash[:error] =  "Ha ocurrido un error en el sistema."
       redirect_to :action => :index
@@ -40,13 +44,14 @@ class Biddings::CertificatesController < ApplicationController
 
   def edit
     @certificate = Certificate.find(params[:id])
-    @profesional = Professional.all
+    @professional = Professional.all
     @charge = Charge.all
     @entities = Array.new
     TypeEntity.where("id IN (1,5)").each do |tent|
       @entities << tent.entities
     end
     @work = Work.all
+    @component =Component.all
     @action = 'edit'
     render layout: false
   end
@@ -74,11 +79,22 @@ class Biddings::CertificatesController < ApplicationController
 
   def get_component_from_work
     @components = Component.where("work_id = ?", params[:work_id])
-    render json: {:components => @components}  
+    render json: {:component_work => @components}  
+  end
+
+  def dates_from_work
+    @start = Work.find(params[:work_id]).start_date
+    @end = Work.find(params[:work_id]).finish_date
+    render json: {:start => @start, :end=>@end}  
   end
 
   private
   def certificate_parameters
-    params.require(:certificate).permit(:professional_id, :work_id, :charge, :contractor, :other, :start_date, :finish_date, {:component_work_id => []}, :certificate)
+    params.require(:certificate).permit(:professional_id, :work_id, :charge_id, :entity_id, :num_days, :start_date, :finish_date, {:component_work_ids => []}, :certificate, :other)
+  end
+
+  private
+  def certificate_parameters_other_work
+    params.require(:certificate).permit(:professional_id, :other_work, :start, :end, :charge_id, :entity_id, :days, :start_date, :finish_date, {:component_work_ids => []}, :certificate, :other)
   end
 end
