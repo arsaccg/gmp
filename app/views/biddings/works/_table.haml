@@ -57,7 +57,10 @@
                   %td
                     = number_to_currency(work.amount_of_contract, unit: 'S/.' , precision: 2)
                   %td
-                    = Work.getContractorName(work.contractor_id)
+                    - if work.contractor_id != nil
+                      = Work.getContractorName(work.contractor_id)
+                    - else
+                      = "No se tiene un Contratista definido."
                   %td
                     = work.participation_of_arsac
                   %td
