@@ -34,14 +34,26 @@
               %tr
                 %th N°
                 %th Nombre
+                %th RUC
+                %th Dirección
                 %th Acciones
             %tbody
               - @workPartners.each do |workPartner|
                 %tr
                   %td
                     = workPartner.id
-                  %TD
+                  %td
                     = workPartner.name
+                  %td
+                    - if workPartner.ruc != nil
+                      = workPartner.ruc
+                    - else
+                      = "Este Socio no tiene RUC."
+                  %td
+                    - if workPartner.address != nil
+                      = workPartner.address
+                    - else
+                      = "Este Socio no tiene dirección."
                   %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_biddings_work_partner_path(workPartner.id)}', 'content', null, null, 'GET')"}
                       Editar

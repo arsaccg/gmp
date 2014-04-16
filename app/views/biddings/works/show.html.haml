@@ -44,7 +44,7 @@
                     %td
                       = @work.entity.name
                     %td
-                      = number_to_currency(@work.amount_of_contract, unit: 'S/.' , precision: 2)
+                      = number_to_currency(@work.amount_of_contract, unit: @work.money.symbol, precision: 2)
                     %td
                       - if @work.contractor_id != nil
                         = Work.getContractorName(@work.contractor_id)
@@ -53,7 +53,7 @@
                     %td
                       = @work.participation_of_arsac
                     %td
-                      = number_to_currency(@work.amount_of_contract, unit: 'S/.' , precision: 2)
+                      = number_to_currency(@work.amount_of_contract, unit: @work.money.symbol, precision: 2)
                     %td
                       = number_to_currency((('%.2f' % @work.participation_of_arsac.to_f).to_f/100)*@work.amount_of_contract.to_f, unit: 'S/.' , precision: 2)
 
@@ -96,7 +96,7 @@
                         = "No hay Fecha de Liquidación."
                     %td
                       - if @work.amount_of_settlement != nil
-                        = number_to_currency(@work.amount_of_settlement, unit: 'S/.' , precision: 2)
+                        = number_to_currency(@work.amount_of_settlement, unit: @work.money.symbol, precision: 2)
                       - else
                         = "No hay Monto de Liquidación."
                     %td

@@ -55,7 +55,7 @@
                   %td
                     = work.entity.name
                   %td
-                    = number_to_currency(work.amount_of_contract, unit: 'S/.' , precision: 2)
+                    = number_to_currency(work.amount_of_contract, unit: work.money.symbol, precision: 2)
                   %td
                     - if work.contractor_id != nil
                       = Work.getContractorName(work.contractor_id)
@@ -64,7 +64,7 @@
                   %td
                     = work.participation_of_arsac
                   %td
-                    = number_to_currency(work.amount_of_settlement, unit: 'S/.' , precision: 2)
+                    = number_to_currency(work.amount_of_settlement, unit: work.money.symbol, precision: 2)
                   %td
                     = work.start_date_of_work.strftime("%d/%m/%Y")
                   %td

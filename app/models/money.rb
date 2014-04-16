@@ -1,6 +1,7 @@
 # enconding: utf-8
 class Money < ActiveRecord::Base
 	has_many :purchase_order
+	has_many :works
 	has_many :exchange_of_rate
 	# Validaciones
 	include ActiveModel::Validations

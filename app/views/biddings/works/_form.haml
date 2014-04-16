@@ -238,6 +238,30 @@
                       %span.input-group-addon
                         %i.fa.fa-calendar
             .row
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Moneda
+                  .col-md-8
+                    .input-group
+                      %select.form-control#money-select{:name =>"work[money_id]"}
+                        - @moneys.each do |money|
+                          - if @work.money_id == money.id
+                            %option{:value => "#{money.id}", :selected => true}
+                              = money.name
+                          - else
+                            %option{:value => "#{money.id}"}
+                              = money.name
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Tipo de cambio
+                  .col-md-8
+                    .input-group
+                      = f.input :exchange_of_rate, :input_html => {:class => 'form-control'}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+            .row
               %fieldset
                 %legend Componentes
                 .col-md-12
