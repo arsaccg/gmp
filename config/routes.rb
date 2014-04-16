@@ -172,6 +172,7 @@ ArsacLogistica::Application.routes.draw do
 
   namespace :biddings do
     resources :works
+    resources :work_partners
     resources :professionals
     resources :trainings
     resources :certificates do

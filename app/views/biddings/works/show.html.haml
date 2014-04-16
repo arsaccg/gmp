@@ -119,7 +119,7 @@
                       - elsif @work.purpose_of_contract == 'llave_mano'
                         = "Llave en mano"
 
-      %article.col-sm-12.col-md-12.col-lg-6
+      %article.col-sm-12.col-md-12.col-lg-3
         #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
           %header
             %span.widget-icon
@@ -137,6 +137,25 @@
               %ul
                 - @components.each do |component|
                   %li= component.name
+
+      %article.col-sm-12.col-md-12.col-lg-3
+        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 Socios
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Socios de la Obra
+              %ul
+                - @work_partners.each do |work_partner|
+                  %li= work_partner.name
 
       %article.col-sm-12.col-md-12.col-lg-6
         #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}

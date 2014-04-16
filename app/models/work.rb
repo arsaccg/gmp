@@ -1,5 +1,6 @@
 class Work < ActiveRecord::Base
   has_and_belongs_to_many :components
+  has_and_belongs_to_many :work_partners
   belongs_to :entity
 
   has_attached_file :testimony_of_consortium
