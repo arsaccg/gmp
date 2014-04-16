@@ -2,6 +2,7 @@ class Work < ActiveRecord::Base
   has_and_belongs_to_many :components
   has_and_belongs_to_many :work_partners
   belongs_to :entity
+  belongs_to :money
 
   has_attached_file :testimony_of_consortium
   validates_attachment_content_type :testimony_of_consortium, :content_type => ['application/pdf', 'application/msword', 'text/plain']

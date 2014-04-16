@@ -35,6 +35,7 @@
                 %th #
                 %th Especialidad
                 %th Nombre
+                %th N° de Licitación
                 %th Entidad Contratante
                 %th Monto del Contrato
                 %th Contratista
@@ -53,9 +54,18 @@
                   %td
                     = work.name
                   %td
+                    - if work.number_of_settlement != ""
+                      = work.number_of_settlement
+                    - else
+                      = "No se ha especificado en N° de Licitación."
+                  %td
                     = work.entity.name
                   %td
-                    = number_to_currency(work.amount_of_contract, unit: 'S/.' , precision: 2)
+                    - if work.money != nil
+                      - if work.exchange_of_rate != ""
+                        = number_to_currency(work.amount_of_contract.to_f*work.exchange_of_rate.to_f, unit: 'S/. ', precision: 2)
+                      - else
+                        = number_to_currency(work.amount_of_contract.to_f, unit: 'S/. ', precision: 2)
                   %td
                     - if work.contractor_id != nil
                       = Work.getContractorName(work.contractor_id)
@@ -64,7 +74,11 @@
                   %td
                     = work.participation_of_arsac
                   %td
-                    = number_to_currency(work.amount_of_settlement, unit: 'S/.' , precision: 2)
+                    - if work.money != nil
+                      - if work.exchange_of_rate != ""
+                        = number_to_currency(work.amount_of_settlement.to_f*work.exchange_of_rate.to_f, unit: 'S/. ', precision: 2)
+                      - else
+                        = number_to_currency(work.amount_of_settlement.to_f, unit: 'S/. ', precision: 2)
                   %td
                     = work.start_date_of_work.strftime("%d/%m/%Y")
                   %td

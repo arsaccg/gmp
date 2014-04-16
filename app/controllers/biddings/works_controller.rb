@@ -8,14 +8,23 @@ class Biddings::WorksController < ApplicationController
     @work = Work.find(params[:id])
     @components = @work.components
     @work_partners = @work.work_partners
+    @financial_variables = Array.new
+    FinancialVariable.where("name LIKE '%IPC%'").each do |fvar|
+      @financial_variables = fvar
+    end
     render layout: false
   end
 
   def new
     @work = Work.new
     @components = Component.all
+    @moneys = Money.all
     @entities = Array.new
     @contractors = Array.new
+    @financial_variables = Array.new
+    FinancialVariable.where("name LIKE '%IPC%'").each do |fvar|
+      @financial_variables = fvar
+    end
     TypeEntity.where("name LIKE 'Clientes'").each do |tent|
       @entities << tent.entities
     end
@@ -43,8 +52,13 @@ class Biddings::WorksController < ApplicationController
   def edit
     @work = Work.find(params[:id])
     @components = Component.all
+    @moneys = Money.all
     @entities = Array.new
     @contractors = Array.new
+    @financial_variables = Array.new
+    FinancialVariable.where("name LIKE '%IPC%'").each do |fvar|
+      @financial_variables = fvar
+    end
     TypeEntity.where("name LIKE 'Clientes'").each do |tent|
       @entities << tent.entities
     end
@@ -74,6 +88,6 @@ class Biddings::WorksController < ApplicationController
 
   private
   def work_params
-    params.require(:work).permit({:work_partner_ids => []}, :budget, :arbitration, :start_date_of_inquiry, :end_date_of_inquiry, :integrated_bases, :procurement_system, :purpose_of_contract, :date_signature_of_contract, :start_date_of_work, :real_end_date_of_work, :date_of_receipt_of_work, :settlement_date, :specialty, :name, :entity_id, :participation_of_arsac, :contractor_id, :amount_of_contract, :amount_of_settlement, :ipc_settlement, :testimony_of_consortium, :contract, :reception_certificate, :settlement_of_work, {:component_ids => []})
+    params.require(:work).permit(:number_of_settlement, :exchange_of_rate, :money_id, {:work_partner_ids => []}, :budget, :arbitration, :start_date_of_inquiry, :end_date_of_inquiry, :integrated_bases, :procurement_system, :purpose_of_contract, :date_signature_of_contract, :start_date_of_work, :real_end_date_of_work, :date_of_receipt_of_work, :settlement_date, :specialty, :name, :entity_id, :participation_of_arsac, :contractor_id, :amount_of_contract, :amount_of_settlement, :ipc_settlement, :testimony_of_consortium, :contract, :reception_certificate, :settlement_of_work, {:component_ids => []})
   end
 end

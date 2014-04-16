@@ -98,6 +98,14 @@
             .row
               .col-md-4
                 .form-group
+                  %label.col-md-4.control-label Número de Licitación
+                  .col-md-8
+                    .input-group
+                      = f.input :number_of_settlement, placeholder: "Numero de Licitación", input_html: { class: 'form-control' }, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-warning
+              .col-md-4
+                .form-group
                   %label.col-md-4.control-label Nombre de la Obra
                   .col-md-8
                     .input-group
@@ -238,6 +246,36 @@
                       %span.input-group-addon
                         %i.fa.fa-calendar
             .row
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Moneda
+                  .col-md-8
+                    .input-group
+                      %select.form-control#money-select{:name =>"work[money_id]"}
+                        - @moneys.each do |money|
+                          - if @work.money_id == money.id
+                            %option{:value => "#{money.id}", :selected => true}
+                              = money.name
+                          - else
+                            %option{:value => "#{money.id}"}
+                              = money.name
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Tipo de cambio
+                  .col-md-8
+                    .input-group
+                      = f.input :exchange_of_rate, :input_html => {:class => 'form-control'}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label IPC Actual
+                  .col-md-8
+                    .input-group
+                      = text_field(:ipc, :actual, class: "form-control", value: "#{@financial_variables.value}", readonly: true)
+            .row
               %fieldset
                 %legend Componentes
                 .col-md-12
@@ -370,6 +408,12 @@
             },
             'work[amount_of_contract]': {
               required : true
+            },
+            'work[money_id]': {
+              required : true
+            },
+            'work[number_of_settlement]': {
+              required: true
             }
           },
 
@@ -404,6 +448,12 @@
             },
             'work[amount_of_contract]': {
               required : 'Campo requerido'
+            },
+            'work[money_id]': {
+              required : 'Campo requerido'
+            },
+            'work[number_of_settlement]': {
+              required: 'Campo requerido'
             }
           },
 
