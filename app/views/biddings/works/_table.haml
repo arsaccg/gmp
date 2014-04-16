@@ -55,7 +55,8 @@
                   %td
                     = work.entity.name
                   %td
-                    = number_to_currency(work.amount_of_contract, unit: work.money.symbol, precision: 2)
+                    - if work.money.symbol != nil
+                      = number_to_currency(work.amount_of_contract, unit: work.money.symbol, precision: 2)
                   %td
                     - if work.contractor_id != nil
                       = Work.getContractorName(work.contractor_id)
