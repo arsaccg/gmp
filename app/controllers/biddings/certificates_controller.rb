@@ -71,14 +71,15 @@ class Biddings::CertificatesController < ApplicationController
     end
   end
 
-  def delete
+  def destroy
     certificate = Certificate.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el certificado seleccionado."
     render :json => certificate
   end
 
   def get_component_from_work
-    @components = Component.where("work_id = ?", params[:work_id])
+    @work = Work.find(params[:work_id])
+    @components=@work.components
     render json: {:component_work => @components}  
   end
 
@@ -95,6 +96,6 @@ class Biddings::CertificatesController < ApplicationController
 
   private
   def certificate_parameters_other_work
-    params.require(:certificate).permit(:professional_id, :other_work, :start, :end, :charge_id, :entity_id, :days, :start_date, :finish_date, {:component_work_ids => []}, :certificate, :other)
+    params.require(:certificate).permit(:other_work, :start, :end, {:component_work_ids => []})
   end
 end

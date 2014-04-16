@@ -65,7 +65,7 @@
                   %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_biddings_certificate_path(com.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-danger.btn-xs{}
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el certificado' , :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{biddings_certificate_path(com.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{biddings_certificates_path}')"}}
                       Eliminar
 
 :javascript

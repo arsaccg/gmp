@@ -52,7 +52,7 @@ class Biddings::ChargesController < ApplicationController
     end
   end
 
-  def delete
+  def destroy
     charge = Charge.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el cargo seleccionado."
     render :json => charge

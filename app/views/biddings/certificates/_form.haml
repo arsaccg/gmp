@@ -115,11 +115,16 @@
         .row
           %section.col.col-6
             %label.label Componentes de la obra:
+        #get-comp  
+          %section.col.col-6
             %label.select.type-training#comp-check
-            - @component.each do |comp|
-              .fields.inline-group
+        #comp
+          %section.col.col-6
+            -if @component!=nil
+              - @component.each do |comp|
                 %input{name: "component_work", type: "checkbox", :value=> "#{comp.id}"}
                   = "#{comp.name}"
+                %br
         .row
           %section.col.col-6
             .form-group
@@ -216,18 +221,17 @@
 
   $(document).ready(function () {
 
+    var work_id = $("#work-select").val();
+    complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
+    set_day("#{dates_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
+
     $('#change-check').change(function(){
       $('#work-select').attr('disabled', this.checked);
       $('#another_work').attr('disabled', !this.checked);
       $('#start').attr('disabled', !this.checked);
       $('#finish').attr('disabled', !this.checked);
+      $('#comp').attr('disabled', this.checked);
     });
-
-
-
-    var work_id = $("#work-select").val();
-    complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
-    set_day("#{dates_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -279,7 +283,6 @@
           item = {};
           item['start'] = value.start_date;
           item['finish'] = value.finish_date;
-          console.log("value.start_date");
           newOptions.push(item);
         });
         $('#start').empty();
@@ -296,6 +299,7 @@
     }
 
     function complete_infocombo(url, work_id, form_token, default_value){
+      var str_html = "";
       $.ajax({
           type: "POST",
           url: url,
@@ -307,20 +311,14 @@
           item = {};
           item['name'] = value.name;
           item['id'] = value.id;
-          console.log("value.id");
+          console.log(value.name);
           newOptions.push(item);
         });
         $('#comp-check').empty();
         $.each(newOptions, function(key,value){
-          if ($("#comp-check").val() == value.id)
-            $('#comp-check').append(
-              $("<input></input>").attr("value", value.id).text(value.name).attr("selected", "selected")
-            )
-          else
-            $('#comp-check').append(
-              $("<input></input>").attr("value", value.id).text(value.name)
-            )
+          str_html = str_html + "<label>" + value.name + "</label><br/>"
         });
+        $('#comp-check').html(str_html);
       });
     }
   });
