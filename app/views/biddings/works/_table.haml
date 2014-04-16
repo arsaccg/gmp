@@ -55,7 +55,7 @@
                   %td
                     = work.entity.name
                   %td
-                    - if work.money.symbol != nil
+                    - if work.money != nil
                       = number_to_currency(work.amount_of_contract, unit: work.money.symbol, precision: 2)
                   %td
                     - if work.contractor_id != nil
