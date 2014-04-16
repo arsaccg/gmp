@@ -62,8 +62,11 @@
                     = work.entity.name
                   %td
                     - if work.money != nil
-                      - if work.exchange_of_rate != ""
-                        = number_to_currency(work.amount_of_contract.to_f*work.exchange_of_rate.to_f, unit: 'S/. ', precision: 2)
+                      - if work.money.symbol != "S/."
+                        - if work.exchange_of_rate != ""
+                          = number_to_currency(work.amount_of_contract.to_f*work.exchange_of_rate.to_f, unit: 'S/. ', precision: 2)
+                        - else
+                          = number_to_currency(work.amount_of_contract.to_f, unit: 'S/. ', precision: 2)
                       - else
                         = number_to_currency(work.amount_of_contract.to_f, unit: 'S/. ', precision: 2)
                   %td
@@ -75,8 +78,11 @@
                     = work.participation_of_arsac
                   %td
                     - if work.money != nil
-                      - if work.exchange_of_rate != ""
-                        = number_to_currency(work.amount_of_settlement.to_f*work.exchange_of_rate.to_f, unit: 'S/. ', precision: 2)
+                      - if work.money.symbol != "S/."
+                        - if work.exchange_of_rate != ""
+                          = number_to_currency(work.amount_of_settlement.to_f*work.exchange_of_rate.to_f, unit: 'S/. ', precision: 2)
+                        - else
+                          = number_to_currency(work.amount_of_settlement.to_f, unit: 'S/. ', precision: 2)
                       - else
                         = number_to_currency(work.amount_of_settlement.to_f, unit: 'S/. ', precision: 2)
                   %td

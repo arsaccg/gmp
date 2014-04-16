@@ -168,12 +168,18 @@
                         = "No hay IPC de Liquidación."
                     %td
                       - if @work.amount_of_settlement != nil
-                        = number_to_currency((@work.amount_of_settlement.to_f * @work.exchange_of_rate.to_f) * (@financial_variables.value.to_f / @work.ipc_settlement.to_f).to_f, unit: 'S/. ', precision: 2)
+                        - if @work.money.symbol != "S/."
+                          = number_to_currency((@work.amount_of_settlement.to_f * @work.exchange_of_rate.to_f) * (@financial_variables.value.to_f / @work.ipc_settlement.to_f).to_f, unit: 'S/. ', precision: 2)
+                        - else
+                          = number_to_currency((@work.amount_of_settlement.to_f) * (@financial_variables.value.to_f / @work.ipc_settlement.to_f).to_f, unit: 'S/. ', precision: 2)
                       - else
                         = "No hay Monto de Liquidación."
                     %td
                       - if @work.amount_of_settlement != nil
-                        = number_to_currency((('%.2f' % @work.participation_of_arsac.to_f).to_f/100)*((@work.amount_of_settlement.to_f * @work.exchange_of_rate.to_f) * (@financial_variables.value.to_f / @work.ipc_settlement.to_f).to_f), unit: 'S/. ', precision: 2)
+                        - if @work.money.symbol != "S/."
+                          = number_to_currency((('%.2f' % @work.participation_of_arsac.to_f).to_f/100)*((@work.amount_of_settlement.to_f * @work.exchange_of_rate.to_f) * (@financial_variables.value.to_f / @work.ipc_settlement.to_f).to_f), unit: 'S/. ', precision: 2)
+                        - else
+                          = number_to_currency((('%.2f' % @work.participation_of_arsac.to_f).to_f/100)*((@work.amount_of_settlement.to_f) * (@financial_variables.value.to_f / @work.ipc_settlement.to_f).to_f), unit: 'S/. ', precision: 2)
                       - else
                         = "No hay Monto de Liquidación."
 
@@ -285,6 +291,16 @@
                           %td
                             %a.btn.btn-info.btn-xs{:href =>"#{@work.arbitration.url}", :target => "_blank"}
                               %i.fa.fa-clipboard
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-works{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de las obras
+
+:javascript
+
+  $('#backlist-works').click(function(){
+      load_url_ajax("#{biddings_works_path}", 'content', null, null, 'GET');
+  });
 
 = javascript_include_tag 'plugin/flot/jquery.flot.cust'
 = javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
