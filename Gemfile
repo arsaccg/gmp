@@ -25,6 +25,9 @@ gem "erb2haml", :group => :development
 gem "role_model"
 gem 'cancan'
 
+# jQuery fileUpload
+gem 'jquery-fileupload-rails'
+
 # Use state machine
 gem 'state_machine'
 

@@ -186,10 +186,6 @@
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Import Articulos
                   %li
-                    %a{href: "#{logistics_type_entities_path}", title: "Tipo de Entidades"}
-                      %i.fa.fa-lg.fa-fw.fa-sitemap
-                      %span.menu-item-parent Tipo de Entidades
-                  %li
                     %a{href: "#{logistics_method_of_payments_path}", title: "Formas de Pago"}
                       %i.fa.fa-lg.fa-fw.fa-dot-circle-o
                       %span.menu-item-parent Formas de Pago
@@ -257,6 +253,10 @@
                       %i.fa.fa-lg.fa-fw.fa-home
                       %span.menu-item-parent Obras
                   %li
+                    %a{href: "#{biddings_work_partners_path}", title: "Miembros Consorcio"}
+                      %i.fa.fa-lg.fa-fw.fa-user
+                      %span.menu-item-parent Socios
+                  %li
                     %a{href: "#{biddings_professionals_path}?company_id=#{@company.id}", title: "Profesionales"}
                       %i.fa.fa-lg.fa-fw.fa-user
                       %span.menu-item-parent Profesionales
@@ -280,6 +280,10 @@
                     %a{href: "#{biddings_components_path}?company_id=#{@company.id}", title: "Componentes"}
                       %i.fa.fa-lg.fa-fw.fa-clipboard
                       %span.menu-item-parent Componentes
+          %li
+            %a{href: "#{logistics_type_entities_path}", title: "Tipo de Entidades"}
+              %i.fa.fa-lg.fa-fw.fa-sitemap
+              %span.menu-item-parent Tipo de Entidades
           %li
             %a{href: "#{logistics_entities_path}", title: "Entidades"}
               %i.fa.fa-lg.fa-fw.fa-group

@@ -89,9 +89,9 @@
 
 :javascript
   $(document).ready(function () {
-  
-    $('#professional_major_ids').select2();
-    $('#s2id_professional_major_ids ul li input').css('width','100%');
+
+    $('#professional_major_ids').select2({ width: '100%' });
+
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
