@@ -9,7 +9,7 @@ class Biddings::WorksController < ApplicationController
     @components = @work.components
     @work_partners = @work.work_partners
     @financial_variables = Array.new
-    FinancialVariable.where("name LIKE 'IPC'").each do |fvar|
+    FinancialVariable.where("name LIKE '%IPC%'").each do |fvar|
       @financial_variables = fvar
     end
     render layout: false
@@ -22,7 +22,7 @@ class Biddings::WorksController < ApplicationController
     @entities = Array.new
     @contractors = Array.new
     @financial_variables = Array.new
-    FinancialVariable.where("name LIKE 'IPC'").each do |fvar|
+    FinancialVariable.where("name LIKE '%IPC%'").each do |fvar|
       @financial_variables = fvar
     end
     TypeEntity.where("name LIKE 'Clientes'").each do |tent|
@@ -55,6 +55,10 @@ class Biddings::WorksController < ApplicationController
     @moneys = Money.all
     @entities = Array.new
     @contractors = Array.new
+    @financial_variables = Array.new
+    FinancialVariable.where("name LIKE '%IPC%'").each do |fvar|
+      @financial_variables = fvar
+    end
     TypeEntity.where("name LIKE 'Clientes'").each do |tent|
       @entities << tent.entities
     end
