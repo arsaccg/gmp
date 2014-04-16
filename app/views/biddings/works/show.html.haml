@@ -6,6 +6,10 @@
         Obra: 
         %strong
           = @work.name
+      %h1
+        N° de Licitación
+        %strong
+          = @work.number_of_settlement
   %section#widget-grid
     .row
       %article.col-sm-12.col-md-12.col-lg-12
@@ -35,6 +39,8 @@
                     %th Participación de ARSAC
                     %th Monto de Contrato
                     %th Monto Participación
+                    %th Moneda
+                    %th Tipo de Cambio
                 %tbody
                   %tr
                     %td
@@ -55,7 +61,11 @@
                     %td
                       = number_to_currency(@work.amount_of_contract, unit: @work.money.symbol, precision: 2)
                     %td
-                      = number_to_currency((('%.2f' % @work.participation_of_arsac.to_f).to_f/100)*@work.amount_of_contract.to_f, unit: 'S/.' , precision: 2)
+                      = number_to_currency((('%.2f' % @work.participation_of_arsac.to_f).to_f/100)*@work.amount_of_contract.to_f, unit: @work.money.symbol, precision: 2)
+                    %td
+                      = @work.money.name
+                    %td
+                      = @work.exchange_of_rate
 
       %article.col-sm-12.col-md-12.col-lg-12
         #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
@@ -118,6 +128,54 @@
                         = "Expediente + Obra"
                       - elsif @work.purpose_of_contract == 'llave_mano'
                         = "Llave en mano"
+
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 ACTUALIZACIÓN
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Actualización de la obra
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th IPC de Liquidación
+                    %th IPC Actual
+                    %th Factor de Actualización
+                    %th Monto contratado Actualizado
+                    %th Monto de participación actualizado
+                %tbody
+                  %tr
+                    %td
+                      - if @work.ipc_settlement != nil
+                        = @work.ipc_settlement
+                      - else
+                        = "No hay IPC de Liquidación."
+                    %td
+                      = @financial_variables.value
+                    %td
+                      - if @work.ipc_settlement != nil
+                        = (@financial_variables.value.to_f / @work.ipc_settlement.to_f).to_f
+                      - else
+                        = "No hay IPC de Liquidación."
+                    %td
+                      - if @work.amount_of_settlement != nil
+                        = number_to_currency((@work.amount_of_settlement.to_f * @work.exchange_of_rate.to_f) * (@financial_variables.value.to_f / @work.ipc_settlement.to_f).to_f, unit: 'S/. ', precision: 2)
+                      - else
+                        = "No hay Monto de Liquidación."
+                    %td
+                      - if @work.amount_of_settlement != nil
+                        = number_to_currency((('%.2f' % @work.participation_of_arsac.to_f).to_f/100)*((@work.amount_of_settlement.to_f * @work.exchange_of_rate.to_f) * (@financial_variables.value.to_f / @work.ipc_settlement.to_f).to_f), unit: 'S/. ', precision: 2)
+                      - else
+                        = "No hay Monto de Liquidación."
 
       %article.col-sm-12.col-md-12.col-lg-3
         #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
