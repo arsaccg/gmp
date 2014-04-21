@@ -2,7 +2,7 @@
   #step1.step-pane.active
     %h3
       %strong Paso 1
-      \- Seleccionar Proveedor
+      \- Seleccionar Responsable
 
     %fieldset
       .row
@@ -19,20 +19,9 @@
   #step2.step-pane
     %h3
       %strong Paso 2
-      \- Seleccionar Items de las Ordenes de Compra
-
-    %fieldset
-      .row
-        %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
-          %br
-          #table-items-paso1
-
-  #step3.step-pane
-    %h3
-      %strong Paso 3
       \- Llenar información
     %fieldset
-      = hidden_field_tag "stock_input[input]", "1"
+      = hidden_field_tag "stock_input[input]", "0"
       .row
         .col-md-3
           .row
@@ -70,12 +59,6 @@
                         - @periods.where("year = ?", x.year).each do |y|
                           %option(value = "#{y.year.to_s}#{y.month.to_s.rjust(2, "0")}")
                             = y.year.to_s + " - " + y.month.to_s.rjust(2, "0")
-        .col-md-1
-          .row
-            .col-md-12
-              .form-group
-                %label.control-label Serie
-                = text_field(:stock_input, :series, placeholder: "Serie", class: "form-control col-md-3")
         .col-md-2
           .row
             .col-md-12
@@ -106,10 +89,25 @@
       %fieldset
         .row
           .col-md-6
-            .actions
-              %button.btn.btn-sm.btn-success#btn-add-more-items-do{'type' => 'button'}
-                Agregar más items
-      
+            .form-group
+              %label.control-label Articulo
+              .input-group
+                %select(name='stock_input[article_id]' class = 'select2 form-control' id = 'article-select' style='width:100%;padding: 0;border: none;')
+                  - @articles.each do |x|
+                    %option(value = "#{x.id}")
+                      = x.code + " - " + x.name + " - " + x.unit_of_measurement.symbol
+          .col-md-2
+            .form-group
+              %label.control-label &nbsp;
+              .input-group
+                = text_field_tag 'article-amount', nil, class: 'form-control col-md-3', id: 'article-amount', value: '1'
+          .col-md-2
+            .form-group
+              %label.control-label &nbsp;
+              .input-group
+                %button.btn.btn-sm.btn-success#btn-add-article{'type' => 'button'}
+                  Agregar item
+
     %fieldset
       %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-pod" aria-describedby="data-table_info")
         %thead
@@ -118,14 +116,12 @@
             %th Descripción
             %th{'style' => 'width: 4%;'}
               Unidad
-            %th{'style' => 'width: 5%;'}
-              Cantidad Total
-            %th{'style' => 'width: 4%;'}
-              Cantidad Pendiente
             %th{'style' => 'width: 6%;'}
-              Cantidad Recibida
+              Cantidad
+            %th{'style' => 'width: 6%;'}
+              Equipo
         %tbody(id="table-items-paso2")
-  #step4.step-pane
+  #step3.step-pane
     %h3
       %strong Guardar Información
       \- Terminado!
@@ -149,44 +145,16 @@
 
 :javascript
   $(document).ready(function(){
-    //$('#stock_input_issue_date').datepicker.noConflict;
+    $('#stock_input_issue_date').datepicker.noConflict;
     $('#stock_input_issue_date').datepicker({
       format: "dd/mm/yyyy", language: "es", autoclose: true, orientation: "auto right"
     });
     $("#stock_input_issue_date").mask('99/99/9999');
-
-    $('#btn-add-more-items-do').click(function(){
-      var ids_items = new Array();
-
-      $('#summary-pod tbody tr td.pod-di input').each(function(index, element){
-        ids_items[index] = $(this).val();
-      });
-
-      data = { cost_center_id: 1, authenticity_token: "#{form_authenticity_token}", ids_items: ids_items };
-      load_items_delivery_order_ajax('#{more_items_from_pod_logistics_stock_inputs_path}', 'modalPodContent', data);
-      $('#modalPurchaseOrderItems').modal('toggle', {
-        keyboard: false,
-        backdrop: 'static'
-      });
-    });
   });
 
-  function add_more_items(){
-    var ids_items = new Array();
-    status = false;
-    var index = 0;
-    $('#modal-more-items tbody tr td .checkbox .order_check').each(function(){
-      if( $(this).is(':checked') ){
-        status = true
-        ids_items[index] = $(this).val();
-        index++;
-      }
-    });
+  $("#btn-add-article").click(function(){
+    var article_id = $("#article-select").val();
+    str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), amount: $("#article-amount").val()};
 
-    if(status){
-      data = { ids_items: ids_items, authenticity_token: "#{form_authenticity_token}" };
-      append_url_ajax('#{add_items_from_pod_logistics_stock_inputs_path}', 'summary-pod', data, '', 'POST');
-    }
-
-    $('#modalPurchaseOrderItems').modal('hide');
-  };
+    append_url_ajax('#{add_stock_input_item_field_logistics_stock_outputs_path}', 'summary-pod', str_item, 0, 'POST');
+  });

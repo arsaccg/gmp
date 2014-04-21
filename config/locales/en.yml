@@ -46,6 +46,7 @@ en:
       warehouse: "Almacenes"
       format: "Formatos"
       document: "Documentos"
+      cost_center: "Centros de Costo"
     attributes:
       money:
         name: "Nombre"

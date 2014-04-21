@@ -44,9 +44,7 @@
           // Rules for form validation
           rules : {
             'cost_center[code]' : {
-              required : true,
-              minlength : 2,
-              maxlength : 2
+              required : true
             },
             'cost_center[name]' : {
               required : true
@@ -56,12 +54,10 @@
           // Messages for form validation
           messages : {
             'cost_center[code]' : {
-              required : 'Porfavor, ingresar el código del Centro de Costo.',
-              minlength : "Como mínimo debe tener 2 dígitos.",
-              maxlength : "Como máximo debe tener 2 dígitos.",
+              required : '(*)'
              },
             'cost_center[name]' : {
-              required : 'Porfavor, ingresar el nombre del Centro de Costo.'
+              required : '(*)'
              }
           },
 

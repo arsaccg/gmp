@@ -1,7 +1,6 @@
-class Logistics::StockInputsController < ApplicationController
+class Logistics::StockOutputsController < ApplicationController
   def index
-    #@input = params[:input]
-    @head = StockInput.where("input = 1")
+    @head = StockInput.where("input = 0")
     @purchaseOrders = PurchaseOrder.all.where("state LIKE 'approved'")
     render layout: false
   end
@@ -10,15 +9,7 @@ class Logistics::StockInputsController < ApplicationController
     @head = StockInput.new(stock_input_parameters)
     @head.year = @head.period.to_s[0,4]
     @head.user_inserts_id = current_user.id
-    #@head.stock_input_details.user_inserts_id = current_user.id
     if @head.save
-      # Verified If All Received
-      @head.stock_input_details.each do |x|
-        @pod = PurchaseOrderDetail.find(x.purchase_order_detail.id)
-        if @pod.amount <= PurchaseOrderDetail.get_total_received(x.purchase_order_detail.id)
-          @pod.update_attributes(:received => 1)
-        end
-      end
       flash[:notice] = "Se ha creado correctamente el registro."
       redirect_to :action => :index
     else
@@ -35,6 +26,7 @@ class Logistics::StockInputsController < ApplicationController
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.all
+    @articles = Article.all
     @formats = Format.all#.joins(:documents).where("documents.id" => 44)
     render layout: false
   end
@@ -85,8 +77,17 @@ class Logistics::StockInputsController < ApplicationController
     render(partial: 'modal_more_items', :layout => false)
   end
 
+  def add_stock_input_item_field
+    @reg_n = Time.now.to_i
+    data_article_unit = params[:article_id].split('-')
+    @article = Article.find(data_article_unit[0])
+    @amount = params[:amount].to_i
+    
+    render(partial: 'add_item', :layout => false)
+  end
+
   private
   def stock_input_parameters
-    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :series, :document, :issue_date, :description, :input, stock_input_details_attributes: [:id, :stock_input_id, :purchase_order_detail_id, :amount])
+    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :document, :issue_date, :description, :input, stock_input_details_attributes: [:id, :stock_input_id, :article_id, :amount, :equipment_id])
   end
 end

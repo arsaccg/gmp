@@ -12,6 +12,7 @@
             %th O/Compra
             %th Cód.Artículo
             %th Artículo
+            %th Unidad
             %th Cantidad
             %th Pendiente
             %th Sector
@@ -29,6 +30,8 @@
                   = y.delivery_order_detail.article.code
                 %td.col-md-1
                   = y.delivery_order_detail.article.name
+                %td.col-md-1
+                  = y.delivery_order_detail.article.unit_of_measurement.symbol
                 %td.col-md-1
                   = y.amount
                 %td.col-md-1

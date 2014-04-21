@@ -4,7 +4,13 @@ class Logistics::CostCentersController < ApplicationController
   
   def index
     flash[:error] = nil
-    @company = params[:company_id]
+    if params[:company_id] != nil
+      @company = params[:company_id]
+    else
+      # After Update: Cache -> company_id
+      cache = ActiveSupport::Cache::MemoryStore.new()
+      @company = Rails.cache.read('company_id')
+    end
     @costCenters = CostCenter.where(company_id: "#{@company}")
     render layout: false
   end
@@ -43,23 +49,54 @@ class Logistics::CostCentersController < ApplicationController
 
   def update
     flash[:error] = nil
-    cost_center = CostCenter.find(params[:id])
-    if cost_center.update_attributes(cost_center_parameters)
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index
-    else
-      cost_center.errors.messages.each do |attribute, error|
-        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+    costCenter = CostCenter.find(params[:id])
+
+    # Cache -> company_id, becouse after save redirect to Index
+    cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 1.minutes)
+    Rails.cache.write('company_id', costCenter.company_id)
+
+    if params[:timeline] == nil
+      # Save Maintenance
+      if costCenter.update_attributes(cost_center_parameters)
+        flash[:notice] = "Se ha actualizado correctamente los datos."
+        redirect_to :action => :index
+      else
+        costCenter.errors.messages.each do |attribute, error|
+          flash[:error] =  flash[:error].to_s + error.to_s + "  "
+        end
+        @costCenter = costCenter
+        render :edit, layout: false
       end
-      @costCenter = cost_center
-      render :edit, layout: false
+    else
+      # Save TimeLine by Start Date / End Date
+      if costCenter.update_attributes(cost_center_parameters_timeline)
+        CostCenterTimeline.LoadTimeLine(costCenter.id, costCenter.start_date, costCenter.end_date)
+
+        flash[:notice] = "Se actualizó la duración del proyecto."
+        redirect_to :action => :index
+      else
+        costCenter.errors.messages.each do |attribute, error|
+          flash[:error] =  flash[:error].to_s + error.to_s + "  "
+        end
+        @costCenter = costCenter
+        render :edit, layout: false
+      end
     end
   end
 
   def destroy
-    cost_center = CostCenter.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente."
-    render :json => cost_center
+    flash[:error] = nil
+    costCenter = CostCenter.find(params[:id])
+    if costCenter.update_attributes({status: "D"})#, user_updates_id: params[:current_user_id]})
+      flash[:notice] = "Se ha eliminado correctamente."
+      render :json => {notice: flash[:notice]}
+    else
+      costCenter.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      @costCenter = costCenter
+      render :json => {error: flash[:error]}
+    end
   end
 
   def save
@@ -71,17 +108,20 @@ class Logistics::CostCentersController < ApplicationController
     end
   end
 
-  def check
-    if save.valid?
-      true
-    else
-      false
-    end
+  def update_timeline
+    @costCenter = CostCenter.find(params[:id])
+    @costCenterTimeLine = CostCenterTimeline.where("cost_center_id =" + @costCenter.id.to_s)
+    
+    render(partial: 'form_timeline', :layout => false)
   end
 
   private
   def cost_center_parameters
     params.require(:cost_center).permit(:code, :name, :company_id)
+  end
+
+  def cost_center_parameters_timeline
+    params.require(:cost_center).permit(:start_date, :end_date)
   end
 
 end
