@@ -89,8 +89,56 @@ class Biddings::WorksController < ApplicationController
     render :json => work
   end
 
+  def add_more_document
+    @reg_n = Time.now.to_i
+    render(partial: 'more_documents', :layout => false)
+  end
+
   private
   def work_params
-    params.require(:work).permit(:number_of_settlement, :exchange_of_rate, :money_id, {:work_partner_ids => []}, :budget, :arbitration, :start_date_of_inquiry, :end_date_of_inquiry, :integrated_bases, :procurement_system, :purpose_of_contract, :date_signature_of_contract, :start_date_of_work, :real_end_date_of_work, :date_of_receipt_of_work, :settlement_date, :specialty, :name, :entity_id, :participation_of_arsac, :contractor_id, :amount_of_contract, :amount_of_settlement, :ipc_settlement, :testimony_of_consortium, :contract, :reception_certificate, :settlement_of_work, {:component_ids => []})
+    params.require(:work).permit(
+      :compliance_work, 
+      :number_of_settlement, 
+      :exchange_of_rate, 
+      :money_id, 
+      {:work_partner_ids => []}, 
+      :budget, 
+      :arbitration, 
+      :start_date_of_inquiry, 
+      :end_date_of_inquiry, 
+      :integrated_bases, 
+      :procurement_system, 
+      :purpose_of_contract, 
+      :date_signature_of_contract, 
+      :start_date_of_work, 
+      :real_end_date_of_work, 
+      :date_of_receipt_of_work, 
+      :settlement_date, 
+      :specialty, 
+      :name, 
+      :entity_id, 
+      :participation_of_arsac, 
+      :contractor_id, 
+      :amount_of_contract, 
+      :amount_of_settlement, 
+      :ipc_settlement, 
+      :testimony_of_consortium, 
+      :contract, 
+      :reception_certificate, 
+      :settlement_of_work, 
+      {:component_ids => []},
+      arbitration_documents_attributes: [
+        :id, :work_id, :attachment, :_destroy
+      ],
+      contract_documents_attributes: [
+        :id, :work_id, :attachment, :_destroy
+      ],
+      integrated_bases_documents_attributes: [
+        :id, :work_id, :attachment, :_destroy
+      ],
+      testimony_of_consortium_documents_attributes: [
+        :id, :work_id, :attachment, :_destroy
+      ]
+    )
   end
 end

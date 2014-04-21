@@ -23,27 +23,27 @@
                             %option{:value => "Saneamiento", :selected => true} Saneamiento
                             %option{:value => "Civil"} Civil
                             %option{:value => "Electromecanico"} Electromecanico
-                            %option{:value => "Hidráulica"} Hidráulica
+                            %option{:value => "Hidraulica"} Hidráulica
                           -elsif @work.specialty=="Civil"
                             %option{:value => "Saneamiento"} Saneamiento
                             %option{:value => "Civil", :selected => true} Civil
                             %option{:value => "Electromecanico"} Electromecanico
-                            %option{:value => "Hidráulica"} Hidráulica
+                            %option{:value => "Hidraulica"} Hidráulica
                           -elsif @work.specialty=="Electromecanico"
                             %option{:value => "Saneamiento"} Saneamiento
                             %option{:value => "Civil"} Civil
                             %option{:value => "Electromecanico", :selected => true} Electromecanico
-                            %option{:value => "Hidráulica"} Hidráulica
-                          -elsif @work.specialty=="Hidráulica"
+                            %option{:value => "Hidraulica"} Hidráulica
+                          -elsif @work.specialty=="Hidraulica"
                             %option{:value => "Saneamiento"} Saneamiento
                             %option{:value => "Civil"} Civil
                             %option{:value => "Electromecanico"} Electromecanico
-                            %option{:value => "Hidráulica", :selected => true} Hidráulica
+                            %option{:value => "Hidraulica", :selected => true} Hidráulica
                         -else
                           %option{:value => "Saneamiento"} Saneamiento
                           %option{:value => "Civil"} Civil
                           %option{:value => "Electromecanico"} Electromecanico
-                          %option{:value => "Hidráulica"} Hidráulica
+                          %option{:value => "Hidraulica"} Hidráulica
                       %span.input-group-addon
                         %i.fa.fa-money
               .col-md-4
@@ -158,7 +158,7 @@
                             %option{:value => "mixto"} Mixto
                           -elsif @work.procurement_system=="advance_sum"
                             %option{:value => "unit_price"} Precio Unitario
-                            %option{:value => "advance_sum", :selected => true} Suma Avanzada
+                            %option{:value => "advance_sum", :selected => true} Suma Alzada
                             %option{:value => "mixto"} Mixto
                           -elsif @work.procurement_system=="mixto"
                             %option{:value => "unit_price"} Precio Unitario
@@ -205,18 +205,27 @@
                           -if @work.procurement_system=="obra"
                             %option{:value => "obra", :selected => true} Obra
                             %option{:value => "expediente_obra"} Exp + Obra
+                            %option{:value => "expediente_obra_is"} Exp + Obra + I.S
                             %option{:value => "llave_mano"} Llave en mano
                           -elsif @work.procurement_system=="expediente_obra"
                             %option{:value => "obra"} Obra
                             %option{:value => "expediente_obra", :selected => true} Exp + Obra
+                            %option{:value => "expediente_obra_is"} Exp + Obra + I.S
                             %option{:value => "llave_mano"} Llave en mano
                           -elsif @work.procurement_system=="llave_mano"
                             %option{:value => "obra"} Obra
                             %option{:value => "expediente_obra"} Exp + Obra
+                            %option{:value => "expediente_obra_is"} Exp + Obra + I.S
+                            %option{:value => "llave_mano", :selected => true} Llave en mano
+                          - elsif @work.procurement_system == 'expediente_obra_is'
+                            %option{:value => "obra"} Obra
+                            %option{:value => "expediente_obra"} Exp + Obra
+                            %option{:value => "expediente_obra_is", :selected => true} Exp + Obra + I.S
                             %option{:value => "llave_mano", :selected => true} Llave en mano
                         -else
                           %option{:value => "obra"} Obra
                           %option{:value => "expediente_obra"} Exp + Obra
+                          %option{:value => "expediente_obra_is"} Exp + Obra + I.S
                           %option{:value => "llave_mano"} Llave en mano
                       %span.input-group-addon
                         %i.fa.fa-calendar
@@ -284,16 +293,22 @@
             .row
               %fieldset
                 %legend Documentos
-                .col-md-6
+                .col-md-6#testimony-of-consortium-container
                   .form-group
-                    %label.col-md-5.control-label Minuta/Testimonio de Consorcio
+                    %label.col-md-4.control-label Minuta/Testimonio de Consorcio
+                    .col-md-1
+                      %a#testimony-of-consortium.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
+                        %i.fa.fa-plus
                     .col-md-7
                       = f.input :testimony_of_consortium, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                       %p.help-block
                         Subir el archivo correspondiente
-                .col-md-6
+                .col-md-6#contract-container
                   .form-group
-                    %label.col-md-4.control-label Contrato + Adendas + Ampliación de Plazo
+                    %label.col-md-3.control-label Contrato + Adendas + Ampliación de Plazo
+                    .col-md-1
+                      %a#contract.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
+                        %i.fa.fa-plus
                     .col-md-8
                       = f.file_field :contract, :class => 'btn btn-default', :name => 'work[contract]', :id => 'multiple_contract', label: false, :multiple => true
                       %p.help-block
@@ -306,11 +321,20 @@
                     = f.input :reception_certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                     %p.help-block
                       Subir el archivo correspondiente
-              .col-md-6
+              .col-md-6#settlement-container
                 .form-group
-                  %label.col-md-4.control-label Liquidación de Obra
+                  %label.col-md-3.control-label Liquidación de Obra + Conformidad de Obra
+                  .col-md-1
+                    %a#settlement.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
+                      %i.fa.fa-plus
                   .col-md-8
                     = f.input :settlement_of_work, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                    %p.help-block
+                      Subir el archivo correspondiente
+                .form-group
+                  %label.col-md-4.control-label
+                  .col-md-8
+                    = f.input :compliance_work, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                     %p.help-block
                       Subir el archivo correspondiente
             .row
@@ -321,31 +345,46 @@
                     = f.input :budget, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                     %p.help-block
                       Subir el archivo correspondiente
-              .col-md-6
+              .col-md-6#integrated-bases-container
                 .form-group
-                  %label.col-md-4.control-label Bases Integradas + Memoria Descriptiva
+                  %label.col-md-3.control-label Bases Integradas + Memoria Descriptiva
+                  .col-md-1
+                    %a#integrated-bases.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
+                      %i.fa.fa-plus
                   .col-md-8
                     = f.file_field :integrated_bases, :class => 'btn btn-default', :id => 'multiple_integrated_bases', :name => 'work[integrated_bases]', label: false, :multiple => true
                     %p.help-block
                       Subir los archivos correspondientes
             .row
-              .col-md-6
+              .col-md-6#arbitration-container
                 .form-group
-                  %label.col-md-5.control-label Arbitraje
+                  %label.col-md-4.control-label Arbitrajes
+                  .col-md-1
+                    %a#arbitration.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
+                      %i.fa.fa-plus
                   .col-md-7
                     = f.input :arbitration, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                     %p.help-block
                       Subir el archivo correspondiente
+              .col-md-6#invoices-container
+                .form-group
+                  %label.col-md-3.control-label Facturas
+                  .col-md-1
+                    %a#invoices.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
+                      %i.fa.fa-plus
+                  .col-md-8
+                    
         %footer
           %button.btn.btn-primary{type: "submit"}
             %i.fa.fa-save
               Guardar
 
 :javascript
+
   $(document).ready(function () {
 
     $('#work_work_partner_ids').select2({ width: '100%' });
-
+    $('.more-docs').tooltip('show');
     $('#purposecontract-select').change(function(){
       if($(this).val() == 'expediente_obra'){
         $('#dates-exp-start').fadeIn('fast');

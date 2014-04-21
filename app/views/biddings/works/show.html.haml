@@ -86,19 +86,27 @@
               %table.table.table-hover
                 %thead
                   %tr
+                    %th Fecha Firma de Contrato
                     %th Fecha de Inicio Obra
                     %th Fecha Fin de Obra
+                    %th Fecha de Recepción de Obra
                     %th Fecha de Liquidación
                     %th Monto de Liquidación
-                    %th IPC de Liquidación
                     %th Sistema de Contratación
                     %th Objeto de Contrato
                 %tbody
                   %tr
                     %td
+                      - if @work.date_signature_of_contract != nil
+                        = @work.date_signature_of_contract
+                      - else
+                        = "No hay fecha de firma de Contrato."
+                    %td
                       = @work.start_date_of_work.strftime("%d/%m/%Y")
                     %td
                       = @work.real_end_date_of_work.strftime("%d/%m/%Y")
+                    %td
+                      = @work.date_of_receipt_of_work.strftime("%d/%m/%Y")
                     %td
                       - if @work.settlement_date != nil
                         = @work.settlement_date.strftime("%d/%m/%Y")
@@ -109,11 +117,6 @@
                         = number_to_currency(@work.amount_of_settlement, unit: @work.money.symbol, precision: 2)
                       - else
                         = "No hay Monto de Liquidación."
-                    %td
-                      - if @work.ipc_settlement != nil
-                        = @work.ipc_settlement
-                      - else
-                        = "No hay IPC de Liquidación."
                     %td
                       - if @work.procurement_system == 'unit_price'
                         = 'Precio Unitario'
