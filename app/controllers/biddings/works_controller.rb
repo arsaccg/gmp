@@ -84,6 +84,9 @@ class Biddings::WorksController < ApplicationController
   end
 
   def destroy
+    work = Work.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente."
+    render :json => work
   end
 
   private
