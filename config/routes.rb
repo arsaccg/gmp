@@ -79,7 +79,7 @@ ArsacLogistica::Application.routes.draw do
     resources :subphases
     resources :companies
     resources :cost_centers do
-      collection do
+      member do
         get 'update_timeline'
       end
     end
