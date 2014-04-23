@@ -1,4 +1,5 @@
 class Biddings::WorksController < ApplicationController
+  skip_before_filter :verify_authenticity_token, :only => [:upload_file]
   def index
     @works = Work.all
     render layout: false
@@ -89,15 +90,20 @@ class Biddings::WorksController < ApplicationController
     render :json => work
   end
 
-  def add_more_document
-    @reg_n = Time.now.to_i
-    render(partial: 'more_documents', :layout => false)
+  # Upload File
+  def upload_file
+    puts params
+    render :json => params
   end
 
   private
   def work_params
     params.require(:work).permit(
       :compliance_work, 
+      :amount_contract_of_inquiry, 
+      :amount_settlement_of_inquiry, 
+      :amount_contract_of_is, 
+      :amount_settlement_of_is, 
       :number_of_settlement, 
       :exchange_of_rate, 
       :money_id, 

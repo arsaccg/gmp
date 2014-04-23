@@ -171,7 +171,11 @@ ArsacLogistica::Application.routes.draw do
   end
 
   namespace :biddings do
-    resources :works
+    resources :works do
+      collection do
+        post 'upload_file'
+      end
+    end
     resources :work_partners
     resources :professionals
     resources :trainings

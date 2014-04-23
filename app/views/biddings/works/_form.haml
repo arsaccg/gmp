@@ -10,7 +10,7 @@
         = hidden_field_tag "company_id", @company
         .col-sm-12
           %fieldset
-            %legend{'style' => 'border:none'}
+            %legend Datos Generales
             .row
               .col-md-4
                 .form-group
@@ -56,10 +56,10 @@
                         %i.fa.fa-flag
               .col-md-4
                 .form-group
-                  %label.col-md-4.control-label Fecha de Liquidación
+                  %label.col-md-4.control-label Miembros Consorcio
                   .col-md-8
                     .input-group
-                      = f.input :settlement_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                      = f.association :work_partners, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
                       %span.input-group-addon
                         %i.fa.fa-calendar
             .row
@@ -89,21 +89,13 @@
                         %i.fa.fa-calendar
               .col-md-4
                 .form-group
-                  %label.col-md-4.control-label Monto de Liquidación
-                  .col-md-8
-                    .input-group
-                      = f.input :amount_of_settlement, placeholder: "Monto de Liquidación", input_html: { value: number_with_precision(f.object.amount_of_settlement, precision: 2), class: 'form-control' }, label: false
-                      %span.input-group-addon
-                        %i.fa.fa-flag
-            .row
-              .col-md-4
-                .form-group
                   %label.col-md-4.control-label Número de Licitación
                   .col-md-8
                     .input-group
                       = f.input :number_of_settlement, placeholder: "Numero de Licitación", input_html: { class: 'form-control' }, label: false
                       %span.input-group-addon
                         %i.fa.fa-warning
+            .row
               .col-md-4
                 .form-group
                   %label.col-md-4.control-label Nombre de la Obra
@@ -122,16 +114,34 @@
                         %i.fa.fa-calendar
               .col-md-4
                 .form-group
-                  %label.col-md-4.control-label IPC de Liquidación
+                  %label.col-md-4.control-label Sistema de Contratación
                   .col-md-8
                     .input-group
-                      = f.input :ipc_settlement, placeholder: "Monto de Liquidación", input_html: { class: 'form-control' }, label: false
+                      %select.form-control#syscontract-select{:name =>"work[procurement_system]"}
+                        -if @action=="edit"
+                          -if @work.procurement_system=="unit_price"
+                            %option{:value => "unit_price", :selected => true} Precios Unitarios
+                            %option{:value => "advance_sum"} Suma Alzada
+                            %option{:value => "mixto"} Mixto
+                          -elsif @work.procurement_system=="advance_sum"
+                            %option{:value => "unit_price"} Precio Unitario
+                            %option{:value => "advance_sum", :selected => true} Suma Alzada
+                            %option{:value => "mixto"} Mixto
+                          -elsif @work.procurement_system=="mixto"
+                            %option{:value => "unit_price"} Precio Unitario
+                            %option{:value => "advance_sum"} Suma Alzada
+                            %option{:value => "mixto", :selected => true} Mixto
+                        -else
+                          %option{:value => "unit_price"} Precio Unitario
+                          %option{:value => "advance_sum"} Suma Alzada
+                          %option{:value => "mixto"} Mixto
                       %span.input-group-addon
-                        %i.fa.fa-flag
+                        %i.fa.fa-calendar
+              
             .row
               .col-md-4
                 .form-group
-                  %label.col-md-4.control-label Monto de Contrato
+                  %label.col-md-4.control-label Monto de Contrato de Obra
                   .col-md-8
                     .input-group
                       = f.input :amount_of_contract, placeholder: "Monto de Contrato", input_html: { value: number_with_precision(f.object.amount_of_contract, precision: 2), class: 'form-control' }, label: false
@@ -147,29 +157,20 @@
                         %i.fa.fa-calendar
               .col-md-4
                 .form-group
-                  %label.col-md-4.control-label Sistema de Contratación
+                  %label.col-md-4.control-label Moneda
                   .col-md-8
                     .input-group
-                      %select.form-control#syscontract-select{:name =>"work[procurement_system]"}
-                        -if @action=="edit"
-                          -if @work.procurement_system=="unit_price"
-                            %option{:value => "unit_price", :selected => true} Precio Unitario
-                            %option{:value => "advance_sum"} Suma Avanzada
-                            %option{:value => "mixto"} Mixto
-                          -elsif @work.procurement_system=="advance_sum"
-                            %option{:value => "unit_price"} Precio Unitario
-                            %option{:value => "advance_sum", :selected => true} Suma Alzada
-                            %option{:value => "mixto"} Mixto
-                          -elsif @work.procurement_system=="mixto"
-                            %option{:value => "unit_price"} Precio Unitario
-                            %option{:value => "advance_sum"} Suma Avanzada
-                            %option{:value => "mixto", :selected => true} Mixto
-                        -else
-                          %option{:value => "unit_price"} Precio Unitario
-                          %option{:value => "advance_sum"} Suma Avanzada
-                          %option{:value => "mixto"} Mixto
+                      %select.form-control#money-select{:name =>"work[money_id]"}
+                        - @moneys.each do |money|
+                          - if @work.money_id == money.id
+                            %option{:value => "#{money.id}", :selected => true}
+                              = money.name
+                          - else
+                            %option{:value => "#{money.id}"}
+                              = money.name
                       %span.input-group-addon
                         %i.fa.fa-calendar
+              
             .row
               .col-md-4
                 .form-group
@@ -197,211 +198,308 @@
                         %i.fa.fa-calendar
               .col-md-4
                 .form-group
-                  %label.col-md-4.control-label Objeto de Contrato
-                  .col-md-8
-                    .input-group
-                      %select.form-control#purposecontract-select{:name =>"work[purpose_of_contract]"}
-                        -if @action=="edit"
-                          -if @work.procurement_system=="obra"
-                            %option{:value => "obra", :selected => true} Obra
-                            %option{:value => "expediente_obra"} Exp + Obra
-                            %option{:value => "expediente_obra_is"} Exp + Obra + I.S
-                            %option{:value => "llave_mano"} Llave en mano
-                          -elsif @work.procurement_system=="expediente_obra"
-                            %option{:value => "obra"} Obra
-                            %option{:value => "expediente_obra", :selected => true} Exp + Obra
-                            %option{:value => "expediente_obra_is"} Exp + Obra + I.S
-                            %option{:value => "llave_mano"} Llave en mano
-                          -elsif @work.procurement_system=="llave_mano"
-                            %option{:value => "obra"} Obra
-                            %option{:value => "expediente_obra"} Exp + Obra
-                            %option{:value => "expediente_obra_is"} Exp + Obra + I.S
-                            %option{:value => "llave_mano", :selected => true} Llave en mano
-                          - elsif @work.procurement_system == 'expediente_obra_is'
-                            %option{:value => "obra"} Obra
-                            %option{:value => "expediente_obra"} Exp + Obra
-                            %option{:value => "expediente_obra_is", :selected => true} Exp + Obra + I.S
-                            %option{:value => "llave_mano", :selected => true} Llave en mano
-                        -else
-                          %option{:value => "obra"} Obra
-                          %option{:value => "expediente_obra"} Exp + Obra
-                          %option{:value => "expediente_obra_is"} Exp + Obra + I.S
-                          %option{:value => "llave_mano"} Llave en mano
-                      %span.input-group-addon
-                        %i.fa.fa-calendar
-            .row
-              .col-md-4
-                .form-group
-                  %label.col-md-4.control-label Miembros Consorcio
-                  .col-md-8
-                    .input-group
-                      = f.association :work_partners, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
-                      %span.input-group-addon
-                        %i.fa.fa-calendar
-              .col-md-4{:id => 'dates-exp-start', :style => 'display:none'}
-                .form-group
-                  %label.col-md-4.control-label Fecha de inicio de Expediente
-                  .col-md-8
-                    .input-group
-                      = f.input :start_date_of_inquiry, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
-                      %span.input-group-addon
-                        %i.fa.fa-calendar
-              .col-md-4{:id => 'dates-exp-end', :style => 'display:none'}
-                .form-group
-                  %label.col-md-4.control-label Fecha de fin de Expediente
-                  .col-md-8
-                    .input-group
-                      = f.input :end_date_of_inquiry, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
-                      %span.input-group-addon
-                        %i.fa.fa-calendar
-            .row
-              .col-md-4
-                .form-group
-                  %label.col-md-4.control-label Moneda
-                  .col-md-8
-                    .input-group
-                      %select.form-control#money-select{:name =>"work[money_id]"}
-                        - @moneys.each do |money|
-                          - if @work.money_id == money.id
-                            %option{:value => "#{money.id}", :selected => true}
-                              = money.name
-                          - else
-                            %option{:value => "#{money.id}"}
-                              = money.name
-                      %span.input-group-addon
-                        %i.fa.fa-calendar
-              .col-md-4
-                .form-group
                   %label.col-md-4.control-label Tipo de cambio
                   .col-md-8
                     .input-group
                       = f.input :exchange_of_rate, :input_html => {:class => 'form-control'}, label: false
                       %span.input-group-addon
                         %i.fa.fa-calendar
+            .row
               .col-md-4
                 .form-group
                   %label.col-md-4.control-label IPC Actual
                   .col-md-8
                     .input-group
                       = text_field(:ipc, :actual, class: "form-control", value: "#{@financial_variables.value}", readonly: true)
-            .row
-              %fieldset
-                %legend Componentes
+                      %span.input-group-addon
+                        %i.fa.fa-thumb-tack
+            %fieldset
+              %legend Variables
+              .row
+                .col-md-4
+                  .form-group
+                    %label.col-md-4.control-label Objeto de Contrato
+                    .col-md-8
+                      .input-group
+                        %select.form-control#purposecontract-select{:name =>"work[purpose_of_contract]"}
+                          -if @action=="edit"
+                            -if @work.procurement_system=="obra"
+                              %option{:value => "obra", :selected => true} Obra
+                              %option{:value => "expediente_obra"} Exp + Obra
+                              %option{:value => "expediente_obra_is"} Exp + Obra + I.S
+                              %option{:value => "llave_mano"} Llave en mano
+                            -elsif @work.procurement_system=="expediente_obra"
+                              %option{:value => "obra"} Obra
+                              %option{:value => "expediente_obra", :selected => true} Exp + Obra
+                              %option{:value => "expediente_obra_is"} Exp + Obra + I.S
+                              %option{:value => "llave_mano"} Llave en mano
+                            -elsif @work.procurement_system=="llave_mano"
+                              %option{:value => "obra"} Obra
+                              %option{:value => "expediente_obra"} Exp + Obra
+                              %option{:value => "expediente_obra_is"} Exp + Obra + I.S
+                              %option{:value => "llave_mano", :selected => true} Llave en mano
+                            - elsif @work.procurement_system == 'expediente_obra_is'
+                              %option{:value => "obra"} Obra
+                              %option{:value => "expediente_obra"} Exp + Obra
+                              %option{:value => "expediente_obra_is", :selected => true} Exp + Obra + I.S
+                              %option{:value => "llave_mano", :selected => true} Llave en mano
+                          -else
+                            %option{:value => "obra"} Obra
+                            %option{:value => "expediente_obra"} Exp + Obra
+                            %option{:value => "expediente_obra_is"} Exp + Obra + I.S
+                            %option{:value => "llave_mano"} Llave en mano
+                        %span.input-group-addon
+                          %i.fa.fa-calendar
+                .col-md-4{:id => 'dates-exp-start', :style => 'display:none'}
+                  .form-group
+                    %label.col-md-4.control-label Fecha de inicio de Expediente
+                    .col-md-8
+                      .input-group
+                        = f.input :start_date_of_inquiry, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                        %span.input-group-addon
+                          %i.fa.fa-calendar
+                .col-md-4{:id => 'dates-exp-end', :style => 'display:none'}
+                  .form-group
+                    %label.col-md-4.control-label Fecha de fin de Expediente
+                    .col-md-8
+                      .input-group
+                        = f.input :end_date_of_inquiry, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                        %span.input-group-addon
+                          %i.fa.fa-calendar
+                .col-md-4{:id => 'amount-contract-exp', :style => 'display:none'}
+                  .form-group
+                    %label.col-md-4.control-label Monto de Contrato del Expediente
+                    .col-md-8
+                      .input-group
+                        = f.input :amount_contract_of_inquiry, as: :string, :input_html => {:class => 'form-control'}, label: false
+                        %span.input-group-addon
+                          %i.fa.fa-calendar
+                .col-md-4{:id => 'amount-settlement-exp', :style => 'display:none'}
+                  .form-group
+                    %label.col-md-4.control-label Monto Liquidación del Expediente
+                    .col-md-8
+                      .input-group
+                        = f.input :amount_settlement_of_inquiry, as: :string, :input_html => {:class => 'form-control'}, label: false
+                        %span.input-group-addon
+                          %i.fa.fa-calendar
+                .col-md-4{:id => 'amount-contract-is', :style => 'display:none'}
+                  .form-group
+                    %label.col-md-4.control-label Monto de Contrato del I.S
+                    .col-md-8
+                      .input-group
+                        = f.input :amount_contract_of_is, as: :string, :input_html => {:class => 'form-control'}, label: false
+                        %span.input-group-addon
+                          %i.fa.fa-calendar
+                .col-md-4{:id => 'amount-settlement-is', :style => 'display:none'}
+                  .form-group
+                    %label.col-md-4.control-label Monto de Liquidación del I.S
+                    .col-md-8
+                      .input-group
+                        = f.input :amount_settlement_of_is, as: :string, :input_html => {:class => 'form-control'}, label: false
+                        %span.input-group-addon
+                          %i.fa.fa-calendar
+
+            %fieldset
+              %legend Liquidación
+              .row
+                .col-md-4
+                  .form-group
+                    %label.col-md-4.control-label Monto de Liquidación
+                    .col-md-8
+                      .input-group
+                        = f.input :amount_of_settlement, placeholder: "Monto de Liquidación", input_html: { value: number_with_precision(f.object.amount_of_settlement, precision: 2), class: 'form-control' }, label: false
+                        %span.input-group-addon
+                          %i.fa.fa-flag
+                .col-md-4
+                  .form-group
+                    %label.col-md-4.control-label IPC de Liquidación
+                    .col-md-8
+                      .input-group
+                        = f.input :ipc_settlement, placeholder: "Monto de Liquidación", input_html: { class: 'form-control' }, label: false
+                        %span.input-group-addon
+                          %i.fa.fa-flag
+                .col-md-4
+                  .form-group
+                    %label.col-md-4.control-label Fecha de Liquidación
+                    .col-md-8
+                      .input-group
+                        = f.input :settlement_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                        %span.input-group-addon
+                          %i.fa.fa-calendar
+            %fieldset
+              %legend Componentes
+              .row
                 .col-md-12
                   .form-group
                     = f.association :components, :as => :check_boxes, :label => false
-            .row
-              %fieldset
-                %legend Documentos
-                .col-md-6#testimony-of-consortium-container
+              .row
+                %fieldset
+                  %legend Documentos
+                  .col-md-6#testimony-of-consortium-container
+                    .form-group
+                      %label.col-md-4.control-label Minuta/Testimonio de Consorcio
+                      .col-md-8
+                        = f.input :testimony_of_consortium, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                        %p.help-block
+                          Subir el archivo correspondiente
+                      .col-md-12
+                        #attachments-testimony.dropzone
+
+                  .col-md-6#contract-container
+                    .form-group
+                      %label.col-md-4.control-label Contrato + Adendas + Ampliación de Plazo
+                      .col-md-8
+                        = f.file_field :contract, :class => 'btn btn-default', :name => 'work[contract]', :id => 'multiple_contract', label: false, :multiple => true
+                        %p.help-block
+                          Subir los archivos correspondientes
+                      .col-md-12
+                        #attachments-contract.dropzone
+              .row
+                .col-md-6
                   .form-group
-                    %label.col-md-4.control-label Minuta/Testimonio de Consorcio
-                    .col-md-1
-                      %a#testimony-of-consortium.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
-                        %i.fa.fa-plus
-                    .col-md-7
-                      = f.input :testimony_of_consortium, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                    %label.col-md-4.control-label Acta de Recepción
+                    .col-md-8
+                      = f.input :reception_certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                       %p.help-block
                         Subir el archivo correspondiente
-                .col-md-6#contract-container
+                .col-md-6#settlement-container
                   .form-group
-                    %label.col-md-3.control-label Contrato + Adendas + Ampliación de Plazo
-                    .col-md-1
-                      %a#contract.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
-                        %i.fa.fa-plus
+                    %label.col-md-4.control-label Liquidación de Obra + Conformidad de Obra
                     .col-md-8
-                      = f.file_field :contract, :class => 'btn btn-default', :name => 'work[contract]', :id => 'multiple_contract', label: false, :multiple => true
+                      = f.input :settlement_of_work, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                      %p.help-block
+                        Subir el archivo correspondiente
+                  .form-group
+                    %label.col-md-4.control-label
+                    .col-md-8
+                      = f.input :compliance_work, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                      %p.help-block
+                        Subir el archivo correspondiente
+              .row
+                .col-md-6
+                  .form-group
+                    %label.col-md-4.control-label Presupuesto
+                    .col-md-8
+                      = f.input :budget, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                      %p.help-block
+                        Subir el archivo correspondiente
+                .col-md-6#integrated-bases-container
+                  .form-group
+                    %label.col-md-4.control-label Bases Integradas + Memoria Descriptiva
+                    .col-md-8
+                      = f.file_field :integrated_bases, :class => 'btn btn-default', :id => 'multiple_integrated_bases', :name => 'work[integrated_bases]', label: false, :multiple => true
                       %p.help-block
                         Subir los archivos correspondientes
-            .row
-              .col-md-6
-                .form-group
-                  %label.col-md-5.control-label Acta de Recepción
-                  .col-md-7
-                    = f.input :reception_certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
-                    %p.help-block
-                      Subir el archivo correspondiente
-              .col-md-6#settlement-container
-                .form-group
-                  %label.col-md-3.control-label Liquidación de Obra + Conformidad de Obra
-                  .col-md-1
-                    %a#settlement.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
-                      %i.fa.fa-plus
-                  .col-md-8
-                    = f.input :settlement_of_work, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
-                    %p.help-block
-                      Subir el archivo correspondiente
-                .form-group
-                  %label.col-md-4.control-label
-                  .col-md-8
-                    = f.input :compliance_work, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
-                    %p.help-block
-                      Subir el archivo correspondiente
-            .row
-              .col-md-6
-                .form-group
-                  %label.col-md-5.control-label Presupuesto
-                  .col-md-7
-                    = f.input :budget, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
-                    %p.help-block
-                      Subir el archivo correspondiente
-              .col-md-6#integrated-bases-container
-                .form-group
-                  %label.col-md-3.control-label Bases Integradas + Memoria Descriptiva
-                  .col-md-1
-                    %a#integrated-bases.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
-                      %i.fa.fa-plus
-                  .col-md-8
-                    = f.file_field :integrated_bases, :class => 'btn btn-default', :id => 'multiple_integrated_bases', :name => 'work[integrated_bases]', label: false, :multiple => true
-                    %p.help-block
-                      Subir los archivos correspondientes
-            .row
-              .col-md-6#arbitration-container
-                .form-group
-                  %label.col-md-4.control-label Arbitrajes
-                  .col-md-1
-                    %a#arbitration.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
-                      %i.fa.fa-plus
-                  .col-md-7
-                    = f.input :arbitration, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
-                    %p.help-block
-                      Subir el archivo correspondiente
-              .col-md-6#invoices-container
-                .form-group
-                  %label.col-md-3.control-label Facturas
-                  .col-md-1
-                    %a#invoices.more-docs.btn.btn-default.btn-circle{ :href => 'javascript:void(0);', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Agregar mas Documentos"}
-                      %i.fa.fa-plus
-                  .col-md-8
+              .row
+                .col-md-6#arbitration-container
+                  .form-group
+                    %label.col-md-4.control-label Arbitrajes
+                    .col-md-8
+                      = f.input :arbitration, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+                      %p.help-block
+                        Subir el archivo correspondiente
+                    .col-md-12
+                      #attachments-arbitration.dropzone
+                .col-md-6#invoices-container
+                  .form-group
+                    %label.col-md-3.control-label Facturas
+                    .col-md-12
+                      #attachments-invoices.dropzone
                     
         %footer
-          %button.btn.btn-primary{type: "submit"}
+          %button.btn.btn-primary#work-submit{type: "submit"}
             %i.fa.fa-save
               Guardar
+:css
+  .dropzone .dz-preview .dz-error-mark, .dropzone .dz-preview .dz-success-mark, .dropzone-previews .dz-preview .dz-error-mark, .dropzone-previews .dz-preview .dz-success-mark, .dropzone .dz-default.dz-message { background-image: url("#{ asset_path 'dropzone/spritemap.png'}") !important }
 
 :javascript
 
+  loadScript("#{ asset_path 'plugin/dropzone/dropzone.min.js', type: :javascript }", startDropZones);
+
   $(document).ready(function () {
 
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    } else {
+      submit_validate($('#new_work'));
+    }
+  });
+
+  function startDropZones(){
     $('#work_work_partner_ids').select2({ width: '100%' });
-    $('.more-docs').tooltip('show');
     $('#purposecontract-select').change(function(){
       if($(this).val() == 'expediente_obra'){
         $('#dates-exp-start').fadeIn('fast');
         $('#dates-exp-end').fadeIn('fast');
+        $('#amount-contract-exp').fadeIn('fast');
+        $('#amount-settlement-exp').fadeIn('fast');
       } else {
-        $('#dates-exp-start').fadeOut('fast');
-        $('#dates-exp-end').fadeOut('fast');
+        if($(this).val() == 'expediente_obra_is'){
+          $('#dates-exp-start').fadeIn('fast');
+          $('#dates-exp-end').fadeIn('fast');
+          $('#amount-contract-exp').fadeIn('fast');
+          $('#amount-settlement-exp').fadeIn('fast');
+          $('#amount-contract-is').fadeIn('fast');
+          $('#amount-settlement-is').fadeIn('fast');
+        } else {
+          $('#dates-exp-start').fadeOut('fast');
+          $('#dates-exp-end').fadeOut('fast');
+          $('#amount-contract-exp').fadeOut('fast');
+          $('#amount-settlement-exp').fadeOut('fast');
+          $('#amount-contract-is').fadeOut('fast');
+          $('#amount-settlement-is').fadeOut('fast');
+        }
       }
     });
 
-    if($('form[id^="edit_"]').length > 0) {
-      submit_validate($('form[id^="edit_"]'));
+    var fd = new FormData();
+    var attachments_testimony = new Dropzone("div#attachments-testimony", { url: "#{upload_file_biddings_works_path}"});
+    var attachments_arbitration = new Dropzone("div#attachments-arbitration", { url: "#{upload_file_biddings_works_path}"});
+    var attachments_invoices = new Dropzone("div#attachments-invoices", { url: "#{upload_file_biddings_works_path}"});
+    var attachments_contract = new Dropzone("div#attachments-contract", { url: "#{upload_file_biddings_works_path}"});
+
+    /* Minuta y Testimonio multiple */
+    Dropzone.autoDiscover = false;
+    Dropzone.options.attachmentsTestimony = {
+      paramName: 'work[testimony_of_consortium]',
+      maxFilesize: 20,
+      parallelUploads: 3,
+      addRemoveLinks : true,
+      autoProcessQueue: false,
+      dictResponseError: 'Error subiendo archivo!'
     }
-    else{
-      submit_validate($('#new_work'));
+
+    /* Arbitrajes Multiple */
+    Dropzone.options.attachmentsArbitration = {
+      paramName: 'work[arbitration]',
+      maxFilesize: 20,
+      parallelUploads: 3,
+      addRemoveLinks : true,
+      autoProcessQueue: false,
+      dictResponseError: 'Error subiendo archivo!'
     }
-  });
+
+    /* Facturas Multiple */
+    Dropzone.options.attachmentsInvoices = {
+      paramName: 'work[invoices]',
+      maxFilesize: 20,
+      parallelUploads: 3,
+      addRemoveLinks : true,
+      autoProcessQueue: false,
+      dictResponseError: 'Error subiendo archivo!'
+    }
+
+    /* Contracto multiple */
+    Dropzone.options.attachmentsContract = {
+      paramName: 'work[contract]',
+      maxFilesize: 20,
+      parallelUploads: 3,
+      addRemoveLinks : true,
+      autoProcessQueue: false,
+      dictResponseError: 'Error subiendo archivo!'
+    }
+  }
 
   function isNumber(evt) {
     evt = (evt) ? evt : window.event;

@@ -27,8 +27,9 @@
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
-                        %th Nombres
+                        %th Nombres/Razón Social
                         %th Apellidos
+                        %th Dirección
                         %th DNI
                         %th RUC
                         %th Acciones
@@ -38,17 +39,25 @@
                           %td
                             = entity.name
                           %td
-                            = entity.surname
+                            -if entity.surname != ''
+                              = entity.surname
+                            - else
+                              = '-'
                           %td
-                            - if entity.dni != nil
+                            -if entity.address != nil
+                              = entity.address
+                            - else
+                              = '-'
+                          %td
+                            - if entity.dni != ""
                               = entity.dni
                             - else
-                              No aplica DNI
+                              = '-'
                           %td
                             - if entity.ruc != nil
                               = entity.ruc
                             - else
-                              No aplica RUC
+                              = '-'
                           %td
                             %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_entity_path(entity.id)}', 'content', null, null, 'GET')"}
                               Ver Detalle

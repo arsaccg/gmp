@@ -98,7 +98,7 @@
                   %tr
                     %td
                       - if @work.date_signature_of_contract != nil
-                        = @work.date_signature_of_contract
+                        = @work.date_signature_of_contract.strftime("%d/%m/%Y")
                       - else
                         = "No hay fecha de firma de Contrato."
                     %td

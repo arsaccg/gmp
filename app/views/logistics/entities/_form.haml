@@ -32,14 +32,14 @@
               = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
         .row
           %section
-            %label.label Tipo
-            .col.col-8.inline-group
-              = f.association :type_entities, :as => :check_boxes, :label => false
-        .row
-          %section
             %label.label Dirección
             .col.col-8.inline-group
               = f.input :address, input_html: { class: 'form-control' }, label: false
+        .row
+          %section
+            %label.label Tipo
+            .col.col-8.inline-group
+              = f.association :type_entities, :as => :check_boxes, :label => false
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
