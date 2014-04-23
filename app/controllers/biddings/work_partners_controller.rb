@@ -30,7 +30,7 @@ class Biddings::WorkPartnersController < ApplicationController
   end
 
   def edit
-    @workPartners = WorkPartner.find(params[:id])
+    @workPartner = WorkPartner.find(params[:id])
     render layout: false
   end
 
@@ -55,6 +55,6 @@ class Biddings::WorkPartnersController < ApplicationController
 
   private
   def work_partner_params
-    params.require(:work_partner).permit(:name)
+    params.require(:work_partner).permit(:name, :ruc, :address)
   end
 end
