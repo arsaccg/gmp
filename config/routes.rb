@@ -78,7 +78,11 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :subphases
     resources :companies
-    resources :cost_centers
+    resources :cost_centers do
+      collection do
+        get 'update_timeline'
+      end
+    end
     resources :type_entities
     resources :type_of_articles
     resources :entities
