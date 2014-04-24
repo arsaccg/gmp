@@ -1,5 +1,5 @@
 class Biddings::WorksController < ApplicationController
-  skip_before_filter :verify_authenticity_token, :only => [:upload_file]
+
   def index
     @works = Work.all
     render layout: false
@@ -90,10 +90,11 @@ class Biddings::WorksController < ApplicationController
     render :json => work
   end
 
-  # Upload File
-  def upload_file
-    puts params
-    render :json => params
+  # Upload Multiple File
+  def more_documents
+    @type_doc = params[:type_doc]
+    @reg = Time.now.to_i
+    render layout: false
   end
 
   private
@@ -143,6 +144,9 @@ class Biddings::WorksController < ApplicationController
         :id, :work_id, :attachment, :_destroy
       ],
       testimony_of_consortium_documents_attributes: [
+        :id, :work_id, :attachment, :_destroy
+      ],
+      invoice_documents_attributes: [
         :id, :work_id, :attachment, :_destroy
       ]
     )

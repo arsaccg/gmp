@@ -73,10 +73,10 @@
                           - entities.each do |entity|
                             - if @work.entity_id == entity.id
                               %option{:value => "#{entity.id}", :selected => true}
-                                = entity.name + ' ' + entity.surname
+                                = entity.name + ' ' + entity.paternal_surname
                             - else
                               %option{:value => "#{entity.id}"}
-                                = entity.name + ' ' + entity.surname
+                                = entity.name + ' ' + entity.paternal_surname
                       %span.input-group-addon
                         %i.fa.fa-gears
               .col-md-4
@@ -182,10 +182,10 @@
                           - entities.each do |entity|
                             - if @work.contractor_id == entity.id
                               %option{:value => "#{entity.id}", :selected => true}
-                                = entity.name + ' ' + entity.surname
+                                = entity.name + ' ' + entity.paternal_surname
                             - else
                               %option{:value => "#{entity.id}"}
-                                = entity.name + ' ' + entity.surname
+                                = entity.name + ' ' + entity.paternal_surname
                       %span.input-group-addon
                         %i.fa.fa-flag
               .col-md-4
@@ -332,28 +332,47 @@
                 .col-md-12
                   .form-group
                     = f.association :components, :as => :check_boxes, :label => false
+
+              // Bloque de DOCUMENTOS
               .row
                 %fieldset
                   %legend Documentos
                   .col-md-6#testimony-of-consortium-container
                     .form-group
-                      %label.col-md-4.control-label Minuta/Testimonio de Consorcio
+                      .col-md-4
+                        %label.control-label Minuta/Testimonio de Consorcio
+                        %a.btn.btn-labeled.btn-success{ :href => 'javascript:void(0);', :onclick => 'add_docs_testimony();'}
+                          %span.btn-label
+                            %i.fa.fa-plus
+                          Añadir documentos
                       .col-md-8
                         = f.input :testimony_of_consortium, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                         %p.help-block
                           Subir el archivo correspondiente
                       .col-md-12
-                        #attachments-testimony.dropzone
+                        .col-md-4
+                        .col-md-8
+                          #attachments-testimony
 
                   .col-md-6#contract-container
                     .form-group
-                      %label.col-md-4.control-label Contrato + Adendas + Ampliación de Plazo
+                      .col-md-4
+                        %label.control-label Contrato + Adendas + Ampliación de Plazo
+                        %a.btn.btn-labeled.btn-success{ :href => 'javascript:void(0);', :onclick => 'add_docs_contract();'}
+                          %span.btn-label
+                            %i.fa.fa-plus
+                          Añadir documentos
                       .col-md-8
                         = f.file_field :contract, :class => 'btn btn-default', :name => 'work[contract]', :id => 'multiple_contract', label: false, :multiple => true
                         %p.help-block
                           Subir los archivos correspondientes
                       .col-md-12
-                        #attachments-contract.dropzone
+                        .col-md-4
+                        .col-md-8
+                          #attachments-contract
+
+              %br
+
               .row
                 .col-md-6
                   .form-group
@@ -375,6 +394,9 @@
                       = f.input :compliance_work, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                       %p.help-block
                         Subir el archivo correspondiente
+
+              %br
+
               .row
                 .col-md-6
                   .form-group
@@ -385,37 +407,58 @@
                         Subir el archivo correspondiente
                 .col-md-6#integrated-bases-container
                   .form-group
-                    %label.col-md-4.control-label Bases Integradas + Memoria Descriptiva
+                    .col-md-4
+                      %label.control-label Bases Integradas + Memoria Descriptiva
+                      %a.btn.btn-labeled.btn-success{:href => 'javascript:void(0);', :onclick => 'add_docs_integrated_bases();'}
+                        %span.btn-label
+                          %i.fa.fa-plus
+                        Añadir documentos
                     .col-md-8
-                      = f.file_field :integrated_bases, :class => 'btn btn-default', :id => 'multiple_integrated_bases', :name => 'work[integrated_bases]', label: false, :multiple => true
+                      = f.file_field :integrated_bases, :class => 'btn btn-default', :id => 'multiple_integrated_bases', :name => 'work[integrated_bases]', label: false
                       %p.help-block
                         Subir los archivos correspondientes
+                    .col-md-12
+                      .col-md-4
+                      .col-md-8
+                        #attachments-integrated-bases
+
+              %br
+
               .row
                 .col-md-6#arbitration-container
                   .form-group
-                    %label.col-md-4.control-label Arbitrajes
+                    .col-md-4
+                      %label.control-label Arbitrajes
+                      %a.btn.btn-labeled.btn-success{ :href => 'javascript:void(0);', :onclick => 'add_docs_arbitration();'}
+                        %span.btn-label
+                          %i.fa.fa-plus
+                        Añadir documentos
                     .col-md-8
                       = f.input :arbitration, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                       %p.help-block
                         Subir el archivo correspondiente
                     .col-md-12
-                      #attachments-arbitration.dropzone
+                      .col-md-4
+                      .col-md-8
+                        #attachments-arbitration
+
                 .col-md-6#invoices-container
                   .form-group
-                    %label.col-md-3.control-label Facturas
-                    .col-md-12
-                      #attachments-invoices.dropzone
+                    .col-md-4
+                      %label.control-label Facturas
+                      %a.btn.btn-labeled.btn-success{ :href => 'javascript:void(0);', :onclick => 'add_docs_invoices();'}
+                        %span.btn-label
+                          %i.fa.fa-plus
+                        Añadir documentos
+                    .col-md-8
+                      #attachments-invoices
                     
         %footer
           %button.btn.btn-primary#work-submit{type: "submit"}
             %i.fa.fa-save
               Guardar
-:css
-  .dropzone .dz-preview .dz-error-mark, .dropzone .dz-preview .dz-success-mark, .dropzone-previews .dz-preview .dz-error-mark, .dropzone-previews .dz-preview .dz-success-mark, .dropzone .dz-default.dz-message { background-image: url("#{ asset_path 'dropzone/spritemap.png'}") !important }
 
 :javascript
-
-  loadScript("#{ asset_path 'plugin/dropzone/dropzone.min.js', type: :javascript }", startDropZones);
 
   $(document).ready(function () {
 
@@ -424,9 +467,7 @@
     } else {
       submit_validate($('#new_work'));
     }
-  });
 
-  function startDropZones(){
     $('#work_work_partner_ids').select2({ width: '100%' });
     $('#purposecontract-select').change(function(){
       if($(this).val() == 'expediente_obra'){
@@ -453,52 +494,35 @@
       }
     });
 
-    var fd = new FormData();
-    var attachments_testimony = new Dropzone("div#attachments-testimony", { url: "#{upload_file_biddings_works_path}"});
-    var attachments_arbitration = new Dropzone("div#attachments-arbitration", { url: "#{upload_file_biddings_works_path}"});
-    var attachments_invoices = new Dropzone("div#attachments-invoices", { url: "#{upload_file_biddings_works_path}"});
-    var attachments_contract = new Dropzone("div#attachments-contract", { url: "#{upload_file_biddings_works_path}"});
+  });
 
-    /* Minuta y Testimonio multiple */
-    Dropzone.autoDiscover = false;
-    Dropzone.options.attachmentsTestimony = {
-      paramName: 'work[testimony_of_consortium]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
+  function delete_item(code){
+    $("#" + code).remove();
+  }
 
-    /* Arbitrajes Multiple */
-    Dropzone.options.attachmentsArbitration = {
-      paramName: 'work[arbitration]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
+  function add_docs_testimony() {
+    data = { authenticity_token: "#{form_authenticity_token}", type_doc: 'testimony' };
+    append_url_ajax('#{more_documents_biddings_works_path}', 'attachments-testimony', data, '', 'POST');
+  }
 
-    /* Facturas Multiple */
-    Dropzone.options.attachmentsInvoices = {
-      paramName: 'work[invoices]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
+  function add_docs_contract() {
+    data = { authenticity_token: "#{form_authenticity_token}", type_doc: 'contract' };
+    append_url_ajax('#{more_documents_biddings_works_path}', 'attachments-contract', data, '', 'POST');
+  }
 
-    /* Contracto multiple */
-    Dropzone.options.attachmentsContract = {
-      paramName: 'work[contract]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
+  function add_docs_integrated_bases() {
+    data = { authenticity_token: "#{form_authenticity_token}", type_doc: 'integrated' };
+    append_url_ajax('#{more_documents_biddings_works_path}', 'attachments-integrated-bases', data, '', 'POST');
+  }
+
+  function add_docs_arbitration() {
+    data = { authenticity_token: "#{form_authenticity_token}", type_doc: 'arbitration' };
+    append_url_ajax('#{more_documents_biddings_works_path}', 'attachments-arbitration', data, '', 'POST');
+  }
+
+  function add_docs_invoices() {
+    data = { authenticity_token: "#{form_authenticity_token}", type_doc: 'invoices' };
+    append_url_ajax('#{more_documents_biddings_works_path}', 'attachments-invoices', data, '', 'POST');
   }
 
   function isNumber(evt) {

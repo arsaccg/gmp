@@ -39,8 +39,8 @@
                           %td
                             = entity.name
                           %td
-                            -if entity.surname != ''
-                              = entity.surname
+                            -if entity.paternal_surname != nil && entity.maternal_surname != nil
+                              = entity.paternal_surname + entity.maternal_surname
                             - else
                               = '-'
                           %td
@@ -82,7 +82,10 @@
                           %td
                             = entity.name
                           %td
-                            = entity.surname
+                            - if entity.paternal_surname != nil && entity.maternal_surname != nil
+                              = entity.paternal_surname + entity.maternal_surname
+                            - else
+                              = '-'
                           %td
                             - if entity.dni != nil
                               = entity.dni
