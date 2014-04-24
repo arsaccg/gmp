@@ -16,6 +16,13 @@ class Biddings::ProfessionalsController < ApplicationController
   def new
     @professional=Professional.new
     @major = Major.all
+    @component = Component.all
+    @charge = Charge.all
+    @work = Work.all
+    @entities = Array.new
+    TypeEntity.where("id IN (1,5)").each do |tent|
+      @entities << tent.entities
+    end
     render :new, layout: false
   end
 
@@ -33,6 +40,7 @@ class Biddings::ProfessionalsController < ApplicationController
       @professional = professional
       render :new, layout: false
     end
+    
   end
 
   def edit
@@ -65,6 +73,38 @@ class Biddings::ProfessionalsController < ApplicationController
 
   private
   def professional_parameters
-    params.require(:professional).permit(:name, :dni, :professional_title_date, {:major_ids=>[]}, :date_of_tuition, :code_tuition, :professional_title, :tuition, :cv)
+    params.require(:professional).permit(
+      :name,
+      :dni, 
+      :professional_title_date, 
+      {:major_ids=>[]}, 
+      :date_of_tuition, 
+      :code_tuition, 
+      :professional_title, 
+      :tuition, 
+      :cv, 
+      certificates_attributes: [
+        :id, 
+        :professional_id, 
+        :work_id, 
+        :charge_id, 
+        :entity_id, 
+        :num_days, 
+        :start_date, 
+        :finish_date, 
+        {:component_work_ids => []}, 
+        :certificate, 
+        :other, 
+        :_destroy], 
+      trainings_attributes: [
+        :id, 
+        :professional_id, 
+        :type_training, 
+        :name_training,
+        :num_hours, 
+        :start_training, 
+        :finish_training, 
+        :training, 
+        :_destroy])
   end
 end

@@ -84,9 +84,10 @@ class Biddings::CertificatesController < ApplicationController
   end
 
   def dates_from_work
-    @start = Work.find(params[:work_id]).start_date
-    @end = Work.find(params[:work_id]).finish_date
-    render json: {:start => @start, :end=>@end}  
+    @work = Work.find(params[:work_id])
+    @start = @work.start_date_of_work
+    @finish = @work.real_end_date_of_work
+    render json: {:start=>@start, :finish=>@finish}  
   end
 
   private

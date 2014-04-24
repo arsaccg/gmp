@@ -25,8 +25,7 @@
                       = "#{pro.name}"
         .row
           %section.col.col-6
-            %label.label Nombre de la obra
-            %label.input
+            %label Nombre de la obra
               %select.form-control#work-select{:name =>"certificate[work_id]"}
                 -if @action=="edit"
                   -@work.each do |wc|
@@ -117,8 +116,8 @@
             %label.label Componentes de la obra:
         #get-comp  
           %section.col.col-6
-            %label.select.type-training#comp-check
-        #comp
+            %label.select.type-training#comp-check{:display=>false}
+        #comp{:display=>false}
           %section.col.col-6
             -if @component!=nil
               - @component.each do |comp|
@@ -230,7 +229,7 @@
       $('#another_work').attr('disabled', !this.checked);
       $('#start').attr('disabled', !this.checked);
       $('#finish').attr('disabled', !this.checked);
-      $('#comp').attr('disabled', this.checked);
+      $('#comp').attr('display', this.checked);
     });
 
     if($('form[id^="edit_"]').length > 0) {
