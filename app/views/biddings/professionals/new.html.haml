@@ -3,8 +3,8 @@
     %span.widget-icon
       %i.fa.fa-check
     %h2 Profesional
-  %div
-    = render :partial => 'form2'
+  %div{:style => 'overflow:hidden'}
+    = render :partial => 'form'
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-pros{type: "button"}
   %i.fa.fa-arrow-left>
@@ -258,7 +258,7 @@
       });
       $('#comp-check').empty();
       $.each(newOptions, function(key,value){
-        str_html = str_html + "<label>" + value.name + "</label><br/>"
+        str_html = str_html + "<label> <strong> > </strong> " + value.name + "</label><br/>"
       });
       $('#comp-check').html(str_html);
     });
