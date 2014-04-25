@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Attachment::ArbitrationDocumentTest < ActiveSupport::TestCase
+class TestimonyOfConsortiumDocumentTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

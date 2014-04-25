@@ -189,6 +189,8 @@ class Logistics::ArticlesController < ApplicationController
       @temp = matriz_exel
       #s.cell('E',fila)
     end
+
+    render layout: false
   end
 
   private

@@ -177,7 +177,7 @@ ArsacLogistica::Application.routes.draw do
   namespace :biddings do
     resources :works do
       collection do
-        post 'upload_file'
+        post 'more_documents'
       end
     end
     resources :work_partners

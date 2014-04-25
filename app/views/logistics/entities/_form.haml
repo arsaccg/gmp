@@ -14,10 +14,16 @@
               = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
-            %label.label Apellidos
-            %label.input{for: "surname"}
+            %label.label Apellido Paterno
+            %label.input{for: "paternal_surname"}
               %i.icon-append.fa.fa-user
-              = f.input :surname, placeholder: "Apellidos", input_html: { class: 'form-control' }, label: false
+              = f.input :paternal_surname, placeholder: "Apellido Paterno", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Apellido Materno
+            %label.input{for: "maternal_surname"}
+              %i.icon-append.fa.fa-user
+              = f.input :maternal_surname, placeholder: "Apellido Materno", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
             %label.label DNI

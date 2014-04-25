@@ -4,12 +4,14 @@ one:
   attachment: MyString
   attachment_file_name: MyString
   attachment_content_type: MyString
-  attachment_file_size: 1
-  attachment_update_at: 2014-04-21 12:16:54
+  attachment_file_size: MyString
+  attachment_update_at: 2014-04-24 16:17:49
+  work_id: 1
 
 two:
   attachment: MyString
   attachment_file_name: MyString
   attachment_content_type: MyString
-  attachment_file_size: 1
-  attachment_update_at: 2014-04-21 12:16:54
+  attachment_file_size: MyString
+  attachment_update_at: 2014-04-24 16:17:49
+  work_id: 1

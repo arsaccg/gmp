@@ -1,12 +1,12 @@
-class CreateAttachmentArbitrationDocuments < ActiveRecord::Migration
+class CreateTestimonyOfConsortiumDocuments < ActiveRecord::Migration
   def change
-    create_table :attachment_arbitration_documents do |t|
-      t.integer :work_id
+    create_table :testimony_of_consortium_documents do |t|
       t.string :attachment
       t.string :attachment_file_name
       t.string :attachment_content_type
-      t.integer :attachment_file_size
+      t.string :attachment_file_size
       t.datetime :attachment_update_at
+      t.integer :work_id
 
       t.timestamps
     end

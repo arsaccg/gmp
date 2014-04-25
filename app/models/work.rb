@@ -9,11 +9,13 @@ class Work < ActiveRecord::Base
   has_many :contract_documents
   has_many :integrated_bases_documents
   has_many :testimony_of_consortium_documents
+  has_many :invoice_documents
 
   accepts_nested_attributes_for :arbitration_documents, :allow_destroy => true
   accepts_nested_attributes_for :contract_documents, :allow_destroy => true
   accepts_nested_attributes_for :integrated_bases_documents, :allow_destroy => true
   accepts_nested_attributes_for :testimony_of_consortium_documents, :allow_destroy => true
+  accepts_nested_attributes_for :invoice_documents, :allow_destroy => true
 
   has_attached_file :testimony_of_consortium
   validates_attachment_content_type :testimony_of_consortium, :content_type => ['application/pdf', 'application/msword', 'text/plain']

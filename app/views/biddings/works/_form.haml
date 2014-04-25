@@ -20,25 +20,25 @@
                       %select.form-control#specialty-select{:name =>"work[specialty]"}
                         -if @action=="edit"
                           -if @work.specialty=="Saneamiento"
-                            %option{:value => "Saneamiento", :selected => true} Saneamiento
+                            %option{:value => "Saneamiento", :selected => 'selected'} Saneamiento
                             %option{:value => "Civil"} Civil
                             %option{:value => "Electromecanico"} Electromecanico
                             %option{:value => "Hidraulica"} Hidráulica
                           -elsif @work.specialty=="Civil"
                             %option{:value => "Saneamiento"} Saneamiento
-                            %option{:value => "Civil", :selected => true} Civil
+                            %option{:value => "Civil", :selected => 'selected'} Civil
                             %option{:value => "Electromecanico"} Electromecanico
                             %option{:value => "Hidraulica"} Hidráulica
                           -elsif @work.specialty=="Electromecanico"
                             %option{:value => "Saneamiento"} Saneamiento
                             %option{:value => "Civil"} Civil
-                            %option{:value => "Electromecanico", :selected => true} Electromecanico
+                            %option{:value => "Electromecanico", :selected => 'selected'} Electromecanico
                             %option{:value => "Hidraulica"} Hidráulica
                           -elsif @work.specialty=="Hidraulica"
                             %option{:value => "Saneamiento"} Saneamiento
                             %option{:value => "Civil"} Civil
                             %option{:value => "Electromecanico"} Electromecanico
-                            %option{:value => "Hidraulica", :selected => true} Hidráulica
+                            %option{:value => "Hidraulica", :selected => 'selected'} Hidráulica
                         -else
                           %option{:value => "Saneamiento"} Saneamiento
                           %option{:value => "Civil"} Civil
@@ -73,10 +73,10 @@
                           - entities.each do |entity|
                             - if @work.entity_id == entity.id
                               %option{:value => "#{entity.id}", :selected => true}
-                                = entity.name + ' ' + entity.surname
+                                = entity.name + ' ' + entity.paternal_surname
                             - else
                               %option{:value => "#{entity.id}"}
-                                = entity.name + ' ' + entity.surname
+                                = entity.name + ' ' + entity.paternal_surname
                       %span.input-group-addon
                         %i.fa.fa-gears
               .col-md-4
@@ -182,10 +182,10 @@
                           - entities.each do |entity|
                             - if @work.contractor_id == entity.id
                               %option{:value => "#{entity.id}", :selected => true}
-                                = entity.name + ' ' + entity.surname
+                                = entity.name + ' ' + entity.paternal_surname
                             - else
                               %option{:value => "#{entity.id}"}
-                                = entity.name + ' ' + entity.surname
+                                = entity.name + ' ' + entity.paternal_surname
                       %span.input-group-addon
                         %i.fa.fa-flag
               .col-md-4
@@ -329,31 +329,108 @@
             %fieldset
               %legend Componentes
               .row
-                .col-md-12
+                .col-md-3
                   .form-group
                     = f.association :components, :as => :check_boxes, :label => false
+
+              // Bloque de DOCUMENTOS
               .row
                 %fieldset
                   %legend Documentos
                   .col-md-6#testimony-of-consortium-container
                     .form-group
-                      %label.col-md-4.control-label Minuta/Testimonio de Consorcio
+                      .col-md-4
+                        %label.control-label Minuta/Testimonio de Consorcio
+                        %a.btn.btn-labeled.btn-success{ :href => 'javascript:void(0);', :onclick => 'add_docs_testimony();'}
+                          %span.btn-label
+                            %i.fa.fa-plus
+                          Añadir documentos
                       .col-md-8
                         = f.input :testimony_of_consortium, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                         %p.help-block
-                          Subir el archivo correspondiente
+                          - if @action == 'edit' && @work.testimony_of_consortium.exists?
+                            = 'Archivo subido: ' + File.basename(@work.testimony_of_consortium.path, File.extname(@work.testimony_of_consortium.path))
+                          - else
+                            Subir el archivo correspondiente
                       .col-md-12
-                        #attachments-testimony.dropzone
+                        .col-md-4{ :style => 'padding: 0' }
+                          - if @action == 'edit'
+                            %br
+                            .alert.alert-info{ :style => 'margin-bottom: 0;' }
+                              %i.fa-fw.fa.fa-info
+                              %strong Archivos subidos
+                            .table-responsive
+                              %table.table.table-bordered.table-striped
+                                %thead
+                                  %tr
+                                    %th Nombre
+                                    %th Eliminar
+                                %tbody
+                                  - if @work.testimony_of_consortium_documents != nil
+                                    - @work.testimony_of_consortium_documents.each do |tocd|
+                                      %tr
+                                        %td{:style => 'display:none'}
+                                          = hidden_field_tag 'work[testimony_of_consortium_documents_attributes][' + tocd.created_at.to_time.to_i.to_s + '][id]', tocd.id
+                                        %td{:style => 'display:none'}
+                                          = hidden_field_tag 'work[testimony_of_consortium_documents_attributes][' + tocd.created_at.to_time.to_i.to_s + '][work_id]', @work.id
+                                        %td
+                                          = File.basename(tocd.attachment.path, File.extname(tocd.attachment.path)).humanize.downcase;
+                                        %td.delete-item
+                                          .checkbox
+                                            %label
+                                              = check_box 'work[testimony_of_consortium_documents_attributes]', '[' + tocd.created_at.to_time.to_i.to_s + '][_destroy]', class: 'checkbox'
+                                              %span
+                        .col-md-8
+                          #attachments-testimony
 
                   .col-md-6#contract-container
                     .form-group
-                      %label.col-md-4.control-label Contrato + Adendas + Ampliación de Plazo
+                      .col-md-4
+                        %label.control-label Contrato + Adendas + Ampliación de Plazo
+                        %a.btn.btn-labeled.btn-success{ :href => 'javascript:void(0);', :onclick => 'add_docs_contract();'}
+                          %span.btn-label
+                            %i.fa.fa-plus
+                          Añadir documentos
                       .col-md-8
                         = f.file_field :contract, :class => 'btn btn-default', :name => 'work[contract]', :id => 'multiple_contract', label: false, :multiple => true
                         %p.help-block
-                          Subir los archivos correspondientes
+                          - if @action == 'edit' && @work.contract.exists?
+                            = 'Archivo subido: ' + File.basename(@work.contract.path, File.extname(@work.contract.path))
+                          - else
+                            Subir los archivos correspondientes
                       .col-md-12
-                        #attachments-contract.dropzone
+                        .col-md-4{ :style => 'padding: 0' }
+                          - if @action == 'edit'
+                            %br
+                            .alert.alert-info{ :style => 'margin-bottom: 0;' }
+                              %i.fa-fw.fa.fa-info
+                              %strong Archivos subidos
+                            .table-responsive
+                              %table.table.table-bordered.table-striped
+                                %thead
+                                  %tr
+                                    %th Nombre
+                                    %th Eliminar
+                                %tbody
+                                  - if @work.contract_documents != nil
+                                    - @work.contract_documents.each do |cd|
+                                      %tr
+                                        %td{:style => 'display:none'}
+                                          = hidden_field_tag 'work[contract_documents_attributes][' + cd.created_at.to_time.to_i.to_s + '][id]', cd.id
+                                        %td{:style => 'display:none'}
+                                          = hidden_field_tag 'work[contract_documents_attributes][' + cd.created_at.to_time.to_i.to_s + '][work_id]', @work.id
+                                        %td
+                                          = File.basename(cd.attachment.path, File.extname(cd.attachment.path)).humanize.downcase;
+                                        %td.delete-item
+                                          .checkbox
+                                            %label
+                                              = check_box 'work[contract_documents_attributes]', '[' + cd.created_at.to_time.to_i.to_s + '][_destroy]', class: 'checkbox'
+                                              %span
+                        .col-md-8
+                          #attachments-contract
+
+              %br
+
               .row
                 .col-md-6
                   .form-group
@@ -361,20 +438,33 @@
                     .col-md-8
                       = f.input :reception_certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                       %p.help-block
-                        Subir el archivo correspondiente
+                        - if @action == 'edit' && @work.reception_certificate.exists?
+                          = 'Archivo subido: ' + File.basename(@work.reception_certificate.path, File.extname(@work.reception_certificate.path))
+                        - else
+                          Subir el archivo correspondiente
                 .col-md-6#settlement-container
                   .form-group
                     %label.col-md-4.control-label Liquidación de Obra + Conformidad de Obra
                     .col-md-8
                       = f.input :settlement_of_work, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                       %p.help-block
-                        Subir el archivo correspondiente
+                        - if @action == 'edit' && @work.settlement_of_work.exists?
+                          = 'Archivo subido: ' + File.basename(@work.settlement_of_work.path, File.extname(@work.settlement_of_work.path))
+                        - else
+                          Subir el archivo correspondiente
+
                   .form-group
                     %label.col-md-4.control-label
                     .col-md-8
                       = f.input :compliance_work, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                       %p.help-block
-                        Subir el archivo correspondiente
+                        - if @action == 'edit' && @work.compliance_work.exists?
+                          = 'Archivo subido: ' + File.basename(@work.compliance_work.path, File.extname(@work.compliance_work.path))
+                        - else
+                          Subir el archivo correspondiente
+
+              %br
+
               .row
                 .col-md-6
                   .form-group
@@ -382,40 +472,149 @@
                     .col-md-8
                       = f.input :budget, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                       %p.help-block
-                        Subir el archivo correspondiente
+                        - if @action == 'edit' && @work.budget.exists?
+                          = 'Archivo subido: ' + File.basename(@work.budget.path, File.extname(@work.budget.path))
+                        - else
+                          Subir el archivo correspondiente
                 .col-md-6#integrated-bases-container
                   .form-group
-                    %label.col-md-4.control-label Bases Integradas + Memoria Descriptiva
+                    .col-md-4
+                      %label.control-label Bases Integradas + Memoria Descriptiva
+                      %a.btn.btn-labeled.btn-success{:href => 'javascript:void(0);', :onclick => 'add_docs_integrated_bases();'}
+                        %span.btn-label
+                          %i.fa.fa-plus
+                        Añadir documentos
                     .col-md-8
-                      = f.file_field :integrated_bases, :class => 'btn btn-default', :id => 'multiple_integrated_bases', :name => 'work[integrated_bases]', label: false, :multiple => true
+                      = f.file_field :integrated_bases, :class => 'btn btn-default', :id => 'multiple_integrated_bases', :name => 'work[integrated_bases]', label: false
                       %p.help-block
-                        Subir los archivos correspondientes
+                        - if @action == 'edit' && @work.integrated_bases.exists?
+                          = 'Archivo subido: ' + File.basename(@work.integrated_bases.path, File.extname(@work.integrated_bases.path))
+                        - else
+                          Subir el archivo correspondiente
+                    .col-md-12
+                      .col-md-4{ :style => 'padding: 0' }
+                        - if @action == 'edit'
+                          %br
+                          .alert.alert-info{ :style => 'margin-bottom: 0;' }
+                            %i.fa-fw.fa.fa-info
+                            %strong Archivos subidos
+                          .table-responsive
+                            %table.table.table-bordered.table-striped
+                              %thead
+                                %tr
+                                  %th Nombre
+                                  %th Eliminar
+                              %tbody
+                                - if @work.integrated_bases_documents != nil
+                                  - @work.integrated_bases_documents.each do |ibd|
+                                    %tr
+                                      %td{:style => 'display:none'}
+                                        = hidden_field_tag 'work[integrated_bases_documents_attributes][' + ibd.created_at.to_time.to_i.to_s + '][id]', ibd.id
+                                      %td{:style => 'display:none'}
+                                        = hidden_field_tag 'work[integrated_bases_documents_attributes][' + ibd.created_at.to_time.to_i.to_s + '][work_id]', @work.id
+                                      %td
+                                        = File.basename(ibd.attachment.path, File.extname(ibd.attachment.path)).humanize.downcase;
+                                      %td.delete-item
+                                        .checkbox
+                                          %label
+                                            = check_box 'work[integrated_bases_documents_attributes]', '[' + ibd.created_at.to_time.to_i.to_s + '][_destroy]', class: 'checkbox'
+                                            %span
+                      .col-md-8
+                        #attachments-integrated-bases
+
+              %br
+
               .row
                 .col-md-6#arbitration-container
                   .form-group
-                    %label.col-md-4.control-label Arbitrajes
+                    .col-md-4
+                      %label.control-label Arbitrajes
+                      %a.btn.btn-labeled.btn-success{ :href => 'javascript:void(0);', :onclick => 'add_docs_arbitration();'}
+                        %span.btn-label
+                          %i.fa.fa-plus
+                        Añadir documentos
                     .col-md-8
                       = f.input :arbitration, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                       %p.help-block
-                        Subir el archivo correspondiente
+                        - if @action == 'edit' && @work.arbitration.exists?
+                          = 'Archivo subido: ' + File.basename(@work.arbitration.path, File.extname(@work.arbitration.path))
+                        - else
+                          Subir archivo correspondiente
                     .col-md-12
-                      #attachments-arbitration.dropzone
+                      .col-md-4{ :style => 'padding: 0' }
+                        - if @action == 'edit'
+                          %br
+                          .alert.alert-info{ :style => 'margin-bottom: 0;' }
+                            %i.fa-fw.fa.fa-info
+                            %strong Archivos subidos
+                          .table-responsive
+                            %table.table.table-bordered.table-striped
+                              %thead
+                                %tr
+                                  %th Nombre
+                                  %th Eliminar
+                              %tbody
+                                - if @work.arbitration_documents != nil
+                                  - @work.arbitration_documents.each do |ad|
+                                    %tr
+                                      %td{:style => 'display:none'}
+                                        = hidden_field_tag 'work[arbitration_documents_attributes][' + ad.created_at.to_time.to_i.to_s + '][id]', ad.id
+                                      %td{:style => 'display:none'}
+                                        = hidden_field_tag 'work[arbitration_documents_attributes][' + ad.created_at.to_time.to_i.to_s + '][work_id]', @work.id
+                                      %td
+                                        = File.basename(ad.attachment.path, File.extname(ad.attachment.path)).humanize.downcase;
+                                      %td.delete-item
+                                        .checkbox
+                                          %label
+                                            = check_box 'work[arbitration_documents_attributes]', '[' + ad.created_at.to_time.to_i.to_s + '][_destroy]', class: 'checkbox'
+                                            %span
+                      .col-md-8
+                        #attachments-arbitration
+
                 .col-md-6#invoices-container
                   .form-group
-                    %label.col-md-3.control-label Facturas
-                    .col-md-12
-                      #attachments-invoices.dropzone
-                    
+                    .col-md-4
+                      %label.control-label Facturas
+                      %a.btn.btn-labeled.btn-success{ :href => 'javascript:void(0);', :onclick => 'add_docs_invoices();'}
+                        %span.btn-label
+                          %i.fa.fa-plus
+                        Añadir documentos
+                    .col-md-8
+                      #attachments-invoices
+                    - if @action == 'edit'
+                      - if @work.invoice_documents != nil
+                        .col-md-12
+                          %br
+                          .alert.alert-info{ :style => 'margin-bottom: 0;' }
+                            %i.fa-fw.fa.fa-info
+                            %strong Archivos subidos
+                          .table-responsive
+                            %table.table.table-bordered.table-striped
+                              %thead
+                                %tr
+                                  %th Nombre
+                                  %th Eliminar
+                              %tbody
+                                - @work.invoice_documents.each do |invoice|
+                                  %tr
+                                    %td{:style => 'display:none'}
+                                      = hidden_field_tag 'work[invoice_documents_attributes][' + invoice.created_at.to_time.to_i.to_s + '][id]', invoice.id
+                                    %td{:style => 'display:none'}
+                                      = hidden_field_tag 'work[invoice_documents_attributes][' + invoice.created_at.to_time.to_i.to_s + '][work_id]', @work.id
+                                    %td
+                                      = File.basename(invoice.attachment.path, File.extname(invoice.attachment.path)).humanize.downcase;
+                                    %td.delete-item
+                                      .checkbox
+                                        %label
+                                          = check_box 'work[invoice_documents_attributes]', '[' + invoice.created_at.to_time.to_i.to_s + '][_destroy]', class: 'checkbox'
+                                          %span
+
         %footer
           %button.btn.btn-primary#work-submit{type: "submit"}
             %i.fa.fa-save
               Guardar
-:css
-  .dropzone .dz-preview .dz-error-mark, .dropzone .dz-preview .dz-success-mark, .dropzone-previews .dz-preview .dz-error-mark, .dropzone-previews .dz-preview .dz-success-mark, .dropzone .dz-default.dz-message { background-image: url("#{ asset_path 'dropzone/spritemap.png'}") !important }
 
 :javascript
-
-  loadScript("#{ asset_path 'plugin/dropzone/dropzone.min.js', type: :javascript }", startDropZones);
 
   $(document).ready(function () {
 
@@ -424,9 +623,7 @@
     } else {
       submit_validate($('#new_work'));
     }
-  });
 
-  function startDropZones(){
     $('#work_work_partner_ids').select2({ width: '100%' });
     $('#purposecontract-select').change(function(){
       if($(this).val() == 'expediente_obra'){
@@ -453,52 +650,35 @@
       }
     });
 
-    var fd = new FormData();
-    var attachments_testimony = new Dropzone("div#attachments-testimony", { url: "#{upload_file_biddings_works_path}"});
-    var attachments_arbitration = new Dropzone("div#attachments-arbitration", { url: "#{upload_file_biddings_works_path}"});
-    var attachments_invoices = new Dropzone("div#attachments-invoices", { url: "#{upload_file_biddings_works_path}"});
-    var attachments_contract = new Dropzone("div#attachments-contract", { url: "#{upload_file_biddings_works_path}"});
+  });
 
-    /* Minuta y Testimonio multiple */
-    Dropzone.autoDiscover = false;
-    Dropzone.options.attachmentsTestimony = {
-      paramName: 'work[testimony_of_consortium]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
+  function delete_item(code){
+    $("#" + code).remove();
+  }
 
-    /* Arbitrajes Multiple */
-    Dropzone.options.attachmentsArbitration = {
-      paramName: 'work[arbitration]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
+  function add_docs_testimony() {
+    data = { authenticity_token: "#{form_authenticity_token}", type_doc: 'testimony' };
+    append_url_ajax('#{more_documents_biddings_works_path}', 'attachments-testimony', data, '', 'POST');
+  }
 
-    /* Facturas Multiple */
-    Dropzone.options.attachmentsInvoices = {
-      paramName: 'work[invoices]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
+  function add_docs_contract() {
+    data = { authenticity_token: "#{form_authenticity_token}", type_doc: 'contract' };
+    append_url_ajax('#{more_documents_biddings_works_path}', 'attachments-contract', data, '', 'POST');
+  }
 
-    /* Contracto multiple */
-    Dropzone.options.attachmentsContract = {
-      paramName: 'work[contract]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
+  function add_docs_integrated_bases() {
+    data = { authenticity_token: "#{form_authenticity_token}", type_doc: 'integrated' };
+    append_url_ajax('#{more_documents_biddings_works_path}', 'attachments-integrated-bases', data, '', 'POST');
+  }
+
+  function add_docs_arbitration() {
+    data = { authenticity_token: "#{form_authenticity_token}", type_doc: 'arbitration' };
+    append_url_ajax('#{more_documents_biddings_works_path}', 'attachments-arbitration', data, '', 'POST');
+  }
+
+  function add_docs_invoices() {
+    data = { authenticity_token: "#{form_authenticity_token}", type_doc: 'invoices' };
+    append_url_ajax('#{more_documents_biddings_works_path}', 'attachments-invoices', data, '', 'POST');
   }
 
   function isNumber(evt) {
