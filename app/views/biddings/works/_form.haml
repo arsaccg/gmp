@@ -344,14 +344,14 @@
                         %a.btn.btn-labeled.btn-success{ :href => 'javascript:void(0);', :onclick => 'add_docs_testimony();'}
                           %span.btn-label
                             %i.fa.fa-plus
-                          - if @action == 'edit' && @work.testimony_of_consortium.exists?
-                            = 'Archivo subido: ' + File.basename(@work.testimony_of_consortium.path, File.extname(@work.testimony_of_consortium.path))
-                          - else
-                            Añadir documentos
+                          Añadir documentos
                       .col-md-8
                         = f.input :testimony_of_consortium, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
                         %p.help-block
-                          Subir el archivo correspondiente
+                          - if @action == 'edit' && @work.testimony_of_consortium.exists?
+                            = 'Archivo subido: ' + File.basename(@work.testimony_of_consortium.path, File.extname(@work.testimony_of_consortium.path))
+                          - else
+                            Subir el archivo correspondiente
                       .col-md-12
                         .col-md-4{ :style => 'padding: 0' }
                           - if @action == 'edit'
