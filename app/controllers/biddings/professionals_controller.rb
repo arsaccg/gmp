@@ -14,6 +14,7 @@ class Biddings::ProfessionalsController < ApplicationController
   end
 
   def new
+    @reg = Time.now.to_i.to_s
     @professional=Professional.new
     @major = Major.all
     @component = Component.all
@@ -96,7 +97,8 @@ class Biddings::ProfessionalsController < ApplicationController
         {:component_work_ids => []}, 
         :certificate, 
         :other, 
-        :_destroy], 
+        :_destroy
+      ], 
       trainings_attributes: [
         :id, 
         :professional_id, 
@@ -106,6 +108,8 @@ class Biddings::ProfessionalsController < ApplicationController
         :start_training, 
         :finish_training, 
         :training, 
-        :_destroy])
+        :_destroy
+      ]
+    )
   end
 end
