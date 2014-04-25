@@ -3,17 +3,12 @@
     %span.widget-icon
       %i.fa.fa-check
     %h2 Profesional
-  %div
-    = render :partial => 'form2'
+  %div{:style => 'overflow:hidden'}
+    = render :partial => 'form'
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-pros{type: "button"}
   %i.fa.fa-arrow-left>
   Retornar al listado de profesionales
-
-#modalDeliveryItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
-  .modal-dialog
-    .modal-content
-      .modal-body#modalDeliveryItemsContent
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -31,7 +26,19 @@
     var work_id = $("#work-select").val();
     complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
     set_day("#{dates_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", 0);
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    } else {
+      submit_validate($('#new_professional'));
+    }
   });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      target: '#content',
+    });
+  }
 
   $('#change-check').change(function(){
     $('#work-select').attr('disabled', this.checked);
@@ -70,7 +77,13 @@
   //Bootstrap Wizard Validations
 
   function runBootstrapWizard(){
-    var $validator = $("#new_professional").validate({
+    if($('form[id^="edit_"]').length > 0) {
+      var form = $('form[id^="edit_"]');
+    } else {
+      var form = $('#new_professional');
+    }
+
+    var $validator = $(form['selector']).validate({
       
       rules: {
         'professional[name]':{
@@ -94,9 +107,6 @@
         },
         'professional[major]':{
           required: true
-        },
-        'professional[cv]':{
-          required:true
         },
         'professional[certificate_attributes][start_date]':{
           required: true
@@ -135,9 +145,6 @@
         'professional[code_tuition]':{
           required: 'Ingrese el código de colegiatura.',
           digits: 'Solo se pueden ingresar números.'
-        },
-        'professional[cv]':{
-          required: 'Adjunte su CV.'
         },
         'professional[major]':{
           required: "Escoja la profesión."
@@ -180,7 +187,7 @@
     $('#bootstrap-wizard').bootstrapWizard({
       'tabClass': 'form-wizard',
       'onNext': function (tab, navigation, index) {
-        var $valid = $("#new_professional").valid();
+        var $valid = $(form['selector']).valid();
         if (!$valid) {
           $validator.focusInvalid();
           return false;
@@ -219,20 +226,26 @@
 
     wizard.on('change', function(e, data){
 
+      if($('form[id^="edit_"]').length > 0) {
+        var form = $('form[id^="edit_"]');
+      } else {
+        var form = $('#new_professional');
+      }
+
       if(data.tab == 1 && data.direction == 'next'){
-        var $valid = $("#new_professional").valid();
+        var $valid = $(form['selector']).valid();
         if (!$valid) {
           e.preventDefault();
         }
       }
       if(data.tab == 2 && data.direction == 'next') {
-        var $valid = $("#new_professional").valid();
+        var $valid = $(form['selector']).valid();
         if (!$valid) {
           e.preventDefault();
         }
       }
       if(data.tab == 3 && data.direction == 'next') {
-        var $valid = $("#new_professional").valid();
+        var $valid = $(form['selector']).valid();
         if (!$valid) {
           e.preventDefault();
         }
@@ -258,7 +271,7 @@
       });
       $('#comp-check').empty();
       $.each(newOptions, function(key,value){
-        str_html = str_html + "<label>" + value.name + "</label><br/>"
+        str_html = str_html + "<label> <strong> > </strong> " + value.name + "</label><br/>"
       });
       $('#comp-check').html(str_html);
     });

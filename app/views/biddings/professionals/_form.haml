@@ -1,181 +1,310 @@
-#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
-  %header
-    %span.widget-icon
-      %i.fa.fa-eye
-    %h2 Profesionales
-  .widget-body
-    = simple_form_for([:biddings, @professional], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
-      %fieldset
+=simple_form_for([:biddings, @professional], html: { multipart: true }) do |f|
+  #bootstrap-wizard.col-sm-12
+    .form-bootstrapWizard
+      %ul.bootstrapWizard.form-wizard
+        %li.active{"data-target" => "#step1"}
+          %a{"data-toggle" => "tab", href: "#tab1"}
+            %span.step 1
+            %span.title Información Básica
+        %li{"data-target" => "#step2"}
+          %a{"data-toggle" => "tab", href: "#tab2"}
+            %span.step 2
+            %span.title Certificados
+        %li{"data-target" => "#step3"}
+          %a{"data-toggle" => "tab", href: "#tab3"}
+            %span.step 3
+            %span.title Capacitaciones
+        %li{"data-target" => "#step4"}
+          %a{"data-toggle" => "tab", href: "#tab4"}
+            %span.step 4
+            %span.title Guardar formulario
+      .clearfix
+    .tab-content
+      #tab1.tab-pane.active
+        %br/
+        %h3
+          %strong Paso 1
+          \- Información básica
         .row
-          %section.col.col-10
-            %label.label Nombre
-            %label.input{for: "name"}
-              %i.icon-append.fa.fa-user
-              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-6
-            %label.label DNI
-            %label.input{for: "dni"}
-              %i.icon-append.fa.fa-superscript
-              = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
-
-        .row
-          %section.col.col-10
+          .col-sm-4
+            %label Nombre
+            .form-group
+              .input-group
+                %span.input-group-addon
+                  %i.fa.fa-user.fa-md.fa-fw
+                = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          .col-sm-4
+            %label DNI:
+            .form-group
+              .input-group
+                %span.input-group-addon
+                  %i.fa.fa-superscript.fa-md.fa-fw
+                = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
+          .col-sm-4
             %label Profesiones
+            .input-group.col-md-12
+              = f.association :majors, :as => :collection_select, :label => false, :input_html =>{:class => "select2-choices", :multiple => true}
+        .row
+          .col-sm-4
+            %label Fecha de Titulación
+            .form-group
+              .input-group
+                %span.input-group-addon
+                  %i.fa.fa-calendar.fa-md.fa-fw
+                = f.input :professional_title_date, as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false
+          .col-sm-4
+            %label Fecha de Colegiatura
+            .form-group
+              .input-group
+                %span.input-group-addon
+                  %i.fa.fa-calendar.fa-md.fa-fw
+                = f.input :date_of_tuition, as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false
+          .col-sm-4
+            %label Número de Colegiatura
+            .form-group
+              .input-group
+                %span.input-group-addon
+                  %i.fa.fa-superscript.fa-md.fa-fw
+                = f.input :code_tuition, placeholder: "Número de Colegiatura", input_html: { :class => 'form-control' }, label: false
+        %fieldset
+          %legend Archivos a Adjuntar
+          .row
+            .col-sm-4
+              .col-sm-3
+                %label Título profesional
+              .col-sm-9
+                = f.input :professional_title, :input_html => { class: 'btn btn-default' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                %p.help-block
+                  Subir el archivo correspondiente
+            .col-sm-4
+              .col-sm-3
+                %label Colegiatura
+              .col-sm-9
+                = f.input :tuition, :input_html => { class: 'btn btn-default' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                %p.help-block
+                  Subir el archivo correspondiente
+            .col-sm-4
+              .col-sm-3
+                %label Curriculum Vitae
+              .col-sm-9
+                = f.input :cv, :input_html => { class: 'btn btn-default' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                %p.help-block
+                  Subir el archivo correspondiente
+
+      #tab2.tab-pane
+        %br/
+        %h3
+          %strong Paso 2
+          \- Certificados
+        .row
+          .col-sm-4
+            %label Nombre de la obra
+            %select.form-control#work-select{name: "professional[certificates_attributes][#{@reg}][work_id]"}
+              -if @action=="edit"
+                -@work.each do |wc|
+                  -if @certificate.work_id==wc.id
+                    %option{value: "#{wc.id}", selected:true} 
+                      = "#{wc.name}"
+                  -else
+                    %option{value: "#{wc.id}"} 
+                      = "#{wc.name}"
+              -else
+                -@work.each do |wc|
+                  %option{value: "#{wc.id}"} 
+                    = "#{wc.name}"
+            %input#change-check{type: "checkbox", :value=> "otros"}
+              = "No es una de las Obras?"
+          .col-sm-4
+            %label Nombre de Otra Obra
+            %input#another_work.form-control{name: "professional[certificates_attributes][#{@reg}][other_work]", :disabled=>"disabled"}
+          .col-sm-2
+            %label Inicio de la obra: 
+            %label.input
+              %input#start_certificate.form-control{name:"professional[certificates_attributes][#{@reg}][start]", :disabled=>"disabled"}
+          .col-sm-2
+            %label Termino de la obra: 
+            %label.input
+              %input#finish_certificate.form-control{name: "professional[certificates_attributes][#{@reg}][end]", :disabled=>"disabled"}
+        %br    
+        .row
+          .col-sm-4
+            %label Entidad contratante
             .input-group
-              = f.association :majors, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
+              %select.form-control.col.sm-4#category-select{ name: "professional[certificates_attributes][#{@reg}][entity_id]"}
+                - @entities.each do |entities|
+                  - entities.each do |entity|
+                    %option{:value => "#{entity.id}"}
+                      = entity.name + ' ' + entity.paternal_surname
+              %span.input-group-addon
+                %i.fa.fa-gears
+          .col-sm-4
+            %label Cargo
+            %select.form-control#work-select{name: "professional[certificates_attributes][#{@reg}][charge_id]"}
+              -if @action=="edit"
+                -@charge.each do |wc|
+                  -if @certificate.charge_id==wc.id
+                    %option{value: "#{wc.id}", selected:true} 
+                      = "#{wc.name}"
+                  -else
+                    %option{value: "#{wc.id}"} 
+                      = "#{wc.name}"
+              -else
+                -@charge.each do |wc|
+                  %option{value: "#{wc.id}"} 
+                    = "#{wc.name}"
+          .col-sm-4
+            %label Cantidad de días trabajados
+            .col-4
+              %input#worked-day.form-control{name: "professional[certificates_attributes][#{@reg}][num_days]", :disabled=>"disabled"}
+        
+        %br
         .row
-          %section.col.col-10
-            %label.col-md-20.control-label Fecha de Titulación
+          .col-sm-2
+            %a.btn.btn-primary{href: 'javascript:void(0);'} Agregar más fechas
+
+        %br
         .row
-          %section.col.col-10
-            .col-md-8
+          .col-sm-4
+            %label.col-sm-4 Fecha de Inicio:
+            .col-sm-8
               .input-group
-                = f.input :professional_title_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                %input#start-worker.form-control{ name: "professional[certificates_attributes][#{@reg}][start_date]", as: :string, type:  "date"}
                 %span.input-group-addon
                   %i.fa.fa-calendar
-        .row
-          %section.col.col-6
-            .col-md-10
-              %label.col-md-20.control-label Fecha de Colegiatura
-          %section.col.col-6
-            .col-md-10 
-              %label.col-md-20.control-label Número de Colegiatura
-        .row
-          %section.col.col-6
-            .col-md-8
+        
+          .col-sm-4
+            %label.col-sm-4.control-label Fecha de Termino:
+            .col-sm-8
               .input-group
-                = f.input :date_of_tuition, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                %input#finish-worker.form-control{ name:"professional[certificates_attributes][#{@reg}][finish_date]", as: :string, type:  "date"}
                 %span.input-group-addon
                   %i.fa.fa-calendar
-          %section.col.col-6
-            .col-md-12
-              .input-group
-                %span.input-group-addon
-                  %i.fa N°
-                = f.input :code_tuition, placeholder: "Código", input_html: { class: 'form-control' }, label: false
-        .row 
-          %section.col.col-10
-            %label Archivos a Adjuntar
+        %br
         .row
-          %section.col.col-10
-            %label.label Título profesional
-            %label.input.input-file{for: "professional_title"}
-              .button
-                = f.input :professional_title, html: { class: 'form-control' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
-                Browse
-              %input{readonly: "readonly", type: "text"}/
+          .col-sm-6
+            %label Componentes de la obra:
+            %br
+            .col-sm-4
+              %label#get-comp
+                %label.select.type-training#comp-check
+
+        .row
+          .col-sm-6
+            .col-sm-4#comp{style: "display:none;"}
+              -if @component !=nil
+                - @component.each do |comp|
+                  %input{name: "professional[certificates_attributes][#{@reg}][component_work]", type: "checkbox", :value=> "#{comp.id}"}
+                    = "#{comp.name}"
+                  %br
+        %fieldset
+          %legend Archivos a Adjuntar
+          .row
+            .col-sm-6
+              %label.col-sm-2 Certificado
+              .col-sm-10
+                .button
+                  = file_field_tag "professional[certificates_attributes][#{@reg}][certificate]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+            .col-sm-6
+              %label.col-sm-2 Otro
+              .col-sm-10
+                .button
+                  = file_field_tag "professional[certificates_attributes][#{@reg}][other]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+
+      #tab3.tab-pane
+        %br/
+        %h3
+          %strong Paso 3
+          \- Capacitaciones
+        
+        .row
+          .col-sm-4
+            %label Tipo de capacitación
+            %br
+            %select.form-control{name: "professional[trainings_attributes][#{@reg}][type_training]"}
+              -if @action=="edit"
+                -if @training.type_training=="Curso"
+                  %option{value: "Curso", selected:true} Curso
+                  %option{value: "Diplomado"} Diplomado
+                  %option{value: "Doctorado"} Doctorado
+                  %option{value: "Maestría"} Maestría
+                -if @training.type_training=="Diplomado"
+                  %option{value: "Curso"} Curso
+                  %option{value: "Diplomado", selected:true} Diplomado
+                  %option{value: "Doctorado"} Doctorado
+                  %option{value: "Maestría"} Maestría
+                -if @training.type_training=="Doctorado"
+                  %option{value: "Curso"} Curso
+                  %option{value: "Diplomado"} Diplomado
+                  %option{value: "Doctorado", selected:true} Doctorado
+                  %option{value: "Maestría"} Maestría
+                -if @training.type_training=="Maestría"
+                  %option{value: "Curso"} Curso
+                  %option{value: "Diplomado"} Diplomado
+                  %option{value: "Doctorado"} Doctorado
+                  %option{value: "Maestría", selected:true} Maestría
+              -else
+                %option{value: "Curso"} Curso
+                %option{value: "Diplomado"} Diplomado
+                %option{value: "Doctorado"} Doctorado
+                %option{value: "Maestría"} Maestría
           
-          %section.col.col-10
-            %label.label Colegiatura
-            %label.input.input-file{for: "tuition"}
-              .button
-                = f.input :tuition, html: { class: 'form-control' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
-                Browse
-              %input{readonly: "readonly", type: "text"}/
+          .col-sm-6
+            %label Nombre de curso
+            %br
+            .input-group
+              %input.form-control{ name:"professional[trainings_attributes][#{@reg}][name_training]", placeholder: "Nombre del curso", html: { class: 'form-control' }}
+              %span.input-group-addon
+                %i.fa.fa-book.fa-sm.fa-fw
+        %br          
+        .row
+          .col-sm-4
+            %label Fecha de Inicio
+            .input-group
+              %input#start.form-control{ name:"professional[trainings_attributes][#{@reg}][start_training]",as: :string, type: "date"}/
+              %span.input-group-addon
+                %i.fa.fa-calendar
+          .col-sm-4
+            %label Fecha de Termino
+            .input-group
+              %input#finish.form-control{ name:"professional[trainings_attributes][#{@reg}][finish_training]", as: :string, type: "date"}/
+              %span.input-group-addon
+                %i.fa.fa-calendar
+          
+          .col-sm-4
+            %label Número de horas
+            .input-group
+              %span.input-group-addon
+                %i.icon-append.fa.fa-book
+              %input.form-control{ name:"professional[trainings_attributes][#{@reg}][num_hours]", placeholder: "Número de horas", input_html: { class: 'form-control' }}
+        %br
+        %fieldset
+          %legend Archivos a Adjuntar
+          .row  
+            %label Certificado de Capacitación
+            = file_field_tag "professional[trainings_attributes][#{@reg}][training]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
 
-          %section.col.col-10
-            %label.label Curriculum Vitae
-            %label.input.input-file{for: "cv"}
-              .button
-                = f.input :cv, html: { class: 'form-control' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
-                Browse
-              %input{readonly: "readonly", type: "text"}/
-              
-      %footer
-        %button.btn.btn-primary{type: "submit"}
-          %i.fa.fa-save
-            Guardar
-
-:javascript
-  $(document).ready(function () {
-
-    $('#professional_major_ids').select2({ width: '100%' });
-
-    if($('form[id^="edit_"]').length > 0) {
-      submit_validate($('form[id^="edit_"]'));
-    }
-    else{
-      submit_validate($('#new_professional'));
-    }
-  });
-  
-  function submit_validate(form){
-    $(form['selector']).ajaxForm({
-      beforeSubmit: function() {
-        $(form['selector']).validate({
-          // Rules for form validation
-          rules : {
-            'professional[name]' : {
-              required : true
-            },
-            'professional[dni]' : {
-              required : true,
-              digits: true
-            },
-            'professional[profession]' : {
-              required : true
-            },
-            'professional[professional_title_date]' : {
-              required : true
-            },
-            'professional[date_of_tuition]' : {
-              required : true
-            },
-            'professional[code_tuition]' : {
-              required : true,
-              digits: true
-            },
-            'professional[professional_cv]' : {
-              required : true
-            }
-          },
-
-          // Messages for form validation
-          messages : {
-            'professional[name]' : {
-              required : 'Porfavor, ingresar el nombre del profesional'
-            },
-            'professional[dni]' : {
-              required : 'Porfavor, ingresar el DNI del profesional',
-              digits: 'Solo se aceptan números'
-            },
-            'professional[profession]' : {
-              required : 'Porfavor, ingresar la profesión.'
-            },
-            'professional[professional_title_date]' : {
-              required : 'Porfavor, ingresar la fecha de titulación.'
-            },
-            'professional[date_of_tuition]' : {
-              required : 'Porfavor, ingresar la fecha de colegiatura.'
-            },
-            'professional[code_tuition]' : {
-              required : 'Porfavor, ingresar el número de colegiatura',
-              digits: 'Solo se aceptan números'
-            },
-            'professional[professional_title]' : {
-              required : 'Porfavor, ingresar el archivo del título profesional'
-            },
-            'professional[tuition]' : {
-              required : 'Porfavor, ingresar el archivo de colegiatura.'
-            }
-          },
-
-          // Do not change code below
-          errorPlacement : function(error, element) {
-            error.insertAfter(element.parent());
-          }
-        });
-        // Remove all Help-inLine
-        $(".help-inline").remove();
-        // Client Valid
-        return $(form['selector']).valid();
-      },
-      target: '#content',
-      success: function (data){
-        $(".help-inline").parent().addClass("state-error");
-      },
-      error: function(xhr, status, error) {
-      }
-    });
-  }
+      #tab4.tab-pane
+        %br/
+        %h3
+          %strong Paso 4
+          \- Guardar Formulario
+        %br/
+        %h1.text-center.text-success
+          %strong
+            %i.fa.fa-check.fa-lg
+            Completo
+        %h4.text-center Haga click en siguiente para finalizar
+        %br/
+        %footer
+          %button.btn.btn-primary#save-professional{type: "submit"}
+            %i.fa.fa-save
+              Guardar
+        %br/
+      .form-actions
+        .row
+          .col-sm-12
+            %ul.pager.wizard.no-margin
+              %li.previous.disabled
+                %a.btn.btn-lg.btn-default{href: "javascript:void(0);"} Previous
+              %li.next
+                %a.btn.btn-lg.txt-color-darken{href: "javascript:void(0);"} Next
