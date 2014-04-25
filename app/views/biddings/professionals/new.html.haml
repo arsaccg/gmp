@@ -27,12 +27,10 @@
     $('#backlist-pros').click(function(){
         load_url_ajax("#{biddings_professionals_path}", 'content', null, null, 'GET');
     });
-
     
     var work_id = $("#work-select").val();
     complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
     set_day("#{dates_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", 0);
-
   });
 
   $('#change-check').change(function(){
@@ -50,11 +48,8 @@
     }else{
       $('#comp-check').fadeIn('fast');
       $('#comp').fadeOut('fast');
-
     }
-    
   });
-
 
   $('#work-select').change(function(){
     var work_id = $(this).val();
@@ -84,7 +79,8 @@
         'professional[dni]':{
           required: true,
           digits: true,
-          maxlength : 8
+          maxlength : 8,
+          minlength : 8
         },
         'professional[professional_title_date]':{
           required: true
@@ -114,8 +110,9 @@
         'professional[training_attributes][start_training]':{
           required: true
         },
-        'professional[training_attributes][num_hours]]':{
-          required: true
+        'professional[training_attributes][num_hours]':{
+          required: true,
+          digits: true
         }
       },
       
@@ -126,7 +123,8 @@
         'professional[dni]':{
           required: 'Ingrese el DNI',
           digits: 'Solo se aceptan números',
-          maxlength: 'Son solo 8 dígitos'
+          maxlength: 'Son solo 8 dígitos',
+          minlength: 'Son solo 8 dígitos'
         },
         'professional[professional_title_date]':{
           required: 'Ingrese la fecha de titulación.'
@@ -157,7 +155,8 @@
           required: 'Ingrese la fecha de inicio.'
         },
         'professional[training_attributes][num_hours]':{
-          required: 'Ingrese el número de horas de duración de la capacitación.'
+          required: 'Ingrese el número de horas de duración de la capacitación.',
+          digits: 'Solo se aceptan números'
         }
       },
       

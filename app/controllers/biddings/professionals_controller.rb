@@ -23,6 +23,7 @@ class Biddings::ProfessionalsController < ApplicationController
     TypeEntity.where("id IN (1,5)").each do |tent|
       @entities << tent.entities
     end
+
     render :new, layout: false
   end
 
@@ -77,7 +78,7 @@ class Biddings::ProfessionalsController < ApplicationController
       :name,
       :dni, 
       :professional_title_date, 
-      {:major_ids=>[]}, 
+      {:major_ids => []}, 
       :date_of_tuition, 
       :code_tuition, 
       :professional_title, 
