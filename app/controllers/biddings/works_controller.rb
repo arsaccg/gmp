@@ -51,6 +51,7 @@ class Biddings::WorksController < ApplicationController
   end
 
   def edit
+    @action = 'edit'
     @work = Work.find(params[:id])
     @components = Component.all
     @moneys = Money.all

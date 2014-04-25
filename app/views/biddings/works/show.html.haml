@@ -283,11 +283,11 @@
                             %a.btn.btn-info.btn-xs{:href =>"#{@work.settlement_of_work.url}", :target => "_blank"}
                               %i.fa.fa-clipboard
 
-                      - if @work.budget.exists?
+                      - if @work.compliance_work.exists?
                         %tr
-                          %td Presupuesto
+                          %td Conformidad de Obra
                           %td
-                            %a.btn.btn-info.btn-xs{:href =>"#{@work.budget.url}", :target => "_blank"}
+                            %a.btn.btn-info.btn-xs{:href =>"#{@work.compliance_work.url}", :target => "_blank"}
                               %i.fa.fa-clipboard
 
                       - if @work.budget.exists?
