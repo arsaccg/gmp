@@ -57,6 +57,6 @@ class Biddings::ComponentsController < ApplicationController
 
   private
   def components_params
-    params.require(:component).permit(:name)
+    params.require(:component).permit(:name, :specialty)
   end
 end

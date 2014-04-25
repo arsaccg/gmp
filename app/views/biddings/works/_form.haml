@@ -330,7 +330,7 @@
               %legend Componentes
               .row
                 .col-md-3
-                  .form-group
+                  .form-group#comp-check
                     = f.association :components, :as => :check_boxes, :label => false
 
               // Bloque de DOCUMENTOS
@@ -617,6 +617,9 @@
 :javascript
 
   $(document).ready(function () {
+    var specialty = $("#specialty-select").val();
+    console.log(specialty);
+    get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", "0302");
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -802,5 +805,53 @@
       },
       error: function(xhr, status, error) {
       }
+    });
+  }
+
+  var clicknum = 0;
+    $("#specialty-select").click(function(){
+      clicknum++;
+      if(clicknum == 1){
+       var specialty = $('#specialty-select').val();
+       console.log(specialty);
+       get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", 0);
+       clicknum = 4;
+      }
+    });
+
+    $('#specialty-select').change(function(){
+      var specialty = $(this).val();
+      console.log(specialty);
+      get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", 0);
+    });
+
+    $('#specialty-select').keyup(function(){
+      var specialty = $(this).val();
+      console.log(specialty);
+      get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", 0);
+    });
+
+  function get_comp(url, specialty, form_token, default_value){
+    var str_html = "";
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { specialty: specialty, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.components, function(key, value){
+        console.log(key);
+        console.log(value);
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#comp-check').empty();
+      $.each(newOptions, function(key,value){
+        str_html = str_html + "<label>" + value.name + "</label><br/>"
+      });
+      $('#comp-check').html(str_html);
     });
   }

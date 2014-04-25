@@ -19,9 +19,16 @@
           %strong Error!
           = flash[:error]
   .row
-    .col-sm-4
-      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_biddings_work_path}', 'content', null, null, 'GET')"}
-        Agregar Obra
+    -if @financial_variables != nil || @financial_variables.count > 0
+      .col-sm-4
+        %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_biddings_work_path}', 'content', null, null, 'GET')"}
+          Agregar Obra
+    -else
+      .col-sm-12
+        .alert.alert-danger.fade.in
+          %h4.alert-heading
+            %i.fa.fa-exclamation
+            Para crear una obra es necesario tener 1 ICP,  por favor cree uno.
   %br
   .row
     #widget-grid 

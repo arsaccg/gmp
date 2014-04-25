@@ -2,6 +2,10 @@ class Biddings::WorksController < ApplicationController
 
   def index
     @works = Work.all
+    @financial_variables = Array.new
+    FinancialVariable.where("name LIKE '%IPC%'").each do |fvar|
+      @financial_variables = fvar
+    end
     render layout: false
   end
 
@@ -96,6 +100,14 @@ class Biddings::WorksController < ApplicationController
     @type_doc = params[:type_doc]
     @reg = Time.now.to_i
     render layout: false
+  end
+
+  def get_components_by_speciality
+    @components = Array.new
+    Component.where("specialty = (?)",params[:specialty]).each do |comspe|
+      @components << comspe
+    end 
+    render json: {:components => @components}  
   end
 
   private

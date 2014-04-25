@@ -12,6 +12,40 @@
             %label.input{for: "name"}
               %i.icon-append.fa.fa-user
               = f.input :name, placeholder: "Nombre del Componente", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.control-label Especialidad
+            %br
+            .input-group
+              %select.col-sm-6.form-control#specialty-select{:name =>"component[specialty]"}
+                -if @action=="edit"
+                  -if @component.specialty=="Saneamiento"
+                    %option{:value => "Saneamiento", :selected => 'selected'} Saneamiento
+                    %option{:value => "Civil"} Civil
+                    %option{:value => "Electromecanico"} Electromecanico
+                    %option{:value => "Hidraulica"} Hidráulica
+                  -elsif @component.specialty=="Civil"
+                    %option{:value => "Saneamiento"} Saneamiento
+                    %option{:value => "Civil", :selected => 'selected'} Civil
+                    %option{:value => "Electromecanico"} Electromecanico
+                    %option{:value => "Hidraulica"} Hidráulica
+                  -elsif @component.specialty=="Electromecanico"
+                    %option{:value => "Saneamiento"} Saneamiento
+                    %option{:value => "Civil"} Civil
+                    %option{:value => "Electromecanico", :selected => 'selected'} Electromecanico
+                    %option{:value => "Hidraulica"} Hidráulica
+                  -elsif @component.specialty=="Hidraulica"
+                    %option{:value => "Saneamiento"} Saneamiento
+                    %option{:value => "Civil"} Civil
+                    %option{:value => "Electromecanico"} Electromecanico
+                    %option{:value => "Hidraulica", :selected => 'selected'} Hidráulica
+                -else
+                  %option{:value => "Saneamiento"} Saneamiento
+                  %option{:value => "Civil"} Civil
+                  %option{:value => "Electromecanico"} Electromecanico
+                  %option{:value => "Hidraulica"} Hidráulica
+              %span.input-group-addon
+                %i.fa.fa-money
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save
