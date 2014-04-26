@@ -47,6 +47,7 @@ class Biddings::ProfessionalsController < ApplicationController
 
   def edit
     @professional = Professional.find(params[:id])
+    @reg = Time.now.to_i.to_s
     @major = Major.all
     @action = 'edit'
     render layout: false
