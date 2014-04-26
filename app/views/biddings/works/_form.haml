@@ -618,7 +618,7 @@
 
   $(document).ready(function () {
     var specialty = $("#specialty-select").val();
-    console.log(specialty);
+    var action = "#{@action}";
     get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", "0302");
 
     if($('form[id^="edit_"]').length > 0) {
@@ -626,7 +626,6 @@
     } else {
       submit_validate($('#new_work'));
     }
-
     $('#work_work_partner_ids').select2({ width: '100%' });
     $('#purposecontract-select').change(function(){
       if($(this).val() == 'expediente_obra'){
@@ -652,7 +651,6 @@
         }
       }
     });
-
   });
 
   function delete_item(code){
@@ -813,7 +811,6 @@
       clicknum++;
       if(clicknum == 1){
        var specialty = $('#specialty-select').val();
-       console.log(specialty);
        get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", 0);
        clicknum = 4;
       }
@@ -821,13 +818,11 @@
 
     $('#specialty-select').change(function(){
       var specialty = $(this).val();
-      console.log(specialty);
       get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", 0);
     });
 
     $('#specialty-select').keyup(function(){
       var specialty = $(this).val();
-      console.log(specialty);
       get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", 0);
     });
 
@@ -841,8 +836,6 @@
     }).done(function( data ) {
       newOptions = [];
       $.each(data.components, function(key, value){
-        console.log(key);
-        console.log(value);
         item = {};
         item['name'] = value.name;
         item['id'] = value.id;
@@ -850,7 +843,14 @@
       });
       $('#comp-check').empty();
       $.each(newOptions, function(key,value){
-        str_html = str_html + "<label>" + value.name + "</label><br/>"
+        if('#{@action}'=="edit"){
+          var flag = true;
+          console.log(flag);
+        }else{
+          var flag = false;
+          console.log(flag);
+        }
+        str_html = str_html + "<label class='checkbox'><input class='check_boxes optional' name='work[component_ids][]' type='checkbox'  value=" +value.id +" id='work_component_ids_"+value.id+"'>" + value.name + "</input></label>"
       });
       $('#comp-check').html(str_html);
     });

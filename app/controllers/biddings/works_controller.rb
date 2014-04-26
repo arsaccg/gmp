@@ -21,6 +21,7 @@ class Biddings::WorksController < ApplicationController
   end
 
   def new
+    @action = 'new'
     @work = Work.new
     @components = Component.all
     @moneys = Money.all

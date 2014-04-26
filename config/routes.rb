@@ -178,6 +178,7 @@ ArsacLogistica::Application.routes.draw do
     resources :works do
       collection do
         post 'more_documents'
+        post 'get_components_by_speciality'
       end
     end
     resources :work_partners
@@ -193,5 +194,4 @@ ArsacLogistica::Application.routes.draw do
     resources :charges
     resources :majors
   end
-
 end
