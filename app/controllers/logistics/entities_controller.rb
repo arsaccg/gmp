@@ -17,6 +17,7 @@ class Logistics::EntitiesController < ApplicationController
   end
 
   def create
+    flash[:error] = nil
     entity = Entity.new(entity_parameters)
     if entity.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
@@ -25,8 +26,10 @@ class Logistics::EntitiesController < ApplicationController
       entity.errors.messages.each do |attribute, error|
         puts flash[:error].to_s + error.to_s + "  "
       end
-      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
-      redirect_to :action => :index
+      @entity = entity
+      render :new, layout: false 
+      #flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
+      #redirect_to :action => :index
     end
   end
 
@@ -52,9 +55,17 @@ class Logistics::EntitiesController < ApplicationController
 
   def update
     entity = Entity.find(params[:id])
-    entity.update_attributes(entity_parameters)
-    flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    if entity.update_attributes(entity_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index
+    else
+      entity.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @entity = entity
+      render :edit, layout: false
+    end
   end
 
   def destroy
