@@ -171,6 +171,11 @@ ArsacLogistica::Application.routes.draw do
         put 'show_purchase_order_item_field'
       end
     end
+    resources :stock_outputs do
+      collection do
+        post 'add_stock_input_item_field'
+      end
+    end
 
   end
 
