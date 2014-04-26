@@ -138,6 +138,6 @@ class Logistics::DocumentsController < ApplicationController
 
   private
   def item_parameters
-    params.require(:document).permit(:name, :description)
+    params.require(:document).permit(:name, :preffix, :description)
   end
 end

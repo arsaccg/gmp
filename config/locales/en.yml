@@ -65,6 +65,7 @@ en:
       document:
         name: "Nombre"
         format: "Formato"
+        preffix: "Prefijo"
         description: "Descripción"
     errors:
       models:
@@ -99,5 +100,8 @@ en:
         document:
           attributes:
             name:
+              blank: "(*) requerido"
+              taken: "El <b>%{attribute}</b> debe ser único."
+            preffix:
               blank: "(*) requerido"
               taken: "El <b>%{attribute}</b> debe ser único."

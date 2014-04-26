@@ -12,7 +12,7 @@
               %section
                 %label.select
                   %select{ 'name' => 'stock_input[supplier_id]', 'id' => 'supplier-selected' }
-                    - @suppliers.each do |x|
+                    - @responsibles.each do |x|
                       %option{'value' => "#{x.id}"}= x.name
                   %i
 

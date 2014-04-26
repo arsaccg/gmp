@@ -23,11 +23,11 @@ class Logistics::StockOutputsController < ApplicationController
 
   def new
     @head = StockInput.new
-    @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
+    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.all
     @articles = Article.all
-    @formats = Format.all#.joins(:documents).where("documents.id" => 44)
+    @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
     render layout: false
   end
 

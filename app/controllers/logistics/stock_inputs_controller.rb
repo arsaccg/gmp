@@ -35,7 +35,7 @@ class Logistics::StockInputsController < ApplicationController
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.all
-    @formats = Format.all#.joins(:documents).where("documents.id" => 44)
+    @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     render layout: false
   end
 

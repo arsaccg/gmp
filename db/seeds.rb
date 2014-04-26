@@ -29,3 +29,8 @@ Company.create(
 FinancialVariables.create(
   [{ name: 'igv'}, { value: '0.18' }]
 )
+
+Document.create(
+  [{ name: 'Ingreso a Almacén'}, { preffix: 'IWH' }],
+  [{ name: 'Salida de Almacén'}, { preffix: 'OWH' }]
+)
