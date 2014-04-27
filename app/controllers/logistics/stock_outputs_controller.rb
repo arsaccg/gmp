@@ -1,4 +1,7 @@
 class Logistics::StockOutputsController < ApplicationController
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+
   def index
     @head = StockInput.where("input = 0")
     @purchaseOrders = PurchaseOrder.all.where("state LIKE 'approved'")
@@ -32,6 +35,19 @@ class Logistics::StockOutputsController < ApplicationController
   end
 
   def edit
+    @company = params[:company_id]
+    @head = StockInput.find(params[:id])
+    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
+    @periods = LinkTime.group(:year, :month)
+    @warehouses = Warehouse.all
+    @articles = Article.all
+    @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
+    @reg_n = Time.now.to_i
+    @arrItems = Array.new
+    @head.stock_input_details.each do |sid|
+      @arrItems << StockInputDetail.find(sid)
+    end
+    render layout: false
   end
 
   def update
@@ -50,33 +66,6 @@ class Logistics::StockOutputsController < ApplicationController
     render :json => item
   end
 
-  def show_purchase_order_item_field
-    supplier = Entity.find(params[:id])
-    @tableItems = supplier.purchase_orders.where("state LIKE 'approved'")
-    render(partial: 'table_items_order', :layout => false)
-  end
-
-  def add_items_from_pod
-    @reg_n = Time.now.to_i
-    @arrItems = Array.new
-    params[:ids_items].each do |ido|
-      @arrItems << PurchaseOrderDetail.find(ido)
-    end
-    render(partial: 'table_items_detail', :layout => false)
-  end
-
-  def more_items_from_pod
-    @reg_n = Time.now.to_i
-    ids_items = params[:ids_items].join(",")
-    @tableItems = Array.new
-    PurchaseOrder.where("state LIKE 'approved'").each do |x|
-      x.purchase_order_details.where("received IS NULL").where("id NOT IN (#{ids_items})").each do |y|
-        @tableItems << y
-      end
-    end
-    render(partial: 'modal_more_items', :layout => false)
-  end
-
   def add_stock_input_item_field
     @reg_n = Time.now.to_i
     data_article_unit = params[:article_id].split('-')
@@ -88,6 +77,6 @@ class Logistics::StockOutputsController < ApplicationController
 
   private
   def stock_input_parameters
-    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :document, :issue_date, :description, :input, stock_input_details_attributes: [:id, :stock_input_id, :article_id, :amount, :equipment_id])
+    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :document, :issue_date, :description, :input, stock_input_details_attributes: [:id, :stock_input_id, :article_id, :amount, :equipment_id, :_destroy])
   end
 end
