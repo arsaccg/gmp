@@ -44,6 +44,8 @@
 
   $(document).ready(function () {
     $('[data-toggle="confirmation"]').confirmation();
+
+    $('#body-summary-purchase-orders tr td a').tooltip('hide');
   });
   
   // PAGE RELATED SCRIPTS
@@ -89,6 +91,8 @@
     });
 
     /* END BASIC */
+
+    $('#dt_basic_wrapper').removeClass("dataTables_wrapper");
 
     /* Add the events etc before DataTables hides a column */
     $("#dt_basic thead input").keyup(function() {
