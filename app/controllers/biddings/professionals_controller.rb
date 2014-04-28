@@ -19,7 +19,6 @@ class Biddings::ProfessionalsController < ApplicationController
     @major = Major.all
     @component = Component.all
     @charge = Charge.all
-    @work = Work.all
     @entities = Array.new
     TypeEntity.where("id IN (1,5)").each do |tent|
       @entities << tent.entities
@@ -47,6 +46,7 @@ class Biddings::ProfessionalsController < ApplicationController
 
   def edit
     @professional = Professional.find(params[:id])
+    @work = Work.all
     @reg = Time.now.to_i.to_s
     @major = Major.all
     @action = 'edit'
