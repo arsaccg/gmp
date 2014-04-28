@@ -223,26 +223,26 @@
                       .input-group
                         %select.form-control#purposecontract-select{:name =>"work[purpose_of_contract]"}
                           -if @action=="edit"
-                            -if @work.procurement_system=="obra"
+                            -if @work.purpose_of_contract=="obra"
                               %option{:value => "obra", :selected => true} Obra
                               %option{:value => "expediente_obra"} Exp + Obra
                               %option{:value => "expediente_obra_is"} Exp + Obra + I.S
                               %option{:value => "llave_mano"} Llave en mano
-                            -elsif @work.procurement_system=="expediente_obra"
+                            -elsif @work.purpose_of_contract=="expediente_obra"
                               %option{:value => "obra"} Obra
                               %option{:value => "expediente_obra", :selected => true} Exp + Obra
                               %option{:value => "expediente_obra_is"} Exp + Obra + I.S
                               %option{:value => "llave_mano"} Llave en mano
-                            -elsif @work.procurement_system=="llave_mano"
+                            -elsif @work.purpose_of_contract=="llave_mano"
                               %option{:value => "obra"} Obra
                               %option{:value => "expediente_obra"} Exp + Obra
                               %option{:value => "expediente_obra_is"} Exp + Obra + I.S
                               %option{:value => "llave_mano", :selected => true} Llave en mano
-                            - elsif @work.procurement_system == 'expediente_obra_is'
+                            - elsif @work.purpose_of_contract == 'expediente_obra_is'
                               %option{:value => "obra"} Obra
                               %option{:value => "expediente_obra"} Exp + Obra
                               %option{:value => "expediente_obra_is", :selected => true} Exp + Obra + I.S
-                              %option{:value => "llave_mano", :selected => true} Llave en mano
+                              %option{:value => "llave_mano"} Llave en mano
                           -else
                             %option{:value => "obra"} Obra
                             %option{:value => "expediente_obra"} Exp + Obra
@@ -330,8 +330,14 @@
               %legend Componentes
               .row
                 .col-md-3
-                  .form-group#comp-check
-                    = f.association :components, :as => :check_boxes, :label => false
+                  .form-group#compSan{style: "display:none;"}
+                    = f.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE '%Saneamiento%'")
+                  .form-group#compCiv{style: "display:none;"}
+                    = f.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE '%Civil%'")
+                  .form-group#compEle{style: "display:none;"}
+                    = f.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE '%Electromecanico%'")
+                  .form-group#compHidra{style: "display:none;"}
+                    = f.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE '%Hidraulica%'")
 
               // Bloque de DOCUMENTOS
               .row
@@ -619,7 +625,55 @@
   $(document).ready(function () {
     var specialty = $("#specialty-select").val();
     var action = "#{@action}";
-    get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", "0302");
+
+    if($("#specialty-select").val() == "Saneamiento"){
+        $('#compSan').fadeIn('fast');
+    }else{
+      $('#compSan').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Civil"){
+      $('#compCiv').fadeIn('fast');
+    }else{
+      $('#compCiv').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Electromecanico"){
+      $('#compEle').fadeIn('fast');
+    }else{
+      $('#compEle').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Hidraulica"){
+      $('#compHidra').fadeIn('fast');
+    }else{
+      $('#compHidra').fadeOut('fast');
+    }
+
+    $("#specialty-select").change(function(){
+      var specialty = $("#specialty-select").val();
+
+      if($("#specialty-select").val() == "Saneamiento"){
+        $('#compSan').fadeIn('fast');
+      }else{
+        $('#compSan').fadeOut('fast');
+      }
+
+      if($("#specialty-select").val() == "Civil"){
+        $('#compCiv').fadeIn('fast');
+      }else{
+        $('#compCiv').fadeOut('fast');
+      }
+
+      if($("#specialty-select").val() == "Electromecanico"){
+        $('#compEle').fadeIn('fast');
+      }else{
+        $('#compEle').fadeOut('fast');
+      }
+
+      if($("#specialty-select").val() == "Hidraulica"){
+        $('#compHidra').fadeIn('fast');
+      }else{
+        $('#compHidra').fadeOut('fast');
+      }
+    });
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -627,6 +681,30 @@
       submit_validate($('#new_work'));
     }
     $('#work_work_partner_ids').select2({ width: '100%' });
+
+    if($('#purposecontract-select').val() == 'expediente_obra'){
+        $('#dates-exp-start').fadeIn('fast');
+        $('#dates-exp-end').fadeIn('fast');
+        $('#amount-contract-exp').fadeIn('fast');
+        $('#amount-settlement-exp').fadeIn('fast');
+    } else {
+      if($('#purposecontract-select').val()== 'expediente_obra_is'){
+        $('#dates-exp-start').fadeIn('fast');
+        $('#dates-exp-end').fadeIn('fast');
+        $('#amount-contract-exp').fadeIn('fast');
+        $('#amount-settlement-exp').fadeIn('fast');
+        $('#amount-contract-is').fadeIn('fast');
+        $('#amount-settlement-is').fadeIn('fast');
+      } else {
+        $('#dates-exp-start').fadeOut('fast');
+        $('#dates-exp-end').fadeOut('fast');
+        $('#amount-contract-exp').fadeOut('fast');
+        $('#amount-settlement-exp').fadeOut('fast');
+        $('#amount-contract-is').fadeOut('fast');
+        $('#amount-settlement-is').fadeOut('fast');
+      }
+    };
+
     $('#purposecontract-select').change(function(){
       if($(this).val() == 'expediente_obra'){
         $('#dates-exp-start').fadeIn('fast');
@@ -806,52 +884,3 @@
     });
   }
 
-  var clicknum = 0;
-    $("#specialty-select").click(function(){
-      clicknum++;
-      if(clicknum == 1){
-       var specialty = $('#specialty-select').val();
-       get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", 0);
-       clicknum = 4;
-      }
-    });
-
-    $('#specialty-select').change(function(){
-      var specialty = $(this).val();
-      get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", 0);
-    });
-
-    $('#specialty-select').keyup(function(){
-      var specialty = $(this).val();
-      get_comp("#{get_components_by_speciality_biddings_works_path}", specialty, "#{form_authenticity_token}", 0);
-    });
-
-  function get_comp(url, specialty, form_token, default_value){
-    var str_html = "";
-    $.ajax({
-        type: "POST",
-        url: url,
-        async: false,
-        data: { specialty: specialty, authenticity_token: form_token}
-    }).done(function( data ) {
-      newOptions = [];
-      $.each(data.components, function(key, value){
-        item = {};
-        item['name'] = value.name;
-        item['id'] = value.id;
-        newOptions.push(item);
-      });
-      $('#comp-check').empty();
-      $.each(newOptions, function(key,value){
-        if('#{@action}'=="edit"){
-          var flag = true;
-          console.log(flag);
-        }else{
-          var flag = false;
-          console.log(flag);
-        }
-        str_html = str_html + "<label class='checkbox'><input class='check_boxes optional' name='work[component_ids][]' type='checkbox'  value=" +value.id +" id='work_component_ids_"+value.id+"'>" + value.name + "</input></label>"
-      });
-      $('#comp-check').html(str_html);
-    });
-  }
