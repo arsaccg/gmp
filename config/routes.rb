@@ -165,10 +165,16 @@ ArsacLogistica::Application.routes.draw do
     resources :documents
     resources :stock_inputs do
       collection do
-        post 'add_items_from_purchase_order'
+        post 'add_items_from_pod'
+        post 'more_items_from_pod'
       end
       member do
         put 'show_purchase_order_item_field'
+      end
+    end
+    resources :stock_outputs do
+      collection do
+        post 'add_stock_input_item_field'
       end
     end
 

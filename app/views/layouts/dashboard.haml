@@ -238,6 +238,11 @@
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ingreso a Almacén
+              %li
+                %a{href: "#{logistics_stock_outputs_path}?company_id=#{@company.id}", title: "Salida de Almacén", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Salida de Almacén
           %li
             %a{href: "#", title: "Licitaciones"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o

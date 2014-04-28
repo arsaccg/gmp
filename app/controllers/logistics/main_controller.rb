@@ -5,7 +5,6 @@ class Logistics::MainController < ApplicationController
       @company = Company.find(params[:company])
       render :show_panel, layout: 'dashboard' 
     else
-      @companies = Company.all
       render layout: false
     end
 

@@ -22,3 +22,35 @@
 = javascript_include_tag 'plugin/datatables/ZeroClipboard'
 = javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
 = javascript_include_tag 'plugin/datatables/DT_bootstrap'
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  $(document).ready(function(){
+  	// Back
+    $('#backlist').click(function(){
+      load_url_ajax("#{logistics_stock_inputs_path}", 'content', null, null, 'GET');
+    });
+  });
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  function minmax(value, min, max){
+    if(parseInt(value) < min || isNaN(value)) 
+      return min; 
+    else if(parseInt(value) > max) 
+      return max; 
+    else return value;
+  }

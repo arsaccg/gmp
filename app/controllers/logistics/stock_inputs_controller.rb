@@ -1,4 +1,7 @@
 class Logistics::StockInputsController < ApplicationController
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+
   def index
     #@input = params[:input]
     @head = StockInput.where("input = 1")
@@ -31,15 +34,28 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def new
+    #@company = params[:company_id]
     @head = StockInput.new
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.all
-    @formats = Format.all#.joins(:documents).where("documents.id" => 44)
+    @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     render layout: false
   end
 
   def edit
+    @company = params[:company_id]
+    @head = StockInput.find(params[:id])
+    @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
+    @periods = LinkTime.group(:year, :month)
+    @warehouses = Warehouse.all
+    @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
+    @reg_n = Time.now.to_i
+    @arrItems = Array.new
+    @head.stock_input_details.each do |sid|
+      @arrItems << StockInputDetail.find(sid)
+    end
+    render layout: false
   end
 
   def update
@@ -75,7 +91,10 @@ class Logistics::StockInputsController < ApplicationController
 
   def more_items_from_pod
     @reg_n = Time.now.to_i
-    ids_items = params[:ids_items].join(",")
+    ids_items = 0
+    if (params[:ids_items] != nil)
+      ids_items = params[:ids_items].join(",")
+    end
     @tableItems = Array.new
     PurchaseOrder.where("state LIKE 'approved'").each do |x|
       x.purchase_order_details.where("received IS NULL").where("id NOT IN (#{ids_items})").each do |y|
@@ -87,6 +106,6 @@ class Logistics::StockInputsController < ApplicationController
 
   private
   def stock_input_parameters
-    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :series, :document, :issue_date, :description, :input, stock_input_details_attributes: [:id, :stock_input_id, :purchase_order_detail_id, :amount])
+    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :series, :document, :issue_date, :description, :input, stock_input_details_attributes: [:id, :stock_input_id, :purchase_order_detail_id, :amount, :_destroy])
   end
 end

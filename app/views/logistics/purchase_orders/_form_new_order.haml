@@ -96,7 +96,7 @@
                 %select.form-control#category-select{:name =>"purchase_order[entity_id]"}
                   - @suppliers.each do |supp|
                     %option{:value => "#{supp.id}"}
-                      = supp.name + ' ' + supp.surname
+                      = supp.name + ' ' + supp.paternal_surname
                 %span.input-group-addon
                   %i.fa.fa-truck
         .col-md-4

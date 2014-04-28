@@ -12,4 +12,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def record_activity(note)
+    @watchdog = Watchdog.new
+    @watchdog.user = current_user
+    @watchdog.note = note
+    @watchdog.browser = request.env['HTTP_USER_AGENT']
+    @watchdog.ip_address = request.env['REMOTE_ADDR']
+    @watchdog.save
+  end
+
 end
