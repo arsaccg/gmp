@@ -5,6 +5,10 @@ class CostCenter < ActiveRecord::Base
 	has_many :purchase_orders
 	has_many :order_of_services
 	belongs_to :company
+
+	# Access
+	has_and_belongs_to_many :users
+
 	default_scope { where(status: "A").order("name ASC") }
 
 	# Validaciones

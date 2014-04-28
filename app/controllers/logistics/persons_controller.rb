@@ -58,6 +58,6 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 
   private
     def user_params
-    	params.require(:user).permit(:first_name, :last_name, :surname, :email, :date_of_birth, :avatar, :password)
+    	params.require(:user).permit(:first_name, :last_name, :surname, :email, :date_of_birth, :avatar, :password, {:company_ids => []}, {:cost_center_ids => []})
     end
 end

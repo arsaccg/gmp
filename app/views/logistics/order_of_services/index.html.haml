@@ -8,6 +8,16 @@
       .col-sm-3{ "style" => "margin-top: 10px;" }
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_order_of_service_path}', 'content', {company_id: #{@company}, cost_center_id: $('#cost-center-selected').val()}, null, 'GET')"}
           Agregar Nueva Orden de Servicio
+    - else
+      .col-xs-12.col-sm-7.col-md-7.col-lg-12
+        .alert.alert-block.alert-danger
+          %a.close(data-dismiss="alert" href="#")
+            ×
+          %h4.alert-heading
+            %i.fa.fa-lock
+              No puedes crear Ordenes de Servicio!
+          %p
+            Verifica si tienes, por lo menos, 1 insumo, 1 fase, 1 centro de costo y 1 sector
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"}
@@ -22,15 +32,6 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
-  - if @article == nil && @phase == nil && @sector == nil && @costcenters.first == nil
-    .alert.alert-block.alert-danger
-      %a.close(data-dismiss="alert" href="#")
-        ×
-      %h4.alert-heading
-        %i.fa.fa-lock
-          No puedes crear Ordenes de Servicio!
-      %p
-        Verifica si tienes, por lo menos, 1 insumo, 1 fase, 1 centro de costo y 1 sector
   %br
   .row
     .col-xs-12.col-sm-7.col-md-7.col-lg-4
@@ -38,8 +39,8 @@
         .smart-form
           %section
             %label.label Selecciona el centro de costo para ver su información
-            %label.select
-              %select{ 'name' => 'cost_center_id', 'id' => 'cost-center-selected' }
+            %div
+              %select.select2-costcenter{ 'name' => 'cost_center_id', 'id' => 'cost-center-selected', 'style' => 'width:100%;padding: 0;border: none;' }
                 - @costcenters.each do |cc|
                   %option{'value' => "#{cc.id}"}= cc.name
               %i
@@ -54,7 +55,7 @@
     $(document).ready(function(){
 
       $("#cost-center-selected").focus();
-      
+      $('#cost-center-selected').select2({ width: '100%' });
       load_items_delivery_order_ajax('#{show_rows_orders_service_logistics_order_of_services_path}', 'body-summary-service-orders', {company_id: '#{@company}', cost_center_id: $("#cost-center-selected").val(), authenticity_token: "#{form_authenticity_token}"});
 
       $('#body-summary-purchase-orders tr td a').tooltip('hide');
