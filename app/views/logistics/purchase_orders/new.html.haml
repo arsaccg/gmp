@@ -53,7 +53,7 @@
   $(document).ready(function(){
 
     $("#company_id").val("#{@company}");
-
+    $('#cost-center-selected').select2({ width: '100%' });
     $('#btn-add-more-items-do').click(function(){
       var ids_delivery_order = new Array();
 

@@ -188,7 +188,8 @@
               required : true
             },
             'delivery_order[scheduled]' : {
-              required : true
+              required : true,
+              greaterThan: "#delivery_order_scheduled"
             }
           },
 
@@ -204,7 +205,8 @@
               required : 'La fecha de emisión es requerida.'
             },
             'delivery_order[scheduled]' : {
-              required : 'La fecha programada es requerida.'
+              required : 'La fecha programada es requerida.',
+              greaterThan: 'Debe ser mayor que la fecha de emisión.'
             }
           },
 

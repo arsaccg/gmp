@@ -11,7 +11,7 @@
             .smart-form
               %section
                 %label.select
-                  %select{ 'name' => 'purchase_order[cost_center_id]', 'id' => 'cost-center-selected' }
+                  %select.select2-change{ 'name' => 'purchase_order[cost_center_id]', 'id' => 'cost-center-selected' }
                     - @cost_center.each do |cc|
                       %option{'value' => "#{cc.id}"}= cc.name
                   %i
