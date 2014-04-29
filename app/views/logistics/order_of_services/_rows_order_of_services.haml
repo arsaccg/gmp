@@ -34,7 +34,7 @@
       - else
         No tiene descripción alguna.
     %td
-      = orderService.entity.name + ' ' + orderService.entity.surname
+      = orderService.entity.name + ' ' + orderService.entity.paternal_surname
     %td
       - if orderService.state_per_order_of_services.last != nil
         = orderService.state_per_order_of_services.last.created_at.strftime("%d/%m/%Y")

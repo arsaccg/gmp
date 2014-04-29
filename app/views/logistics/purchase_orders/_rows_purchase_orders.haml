@@ -34,7 +34,7 @@
       - else
         No se tiene una descripción
     %td
-      = purchase.entity.name + ' ' + purchase.entity.surname
+      = purchase.entity.name + ' ' + purchase.entity.paternal_surname
     %td
       - if purchase.state_per_order_purchases.last != nil
         = purchase.state_per_order_purchases.last.created_at.strftime("%d/%m/%Y")
