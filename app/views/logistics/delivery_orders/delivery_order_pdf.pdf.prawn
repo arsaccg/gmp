@@ -31,7 +31,7 @@ text "#{@deliveryOrder.description}"
 repeat :all do
    bounding_box [bounds.left, bounds.bottom + 50], :width  => bounds.width do
     table([ 
-      ["#{@state_per_order_details_approved.user.first_name rescue current_user.first_name + ' ' + @state_per_order_details_approved.user.last_name rescue current_user.last_name + ' ' + @state_per_order_details_approved.user.surname rescue current_user.surname }", "#{@state_per_order_details_revised.user.first_name rescue current_user.first_name + ' ' + @state_per_order_details_revised.user.last_name rescue current_user.last_name + ' ' + @state_per_order_details_revised.user.surname rescue current_user.surname }"], ["#{@first_state} el #{@state_per_order_details_approved.created_at.strftime('%d/%m/%Y')}", "#{@second_state} OK"]
+      ["#{@state_per_order_details_approved.user.first_name + ' ' + @state_per_order_details_approved.user.last_name + ' ' + @state_per_order_details_approved.user.surname }", "#{@state_per_order_details_revised.user.first_name + ' ' + @state_per_order_details_revised.user.last_name + ' ' + @state_per_order_details_revised.user.surname }"], ["#{@first_state} el #{@state_per_order_details_approved.created_at.strftime('%d/%m/%Y')}", "#{@second_state} OK"]
     ], :width => 540) do
       row(0).style :align => :center
       row(1).style :align => :center
