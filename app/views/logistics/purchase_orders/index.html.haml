@@ -59,7 +59,7 @@
       load_items_delivery_order_ajax('#{show_rows_purchase_orders_logistics_purchase_orders_path}', 'body-summary-purchase-orders', {company_id: '#{@company}', cost_center_id: $("#cost-center-selected").val(), authenticity_token: "#{form_authenticity_token}"});
 
       $('#body-summary-purchase-orders tr td a').tooltip('hide');
-
+      $('[data-toggle="confirmation"]').confirmation();
       $('#cost-center-selected').change(function(){
         load_items_delivery_order_ajax('#{show_rows_purchase_orders_logistics_purchase_orders_path}', 'body-summary-purchase-orders', {company_id: '#{@company}', cost_center_id: this.value, authenticity_token: "#{form_authenticity_token}"});
 

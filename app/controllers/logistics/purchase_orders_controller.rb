@@ -220,11 +220,22 @@ class Logistics::PurchaseOrdersController < ApplicationController
     # Numerics/Text values for footer
     @total = 0
     @igv = 0
+    @igv_neto = 0
+
     @purchaseOrderDetails.each do |pod|
-      @total += pod.delivery_order_detail.amount*pod.unit_price
+      @total += pod.amount*pod.unit_price
     end
-    @igv = @total*0.18
-    @total_neto = @total - @igv
+
+    FinancialVariable.where("name LIKE '%IGV%'").each do |val|
+      if val != nil
+        @igv= val.value.to_f
+      else
+        @igv = 0.18
+      end
+    end
+
+    @igv_neto = @total*@igv
+    @total_neto = @total - @igv_neto
 
     if @purchaseOrder.state == 'pre_issued'
       @state_per_order_purchase_approved = @purchaseOrder.state_per_order_purchases.where("state LIKE 'pre_issued'").last
