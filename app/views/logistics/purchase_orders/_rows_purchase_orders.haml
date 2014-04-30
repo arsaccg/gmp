@@ -34,7 +34,7 @@
       - else
         No se tiene una descripción
     %td
-      = purchase.entity.name + ' ' + purchase.entity.surname
+      = purchase.entity.name + ' ' + purchase.entity.paternal_surname
     %td
       - if purchase.state_per_order_purchases.last != nil
         = purchase.state_per_order_purchases.last.created_at.strftime("%d/%m/%Y")
@@ -55,7 +55,7 @@
             %i.fa.fa-flag
 
           - if current_user.has_role? :canceller
-            %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{delete_logistics_purchase_order_path(purchase.id)}?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_purchase_orders_path}?company_id=#{@company}')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Eliminar Orden"}
+            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar la Orden de Compra ' + "#{purchase.id.to_s.rjust(5, '0')}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{delete_logistics_purchase_order_path(purchase.id)}?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_purchase_orders_path}?company_id=#{@company}')"}}
               %i.fa.fa-trash-o
 
         - when 'issued'

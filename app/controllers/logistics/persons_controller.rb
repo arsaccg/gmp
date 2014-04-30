@@ -1,7 +1,11 @@
 class Logistics::PersonsController < ApplicationController
 protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @persons = User.all.where('roles_mask NOT IN (1)')
+    if current_user.has_role? :director
+      @persons = User.all
+    else
+      @persons = User.all.where('roles_mask NOT IN (1)')
+    end
     render layout: false
   end
 
@@ -30,6 +34,7 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 
   # Función para editar usuarios en el panel del director.
   def edit
+    @action = 'edit'
     @user = User.find(params[:id])
     @all_roles = { 'issuer' => 'Emite las ordenes de suministro', 'approver' => 'Aprueba ordenes de Suministro', 'reviser' => 'Dar visto bueno a las ordenes de suministro', 'canceller' => 'Anular ordenes suministro' }
     @roles = @user.role_symbols

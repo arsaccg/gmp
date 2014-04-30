@@ -39,7 +39,7 @@
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
   %i.fa.fa-arrow-left>
-  Retornar al listado de Ordenes de Suministro
+  Retornar al listado de Ordenes de Compra
 
 #modalDeliveryItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
   .modal-dialog
@@ -53,7 +53,7 @@
   $(document).ready(function(){
 
     $("#company_id").val("#{@company}");
-
+    $('#cost-center-selected').select2({ width: '100%' });
     $('#btn-add-more-items-do').click(function(){
       var ids_delivery_order = new Array();
 
@@ -181,10 +181,12 @@
           required: true
         },
         'purchase_order[expiration_date]': {
-          required: true
+          required: true,
+          greaterThan: "#purchase_order_delivery_date"
         },
         'purchase_order[delivery_date]': {
-          required: true
+          required: true,
+          greaterThan: "#purchase_order_date_of_issue"
         }
       },
       
@@ -193,8 +195,14 @@
         'purchase_order[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
         'purchase_order[method_of_payment_id]': "Porfavor, especifica el método de págo.",
         'purchase_order[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
-        'purchase_order[expiration_date]': "Porfavor, especifica la fecha de expiración.",
-        'purchase_order[delivery_date]': "Porfavor, especifica la fecha de entrega."
+        'purchase_order[expiration_date]': {
+          required: "Porfavor, especifica la fecha de expiración.",
+          greaterThan: "La fecha de vencimiento debe ser mayor a la fecha de entrega."
+        },
+        'purchase_order[delivery_date]': { 
+          required: "Porfavor, especifica la fecha de entrega.",
+          greaterThan: "La fecha de entrega debe ser mayor a la fecha de emisión."
+        }
       },
       
       highlight: function (element) {
