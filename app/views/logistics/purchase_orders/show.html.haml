@@ -183,7 +183,7 @@
                       %td
                         = purchasedetail.delivery_order_detail.article.name
                       %td
-                        = purchasedetail.delivery_order_detail.amount
+                        = purchasedetail.amount
                       %td
                         - if purchasedetail.delivery_order_detail.unit_of_measurement != nil
                           = purchasedetail.delivery_order_detail.unit_of_measurement.name
@@ -192,7 +192,7 @@
                       %td
                         = number_to_currency(purchasedetail.unit_price.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
                       %td
-                        = number_to_currency((purchasedetail.delivery_order_detail.amount.to_i * purchasedetail.unit_price.to_f).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                        = number_to_currency((purchasedetail.amount.to_i * purchasedetail.unit_price.to_f).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
                       %td
                         = number_to_currency(purchasedetail.unit_price_igv.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
                       %td

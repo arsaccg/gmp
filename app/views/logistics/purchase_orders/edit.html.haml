@@ -9,6 +9,10 @@
       %article.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'form'
         
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Ordenes de Compra
+
 = javascript_include_tag 'plugin/flot/jquery.flot.cust'
 = javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
 = javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
@@ -24,6 +28,11 @@
 = javascript_include_tag 'plugin/datatables/DT_bootstrap'
 
 :javascript
+  
+  $('#backlist-purchase-order').click(function(){
+    load_url_ajax("#{logistics_purchase_orders_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
+  });
+
   function delete_item(code){
     $("#tr" + code).remove();
   }
