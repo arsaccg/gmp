@@ -24,8 +24,8 @@
     });
     
     var work_id = $("#work-select").val();
-    complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", "0302");
-    set_day("#{dates_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", 0);
+    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", "0302");
+    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -40,6 +40,21 @@
     });
   }
 
+  function add_dates() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{more_dates_biddings_professionals_path}', 'new-date', data, '', 'POST');
+  }
+  
+  function add_certificates() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{more_certificates_biddings_professionals_path}', 'accordion-ce', data, '', 'POST');
+  }
+
+  function add_trainings() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{more_trainings_biddings_professionals_path}', 'accordion-tr', data, '', 'POST');
+  }
+
   $('#change-check').change(function(){
     $('#work-select').attr('disabled', this.checked);
     $('#another_work').attr('disabled', !this.checked);
@@ -51,7 +66,6 @@
     if ($('#change-check').is(':checked')){
       $('#comp-check').fadeOut('fast');
       $('#comp').fadeIn('fast');
-      console.log($('#change-check').is(':checked'));
     }else{
       $('#comp-check').fadeIn('fast');
       $('#comp').fadeOut('fast');
@@ -60,14 +74,14 @@
 
   $('#work-select').change(function(){
     var work_id = $(this).val();
-    complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", 0);
-    set_day("#{dates_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", 0);
+    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
   });
 
   $('#work-select').keyup(function(){
     var work_id = $(this).val();
-    complete_infocombo("#{get_component_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", 0);
-    set_day("#{dates_from_work_biddings_certificates_path}", work_id, "#{form_authenticity_token}", 0);
+    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
   });
 
   // PAGE RELATED SCRIPTS
@@ -266,7 +280,6 @@
         item = {};
         item['name'] = value.name;
         item['id'] = value.id;
-        console.log(value.name);
         newOptions.push(item);
       });
       $('#comp-check').empty();
@@ -285,9 +298,7 @@
         data: { work_id: work_id, authenticity_token: form_token}
       }).done(function(data){
         var start = data.start;
-        console.log(start);
         var finish = data.finish;
-        console.log(finish);
         $('#start_certificate').empty();
         $('#start_certificate').val(start);
         $('#finish_certificate').empty();
