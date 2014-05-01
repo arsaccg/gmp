@@ -410,12 +410,8 @@
           %button.btn.btn-primary#work-submit{type: "submit"}
             %i.fa.fa-save
               Guardar
-:css
-  .dropzone .dz-preview .dz-error-mark, .dropzone .dz-preview .dz-success-mark, .dropzone-previews .dz-preview .dz-error-mark, .dropzone-previews .dz-preview .dz-success-mark, .dropzone .dz-default.dz-message { background-image: url("#{ asset_path 'dropzone/spritemap.png'}") !important }
 
 :javascript
-
-  loadScript("#{ asset_path 'plugin/dropzone/dropzone.min.js', type: :javascript }", startDropZones);
 
   $(document).ready(function () {
 
@@ -424,9 +420,7 @@
     } else {
       submit_validate($('#new_work'));
     }
-  });
 
-  function startDropZones(){
     $('#work_work_partner_ids').select2({ width: '100%' });
     $('#purposecontract-select').change(function(){
       if($(this).val() == 'expediente_obra'){
@@ -452,54 +446,7 @@
         }
       }
     });
-
-    var fd = new FormData();
-    var attachments_testimony = new Dropzone("div#attachments-testimony", { url: "#{upload_file_biddings_works_path}"});
-    var attachments_arbitration = new Dropzone("div#attachments-arbitration", { url: "#{upload_file_biddings_works_path}"});
-    var attachments_invoices = new Dropzone("div#attachments-invoices", { url: "#{upload_file_biddings_works_path}"});
-    var attachments_contract = new Dropzone("div#attachments-contract", { url: "#{upload_file_biddings_works_path}"});
-
-    /* Minuta y Testimonio multiple */
-    Dropzone.autoDiscover = false;
-    Dropzone.options.attachmentsTestimony = {
-      paramName: 'work[testimony_of_consortium]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
-
-    /* Arbitrajes Multiple */
-    Dropzone.options.attachmentsArbitration = {
-      paramName: 'work[arbitration]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
-
-    /* Facturas Multiple */
-    Dropzone.options.attachmentsInvoices = {
-      paramName: 'work[invoices]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
-
-    /* Contracto multiple */
-    Dropzone.options.attachmentsContract = {
-      paramName: 'work[contract]',
-      maxFilesize: 20,
-      parallelUploads: 3,
-      addRemoveLinks : true,
-      autoProcessQueue: false,
-      dictResponseError: 'Error subiendo archivo!'
-    }
-  }
+  });
 
   function isNumber(evt) {
     evt = (evt) ? evt : window.event;
