@@ -38,7 +38,7 @@ class Biddings::MajorsController < ApplicationController
 
   def update
     major = Major.find(params[:id])
-    if major.update_attributes(charge_parameters)
+    if major.update_attributes(major_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
     else

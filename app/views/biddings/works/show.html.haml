@@ -13,7 +13,7 @@
   %section#widget-grid
     .row
       %article.col-sm-12.col-md-12.col-lg-12
-        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+        #wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
           %header
             %span.widget-icon
               %i.fa.fa-table
@@ -247,18 +247,27 @@
                         %th Nombre del Documento
                         %th Documento
                     %tbody
-                      - if @work.testimony_of_consortium.exists?
+                      - if @work.testimony_of_consortium.exists? || @work.testimony_of_consortium_documents
                         %tr
                           %td Minuta/Testimonio de Consorcio
                           %td
                             %a.btn.btn-warning.btn-xs{:href =>"#{@work.testimony_of_consortium.url}", :target => "_blank"}
                               %i.fa.fa-clipboard
-                      - if @work.contract.exists?
+                            - if @work.testimony_of_consortium_documents != nil
+                              - @work.testimony_of_consortium_documents.each do |tocd|
+                                %a.btn.btn-warning.btn-xs{:href =>"#{tocd.attachment.url}", :target => "_blank"}
+                                  %i.fa.fa-clipboard
+
+                      - if @work.contract.exists? || @work.contract_documents
                         %tr
                           %td Contrato
                           %td
                             %a.btn.btn-info.btn-xs{:href =>"#{@work.contract.url}", :target => "_blank"}
                               %i.fa.fa-clipboard
+                            - if @work.contract_documents != nil
+                              - @work.contract_documents.each do |cd|
+                                %a.btn.btn-warning.btn-xs{:href =>"#{cd.attachment.url}", :target => "_blank"}
+                                  %i.fa.fa-clipboard
 
                       - if @work.reception_certificate.exists?
                         %tr
@@ -274,6 +283,13 @@
                             %a.btn.btn-info.btn-xs{:href =>"#{@work.settlement_of_work.url}", :target => "_blank"}
                               %i.fa.fa-clipboard
 
+                      - if @work.compliance_work.exists?
+                        %tr
+                          %td Conformidad de Obra
+                          %td
+                            %a.btn.btn-info.btn-xs{:href =>"#{@work.compliance_work.url}", :target => "_blank"}
+                              %i.fa.fa-clipboard
+
                       - if @work.budget.exists?
                         %tr
                           %td Presupuesto
@@ -281,19 +297,34 @@
                             %a.btn.btn-info.btn-xs{:href =>"#{@work.budget.url}", :target => "_blank"}
                               %i.fa.fa-clipboard
 
-                      - if @work.integrated_bases.exists?
+                      - if @work.integrated_bases.exists? || @work.integrated_bases_documents
                         %tr
                           %td Bases Integradas
                           %td
                             %a.btn.btn-info.btn-xs{:href =>"#{@work.integrated_bases.url}", :target => "_blank"}
                               %i.fa.fa-clipboard
+                            - if @work.integrated_bases_documents != nil
+                              - @work.integrated_bases_documents.each do |ibd|
+                                %a.btn.btn-warning.btn-xs{:href =>"#{ibd.attachment.url}", :target => "_blank"}
+                                  %i.fa.fa-clipboard
 
-                      - if @work.arbitration.exists?
+                      - if @work.arbitration.exists? || @work.arbitration_documents != nil
                         %tr
                           %td Arbitraje
                           %td
                             %a.btn.btn-info.btn-xs{:href =>"#{@work.arbitration.url}", :target => "_blank"}
                               %i.fa.fa-clipboard
+                            - if @work.arbitration_documents != nil
+                              - @work.arbitration_documents.each do |ad|
+                                %a.btn.btn-warning.btn-xs{:href =>"#{ad.attachment.url}", :target => "_blank"}
+                                  %i.fa.fa-clipboard
+                      - if @work.invoice_documents != nil
+                        %tr
+                          %td Facturas
+                          %td
+                            - @work.invoice_documents.each do |invoice|
+                              %a.btn.btn-warning.btn-xs{:href =>"#{invoice.attachment.url}", :target => "_blank"}
+                                %i.fa.fa-clipboard
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-works{type: "button"}
   %i.fa.fa-arrow-left>

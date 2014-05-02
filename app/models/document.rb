@@ -17,5 +17,6 @@ class Document < ActiveRecord::Base
   # Validaciones
   include ActiveModel::Validations
   validates :name, :uniqueness => { :scope => :status, :case_sensitive => false }
+  validates :preffix, :uniqueness => { :scope => :preffix, :case_sensitive => false }
 
 end

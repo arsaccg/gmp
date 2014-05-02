@@ -11,7 +11,7 @@
             .smart-form
               %section
                 %label.select
-                  %select{ 'name' => 'purchase_order[cost_center_id]', 'id' => 'cost-center-selected' }
+                  %select.select2-change{ 'name' => 'purchase_order[cost_center_id]', 'id' => 'cost-center-selected' }
                     - @cost_center.each do |cc|
                       %option{'value' => "#{cc.id}"}= cc.name
                   %i
@@ -96,7 +96,7 @@
                 %select.form-control#category-select{:name =>"purchase_order[entity_id]"}
                   - @suppliers.each do |supp|
                     %option{:value => "#{supp.id}"}
-                      = supp.name + ' ' + supp.surname
+                      = supp.name + ' ' + supp.paternal_surname
                 %span.input-group-addon
                   %i.fa.fa-truck
         .col-md-4
@@ -130,13 +130,15 @@
           .actions
             %button.btn.btn-sm.btn-success#btn-add-more-items-do{'type' => 'button'}
               Agregar más items de Ordenes de Suministro
+            %button.btn.btn-primary#btn-info-cost{'type' => 'button'}
+              Calcular Total y Sub-Total de lo que tengo
     %br
     %fieldset
       %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-delivery-orders" aria-describedby="data-table_info")
         %thead
           %tr
             %th Codigo
-            %th Descripción
+            %th Nombre del Artículo
             %th{'style' => 'width: 4%;'}
               Unidad
             %th{'style' => 'width: 5%;'}
@@ -161,8 +163,11 @@
       %i.fa.fa-check
       Felicidades!
       %br/
-      %small Presiona FINALIZAR para terminar con la Orden de Compra.
-      %i.fa.fa-hand-o-up
+      .alert.alert-warning.fade.in
+        %i.fa-fw.fa.fa-warning
+        %strong Aún no Acabas
+        Presiona el botón FINALIZAR para terminar con la Orden de Compra.
+        %i.fa.fa-hand-o-up
     %br/
     %br/
     %br/

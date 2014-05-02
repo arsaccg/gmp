@@ -39,12 +39,13 @@
                     %label.input{for: "email"}
                       %i.icon-append.fa.fa-user
                       = f.input :email, placeholder: "Email", input_html: { class: 'form-control' }, label: false
-                .row
-                  %section.col.col-10
-                    %label.label Contraseña
-                    %label.input{for: "email"}
-                      %i.icon-append.fa.fa-user
-                      = f.input :password, placeholder: "Contraseña", input_html: { class: 'form-control' }, label: false
+                - if @action != 'edit'
+                  .row
+                    %section.col.col-10
+                      %label.label Contraseña
+                      %label.input{for: "email"}
+                        %i.icon-append.fa.fa-user
+                        = f.input :password, placeholder: "Contraseña", input_html: { class: 'form-control' }, label: false
                 .row
                   %section.col.col-10
                     %label.label Rol de Usuario
@@ -64,6 +65,16 @@
                             %option{value: "#{rol[0]}"}
                               = rol[1]
                       %i
+                .row
+                  %section.col.col-10
+                    %label.label Acceso a Compañias
+                    %label.select
+                      = f.association :companies, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
+                .row
+                  %section.col.col-10
+                    %label.label Acceso a Centro de Costo
+                    %label.select
+                      = f.association :cost_centers, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
               %footer
                 %button.btn.btn-primary{type: "submit"}
                   %i.fa.fa-save 
@@ -78,6 +89,8 @@
   $(document).ready(function () {
     $("#role-user").focus();
     $('#role-user').select2();
+    $('#user_company_ids').select2({ width: '100%' });
+    $('#user_cost_center_ids').select2({ width: '100%' });
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{

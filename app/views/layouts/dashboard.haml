@@ -238,6 +238,11 @@
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ingreso a Almacén
+              %li
+                %a{href: "#{logistics_stock_outputs_path}?company_id=#{@company.id}", title: "Salida de Almacén", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Salida de Almacén
           %li
             %a{href: "#", title: "Licitaciones"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
@@ -268,14 +273,6 @@
                     %a{href: "#{biddings_charges_path}?company_id=#{@company.id}", title: "Cargos"}
                       %i.fa.fa-lg.fa-fw.fa-group
                       %span.menu-item-parent Cargos
-                  %li
-                    %a{href: "#{biddings_certificates_path}?company_id=#{@company.id}", title: "Certificados"}
-                      %i.fa.fa-lg.fa-fw.fa-clipboard
-                      %span.menu-item-parent Certificados
-                  %li
-                    %a{href: "#{biddings_trainings_path}?company_id=#{@company.id}", title: "Capacitaciones"}
-                      %i.fa.fa-lg.fa-fw.fa-clipboard
-                      %span.menu-item-parent Capacitaciones
                   %li
                     %a{href: "#{biddings_components_path}?company_id=#{@company.id}", title: "Componentes"}
                       %i.fa.fa-lg.fa-fw.fa-clipboard

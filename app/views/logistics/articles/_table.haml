@@ -47,13 +47,15 @@
                   %td
                     = article.type_of_article.name
                   %td
-                    =article.specific.name
+                    - if article.specific != nil
+                      = article.specific.name
                   %td
                     = article.name
                   %td
                     = article.description
                   %td
-                    = article.unit_of_measurement.name
+                    - if article.unit_of_measurement != nil
+                      = article.unit_of_measurement.name
                   %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_article_path(article.id)}', 'content', null, null, 'GET')"}
                       Editar

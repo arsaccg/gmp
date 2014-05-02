@@ -1,6 +1,26 @@
 class Biddings::ComponentsController < ApplicationController
   def index
     @components = Component.all
+    @saneamiento = Array.new
+    @civil = Array.new
+    @hidro = Array.new
+    @electro = Array.new
+
+    @components.each do |comper|
+      if comper.specialty=="Saneamiento"
+        @saneamiento << comper
+      end
+      if comper.specialty=="Civil"
+        @civil << comper
+      end
+      if comper.specialty=="Electromecanico"
+        @electro << comper
+      end
+      if comper.specialty=="Hidraulica"
+        @hidro << comper
+      end
+    end
+
     render layout: false
   end
 
@@ -31,6 +51,7 @@ class Biddings::ComponentsController < ApplicationController
 
   def edit
     @component = Component.find(params[:id])
+    @action = 'edit'
     render layout: false
   end
 
@@ -57,6 +78,6 @@ class Biddings::ComponentsController < ApplicationController
 
   private
   def components_params
-    params.require(:component).permit(:name)
+    params.require(:component).permit(:name, :specialty)
   end
 end

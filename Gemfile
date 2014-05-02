@@ -74,6 +74,9 @@ end
 
 gem 'roo'
 
+# Last officially released gem
+gem "squeel"
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 

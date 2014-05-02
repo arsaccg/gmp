@@ -33,8 +33,8 @@
               %td
                 = head.format.name
               %td
-                //%a.btn.btn-warning.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{edit_logistics_stock_input_path(head.id)}', 'content', {company_id: #{@company}}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
-                //  %i.fa.fa-edit
+                %a.btn.btn-warning.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{edit_logistics_stock_input_path(head.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
+                  %i.fa.fa-edit
                 %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => t('activerecord.actions.deletem') + "#{head.series}"+ "-" + "#{head.document}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_stock_input_path(head.id)}' + '?authenticity_token=#{form_authenticity_token}' + '&current_user_id=#{current_user.id}', 'content', '#{logistics_stock_inputs_path}?company_id=#{@company}')"}}
                   %i.fa.fa-trash-o
 
@@ -44,6 +44,8 @@
 
   $(document).ready(function () {
     $('[data-toggle="confirmation"]').confirmation();
+
+    $('#body-summary-purchase-orders tr td a').tooltip('hide');
   });
   
   // PAGE RELATED SCRIPTS
@@ -89,6 +91,8 @@
     });
 
     /* END BASIC */
+
+    $('#dt_basic_wrapper').removeClass("dataTables_wrapper");
 
     /* Add the events etc before DataTables hides a column */
     $("#dt_basic thead input").keyup(function() {

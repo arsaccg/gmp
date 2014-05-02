@@ -165,10 +165,16 @@ ArsacLogistica::Application.routes.draw do
     resources :documents
     resources :stock_inputs do
       collection do
-        post 'add_items_from_purchase_order'
+        post 'add_items_from_pod'
+        post 'more_items_from_pod'
       end
       member do
         put 'show_purchase_order_item_field'
+      end
+    end
+    resources :stock_outputs do
+      collection do
+        post 'add_stock_input_item_field'
       end
     end
 
@@ -177,21 +183,24 @@ ArsacLogistica::Application.routes.draw do
   namespace :biddings do
     resources :works do
       collection do
-        post 'upload_file'
+        post 'more_documents'
+        post 'get_components_by_speciality'
       end
     end
     resources :work_partners
-    resources :professionals
-    resources :trainings
-    resources :certificates do
+    resources :professionals do
       collection do
         post 'get_component_from_work'
         post 'dates_from_work'
+        post 'more_dates'
+        post 'more_certificates'
+        post 'more_trainings'
       end
     end
+    resources :trainings
+    resources :certificates
     resources :components
     resources :charges
     resources :majors
   end
-
 end

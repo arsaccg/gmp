@@ -187,6 +187,9 @@ class Logistics::DeliveryOrdersController < ApplicationController
     if @deliveryOrder.state == 'issued'
       @state_per_order_details_approved = @deliveryOrder.state_per_order_details.where("state LIKE 'issued'").last
       @state_per_order_details_revised = @deliveryOrder.state_per_order_details.where("state LIKE 'pre_issued'").last
+      if @state_per_order_details_revised == nil
+        @state_per_order_details_revised = @state_per_order_details_approved
+      end
       @first_state = "Emitido"
       @second_state = "Pre-Emitido"
     end

@@ -1,33 +1,307 @@
-#content-inside
-  .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
-      %h1.page-title.txt-color-blueDark
-        %i.fa.fa-pencil-square-o.fa-fw 
-        Nuevo Profesional
-  #widget-grid
-    .row
-      %article.col-sm-12.col-md-12.col-lg-6
-        = render :partial => 'form'
-  %button.btn.btn-sm.btn-primary.btn-prev#backlist-pros{type: "button"}
-    %i.fa.fa-arrow-left>
-    Retornar al listado de profesionales
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-check
+    %h2 Profesional
+  %div{:style => 'overflow:hidden'}
+    = render :partial => 'form'
 
-= javascript_include_tag 'plugin/flot/jquery.flot.cust'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
-= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
-= javascript_include_tag 'plugin/flot/jquery.flot.resize'
-= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
-= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
-= javascript_include_tag 'plugin/datatables/ColReorder.min'
-= javascript_include_tag 'plugin/datatables/FixedColumns.min'
-= javascript_include_tag 'plugin/datatables/ColVis.min'
-= javascript_include_tag 'plugin/datatables/ZeroClipboard'
-= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
-= javascript_include_tag 'plugin/datatables/DT_bootstrap'
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-pros{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de profesionales
 
 :javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
 
-  $('#backlist-pros').click(function(){
-      load_url_ajax("#{biddings_professionals_path}", 'content', null, null, 'GET');
+  $(document).ready(function(){
+    $('#professional_major_ids').select2({ width: '100%' });
+
+    $("#company_id").val("#{@company}");
+
+    $('#backlist-pros').click(function(){
+        load_url_ajax("#{biddings_professionals_path}", 'content', null, null, 'GET');
+    });
+    
+    var work_id = $("#work-select").val();
+    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", "0302");
+    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    } else {
+      submit_validate($('#new_professional'));
+    }
   });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      target: '#content',
+    });
+  }
+
+  function add_dates() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{more_dates_biddings_professionals_path}', 'new-date', data, '', 'POST');
+  }
+  
+  function add_certificates() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{more_certificates_biddings_professionals_path}', 'accordion-ce', data, '', 'POST');
+  }
+
+  function add_trainings() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{more_trainings_biddings_professionals_path}', 'accordion-tr', data, '', 'POST');
+  }
+
+  $('#change-check').change(function(){
+    $('#work-select').attr('disabled', this.checked);
+    $('#another_work').attr('disabled', !this.checked);
+    $('#start_certificate').attr('disabled', !this.checked);
+    $('#finish_certificate').attr('disabled', !this.checked);
+    $('#comp-check').fadeOut('fast');
+    $('#comp').fadeIn('fast');
+
+    if ($('#change-check').is(':checked')){
+      $('#comp-check').fadeOut('fast');
+      $('#comp').fadeIn('fast');
+    }else{
+      $('#comp-check').fadeIn('fast');
+      $('#comp').fadeOut('fast');
+    }
+  });
+
+  $('#work-select').change(function(){
+    var work_id = $(this).val();
+    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+  });
+
+  $('#work-select').keyup(function(){
+    var work_id = $(this).val();
+    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+  });
+
+  // PAGE RELATED SCRIPTS
+  
+  loadScript("#{ asset_path 'plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js', type: :javascript }", runBootstrapWizard);
+  
+  //Bootstrap Wizard Validations
+
+  function runBootstrapWizard(){
+    if($('form[id^="edit_"]').length > 0) {
+      var form = $('form[id^="edit_"]');
+    } else {
+      var form = $('#new_professional');
+    }
+
+    var $validator = $(form['selector']).validate({
+      
+      rules: {
+        'professional[name]':{
+          required:true
+        },
+        'professional[dni]':{
+          required: true,
+          digits: true,
+          maxlength : 8,
+          minlength : 8
+        },
+        'professional[professional_title_date]':{
+          required: true
+        },
+        'professional[date_of_tuition]':{
+          required: true
+        },
+        'professional[code_tuition]':{
+          required: true,
+          digits: true
+        },
+        'professional[major]':{
+          required: true
+        },
+        'professional[certificate_attributes][start_date]':{
+          required: true
+        },
+        'professional[certificate_attributes][finish_date]':{
+          required: true
+        },
+        'professional[training_attributes][name_training]':{
+          required: true
+        },
+        'professional[training_attributes][start_training]':{
+          required: true
+        },
+        'professional[training_attributes][num_hours]':{
+          required: true,
+          digits: true
+        }
+      },
+      
+      messages: {
+        'professional[name]':{
+          required: 'Ingrese el nombre'
+        },
+        'professional[dni]':{
+          required: 'Ingrese el DNI',
+          digits: 'Solo se aceptan números',
+          maxlength: 'Son solo 8 dígitos',
+          minlength: 'Son solo 8 dígitos'
+        },
+        'professional[professional_title_date]':{
+          required: 'Ingrese la fecha de titulación.'
+        },
+        'professional[date_of_tuition]':{
+          required: 'Ingrese la fecha de colegiatura.'
+        },
+        'professional[code_tuition]':{
+          required: 'Ingrese el código de colegiatura.',
+          digits: 'Solo se pueden ingresar números.'
+        },
+        'professional[major]':{
+          required: "Escoja la profesión."
+        },
+        'professional[certificate_attributes][start_date]':{
+          required: 'Ingrese la fecha de inicio.'
+        },
+        'professional[certificate_attributes][finish_date]':{
+          required: 'Ingrese la fecha de termino.'
+        },
+        'professional[training_attributes][name_training]':{
+          required: 'Ingrese el nombre de la capacitación.'
+        },
+        'professional[training_attributes][start_training]':{
+          required: 'Ingrese la fecha de inicio.'
+        },
+        'professional[training_attributes][num_hours]':{
+          required: 'Ingrese el número de horas de duración de la capacitación.',
+          digits: 'Solo se aceptan números'
+        }
+      },
+      
+      highlight: function (element) {
+        $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+      },
+      unhighlight: function (element) {
+        $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+      },
+      errorElement: 'span',
+      errorClass: 'help-block',
+      errorPlacement: function (error, element) {
+        if (element.parent('.input-group').length) {
+          error.insertAfter(element.parent());
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    });
+    
+    $('#bootstrap-wizard').bootstrapWizard({
+      'tabClass': 'form-wizard',
+      'onNext': function (tab, navigation, index) {
+        var $valid = $(form['selector']).valid();
+        if (!$valid) {
+          $validator.focusInvalid();
+          return false;
+        } else {
+          $('#bootstrap-wizard').find('.form-wizard').children('li').eq(index - 1).addClass('complete');
+          $('#bootstrap-wizard').find('.form-wizard').children('li').eq(index - 1).find('.step').html('<i class="fa fa-check"></i>');
+        }
+      }
+    });
+  }
+
+  loadScript("#{ asset_path 'plugin/fuelux/wizard/wizard.js', type: :javascript }", fueluxWizard);
+  
+  function fueluxWizard() {
+    
+    var wizard = $('.wizard').wizard();
+    
+    wizard.on('finished', function (e, data) {
+    
+      $.ajax({
+        type: 'POST',
+        url: "/biddings/professionals",
+        async: false,
+        data: $('#new_professional').serialize(),
+        dataType : 'html',
+        success: function(data) {
+          $('#modalLoading').modal('hide');
+          $('#content').html(data);
+        },
+        error : function(xhr, ajaxOptions, thrownError) {
+          container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+        }
+      });
+
+    });
+
+    wizard.on('change', function(e, data){
+
+      if($('form[id^="edit_"]').length > 0) {
+        var form = $('form[id^="edit_"]');
+      } else {
+        var form = $('#new_professional');
+      }
+
+      if(data.tab == 1 && data.direction == 'next'){
+        var $valid = $(form['selector']).valid();
+        if (!$valid) {
+          e.preventDefault();
+        }
+      }
+      if(data.tab == 2 && data.direction == 'next') {
+        var $valid = $(form['selector']).valid();
+        if (!$valid) {
+          e.preventDefault();
+        }
+      }
+      if(data.tab == 3 && data.direction == 'next') {
+        var $valid = $(form['selector']).valid();
+        if (!$valid) {
+          e.preventDefault();
+        }
+      }
+    });
+  }
+
+  function complete_infocombo(url, work_id, form_token, default_value){
+    var str_html = "";
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { work_id: work_id, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.component_work, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#comp-check').empty();
+      $.each(newOptions, function(key,value){
+        str_html = str_html + "<label> <strong> > </strong> " + value.name + "</label><br/>"
+      });
+      $('#comp-check').html(str_html);
+    });
+  }
+
+  function set_day(url, work_id, form_token, default_value){
+      $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { work_id: work_id, authenticity_token: form_token}
+      }).done(function(data){
+        var start = data.start;
+        var finish = data.finish;
+        $('#start_certificate').empty();
+        $('#start_certificate').val(start);
+        $('#finish_certificate').empty();
+        $('#finish_certificate').val(finish);
+      });
+  }

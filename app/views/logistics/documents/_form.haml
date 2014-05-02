@@ -15,6 +15,13 @@
               %i.icon-append.fa.fa-superscript
               = f.input :name, placeholder: t('activerecord.attributes.document.name'), input_html: { class: 'form-control' }, label: false
         .row
+          %section.col.col-3
+            %label.label
+              = t('activerecord.attributes.document.preffix')
+            %label.input{for: "preffix"}
+              %i.icon-append.fa.fa-superscript
+              = f.input :preffix, placeholder: t('activerecord.attributes.document.preffix'), input_html: { class: 'form-control' }, label: false
+        .row
           %section.col.col-10
             %label.label
               = t('activerecord.attributes.document.description')

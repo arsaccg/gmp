@@ -1,7 +1,11 @@
 class Biddings::WorksController < ApplicationController
-  skip_before_filter :verify_authenticity_token, :only => [:upload_file]
+
   def index
     @works = Work.all
+    @financial_variables = Array.new
+    FinancialVariable.where("name LIKE '%IPC%'").each do |fvar|
+      @financial_variables = fvar
+    end
     render layout: false
   end
 
@@ -17,6 +21,7 @@ class Biddings::WorksController < ApplicationController
   end
 
   def new
+    @action = 'new'
     @work = Work.new
     @components = Component.all
     @moneys = Money.all
@@ -51,6 +56,7 @@ class Biddings::WorksController < ApplicationController
   end
 
   def edit
+    @action = 'edit'
     @work = Work.find(params[:id])
     @components = Component.all
     @moneys = Money.all
@@ -90,10 +96,19 @@ class Biddings::WorksController < ApplicationController
     render :json => work
   end
 
-  # Upload File
-  def upload_file
-    puts params
-    render :json => params
+  # Upload Multiple File
+  def more_documents
+    @type_doc = params[:type_doc]
+    @reg = Time.now.to_i
+    render layout: false
+  end
+
+  def get_components_by_speciality
+    @components = Array.new
+    Component.where("specialty = (?)",params[:specialty]).each do |comspe|
+      @components << comspe
+    end 
+    render json: {:components => @components}  
   end
 
   private
@@ -143,6 +158,9 @@ class Biddings::WorksController < ApplicationController
         :id, :work_id, :attachment, :_destroy
       ],
       testimony_of_consortium_documents_attributes: [
+        :id, :work_id, :attachment, :_destroy
+      ],
+      invoice_documents_attributes: [
         :id, :work_id, :attachment, :_destroy
       ]
     )

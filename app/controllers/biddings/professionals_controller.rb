@@ -10,12 +10,21 @@ class Biddings::ProfessionalsController < ApplicationController
   end
 
   def show
+    @professional= Professional.find(params[:id])
     render layout: false
   end
 
   def new
+    @reg = Time.now.to_i.to_s
     @professional=Professional.new
+    @work = Work.all
     @major = Major.all
+    @component = Component.all
+    @charge = Charge.all
+    @entities = Array.new
+    TypeEntity.where("id IN (1,5)").each do |tent|
+      @entities << tent.entities
+    end
     render :new, layout: false
   end
 
@@ -33,10 +42,27 @@ class Biddings::ProfessionalsController < ApplicationController
       @professional = professional
       render :new, layout: false
     end
+    
   end
 
   def edit
     @professional = Professional.find(params[:id])
+    @component = Component.all
+    cert = Certificate.where('professional_id = ?', params[:id])
+    cert.each do |certificate|
+      @certificate = certificate
+    end
+    tra = Training.where('professional_id = ?', params[:id])
+    tra.each do |training|
+      @training = training
+    end
+    @work = Work.all
+    @charge = Charge.all
+    @entities =Array.new
+    TypeEntity.where("id IN (1,5)").each do |tent|
+      @entities << tent.entities
+    end
+    @reg = Time.now.to_i.to_s
     @major = Major.all
     @action = 'edit'
     render layout: false
@@ -63,8 +89,80 @@ class Biddings::ProfessionalsController < ApplicationController
     render :json => profesional
   end
 
+  def get_component_from_work
+    @work = Work.find(params[:work_id])
+    @components=@work.components
+    render json: {:component_work => @components}  
+  end
+
+  def dates_from_work
+    @work = Work.find(params[:work_id])
+    @start = @work.start_date_of_work
+    @finish = @work.real_end_date_of_work
+    render json: {:start=>@start, :finish=>@finish}  
+  end
+
+  def more_dates
+    @reg = Time.now.to_i
+    render layout: false
+  end
+
+  def more_certificates
+    @reg = Time.now.to_i.to_s
+    @professional=Professional.new
+    @work = Work.all
+    @major = Major.all
+    @component = Component.all
+    @charge = Charge.all
+    @entities = Array.new
+    TypeEntity.where("id IN (1,5)").each do |tent|
+      @entities << tent.entities
+    end
+    render layout: false
+  end
+  
+  def more_trainings
+    @reg = Time.now.to_i.to_s
+    render layout: false
+  end
+
   private
   def professional_parameters
-    params.require(:professional).permit(:name, :dni, :professional_title_date, {:major_ids=>[]}, :date_of_tuition, :code_tuition, :professional_title, :tuition, :cv)
+    params.require(:professional).permit(
+      :name,
+      :dni, 
+      :professional_title_date, 
+      {:major_ids => []}, 
+      :date_of_tuition, 
+      :code_tuition, 
+      :professional_title, 
+      :tuition, 
+      :cv, 
+      certificates_attributes: [
+        :id, 
+        :professional_id, 
+        :work_id, 
+        :charge_id, 
+        :entity_id, 
+        :num_days, 
+        :start_date, 
+        :finish_date, 
+        {:component_work_ids => []}, 
+        :certificate, 
+        :other, 
+        :_destroy
+      ], 
+      trainings_attributes: [
+        :id, 
+        :professional_id, 
+        :type_training, 
+        :name_training,
+        :num_hours, 
+        :start_training, 
+        :finish_training, 
+        :training, 
+        :_destroy
+      ]
+    )
   end
 end
