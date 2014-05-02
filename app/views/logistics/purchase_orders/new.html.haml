@@ -69,6 +69,29 @@
       });
     });
 
+    $('#category-select').change(function(){
+      var date = $('#purchase_order_date_of_issue').val();
+      var money_id = $(this).val();
+      $.ajax({
+        type: 'POST',
+        url: "#{get_exchange_rate_per_date_logistics_purchase_orders_path}",
+        data: {
+          date: date,
+          money_id: money_id,
+          authenticity_token: "#{form_authenticity_token}"
+        },
+        dataType : 'json',
+        async: false,
+        success: function(data) {
+          if(data){
+            $('#purchase_order_exchange_of_rate').val(data);
+          }else{
+            $('#purchase_order_exchange_of_rate').val(0);
+          }
+        }
+      });
+    });
+
     $('#backlist-purchase-order').click(function(){
       load_url_ajax("#{logistics_purchase_orders_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
     });
