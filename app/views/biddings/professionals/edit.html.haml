@@ -30,6 +30,7 @@
   pageSetUp();
 
   $(document).ready(function(){
+
     $('#professional_major_ids').select2({ width: '100%' });
     
     $("#company_id").val("#{@company}");
@@ -49,6 +50,30 @@
     }
   });
 
+  $("#specialty-select").change(function(){
+    var specialty = $("#specialty-select").val();
+    if($("#specialty-select").val() == "Saneamiento"){
+      $('#compSan').fadeIn('fast');
+    }else{
+      $('#compSan').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Civil"){
+      $('#compCiv').fadeIn('fast');
+    }else{
+      $('#compCiv').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Electromecanico"){
+      $('#compEle').fadeIn('fast');
+    }else{
+      $('#compEle').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Hidraulica"){
+      $('#compHidra').fadeIn('fast');
+    }else{
+      $('#compHidra').fadeOut('fast');
+    }
+  });
+
   function submit_validate(form){
     $(form['selector']).ajaxForm({
       target: '#content',
@@ -57,7 +82,6 @@
 
   $('#change-check').change(function(){
     $('#work-select').attr('disabled', this.checked);
-    $('#another_work').attr('disabled', !this.checked);
     $('#start_certificate').attr('disabled', !this.checked);
     $('#finish_certificate').attr('disabled', !this.checked);
     $('#comp-check').fadeOut('fast');
@@ -66,10 +90,13 @@
     if ($('#change-check').is(':checked')){
       $('#comp-check').fadeOut('fast');
       $('#comp').fadeIn('fast');
-      console.log($('#change-check').is(':checked'));
+      $('#another_work').fadeIn('fast');
+      $('#specialty').fadeIn('fast');
     }else{
       $('#comp-check').fadeIn('fast');
       $('#comp').fadeOut('fast');
+      $('#another_work').fadeOut('fast');
+      $('#specialty').fadeOut('fast');
     }
   });
 
@@ -268,6 +295,49 @@
     });
   }
 
+  function add_dates() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{more_dates_biddings_professionals_path}', 'new-date', data, '', 'POST');
+  }
+  
+  function add_certificates() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{more_certificates_biddings_professionals_path}', 'accordion-ce', data, '', 'POST');
+  }
+
+  $('#change-check').change(function(){
+    $('#work-select').attr('disabled', this.checked);
+    
+    $('#start_certificate').attr('disabled', !this.checked);
+    $('#finish_certificate').attr('disabled', !this.checked);
+    $('#comp-check').fadeOut('fast');
+    $('#comp').fadeIn('fast');
+
+    if ($('#change-check').is(':checked')){
+      $('#comp-check').fadeOut('fast');
+      $('#comp').fadeIn('fast');
+      $('#another_work').fadeIn('fast');
+      $('#specialty').fadeIn('fast');
+    }else{
+      $('#comp-check').fadeIn('fast');
+      $('#comp').fadeOut('fast');
+      $('#another_work').fadeOut('fast');
+      $('#specialty').fadeOut('fast');
+    }
+  });
+
+  $('#work-select').change(function(){
+    var work_id = $(this).val();
+    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+  });
+
+  $('#work-select').keyup(function(){
+    var work_id = $(this).val();
+    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+  });
+
   function complete_infocombo(url, work_id, form_token, default_value){
     var str_html = "";
     $.ajax({
@@ -281,7 +351,6 @@
         item = {};
         item['name'] = value.name;
         item['id'] = value.id;
-        console.log(value.name);
         newOptions.push(item);
       });
       $('#comp-check').empty();
@@ -300,9 +369,7 @@
         data: { work_id: work_id, authenticity_token: form_token}
       }).done(function(data){
         var start = data.start;
-        console.log(start);
         var finish = data.finish;
-        console.log(finish);
         $('#start_certificate').empty();
         $('#start_certificate').val(start);
         $('#finish_certificate').empty();

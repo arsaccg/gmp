@@ -32,20 +32,22 @@
                     %th Fecha de Titulación
                     %th Fecha de Colegiatura
                     %th Código de Colegiatura
+                    
                 %tbody
                   %tr
                     %td
                       = @professional.dni
                     %td
-                      -pro.majors.each do |major|
-	                      = major.name
-                      %br
+                      -@professional.majors.each do |major|
+                        = major.name
+                        %br
                     %td
                       = @professional.professional_title_date
                     %td
                       = @professional.date_of_tuition
                     %td
                       = @professional.code_tuition
+
 
     .row
       %article.col-sm-12.col-md-12.col-lg-12
@@ -72,26 +74,44 @@
                     %th Entidad
                     %th Fecha de Inicio
                     %th Fecha de Termino
+                    %th Nombre del Documento
+                    %th Documento
                 %tbody
                   -@professional.certificates.each do |procert|
-	                  %tr
-	                    %td
-	                      - @work.each do |wo|
-	                        - if procert.work_id == wo.id
-	                          = wo.name
-	                    %td
-	                      - @charge.each do |ch|
-	                        -if procert.charge_id == ch.id
-	                          = ch.name
-	                    %td
-	                      - @entity.each do |en|
-	                        - if procert.entity_id == en.id
-	                          = en.name
-	                    %td
-	                      = procert.start_date
-	                    %td
-	                      = procert.finish_date
-	  .row
+                    %tr
+                      %td
+                        - @work.each do |wo|
+                          - if procert.work_id == wo.id
+                            = wo.name
+                      %td
+                        - @charge.each do |ch|
+                          -if procert.charge_id == ch.id
+                            = ch.name
+                      %td
+                        - @entity.each do |en|
+                          - if procert.entity_id == en.id
+                            = en.name
+                      %td
+                        = procert.start_date
+                      %td
+                        = procert.finish_date
+                      %td
+                        Certificado
+                        %br Otro
+                      %td
+                        - if procert.certificate.exists?
+                          %a.btn.btn-info.btn-xs{:href =>"#{procert.certificate.url}", :target => "_blank"}
+                            %i.fa.fa-clipboard
+                        -else
+                          No hay ningun Archivo adjunto
+                        %br
+                        - if procert.other.exists? 
+                          %a.btn.btn-info.btn-xs{:href =>"#{procert.other.url}", :target => "_blank"}
+                            %i.fa.fa-clipboard
+                        -else
+                          No hay ningun Archivo adjunto
+
+    .row
       %article.col-sm-12.col-md-12.col-lg-12
         #wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
           %header
@@ -116,16 +136,50 @@
                     %th Cantidad de Horas
                     %th Fecha de Inicio
                     %th Fecha de Termino
+                    %th Nombre del Documento
+                    %th Documento
                 %tbody
                   -@professional.trainings.each do |proctra|
-	                  %tr
-	                    %td
+                    %tr
+                      %td
                         = proctra.type_training
-	                    %td
-	                      = proctra.name_training
-	                    %td
+                      %td
+                        = proctra.name_training
+                      %td
                         = proctra.num_hours
-	                    %td
-	                      = procert.start_training
-	                    %td
-	                      = procert.finish_training
+                      %td
+                        = proctra.start_training
+                      %td
+                        = proctra.finish_training
+                      %td
+                        Certificado
+                      %td
+                        - if proctra.training.exists?
+                          %a.btn.btn-info.btn-xs{:href =>"#{procert.training.url}", :target => "_blank"}
+                            %i.fa.fa-clipboard
+                        -else
+                          No hay ningun Archivo adjunto
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-works{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de las Profesionales
+
+:javascript
+
+  $('#backlist-works').click(function(){
+      load_url_ajax("#{biddings_professionals_path}", 'content', null, null, 'GET');
+  });
+
+= javascript_include_tag 'plugin/flot/jquery.flot.cust'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
+= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
+= javascript_include_tag 'plugin/flot/jquery.flot.resize'
+= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
+= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
+= javascript_include_tag 'plugin/datatables/ColReorder.min'
+= javascript_include_tag 'plugin/datatables/FixedColumns.min'
+= javascript_include_tag 'plugin/datatables/ColVis.min'
+= javascript_include_tag 'plugin/datatables/ZeroClipboard'
+= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
+= javascript_include_tag 'plugin/datatables/DT_bootstrap'

@@ -10,12 +10,17 @@ class Biddings::ProfessionalsController < ApplicationController
   end
 
   def show
+    @work = Work.all
+    @charge = Charge.all
     @professional= Professional.find(params[:id])
+    TypeEntity.where("id IN (1,5)").each do |tent|
+      @entity = tent.entities
+    end
     render layout: false
   end
 
   def new
-    @reg = Time.now.to_i.to_s
+    @reg = Time.now.to_i
     @professional=Professional.new
     @work = Work.all
     @major = Major.all
@@ -48,21 +53,13 @@ class Biddings::ProfessionalsController < ApplicationController
   def edit
     @professional = Professional.find(params[:id])
     @component = Component.all
-    cert = Certificate.where('professional_id = ?', params[:id])
-    cert.each do |certificate|
-      @certificate = certificate
-    end
-    tra = Training.where('professional_id = ?', params[:id])
-    tra.each do |training|
-      @training = training
-    end
     @work = Work.all
     @charge = Charge.all
     @entities =Array.new
     TypeEntity.where("id IN (1,5)").each do |tent|
       @entities << tent.entities
     end
-    @reg = Time.now.to_i.to_s
+    @reg = Time.now.to_i
     @major = Major.all
     @action = 'edit'
     render layout: false
@@ -108,8 +105,7 @@ class Biddings::ProfessionalsController < ApplicationController
   end
 
   def more_certificates
-    @reg = Time.now.to_i.to_s
-    @professional=Professional.new
+    @reg = Time.now.to_i
     @work = Work.all
     @major = Major.all
     @component = Component.all
@@ -122,7 +118,7 @@ class Biddings::ProfessionalsController < ApplicationController
   end
   
   def more_trainings
-    @reg = Time.now.to_i.to_s
+    @reg = Time.now.to_i
     render layout: false
   end
 

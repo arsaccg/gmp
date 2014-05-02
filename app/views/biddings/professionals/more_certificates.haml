@@ -1,47 +1,49 @@
 .panel.panel-default
   .panel-heading
     %h4.panel-title
-      %a{"data-parent" => "#accordion-tr", "data-toggle" => "collapse", href: "#collapse#{@reg}-1"}
+      %a{"data-parent" => "#accordion-ce", "data-toggle" => "collapse", href: "#collapse"+@reg.to_s+"-1"}
         %i.fa.fa-fw.fa-plus-circle.txt-color-green
         %i.fa.fa-fw.fa-minus-circle.txt-color-red
-        Nuevo Certificado
-  .panel-collapse.collapse.in{ 'id'=> "collapse#{@reg}-1"}
+        Certificados
+  .panel-collapse.collapse.in{ 'id'=> "collapse"+@reg.to_s+"-1"}
     .panel-body
       .row
         .col-sm-4
           %label Nombre de la obra
-          %select.form-control#work-select{name: "professional[certificates_attributes][#{@reg}][work_id]"}
-            -if @action=="edit"
-              - @work.each do |wc|
-                -if @certificate.work_id==wc.id
-                  %option{value: "#{wc.id}", selected:true} 
-                    = "#{wc.name}"
-                -else
-                  %option{value: "#{wc.id}"} 
-                    = "#{wc.name}"
-            -else
-              -@work.each do |wc|
-                %option{value: "#{wc.id}"} 
-                  = "#{wc.name}"
+          %select.form-control#work-select{name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]"}
+            -@work.each do |wc|
+              %option{value: "#{wc.id}"} 
+                = "#{wc.name}"
           %input#change-check{type: "checkbox", :value=> "otros"}
             = "No es una de las Obras?"
-        .col-sm-4
+        .col-sm-4#another_work{style: "display:none;"}
           %label Nombre de Otra Obra
-          %input#another_work.form-control{name: "professional[certificates_attributes][#{@reg}][other_work]", :disabled=>"disabled"}
+          %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work]"}
         .col-sm-2
           %label Inicio de la obra: 
           %label.input
-            %input#start_certificate.form-control{name:"professional[certificates_attributes][#{@reg}][start]", :disabled=>"disabled"}
+            %input#start_certificate.form-control{name:"professional[certificates_attributes][" + @reg.to_s + "][start]", :disabled=>"disabled"}
         .col-sm-2
           %label Termino de la obra: 
           %label.input
-            %input#finish_certificate.form-control{name: "professional[certificates_attributes][#{@reg}][end]", :disabled=>"disabled"}
-      %br    
+            %input#finish_certificate.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][end]", :disabled=>"disabled"}
+        .col-sm-4#specialty{style: "display:none;"}
+          %label Especialidad
+          %br
+          .input-group
+            %select.form-control#specialty-select{:name =>"professional[certificates_attributes][" + @reg.to_s + "][specialty]"}
+              %option{:value => "Saneamiento"} Saneamiento
+              %option{:value => "Civil"} Civil
+              %option{:value => "Electromecanico"} Electromecanico
+              %option{:value => "Hidraulica"} Hidráulica
+            %span.input-group-addon
+              %i.fa.fa-money
+      %br
       .row
         .col-sm-4
           %label Entidad contratante
           .input-group
-            %select.form-control.col.sm-4#category-select{ name: "professional[certificates_attributes][#{@reg}][entity_id]"}
+            %select.form-control.col.sm-4#category-select{ name: "professional[certificates_attributes][" + @reg.to_s + "][entity_id]"}
               - @entities.each do |entities|
                 - entities.each do |entity|
                   %option{:value => "#{entity.id}"}
@@ -50,56 +52,37 @@
               %i.fa.fa-gears
         .col-sm-4
           %label Cargo
-          %select.form-control#work-select{name: "professional[certificates_attributes][#{@reg}][charge_id]"}
-            -if @action=="edit"
-              -@charge.each do |wc|
-                -if @certificate.charge_id==wc.id
-                  %option{value: "#{wc.id}", selected:true} 
-                    = "#{wc.name}"
-                -else
-                  %option{value: "#{wc.id}"} 
-                    = "#{wc.name}"
-            -else
-              -@charge.each do |wc|
-                %option{value: "#{wc.id}"} 
-                  = "#{wc.name}"
+          %select.form-control#work-select{name: "professional[certificates_attributes][" + @reg.to_s + "][charge_id]"}
+            -@charge.each do |wc|
+              %option{value: "#{wc.id}"} 
+                = "#{wc.name}"
         .col-sm-4
           %label Cantidad de días trabajados
           .col-4
-            %input#worked-day.form-control{name: "professional[certificates_attributes][#{@reg}][num_days]", :disabled=>"disabled"}
+            %input#worked-day.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][num_days]", :disabled=>"disabled"}
+      
       %br
       .row
         .col-sm-2
-          %a.btn.btn-primary{href: 'javascript:void(0);', :onclick => 'add_dates();'} Agregar más fechas
+          //%a.btn.btn-primary{href: 'javascript:void(0);', :onclick => 'add_dates();'} Agregar más fechas
+
       %br
       .row
         .col-sm-4
           %label.col-sm-4 Fecha de Inicio:
           .col-sm-8
-            -if @action == 'edit'
-              .input-group
-                %input#finish-worker.form-control{ name:"professional[certificates_attributes][#{@reg}][start_date]", as: :string, type:  "date", :value => "#{@certificate.start_date}"}
-                %span.input-group-addon
-                  %i.fa.fa-calendar
-            -else
-              .input-group
-                %input#start-worker.form-control{ name: "professional[certificates_attributes][#{@reg}][start_date]", as: :string, type:  "date"}
-                %span.input-group-addon
-                  %i.fa.fa-calendar
+            .input-group
+              %input#start-worker.form-control{ name: "professional[certificates_attributes][" + @reg.to_s + "][start_date]", as: :string, type:  "date"}
+              %span.input-group-addon
+                %i.fa.fa-calendar
       
         .col-sm-4
           %label.col-sm-4.control-label Fecha de Termino:
           .col-sm-8
-            -if @action == 'edit'
-              .input-group
-                %input#finish-worker.form-control{ name:"professional[certificates_attributes][#{@reg}][finish_date]", as: :string, type:  "date", :value => "#{@certificate.finish_date}"}
-                %span.input-group-addon
-                  %i.fa.fa-calendar
-            -else
-              .input-group
-                %input#finish-worker.form-control{ name:"professional[certificates_attributes][#{@reg}][finish_date]", as: :string, type:  "date"}
-                %span.input-group-addon
-                  %i.fa.fa-calendar
+            .input-group
+              %input#finish-worker.form-control{ name:"professional[certificates_attributes][" + @reg.to_s + "][finish_date]", as: :string, type:  "date"}
+              %span.input-group-addon
+                %i.fa.fa-calendar
       %br
       .row
         .col-sm-12
@@ -116,7 +99,7 @@
           .col-sm-4#comp{style: "display:none;"}
             -if @component !=nil
               - @component.each do |comp|
-                %input{name: "professional[certificates_attributes][#{@reg}][component_work]", type: "checkbox", :value=> "#{comp.id}"}
+                %input{name: "professional[certificates_attributes][" + @reg.to_s + "][component_work]", type: "checkbox", :value=> "#{comp.id}"}
                   = "#{comp.name}"
                 %br
       %fieldset
@@ -126,9 +109,9 @@
             %label.col-sm-2 Certificado
             .col-sm-10
               .button
-                = file_field_tag "professional[certificates_attributes][#{@reg}][certificate]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][certificate]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
           .col-sm-6
             %label.col-sm-2 Otro
             .col-sm-10
               .button
-                = file_field_tag "professional[certificates_attributes][#{@reg}][other]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][other]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
