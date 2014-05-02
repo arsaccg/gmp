@@ -282,6 +282,10 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   end
 
+  def get_exchange_rate_per_date
+    render :json => exchange_rate_per_date(params[:date], params[:money_id]).first()
+  end
+
   private
   def purchase_order_parameters
     params.require(:purchase_order).permit(:exchange_of_rate, :date_of_issue, :expiration_date, :delivery_date, :retention, :money_id, :method_of_payment_id, :entity_id, :cost_center_id, :state, :description, purchase_order_details_attributes: [:id, :puchase_order_id, :delivery_order_detail_id, :unit_price, :igv, :amount, :unit_price_igv, :description, :_destroy])
