@@ -1,0 +1,99 @@
+.panel.panel-default
+  .panel-heading
+    %h4.panel-title
+      %a{"data-parent" => "#accordion-tr", "data-toggle" => "collapse", href: "#collapse#{@reg}-1"}
+        %i.fa.fa-fw.fa-plus-circle.txt-color-green
+        %i.fa.fa-fw.fa-minus-circle.txt-color-red
+        Nuevo Capacitación
+  .panel-collapse.collapse.in{ 'id'=> "collapse#{@reg}-1"}
+    .panel-body
+      .row
+        .col-sm-4
+          %label Tipo de capacitación
+          %br
+          %select.form-control{name: "professional[trainings_attributes][#{@reg}][type_training]"}
+            -if @action=="edit"
+              -if @training.type_training=="Curso"
+                %option{value: "Curso", selected:true} Curso
+                %option{value: "Diplomado"} Diplomado
+                %option{value: "Doctorado"} Doctorado
+                %option{value: "Maestría"} Maestría
+              -if @training.type_training=="Diplomado"
+                %option{value: "Curso"} Curso
+                %option{value: "Diplomado", selected:true} Diplomado
+                %option{value: "Doctorado"} Doctorado
+                %option{value: "Maestría"} Maestría
+              -if @training.type_training=="Doctorado"
+                %option{value: "Curso"} Curso
+                %option{value: "Diplomado"} Diplomado
+                %option{value: "Doctorado", selected:true} Doctorado
+                %option{value: "Maestría"} Maestría
+              -if @training.type_training=="Maestría"
+                %option{value: "Curso"} Curso
+                %option{value: "Diplomado"} Diplomado
+                %option{value: "Doctorado"} Doctorado
+                %option{value: "Maestría", selected:true} Maestría
+            -else
+              %option{value: "Curso"} Curso
+              %option{value: "Diplomado"} Diplomado
+              %option{value: "Doctorado"} Doctorado
+              %option{value: "Maestría"} Maestría
+        
+        .col-sm-6
+          %label Nombre de curso
+          %br
+          -if @action=='edit'
+            .input-group
+              %input.form-control{ name:"professional[trainings_attributes][#{@reg}][name_training]", placeholder: "Nombre del curso", :value=> "#{@training.name_training}",html: { class: 'form-control' }}
+              %span.input-group-addon
+                %i.fa.fa-book.fa-sm.fa-fw
+          -else
+            .input-group
+              %input.form-control{ name:"professional[trainings_attributes][#{@reg}][name_training]", placeholder: "Nombre del curso", html: { class: 'form-control' }}
+              %span.input-group-addon
+                %i.fa.fa-book.fa-sm.fa-fw
+      %br          
+      .row
+        .col-sm-4
+          %label Fecha de Inicio
+          -if @action == 'edit'
+            .input-group
+              %input#finish.form-control{ name:"professional[trainings_attributes][#{@reg}][start_training]",as: :string, type: "date", :value => "#{@training.start_training}"}
+              %span.input-group-addon
+                %i.fa.fa-calendar
+          -else
+            .input-group
+              %input#start.form-control{ name:"professional[trainings_attributes][#{@reg}][start_training]",as: :string, type: "date"}/
+              %span.input-group-addon
+                %i.fa.fa-calendar
+        .col-sm-4
+          %label Fecha de Termino
+          -if @action =='edit'
+            .input-group
+              %input#finish.form-control{ name:"professional[trainings_attributes][#{@reg}][finish_training]", as: :string, type: "date", :value => "#{@training.finish_training}" }/
+              %span.input-group-addon
+                %i.fa.fa-calendar
+          -else
+            .input-group
+              %input#finish.form-control{ name:"professional[trainings_attributes][#{@reg}][finish_training]", as: :string, type: "date"}/
+              %span.input-group-addon
+                %i.fa.fa-calendar
+        
+        .col-sm-4
+          %label Número de horas
+          -if @action =='edit'
+            .input-group
+              %span.input-group-addon
+                %i.icon-append.fa.fa-book
+              %input.form-control{ name:"professional[trainings_attributes][#{@reg}][num_hours]", placeholder: "Número de horas", :value => "#{@training.num_hours}",input_html: { class: 'form-control' }}
+          -else
+            .input-group
+              %span.input-group-addon
+                %i.icon-append.fa.fa-book
+              %input.form-control{ name:"professional[trainings_attributes][#{@reg}][num_hours]", placeholder: "Número de horas", input_html: { class: 'form-control' }}
+      %br
+      %fieldset
+        %legend Archivos a Adjuntar
+        .row  
+          %label Certificado de Capacitación
+          = file_field_tag "professional[trainings_attributes][#{@reg}][training]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"

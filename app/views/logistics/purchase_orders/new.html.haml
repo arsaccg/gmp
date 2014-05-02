@@ -96,6 +96,26 @@
       load_url_ajax("#{logistics_purchase_orders_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
     });
 
+    $('#btn-info-cost').click(function() {
+      var total_unit_price = 0;
+      $('#order_delivery_items_table tr td.price-without-igv input').each(function(k,v){
+        total_unit_price = total_unit_price + parseFloat($(this).val());
+      });
+
+      var total_unit_price_with_igv = 0;
+      $('#order_delivery_items_table tr td.price-with-igv input').each(function(k,v){
+        total_unit_price_with_igv = total_unit_price_with_igv + parseFloat($(this).val());
+      });
+
+      $.smallBox({
+        title : "Información de la Orden de Compra",
+        content : "El Sub Total es de: " + total_unit_price + ' ' + "El Total es de: " + total_unit_price_with_igv, 
+        color : "#5384AF",
+        //timeout: 8000,
+        icon : "fa fa-bell"
+      });
+    });
+
   });
 
   function delete_item(code){
@@ -175,6 +195,8 @@
   function enableFieldsForIgv(element){
     if($(element).is(":checked")){
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
+      console.log(price_without_igv);
+      console.log($(element).parent().parent().siblings('.price-with-igv').find('input'));
       $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*(parseFloat("#{@igv}"))).toFixed(2));
     } else {
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();

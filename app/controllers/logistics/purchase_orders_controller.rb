@@ -2,7 +2,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
   def index
     @company = params[:company_id]
     @purchaseOrders = PurchaseOrder.all
-    @deliveryOrders = DeliveryOrder.all.where("state LIKE 'approved'").first()
+    @deliveryOrders = DeliveryOrder.all.where("state LIKE 'approved'")
     @deliveryOrder = DeliveryOrder.all.first()
     @costcenters = CostCenter.where("company_id = #{@company}")
     render layout: false

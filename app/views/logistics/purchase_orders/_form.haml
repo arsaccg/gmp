@@ -123,6 +123,8 @@
                 .actions
                   %button.btn.btn-sm.btn-success#btn-add-more-items-do{'type' => 'button'}
                     Agregar más items de Ordenes de Suministro
+                  %button.btn.btn-primary#btn-info-cost{'type' => 'button'}
+                    Calcular Total y Sub-Total de lo que tengo
           %br
         .col-sm-12
           %fieldset
@@ -138,12 +140,12 @@
                       %th Unidad de Medida
                       %th Cantidad
                       %th Precio Unitario
-                      %th Precio antes de IGV
+                      %th Total antes de IGV
                       %th ¿Aplica IGV?
-                      %th Precio después de IGV
-                      %th Glosa
+                      %th Total después de IGV
+                      %th Descripción
                       %th Eliminar
-                  %tbody
+                  %tbody#order_delivery_items_table
                     - @purchaseOrder.purchase_order_details.each do |pod|
                       %tr
                         %td(style="display:none" class="pod-di")
@@ -213,6 +215,26 @@
       $('#modalDeliveryItems').modal('toggle', {
         keyboard: false,
         backdrop: 'static'
+      });
+    });
+
+    $('#btn-info-cost').click(function() {
+      var total_unit_price = 0;
+      $('#order_delivery_items_table tr td.price-without-igv input').each(function(k,v){
+        total_unit_price = total_unit_price + parseFloat($(this).val());
+      });
+
+      var total_unit_price_with_igv = 0;
+      $('#order_delivery_items_table tr td.price-with-igv input').each(function(k,v){
+        total_unit_price_with_igv = total_unit_price_with_igv + parseFloat($(this).val());
+      });
+
+      $.smallBox({
+        title : "Información de la Orden de Compra",
+        content : "El Sub Total es de: " + total_unit_price + ' ' + "El Total es de: " + total_unit_price_with_igv, 
+        color : "#5384AF",
+        //timeout: 8000,
+        icon : "fa fa-bell"
       });
     });
 

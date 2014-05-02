@@ -26,11 +26,11 @@ $(document).ready(function(){
         var isValueNumeric = !isNaN(parseFloat(value)) && isFinite(value);
         var isTargetNumeric = !isNaN(parseFloat(target)) && isFinite(target);
         if (isValueNumeric && isTargetNumeric) {
-            return Number(value) > Number(target);
+            return Number(value) >= Number(target);
         }
 
         if (!/Invalid|NaN/.test(new Date(value))) {
-            return new Date(value) > new Date(target);
+            return new Date(value) >= new Date(target);
         }
 
         return false;

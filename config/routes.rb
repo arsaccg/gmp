@@ -189,14 +189,17 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :work_partners
-    resources :professionals
-    resources :trainings
-    resources :certificates do
+    resources :professionals do
       collection do
         post 'get_component_from_work'
         post 'dates_from_work'
+        post 'more_dates'
+        post 'more_certificates'
+        post 'more_trainings'
       end
     end
+    resources :trainings
+    resources :certificates
     resources :components
     resources :charges
     resources :majors

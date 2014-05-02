@@ -52,7 +52,7 @@ class Logistics::ArticlesController < ApplicationController
     # Todas las categorias
     @categories = Category.all
     # La categoria al que pertenece
-    @specific_article = @article.specific.id
+    @specific_article = @article.specific.id rescue 1
     # Traemos las SubCategorias
     # Traemos la subcategoria
     @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
