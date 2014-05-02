@@ -51,7 +51,7 @@
   pageSetUp();
 
   $(document).ready(function(){
-
+    get_exchange_rate();
     $("#company_id").val("#{@company}");
     $('#cost-center-selected').select2({ width: '100%' });
     $('#btn-add-more-items-do').click(function(){
@@ -70,26 +70,7 @@
     });
 
     $('#category-select').change(function(){
-      var date = $('#purchase_order_date_of_issue').val();
-      var money_id = $(this).val();
-      $.ajax({
-        type: 'POST',
-        url: "#{get_exchange_rate_per_date_logistics_purchase_orders_path}",
-        data: {
-          date: date,
-          money_id: money_id,
-          authenticity_token: "#{form_authenticity_token}"
-        },
-        dataType : 'json',
-        async: false,
-        success: function(data) {
-          if(data){
-            $('#purchase_order_exchange_of_rate').val(data);
-          }else{
-            $('#purchase_order_exchange_of_rate').val(0);
-          }
-        }
-      });
+      get_exchange_rate();
     });
 
     $('#backlist-purchase-order').click(function(){
@@ -120,6 +101,29 @@
 
   function delete_item(code){
     $("#tr" + code).remove();
+  }
+
+  function get_exchange_rate(){
+    var date = $('#purchase_order_date_of_issue').val();
+    var money_id = $('#category-select').val();
+    $.ajax({
+      type: 'POST',
+      url: "#{get_exchange_rate_per_date_logistics_purchase_orders_path}",
+      data: {
+        date: date,
+        money_id: money_id,
+        authenticity_token: "#{form_authenticity_token}"
+      },
+      dataType : 'json',
+      async: false,
+      success: function(data) {
+        if(data){
+          $('#purchase_order_exchange_of_rate').val(data);
+        }else{
+          $('#purchase_order_exchange_of_rate').val(0);
+        }
+      }
+    });
   }
 
   // PAGE RELATED SCRIPTS
