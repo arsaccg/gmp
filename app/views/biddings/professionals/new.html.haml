@@ -83,6 +83,16 @@
     $("#" + code).remove();
   }
 
+  $('#finish-worker').change(function(){
+    var d1 = $('#start-worker').val().split("-");
+    var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
+    var d2 = $('#finish-worker').val().split("-");
+    var dat2 = new Date(d2[0], parseFloat(d2[1])-1, parseFloat(d2[2]));
+    var fin = dat2.getTime() - dat1.getTime();
+    var dias = Math.floor(fin / (1000 * 60 * 60 * 24))  
+    $('#worked-day').val(dias);
+  });
+
   $('#change-check').change(function(){
     $('#work-select').attr('disabled', this.checked);
     $('#start_certificate').attr('disabled', !this.checked);

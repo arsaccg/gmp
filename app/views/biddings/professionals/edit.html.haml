@@ -99,6 +99,12 @@
       $('#specialty').fadeOut('fast');
     }
   });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      target: '#content',
+    });
+  }
 
   $('#work-select').change(function(){
     var work_id = $(this).val();

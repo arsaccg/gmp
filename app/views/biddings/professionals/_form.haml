@@ -309,7 +309,7 @@
                             %label.col-sm-4 Fecha de Inicio:
                             .col-sm-8
                               .input-group
-                                %input#start-worker.form-control{ name: "professional[certificates_attributes][" + @reg.to_s + "][start_date]", as: :string, type:  "date"}
+                                %input#start-worker.form-control{ name: "professional[certificates_attributes][" + @reg.to_s + "][start_date]", as: :date, type:  "date"}
                                 %span.input-group-addon
                                   %i.fa.fa-calendar
                         
@@ -317,7 +317,7 @@
                             %label.col-sm-4.control-label Fecha de Termino:
                             .col-sm-8
                               .input-group
-                                %input#finish-worker.form-control{ name:"professional[certificates_attributes][" + @reg.to_s + "][finish_date]", as: :string, type:  "date"}
+                                %input#finish-worker.form-control{ name:"professional[certificates_attributes][" + @reg.to_s + "][finish_date]", as: :date, type:  "date"}
                                 %span.input-group-addon
                                   %i.fa.fa-calendar
                         %br
@@ -375,11 +375,11 @@
                     .panel.panel-default
                       .panel-heading
                         %h4.panel-title
-                          %a{"data-parent" => "#accordion-tr", "data-toggle" => "collapse", href: "#collapse" + @reg.to_s + "-1"}
+                          %a{"data-parent" => "#accordion-tr", "data-toggle" => "collapse", href: "#collapse" + @reg.to_s + "-2"}
                             %i.fa.fa-fw.fa-plus-circle.txt-color-green
                             %i.fa.fa-fw.fa-minus-circle.txt-color-red
                             Capacitación N°1
-                      .panel-collapse.collapse.in{ 'id'=> "collapse" + @reg.to_s + "-1"}
+                      .panel-collapse.collapse.in{ 'id'=> "collapse" + @reg.to_s + "-2"}
                         .panel-body
                           .row
                             .col-sm-4
@@ -446,11 +446,11 @@
                   .panel.panel-default
                     .panel-heading
                       %h4.panel-title
-                        %a{"data-parent" => "#accordion-ce", "data-toggle" => "collapse", href: "#collapse"+@reg.to_s+"-1"}
+                        %a{"data-parent" => "#accordion-tr", "data-toggle" => "collapse", href: "#collapse"+@reg.to_s+"-2"}
                           %i.fa.fa-fw.fa-plus-circle.txt-color-green
                           %i.fa.fa-fw.fa-minus-circle.txt-color-red
-                          Capacitaciones
-                    .panel-collapse.collapse.in{ 'id'=> "collapse"+@reg.to_s+"-1"}
+                          Capacitación N°1
+                    .panel-collapse.collapse.in{ 'id'=> "collapse"+@reg.to_s+"-2"}
                       .panel-body
                         .row
                           .col-sm-4
