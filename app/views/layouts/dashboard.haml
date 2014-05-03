@@ -243,6 +243,11 @@
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Salida de Almacén
+              %li
+                %a{href: "#{reports_inventories_path}?company_id=#{@company.id}", title: "Consulta de Inventarios", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Consulta de Inventarios
           %li
             %a{href: "#", title: "Licitaciones"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
