@@ -1,3 +1,6 @@
+require 'numbers_in_words'
+require 'numbers_in_words/duck_punch'
+
 text "ORDEN DE COMPRA - #{@purchaseOrder.id.to_s.rjust(5, '0')}", :align => :center
 
 move_down 20
@@ -32,7 +35,8 @@ text "Glosa", :style => :bold
 text "#{@purchaseOrder.description}"
 
 repeat :all do
-   bounding_box [bounds.left, bounds.bottom + 53], :width  => bounds.width do
+  text "#{@total_neto.to_i.in_words.capitalize} y #{number_with_precision (@total_neto-@total_neto.to_i)*100, :precision => 0}/100 #{@purchaseOrder.money.name}"
+  bounding_box [bounds.left, bounds.bottom + 53], :width  => bounds.width do
     table([ 
       ["", "Condiciones:
       1. Facturar adjuntando O/C y guias recepcionadas
