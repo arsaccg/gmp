@@ -10,24 +10,24 @@
       .row
         .col-sm-4
           %label Nombre de la obra
-          %select.form-control#work-select{name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]"}
+          %select.form-control{'class'=> 'work-select2' ,name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]"}
             -@work.each do |wc|
               %option{value: "#{wc.id}"} 
                 = "#{wc.name}"
-          %input#change-check{type: "checkbox", :value=> "otros"}
+          %input{'class'=> 'change-check2' ,type: "checkbox", :value=> "otros"}
             = "No es una de las Obras?"
-        .col-sm-4#another_work{style: "display:none;"}
+        .col-sm-4{'class'=>'another_work2' ,style: "display:none;"}
           %label Nombre de Otra Obra
           %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work]"}
         .col-sm-2
           %label Inicio de la obra: 
           %label.input
-            %input#start_certificate.form-control{name:"professional[certificates_attributes][" + @reg.to_s + "][start]", :disabled=>"disabled"}
+            %input.form-control{'class'=>'start_certificate2', name:"professional[certificates_attributes][" + @reg.to_s + "][start]", :disabled=>"disabled"}
         .col-sm-2
           %label Termino de la obra: 
           %label.input
-            %input#finish_certificate.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][end]", :disabled=>"disabled"}
-        .col-sm-4#specialty{style: "display:none;"}
+            %input.form-control{'class'=> 'finish_certificate2' ,name: "professional[certificates_attributes][" + @reg.to_s + "][end]", :disabled=>"disabled"}
+        .col-sm-4{'class'=> 'specialty2' ,style: "display:none;"}
           %label Especialidad
           %br
           .input-group
@@ -59,7 +59,7 @@
         .col-sm-4
           %label Cantidad de días trabajados
           .col-4
-            %input#worked-day.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][num_days]", :disabled=>"disabled"}
+            %input.form-control{'class'=> 'worked-day' ,name: "professional[certificates_attributes][" + @reg.to_s + "][num_days]", :disabled=>"disabled"}
       
       %br
       .row
@@ -72,7 +72,7 @@
           %label.col-sm-4 Fecha de Inicio:
           .col-sm-8
             .input-group
-              %input#start-worker.form-control{ name: "professional[certificates_attributes][" + @reg.to_s + "][start_date]", as: :string, type:  "date"}
+              %input.form-control{'class'=>'start-worker', name: "professional[certificates_attributes][" + @reg.to_s + "][start_date]", as: :string, type:  "date"}
               %span.input-group-addon
                 %i.fa.fa-calendar
       
@@ -80,23 +80,23 @@
           %label.col-sm-4.control-label Fecha de Termino:
           .col-sm-8
             .input-group
-              %input#finish-worker.form-control{ name:"professional[certificates_attributes][" + @reg.to_s + "][finish_date]", as: :string, type:  "date"}
+              %input.form-control{'class'=> 'finish-worker', name:"professional[certificates_attributes][" + @reg.to_s + "][finish_date]", as: :string, type:  "date"}
               %span.input-group-addon
                 %i.fa.fa-calendar
       %br
-      .row
-        .col-sm-12
-          #new-date 
+        .row
+          .col-sm-12
+            #new-date2 
       .row
         .col-sm-6
           %label Componentes de la obra:
           %br
           .col-sm-4
             %label#get-comp
-              %label.select.type-training#comp-check
+              %label.select.type-training{'class'=> 'comp-check2'}
       .row
         .col-sm-6
-          .col-sm-4#comp{style: "display:none;"}
+          .col-sm-4{'class'=> 'comp2' ,style: "display:none;"}
             -if @component !=nil
               - @component.each do |comp|
                 %input{name: "professional[certificates_attributes][" + @reg.to_s + "][component_work]", type: "checkbox", :value=> "#{comp.id}"}
@@ -115,3 +115,98 @@
             .col-sm-10
               .button
                 = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][other]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+
+
+:javascript
+  $(document).ready(function(){
+    function delete_item(code){
+      $("#" + code).remove();
+    }
+
+    $('.change-check2').change(function(){
+      $('.work-select2').attr('disabled', this.checked);
+      $('.start_certificate2').attr('disabled', !this.checked);
+      $('.finish_certificate2').attr('disabled', !this.checked);
+
+      if ($('.change-check2').is(':checked')){
+        $('.comp-check2').fadeOut('fast');
+        $('.comp2').fadeIn('fast');
+        $('.another_work2').fadeIn('fast');
+        $('.specialty2').fadeIn('fast');
+      }else{
+        $('.comp-check2').fadeIn('fast');
+        $('.comp2').fadeOut('fast');
+        $('.another_work2').fadeOut('fast');
+        $('.specialty2').fadeOut('fast');
+      }
+    });
+
+    $('.work-select2').change(function(){
+      var work_id = $(this).val();
+      complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+      set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    });
+
+    $('.work-select2').keyup(function(){
+      var work_id = $(this).val();
+      complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+      set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    });
+
+  });
+
+  $('.finish-worker').change(function(){
+    var d1 = $('.start-worker').val().split("-");
+    var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
+
+    var d2 = $('.finish-worker').val().split("-");
+    var dat2 = new Date(d2[0], parseFloat(d2[1])-1, parseFloat(d2[2]));
+
+    var fin = dat2.getTime() - dat1.getTime();
+    var dias = Math.floor(fin / (1000 * 60 * 60 * 24))  
+    $('.worked-day').val(dias);
+  });
+
+  function complete_infocombo(url, work_id, form_token, default_value){
+    var str_html = "";
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { work_id: work_id, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.component_work, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('.comp-check2').empty();
+      $.each(newOptions, function(key,value){
+        str_html = str_html + "<label> <strong> > </strong> " + value.name + "</label><br/>"
+      });
+      $('.comp-check2').html(str_html);
+    });
+  }
+
+  function set_day(url, work_id, form_token, default_value){
+      $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { work_id: work_id, authenticity_token: form_token}
+      }).done(function(data){
+        var start = data.start;
+        var finish = data.finish;
+        $('.start_certificate2').empty();
+        $('.start_certificate2').val(start);
+        $('.finish_certificate2').empty();
+        $('.finish_certificate2').val(finish);
+      });
+  }
+
+  function add_dates() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{more_dates_biddings_professionals_path}', 'new-date2', data, '', 'POST');
+  }

@@ -7,6 +7,7 @@ class Article < ActiveRecord::Base
   
 	belongs_to :unit_of_measurement#, :through => :article_unit_of_measurements
 	#accepts_nested_attributes_for :unit_of_measurements
+	belongs_to :rep_inv_article, :foreign_key => 'id'
 
 	#Validaciones
 	include ActiveModel::Validations

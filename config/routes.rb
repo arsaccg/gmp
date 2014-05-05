@@ -178,7 +178,6 @@ ArsacLogistica::Application.routes.draw do
         post 'add_stock_input_item_field'
       end
     end
-
   end
 
   namespace :biddings do
@@ -204,4 +203,16 @@ ArsacLogistica::Application.routes.draw do
     resources :charges
     resources :majors
   end
+
+  namespace :reports do
+    resources :inventories do
+      collection do
+        post 'show_rows_results'
+      end
+      member do
+        get 'show_rows_results_pdf'
+      end
+    end
+  end
+
 end

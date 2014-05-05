@@ -216,7 +216,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         @deliveryOrders << current_id.to_s.rjust(5, '0')
       end
     end
-
+    
     # Numerics/Text values for footer
     @total = 0
     @igv = 0
