@@ -158,9 +158,6 @@ class Logistics::ArticlesController < ApplicationController
 
         ## creacion de categoria
         if codigo_article != '00' and codigo_category != '00' and codigo_subcategory == '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
-          #type_of_articles_last = TypeOfArticle.last
-          #type_of_articles_last_id = type_of_articles_last.id
-          #category = Category.new(:code => codigo_category, :name => name, :article_id => type_of_articles_last_id)
           category = Category.new(:code => codigo_category, :name => name)
           category.save
         end
@@ -187,9 +184,8 @@ class Logistics::ArticlesController < ApplicationController
         end        
       end
       @temp = matriz_exel
-      #s.cell('E',fila)
+      redirect_to :action => :index
     end
-
     render layout: false
   end
 

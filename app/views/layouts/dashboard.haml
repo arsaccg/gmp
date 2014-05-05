@@ -244,9 +244,39 @@
                   %span.menu-item-parent
                     Salida de Almacén
           %li
+            %a{href: '#', title: "Producción"}
+              %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+              %span.menu-item-parent Producción
+            %ul
+              %li
+                %a{href: '#', title: 'General'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent General
+              %li
+                %a{href: '#', title: 'General'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Parte Obra
+              %li
+                %a{href: '#', title: 'General'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Personal
+              %li
+                %a{href: '#', title: 'General'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Equipos
+              %li
+                %a{href: '#', title: 'General'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Valorizaciones
+          %li
             %a{href: "#", title: "Licitaciones"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
               %span.menu-item-parent Licitaciones
+            %ul
+              %li
+                %a{href: "#{biddings_works_path}?company_id=#{@company.id}", title: "Obras"}
+                  %i.fa.fa-lg.fa-fw.fa-home
+                  %span.menu-item-parent Obras
             %ul
               %li
                 %a{href: '#'}
