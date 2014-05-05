@@ -61,6 +61,18 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
     render :json => user
   end
 
+  def getCostCentersPerCompany
+    if params[:costCenter] != nil
+      cost_centers = params[:costCenter]
+    end
+    respond_to do |format|
+      format.json { 
+        data = ActiveRecord::Base.connection.execute("SELECT id,name FROM `cost_centers` WHERE `company_id` IN (#{cost_centers})")
+        render :json => data
+      }
+    end
+  end
+
   private
     def user_params
     	params.require(:user).permit(:first_name, :last_name, :surname, :email, :date_of_birth, :avatar, :password, {:company_ids => []}, {:cost_center_ids => []})

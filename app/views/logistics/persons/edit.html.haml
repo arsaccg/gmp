@@ -74,7 +74,8 @@
                   %section.col.col-10
                     %label.label Acceso a Centro de Costo
                     %label.select
-                      = f.association :cost_centers, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
+                      %select.collection_select.optional.select2#user_cost_center_ids{'multiple'=>'multiple', 'name'=>'user[cost_center_ids][]'}
+                      =# f.association :cost_centers, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
               %footer
                 %button.btn.btn-primary{type: "submit"}
                   %i.fa.fa-save 
@@ -96,6 +97,33 @@
     }else{
       submit_validate($('#new_user'));
     }
+
+    $('#user_company_ids').change(function(){
+      if($(this).val() != null){
+        $.ajax({
+          type: 'POST',
+          url: '#{getCostCentersPerCompany_logistics_persons_path}.json',
+          async: false,
+          data: { costCenter: $(this).val().join() },
+          dataType : 'json',
+          success: function(response) {
+            $('#user_cost_center_ids').find('option').remove();
+            newOptions = [];
+            for(var i=0; i < response.length; i++){
+              $('#user_cost_center_ids').append(
+                $("<option></option>").attr("value", response[i][0]).text(response[i][1])
+              )
+            }
+          },
+          error: function(xhr, ajaxOptions, thrownError) {
+            console.log('No hay compañia seleccionada');
+          }
+        });
+      } else {
+        $('#user_cost_center_ids').find('option').remove();
+      }
+    });
+
   });
   
   function submit_validate(form){
