@@ -6,12 +6,47 @@
   .widget-body
     = simple_form_for([:logistics, @Sectors], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
-        .row
-          %section.col.col-10
-            %label.label Código
-            %label.input{for: "code"}
-              %i.icon-append.fa.fa-user
-              = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
+        - if @subsector
+          .row{'style' => 'display:none;'}
+            = text_field(:is, :subsector, class: "form-control", value: 1, readonly: true)
+          .row
+            %section.col.col-10
+              %label.label Sector
+              %label.input
+                %select.form-control#sector-select{:name =>"sector_id"}
+                  - @sectors.each do |sector|
+                    %option{:value => "#{sector.id}", :rel => "#{sector.code}"}
+                      = sector.name
+          .row
+            - if @Sectors.code != nil
+              %section.col.col-2
+                %label.label Código Fase
+                %label.input{for: "first_code"}
+                  %i.icon-append.fa.fa-user
+                  = text_field(:extrafield, :first_code, class: "form-control", readonly: true)
+              %section.col.col-8
+                %label.label Código Sub-Fase
+                %label.input{for: "code"}
+                  %i.icon-append.fa.fa-user
+                  = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
+            - else
+              %section.col.col-2
+                %label.label Código Fase
+                %label.input{for: "first_code"}
+                  %i.icon-append.fa.fa-user
+                  = text_field(:extrafield, :first_code, class: "form-control", readonly: true)
+              %section.col.col-8
+                %label.label Código Sub-Fase
+                %label.input{for: "code"}
+                  %i.icon-append.fa.fa-user
+                  = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
+        - else
+          .row
+            %section.col.col-10
+              %label.label Código
+              %label.input{for: "code"}
+                %i.icon-append.fa.fa-user
+                = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
             %label.label Nombre
@@ -26,6 +61,19 @@
 :javascript
   $(document).ready(function () {
     $("#sector_code").focus();
+
+    var code = $('option:selected', $("#sector-select")).attr('rel');
+    $('#extrafield_first_code').val(code);
+
+    $('#sector-select').change(function(){
+      var code = $('option:selected', this).attr('rel');
+      $('#extrafield_first_code').val(code);
+    });
+
+    $('#sector-select').keyup(function(){
+      var code = $('option:selected', this).attr('rel');
+      $('#extrafield_first_code').val(code);
+    });
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
