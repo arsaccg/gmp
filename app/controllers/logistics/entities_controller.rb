@@ -1,6 +1,7 @@
 class Logistics::EntitiesController < ApplicationController
   def index
     @type_entities = TypeEntity.all
+    @company = params[:company_id]
     render layout: false
   end
 
@@ -13,6 +14,8 @@ class Logistics::EntitiesController < ApplicationController
     @reg_n = Time.now.to_i
     @type_entities = TypeEntity.all
     @entity = Entity.new
+    @company_id = params[:company_id]
+    @costCenter = CostCenter.where("company_id = #{@company_id}")
     render layout: false
   end
 
@@ -21,7 +24,7 @@ class Logistics::EntitiesController < ApplicationController
     entity = Entity.new(entity_parameters)
     if entity.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
-      redirect_to :action => :index
+      redirect_to :action => :index, company_id: params[:company_id]
     else
       entity.errors.messages.each do |attribute, error|
         puts flash[:error].to_s + error.to_s + "  "
@@ -34,6 +37,7 @@ class Logistics::EntitiesController < ApplicationController
   end
 
   def edit
+    @company_id = params[:company_id]
     @reg_ed = Time.now.to_i
     @entity = Entity.find(params[:id])
     @all_entity_types = Array.new
@@ -57,7 +61,7 @@ class Logistics::EntitiesController < ApplicationController
     entity = Entity.find(params[:id])
     if entity.update_attributes(entity_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index
+      redirect_to :action => :index, company_id: params[:company_id]
     else
       entity.errors.messages.each do |attribute, error|
         flash[:error] =  flash[:error].to_s + error.to_s + "  "

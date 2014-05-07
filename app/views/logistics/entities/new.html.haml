@@ -25,8 +25,8 @@
 = javascript_include_tag 'plugin/datatables/ZeroClipboard'
 = javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
 = javascript_include_tag 'plugin/datatables/DT_bootstrap'
-:javascript
 
+:javascript
   $('#backlist-entity').click(function(){
-      load_url_ajax("#{logistics_entities_path}", 'content', null, null, 'GET');
+      load_url_ajax("#{logistics_entities_path}", 'content', {company_id: '#{@company_id}'}, null, 'GET');
   });

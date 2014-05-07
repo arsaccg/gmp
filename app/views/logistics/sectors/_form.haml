@@ -15,20 +15,24 @@
               %label.input
                 %select.form-control#sector-select{:name =>"sector_id"}
                   - @sectors.each do |sector|
-                    %option{:value => "#{sector.id}", :rel => "#{sector.code}"}
-                      = sector.name
+                    - if @Sectors.code.to_s[0,2] == sector.code
+                      %option{:value => "#{sector.id}", :rel => "#{sector.code}", :selected => true}
+                        = sector.name
+                    - else
+                      %option{:value => "#{sector.id}", :rel => "#{sector.code}"}
+                        = sector.name
           .row
             - if @Sectors.code != nil
               %section.col.col-2
                 %label.label Código Fase
                 %label.input{for: "first_code"}
                   %i.icon-append.fa.fa-user
-                  = text_field(:extrafield, :first_code, class: "form-control", readonly: true)
+                  = text_field(:extrafield, :first_code, class: "form-control", readonly: true, value: "#{@Sectors.code.to_s[0,2]}")
               %section.col.col-8
                 %label.label Código Sub-Fase
                 %label.input{for: "code"}
                   %i.icon-append.fa.fa-user
-                  = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
+                  = f.input :code, placeholder: "Código", input_html: { class: 'form-control', value: "#{@Sectors.code.to_s[2,4]}" }, label: false
             - else
               %section.col.col-2
                 %label.label Código Fase

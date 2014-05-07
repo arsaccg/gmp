@@ -254,9 +254,13 @@
               %span.menu-item-parent Producción
             %ul
               %li
-                %a{href: '#', title: 'General'}
+                %a{href: "#{production_workers_path}?company_id=#{@company.id}", title: 'Trabajadores'}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent General
+                  %span.menu-item-parent Trabajadores
+              %li
+                %a{href: "#{production_workers_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Grupos de Trabajo
               %li
                 %a{href: '#', title: 'General'}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
@@ -317,7 +321,7 @@
               %i.fa.fa-lg.fa-fw.fa-sitemap
               %span.menu-item-parent Tipo de Entidades
           %li
-            %a{href: "#{logistics_entities_path}", title: "Entidades"}
+            %a{href: "#{logistics_entities_path}?company_id=#{@company.id}", title: "Entidades"}
               %i.fa.fa-lg.fa-fw.fa-group
               %span.menu-item-parent Entidades
           %li

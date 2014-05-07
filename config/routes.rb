@@ -1,5 +1,12 @@
 ArsacLogistica::Application.routes.draw do
 
+  get "working_groups/index"
+  get "working_groups/show"
+  get "working_groups/new"
+  get "working_groups/create"
+  get "working_groups/edit"
+  get "working_groups/update"
+  get "working_groups/destroy"
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -217,6 +224,10 @@ ArsacLogistica::Application.routes.draw do
         get 'show_rows_results_pdf'
       end
     end
+  end
+
+  namespace :production do
+    resources :workers
   end
 
 end

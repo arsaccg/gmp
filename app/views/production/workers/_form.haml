@@ -4,16 +4,16 @@
       %i.fa.fa-eye
     %h2 Entidad
   .widget-body
-    = simple_form_for([:logistics, @entity], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:production, @worker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
         .row
           %section.col.col-10
-            %label.label Nombre o Razón Social
-            %label.input{for: "name"}
+            %label.label Nombres
+            %label.input{for: "first_name"}
               %i.icon-append.fa.fa-user
-              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+              = f.input :first_name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
             %label.label Apellido Paterno
@@ -34,37 +34,35 @@
               = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
-            %label.label RUC
-            %label.input{for: "surname"}
+            %label.label Email
+            %label.input{for: "email"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
+              = f.input :email, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Teléfono
+            %label.input{for: "phone"}
+              = f.input :phone, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Banco
+            %label.input{for: "bank"}
+              = f.input :bank, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Numero de Cuenta Bancaria
+            %label.input{for: "account_number"}
+              = f.input :account_number, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Fecha de Nacimiento
+            %label.input{for: "date_of_birth"}
+              = f.input :date_of_birth, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
         .row
           %section.col.col-10
             %label.label Dirección
             %label.input{for: "address"}
               = f.input :address, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
-            %label.label Tipo
-            .col.col-10.inline-group
-              = f.association :type_entities, :as => :check_boxes, :label => false
-        .row#cost-center-select{ 'style' => 'display:none' }
-          %section.col.col-10
-            %label.label Centro de Costo
-            %label.input
-              %select.form-control#cost-center-select{:name =>"cost_center_id"}
-                %option{:value => ""} Seleccionar Centro de Costo
-                - @costCenter.each do |costcenter|
-                  - if @action == 'edit'
-                    - if @Sectors.cost_center_id == costcenter.id
-                      %option{:value => "#{costcenter.id}", :selected => true}
-                        = costcenter.name
-                    - else
-                      %option{:value => "#{costcenter.id}"}
-                        = costcenter.name
-                  - else
-                    %option{:value => "#{costcenter.id}"}
-                      = costcenter.name
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 

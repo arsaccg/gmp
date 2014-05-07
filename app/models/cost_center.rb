@@ -4,6 +4,7 @@ class CostCenter < ActiveRecord::Base
 	has_many :delivery_orders
 	has_many :purchase_orders
 	has_many :order_of_services
+	has_many :entities
 	belongs_to :company
 
 	# Access

@@ -47,7 +47,7 @@ class Logistics::SectorsController < ApplicationController
 
   def update
     sector = Sector.find(params[:id])
-    if params[:is]['subsector'] == nil
+    if params[:is] == nil
       if sector.update_attributes(sector_parameters)
         flash[:notice] = "Se ha actualizado correctamente los datos."
         redirect_to :action => :index
