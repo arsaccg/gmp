@@ -258,23 +258,31 @@
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                   %span.menu-item-parent Trabajadores
               %li
-                %a{href: "#{production_workers_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                %a{href: "#{production_working_groups_path}?company_id=#{@company.id}", title: 'Trabajadores'}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                   %span.menu-item-parent Grupos de Trabajo
               %li
-                %a{href: '#', title: 'General'}
+                %a{href: "#{production_working_groups_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Subcontrato
+              %li
+                %a{href: "#{production_working_groups_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Subcontrato de Equipos
+              %li
+                %a{href: '#', title: 'Parte Obra'}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                   %span.menu-item-parent Parte Obra
               %li
-                %a{href: '#', title: 'General'}
+                %a{href: '#', title: 'Personal'}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                   %span.menu-item-parent Personal
               %li
-                %a{href: '#', title: 'General'}
+                %a{href: '#', title: 'Equipos'}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                   %span.menu-item-parent Equipos
               %li
-                %a{href: '#', title: 'General'}
+                %a{href: '#', title: 'Valorizaciones'}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                   %span.menu-item-parent Valorizaciones
           %li

@@ -1,7 +1,7 @@
 # enconding: utf-8
 class Sector < ActiveRecord::Base
 	has_many :deliver_orders
-
+	has_many :working_groups
 	#Validaciones
 	include ActiveModel::Validations
 	#validates :code, :uniqueness => { :scope => :name, :message => "El código debe ser único" }

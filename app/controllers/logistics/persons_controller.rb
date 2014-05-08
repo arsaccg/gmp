@@ -38,13 +38,16 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
     @user = User.find(params[:id])
     @all_roles = { 'issuer' => 'Emite las ordenes de suministro', 'approver' => 'Aprueba ordenes de Suministro', 'reviser' => 'Dar visto bueno a las ordenes de suministro', 'canceller' => 'Anular ordenes suministro' }
     @roles = @user.role_symbols
+    puts @roles
     render layout: false
   end
 
   def update
     @person = User.find(params[:id])
-    if !params[:profile]
+    if params[:profile] != nil
       @person.roles = [params[:role]]
+    else
+      @person.roles = nil
     end
     @person.update_attributes(user_params)
     flash[:notice] = "Se ha actualizado correctamente al usuario #{@person.first_name + ' ' + @person.last_name}."

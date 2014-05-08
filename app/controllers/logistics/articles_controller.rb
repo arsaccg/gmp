@@ -138,48 +138,76 @@ class Logistics::ArticlesController < ApplicationController
   end
 
   def import    
+    @unidades = UnitOfMeasurement.all  
     if !params[:file].nil?
       s = Roo::Excelx.new(params[:file].path,nil, :ignore)
       matriz_exel = []
+      code = 1
       cantidad = s.count.to_i
       (1..cantidad).each do |fila|  
         codigo                        =       "#{s.cell('A',fila)}#{s.cell('B',fila)}#{s.cell('C',fila)}#{s.cell('D',fila)}" 
-        codigo_article                =       s.cell('A',fila).to_s  
-        codigo_category               =       s.cell('B',fila).to_s
-        codigo_subcategory            =       s.cell('C',fila).to_s
-        codigo_subcategory_extencion  =       s.cell('D',fila).to_s
-        name                          =       s.cell('E',fila).to_s
+        codigo_article                =       s.cell('A',fila).to_s   # GRUP           --->    GRUPO
+        codigo_category               =       s.cell('B',fila).to_s   # SUB            --->    SUBGRUPO
+        codigo_subcategory            =       s.cell('C',fila).to_s   # ESPECIFICO 1   --->    ESPECIFIC
+        codigo_subcategory_extencion  =       s.cell('D',fila).to_s   # ESPECIFICO 2   --->    ARTICLE
 
-        ## creacion de type_of_articles
+        name                          =       s.cell('E',fila).to_s   
+        unidad_symbol                 =       s.cell('F',fila).to_s
+        
+
+        ## creacion de Grupos
         if codigo_article != "00" and codigo_category == "00" and codigo_subcategory == '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
-          type_of_articles = TypeOfArticle.new(:code => codigo_article, :name => name )
-          type_of_articles.save          
-        end
-
-        ## creacion de categoria
-        if codigo_article != '00' and codigo_category != '00' and codigo_subcategory == '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
-          category = Category.new(:code => codigo_category, :name => name)
+          category = Category.new(:code => codigo_article, :name => name)
           category.save
         end
 
+
+        ## creacion de Subgrupo
+        if codigo_article != '00' and codigo_category != '00' and codigo_subcategory == '00' and codigo_subcategory_extencion == '00' and codigo.length == 8                    
+
+          category_last     =   Category.last
+          category_last_id  =   category_last.id
+          subcategory       =   Subcategory.new(:code => codigo_category, :name => name, :category_id => category_last_id)
+          subcategory.save
+
+        end
+
+
+
         ## creacion subcategory
         if codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
-          category_last = Category.last
-          category_last_id = category_last.id
-          subcategory = Subcategory.new(:code => codigo_subcategory, :name => name, :category_id => category_last_id)
-          subcategory.save
-        elsif codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion != '00' and codigo.length == 8        
           subcategory_last = Subcategory.last
           subcategory_last_id = subcategory_last.id
-          specific = Specific.new(:code => codigo_subcategory_extencion, :name => name, :subcategory_id => subcategory_last_id )
+          specific = Specific.new(:code => codigo_subcategory, :name => name, :subcategory_id => subcategory_last_id)
           specific.save
+        elsif codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion != '00' and codigo.length == 8        
+          
+          specific_last         =     Specific.last
+          specific_last_id      =     specific_last.id
+          #subcategory_last = Subcategory.last
+          #subcategory_last_id = subcategory_last.id
+
+
+
+          #specific = Specific.new(:code => codigo_subcategory_extencion, :name => name, :subcategory_id => subcategory_last_id )
+          #specific.save
 
           ##### agregando articles
-          type_of_articles_last = TypeOfArticle.last
-          type_of_articles_last_id = type_of_articles_last.id
-          specific_last = Specific.last
-          specific_last_id = specific_last.id
-          article = Article.new(:name => name, :code => codigo, :type_of_article_id => type_of_articles_last_id, :specific_id => specific_last_id)
+          unidad = UnitOfMeasurement.where("symbol LIKE ?","%#{unidad_symbol}%")
+          count_unidad = unidad.count
+          if count_unidad != 0
+            unidad_last_id = unidad[0].id
+          else
+            randon = rand(1000)
+            codigo_unidad = "#{code}#{randon}"
+            unidad_new = UnitOfMeasurement.new(:symbol => unidad_symbol, :code => codigo_unidad, :name => unidad_symbol)
+            code += 1 
+            unidad_new.save
+            unidad_last = UnitOfMeasurement.last
+            unidad_last_id = unidad_last.id            
+          end
+
+          article = Article.new(:code => codigo, :name => name, :unit_of_measurement_id => unidad_last_id, :specific_id => specific_last_id)
           article.save
         end        
       end
