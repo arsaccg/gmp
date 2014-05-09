@@ -15,7 +15,7 @@ development:
   database: arsac_logistica_develop
   #database: arsac_logistica
   username: root
-  password: root
+  password: tak07032011
   host: localhost
 
 # Warning: The database defined as "test" will be erased and
@@ -25,12 +25,12 @@ test:
   adapter: mysql2
   database: arsac_logistica_testing
   username: root
-  password: root
+  password: tak07032011
   host: localhost
 
 production:
   adapter: mysql2
   database: arsac_logistica_production
   username: root
-  password: root
+  password: tak07032011
   host: localhost

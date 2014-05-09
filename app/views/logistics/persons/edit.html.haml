@@ -70,14 +70,16 @@
                     %label.label Acceso a Compañias
                     %label.select
                       = f.association :companies, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
-                .row
-                  %section.col.col-10
+                .row#combocenter
+                  %section.col.col-10.collection_select 
                     %label.label Acceso a Centro de Costo
                     %label.select
-                      = f.association :cost_centers, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
+                      %select#user_cost_center_ids.collection_select-optional-select2{multiple: "multiple", name: "user[cost_center_ids][]"} }
+                      //= f.association :cost_centers, :as => :collection_select, collection: CostCenter.where("company_id IN(1,2,3)"), :label => false, :input_html =>{:class => "select2", :multiple => true}
+
               %footer
                 %button.btn.btn-primary{type: "submit"}
-                  %i.fa.fa-save 
+                  %i.fa.fa-save
                   Guardar
 
 
@@ -90,7 +92,6 @@
     $("#role-user").focus();
     $('#role-user').select2();
     $('#user_company_ids').select2({ width: '100%' });
-    $('#user_cost_center_ids').select2({ width: '100%' });
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -98,6 +99,26 @@
     }
   });
   
+  $("#user_company_ids").change(function(){
+      var varid = $('#user_company_ids').val();
+      var chain = varid.join();
+      console.log(varid);
+      console.log(chain);
+      var querycostcenter = "company_id IN("+chain+")";
+      console.log(querycostcenter);
+      $('#user_cost_center_ids').select2({ 
+        width: '100%',
+        ajax: {
+          dataType: "json",
+          url: "/logistics/persons/bring_costcenter.json?querycostcenter=chain",
+          results: function (data) {
+              return {results: data};
+              console.log(data);
+          }
+        }
+      });
+  });
+
   function submit_validate(form){
     $(form['selector']).ajaxForm({
       beforeSubmit: function() {
