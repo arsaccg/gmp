@@ -69,6 +69,7 @@
               %table.table.table-hover
                 %thead
                   %tr
+                    %th N°
                     %th Obra
                     %th Cargo
                     %th Entidad
@@ -79,6 +80,8 @@
                 %tbody
                   -@professional.certificates.each do |procert|
                     %tr
+                      %td 
+                        =@cont
                       %td
                         - @work.each do |wo|
                           - if procert.work_id == wo.id
@@ -110,6 +113,7 @@
                             %i.fa.fa-clipboard
                         -else
                           No hay ningun Archivo adjunto
+                    - @cont= @cont+1
 
     .row
       %article.col-sm-12.col-md-12.col-lg-12
@@ -131,6 +135,7 @@
               %table.table.table-hover
                 %thead
                   %tr
+                    %th N°
                     %th Tipo de Capacitación
                     %th Nombre de Capacitación
                     %th Cantidad de Horas
@@ -141,6 +146,8 @@
                 %tbody
                   -@professional.trainings.each do |proctra|
                     %tr
+                      %td 
+                        =@cont2
                       %td
                         = proctra.type_training
                       %td
@@ -159,6 +166,7 @@
                             %i.fa.fa-clipboard
                         -else
                           No hay ningun Archivo adjunto
+                    - @cont2= @cont2+1
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-works{type: "button"}
   %i.fa.fa-arrow-left>
