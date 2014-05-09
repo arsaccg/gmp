@@ -195,7 +195,6 @@ ArsacLogistica::Application.routes.draw do
     resources :professionals do
       collection do
         post 'get_component_from_work'
-        post 'dates_from_work'
         post 'more_dates'
         post 'more_certificates'
         post 'more_trainings'
