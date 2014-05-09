@@ -221,7 +221,9 @@ ArsacLogistica::Application.routes.draw do
 
   namespace :production do
     resources :workers
+    resources :category_of_workers
     resources :working_groups
+    resources :subcontracts
   end
 
 end

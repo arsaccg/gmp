@@ -1,3 +1,4 @@
 class Subcontract < ActiveRecord::Base
-	has_and_belongs_to_many :working_group
+  has_many :subcontract_details
+  accepts_nested_attributes_for :subcontract_details, :allow_destroy => true
 end

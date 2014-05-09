@@ -14,6 +14,7 @@
             %th Nombres
             %th Apellido Paterno
             %th Apellido Materno
+            %th Categoria
             %th Email
             %th Fecha de nacimiento
             %th Dirección
@@ -30,15 +31,20 @@
               %td 
                 = worker.maternal_surname
               %td
+                = worker.category_of_worker.name
+              %td
                 = worker.email
               %td 
                 = worker.date_of_birth
               %td
-                = worker.address
+                - if worker.address != ''
+                  = worker.address
+                - else
+                  = "No tiene dirección este trabajador."
               %td
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_worker_path(worker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{worker.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_worker_path(worker.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_workers_path}?company_id=#{@company}')"}}
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{worker.first_name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_worker_path(worker.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_workers_path}?company_id=#{@company}')"}}
                   Eliminar
 
 :javascript

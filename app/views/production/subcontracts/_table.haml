@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Grupos de Trabajo
+    %h2 Lista de Trabajadores
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
@@ -11,28 +11,34 @@
         %thead
           %tr
             %th N°
-            %th Sector
-            %th Jefe de Frente
-            %th Ejecutor
-            %th Maestro de Obra
+            %th Nombres
+            %th Apellido Paterno
+            %th Apellido Materno
+            %th Email
+            %th Fecha de nacimiento
+            %th Dirección
             %th Acciones
         %tbody
-          - @workingGroups.each do |working_group|
+          - @workers.each do |worker|
             %tr
               %td
-                = working_group.id
+                = worker.id
               %td 
-                = working_group.sector.name
+                = worker.first_name
               %td
-                = Entity.find(working_group.front_chief_id).name
+                = worker.paternal_surname
               %td 
-                = Entity.find(working_group.executor_id).name
+                = worker.maternal_surname
               %td
-                = Entity.find(working_group.master_builder_id).name
+                = worker.email
+              %td 
+                = worker.date_of_birth
               %td
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_working_group_path(working_group.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                = worker.address
+              %td
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_worker_path(worker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{working_group.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_working_group_path(working_group.id)}', 'content', '#{production_working_groups_path}?company_id=#{@company}')"}}
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{worker.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_worker_path(worker.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_workers_path}?company_id=#{@company}')"}}
                   Eliminar
 
 :javascript
