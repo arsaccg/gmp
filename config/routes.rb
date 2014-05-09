@@ -53,7 +53,11 @@ ArsacLogistica::Application.routes.draw do
 
   namespace :logistics do
     resources :unit_of_measurements
-    resources :persons
+    resources :persons do
+      collection do
+        post 'getCostCentersPerCompany'
+      end
+    end
     resources :center_of_attentions
     resources :financial_variables
     resources :articles do
@@ -212,6 +216,11 @@ ArsacLogistica::Application.routes.draw do
         get 'show_rows_results_pdf'
       end
     end
+  end
+
+  namespace :production do
+    resources :workers
+    resources :working_groups
   end
 
 end

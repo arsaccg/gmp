@@ -249,9 +249,51 @@
                   %span.menu-item-parent
                     Consulta de Inventarios
           %li
+            %a{href: '#', title: "Producción"}
+              %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+              %span.menu-item-parent Producción
+            %ul
+              %li
+                %a{href: "#{production_workers_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Trabajadores
+              %li
+                %a{href: "#{production_working_groups_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Grupos de Trabajo
+              %li
+                %a{href: "#{production_working_groups_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Subcontrato
+              %li
+                %a{href: "#{production_working_groups_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Subcontrato de Equipos
+              %li
+                %a{href: '#', title: 'Parte Obra'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Parte Obra
+              %li
+                %a{href: '#', title: 'Personal'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Personal
+              %li
+                %a{href: '#', title: 'Equipos'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Equipos
+              %li
+                %a{href: '#', title: 'Valorizaciones'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Valorizaciones
+          %li
             %a{href: "#", title: "Licitaciones"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
               %span.menu-item-parent Licitaciones
+            %ul
+              %li
+                %a{href: "#{biddings_works_path}?company_id=#{@company.id}", title: "Obras"}
+                  %i.fa.fa-lg.fa-fw.fa-home
+                  %span.menu-item-parent Obras
             %ul
               %li
                 %a{href: '#'}
@@ -287,7 +329,7 @@
               %i.fa.fa-lg.fa-fw.fa-sitemap
               %span.menu-item-parent Tipo de Entidades
           %li
-            %a{href: "#{logistics_entities_path}", title: "Entidades"}
+            %a{href: "#{logistics_entities_path}?company_id=#{@company.id}", title: "Entidades"}
               %i.fa.fa-lg.fa-fw.fa-group
               %span.menu-item-parent Entidades
           %li

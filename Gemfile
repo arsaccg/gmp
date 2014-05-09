@@ -25,6 +25,9 @@ gem "erb2haml", :group => :development
 gem "role_model"
 gem 'cancan'
 
+# Number in words
+gem 'numbers_in_words'
+
 # jQuery fileUpload
 gem 'jquery-fileupload-rails'
 
