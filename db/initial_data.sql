@@ -3,6 +3,9 @@ INSERT INTO `type_entities` (`name`, `preffix`, `created_at`, `updated_at`) VALU
 ('Proveedores', 'P', NULL, NULL),
 ('Accionistas', 'P', NULL, NULL),
 ('Trabajadores', 'P', NULL, NULL);
+('Clientes', 'P', NULL, NULL),
+('Jefes de Frente', 'P', NULL, NULL),
+('Maestro de Obras', 'P', NULL, NULL);
 
 -- Data for Type of Article
 INSERT INTO `type_of_articles` (`name`, `code`, `created_at`, `updated_at`) VALUES 
@@ -20,3 +23,4 @@ INSERT INTO `companies` (`name`, `ruc`, `created_at`, `updated_at`) VALUES
 
 -- Data for Financial Variables
 INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('IGV', '0.18', NULL, NULL);
+INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('IPC', '114.63', NULL, NULL);

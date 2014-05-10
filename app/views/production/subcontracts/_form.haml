@@ -1,0 +1,139 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Trabajadores
+  .widget-body
+    = simple_form_for([:production, @worker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row{ 'style' => 'display:none' }
+          %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
+        .row
+          %section.col.col-10
+            %label.label Nombres
+            %label.input{for: "first_name"}
+              %i.icon-append.fa.fa-user
+              = f.input :first_name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Apellido Paterno
+            %label.input{for: "paternal_surname"}
+              %i.icon-append.fa.fa-user
+              = f.input :paternal_surname, placeholder: "Apellido Paterno", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Apellido Materno
+            %label.input{for: "maternal_surname"}
+              %i.icon-append.fa.fa-user
+              = f.input :maternal_surname, placeholder: "Apellido Materno", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label DNI
+            %label.input{for: "dni"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Email
+            %label.input{for: "email"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :email, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Teléfono
+            %label.input{for: "phone"}
+              = f.input :phone, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Banco
+            %label.input{for: "bank"}
+              = f.input :bank, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Numero de Cuenta Bancaria
+            %label.input{for: "account_number"}
+              = f.input :account_number, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Fecha de Nacimiento
+            %label.input{for: "date_of_birth"}
+              = f.input :date_of_birth, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+        .row
+          %section.col.col-10
+            %label.label Dirección
+            %label.input{for: "address"}
+              = f.input :address, input_html: { class: 'form-control' }, label: false
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    $("#entity_name").focus();
+    $('#type-entity-select').select2();
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_entity'));
+    }
+
+    if($('#entity_type_entity_ids_6').is(':checked') || $('#entity_type_entity_ids_7').is(':checked')){
+      $('#cost-center-select').fadeIn('fast');
+    } else {
+      $('#cost-center-select').fadeOut('fast');
+    }
+
+    $('#entity_type_entity_ids_6').change(function(){
+      if($(this).is(':checked'))
+        $('#cost-center-select').fadeIn('fast');
+      else
+        $('#cost-center-select').fadeOut('fast');
+    });
+
+    $('#entity_type_entity_ids_7').change(function(){
+      if($(this).is(':checked'))
+        $('#cost-center-select').fadeIn('fast');
+      else
+        $('#cost-center-select').fadeOut('fast');
+    });
+
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'entity[name]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'entity[name]' : {
+              required : 'Por favor, ingresar el nombre.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }

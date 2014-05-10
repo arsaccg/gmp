@@ -51,19 +51,25 @@
                     %label.label Rol de Usuario
                     %label.select
                       %select.select2#role-user{:name => "role[]", :style => "width:100%;padding: 0;border: none;", :multiple => true}
-                        - status = false
-                        - @all_roles.each do |rol|
-                          - @roles.each_with_index do |role, i|
-                            - if role.to_s == rol[0].to_s
-                              %option{value: "#{rol[0]}", selected: true}
+                        - if @roles.count > 0
+                          - status = false
+                          - @all_roles.each do |rol|
+                            - @roles.each_with_index do |role, i|
+                              - if role.to_s == rol[0].to_s
+                                %option{value: "#{rol[0]}", selected: true}
+                                  = rol[1]
+                                - status = false
+                                - break
+                              - else
+                                - status = true
+                            - if status
+                              %option{value: "#{rol[0]}"}
                                 = rol[1]
-                              - status = false
-                              - break
-                            - else
-                              - status = true
-                          - if status
-                            %option{value: "#{rol[0]}"}
-                              = rol[1]
+                        - else
+                          %option{value: "issuer"} Emite las ordenes de suministro
+                          %option{value: "approver"} Aprueba ordenes de Suministro
+                          %option{value: "reviser"} Dar visto bueno a las ordenes de suministro
+                          %option{value: "canceller"} Anular ordenes suministro
                       %i
                 .row
                   %section.col.col-10
@@ -74,7 +80,8 @@
                   %section.col.col-10
                     %label.label Acceso a Centro de Costo
                     %label.select
-                      = f.association :cost_centers, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
+                      %select.collection_select.optional.select2#user_cost_center_ids{'multiple'=>'multiple', 'name'=>'user[cost_center_ids][]'}
+                      =# f.association :cost_centers, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
               %footer
                 %button.btn.btn-primary{type: "submit"}
                   %i.fa.fa-save 
@@ -96,6 +103,33 @@
     }else{
       submit_validate($('#new_user'));
     }
+
+    $('#user_company_ids').change(function(){
+      if($(this).val() != null){
+        $.ajax({
+          type: 'POST',
+          url: '#{getCostCentersPerCompany_logistics_persons_path}.json',
+          async: false,
+          data: { costCenter: $(this).val().join() },
+          dataType : 'json',
+          success: function(response) {
+            $('#user_cost_center_ids').find('option').remove();
+            newOptions = [];
+            for(var i=0; i < response.length; i++){
+              $('#user_cost_center_ids').append(
+                $("<option></option>").attr("value", response[i][0]).text(response[i][1])
+              )
+            }
+          },
+          error: function(xhr, ajaxOptions, thrownError) {
+            console.log('No hay compañia seleccionada');
+          }
+        });
+      } else {
+        $('#user_cost_center_ids').find('option').remove();
+      }
+    });
+
   });
   
   function submit_validate(form){
