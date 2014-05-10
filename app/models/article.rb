@@ -1,10 +1,10 @@
 # enconding: utf-8
 class Article < ActiveRecord::Base
 	has_many :deliver_orders
-  
+  	
 	belongs_to :specific
 	belongs_to :type_of_article
-  
+  	belongs_to :subcontract_detail
 	belongs_to :unit_of_measurement#, :through => :article_unit_of_measurements
 	#accepts_nested_attributes_for :unit_of_measurements
 	belongs_to :rep_inv_article, :foreign_key => 'id'

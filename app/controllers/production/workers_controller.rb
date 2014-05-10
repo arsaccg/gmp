@@ -12,12 +12,13 @@ class Production::WorkersController < ApplicationController
 
   def new
     @worker = Worker.new
+    @categoryOfWorkers = CategoryOfWorker.all
     @company = params[:company_id]
     render layout: false
   end
 
   def create
-    worker = Worker.new(work_partner_params)
+    worker = Worker.new(worker_parameters)
     if worker.save
       flash[:notice] = "Se ha creado correctamente el trabajador."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -33,13 +34,15 @@ class Production::WorkersController < ApplicationController
 
   def edit
     @worker = Worker.find(params[:id])
+    @categoryOfWorkers = CategoryOfWorker.all
     @company = params[:company_id]
+    @action = 'edit'
     render layout: false
   end
 
   def update
     worker = Worker.find(params[:id])
-    if worker.update_attributes(work_partner_params)
+    if worker.update_attributes(worker_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index, company_id: params[:company_id]
     else
@@ -60,6 +63,6 @@ class Production::WorkersController < ApplicationController
 
   private
   def worker_parameters
-    params.require(:worker).permit(:first_name, :paternal_surname, :maternal_surname, :email, :phone, :bank, :account_number, :date_of_birth, :address)
+    params.require(:worker).permit(:first_name, :paternal_surname, :maternal_surname, :email, :phone, :bank, :account_number, :date_of_birth, :address, :category_of_worker_id)
   end
 end

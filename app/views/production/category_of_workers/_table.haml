@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Grupos de Trabajo
+    %h2 Lista de Trabajadores
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
@@ -11,28 +11,31 @@
         %thead
           %tr
             %th N°
-            %th Sector
-            %th Jefe de Frente
-            %th Ejecutor
-            %th Maestro de Obra
+            %th Nombre
+            %th Unidad
+            %th Precio Normal
+            %th Precio 60
+            %th Precio 100
             %th Acciones
         %tbody
-          - @workingGroups.each do |working_group|
+          - @categoryOfWorker.each do |categoryOfWorker|
             %tr
               %td
-                = working_group.id
+                = categoryOfWorker.id
               %td 
-                = working_group.sector.name
+                = categoryOfWorker.name
               %td
-                = Entity.find(working_group.front_chief_id).name
+                = categoryOfWorker.unit_of_measurement.name
+              %td
+                = number_to_currency(categoryOfWorker.normal_price.to_f, unit: "S/.", precision: 2)
+              %td
+                = number_to_currency(categoryOfWorker.he_60_price.to_f, unit: "S/.", precision: 2)
               %td 
-                = Entity.find(working_group.executor_id).name
+                = number_to_currency(categoryOfWorker.he_100_price.to_f, unit: "S/.", precision: 2)
               %td
-                = Entity.find(working_group.master_builder_id).name
-              %td
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_working_group_path(working_group.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_category_of_worker_path(categoryOfWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{working_group.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_working_group_path(working_group.id)}', 'content', '#{production_working_groups_path}?company_id=#{@company}')"}}
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{categoryOfWorker.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_category_of_worker_path(categoryOfWorker.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_category_of_workers_path}?company_id=#{@company}')"}}
                   Eliminar
 
 :javascript
