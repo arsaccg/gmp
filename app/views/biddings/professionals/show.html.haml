@@ -72,7 +72,6 @@
                     %th N°
                     %th Obra
                     %th Cargo
-                    %th Entidad
                     %th Fecha de Inicio
                     %th Fecha de Termino
                     %th Nombre del Documento
@@ -83,17 +82,25 @@
                       %td 
                         =@cont
                       %td
-                        - @work.each do |wo|
-                          - if procert.work_id == wo.id
-                            = wo.name
+                        - if @other.any?
+                          - @other.each do |oth|
+                            -if oth.certificate_id==procert.id
+                              = oth.name
+                              -@flag=true
+                              
+                          -if @flag==false
+                            - @work.each do |wo|
+                              - if procert.work_id == wo.id
+                                = wo.name
+                        -else
+                          -if @flag==false
+                            - @work.each do |wo|
+                              - if procert.work_id == wo.id
+                                = wo.name
                       %td
                         - @charge.each do |ch|
                           -if procert.charge_id == ch.id
                             = ch.name
-                      %td
-                        - @entity.each do |en|
-                          - if procert.entity_id == en.id
-                            = en.name
                       %td
                         = procert.start_date
                       %td

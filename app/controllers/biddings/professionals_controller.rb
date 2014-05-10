@@ -13,6 +13,8 @@ class Biddings::ProfessionalsController < ApplicationController
     @cont =1 
     @cont2 =1 
     @work = Work.all
+    @other= OtherWork.all
+    @flag=false
     @charge = Charge.all
     @professional= Professional.find(params[:id])
     TypeEntity.where("id IN (1,5)").each do |tent|
@@ -61,6 +63,7 @@ class Biddings::ProfessionalsController < ApplicationController
     TypeEntity.where("id IN (1,5)").each do |tent|
       @entities << tent.entities
     end
+    @other= OtherWork.all
     @reg = Time.now.to_i
     @major = Major.all
     @action = 'edit'
@@ -148,19 +151,19 @@ class Biddings::ProfessionalsController < ApplicationController
         :professional_id, 
         :work_id, 
         :charge_id, 
-        :entity_id, 
         :num_days, 
         :start_date, 
         :finish_date, 
-        {:component_work_ids => []}, 
         :certificate, 
         :other, 
         :_destroy,
-        other_works_attributes: [
+        other_work_attributes: [
           :id,
           :certificate_id,
-          :other_work,
+          :name,
           :start,
+          :entity,
+          :contractor,
           :end,
           :specialty,
           {:component_work_ids => []}, 

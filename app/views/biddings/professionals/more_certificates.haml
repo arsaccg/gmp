@@ -19,24 +19,25 @@
             = "No es una de las Obras?"
         .col-sm-4{'class' =>'another_work' ,style: "display:none;"}
           %label Nombre de Otra Obra
-          %input.form-control{name: "professional[certificates_attributes][other_works_attributes][" + @reg.to_s + "][other_work]"}
+          %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][name]"}
         .col-sm-2
           %label Inicio de la obra: 
           %label.input{'class'=>'start_other_works', 'style'=>'display:none;'}
-            %input.form-control{name:"professional[certificates_attributes][other_works_attributes][" + @reg.to_s + "][start]",  as: :date, type:  "date"}
+            %input.form-control{name:"professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][start]",  as: :date, type:  "date"}
           %label.input{'class'=>'start_certificate'}
             %input.form-control{:disabled=>"disabled", as: :date, type:  "date"}
         .col-sm-2
           %label Termino de la obra: 
           %label.input{'class'=>'finish_other_works', 'style'=>'display:none;'}
-            %input.form-control{name: "professional[certificates_attributes][other_works_attributes][" + @reg.to_s + "][end]", as: :date, type:  "date"}
+            %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][end]", as: :date, type:  "date"}
           %label.input{'class'=>'finish_certificate'}
             %input.form-control{:disabled=>"disabled", as: :date, type:  "date"}
         .col-sm-4{'class'=>'specialty-select', style: "display:none;"}
           %label Especialidad
           %br
           .input-group
-            %select.form-control{:name =>"professional[certificates_attributes][other_works_attributes][" + @reg.to_s + "][specialty]"}
+            %select.form-control{:name =>"professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][specialty]"}
+              %option 
               %option{:value => "Saneamiento"} Saneamiento
               %option{:value => "Civil"} Civil
               %option{:value => "Electromecanico"} Electromecanico
@@ -48,7 +49,7 @@
         .col-sm-4
           %label Entidad contratante
           .input-group{'class'=>'entity_other_works', 'style'=>'display:none;'}
-            %input.form-control{name: "professional[certificates_attributes][other_works_attributes][" + @reg.to_s + "][entity]"}
+            %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][entity]"}
             %span.input-group-addon
               %i.fa.fa-gears
           .input-group{'class'=>'entity'}
@@ -58,7 +59,7 @@
         .col-sm-4
           %label Contratista
           .input-group{'class'=>'contractor_other_works', 'style'=>'display:none;'}
-            %input.form-control{ name: "professional[certificates_attributes][other_works_attributes][" + @reg.to_s + "][contractor]"}
+            %input.form-control{ name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][contractor]"}
             %span.input-group-addon
               %i.fa.fa-gears
           .input-group{'class'=>'contractor'}
@@ -116,7 +117,7 @@
           .col-sm-4{'class'=>'comp', style: "display:none;"}
             -if @component !=nil
               - @component.each do |comp|
-                %input{name: "professional[certificates_attributes][other_works_attributes][" + @reg.to_s + "][component_work]", type: "checkbox", :value=> "#{comp.id}"}
+                %input{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][component_work]", type: "checkbox", :value=> "#{comp.id}"}
                   = "#{comp.name}"
                 %br
       %fieldset
