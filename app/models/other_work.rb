@@ -1,3 +1,3 @@
 class OtherWork < ActiveRecord::Base
-	has_one :certificate
+	belongs_to :certificate
 end
