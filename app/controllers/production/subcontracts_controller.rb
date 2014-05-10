@@ -20,6 +20,13 @@ class Production::SubcontractsController < ApplicationController
     end
     @company = params[:company_id]
     @type = params[:type]
+
+    if @type == 'subcontract'
+      @articles = TypeOfArticle.find(4).articles
+    elsif @type == 'equipment'
+      @articles = TypeOfArticle.find(3).articles
+    end
+
     render layout: false
   end
 
@@ -40,11 +47,12 @@ class Production::SubcontractsController < ApplicationController
 
   def add_more_article
     @type = params[:type]
-    if @type == 'subcontract'
-      @articles = TypeOfArticle.find(4).articles
-    elsif @type == 'equipment'
-      @articles = TypeOfArticle.find(3).articles
-    end
+    @reg_n = Time.now.to_i
+    data_article_unit = params[:article_id].split('-')
+    @article = Article.find(data_article_unit[0])
+    @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
+    @unitOfMeasurementId = data_article_unit[1]
+    render(partial: 'subcontract_items', :layout => false)
   end
 
   def edit
@@ -54,6 +62,13 @@ class Production::SubcontractsController < ApplicationController
     end
     @company = params[:company_id]
     @type = params[:type]
+
+    if @type == 'subcontract'
+      @articles = TypeOfArticle.find(4).articles
+    elsif @type == 'equipment'
+      @articles = TypeOfArticle.find(3).articles
+    end
+
     render layout: false
   end
 
