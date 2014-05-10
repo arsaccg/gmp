@@ -20,7 +20,7 @@
         = flash[:error]
   .row
     .col-sm-2
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_subcontract_path}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_subcontract_path}', 'content', {company_id: '#{@company}', type: '#{@type}'}, null, 'GET')"}
         Agregar Subcontrato
   %br
   .row

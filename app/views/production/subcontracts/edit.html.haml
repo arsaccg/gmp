@@ -29,5 +29,5 @@
 :javascript
 
   $('#backlist').click(function(){
-      load_url_ajax("#{edit_production_subcontract_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+      load_url_ajax("#{edit_production_subcontract_path}", 'content', {company_id: '#{@company}', type: '#{@type}'}, null, 'GET');
   });

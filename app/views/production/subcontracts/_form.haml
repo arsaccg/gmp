@@ -2,67 +2,84 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Trabajadores
+    %h2 Subcontrato
   .widget-body
-    = simple_form_for([:production, @worker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:production, @subcontract], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
+          = f.input :type, input_html: { class: 'form-control', value: "#{@type}" }, label: false, readonly: true
         .row
           %section.col.col-10
-            %label.label Nombres
-            %label.input{for: "first_name"}
-              %i.icon-append.fa.fa-user
-              = f.input :first_name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+            %label.label Ejecutor
+            %label.input{for: "entity_id"}
+              %select.form-control{:name =>"subcontract[entity_id]"}
+                - @suppliers.each do |supply|
+                  %option{:value => "#{supply.id}"}
+                    = supply.name
         .row
           %section.col.col-10
-            %label.label Apellido Paterno
-            %label.input{for: "paternal_surname"}
-              %i.icon-append.fa.fa-user
-              = f.input :paternal_surname, placeholder: "Apellido Paterno", input_html: { class: 'form-control' }, label: false
+            %label.label Valorizaciones
+            %label.input{for: "valorization"}
+              %select.form-control{:name =>"subcontract[valorization]"}
+                %option{:value => "semanal"}
+                  Semanales
+                %option{:value => "quincenal"}
+                  Quincenales
+                %option{:value => "mensual"}
+                  Mensuales
         .row
           %section.col.col-10
-            %label.label Apellido Materno
-            %label.input{for: "maternal_surname"}
-              %i.icon-append.fa.fa-user
-              = f.input :maternal_surname, placeholder: "Apellido Materno", input_html: { class: 'form-control' }, label: false
+            %label.label Condiciones de Pago
+            %label.input{for: "terms_of_payment"}
+              %select.form-control{:name =>"subcontract[terms_of_payment]"}
+                %option{:value => "contado"}
+                  Al Contado
+                %option{:value => "quincenal"}
+                  Crédito a 3 dias
+                %option{:value => "mensual"}
+                  Crédito a 5 dias
+                %option{:value => "mensual"}
+                  Crédito a 7 dias
+                %option{:value => "quincenal"}
+                  Crédito a 10 dias
+                %option{:value => "mensual"}
+                  Crédito a 15 dias
+                %option{:value => "mensual"}
+                  Crédito a 30 dias
+                %option{:value => "quincenal"}
+                  Crédito a 40 dias
+                %option{:value => "mensual"}
+                  Crédito a 50 dias
+                %option{:value => "mensual"}
+                  Crédito a 60 dias
         .row
           %section.col.col-10
-            %label.label DNI
-            %label.input{for: "dni"}
+            %label.label Amortización inicial (Numérico)
+            %label.input{for: "initial_amortization_number"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
-            %label.label Email
-            %label.input{for: "email"}
+              = f.input :initial_amortization_number, placeholder: "Amortización numérico", input_html: { class: 'form-control' }, label: false
+
+            %label.label Amortización inicial (Porcentaje)
+            %label.input{for: "initial_amortization_percent"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :email, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
+              = f.input :initial_amortization_percent, placeholder: "Amortización porcentaje", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
-            %label.label Teléfono
-            %label.input{for: "phone"}
-              = f.input :phone, input_html: { class: 'form-control' }, label: false
+            %label.label Fondo de Garantia
+            %label.input{for: "guarantee_fund"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :guarantee_fund, placeholder: "Fondo de garantía", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
-            %label.label Banco
-            %label.input{for: "bank"}
-              = f.input :bank, input_html: { class: 'form-control' }, label: false
+            %label.label Detracción
+            %label.input{for: "detraction"}
+              = f.input :detraction, placeholder: "Detracción", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
-            %label.label Numero de Cuenta Bancaria
-            %label.input{for: "account_number"}
-              = f.input :account_number, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
-            %label.label Fecha de Nacimiento
-            %label.input{for: "date_of_birth"}
-              = f.input :date_of_birth, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
-        .row
-          %section.col.col-10
-            %label.label Dirección
-            %label.input{for: "address"}
-              = f.input :address, input_html: { class: 'form-control' }, label: false
+            %label.label Monto Contratado
+            %label.input{for: "contract_amount"}
+              = f.input :contract_amount, placeholder: "Monto contratado", input_html: { class: 'form-control' }, label: false
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 

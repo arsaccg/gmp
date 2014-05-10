@@ -19,6 +19,7 @@ class Production::SubcontractsController < ApplicationController
       @suppliers = supply.entities
     end
     @company = params[:company_id]
+    @type = params[:type]
     render layout: false
   end
 
@@ -37,9 +38,22 @@ class Production::SubcontractsController < ApplicationController
     end
   end
 
+  def add_more_article
+    @type = params[:type]
+    if @type == 'subcontract'
+      @articles = TypeOfArticle.find(4).articles
+    elsif @type == 'equipment'
+      @articles = TypeOfArticle.find(3).articles
+    end
+  end
+
   def edit
     @subcontract = Subcontract.find(params[:id])
+    TypeEntity.where("name LIKE '%Proveedores%'").each do |supply|
+      @suppliers = supply.entities
+    end
     @company = params[:company_id]
+    @type = params[:type]
     render layout: false
   end
 
