@@ -108,8 +108,6 @@
               #accordion-ce.panel-group.smart-accordion-default
                 - if @action=="edit"
                   -@professional.certificates.each do |cert|
-                    = hidden_field_tag 'professional[certificate][' + @reg.to_s + '][id]', cert.id
-                    = hidden_field_tag 'professional[certificate][' + @reg.to_s + '][professional_id]', @professional.id
                     .panel.panel-default
                       .panel-heading
                         %h4.panel-title
@@ -119,10 +117,13 @@
                             Certificados
                       .panel-collapse.collapse.in{ 'id'=> "collapse"+@reg.to_s+"-1"}
                         .panel-body
+                          = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][id]', cert.id
+                          = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][professional_id]', @professional.id
                           .row
                             .col-sm-4
                               %label Nombre de la obra
                               %select.form-control{'class'=>'work-select', name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onkeyup:'workSelectKU(this);'}
+                                %option
                                 -@work.each do |wc|
                                   -if wc.id == cert.work_id
                                     %option{value: "#{wc.id}", :selected=>'selected'} 
@@ -131,8 +132,15 @@
                                     %option{value: "#{wc.id}"} 
                                       = "#{wc.name}"
                               - if @other.any?
-                                %input{'class'=>'change-check' ,type: "checkbox", :value=> "otros", :checked=>"checked", onchange:'check(this);'}
-                                  = "No es una de las Obras?"
+                                -@other.each do |other|
+                                  -if other.certificate_id==cert.id
+                                    -@flag = true
+                                    %input{'class'=>'change-check' ,type: "checkbox", :value=> "otros", :checked=>"checked", onchange:'check(this);'}
+                                      = "No es una de las Obras?"
+                                    = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][other_work_attributes][id]', other.id
+                                - if @flag == false
+                                  %input{'class'=>'change-check' ,type: "checkbox", :value=> "otros", onchange:'check(this);'}
+                                    = "No es una de las Obras?"  
                               -else
                                 %input{'class'=>'change-check' ,type: "checkbox", :value=> "otros", onchange:'check(this);'}
                                   = "No es una de las Obras?"
@@ -142,6 +150,9 @@
                                 - @other.each do |other|
                                   -if other.certificate_id==cert.id
                                     %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][name]", :value => "#{other.name}"}
+                                    -@flag=true
+                                -if @flag == false
+                                  %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][name]"}  
                               -else 
                                 %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][name]"}
                             .col-sm-2
@@ -151,6 +162,9 @@
                                   - @other.each do |other|
                                     -if other.certificate_id==cert.id
                                       %input.form-control{name:"professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][start]",  as: :date, type:  "date", :value => "#{other.start}"}
+                                      -@flag=true
+                                  -if @flag == false
+                                    %input.form-control{name:"professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][start]",  as: :date, type:  "date"}
                                 -else
                                   %input.form-control{name:"professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][start]",  as: :date, type:  "date"}
                               %label.input{'class'=>'start_certificate'}
@@ -162,6 +176,9 @@
                                   - @other.each do |other|
                                     -if other.certificate_id==cert.id
                                       %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][end]", as: :date, type:  "date", :value => "#{other.end}"}
+                                      -@flag=true
+                                  -if @flag == false
+                                    %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][end]", as: :date, type:  "date"}
                                 -else
                                   %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][end]", as: :date, type:  "date"}
                               %label.input{'class'=>'finish_certificate'}
@@ -173,26 +190,41 @@
                                 %select.form-control{:name =>"professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][specialty]"}
                                   - if @other.any?
                                     - @other.each do |other|
-                                      -if other.specialty=="Saneamiento"
-                                        %option{:value => "Saneamiento", :selected => 'selected'} Saneamiento
-                                        %option{:value => "Civil"} Civil
-                                        %option{:value => "Electromecanico"} Electromecanico
-                                        %option{:value => "Hidraulica"} Hidráulica
-                                      -if other.specialty=="Civil"
-                                        %option{:value => "Saneamiento"} Saneamiento
-                                        %option{:value => "Civil", :selected => 'selected'} Civil
-                                        %option{:value => "Electromecanico"} Electromecanico
-                                        %option{:value => "Hidraulica"} Hidráulica
-                                      -if other.specialty=="Electromecanico"
-                                        %option{:value => "Saneamiento"} Saneamiento
-                                        %option{:value => "Civil"} Civil
-                                        %option{:value => "Electromecanico", :selected => 'selected'} Electromecanico
-                                        %option{:value => "Hidraulica"} Hidráulica
-                                      -if other.specialty=="Hidraulica"
-                                        %option{:value => "Saneamiento"} Saneamiento
-                                        %option{:value => "Civil"} Civil
-                                        %option{:value => "Electromecanico"} Electromecanico
-                                        %option{:value => "Hidraulica", :selected => 'selected'} Hidráulica
+                                      -if other.certificate_id==cert.id
+                                        -if other.specialty=="Saneamiento"
+                                          %option
+                                          %option{:value => "Saneamiento", :selected => 'selected'} Saneamiento
+                                          %option{:value => "Civil"} Civil
+                                          %option{:value => "Electromecanico"} Electromecanico
+                                          %option{:value => "Hidraulica"} Hidráulica
+                                          -@flag=true
+                                        -if other.specialty=="Civil"
+                                          %option
+                                          %option{:value => "Saneamiento"} Saneamiento
+                                          %option{:value => "Civil", :selected => 'selected'} Civil
+                                          %option{:value => "Electromecanico"} Electromecanico
+                                          %option{:value => "Hidraulica"} Hidráulica
+                                          -@flag=true
+                                        -if other.specialty=="Electromecanico"
+                                          %option
+                                          %option{:value => "Saneamiento"} Saneamiento
+                                          %option{:value => "Civil"} Civil
+                                          %option{:value => "Electromecanico", :selected => 'selected'} Electromecanico
+                                          %option{:value => "Hidraulica"} Hidráulica
+                                          -@flag=true
+                                        -if other.specialty=="Hidraulica"
+                                          %option
+                                          %option{:value => "Saneamiento"} Saneamiento
+                                          %option{:value => "Civil"} Civil
+                                          %option{:value => "Electromecanico"} Electromecanico
+                                          %option{:value => "Hidraulica", :selected => 'selected'} Hidráulica
+                                          -@flag=true
+                                    -if @flag==false
+                                      %option
+                                      %option{:value => "Saneamiento"} Saneamiento
+                                      %option{:value => "Civil"} Civil
+                                      %option{:value => "Electromecanico"} Electromecanico
+                                      %option{:value => "Hidraulica"} Hidráulica
                                   -else
                                     %option
                                     %option{:value => "Saneamiento"} Saneamiento
@@ -209,9 +241,15 @@
                                 - if @other.any?
                                   - @other.each do |other|
                                     -if other.certificate_id==cert.id
+                                      -@flag = true
                                       %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][entity]", :value => "#{other.entity}"}
                                       %span.input-group-addon
                                         %i.fa.fa-gears
+                                      
+                                  -if @flag == false
+                                    %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][entity]"}
+                                    %span.input-group-addon
+                                      %i.fa.fa-gears
                                 -else
                                   %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][entity]"}
                                   %span.input-group-addon
@@ -230,6 +268,11 @@
                                       %input.form-control{ name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][contractor]", :value=>"#{other.contractor}"}
                                       %span.input-group-addon
                                         %i.fa.fa-gears
+                                      -@flag=true
+                                  -if @flag == false
+                                    %input.form-control{ name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][contractor]"}
+                                    %span.input-group-addon
+                                      %i.fa.fa-gears
                                 -else
                                   %input.form-control{ name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][contractor]"}
                                   %span.input-group-addon
@@ -326,6 +369,7 @@
                           .col-sm-4
                             %label Nombre de la obra
                             %select.form-control{'class'=>'work-select', name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onkeyup:'workSelectKU(this);'}
+                              %option
                               -@work.each do |wc|
                                 %option{value: "#{wc.id}"} 
                                   = "#{wc.name}"
@@ -418,7 +462,7 @@
                         %br
                         .row
                           .col-sm-12
-                            #new-date 
+                            .new-date 
                         .row{'class'=>'comp2'}
                           .col-sm-6
                             %label Componentes de la obra:
@@ -465,8 +509,8 @@
               #accordion-tr.panel-group.smart-accordion-default
                 - if @action=="edit"
                   -@professional.trainings.each do |tra|
-                    = hidden_field_tag 'professional[training][' + @reg.to_s + '][id]', tra.id
-                    = hidden_field_tag 'professional[training][' + @reg.to_s + '][professional_id]', @professional.id
+                    = hidden_field_tag 'professional[trainings_attributes][' + @reg.to_s + '][id]', tra.id
+                    = hidden_field_tag 'professional[trainings_attributes][' + @reg.to_s + '][professional_id]', @professional.id
                     .panel.panel-default
                       .panel-heading
                         %h4.panel-title
