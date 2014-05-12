@@ -4,7 +4,12 @@ class Production::SubcontractsController < ApplicationController
     @company = params[:company_id]
     @type = params[:type]
 
-    @subcontracts = Subcontract.all
+    if @type == 'subcontract'
+      @subcontracts = Subcontract.where("type LIKE 'subcontract'")
+    elsif @type == 'equipment'
+      @subcontracts = Subcontract.where("type LIKE 'equipment'")
+    end
+
     render layout: false
   end
 
@@ -31,27 +36,29 @@ class Production::SubcontractsController < ApplicationController
   end
 
   def create
-    subcontract = Subcontract.new(working_groups_parameters)
+    subcontract = Subcontract.new(subcontracts_parameters)
     if subcontract.save
       flash[:notice] = "Se ha creado correctamente el trabajador."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: params[:company_id], type: params[:subcontract]['type']
     else
       subcontract.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
       flash[:error] =  "Ha ocurrido un error en el sistema."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: params[:company_id], type: params[:subcontract]['type']
     end
   end
 
   def add_more_article
     @type = params[:type]
     @reg_n = Time.now.to_i
+    @amount = params[:amount]
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
-    @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
-    @unitOfMeasurementId = data_article_unit[1]
+    @id_article = @article.id
+    @name_article = @article.name
+    @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).name
     render(partial: 'subcontract_items', :layout => false)
   end
 
@@ -74,9 +81,9 @@ class Production::SubcontractsController < ApplicationController
 
   def update
     subcontract = Subcontract.find(params[:id])
-    if subcontract.update_attributes(working_groups_parameters)
+    if subcontract.update_attributes(subcontracts_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: params[:company_id], type: params[:subcontract]['type']
     else
       subcontract.errors.messages.each do |attribute, error|
         flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
@@ -95,6 +102,6 @@ class Production::SubcontractsController < ApplicationController
 
   private
   def subcontracts_parameters
-    params.require(:subcontract).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :guarantee_fund, :detraction, :contract_amount, :type)
+    params.require(:subcontract).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :guarantee_fund, :detraction, :contract_amount, :type, subcontract_details_attributes: [:id, :subcontract_id, :article_id, :amount, :unit_price, :partial, :description, :_destroy])
   end
 end

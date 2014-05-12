@@ -278,31 +278,78 @@
                     %a{href: "#{production_subcontracts_path}?company_id=#{@company.id}&type=equipment", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Subcontrato de Equipos
-                %li
-                  %a{href: '#', title: 'Parte Obra'}
-                    %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                    %span.menu-item-parent Parte Obra
-                %li
-                  %a{href: '#', title: 'Personal'}
-                    %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                    %span.menu-item-parent Personal
-                %li
-                  %a{href: '#', title: 'Equipos'}
-                    %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                    %span.menu-item-parent Equipos
-                %li
-                  %a{href: '#', title: 'Valorizaciones'}
-                    %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                    %span.menu-item-parent Valorizaciones
+              %li
+                %a{href: '#'}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Producción
+                %ul
+                  %li
+                    %a{href: '#', title: 'Parte Obras'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Parte Obras
+              %li
+                %a{href: '#', title: 'Personal'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Personal
+                %ul
+                  %li
+                    %a{href: '#', title: 'Parte de Personal'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Parte de Personal
+                  %li
+                    %a{href: '#', title: 'Trabajadores Subidos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Trabajadores Subidos
+                  %li
+                    %a{href: '#', title: 'Tareo de Obras'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Tareo de Obras
+                  %li
+                    %a{href: '#', title: 'Tareo Semanal'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Tareo Semanal   
+              %li
+                %a{href: '#', title: 'Equipos'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Equipos
+                %ul
+                  %li
+                    %a{href: '#', title: 'Parte de Equipos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Parte de Equipos
+                  %li
+                    %a{href: '#', title: 'Equipos Registrados'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Equipos Registrados
+              %li
+                %a{href: '#', title: 'Valorizaciones'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Valorizaciones
+                %ul
+                  %li
+                    %a{href: '#', title: 'Analisis de Producción'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Analisis de Producción
+                  %li
+                    %a{href: '#', title: 'Valorizaciones SC'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Valorizaciones SC
+                  %li
+                    %a{href: '#', title: 'Reporte de Equipos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Reporte de Equipos
+                  %li
+                    %a{href: '#', title: 'Reporte de Maquinaria'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Reporte de Maquinaria
+                  %li
+                    %a{href: '#', title: 'Valorizar Equipos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Valorizar Equipos
           %li
             %a{href: "#", title: "Licitaciones"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
               %span.menu-item-parent Licitaciones
-            %ul
-              %li
-                %a{href: "#{biddings_works_path}?company_id=#{@company.id}", title: "Obras"}
-                  %i.fa.fa-lg.fa-fw.fa-home
-                  %span.menu-item-parent Obras
             %ul
               %li
                 %a{href: '#'}

@@ -1,4 +1,4 @@
 class SubcontractDetail < ActiveRecord::Base
 	belongs_to :subcontract
-	has_many :articles
+	belongs_to :article
 end

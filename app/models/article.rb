@@ -4,7 +4,7 @@ class Article < ActiveRecord::Base
   	
 	belongs_to :specific
 	belongs_to :type_of_article
-  	belongs_to :subcontract_detail
+  	has_many :subcontract_details
 	belongs_to :unit_of_measurement#, :through => :article_unit_of_measurements
 	#accepts_nested_attributes_for :unit_of_measurements
 	belongs_to :rep_inv_article, :foreign_key => 'id'
