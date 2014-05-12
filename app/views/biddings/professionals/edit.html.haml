@@ -280,9 +280,7 @@
 
   function check(element){
     $(element).parent().find('select').attr("disabled", $(element).is(':checked'));
-    console.log("entro a check")
     if ($(element).parent().children('.change-check').is(':checked')){
-      console.log($(element).parent().parent().children().children('.start_other_works').fadeIn('fast'))
       $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').fadeOut('fast');
       $(element).parent().parent().children().children('.start_certificate').find('input').fadeOut('fast');
       $(element).parent().parent().children().children('.finish_certificate').find('input').fadeOut('fast');
@@ -296,7 +294,6 @@
       $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor_other_works.input-group').fadeIn('fast');
       $(element).parent().parent().parent().children('.comp.row').children('.col-sm-6').children('.col-sm-4.comp').fadeIn('fast');
     }else{
-      console.log("entro a else")
       $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').fadeIn('fast');
       $(element).parent().parent().children().children('.start_certificate').find('input').fadeIn('fast');
       $(element).parent().parent().children().children('.finish_certificate').find('input').fadeIn('fast');
@@ -313,7 +310,12 @@
   }
 
   function workSelectCH(element){
-    console.log($(element).parent().parent().children('.another_work.col-sm-4'));
+    var work_id = $(element).val();
+    complete_infocombo(element, "#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+  }
+
+  function workSelectOL(element){
+    console.log("entro al onload");
     var work_id = $(element).val();
     complete_infocombo(element, "#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
   }
