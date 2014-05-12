@@ -142,3 +142,35 @@ function load_items_delivery_order_ajax(url, div_id, parameters){
     }
   });
 }
+
+function show_report_inventory(url, parameters, wurl, wname, wparameters){
+  var url_str = url;
+  
+  alert("Presione OK para visualizar reporte:")
+  
+  $.ajax({
+    type: 'POST',
+    url: url_str,
+    async: false,
+    data: parameters,
+    dataType : 'html',
+    beforeSend : function() {
+      $('#modalLoading').modal('toggle', {
+        keyboard: false,
+        backdrop: 'static'
+      });
+    },
+    success: function(data) {
+      $('#modalLoading').modal('hide');
+      //var myWindow = window.open(wurl, wname, wparameters);
+      var _form = document.createElement('form');
+      _form.action = wurl;
+      _form.target = '_blank';
+      document.body.appendChild(_form);
+      _form.submit();
+    },
+    error : function(xhr, ajaxOptions, thrownError) {
+      container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+    }
+  });
+}

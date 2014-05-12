@@ -8,7 +8,8 @@ class PurchaseOrder < ActiveRecord::Base
   belongs_to :method_of_payment
 
   accepts_nested_attributes_for :purchase_order_details, :allow_destroy => true
-
+  belongs_to :rep_inv_money, :foreign_key => 'money_id'
+  
   state_machine :state, :initial => :pre_issued do
 
     event :issue do

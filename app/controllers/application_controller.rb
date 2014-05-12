@@ -21,4 +21,8 @@ class ApplicationController < ActionController::Base
     @watchdog.save
   end
 
+  def exchange_rate_per_date(date, money)
+    return ActiveRecord::Base.connection.execute("SELECT  `value` FROM  `exchange_of_rates` WHERE DATE(`day`) = '#{date}' AND `money_id` = #{money} ORDER BY 1 DESC LIMIT 1")
+  end
+
 end

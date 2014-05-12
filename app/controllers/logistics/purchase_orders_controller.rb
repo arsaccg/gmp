@@ -216,7 +216,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         @deliveryOrders << current_id.to_s.rjust(5, '0')
       end
     end
-
+    
     # Numerics/Text values for footer
     @total = 0
     @igv = 0
@@ -280,6 +280,10 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape }
 
+  end
+
+  def get_exchange_rate_per_date
+    render :json => exchange_rate_per_date(params[:date], params[:money_id]).first()
   end
 
   private

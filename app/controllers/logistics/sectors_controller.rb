@@ -4,16 +4,19 @@ class Logistics::SectorsController < ApplicationController
   
   def index
     flash[:error] = nil
-    @Sectors = Sector.all
-    if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
-      render layout: 'dashboard'
-    else
-      render layout: false
-    end
+    @Sectors = Sector.where("code LIKE '__'")
+    render layout: false
   end
 
   def create
-    sector = Sector.new(sector_parameters)
+    if params[:is]['subsector'] == nil
+      sector = Sector.new(sector_parameters)
+    else
+      sector = Sector.new
+      sector.code = params[:extrafield]['first_code'].to_s + params[:sector]['code'].to_s
+      sector.name = params[:sector]['name'].to_s
+    end
+
     if sector.save
       flash[:notice] = "Se ha creado correctamente el sector."
       redirect_to :action => :index
@@ -29,6 +32,10 @@ class Logistics::SectorsController < ApplicationController
 
   def edit
     @Sectors = Sector.find(params[:id])
+    if params[:subsector]
+      @subsector = true
+      @sectors = Sector.where("`code` LIKE  '__'")
+    end
     @action = 'edit'
     render layout: false
   end
@@ -40,21 +47,41 @@ class Logistics::SectorsController < ApplicationController
 
   def update
     sector = Sector.find(params[:id])
-    if sector.update_attributes(sector_parameters)
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index
-    else
-      sector.errors.messages.each do |attribute, error|
-        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+    if params[:is] == nil
+      if sector.update_attributes(sector_parameters)
+        flash[:notice] = "Se ha actualizado correctamente los datos."
+        redirect_to :action => :index
+      else
+        sector.errors.messages.each do |attribute, error|
+          flash[:error] =  flash[:error].to_s + error.to_s + "  "
+        end
+        # Load new()
+        @Sectors = sector
+        render :edit, layout: false
       end
-      # Load new()
-      @Sectors = sector
-      render :edit, layout: false
+    else
+      sector.code = params[:extrafield]['first_code'].to_s + params[:sector]['code'].to_s
+      sector.name = params[:sector]['name'].to_s
+      if sector.save
+        flash[:notice] = "Se ha actualizado correctamente los datos."
+        redirect_to :action => :index
+      else
+        sector.errors.messages.each do |attribute, error|
+          flash[:error] =  flash[:error].to_s + error.to_s + "  "
+        end
+        # Load new()
+        @Sectors = sector
+        render :edit, layout: false
+      end
     end
   end
 
   def new
     @Sectors = Sector.new
+    if params[:subsector]
+      @subsector = true
+      @sectors = Sector.where("`code` LIKE  '__'")
+    end
     render :new, layout: false
   end
 

@@ -11,6 +11,7 @@ class Logistics::CostCentersController < ApplicationController
       cache = ActiveSupport::Cache::MemoryStore.new()
       @company = Rails.cache.read('company_id')
     end
+    #@own_cost_center = current_user.cost_centers
     @costCenters = CostCenter.where(company_id: "#{@company}")
     render layout: false
   end

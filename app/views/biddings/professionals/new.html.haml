@@ -34,6 +34,30 @@
     }
   });
 
+  $("#specialty-select").change(function(){
+    var specialty = $("#specialty-select").val();
+    if($("#specialty-select").val() == "Saneamiento"){
+      $('#compSan').fadeIn('fast');
+    }else{
+      $('#compSan').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Civil"){
+      $('#compCiv').fadeIn('fast');
+    }else{
+      $('#compCiv').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Electromecanico"){
+      $('#compEle').fadeIn('fast');
+    }else{
+      $('#compEle').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Hidraulica"){
+      $('#compHidra').fadeIn('fast');
+    }else{
+      $('#compHidra').fadeOut('fast');
+    }
+  });
+
   function submit_validate(form){
     $(form['selector']).ajaxForm({
       target: '#content',
@@ -55,9 +79,22 @@
     append_url_ajax('#{more_trainings_biddings_professionals_path}', 'accordion-tr', data, '', 'POST');
   }
 
+  function delete_item(code){
+    $("#" + code).remove();
+  }
+
+  $('#finish-worker').change(function(){
+    var d1 = $('#start-worker').val().split("-");
+    var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
+    var d2 = $('#finish-worker').val().split("-");
+    var dat2 = new Date(d2[0], parseFloat(d2[1])-1, parseFloat(d2[2]));
+    var fin = dat2.getTime() - dat1.getTime();
+    var dias = Math.floor(fin / (1000 * 60 * 60 * 24))  
+    $('#worked-day').val(dias);
+  });
+
   $('#change-check').change(function(){
     $('#work-select').attr('disabled', this.checked);
-    $('#another_work').attr('disabled', !this.checked);
     $('#start_certificate').attr('disabled', !this.checked);
     $('#finish_certificate').attr('disabled', !this.checked);
     $('#comp-check').fadeOut('fast');
@@ -66,9 +103,13 @@
     if ($('#change-check').is(':checked')){
       $('#comp-check').fadeOut('fast');
       $('#comp').fadeIn('fast');
+      $('#another_work').fadeIn('fast');
+      $('#specialty').fadeIn('fast');
     }else{
       $('#comp-check').fadeIn('fast');
       $('#comp').fadeOut('fast');
+      $('#another_work').fadeOut('fast');
+      $('#specialty').fadeOut('fast');
     }
   });
 

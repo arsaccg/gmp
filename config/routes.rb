@@ -55,7 +55,7 @@ ArsacLogistica::Application.routes.draw do
     resources :unit_of_measurements
     resources :persons do
       collection do
-        get 'bring_costcenter'
+        post 'getCostCentersPerCompany'
       end
     end
     resources :center_of_attentions
@@ -116,6 +116,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_items_from_delivery_orders'
         post 'more_items_from_delivery_orders'
         post 'show_rows_purchase_orders'
+        post 'get_exchange_rate_per_date'
       end
       member do
         put 'show_delivery_order_item_field'
@@ -181,7 +182,6 @@ ArsacLogistica::Application.routes.draw do
         post 'add_stock_input_item_field'
       end
     end
-
   end
 
   namespace :biddings do
@@ -207,4 +207,21 @@ ArsacLogistica::Application.routes.draw do
     resources :charges
     resources :majors
   end
+
+  namespace :reports do
+    resources :inventories do
+      collection do
+        post 'show_rows_results'
+      end
+      member do
+        get 'show_rows_results_pdf'
+      end
+    end
+  end
+
+  namespace :production do
+    resources :workers
+    resources :working_groups
+  end
+
 end

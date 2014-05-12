@@ -4,7 +4,7 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
     if current_user.has_role? :director
       @persons = User.all
     else
-      @persons = User.all.where('roles_mask NOT IN (1)')
+      @persons = User.all.where('roles_mask NOT IN(1)')
     end
     render layout: false
   end
@@ -38,14 +38,14 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
     @user = User.find(params[:id])
     @all_roles = { 'issuer' => 'Emite las ordenes de suministro', 'approver' => 'Aprueba ordenes de Suministro', 'reviser' => 'Dar visto bueno a las ordenes de suministro', 'canceller' => 'Anular ordenes suministro' }
     @roles = @user.role_symbols
+    puts @roles
     render layout: false
   end
 
   def update
     @person = User.find(params[:id])
-    if !params[:profile]
       @person.roles = [params[:role]]
-    end
+
     @person.update_attributes(user_params)
     flash[:notice] = "Se ha actualizado correctamente al usuario #{@person.first_name + ' ' + @person.last_name}."
     if current_user.has_role? :director
@@ -61,12 +61,17 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
     render :json => user
   end
 
-  def bring_costcenter
-    costcenter = ActiveRecord::Base.connection.execute("SELECT id, name FROM `cost_centers` WHERE `company_id` IN (#{params[:querycostcenter]})")
-    respond_to do |format|
-        format.json { render :json => { costcenter: costcenter } }
+
+  def getCostCentersPerCompany
+    if params[:costCenter] != nil
+      cost_centers = params[:costCenter]
     end
-    #costcenter = CostCenter.where('company_id = ?', params[:id])
+    respond_to do |format|
+      format.json { 
+        data = ActiveRecord::Base.connection.execute("SELECT id,name FROM `cost_centers` WHERE `company_id` IN (#{cost_centers})")
+        render :json => data
+      }
+    end
   end
 
   private
