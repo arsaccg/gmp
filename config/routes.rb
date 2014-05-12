@@ -1,12 +1,5 @@
 ArsacLogistica::Application.routes.draw do
 
-  get "part_works/index"
-  get "part_works/show"
-  get "part_works/new"
-  get "part_works/create"
-  get "part_works/edit"
-  get "part_works/update"
-  get "part_works/destroy"
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -227,6 +220,7 @@ ArsacLogistica::Application.routes.draw do
 
   namespace :production do
     resources :workers
+    resources :part_works
     resources :category_of_workers
     resources :working_groups
     resources :subcontracts do
