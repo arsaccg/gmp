@@ -10,7 +10,11 @@ class Biddings::ProfessionalsController < ApplicationController
   end
 
   def show
+    @cont =1 
+    @cont2 =1 
     @work = Work.all
+    @other= OtherWork.all
+    @flag=false
     @charge = Charge.all
     @professional= Professional.find(params[:id])
     TypeEntity.where("id IN (1,5)").each do |tent|
@@ -59,6 +63,7 @@ class Biddings::ProfessionalsController < ApplicationController
     TypeEntity.where("id IN (1,5)").each do |tent|
       @entities << tent.entities
     end
+    @other= OtherWork.all
     @reg = Time.now.to_i
     @major = Major.all
     @action = 'edit'
@@ -81,6 +86,13 @@ class Biddings::ProfessionalsController < ApplicationController
   end
 
   def destroy
+    pro = Professional.find(params[:id])
+    pro.certificates.each do |cert|
+      certificate = Certificate.destroy(cert.id)  
+    end
+    pro.trainings.each do |tra|
+      training = Training.destroy(tra.id)
+    end
     profesional = Professional.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
     render :json => profesional
@@ -89,14 +101,13 @@ class Biddings::ProfessionalsController < ApplicationController
   def get_component_from_work
     @work = Work.find(params[:work_id])
     @components=@work.components
-    render json: {:component_work => @components}  
-  end
-
-  def dates_from_work
     @work = Work.find(params[:work_id])
     @start = @work.start_date_of_work
     @finish = @work.real_end_date_of_work
-    render json: {:start=>@start, :finish=>@finish}  
+    @entity = @work.entity.name
+    contr = Entity.find(@work.contractor_id)
+    @contractor = contr.name
+    render json: {:start=>@start, :finish=>@finish, :entity=>@entity, :contractor=>@contractor, :component_work => @components}  
   end
 
   def more_dates
@@ -106,6 +117,7 @@ class Biddings::ProfessionalsController < ApplicationController
 
   def more_certificates
     @reg = Time.now.to_i
+    @reg2 = Time.now.to_i.to_s
     @work = Work.all
     @major = Major.all
     @component = Component.all
@@ -139,14 +151,24 @@ class Biddings::ProfessionalsController < ApplicationController
         :professional_id, 
         :work_id, 
         :charge_id, 
-        :entity_id, 
         :num_days, 
         :start_date, 
         :finish_date, 
-        {:component_work_ids => []}, 
         :certificate, 
         :other, 
-        :_destroy
+        :_destroy,
+        other_work_attributes: [
+          :id,
+          :certificate_id,
+          :name,
+          :start,
+          :entity,
+          :contractor,
+          :end,
+          :specialty,
+          {:component_work_ids => []}, 
+          :_destroy
+        ]
       ], 
       trainings_attributes: [
         :id, 

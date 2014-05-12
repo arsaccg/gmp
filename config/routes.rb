@@ -195,7 +195,6 @@ ArsacLogistica::Application.routes.draw do
     resources :professionals do
       collection do
         post 'get_component_from_work'
-        post 'dates_from_work'
         post 'more_dates'
         post 'more_certificates'
         post 'more_trainings'
@@ -221,7 +220,13 @@ ArsacLogistica::Application.routes.draw do
 
   namespace :production do
     resources :workers
+    resources :category_of_workers
     resources :working_groups
+    resources :subcontracts do
+      collection do
+        post 'add_more_article'
+      end
+    end
   end
 
 end

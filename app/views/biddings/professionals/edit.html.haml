@@ -39,10 +39,6 @@
         load_url_ajax("#{biddings_professionals_path}", 'content', null, null, 'GET');
     });
     
-    var work_id = $("#work-select").val();
-    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", "0302");
-    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
-
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     } else {
@@ -50,74 +46,18 @@
     }
   });
 
-  $("#specialty-select").change(function(){
-    var specialty = $("#specialty-select").val();
-    if($("#specialty-select").val() == "Saneamiento"){
-      $('#compSan').fadeIn('fast');
-    }else{
-      $('#compSan').fadeOut('fast');
-    }
-    if($("#specialty-select").val() == "Civil"){
-      $('#compCiv').fadeIn('fast');
-    }else{
-      $('#compCiv').fadeOut('fast');
-    }
-    if($("#specialty-select").val() == "Electromecanico"){
-      $('#compEle').fadeIn('fast');
-    }else{
-      $('#compEle').fadeOut('fast');
-    }
-    if($("#specialty-select").val() == "Hidraulica"){
-      $('#compHidra').fadeIn('fast');
-    }else{
-      $('#compHidra').fadeOut('fast');
-    }
-  });
-
   function submit_validate(form){
     $(form['selector']).ajaxForm({
       target: '#content',
     });
   }
 
-  $('#change-check').change(function(){
-    $('#work-select').attr('disabled', this.checked);
-    $('#start_certificate').attr('disabled', !this.checked);
-    $('#finish_certificate').attr('disabled', !this.checked);
-    $('#comp-check').fadeOut('fast');
-    $('#comp').fadeIn('fast');
-
-    if ($('#change-check').is(':checked')){
-      $('#comp-check').fadeOut('fast');
-      $('#comp').fadeIn('fast');
-      $('#another_work').fadeIn('fast');
-      $('#specialty').fadeIn('fast');
-    }else{
-      $('#comp-check').fadeIn('fast');
-      $('#comp').fadeOut('fast');
-      $('#another_work').fadeOut('fast');
-      $('#specialty').fadeOut('fast');
-    }
-  });
   
   function submit_validate(form){
     $(form['selector']).ajaxForm({
       target: '#content',
     });
   }
-
-  $('#work-select').change(function(){
-    var work_id = $(this).val();
-    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
-    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
-  });
-
-  $('#work-select').keyup(function(){
-    var work_id = $(this).val();
-    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
-    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
-  });
-
   // PAGE RELATED SCRIPTS
   
   loadScript("#{ asset_path 'plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js', type: :javascript }", runBootstrapWizard);
@@ -311,40 +251,79 @@
     append_url_ajax('#{more_certificates_biddings_professionals_path}', 'accordion-ce', data, '', 'POST');
   }
 
-  $('#change-check').change(function(){
-    $('#work-select').attr('disabled', this.checked);
-    
-    $('#start_certificate').attr('disabled', !this.checked);
-    $('#finish_certificate').attr('disabled', !this.checked);
-    $('#comp-check').fadeOut('fast');
-    $('#comp').fadeIn('fast');
+  function add_trainings() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{more_trainings_biddings_professionals_path}', 'accordion-tr', data, '', 'POST');
+  }
 
-    if ($('#change-check').is(':checked')){
-      $('#comp-check').fadeOut('fast');
-      $('#comp').fadeIn('fast');
-      $('#another_work').fadeIn('fast');
-      $('#specialty').fadeIn('fast');
+  function delete_item(code){
+    $("#" + code).remove();
+  }
+
+  function calculateDays(element){
+    var di = $(element).parent().parent().parent().siblings().children('.col-sm-8').children('.input-group').find('input').val();
+    if(di!=''){
+      var d1 = di.split("-");
+      var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
+      var d2 = $(element).val().split("-");
+      var dat2 = new Date(d2[0], parseFloat(d2[1])-1, parseFloat(d2[2]));
+      var fin = dat2.getTime() - dat1.getTime();
+      var dias = Math.floor(fin / (1000 * 60 * 60 * 24));
+      if(dias<0){
+        dias="Ingrese una fecha correcta"
+      }
+      $(element).parent().parent().parent().parent().parent().children('.3.row').children('.col-sm-4').children('.form-control.worked-day').val(dias);
     }else{
-      $('#comp-check').fadeIn('fast');
-      $('#comp').fadeOut('fast');
-      $('#another_work').fadeOut('fast');
-      $('#specialty').fadeOut('fast');
+      $(element).parent().parent().parent().parent().parent().children('.3.row').children('.col-sm-4').children('.form-control.worked-day').val("Ingrese correctamente ambas fechas");
     }
-  });
+  }
 
-  $('#work-select').change(function(){
-    var work_id = $(this).val();
-    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
-    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
-  });
+  function check(element){
+    $(element).parent().find('select').attr("disabled", $(element).is(':checked'));
+    console.log("entro a check")
+    if ($(element).parent().children('.change-check').is(':checked')){
+      console.log($(element).parent().parent().children().children('.start_other_works').fadeIn('fast'))
+      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').fadeOut('fast');
+      $(element).parent().parent().children().children('.start_certificate').find('input').fadeOut('fast');
+      $(element).parent().parent().children().children('.finish_certificate').find('input').fadeOut('fast');
+      $(element).parent().parent().children('.another_work').fadeIn('fast');
+      $(element).parent().parent().children('.specialty-select').fadeIn('fast');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').fadeOut('fast');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').fadeOut('fast');
+      $(element).parent().parent().children().children('.start_other_works').fadeIn('fast');
+      $(element).parent().parent().children().children('.finish_other_works').fadeIn('fast');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity_other_works.input-group').fadeIn('fast');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor_other_works.input-group').fadeIn('fast');
+      $(element).parent().parent().parent().children('.comp.row').children('.col-sm-6').children('.col-sm-4.comp').fadeIn('fast');
+    }else{
+      console.log("entro a else")
+      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').fadeIn('fast');
+      $(element).parent().parent().children().children('.start_certificate').find('input').fadeIn('fast');
+      $(element).parent().parent().children().children('.finish_certificate').find('input').fadeIn('fast');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').fadeIn('fast');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').fadeIn('fast');
+      $(element).parent().parent().children('.another_work').fadeOut('fast');
+      $(element).parent().parent().children('.specialty-select').fadeOut('fast');
+      $(element).parent().parent().children().children('.start_other_works').fadeOut('fast');
+      $(element).parent().parent().children().children('.finish_other_works').fadeOut('fast');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity_other_works.input-group').fadeOut('fast');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor_other_works.input-group').fadeOut('fast');
+      $(element).parent().parent().parent().children('.comp.row').children('.col-sm-6').children('.col-sm-4.comp').fadeOut('fast');
+    }
+  }
 
-  $('#work-select').keyup(function(){
-    var work_id = $(this).val();
-    complete_infocombo("#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
-    set_day("#{dates_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
-  });
+  function workSelectCH(element){
+    console.log($(element).parent().parent().children('.another_work.col-sm-4'));
+    var work_id = $(element).val();
+    complete_infocombo(element, "#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+  }
 
-  function complete_infocombo(url, work_id, form_token, default_value){
+  function workSelectKU(element){
+    var work_id = $(element).val();
+    complete_infocombo(element, "#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+  }
+
+  function complete_infocombo(element, url, work_id, form_token, default_value){
     var str_html = "";
     $.ajax({
         type: "POST",
@@ -352,6 +331,10 @@
         async: false,
         data: { work_id: work_id, authenticity_token: form_token}
     }).done(function( data ) {
+      var start = data.start;
+      var finish = data.finish;
+      var entity = data.entity;
+      var contractor = data.contractor;
       newOptions = [];
       $.each(data.component_work, function(key, value){
         item = {};
@@ -359,26 +342,18 @@
         item['id'] = value.id;
         newOptions.push(item);
       });
-      $('#comp-check').empty();
+      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').empty();
       $.each(newOptions, function(key,value){
         str_html = str_html + "<label> <strong> > </strong> " + value.name + "</label><br/>"
       });
-      $('#comp-check').html(str_html);
+      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').html(str_html);
+      $(element).parent().parent().children().children('.start_certificate').find('input').empty();
+      $(element).parent().parent().children().children('.start_certificate').find('input').val(start);
+      $(element).parent().parent().children().children('.finish_certificate').find('input').empty();
+      $(element).parent().parent().children().children('.finish_certificate').find('input').val(finish);
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').find('input').empty();
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').find('input').val(entity);
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').empty();
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').val(contractor);
     });
-  }
-
-  function set_day(url, work_id, form_token, default_value){
-      $.ajax({
-        type: "POST",
-        url: url,
-        async: false,
-        data: { work_id: work_id, authenticity_token: form_token}
-      }).done(function(data){
-        var start = data.start;
-        var finish = data.finish;
-        $('#start_certificate').empty();
-        $('#start_certificate').val(start);
-        $('#finish_certificate').empty();
-        $('#finish_certificate').val(finish);
-      });
   }

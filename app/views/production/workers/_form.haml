@@ -10,6 +10,18 @@
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
         .row
           %section.col.col-10
+            %label.label Categoria del Trabajador
+            %label.input{for: "category_of_worker_id"}
+              %select.form-control{:name =>"worker[category_of_worker_id]"}
+                - @categoryOfWorkers.each do |categoryOfWorker|
+                  - if @worker.category_of_worker_id == categoryOfWorker.id
+                    %option{:value => "#{categoryOfWorker.id}", :selected => true}
+                      = categoryOfWorker.name
+                  - else
+                    %option{:value => "#{categoryOfWorker.id}"}
+                      = categoryOfWorker.name
+        .row
+          %section.col.col-10
             %label.label Nombres
             %label.input{for: "first_name"}
               %i.icon-append.fa.fa-user
@@ -70,34 +82,13 @@
 
 :javascript
   $(document).ready(function () {
-    $("#entity_name").focus();
-    $('#type-entity-select').select2();
+    $('select').select2();
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
-      submit_validate($('#new_entity'));
+      submit_validate($('#new_worker'));
     }
-
-    if($('#entity_type_entity_ids_6').is(':checked') || $('#entity_type_entity_ids_7').is(':checked')){
-      $('#cost-center-select').fadeIn('fast');
-    } else {
-      $('#cost-center-select').fadeOut('fast');
-    }
-
-    $('#entity_type_entity_ids_6').change(function(){
-      if($(this).is(':checked'))
-        $('#cost-center-select').fadeIn('fast');
-      else
-        $('#cost-center-select').fadeOut('fast');
-    });
-
-    $('#entity_type_entity_ids_7').change(function(){
-      if($(this).is(':checked'))
-        $('#cost-center-select').fadeIn('fast');
-      else
-        $('#cost-center-select').fadeOut('fast');
-    });
 
   });
   
@@ -107,15 +98,64 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'entity[name]' : {
+            'worker[category_of_worker_id]' : {
+              required : true,
+            },
+            'worker[first_name]' : {
+              required : true,
+            },
+            'worker[paternal_surname]' : {
+              required : true,
+            },
+            'worker[maternal_surname]' : {
+              required : true,
+            },
+            'worker[dni]' : {
+              required : true,
+              digits: true,
+              maxlength: 8,
+              minlength: 8
+            },
+            'worker[email]' : {
+              required : true,
+            },
+            'worker[phone]' : {
+              required : true,
+            },
+            'worker[date_of_birth]' : {
               required : true,
             }
           },
 
           // Messages for form validation
           messages : {
-            'entity[name]' : {
+            'worker[category_of_worker_id]' : {
+              required : 'Por favor, ingresar la categoria del trabajador.'
+            },
+            'worker[first_name]' : {
               required : 'Por favor, ingresar el nombre.'
+            },
+            'worker[paternal_surname]' : {
+              required : 'Por favor, ingresar el apellido Paterno.'
+            },
+            'worker[maternal_surname]' : {
+              required : 'Por favor, ingresar el apellido Materno.'
+            },
+            'worker[dni]' : {
+              required : 'Por favor, ingresar el DNI.',
+              digits: 'Por favor, ingresar un DNI válido',
+              maxlength: 'Por favor, ingresar un DNI válido',
+              minlength: 'Por favor, ingresar un DNI válido'
+            },
+            'worker[email]' : {
+              required : 'Por favor, ingresar el email.',
+              email: true
+            },
+            'worker[phone]' : {
+              required : 'Por favor, ingresar el teléfono.'
+            },
+            'worker[date_of_birth]' : {
+              required : 'Por favor, ingresar la fecha de nacimiento.'
             }
           },
 
