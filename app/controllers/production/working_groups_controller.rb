@@ -44,6 +44,17 @@ class Production::WorkingGroupsController < ApplicationController
 
   def edit
     @workingGroup = WorkingGroup.find(params[:id])
+    TypeEntity.where("name LIKE '%Jefes de Frente%'").each do |front_chief|
+      @front_chiefs = front_chief.entities
+    end
+
+    TypeEntity.where("name LIKE '%Maestro de Obras%'").each do |master_builder|
+      @master_builders = master_builder.entities
+    end
+    TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
+      @executors = executor.entities
+    end
+    @sectors = Sector.where("code LIKE '__'")
     @company = params[:company_id]
     render layout: false
   end
