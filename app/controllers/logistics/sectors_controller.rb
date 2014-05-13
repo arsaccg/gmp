@@ -9,7 +9,7 @@ class Logistics::SectorsController < ApplicationController
   end
 
   def create
-    if params[:is]['subsector'] == nil
+    if params[:is]== nil
       sector = Sector.new(sector_parameters)
     else
       sector = Sector.new

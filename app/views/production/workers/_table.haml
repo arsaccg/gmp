@@ -11,7 +11,8 @@
         %thead
           %tr
             %th N°
-            %th Nombres
+            %th Primer Nombre
+            %th Segundo Nombre
             %th Apellido Paterno
             %th Apellido Materno
             %th Categoria
@@ -26,6 +27,8 @@
                 = worker.id
               %td 
                 = worker.first_name
+              %td 
+                = worker.second_name
               %td
                 = worker.paternal_surname
               %td 

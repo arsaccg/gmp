@@ -15,7 +15,7 @@ class Logistics::EntitiesController < ApplicationController
     @type_entities = TypeEntity.all
     @entity = Entity.new
     @company_id = params[:company_id]
-    @costCenter = CostCenter.where("company_id = #{@company_id}")
+    @costCenter = CostCenter.where("company_id = #{params[:company_id]}")
     render layout: false
   end
 
@@ -40,6 +40,7 @@ class Logistics::EntitiesController < ApplicationController
     @company_id = params[:company_id]
     @reg_ed = Time.now.to_i
     @entity = Entity.find(params[:id])
+    @costCenter = CostCenter.where("company_id = #{params[:company_id]}")
     @all_entity_types = Array.new
     @own_entity_types = Array.new
     # Comenzando lógica
@@ -64,7 +65,7 @@ class Logistics::EntitiesController < ApplicationController
       redirect_to :action => :index, company_id: params[:company_id]
     else
       entity.errors.messages.each do |attribute, error|
-        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
       end
       # Load new()
       @entity = entity
@@ -73,8 +74,9 @@ class Logistics::EntitiesController < ApplicationController
   end
 
   def destroy
-    @entity = Entity.destroy(params[:id])
-    render :json => @entity
+    entity = Entity.destroy(params[:id])    
+    flash[:notice] = "Se ha eliminado correctamente la entidad."
+    render :json => entity
   end
 
   private

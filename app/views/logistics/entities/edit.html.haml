@@ -10,7 +10,7 @@
         = render :partial => 'form'
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-entity{type: "button"}
     %i.fa.fa-arrow-left>
-    Retornar al listado de entidades
+    Retornar al Listado de Entidades
 
 = javascript_include_tag 'plugin/flot/jquery.flot.cust'
 = javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
@@ -27,6 +27,7 @@
 = javascript_include_tag 'plugin/datatables/DT_bootstrap'
 
 :javascript
+
   $('#backlist-entity').click(function(){
-      load_url_ajax("#{logistics_entities_path}", 'content', {company_id: '#{@company_id}'}, null, 'GET');
+      load_url_ajax("#{logistics_entities_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
   });
