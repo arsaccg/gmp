@@ -103,7 +103,6 @@ class Biddings::ProfessionalsController < ApplicationController
   def get_component_from_work
     @work = Work.find(params[:work_id])
     @components=@work.components
-    @work = Work.find(params[:work_id])
     @start = @work.start_date_of_work
     @finish = @work.real_end_date_of_work
     @entity = @work.entity.name

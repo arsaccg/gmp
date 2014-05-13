@@ -52,16 +52,13 @@
     });
   }
 
-  
   function submit_validate(form){
     $(form['selector']).ajaxForm({
       target: '#content',
     });
   }
   // PAGE RELATED SCRIPTS
-  
   loadScript("#{ asset_path 'plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js', type: :javascript }", runBootstrapWizard);
-  
   //Bootstrap Wizard Validations
 
   function runBootstrapWizard(){
@@ -278,6 +275,24 @@
     }
   }
 
+  function calculateDays2(element){
+    var di = $(element).parent().parent().parent().siblings().children('.col-sm-8').children('.input-group').find('input').val();
+    if(di!=''){
+      var d1 = $(element).val().split("-");
+      var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
+      var d2 = di.split("-");
+      var dat2 = new Date(d2[0], parseFloat(d2[1])-1, parseFloat(d2[2]));
+      var fin = dat2.getTime() - dat1.getTime();
+      var dias = Math.floor(fin / (1000 * 60 * 60 * 24));
+      if(dias<0){
+        dias="Ingrese una fecha correcta"
+      }
+      $(element).parent().parent().parent().parent().parent().children('.3.row').children('.col-sm-4').children('.form-control.worked-day').val(dias);
+    }else{
+      $(element).parent().parent().parent().parent().parent().children('.3.row').children('.col-sm-4').children('.form-control.worked-day').val("Ingrese correctamente ambas fechas");
+    }
+  }
+
   function check(element){
     $(element).parent().find('select').attr("disabled", $(element).is(':checked'));
     if ($(element).parent().children('.change-check').is(':checked')){
@@ -310,8 +325,20 @@
   }
 
   function workSelectCH(element){
-    var work_id = $(element).val();
-    complete_infocombo(element, "#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    if($(element).val()==''){
+      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').html('');
+      $(element).parent().parent().children().children('.start_certificate').find('input').empty();
+      $(element).parent().parent().children().children('.start_certificate').find('input').val('');
+      $(element).parent().parent().children().children('.finish_certificate').find('input').empty();
+      $(element).parent().parent().children().children('.finish_certificate').find('input').val('');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').find('input').empty();
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').find('input').val('');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').empty();
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').val('');
+    }else{
+      var work_id = $(element).val();
+      complete_infocombo(element, "#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    }
   }
 
   function workSelectOL(element){
@@ -321,8 +348,20 @@
   }
 
   function workSelectKU(element){
-    var work_id = $(element).val();
-    complete_infocombo(element, "#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    if($(element).val()==''){
+      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').html('');
+      $(element).parent().parent().children().children('.start_certificate').find('input').empty();
+      $(element).parent().parent().children().children('.start_certificate').find('input').val('');
+      $(element).parent().parent().children().children('.finish_certificate').find('input').empty();
+      $(element).parent().parent().children().children('.finish_certificate').find('input').val('');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').find('input').empty();
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').find('input').val('');
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').empty();
+      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').val('');
+    }else{
+      var work_id = $(element).val();
+      complete_infocombo(element, "#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+    }
   }
 
   function complete_infocombo(element, url, work_id, form_token, default_value){

@@ -32,7 +32,6 @@
                     %th Fecha de Titulación
                     %th Fecha de Colegiatura
                     %th Código de Colegiatura
-                    
                 %tbody
                   %tr
                     %td
@@ -87,11 +86,10 @@
                             -if oth.certificate_id==procert.id
                               = oth.name
                               -@flag=true
-                              
-                          -if @flag==false
-                            - @work.each do |wo|
-                              - if procert.work_id == wo.id
-                                = wo.name
+                            -if @flag==false
+                              - @work.each do |wo|
+                                - if procert.work_id == wo.id
+                                  = wo.name
                         -else
                           -if @flag==false
                             - @work.each do |wo|

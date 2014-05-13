@@ -310,7 +310,7 @@
                               %label.col-sm-4 Fecha de Inicio:
                               .col-sm-8
                                 .input-group
-                                  %input.form-control{'class'=>'start-worker', name: "professional[certificates_attributes][" + @reg.to_s + "][start_date]", as: :date, type:  "date", :value=>"#{cert.start_date}"}
+                                  %input.form-control{'class'=>'start-worker', name: "professional[certificates_attributes][" + @reg.to_s + "][start_date]", as: :date, type:  "date", :value=>"#{cert.start_date}", onchange:'calculateDays2(this);'}
                                   %span.input-group-addon
                                     %i.fa.fa-calendar
                           
@@ -448,7 +448,7 @@
                             %label.col-sm-4 Fecha de Inicio:
                             .col-sm-8
                               .input-group
-                                %input.form-control{'class'=>'start-worker', name: "professional[certificates_attributes][" + @reg.to_s + "][start_date]", as: :date, type:  "date"}
+                                %input.form-control{'class'=>'start-worker', name: "professional[certificates_attributes][" + @reg.to_s + "][start_date]", as: :date, type:  "date", onchange:'calculateDays2(this);'}
                                 %span.input-group-addon
                                   %i.fa.fa-calendar
                         
