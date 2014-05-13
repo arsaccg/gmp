@@ -1,2 +1,108 @@
-%h1 Production::PartWorks#show
-%p Find me in app/views/production/part_works/show.html.haml
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        Parte de Obra
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-8
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = 'Parte Obra N° ' + @partwork.number_working_group.to_s
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Información Principal
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Número
+                    %th Frente
+                    %th Jefe de Frente
+                    %th Ejecutor
+                    %th Maestro de Obra
+                    %th Fecha
+                %tbody(id="article_items_table")
+                  %tr
+                    %td
+                      = @partwork.number_working_group
+                    %td
+                      = @partwork.sector.name
+                    %td
+                      = Worker.find(@partwork.working_group.front_chief_id).first_name + ' ' + Worker.find(@partwork.working_group.front_chief_id).second_name + ' ' + Worker.find(@partwork.working_group.front_chief_id).paternal_surname + ' ' + Worker.find(@partwork.working_group.front_chief_id).maternal_surname
+                    %td
+                      = Entity.find(@partwork.working_group.executor_id).name
+                    %td
+                      = Worker.find(@partwork.working_group.master_builder_id).first_name + ' ' + Worker.find(@partwork.working_group.master_builder_id).second_name + ' ' + Worker.find(@partwork.working_group.master_builder_id).paternal_surname + ' ' + Worker.find(@partwork.working_group.master_builder_id).maternal_surname
+                    %td
+                      = @partwork.date_of_creation
+
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 Detalle de la Parte Obra
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Detalle de los Insumos Asociados
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Codigo
+                    %th Insumo
+                    %th Unidad de Medida
+                    %th Metrado
+                    %th Descripción
+                %tbody
+                  - @partworkdetails.each do |partworkdetail|
+                    %tr
+                      %td
+                        = partworkdetail.article.code
+                      %td
+                        = partworkdetail.article.name
+                      %td
+                        = partworkdetail.article.unit_of_measurement.name
+                      %td
+                        = partworkdetail.bill_of_quantitties
+                      %td
+                        = partworkdetail.description
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Ordenes de Compra
+
+= javascript_include_tag 'plugin/flot/jquery.flot.cust'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
+= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
+= javascript_include_tag 'plugin/flot/jquery.flot.resize'
+= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
+= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
+= javascript_include_tag 'plugin/datatables/ColReorder.min'
+= javascript_include_tag 'plugin/datatables/FixedColumns.min'
+= javascript_include_tag 'plugin/datatables/ColVis.min'
+= javascript_include_tag 'plugin/datatables/ZeroClipboard'
+= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
+= javascript_include_tag 'plugin/datatables/DT_bootstrap'
+
+:javascript
+  
+  $('#backlist-purchase-order').click(function(){
+    load_url_ajax("#{production_part_works_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
+  });

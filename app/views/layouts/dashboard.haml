@@ -284,7 +284,7 @@
                   %span.menu-item-parent Producción
                 %ul
                   %li
-                    %a{href: '#', title: 'Parte Obras'}
+                    %a{href: "#{production_part_works_path}?company_id=#{@company.id}", title: 'Parte Obras'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Parte Obras
               %li
@@ -293,7 +293,7 @@
                   %span.menu-item-parent Personal
                 %ul
                   %li
-                    %a{href: '#', title: 'Parte de Personal'}
+                    %a{href: "#{production_part_people_path}?company_id=#{@company.id}", title: 'Parte de Personal'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Parte de Personal
                   %li

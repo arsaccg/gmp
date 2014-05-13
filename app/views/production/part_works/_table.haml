@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Grupos de Trabajo
+    %h2 Lista de Parte Obras
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
@@ -11,28 +11,33 @@
         %thead
           %tr
             %th N°
-            %th Sector
+            %th Frente
             %th Jefe de Frente
             %th Ejecutor
             %th Maestro de Obra
+            %th Fecha
             %th Acciones
         %tbody
-          - @workingGroups.each do |working_group|
+          - @part_works.each do |partwork|
             %tr
               %td
-                = working_group.id
+                = partwork.number_working_group
               %td 
-                = working_group.sector.name
+                = partwork.sector.name
               %td
-                = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' ' + Worker.find(working_group.front_chief_id).paternal_surname + ' ' + Worker.find(working_group.front_chief_id).maternal_surname
+                = Worker.find(partwork.working_group.front_chief_id).first_name + ' ' + Worker.find(partwork.working_group.front_chief_id).second_name  + ' ' + Worker.find(partwork.working_group.front_chief_id).paternal_surname  + ' ' + Worker.find(partwork.working_group.front_chief_id).maternal_surname
               %td 
-                = Entity.find(working_group.executor_id).name
+                = Entity.find(partwork.working_group.executor_id).name
               %td
-                = Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name + ' ' + Worker.find(working_group.master_builder_id).paternal_surname + ' ' + Worker.find(working_group.master_builder_id).maternal_surname
+                = Worker.find(partwork.working_group.master_builder_id).first_name + ' ' + Worker.find(partwork.working_group.front_chief_id).second_name  + ' ' + Worker.find(partwork.working_group.front_chief_id).paternal_surname  + ' ' + Worker.find(partwork.working_group.front_chief_id).maternal_surname
+              %td 
+                = partwork.date_of_creation
               %td
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_working_group_path(working_group.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{production_part_work_path(partwork.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                  Ver Información
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_part_work_path(partwork.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{working_group.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_working_group_path(working_group.id)}', 'content', '#{production_working_groups_path}?company_id=#{@company}')"}}
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{partwork.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_part_work_path(partwork.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_part_works_path}?company_id=#{@company}')"}}
                   Eliminar
 
 :javascript

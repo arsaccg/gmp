@@ -1,33 +1,32 @@
-class Production::PartWorksController < ApplicationController
+class Production::PartPeopleController < ApplicationController
   def index
     @company = params[:company_id]
-    @part_works = PartWork.all
+    @part_people = PartPerson.all
     render layout: false
   end
 
   def show
-    @partwork = PartWork.find(params[:id])
-    @partworkdetails = @partwork.part_work_details
+    @partperson = PartPerson.find(params[:id])
+    @partpersondetails = @partperson.part_person_details
     @company = params[:company_id]
     render layout: false
   end
 
   def new
-    @partwork = PartWork.new
+    @partperson = PartPerson.new
     @working_groups = WorkingGroup.all
-    @sectors = Sector.where("code LIKE '__'")
-    @articles = TypeOfArticle.find(4).articles
+    @workers = Worker.all
     @company = params[:company_id]
     render layout: false
   end
 
   def create
-    partwork = PartWork.new(part_work_parameters)
-    if partwork.save
+    partperson = PartPerson.new(part_person_parameters)
+    if partperson.save
       flash[:notice] = "Se ha creado correctamente la parte de obra."
       redirect_to :action => :index, company_id: params[:company_id]
     else
-      partwork.errors.messages.each do |attribute, error|
+      partperson.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
@@ -36,8 +35,9 @@ class Production::PartWorksController < ApplicationController
     end
   end
 
-  def add_more_article
+  def add_more_worker
     @reg_n = Time.now.to_i
+    @sectors = Sector.where("code LIKE '__'")
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
     @id_article = @article.id
@@ -47,7 +47,7 @@ class Production::PartWorksController < ApplicationController
   end
 
   def edit
-    @partwork = PartWork.find(params[:id])
+    @partperson = PartPerson.find(params[:id])
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
     @action = 'edit'
@@ -56,28 +56,28 @@ class Production::PartWorksController < ApplicationController
   end
 
   def update
-    partwork = PartWork.find(params[:id])
-    if partwork.update_attributes(part_work_parameters)
+    partperson = PartPerson.find(params[:id])
+    if partperson.update_attributes(part_person_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index, company_id: params[:company_id]
     else
-      partwork.errors.messages.each do |attribute, error|
+      partperson.errors.messages.each do |attribute, error|
         flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
       end
       # Load new()
-      @partwork = partwork
+      @partperson = partperson
       render :edit, layout: false
     end
   end
 
   def destroy
-    partwork = PartWork.destroy(params[:id])
+    partperson = PartPerson.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el Grupo de Trabajo."
-    render :json => partwork
+    render :json => partperson
   end
 
   private
-  def part_work_parameters
-    params.require(:part_work).permit(:working_group_id, :number_working_group, :sector_id, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :article_id, :bill_of_quantitties, :description])
+  def part_person_parameters
+    params.require(:part_person).permit(:working_group_id, :number_working_group, :sector_id, :date_of_creation, part_person_details_attributes: [:id, :part_work_id, :article_id, :bill_of_quantitties, :description])
   end
 end
