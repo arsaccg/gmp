@@ -20,7 +20,6 @@
     $('#backlist-pros').click(function(){
         load_url_ajax("#{biddings_professionals_path}", 'content', null, null, 'GET');
     });
-
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     } else {

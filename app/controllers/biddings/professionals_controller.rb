@@ -27,6 +27,7 @@ class Biddings::ProfessionalsController < ApplicationController
     @reg = Time.now.to_i
     @professional=Professional.new
     @work = Work.all
+    @other= OtherWork.all
     @major = Major.all
     @component = Component.all
     @charge = Charge.all
@@ -58,6 +59,7 @@ class Biddings::ProfessionalsController < ApplicationController
     @professional = Professional.find(params[:id])
     @component = Component.all
     @work = Work.all
+    @flag=false
     @charge = Charge.all
     @entities =Array.new
     TypeEntity.where("id IN (1,5)").each do |tent|

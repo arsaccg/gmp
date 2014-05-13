@@ -12,6 +12,7 @@
         .col-sm-4
           %label Nombre de la obra
           %select.form-control{'class'=>'work-select' ,name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onkeyup:'workSelectKU(this);'}
+            %option
             -@work.each do |wc|
               %option{value: "#{wc.id}"} 
                 = "#{wc.name}"

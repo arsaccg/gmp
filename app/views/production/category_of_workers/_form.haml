@@ -18,7 +18,7 @@
           %section.col.col-10
             %label.label Unidad
             %label.input{for: "unit_of_measurement_id"}
-              %select.form-control{:name =>"category_of_worker[unit_of_measurement_id]"}
+              %select.form-control{:name =>"category_of_worker[unit_of_measurement_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @unitOfMeasurements.each do |unitOfMeasurement|
                   %option{:value => "#{unitOfMeasurement.id}"}
                     = unitOfMeasurement.name
