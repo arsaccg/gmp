@@ -2,6 +2,17 @@ class Production::WorkingGroupsController < ApplicationController
   def index
     @company = params[:company_id]
     @workingGroups = WorkingGroup.all
+    @sector = Sector.where("code LIKE '__'")
+    @subsectors = Sector.where("code LIKE '____'")
+    TypeEntity.where("name LIKE '%Proveedores%'").each do |entity|
+      @entity = entity.entities.first
+    end
+    CategoryOfWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
+      @front_chief = front_chief.workers.first
+    end
+    CategoryOfWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
+      @master_builder = master_builder.workers.first
+    end
     render layout: false
   end
 
@@ -12,12 +23,12 @@ class Production::WorkingGroupsController < ApplicationController
 
   def new
     @workingGroup = WorkingGroup.new
-    TypeEntity.where("name LIKE '%Jefes de Frente%'").each do |front_chief|
-      @front_chiefs = front_chief.entities
+    CategoryOfWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
+      @front_chiefs = front_chief.workers
     end
 
-    TypeEntity.where("name LIKE '%Maestro de Obras%'").each do |master_builder|
-      @master_builders = master_builder.entities
+    CategoryOfWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
+      @master_builders = master_builder.workers
     end
     TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
       @executors = executor.entities

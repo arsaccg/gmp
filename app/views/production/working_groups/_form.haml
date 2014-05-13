@@ -23,7 +23,7 @@
               %select.form-control{:name =>"working_group[front_chief_id]"}
                 - @front_chiefs.each do |front_chief|
                   %option{:value => "#{front_chief.id}"}
-                    = front_chief.name
+                    = front_chief.first_name + ' ' + front_chief.paternal_surname
         .row
           %section.col.col-10
             %label.label Ejecutor
@@ -39,7 +39,7 @@
               %select.form-control{:name =>"working_group[master_builder_id]"}
                 - @master_builders.each do |master_builder|
                   %option{:value => "#{master_builder.id}"}
-                    = master_builder.name
+                    = master_builder.first_name + ' ' + master_builder.paternal_surname
         .row
           %section.col.col-10
             %label.label Activo
