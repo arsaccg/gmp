@@ -1,14 +1,18 @@
-require 'numbers_in_words'
-require 'numbers_in_words/duck_punch'
-
 text "ORDEN DE COMPRA - #{@purchaseOrder.id.to_s.rjust(5, '0')}", :align => :center
 
 move_down 20
 
 table([ ["PROVEEDOR", "#{@purchaseOrder.entity.ruc} - #{@purchaseOrder.entity.name}"] ], :width => 770, :column_widths => [140])
+
 table([ ["CENTRO DE COSTO", "#{@purchaseOrder.cost_center.name}"] ], :width => 770, :column_widths => [140])
+
 table([ ["FORMA DE PAGO", "#{@purchaseOrder.method_of_payment.name}", "O/Suministro", "#{@deliveryOrders.map(&:inspect).join(', ')}", "FECHA EMISIÓN", "#{@purchaseOrder.date_of_issue.strftime("%d/%m/%Y")}"] ], :width => 770, :column_widths => [140])
+
+if ((@purchaseOrder.money.name.include? "Sol") || (@purchaseOrder.money.name.include? "sol"))
 table([ ["ESTADO", "#{translate_purchase_order_state(@purchaseOrder.state)}", "FECHA A ATENDER", "#{@purchaseOrder.delivery_date.strftime("%d/%m/%Y")}"] ], :width => 770, :column_widths => [140])
+else
+table([ ["ESTADO", "#{translate_purchase_order_state(@purchaseOrder.state)}", "FECHA A ATENDER", "#{@purchaseOrder.delivery_date.strftime("%d/%m/%Y")}","TIPO DE CAMBIO", "#{@purchaseOrder.money.name} : #{@purchaseOrder.exchange_of_rate}"] ], :width => 770, :column_widths => [140])
+end
 
 move_down 20
 
@@ -33,9 +37,9 @@ move_down 10
 
 text "Glosa", :style => :bold
 text "#{@purchaseOrder.description}"
-
+move_down 175
 repeat :all do
-  text "#{@total_neto.to_i.in_words.capitalize} y #{number_with_precision (@total_neto-@total_neto.to_i)*100, :precision => 0}/100 #{@purchaseOrder.money.name}"
+  text "#{@total_neto.to_i.to_words.capitalize} y #{number_with_precision (@total_neto-@total_neto.to_i)*100, :precision => 0}/100 #{@purchaseOrder.money.name}"
   bounding_box [bounds.left, bounds.bottom + 53], :width  => bounds.width do
     table([ 
       ["", "Condiciones:

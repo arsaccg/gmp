@@ -26,7 +26,7 @@ gem "role_model"
 gem 'cancan'
 
 # Number in words
-gem 'numbers_in_words'
+gem 'number_to_words', :git => 'https://github.com/mexpolk/number_to_words.git'
 
 # jQuery fileUpload
 gem 'jquery-fileupload-rails'

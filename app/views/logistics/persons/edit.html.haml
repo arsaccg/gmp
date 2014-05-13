@@ -77,14 +77,13 @@
                     %label.select
                       = f.association :companies, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
                 .row
-                  %section.col.col-10
+                  %section.col.col-10.collection_select 
                     %label.label Acceso a Centro de Costo
                     %label.select
-                      %select.collection_select.optional.select2#user_cost_center_ids{'multiple'=>'multiple', 'name'=>'user[cost_center_ids][]'}
-                      =# f.association :cost_centers, :as => :collection_select, :label => false, :input_html =>{:class => "select2", :multiple => true}
+                      %select.collection_select.optional.select2#user_cost_center_ids{'multiple'=>'multiple','name'=>'user[cost_center_ids][]'}
               %footer
                 %button.btn.btn-primary{type: "submit"}
-                  %i.fa.fa-save 
+                  %i.fa.fa-save
                   Guardar
 
 
@@ -96,8 +95,8 @@
   $(document).ready(function () {
     $("#role-user").focus();
     $('#role-user').select2();
-    $('#user_company_ids').select2({ width: '100%' });
     $('#user_cost_center_ids').select2({ width: '100%' });
+    $('#user_company_ids').select2({ width: '100%' });
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -105,6 +104,7 @@
     }
 
     $('#user_company_ids').change(function(){
+      $("#user_cost_center_ids").select2("val", "");
       if($(this).val() != null){
         $.ajax({
           type: 'POST',
@@ -131,7 +131,7 @@
     });
 
   });
-  
+
   function submit_validate(form){
     $(form['selector']).ajaxForm({
       beforeSubmit: function() {
@@ -155,7 +155,7 @@
               required : true,
               minlength : 8
             },
-            'role' : {
+            'role[]' : {
               required : true
             }
           },
@@ -179,7 +179,7 @@
               required : 'La contraseña es requerida.',
               minlength : 'La contraseña debe ser, por lo menos, de 8 caracteres.'
             },
-            'role' : {
+            'role[]' : {
               required : 'Por favor, defina el rol de usuario.'
             }
           },

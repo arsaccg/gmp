@@ -4,7 +4,7 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
     if current_user.has_role? :director
       @persons = User.all
     else
-      @persons = User.all.where('roles_mask NOT IN (1)')
+      @persons = User.all.where('roles_mask NOT IN(1)')
     end
     render layout: false
   end
@@ -44,11 +44,8 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 
   def update
     @person = User.find(params[:id])
-    if params[:profile] != nil
       @person.roles = [params[:role]]
-    else
-      @person.roles = nil
-    end
+
     @person.update_attributes(user_params)
     flash[:notice] = "Se ha actualizado correctamente al usuario #{@person.first_name + ' ' + @person.last_name}."
     if current_user.has_role? :director
@@ -63,6 +60,7 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
     flash[:notice] = "Se ha eliminado correctamente."
     render :json => user
   end
+
 
   def getCostCentersPerCompany
     if params[:costCenter] != nil
