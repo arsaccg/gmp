@@ -1,0 +1,2 @@
+module Logistics::DeliveryOrdersHelper
+end

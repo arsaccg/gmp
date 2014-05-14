@@ -1,0 +1,71 @@
+/ NEW WIDGET START
+%article.col-sm-12.col-md-12.col-lg-12
+  / Widget ID (each widget will need unique ID)
+  #wid-id-1.jarviswidget.jarviswidget-color-blue{"data-widget-editbutton" => "false", "data-widget-sortable" => "false", "data-widget-deletebutton" => "false"}
+    /
+      widget options:
+      usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+      
+      data-widget-colorbutton="false"
+      data-widget-editbutton="false"
+      data-widget-togglebutton="false"
+      
+      data-widget-fullscreenbutton="false"
+      data-widget-custombutton="false"
+      data-widget-collapsed="true"
+      
+    %header
+      %span.widget-icon
+        %i.fa.fa-sitemap
+      %h2 Fases/SubFases
+    / widget div
+    %div
+      / widget edit box
+      .jarviswidget-editbox
+        / This area used as dropdown edit box
+      / end widget edit box
+      / widget content
+      .widget-body
+        .tree
+          - @phases.each do |phase|
+            %ul
+              %li
+                %span
+                  %i.fa.fa-lg.fa-folder-open
+                  = phase.name + " (cod. " + phase.code + ")"
+                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_phase_path(phase.id)}', 'content', null, null, 'GET')"}
+                    Editar
+                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{phase.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_phase_path(phase.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_phases_path}')"}}
+                    Eliminar
+                %ul
+                  - Phase.get_subphases(phase.code).each do |subphase|
+                    %li
+                      %span
+                        %i.icon-leaf
+                        = subphase.name + " (cod. " + subphase.code + ")"
+                        %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('/logistics/phases/editsub/" + subphase.id.to_s + "', 'content', null, null, 'GET')"}
+                          Editar
+                        %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{subphase.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_subphase_path(subphase.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_phases_path}')"}}
+                          Eliminar
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });
+  // PAGE RELATED SCRIPTS
+
+  $('.tree > ul').attr('role', 'tree').find('ul').attr('role', 'group');
+  $('.tree').find('li:has(ul)').addClass('parent_li').attr('role', 'treeitem').find(' > span').attr('title', 'Collapse this branch').on('click', function(e) {
+    var children = $(this).parent('li.parent_li').find(' > ul > li');
+    if (children.is(':visible')) {
+      children.hide('fast');
+      $(this).attr('title', 'Expand this branch').find(' > i').removeClass().addClass('fa fa-lg fa-plus-circle');
+    } else {
+      children.show('fast');
+      $(this).attr('title', 'Collapse this branch').find(' > i').removeClass().addClass('fa fa-lg fa-minus-circle');
+    }
+    e.stopPropagation();
+  });

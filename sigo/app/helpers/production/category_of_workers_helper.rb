@@ -1,0 +1,2 @@
+module Production::CategoryOfWorkersHelper
+end

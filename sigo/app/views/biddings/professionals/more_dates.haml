@@ -1,0 +1,18 @@
+%div{ :id => "file-"+@reg.to_s+"" }
+  %a.btn.btn-danger.btn-xs{href: "javascript:delete_item('file-"+@reg.to_s+"')"}
+    %i.fa.fa-times
+  .row
+    .col-sm-4
+      %label.col-sm-4.control-label Fecha de Inicio:
+      .col-sm-8
+        .input-group
+          %input#start-worker.form-control{ name: "professional[certificates_attributes]["+@reg.to_s+"][start_date]", as: :string, type: "date"}
+          %span.input-group-addon
+            %i.fa.fa-calendar
+    .col-sm-4
+      %label.col-sm-4.control-label Fecha de Termino:
+      .col-sm-8
+        .input-group
+          %input#finish-worker.form-control{ name: "professional[certificates_attributes]["+@reg.to_s+"][finish_date]", as: :string, type: "date"}
+          %span.input-group-addon
+            %i.fa.fa-calendar

@@ -1,0 +1,482 @@
+!!!
+%html{lang: "en-us"}
+  %head
+    %meta{charset: "utf-8"}
+    / <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    %title ARSAC Managment Project
+    %meta{content: "", name: "description"}
+    %meta{content: "", name: "author"}
+    /
+      Use the correct meta names below for your web application
+      Ref: http://davidbcalhoun.com/2010/viewport-metatag
+      
+      <meta name="HandheldFriendly" content="True">
+      <meta name="MobileOptimized" content="320">
+    %meta{content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no", name: "viewport"}
+    / Basic Styles
+    = stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
+    = stylesheet_link_tag "font-awesome.min", media: "screen", rel: "stylesheet", type: "text/css"
+    
+    / SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables
+    = stylesheet_link_tag "smartadmin-production", media: "screen", rel: "stylesheet", type: "text/css"
+    = stylesheet_link_tag "smartadmin-production_unminified", media: "screen", rel: "stylesheet", type: "text/css"
+    = stylesheet_link_tag "smartadmin-skins", media: "screen", rel: "stylesheet", type: "text/css"
+    /
+      SmartAdmin RTL Support is under construction
+      <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-rtl.css">
+    / Demo purpose only: goes with demo.js, you can delete this css when designing your own WebApp
+    = stylesheet_link_tag "custom", media: "screen", rel: "stylesheet", type: "text/css"
+    /JS
+    = javascript_include_tag 'application'
+    / TOKEN
+    = csrf_meta_tag
+    / FAVICONS
+    =# stylesheet_link_tag "smartadmin-production.min", media: "screen", rel: "stylesheet", type: "text/css"
+    =# stylesheet_link_tag "smartadmin-production.min", media: "screen", rel: "stylesheet", type: "text/css"
+    %link{href: "images/favicon/favicon.ico", rel: "shortcut icon", type: "image/x-icon"}
+    %link{href: "images/favicon/favicon.ico", rel: "icon", type: "image/x-icon"}
+    / GOOGLE FONT
+    %link{href: "http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700", rel: "stylesheet"}
+  %body
+    / possible classes: minified, fixed-ribbon, fixed-header, fixed-width
+    / HEADER
+    %header#header
+      #logo-group
+        / PLACE YOUR LOGO HERE
+        %span#logo
+          = image_tag @company.avatar.url, alt: "#{@company.name}"
+        / END LOGO PLACEHOLDER
+        /
+
+        / AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file
+        .ajax-dropdown
+          / the ID links are fetched via AJAX to the ajax container "ajax-notifications"
+          .btn-group.btn-group-justified{"data-toggle" => "buttons"}
+            %label.btn.btn-default
+              %input{id: "ajax/notify/mail.html", name: "activity", type: "radio"}
+              Msgs (14)
+            %label.btn.btn-default
+              %input{id: "ajax/notify/notifications.html", name: "activity", type: "radio"}
+              notify (3)
+            %label.btn.btn-default
+              %input{id: "ajax/notify/tasks.html", name: "activity", type: "radio"}
+              Tasks (4)
+          / notification content
+          .ajax-notifications.custom-scroll
+            .alert.alert-transparent
+              %h4 Click a button to show messages here
+              This blank page message helps protect your privacy, or you can show the first message here automatically.
+            %i.fa.fa-lock.fa-4x.fa-border
+          / end notification content
+          / footer: refresh area
+          %span
+            Last updated on: 12/12/2013 9:43AM
+            %button.btn.btn-xs.btn-default.pull-right{"data-loading-text" => "<i class='fa fa-refresh fa-spin'></i> Loading...", type: "button"}
+              %i.fa.fa-refresh
+          / end footer
+        / END AJAX-DROPDOWN
+      / projects dropdown
+      / pulled right: nav area
+      .pull-right
+        / collapse menu button
+        #hide-menu.btn-header.pull-right
+          %span
+            %a{href: "javascript:void(0);", title: "Collapse Menu"}
+              %i.fa.fa-reorder
+        / end collapse menu
+        / logout button
+        #logout.btn-header.transparent.pull-right
+          %span
+            %a{href: "#{destroy_user_session_path}", title: 'Sign out'}
+              %i.fa.fa-sign-out
+        / end logout button
+        / search mobile button (this is hidden till mobile view port)
+        #search-mobile.btn-header.transparent.pull-right
+          %span
+            %a{href: "javascript:void(0)", title: "Search"}
+              %i.fa.fa-search
+
+        #return-company.btn-header.transparent.pull-right
+          %span
+            %a{href: "#{root_path}", title: "Ver Compañias"}
+              %i.fa.fa-briefcase
+        / end search mobile button
+        / input: search field
+      / end pulled right: nav area
+    / END HEADER
+    / Left panel : Navigation area
+    / Note: This width of the aside area can be adjusted through LESS variables
+    %aside#left-panel
+      / User info
+      .login-info
+        %span
+          / User image size is adjusted inside CSS, it should stay as it
+          = image_tag current_user.avatar.url(:thumb), alt: "me", class: 'online'
+          %a#show-shortcut{href: "javascript:void(0);"}
+            = "#{current_user.first_name} #{current_user.last_name}"
+            %i.fa.fa-angle-down
+      / end user info
+      /
+        NAVIGATION : This navigation is also responsive
+        
+        To make this navigation dynamic please make sure to link the node
+        (the reference to the nav > ul) after page load. Or the navigation
+        will not initialize.
+      %nav
+        /
+          NOTE: Notice the gaps after each icon usage <i></i>..
+          Please note that these links work a bit different than
+          traditional href="" links. See documentation for details.
+        %ul
+          - if current_user.has_role? :director
+            %li
+              %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
+                %i.fa.fa-lg.fa-fw.fa-gears
+                %span.menu-item-parent Companias
+            %li
+              %a{href: "#{logistics_persons_path}", title: "Gestión de Usuarios"}
+                %i.fa.fa-lg.fa-fw.fa-group
+                %span.menu-item-parent Usuarios
+          %li
+            %a{href: "#", title: "Compañias"}
+              %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+              %span.menu-item-parent Logística
+            %ul
+              %li
+                %a{href: '#'}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Mantenimientos
+                %ul
+                  %li
+                    %a{href: "#{logistics_unit_of_measurements_path}", title: "Unidad de Medida"}
+                      %i.fa.fa-lg.fa-fw.fa-home{'style'=>"position: relative;bottom: 11px;"}
+                      %span.menu-item-parent{'style'=>"width: 100px;"}
+                        Unidades de Medida
+                  %li
+                    %a{href: "#{logistics_center_of_attentions_path}", title: "Centro de Atención"}
+                      %i.fa.fa-lg.fa-fw.fa-dot-circle-o{'style'=>"position: relative;bottom: 11px;"}
+                      %span.menu-item-parent{'style'=>"width: 100px;"}
+                        Centro de Atención
+                  %li
+                    %a{href: "#{logistics_cost_centers_path}?company_id=#{@company.id}", title: "Centro de Costos", company: "#{@company.id}"}
+                      %i.fa.fa-lg.fa-fw.fa-desktop
+                      %span.menu-item-parent Centro de Costos
+                  %li
+                    %a{href: "#{logistics_categories_path}", title: "Fases"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Grupos
+                  %li
+                    %a{href: "#{logistics_type_of_articles_path}", title: "Articulos"}
+                      %i.fa.fa-lg.fa-fw.fa-filter
+                      %span.menu-item-parent Tipo de Insumos
+                  %li
+                    %a{href: "#{logistics_articles_path}", title: "Articulos"}
+                      %i.fa.fa-lg.fa-fw.fa-desktop
+                      %span.menu-item-parent Articulos
+                  %li
+                    %a{href: "#{logistics_sectors_path}", title: "Sectores"}
+                      %i.fa.fa-lg.fa-fw.fa-map-marker
+                      %span.menu-item-parent Sectores
+                  %li
+                    %a{href: "#{logistics_phases_path}", title: "Fases"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Fases
+                  %li
+                    %a{href: "#{import_logistics_articles_path}", title: "Importar Artículos"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Import Articulos
+                  %li
+                    %a{href: "#{logistics_method_of_payments_path}", title: "Formas de Pago"}
+                      %i.fa.fa-lg.fa-fw.fa-dot-circle-o
+                      %span.menu-item-parent Formas de Pago
+                  %li
+                    %a{href: "#{logistics_money_index_path}", title: "Monedas"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Monedas
+                  %li
+                    %a{href: "#{logistics_exchange_of_rates_path}", title: "Tipo de Cambio"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Tipo de Cambio
+                  %li
+                    %a{href: "#{logistics_financial_variables_path}", title: "Variables Financieras"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Variables Financieras
+                  %li
+                    %a{href: "#{logistics_warehouses_path}", title: "Almacenes"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Almacenes
+                  %li
+                    %a{href: "#{logistics_formats_path}", title: "Formatos"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Formatos
+                  %li
+                    %a{href: "#{logistics_documents_path}", title: "Documentos"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Documentos
+                  %li
+                    %a{href: "#{logistics_banks_path}", title: "Bancos"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Bancos
+              %li
+                %a{href: "#{logistics_delivery_orders_path}?company_id=#{@company.id}", title: "Ordenes de Suministro", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Ordenes de Suministro
+              %li
+                %a{href: "#{logistics_purchase_orders_path}?company_id=#{@company.id}", title: "Ordenes de Compra", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Ordenes de Compra
+              %li
+                %a{href: "#{logistics_order_of_services_path}?company_id=#{@company.id}", title: "Ordenes de Servicio", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Ordenes de Servicio
+              %li
+                %a{href: "#{show_tracking_orders_logistics_delivery_order_path(@company.id)}", title: "Seguimiento de Ordenes", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Seguimiento de Ordenes
+              %li
+                %a{href: "#{logistics_stock_inputs_path}?company_id=#{@company.id}", title: "Ingreso a Almacén", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Ingreso a Almacén
+              %li
+                %a{href: "#{logistics_stock_outputs_path}?company_id=#{@company.id}", title: "Salida de Almacén", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Salida de Almacén
+              %li
+                %a{href: "#{reports_inventories_path}?company_id=#{@company.id}", title: "Consulta de Inventarios", company: "#{@company.id}"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Consulta de Inventarios
+          %li
+            %a{href: '#', title: "Producción"}
+              %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+              %span.menu-item-parent Producción
+            %ul
+              %li
+                %a{href: '#'}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Generales
+                %ul
+                  %li
+                    %a{href: "#{production_workers_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Trabajadores
+                  %li
+                    %a{href: "#{production_category_of_workers_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Categoria de Trabajadores
+                  %li
+                    %a{href: "#{production_working_groups_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Grupos de Trabajo
+                  %li
+                    %a{href: "#{production_subcontracts_path}?company_id=#{@company.id}&type=subcontract", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Subcontrato
+                  %li
+                    %a{href: "#{production_subcontract_equipments_path}?company_id=#{@company.id}&type=equipment", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Subcontrato de Equipos
+              %li
+                %a{href: '#'}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Producción
+                %ul
+                  %li
+                    %a{href: "#{production_part_works_path}?company_id=#{@company.id}", title: 'Parte Obras'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Parte Obras
+              %li
+                %a{href: '#', title: 'Personal'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Personal
+                %ul
+                  %li
+                    %a{href: "#{production_part_people_path}?company_id=#{@company.id}", title: 'Parte de Personal'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Parte de Personal
+                  %li
+                    %a{href: '#', title: 'Trabajadores Subidos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Trabajadores Subidos
+                  %li
+                    %a{href: '#', title: 'Tareo de Obras'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Tareo de Obras
+                  %li
+                    %a{href: '#', title: 'Tareo Semanal'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Tareo Semanal   
+              %li
+                %a{href: '#', title: 'Equipos'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Equipos
+                %ul
+                  %li
+                    %a{href: '#', title: 'Parte de Equipos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Parte de Equipos
+                  %li
+                    %a{href: '#', title: 'Equipos Registrados'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Equipos Registrados
+              %li
+                %a{href: '#', title: 'Valorizaciones'}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Valorizaciones
+                %ul
+                  %li
+                    %a{href: '#', title: 'Analisis de Producción'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Analisis de Producción
+                  %li
+                    %a{href: '#', title: 'Valorizaciones SC'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Valorizaciones SC
+                  %li
+                    %a{href: '#', title: 'Reporte de Equipos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Reporte de Equipos
+                  %li
+                    %a{href: '#', title: 'Reporte de Maquinaria'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Reporte de Maquinaria
+                  %li
+                    %a{href: '#', title: 'Valorizar Equipos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Valorizar Equipos
+          %li
+            %a{href: "#", title: "Licitaciones"}
+              %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+              %span.menu-item-parent Licitaciones
+            %ul
+              %li
+                %a{href: '#'}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Mantenimientos
+                %ul
+                  %li
+                    %a{href: "#{biddings_works_path}?company_id=#{@company.id}", title: "Obras"}
+                      %i.fa.fa-lg.fa-fw.fa-home
+                      %span.menu-item-parent Obras
+                  %li
+                    %a{href: "#{biddings_work_partners_path}", title: "Miembros Consorcio"}
+                      %i.fa.fa-lg.fa-fw.fa-user
+                      %span.menu-item-parent Socios
+                  %li
+                    %a{href: "#{biddings_professionals_path}?company_id=#{@company.id}", title: "Profesionales"}
+                      %i.fa.fa-lg.fa-fw.fa-user
+                      %span.menu-item-parent Profesionales
+                  %li
+                    %a{href: "#{biddings_majors_path}?company_id=#{@company.id}", title: "Profesionales"}
+                      %i.fa.fa-lg.fa-fw.fa-book
+                      %span.menu-item-parent Profesiones
+                  %li
+                    %a{href: "#{biddings_charges_path}?company_id=#{@company.id}", title: "Cargos"}
+                      %i.fa.fa-lg.fa-fw.fa-group
+                      %span.menu-item-parent Cargos
+                  %li
+                    %a{href: "#{biddings_components_path}?company_id=#{@company.id}", title: "Componentes"}
+                      %i.fa.fa-lg.fa-fw.fa-clipboard
+                      %span.menu-item-parent Componentes
+          %li
+            %a{href: "#{logistics_type_entities_path}", title: "Tipo de Entidades"}
+              %i.fa.fa-lg.fa-fw.fa-sitemap
+              %span.menu-item-parent Tipo de Entidades
+          %li
+            %a{href: "#{logistics_entities_path}?company_id=#{@company.id}", title: "Entidades"}
+              %i.fa.fa-lg.fa-fw.fa-group
+              %span.menu-item-parent Entidades
+          %li
+            %a{href: "##{logistics_person_path(current_user.id)}", title: "Usuario"}
+              %i.fa.fa-lg.fa-fw.fa-user
+              %span.menu-item-parent Mi Perfil
+      %span.minifyme
+        %i.fa.fa-arrow-circle-left.hit
+    / END NAVIGATION
+    / MAIN PANEL
+    #main{role: "main"}
+      / MAIN CONTENT
+      #content
+      / END MAIN CONTENT
+    / END MAIN PANEL
+    /
+      SHORTCUT AREA : With large tiles (activated via clicking user name tag)
+      Note: These tiles are completely responsive,
+      you can add as many as you like
+    #shortcut
+      %ul
+        %li
+          %a.jarvismetro-tile.big-cubes.selected.bg-color-pinkDark{href: "##{logistics_person_path(current_user.id)}"}
+            %span.iconbox
+              %i.fa.fa-user.fa-4x
+              %span Mi Perfil
+
+    %a{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modalLoading"}
+
+    #modalLoading.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
+      .modal-dialog
+        .modal-content
+          .modal-body
+            .row
+              .col-sm-12
+                %h3 Cargando Contenido...
+                .progress.progress-sm.progress-striped.active
+                  .progress-bar.bg-color-darken{role: "progressbar", style: "width: 100%"}
+    / END SHORTCUT AREA
+    / ==================================================
+    /
+      PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)
+      <script data-pace-options='{ "restartOnRequestAfter": true }' src="js/plugin/pace/pace.min.js"></script>
+    / Link to Google CDN's jQuery + jQueryUI; fall back to local
+    = javascript_include_tag '//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js'
+    :javascript
+      if (!window.jQuery) {
+      	document.write('<script src="js/libs/jquery-2.0.2.min.js"><\/script>');
+      }
+    = javascript_include_tag "//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"
+    :javascript
+      if (!window.jQuery.ui) {
+      	document.write('<script src="js/libs/jquery-ui-1.10.3.min.js"><\/script>');
+      }
+    /
+      JS TOUCH : include this plugin for mobile drag / drop touch events
+      <script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script>
+    / BOOTSTRAP JS
+    = javascript_include_tag 'bootstrap/bootstrap'
+    = javascript_include_tag 'bootstrap/bootstrap-tooltip'
+    = javascript_include_tag 'bootstrap/bootstrap-confirmation'
+    / CUSTOM NOTIFICATION
+    = javascript_include_tag 'notification/SmartNotification.min'
+    / JARVIS WIDGETS
+    = javascript_include_tag 'smartwidgets/jarvis.widget.min'
+    / EASY PIE CHARTS
+    = javascript_include_tag 'plugin/easy-pie-chart/jquery.easy-pie-chart.min'
+    / SPARKLINES
+    = javascript_include_tag 'plugin/sparkline/jquery.sparkline.min'
+    / JQUERY VALIDATE
+    = javascript_include_tag 'plugin/jquery-validate/jquery.validate.min'
+    / JQUERY MASKED INPUT
+    = javascript_include_tag 'plugin/masked-input/jquery.maskedinput.min'
+    / JQUERY SELECT2 INPUT
+    = javascript_include_tag 'plugin/select2/select2.min'
+    / JQUERY UI + Bootstrap Slider
+    = javascript_include_tag 'plugin/bootstrap-slider/bootstrap-slider.min'
+    / browser msie issue fix
+    = javascript_include_tag 'plugin/msie-fix/jquery.mb.browser.min'
+    / SmartClick: For mobile devices
+    = javascript_include_tag 'plugin/smartclick/smartclick'
+    / JQUERY FORM
+    = javascript_include_tag 'plugin/jquery-form/jquery-form.min'
+    /[if IE 7]
+      <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
+    / Demo purpose only
+    = javascript_include_tag 'demo'
+    / MAIN APP JS FILE
+    = javascript_include_tag 'app'
+    / Your GOOGLE ANALYTICS CODE Below

@@ -1,0 +1,32 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Lista de Fases
+    - if flash[:notice] != nil
+      .alert.alert-success.fade.in{"style" => "clear:both"}
+        %button.close{"data-dismiss" => "alert"}
+          ×
+        %i.fa-fw.fa.fa-check
+        %strong Éxito
+        = flash[:notice]
+    - if flash[:error] != nil
+      .alert.alert-danger.fade.in
+        %button.close{"data-dismiss" => "alert"}
+          ×
+        %i.fa-fw.fa.fa-times
+        %strong Error!
+        = flash[:error]
+  .row
+    .col-sm-4
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_phase_path}', 'content', null, null, 'GET')"}
+        Agregar Fase
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{addsub_logistics_phases_path}', 'content', null, null, 'GET')"}
+        Agregar Sub-Fase
+  %br
+  .row
+  #widget-grid
+    .row
+      %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+        = render :partial => 'table'

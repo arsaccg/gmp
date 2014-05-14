@@ -1,0 +1,35 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  dni: 1
+  profession: MyString
+  professional_title_date: 2014-04-10
+  date_of_tuition: 2014-04-10
+  professional_title: MyString
+  professional_title_file_name: MyString
+  professional_title_content_type: MyString
+  professional_title_file_size: 1
+  professional_title_updated_at: 2014-04-10 11:19:51
+  tuition: MyString
+  tuition_file_name: MyString
+  tuition_content_type: MyString
+  tuition_file_size: 1
+  tuition_updated_at: 2014-04-10 11:19:51
+
+two:
+  name: MyString
+  dni: 1
+  profession: MyString
+  professional_title_date: 2014-04-10
+  date_of_tuition: 2014-04-10
+  professional_title: MyString
+  professional_title_file_name: MyString
+  professional_title_content_type: MyString
+  professional_title_file_size: 1
+  professional_title_updated_at: 2014-04-10 11:19:51
+  tuition: MyString
+  tuition_file_name: MyString
+  tuition_content_type: MyString
+  tuition_file_size: 1
+  tuition_updated_at: 2014-04-10 11:19:51

@@ -1,0 +1,2 @@
+module Logistics::EntitiesHelper
+end

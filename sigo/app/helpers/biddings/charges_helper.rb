@@ -1,0 +1,2 @@
+module Biddings::ChargesHelper
+end

@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  professional_id: 1
+  work_id: 1
+  charge: MyString
+  contractor: MyString
+  star_date: 2014-04-10
+  finish_date: 2014-04-10
+  componetns_id: 1
+  certificate: MyString
+  certificate_file_name: MyString
+  certificate_content_type: MyString
+  certificate_file_size: 1
+  certificate_updated_at: 2014-04-10 11:24:15
+
+two:
+  professional_id: 1
+  work_id: 1
+  charge: MyString
+  contractor: MyString
+  star_date: 2014-04-10
+  finish_date: 2014-04-10
+  componetns_id: 1
+  certificate: MyString
+  certificate_file_name: MyString
+  certificate_content_type: MyString
+  certificate_file_size: 1
+  certificate_updated_at: 2014-04-10 11:24:15

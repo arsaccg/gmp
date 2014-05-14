@@ -1,0 +1,223 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        Orden de Compra #
+        = @purchaseOrder.id.to_s.rjust(5, '0')
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-8
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = 'Orden de Compra N° ' + @purchaseOrder.id.to_s.rjust(5, '0')
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Cabecera de la Orden de Compra
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Código
+                    %th Estado
+                    %th Proveedor
+                    %th Forma de pago
+                    %th Fecha de Emisión
+                    %th Fecha de Expiración
+                    %th Fecha de Entrega
+                    %th Responsable
+                    %th Descripcion
+                %tbody(id="article_items_table")
+                  %tr
+                    %td
+                      = @purchaseOrder.id.to_s.rjust(5, '0')
+                    %td
+                      = translate_purchase_order_state(@purchaseOrder.state)
+                    %td
+                      = @purchaseOrder.entity.name + ' ' + @purchaseOrder.entity.paternal_surname
+                    %td
+                      = @purchaseOrder.method_of_payment.name
+                    %td
+                      = @purchaseOrder.date_of_issue.strftime("%d/%m/%Y")
+                    %td
+                      = @purchaseOrder.expiration_date.strftime("%d/%m/%Y")
+                    %td
+                      = @purchaseOrder.delivery_date.strftime("%d/%m/%Y")
+                    %td
+                      = @purchaseOrder.user.first_name + ' ' + @purchaseOrder.user.last_name
+                    %td
+                      = @purchaseOrder.description
+      - if @state_change != nil
+        %h1.page-title.txt-color-blueDark
+          %i.fa.fa-pencil-square-o.fa-fw 
+          Cambiar estado de la Orden
+        %article.col-sm-12.col-md-12.col-lg-4
+          - case @state_change
+            - when 'issued'
+
+              - if current_user.has_role? :issuer
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goissue_logistics_purchase_order_path(@purchaseOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                  Emitir
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Emitir.
+
+            - when 'observed'
+
+              - if current_user.has_role? :issuer
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goobserve_logistics_purchase_order_path(@purchaseOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                  Observar
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para hacer una Observación.
+
+            - when 'revised'
+
+              - if current_user.has_role? :reviser
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{gorevise_logistics_purchase_order_path(@purchaseOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                  Dar visto bueno
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Dar el Visto Bueno.
+
+            - when 'canceled'
+              - if current_user.has_role? :canceller
+                %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_purchase_orders_path}?company_id=#{@company}')"}
+                  Anular
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Anular.
+            - when 'approved'
+              - if current_user.has_role? :approver
+                %a.btn.btn-primary.btn-lg{:onclick => "javascript:load_url_ajax('#{goapprove_logistics_purchase_order_path(@purchaseOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}'})"}
+                  Aprobar
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Aprobar.
+            - when ''
+              %p.alert.alert-danger
+                %i.fa.fa-times.fa-fw.fa-lg
+                %strong Opps!
+                Ya no puedes cambiar de estado.
+      - else
+        %article.col-sm-12.col-md-12.col-lg-4
+          #wid-id-3.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+            %header
+              %span.widget-icon
+                %i.fa.fa-table
+              %h2 
+              = 'Historial de Estado de la Orden de Compra N° ' + @purchaseOrder.id.to_s.rjust(5, '0')
+            %div
+              .jarviswidget-editbox
+                / This area used as dropdown edit box
+              .widget-body.no-padding
+                .alert.alert-info.no-margin.fade.in
+                  %button.close{"data-dismiss" => "alert"}
+                    ×
+                  %i.fa-fw.fa.fa-info
+                  Historial de Estados
+                %table.table.table-hover
+                  %thead
+                    %tr
+                      %th Estado
+                      %th Fecha
+                      %th Quien fue
+                  %tbody
+                    - @purchasePerState.each do |purchaseState|
+                      %tr
+                        %td
+                          = translate_purchase_order_state(purchaseState.state)
+                        %td
+                          = purchaseState.created_at.strftime("%d/%m/%Y")
+                        %td
+                          = purchaseState.user.first_name + " " + purchaseState.user.last_name
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 Detalle de la Orden de Compra
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Detalle de la Orden de Compra
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Codigo
+                    %th Insumo
+                    %th Cantidad
+                    %th Unidad de Medida
+                    %th Precio Unitario
+                    %th Total antes de IGV
+                    %th Total después de IGV
+                    %th Glosa
+                %tbody(id="purchase_detail_items_table")
+                  - @purchaseOrderDetails.each do |purchasedetail|
+                    %tr
+                      %td
+                        = purchasedetail.delivery_order_detail.article.code
+                      %td
+                        = purchasedetail.delivery_order_detail.article.name
+                      %td
+                        = purchasedetail.amount
+                      %td
+                        - if purchasedetail.delivery_order_detail.unit_of_measurement != nil
+                          = purchasedetail.delivery_order_detail.unit_of_measurement.name
+                        - else
+                          = "No tiene Unidad de Medida"
+                      %td
+                        = number_to_currency(purchasedetail.unit_price.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                      %td
+                        = number_to_currency((purchasedetail.amount.to_i * purchasedetail.unit_price.to_f).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                      %td
+                        = number_to_currency(purchasedetail.unit_price_igv.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                      %td
+                        = purchasedetail.description
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Ordenes de Compra
+
+= javascript_include_tag 'plugin/flot/jquery.flot.cust'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
+= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
+= javascript_include_tag 'plugin/flot/jquery.flot.resize'
+= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
+= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
+= javascript_include_tag 'plugin/datatables/ColReorder.min'
+= javascript_include_tag 'plugin/datatables/FixedColumns.min'
+= javascript_include_tag 'plugin/datatables/ColVis.min'
+= javascript_include_tag 'plugin/datatables/ZeroClipboard'
+= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
+= javascript_include_tag 'plugin/datatables/DT_bootstrap'
+
+:javascript
+  
+  $('#backlist-purchase-order').click(function(){
+    load_url_ajax("#{logistics_purchase_orders_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
+  });

@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  deliver_order_id: 1
+  phase_id: 1
+  sector_id: 1
+  person_id: 1
+  article_id: 1
+
+two:
+  deliver_order_id: 1
+  phase_id: 1
+  sector_id: 1
+  person_id: 1
+  article_id: 1

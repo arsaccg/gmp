@@ -1,0 +1,95 @@
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Lista de Parte Obras
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      .widget-body-toolbar
+      %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th N°
+            %th Frente
+            %th Jefe de Frente
+            %th Ejecutor
+            %th Maestro de Obra
+            %th Fecha
+            %th Acciones
+        %tbody
+          - @part_works.each do |partwork|
+            %tr
+              %td
+                = partwork.number_working_group
+              %td 
+                = partwork.sector.name
+              %td
+                = Worker.find(partwork.working_group.front_chief_id).first_name + ' ' + Worker.find(partwork.working_group.front_chief_id).second_name  + ' ' + Worker.find(partwork.working_group.front_chief_id).paternal_surname  + ' ' + Worker.find(partwork.working_group.front_chief_id).maternal_surname
+              %td 
+                = Entity.find(partwork.working_group.executor_id).name
+              %td
+                = Worker.find(partwork.working_group.master_builder_id).first_name + ' ' + Worker.find(partwork.working_group.front_chief_id).second_name  + ' ' + Worker.find(partwork.working_group.front_chief_id).paternal_surname  + ' ' + Worker.find(partwork.working_group.front_chief_id).maternal_surname
+              %td 
+                = partwork.date_of_creation
+              %td
+                %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{production_part_work_path(partwork.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                  Ver Información
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_part_work_path(partwork.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                  Editar
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{partwork.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_part_work_path(partwork.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_part_works_path}?company_id=#{@company}')"}}
+                  Eliminar
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });
+
+  // PAGE RELATED SCRIPTS
+
+  loadDataTableScripts();
+  function loadDataTableScripts() {
+
+    loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
+
+    function dt_2() {
+      loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
+    }
+
+    function dt_3() {
+      loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
+    }
+
+    function dt_4() {
+      loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
+    }
+
+    function dt_5() {
+      loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
+    }
+
+    function dt_6() {
+      loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
+    }
+
+    function dt_7() {
+      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
+    }
+
+  }
+
+  function runDataTables() {
+
+    /*
+     * BASIC
+     */
+    $('#dt_basic').dataTable({
+      "sPaginationType" : "bootstrap_full"
+    });
+
+    /* END BASIC */
+
+  }

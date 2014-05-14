@@ -1,0 +1,126 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Sub-Grupo
+  .widget-body
+    = simple_form_for([:logistics, @SubCategories], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row
+          %section.col.col-10
+            %label.label Grupo
+            %label.input{for: "category_id"}
+              %select.form-control#category-select{:name =>"subcategory[category_id]"}
+                - @Categories.each do |category|
+                  %option{:value => "#{category.id}", :rel => "#{category.code}", :selected => @SubCategories.category_id == category.id}
+                    = category.name
+        .row
+          %section.col.col-2
+            %label.label Código
+            %label.input{for: "code"}
+              %i
+              - if @SubCategories.code != nil
+                = text_field(:extrafield, :first_code, class: "form-control", readonly: true, value: "#{@SubCategories.code[0,2]}")
+              - else
+                = text_field(:extrafield, :first_code, class: "form-control", readonly: true)
+          %section.col.col-6
+            %label.label &nbsp;
+            %label.input{for: "code"}
+              %i.icon-append.fa.fa-superscript
+              - if @SubCategories.code != nil
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category', :value => "#{@SubCategories.code[2,4]}"}, label: false
+              - else
+                = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Nombre
+            %label.input{for: "text-field"}
+              %i.icon-append.fa.fa-user
+              = f.input :name, placeholder: "Nombre del Sub Grupo", input_html: { class: 'form-control' }, label: false
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save
+            Guardar
+
+:javascript
+  $(document).ready(function () {
+    $("#category-select").focus();
+    var code = $("#category-select option:selected").attr('rel');;
+    $("#extrafield_first_code").val(code);
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }
+    else{
+      submit_validate($('#new_subcategory'));
+    }
+  });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'subcategory[code]' : {
+              required : true,
+              minlength : 2,
+              maxlength : 2
+            },
+            'subcategory[name]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'subcategory[code]' : {
+              required : 'Porfavor, ingresar el código del SubGrupo',
+              minlength : "Como mínimo debe tener 2 dígitos.",
+              maxlength : "Como máximo debe tener 2 dígitos.",
+            },
+            'subcategory[name]' : {
+              required : 'Porfavor, ingresar el nombre del SubGrupo.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
+
+  $(document).ready(function(){
+    var clicknum = 0;
+    $("#category-select").click(function(){
+     clicknum++;
+     if(clicknum == 1){
+      var code = $('option:selected', this).attr('rel');
+      $('#extrafield_first_code').val(code);
+      clicknum = 4;
+     }
+    });
+
+    $('#category-select').change(function(){
+      var code = $('option:selected', this).attr('rel');
+      $('#extrafield_first_code').val(code);
+    });
+
+    $('#category-select').keyup(function(){
+      var code = $('option:selected', this).attr('rel');
+      $('#extrafield_first_code').val(code);
+    });
+  });
