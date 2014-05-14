@@ -1,0 +1,63 @@
+/*
+ * It is advised not to edit the smartadmin_production.css
+ * as this will override any changes you make in the 
+ * later versions of this theme. 
+ * 
+ * We advise that you use use this CSS to override 
+ * SmartAdmin styles. 
+ * 
+ * Rename the stylesheet to whatever your liking so it will stay
+ * unique to you with each update of SmartAdmin.
+ */
+
+/*
+ * INDEX
+ * 
+ * - HTML
+ * - BODY
+ * - CUSTOM STYLES
+ */
+
+ .btn-view {
+   color: #fff;
+   background-color: #62D1C8;
+   border-color: #07BEB7;
+ }
+
+  .btn-view:hover { color: #fff; }
+
+ .btn-pdf {
+   color: #fff;
+   background-color: #DD0008;
+   border-color: #EC1B56;
+ }
+
+ .btn-pdf i { font-size: 15px !important; }
+ .btn-pdf:hover { color: #fff; }
+
+#summary-articles tbody tr td { vertical-align: inherit; }
+
+.help-inline { color: #D56161; font-size: 11px; }
+
+td.unit-of-measurement, td.amount, input.unit-price, input.unit-price-before-igv, input.unit-price-igv { text-align: center; }
+
+form label { text-align: left !important; }
+
+@media screen and (min-width: 768px){
+  #modalDeliveryItems .modal-dialog { width: 1260px; }
+  #modalPurchaseOrderItems .modal-dialog { width: 960px; }
+}
+
+#summary-delivery-orders tbody tr td.label-status i, #summary-purchase-orders tbody tr td.label-status i {
+	font-size: 17px;
+	position: relative;
+	padding-right: 9px;
+	top: 2px;
+}
+
+#summary-delivery-orders tbody tr td span.label, #summary-purchase-orders tbody tr td span.label { font-size: 9px; }
+
+.control-group.check_boxes.optional.entity_type_entities .controls label.checkbox input {
+  position: relative;
+  left: 0;
+}

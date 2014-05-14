@@ -1,0 +1,370 @@
+#content-inside
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-collapsed" => "false", "data-widget-fullscreenbutton" => "false"}
+          %header
+            %h2 Generar Órdenes de Compra - Paso a Paso
+          %div
+            .jarviswidget-editbox
+
+            .widget-body.fuelux
+              .wizard
+                %ul.steps
+                  %li.active{"data-target" => "#step1"}
+                    %span.badge.badge-info> 1
+                    Seleccionar Centro de Costo
+                    %span.chevron
+                  %li{"data-target" => "#step2"}
+                    %span.badge> 2
+                    Seleccionar los Items de Ordenes de Suministro
+                    %span.chevron
+                  %li{"data-target" => "#step3"}
+                    %span.badge> 3
+                    Llenar información de la Órden de Compra
+                    %span.chevron
+                  %li{"data-target" => "#step4"}
+                    %span.badge> 4
+                    Guardar Información
+                    %span.chevron
+                .actions
+                  %button.btn.btn-sm.btn-primary.btn-prev{type: "button"}
+                    %i.fa.fa-arrow-left>
+                    Anterior
+                  %button.btn.btn-sm.btn-success.btn-next{"data-last" => "Finalizar", type: "button"}
+                    Siguiente
+                    %i.fa.fa-arrow-right
+              .step-content
+                = render :partial => 'form_new_order'
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Ordenes de Compra
+
+#modalDeliveryItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
+  .modal-dialog
+    .modal-content
+      .modal-body#modalDeliveryItemsContent
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  $(document).ready(function(){
+    get_exchange_rate();
+    $("#company_id").val("#{@company}");
+    $('#cost-center-selected').select2({ width: '100%' });
+    $('#btn-add-more-items-do').click(function(){
+      var ids_delivery_order = new Array();
+
+      $('#summary-delivery-orders tbody tr td.pod-di input').each(function(index, element){
+        ids_delivery_order[index] = $(this).val();
+      });
+
+      data = { cost_center_id: $.cost_center, authenticity_token: "#{form_authenticity_token}", ids_delivery_order: ids_delivery_order };
+      load_items_delivery_order_ajax('#{more_items_from_delivery_orders_logistics_purchase_orders_path}', 'modalDeliveryItemsContent', data);
+      $('#modalDeliveryItems').modal('toggle', {
+        keyboard: false,
+        backdrop: 'static'
+      });
+    });
+
+    $('#category-select').change(function(){
+      get_exchange_rate();
+    });
+
+    $('#backlist-purchase-order').click(function(){
+      load_url_ajax("#{logistics_purchase_orders_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
+    });
+
+    $('#btn-info-cost').click(function() {
+      var total_unit_price = 0;
+      $('#order_delivery_items_table tr td.price-without-igv input').each(function(k,v){
+        total_unit_price = total_unit_price + parseFloat($(this).val());
+      });
+
+      var total_unit_price_with_igv = 0;
+      $('#order_delivery_items_table tr td.price-with-igv input').each(function(k,v){
+        total_unit_price_with_igv = total_unit_price_with_igv + parseFloat($(this).val());
+      });
+
+      $.smallBox({
+        title : "Información de la Orden de Compra",
+        content : "El Sub Total es de: " + total_unit_price + ' ' + "El Total es de: " + total_unit_price_with_igv, 
+        color : "#5384AF",
+        //timeout: 8000,
+        icon : "fa fa-bell"
+      });
+    });
+
+  });
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
+
+  function get_exchange_rate(){
+    var date = $('#purchase_order_date_of_issue').val();
+    var money_id = $('#category-select').val();
+    $.ajax({
+      type: 'POST',
+      url: "#{get_exchange_rate_per_date_logistics_purchase_orders_path}",
+      data: {
+        date: date,
+        money_id: money_id,
+        authenticity_token: "#{form_authenticity_token}"
+      },
+      dataType : 'json',
+      async: false,
+      success: function(data) {
+        if(data){
+          $('#purchase_order_exchange_of_rate').val(data);
+        }else{
+          $('#purchase_order_exchange_of_rate').val(0);
+        }
+      }
+    });
+  }
+
+  // PAGE RELATED SCRIPTS
+  function calculatePriceWithourIgv(element){
+    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
+
+    var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
+
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  function calculatePrice(element){
+    var amount = parseInt($(element).val());
+
+    var price_without_igv = parseFloat($(element).parent().siblings('.unit-price').find('input').val() * amount).toFixed(2);
+
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  function minmax(value, min, max){
+    if(parseInt(value) < min || isNaN(value)) 
+      return min; 
+    else if(parseInt(value) > max) 
+      return max; 
+    else return value;
+  }
+
+  function add_more_items(){
+    var data_delivery_order = new Array();
+    status = false;
+    var index = 0;
+    $('#modal-more-items tbody tr td .checkbox .order_check').each(function(){
+      if( $(this).is(':checked') ){
+        status = true
+        data_delivery_order[index] = $(this).val();
+        index++;
+      }
+    });
+
+    if(status){
+      data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
+      append_url_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'order_delivery_items_table', data, '', 'POST');
+    }
+
+    $('#modalDeliveryItems').modal('hide');
+  };
+
+  /* Comentando una función que puede servir en un futuro...
+  function calculatePriceFromIgv(element){
+    var price_with_igv = parseFloat($(element).val()).toFixed(2);
+    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
+    var price_without_igv = parseFloat(price_with_igv / ((parseFloat("#{@igv}"))*amount)).toFixed(2);
+
+    $(element).parent().siblings('.unit-price').find('input').val(price_without_igv);
+
+    var price_with_amount_unit = parseFloat(amount * price_without_igv).toFixed(2);
+
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_with_amount_unit);
+  }
+  */
+
+  function enableFieldsForIgv(element){
+    if($(element).is(":checked")){
+      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
+      console.log(price_without_igv);
+      console.log($(element).parent().parent().siblings('.price-with-igv').find('input'));
+      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*(parseFloat("#{@igv}"))).toFixed(2));
+    } else {
+      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
+      $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+    }
+  }
+
+  loadScript("#{ asset_path 'plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js', type: :javascript }", runBootstrapWizard);
+  
+  //Bootstrap Wizard Validations
+
+  function runBootstrapWizard() {
+
+    var $validator = $("#new_purchase_order").validate({
+
+      rules: {
+        'purchase_order[supplier_id]': {
+          required: true
+        },
+        'purchase_order[money_id]': {
+          required: true
+        },
+        'purchase_order[method_of_payment_id]': {
+          required: true
+        },
+        'purchase_order[date_of_issue]': {
+          required: true
+        },
+        'purchase_order[expiration_date]': {
+          required: true,
+          greaterThan: "#purchase_order_delivery_date"
+        },
+        'purchase_order[delivery_date]': {
+          required: true,
+          greaterThan: "#purchase_order_date_of_issue"
+        }
+      },
+      
+      messages: {
+        'purchase_order[supplier_id]': "Porfavor, especifica el proveedor.",
+        'purchase_order[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
+        'purchase_order[method_of_payment_id]': "Porfavor, especifica el método de págo.",
+        'purchase_order[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
+        'purchase_order[expiration_date]': {
+          required: "Porfavor, especifica la fecha de expiración.",
+          greaterThan: "La fecha de vencimiento debe ser mayor a la fecha de entrega."
+        },
+        'purchase_order[delivery_date]': { 
+          required: "Porfavor, especifica la fecha de entrega.",
+          greaterThan: "La fecha de entrega debe ser mayor a la fecha de emisión."
+        }
+      },
+      
+      highlight: function (element) {
+        $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+      },
+      unhighlight: function (element) {
+        $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+      },
+      errorElement: 'span',
+      errorClass: 'help-block',
+      errorPlacement: function (error, element) {
+        if (element.parent('.input-group').length) {
+          error.insertAfter(element.parent());
+        } else {
+          error.insertAfter(element);
+        }
+      }
+    });
+
+  }
+
+  loadScript("#{ asset_path 'plugin/fuelux/wizard/wizard.js', type: :javascript }", fueluxWizard);
+  
+  function fueluxWizard() {
+    
+    var wizard = $('.wizard').wizard();
+    
+    wizard.on('finished', function (e, data) {
+    
+      $.ajax({
+        type: 'POST',
+        url: "/logistics/purchase_orders",
+        async: false,
+        data: $('#new_purchase_order').serialize(),
+        dataType : 'html',
+        success: function(data) {
+          $('#modalLoading').modal('hide');
+          $('#content').html(data);
+        },
+        error : function(xhr, ajaxOptions, thrownError) {
+          container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+        }
+      });
+
+    });
+
+    wizard.on('change', function(e, data){
+
+      var status = false;
+      var data_delivery_order = new Array();
+
+      if(data.step == 1 && data.direction == 'next'){
+
+        if(!$('#cost-center-selected').val()){
+          e.preventDefault();
+          $.smallBox({
+            title: "Antes de continuar debes de haber seleccionado algún centro de costo.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });
+        } else {
+          cost_center_id = $('#cost-center-selected').val();
+          $.cost_center = cost_center_id
+          url = "/logistics/purchase_orders/" + cost_center_id + "/show_delivery_order_item_field";
+          data = { authenticity_token: "#{form_authenticity_token}" }
+          load_url_ajax(url, 'items-delivery-orders', data, 'avoid-opacity', 'PUT');
+        }
+      }
+
+      if(data.step == 2 && data.direction == 'next') {
+        var index = 0;
+        $('#items-delivery-orders #dt_basic tbody tr td .checkbox .order_check').each(function(){
+          if( $(this).is(':checked') ){
+            status = true
+            data_delivery_order[index] = $(this).val();
+            index++;
+          }
+        });
+
+        if(status){
+          data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
+          load_items_delivery_order_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'order_delivery_items_table', data);
+
+          $.smallBox({
+            title: "Ahora completa la información de la Orden de compra.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#5F895F",
+            iconSmall: "fa fa-check bounce animated",
+            timeout: 4000
+          });
+
+        } else {
+
+          e.preventDefault();
+          $.smallBox({
+            title: "Antes de continuar debes de haber seleccionado Items de alguna Orden de Suministro.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });
+        }
+      }
+
+      if(data.step == 3 && data.direction == 'next') {
+        var $valid = $("#new_purchase_order").valid();
+        if (!$valid) {
+          e.preventDefault();
+        }
+      }
+
+    });
+
+  }

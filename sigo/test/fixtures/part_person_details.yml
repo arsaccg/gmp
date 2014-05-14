@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  part_people_id: 1
+  worker_id: 1
+  sector_id: 1
+  phase_id: 1
+  normal_hours: 1
+  he_60: 1
+  he_100: 1
+  total_hours: 1
+
+two:
+  part_people_id: 1
+  worker_id: 1
+  sector_id: 1
+  phase_id: 1
+  normal_hours: 1
+  he_60: 1
+  he_100: 1
+  total_hours: 1

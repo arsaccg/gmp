@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  working_group_id: 1
+  number_working_group: MyString
+  sector_id: 1
+  date_of_creation: 2014-05-12
+
+two:
+  working_group_id: 1
+  number_working_group: MyString
+  sector_id: 1
+  date_of_creation: 2014-05-12

@@ -1,0 +1,346 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Orden de Compra
+  %div{:style => "padding-top: 0"}
+    .jarviswidget-editbox
+    .widget-body 
+      = simple_form_for([:logistics, @purchaseOrder], html: {class: 'form-horizontal', autocomplete: 'off' }) do |f|
+        = hidden_field_tag "company_id", @company
+        .col-sm-12
+          %fieldset
+            %legend{'style' => 'border:none'}
+            .row
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Fecha de Emisión
+                  .col-md-8
+                    .input-group
+                      = f.input :date_of_issue, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Fecha de Vencimiento
+                  .col-md-8
+                    .input-group
+                      = f.input :expiration_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Fecha de Entrega
+                  .col-md-8
+                    .input-group
+                      = f.input :delivery_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+            .row
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Moneda
+                  .col-md-8
+                    .input-group
+                      %select.form-control#category-select{:name =>"purchase_order[money_id]"}
+                        - @moneys.each do |money|
+                          - if @purchaseOrder.money_id == money.id
+                            %option{:value => "#{money.id}", :rel => "", :selected => true}
+                              = money.name
+                          - else
+                            %option{:value => "#{money.id}", :rel => ""}
+                              = money.name
+                      %span.input-group-addon
+                        %i.fa.fa-money
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Tipo de cambio
+                  .col-md-8
+                    .input-group
+                      = text_field(:purchase_order, :exchange_of_rate, :value => "#{@purchaseOrder.exchange_of_rate}", class: "form-control")
+                      %span.input-group-addon
+                        %i.fa.fa-warning
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Forma de pago
+                  .col-md-8
+                    .input-group
+                      %select.form-control#category-select{:name =>"purchase_order[method_of_payment_id]"}
+                        - @methodOfPayments.each do |mop|
+                          - if @purchaseOrder.method_of_payment_id == mop.id
+                            %option{:value => "#{mop.id}", :selected => true}
+                              = mop.name
+                          - else
+                            %option{:value => "#{mop.id}"}
+                              = mop.name
+                      %span.input-group-addon
+                        %i.fa.fa-gears
+            .row
+              .col-md-4
+                .form-group
+                  %label.col-md-3.control-label Proveedores
+                  .col-md-9
+                    .input-group
+                      %select.form-control#category-select{:name =>"purchase_order[entity_id]"}
+                        - @suppliers.each do |supp|
+                          - if @purchaseOrder.entity_id == supp.id
+                            %option{:value => "#{supp.id}", :selected => true}
+                              = supp.name
+                          - else
+                            %option{:value => "#{supp.id}"}
+                              = supp.name
+                      %span.input-group-addon
+                        %i.fa.fa-truck
+              .col-md-4
+                .form-group
+                  %label.col-md-2.control-label Estado
+                  .col-md-10
+                    .input-group
+                      = f.input :state, :input_html => {:name => 'state', :class => 'form-control', :value => translate_purchase_order_state(@purchaseOrder.state)}, label: false, readonly: true
+                      %span.input-group-addon
+                        %i.fa.fa-flag
+              .col-md-4
+                .form-group
+                  %label.col-md-3.control-label Responsable
+                  .col-md-9
+                    .input-group
+                      = text_field(:purchaseOrder, :liable, class: "form-control", value: "#{@purchaseOrder.user.first_name} #{@purchaseOrder.user.last_name}", readonly: true)
+                      %span.input-group-addon
+                        %i.fa.fa-male
+            .row
+              .col-md-12
+                .form-group
+                  %label.col-md-2.control-label Glosa
+                  .col-md-10
+                    .input-group
+                      = f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-align-justify
+          %br
+          %fieldset
+            .row
+              .col-md-6
+                .actions
+                  %button.btn.btn-sm.btn-success#btn-add-more-items-do{'type' => 'button'}
+                    Agregar más items de Ordenes de Suministro
+                  %button.btn.btn-primary#btn-info-cost{'type' => 'button'}
+                    Calcular Total y Sub-Total de lo que tengo
+          %br
+        .col-sm-12
+          %fieldset
+            %legend Detalle de Orden de Compra
+            .form-group
+              .col-lg-3
+              .col-lg-12
+                %table#summary-delivery-orders.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+                  %thead
+                    %tr
+                      %th Código de la orden de Suministro
+                      %th Nombre del Artículo
+                      %th Unidad de Medida
+                      %th Cantidad
+                      %th Precio Unitario
+                      %th Total antes de IGV
+                      %th ¿Aplica IGV?
+                      %th Total después de IGV
+                      %th Descripción
+                      %th Eliminar
+                  %tbody#order_delivery_items_table
+                    - @purchaseOrder.purchase_order_details.each do |pod|
+                      %tr
+                        %td(style="display:none" class="pod-di")
+                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][delivery_order_detail_id]', pod.delivery_order_detail.id.to_i
+                        %td=pod.delivery_order_detail.article.code
+                        %td=pod.delivery_order_detail.article.description
+                        %td.unit-of-measurement
+                          =pod.delivery_order_detail.unit_of_measurement.symbol
+                        %td.amount
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount, class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pod.delivery_order_detail.amount})"
+                          %code= "Por atender: #{pod.delivery_order_detail.amount}"
+                        %td.unit-price
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', pod.unit_price, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);"
+                        %td.price-without-igv
+                          - @unit_price_without_igv = pod.amount * pod.unit_price
+                          = text_field_tag 'unit_price_before_igv', "#{@unit_price_without_igv}", class: "form-control unit-price-before-igv", :readonly => true
+                        %td.check-igv
+                          %label.checkbox
+                            - if pod.igv != nil
+                              = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', ''
+                              = check_box_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', nil, true, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
+                              %i
+                            - else
+                              = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', ''
+                              = check_box_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', nil, nil, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
+                              %i
+                        %td.price-with-igv
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv , class: "form-control unit-price-igv", :readonly => true
+                        %td
+                          = text_area_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][description]', pod.description, class: "form-control description"
+                        %td(style="display:none")
+                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][id]', pod.id
+                        %td(style="display:none")
+                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][purchase_order_id]', @purchaseOrder.id
+                        %td.delete-item
+                          %label.checkbox
+                            = check_box 'purchase_order', '[purchase_order_details_attributes][' + @reg_n.to_s + '][_destroy]'
+                            %i
+                      - @reg_n += 1
+        .form-actions{:style => "margin-top: 0;"}
+          .row
+            .col-md-12
+              %button.btn.btn-primary{type: "submit"}
+                %i.fa.fa-save
+                  Guardar
+
+#modalDeliveryItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
+  .modal-dialog
+    .modal-content
+      .modal-body#modalDeliveryItemsContent
+
+:javascript
+  
+  $(document).ready(function(){
+
+    $.cost_center = "#{@purchaseOrder.cost_center_id}";
+
+    $('#btn-add-more-items-do').click(function(){
+      var ids_delivery_order = new Array();
+
+      $('#summary-delivery-orders tbody tr td.pod-di input').each(function(index, element){
+        ids_delivery_order[index] = $(this).val();
+      });
+
+      data = { cost_center_id: $.cost_center, authenticity_token: "#{form_authenticity_token}", ids_delivery_order: ids_delivery_order };
+      load_items_delivery_order_ajax('#{more_items_from_delivery_orders_logistics_purchase_orders_path}', 'modalDeliveryItemsContent', data);
+      $('#modalDeliveryItems').modal('toggle', {
+        keyboard: false,
+        backdrop: 'static'
+      });
+    });
+
+    $('#btn-info-cost').click(function() {
+      var total_unit_price = 0;
+      $('#order_delivery_items_table tr td.price-without-igv input').each(function(k,v){
+        total_unit_price = total_unit_price + parseFloat($(this).val());
+      });
+
+      var total_unit_price_with_igv = 0;
+      $('#order_delivery_items_table tr td.price-with-igv input').each(function(k,v){
+        total_unit_price_with_igv = total_unit_price_with_igv + parseFloat($(this).val());
+      });
+
+      $.smallBox({
+        title : "Información de la Orden de Compra",
+        content : "El Sub Total es de: " + total_unit_price + ' ' + "El Total es de: " + total_unit_price_with_igv, 
+        color : "#5384AF",
+        //timeout: 8000,
+        icon : "fa fa-bell"
+      });
+    });
+
+    $('form[id^="edit_purchase_order"]').ajaxForm({
+      beforeSubmit: function(arr, $form, options) {
+        $form.validate({
+          // Rules for form validation
+          rules : {
+            'purchase_order[supplier_id]': {
+              required: true
+            },
+            'purchase_order[money_id]': {
+              required: true
+            },
+            'purchase_order[method_of_payment_id]': {
+              required: true
+            },
+            'purchase_order[date_of_issue]': {
+              required: true
+            },
+            'purchase_order[expiration_date]': {
+              required: true,
+              greaterThan: "#purchase_order_delivery_date",
+              greaterThan: "#purchase_order_date_of_issue"
+            },
+            'purchase_order[delivery_date]': {
+              required: true,
+              greaterThan: "#purchase_order_date_of_issue"
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'purchase_order[supplier_id]': "Porfavor, especifica el proveedor.",
+            'purchase_order[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
+            'purchase_order[method_of_payment_id]': "Porfavor, especifica el método de págo.",
+            'purchase_order[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
+            'purchase_order[expiration_date]': {
+              required: "Porfavor, especifica la fecha de expiración.",
+              greaterThan: "La fecha de vencimiento debe ser mayor a la fecha de entrega.",
+              greaterThan: "La fecha de vencimiento debe ser mayor a la fecha de emisión."
+            },
+            'purchase_order[delivery_date]': { 
+              required: "Porfavor, especifica la fecha de entrega.",
+              greaterThan: "La fecha de entrega debe ser mayor a la fecha de emisión."
+            }
+          },
+          highlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+          },
+          unhighlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+          },
+          errorElement: 'span',
+          errorClass: 'help-block',
+          errorPlacement: function (error, element) {
+            if (element.parent('.input-group').length) {
+              error.insertAfter(element.parent());
+            } else {
+              error.insertAfter(element);
+            }
+          }
+        });
+
+        return $form.valid();
+      },
+      target: '#content'
+    });
+
+  });
+
+  function calculatePriceWithourIgv(element){
+    var amount = parseInt($(element).parent().siblings('.amount').html());
+
+    var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
+
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  function enableFieldsForIgv(element){
+    if($(element).is(":checked")){
+      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
+      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*#{@igv}).toFixed(2));
+    } else {
+      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
+      $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+    }
+  }
+
+  function add_more_items(){
+    var data_delivery_order = new Array();
+    status = false;
+    var index = 0;
+    $('#modal-more-items tbody tr td .checkbox .order_check').each(function(){
+      if( $(this).is(':checked') ){
+        status = true
+        data_delivery_order[index] = $(this).val();
+        index++;
+      }
+    });
+
+    if(status){
+      data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
+      append_url_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'summary-delivery-orders', data, '', 'POST');
+    }
+
+    $('#modalDeliveryItems').modal('hide');
+  };

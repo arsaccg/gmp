@@ -1,0 +1,48 @@
+.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Lista de Ordenes de Compra
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      %table#dt_basic.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+        %thead
+          %tr
+            %th O/Compra
+            %th Cód.Artículo
+            %th Artículo
+            %th Unidad
+            %th Cantidad
+            %th Pendiente
+            %th Sector
+            %th Fase
+            %th C/Atención
+            %th Seleccionar
+        %tbody
+          - @tableItems.each do |x|
+            - x.purchase_order_details.where("received IS NULL").each do |y|
+              - @pending = y.amount.to_i - PurchaseOrderDetail.get_total_received(y.id).to_i
+              %tr
+                %td.col-md-1
+                  = x.id.to_s.rjust(5, '0')
+                %td.col-md-1
+                  = y.delivery_order_detail.article.code
+                %td.col-md-1
+                  = y.delivery_order_detail.article.name
+                %td.col-md-1
+                  = y.delivery_order_detail.article.unit_of_measurement.symbol
+                %td.col-md-1
+                  = y.amount
+                %td.col-md-1
+                  = @pending
+                %td.col-md-1
+                  = y.delivery_order_detail.sector.name
+                %td.col-md-1
+                  = y.delivery_order_detail.phase.name
+                %td.col-md-1
+                  = y.delivery_order_detail.center_of_attention.name
+                %td
+                  %label.checkbox
+                    = check_box("order_delivery", "approved", { class: 'order_check' }, y.id)
+                    %i

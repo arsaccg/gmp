@@ -1,0 +1,141 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Entidad
+  .widget-body
+    = simple_form_for([:logistics, @entity], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row{ 'style' => 'display:none' }
+          %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
+        .row
+          %section.col.col-10
+            %label.label Nombre o Razón Social
+            %label.input{for: "name"}
+              %i.icon-append.fa.fa-user
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Apellido Paterno
+            %label.input{for: "paternal_surname"}
+              %i.icon-append.fa.fa-user
+              = f.input :paternal_surname, placeholder: "Apellido Paterno", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Apellido Materno
+            %label.input{for: "maternal_surname"}
+              %i.icon-append.fa.fa-user
+              = f.input :maternal_surname, placeholder: "Apellido Materno", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label DNI
+            %label.input{for: "dni"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label RUC
+            %label.input{for: "surname"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Dirección
+            %label.input{for: "address"}
+              = f.input :address, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Tipo
+            .col.col-10.inline-group
+              = f.association :type_entities, :as => :check_boxes, :label => false
+        .row#cost-center-select{ 'style' => 'display:none' }
+          %section.col.col-10
+            %label.label Centro de Costo
+            %label.input
+              %select.form-control#cost-center-select{:name =>"cost_center_id"}
+                %option{:value => ""} Seleccionar Centro de Costo
+                - @costCenter.each do |costCenter|
+                  - if @action == 'edit'
+                    - if @entity.cost_center_id == costCenter.id
+                      %option{:value => "#{costCenter.id}", :selected => true}
+                        = costCenter.name
+                    - else
+                      %option{:value => "#{costCenter.id}"}
+                        = costCenter.name
+                  - else
+                    %option{:value => "#{costCenter.id}"}
+                      = costCenter.name
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    $("#entity_name").focus();
+    $('#type-entity-select').select2();
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_entity'));
+    }
+
+    if($('#entity_type_entity_ids_6').is(':checked') || $('#entity_type_entity_ids_7').is(':checked')){
+      $('#cost-center-select').fadeIn('fast');
+    } else {
+      $('#cost-center-select').fadeOut('fast');
+    }
+
+    $('#entity_type_entity_ids_6').change(function(){
+      if($(this).is(':checked'))
+        $('#cost-center-select').fadeIn('fast');
+      else
+        $('#cost-center-select').fadeOut('fast');
+    });
+
+    $('#entity_type_entity_ids_7').change(function(){
+      if($(this).is(':checked'))
+        $('#cost-center-select').fadeIn('fast');
+      else
+        $('#cost-center-select').fadeOut('fast');
+    });
+
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'entity[name]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'entity[name]' : {
+              required : 'Por favor, ingresar el nombre.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }

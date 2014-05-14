@@ -1,0 +1,2 @@
+module Biddings::TrainingsHelper
+end

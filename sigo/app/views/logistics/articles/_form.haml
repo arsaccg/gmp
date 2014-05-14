@@ -1,0 +1,308 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Artículos
+  .widget-body
+    = simple_form_for([:logistics, @article], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        = f.hidden_field :subcategory_id_edit, :value => @subcategory_article
+        .row
+          %section.col.col-10
+            %label.label Tipo de Articulo
+            %label.input{for: "type_of_article_id"}
+              %select.form-control#type-article-select{:name =>"article[type_of_article_id]"}
+                - @typeOfArticles.each do |typeArticle|
+                  %option{:value => "#{typeArticle.id}", :rel => "#{typeArticle.code}", :selected => @typeOfArticle == typeArticle.id}
+                    = typeArticle.name
+          %section.col.col-5
+            %label.label Grupo
+            %label.input{for: "category_id"}
+              %select.form-control#category-select{:name =>"category_id"}
+                - @categories.each do |cat|
+                  %option{:value => "#{cat.id}", :rel => "#{cat.code}", :selected => @category_article == cat.id}
+                    = cat.name
+          %section.col.col-5
+            %label.label Sub Grupo
+            %label.input{for: "subcategory_id"}
+              %select.form-control#subcategory-select{:name =>"subcategory_id"}
+                - if @subcategories != nil
+                  - @subcategories.each do |subcat|
+                    %option{:value => "#{subcat.id}", :rel => "#{subcat.code}", :selected => @subcategory_article == subcat.code}
+                      = subcat.name
+          %section.col.col-5
+            %label.label Específico
+            %label.input{for: "specific_id"}
+              %select.form-control#specific-select{:name =>"article[specific_id]"}
+                - if @specifics != nil
+                  - @specifics.each do |es|
+                    %option{:value => "#{es.id}", :rel => "#{es.code}", :selected => @specific_article == es.code}
+                      = es.name
+        .row
+          %section.col.col-3
+            %label.label Código
+            %label.input{for: "code"}
+              %i
+              - if @article.code != nil
+                = text_field(:extrafield, :first_code, class: "form-control", readonly: true, value: "#{@article.code[0,6]}")
+              - else
+                = text_field(:extrafield, :first_code, class: "form-control", readonly: true)
+          %section.col.col-6
+            %label.label &nbsp;
+            %label.input{for: "code"}
+              %i.icon-append.fa.fa-superscript
+              - if @article.code != nil
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category', :value => "#{@article.code[8,6]}"}, label: false
+              - else
+                = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Nombre
+            %label.input{for: "name"}
+              %i.icon-append.fa.fa-user
+              = f.input :name, placeholder: "Nombre del articulo", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Unidad de medida
+            %label.input{for: "unit_of_measurement_id"}
+            %select#unit-select-measure.form-control.select2{:name =>"article[unit_of_measurement_id]", :style => "width:100%;;padding: 0;border: none;"}
+              - if @action == 'edit'
+                - @unitOfMeasurement.each do |unito|
+                  - if @unitid == unito.id
+                    %option{:value => "#{unito.id}", :selected => true}
+                      =unito.name
+                  - else
+                    %option{:value => "#{unito.id}"}
+                      =unito.name
+              - else
+                - @unitOfMeasurement.each do |unit|
+                  %option{:value => "#{unit.id}"}
+                    =unit.name
+
+        .row
+          %section.col.col-10
+            %label.label Descripción
+            %label.input{for: "description"}
+              = f.input :description, placeholder: "Descripción del articulo", input_html: { class: 'form-control' }, label: false, rows: 4
+
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save
+            Guardar
+
+:javascript
+  $(document).ready(function () {
+    $("#type-article-select").focus();
+
+    var type = $('option:selected', $('#type-article-select')).attr('rel');
+    $('#extrafield_first_code').val(type);
+
+    var category_id = $("#category-select").val();
+    complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}", "0302");
+
+    var subcategory_id = $("#subcategory-select").val();
+    complete_infocombo2("#{get_specific_from_subcategory_logistics_specifics_path}", subcategory_id, "#{form_authenticity_token}", "0302");
+  
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }
+    else{
+      submit_validate($('#new_article'));
+    }
+  });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'article[code]' : {
+              required : true,
+              minlength : 2,
+              maxlength : 2
+            },
+            'article[name]' : {
+              required : true,
+            },
+            'article[unit_of_measurement_id]': {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'article[code]' : {
+              required : 'Por favor, ingresar el código del Artículo',
+              minlength : "Como mínimo debe tener 2 dígitos.",
+              maxlength : "Como máximo debe tener 2 dígitos.",
+            },
+            'article[name]' : {
+              required : 'Por favor, ingresar el nombre del artículo.'
+            },
+            'article[unit_of_measurement_id]' : {
+              required : '</br>Por favor, ingresar la unidad de medida.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
+
+  $(document).ready(function(){
+    var clicknum = 0;
+    var clicknum2 = 0;
+    var clicknum3 = 0;
+    $("#category-select").click(function(){
+     clicknum++;
+     if(clicknum == 1){
+      var category_id = $('#category-select').val();
+      complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}, 0");
+      clicknum = 4;
+     }
+    clicknum2++;
+      if(clicknum2 == 1){
+        var subcategory_id = $(this).val();
+        complete_infocombo2("#{get_specific_from_subcategory_logistics_specifics_path}", subcategory_id, "#{form_authenticity_token}, 0");
+        clicknum2 = 0;
+      }
+  });
+
+
+
+    $('#specific-select').click(function(){
+      clicknum3++;
+      if(clicknum3 == 1){
+        var es_code = $('option:selected', $('#specific-select')).attr('code');
+        var type = $('option:selected', $('#type-article-select')).attr('rel');
+        $('#extrafield_first_code').val(type + es_code);
+        clicknum3 = 0;
+      }
+    });
+
+    $('#unit-select-measure').select2();
+
+    $('#category-select').change(function(){
+      var category_id = $(this).val();
+      complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}, 0");
+      console.log(category_id);
+    });
+
+    $('#category-select').keyup(function(){
+      var category_id = $(this).val();
+      complete_infocombo("#{get_subcategory_form_category_logistics_subcategories_path}", category_id, "#{form_authenticity_token}, 0");
+    });
+
+    $('#subcategory-select').change(function(){
+      var subcategory_id = $(this).val();
+      complete_infocombo2("#{get_specific_from_subcategory_logistics_specifics_path}", subcategory_id, "#{form_authenticity_token}, 0");
+      console.log(subcategory_id);
+    });
+
+    $('#subcategory-select').keyup(function(){
+      var subcategory_id = $(this).val();
+      complete_infocombo2("#{get_specific_from_subcategory_logistics_specifics_path}", subcategory_id, "#{form_authenticity_token}, 0");
+    });
+
+    $('#specific-select').change(function(){
+      var es_code = $(this).val();
+      var type = $('option:selected', $('#type-article-select')).attr('rel') + $('option:selected', $('#specific-select')).attr('code');
+      $('#extrafield_first_code').val(type);
+    });
+
+    $('#specific-select').keyup(function(){
+      var es_code =$(this).val();
+      var type = $('option:selected', $('#type-article-select')).attr('rel') + $('option:selected', $('#specific-select')).attr('code');
+      $('#extrafield_first_code').val(type);
+    });
+
+    $('#category-select').change(function(){
+      var type = $('option:selected', $('#type-article-select')).attr('rel');
+      $('#extrafield_first_code').val(type);
+    });
+
+    $('#type-article-select').change(function(){
+      var type = $('option:selected', $('#type-article-select')).attr('rel')
+      $('#extrafield_first_code').val(type);
+    });
+  });
+
+  function complete_infocombo(url, category_id, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { category_id: category_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.subcategories, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        $('#subcategory-select').empty();
+        $.each(newOptions, function(key,value){
+          if ($("#article_subcategory_id_edit").val() == value.code)
+            $('#subcategory-select').append(
+              $("<option></option>").attr("value", value.id).text(value.name).attr("selected", "selected").attr("code",value.code)
+            )
+          else
+            $('#subcategory-select').append(
+              $("<option></option>").attr("value", value.id).text(value.name).attr("code",value.code)
+            )
+          // Default Value:
+          var code = $('option:selected', $('#type-article-select')).attr('rel') + $("#subcategory-select").val().toString();
+          $("#extrafield_first_code").val(code);
+        });
+      });
+  }
+
+  function complete_infocombo2(url, subcategory_id, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { subcategory_id: subcategory_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.specifics, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        $('#specific-select').empty();
+        $.each(newOptions, function(key,value){
+          if ($("#specific_article").val() == value.code){
+            $('#specific-select').append(
+              $("<option></option>").attr("value", value.id).text(value.name).attr("selected", "selected").attr("code", value.code)
+            )
+          } else {
+            $('#specific-select').append(
+              $("<option></option>").attr("value", value.id).text(value.name).attr("code", value.code)
+            )
+          }  
+          // Default Value:
+          var code =$('option:selected', $('#type-article-select')).attr('rel')+ $('option:selected', $('#specific-select')).attr('code');
+          $("#extrafield_first_code").val(code);
+        });
+      });
+  }

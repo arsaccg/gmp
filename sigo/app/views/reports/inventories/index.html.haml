@@ -1,0 +1,387 @@
+#content-inside
+  .row
+    .col-xs-12
+      %h1.page-title.txt-color-blueDark{ "style" => "margin-bottom: 10px;"}
+        %i.fa.fa-pencil-square-o.fa-fw
+        Consulta de Inventarios
+
+  %br
+  .row
+    .col-xs-12
+      %div
+        .smart-form
+          %section
+            .row
+              .section.col.col-md-2
+                %label.label Tipo Reporte
+              .section.col.col-md-10
+                .form-group
+                  .col-md-12
+                    //%label.radio.radio-inline
+                    //  %input.radiobox.style-0{:name =>'rad_type_id', :type => 'radio', :value => 1}
+                    //  %span Ingreso a Almacén
+                    //%label.radio.radio-inline
+                    //  %input.radiobox.style-0{:name =>'rad_type_id', :type => 'radio', :value => 2}
+                    //  %span Salida de Almacén
+                    %label.radio-inline
+                      %input.radiobox.style-0{:name =>'rad_type_id', :type => 'radio', :value => 3}
+                      %span Kárdex
+                    //%label.radio.radio-inline
+                    //  %input.radiobox.style-0{:name =>'rad_type_id', :type => 'radio', :value => 4}
+                    //  %span Stock
+            .row#rowKardexType
+              .section.col.col-md-2
+                %label.label Tipo Kárdex
+              .section.col.col-md-10
+                .form-group
+                  .col-md-12
+                    %label.radio-inline
+                      %input.radiobox.style-0{:name =>'rad_kardex_type', :type => 'radio', :value => 3}
+                      %span Detallado
+                    %label.radio-inline
+                      %input.radiobox.style-0{:name =>'rad_kardex_type', :type => 'radio', :value => 2}
+                      %span Mensual
+                    %label.radio-inline
+                      %input.radiobox.style-0{:name =>'rad_kardex_type', :type => 'radio', :value => 1}
+                      %span Anual
+            //.row
+            //  .section.col.col-md-2
+            //    %label.label Centro Costo
+            //  .section.col.col-md-10
+            //    %label.input{for: "cos_center_id"}
+            //    %select#cost_center-select.form-control.select2{:name =>"report_inventory[cos_center_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Centro de Costos"}
+            //      - @cost_centers.each do |x|
+            //        %option{:value => "#{x.id}"}
+            //          = x.name
+            .row
+              .section.col.col-md-2
+                %label.label Almacén
+              .section.col.col-md-10
+                %label.input{for: "warehouse_id"}
+                %select#warehouse-select.form-control.select2{:name =>"report_inventory[warehouse_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Almacenes"}
+                  - @warehouses.each do |x|
+                    %option{:value => "#{x.id}"}
+                      = x.name
+
+            .row#rowSupplier
+              .section.col.col-md-2
+                %label.label Proveedor
+              .section.col.col-md-10
+                %label.input{for: "supplier_id"}
+                %select#supplier-select.form-control.select2{:name =>"report_inventory[supplier_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Proveedores"}
+                  - @suppliers.each do |x|
+                    %option{:value => "#{x.id}"}
+                      = x.name
+            .row#rowResponsible{:style => 'display: none'}
+              .section.col.col-md-2
+                %label.label Responsable
+              .section.col.col-md-10
+                %label.input{for: "responsible_id"}
+                %select#responsible-select.form-control.select2{:name =>"report_inventory[responsible_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Responsables"}
+                  - @responsibles.each do |x|
+                    %option{:value => "#{x.id}"}
+                      = x.name
+            .row#rowYear
+              .section.col.col-md-2
+                %label.label Año
+              .section.col.col-md-10
+                %label.input{for: "year_id"}
+                %select#year-select.form-control.select2{:name =>"report_inventory[year][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Años"}
+                  - @years.each do |x|
+                    %option(value = "#{x}")
+                      = x
+            .row#rowPeriod
+              .section.col.col-md-2
+                %label.label Periodo
+              .section.col.col-md-10
+                %label.input{for: "period_id"}
+                %select#period-select.form-control.select2{:name =>"report_inventory[period_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Periodos"}
+                  - @years.each do |x|
+                    %optgroup{:label => "#{x}"}
+                      - (1..12).each do |y|
+                        %option(value = "#{x.to_s}#{y.to_s.rjust(2, "0")}")
+                          = x.to_s + " - " + y.to_s.rjust(2, "0")
+            .row#rowFormat
+              .section.col.col-md-2
+                %label.label Formato
+              .section.col.col-md-10
+                %label.input{for: "format_id"}
+                %select#format-select.form-control.select2{:name =>"report_inventory[format_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Formatos"}
+                  - @formats.each do |x|
+                    %option{:value => "#{x.id}"}
+                      = x.name
+            .row
+              .section.col.col-md-2
+                %label.label Articulo
+              .section.col.col-md-10
+                %label.input{for: "article_id"}
+                %select#article-select.form-control.select2{:name =>"report_inventory[article_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Articulos"}
+                  - @articles.each do |x|
+                    %option{:value => "#{x.id}"}
+                      = x.name
+            //.row
+            //  .section.col.col-md-2
+            //    %label.label Moneda
+            //  .section.col.col-md-10
+            //    %label.input{for: "money_id"}
+            //    %select#money-select.form-control.select2{:name =>"report_inventory[money_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Monedas"}
+            //      - @moneys.each do |x|
+            //        %option{:value => "#{x.id}"}
+            //          = x.name
+            .row#rowDateType
+              .section.col.col-md-2
+                %label.label Tipo Fecha
+              .section.col.col-md-10
+                .form-group
+                  .col-md-12
+                    %label.radio-inline
+                      %input.radiobox{:name =>'rad_date_type', :type => 'radio', :value => 1}
+                      %span Calendario
+                    %label.radio-inline
+                      %input.radiobox{:name =>'rad_date_type', :type => 'radio', :value => 2}
+                      %span Centro Costo
+            .row#rowMoney
+              .section.col.col-md-2
+                %label.label Fechas
+              .section.col.col-md-2
+                .form-group
+                  .input-group
+                    = text_field(:report_inventory, :since_date, placeholder: "Fecha Desde", class: "form-control", style: "height:28px")
+                    %span.input-group-addon
+                      %i.fa.fa-calendar
+              .section.col.col-md-2
+                .form-group
+                  .input-group
+                    = text_field(:report_inventory, :to_date, placeholder: "Fecha Hasta", class: "form-control", style: "height:28px")
+                    %span.input-group-addon
+                      %i.fa.fa-calendar
+            .row#rowDocument{:style => 'display: none'}
+              .section.col.col-md-2
+                %label.label Documento
+              .section.col.col-md-5
+                .form-inline
+                  = text_field(:report_inventory, :series, placeholder: "Serie", class: "form-control", style: "height:30px;width:10%")
+                  .input-group
+                    = text_field(:report_inventory, :document, placeholder: "N° Documento", class: "form-control")
+                    %span.input-group-addon
+                      %i.fa.fa-file
+
+            %fieldset
+              .row
+                .col-md-3
+                  .actions
+                    %button.btn.btn-sm.btn-success#btn-find{'type' => 'button'}
+                      %i.fa.fa-search
+                        Buscar
+                    %button.btn.btn-sm.btn-warning#btn-export-pdf{'type' => 'button', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Exportar a PDF"}
+                      %i.fa.fa-file
+                        Exportar
+
+  #widget-grid
+    //.row#gridInput
+    //  %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+    //    = render :partial => 'table_input'
+    //.row#gridOutput{:style => 'display: none'}
+    //  %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+    //    = render :partial => 'table_output'
+    .row#gridKardexDetail
+      %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+        = render :partial => 'table_kardex_detail'
+    .row#gridKardexYearly{:style => 'display: none'}
+      %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+        = render :partial => 'table_kardex_yearly'
+    .row#gridKardexMonthly{:style => 'display: none'}
+      %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+        = render :partial => 'table_kardex_monthly'
+    //.row#gridStock{:style => 'display: none'}
+    //  %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+    //    = render :partial => 'table_stock'
+
+
+:javascript
+  $(document).ready(function () {
+
+    $('#cost_center-select').select2();
+    $('#warehouse-select').select2();
+    $('#supplier-select').select2();
+    $('#responsible-select').select2();
+    $('#year-select').select2();
+    $('#period-select').select2();
+    $('#format-select').select2();
+    $('#article-select').select2();
+    $('#money-select').select2();
+    $('#report_inventory_since_date').datepicker();
+    $('#report_inventory_to_date').datepicker();
+    $("#report_inventory_since_date").mask('99/99/9999');
+    $("#report_inventory_to_date").mask('99/99/9999');
+
+    //Default Ingreso Almacén
+    $("input[name=rad_type_id]").val([3]);
+    $("input[name=rad_kardex_type]").val([3]);
+    $("input[name=rad_date_type]").val([1]);
+
+    // Tipo Reporte
+    $('input[name=rad_type_id]').change(function(){
+      switch (parseInt(this.value)){
+        case 1:
+          $('#rowKardexType').hide();
+          $('#rowSupplier').show();
+          $('#rowResponsible').hide();
+          $('#rowYear').hide();
+          $('#rowFormat').show();
+          $('#report_inventory_series').show();
+          $('#rowDocument').show();
+          $('#gridInput').show();
+          $('#gridOutput').hide();
+          $('#gridKardexYearly').hide();
+          $('#gridKardexMonthly').hide();
+          $('#gridKardexDetail').hide();
+          $('#gridStock').hide();
+          break;
+        case 2:
+          $('#rowKardexType').hide();
+          $('#rowSupplier').hide();
+          $('#rowResponsible').show();
+          $('#rowYear').hide();
+          $('#rowFormat').show();
+          $('#report_inventory_series').hide();
+          $('#rowDocument').show();
+          $('#gridInput').hide();
+          $('#gridOutput').show();
+          $('#gridKardexYearly').hide();
+          $('#gridKardexMonthly').hide();
+          $('#gridKardexDetail').hide();
+          $('#gridStock').hide();
+          break;
+        case 3:
+          $('#rowKardexType').show();
+          $('#rowSupplier').hide();
+          $('#rowResponsible').hide();
+          $('#rowYear').show();
+          $('#rowFormat').hide();
+          $('#rowDocument').hide();
+          $('#gridInput').hide();
+          $('#gridOutput').hide();
+          $('#gridKardexYearly').show();
+          $('#gridKardexMonthly').hide();
+          $('#gridKardexDetail').hide();
+          $('#gridStock').hide();
+          break;
+        case 4:
+          $('#rowKardexType').hide();
+          $('#rowSupplier').hide();
+          $('#rowResponsible').hide();
+          $('#rowYear').hide();
+          $('#rowFormat').hide();
+          $('#rowDocument').hide();
+          $('#gridInput').hide();
+          $('#gridOutput').hide();
+          $('#gridKardexYearly').hide();
+          $('#gridKardexMonthly').hide();
+          $('#gridKardexDetail').hide();
+          $('#gridStock').show();
+          break;
+      }
+    });
+
+    // Tipo Kárdex
+    $('input[name=rad_kardex_type]').change(function(){
+      switch (parseInt(this.value)){
+        case 1:
+          $('#gridKardexYearly').show();
+          $('#gridKardexMonthly').hide();
+          $('#gridKardexDetail').hide();
+          break;
+        case 2:
+          $('#gridKardexYearly').hide();
+          $('#gridKardexMonthly').show();
+          $('#gridKardexDetail').hide();
+          break;
+        case 3:
+          $('#gridKardexYearly').hide();
+          $('#gridKardexMonthly').hide();
+          $('#gridKardexDetail').show();
+          break;
+      }
+    });
+
+    // ********************************************************
+    //  Acciones
+    // ********************************************************
+    // Search #btn-find #btn-export-pdf
+    $('.btn-sm').click(function(){
+      var _action = 0;
+      var _report_type = parseInt($("input:radio[name=rad_type_id]:checked").val());
+      var _kardex_type = parseInt($("input:radio[name=rad_kardex_type]:checked").val());
+      var _date_type = parseInt($("input:radio[name=rad_date_type]:checked").val());
+      
+      switch (this.id){
+        case "btn-find":
+          _action = 1;
+          break;
+        case "btn-export-pdf":
+          _action = 2;
+          break;
+      }
+      var gridResult;
+      switch (_report_type){
+        case 1:
+          gridResult = "body-report-stock-input-detail";
+          break;
+        case 2:
+          gridResult = "body-report-stock-output-detail";
+          break;
+        case 3:
+          switch (_kardex_type){
+            case 1:
+              gridResult = "body-report-kardex-yearly";
+              break;
+            case 2:
+              gridResult = "body-report-kardex-monthly";
+              break;
+            case 3:
+              gridResult = "body-report-kardex-detail";
+              break;
+          }
+          break;
+        case 4:
+          gridResult = "body-report-stock";
+          if ($('#period-select').val().length > 1){
+            alert("Debe seleccionar 1 solo periodo.");
+            return false;
+          }
+          break;
+      }
+      // Data Parameters
+      data = { authenticity_token: "#{form_authenticity_token}",
+               report_action: _action,
+               //cost_center_id: $('#cost_center-select').val(),
+               report_type: _report_type,
+               kardex_type: _kardex_type,
+               date_type: _date_type,
+               warehouse_id: $('#warehouse-select').val(),
+               supplier_id: $('#supplier-select').val(),
+               responsible_id: $('#responsible-select').val(),
+               year_id: $('#year-select').val(),
+               period_id: $('#period-select').val(),
+               format_id: $('#format-select').val(),
+               article_id: $('#article-select').val(),
+               money_id: "",
+               since_date: $('#report_inventory_since_date').val(),
+               to_date: $('#report_inventory_to_date').val(),
+               series: $('#report_inventory_series').val(),
+               document: $('#report_inventory_document').val() };
+      
+      switch (_action){
+        case 1:
+          load_items_delivery_order_ajax('#{show_rows_results_reports_inventories_path}', gridResult, data);
+          $('#' + gridResult + ' tr td a').tooltip('hide');
+          break;
+        case 2:
+          show_report_inventory('#{show_rows_results_reports_inventories_path}', data, "/reports/inventories/" + _kardex_type + _date_type + "/show_rows_results_pdf.pdf", "Reporte de Inventario","toolbar=yes, scrollbars=yes, resizable=yes, fullscreen=yes location=no titlebar=no");
+          break;
+      }
+      
+    });
+
+  });

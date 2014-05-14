@@ -1,0 +1,105 @@
+#wid-id-5.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-custombutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-sortable" => "false", "data-widget-deletebutton" => "false"}
+  %header
+    %h2 Lista de Entidades
+  %div
+    .jarviswidget-editbox
+    .widget-body
+      .tabs-left
+        %ul.nav.nav-tabs.tabs-left
+          - @type_entities.each do |type_entity|
+            - if type_entity.id == 1
+              %li.active
+                %a{"data-toggle" => "tab", href: "#tab-#{type_entity.id}"}
+                  %span.badge.bg-color-blue.txt-color-white
+                    = type_entity.entities.count
+                  = type_entity.name
+            - else
+              %li
+                %a{"data-toggle" => "tab", href: "#tab-#{type_entity.id}"}
+                  %span.badge.bg-color-blue.txt-color-white
+                    = type_entity.entities.count
+                  = type_entity.name
+        .tab-content
+          - @type_entities.each do |type_entity|
+            - if type_entity.id == 1
+              .tab-pane.active{:id => "tab-#{type_entity.id}"}
+                .col-md-11
+                  %table.table.table-condensed.table-bordered
+                    %thead
+                      %tr
+                        %th Nombres/Razón Social
+                        %th Apellidos
+                        %th Dirección
+                        %th DNI
+                        %th RUC
+                        %th Acciones
+                    %tbody
+                      - type_entity.entities.each do |entity|
+                        %tr
+                          %td
+                            = entity.name
+                          %td
+                            -if entity.paternal_surname != nil && entity.maternal_surname != nil
+                              = entity.paternal_surname + entity.maternal_surname
+                            - else
+                              = '-'
+                          %td
+                            -if entity.address != nil
+                              = entity.address
+                            - else
+                              = '-'
+                          %td
+                            - if entity.dni != ""
+                              = entity.dni
+                            - else
+                              = '-'
+                          %td
+                            - if entity.ruc != nil
+                              = entity.ruc
+                            - else
+                              = '-'
+                          %td
+                            %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_entity_path(entity.id)}', 'content', null, null, 'GET')"}
+                              Ver Detalle
+                            %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_entity_path(entity.id)}', 'content', {company_id : '#{@company}'}, null, 'GET')"}
+                              Editar
+                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{entity.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_entity_path(entity.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_entities_path}')"}}
+                              Eliminar
+            - else
+              .tab-pane{:id => "tab-#{type_entity.id}"}
+                .col-md-11
+                  %table.table.table-condensed.table-bordered
+                    %thead
+                      %tr
+                        %th Nombres
+                        %th Apellidos
+                        %th DNI
+                        %th RUC
+                        %th Acciones
+                    %tbody
+                      - type_entity.entities.each do |entity|
+                        %tr
+                          %td
+                            = entity.name
+                          %td
+                            - if entity.paternal_surname != nil && entity.maternal_surname != nil
+                              = entity.paternal_surname + entity.maternal_surname
+                            - else
+                              = '-'
+                          %td
+                            - if entity.dni != nil
+                              = entity.dni
+                            - else
+                              No aplica DNI
+                          %td
+                            - if entity.ruc != nil
+                              = entity.ruc
+                            - else
+                              No aplica RUC
+                          %td
+                            %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_entity_path(entity.id)}', 'content', null, null, 'GET')"}
+                              Ver Detalle
+                            %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_entity_path(entity.id)}', 'content', null, null, 'GET')"}
+                              Editar
+                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{entity.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_entity_path(entity.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_entities_path}?company_id=#{@company}')"}}
+                              Eliminar

@@ -1,0 +1,9 @@
+= form_tag import_logistics_articles_path,{ multipart: true } do
+  .form-group
+    %label.col-md-2.control-label{ 'style' => 'font-size: 13px;'}
+      Seleccionar excel para importar:
+    .col-md-7
+      = file_field_tag :file, class: 'btn btn-default'
+      %p.help-block
+        Seleccionar Archivo
+      = submit_tag 'Importar'

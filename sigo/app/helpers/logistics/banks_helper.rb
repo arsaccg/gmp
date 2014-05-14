@@ -1,0 +1,2 @@
+module Logistics::BanksHelper
+end

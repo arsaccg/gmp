@@ -1,0 +1,2 @@
+module Logistics::SuppliersHelper
+end

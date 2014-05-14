@@ -1,0 +1,261 @@
+#content-inside
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-collapsed" => "false", "data-widget-fullscreenbutton" => "false"}
+          %header
+            %h2 Crear Ingreso a Almacén
+          %div
+            .jarviswidget-editbox
+
+            .widget-body.fuelux
+              .wizard
+                %ul.steps
+                  %li.active{"data-target" => "#step1"}
+                    %span.badge.badge-info> 1
+                    Seleccionar Proveedor
+                    %span.chevron
+                  %li{"data-target" => "#step2"}
+                    %span.badge> 2
+                    Seleccionar items
+                    %span.chevron
+                  %li{"data-target" => "#step3"}
+                    %span.badge> 3
+                    Llenar Información
+                    %span.chevron
+                  %li{"data-target" => "#step4"}
+                    %span.badge> 4
+                    Guardar Información
+                    %span.chevron
+                .actions
+                  %button.btn.btn-sm.btn-primary.btn-prev{type: "button"}
+                    %i.fa.fa-arrow-left>
+                    Anterior
+                  %button.btn.btn-sm.btn-success.btn-next{"data-last" => "Finalizar", type: "button"}
+                    Siguiente
+                    %i.fa.fa-arrow-right
+              .step-content
+                = render :partial => 'form_step'
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+  %i.fa.fa-arrow-left>
+  &nbsp;Retornar
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  $(document).ready(function(){
+
+    // Search
+    $('#search').click(function(){
+      supplier_id = $('#supplier-selected').val();
+      url = "/logistics/stock_inputs/" + supplier_id + "/show_purchase_order_item_field";
+      data = { authenticity_token: "#{form_authenticity_token}" }
+      load_url_ajax(url, 'table-items-paso1', data, 'avoid-opacity', 'PUT');
+    });
+    // Back
+    $('#backlist').click(function(){
+      load_url_ajax("#{logistics_stock_inputs_path}", 'content', null, null, 'GET');
+    });
+
+    loadScript("#{ asset_path 'plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js', type: :javascript }", runBootstrapWizard);
+  
+    //Bootstrap Wizard Validations
+
+    function runBootstrapWizard() {
+
+      var $validator = $("#new_stock_input").validate({
+
+        rules: {
+          'stock_input[supplier_id]': {
+            required: true
+          },
+          'stock_input[warehouse_id]': {
+            required: true
+          },
+          'stock_input[format_id]': {
+            required: true
+          },
+          'stock_input[period]': {
+            required: true
+          },
+          'stock_input[series]': {
+            required: true,
+            minlength : 3,
+            maxlength : 3
+          },
+          'stock_input[document]': {
+            required: true,
+            minlength : 2,
+            maxlength : 10
+          },
+          'stock_input[issue_date]': {
+            required: true
+          },
+          'stock_input[description]': {
+            required: true
+          }
+        },
+        
+        messages: {
+          'stock_input[supplier_id]': "(*)",
+          'stock_input[warehouse_id]': "(*)",
+          'stock_input[format_id]': "(*)",
+          'stock_input[period]': "(*)",
+          'stock_input[series]' : {
+            required : '(*)',
+            minlength : "Mín 3 dígitos",
+            maxlength : "Máx 3 dígitos."
+          },
+          'stock_input[document]' : {
+            required : '(*)',
+            minlength : "Mín 2 dígitos",
+            maxlength : "Máx 10 dígitos.",
+          },
+          'stock_input[issue_date]': "(*)",
+          'stock_input[description]': "(*)"
+        },
+        
+        highlight: function (element) {
+          $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+        },
+        unhighlight: function (element) {
+          $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+        },
+        errorElement: 'span',
+        errorClass: 'help-block',
+        errorPlacement: function (error, element) {
+          if (element.parent('.input-group').length) {
+            error.insertAfter(element.parent());
+          } else {
+            error.insertAfter(element);
+          }
+        }
+      });
+
+    }
+
+    // Steps
+    loadScript("#{ asset_path 'plugin/fuelux/wizard/wizard.js', type: :javascript }", fueluxWizard);
+  
+    function fueluxWizard() {
+      
+      var wizard = $('.wizard').wizard();
+      
+      // Siguiente
+      wizard.on('change', function(e, data){
+
+        var status = false;
+        var data_items_sel = new Array();
+
+        if(data.step == 1 && data.direction == 'next'){
+          supplier_id = $('#supplier-selected').val();
+          url = "/logistics/stock_inputs/" + supplier_id + "/show_purchase_order_item_field";
+          data = { authenticity_token: "#{form_authenticity_token}" }
+          load_url_ajax(url, 'table-items-paso1', data, 'avoid-opacity', 'PUT');
+        }
+
+        if(data.step == 2 && data.direction == 'next'){
+
+          if( $.trim($('#table-items-paso1').html()).length ) {
+            var index = 0;
+            $('#table-items-paso1 #dt_basic tbody tr td .checkbox .order_check').each(function(){
+              if( $(this).is(':checked') ){
+                status = true
+                data_items_sel[index] = $(this).val();
+                index++;
+              }
+            });
+
+            if(status){
+              data = { ids_items: data_items_sel, authenticity_token: "#{form_authenticity_token}" };
+              load_items_delivery_order_ajax('#{add_items_from_pod_logistics_stock_inputs_path}', 'table-items-paso2', data);
+
+              $.smallBox({
+                title: "Completa el <font color=yellow>Ingreso a Almacén</font>.",
+                content: "<i class='fa fa-clock-o'></i> <i>Hace unos segundos...</i>",
+                color: "#5F895F",
+                iconSmall: "fa fa-check bounce animated",
+                timeout: 4000
+              });
+
+            } else {
+
+              e.preventDefault();
+              $.smallBox({
+                title: "Para continuar <font color=yellow>seleccionar items</font>.",
+                content: "<i class='fa fa-clock-o'></i> <i>Hace unos segundos...</i>",
+                color: "#c46a69",
+                iconSmall: "fa fa-times bounce animated",
+                timeout: 4000
+              });
+            }
+
+          } else {
+
+            e.preventDefault();
+            $.smallBox({
+              title: "Para continuar <font color=yellow>buscar items</font>.",
+              content: "<i class='fa fa-clock-o'></i> <i>Hace unos segundos...</i>",
+              color: "#c46a69",
+              iconSmall: "fa fa-times bounce animated",
+              timeout: 4000
+            });
+
+          }
+        }
+
+        if(data.step == 3 && data.direction == 'next') {
+
+          var $valid = $("#new_stock_input").valid();
+          if (!$valid) {
+            e.preventDefault();
+          }
+        }
+
+      });
+
+      // Finalizar
+      wizard.on('finished', function (e, data) {
+
+        $.ajax({
+          type: 'POST',
+          url: "/logistics/stock_inputs",
+          async: false,
+          data: $('#new_stock_input').serialize(),
+          dataType : 'html',
+          success: function(data) {
+            $('#modalLoading').modal('hide');
+            $('#content').html(data);
+          },
+          error : function(xhr, ajaxOptions, thrownError) {
+            container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+          }
+      });
+
+    });
+    }
+
+  });
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  function minmax(value, min, max){
+    if(parseInt(value) < min || isNaN(value)) 
+      return min; 
+    else if(parseInt(value) > max) 
+      return max; 
+    else return value;
+  }
