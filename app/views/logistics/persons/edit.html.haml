@@ -80,7 +80,7 @@
                   %section.col.col-10.collection_select 
                     %label.label Acceso a Centro de Costo
                     %label.select
-                      %select.collection_select.optional.select2#user_cost_center_ids{'multiple'=>'multiple','name'=>'user[cost_center_ids][]'}
+                      =select_tag "user_cost_center_ids",options_from_collection_for_select(@allCostCenter, 'id', 'name', @costCenter), label: 'false', multiple: 'true', class: 'collection_select optional select2', name: 'user[cost_center_ids][]'
               %footer
                 %button.btn.btn-primary{type: "submit"}
                   %i.fa.fa-save
