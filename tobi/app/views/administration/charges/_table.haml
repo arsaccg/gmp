@@ -1,0 +1,28 @@
+%a{:href=>"javascript:load_url_ondiv('#{new_administration_charge_path}?invoice_id=#{@invoice_id}&&action=new_invoice', 'right-area')"}(class="btn btn-success btn-small")
+  Registrar Cobro
+%table(class="white-table table-bordered table table-condensed" style="width: 100%;")
+  %thead
+    %th
+      Monto
+    %th
+      Fecha de Cobro
+    %th
+      Monto Pagado
+    %th
+      Entidad Financiera Cliente
+    %th
+      Entidad Financiera Destino
+
+  %tbody
+    - @charges.each do |charge|
+      %tr
+        %td
+          = charge.amount
+        %td
+          = charge.charge_date
+        %td
+          = charge.payment_amount
+        %td
+          = charge.financial_agent_client
+        %td
+          = charge.financial_agent_destiny

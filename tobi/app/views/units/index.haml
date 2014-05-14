@@ -1,0 +1,19 @@
+%h3 Unidades
+
+%a{href: "javascript:load_units_new()", class: "btn btn-success"}
+  Anadir
+%br
+%br
+%table(class="table-hover white-table small-font table-light"  id="scroll-table" width="100%")
+  %thead
+    %th Simbolo
+    %th Nombre
+    %th Acciones
+  %tbody
+    = render :partial => 'table'
+    
+    
+:javascript
+  function load_units_new(){
+    load_url_ondiv("#{new_unit_path}", 'right-area');
+  }

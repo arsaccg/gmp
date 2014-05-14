@@ -1,0 +1,80 @@
+%h1(style="text-align:center") Variación del Plazo Contractual
+
+.container-fluid
+  .row-fluid
+    .span8
+      %table(class="white-table table-bordered table table-condensed" style="width: 100%;")
+        %thead
+          %th
+            Fecha de Inicio
+          %th
+            Plazo Contractual
+          %th
+            Total Plazo Actualizado
+          %th
+            Fecha de Término Contractual
+          %th
+            Fecha de Término Actualizada
+        %tbody
+          %tr
+            %td
+              = @project.created_at
+
+%a(class="btn btn-danger"){:href => "javascript:load_url_ondiv('#{new_management_extensionscontrol_path}?project_id=#{@project.id}', 'right-area')"}
+  Registrar Ampliación
+
+%br
+%br
+
+%table(class="white-table table-bordered table table-condensed" style="width: 100%;")
+  %thead
+    %th
+      ID
+    %th
+      Motivo
+    %th
+      Estado
+    %th
+      Plazo Solicitado
+    %th
+      Plazo Aprobado
+    %th
+      M.G.G Solicitado
+    %th
+      M.G.G Aprobado
+    %th
+      Resolución
+    %th
+      Observación
+    %th
+      Ver Archivo
+    %th
+      Acciones
+  %tbody
+    - @extensionscontrol.each do |ext|
+      %tr
+        %td
+          = ext.id
+        %td
+          = ext.motive
+        %td
+          = ext.status
+        %td
+          = ext.requested_deadline
+        %td
+          = ext.approved_deadline
+        %td
+          = ext.requested_mgg
+        %td
+          = ext.approved_mgg
+        %td
+          = ext.resolution
+        %td
+          = ext.observation
+        %td
+          = image_tag ext.files.url
+        %td
+          %a(href="javascript:post_to_url('#{approve_management_extensionscontrols_path}?project_id=#{@project.id}&&extension_id=#{ext.id}','new_extensionscontrol', 'right-area')" class="btn btn-success")
+            Aprobar
+          %a(href="javascript:post_to_url('#{disprove_management_extensionscontrols_path}project_id=#{@project.id}&&extension_id=#{ext.id}','new_extensionscontrol', 'right-area')" class="btn btn-warning")
+            Desaprobar

@@ -1,0 +1,58 @@
+%h3
+  = @project.name
+%br
+.detail-area
+  %table(class="table table-bordered table-hover white-table")
+    %tr(class="success")
+      %td
+        %strong
+          Monto Total
+      %td
+        %strong
+          S/.
+          = @project.total_amount
+      
+    %tr
+      %td
+        Total de Costos Directos
+      %td
+        %strong
+          S/.
+          = @project.direct_cost_amount
+    %tr
+      %td
+        Total de Costos Generales
+      %td
+        %strong
+          S/.
+          = @project.general_cost_amount
+    %tr
+      %td
+        Monto de Utilidad
+      %td
+        %strong
+          S/.
+          = @project.utility_amount
+    %tr
+      %td
+        Porcentaje de Adelante
+      %td
+        %strong
+          = @project.advance_payment_percent
+          ="%"   
+    %tr
+      %td
+        Procentaje Asesorias Otorgadas
+      %td
+        %strong
+          = @project.coaching_granted_percent
+          ="%"
+    %tr
+      %td
+        IGV
+      %td
+        %strong
+          = @project.igv
+          ="%"
+        
+        

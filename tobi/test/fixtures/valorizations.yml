@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  month: 1
+  name: MyString
+  status: MyString
+  budget_id: 1
+
+two:
+  month: 1
+  name: MyString
+  status: MyString
+  budget_id: 1

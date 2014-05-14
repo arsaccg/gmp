@@ -1,0 +1,22 @@
+/ %div(class='btn-group')
+/   %a(href ='#{#feo_pdf_administration_inputcategories_path.to_s}.pdf?budget_sale=#{@budget_sale.id}&budget_goal=#{@budget_goal.id}'  class='btn btn-default btn-mini btn-danger')
+/     PDF
+
+.row-fuild
+  .span12
+    #tabs(class="small-font")
+      %ul
+        %li
+          %a(href="#tabs-1")
+            Feo de Obra
+        %li
+          %a(href="#tabs-2")Feo de Obra por Fases
+      #tabs-1
+        = render :partial => "table_feo"
+      #tabs-2
+        = render :partial => "table_feo_wbs"
+
+:javascript
+  $(function() {
+    $( "#tabs" ).tabs();
+  });

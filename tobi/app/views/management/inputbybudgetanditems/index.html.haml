@@ -1,0 +1,52 @@
+%form(id="form-wbs" action="#" name="itemform" method="POST" class="form-horizontal")
+  %table(class="table-bordered table-hover white-table small-font" width="100%")
+    %thead 
+      %th
+      %th 
+        %strong Insumo
+      %th 
+        %strong Código
+      %th 
+        %strong Cantidad
+      %th
+        %strong Unidad
+      %th 
+        %strong Precio
+      %th 
+        %strong Total
+    %tbody
+      - @itembybudgetanditems.each do |itembudget|
+        %tr 
+          %td
+            - str = itembudget.cod_input.to_s
+            - case str[0..1]
+              - when '01'
+                %i(class="icon-user")
+              - when '02'
+                %i(class="icon-wrench")
+              - when '03'
+                %i(class="icon-certificate")
+              - when '04'
+                %i(class="icon-file")
+          %td
+            =itembudget.input
+          %td
+            =itembudget.cod_input
+          %td(style="text-align: right;") 
+            %input(type="text" class="input-small small-font"){:value=>number_with_precision(itembudget.quantity, :precision => 4), :id => "itembudget_quantity_" + itembudget.cod_input.to_s, :onblur => "update_table('" + itembudget.cod_input.to_s + "')" }
+          %td(style="text-align: center;") 
+            =itembudget.unit rescue "-"
+          %td(style="text-align: right;") 
+            %input(type="text" class="input-small small-font"){:value=>number_with_precision(itembudget.price, :precision => 4).to_s, :id => "itembudget_price_" + itembudget.cod_input.to_s, :onblur => "update_table('" + itembudget.cod_input.to_s + "')"} 
+          %td(style="text-align: right;") 
+            %strong
+              %span{:id => "itembudget_total_" + itembudget.cod_input.to_s}
+                = "S/."
+                - quantity = itembudget.quantity.to_f.round(4).to_s.to_f
+                - price = itembudget.price.to_f.round(4).to_s.to_f
+                - total=(quantity.round(4) * price.round(4)).round(2)
+                = total.round(2)
+:javascript
+  $("#brief-items").html("<span style='padding-left: 30px;' class='small-font'><i class='icon-user'/> Mano de Obra : #{number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[0], :precision => 2)} </span><span style='padding-left: 20px;' class='small-font'><i class='icon-wrench'/> Materiales : #{number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[1], :precision => 2)} </span><span style='padding-left: 20px;' class='small-font'><i class='icon-certificate'/> Equipos : #{number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[2], :precision => 2)} </span><span style='padding-left: 20px;' class='small-font'><i class='icon-file'/> Subcontratos :  #{number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[3], :precision => 2)} </span><div class='btn-group'><span style='padding-left: 30px;' class='small-font'><a href ='#{ filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s}.pdf?budget_id=#{@budget_id}&item_id=#{@item_id}&order=#{@order}'  class='btn btn-default btn-mini btn-danger'><i class='icon-download-alt'/> PDF </a> <a href='#itemsModal' data-toggle='modal' class='btn btn-success btn-mini' ><i class='icon-plus'/> Agregar</a></span></div>")
+  
+

@@ -1,0 +1,7 @@
+  $("#brief-items").html("<span style='padding-left: 100px;' class='small-font'><i class='icon-user'/> Mano de Obra : #{number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[0], :precision => 2)} </span><span style='padding-left: 20px;' class='small-font'><i class='icon-wrench'/> Materiales : #{number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[1], :precision => 2)} </span><span style='padding-left: 20px;' class='small-font'><i class='icon-certificate'/> Equipos : #{number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[2], :precision => 2)} </span><span style='padding-left: 20px;' class='small-font'><i class='icon-file'/> Subcontratos :  #{number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[3], :precision => 2)} </span><div class='btn-group'><span style='padding-left: 50px;' class='small-font'><a href ='#{ filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s}.pdf?budget_id=#{@budget_id}&item_id=#{@item_id}&order=#{@order}'  class='btn btn-default btn-mini btn-danger'><i class='icon-download-alt'/> PDF </a> <a href='' class='btn btn-success btn-mini' ><i class='icon-plus'/> Agregar</a></span></div>")
+
+
+  function update_table(id)
+  {
+     $("#itembudget_total_" + id).text("S/. " + ($("#itembudget_quantity_" + id).val() * $("#itembudget_price_" + id).val()).toFixed(2));
+  }

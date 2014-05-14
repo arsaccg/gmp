@@ -1,0 +1,43 @@
+
+=simple_form_for [:management, @project], :html => {:class => 'form-horizontal', id: "form-data"} do |f|
+  .fieldset
+    %legend
+      Editar
+    .control-group
+      %label(class="control-label") Nombre del Proyecto
+      .controls
+        = f.input :name, label: false, placeholder: 'Nombre del Proyecto'
+    .control-group
+      %label(class="control-label") Costo Total
+      .controls
+        = f.input :total_amount, label: false, placeholder: "0.00"
+    .control-group
+      %label(class="control-label") Monto de Costo Directo
+      .controls
+        = f.input :direct_cost_amount, label: false, placeholder: "0.00"
+    .control-group
+      %label(class="control-label") Monto de Costo General
+      .controls
+        = f.input :general_cost_amount, label: false, placeholder: "0.00"
+    .control-group
+      %label(class="control-label") Monto de Utilidad
+      .controls
+        = f.input :utility_amount, label: false, placeholder: "0.00"
+    .control-group
+      %label(class="control-label") Porcentaje de Pago Anticipado
+      .controls
+        = f.input :advance_payment_percent, label: false, placeholder: "0.00"
+    .control-group
+      %label(class="control-label") Porcentaje de Asesorias
+      .controls
+        = f.input :coaching_granted_percent, label: false, placeholder: "0.00"
+    .control-group
+      %label(class="control-label") IGV
+      .controls
+        = f.input :igv, label: false, placeholder: "0.18"
+    .form-actions
+      %a{:href=>"javascript:post_to_url('" + management_project_path.to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
+        Guardar
+       
+      %a(href="#"){class: "btn btn-danger"}
+        Cancelar
