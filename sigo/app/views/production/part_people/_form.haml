@@ -15,7 +15,7 @@
 
           %section.col.col-8
             %label.input{for: "working_group_id"}
-              %select.form-control{:name =>"part_work[working_group_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %select.form-control{:name =>"part_person[working_group_id]", :style => 'width:100%;padding: 0;border: none;'}
                 %option{:value => ''}
                   = 'SECTOR - JEFEDEFRENTE - EJECUTOR - MAESTRO DE OBRA'
                 - @working_groups.each do |working_group|
@@ -146,38 +146,60 @@
   function calculateHours(element, str){
     switch(str){
       case 'normal':
-        console.log('normal')
         h_normal = parseInt($(element).val());
-        he_60 = parseInt($(element).parent().siblings('he-60').find('input').val())
-        he_100 = parseInt($(element).parent().siblings('he-100').find('input').val())
+        he_60 = parseInt($(element).parent().siblings('.he-60').find('input').val())
+        he_100 = parseInt($(element).parent().siblings('.he-100').find('input').val())
 
         total_hours = h_normal + he_60 + he_100
 
-        $(element).parent().siblings('total-hours').find('input').val(total_hours)
+        $(element).parent().siblings('.total-hours').find('input').val(total_hours)
         break;
 
       case '60':
-        console.log('60')
-        h_normal = parseInt($(element).parent().siblings('normal-hours').find('input').val());
+        h_normal = parseInt($(element).parent().siblings('.normal-hours').find('input').val());
         he_60 = parseInt($(element).val())
-        he_100 = parseInt($(element).parent().siblings('he-100').find('input').val())
+        he_100 = parseInt($(element).parent().siblings('.he-100').find('input').val())
 
         total_hours = h_normal + he_60 + he_100
 
-        $(element).parent().siblings('total-hours').find('input').val(total_hours)
+        if(isNaN(total_hours)){
+          total_hours
+        }
+
+        $(element).parent().siblings('.total-hours').find('input').val(total_hours)
         break;
 
       case '100':
-        console.log('100')
-        h_normal = parseInt($(element).parent().siblings('normal-hours').find('input').val());
-        he_60 = parseInt($(element).parent().siblings('he-60').find('input').val())
+        h_normal = parseInt($(element).parent().siblings('.normal-hours').find('input').val());
+        he_60 = parseInt($(element).parent().siblings('.he-60').find('input').val())
         he_100 = parseInt($(element).val())
 
         total_hours = h_normal + he_60 + he_100
 
-        $(element).parent().siblings('total-hours').find('input').val(total_hours)
+        if(isNaN(total_hours)){
+          total_hours
+        }
+
+        $(element).parent().siblings('.total-hours').find('input').val(total_hours)
         break;
     }
+  }
+
+  function minmax(value, min, max){
+    if(parseInt(value) < min || isNaN(value)) 
+      return min; 
+    else if(parseInt(value) > max) 
+      return max; 
+    else return value;
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
   }
 
   function delete_item(code){
