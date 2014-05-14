@@ -115,7 +115,7 @@
                             %i.fa.fa-fw.fa-plus-circle.txt-color-green
                             %i.fa.fa-fw.fa-minus-circle.txt-color-red
                             Certificados
-                      .panel-collapse.collapse.in{ 'id'=> "collapse"+@reg.to_s+"-1"}
+                      .panel-collapse.collapse{ 'id'=> "collapse"+@reg.to_s+"-1"}
                         .panel-body
                           = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][id]', cert.id
                           = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][professional_id]', @professional.id

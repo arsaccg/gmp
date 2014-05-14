@@ -1,0 +1,2 @@
+module Production::SubcontractEquipmentsHelper
+end
