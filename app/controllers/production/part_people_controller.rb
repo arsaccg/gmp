@@ -38,12 +38,11 @@ class Production::PartPeopleController < ApplicationController
   def add_more_worker
     @reg_n = Time.now.to_i
     @sectors = Sector.where("code LIKE '__'")
-    data_article_unit = params[:article_id].split('-')
-    @article = Article.find(data_article_unit[0])
-    @id_article = @article.id
-    @name_article = @article.name
-    @unitOfMeasurement = @article.unit_of_measurement.name
-    render(partial: 'partwork_items', :layout => false)
+    @phases = Phase.where("code LIKE '__'")
+    @worker = Worker.find(params[:worker_id])
+    @id_worker = @worker.id
+    @name_worker = @worker.name
+    render(partial: 'part_people_items', :layout => false)
   end
 
   def edit
@@ -78,6 +77,6 @@ class Production::PartPeopleController < ApplicationController
 
   private
   def part_person_parameters
-    params.require(:part_person).permit(:working_group_id, :number_working_group, :sector_id, :date_of_creation, part_person_details_attributes: [:id, :part_work_id, :article_id, :bill_of_quantitties, :description])
+    params.require(:part_person).permit(:working_group_id, :number_working_group, :sector_id, :date_of_creation, part_person_details_attributes: [:id, :part_people_id, :worker_id, :sector_id, :phase_id, :normal_hours, :he_60, :he_100, :total_hours])
   end
 end

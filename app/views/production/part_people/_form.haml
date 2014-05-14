@@ -1,0 +1,148 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Subcontrato
+  .widget-body
+    = simple_form_for([:production, @partperson], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row{ 'style' => 'display:none' }
+          %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
+        .row
+          %section.col.col-2
+            %label.input{for: "number_part"}
+              = f.input :number_part, placeholder: "Numero", input_html: { class: 'form-control' }, label: false
+
+          %section.col.col-8
+            %label.input{for: "working_group_id"}
+              %select.form-control{:name =>"part_work[working_group_id]", :style => 'width:100%;padding: 0;border: none;'}
+                %option{:value => ''}
+                  = 'SECTOR - JEFEDEFRENTE - EJECUTOR - MAESTRO DE OBRA'
+                - @working_groups.each do |working_group|
+                  - if @action == 'edit'
+                    - if @subcontract.working_group_id == working_group.id
+                      %option{:value => "#{working_group.id}", :selected => true}
+                        = working_group.sector.name + ' - ' + Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                    - else
+                      %option{:value => "#{working_group.id}"}
+                        = working_group.sector.name + ' - ' + Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                  - else
+                    %option{:value => "#{working_group.id}"}
+                      = working_group.sector.name + ' - ' + Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+
+          %section.col.col-2
+            %label.input{for: "date_of_creation"}
+              = f.input :date_of_creation, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
+            
+      %fieldset
+        %legend Registro de Partidas
+        .row
+          %section.col.col-2
+            %label.control-label(for="worker_id") Trabajador
+
+          %section.col.col-6
+            %select#worker-select.select2.form-control(name='worker_id' style='width:100%;padding: 0;border: none;')
+              - @workers.each do |worker|
+                %option(value = "#{worker.id}")
+                  = worker.category_of_worker.name + " - " + worker.first_name + " " + worker.second_name + " " + worker.paternal_surname + " " + worker.maternal_surname
+
+          %section.col.col-2
+            %div
+              %a(href="javascript:add_worker_item();" id="btn-add-article" class="btn btn-success" role="button")
+                Agregar Trabajador
+
+        .col-lg-12
+          %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
+            %thead
+              %tr
+                %th Trabajador
+                %th Frente
+                %th Fase
+                %th Horas normales
+                %th Horas Extras 60
+                %th Horas Extras 100
+                %th Total Horas
+                %th Eliminar
+            %tbody(id="worker_items_table")
+
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+
+    $('select').select2();
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_part_person'));
+    }
+
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'part_person[number_working_group]' : {
+              required : true
+            },
+            'part_person[working_group_id]' : {
+              required : true
+            },
+            'part_person[sector_id]' : {
+              required : true
+            },
+            'part_person[date_of_creation]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'part_person[number_working_group]' : {
+              required : 'Por favor, ingresar el grupo de trabajo.'
+            },
+            'part_person[working_group_id]' : {
+              required : 'Por favor, ingresar el grupo de trabajo.'
+            },
+            'part_person[sector_id]' : {
+              required : 'Por favor, ingresar el sector.'
+            },
+            'part_person[date_of_creation]' : {
+              required : 'Por favor, ingresar la fecha.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
+
+  function add_worker_item(){
+    str_item = {authenticity_token: "#{form_authenticity_token}", worker_id: $("#worker-select").val(), amount: $("#article-amount").val()};
+    append_url_ajax('#{add_more_worker_production_part_people_path}', 'worker_items_table', str_item, 0, 'POST');
+  }
+
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }

@@ -225,7 +225,11 @@ ArsacLogistica::Application.routes.draw do
         post 'add_more_article'
       end
     end
-    resources :part_people
+    resources :part_people do
+      collection do
+        post 'add_more_worker'
+      end
+    end
     resources :category_of_workers
     resources :working_groups
     resources :subcontracts do
