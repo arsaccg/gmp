@@ -21,56 +21,42 @@
                     %option{:value => "#{categoryOfWorker.id}"}
                       = categoryOfWorker.name
         .row
-          %section.col.col-10
+          %section.col.col-6
             %label.label Primer Nombre
             %label.input{for: "first_name"}
               %i.icon-append.fa.fa-user
               = f.input :first_name, placeholder: "Primer Nombre", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
+          %section.col.col-6
             %label.label Segundo Nombre
             %label.input{for: "second_name"}
               %i.icon-append.fa.fa-user
               = f.input :second_name, placeholder: "Segundo Nombre", input_html: { class: 'form-control' }, label: false
         .row
-          %section.col.col-10
+          %section.col.col-6
             %label.label Apellido Paterno
             %label.input{for: "paternal_surname"}
               %i.icon-append.fa.fa-user
               = f.input :paternal_surname, placeholder: "Apellido Paterno", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
+          %section.col.col-6
             %label.label Apellido Materno
             %label.input{for: "maternal_surname"}
               %i.icon-append.fa.fa-user
               = f.input :maternal_surname, placeholder: "Apellido Materno", input_html: { class: 'form-control' }, label: false
         .row
-          %section.col.col-10
+          %section.col.col-4
             %label.label DNI
             %label.input{for: "dni"}
               %i.icon-append.fa.fa-credit-card
               = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
+          %section.col.col-4
             %label.label Email
             %label.input{for: "email"}
               %i.icon-append.fa.fa-credit-card
               = f.input :email, placeholder: "Email", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
+          %section.col.col-4
             %label.label Teléfono
             %label.input{for: "phone"}
               = f.input :phone, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
-            %label.label Banco
-            %label.input{for: "bank"}
-              = f.input :bank, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
-            %label.label Numero de Cuenta Bancaria
-            %label.input{for: "account_number"}
-              = f.input :account_number, input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
             %label.label Fecha de Nacimiento
@@ -81,6 +67,26 @@
             %label.label Dirección
             %label.input{for: "address"}
               = f.input :address, input_html: { class: 'form-control' }, label: false
+      %fieldset
+        %legend Bancos
+        .row
+          %section.col.col-2
+            %label.control-label(for="bank_id") Bancos
+
+          %section.col.col-6
+            %select#article-select.select2.form-control(name='bank_id' style='width:100%;padding: 0;border: none;')
+              - @banks.each do |bank|
+                %option(value = "#{article.id}-#{article.unit_of_measurement.id}")
+                  = article.code + " - " + article.name + " - " + article.unit_of_measurement.symbol
+
+          %section.col.col-1
+            = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
+
+          %section.col.col-2
+            %div
+              %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
+                Agregar Insumo
+
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 

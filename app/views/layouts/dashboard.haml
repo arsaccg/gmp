@@ -213,6 +213,10 @@
                     %a{href: "#{logistics_documents_path}", title: "Documentos"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Documentos
+                  %li
+                    %a{href: "#{logistics_banks_path}", title: "Bancos"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Bancos
               %li
                 %a{href: "#{logistics_delivery_orders_path}?company_id=#{@company.id}", title: "Ordenes de Suministro", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
