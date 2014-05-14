@@ -233,6 +233,9 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :category_of_workers
     resources :working_groups
+    resources :subcontract_equipment_details
+    resources :rental_types
+    resources :subcontract_equipments
     resources :subcontracts do
       collection do
         post 'add_more_article'
@@ -241,3 +244,5 @@ ArsacLogistica::Application.routes.draw do
   end
 
 end
+
+  

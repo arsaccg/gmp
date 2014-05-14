@@ -1,0 +1,2 @@
+module Production::RentalTypesHelper
+end
