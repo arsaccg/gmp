@@ -14,6 +14,7 @@ class Production::WorkersController < ApplicationController
     @worker = Worker.new
     @categoryOfWorkers = CategoryOfWorker.all
     @company = params[:company_id]
+    @banks = Bank.all
     render layout: false
   end
 
