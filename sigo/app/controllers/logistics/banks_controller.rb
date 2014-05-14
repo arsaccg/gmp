@@ -28,6 +28,9 @@ class Logistics::BanksController < ApplicationController
   end
 
   def edit
+    @bank = Bank.find(params[:id])
+    @action = 'edit'
+    render layout: false
   end
 
   def show
