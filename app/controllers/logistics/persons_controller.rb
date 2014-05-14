@@ -4,7 +4,7 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
     if current_user.has_role? :director
       @persons = User.all
     else
-      @persons = User.all.where('roles_mask NOT IN(1)')
+      @persons = User.all.where('roles_mask NOT IN(31)')
     end
     render layout: false
   end
@@ -35,10 +35,30 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   # Función para editar usuarios en el panel del director.
   def edit
     @action = 'edit'
+    @costCenter = Array.new
+    @allCostCenter = Array.new
     @user = User.find(params[:id])
     @all_roles = { 'issuer' => 'Emite las ordenes de suministro', 'approver' => 'Aprueba ordenes de Suministro', 'reviser' => 'Dar visto bueno a las ordenes de suministro', 'canceller' => 'Anular ordenes suministro' }
     @roles = @user.role_symbols
-    puts @roles
+
+    @user.companies.each do |company|
+      company.cost_centers.each do |cc|
+        @allCostCenter << cc
+      end
+    end
+
+    #@allCostCenter.each do |completecc|
+    #  completecc.each do |wtf|
+    #    @other << { :id => wtf.id.to_i, :name => wtf.name.to_s}
+    #  end
+    #end
+
+    puts @other.inspect
+
+    @user.cost_centers.each do |cc|
+      @costCenter << cc.id
+    end
+
     render layout: false
   end
 
