@@ -1,2 +1,0 @@
-module Biddings::MajorsHelper
-end
