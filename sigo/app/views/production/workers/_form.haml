@@ -67,6 +67,7 @@
             %label.label Dirección
             %label.input{for: "address"}
               = f.input :address, input_html: { class: 'form-control' }, label: false
+
       %fieldset
         %legend Bancos
         .row
@@ -74,18 +75,24 @@
             %label.control-label(for="bank_id") Bancos
 
           %section.col.col-6
-            %select#article-select.select2.form-control(name='bank_id' style='width:100%;padding: 0;border: none;')
+            %select#article-select.select2.form-control(name='bank_id' style='width:100%;padding: 0;border: none;') 
               - @banks.each do |bank|
-                %option(value = "#{article.id}-#{article.unit_of_measurement.id}")
-                  = article.code + " - " + article.name + " - " + article.unit_of_measurement.symbol
-
-          %section.col.col-1
-            = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
+                %option(value = "#{bank.id}")
+                  = bank.business_name + " - " + bank.ruc
 
           %section.col.col-2
             %div
-              %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
-                Agregar Insumo
+              %a(href="javascript:add_bank_item();" id="btn-add-bank" class="btn btn-success" role="button")
+                Agregar Banco
+
+        .col-lg-12
+          %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-banks" aria-describedby="data-table_info")
+            %thead
+              %tr
+                %th Nombre
+                %th RUC
+                %th Eliminar
+            %tbody(id="bank_items_table")
 
       %footer
         %button.btn.btn-primary{type: "submit"}

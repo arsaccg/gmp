@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Centro de Costos
+    %h2 Bancos
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
@@ -11,19 +11,19 @@
         %thead
           %tr
             %th Nombre
-            %th Nombre
+            %th RUC
             %th Acciones
         %tbody
-          - @costCenters.each do |unit|
+          - @banks.each do |unit|
             %tr
               %td 
                 = unit.business_name
               %td
                 = unit.ruc
               %td
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_cost_center_path(unit.id)}', 'content', null, null, 'GET')"}
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_bank_path(unit.id)}', 'content', null, null, 'GET')"}
                   Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_cost_center_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_cost_centers_path}?company_id=#{@company}')"}}
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.business_name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_bank_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_banks_path}?company_id=#{@company}')"}}
                   Eliminar
 
 :javascript
