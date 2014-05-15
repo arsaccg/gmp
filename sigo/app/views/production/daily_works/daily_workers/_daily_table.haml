@@ -1,0 +1,22 @@
+#wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2
+      = @working_group.sector.name + ' - ' + Worker.find(@working_group.front_chief_id).first_name + ' ' + Worker.find(@working_group.front_chief_id).second_name + ' ' + Worker.find(@working_group.front_chief_id).paternal_surname + ' ' + Worker.find(@working_group.front_chief_id).maternal_surname + ' - ' + Entity.find(@working_group.executor_id).name + ' - ' + Worker.find(@working_group.master_builder_id).first_name + ' ' + Worker.find(@working_group.master_builder_id).second_name + ' ' + Worker.find(@working_group.master_builder_id).paternal_surname + ' ' + Worker.find(@working_group.master_builder_id).maternal_surname
+  %div
+    .jarviswidget-editbox
+    .widget-body
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th Item
+            %th Apellidos y Nombres
+            %th Categoria
+            %th T. Normales
+            - @business_days.each do |date|
+              %th= date
+            %th T. 60%
+            %th T. 100%
+            %th Total Hours
+        %tbody
