@@ -220,7 +220,11 @@ ArsacLogistica::Application.routes.draw do
   end
 
   namespace :production do
-    resources :workers
+    resources :workers do
+      collection do
+        post 'add_worker_item_field'
+      end
+    end
     resources :part_works do
       collection do
         post 'add_more_article'
