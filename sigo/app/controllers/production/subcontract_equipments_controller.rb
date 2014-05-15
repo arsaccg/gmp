@@ -6,11 +6,13 @@ class Production::SubcontractEquipmentsController < ApplicationController
   end
 
   def show
+    @company = params[:company_id]
     @subcontractEq = SubcontractEquipment.find(params[:id])
     render layout: false
   end
 
   def new
+    @company = params[:company_id]
     @subcontractEquipment = SubcontractEquipment.new
     TypeEntity.where("name LIKE '%Proveedores%'").each do |supply|
       @suppliers = supply.entities
@@ -35,6 +37,7 @@ class Production::SubcontractEquipmentsController < ApplicationController
   end
 
   def edit
+    @company = params[:company_id]
     @subcontractEquipment = SubcontractEquipment.find(params[:id])
     TypeEntity.where("name LIKE '%Proveedores%'").each do |supply|
       @suppliers = supply.entities
@@ -60,8 +63,12 @@ class Production::SubcontractEquipmentsController < ApplicationController
   end
 
   def destroy
+    subcontract = SubcontractEquipment.find(params[:id])
+    subcontract.subcontract_equipment_details.each do |part|
+      partequi = SubcontractEquipmentDetail.destroy(part.id)
+    end
     subcontract = SubcontractEquipment.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente el Grupo de Trabajo."
+    flash[:notice] = "Se ha eliminado correctamente el Subcontrato de Equipo."
     render :json => subcontract
   end
 

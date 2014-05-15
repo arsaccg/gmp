@@ -1,0 +1,9 @@
+%tr(class="worker_item"){id: "tr" + @reg_n.to_s}
+  %td.bank-id(style="display:none")
+    = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][bank_id]', @id_bank.to_i
+  %td.col-2
+    = @business_name_bank
+  %td.col-md-1.account_number{:style => "width:5%"}
+    = text_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][account_number]', @account_number.to_i , class: "form-control quantity", id: 'bank-account_number'
+  %td{:style => "width: 1%;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

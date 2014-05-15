@@ -9,11 +9,12 @@
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
           %input{ 'name' => 'subcontract', 'value' => "#{@subcontract}", 'readonly' => true, 'style' => 'display:none' }
+          %input{ 'name' => 'subcontract_equipment_detail[subcontract_equipment_id]', 'value' => "#{@subcontract}", 'readonly' => true, 'style' => 'display:none' }
         .row
           %section.col.col-4
             %label.label Artículo
             %label.input
-              %select.form-control{:name =>"subcontract_equipment_detail[article_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %select.form-control#article{:name =>"subcontract_equipment_detail[article_id]", :style => 'width:100%;padding: 0;border: none;', onchange: 'artiSelectCH();'}
                 -if @action =="edit"
                   - @article.each do |arti|
                     -if @partequi.article_id== arti.id
@@ -26,44 +27,79 @@
                   - @article.each do |arti|
                     %option{:value => "#{arti.id}"}
                       = arti.name
-          %input.col.col-4{'name'=>'cod_art', :disbled=>'disabled'}
-          %input.col.col-4{'name'=>'unit_art', :disbled=>'disabled'}
+
+          .col.col-4
+            %label.label Código de Articulo      
+            .col-sm-10
+              %input.form-control#cod-art{:disabled=>'disabled'}
+          .col.col-4
+            %label.label Unidad de medida
+            .col-sm-10
+              %input.form-control#unit-art{:disabled=>'disabled'}
         .row
-          %section.col.col-10
-            %label.label Descripción
-            %label.input{for: "description"}
-              = f.input :description, placeholder: "Descripción del articulo", input_html: { class: 'form-control' }, label: false, rows: 4
+          .col.col-10
+            %section
+              %label.label Descripción
+              %label.input{for: "description"}
+                = f.input :description, :disabled=>'disabled', input_html: { class: 'form-control' }, label: false, rows: 4
         .row
-          .col-sm-4
+          .col.col-4
             %label.label Marca
-            %label.input{for: "brand"}
-              = f.input :brand, placeholder: "Marca",  input_html: { class: 'form-control' }, label: false
-          .col-sm-4
+            .col.col-10
+              .form-group
+                .input-group
+                  = f.input :brand, placeholder: "  Marca",  input_html: { class: 'form-control' }, label: false
+                  %span.input-group-addon
+                    %i.fa.fa-wrench.fa-md.fa-fw
+          .col.col-4
             %label.label Serie
-            %label.input{for: "series"}
-              = f.input :series, placeholder: "Serie",  input_html: { class: 'form-control' }, label: false
-          .col-sm-4
+            .col.col-10
+              .form-group
+                .input-group
+                  = f.input :series, placeholder: "  Serie",  input_html: { class: 'form-control' }, label: false
+                  %span.input-group-addon
+                    %i.fa.fa-cogs.fa-md.fa-fw
+          .col.col-4
             %label.label Modelo
-            %label.input{for: "model"}
-              = f.input :model, placeholder: "Modelo", input_html: { class: 'form-control' }, label: false
+            .col.col-10
+              .form-group
+                .input-group
+                  = f.input :model, placeholder: "  Modelo", input_html: { class: 'form-control' }, label: false
+                  %span.input-group-addon
+                    %i.fa.fa-truck.fa-md.fa-fw
+
+        %br      
         .row
-          .col-sm-4
+          .col.col-4
             %label.label Fecha de ingreso
-              %label.input{for: "date_in"}
-                = f.input :date_in, as: :date, input_html: { class: 'form-control' }, label: false
-          .col-sm-4
+            .col.col-10
+              .form-group
+                .input-group
+                  = f.input :date_in,as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
+                  %span.input-group-addon
+                    %i.fa.fa-calendar.fa-md.fa-fw
+          .col.col-4
             %label.label Año
-              %label.input{for: "year"}
-                = f.input :year, input_html: { class: 'form-control' }, label: false
-          .col-sm-4
+            .col.col-10
+              .form-group
+                .input-group
+                  = f.input :year, placeholder: "  Año", input_html: { class: 'form-control' }, label: false
+                  %span.input-group-addon
+                    %i.fa.fa-calendar.fa-md.fa-fw
+          .col.col-4
             %label.label Precio sin IGV
-              %label.input{for: "price_no_igv"}
-                = f.input :price_no_igvz, input_html: { class: 'form-control' }, label: false
+            .col.col-10
+              .form-group
+                .input-group
+                  = f.input :price_no_igv, placeholder: "  Precio Sin IGV", input_html: { class: 'form-control' }, label: false
+                  %span.input-group-addon
+                    %i.fa.fa-money.fa-md.fa-fw
+        %br     
         .row
           %section.col.col-4
             %label.label Tipos de Alquiler
             %label.input
-              %select.form-control{:name =>"subcontract_equipment_detail[rental_type_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %select.form-control.col-sm-10{:name =>"subcontract_equipment_detail[rental_type_id]", :style => 'width:100%;padding: 0;border: none;'}
                 -if @action =="edit"
                   - @rental.each do |rent|
                     -if @partequi.rental_type_id== rent.id
@@ -77,18 +113,30 @@
                     %option{:value => "#{rent.id}"}
                       = rent.name
         .row
-          .col-sm-4
+          .col.col-4
             %label.label Horas Mínimas
-              %label.input{for: "minimum_hours"}
-                = f.input :minimum_hours, as: :date, input_html: { class: 'form-control' }, label: false
-          .col-sm-4
-            %label.label Cantidad de Horas de maquinaria
-              %label.input{for: "amount_hours"}
-                = f.input :amount_hours, input_html: { class: 'form-control' }, label: false
-          .col-sm-4
+            %label.input.col-sm-10{for: "minimum_hours"}
+              %select.form-control{:name =>"subcontract_equipment_detail[minimum_hours]", :style => 'width:100%;padding: 0;border: none;'}
+                %option{:value => "diario"} Diario
+                %option{:value => "semanal"} Semanal
+                %option{:value => "quincenal"} Quincenal
+                %option{:value => "mensual"} Mensual
+          .col.col-4
+            %label.label Cantidad de Horas de Maquinaria
+            .col.col-10
+              .form-group
+                .input-group
+                  = f.input :amount_hours, placeholder: "  Cantidad de Horas de Maquinaria", input_html: { class: 'form-control' }, label: false
+                  %span.input-group-addon
+                    %i.fa.fa-clock-o.fa-md.fa-fw
+          .col.col-4
             %label.label Cantidad Contratada
-              %label.input{for: "contracted_amount"}
-                = f.input :contracted_amount, input_html: { class: 'form-control' }, label: false
+            .col.col-10
+              .form-group
+                .input-group
+                  = f.input :contracted_amount, placeholder: "  Cantidad Contratada", input_html: { class: 'form-control' }, label: false
+                  %span.input-group-addon
+                    %i.fa.fa-briefcase.fa-md.fa-fw
         
       %footer
         %button.btn.btn-primary{type: "submit"}
@@ -97,12 +145,14 @@
 
 :javascript
   $(document).ready(function () {
+    var article_id = $('#article').val();
+    complete_infocombo("#{get_component_from_article_production_subcontract_equipment_details_path}", article_id, "#{form_authenticity_token}", 0);
 
     $('select').select2();
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
-      submit_validate($('#subcontractEquipment'));
+      submit_validate($('#new_subcontract_equipment_detail'));
     }
 
   });
@@ -113,46 +163,12 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'subcontractEquipment[entity_id]' : {
-              required : true
-            },
-            'subcontractEquipment[valorization]' : {
-              required : true
-            },
-            'subcontractEquipment[terms_of_payment]' : {
-              required : true
-            },
-            'subcontractEquipment[guarantee_fund]' : {
-              required : true
-            },
-            'subcontractEquipment[detraction]' : {
-              required : true
-            },
-            'subcontractEquipment[contract_amount]' : {
-              required : true
-            }
+            
           },
 
           // Messages for form validation
           messages : {
-            'subcontractEquipment[entity_id]' : {
-              required : 'Por favor, ingresar el Ejecutor.'
-            },
-            'subcontractEquipment[valorization]' : {
-              required : 'Por favor, ingresar la valorizacion.'
-            },
-            'subcontractEquipment[terms_of_payment]' : {
-              required : 'Por favor, ingresar la condición de pago.'
-            },
-            'subcontractEquipment[guarantee_fund]' : {
-              required : 'Por favor, ingresar el fondo de garantia.'
-            },
-            'subcontractEquipment[detraction]' : {
-              required : 'Por favor, ingresar la detracción.'
-            },
-            'subcontractEquipment[contract_amount]' : {
-              required : 'Por favor, ingresar el monto contratado.'
-            }
+            
           },
 
           // Do not change code below
@@ -171,5 +187,32 @@
       },
       error: function(xhr, status, error) {
       }
+    });
+  }
+
+  function artiSelectCH(){
+    var article_id = $('#article').val();
+    complete_infocombo("#{get_component_from_article_production_subcontract_equipment_details_path}", article_id, "#{form_authenticity_token}", 0);
+  }
+
+  function artiSelectKU(){
+    var article_id = $('#article').val();
+    complete_infocombo("#{get_component_from_article_production_subcontract_equipment_details_path}", article_id, "#{form_authenticity_token}", 0);
+  }
+
+  function complete_infocombo( url, article_id, form_token, default_value){
+    var str_html = "";
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { article_id: article_id, authenticity_token: form_token}
+    }).done(function( data ) {
+      var code = data.code;
+      console.log(code);
+      var unit = data.unit;
+      console.log(unit);
+      $('#cod-art').val(code);
+      $('#unit-art').val(unit);
     });
   }

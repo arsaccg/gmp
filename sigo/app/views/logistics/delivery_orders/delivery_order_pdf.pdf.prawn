@@ -28,13 +28,11 @@ move_down 40
 text "Glosa", :style => :bold
 text "#{@deliveryOrder.description}"
 
-repeat :all do
-   bounding_box [bounds.left, bounds.bottom + 50], :width  => bounds.width do
-    table([ 
-      ["#{@state_per_order_details_approved.user.first_name + ' ' + @state_per_order_details_approved.user.last_name + ' ' + @state_per_order_details_approved.user.surname }", "#{@state_per_order_details_revised.user.first_name + ' ' + @state_per_order_details_revised.user.last_name + ' ' + @state_per_order_details_revised.user.surname }"], ["#{@first_state} el #{@state_per_order_details_approved.created_at.strftime('%d/%m/%Y')}", "#{@second_state} OK"]
-    ], :width => 540) do
-      row(0).style :align => :center
-      row(1).style :align => :center
-    end
+bounding_box [bounds.left, bounds.bottom + 50], :width  => bounds.width do
+  table([ 
+  ["#{@state_per_order_details_approved.user.first_name + ' ' + @state_per_order_details_approved.user.last_name + ' ' + @state_per_order_details_approved.user.surname }", "#{@state_per_order_details_revised.user.first_name + ' ' + @state_per_order_details_revised.user.last_name + ' ' + @state_per_order_details_revised.user.surname }"], ["#{@first_state} el #{@state_per_order_details_approved.created_at.strftime('%d/%m/%Y')}", "#{@second_state} OK"]
+  ], :width => 540) do
+    row(0).style :align => :center
+    row(1).style :align => :center
   end
 end

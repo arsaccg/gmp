@@ -1,8 +1,13 @@
 class Production::SubcontractEquipmentDetailsController < ApplicationController
   def index
     @company = params[:company_id]
-    @partequi = SubcontractEquipmentDetail.all
     @subcontract = params[:subcontract]
+    @partequi = SubcontractEquipmentDetail.where("subcontract_equipment_id= ?", @subcontract)
+    @article= Array.new
+    TypeOfArticle.where("name LIKE '%EQUIPOS%'").each do |arti|
+      @article = arti.articles
+    end
+    
     render layout: false
   end
 
@@ -12,13 +17,14 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
   end
 
   def new
+    @company = params[:company_id]
+    @subcontract = params[:subcontract]
     @partequi = SubcontractEquipmentDetail.new
-    @subcontract = SubcontractEquipment.find(params[:subcontract])
+    @article= Array.new
     TypeOfArticle.where("name LIKE '%EQUIPOS%'").each do |arti|
-      @article << arti.articles
+      @article = arti.articles
     end
     @rental = RentalType.all
-    @company = params[:company_id]
     render layout: false
   end
 
@@ -38,13 +44,14 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
   end
 
   def edit
-    @partequi = SubcontractEquipmentDetail.find(params[:id])
+    @company = params[:company_id]
     @subcontract = params[:subcontract]
+    @partequi = SubcontractEquipmentDetail.find(params[:id])
+    @article = Array.new
     TypeOfArticle.where("name LIKE '%EQUIPOS%'").each do |arti|
-      @article << arti.articles
+      @article = arti.articles
     end
     @rental = RentalType.all
-    @company = params[:company_id]
     @action="edit"
     render layout: false
   end
@@ -70,8 +77,16 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
     render :json => partequi
   end
 
+  def get_component_from_article
+    @article = Article.find(params[:article_id])
+    @code = @article.code
+    unit = UnitOfMeasurement.find(@article.unit_of_measurement_id)
+    @unit = unit.name
+    render json: {:code=>@code, :unit=>@unit}  
+  end
+
   private
   def partequi_parameters
-    params.require(:subcontract_equipment_details).permit()
+    params.require(:subcontract_equipment_detail).permit(:article_id, :description,:brand, :series, :model, :date_in, :year, :price_no_igv, :rental_type_id, :minimum_hours, :amount_hours, :contracted_amount, :subcontract_equipment_id)
   end
 end

@@ -31,21 +31,19 @@ move_down 10
 text "Glosa", :style => :bold
 text "#{@orderOfService.description}"
 
-repeat :all do
-   bounding_box [bounds.left, bounds.bottom + 53], :width  => bounds.width do
-    table([ 
-      ["", "Condiciones:
-      1. Facturar adjuntando O/C y guias recepcionadas
-      2. Indicar procedencia, marca y lote de producción en casos aplicables
-      3. Adjuntar certificado de calidad, en casos aplicables", ""]
-    ], :width => 600, :column_widths => [90, 420, 90])
-  end
+bounding_box [bounds.left, bounds.bottom + 53], :width  => bounds.width do
+table([ 
+  ["", "Condiciones:
+  1. Facturar adjuntando O/C y guias recepcionadas
+  2. Indicar procedencia, marca y lote de producción en casos aplicables
+  3. Adjuntar certificado de calidad, en casos aplicables", ""]
+], :width => 600, :column_widths => [90, 420, 90])
+end
 
-  bounding_box [bounds.right - 150, bounds.bottom + 53], :width  => bounds.width do
-    text "TOTAL                  #{number_to_currency(@total, unit: '', precision: 2)}"
-    move_down 5
-    text "IGV #{number_to_percentage(@igv*100, precision: 0)}                 #{number_to_currency(@igv_neto, unit: '', precision: 2)}"
-    move_down 5
-    text "TOTAL NETO #{@orderOfService.money.symbol}     #{number_to_currency(@total_neto, unit: '', precision: 2)}"
-  end
+bounding_box [bounds.right - 150, bounds.bottom + 53], :width  => bounds.width do
+text "TOTAL                  #{number_to_currency(@total, unit: '', precision: 2)}"
+move_down 5
+text "IGV #{number_to_percentage(@igv*100, precision: 0)}                 #{number_to_currency(@igv_neto, unit: '', precision: 2)}"
+move_down 5
+text "TOTAL NETO #{@orderOfService.money.symbol}     #{number_to_currency(@total_neto, unit: '', precision: 2)}"
 end
