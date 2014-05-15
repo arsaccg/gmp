@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Subcontratos
+    %h2 Lista de Partes de Equipos
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
@@ -18,25 +18,14 @@
             %th Monto Contratado
             %th Acciones
         %tbody
-          - @subcontracts.each do |subcontract|
-            %tr
-              %td
-                = subcontract.id
-              %td 
-                = subcontract.entity.name
-              %td
-                = subcontract.valorization
-              %td 
-                = subcontract.terms_of_payment
-              %td
-                = number_to_currency(subcontract.guarantee_fund.to_f, unit: "S/.", precision: 2)
-              %td 
-                = number_to_currency(subcontract.contract_amount.to_f, unit: "S/.", precision: 2)
-              %td
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_subcontract_path(subcontract.id)}', 'content', {company_id: '#{@company}', type: '#{@type}'}, null, 'GET')"}
-                  Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{subcontract.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_subcontract_path(subcontract.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_subcontracts_path}?company_id=#{@company}&type=#{@type}')"}}
-                  Eliminar
+          %tr
+            %td
+            %td 
+            %td
+            %td
+            %td
+            %td 
+            %td
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

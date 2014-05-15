@@ -8,55 +8,298 @@
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
-          = f.input :type, input_html: { class: 'form-control', value: "#{@type}" }, label: false, readonly: true
         .row
           %section.col.col-4
             %label.label Proveedor
-            %label.input{for: "entity_id"}
-              %select.form-control{:name =>"subcontractEquipment[entity_id]", :style => 'width:100%;padding: 0;border: none;'}
-                - @suppliers.each do |supply|
-                  %option{:value => "#{supply.id}"}
-                    = supply.name
+            %label.input
+              %select.form-control{:name =>"subcontract_equipment[entity_id]", :style => 'width:100%;padding: 0;border: none;'}
+                -if @action =="edit"
+                  - @suppliers.each do |supply|
+                    -if @subcontractEquipment.entity_id== supply.id
+                      %option{:value => "#{supply.id}", :selected=>"selected"}
+                        = supply.name
+                    -else
+                      %option{:value => "#{supply.id}"}
+                        = supply.name
+                -else
+                  - @suppliers.each do |supply|
+                    %option{:value => "#{supply.id}"}
+                      = supply.name
 
           %section.col.col-4
             %label.label Valorizaciones
             %label.input{for: "valorization"}
-              %select.form-control{:name =>"subcontractEquipment[valorization]", :style => 'width:100%;padding: 0;border: none;'}
-                %option{:value => "semanal"}
-                  Semanales
-                %option{:value => "quincenal"}
-                  Quincenales
-                %option{:value => "mensual"}
-                  Mensuales
+              %select.form-control{:name =>"subcontract_equipment[valorization]", :style => 'width:100%;padding: 0;border: none;'}
+                -if @action == "edit"
+                  - if @subcontractEquipment.valorization == "semanal"
+                    %option{:value => "semanal", :selected=>"selected"}
+                      Semanales
+                    %option{:value => "quincenal"}
+                      Quincenales
+                    %option{:value => "mensual"}
+                      Mensuales
+                  - if @subcontractEquipment.valorization == "quincenal"
+                    %option{:value => "semanal"}
+                      Semanales
+                    %option{:value => "quincenal", :selected=>"selected"}
+                      Quincenales
+                    %option{:value => "mensual"}
+                      Mensuales
+                  -else
+                    %option{:value => "semanal"}
+                      Semanales
+                    %option{:value => "quincenal"}
+                      Quincenales
+                    %option{:value => "mensual", :selected=>"selected"}
+                      Mensuales
+                -else
+                  %option{:value => "semanal"}
+                    Semanales
+                  %option{:value => "quincenal"}
+                    Quincenales
+                  %option{:value => "mensual"}
+                    Mensuales
 
           %section.col.col-4
             %label.label Condiciones de Pago
             %label.input{for: "terms_of_payment"}
-              %select.form-control{:name =>"subcontractEquipment[terms_of_payment]", :style => 'width:100%;padding: 0;border: none;'}
-                %option{:value => "contado"}
-                  Al Contado
-                %option{:value => "quincenal"}
-                  Crédito a 3 dias
-                %option{:value => "mensual"}
-                  Crédito a 5 dias
-                %option{:value => "mensual"}
-                  Crédito a 7 dias
-                %option{:value => "quincenal"}
-                  Crédito a 10 dias
-                %option{:value => "mensual"}
-                  Crédito a 15 dias
-                %option{:value => "mensual"}
-                  Crédito a 30 dias
-                %option{:value => "quincenal"}
-                  Crédito a 40 dias
-                %option{:value => "mensual"}
-                  Crédito a 50 dias
-                %option{:value => "mensual"}
-                  Crédito a 60 dias
+              %select.form-control{:name =>"subcontract_equipment[terms_of_payment]", :style => 'width:100%;padding: 0;border: none;'}
+                -if @action =="edit"
+                  -if @subcontractEquipment.terms_of_payment=="contado"
+                    %option{:value => "contado", :selected=>"selected"}
+                      Al Contado
+                    %option{:value => "3D"}
+                      Crédito a 3 dias
+                    %option{:value => "5D"}
+                      Crédito a 5 dias
+                    %option{:value => "7D"}
+                      Crédito a 7 dias
+                    %option{:value => "10D"}
+                      Crédito a 10 dias
+                    %option{:value => "15D"}
+                      Crédito a 15 dias
+                    %option{:value => "30D"}
+                      Crédito a 30 dias
+                    %option{:value => "40D"}
+                      Crédito a 40 dias
+                    %option{:value => "50D"}
+                      Crédito a 50 dias
+                    %option{:value => "60D"}
+                      Crédito a 60 dias
+                  -elsif @subcontractEquipment.terms_of_payment=="3D"
+                    %option{:value => "contado"}
+                      Al Contado
+                    %option{:value => "3D", :selected=>"selected"}
+                      Crédito a 3 dias
+                    %option{:value => "5D"}
+                      Crédito a 5 dias
+                    %option{:value => "7D"}
+                      Crédito a 7 dias
+                    %option{:value => "10D"}
+                      Crédito a 10 dias
+                    %option{:value => "15D"}
+                      Crédito a 15 dias
+                    %option{:value => "30D"}
+                      Crédito a 30 dias
+                    %option{:value => "40D"}
+                      Crédito a 40 dias
+                    %option{:value => "50D"}
+                      Crédito a 50 dias
+                    %option{:value => "60D"}
+                      Crédito a 60 dias
+                  -elsif @subcontractEquipment.terms_of_payment=="5D"
+                    %option{:value => "contado"}
+                      Al Contado
+                    %option{:value => "3D"}
+                      Crédito a 3 dias
+                    %option{:value => "5D", :selected=>"selected"}
+                      Crédito a 5 dias
+                    %option{:value => "7D"}
+                      Crédito a 7 dias
+                    %option{:value => "10D"}
+                      Crédito a 10 dias
+                    %option{:value => "15D"}
+                      Crédito a 15 dias
+                    %option{:value => "30D"}
+                      Crédito a 30 dias
+                    %option{:value => "40D"}
+                      Crédito a 40 dias
+                    %option{:value => "50D"}
+                      Crédito a 50 dias
+                    %option{:value => "60D"}
+                      Crédito a 60 dias
+                  -elsif @subcontractEquipment.terms_of_payment=="7D"
+                    %option{:value => "contado"}
+                      Al Contado
+                    %option{:value => "3D"}
+                      Crédito a 3 dias
+                    %option{:value => "5D"}
+                      Crédito a 5 dias
+                    %option{:value => "7D", :selected=>"selected"}
+                      Crédito a 7 dias
+                    %option{:value => "10D"}
+                      Crédito a 10 dias
+                    %option{:value => "15D"}
+                      Crédito a 15 dias
+                    %option{:value => "30D"}
+                      Crédito a 30 dias
+                    %option{:value => "40D"}
+                      Crédito a 40 dias
+                    %option{:value => "50D"}
+                      Crédito a 50 dias
+                    %option{:value => "60D"}
+                      Crédito a 60 dias
+                  -elsif @subcontractEquipment.terms_of_payment=="10D"
+                    %option{:value => "contado"}
+                      Al Contado
+                    %option{:value => "3D"}
+                      Crédito a 3 dias
+                    %option{:value => "5D"}
+                      Crédito a 5 dias
+                    %option{:value => "7D"}
+                      Crédito a 7 dias
+                    %option{:value => "10D", :selected=>"selected"}
+                      Crédito a 10 dias
+                    %option{:value => "15D"}
+                      Crédito a 15 dias
+                    %option{:value => "30D"}
+                      Crédito a 30 dias
+                    %option{:value => "40D"}
+                      Crédito a 40 dias
+                    %option{:value => "50D"}
+                      Crédito a 50 dias
+                    %option{:value => "60D"}
+                      Crédito a 60 dias
+                  -elsif @subcontractEquipment.terms_of_payment=="15D"
+                    %option{:value => "contado"}
+                      Al Contado
+                    %option{:value => "3D"}
+                      Crédito a 3 dias
+                    %option{:value => "5D"}
+                      Crédito a 5 dias
+                    %option{:value => "7D"}
+                      Crédito a 7 dias
+                    %option{:value => "10D"}
+                      Crédito a 10 dias
+                    %option{:value => "15D", :selected=>"selected"}
+                      Crédito a 15 dias
+                    %option{:value => "30D"}
+                      Crédito a 30 dias
+                    %option{:value => "40D"}
+                      Crédito a 40 dias
+                    %option{:value => "50D"}
+                      Crédito a 50 dias
+                    %option{:value => "60D"}
+                      Crédito a 60 dias
+                  -elsif @subcontractEquipment.terms_of_payment=="30D"
+                    %option{:value => "contado"}
+                      Al Contado
+                    %option{:value => "3D"}
+                      Crédito a 3 dias
+                    %option{:value => "5D"}
+                      Crédito a 5 dias
+                    %option{:value => "7D"}
+                      Crédito a 7 dias
+                    %option{:value => "10D"}
+                      Crédito a 10 dias
+                    %option{:value => "15D"}
+                      Crédito a 15 dias
+                    %option{:value => "30D", :selected=>"selected"}
+                      Crédito a 30 dias
+                    %option{:value => "40D"}
+                      Crédito a 40 dias
+                    %option{:value => "50D"}
+                      Crédito a 50 dias
+                    %option{:value => "60D"}
+                      Crédito a 60 dias
+                  -elsif @subcontractEquipment.terms_of_payment=="40D"
+                    %option{:value => "contado"}
+                      Al Contado
+                    %option{:value => "3D"}
+                      Crédito a 3 dias
+                    %option{:value => "5D"}
+                      Crédito a 5 dias
+                    %option{:value => "7D"}
+                      Crédito a 7 dias
+                    %option{:value => "10D"}
+                      Crédito a 10 dias
+                    %option{:value => "15D"}
+                      Crédito a 15 dias
+                    %option{:value => "30D"}
+                      Crédito a 30 dias
+                    %option{:value => "40D", :selected=>"selected"}
+                      Crédito a 40 dias
+                    %option{:value => "50D"}
+                      Crédito a 50 dias
+                    %option{:value => "60D"}
+                      Crédito a 60 dias
+                  -elsif @subcontractEquipment.terms_of_payment=="50D"
+                    %option{:value => "contado"}
+                      Al Contado
+                    %option{:value => "3D"}
+                      Crédito a 3 dias
+                    %option{:value => "5D"}
+                      Crédito a 5 dias
+                    %option{:value => "7D"}
+                      Crédito a 7 dias
+                    %option{:value => "10D"}
+                      Crédito a 10 dias
+                    %option{:value => "15D"}
+                      Crédito a 15 dias
+                    %option{:value => "30D"}
+                      Crédito a 30 dias
+                    %option{:value => "40D"}
+                      Crédito a 40 dias
+                    %option{:value => "50D", :selected=>"selected"}
+                      Crédito a 50 dias
+                    %option{:value => "60D"}
+                      Crédito a 60 dias
+                  -else
+                    %option{:value => "contado"}
+                      Al Contado
+                    %option{:value => "3D"}
+                      Crédito a 3 dias
+                    %option{:value => "5D"}
+                      Crédito a 5 dias
+                    %option{:value => "7D"}
+                      Crédito a 7 dias
+                    %option{:value => "10D"}
+                      Crédito a 10 dias
+                    %option{:value => "15D"}
+                      Crédito a 15 dias
+                    %option{:value => "30D"}
+                      Crédito a 30 dias
+                    %option{:value => "40D"}
+                      Crédito a 40 dias
+                    %option{:value => "50D"}
+                      Crédito a 50 dias
+                    %option{:value => "60D", :selected=>"selected"}
+                      Crédito a 60 dias
+                -else
+                  %option{:value => "contado"}
+                    Al Contado
+                  %option{:value => "3D"}
+                    Crédito a 3 dias
+                  %option{:value => "5D"}
+                    Crédito a 5 dias
+                  %option{:value => "7D"}
+                    Crédito a 7 dias
+                  %option{:value => "10D"}
+                    Crédito a 10 dias
+                  %option{:value => "15D"}
+                    Crédito a 15 dias
+                  %option{:value => "30D"}
+                    Crédito a 30 dias
+                  %option{:value => "40D"}
+                    Crédito a 40 dias
+                  %option{:value => "50D"}
+                    Crédito a 50 dias
+                  %option{:value => "60D"}
+                    Crédito a 60 dias
         .row
           %section.col.col-4
             %label.label Amortización inicial (Numérico)
-            .input-group
+            .input-group{for: "initial_amortization_number"}
               = f.input :initial_amortization_number, placeholder: "Amortización numérico", input_html: { class: 'form-control' }, label: false
               %span.input-group-addon
                 %span.onoffswitch
@@ -67,7 +310,7 @@
 
           %section.col.col-4
             %label.label Amortización inicial (Porcentaje)
-            .input-group
+            .input-group{for: "initial_amortization_percent"}
               = f.input :initial_amortization_percent, placeholder: "Amortización porcentaje", input_html: { class: 'form-control' }, label: false, readonly: true
               %span.input-group-addon
                 %span.onoffswitch
@@ -196,26 +439,4 @@
       error: function(xhr, status, error) {
       }
     });
-  }
-
-  function calculatePartialAmount(element){
-    var unitprice = parseFloat($(element).parent().siblings('.unit-price').find('input').val());
-    var amount = parseInt($(element).val());
-
-    var price_without_igv = parseFloat(unitprice * amount).toFixed(2);
-
-    $(element).parent().siblings('.partial').find('input').val(price_without_igv);
-  }
-
-  function calculatePartialUnitPrice(element){
-    var amount = parseFloat($(element).parent().siblings('.amount').find('input').val());
-    var unitprice = parseInt($(element).val());
-
-    var price_without_igv = parseFloat(unitprice * amount).toFixed(2);
-
-    $(element).parent().siblings('.partial').find('input').val(price_without_igv);
-  }
-
-  function delete_item(code){
-    $("#tr" + code).remove();
   }

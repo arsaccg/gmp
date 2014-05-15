@@ -1,0 +1,175 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Subcontrato
+  .widget-body
+    = simple_form_for([:production, @partequi], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row{ 'style' => 'display:none' }
+          %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
+          %input{ 'name' => 'subcontract', 'value' => "#{@subcontract}", 'readonly' => true, 'style' => 'display:none' }
+        .row
+          %section.col.col-4
+            %label.label Artículo
+            %label.input
+              %select.form-control{:name =>"subcontract_equipment_detail[article_id]", :style => 'width:100%;padding: 0;border: none;'}
+                -if @action =="edit"
+                  - @article.each do |arti|
+                    -if @partequi.article_id== arti.id
+                      %option{:value => "#{arti.id}", :selected=>"selected"}
+                        = arti.name
+                    -else
+                      %option{:value => "#{arti.id}"}
+                        = arti.name
+                -else
+                  - @article.each do |arti|
+                    %option{:value => "#{arti.id}"}
+                      = arti.name
+          %input.col.col-4{'name'=>'cod_art', :disbled=>'disabled'}
+          %input.col.col-4{'name'=>'unit_art', :disbled=>'disabled'}
+        .row
+          %section.col.col-10
+            %label.label Descripción
+            %label.input{for: "description"}
+              = f.input :description, placeholder: "Descripción del articulo", input_html: { class: 'form-control' }, label: false, rows: 4
+        .row
+          .col-sm-4
+            %label.label Marca
+            %label.input{for: "brand"}
+              = f.input :brand, placeholder: "Marca",  input_html: { class: 'form-control' }, label: false
+          .col-sm-4
+            %label.label Serie
+            %label.input{for: "series"}
+              = f.input :series, placeholder: "Serie",  input_html: { class: 'form-control' }, label: false
+          .col-sm-4
+            %label.label Modelo
+            %label.input{for: "model"}
+              = f.input :model, placeholder: "Modelo", input_html: { class: 'form-control' }, label: false
+        .row
+          .col-sm-4
+            %label.label Fecha de ingreso
+              %label.input{for: "date_in"}
+                = f.input :date_in, as: :date, input_html: { class: 'form-control' }, label: false
+          .col-sm-4
+            %label.label Año
+              %label.input{for: "year"}
+                = f.input :year, input_html: { class: 'form-control' }, label: false
+          .col-sm-4
+            %label.label Precio sin IGV
+              %label.input{for: "price_no_igv"}
+                = f.input :price_no_igvz, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-4
+            %label.label Tipos de Alquiler
+            %label.input
+              %select.form-control{:name =>"subcontract_equipment_detail[rental_type_id]", :style => 'width:100%;padding: 0;border: none;'}
+                -if @action =="edit"
+                  - @rental.each do |rent|
+                    -if @partequi.rental_type_id== rent.id
+                      %option{:value => "#{rent.id}", :selected=>"selected"}
+                        = rent.name
+                    -else
+                      %option{:value => "#{rent.id}"}
+                        = rent.name
+                -else
+                  - @rental.each do |rent|
+                    %option{:value => "#{rent.id}"}
+                      = rent.name
+        .row
+          .col-sm-4
+            %label.label Horas Mínimas
+              %label.input{for: "minimum_hours"}
+                = f.input :minimum_hours, as: :date, input_html: { class: 'form-control' }, label: false
+          .col-sm-4
+            %label.label Cantidad de Horas de maquinaria
+              %label.input{for: "amount_hours"}
+                = f.input :amount_hours, input_html: { class: 'form-control' }, label: false
+          .col-sm-4
+            %label.label Cantidad Contratada
+              %label.input{for: "contracted_amount"}
+                = f.input :contracted_amount, input_html: { class: 'form-control' }, label: false
+        
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+
+    $('select').select2();
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#subcontractEquipment'));
+    }
+
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'subcontractEquipment[entity_id]' : {
+              required : true
+            },
+            'subcontractEquipment[valorization]' : {
+              required : true
+            },
+            'subcontractEquipment[terms_of_payment]' : {
+              required : true
+            },
+            'subcontractEquipment[guarantee_fund]' : {
+              required : true
+            },
+            'subcontractEquipment[detraction]' : {
+              required : true
+            },
+            'subcontractEquipment[contract_amount]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'subcontractEquipment[entity_id]' : {
+              required : 'Por favor, ingresar el Ejecutor.'
+            },
+            'subcontractEquipment[valorization]' : {
+              required : 'Por favor, ingresar la valorizacion.'
+            },
+            'subcontractEquipment[terms_of_payment]' : {
+              required : 'Por favor, ingresar la condición de pago.'
+            },
+            'subcontractEquipment[guarantee_fund]' : {
+              required : 'Por favor, ingresar el fondo de garantia.'
+            },
+            'subcontractEquipment[detraction]' : {
+              required : 'Por favor, ingresar la detracción.'
+            },
+            'subcontractEquipment[contract_amount]' : {
+              required : 'Por favor, ingresar el monto contratado.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }

@@ -2,16 +2,16 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Profesión
+    %h2 Tipo de Alquiler
   .widget-body
-    = simple_form_for([:biddings, @major], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:production, @rentaltype], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-10
-            %label.label Nombre de la profesión
-            %label.input{for: "major"}
+            %label.label Nombre del tipo de alquiler:
+            %label.input
               %i.icon-append.fa.fa-book
-              = f.input :name, placeholder: "Nombre de la profesión ", input_html: { class: 'form-control' }, label: false
+              = f.input :name, placeholder: "Tipo de Alquiler ", input_html: { class: 'form-control' }, label: false
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save
@@ -19,13 +19,13 @@
 
 :javascript
   $(document).ready(function () {
-    $("#major_name").focus();
+    $("#name").focus();
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }
     else{
-      submit_validate($('#new_major'));
+      submit_validate($('#new_rental_type'));
     }
   });
   
@@ -35,15 +35,15 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'major[major]' : {
+            'rental_type[name]' : {
               required : true
             }
           },
 
           // Messages for form validation
           messages : {
-            'major[major]' : {
-              required : 'Porfavor, ingresar el nombre de la profesión'
+            'rental_type[name]' : {
+              required : 'Porfavor, ingresar el tipo de alquiler'
             }
           },
 
