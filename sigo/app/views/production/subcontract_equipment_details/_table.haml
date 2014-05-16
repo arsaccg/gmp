@@ -1,0 +1,51 @@
+#wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Lista de Partes de Equipos
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th N°
+            %th Equipo
+            %th Marca
+            %th Modelo
+            %th Año
+            %th Precio sin IGV
+            %th Horas Contratadas
+            %th Acciones
+        %tbody
+          - @partequi.each do |part|
+            %tr
+              %td
+                =part.id
+              %td
+                -@article.each do |arti|
+                  -if part.article_id == arti.id
+                    =arti.name
+              %td
+                =part.brand
+              %td
+                =part.model
+              %td
+                =part.year
+              %td 
+                =part.price_no_igv
+              %td
+                =part.contracted_amount
+              %td
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_subcontract_equipment_detail_path(part.id)}', 'content', {company_id: '#{@company}', subcontract: '#{@subcontract}'} , null, 'GET')"}
+                  Editar
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{part.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_subcontract_equipment_detail_path(part.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_subcontract_equipment_details_path}?company_id=#{@company}&subcontract=#{@subcontract}')"}}
+                  Eliminar                
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });
+
+  // PAGE RELATED SCRIPTS

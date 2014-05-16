@@ -301,15 +301,11 @@
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Parte de Personal
                   %li
-                    %a{href: '#', title: 'Trabajadores Subidos'}
+                    %a{href: "#{production_daily_works_daily_workers_path}?company_id=#{@company.id}", title: 'Tareo Diario de Obra'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Trabajadores Subidos
+                      %span.menu-item-parent Tareo de Obreros
                   %li
-                    %a{href: '#', title: 'Tareo de Obras'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Tareo de Obras
-                  %li
-                    %a{href: '#', title: 'Tareo Semanal'}
+                    %a{href: "#{production_daily_works_weekly_workers_path}?company_id=#{@company.id}", title: 'Tareo Semanal de Obra'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Tareo Semanal   
               %li
@@ -317,6 +313,10 @@
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                   %span.menu-item-parent Equipos
                 %ul
+                  %li
+                    %a{href: "#{production_rental_types_path}?company_id=#{@company.id}", title: 'Tipo de Alquiler'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Tipo de Alquiler
                   %li
                     %a{href: '#', title: 'Parte de Equipos'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o

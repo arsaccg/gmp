@@ -26,16 +26,37 @@
                 = subcontract.entity.name
               %td
                 = subcontract.valorization
-              %td 
-                = subcontract.terms_of_payment
+              %td
+                -if subcontract.terms_of_payment=="contado"
+                  Al Contado
+                -elsif subcontract.terms_of_payment=="3D"
+                  Crédito a 3 dias
+                -elsif subcontract.terms_of_payment=="5D"
+                  Crédito a 5 dias
+                -elsif subcontract.terms_of_payment=="7D"
+                  Crédito a 7 dias
+                -elsif subcontract.terms_of_payment=="10D"
+                  Crédito a 10 dias
+                -elsif subcontract.terms_of_payment=="15D"
+                  Crédito a 15 dias
+                -elsif subcontract.terms_of_payment=="30D"
+                  Crédito a 30 dias
+                -elsif subcontract.terms_of_payment=="40D"
+                  Crédito a 40 dias
+                -elsif subcontract.terms_of_payment=="50D"
+                  Crédito a 50 dias
+                -else
+                  Crédito a 60 dias
               %td
                 = number_to_currency(subcontract.guarantee_fund.to_f, unit: "S/.", precision: 2)
               %td 
                 = number_to_currency(subcontract.contract_amount.to_f, unit: "S/.", precision: 2)
               %td
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_worker_path(subcontract.id)}', 'content', {company_id: '#{@company}', type: '#{@type}'}, null, 'GET')"}
+                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_subcontract_equipment_details_path}', 'content', {company_id: '#{@company}', subcontract: '#{subcontract.id}'}, null, 'GET')"}
+                  Equipos
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_subcontract_equipment_path(subcontract.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{subcontract.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_worker_path(subcontract.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_workers_path}?company_id=#{@company}&type=#{@type}')"}}
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{subcontract.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_subcontract_equipment_path(subcontract.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_subcontract_equipments_path}?company_id=#{@company}')"}}
                   Eliminar
 
 :javascript

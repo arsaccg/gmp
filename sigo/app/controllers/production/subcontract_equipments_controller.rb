@@ -1,32 +1,23 @@
 class Production::SubcontractEquipmentsController < ApplicationController
   def index
     @company = params[:company_id]
-    @type = params[:type]
-    if @type == 'subcontract'
-      @subcontracts = Subcontract.where("type LIKE 'subcontract'")
-    elsif @type == 'equipment'
-      @subcontracts = Subcontract.where("type LIKE 'equipment'")
-    end
+    @subcontracts = SubcontractEquipment.all
     render layout: false
   end
 
   def show
+    @company = params[:company_id]
     @subcontractEq = SubcontractEquipment.find(params[:id])
     render layout: false
   end
 
   def new
-    @subcontractEq = SubcontractEquipment.new
+    @company = params[:company_id]
+    @subcontractEquipment = SubcontractEquipment.new
     TypeEntity.where("name LIKE '%Proveedores%'").each do |supply|
       @suppliers = supply.entities
     end
     @company = params[:company_id]
-    @type = params[:type]
-    if @type == 'subcontract'
-      @articles = TypeOfArticle.find(4).articles
-    elsif @type == 'equipment'
-      @articles = TypeOfArticle.find(3).articles
-    end
     render layout: false
   end
 
@@ -34,29 +25,25 @@ class Production::SubcontractEquipmentsController < ApplicationController
     subcontract = SubcontractEquipment.new(subcontracts_parameters)
     if subcontract.save
       flash[:notice] = "Se ha creado correctamente el trabajador."
-      redirect_to :action => :index, company_id: params[:company_id], type: params[:subcontract]['type']
+      redirect_to :action => :index, company_id: params[:company_id]
     else
       subcontract.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
       flash[:error] =  "Ha ocurrido un error en el sistema."
-      redirect_to :action => :index, company_id: params[:company_id], type: params[:subcontract]['type']
+      redirect_to :action => :index, company_id: params[:company_id]
     end
   end
 
   def edit
-    @subcontract = SubcontractEquipment.find(params[:id])
+    @company = params[:company_id]
+    @subcontractEquipment = SubcontractEquipment.find(params[:id])
     TypeEntity.where("name LIKE '%Proveedores%'").each do |supply|
       @suppliers = supply.entities
     end
     @company = params[:company_id]
-    @type = params[:type]
-    if @type == 'subcontract'
-      @articles = TypeOfArticle.find(4).articles
-    elsif @type == 'equipment'
-      @articles = TypeOfArticle.find(3).articles
-    end
+    @action="edit"
     render layout: false
   end
 
@@ -64,7 +51,7 @@ class Production::SubcontractEquipmentsController < ApplicationController
     subcontract = SubcontractEquipment.find(params[:id])
     if subcontract.update_attributes(subcontracts_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id], type: params[:subcontract]['type']
+      redirect_to :action => :index, company_id: params[:company_id]
     else
       subcontract.errors.messages.each do |attribute, error|
         flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
@@ -76,14 +63,18 @@ class Production::SubcontractEquipmentsController < ApplicationController
   end
 
   def destroy
+    subcontract = SubcontractEquipment.find(params[:id])
+    subcontract.subcontract_equipment_details.each do |part|
+      partequi = SubcontractEquipmentDetail.destroy(part.id)
+    end
     subcontract = SubcontractEquipment.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente el Grupo de Trabajo."
+    flash[:notice] = "Se ha eliminado correctamente el Subcontrato de Equipo."
     render :json => subcontract
   end
 
   private
   def subcontracts_parameters
-    params.require(:subcontractEquipment).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :guarantee_fund, :detraction, :contract_amount, :type, subcontract_details_attributes: [:id, :subcontract_id, :article_id, :amount, :unit_price, :partial, :description, :_destroy])
+    params.require(:subcontract_equipment).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :guarantee_fund, :detraction, :contract_amount)
   end
 end
 

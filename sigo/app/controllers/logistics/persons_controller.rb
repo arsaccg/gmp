@@ -60,8 +60,9 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 
   def update
     @person = User.find(params[:id])
+    if @person.roles_mask != 31
       @person.roles = [params[:role]]
-
+    end
     @person.update_attributes(user_params)
     flash[:notice] = "Se ha actualizado correctamente al usuario #{@person.first_name + ' ' + @person.last_name}."
     if current_user.has_role? :director
