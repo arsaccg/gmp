@@ -232,8 +232,18 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :category_of_workers
+    resources :part_of_equipments do
+      collection do
+        post 'get_equipment_form_subcontract'
+        post 'add_more_register'
+      end
+    end
     resources :working_groups
-    resources :subcontract_equipment_details
+    resources :subcontract_equipment_details do
+      collection do
+        post 'get_component_from_article'
+      end
+    end
     resources :rental_types
     resources :subcontract_equipments
     resources :subcontracts do

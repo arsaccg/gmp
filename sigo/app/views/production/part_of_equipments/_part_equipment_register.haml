@@ -1,0 +1,26 @@
+%tr.part-equi_item{id: "tr" + @reg_n.to_s}
+  %td.sector.col-lg-3
+    %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][work_group_id]"}
+      -@working_groups.each do |wg|
+        %option{:value => "#{wg.id}"}
+          wg.name
+  %td.sector.col-lg-2
+    %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][sub_sector_id]"}
+      - @sectors.each do |sector|
+        %optgroup{:label => "#{sector.name}"}
+          - Sector.getSubSectors(sector.code).each do |subsector|
+            %option{:value => "#{subsector.id}"}
+              = subsector.name
+  %td.phase.col-lg-2
+    %select.form-control{:name =>"part_person[part_person_details_attributes][" + @reg_n.to_s + "][sub_phase_id]"}
+      - @phases.each do |phas|
+        %optgroup{:label => "#{phas.name}"}
+          - Phase.get_subphases(phas.code).each do |subphase|
+            %option{:value => "#{subphase.id}"}
+              = subphase.name
+  %td.effective-hours.col-lg-2
+    = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][efective_hours]', 0 , class: "form-control effective-hours"
+  %td.unit-of-measumente.col-lg-1
+    = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][unit]', '' , class: "form-control", readonly: true
+  %td{:style => "width: 1%; text-align: center;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

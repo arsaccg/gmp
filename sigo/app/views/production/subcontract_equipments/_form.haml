@@ -352,23 +352,25 @@
 
     $('#number-amort').change(function(){
       if($(this).is(':checked')){
-        $('#subcontractEquipment_initial_amortization_number').removeAttr('readonly');
-        $('#subcontractEquipment_initial_amortization_percent').attr('readonly', 'readonly')
+        $('#subcontract_equipment_initial_amortization_number').removeAttr('readonly');
+        $('#subcontract_equipment_initial_amortization_percent').attr('readonly', 'readonly')
+        $('#percent-amort').click();
       }else{
-        $('#subcontractEquipment_initial_amortization_number').attr('readonly', 'readonly')
-        $('#subcontractEquipment_initial_amortization_percent').removeAttr('readonly')
-        $('#percent-amort').click()
+        $('#subcontract_equipment_initial_amortization_number').attr('readonly', 'readonly')
+        $('#subcontract_equipment_initial_amortization_percent').removeAttr('readonly')
+        $('#percent-amort').click();
       }
     });
 
     $('#percent-amort').change(function(){
       if($(this).is(':checked')){
-        $('#subcontractEquipmentinitial_amortization_percent').removeAttr('readonly');
-        $('#subcontractEquipment_initial_amortization_number').attr('readonly', 'readonly')
+        $('#subcontract_equipment_initial_amortization_percent').removeAttr('readonly');
+        $('#subcontract_equipment_initial_amortization_number').attr('readonly', 'readonly')
+        $('#number-amort').click();
       }else{
-        $('#subcontractEquipment_initial_amortization_percent').attr('readonly', 'readonly')
-        $('#subcontractEquipment_initial_amortization_number').removeAttr('readonly')
-        $('#number-amort').click()
+        $('#subcontract_equipment_initial_amortization_percent').attr('readonly', 'readonly')
+        $('#subcontract_equipment_initial_amortization_number').removeAttr('readonly')
+        $('#number-amort').click();
       }
     });
 
@@ -380,44 +382,27 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'subcontractEquipment[entity_id]' : {
+            'subcontract_equipment[guarantee_fund]' : {
               required : true
             },
-            'subcontractEquipment[valorization]' : {
+            'subcontract_equipment[detraction]' : {
               required : true
             },
-            'subcontractEquipment[terms_of_payment]' : {
-              required : true
-            },
-            'subcontractEquipment[guarantee_fund]' : {
-              required : true
-            },
-            'subcontractEquipment[detraction]' : {
-              required : true
-            },
-            'subcontractEquipment[contract_amount]' : {
+            'subcontract_equipment[contract_amount]' : {
               required : true
             }
           },
 
           // Messages for form validation
           messages : {
-            'subcontractEquipment[entity_id]' : {
-              required : 'Por favor, ingresar el Ejecutor.'
-            },
-            'subcontractEquipment[valorization]' : {
-              required : 'Por favor, ingresar la valorizacion.'
-            },
-            'subcontractEquipment[terms_of_payment]' : {
-              required : 'Por favor, ingresar la condición de pago.'
-            },
-            'subcontractEquipment[guarantee_fund]' : {
+            
+            'subcontract_equipment[guarantee_fund]' : {
               required : 'Por favor, ingresar el fondo de garantia.'
             },
-            'subcontractEquipment[detraction]' : {
+            'subcontract_equipment[detraction]' : {
               required : 'Por favor, ingresar la detracción.'
             },
-            'subcontractEquipment[contract_amount]' : {
+            'subcontract_equipment[contract_amount]' : {
               required : 'Por favor, ingresar el monto contratado.'
             }
           },

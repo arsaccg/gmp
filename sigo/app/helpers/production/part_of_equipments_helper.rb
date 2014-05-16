@@ -1,0 +1,2 @@
+module Production::PartOfEquipmentsHelper
+end
