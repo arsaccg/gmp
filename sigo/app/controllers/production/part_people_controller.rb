@@ -2,6 +2,7 @@ class Production::PartPeopleController < ApplicationController
   def index
     @company = params[:company_id]
     @part_people = PartPerson.all
+    @workinggroup = WorkingGroup.first
     render layout: false
   end
 
@@ -48,10 +49,12 @@ class Production::PartPeopleController < ApplicationController
 
   def edit
     @partperson = PartPerson.find(params[:id])
+    @reg_n = Time.now.to_i
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
     @action = 'edit'
     @company = params[:company_id]
+    @workers = Worker.all
     render layout: false
   end
 
