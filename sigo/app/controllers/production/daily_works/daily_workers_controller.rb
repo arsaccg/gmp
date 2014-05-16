@@ -14,7 +14,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
     start_date = params[:start_date]
     end_date = params[:end_date]
     @business_days = range_business_days(start_date, end_date)
-    #@workers_array = business_days_array(start_date, end_date, params[:working_group], @business_days)
+    @workers_array = business_days_array(start_date, end_date, params[:working_group])
     render(partial: 'daily_table', :layout => false)
   end
 

@@ -35,6 +35,8 @@ class Production::WorkersController < ApplicationController
 
   def edit
     @worker = Worker.find(params[:id])
+    @banks = Bank.all
+    @reg_n = Time.now.to_i
     @categoryOfWorkers = CategoryOfWorker.all
     @company = params[:company_id]
     @action = 'edit'
