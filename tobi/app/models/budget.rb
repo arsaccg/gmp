@@ -59,7 +59,7 @@ class Budget < ActiveRecord::Base
 
 
 
-  def load_elements(budget_id, project_id, type_of_budget, database)
+  def load_elements(budget_id, cost_center_id, type_of_budget, database)
 
     arr_thread = []
 
@@ -105,7 +105,7 @@ class Budget < ActiveRecord::Base
             array_sub_budgets.each do |subbudget|
 
                 new_subbudget=Budget.new
-                new_subbudget.project_id = project_id
+                new_subbudget.cost_center_id = cost_center_id
                 new_subbudget.cod_budget = subbudget[0].to_s + subbudget[1].to_s
                 new_subbudget.description = subbudget[2].to_s
                 new_subbudget.subbudget_code = subbudget[1].to_s

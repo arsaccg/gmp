@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140419171052) do
+ActiveRecord::Schema.define(version: 20140516222318) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -47,6 +47,26 @@ ActiveRecord::Schema.define(version: 20140419171052) do
     t.string   "financial_agent_destiny"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "companies", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "cost_centers", force: true do |t|
+    t.string   "name"
+    t.float    "total_amount"
+    t.float    "direct_cost_amount"
+    t.float    "general_cost_amount"
+    t.float    "utility_amount"
+    t.float    "advance_payment_percent"
+    t.float    "coaching_granted_percent"
+    t.float    "igv"
+    t.integer  "deleted"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "company_id"
   end
 
   create_table "extensionscontrols", force: true do |t|
@@ -230,6 +250,7 @@ ActiveRecord::Schema.define(version: 20140419171052) do
     t.integer  "deleted",                  default: 0
     t.float    "igv"
     t.string   "owner"
+    t.integer  "company_id"
   end
 
   create_table "units", force: true do |t|
@@ -292,6 +313,7 @@ ActiveRecord::Schema.define(version: 20140419171052) do
     t.string   "predecessors"
     t.string   "fase_id"
     t.string   "fase"
+    t.integer  "cost_center_id"
   end
 
 end

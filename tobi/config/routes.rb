@@ -6,7 +6,7 @@ Pmicg::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-   root 'management/projects#index'
+   root 'management/products#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
@@ -60,7 +60,7 @@ Pmicg::Application.routes.draw do
   namespace :management do
     get 'dashboard' => 'dashboard#index'
     post 'dashboard' => 'dashboard#index'
-    resources :projects
+    resources :cost_centers
     resources :extensionscontrols do
       collection do
         post 'approve'
