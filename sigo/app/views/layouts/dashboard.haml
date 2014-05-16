@@ -301,11 +301,11 @@
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Parte de Personal
                   %li
-                    %a{href: '#', title: 'Tareo de Obras'}
+                    %a{href: "#{production_daily_works_daily_workers_path}?company_id=#{@company.id}", title: 'Tareo Diario de Obra'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Tareo de Obreros
                   %li
-                    %a{href: '#', title: 'Tareo Semanal'}
+                    %a{href: "#{production_daily_works_weekly_workers_path}?company_id=#{@company.id}", title: 'Tareo Semanal de Obra'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Tareo Semanal   
               %li

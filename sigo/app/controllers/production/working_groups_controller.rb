@@ -55,12 +55,12 @@ class Production::WorkingGroupsController < ApplicationController
 
   def edit
     @workingGroup = WorkingGroup.find(params[:id])
-    TypeEntity.where("name LIKE '%Jefes de Frente%'").each do |front_chief|
-      @front_chiefs = front_chief.entities
+    CategoryOfWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
+      @front_chiefs = front_chief.workers
     end
 
-    TypeEntity.where("name LIKE '%Maestro de Obras%'").each do |master_builder|
-      @master_builders = master_builder.entities
+    CategoryOfWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
+      @master_builders = master_builder.workers
     end
     TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
       @executors = executor.entities

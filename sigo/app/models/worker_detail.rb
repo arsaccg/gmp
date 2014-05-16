@@ -1,4 +1,4 @@
-class WorkerDetails < ActiveRecord::Base
+class WorkerDetail < ActiveRecord::Base
 	belongs_to :worker
 	belongs_to :bank
 end

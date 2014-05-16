@@ -74,11 +74,15 @@
           %section.col.col-2
             %label.control-label(for="bank_id") Bancos
 
-          %section.col.col-6
-            %select#article-select.select2.form-control(name='bank_id' style='width:100%;padding: 0;border: none;') 
+          %section.col.col-3
+            %select#bank-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
               - @banks.each do |bank|
                 %option(value = "#{bank.id}")
-                  = bank.business_name + " - " + bank.ruc
+                  = bank.business_name
+
+          %section.col.col-3
+            = text_field_tag 'account_number', nil, class: 'form-control', id: 'bank-account_number', placeholder: 'Numero de Cuenta'
+
 
           %section.col.col-2
             %div
@@ -86,14 +90,30 @@
                 Agregar Banco
 
         .col-lg-12
-          %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-banks" aria-describedby="data-table_info")
+          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
-                %th Nombre
-                %th RUC
+                %th.col-2 Nombre
+                %th.col-5 Numero de Cuenta
                 %th Eliminar
             %tbody(id="bank_items_table")
-
+              - if @action == 'edit'
+                - @worker.worker_details.each do |oos|
+                  %tr
+                    %td.bank-id(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][bank_id]', oos.bank.id
+                    %td.col-2=oos.bank.business_name
+                    %td.col-5.account_number
+                      = text_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][account_number]', oos.account_number, class: "form-control account_number-item", onkeypress: "return isNumber(event);"
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][id]', oos.id
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][part_person_id]', @partperson.id
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -111,7 +131,9 @@
 
   });
   
-  function submit_validate(form){
+  function submit_validate(form){    
+    loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
+    $('#bank-select').select2();
     $(form['selector']).ajaxForm({
       beforeSubmit: function() {
         $(form['selector']).validate({
@@ -201,4 +223,24 @@
       error: function(xhr, status, error) {
       }
     });
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  function add_bank_item(){
+    var bank_id = $("#bank-select").val();
+    str_item = {authenticity_token: "#{form_authenticity_token}", bank_id: $("#bank-select").val(), account_number: $("#bank-account_number").val()};
+
+    append_url_ajax('#{add_worker_item_field_production_workers_path}', 'bank_items_table', str_item, 0, 'POST');
+  }
+
+  function delete_item(code){
+    $("#tr" + code).remove();
   }
