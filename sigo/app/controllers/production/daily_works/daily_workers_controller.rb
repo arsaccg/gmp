@@ -43,7 +43,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
     #end
 
     workers_array = ActiveRecord::Base.connection.execute("
-      SELECT  CONCAT( w.first_name, w.second_name, w.paternal_surname, w.maternal_surname ) AS name, 
+      SELECT  CONCAT( w.paternal_surname,  ' ', w.maternal_surname,  ' ', w.first_name,  ' ', w.second_name ) AS name, 
         cow.name AS category,
         SUM( ppd.normal_hours ) AS normal_hours, 
         SUM( ppd.he_60 ) AS he_60, 
