@@ -77,6 +77,38 @@
                       = text_field(:stock_input, :issue_date, :value => "#{@head.issue_date.strftime("%d/%m/%Y")}", class: "form-control")
                       %span.input-group-addon
                         %i.fa.fa-calendar
+
+          .row
+            .col-md-3
+              .form-group
+                %label.control-label Fases/Subfases
+                .input-group          
+                  %select.form-control{:name =>"stock_input[phase_id]"}
+                    - @phases.each do |phas|
+                      %optgroup{:label => "#{phas.name}"}
+                        - Phase.get_subphases(phas.code).each do |subphase|
+                          - if subphase.id == @head.phase_id
+                            %option{:value => "#{subphase.id}", :selected => true}
+                              = subphase.name
+                          - else
+                            %option{:value => "#{subphase.id}"}
+                              = subphase.name
+                  %span.input-group-addon
+                    %i.fa.fa-gears
+            .col-md-9
+              .form-group
+                %label.control-label Grupo de Trabajo
+                .input-group
+                  %select(name='stock_input[working_group_id]' class = 'select2 form-control' id = 'working_group-select' style='width:100%;padding: 0;border: none;')
+                    - @sectors.each do |x|
+                      %optgroup{:label => "#{x.name}"}
+                        - @working_group.where("sector_id = ?", x.id).each do |y|
+                          - if @head.working_group_id == y.id
+                            %option{:value => "#{y.id}", :selected => true}
+                              = y.sector.name + " - " + y.front_chief.name + " - " + y.master_builder.name + " - " + y.executor.name
+                          - else
+                            %option{:value => "#{y.id}"}
+                              = y.sector.name + " - " + y.front_chief.name + " - " + y.master_builder.name + " - " + y.executor.name
           .row
             .col-md-12
               .form-group

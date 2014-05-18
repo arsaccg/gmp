@@ -3,7 +3,7 @@
     %span.widget-icon
       %i.fa.fa-table
     %h2
-      = t('activerecord.modelsdescription.warehouse')
+      = t('activerecord.modelsdescription.working_group')
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
@@ -12,26 +12,30 @@
         %thead
           %tr
             %th
-              = t('activerecord.attributes.warehouse.cost_center')
+              = t('activerecord.attributes.working_group.sector')
             %th
-              = t('activerecord.attributes.warehouse.name')
+              = t('activerecord.attributes.working_group.front_chief')
             %th
-              = t('activerecord.attributes.warehouse.location')
+              = t('activerecord.attributes.working_group.master_builder')
+            %th
+              = t('activerecord.attributes.working_group.executor')
             %th
               = t('activerecord.actions.name')
         %tbody
           - @items.each do |unit|
             %tr
-              %td 
-                = unit.cost_center.name
-              %td 
-                = unit.name
               %td
-                = unit.location
+                = unit.sector.name
+              %td 
+                = unit.front_chief.name
+              %td 
+                = unit.master_builder.name
               %td
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_warehouse_path(unit.id)}', 'content', null, null, 'GET')"}
+                = unit.executor.name
+              %td
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_working_group_path(unit.id)}', 'content', null, null, 'GET')"}
                   = t('activerecord.actions.edit')
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => t('activerecord.actions.deletem') + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_warehouse_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}' + '&current_user_id=#{current_user.id}', 'content', '#{logistics_warehouses_path}')"}}
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => t('activerecord.actions.deletem') + "#{unit.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_working_group_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}' + '&current_user_id=#{current_user.id}', 'content', '#{logistics_working_groups_path}')"}}
                   = t('activerecord.actions.delete')
 
 :javascript

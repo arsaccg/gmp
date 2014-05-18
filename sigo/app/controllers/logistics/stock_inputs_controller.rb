@@ -4,6 +4,14 @@ class Logistics::StockInputsController < ApplicationController
 
   def index
     #@input = params[:input]
+    if params[:company_id] != nil
+      @company = params[:company_id]
+      # Cache -> company_id
+      cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 120.minutes)
+      Rails.cache.write('company_id', @company)
+    else
+      @company = Rails.cache.read('company_id')
+    end
     @head = StockInput.where("input = 1")
     @purchaseOrders = PurchaseOrder.all.where("state LIKE 'approved'")
     render layout: false
@@ -34,21 +42,21 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def new
-    #@company = params[:company_id]
+    @company = Rails.cache.read('company_id')
     @head = StockInput.new
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @periods = LinkTime.group(:year, :month)
-    @warehouses = Warehouse.all
+    @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     render layout: false
   end
 
   def edit
-    @company = params[:company_id]
+    @company = Rails.cache.read('company_id')
     @head = StockInput.find(params[:id])
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @periods = LinkTime.group(:year, :month)
-    @warehouses = Warehouse.all
+    @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     @reg_n = Time.now.to_i
     @arrItems = Array.new

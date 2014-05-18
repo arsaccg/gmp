@@ -39,6 +39,7 @@ en:
       warehouse: "Almacén"
       format: "Formato"
       document: "Documento"
+      working_group: "Grupo de Trabajo"
     modelsdescription: 
       bill_of: "Lista de "
       money: "Monedas"
@@ -47,6 +48,7 @@ en:
       format: "Formatos"
       document: "Documentos"
       cost_center: "Centros de Costo"
+      working_group: "Grupos de Trabajo"
     attributes:
       money:
         name: "Nombre"
@@ -57,6 +59,7 @@ en:
         money_id: "Moneda"
         value: "Valor de Cambio"
       warehouse:
+        cost_center: "Centro de Costo"
         name: "Nombre"
         location: "Ubicación"
       format:
@@ -67,6 +70,11 @@ en:
         format: "Formato"
         preffix: "Prefijo"
         description: "Descripción"
+      working_group:
+        front_chief: "Jefe de Frente"
+        master_builder: "Maestro de Obra"
+        executor: "Ejecutor"
+        sector: "Sector"
     errors:
       models:
         money:
