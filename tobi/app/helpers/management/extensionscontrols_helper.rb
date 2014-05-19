@@ -1,0 +1,2 @@
+module Management::ExtensionscontrolsHelper
+end

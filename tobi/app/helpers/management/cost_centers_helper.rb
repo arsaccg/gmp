@@ -1,0 +1,2 @@
+module Management::CostCentersHelper
+end

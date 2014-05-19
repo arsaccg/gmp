@@ -1,0 +1,76 @@
+=form_tag save_gantt_management_wbsitems_path, class: "form-horizontal", id: "gantt_form" do
+  %table(class="white-table table-bordered table table-condensed")
+    %thead
+      %th Codigo
+      %th Partida
+      %th Duracion
+      %th Fecha de Inicio
+      %th Fecha de Fin
+      %th Predecesor
+    %tbody
+      - @wbsitems.each do |item|
+        %tr
+          %td
+            = item.codewbs
+          %td
+            = hidden_field_tag("data[" + item.id.to_s + "][id_wbs]", item.id)
+            = "---" * (item.codewbs.length).to_i
+            = item.name
+          %td
+            %span{:id=>"duration_" + item.codewbs.to_s}
+              = "dias"
+          %td
+            %input(class="span11 small-font" type="date" style="font-size: 10px;"){name: "data[" + item.id.to_s + "][start_date]", :value => item.start_date.to_s.to_date, :id => "cmb_start_" + item.codewbs.to_s, :onchange => "update_date('" + item.codewbs.to_s + "', this.value.to_datetime);"  }
+          %td
+            %input(class="span11 small-font" type="date"  style="font-size: 10px;"){name: "data[" + item.id.to_s + "][end_date]", value: item.end_date.to_s.to_date, :id => "cmb_end_" + item.codewbs.to_s, :onchange => "update_str('" + item.codewbs.to_s + "', this.value.to_datetime);"}
+          %td
+            %input(class="span11 small-font tagsinput form-control" type="text" data-role="tagsinput"  style="font-size: 10px;"){name: "data[" + item.id.to_s + "][predecessors]", value: item.predecessors.to_s, :id => "cmb_pred_" + item.codewbs.to_s}
+
+%a(class="btn btn-default btn-medium"){:href=>"#{set_gantt_management_wbsitems_path.to_s + '.xls'}"}
+  %i(class="icon-ok")
+    Descargar Excel
+
+
+:javascript
+  
+  function update_date(id_str, value)
+  {
+    $("[id*='cmb_end_" + id_str + "']").attr("min", value);
+
+    temp_min = $("[id='cmb_start_" + id_str + "']").attr("min");
+    $("[id*='cmb_start_" + id_str + "']").attr("min", value);
+    $("[id='cmb_start_" + id_str + "']").attr("min", temp_min);
+
+    update_str(id_str);
+  }
+
+  function update_str(id, value)
+  {
+
+    one_day = 1000*60*60*24;
+    start_date = new Date($("#cmb_start_" + id).val());
+    end_date = new Date($("#cmb_end_" + id).val());
+
+    var nDifference = Math.abs(end_date - start_date);
+
+    $("#duration_" + id).text(Math.round(nDifference/one_day) + " dias");
+
+    temp_max = $("[id='cmb_end_" + id + "']").attr("max");
+    $("[id*='cmb_end_" + id + "']").attr("max", value);
+    $("[id='cmb_end_" + id + "']").attr("max", temp_max);
+
+    $("[id*='cmb_start_" + id + "']").attr("max", value);
+
+
+  }
+
+  $("[id*='cmb_start_']").change();
+  $("[id*='cmb_end_']").change();
+
+  $("[id='cmb_start_" + project_selected_data['id'] + "']").removeAttr("max");
+  $("[id='cmb_start_" + project_selected_data['id'] + "']").removeAttr("min");
+  $("[id='cmb_end_" + project_selected_data['id'] + "']").removeAttr("max");
+  $("[id='cmb_end_" + project_selected_data['id'] + "']").removeAttr("min");
+
+  $("[id*='cmb_pred_']").tagsinput();
+  

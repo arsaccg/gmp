@@ -1,0 +1,33 @@
+.group-bar
+  %strong(style="padding-left: 10px;")
+    Diagrama Gantt
+  %div(class="btn-group" style="padding-left: 100px;")
+    %a(class="btn btn-default btn-small"){:href=>"javascript:post_to_url('" + save_gantt_management_wbsitems_path + "', 'gantt_form', 'data')"}
+      %i(class="icon-ok")
+      Guardar
+    %a(class="btn btn-default btn-small"){:href=>"javascript:load_gantt()"}
+      %i(class="icon-tasks")
+      Ver Diagrama Gantt
+    %a(class="btn btn-default btn-small"){:href=>"javascript:edit_gantt()"}
+      %i(class="icon-tasks")
+      Editar Diagrama Gantt
+.row-fuild
+  .span12
+    .board
+      = render :partial => "table_gantt"
+
+:javascript
+  $(function() {
+    $(".table-gantt").resizable();
+  });
+
+ 
+  function load_gantt(){
+    load_url_ondiv("#{graph_gantt_management_wbsitems_path}?project_id=" + project_selected_data['id'], 'board');
+  }
+
+  function edit_gantt(){
+    load_url_ondiv("#{set_gantt_management_wbsitems_path}?project_id=" + project_selected_data['id'], 'right-area');
+  }
+
+ 

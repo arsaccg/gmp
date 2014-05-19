@@ -1,0 +1,58 @@
+%table(class="white-table table-bordered table table-condensed" style="width: 100%;")
+  %thead
+    %tr
+      %th Codigo
+      %th Presupuesto
+      %th Costo Total
+      %th Utilidad
+      %th="%"
+      %th Gastos Generales
+      %th="%"
+      %th Estado
+      %th Acciones
+  %tbody
+    - @budget.each do |item|
+      %tr
+        %td= item.id
+        %td
+          %strong= item.description
+        %td
+          %strong= number_to_currency(get_bugdet_cost(item.id), :unit=>'S/. ')
+        %td= number_with_precision(item.general_expenses, :precision => 4) rescue 0
+        %td= number_with_precision(item.general_expenses * suma, :precision => 4) rescue 0
+        %td= number_with_precision(item.utility, :precision => 4) rescue 0
+        %td= number_with_precision(item.utility * suma, :precision => 4) rescue 0
+        %td
+        %td
+          .btn-group
+            %a{:href=>"javascript:load_edit('"+edit_management_budget_path(item.id).to_s+"')"}(class="btn btn-mini")
+              %i(class="icon-edit")
+              Editar
+            %a{:href=>"javascript:load_resume('"+resume_management_budget_path(item.id).to_s+"')"}(class="btn btn-mini")
+              %i(class="icon-book")
+              Resumen
+            %a{:href=>"javascript:load_update_valorization('"+newvalorization_management_valorization_path(item.id).to_s+"')"}(class="btn btn-mini")
+              %i(class="icon-list-alt")
+              Crear Valorizacion
+            %a{:href=>"javascript:load_delete('"+destroy_admin_management_budget_path(item.id).to_s+"')", data: { confirm: "¿Esta seguro de eliminar este presupuesto?" }}(class="btn btn-mini btn-danger")
+              %i(class="icon-remove")
+      %tr
+        %td(colspan="9")
+          %table(class="white-table table-bordered table table-condensed" style="width: 60%;")
+            %tbody
+              - item.valorizations.each do |valorization|
+                %tr
+                  %td= valorization.id
+                  %td= valorization.month
+
+:javascript 
+  function load_edit(url){
+    load_url_ondiv(url, 'right-area');
+  }
+  function load_resume(url){
+    load_url_ondiv(url, 'right-area');
+  }
+  function load_update_valorization(url){
+    load_url_ondiv(url, 'right-area');
+  }
+ 

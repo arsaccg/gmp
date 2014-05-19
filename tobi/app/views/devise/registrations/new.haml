@@ -1,0 +1,35 @@
+.span3
+
+  
+
+.span6
+  %br
+  %br
+  %br
+  #signup_panel
+    = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => {:class=>'form-horizontal'}) do |f|
+      = devise_error_messages!
+      .fieldset
+        %legend
+          Sign up
+        .control-group
+          = f.label :dni, 'D.N.I.:', :class=>"control-label"
+          .controls
+            = f.text_field :dni, :autofocus => true
+        .control-group
+          = f.label :email, 'e-mail:', :class=>"control-label"
+          .controls
+            = f.email_field :email
+        .control-group
+          = f.label :password, 'Contraseña:', :class=>"control-label"  
+          .controls
+            = f.password_field :password
+        .control-group
+          = f.label :password_confirmation, 'Confirmar contraseña:', :class=>"control-label"  
+          .controls
+            = f.password_field :password_confirmation
+
+        .form-actions
+          = f.submit "Registrarme", :class => "btn"
+    = render "devise/shared/links"
+.span3

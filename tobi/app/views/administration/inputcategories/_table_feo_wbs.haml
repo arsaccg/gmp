@@ -1,0 +1,89 @@
+%table(id="scroll-table" class="table table-bordered table-condensed table-hover white-table small-font table-light"  width="100%")
+  %thead
+    %tr
+      %th(rowspan = "2")
+        %strong CODIGO
+      %th(rowspan = "2")
+        %strong FEO DE OBRA
+      %th
+        %strong PRESUPUESTO VENTA
+      %th
+        %strong PRESUPUESTO META
+    %tr
+      %th
+        %strong Parcial
+      %th
+        %strong Parcial 
+  %tbody 
+    - direct_cost_sale, direct_cost_goal = 0, 0
+    
+    -@wbsitems.each do |wbs|  
+      %tr
+        %td(colspan="5")
+          %strong= wbs.name
+      - @inputcategories.each do |input|
+        - if @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"] != nil
+          -partial_sale, partial_goal = @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"], @data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"]
+          %tr
+            %td= ("---" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
+            %td= @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][3]
+            %td(style ="text-align: right;")= number_to_currency(@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
+            %td(style ="text-align: right;")= number_to_currency(@data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
+    %tr   
+      %td
+      %td(style="font-size:115%;")
+        %strong COSTO DIRECTO
+      %td(style="text-align: right; font-size:115%;")
+        %strong= number_to_currency(direct_cost_sale.to_s, :unit=>'S/. ')
+      %td(style="text-align: right; font-size:115%;")
+        %strong= number_to_currency(direct_cost_goal.to_s, :unit=>'S/. ')
+
+:javascript
+
+  $(document).ready(function(){
+    $("[class*='itme_']").css("display","none");
+    $("[class*='sub_itme_']").css("display","none");
+    $("[class*='table_']").css("display","none");
+    
+  });
+
+  function toggle_table(table_id){  
+      $("[class^='itme_"+ table_id + "']").each(function() {
+          if($(this).css("display") == 'table-row'){
+            $(this).css("display","none");
+            disapear(table_id);
+          } else {
+            $(this).css("display","table-row");
+          }
+        }
+      );
+  }
+
+  function toggle_subtable(table_id){  
+      $("[class^='sub_itme_"+ table_id + "']").each(function() {
+        if($(this).css("display") == 'table-row')
+          $(this).css("display","none");
+        else
+          $(this).css("display","table-row");
+        }
+
+      );
+  }
+
+  function disapear(table_id) {
+    $("[class^='sub_itme_"+ table_id + "']").each(function() {
+      $(this).css("display","none");
+    });
+
+    $("[class^='table_"+ table_id + "']").each(function() {
+      $(this).css("display","none");
+    });
+  }
+
+  function toogle_tbl(clase){
+
+    if($("." + clase).css("display") == 'table-row')
+      $("." + clase).css("display","none");
+    else
+      $("." + clase).css("display","table-row");
+  }

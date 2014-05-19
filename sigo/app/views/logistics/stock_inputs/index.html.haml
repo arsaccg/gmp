@@ -4,7 +4,7 @@
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw
         Ingreso a Almacén
-    - if @purchaseOrders != nil
+    - if @purchaseOrders.first != nil
       .col-sm-3{ "style" => "margin-top: 10px;" }
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_stock_input_path}', 'content', null, null, 'GET')"}
           Agregar
@@ -22,15 +22,15 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
-  - if @purchaseOrders == nil
+  - if @purchaseOrders.first == nil
     .alert.alert-block.alert-danger
       %a.close(data-dismiss="alert" href="#")
         ×
       %h4.alert-heading
         %i.fa.fa-lock
-          No puedes crear Entrada a Almacén!
+          No puedes crear Ingreso a Almacén!
       %p
-        Verifica si tienes por lo menos, 1 Orden de Compra generada y aprobada.
+        Verifica si tienes por lo menos, 1 Orden de Compra generada y aprobada en la compañia.
   #widget-grid
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12

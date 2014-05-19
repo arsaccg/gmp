@@ -1,0 +1,55 @@
+%br
+- @budgets.each do |item|
+  %blockquote
+    = item.description
+  %table(class="table table-bordered table-hover table-condensed white-table" width="100%")
+    %tbody
+      - item.valorizations.each do |val|  
+        %tr
+          %td
+            %strong
+              =val.month
+          %td
+            .btn-group 
+              -if val.charged? == false
+                %a{:href=>"javascript:load_edit_valorization('"+show_data_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-info")
+                  %i(class="icon-search")
+                %a{:href=>"javascript:load_edit_valorization('"+changevalorization_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-default")
+                  %i(class="icon-pencil") 
+
+              
+              
+              %a{:href=>"javascript:load_url_ondiv('#{administration_invoices_path}?budget_id=#{item.id}', 'right-area')"}(class="btn btn-mini")
+                %i(class="icon-book")
+                Cobros
+
+              %a{:href=>"javascript:load_resume('"+report_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini")
+                %i(class="icon-file")
+                Reporte
+
+              -if val.pending? == false && val.charged? == false
+                %a{:href=>"javascript:load_edit_valorization('"+finalize_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini")
+                  %i(class="icon-ban-circle")
+                  Bloquear
+                  
+                %a{:href=>"javascript:load_edit_valorization('"+finalize_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-danger")
+                  %i(class="icon-remove")
+:javascript 
+  function load_edit(url){
+    load_url_ondiv(url, 'right-area');
+  }
+  function load_resume(url){
+    load_url_ondiv(url, 'right-area');
+  }
+  function load_update_valorization(url){
+    load_url_ondiv(url, 'right-area');
+  }
+  function load_edit_valorization(url){
+    load_url_ondiv(url, 'right-area');
+  }
+  function load_resume(url){
+    load_url_ondiv(url + '?project_id=' + project_selected_data['id'], 'right-area');
+  }
+  function load_delete(url){
+    delete_to_url(url, 'right-area');
+  }

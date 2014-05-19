@@ -1,0 +1,58 @@
+%h3
+  = @costcenter.name
+%br
+.detail-area
+  %table(class="table table-bordered table-hover white-table")
+    %tr(class="success")
+      %td
+        %strong
+          Monto Total
+      %td
+        %strong
+          S/.
+          = @costcenter.total_amount
+      
+    %tr
+      %td
+        Total de Costos Directos
+      %td
+        %strong
+          S/.
+          = @costcenter.direct_cost_amount
+    %tr
+      %td
+        Total de Costos Generales
+      %td
+        %strong
+          S/.
+          = @costcenter.general_cost_amount
+    %tr
+      %td
+        Monto de Utilidad
+      %td
+        %strong
+          S/.
+          = @costcenter.utility_amount
+    %tr
+      %td
+        Porcentaje de Adelante
+      %td
+        %strong
+          = @costcenter.advance_payment_percent
+          ="%"   
+    %tr
+      %td
+        Procentaje Asesorias Otorgadas
+      %td
+        %strong
+          = @costcenter.coaching_granted_percent
+          ="%"
+    %tr
+      %td
+        IGV
+      %td
+        %strong
+          = @costcenter.igv
+          ="%"
+        
+        

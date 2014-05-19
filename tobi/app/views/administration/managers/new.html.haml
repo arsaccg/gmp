@@ -1,0 +1,73 @@
+.span3
+
+
+
+.span6
+  %br
+  %br
+  %br
+  #signup_panel
+    /%h4 Crear Nuevo Usuario
+    = simple_form_for [:administration, @manager], :role=>"form", :html => {:id => 'new_manager', :class => 'form-horizontal', :multipart => true} do |f| 
+      .fieldset
+        %legend
+          Crear Nuevo Usuario
+        .form-group
+          = f.label "DNI: ", :class=>"col-lg-2 control-label"
+          .controls
+            = f.input :dni, :label => false, as: :string , input_html: {class: "form-control", maxlength: "8"}
+        .form-group
+          = f.label "E-mail: ", :class=>"col-lg-2 control-label"
+          .controls
+            = f.input :email, :label => false, input_html: {class: "form-control"}
+        .form-group
+          = f.label "Contraseña: ", :class=>"col-lg-2 control-label"
+          .controls
+            = f.input :password, :label => false, input_html: {class: "form-control"}
+        .form-group
+          = f.label "Tipo: ", :class=>"col-lg-2 control-label"
+          .controls
+            = f.input :kind, :label => false, as: :integer, input_html: {class: "form-control", max: "3", min: "1"}
+      .form-actions
+        %div(class="col-lg-offset-2 col-lg-10")
+          %a(href="javascript:post_to_url('#{administration_managers_path}', 'new_manager', 'panel-master')" class="btn btn-success")
+            Enviar
+          %a(href="javascript:goBack()" class="btn btn-danger")
+            Cancelar
+
+.span3      
+
+
+
+/.span6
+/  %br
+/  %br
+/  %br
+/  #signup_panel
+/    = form_tag(:url => administration_managers_path, :method => :post, :html => {:class=>'form-horizontal'}) do
+/      .fieldset
+/        %legend
+/          Sign up
+/        .control-group
+/          = label_tag :dni, 'D.N.I.:', :class=>"control-label"
+/          .controls
+/            = text_field_tag :dni
+/        .control-group
+/          = label_tag :email, 'E-mail:', :class=>"control-label"
+/          .controls
+/            = email_field_tag :email
+/        .control-group
+/          = label_tag :password, 'Contraseña:', :class=>"control-label"  
+/          .controls
+/            = password_field_tag :password
+/        .control-group
+/          = label :password_confirmation, 'Confirmar contraseña:', :class=>"control-label"  
+/          .controls
+/            = password_field_tag :password_confirmation
+/        .control-group
+/          = label :kind, 'Tipo:', :class=>"control-label"  
+/          .controls
+/            = number_field_tag :kind
+/
+/        .form-actions
+/          = submit_tag "Registrarme", :class => "btn"

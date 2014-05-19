@@ -1,0 +1,81 @@
+= simple_form_for @input, :html => {:class => 'form-horizontal', id: 'input-form'} do |f|
+  %fieldset
+    %legend
+      Nuevo Insumo
+    .row-fluid
+      .span6
+        .control-group
+          %label(class="control-label") Padre
+          .controls
+            %select{name: "ancestry"}
+              %option(value="0") Ninguno
+              = options_from_collection_for_select(Input.all, :id, :name)
+        .control-group
+          %label(class="control-label" for="is_group" ) Es Grupo
+          .controls
+            %input(type = "checkbox" name = "is_group" class = "form-control" id="is_group")
+        .control-group
+          %label(class="control-label") Codigo
+          .controls= f.input :code, label: false, input_html: {class: "form-control"}
+        .control-group
+          %label(class="control-label") Nombre
+          .controls= f.input :name, label: false, input_html: {class: "form-control"}
+
+      .span6
+        %div(class="control-group")
+          .row
+            .span5
+              %label(class="control-label") Unidades
+            .span6
+              %select{id: "unit-selected" }
+                = options_from_collection_for_select(Unit.all, :id, :name)
+            .span1
+              %a(href="javascript:add_input_to_table()" class="btn btn-success")
+                %i(class="icon-plus")
+        %div(class="control-group")
+          %table(class="table-hover white-table small-font table-light" width="100%")
+            %thead
+              %th Nombre
+              %th Codigo
+            %tbody(id="tbody_inputs")
+
+
+
+  .form-actions
+
+    %a{href: "javascript:post_to_url_class('" + inputs_path  + "', 'input', 'right-area')", class: "btn btn-success"}
+      Guardar
+    %a(href="#"){class: "btn btn-danger"}
+      Cancelar
+
+  %br
+%br
+
+:javascript
+
+  $('#is_group').change(function(){
+      var c = this.checked;
+      $("#unit-selected").prop('disabled', c);
+
+  });
+
+  $('#input_code').on('change', function(){
+    $(".prefix_code").text($('#input_code').val());
+  });
+
+  function add_input_to_table(){
+    val_input = $('#unit-selected').val();
+    text_input = $('#unit-selected option:selected').text();
+    input_code = $('#input_code').val();
+
+    $.ajax({
+      type: "POST",
+      url: "#{add_input_unit_inputs_path}",
+      data: {value: val_input, text: text_input, code: input_code}
+    }).done(function( msg ) {
+      $("#tbody_inputs").append(msg);
+    });
+
+
+  }
+

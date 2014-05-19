@@ -4,7 +4,16 @@ class Logistics::WarehousesController < ApplicationController
   
   def index
     flash[:error] = nil
-    @items = Warehouse.all #.where(company_id: "#{params[:company_id]}")
+    if params[:company_id] != nil
+      @company = params[:company_id]
+      # Cache -> company_id
+      cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 120.minutes)
+      Rails.cache.write('company_id', @company)
+    else
+      @company = Rails.cache.read('company_id')
+    end
+    #logger.info "@company:" + @company + "."    
+    @items = Warehouse.where(company_id: "#{@company}")
     render layout: false
   end
 
@@ -13,7 +22,9 @@ class Logistics::WarehousesController < ApplicationController
   end
 
   def new
+    @company = Rails.cache.read('company_id')
     @warehouse = Warehouse.new
+    @cost_centers = CostCenter.where(company_id: "#{@company}")
     render :new, layout: false
   end
 
@@ -21,6 +32,10 @@ class Logistics::WarehousesController < ApplicationController
     flash[:error] = nil
     item = Warehouse.new(item_parameters)
     item.user_inserts_id = current_user.id
+
+    @company = Rails.cache.read('company_id')
+    @cost_centers = CostCenter.where(company_id: "#{@company}")
+    
     if item.update_attributes(item_parameters)
       flash[:notice] = "Se ha creado correctamente el registro."
       redirect_to :action => :index
@@ -37,6 +52,8 @@ class Logistics::WarehousesController < ApplicationController
 
   def edit
     @warehouse = Warehouse.find(params[:id])
+    @company = @warehouse.company_id
+    @cost_centers = CostCenter.where(company_id: "#{@company}")
     @action = 'edit'
     render layout: false
   end
@@ -45,6 +62,10 @@ class Logistics::WarehousesController < ApplicationController
     flash[:error] = nil
     item = Warehouse.find(params[:id])
     item.user_updates_id = current_user.id
+
+    @company = Rails.cache.read('company_id')
+    @cost_centers = CostCenter.where(company_id: "#{@company}")
+
     if item.update_attributes(item_parameters)
       flash[:notice] = "Se ha actualizado correctamente el registro."
       redirect_to :action => :index
@@ -76,6 +97,6 @@ class Logistics::WarehousesController < ApplicationController
 
   private
   def item_parameters
-    params.require(:warehouse).permit(:name, :location)
+    params.require(:warehouse).permit(:name, :location, :cost_center_id, :company_id)
   end
 end

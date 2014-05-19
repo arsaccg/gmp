@@ -12,4 +12,13 @@ class PurchaseOrderDetail < ActiveRecord::Base
 	    return 0
 	  end
 	end
+
+	def self.get_approved_more_items(company_id, supplier_id, list_not_in)
+		joins{purchase_order.cost_center.company}
+	    .where{(companies.id.eq "#{company_id}") &
+	           (purchase_orders.entity_id.eq "#{supplier_id}") &
+           	   (purchase_orders.state.eq "approved")}
+        .where('purchase_order_details.id NOT IN (' + list_not_in + ')')
+        .where('purchase_order_details.received IS NULL')
+	  end
 end

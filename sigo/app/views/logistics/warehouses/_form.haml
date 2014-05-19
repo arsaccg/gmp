@@ -8,6 +8,15 @@
     = simple_form_for([:logistics, @warehouse], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
+          %section.col.col-10
+            %label.label
+              = t('activerecord.attributes.warehouse.cost_center')
+            %label.input{for: "cost_center_id"}
+              %select.form-control#cost_center-select{:name =>"warehouse[cost_center_id]"}
+                - @cost_centers.each do |x|
+                  %option{:value => "#{x.id}", :rel => "#{x.code}", :selected => @warehouse.cost_center_id == x.id}
+                    = x.name
+        .row
           %section.col.col-6
             %label.label
               = t('activerecord.attributes.warehouse.name')
@@ -21,9 +30,8 @@
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-user
               = f.input :location, placeholder: t('activerecord.attributes.warehouse.location'), input_html: { class: 'form-control' }, label: false
-        = hidden_field_tag "cost_center[company_id]"
-          
-        
+        = hidden_field_tag "warehouse[company_id]"
+
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save
@@ -31,6 +39,7 @@
 
 :javascript
   $(document).ready(function () {
+    //alert($.company_global_id);
     $("#warehouse_company_id").val($.company_global_id);
     $("#warehouse_name").focus();
 

@@ -9,7 +9,9 @@
 TypeEntity.create(
   [{ name: 'Proveedores' }, { preffix: 'P' }],
   [{ name: 'Accionistas' }, { preffix: 'AC' }],
-  [{ name: 'Trabajadores' }, { preffix: 'T' }]
+  [{ name: 'Trabajadores' }, { preffix: 'T' }],
+  [{ name: 'Jefe de Frente' }, { preffix: 'JF' }],
+  [{ name: 'Maestro de Obra' }, { preffix: 'MO' }]
 )
 
 TypeOfArticle.create(
