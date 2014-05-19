@@ -35,7 +35,7 @@ class Logistics::StockOutputsController < ApplicationController
   def new
     @company = Rails.cache.read('company_id')
     @head = StockInput.new
-    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
+    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @articles = Article.all
@@ -48,7 +48,7 @@ class Logistics::StockOutputsController < ApplicationController
   def edit
     @company = Rails.cache.read('company_id')
     @head = StockInput.find(params[:id])
-    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
+    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @articles = Article.all

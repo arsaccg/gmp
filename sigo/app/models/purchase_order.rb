@@ -40,4 +40,17 @@ class PurchaseOrder < ActiveRecord::Base
   def self.get_total_amount_items_requested_by_purchase_order(delivery_detail_id)
     return ActiveRecord::Base.connection.execute("SELECT SUM( amount ) AS 'sum' FROM `purchase_order_details` WHERE `delivery_order_detail_id` = #{delivery_detail_id} GROUP BY `delivery_order_detail_id`")
   end
+
+  def self.get_approved_by_company(company_id)
+    joins{cost_center.company}
+    .where{(companies.id.eq "#{company_id}") &
+           (purchase_orders.state.eq 'approved')}
+  end
+
+  def self.get_approved_by_company_and_supplier(company_id, supplier_id)
+    joins{cost_center.company}
+    .where{(companies.id.eq "#{company_id}") &
+           (purchase_orders.entity_id.eq "#{supplier_id}") &
+           (purchase_orders.state.eq 'approved')}
+  end
 end

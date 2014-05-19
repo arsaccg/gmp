@@ -13,7 +13,7 @@ class Logistics::StockInputsController < ApplicationController
       @company = Rails.cache.read('company_id')
     end
     @head = StockInput.where("input = 1")
-    @purchaseOrders = PurchaseOrder.all.where("state LIKE 'approved'")
+    @purchaseOrders = PurchaseOrder.get_approved_by_company(@company)
     render layout: false
   end
 
@@ -83,8 +83,8 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def show_purchase_order_item_field
-    supplier = Entity.find(params[:id])
-    @tableItems = supplier.purchase_orders.where("state LIKE 'approved'")
+    @company = Rails.cache.read('company_id')
+    @tableItems = PurchaseOrder.get_approved_by_company_and_supplier(@company, params[:id])
     render(partial: 'table_items_order', :layout => false)
   end
 
@@ -98,16 +98,21 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def more_items_from_pod
+    @company = Rails.cache.read('company_id')
     @reg_n = Time.now.to_i
-    ids_items = 0
+    @ids_items = 0
     if (params[:ids_items] != nil)
-      ids_items = params[:ids_items].join(",")
+      @ids_items = params[:ids_items].join(",")
     end
     @tableItems = Array.new
-    PurchaseOrder.where("state LIKE 'approved'").each do |x|
-      x.purchase_order_details.where("received IS NULL").where("id NOT IN (#{ids_items})").each do |y|
-        @tableItems << y
-      end
+    #PurchaseOrder.where("state LIKE 'approved'").each do |x|
+    #  x.purchase_order_details.where("received IS NULL").where("id NOT IN (#{ids_items})").each do |y|
+    #    @tableItems << y
+    #  end
+    #end
+    logger.info "@ids_items:" + @ids_items
+    PurchaseOrderDetail.get_approved_more_items(@company, params[:supplier_id], @ids_items).each do |y|
+      @tableItems << y
     end
     render(partial: 'modal_more_items', :layout => false)
   end
