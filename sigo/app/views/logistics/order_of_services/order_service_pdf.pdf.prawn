@@ -1,37 +1,52 @@
 text "ORDEN DE SERVICIO - #{@orderOfService.id.to_s.rjust(5, '0')}", :align => :center, :style => :bold
+image "/home/gguzman/sitios_web/gmp/sigo/app/assets/images/logo.png", :width => 100, :height => 50
 
 move_down 20
 
 table([ ["PROVEEDOR", "#{@orderOfService.entity.ruc} - #{@orderOfService.entity.name}"] ], :width => 770, :column_widths => [140]) do
-      style(columns(0), :size => 11)
+      style(columns(0..1), :size => 9)
       columns(0).font_style = :bold
     end
 table([ ["CENTRO DE COSTO", "#{@orderOfService.cost_center.name}"] ], :width => 770, :column_widths => [140]) do
-      style(columns(0), :size => 11)
+      style(columns(0..1), :size => 9)
       columns(0).font_style = :bold
     end
-table([ ["FORMA DE PAGO", "#{@orderOfService.method_of_payment.name}", "FECHA EMISIÓN", "#{@orderOfService.date_of_issue.strftime("%d/%m/%Y")}"] ], :width => 770, :column_widths => [140]) do
-      style(columns(0), :size => 11)
-      columns(0).font_style = :bold
-      columns(2).font_style = :bold
-    end
-table([ ["ESTADO", "#{translate_purchase_order_state(@orderOfService.state)}", "FECHA DE SERVICIO", "#{@orderOfService.date_of_service.strftime("%d/%m/%Y")}"] ], :width => 770, :column_widths => [140]) do
-      style(columns(0), :size => 11)
+table([ 
+    ["FORMA DE PAGO", "#{@orderOfService.method_of_payment.name}", "FECHA EMISIÓN", "#{@orderOfService.date_of_issue.strftime("%d/%m/%Y")}"],
+    ["ESTADO", "#{translate_purchase_order_state(@orderOfService.state)}", "FECHA DE SERVICIO", "#{@orderOfService.date_of_service.strftime("%d/%m/%Y")}"]
+  ], :width => 770, :column_widths => [140]) do
+      style(columns(0..3), :size => 9)
       columns(0).font_style = :bold
       columns(2).font_style = :bold
     end
 
 move_down 20
 
-table([ ["ITEM", " CÓDIGO   ", "DESCRIPCIÓN                                     Sector   FASE", "U.M", "CANTIDAD", "PRECIO UNITARIO", "% Dscto", "SUBTOTAL"] ], :width => 770)
+table([ ["ITEM", "CÓDIGO", "DESCRIPCIÓN","Sector","FASE", "U.M", "CANTIDAD", "PRECIO UNITARIO", "% Dscto", "SUBTOTAL"] ], :width => 770, :column_widths => [40,80,190,55,50,30,75,120,55,75]) do
+      style(columns(3..8), :align => :center)
+      style(columns(9), :align => :right)
+      style(columns(0..9), :size => 9)
+      columns(0).font_style = :bold
+      columns(1).font_style = :bold
+      columns(2).font_style = :bold
+      columns(3).font_style = :bold
+      columns(4).font_style = :bold
+      columns(5).font_style = :bold
+      columns(6).font_style = :bold
+      columns(7).font_style = :bold
+      columns(8).font_style = :bold
+      columns(9).font_style = :bold
+    end
 
 move_down 3
 
 @orderServiceDetails.each do |data|
   stroke_horizontal_rule
   pad(5) {
-    table([ ["#{data.id}", "#{data.article.code}", "#{data.article.name}", "#{data.sector.code}", "#{data.phase.code}", "#{data.unit_of_measurement.symbol}", "#{sprintf("%.2f", data.amount)}", "#{number_to_currency(data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}", ".00", "#{number_to_currency(data.amount*data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "fffffff"}, :column_widths => [40,80,210,35,50,30,75,120,55,75]) do
-      style(columns(7..11), :align => :right)
+    table([ ["#{data.id}", "#{data.article.code}", "#{data.article.name}", "#{data.sector.code}", "#{data.phase.code}", "#{data.unit_of_measurement.symbol}", "#{sprintf("%.2f", data.amount)}", "#{number_to_currency(data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}", ".00", "#{number_to_currency(data.amount*data.unit_price, unit: @orderOfService.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "fffffff"}, :column_widths => [40,80,190,55,50,30,75,120,55,75]) do
+      style(columns(3..8), :align => :center)
+      style(columns(9), :align => :right)
+      style(columns(0..9), :size => 9)
     end
     move_down 4
     text "#{data.description}"
