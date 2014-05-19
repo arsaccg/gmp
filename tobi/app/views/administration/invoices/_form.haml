@@ -1,0 +1,36 @@
+= simple_form_for [:administration, @invoice], :role=>"form", :html => {:class => 'form-horizontal', :multipart => true} do |f| 
+  .fieldset
+    .form-group
+      = f.label "Numero de Documento : ", :class=>"col-lg-2 control-label"
+      .col-lg-10
+        = f.input :document_number, :label => false, input_html: {class: "form-control"}
+    .form-group
+      = f.label "Monto : ", :class=>"col-lg-2 control-label"
+      .col-lg-10
+        = f.input :amount, :label => false, input_html: {class: "form-control"}
+    .form-group
+      = f.label "Fecha de Emision : ", :class=>"col-lg-2 control-label"
+      .col-lg-10
+        = f.input :issue_date, :as => :date, :label => false, input_html: {class: "form-control"}
+    .form-group
+      = f.label "Fecha de Presentacion : ", :class=>"col-lg-2 control-label"
+      .col-lg-10
+        = f.input :filing_date, :as => :date, :label => false, input_html: {class: "form-control"}
+    .form-group
+      = f.label "Nota de Credito : ", :class=>"col-lg-2 control-label"
+      .col-lg-10
+        = f.input :credit_note, :label => false, input_html: {class: "form-control"}
+    .form-group
+      = f.label "Observaciones : ", :class=>"col-lg-2 control-label"
+      .col-lg-10
+        = f.input :observations, :label => false, input_html: {class: "form-control"}
+        %input(name='budget_id' type='hidden'){:value=>@invoice.valorization.budget.id}
+        = f.input :valorization_id, :as => :hidden
+  .form-actions
+    %br
+    %div(class="col-lg-offset-2 col-lg-10")
+      %a(href="javascript:post_to_url('#{administration_invoice_path(@invoice.id)}', '#{@action}', 'right-area')" class="btn btn-success")
+        Enviar
+      =# f.submit @action_label, :class=>"btn btn-success"
+      %a(href="javascript:goBack()" class="btn btn-danger")
+        Cancelar

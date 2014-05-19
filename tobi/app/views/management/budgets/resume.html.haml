@@ -1,0 +1,86 @@
+%h4
+  Resumen - 
+  =@budget.description
+%br
+%table(class="white-table table-bordered table table-condensed")
+  %thead
+    %tr
+      %th
+        Atributo
+      %th
+        Valor
+  %tbody
+    %tr
+      -if @budget.id
+        %td
+          %label
+            Código
+        %td
+          =@budget.id
+    %tr
+      -if @budget.cod_budget
+        %td
+          %label
+            Código Presupuesto
+        %td
+          =@budget.cod_budget
+    %tr
+      -if @budget.description
+        %td
+          %label
+            Descripción
+        %td
+          =@budget.description
+    %tr
+      -if @budget.term
+        %td
+          %label
+            Término
+        %td
+          =@budget.term
+    %tr
+      -if @budget.created_at
+        %td
+          %label
+            Creado en
+        %td
+          =@budget.created_at
+    %tr
+      -if @budget.project_id
+        %td
+          %label
+            Código Projecto
+        %td
+          =@budget.project_id
+    %tr
+      -if @budget.level
+        %td
+          %label
+            Nivel
+        %td
+          =@budget.level
+    %tr
+      -if @budget.subbudget_code
+        %td
+          %label
+            Código Subpresupuesto
+        %td
+          =@budget.subbudget_code
+ 
+    %tr
+      -if @budget.utility
+        %td
+          %label
+            Utilidad
+        %td
+          =@budget.utility
+    %tr
+      -if @budget.general_expenses
+        %td
+          %label
+            Gastos Generales
+        %td
+          =@budget.general_expenses
+
+%a{:href=>"javascript:load_url_ondiv('" + administrate_budget_management_budgets_path.to_s + "\', 'right-area');"}(class="btn btn-danger")
+  Volver

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  invoice_id: 1
+  amount: 1.5
+  charge_date: 2013-11-07
+  payment_amount: 1.5
+  financial_agent_client: MyString
+  financial_agent_destiny: MyString
+
+two:
+  invoice_id: 1
+  amount: 1.5
+  charge_date: 2013-11-07
+  payment_amount: 1.5
+  financial_agent_client: MyString
+  financial_agent_destiny: MyString

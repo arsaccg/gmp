@@ -1,0 +1,44 @@
+%h1(style="text-align:center") Registro de Ampliaciones
+
+=simple_form_for [:management, @extensionscontrol], :html => {:class => 'form-horizontal'} do |f|
+  .fieldset
+    %legend
+      Nueva Ampliación
+    .control-group
+      %label(class="control-label") Motivo de la Ampliación
+      .controls
+        = f.input :motive, label: false, placeholder: 'Motivo de la Ampliación'
+    .control-group
+      %label(class="control-label") Plazo Solicitado
+      .controls
+        = f.input :requested_deadline, label: false, placeholder: "0.00"
+    .control-group
+      %label(class="control-label") Plazo Aprobado
+      .controls
+        = f.input :approved_deadline, label: false, placeholder: "0.00"
+    .control-group
+      %label(class="control-label") M.G.G Solicitados
+      .controls
+        = f.input :requested_mgg, label: false, placeholder: "0.00"
+    .control-group
+      %label(class="control-label") M.G.G Aprobados
+      .controls
+        = f.input :approved_mgg, label: false, placeholder: "0.00"
+    .control-group
+      %label(class="control-label") N° de Resolución
+      .controls
+        = f.input :resolution, label: false
+    .control-group
+      %label(class="control-label") Observaciones
+      .controls
+        = f.input :observation, label: false
+    .control-group
+      %label(class="control-label") Subir Archivos
+      .controls
+        = f.file_field :files
+    .form-actions
+      %a(href="javascript:post_to_url('#{management_extensionscontrols_path}?project_id=#{@project_id}','new_extensionscontrol', 'right-area')" class="btn btn-success" id="upload_pic")
+        Enviar
+      =# f.button :submit, value: 'Crear nueva ampliación', class: "btn btn-success"
+      %a(href="#"){class: "btn btn-danger"}
+        Cancelar

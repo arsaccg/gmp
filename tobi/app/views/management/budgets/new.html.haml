@@ -1,0 +1,57 @@
+.row-fluid
+  .span12
+    =simple_form_for [:management, @budget], :html => {:id=>'form-data'} do |f|
+      .fieldset
+        %legend
+          Cargar Presupuesto
+        .control-group
+          %label(class="control-label") Base de Datos
+          .controls
+            %select(name="database_id" id="database_id" class="span12 small-font" onchange="load_budgets_from_db($(this).val())")
+              =#options_for_select(@budgets.collect{ |u| [ (("--") * u[:budget_code].length.to_i) + " " + u[:budget_code] + " " +  " " + u[:budget_name], u[:budget_code].to_s]})
+              - @dbs.each do |db|
+                %option{value: db[:name]}
+                  = db[:name]
+            %select(name="budget_id" class="span12 small-font" size="10" id = "budget_id")
+            %input(type="hidden" id="project_id" name = "project_id")
+        %h5
+          Tipo de Presupuesto:
+        .small-font
+          %input(type="radio" name="type_of_budget" value="0")
+          
+            Presupuesto Meta
+        %br
+        .small-font
+          %input(type="radio" name="type_of_budget" value="1")
+           
+            Presupuesto Venta
+        .form-actions     
+          %a{:href=>"javascript:load_budget();"}(class="btn btn-success btn-small")
+            %i(class="icon-arrow-up")
+            Cargar Presupuesto
+
+          =#%a(href="#"){class: "btn btn-danger"}
+          =#  Cancelar
+ 
+:javascript 
+  $("#project_id").val(project_selected_data['id']);
+
+  
+  function load_budget(){
+    post_to_url('#{load_elements_management_budgets_path.to_s}?database=' + $("#database_id").val(), 'form-data', 'right-area');
+  }
+
+
+  function load_budgets_from_db(str_budget){
+    var select = $('#budget_id');
+    $('#budget_id').empty();
+    $.ajax({
+      type: "GET",
+      url: "/management/budgets/get_budgets.json?database=" + str_budget
+    }).done(function(json) {
+      $.each(json, function(index, value) {
+        $('#budget_id').append("<option value='" + value.budget_code + "'>" + value.budget_name + "</option>");
+      });
+    });
+  }
+

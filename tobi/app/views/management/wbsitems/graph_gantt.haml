@@ -1,0 +1,89 @@
+.row-fluid
+  .span12
+    %div(id="graph-gantt" class="graph-gantt")
+
+:javascript
+  
+  var json_data="";
+
+  var contenedor = document.getElementById('graph-gantt');
+
+  var width_graph = $('#graph-gantt').width() - 20;
+  var height_graph = $('#graph-gantt').height()- 20;
+
+  var mesa = new Raphael(contenedor, width_graph, height_graph*2);
+  
+  var total_duration = 0;
+
+  var first_end_date;
+  var first_start_date;
+
+  var factor=10;
+
+  var title_factor = 15;
+
+  var int_left = 450;
+
+  function draw_gantt(url_str){
+    
+    $.ajax({
+      type: "GET",
+      url: url_str
+    }).done(function(json) {
+      json_data = json;
+      var count = 0 ;
+
+      jQuery.each(json, function(i, val) { count++ });
+
+      jQuery.each(json, function(i, val) {
+
+      	if (i==0){
+      	  first_end_date = new Date(val.end_date)
+      	  first_start_date = new Date(val.start_date)
+      	  total_duration =(first_end_date-first_start_date) /(1000*60*60*24);
+
+      	  for (var k=0;k<total_duration;k=k+title_factor) {
+      	  	rectangulo_principal = mesa.rect(int_left + factor*k, 50, title_factor*factor, 20);
+      	  	rectangulo_principal.attr({fill: "#fff", stroke: "#444", "stroke-width": 1}); 
+
+      	  	t = mesa.text((int_left + factor*k + (title_factor*factor)/2), 60, "Quincena " + k / title_factor);
+  			    t.attr({fill: "#555", "font-weight": "bold",  "font-size": "12px"});
+
+  			rectangulo_principal = mesa.rect(int_left + factor*k, 70, title_factor * factor, 40);
+      	  	rectangulo_principal.attr({fill: "#fff", stroke: "#aaa", "stroke-width": 1});  
+      	  }
+
+      	  rectangulo_principal = mesa.rect(int_left, 80, total_duration*factor, 20);
+      	  rectangulo_principal.attr({fill: "#1E5187", stroke: "#fff", "stroke-width": 0});  
+
+      	} else {
+
+      	  end_date = new Date(val.end_date);
+      	  start_date = new Date(val.start_date);
+
+      	  duration =(end_date-start_date) /(1000*60*60*24);
+
+      	  time_from_start_project = (start_date - first_start_date) /(1000*60*60*24);
+
+      	  for (var k=0;k<total_duration;k=k+title_factor) { 
+      	  	rectangulo_principal = mesa.rect(int_left + factor*k, 70 + i * 40 , title_factor*factor , 40);
+      	  	rectangulo_principal.attr({fill: "#fff", stroke: "#ddd", "stroke-width": 1});
+
+      	  }
+
+          rectangulo_secundario = mesa.rect(1, 70 + i * 40 , 448 , 40);
+          rectangulo_secundario.attr({fill: "#fff", stroke: "#ddd", "stroke-width": 1});
+
+          t = mesa.text(2 + val.codewbs.length * 10, 90 + i * 40 , val.name ,60);
+          t.attr({fill: "#555", "font-weight": "bold",  "font-size": "12px", "stroke-width": 1, 'text-anchor': 'start'});
+
+      	  rectangulo_secundario = mesa.rect(int_left + time_from_start_project * factor, 80 + i * 40 , duration * factor, 20);
+      	  rectangulo_secundario.attr({fill: "#439CBA", stroke: "#fff", "stroke-width": 0});
+      	 
+      	}
+      });
+
+    });
+  }
+
+  draw_gantt("#{graph_gantt_management_wbsitems_path}.json");

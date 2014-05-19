@@ -1,0 +1,102 @@
+.row-fluid
+  .span3
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;") Presupuesto Meta
+    .individual-panel
+      %table(class="table-bordered table-hover white-table small-font" width="100%")
+        %tbody
+          - @budgets_goal.each do |budget|
+            %tr 
+              -if (budget.cod_budget.length > 7)
+                %td 
+                %td
+                  %a{:href=>"javascript:load_url_ondiv('" + filter_by_budget_management_itembybudgets_path.to_s + "?budget_id=" + budget.id.to_s + "', 'content-load');"}(class="small-font")
+                    = "--"
+                    =budget.description
+                %td
+                  %strong
+                    =number_to_currency(number_with_precision(get_total_cost("", budget.id), :precision => 2).to_s , :unit=>'S/. ') rescue "" 
+
+                %td
+              -else
+                %td(colspan="2")
+                  %strong=budget.description
+                %td
+                  %strong=number_to_currency(number_with_precision(get_total_cost("", budget.id), :precision => 2).to_s , :unit=>'S/. ') rescue ""
+              %td
+                %a(data-method ="delete"){:href=>"javascript:delete_to_url('" + management_budget_path(budget.id).to_s + "', 'right-area');"}
+                  %i(class='icon-remove')
+    %br
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;") Presupuesto Venta
+    .individual-panel
+      %table(class="table-bordered table-hover white-table small-font" width="100%")
+        %tbody
+          - @budgets_sale.each do |budget|
+            %tr 
+              -if (budget.cod_budget.length > 7)
+                %td 
+                %td
+                  %a{:href=>"javascript:load_url_ondiv('" + filter_by_budget_management_itembybudgets_path.to_s + "?budget_id=" + budget.id.to_s + "', 'content-load');"}(class="small-font")
+                    = "--"
+                    =budget.description
+                %td
+                  %strong=number_to_currency(number_with_precision(get_total_cost("", budget.id) , :precision => 2).to_s , :unit=>'S/. ') rescue ""
+                %td
+              -else
+                %td(colspan="2")     
+                  %strong=budget.description
+              %td
+                %a(data-method ="delete"){:href=>"javascript:delete_to_url('" + management_budget_path(budget.id).to_s + "', 'right-area');"}
+                  %i(class='icon-remove')
+  .span9
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;") Partidas
+    .row-fluid
+      .span12
+        .content-load
+    %br
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;")
+        Insumos
+        %span(id="brief-items")
+    .row-fluid
+      .span12
+        .botom-load
+
+#itemsModal.modal.hide.fade(tabindex="-1" role="dialog" aria-hidden="true")
+  .modal-header
+    %button(type="button" class="close" data-dismiss="modal" aria-hidden="true")X
+    %h3
+      Insumos
+  .modal-body
+    %table(class="table-hover white-table small-font table-light"  id="scroll-table" width="100%")
+      %thead
+        %th
+          Codigo
+        %th
+          Nombre
+        %th
+          Unidades
+      %tbody
+        - @inputs.each do |int|
+          %tr
+            %td= int.code
+            %td= int.name
+            %td
+              %table(class="table-hover white-table small-font table-light"  id="scroll-table" width="100%")
+
+                %tbody
+                  - InputUnit.where(input_id: int.id).each do |inpunit|
+                    %tr
+                      %td= int.code.to_s + inpunit.code.to_s
+                      %td= inpunit.unit.name rescue " "
+                      %td(style="text-align: right;" )
+                        %a{href: "#", class: "btn btn-success btn-mini"}
+                          Seleccionar
+
+
+:javascript
+  $(".individual-panel").height($(document).height()/2 -100 );
+  $(".content-load").height($(document).height()/2 - 100); 
+  $(".botom-load").height($(document).height()/2 - 100); 

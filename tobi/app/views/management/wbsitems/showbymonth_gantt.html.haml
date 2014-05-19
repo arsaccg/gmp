@@ -1,0 +1,80 @@
+.group-bar
+  %strong(style="padding-left: 10px;")
+    Distribucion por Meses
+    %div(class="btn-group" style="padding-left: 200px;")
+      %a{:href=>"javascript:load_gantt_month_by_project();"}(class="btn btn-small")
+        =image_tag('calendar.png', :width =>"14px") 
+        Costo por Meses
+      %a{:href=>"javascript:load_measured_month_by_project();"}(class="btn btn-small")
+        =image_tag('calendar.png', :width =>"14px") 
+        Metrado por Meses
+      %a{:href=>"javascript:load_gantt_per_item();"}(class="btn btn-small")
+        =image_tag('calendar.png', :width =>"14px") 
+        Distribucion de Partidas
+      
+.row-fuild
+  .span11
+    .table-month-ganttDAS
+      .contentAS
+        =form_tag save_gantt_management_wbsitems_path, class: "form-horizontal", id: "gantt_form" do
+          %table(class="white-table table table-bordered table-condensed table-stripped")
+            %thead
+              %th
+                Partida
+
+              - in_order = @wbsitems.where("start_date IS NOT NULL").order("`start_date` ASC").first
+              - first_d = @wbsitems.where("start_date IS NOT NULL").minimum(:start_date)
+              - last_d = @wbsitems.where("end_date IS NOT NULL").maximum(:end_date) 
+              - d_months = difference_days(first_d, last_d)/30
+              - duration = d_months.to_i+1
+              - f_month = in_order.start_date 
+
+              - for i in 0..(duration-1)
+                %th
+                  - c_month = f_month + i.month
+                  = get_espanol(c_month.strftime("%B"))
+            %tbody
+              - days_per_month = Hash.new
+              
+              - @wbsitems.each do |item|
+
+                %tr
+                  %td
+                    = hidden_field_tag("data[" + item.id.to_s + "][id_wbs]", item.id)
+                    = "---" * (item.codewbs.length).to_i
+                    = item.codewbs
+                    = item.name
+
+                  -for i in 0..(duration - 1)
+                    %td(style="text-align: right;"){:id => (f_month + i.month).strftime("%-m") + "_" + item.id.to_s}
+
+                - total_days = 0
+                - amount = get_amount(item.codewbs)
+
+                - amount
+                - start_day = Wbsitem.where("codewbs = ? ", item.codewbs ).first.start_date 
+                - end_day = Wbsitem.where("codewbs = ? ", item.codewbs ).first.end_date
+                
+                - if (start_day != nil ) 
+                  - days_between = difference_days(start_day, end_day) + 2          
+                  - amount_per_day = (amount/days_between)
+                  - d_months = (days_between/30).ceil #((end_day-start_day)/60/60/24/30).ceil
+                  - days_for_first_month = difference_days(start_day, start_day.end_of_month)
+                  - if d_months < 2
+                    - days_for_last_month = difference_days(start_day, end_day) + 2 
+                  - else
+                    - days_for_last_month = difference_days(end_day.beginning_of_month, end_day) 
+                    - days_per_month[start_day.strftime("%-m") + "_" + item.id.to_s] = number_with_precision(amount_per_day * days_for_first_month.to_i,  :precision => 2)
+                    - days_per_month[end_day.strftime("%-m") + "_" + item.id.to_s] = number_with_precision(amount_per_day * days_for_last_month.to_i,  :precision => 2) 
+                  - for i in 1..(d_months-2)
+                    - rest = (start_day + i.month).end_of_month.strftime("%-d").to_i
+                    - days_per_month[(start_day + i.month).strftime("%-m") + "_" + item.id.to_s] = number_with_precision(amount_per_day *  rest.to_i,  :precision => 2)
+                  
+                  - days_per_month.each do |c, v|
+                    :javascript
+                      $("#" + "#{c}").text("S/. " + (#{v}).format_currency());
+
+:javascript
+  $(function() {
+    $(".table-gantt").resizable();
+  });
