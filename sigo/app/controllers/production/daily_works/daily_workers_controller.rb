@@ -12,7 +12,6 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
     @fin                = params[:end_date]
 
     if @gruposdetrabajo_id.present? && @inicio.present? && @fin.present?
-      puts '----- Entro al primero ------'
       @dias_habiles =  range_business_days(@inicio,@fin)
       @trabajadores_array = business_days_array(@inicio,@fin,@gruposdetrabajo_id,@dias_habiles)
       gruposdetrabajo = WorkingGroup.find_by_id(@gruposdetrabajo_id)
@@ -28,7 +27,6 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
       end
 
     elsif @gruposdetrabajo_id.blank? && @inicio.present? && @fin.present?
-      puts '----- Entro al segundo ------'
       @dias_habiles =  range_business_days(@inicio,@fin)
       gruposdetrabajos = WorkingGroup.all
       @tareos_total_arrays = []
@@ -51,9 +49,45 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
         render(partial: 'daily_table', :layout => false)
       end
     else
-      puts '----- Entro al tercero ------'
       @pase = 3
       render(partial: 'daily_table', :layout => false)
+    end
+  end
+
+  def search_weekly_work
+    @inicio                = params[:start_date]
+    @fin                   = params[:end_date]
+
+    if @inicio.present? && @fin.present?        
+      @dias_habiles =  range_business_days(@inicio,@fin)
+      gruposdetrabajos = WorkingGroup.all
+      @tareos_total_arrays = []
+      @subcontratista_arrays = []
+      gruposdetrabajos.each do |gruposdetrabajo|
+        temp_tareo = []
+        temp_tareo = business_days_array(@inicio,@fin,gruposdetrabajo.id,@dias_habiles)          
+        if temp_tareo.length != 0 
+          @tareos_total_arrays << temp_tareo
+          subcontratista_nombre = "#{gruposdetrabajo.sector.name} - #{Worker.find_name_front_chief(gruposdetrabajo.front_chief_id)} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Worker.find_name_master_builder(gruposdetrabajo.master_builder_id)}"
+          @subcontratista_arrays << subcontratista_nombre
+        end
+      end
+
+      if @dias_habiles.length == 0
+        @pase = 3
+        render(partial: 'weekly_table', :layout => false)
+      else
+        if @tareos_total_arrays.length != 0
+          @pase = 4
+          render(partial: 'weekly_table', :layout => false)
+        else
+          @pase = 2
+          render(partial: 'weekly_table', :layout => false)
+        end
+      end
+    else 
+      @pase = 3
+      render(partial: 'weekly_table', :layout => false)
     end
   end
 
@@ -92,7 +126,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
           end               
         end              
         # [0]     =>     id                           trabajadores
-        # [1]     =>     nombre                       catalogodetrabajadores
+        # [1]     =>     nombre                       nombreTrabajador
         # [2]     =>     categoria                    catalogotrabajadores
         # [3]     =>     Dias                         exterior calculo de dias
         # [4]     =>     total_horas                  trabajadores 
