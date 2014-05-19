@@ -100,15 +100,13 @@
                 %label.control-label Grupo de Trabajo
                 .input-group
                   %select(name='stock_input[working_group_id]' class = 'select2 form-control' id = 'working_group-select' style='width:100%;padding: 0;border: none;')
-                    - @sectors.each do |x|
-                      %optgroup{:label => "#{x.name}"}
-                        - @working_group.where("sector_id = ?", x.id).each do |y|
-                          - if @head.working_group_id == y.id
-                            %option{:value => "#{y.id}", :selected => true}
-                              = y.sector.name + " - " + y.front_chief.name + " - " + y.master_builder.name + " - " + y.executor.name
-                          - else
-                            %option{:value => "#{y.id}"}
-                              = y.sector.name + " - " + y.front_chief.name + " - " + y.master_builder.name + " - " + y.executor.name
+                    - @working_groups.each do |x|
+                      - if @head.working_group_id == x.id
+                        %option{:value => "#{x.id}", :selected => true}
+                          = x.front_chief.name + " - " + x.master_builder.name + " - " + x.executor.name
+                      - else
+                        %option{:value => "#{x.id}"}
+                          = x.front_chief.name + " - " + x.master_builder.name + " - " + x.executor.name
           .row
             .col-md-12
               .form-group

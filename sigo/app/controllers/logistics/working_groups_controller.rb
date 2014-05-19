@@ -18,7 +18,6 @@ class Logistics::WorkingGroupsController < ApplicationController
     @front_chiefs = Entity.joins(:type_entities).where("type_entities.preffix" => "JF")
     @master_builders = Entity.joins(:type_entities).where("type_entities.preffix" => "MO")
     @executors = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
-    @sectors = Sector.all
     render :new, layout: false
   end
 
@@ -46,7 +45,6 @@ class Logistics::WorkingGroupsController < ApplicationController
     @front_chiefs = Entity.joins(:type_entities).where("type_entities.preffix" => "JF")
     @master_builders = Entity.joins(:type_entities).where("type_entities.preffix" => "MO")
     @executors = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
-    @sectors = Sector.all
     @action = 'edit'
     render layout: false
   end
@@ -87,6 +85,6 @@ class Logistics::WorkingGroupsController < ApplicationController
 
   private
   def item_parameters
-    params.require(:working_group).permit(:front_chief_id, :master_builder_id, :executor_id, :sector_id)
+    params.require(:working_group).permit(:front_chief_id, :master_builder_id, :executor_id)
   end
 end

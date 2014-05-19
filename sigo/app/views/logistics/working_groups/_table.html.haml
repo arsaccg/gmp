@@ -11,8 +11,7 @@
       %table#dt_basic.table.table-striped.table-bordered.table-hover
         %thead
           %tr
-            %th
-              = t('activerecord.attributes.working_group.sector')
+            %th Id
             %th
               = t('activerecord.attributes.working_group.front_chief')
             %th
@@ -24,8 +23,8 @@
         %tbody
           - @items.each do |unit|
             %tr
-              %td
-                = unit.sector.name
+              %td 
+                = unit.id
               %td 
                 = unit.front_chief.name
               %td 

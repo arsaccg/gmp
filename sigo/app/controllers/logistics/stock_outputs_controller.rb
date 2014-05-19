@@ -41,8 +41,7 @@ class Logistics::StockOutputsController < ApplicationController
     @articles = Article.all
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
     @phases = Phase.where("category LIKE 'phase'")
-    @sectors = Sector.all
-    @working_group = WorkingGroup.all
+    @working_groups = WorkingGroup.all
     render layout: false
   end
 
@@ -54,9 +53,8 @@ class Logistics::StockOutputsController < ApplicationController
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @articles = Article.all
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
-    @phases = Phase.where("category LIKE 'phase2'")
-    @sectors = Sector.all
-    @working_group = WorkingGroup.all
+    @phases = Phase.where("category LIKE 'phase'")
+    @working_groups = WorkingGroup.all
     @reg_n = Time.now.to_i
     @arrItems = Array.new
     @head.stock_input_details.each do |sid|
