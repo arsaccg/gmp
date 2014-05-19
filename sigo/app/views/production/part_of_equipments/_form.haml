@@ -19,10 +19,10 @@
           %section.col.col-4
             %label.label Proveedor
             %label.input
-              %select.form-control#ent{:name =>"part_of_equipment[entity_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %select.form-control#ent{:name =>"part_of_equipment[subcontract_of_equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
                 -if @action =="edit"
                   -@subcon.each do |subcon|
-                    -if @partofequipment.entity_id== subcon.id
+                    -if @partofequipment.subcontract_of_equipment_id== subcon.id
                       %option{:value => "#{subcon.id}", :selected=>"selected"}
                         = subcon.entity.name
                     -else
@@ -36,7 +36,7 @@
           %section.col.col-4
             %label.label Equipos
             %label.input
-              %select.form-control#equipment{:name =>"part_of_equipment[equipment]", :style => 'width:100%;padding: 0;border: none;'}
+              %select.form-control#equipment{:name =>"part_of_equipment[equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
 
 
 
@@ -77,10 +77,10 @@
           .col.col-4
             %label.label Tipo y cantidad de Combustible
             %label.input.col-sm-6
-              %select.form-control#fuel{:name =>"part_of_equipment[sub_group_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %select.form-control#fuel{:name =>"part_of_equipment[subcategory_id]", :style => 'width:100%;padding: 0;border: none;'}
                 -if @action =="edit"
                   -@type.each do |fuel|
-                    -if @partofequipment.sub_group_id == fuel.id
+                    -if @partofequipment.subcategory_id == fuel.id
                       %option{:value => "#{fuel.id}", :selected=>"selected"}
                         = fuel.name
                     -else
@@ -287,12 +287,15 @@
           item = {};
           item['name'] = value.name;
           item['id'] = value.id;
+          item['unit'] = value.unit_of_measurement_id;
           newOptions.push(item);
         });
+        $('#equipment').empty();
         $.each(newOptions, function(key,value){
-          $('#s2id_equipment').append(
+          $('#equipment').append(
             $("<option></option>").attr("value", value.id).text(value.name)
           )
+          $('.form-control.unit').attr("value", value.unit)
         });
       });
   }

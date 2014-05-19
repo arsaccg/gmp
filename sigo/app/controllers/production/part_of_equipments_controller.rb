@@ -2,6 +2,9 @@ class Production::PartOfEquipmentsController < ApplicationController
   def index
     @company = params[:company_id]
     @partofequipment = PartOfEquipment.all
+    @subcontracts = SubcontractEquipment.all
+    @article = Article.all
+    @worker = Worker.all
     render layout: false
   end
 
@@ -85,11 +88,24 @@ class Production::PartOfEquipmentsController < ApplicationController
   end
 
   def get_equipment_form_subcontract
-    @equipment= Array.new
-    SubcontractEquipment.where("id = ?", params[:subcontract_id]).each do |sce|
-      @equipment = sce.subcontract_equipment_details
+    equip = Array.new
+    articles = Array.new
+    @equipment = Array.new
+    unit=''
+    equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", params[:subcontract_id])
+    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
+      articles = arti.articles
     end
-    render json: {:equipment => @equipment}  
+    equip.each do |eq|
+      articles.each do |ar|
+        if ar.id==eq.article_id
+          @equipment << ar
+          unit = ar.unit_of_measurement_id
+        end
+      end
+    end
+    @unit = UnitOfMeasurement.find(unit).name
+    render json: {:equipment => @equipment, :unit =>@unit}  
   end
 
   def add_more_register
@@ -102,7 +118,7 @@ class Production::PartOfEquipmentsController < ApplicationController
 
   private
   def partOfEquipment_parameters
-    params.require(:part_of_equipment).permit(:code, :entity_id, :equipment, :worker_id, :hour_meter, :mileage, :dif, :sub_group_id, :fuel_amount, :h_stand_by, :h_maintenance, :date, :total_hours, 
-      part_of_equipment_details_attributes: [:id, :part_of_equipment_id, :work_group_id, :sub_sector_id, :sub_phase_id, :efective_hours, :unitname, :_destroy])
+    params.require(:part_of_equipment).permit(:code, :subcontract_of_equipment_id, :equipment_id, :worker_id, :initial_km, :final_km, :dif, :subcategory_id, :fuel_amount, :h_stand_by, :h_maintenance, :date, :total_hours, 
+      part_of_equipment_details_attributes: [:id, :part_of_equipment_id, :work_group_id, :sub_sector_id, :subphase_id, :effective_hours, :unit, :_destroy])
   end
 end 
