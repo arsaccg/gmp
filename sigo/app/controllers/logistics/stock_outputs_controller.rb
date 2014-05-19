@@ -3,6 +3,14 @@ class Logistics::StockOutputsController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 
   def index
+    if params[:company_id] != nil
+      @company = params[:company_id]
+      # Cache -> company_id
+      cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 120.minutes)
+      Rails.cache.write('company_id', @company)
+    else
+      @company = Rails.cache.read('company_id')
+    end
     @head = StockInput.where("input = 0")
     @purchaseOrders = PurchaseOrder.all.where("state LIKE 'approved'")
     render layout: false
@@ -25,23 +33,28 @@ class Logistics::StockOutputsController < ApplicationController
   end
 
   def new
+    @company = Rails.cache.read('company_id')
     @head = StockInput.new
-    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
+    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @periods = LinkTime.group(:year, :month)
-    @warehouses = Warehouse.all
+    @warehouses = Warehouse.where(company_id: "#{@company}")
     @articles = Article.all
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
+    @phases = Phase.where("category LIKE 'phase'")
+    @working_groups = WorkingGroup.all
     render layout: false
   end
 
   def edit
-    @company = params[:company_id]
+    @company = Rails.cache.read('company_id')
     @head = StockInput.find(params[:id])
-    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
+    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @periods = LinkTime.group(:year, :month)
-    @warehouses = Warehouse.all
+    @warehouses = Warehouse.where(company_id: "#{@company}")
     @articles = Article.all
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
+    @phases = Phase.where("category LIKE 'phase'")
+    @working_groups = WorkingGroup.all
     @reg_n = Time.now.to_i
     @arrItems = Array.new
     @head.stock_input_details.each do |sid|
@@ -77,6 +90,6 @@ class Logistics::StockOutputsController < ApplicationController
 
   private
   def stock_input_parameters
-    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :document, :issue_date, :description, :input, stock_input_details_attributes: [:id, :stock_input_id, :article_id, :amount, :equipment_id, :_destroy])
+    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :document, :issue_date, :description, :input, :phase_id, :working_group_id, stock_input_details_attributes: [:id, :stock_input_id, :article_id, :amount, :equipment_id, :_destroy])
   end
 end

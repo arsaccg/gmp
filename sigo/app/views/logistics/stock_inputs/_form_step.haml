@@ -164,7 +164,9 @@
         ids_items[index] = $(this).val();
       });
 
-      data = { cost_center_id: 1, authenticity_token: "#{form_authenticity_token}", ids_items: ids_items };
+      var supplier_id = $("#supplier-selected").val();
+
+      data = { cost_center_id: 1, authenticity_token: "#{form_authenticity_token}", ids_items: ids_items, supplier_id: supplier_id };
       load_items_delivery_order_ajax('#{more_items_from_pod_logistics_stock_inputs_path}', 'modalPodContent', data);
       $('#modalPurchaseOrderItems').modal('toggle', {
         keyboard: false,

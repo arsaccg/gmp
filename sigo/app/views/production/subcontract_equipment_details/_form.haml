@@ -163,11 +163,65 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
+            'subcontract_equipment_detail[description]':{
+              required : true
+            },
+            'subcontract_equipment_detail[brand]':{
+              required : true
+            },
+            'subcontract_equipment_detail[series]':{
+              required : true
+            },
+            'subcontract_equipment_detail[model]':{
+              required : true
+            },
+            'subcontract_equipment_detail[date_in]':{
+              required : true
+            },
+            'subcontract_equipment_detail[year]':{
+              required : true
+            },
+            'subcontract_equipment_detail[price_no_igv]':{
+              required : true
+            },
+            'subcontract_equipment_detail[amount_hours]':{
+              required : true
+            },
+            'subcontract_equipment_detail[contracted_amount]':{
+              required : true
+            }
             
           },
 
           // Messages for form validation
           messages : {
+            'subcontract_equipment_detail[description]':{
+              required : 'Por favor, ingrese una descripción.'
+            },
+            'subcontract_equipment_detail[brand]':{
+              required : 'Por favor, señale la marca del equipo.'
+            },
+            'subcontract_equipment_detail[series]':{
+              required : 'Por favor, señale la serie del equipo.'
+            },
+            'subcontract_equipment_detail[model]':{
+              required : 'Por favor, señale el modelo.'
+            },
+            'subcontract_equipment_detail[date_in]':{
+              required : 'Por favor, seleccione la fecha de ingreso.'
+            },
+            'subcontract_equipment_detail[year]':{
+              required : 'Por favor, señale el año del equipo.'
+            },
+            'subcontract_equipment_detail[price_no_igv]':{
+              required : 'Por favor, ingrese el precio sin IGV.'
+            },
+            'subcontract_equipment_detail[amount_hours]':{
+              required : 'Por favor, señale la cantidad de horas.'
+            },
+            'subcontract_equipment_detail[contracted_amount]':{
+              required : 'Por favor, señale la cantidad de horas contratadas.'
+            }
             
           },
 

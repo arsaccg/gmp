@@ -4,7 +4,7 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
     @subcontract = params[:subcontract]
     @partequi = SubcontractEquipmentDetail.where("subcontract_equipment_id= ?", @subcontract)
     @article= Array.new
-    TypeOfArticle.where("name LIKE '%EQUIPOS%'").each do |arti|
+    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
       @article = arti.articles
     end
     
@@ -21,7 +21,7 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
     @subcontract = params[:subcontract]
     @partequi = SubcontractEquipmentDetail.new
     @article= Array.new
-    TypeOfArticle.where("name LIKE '%EQUIPOS%'").each do |arti|
+    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
       @article = arti.articles
     end
     @rental = RentalType.all
@@ -48,7 +48,7 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
     @subcontract = params[:subcontract]
     @partequi = SubcontractEquipmentDetail.find(params[:id])
     @article = Array.new
-    TypeOfArticle.where("name LIKE '%EQUIPOS%'").each do |arti|
+    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
       @article = arti.articles
     end
     @rental = RentalType.all
@@ -60,7 +60,7 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
     subcontract = SubcontractEquipmentDetail.find(params[:id])
     if subcontract.update_attributes(partequi_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: params[:company_id], subcontract: params[:subcontract]
     else
       subcontract.errors.messages.each do |attribute, error|
         flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "

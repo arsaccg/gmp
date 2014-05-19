@@ -144,10 +144,11 @@
       if($(this).is(':checked')){
         $('#subcontract_initial_amortization_number').removeAttr('readonly');
         $('#subcontract_initial_amortization_percent').attr('readonly', 'readonly')
+        $('#percent-amort').click();
       }else{
         $('#subcontract_initial_amortization_number').attr('readonly', 'readonly')
         $('#subcontract_initial_amortization_percent').removeAttr('readonly')
-        $('#percent-amort').click()
+        $('#percent-amort').click();
       }
     });
 
@@ -155,10 +156,11 @@
       if($(this).is(':checked')){
         $('#subcontract_initial_amortization_percent').removeAttr('readonly');
         $('#subcontract_initial_amortization_number').attr('readonly', 'readonly')
+        $('#number-amort').click();
       }else{
         $('#subcontract_initial_amortization_percent').attr('readonly', 'readonly')
         $('#subcontract_initial_amortization_number').removeAttr('readonly')
-        $('#number-amort').click()
+        $('#number-amort').click();
       }
     });
 

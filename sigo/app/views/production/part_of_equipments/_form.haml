@@ -1,0 +1,298 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Parte de Equipo
+  .widget-body
+    = simple_form_for([:production, @partofequipment], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row{ 'style' => 'display:none' }
+          %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
+        .row
+          .col.col-4
+            %label.label Número de Parte
+            %label.input
+              = f.input :code, placeholder: "Numero", input_html: { class: 'form-control' }, label: false
+
+        %br
+        .row
+          %section.col.col-4
+            %label.label Proveedor
+            %label.input
+              %select.form-control#ent{:name =>"part_of_equipment[entity_id]", :style => 'width:100%;padding: 0;border: none;'}
+                -if @action =="edit"
+                  -@subcon.each do |subcon|
+                    -if @partofequipment.entity_id== subcon.id
+                      %option{:value => "#{subcon.id}", :selected=>"selected"}
+                        = subcon.entity.name
+                    -else
+                      %option{:value => "#{subcon.id}"}
+                      = subcon.entity.name
+                -else
+                  -@subcon.each do |subcon|
+                    %option{:value => "#{subcon.id}"}
+                      = subcon.entity.name
+
+          %section.col.col-4
+            %label.label Equipos
+            %label.input
+              %select.form-control#equipment{:name =>"part_of_equipment[equipment]", :style => 'width:100%;padding: 0;border: none;'}
+
+
+
+          %section.col.col-4
+            %label.label Operador
+            %label.input
+              %select.form-control#worker{:name =>"part_of_equipment[worker_id]", :style => 'width:100%;padding: 0;border: none;'}
+                -if @action =="edit"
+                  -@worker.each do |wo|
+                    -if @partofequipment.worker_id== wo.id
+                      %option{:value => "#{wo.id}", :selected=>"selected"}
+                        = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
+                    -else
+                      %option{:value => "#{wo.id}"}
+                      = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
+                -else
+                  -@worker.each do |wo|
+                    %option{:value => "#{wo.id}"}
+                      = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
+        %br
+        .row
+          .col.col-8
+            %label.label Horometro/Kilometraje
+            .col.col-4
+              %label.label Inicial
+              %label.input#hm
+                = f.input :initial_km, placeholder: "Inicial", input_html: { class: 'form-control'}, label: false,  :onchange =>'calculateHours();' 
+            .col.col-4
+              %label.label Final
+              %label.input#km
+                = f.input :final_km, placeholder: "Final", input_html: { class: 'form-control'}, label: false, :onchange =>'calculateHours();'  
+            .col.col-4
+              %label.label Diferencia
+              %label.input
+                = f.input :dif, input_html: { class: 'form-control' }, label: false, :readonly => true
+        %br
+        .row
+          .col.col-4
+            %label.label Tipo y cantidad de Combustible
+            %label.input.col-sm-6
+              %select.form-control#fuel{:name =>"part_of_equipment[sub_group_id]", :style => 'width:100%;padding: 0;border: none;'}
+                -if @action =="edit"
+                  -@type.each do |fuel|
+                    -if @partofequipment.sub_group_id == fuel.id
+                      %option{:value => "#{fuel.id}", :selected=>"selected"}
+                        = fuel.name
+                    -else
+                      %option{:value => "#{fuel.id}"}
+                        = fuel.name
+                -else
+                  -@type.each do |fuel|
+                    %option{:value => "#{fuel.id}"}
+                      = fuel.name
+            %label.input.col-sm-6
+              = f.input :fuel_amount, input_html: { class: 'form-control' }, label: false
+          .col.col-4
+            %label.label H. stand by
+            %label.input
+              = f.input :h_stand_by, placeholder: " H. stand by", input_html: { class: 'form-control' }, label: false
+
+          .col.col-4
+            %label.label H. Mantenimiento
+            %label.input
+              = f.input :h_maintenance, placeholder: "  H. Mantenimiento", input_html: { class: 'form-control' }, label: false
+
+        %br
+        .row
+          .col.col-4
+            %label.label Fecha de ingreso
+            .col.col-10
+              .form-group
+                .input-group
+                  = f.input :date,as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
+                  %span.input-group-addon
+                    %i.fa.fa-calendar.fa-md.fa-fw
+
+          .col.col-4
+            %label.label Total de Horas Efectivas
+            %label.input
+              = f.input :total_hours, input_html: { class: 'form-control'}, label: false, :readonly => true
+
+
+        %fieldset
+          %legend Registro de Partidas
+          .row
+            %section.col.col-2
+              %div
+                %a(href="javascript:add_more_register();" id="btn-add-article" class="btn btn-success" role="button")
+                  Agregar Registro
+
+          .col-lg-12
+            %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
+              %thead
+                %tr
+                  %th.col-lg-3 Grupo de Trabajo
+                  %th.col-lg-2 Frente
+                  %th.col-lg-2 Fase
+                  %th.col-lg-2 Horas Efectivas
+                  %th.col-lg-2 Unidad de Medida
+                  %th.col-lg-1 Eliminar
+              %tbody(id="part_register_table")
+              
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    $('select').select2();
+
+    var subcontract_id = $("#ent").val();
+    complete_equipment("#{get_equipment_form_subcontract_production_part_of_equipments_path}", subcontract_id, "#{form_authenticity_token}", "0302");
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_part_of_equipment'));
+    }
+
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'part_of_equipment[code]':{
+              required : true
+            },
+            'part_of_equipment[initial_km]':{
+              required : true
+            },
+            'part_of_equipment[final_km]':{
+              required : true
+            },
+            'part_of_equipment[fuel_amount]':{
+              required : true
+            },
+            'part_of_equipment[h_stand_by]':{
+              required : true
+            },
+            'part_of_equipment[h_maintenance]':{
+              required : true
+            },
+            'part_of_equipment[date]':{
+              required : true
+            }
+            
+          },
+
+          // Messages for form validation
+          messages : {
+            'part_of_equipment[code]':{
+              required : 'Por favor, ingrese el código de parte.'
+            },
+            'part_of_equipment[initial_km]':{
+              required : 'Por favor, ingrese el valor inicial.'
+            },
+            'part_of_equipment[final_km]':{
+              required : 'Por favor, ingrese el valor final'
+            },
+            'part_of_equipment[fuel_amount]':{
+              required : 'Por favor, ingrese la cantidad de combustible'
+            },
+            'part_of_equipment[h_stand_by]':{
+              required : 'Por favor, ingrese el h. stand by'
+            },
+            'part_of_equipment[h_maintenance]':{
+              required : 'Por favor, ingrese el h. mantenimiento'
+            },
+            'part_of_equipment[date]':{
+              required : 'Por favor, ingrese la fecha.'
+            }
+            
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
+
+  function add_more_register(){
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{add_more_register_production_part_of_equipments_path}', 'part_register_table', data, 0, 'POST');
+  }
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
+
+  $('#ent').change(function(){
+    var subcontract_id = $(this).val();
+    complete_equipment("#{get_equipment_form_subcontract_production_part_of_equipments_path}", subcontract_id, "#{form_authenticity_token}", "0302");
+  });
+
+  $('#ent').keyup(function(){
+    var subcontract_id = $(this).val();
+    complete_equipment("#{get_equipment_form_subcontract_production_part_of_equipments_path}", subcontract_id, "#{form_authenticity_token}", "0302");
+  });
+
+  $('#hm').change(function(){
+    var hm = $('#part_of_equipment_initial_km').val();
+    var km = $('#part_of_equipment_final_km').val();
+    if(hm!='' && km!=''){
+      var dif= km-hm;
+      $('#part_of_equipment_dif').val(dif);
+    }else{
+      $('#part_of_equipment_dif').val('');
+    }
+  });
+
+  $('#km').change(function(){
+    var hm = $('#part_of_equipment_initial_km').val();
+    var km = $('#part_of_equipment_final_km').val();
+    if(hm!='' && km!=''){
+      var dif= km-hm;
+      $('#part_of_equipment_dif').val(dif);
+    }else{
+      $('#part_of_equipment_dif').val('');
+    }
+  });
+
+  function complete_equipment(url, subcontract_id, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { subcontract_id: subcontract_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.equipment, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        $.each(newOptions, function(key,value){
+          $('#s2id_equipment').append(
+            $("<option></option>").attr("value", value.id).text(value.name)
+          )
+        });
+      });
+  }
