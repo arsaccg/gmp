@@ -11,6 +11,7 @@
         %thead
           %tr
             %th N°
+            %th Nombre de Grupo de Trabajo
             %th Sector
             %th Jefe de Frente
             %th Ejecutor
@@ -21,6 +22,8 @@
             %tr
               %td
                 = working_group.id
+              %td
+                = working_group.name
               %td 
                 = working_group.sector.name
               %td
