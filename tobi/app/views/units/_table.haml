@@ -1,0 +1,16 @@
+- @units.each do |unit|
+  %tr
+    %td= unit.symbol
+    %td= unit.name
+    %td
+      %a{href: "javascript:load_url_ondiv('" + edit_unit_path(unit.id)+ "')", class: 'btn btn-default btn-mini' }
+        Editar
+      %a{href: "javascript:delete_unit('" + unit_path(unit.id)+ "')", class: 'btn btn-danger btn-mini' }
+        Eliminar
+        
+:javascript 
+  function delete_unit(url_unit){
+    delete_to_url(url_unit, 'right-area');
+  }
+  
+  

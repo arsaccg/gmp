@@ -4,8 +4,16 @@ class Logistics::StockInputsController < ApplicationController
 
   def index
     #@input = params[:input]
+    if params[:company_id] != nil
+      @company = params[:company_id]
+      # Cache -> company_id
+      cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 120.minutes)
+      Rails.cache.write('company_id', @company)
+    else
+      @company = Rails.cache.read('company_id')
+    end
     @head = StockInput.where("input = 1")
-    @purchaseOrders = PurchaseOrder.all.where("state LIKE 'approved'")
+    @purchaseOrders = PurchaseOrder.get_approved_by_company(@company)
     render layout: false
   end
 
@@ -34,21 +42,21 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def new
-    #@company = params[:company_id]
+    @company = Rails.cache.read('company_id')
     @head = StockInput.new
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @periods = LinkTime.group(:year, :month)
-    @warehouses = Warehouse.all
+    @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     render layout: false
   end
 
   def edit
-    @company = params[:company_id]
+    @company = Rails.cache.read('company_id')
     @head = StockInput.find(params[:id])
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @periods = LinkTime.group(:year, :month)
-    @warehouses = Warehouse.all
+    @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     @reg_n = Time.now.to_i
     @arrItems = Array.new
@@ -75,8 +83,8 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def show_purchase_order_item_field
-    supplier = Entity.find(params[:id])
-    @tableItems = supplier.purchase_orders.where("state LIKE 'approved'")
+    @company = Rails.cache.read('company_id')
+    @tableItems = PurchaseOrder.get_approved_by_company_and_supplier(@company, params[:id])
     render(partial: 'table_items_order', :layout => false)
   end
 
@@ -90,16 +98,21 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def more_items_from_pod
+    @company = Rails.cache.read('company_id')
     @reg_n = Time.now.to_i
-    ids_items = 0
+    @ids_items = 0
     if (params[:ids_items] != nil)
-      ids_items = params[:ids_items].join(",")
+      @ids_items = params[:ids_items].join(",")
     end
     @tableItems = Array.new
-    PurchaseOrder.where("state LIKE 'approved'").each do |x|
-      x.purchase_order_details.where("received IS NULL").where("id NOT IN (#{ids_items})").each do |y|
-        @tableItems << y
-      end
+    #PurchaseOrder.where("state LIKE 'approved'").each do |x|
+    #  x.purchase_order_details.where("received IS NULL").where("id NOT IN (#{ids_items})").each do |y|
+    #    @tableItems << y
+    #  end
+    #end
+    logger.info "@ids_items:" + @ids_items
+    PurchaseOrderDetail.get_approved_more_items(@company, params[:supplier_id], @ids_items).each do |y|
+      @tableItems << y
     end
     render(partial: 'modal_more_items', :layout => false)
   end

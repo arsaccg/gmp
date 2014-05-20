@@ -1,0 +1,50 @@
+- @valorizations.each do |val|
+  %h4
+    Facturas
+    %br
+    %span
+    %a{:href=>"javascript:load_url_ondiv('#{new_administration_invoice_path}?valorization_id=#{val.id}&&actionForm=new_invoice', 'right-area')"}(class="btn btn-success btn-small")
+      Registrar Factura
+  %table(class="white-table table-bordered table table-condensed" style="width: 100%;")
+    %thead
+      %th
+        Numero de Documento
+      %th
+        Monto
+      %th
+        Fecha de Emision
+      %th
+        Fecha de Presentacion
+      %th
+        Estado
+      %th
+        Nota de Credito
+      %th
+        Observaciones
+      %th
+        Acciones
+    %tbody
+
+      - val.invoices.each do |invoice|
+        %tr
+          %td
+            = invoice.document_number
+          %td
+            = invoice.amount
+          %td
+            = invoice.issue_date
+          %td
+            = invoice.filing_date
+          %td
+            = invoice.status
+          %td
+            = invoice.credit_note
+          %td
+            = invoice.observations
+          %td
+            %a(href="javascript:load_url_ondiv('#{administration_charges_path}?invoice_id=#{invoice.id}', 'right-area')" class="btn btn-success")
+              Ver Cobros
+            %a(href="javascript:load_url_ondiv('#{administration_charges_path}?invoice_id=#{invoice.id}', 'right-area')" class="btn btn-success")
+              Registrar Cobro
+            %a(href="javascript:load_url_ondiv('#{edit_administration_invoice_path(invoice.id)}?actionForm=edit_invoice', 'right-area')" class="btn btn-success")
+              Editar Factura

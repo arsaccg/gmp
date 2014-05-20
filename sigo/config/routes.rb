@@ -183,6 +183,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_stock_input_item_field'
       end
     end
+    resources :working_groups
   end
 
   namespace :biddings do
@@ -236,8 +237,18 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :category_of_workers
+    resources :part_of_equipments do
+      collection do
+        post 'get_equipment_form_subcontract'
+        post 'add_more_register'
+      end
+    end
     resources :working_groups
-    resources :subcontract_equipment_details
+    resources :subcontract_equipment_details do
+      collection do
+        post 'get_component_from_article'
+      end
+    end
     resources :rental_types
     resources :subcontract_equipments
     resources :subcontracts do
@@ -249,14 +260,11 @@ ArsacLogistica::Application.routes.draw do
       resources :daily_workers do
         collection do
           post 'search_daily_work'
-        end
-      end
-
-      resources :weekly_workers do
-        collection do
           post 'search_weekly_work'
         end
       end
+
+      resources :weekly_workers
     end
   end
 

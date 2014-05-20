@@ -1,0 +1,111 @@
+.row-fluid
+  .span12
+    %select(class="span12 small-font" id="budget-select")
+      - @budgets.each do |budget|
+        %option{:value => budget.id}
+          = "--" * budget.cod_budget.length
+          = budget.description
+.row-fluid
+  .span12
+    .content-load
+      .items-panel
+        %table(class="table-bordered table-hover white-table small-font")
+          %thead
+            %th Codigo
+            %th Descripcion
+            %th Precio
+            %th Metrado
+          %tbody
+%br
+.row-fluid
+  .span4
+    .botom-load 
+      %table(class="table-bordered table-hover white-table small-font" width="100%")
+        %thead
+          %th
+            Nombre
+        %tbody
+          - @wbsitems.each do |wbsitem|
+            %tr{:id=>"wbsitem_" + wbsitem.codewbs.to_s}
+              %td
+                = "----" * wbsitem.codewbs.length
+                = wbsitem.codewbs
+              
+                -if is_the_last(wbsitem.codewbs.to_s)
+                  %a{:href=>"javascript:selectwbs('" + wbsitem.codewbs.to_s + "');"}
+                    = wbsitem.name
+                - else 
+                  = wbsitem.name
+  .span8
+    .botom-load 
+      %form(id="form-wbs" action="#" name="itemform" method="POST" class="form-horizontal form-wbs")
+        .control-group
+          %table(class="table-bordered table  table-condensed table-hover white-table small-font" width="100%")
+            %thead
+              %th Presupuesto
+              %th Orden
+              %th Descripcion
+              %th Metrado
+              %th Costo
+              %th Total
+              %th Acciones
+            %tbody(id="table_wbs")
+            - n = 0
+            - @wbsitems_arr.each do |itembywbs|
+              - n = n + 1
+              %tr{:class=>"wbs_" + itembywbs.wbscode.to_s}
+                %td
+                  = itembywbs.budget.description
+                %td 
+                  = itembywbs.order_budget rescue ""
+                %td 
+                  = itembywbs.subbudgetdetail rescue ""
+                %td 
+                  - rand_code = Time.now.to_f.to_s + n.to_s
+                  %input(type="text" class="input-small small-font"){:name=>"itemform[" + rand_code + "][measured]", :value=>itembywbs.measured.to_s, :id => "itemwbs_" + itembywbs.id.to_s, :onblur => "update_table('" + itembywbs.id.to_s + "', '" + itembywbs.price.to_s + "')" }
+                  %input(type="hidden"){:name=>"itemform[" + rand_code + "][price]", :value=>itembywbs.price}
+                  %input(type="hidden"){:name=>"itemform[" + rand_code + "][budget]", :value=>itembywbs.budget_id}
+                  %input(type="hidden"){:name=>"itemform[" + rand_code + "][coditem]", :value=>itembywbs.coditem}
+                  %input(type="hidden"){:name=>"itemform[" + rand_code + "][wbscode]", :value=>itembywbs.wbscode}
+                %td 
+                  = number_to_currency(number_with_precision(itembywbs.price , :precision => 2).to_s , :unit=>'S/. ') rescue ""
+                %td
+                  %strong
+                    %span{:id => "total_" + itembywbs.id.to_s}
+                      = number_to_currency(number_with_precision((itembywbs.measured.to_f * itembywbs.price.to_f).to_s, :precision => 2).to_s , :unit=>'S/. ') rescue ""
+                %td
+                  %a(class="btn btn-mini btn-danger"){:href=>"javascript:delete_ajax('#{management_itembywbs_path(itembywbs.id)}')"}
+                    %i(class="icon-trash") 
+:javascript 
+
+  var selected_wbs;
+  var dropdown_budget;
+
+  $(".content-load").height($(document).height()-400);
+  $(".botom-load").height(200);
+
+  $("#budget-select").on("change", function(event){
+    dropdown_budget = $("#budget-select").val();
+    load_url_ondiv("#{get_items_by_budget_management_wbsitems_path.to_s}?budget_id=" + dropdown_budget, 'items-panel');
+  });
+
+  function selectwbs(item){
+    $("#wbsitem_" + selected_wbs).removeClass("info");
+    $(".wbs_" + selected_wbs).fadeOut('fast');
+    selected_wbs = item
+    $("#wbsitem_" + item).addClass("info"); 
+    $(".wbs_" + item).fadeIn('fast');
+  }
+
+  function delete_ajax(url){
+    delete_to_url(url + "?project_id=" + project_selected_data['id'] + "&wbscode=" + selected_wbs, 'form-wbs' );
+  }
+ 
+  function update_table(id, price){
+    $("#total_" + id).text("S/. " + (price * $("#itemwbs_" + id).val()).toFixed(2));
+    post_to_url("#{save_data_management_itembywbses_path}", 'form-wbs', 'items-panel');
+  }
+
+  $("[class*='wbs_']").fadeOut('fast');
+ 
+  load_url_ondiv("#{get_items_by_budget_management_wbsitems_path.to_s}?budget_id=" + $("#budget-select").val(), 'items-panel');

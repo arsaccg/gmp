@@ -1,0 +1,25 @@
+%h3 Insumos
+%a{href: "javascript:load_inputs_new()", class: "btn btn-success"}
+  Anadir
+%br
+%br
+%table(class="table-hover white-table small-font table-light"  id="scroll-table" width="100%")
+  %thead
+    %th
+      Codigo
+    
+    %th
+      Nombre
+    %th
+      Unidades
+  %tbody
+    = render :partial => 'table'
+    
+    
+:javascript
+
+
+
+  function load_inputs_new(){
+    load_url_ondiv("#{new_input_path}", 'right-area');
+  }

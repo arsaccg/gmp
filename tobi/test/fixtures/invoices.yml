@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  valorization_id: 1
+  amount: 1.5
+  issue_date: 2013-11-07
+  filing_date: 2013-11-07
+  status: MyString
+  credit_note: MyString
+  observations: MyString
+
+two:
+  valorization_id: 1
+  amount: 1.5
+  issue_date: 2013-11-07
+  filing_date: 2013-11-07
+  status: MyString
+  credit_note: MyString
+  observations: MyString

@@ -253,9 +253,9 @@
   }
 
   function minmax(value, min, max){
-    if(parseInt(value) < min || isNaN(value)) 
+    if(parseFloat(value) < min || isNaN(value)) 
       return min; 
-    else if(parseInt(value) > max) 
+    else if(parseFloat(value) > max) 
       return max; 
     else return value;
   }

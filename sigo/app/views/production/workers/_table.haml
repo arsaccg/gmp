@@ -34,7 +34,8 @@
               %td 
                 = worker.maternal_surname
               %td
-                = worker.category_of_worker.name
+                - if worker.category_of_worker != nil
+                  = worker.category_of_worker.name
               %td
                 = worker.email
               %td 

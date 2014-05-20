@@ -2,14 +2,7 @@ class Production::SubcontractsController < ApplicationController
   def index
     # General
     @company = params[:company_id]
-    @type = params[:type]
-
-    if @type == 'subcontract'
-      @subcontracts = Subcontract.where("type LIKE 'subcontract'")
-    elsif @type == 'equipment'
-      @subcontracts = Subcontract.where("type LIKE 'equipment'")
-    end
-
+    @subcontracts = Subcontract.all
     render layout: false
   end
 
@@ -24,12 +17,9 @@ class Production::SubcontractsController < ApplicationController
       @suppliers = supply.entities
     end
     @company = params[:company_id]
-    @type = params[:type]
-
-    if @type == 'subcontract'
-      @articles = TypeOfArticle.find(4).articles
-    elsif @type == 'equipment'
-      @articles = TypeOfArticle.find(3).articles
+    @articles= Array.new
+    TypeOfArticle.where("name LIKE '%subcontratos%'").each do |arti|
+      @articles = arti.articles
     end
 
     render layout: false
@@ -68,12 +58,9 @@ class Production::SubcontractsController < ApplicationController
       @suppliers = supply.entities
     end
     @company = params[:company_id]
-    @type = params[:type]
-
-    if @type == 'subcontract'
-      @articles = TypeOfArticle.find(4).articles
-    elsif @type == 'equipment'
-      @articles = TypeOfArticle.find(3).articles
+    @articles= Array.new
+    TypeOfArticle.where("name LIKE '%subcontratos%'").each do |arti|
+      @articles = arti.articles
     end
 
     render layout: false

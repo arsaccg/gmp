@@ -1,0 +1,18 @@
+%table(class="white-table table-bordered table table-condensed")
+  %thead
+    %th Codigo
+    %th Descripcion
+    %th Precio
+    %th Metrado
+  %tbody
+    - @itembywbs.each do |item|
+      %tr
+        %td
+          = item.item_id
+        %td
+          = item.wbsitem.name
+        %td
+          = number_to_currency(number_with_precision((item.price).to_s, :precision => 2).to_s , :unit=>'S/. ') 
+        %td
+          = number_with_precision(item.measured, :precision => 2).to_s
+     

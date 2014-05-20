@@ -1,0 +1,21 @@
+== README
+
+Ruby version : 1.9.3
+Rails version : 4.0
+
+System Dependencies:
+====================
+- mysql > 5.0
+
+Configuration:
+==============
+
+Database Initialization:
+========================
+
+Run the follow commands at the first time
+
+$ rake db:create
+$ rake db:migrate
+$ rake db:sedd
+

@@ -12,6 +12,8 @@
         %thead
           %tr
             %th
+              = t('activerecord.attributes.warehouse.cost_center')
+            %th
               = t('activerecord.attributes.warehouse.name')
             %th
               = t('activerecord.attributes.warehouse.location')
@@ -20,6 +22,8 @@
         %tbody
           - @items.each do |unit|
             %tr
+              %td 
+                = unit.cost_center.name
               %td 
                 = unit.name
               %td

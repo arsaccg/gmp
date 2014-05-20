@@ -1,0 +1,19 @@
+%h4 
+  = Budget.where(:id => @valorization.budget_id).first.description
+%h5 
+  Valorizacion N 
+  = @valorization.name
+  del Mes de
+  = @valorization.month
+
+%br
+.row-fuild
+  .span12
+    = render :partial => "table"
+
+
+ 
+:javascript
+  $(function() {
+    $(".table-gantt").resizable();
+  });

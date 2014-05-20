@@ -1,0 +1,11 @@
+%tr
+  %td
+    %input{name: 'units_selected[' + @time_stamp + '][id]', type: 'hidden', value: @val_input, class: 'form-control'}
+    %input{name: 'units_selected[' + @time_stamp + '][name]', value: @text_input, class: 'form-control'}
+  %td
+    .row-fluid
+      .span4
+        %span(class="prefix_code")
+          =@input_code
+      .span8
+        %input{name: 'units_selected[' + @time_stamp + '][code]', class: "span8"}

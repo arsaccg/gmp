@@ -1,0 +1,54 @@
+# MySQL.  Versions 4.1 and 5.0 are recommended.
+#
+# Install the MYSQL driver
+#   gem install mysql2
+#
+# Ensure the MySQL gem is defined in your Gemfile
+#   gem 'mysql2'
+#
+# And be sure to use new-style password hashing:
+#   http://dev.mysql.com/doc/refman/5.0/en/old-client.html
+development:
+
+  adapter: mysql2
+  #adapter: postgresql
+  #encoding: unicode
+  database: pmicg_development
+  pool: 5
+  #username: postgres
+  username: root
+  #password: r3dc0d3
+  password: root
+  flags: CLIENTS_MULTI_RESULTS 
+
+wharehouses_development:
+  adapter: sqlserver
+  host: 192.168.1.35
+  database: almacen
+  username: sa
+  password: r3dc0d3
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  adapter: mysql2
+  database: pmicg_test
+  username: root
+  password: root
+
+poduction:
+  adapter: mysql2
+  encoding: utf8
+  database: pmicg_production
+  username: root
+  password: root
+  pool: 100
+  timeout: 50000
+
+wharehouses_production:
+  adapter: sqlserver
+  host: 192.168.1.35
+  database: almacen
+  username: sa
+  password: r3dc0d3

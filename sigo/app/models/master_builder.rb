@@ -1,0 +1,3 @@
+class MasterBuilder < Entity
+
+end

@@ -1,0 +1,13 @@
+
+%h4 Administrar Información de Presupuestos
+%br
+.row-fuild
+  .span12
+    = render :partial => "table"
+
+
+ 
+:javascript
+  $(function() {
+    $(".table-gantt").resizable();
+  });
