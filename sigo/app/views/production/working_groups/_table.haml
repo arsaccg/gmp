@@ -12,7 +12,6 @@
           %tr
             %th N°
             %th Nombre de Grupo de Trabajo
-            %th Sector
             %th Jefe de Frente
             %th Ejecutor
             %th Maestro de Obra
@@ -24,8 +23,6 @@
                 = working_group.id
               %td
                 = working_group.name
-              %td 
-                = working_group.sector.name
               %td
                 = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' ' + Worker.find(working_group.front_chief_id).paternal_surname + ' ' + Worker.find(working_group.front_chief_id).maternal_surname
               %td 

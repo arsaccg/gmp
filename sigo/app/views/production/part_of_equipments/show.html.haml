@@ -77,7 +77,6 @@
                 %thead
                   %tr
                     %th Grupo de Trabajo
-                    %th Frente
                     %th Fase
                     %th Horas Efectivas
                     %th Unidad de Medida
@@ -87,12 +86,8 @@
                       %td.sector.col-lg-3
                         -@working_groups.each do |wg|
                           -if part.work_group_id == wg.id
-                            wg.name
-                      %td.sector.col-lg-2
-                        - @sectors.each do |sector|
-                          - Sector.getSubSectors(sector.code).each do |subsector|
-                            -if part.sub_sector_id == subsector.id
-                              = "#{subsector.name}"
+                            =wg.name
+
                       %td.phase.col-lg-2
                         - @phases.each do |phas|
                           - Phase.get_subphases(phas.code).each do |subphase|

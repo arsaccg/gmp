@@ -17,18 +17,18 @@
             %label.input{for: "working_group_id"}
               %select.form-control{:name =>"part_person[working_group_id]", :style => 'width:100%;padding: 0;border: none;'}
                 %option{:value => ''}
-                  = 'SECTOR - JEFEDEFRENTE - EJECUTOR - MAESTRO DE OBRA'
+                  = 'JEFEDEFRENTE - EJECUTOR - MAESTRO DE OBRA'
                 - @working_groups.each do |working_group|
                   - if @action == 'edit'
                     - if @partperson.working_group_id == working_group.id
                       %option{:value => "#{working_group.id}", :selected => true}
-                        = working_group.sector.name + ' - ' + Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                        = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
                     - else
                       %option{:value => "#{working_group.id}"}
-                        = working_group.sector.name + ' - ' + Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                        = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
                   - else
                     %option{:value => "#{working_group.id}"}
-                      = working_group.sector.name + ' - ' + Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                      = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
 
           %section.col.col-2
             %label.input{for: "date_of_creation"}
@@ -57,7 +57,6 @@
               %tr
                 %th Cargo
                 %th Trabajador
-                %th Frente
                 %th Fase
                 %th Horas normales
                 %th Horas Extras 60
@@ -72,7 +71,6 @@
                       = hidden_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][worker_id]', oos.worker.id
                     %td.col-2=oos.worker.dni
                     %td.col-2=oos.worker.first_name
-                    %td.col-2=oos.sector.name
                     %td.col-2=oos.phase.name
                     %td.col-2=oos.normal_hours
                     %td.col-2=oos.he_60
@@ -114,9 +112,6 @@
             'part_person[working_group_id]' : {
               required : true
             },
-            'part_person[sector_id]' : {
-              required : true
-            },
             'part_person[date_of_creation]' : {
               required : true
             }
@@ -129,9 +124,6 @@
             },
             'part_person[working_group_id]' : {
               required : 'Por favor, ingresar el grupo de trabajo.'
-            },
-            'part_person[sector_id]' : {
-              required : 'Por favor, ingresar el sector.'
             },
             'part_person[date_of_creation]' : {
               required : 'Por favor, ingresar la fecha.'

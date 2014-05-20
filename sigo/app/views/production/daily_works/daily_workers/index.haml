@@ -11,10 +11,10 @@
         .col-sm-6
           %label.input{for: "working_group_id"}
             %select#working-group-select.form-control{:name =>"working_group_id"}
-              %option{:value => ''} Sector - Jefe de Frente - Ejecutor - Maestro de Obra
+              %option{:value => ''} Jefe de Frente - Ejecutor - Maestro de Obra
               - @workingGroups.each do |working_group|
                 %option{:value => "#{working_group.id}"}
-                  = working_group.sector.name + ' - ' + Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' ' + Worker.find(working_group.front_chief_id).paternal_surname + ' ' + Worker.find(working_group.front_chief_id).maternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name + ' ' + Worker.find(working_group.master_builder_id).paternal_surname + ' ' + Worker.find(working_group.master_builder_id).maternal_surname
+                  = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' ' + Worker.find(working_group.front_chief_id).paternal_surname + ' ' + Worker.find(working_group.front_chief_id).maternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name + ' ' + Worker.find(working_group.master_builder_id).paternal_surname + ' ' + Worker.find(working_group.master_builder_id).maternal_surname
         .col-sm-2
           %label.input{for: "start_date"}
             %input#start-date-input.string.optional.form-control{:name => "start_date", :type => "date"}

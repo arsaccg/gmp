@@ -165,6 +165,6 @@ class Production::PartOfEquipmentsController < ApplicationController
   private
   def partOfEquipment_parameters
     params.require(:part_of_equipment).permit(:code, :subcontract_of_equipment_id, :equipment_id, :worker_id, :initial_km, :final_km, :dif, :subcategory_id, :fuel_amount, :h_stand_by, :h_maintenance, :date, :total_hours, 
-      part_of_equipment_details_attributes: [:id, :part_of_equipment_id, :work_group_id, :sub_sector_id, :subphase_id, :effective_hours, :unit, :_destroy])
+      part_of_equipment_details_attributes: [:id, :part_of_equipment_id, :work_group_id, :subphase_id, :effective_hours, :unit, :_destroy])
   end
 end 

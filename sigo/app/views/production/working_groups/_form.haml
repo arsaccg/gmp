@@ -14,20 +14,7 @@
             %label.input{for: "name"}
               %i.icon-append.fa.fa-user
               = f.input :name, placeholder: "Nombre del Grupo de Trabajo", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
-            %label.label Sector
-            %label.input{for: "sector_id"}
-              %select.form-control{:name =>"working_group[sector_id]", :style => 'width:100%;padding: 0;border: none;'}
-                - @sectors.each do |sector|
-                  %optgroup{:label => "#{sector.name}"}
-                    - Sector.getSubSectors(sector.code).each do |subsector|
-                      - if @workingGroup.sector_id == subsector.id
-                        %option{:value => "#{subsector.id}", :selected => true}
-                          = subsector.name
-                      - else
-                        %option{:value => "#{subsector.id}"}
-                          = subsector.name
+
         .row
           %section.col.col-10
             %label.label Jefe de Frente
@@ -84,9 +71,6 @@
             'working_group[name]' : {
               required : true,
             },
-            'working_group[sector_id]' : {
-              required : true,
-            },
             'working_group[front_chief_id]' : {
               required : true,
             },
@@ -105,9 +89,6 @@
           messages : {
             'working_group[name]' : {
               required : 'Por favor, ingrese el nombre del grupo.',
-            },
-            'working_group[sector_id]' : {
-              required : 'Por favor, seleccionar el sector.',
             },
             'working_group[front_chief_id]' : {
               required : 'Por favor, seleccionar el jefe de frente.',
