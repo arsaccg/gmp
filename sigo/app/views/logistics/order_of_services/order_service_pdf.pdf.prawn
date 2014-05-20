@@ -57,7 +57,7 @@ index=1
   stroke_horizontal_rule
   move_down 2
   index += 1
-  if index%10==1
+  if cursor()<100
     start_new_page
     move_down 152
   end
