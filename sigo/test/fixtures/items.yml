@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  item_code: MyString
+  project_code: 1
+  wbs_parent_code: MyString
+  budget_code: MyString
+  description: MyString
+  own_code: MyString
+  level: 1
+  unity_code: MyString
+  deleted: 1
+  cost_center_id: 1
+
+two:
+  item_code: MyString
+  project_code: 1
+  wbs_parent_code: MyString
+  budget_code: MyString
+  description: MyString
+  own_code: MyString
+  level: 1
+  unity_code: MyString
+  deleted: 1
+  cost_center_id: 1
