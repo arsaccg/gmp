@@ -55,10 +55,10 @@ class Logistics::OrderOfServicesController < ApplicationController
   end
 
   def add_order_service_item_field
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*10000000).to_i
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
-    @sectors = Sector.all
+    @sectors = Sector.where("code LIKE '__'")
     @phases = Phase.where("category LIKE 'phase'")
     @amount = params[:amount].to_f
     @centerOfAttention = CenterOfAttention.all

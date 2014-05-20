@@ -12,8 +12,10 @@
           %section.col.col-10
             %label.label Nombre
             %label.input{for: "name"}
-              %i.icon-append.fa.fa-user
-              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+              %select.form-control{:name => "category_of_worker[name]", :style => 'width:100%;padding: 0;border: none;'}
+                - @articles.each do |article|
+                  %option{:value => "#{article.name}"}
+                    = article.name
         .row
           %section.col.col-10
             %label.label Unidad

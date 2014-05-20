@@ -11,12 +11,14 @@
     = @unitOfMeasurement
   %td.col-md-1.amount{:style => "width:5%"}
     = text_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", id: 'article-amount'
-  %td.sector.col-md-1
+  %td
     %select.form-control{:name =>"order_of_service[order_of_service_details_attributes][#{@reg_n.to_s}][sector_id]"}
       %option{:value => "0", :selected => true, :disabled => true} Seleccionar Sector
       - @sectors.each do |sector|
-        %option{:value => "#{sector.id}"}
-          = sector.name
+        %optgroup{:label => "#{sector.name}"}
+          - Sector.getSubSectors(sector.code).each do |subsector|
+            %option{:value => "#{subsector.id}"}
+              = subsector.name
   %td
     %select.form-control{:name =>"order_of_service[order_of_service_details_attributes][#{@reg_n.to_s}][phase_id]"}
       %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase

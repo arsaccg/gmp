@@ -108,7 +108,7 @@
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][part_person_id]', @partperson.id
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
                     %td.delete-item
                       %label.checkbox
                         = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
