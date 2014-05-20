@@ -14,6 +14,7 @@
           %br
           %label.input{for: "sector_id"}
             %select.form-control{:name =>"validation[sector_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Sector
               -@sector.each do |sector|
                 %optgroup{:label => "#{sector.name}"}
                   - Sector.getSubSectors(sector.code).each do |subsector|
@@ -24,6 +25,7 @@
           %br
           %label.input{for: "front_chief_id"}
             %select.form-control{:name =>"working_group[front_chief_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Jefe de Frente
               - @front_chiefs.each do |front_chief|
                 %option{:value => "#{front_chief.id}"}
                   = front_chief.first_name + ' ' + front_chief.paternal_surname
@@ -32,6 +34,7 @@
           %br
           %label.input{for: "executor_id"}
             %select.form-control{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Proveedor
               - @executors.each do |executor|
                 %option{:value => "#{executor.id}"}
                   = executor.name
@@ -40,6 +43,7 @@
           %br
           %label.input{for: "master_builder_id"}
             %select{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Maestro de Obra
               - @master_builders.each do |master_builder|
                 %option{:value => "#{master_builder.id}"}
                   = master_builder.first_name + ' ' + master_builder.paternal_surname
@@ -54,14 +58,10 @@
           %input.form-control{'name'=>'date2', type: "date"}
 
         .col-md-3
+        %br
           %button.btn.btn-primary{type: "btn"}
             %i.fa.fa-save 
               Consultar
-
-
-
-
-
     - else
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
@@ -87,9 +87,8 @@
         %strong Error!
         = flash[:error]
 
+
 :javascript
   $(document).ready(function () {
-
-    $('select').select2({width:'100%'});
-
+    $('select').select2({ width:'200'});
   });
