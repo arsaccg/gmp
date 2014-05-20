@@ -52,7 +52,7 @@
                   %label.col-md-4.control-label Fecha de Servicio
                   .col-md-8
                     .input-group
-                      = f.input :date_of_service, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                      = f.input :date_of_service, placeholder: "Fecha de servicio", as: :string, :input_html => {:class => 'form-control', type: "date"}, label: false
                       %span.input-group-addon
                         %i.fa.fa-calendar
             .row
@@ -220,6 +220,51 @@
     loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
     $('#article-select').select2();
     $.cost_center = "#{@company}";
+
+    $('#new_order_of_service').ajaxForm({
+      beforeSubmit: function() {
+        $('#new_order_of_service').validate({
+          // Rules for form validation
+          rules : {
+            'order_of_service[supplier_id]': {
+              required: true
+            },
+            'order_of_service[money_id]': {
+              required: true
+            },
+            'order_of_service[method_of_payment_id]': {
+              required: true
+            },
+            'order_of_service[date_of_issue]': {
+              required: true
+            },
+            'order_of_service[expiration_date]': {
+              required: true
+            },
+            'order_of_service[delivery_date]': {
+              required: true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'order_of_service[supplier_id]': "Porfavor, especifica el proveedor.",
+            'order_of_service[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
+            'order_of_service[method_of_payment_id]': "Porfavor, especifica el método de págo.",
+            'order_of_service[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
+            'order_of_service[expiration_date]': "Porfavor, especifica la fecha de expiración.",
+            'order_of_service[delivery_date]': "Porfavor, especifica la fecha de entrega."
+          },
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+
+        return $('#new_order_of_service').valid();
+      },
+      target: '#content'
+    });
 
     $('form[id^="edit_order_of_service"]').ajaxForm({
       beforeSubmit: function(arr, $form, options) {

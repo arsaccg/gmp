@@ -39,11 +39,11 @@ move_down 20
 table([ ["ITEM", " CÓDIGO   ", "DESCRIPCIÓN                                   At.  Sector   FASE", "U.M", "CANTIDAD", "PRECIO UNITARIO", "% Dscto", "SUBTOTAL"] ], :width => 770)
 
 move_down 3
-
+index=1
 @purchaseOrderDetails.each do |data|
   stroke_horizontal_rule
   pad(5) {
-    table([ ["#{data.id}", "#{data.delivery_order_detail.article.code}", "#{data.delivery_order_detail.article.name}", "#{data.delivery_order_detail.center_of_attention.abbreviation}", "#{data.delivery_order_detail.sector.code}", "#{data.delivery_order_detail.phase.code}", "#{data.delivery_order_detail.unit_of_measurement.symbol}", "#{sprintf("%.2f", data.amount)}", "#{number_to_currency(data.unit_price, unit: @purchaseOrder.money.symbol, precision: 2)}", ".00", "#{number_to_currency(data.amount*data.unit_price, unit: @purchaseOrder.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "ffffff"}, :column_widths => [35,80,195,35,35,45,30,70,120,50,75]) do
+    table([ ["#{index}", "#{data.delivery_order_detail.article.code}", "#{data.delivery_order_detail.article.name}", "#{data.delivery_order_detail.center_of_attention.abbreviation}", "#{data.delivery_order_detail.sector.code}", "#{data.delivery_order_detail.phase.code}", "#{data.delivery_order_detail.unit_of_measurement.symbol}", "#{sprintf("%.2f", data.amount)}", "#{number_to_currency(data.unit_price, unit: @purchaseOrder.money.symbol, precision: 2)}", ".00", "#{number_to_currency(data.amount*data.unit_price, unit: @purchaseOrder.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "ffffff"}, :column_widths => [35,80,195,35,35,45,30,70,120,50,75]) do
       style(columns(6..10), :align => :right)
       style(columns(0..10), :size => 11)
     end
@@ -52,6 +52,11 @@ move_down 3
   }
   stroke_horizontal_rule
   move_down 3
+  index += 1
+  if index%6==1
+    start_new_page
+    move_down 150
+  end
 end
 
 move_down 10
