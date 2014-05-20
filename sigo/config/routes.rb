@@ -86,6 +86,7 @@ ArsacLogistica::Application.routes.draw do
     resources :cost_centers do
       member do
         get 'update_timeline'
+        get 'select_warehouses'
       end
     end
     resources :type_entities
@@ -181,6 +182,7 @@ ArsacLogistica::Application.routes.draw do
     resources :stock_outputs do
       collection do
         post 'add_stock_input_item_field'
+        post 'show_rows_stock_inputs'
       end
     end
     resources :working_groups
