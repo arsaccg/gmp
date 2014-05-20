@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  advance_type: MyString
+  advance_number: 1
+  advance_direct_cost_percent: 1.5
+  amount: 1.5
+  cost_center_id: 1
+
+two:
+  advance_type: MyString
+  advance_number: 1
+  advance_direct_cost_percent: 1.5
+  amount: 1.5
+  cost_center_id: 1

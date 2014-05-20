@@ -9,6 +9,7 @@
       = simple_form_for([:logistics, @head], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
         %fieldset
           = hidden_field_tag "stock_input[id]", @head.id
+          = hidden_field_tag "stock_input[conpany_id]", @head.company_id
           = hidden_field_tag "stock_input[input]", "0"
           .row
             .col-md-3

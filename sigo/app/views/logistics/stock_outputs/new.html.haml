@@ -13,7 +13,7 @@
                 %ul.steps
                   %li.active{"data-target" => "#step1"}
                     %span.badge.badge-info> 1
-                    Seleccionar Responsable
+                    Seleccionar CC / Responsable
                     %span.chevron
                   %li{"data-target" => "#step2"}
                     %span.badge> 2
@@ -43,10 +43,11 @@
 
   $(document).ready(function(){
 
+    $('#cost-center-selected').select2({ width: '100%' });
     // Search
     $('#search').click(function(){
-      supplier_id = $('#supplier-selected').val();
-      url = "/logistics/stock_inputs/" + supplier_id + "/show_purchase_order_item_field";
+      responsible_id = $('#responsible-selected').val();
+      url = "/logistics/stock_inputs/" + responsible_id + "/show_purchase_order_item_field";
       data = { authenticity_token: "#{form_authenticity_token}" }
       load_url_ajax(url, 'table-items-paso1', data, 'avoid-opacity', 'PUT');
     });
@@ -64,11 +65,11 @@
       var $validator = $("#new_stock_input").validate({
 
         rules: {
-          'stock_input[supplier_id]': {
+          'stock_input[responsible_id]': {
             required: true
           },
           'stock_input[warehouse_id]': {
-            required: true
+            required: true 
           },
           'stock_input[format_id]': {
             required: true
@@ -99,7 +100,7 @@
         },
         
         messages: {
-          'stock_input[supplier_id]': "(*)",
+          'stock_input[responsible_id]': "(*)",
           'stock_input[warehouse_id]': "(*)",
           'stock_input[format_id]': "(*)",
           'stock_input[period]': "(*)",
@@ -148,10 +149,11 @@
         var data_items_sel = new Array();
 
         if(data.step == 1 && data.direction == 'next'){
-          supplier_id = $('#supplier-selected').val();
-          url = "/logistics/stock_inputs/" + supplier_id + "/show_purchase_order_item_field";
+          // refresf Warehouse Select
+          cost_center_id = $("#cost-center-selected").val();
+          url = "/logistics/cost_centers/" + cost_center_id + "/select_warehouses";
           data = { authenticity_token: "#{form_authenticity_token}" }
-          load_url_ajax(url, 'table-items-paso1', data, 'avoid-opacity', 'PUT');
+          load_url_ajax(url, 'warehouse-select', data, 'avoid-opacity', 'GET');
         }
 
         if(data.step == 2 && data.direction == 'next'){

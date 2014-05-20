@@ -1,0 +1,37 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  coditem: MyString
+  ownitem: MyString
+  cod_input: MyString
+  quantity: 1.5
+  price: 1.5
+  aprox: 1.5
+  order: MyString
+  measured: 1.5
+  input: MyString
+  budget_id: 1
+  subbudget_code: MyString
+  item_id: 1
+  deleted: 1
+  budget_code: MyString
+  owneritem: MyString
+  unit: MyString
+
+two:
+  coditem: MyString
+  ownitem: MyString
+  cod_input: MyString
+  quantity: 1.5
+  price: 1.5
+  aprox: 1.5
+  order: MyString
+  measured: 1.5
+  input: MyString
+  budget_id: 1
+  subbudget_code: MyString
+  item_id: 1
+  deleted: 1
+  budget_code: MyString
+  owneritem: MyString
+  unit: MyString

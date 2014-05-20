@@ -116,6 +116,12 @@ class Logistics::CostCentersController < ApplicationController
     render(partial: 'form_timeline', :layout => false)
   end
 
+  def select_warehouses
+    @select = CostCenter.find(params[:id]).warehouses
+    
+    render(partial: 'select', :layout => false)
+  end
+
   private
   def cost_center_parameters
     params.require(:cost_center).permit(:code, :name, :company_id)

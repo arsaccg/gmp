@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  valorization_id: 1
+  itembybudget_id: 1
+  actual_measured: 1.5
+
+two:
+  valorization_id: 1
+  itembybudget_id: 1
+  actual_measured: 1.5
