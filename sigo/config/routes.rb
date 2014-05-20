@@ -260,14 +260,11 @@ ArsacLogistica::Application.routes.draw do
       resources :daily_workers do
         collection do
           post 'search_daily_work'
-        end
-      end
-
-      resources :weekly_workers do
-        collection do
           post 'search_weekly_work'
         end
       end
+
+      resources :weekly_workers
     end
   end
 
