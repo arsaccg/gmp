@@ -2,19 +2,15 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Consulta de Kárdex Detalle
+    %h2 Consulta de Kárdex
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
-      %table#dt_basicx.table.table-striped.table-bordered.table-hover
+      %table#dt_basics.table.table-striped.table-bordered.table-hover
         %thead
           %tr
             %th{'style' => 'width: 10%;'}
               Almacén
-            %th{'style' => 'width: 5%;'}
-              Periodo
-            %th{'style' => 'width: 7%;'}
-              Fecha
             %th{'style' => 'width: 6%;'}
               Codigo
             %th{'style' => 'width: 8%;'}
@@ -33,4 +29,4 @@
               Costo Unitario (-)
             %th{'style' => 'width: 5%;'}
               Costo (-)
-        %tbody{ :id => "body-report-kardex-detail" }
+        %tbody{ :id => "body-report-kardex-summary" }
