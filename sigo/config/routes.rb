@@ -227,6 +227,11 @@ ArsacLogistica::Application.routes.draw do
         post 'add_worker_item_field'
       end
     end
+    resources :analysis_of_valuations do
+      collection do
+        post 'get_report'
+      end
+    end
     resources :part_works do
       collection do
         post 'add_more_article'
