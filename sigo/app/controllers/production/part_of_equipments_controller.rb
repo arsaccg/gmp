@@ -11,6 +11,38 @@ class Production::PartOfEquipmentsController < ApplicationController
   def show
     @company = params[:company_id]
     @partofequipment = PartOfEquipment.find(params[:id])
+
+    @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
+    @sectors = Sector.where("code LIKE '__'")
+    @phases = Phase.where("code LIKE '__'")
+    @working_groups= WorkingGroup.all
+
+    @subcontracts = SubcontractEquipment.all
+    @type = Array.new
+    Category.where("code LIKE ?",32).each do |cat|
+      @type=cat.subcategories
+    end
+    @worker = Array.new
+    CategoryOfWorker.where("name LIKE '%operador%'").each do |wo|
+      @worker= wo.workers
+    end
+
+    subcontract_id=@partofequipment.subcontract_of_equipment_id
+    equip = Array.new
+    @articles = Array.new
+    unit=''
+    equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", subcontract_id)
+    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
+      @articles = arti.articles
+    end
+    equip.each do |eq|
+      @articles.each do |ar|
+        if ar.id==eq.article_id
+          unit = ar.unit_of_measurement_id
+        end
+      end
+    end
+    @unit = UnitOfMeasurement.find(unit).name
     render layout: false
   end
 
@@ -47,8 +79,10 @@ class Production::PartOfEquipmentsController < ApplicationController
 
   def edit
     @company = params[:company_id]
-    @working_groups = WorkingGroup.all
+    @id = PartOfEquipment.find(params[:id]).equipment_id
     @partofequipment = PartOfEquipment.find(params[:id])
+
+    @working_groups = WorkingGroup.all
     @subcon = SubcontractEquipment.all
     @type = Array.new
     Category.where("code LIKE ?",32).each do |cat|
@@ -58,6 +92,12 @@ class Production::PartOfEquipmentsController < ApplicationController
     CategoryOfWorker.where("name LIKE '%operador%'").each do |wo|
       @worker= wo.workers
     end
+
+    @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
+    @reg_n = Time.now.to_i
+    @sectors = Sector.where("code LIKE '__'")
+    @phases = Phase.where("code LIKE '__'")
+    @working_groups= WorkingGroup.all
     @action="edit"
     render layout: false
   end
@@ -87,6 +127,12 @@ class Production::PartOfEquipmentsController < ApplicationController
     render :json => part
   end
 
+  def destroy_detail
+    partequip = PartOfEquipmentDetail.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente el Subcontrato de Equipo."
+    render :json => part
+  end
+
   def get_equipment_form_subcontract
     equip = Array.new
     articles = Array.new
@@ -112,7 +158,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     @reg_n = Time.now.to_i
     @sectors = Sector.where("code LIKE '__'")
     @phases = Phase.where("code LIKE '__'")
-    @working_groups= WorkingGroup.all
+    @working_groups = WorkingGroup.all
     render(partial: 'part_equipment_register', :layout => false)
   end
 

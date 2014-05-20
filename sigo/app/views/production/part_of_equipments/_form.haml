@@ -22,12 +22,12 @@
               %select.form-control#ent{:name =>"part_of_equipment[subcontract_of_equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
                 -if @action =="edit"
                   -@subcon.each do |subcon|
-                    -if @partofequipment.subcontract_of_equipment_id== subcon.id
+                    -if @partofequipment.subcontract_of_equipment_id == subcon.id
                       %option{:value => "#{subcon.id}", :selected=>"selected"}
                         = subcon.entity.name
                     -else
                       %option{:value => "#{subcon.id}"}
-                      = subcon.entity.name
+                        = subcon.entity.name
                 -else
                   -@subcon.each do |subcon|
                     %option{:value => "#{subcon.id}"}
@@ -51,7 +51,7 @@
                         = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
                     -else
                       %option{:value => "#{wo.id}"}
-                      = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
+                        = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
                 -else
                   -@worker.each do |wo|
                     %option{:value => "#{wo.id}"}
@@ -138,6 +138,54 @@
                   %th.col-lg-2 Unidad de Medida
                   %th.col-lg-1 Eliminar
               %tbody(id="part_register_table")
+                -if @action=="edit"
+                  -@partdetail.each do |part|
+                    = hidden_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg.to_s + '][id]', part.id
+                    = hidden_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg.to_s + '][part_of_equipment_id]', @partofequipment.id
+                    %tr.part-equi_item{id: "tr" + @reg_n.to_s}
+                      %td.sector.col-lg-3
+                        %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][work_group_id]"}
+                          -if @action =="edit"
+                            -@working_groups.each do |wg|
+                              -if part.work_group_id == wg.id
+                                %option{:value => "#{wg.id}", :selected=>"selected"}
+                                  wg.name
+                              -else
+                                %option{:value => "#{wg.id}"}
+                                  wg.name
+                          
+                      %td.sector.col-lg-2
+                        %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][sub_sector_id]"}
+                          - @sectors.each do |sector|
+                            %optgroup{:label => "#{sector.name}"}
+                              - Sector.getSubSectors(sector.code).each do |subsector|
+                                -if part.sub_sector_id == subsector.id
+                                  %option{:value => "#{subsector.id}", :selected=>"selected"}
+                                    = subsector.name
+                                -else
+                                  %option{:value => "#{subsector.id}"}
+                                    = subsector.name
+
+                      %td.phase.col-lg-2
+                        %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][subphase_id]"}
+                          - @phases.each do |phas|
+                            %optgroup{:label => "#{phas.name}"}
+                              - Phase.get_subphases(phas.code).each do |subphase|
+                                -if part.subphase_id == subphase.id
+                                  %option{:value => "#{subphase.id}", :selected=>"selected"}
+                                    = subphase.name
+                                -else
+                                  %option{:value => "#{subphase.id}"}
+                                    = subphase.name
+
+                      %td.effective-hours.col-lg-2
+                        = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][effective_hours]', part.effective_hours , class: "form-control effective-hours", onchange: "sumHours(this);"
+                      %td.unit-of-measumente.col-lg-1
+                        = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][unit]', '' , class: "form-control unit", readonly: true
+                      %td.delete-item
+                        %label
+                          %i
+                    - @reg_n+=1
               
       %footer
         %button.btn.btn-primary{type: "submit"}
@@ -146,10 +194,11 @@
 
 :javascript
   $(document).ready(function () {
-    $('select').select2();
+    
 
     var subcontract_id = $("#ent").val();
     complete_equipment("#{get_equipment_form_subcontract_production_part_of_equipments_path}", subcontract_id, "#{form_authenticity_token}", "0302");
+    $('select').select2();
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -282,6 +331,9 @@
         async: false,
         data: { subcontract_id: subcontract_id, authenticity_token: form_token}
       }).done(function( data ) {
+        var unit = data.unit;
+        $('.form-control.unit').empty();
+        $('.form-control.unit').val(unit);
         newOptions = [];
         $.each(data.equipment, function(key, value){
           item = {};
@@ -292,9 +344,16 @@
         });
         $('#equipment').empty();
         $.each(newOptions, function(key,value){
-          $('#equipment').append(
-            $("<option></option>").attr("value", value.id).text(value.name)
-          )
+          console.log("id:"+"#{@id}");
+          console.log(value.id);
+          if ("#{@id}" == value.id)
+            $('#equipment').append(
+              $("<option></option>").attr("value", value.id).attr("selected", "selected").text(value.name)
+            )
+          else
+            $('#equipment').append(
+              $("<option></option>").attr("value", value.id).text(value.name)
+            )
           $('.form-control.unit').attr("value", value.unit)
         });
       });

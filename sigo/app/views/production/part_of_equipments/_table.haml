@@ -14,7 +14,7 @@
             %th Proveedor
             %th Trabajador
             %th Equipo
-            %th Kilometros recorridos
+            %th Horómetro/Kilometros usados
             %th Fecha
             %th Acciones
         %tbody
@@ -35,7 +35,7 @@
                   -if ar.id==partofequipment.equipment_id
                     = ar.name
               %td
-                =partofequipment.dif + ' km'
+                =partofequipment.dif
               %td 
                 = partofequipment.date
               %td
