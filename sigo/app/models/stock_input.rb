@@ -1,6 +1,7 @@
 class StockInput < ActiveRecord::Base
   has_many :stock_input_details
-  belongs_to :entity, :foreign_key => 'supplier_id'
+  belongs_to :supplier, :foreign_key => 'supplier_id'
+  belongs_to :responsible, :foreign_key => 'responsible_id'
   belongs_to :warehouse
   belongs_to :format
   #belongs_to :rep_inv_cost_center, :foreign_key => 'warehouse_id'

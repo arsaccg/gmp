@@ -6,6 +6,8 @@ class CostCenter < ActiveRecord::Base
 	has_many :order_of_services
 	has_many :entities
 	belongs_to :company
+	has_many :stock_inputs
+	has_many :warehouses
 
 	# Access
 	has_and_belongs_to_many :users
