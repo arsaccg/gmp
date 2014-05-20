@@ -4,40 +4,64 @@
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Valorizaciones
+  .row
     - if @sector != nil && @subsectors.first != nil && @workingGroups != nil
-      .col-sm-12
-        %label.label Sector
-        %label.input{for: "sector_id"}
-          %select.form-control{:name =>"validation[sector_id]", :style => 'width:100%;padding: 0;border: none;'}
-            -@sector.each do |sector|
-              %optgroup{:label => "#{sector.name}"}
-                - Sector.getSubSectors(sector.code).each do |subsector|
-                  %option{:value => "#{subsector.id}"}
-                    =subsector.name
-        %label.label Jefe de Frente
-        %label.input{for: "front_chief_id"}
-          %select.form-control{:name =>"working_group[front_chief_id]", :style => 'width:100%;padding: 0;border: none;'}
-            - @front_chiefs.each do |front_chief|
-              %option{:value => "#{front_chief.id}"}
-                = front_chief.first_name + ' ' + front_chief.paternal_surname
-        %label.label Ejecutor
-        %label.input{for: "executor_id"}
-          %select.form-control{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
-            - @executors.each do |executor|
-              %option{:value => "#{executor.id}"}
-                = executor.name
-        %label.label Maestro de Obra
-        %label.input{for: "master_builder_id"}
-          %select.form-control{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
-            - @master_builders.each do |master_builder|
-              %option{:value => "#{master_builder.id}"}
-                = master_builder.first_name + ' ' + master_builder.paternal_surname
-        %label.label Fecha de ingreso
-        .form-group
-          .input-group
-            %input{'name'=>'datein',as: :date}
-            %span.input-group-addon
-              %i.fa.fa-calendar.fa-md.fa-fw
+      
+      .row
+        .col-md-1
+        .col-md-2
+          %label Sector
+          %br
+          %label.input{for: "sector_id"}
+            %select.form-control{:name =>"validation[sector_id]", :style => 'width:100%;padding: 0;border: none;'}
+              -@sector.each do |sector|
+                %optgroup{:label => "#{sector.name}"}
+                  - Sector.getSubSectors(sector.code).each do |subsector|
+                    %option{:value => "#{subsector.id}"}
+                      =subsector.name
+        .col-md-2
+          %label Jefe de Frente
+          %br
+          %label.input{for: "front_chief_id"}
+            %select.form-control{:name =>"working_group[front_chief_id]", :style => 'width:100%;padding: 0;border: none;'}
+              - @front_chiefs.each do |front_chief|
+                %option{:value => "#{front_chief.id}"}
+                  = front_chief.first_name + ' ' + front_chief.paternal_surname
+        .col-md-2
+          %label Ejecutor
+          %br
+          %label.input{for: "executor_id"}
+            %select.form-control{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
+              - @executors.each do |executor|
+                %option{:value => "#{executor.id}"}
+                  = executor.name
+        .col-md-2
+          %label Maestro de Obra
+          %br
+          %label.input{for: "master_builder_id"}
+            %select{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
+              - @master_builders.each do |master_builder|
+                %option{:value => "#{master_builder.id}"}
+                  = master_builder.first_name + ' ' + master_builder.paternal_surname
+      .row
+        .col-md-1
+        .col-md-3
+          %label Fecha de ingreso
+          %input.form-control{'name'=>'date1', type: "date"}
+
+        .col-md-3
+          %label Fecha de ingreso
+          %input.form-control{'name'=>'date2', type: "date"}
+
+        .col-md-3
+          %button.btn.btn-primary{type: "btn"}
+            %i.fa.fa-save 
+              Consultar
+
+
+
+
+
     - else
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
@@ -62,3 +86,10 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
+
+:javascript
+  $(document).ready(function () {
+
+    $('select').select2({width:'100%'});
+
+  });
