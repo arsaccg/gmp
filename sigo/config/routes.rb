@@ -216,6 +216,7 @@ ArsacLogistica::Application.routes.draw do
       end
       member do
         get 'show_rows_results_pdf'
+        get 'show_group_results_pdf'
       end
     end
   end
