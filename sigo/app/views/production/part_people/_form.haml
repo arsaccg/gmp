@@ -57,6 +57,7 @@
               %tr
                 %th Cargo
                 %th Trabajador
+                %th Sector
                 %th Fase
                 %th Horas normales
                 %th Horas Extras 60
@@ -71,6 +72,7 @@
                       = hidden_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][worker_id]', oos.worker.id
                     %td.col-2=oos.worker.dni
                     %td.col-2=oos.worker.first_name
+                    %td.col-2=oos.sector.name
                     %td.col-2=oos.phase.name
                     %td.col-2=oos.normal_hours
                     %td.col-2=oos.he_60

@@ -4,6 +4,7 @@ class Sector < ActiveRecord::Base
 	has_many :working_groups
 	has_many :part_works
 	has_many :part_person_details
+	has_many :part_of_equipment_details
 	#Validaciones
 	include ActiveModel::Validations
 	#validates :code, :uniqueness => { :scope => :name, :message => "El código debe ser único" }

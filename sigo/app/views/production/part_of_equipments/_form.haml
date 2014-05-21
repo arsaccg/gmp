@@ -131,6 +131,7 @@
               %thead
                 %tr
                   %th.col-lg-3 Grupo de Trabajo
+                  %th.col-lg-2 Sector
                   %th.col-lg-2 Fase
                   %th.col-lg-2 Horas Efectivas
                   %th.col-lg-2 Unidad de Medida
@@ -143,21 +144,28 @@
                     %tr.part-equi_item{id: "tr" + @reg_n.to_s}
                       %td.col-lg-3
                         %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][work_group_id]"}
-                          -if @action =="edit"
-                            -@working_groups.each do |wg|
-                              -if part.work_group_id == wg.id
-                                %option{:value => "#{wg.id}", :selected=>"selected"}
-                                  =wg.name
-                              -else
-                                %option{:value => "#{wg.id}"}
-                                  wg.name
+                          -@working_groups.each do |wg|
+                            -if part.working_group_id == wg.id
+                              %option{:value => "#{wg.id}", :selected=>"selected"}
+                                =wg.name
+                            -else
+                              %option{:value => "#{wg.id}"}
+                                wg.name
+
+                      %td.sector
+                        %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][sector_id]"}
+                          - @sectors.each do |sector|
+                            %optgroup{:label => "#{sector.name}"}
+                              - Sector.getSubSectors(sector.code).each do |subsector|
+                                %option{:value => "#{subsector.id}"}
+                                  = subsector.name
                           
                       %td.phase.col-lg-2
                         %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][subphase_id]"}
                           - @phases.each do |phas|
                             %optgroup{:label => "#{phas.name}"}
                               - Phase.get_subphases(phas.code).each do |subphase|
-                                -if part.subphase_id == subphase.id
+                                -if part.phase_id == subphase.id
                                   %option{:value => "#{subphase.id}", :selected=>"selected"}
                                     = subphase.name
                                 -else
