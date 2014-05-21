@@ -401,6 +401,8 @@
     / END NAVIGATION
     / MAIN PANEL
     #main{role: "main"}
+      #ribbon
+        %ol.breadcrumb
       / MAIN CONTENT
       #content
       / END MAIN CONTENT
@@ -476,7 +478,7 @@
     /[if IE 7]
       <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
     / Demo purpose only
-    = javascript_include_tag 'demo'
+    //= javascript_include_tag 'demo'
     / MAIN APP JS FILE
     = javascript_include_tag 'app'
     / Your GOOGLE ANALYTICS CODE Below

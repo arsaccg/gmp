@@ -55,10 +55,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     Category.where("code LIKE ?",32).each do |cat|
       @type=cat.subcategories
     end
-    @worker = Array.new
-    CategoryOfWorker.where("name LIKE '%Operador%'").each do |wo|
-      @worker= wo.workers
-    end
+    @worker = CategoryOfWorker.find_by_name('Operador').workers
     render layout: false
   end
 
@@ -164,7 +161,28 @@ class Production::PartOfEquipmentsController < ApplicationController
 
   private
   def partOfEquipment_parameters
-    params.require(:part_of_equipment).permit(:code, :subcontract_of_equipment_id, :equipment_id, :worker_id, :initial_km, :final_km, :dif, :subcategory_id, :fuel_amount, :h_stand_by, :h_maintenance, :date, :total_hours, 
-      part_of_equipment_details_attributes: [:id, :part_of_equipment_id, :work_group_id, :subphase_id, :effective_hours, :unit, :_destroy])
+    params.require(:part_of_equipment).permit(
+      :code, 
+      :subcontract_of_equipment_id, 
+      :equipment_id, 
+      :worker_id, 
+      :initial_km, 
+      :final_km, 
+      :dif, 
+      :subcategory_id, 
+      :fuel_amount, 
+      :h_stand_by, 
+      :h_maintenance, 
+      :date, :total_hours, 
+      part_of_equipment_details_attributes: [
+        :id, 
+        :part_of_equipment_id, 
+        :work_group_id, 
+        :subphase_id, 
+        :effective_hours, 
+        :unit, 
+        :_destroy
+      ]
+    )
   end
 end 

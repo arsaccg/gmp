@@ -81,6 +81,6 @@ class Production::PartPeopleController < ApplicationController
 
   private
   def part_person_parameters
-    params.require(:part_person).permit(:working_group_id, :number_part, :date_of_creation, part_person_details_attributes: [:id, :part_person_id, :worker_id, :sector_id, :phase_id, :normal_hours, :he_60, :he_100, :total_hours])
+    params.require(:part_person).permit(:working_group_id, :number_part, :date_of_creation, part_person_details_attributes: [:id, :part_person_id, :worker_id, :sector_id, :phase_id, :normal_hours, :he_60, :he_100, :total_hours, :_destroy])
   end
 end

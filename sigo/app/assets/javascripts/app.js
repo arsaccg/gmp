@@ -1229,9 +1229,9 @@ function loadURL(url, container) {
 			// TODO: see the framerate for the animation in touch devices
 			
 			if (container[0] == $("#content")[0]) {
-				//drawBreadCrumb();
+				drawBreadCrumb();
 				// update title with breadcrumb...
-				//document.title = $(".breadcrumb li:last-child").text();
+				document.title = $(".breadcrumb li:last-child").text();
 				// scroll up
 				$("html, body").animate({
 					scrollTop : 0
