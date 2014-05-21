@@ -1,0 +1,3 @@
+class Responsible < Entity
+
+end

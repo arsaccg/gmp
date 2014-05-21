@@ -13,4 +13,8 @@ class Entity < ActiveRecord::Base
 	include ActiveModel::Validations
 	validates :ruc, :uniqueness => { :message => "El RUC debe ser único."}, :allow_blank => true, :case_sensitive => false
 	validates :dni, :uniqueness => { :message => "El DNI debe ser único."}, :allow_blank => true, :case_sensitive => false
+
+	def self.find_name_executor(executor_id)
+		return Entity.find(executor_id).name
+	end
 end

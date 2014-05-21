@@ -1,0 +1,94 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Valorizaciones
+  .row
+    - if @sector != nil && @subsectors.first != nil && @workingGroups != nil
+      
+      .row
+        .col-md-1
+        .col-md-2
+          %label Sector
+          %br
+          %label.input{for: "sector_id"}
+            %select.form-control{:name =>"validation[sector_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Sector
+              -@sector.each do |sector|
+                %optgroup{:label => "#{sector.name}"}
+                  - Sector.getSubSectors(sector.code).each do |subsector|
+                    %option{:value => "#{subsector.id}"}
+                      =subsector.name
+        .col-md-2
+          %label Jefe de Frente
+          %br
+          %label.input{for: "front_chief_id"}
+            %select.form-control{:name =>"working_group[front_chief_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Jefe de Frente
+              - @front_chiefs.each do |front_chief|
+                %option{:value => "#{front_chief.id}"}
+                  = front_chief.first_name + ' ' + front_chief.paternal_surname
+        .col-md-2
+          %label Ejecutor
+          %br
+          %label.input{for: "executor_id"}
+            %select.form-control{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Proveedor
+              - @executors.each do |executor|
+                %option{:value => "#{executor.id}"}
+                  = executor.name
+        .col-md-2
+          %label Maestro de Obra
+          %br
+          %label.input{for: "master_builder_id"}
+            %select{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Maestro de Obra
+              - @master_builders.each do |master_builder|
+                %option{:value => "#{master_builder.id}"}
+                  = master_builder.first_name + ' ' + master_builder.paternal_surname
+      .row
+        .col-md-1
+        .col-md-3
+          %label Fecha de ingreso
+          %input.form-control{'name'=>'date1', type: "date"}
+
+        .col-md-3
+          %label Fecha de ingreso
+          %input.form-control{'name'=>'date2', type: "date"}
+
+        .col-md-3
+        %br
+          %button.btn.btn-primary{type: "btn"}
+            %i.fa.fa-save 
+              Consultar
+    - else
+      .col-xs-12.col-sm-7.col-md-7.col-lg-12
+        .alert.alert-block.alert-danger
+          %a.close(data-dismiss="alert" href="#")
+            ×
+          %h4.alert-heading
+            %i.fa.fa-lock
+              No puedes hacer un Analisis de Valorizaciones!
+          %p
+            Verifica si tienes, por lo menos, 1 sector, 1 subsector, 1 grupo de trabajo
+    - if flash[:notice] != nil
+      .alert.alert-success.fade.in{"style" => "clear:both"}
+        %button.close{"data-dismiss" => "alert"}
+          ×
+        %i.fa-fw.fa.fa-check
+        %strong Éxito
+        = flash[:notice]
+    - if flash[:error] != nil
+      .alert.alert-danger.fade.in
+        %button.close{"data-dismiss" => "alert"}
+          ×
+        %i.fa-fw.fa.fa-times
+        %strong Error!
+        = flash[:error]
+
+
+:javascript
+  $(document).ready(function () {
+    $('select').select2({ width:'200'});
+  });

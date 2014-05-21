@@ -30,7 +30,37 @@
           No puedes crear Entrada a Almacén!
       %p
         Verifica si tienes por lo menos, 1 Orden de Compra generada y aprobada.
+  %br
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %div
+        .smart-form
+          %section
+            %label.label Selecciona el centro de costo para ver su información
+            %div
+              %select.select2-costcenter{ 'name' => 'cost_center_find_id', 'id' => 'cost-center-find-selected', 'style' => 'width:100%;padding: 0;border: none;' }
+                - @cost_centers.each do |cc|
+                  %option{'value' => "#{cc.id}"}= cc.name
+              %i
   #widget-grid
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table'
+
+:javascript
+
+  $(document).ready(function(){
+
+    $("#cost-center-find-selected").focus();
+    $('#cost-center-find-selected').select2({ width: '100%' });
+    load_items_delivery_order_ajax('#{show_rows_stock_inputs_logistics_stock_outputs_path}', 'body-summary-stock-inputs', {company_id: '#{@company}', cost_center_id: $("#cost-center-find-selected").val(), authenticity_token: "#{form_authenticity_token}"});
+
+    $('#body-summary-stock-inputs tr td a').tooltip('hide');
+    $('[data-toggle="confirmation"]').confirmation();
+    $('#cost-center-find-selected').change(function(){
+      load_items_delivery_order_ajax('#{show_rows_stock_inputs_logistics_stock_outputs_path}', 'body-summary-stock-inputs', {company_id: '#{@company}', cost_center_id: this.value, authenticity_token: "#{form_authenticity_token}"});
+
+      $('#body-summary-stock-inputs tr td a').tooltip('hide');
+    });
+
+  });

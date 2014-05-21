@@ -4,27 +4,92 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
     render layout: false
   end
 
+  # Functions for show Table Summarize
+
   def search_daily_work
-    @company = params[:company_id]
-    @dates = Array.new
-    if params[:working_group] != nil
-      @working_group = WorkingGroup.find(params[:working_group])
+    @gruposdetrabajo_id     = params[:working_group]      
+    @inicio             = params[:start_date]      
+    @fin                = params[:end_date]
+
+    if @gruposdetrabajo_id.present? && @inicio.present? && @fin.present?
+      @dias_habiles =  range_business_days(@inicio,@fin)
+      @trabajadores_array = business_days_array(@inicio,@fin,@gruposdetrabajo_id,@dias_habiles)
+      gruposdetrabajo = WorkingGroup.find_by_id(@gruposdetrabajo_id)
+      @subcontratista_nombre = "#{gruposdetrabajo.name} - #{Worker.find_name_front_chief(gruposdetrabajo.front_chief_id)} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Worker.find_name_master_builder(gruposdetrabajo.master_builder_id)}"
+
+      if @trabajadores_array.length != 0
+        @pase = 1
+        puts @pase
+        render(partial: 'daily_table', :layout => false)
+      else
+        @pase = 2
+        render(partial: 'daily_table', :layout => false)
+      end
+
+    elsif @gruposdetrabajo_id.blank? && @inicio.present? && @fin.present?
+      @dias_habiles =  range_business_days(@inicio,@fin)
+      gruposdetrabajos = WorkingGroup.all
+      @tareos_total_arrays = []
+      @subcontratista_arrays = []
+      gruposdetrabajos.each do |gruposdetrabajo|
+        temp_tareo = []
+        temp_tareo = business_days_array(@inicio,@fin,gruposdetrabajo.id,@dias_habiles)          
+        if temp_tareo.length != 0 
+          @tareos_total_arrays << temp_tareo
+          subcontratista_nombre = "#{gruposdetrabajo.name} - #{Worker.find_name_front_chief(gruposdetrabajo.front_chief_id)} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Worker.find_name_master_builder(gruposdetrabajo.master_builder_id)}"
+          @subcontratista_arrays << subcontratista_nombre
+        end
+      end
+
+      if @tareos_total_arrays.length != 0
+        @pase = 4
+        render(partial: 'daily_table', :layout => false)
+      else
+        @pase = 2
+        render(partial: 'daily_table', :layout => false)
+      end
     else
-      @working_group = WorkingGroup.all
+      @pase = 3
+      render(partial: 'daily_table', :layout => false)
     end
-    start_date = params[:start_date]
-    end_date = params[:end_date]
-    @business_days = range_business_days(start_date, end_date)
-    @workers_array = business_days_array(start_date, end_date, params[:working_group])
-
-    @business_days.each do |per_date|
-      @dates << show_dates(per_date)
-    end
-
-    render(partial: 'daily_table', :layout => false)
   end
 
-  # Functions for show Table Summarize
+  def search_weekly_work
+    @inicio                = params[:start_date]
+    @fin                   = params[:end_date]
+
+    if @inicio.present? && @fin.present?        
+      @dias_habiles =  range_business_days(@inicio,@fin)
+      gruposdetrabajos = WorkingGroup.all
+      @tareos_total_arrays = []
+      @subcontratista_arrays = []
+      gruposdetrabajos.each do |gruposdetrabajo|
+        temp_tareo = []
+        temp_tareo = business_days_array(@inicio,@fin,gruposdetrabajo.id,@dias_habiles)          
+        if temp_tareo.length != 0 
+          @tareos_total_arrays << temp_tareo
+          subcontratista_nombre = "#{gruposdetrabajo.name} - #{Worker.find_name_front_chief(gruposdetrabajo.front_chief_id)} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Worker.find_name_master_builder(gruposdetrabajo.master_builder_id)}"
+          @subcontratista_arrays << subcontratista_nombre
+        end
+      end
+
+      if @dias_habiles.length == 0
+        @pase = 3
+        render(partial: 'weekly_table', :layout => false)
+      else
+        if @tareos_total_arrays.length != 0
+          @pase = 4
+          render(partial: 'weekly_table', :layout => false)
+        else
+          @pase = 2
+          render(partial: 'weekly_table', :layout => false)
+        end
+      end
+    else 
+      @pase = 3
+      render(partial: 'weekly_table', :layout => false)
+    end
+  end
 
   def range_business_days(start_date, end_date)
     start_date_var = start_date.to_date
@@ -37,37 +102,83 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
     return business_days
   end
 
-  def business_days_array(start_date, end_date, working_group_id)
+  def business_days_array(start_date, end_date, working_group_id, business_days)
 
-    workers_array = ActiveRecord::Base.connection.execute("
-      SELECT  CONCAT( w.paternal_surname,  ' ', w.maternal_surname,  ' ', w.first_name,  ' ', w.second_name ) AS name, 
-        cow.name AS category,
-        SUM( ppd.normal_hours ) AS normal_hours, 
-        SUM( ppd.he_60 ) AS he_60, 
-        SUM( ppd.he_100 ) AS he_100, 
-        SUM( ppd.total_hours ) AS total_hours, 
-        p.date_of_creation 
-      FROM part_people p, part_person_details ppd, workers w, category_of_workers cow
-      WHERE p.working_group_id = " + working_group_id + "
-      AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
-      AND p.id = ppd.part_person_id 
-      AND ppd.worker_id = w.id
-      AND w.category_of_worker_id = cow.id
-      GROUP BY ppd.worker_id
-    ")
+    personals_array = []
+    trabajadores_array = []
+    partediariodepersonals = PartPerson.where("working_group_id = ? and date_of_creation BETWEEN ? AND ?", working_group_id,start_date,end_date)
+    partediariodepersonals.each do |partediariodepersonal|
+      partediariodepersonal.part_person_details.each do |trabajador_detalle|
+        trabajadore = trabajador_detalle.worker
+        id = trabajadore.id
+        nombre = "#{trabajadore.paternal_surname + ' ' + trabajadore.maternal_surname}, #{trabajadore.first_name}  #{trabajadore.second_name}"
+        categoria = "#{trabajadore.category_of_worker.name}"              
+        total_horas     = trabajador_detalle.total_hours.to_f
+        total_normales  = trabajador_detalle.normal_hours.to_f
+        total_60        = trabajador_detalle.he_60.to_f
+        total_100       = trabajador_detalle.he_100.to_f
+        rango_dias = []
+        business_days.each do |dia|
+          if partediariodepersonal.date_of_creation  == dia.to_date
+            rango_dias << trabajador_detalle.total_hours.to_f
+          else
+            rango_dias << 0
+          end               
+        end              
+        # [0]     =>     id                           trabajadores
+        # [1]     =>     nombre                       nombreTrabajador
+        # [2]     =>     categoria                    catalogotrabajadores
+        # [3]     =>     Dias                         exterior calculo de dias
+        # [4]     =>     total_horas                  trabajadores 
+        # [5]     =>     total_normales               trabajadores
+        # [6]     =>     total_60                     trabajadores
+        # [7]     =>     total_100                    trabajadores
+        trabajadores_array << [id,nombre,categoria,rango_dias,total_horas,total_normales,total_60,total_100]
+      end
+    end
+    return filter_array_business_days(trabajadores_array)
 
-    return workers_array
   end
 
-  def show_dates(date)
-    date_array = ActiveRecord::Base.connection.execute("
-    SELECT ppd.total_hours as total_hour_per_date
-    FROM part_people p, part_person_details ppd
-    WHERE p.working_group_id =1
-    AND p.date_of_creation =  '" + date.to_s + "'
-    GROUP BY ppd.part_person_id")
-
-    return date_array
+  def filter_array_business_days(array_order)
+    reset_principal = 0
+    while reset_principal == 0
+      i = 0
+      imax = array_order.count - 1
+      reset = 0
+      while i <= imax && reset == 0
+          k = 0        
+          repe = 0          
+          while k <= imax && repe < 2
+              if array_order[i][0] == array_order[k][0]
+                  repe += 1                          
+              end
+              k += 1
+          end
+          if repe == 2   
+              k = k - 1 
+              sub_array_max = array_order[i][3].count - 1
+              d = 0
+              nuevo_total_horas_suma = 0
+              while d <= sub_array_max
+                array_order[i][3][d] = array_order[i][3][d].to_f + array_order[k][3][d].to_f
+                nuevo_total_horas_suma += array_order[i][3][d]
+                d += 1
+              end
+              array_order[i][4] = nuevo_total_horas_suma
+              array_order[i][5] += array_order[k][5]
+              array_order[i][6] += array_order[k][6]
+              array_order[i][7] += array_order[k][7]                
+              array_order.delete_at(k)
+              reset += 1
+          end                  
+          i += 1
+      end          
+      if i == array_order.count
+        reset_principal += 1
+      end    
+    end    
+    return array_order.sort_by{|k| k[1]}    
   end
 
 end

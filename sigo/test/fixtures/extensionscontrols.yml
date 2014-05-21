@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  description: MyString
+  motive: MyString
+  status: MyString
+  requested_deadline: 1.5
+  approved_deadline: 1.5
+  requested_mgg: 1.5
+  resolution: MyString
+  observation: MyString
+  cost_center_id: 1
+  files: MyString
+  approved_mgg: 1.5
+
+two:
+  description: MyString
+  motive: MyString
+  status: MyString
+  requested_deadline: 1.5
+  approved_deadline: 1.5
+  requested_mgg: 1.5
+  resolution: MyString
+  observation: MyString
+  cost_center_id: 1
+  files: MyString
+  approved_mgg: 1.5

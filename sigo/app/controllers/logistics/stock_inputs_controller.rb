@@ -12,6 +12,7 @@ class Logistics::StockInputsController < ApplicationController
     else
       @company = Rails.cache.read('company_id')
     end
+    @cost_centers = CostCenter.where(company_id: "#{@company}")
     @head = StockInput.where("input = 1")
     @purchaseOrders = PurchaseOrder.get_approved_by_company(@company)
     render layout: false
@@ -44,6 +45,7 @@ class Logistics::StockInputsController < ApplicationController
   def new
     @company = Rails.cache.read('company_id')
     @head = StockInput.new
+    @cost_centers = CostCenter.where(company_id: "#{@company}")
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
@@ -80,6 +82,15 @@ class Logistics::StockInputsController < ApplicationController
     item.update_attributes({status: "D", user_updates_id: params[:current_user_id]})
     flash[:notice] = "Se ha eliminado correctamente."
     render :json => item
+  end
+
+  def show_rows_stock_inputs
+    @head = Array.new
+    @company = params[:company_id]
+    StockInput.where(company_id: @company).where(cost_center_id: params[:cost_center_id]).where(input: 1).each do |x|
+      @head << x
+    end
+    render(partial: 'rows_stock_inputs', :layout => false)
   end
 
   def show_purchase_order_item_field
@@ -119,6 +130,6 @@ class Logistics::StockInputsController < ApplicationController
 
   private
   def stock_input_parameters
-    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :series, :document, :issue_date, :description, :input, stock_input_details_attributes: [:id, :stock_input_id, :purchase_order_detail_id, :amount, :_destroy])
+    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :series, :document, :issue_date, :description, :input, :company_id, :cost_center_id, stock_input_details_attributes: [:id, :stock_input_id, :purchase_order_detail_id, :amount, :_destroy])
   end
 end

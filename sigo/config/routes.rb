@@ -86,6 +86,7 @@ ArsacLogistica::Application.routes.draw do
     resources :cost_centers do
       member do
         get 'update_timeline'
+        get 'select_warehouses'
       end
     end
     resources :type_entities
@@ -171,6 +172,7 @@ ArsacLogistica::Application.routes.draw do
     resources :documents
     resources :stock_inputs do
       collection do
+        post 'show_rows_stock_inputs'
         post 'add_items_from_pod'
         post 'more_items_from_pod'
       end
@@ -180,6 +182,7 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :stock_outputs do
       collection do
+        post 'show_rows_stock_inputs'
         post 'add_stock_input_item_field'
       end
     end
@@ -216,6 +219,7 @@ ArsacLogistica::Application.routes.draw do
       end
       member do
         get 'show_rows_results_pdf'
+        get 'show_group_results_pdf'
       end
     end
   end
@@ -224,6 +228,11 @@ ArsacLogistica::Application.routes.draw do
     resources :workers do
       collection do
         post 'add_worker_item_field'
+      end
+    end
+    resources :analysis_of_valuations do
+      collection do
+        post 'get_report'
       end
     end
     resources :part_works do
@@ -260,14 +269,11 @@ ArsacLogistica::Application.routes.draw do
       resources :daily_workers do
         collection do
           post 'search_daily_work'
-        end
-      end
-
-      resources :weekly_workers do
-        collection do
           post 'search_weekly_work'
         end
       end
+
+      resources :weekly_workers
     end
   end
 

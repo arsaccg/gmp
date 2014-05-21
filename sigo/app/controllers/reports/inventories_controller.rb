@@ -1,9 +1,17 @@
 class Reports::InventoriesController < ApplicationController
   def index
-    @cost_centers = CostCenter.all
-    @warehouses = Warehouse.all
+    if params[:company_id] != nil
+      @company = params[:company_id]
+      # Cache -> company_id
+      cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 120.minutes)
+      Rails.cache.write('company_id', @company)
+    else
+      @company = Rails.cache.read('company_id')
+    end
+    @cost_centers = CostCenter.where("company_id = " + @company)
+    @warehouses = Warehouse.where("company_id = " + @company)
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
-    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
+    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @years = Array.new
     (2000..2050).each do |x|
       @years << x
@@ -12,19 +20,11 @@ class Reports::InventoriesController < ApplicationController
     @formats = Format.all
     @articles = Article.joins(:type_of_article).where("type_of_articles.code" => "02")
     @moneys = Money.all
-  	render layout: false
+    render layout: false
   end
 
   def show
 
-  end
-
-  def show_rows_results2
-    @user = current_user.id
-
-    #-------------------------------
-    # Period Closure
-    #-------------------------------
   end
 
   def show_rows_results
@@ -33,111 +33,82 @@ class Reports::InventoriesController < ApplicationController
     #-------------------------------
     # CostCenter
     #-------------------------------
-    #RepInvCostCenter.delete_all ({user: @user})
-    #if params[:cost_center_id] != ""
-    #  params[:cost_center_id].each.with_index(1) do |x, i|
-    #    e = CostCenter.find(x.to_i)
-    #    RepInvCostCenter.create({user: @user, id: e.id, name: e.name})
-    #  end
-    #else
-    #  CostCenter.all.each do |x|
-    #    RepInvCostCenter.create({user: @user, id: x.id, name: x.name})
-    #  end
-    #end
+    @cost_centers = ""
+    if params[:cost_center_id] != ""
+      @cost_centers = ","
+      params[:cost_center_id].each.with_index(1) do |x, i|
+        @cost_centers += x.to_s + ","
+      end
+    end
     #-------------------------------
     # Warehouses
     #-------------------------------
-    RepInvWarehouse.delete_all ({user: @user})
+    @warehouses = ""
     if params[:warehouse_id] != ""
+      @warehouses = ","
       params[:warehouse_id].each.with_index(1) do |x, i|
-        e = Warehouse.find(x.to_i)
-        RepInvWarehouse.create({user: @user, id: e.id, name: e.name})
-      end
-    else
-      Warehouse.all.each do |x|
-        RepInvWarehouse.create({user: @user, id: x.id, name: x.name})
+        @warehouses += x.to_s + ","
       end
     end
     #-------------------------------
     # Supplier
     #-------------------------------
-    RepInvSupplier.delete_all ({user: @user})
+    @suppliers = ""
     if params[:supplier_id] != ""
+      @suppliers = ","
       params[:supplier_id].each.with_index(1) do |x, i|
-        e = Entity.find(x.to_i)
-        RepInvSupplier.create({user: @user, id: e.id, name: e.name})
-      end
-    else
-      Entity.joins(:type_entities).where("type_entities.preffix" => "P").all.each do |x|
-        RepInvSupplier.create({user: @user, id: x.id, name: x.name})
+        @suppliers += x.to_s + ","
       end
     end
     #-------------------------------
     # Year
     #-------------------------------
-    RepInvYear.delete_all ({user: @user})
+    @years = ""
     if params[:year_id] != ""
+      @years = ","
       params[:year_id].each.with_index(1) do |x, i|
-        RepInvYear.create({user: @user, id: x.to_i})
-      end
-    else
-      LinkTime.group(:year).uniq.all.each do |x|
-        RepInvYear.create({user: @user, id: x.year})
+        @years += x.to_s + ","
       end
     end
     #-------------------------------
     # Period
     #-------------------------------
-    RepInvPeriod.delete_all ({user: @user})
+    @periods = ""
     if params[:period_id] != ""
+      @periods = ","
       params[:period_id].each.with_index(1) do |x, i|
-        RepInvPeriod.create({user: @user, id: x.to_i, name: x.to_i})
-      end
-    else
-      LinkTime.group(:year, :month).uniq.all.each do |x|
-        RepInvPeriod.create({user: @user, id: x.year * 100 + x.month, name: x.year * 100 + x.month})
+        @periods += x.to_s + ","
       end
     end
     #-------------------------------
     # Format
     #-------------------------------
-    RepInvFormat.delete_all ({user: @user})
+    @formats = ""
     if params[:format_id] != ""
+      @formats = ","
       params[:format_id].each.with_index(1) do |x, i|
-        e = Format.find(x.to_i)
-        RepInvFormat.create({user: @user, id: e.id, name: e.name})
-      end
-    else
-      Format.all.each do |x|
-        RepInvFormat.create({user: @user, id: x.id, name: x.name})
+        @formats += x.to_s + ","
       end
     end
     #-------------------------------
     # Articles
     #-------------------------------
-    RepInvArticle.delete_all ({user: @user})
+    @articles = ""
     if params[:article_id] != ""
+      @articles = ","
       params[:article_id].each.with_index(1) do |x, i|
-        e = Entity.find(x.to_i)
-        RepInvArticle.create({user: @user, id: e.id, name: e.name})
-      end
-    else
-      Article.joins(:type_of_article).where("type_of_articles.code" => "02").all.each do |x|
-        RepInvArticle.create({user: @user, id: x.id, name: x.name})
+        @articles += x.to_s + ","
       end
     end
+    #  Article.joins(:type_of_article).where("type_of_articles.code" => "02").all.each do |x|
     #-------------------------------
     # Money
     #-------------------------------
-    RepInvMoney.delete_all ({user: @user})
+    @moneys = ""
     if params[:money_id] != ""
+      @moneys = ","
       params[:money_id].each.with_index(1) do |x, i|
-        e = Money.find(x.to_i)
-        RepInvMoney.create({user: @user, id: e.id, name: e.name})
-      end
-    else
-      Money.all.each do |x|
-        RepInvMoney.create({user: @user, id: x.id, name: x.name})
+        @moneys += x.to_s + ","
       end
     end
     #-------------------------------
@@ -158,6 +129,7 @@ class Reports::InventoriesController < ApplicationController
     @document = params[:document]
 
     @date_type = params[:date_type]
+    @report_type = params[:report_type]
  
     #if params[:report_type] == "1" # Stock Input
     #  @reportRows = StockInputDetail.get_inputs(@user, @since_date, @to_date, @series, @document)
@@ -170,18 +142,44 @@ class Reports::InventoriesController < ApplicationController
       when "1" # Find
         case params[:kardex_type]
           when "1"
-            @reportRows = StockInputDetail.get_kardex_yearly(@user, @date_type, @since_date, @to_date)
-            render(partial: 'show_rows_kardex_yearly', :layout => false)
+            @reportRows = StockInputDetail.get_kardex_yearly(1, @user, @report_type, @date_type, @since_date, @to_date, @cost_centers, @warehouses, @suppliers, @years, @periods, @formats, @articles, @moneys)
+            case @report_type
+              when "4" then
+              render(partial: 'show_group_kardex_yearly', :layout => false)
+              when "5" then
+              render(partial: 'show_row_kardex_yearly', :layout => false)
+            end
           when "2"
-            @reportRows = StockInputDetail.get_kardex_monthly(@user, @date_type, @since_date, @to_date)
-            render(partial: 'show_rows_kardex_monthly', :layout => false)
+            @reportRows = StockInputDetail.get_kardex_monthly(1, @user, @report_type, @date_type, @since_date, @to_date, @cost_centers, @warehouses, @suppliers, @years, @periods, @formats, @articles, @moneys)
+            case @report_type
+              when "4" then
+              render(partial: 'show_group_kardex_monthly', :layout => false)
+              when "5" then
+              render(partial: 'show_row_kardex_monthly', :layout => false)
+            end
           when "3"
-            @reportRows = StockInputDetail.get_kardex_detail(@user, @date_type, @since_date, @to_date)
-            render(partial: 'show_rows_kardex_detail', :layout => false)
+            @reportRows = StockInputDetail.get_kardex_daily(1, @user, @report_type, @date_type, @since_date, @to_date, @cost_centers, @warehouses, @suppliers, @years, @periods, @formats, @articles, @moneys)
+            case @report_type
+              when "4" then
+              render(partial: 'show_group_kardex_daily', :layout => false)
+              when "5" then
+              render(partial: 'show_row_kardex_daily', :layout => false)
+            end
+          when "4"
+            @reportRows = StockInputDetail.get_kardex_summary(1, @user, @report_type, @date_type, @since_date, @to_date, @cost_centers, @warehouses, @suppliers, @years, @periods, @formats, @articles, @moneys)
+            case @report_type
+              when "4" then
+              render(partial: 'show_group_kardex_summary', :layout => false)
+              when "5" then
+              render(partial: 'show_row_kardex_detail', :layout => false)
+            end
         end
       when "2" # Export PDF
         # Previous save filters
-        # -> Json -> show_rows_results_pdf
+        # -> Json -> show_rows_results_pdf / show_group_results_pdf
+        cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 20.minutes)
+        Rails.cache.write('since_date', @since_date)
+        Rails.cache.write('to_date', @to_date)
         render :json => nil
     end
     #elsif params[:report_type] == "4" # Stock
@@ -194,24 +192,57 @@ class Reports::InventoriesController < ApplicationController
   def show_rows_results_pdf
     @user = current_user.id
 
-    @kardex_type = params[:id][0,1]
-    @date_type = params[:id][1,1]
+    @report_type = params[:id][0,1]
+    @kardex_type = params[:id][1,1]
+    @date_type = params[:id][2,1]
 
-    @from_date = Date.strptime("01/01/1900", '%d/%m/%Y')
-    @to_date = Date.strptime("31/12/2050", '%d/%m/%Y')
+    @since_date = Rails.cache.read('since_date')#Date.strptime("01/01/1900", '%d/%m/%Y')
+    @to_date = Rails.cache.read('to_date')  #Date.strptime("31/12/2050", '%d/%m/%Y')
 
     case @kardex_type
       when "1"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_yearly(@user, @date_type, @from_date, @to_date)
+        @reportRows = StockInputDetail.get_kardex_yearly(0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
       when "2"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_monthly(@user, @date_type, @from_date, @to_date)
+        @reportRows = StockInputDetail.get_kardex_monthly(0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
       when "3"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_detail(@user, @date_type, @from_date, @to_date)
+        @reportRows = StockInputDetail.get_kardex_daily(0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+      when "4"
+        @rows_per_page = 23
+        @reportRows = StockInputDetail.get_kardex_summary(0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+    end    
+
+    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape, :margin => [10, 40, 50, 40] }
+  end
+
+  def show_group_results_pdf
+    @user = current_user.id
+
+    @report_type = params[:id][0,1]
+    @kardex_type = params[:id][1,1]
+    @date_type = params[:id][2,1]
+
+    @since_date = Rails.cache.read('since_date')#Date.strptime("01/01/1900", '%d/%m/%Y')
+    @to_date = Rails.cache.read('to_date')  #Date.strptime("31/12/2050", '%d/%m/%Y')
+
+    case @kardex_type
+      when "1"
+        @rows_per_page = 23
+        @reportRows = StockInputDetail.get_kardex_yearly(0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+      when "2"
+        @rows_per_page = 23
+        @reportRows = StockInputDetail.get_kardex_monthly(0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+      when "3"
+        @rows_per_page = 23
+        @reportRows = StockInputDetail.get_kardex_daily(0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+      when "4"
+        @rows_per_page = 23
+        @reportRows = StockInputDetail.get_kardex_summary(0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
     end    
     
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape, :margin => [10, 40, 50, 40] }
   end
+
 end

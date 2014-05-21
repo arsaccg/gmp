@@ -17,35 +17,18 @@
             %label.input{for: "working_group_id"}
               %select.form-control{:name =>"part_work[working_group_id]", :style => 'width:100%;padding: 0;border: none;'}
                 %option{:value => ''}
-                  = 'SECTOR - JEFEDEFRENTE - EJECUTOR - MAESTRO DE OBRA'
+                  = 'JEFEDEFRENTE - EJECUTOR - MAESTRO DE OBRA'
                 - @working_groups.each do |working_group|
                   - if @action == 'edit'
-                    - if @subcontract.working_group_id == working_group.id
+                    - if @partwork.working_group_id == working_group.id
                       %option{:value => "#{working_group.id}", :selected => true}
-                        = working_group.sector.name + ' - ' + Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                        =  Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
                     - else
                       %option{:value => "#{working_group.id}"}
-                        = working_group.sector.name + ' - ' + Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                        = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
                   - else
                     %option{:value => "#{working_group.id}"}
-                      = working_group.sector.name + ' - ' + Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
-
-          %section.col.col-4
-            %label.input{for: "sector_id"}
-              %select.form-control{:name =>"part_work[sector_id]", :style => 'width:100%;padding: 0;border: none;'}
-                - @sectors.each do |sector|
-                  %optgroup{:label => "#{sector.name}"}
-                    - Sector.getSubSectors(sector.code).each do |subsector|
-                      - if @action == 'edit'
-                        - if @subcontract.sector_id == subsector.id
-                          %option{:value => "#{subsector.id}", :selected => true}
-                            = subsector.name
-                        - else
-                          %option{:value => "#{subsector.id}"}
-                            = subsector.name
-                      - else
-                        %option{:value => "#{subsector.id}"}
-                          = subsector.name
+                      =  Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
 
           %section.col.col-2
             %label.input{for: "date_of_creation"}
@@ -78,7 +61,28 @@
                 %th Observación
                 %th Eliminar
             %tbody(id="article_items_table")
-
+              -if @action == "edit"
+                - @partworkde.each do |part|
+                  %tr.partwork_item{id: "tr" + @reg_n.to_s}
+                    %td.article-id{"style"=>"display:none"}
+                      = hidden_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][article_id]', part.article_id
+                    %td.col-md-2
+                      -@articles.each do |ar|
+                        - if part.article_id==ar.id
+                          = ar.name
+                    %td.col-md-2
+                      -@unit.each do |u|
+                        -@articles.each do |ar|
+                          - if ar.unit_of_measurement_id==u.id
+                            = u.name
+                    %td.amount.col-md-1{:style => "width:5%"}
+                      = part.bill_of_quantitties
+                    %td.description
+                      = part.description
+                    %td{:style => "width: 1%; text-align: center;"}
+                      %label.checkbox
+                        = check_box 'part_work', '[part_work_details_attributes][' + @reg_n.to_s + '][_destroy]'
+                        %i
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 

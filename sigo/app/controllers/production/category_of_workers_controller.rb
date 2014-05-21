@@ -1,5 +1,6 @@
 class Production::CategoryOfWorkersController < ApplicationController
   def index
+    @article = TypeOfArticle.find_by_code('01').articles.first
     @company = params[:company_id]
     @categoryOfWorker = CategoryOfWorker.all
     render layout: false
@@ -13,6 +14,7 @@ class Production::CategoryOfWorkersController < ApplicationController
   def new
     @categoryOfWorker = CategoryOfWorker.new
     @unitOfMeasurements = UnitOfMeasurement.all
+    @articles = TypeOfArticle.find_by_code('01').articles
     @company = params[:company_id]
     render layout: false
   end
@@ -35,6 +37,7 @@ class Production::CategoryOfWorkersController < ApplicationController
   def edit
     @categoryOfWorker = CategoryOfWorker.find(params[:id])
     @unitOfMeasurements = UnitOfMeasurement.all
+    @articles = Article.where("type_of_article_id=1")
     @company = params[:company_id]
     render layout: false
   end

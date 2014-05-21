@@ -54,17 +54,18 @@
             %label.input
               %select.form-control#cost-center-select{:name =>"cost_center_id"}
                 %option{:value => ""} Seleccionar Centro de Costo
-                - @costCenter.each do |costCenter|
-                  - if @action == 'edit'
-                    - if @entity.cost_center_id == costCenter.id
-                      %option{:value => "#{costCenter.id}", :selected => true}
-                        = costCenter.name
+                - if @costCenter.present?
+                  - @costCenter.each do |costCenter|
+                    - if @action == 'edit'
+                      - if @entity.cost_center_id == costCenter.id
+                        %option{:value => "#{costCenter.id}", :selected => true}
+                          = costCenter.name
+                      - else
+                        %option{:value => "#{costCenter.id}"}
+                          = costCenter.name
                     - else
                       %option{:value => "#{costCenter.id}"}
                         = costCenter.name
-                  - else
-                    %option{:value => "#{costCenter.id}"}
-                      = costCenter.name
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 

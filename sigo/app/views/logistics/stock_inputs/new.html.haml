@@ -13,7 +13,7 @@
                 %ul.steps
                   %li.active{"data-target" => "#step1"}
                     %span.badge.badge-info> 1
-                    Seleccionar Proveedor
+                    Seleccionar CC / Proveedor
                     %span.chevron
                   %li{"data-target" => "#step2"}
                     %span.badge> 2
@@ -54,6 +54,18 @@
       data = { authenticity_token: "#{form_authenticity_token}" }
       load_url_ajax(url, 'table-items-paso1', data, 'avoid-opacity', 'PUT');
     });
+    // Cost Center Change
+    GetWarehouse($("#cost-center-selected").val());
+    $('#cost-center-selected').change(function(){
+      // refresf Warehouse Select
+      //cost_center_id = $("#cost-center-selected").val();
+      GetWarehouse(this.value);
+    });
+    function GetWarehouse(cost_center_id){
+      url = "/logistics/cost_centers/" + cost_center_id + "/select_warehouses";
+      data = { authenticity_token: "#{form_authenticity_token}" }
+      load_url_ajax(url, 'warehouse-select', data, 'avoid-opacity', 'GET');
+    }
     // Back
     $('#backlist').click(function(){
       load_url_ajax("#{logistics_stock_inputs_path}", 'content', null, null, 'GET');
@@ -150,6 +162,18 @@
         var data_items_sel = new Array();
 
         if(data.step == 1 && data.direction == 'next'){
+          var $valid = $("#new_stock_input").valid();
+          if (!$valid) {
+            e.preventDefault();
+            $.smallBox({
+              title: "Para continuar <font color=yellow>seleccionar Centro de costo y Proveedor</font>.",
+              content: "<i class='fa fa-clock-o'></i> <i>Hace unos segundos...</i>",
+              color: "#c46a69",
+              iconSmall: "fa fa-times bounce animated",
+              timeout: 4000
+            });
+          }
+          // Refresh Purchase Order Detail 
           supplier_id = $('#supplier-selected').val();
           url = "/logistics/stock_inputs/" + supplier_id + "/show_purchase_order_item_field";
           data = { authenticity_token: "#{form_authenticity_token}" }

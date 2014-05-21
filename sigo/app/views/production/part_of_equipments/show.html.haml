@@ -1,2 +1,123 @@
-%h1 Production::PartOfEquipments#show
-%p Find me in app/views/production/part_of_equipments/show.html.haml
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-12
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        Parte número: 
+        %strong
+          =@partofequipment.code
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+              = 'Parte número: '+ @partofequipment.code
+          %div
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th N°
+                    %th Fecha
+                    %th Proveedor
+                    %th Trabajador
+                    %th Equipo
+                    %th Horómetro/Km usados
+                    %th H. de Mantenimiento
+                    %th H. Stand by
+                    %th Tipo de combustible
+                    %th Cantidad de combustible
+                %tbody
+                  %tr
+                    %td
+                      = @partofequipment.code
+                    %td 
+                      = @partofequipment.date
+                    %td
+                      -@subcontracts.each do |sb|
+                        -if sb.id==@partofequipment.subcontract_of_equipment_id
+                          = sb.entity.name
+                    %td
+                      -@worker.each do |wk|
+                        -if wk.id==@partofequipment.worker_id
+                          = wk.first_name + ' '+ wk.paternal_surname+' '+wk.maternal_surname
+                    %td
+                      -@articles.each do |ar|
+                        -if ar.id==@partofequipment.equipment_id
+                          = ar.name
+                    %td
+                      = @partofequipment.dif
+                    %td
+                      = @partofequipment.h_maintenance
+                    %td
+                      = @partofequipment.h_stand_by
+                    %td
+                      -@type.each do |type|
+                        - if type.id==@partofequipment.subcategory_id
+                          = type.name
+                    %td
+                      = @partofequipment.fuel_amount
+
+                    
+
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+              = 'Detalle del parte número: '+ @partofequipment.code
+          %div
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Grupo de Trabajo
+                    %th Fase
+                    %th Horas Efectivas
+                    %th Unidad de Medida
+                %tbody(id="part_register_table")
+                  -@partdetail.each do |part|
+                    %tr.part-equi_item{id: "tr" + @reg_n.to_s}
+                      %td.sector.col-lg-3
+                        -@working_groups.each do |wg|
+                          -if part.work_group_id == wg.id
+                            =wg.name
+
+                      %td.phase.col-lg-2
+                        - @phases.each do |phas|
+                          - Phase.get_subphases(phas.code).each do |subphase|
+                            -if part.subphase_id == subphase.id
+                              = "#{subphase.name}"
+                      %td.effective-hours.col-lg-2
+                        = part.effective_hours
+                      %td.unit-of-measumente.col-lg-1
+                        = @unit
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de las Partes
+
+:javascript
+
+  $('#backlist').click(function(){
+      load_url_ajax("#{production_part_of_equipments_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+  });
+
+= javascript_include_tag 'plugin/flot/jquery.flot.cust'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
+= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
+= javascript_include_tag 'plugin/flot/jquery.flot.resize'
+= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
+= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
+= javascript_include_tag 'plugin/datatables/ColReorder.min'
+= javascript_include_tag 'plugin/datatables/FixedColumns.min'
+= javascript_include_tag 'plugin/datatables/ColVis.min'
+= javascript_include_tag 'plugin/datatables/ZeroClipboard'
+= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
+= javascript_include_tag 'plugin/datatables/DT_bootstrap'

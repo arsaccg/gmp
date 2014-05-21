@@ -1,5 +1,7 @@
 class Production::WorkersController < ApplicationController
   def index
+    @categoryOfWorker = CategoryOfWorker.first
+    @bank = Bank.first
     @company = params[:company_id]
     @workers = Worker.all
     render layout: false

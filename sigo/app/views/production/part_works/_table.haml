@@ -11,7 +11,6 @@
         %thead
           %tr
             %th N°
-            %th Frente
             %th Jefe de Frente
             %th Ejecutor
             %th Maestro de Obra
@@ -22,8 +21,6 @@
             %tr
               %td
                 = partwork.number_working_group
-              %td 
-                = partwork.sector.name
               %td
                 = Worker.find(partwork.working_group.front_chief_id).first_name + ' ' + Worker.find(partwork.working_group.front_chief_id).second_name  + ' ' + Worker.find(partwork.working_group.front_chief_id).paternal_surname  + ' ' + Worker.find(partwork.working_group.front_chief_id).maternal_surname
               %td 

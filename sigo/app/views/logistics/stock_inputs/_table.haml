@@ -17,26 +17,7 @@
             %th Proveedor
             %th Formato
             %th Acciones
-        %tbody
-          - @head.each do |head|
-            %tr
-              %td
-                = head.warehouse.name
-              %td
-                = head.period
-              %td
-                = head.issue_date.strftime("%d/%m/%Y")
-              %td
-                = head.series + "-" + head.document
-              %td
-                = head.entity.name
-              %td
-                = head.format.name
-              %td
-                %a.btn.btn-warning.btn-xs{:href =>"javascript:void(0);", :onclick => "javascript:load_url_ajax('#{edit_logistics_stock_input_path(head.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
-                  %i.fa.fa-edit
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => t('activerecord.actions.deletem') + "#{head.series}"+ "-" + "#{head.document}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_stock_input_path(head.id)}' + '?authenticity_token=#{form_authenticity_token}' + '&current_user_id=#{current_user.id}', 'content', '#{logistics_stock_inputs_path}?company_id=#{@company}')"}}
-                  %i.fa.fa-trash-o
+        %tbody{ :id => "body-summary-stock-inputs" }
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

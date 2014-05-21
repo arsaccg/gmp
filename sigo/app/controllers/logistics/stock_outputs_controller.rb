@@ -11,6 +11,7 @@ class Logistics::StockOutputsController < ApplicationController
     else
       @company = Rails.cache.read('company_id')
     end
+    @cost_centers = CostCenter.where(company_id: "#{@company}")
     @head = StockInput.where("input = 0")
     @purchaseOrders = PurchaseOrder.all.where("state LIKE 'approved'")
     render layout: false
@@ -35,6 +36,7 @@ class Logistics::StockOutputsController < ApplicationController
   def new
     @company = Rails.cache.read('company_id')
     @head = StockInput.new
+    @cost_centers = CostCenter.where(company_id: "#{@company}")
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
@@ -50,7 +52,7 @@ class Logistics::StockOutputsController < ApplicationController
     @head = StockInput.find(params[:id])
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @periods = LinkTime.group(:year, :month)
-    @warehouses = Warehouse.where(company_id: "#{@company}")
+    @warehouses = Warehouse.where(company_id: "#{@company}").where(cost_center_id: "#{@head.cost_center_id}")
     @articles = Article.all
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
     @phases = Phase.where("category LIKE 'phase'")
@@ -79,9 +81,19 @@ class Logistics::StockOutputsController < ApplicationController
     render :json => item
   end
 
+  def show_rows_stock_inputs
+    @head = Array.new
+    @company = params[:company_id]
+    StockInput.where(company_id: @company).where(cost_center_id: params[:cost_center_id]).where(input: 0).each do |x|
+      @head << x
+    end
+    render(partial: 'rows_stock_inputs', :layout => false)
+  end
+
   def add_stock_input_item_field
     @reg_n = Time.now.to_i
     data_article_unit = params[:article_id].split('-')
+    @company_id = params[:company_id]
     @article = Article.find(data_article_unit[0])
     @amount = params[:amount].to_i
     
@@ -90,6 +102,6 @@ class Logistics::StockOutputsController < ApplicationController
 
   private
   def stock_input_parameters
-    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :document, :issue_date, :description, :input, :phase_id, :working_group_id, stock_input_details_attributes: [:id, :stock_input_id, :article_id, :amount, :equipment_id, :_destroy])
+    params.require(:stock_input).permit(:responsible_id, :warehouse_id, :period, :format_id, :document, :issue_date, :description, :input, :phase_id, :working_group_id, :company_id, :cost_center_id, stock_input_details_attributes: [:id, :stock_input_id, :article_id, :amount, :equipment_id, :_destroy])
   end
 end

@@ -92,6 +92,6 @@ class Production::WorkingGroupsController < ApplicationController
   end
 
   def working_groups_parameters
-    params.require(:working_group).permit(:sector_id, :master_builder_id, :front_chief_id, :active, :executor_id)
+    params.require(:working_group).permit(:master_builder_id, :front_chief_id, :active, :executor_id, :name)
   end
 end

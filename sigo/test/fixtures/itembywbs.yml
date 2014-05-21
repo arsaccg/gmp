@@ -1,0 +1,39 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  wbscode: MyString
+  itembywbs_id: 1
+  coditem: MyString
+  order_budget: MyString
+  partial: MyString
+  subbudget_code: MyString
+  price: 1.5
+  budget_code: MyString
+  budget_id: 1
+  item_id: 1
+  status_flag: MyString
+  deleted: 1
+  wbsitem_id: 1
+  measured: 1.5
+  cost_center_id: 1
+  subbudgetdetail: MyString
+  itembybudget_id: 1
+
+two:
+  wbscode: MyString
+  itembywbs_id: 1
+  coditem: MyString
+  order_budget: MyString
+  partial: MyString
+  subbudget_code: MyString
+  price: 1.5
+  budget_code: MyString
+  budget_id: 1
+  item_id: 1
+  status_flag: MyString
+  deleted: 1
+  wbsitem_id: 1
+  measured: 1.5
+  cost_center_id: 1
+  subbudgetdetail: MyString
+  itembybudget_id: 1

@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  month: MyString
+  name: MyString
+  status: MyString
+  budget_id: 1
+  general_expenses: 1.5
+  utility: 1.5
+  readjustment: 1.5
+  no_direct_r: 1.5
+  no_materials_r: 1.5
+  direct_advance: 1.5
+  advance_of_materials: 1.5
+  valorization_date: 2014-05-20
+
+two:
+  month: MyString
+  name: MyString
+  status: MyString
+  budget_id: 1
+  general_expenses: 1.5
+  utility: 1.5
+  readjustment: 1.5
+  no_direct_r: 1.5
+  no_materials_r: 1.5
+  direct_advance: 1.5
+  advance_of_materials: 1.5
+  valorization_date: 2014-05-20

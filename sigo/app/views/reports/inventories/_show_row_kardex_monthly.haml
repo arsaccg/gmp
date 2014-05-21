@@ -1,0 +1,33 @@
+- @reportRows.each do |x|
+  %tr
+    %td
+      = x[2]
+    %td
+      = x[4]
+    %td
+      = x[6]
+    %td
+      = x[7]
+    %td
+      = x[8]
+    - case x[0]
+      - when 1  
+        %td
+          = x[9]
+        %td
+          = number_with_precision(x[10], precision: 2, delimiter: ',')
+        %td
+          = number_with_precision(x[11], precision: 2, delimiter: ',')
+        %td
+        %td
+        %td
+      - when 0
+        %td
+        %td
+        %td
+        %td
+          = x[9]
+        %td
+          = number_with_precision(x[10], precision: 2, delimiter: ',')
+        %td
+          = number_with_precision(x[11], precision: 2, delimiter: ',')

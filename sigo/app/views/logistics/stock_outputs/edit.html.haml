@@ -48,7 +48,7 @@
       var $validator = $('form[id^="edit_stock_input"]').validate({
 
         rules: {
-          'stock_input[supplier_id]': {
+          'stock_input[responsible_id]': {
             required: true
           },
           'stock_input[warehouse_id]': {
@@ -83,7 +83,7 @@
         },
         
         messages: {
-          'stock_input[supplier_id]': "(*)",
+          'stock_input[responsible_id]': "(*)",
           'stock_input[warehouse_id]': "(*)",
           'stock_input[format_id]': "(*)",
           'stock_input[period]': "(*)",

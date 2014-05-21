@@ -49,6 +49,9 @@ class Production::PartWorksController < ApplicationController
   def edit
     @partwork = PartWork.find(params[:id])
     @working_groups = WorkingGroup.all
+    @partworkde = PartWorkDetail.where("part_work_id LIKE ?", params[:id])
+    @unit = UnitOfMeasurement.all
+    @articles = TypeOfArticle.find(4).articles
     @sectors = Sector.where("code LIKE '__'")
     @action = 'edit'
     @company = params[:company_id]
@@ -78,6 +81,6 @@ class Production::PartWorksController < ApplicationController
 
   private
   def part_work_parameters
-    params.require(:part_work).permit(:working_group_id, :number_working_group, :sector_id, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :article_id, :bill_of_quantitties, :description])
+    params.require(:part_work).permit(:working_group_id, :number_working_group, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :article_id, :bill_of_quantitties, :description])
   end
 end

@@ -12,7 +12,7 @@
           %section.col.col-10
             %label.label Categoria del Trabajador
             %label.input{for: "category_of_worker_id"}
-              %select.form-control{:name =>"worker[category_of_worker_id]"}
+              %select.form-control{:name =>"worker[category_of_worker_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @categoryOfWorkers.each do |categoryOfWorker|
                   - if @worker.category_of_worker_id == categoryOfWorker.id
                     %option{:value => "#{categoryOfWorker.id}", :selected => true}
@@ -98,6 +98,7 @@
                 %th Eliminar
             %tbody(id="bank_items_table")
               - if @action == 'edit'
+                - puts @worker.worker_details
                 - @worker.worker_details.each do |oos|
                   %tr
                     %td.bank-id(style="display:none")
@@ -108,7 +109,7 @@
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][part_person_id]', @partperson.id
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
                     %td.delete-item
                       %label.checkbox
                         = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'

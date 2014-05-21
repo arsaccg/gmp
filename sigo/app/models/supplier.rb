@@ -1,5 +1,5 @@
 # enconding: utf-8
-class Supplier < ActiveRecord::Base
+class Supplier < Entity
 	has_many :purchase_orders
 	# Validaciones
 	include ActiveModel::Validations
