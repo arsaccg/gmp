@@ -53,6 +53,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     @partofequipment = PartOfEquipment.new
     @subcon = SubcontractEquipment.all
     @fuel_articles = Article.where("code LIKE ?", '__32%')
+    @sectors = Sector.where("code LIKE '__'")
     @worker = CategoryOfWorker.find_by_name('Operador').workers
     render layout: false
   end
@@ -76,7 +77,6 @@ class Production::PartOfEquipmentsController < ApplicationController
     @company = params[:company_id]
     @id = PartOfEquipment.find(params[:id]).equipment_id
     @partofequipment = PartOfEquipment.find(params[:id])
-
     @working_groups = WorkingGroup.all
     @subcon = SubcontractEquipment.all
     @type = Array.new
@@ -174,8 +174,9 @@ class Production::PartOfEquipmentsController < ApplicationController
       part_of_equipment_details_attributes: [
         :id, 
         :part_of_equipment_id, 
-        :work_group_id, 
-        :subphase_id, 
+        :working_group_id, 
+        :phase_id, 
+        :sector_id, 
         :effective_hours, 
         :unit, 
         :_destroy

@@ -4,8 +4,15 @@
       -@working_groups.each do |wg|
         %option{:value => "#{wg.id}"}
           =wg.name
+  %td.sector
+    %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][#{@reg_n.to_s}][sector_id]"}
+      - @sectors.each do |sector|
+        %optgroup{:label => "#{sector.name}"}
+          - Sector.getSubSectors(sector.code).each do |subsector|
+            %option{:value => "#{subsector.id}"}
+              = subsector.name
   %td.phase.col-lg-2
-    %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][subphase_id]"}
+    %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][phase_id]"}
       - @phases.each do |phas|
         %optgroup{:label => "#{phas.name}"}
           - Phase.get_subphases(phas.code).each do |subphase|

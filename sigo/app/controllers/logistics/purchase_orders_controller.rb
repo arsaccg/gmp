@@ -205,6 +205,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def purchase_order_pdf
+    @company = Company.find(params[:company_id])
     @purchaseOrder = PurchaseOrder.find(params[:id])
     @purchaseOrderDetails = @purchaseOrder.purchase_order_details
     aux = 0

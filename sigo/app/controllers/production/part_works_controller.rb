@@ -81,6 +81,6 @@ class Production::PartWorksController < ApplicationController
 
   private
   def part_work_parameters
-    params.require(:part_work).permit(:working_group_id, :number_working_group, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :article_id, :bill_of_quantitties, :description])
+    params.require(:part_work).permit(:working_group_id, :sector_id, :number_working_group, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :article_id, :bill_of_quantitties, :description])
   end
 end
