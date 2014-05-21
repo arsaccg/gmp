@@ -21,23 +21,67 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def get_report
     @totalprice = 0
+    @cad2 = Array.new
+    @cad3 = Array.new
     @company = params[:company_id]
     @working_group = WorkingGroup.all
+
+    if params[:front_chief]=="0" && params[:master_builder] == "0"
+      CategoryOfWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
+        @front_chief = front_chief.workers
+      end
+      @front_chief.each do |fc|
+        @cad2 << fc.id
+      end
+      CategoryOfWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
+        @master_builders = master_builder.workers
+      end
+      @master_builders.each do |mb|
+        @cad2 << mb.id
+      end
+    end
+
+    if params[:front_chief]!="0" && params[:master_builder] == "0"
+      @cad2 << params[:front_chief]
+    end
+
+    if params[:front_chief]=="0" && params[:master_builder] != "0"
+      @cad2 << params[:master_builder]
+    end
+
+    if params[:front_chief]!="0" && params[:master_builder] != "0"
+      @cad2 << params[:front_chief]
+      @cad2 << params[:master_builder]
+    end
+
+    if params[:executor] != '0'
+      @cad3 << params[:executor]
+    else
+      TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
+        @executors = executor.entities
+      end
+      @executors.each do |ex|
+      @cad3 << ex.id
+      end
+    end
     start_date = params[:start_date]
     end_date = params[:end_date]
     @cad = Array.new
     @working_group.each do |wg|
       @cad << wg.id
     end
-    @cad = @cad.join(',')
-    @workers_array = business_days_array(start_date, end_date, @cad)
+    @cad = @cad.join(',')    
+    @cad2 = @cad2.join(',')
+    @cad3 = @cad3.join(',')
+    @workers_array = business_days_array(start_date, end_date, @cad, @cad2)
+    @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2)
     @workers_array.each do |workerDetail|
       @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
     end
     render(partial: 'report_table', :layout => false)
   end
 
-  def business_days_array(start_date, end_date, working_group_id)
+  def business_days_array(start_date, end_date, working_group_id, front_chief_id)
     workers_array = ActiveRecord::Base.connection.execute("
       SELECT  cow.name AS category,
         cow.normal_price,
@@ -56,6 +100,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.id = ppd.part_person_id 
       AND ppd.worker_id = w.id
+      AND w.id  IN(" + front_chief_id + ")
       AND w.category_of_worker_id = cow.id
       AND uom.id = cow.unit_of_measurement_id
       GROUP BY cow.name
@@ -63,7 +108,24 @@ class Production::AnalysisOfValuationsController < ApplicationController
     return workers_array
   end
 
-<<<<<<< HEAD
+  def business_days_array2(start_date, end_date, working_group_id, front_chief_id)
+    workers_array2 = ActiveRecord::Base.connection.execute("
+      SELECT  pwd.article_id, 
+        art.name, 
+        uom.name, 
+        SUM( pwd.bill_of_quantitties ), 
+        p.date_of_creation 
+      FROM part_works p, part_work_details pwd, articles art, unit_of_measurements uom
+      WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND p.working_group_id IN(" + working_group_id + ")
+      AND p.id = pwd.part_work_id
+      AND pwd.article_id = art.id
+      AND uom.id = art.unit_of_measurement_id
+      GROUP BY art.name
+    ")
+    return workers_array2
+  end
+
   def frontChief
     if params[:front_chief_id]=="0"
       TypeEntity.where("name LIKE '%Proveedores%'").each do |ex|
@@ -107,6 +169,4 @@ class Production::AnalysisOfValuationsController < ApplicationController
     end
     render json: {:master => @master}
   end
-=======
->>>>>>> fd3e46d3b1b1daadaa3c7d429b1e31dbdf715951
 end

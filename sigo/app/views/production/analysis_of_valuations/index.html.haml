@@ -194,9 +194,9 @@
   $('#show-table').click(function(){
     var start_date = $('#start-date-input').val();
     var end_date = $('#end-date-input').val();
-    var chief = $('#end-date-input').val();
-    var exe = $('#end-date-input').val();
-    var master = $('#end-date-input').val();
+    var chief = $('#chief').val();
+    var exe = $('#exe').val();
+    var master = $('#master').val();
 
     if(start_date != null && end_date != null) {
       if(new Date(start_date) < new Date(end_date)) {
