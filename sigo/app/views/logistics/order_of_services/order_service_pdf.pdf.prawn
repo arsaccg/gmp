@@ -1,6 +1,6 @@
 repeat :all do
   bounding_box [bounds.left, bounds.bottom + 520], :width  => 100 do
-    image_tag @company.avatar.url, :fit => [100, 50]
+    image @company.avatar.path, :fit => [100, 50]
   end
   bounding_box [bounds.right - 650, bounds.bottom + 500], :width  => 500 do
     text "ORDEN DE SERVICIO - #{@orderOfService.id.to_s.rjust(5, '0')}", :align => :center, :style => :bold
