@@ -23,17 +23,11 @@
               %td
                 = partofequipment.code
               %td
-                -@subcontracts.each do |sb|
-                  -if sb.id==partofequipment.subcontract_of_equipment_id
-                    = sb.entity.name
+                = partofequipment.subcontract_equipment.entity.name
               %td
-                -@worker.each do |wk|
-                  -if wk.id==partofequipment.worker_id
-                    = wk.first_name + ' '+ wk.paternal_surname+' '+wk.maternal_surname
+                = partofequipment.worker.first_name + ' ' + partofequipment.worker.paternal_surname + ' ' + partofequipment.worker.maternal_surname
               %td 
-                -@article.each do |ar|
-                  -if ar.id==partofequipment.equipment_id
-                    = ar.name
+                = Article.find_article(partofequipment.equipment_id).name
               %td
                 =partofequipment.dif
               %td 

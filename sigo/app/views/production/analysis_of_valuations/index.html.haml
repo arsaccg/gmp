@@ -24,8 +24,8 @@
           %label Jefe de Frente
           %br
           %label.input{for: "front_chief_id"}
-            %select.form-control{:name =>"working_group[front_chief_id]", :style => 'width:100%;padding: 0;border: none;'}
-              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Jefe de Frente
+            %select.form-control#chief{:name =>"working_group[front_chief_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0"} Seleccione un jefe de frente
               - @front_chiefs.each do |front_chief|
                 %option{:value => "#{front_chief.id}"}
                   = front_chief.first_name + ' ' + front_chief.paternal_surname
@@ -33,35 +33,41 @@
           %label Ejecutor
           %br
           %label.input{for: "executor_id"}
-            %select.form-control{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
-              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Proveedor
-              - @executors.each do |executor|
-                %option{:value => "#{executor.id}"}
-                  = executor.name
+            %select.form-control#exe{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0"} Seleccione un ejecutor
+              - @executors.each do |ex|
+                %option{:value => "#{ex.id}"}
+                  = ex.name
         .col-md-2
           %label Maestro de Obra
           %br
           %label.input{for: "master_builder_id"}
-            %select{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
-              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Maestro de Obra
+            %select.form-control#master{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0"} Seleccione un maestro
               - @master_builders.each do |master_builder|
                 %option{:value => "#{master_builder.id}"}
                   = master_builder.first_name + ' ' + master_builder.paternal_surname
       .row
         .col-md-1
         .col-md-3
-          %label Fecha de ingreso
-          %input.form-control{'name'=>'date1', type: "date"}
+          %label Fecha de inicio
+          %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
 
         .col-md-3
-          %label Fecha de ingreso
-          %input.form-control{'name'=>'date2', type: "date"}
+          %label Fecha de fin
+          %input#end-date-input.string.optional.form-control{'name'=>'date2', type: "date"}
 
         .col-md-3
         %br
-          %button.btn.btn-primary{type: "btn"}
-            %i.fa.fa-save 
-              Consultar
+          %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
+            %i.fa.fa-search
+            Consultar
+      %br
+      .row
+      #widget-grid
+        .row
+          %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+            #table-information-result
     - else
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
@@ -69,7 +75,7 @@
             ×
           %h4.alert-heading
             %i.fa.fa-lock
-              No puedes hacer un Analisis de Valorizaciones!
+              No puedes generar un Analisis de Valorizaciones!
           %p
             Verifica si tienes, por lo menos, 1 sector, 1 subsector, 1 grupo de trabajo
     - if flash[:notice] != nil
@@ -90,5 +96,117 @@
 
 :javascript
   $(document).ready(function () {
-    $('select').select2({ width:'200'});
+    $('select').select2({width:'200'});
+  });
+
+  $('#chief').change(function (){
+    console.log("entro al chief change");
+    var front_chief_id= $(this).val();
+    console.log(front_chief_id);
+    frontChief("#{frontChief_production_analysis_of_valuations_path}", front_chief_id, "#{form_authenticity_token}", "0302");
+  });
+
+  $('#chief').keyup(function(){
+    console.log("entro al chief keyup");
+    var front_chief_id= $(this).val();
+    frontChief("#{frontChief_production_analysis_of_valuations_path}", front_chief_id, "#{form_authenticity_token}", "0302");
+  });
+
+  $('#exe').change(function (){
+    var executor_id = $(this).val();
+    var front_chief_id = $('#chief').val();
+    console.log(executor_id);
+    console.log(front_chief_id);
+    executor("#{executor_production_analysis_of_valuations_path}", front_chief_id, executor_id ,"#{form_authenticity_token}", "0302");
+
+  });
+
+  $('#exe').keyup(function(){
+    var executor_id = $(this).val();
+    var front_chief_id = $('#chief').val();
+    executor("#{executor_production_analysis_of_valuations_path}", front_chief_id, executor_id ,"#{form_authenticity_token}", "0302");
+  });
+
+
+  function frontChief(url, front_chief_id, form_token, default_value){
+    console.log("entro a la funcion chief ");
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { front_chief_id: front_chief_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        console.log(data);
+        newOptions = [];
+        $.each(data.executor, function(key, value){
+          item = {};
+          item['id'] = value.id;
+          item['name'] = value.name;
+          console.log("name: " + value.name);
+          console.log("id: "+value.id);
+          newOptions.push(item);
+        });
+        $('#exe').empty();
+        $('#exe').append(
+            $("<option></option>").attr("value", 0).text("Seleccione un ejecutor")
+        )
+        $.each(newOptions, function(key,value){
+          $('#exe').append(
+            $("<option></option>").attr("value", value.id).text(value.name)
+          )
+        });
+      });
+  }
+
+  function executor(url, front_chief_id, executor_id, form_token, default_value){
+    console.log("entro a la funcion chief ");
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { front_chief_id: front_chief_id, executor_id: executor_id, authenticity_token: form_token}
+      }).done(function( data ) {
+        console.log(data);
+        newOptions = [];
+        $.each(data.master, function(key, value){
+          item = {};
+          item['id'] = value.id;
+          item['first_name'] = value.first_name;
+          item['paternal_surname'] = value.paternal_name;
+          item['maternal_surname'] = value.maternal_surname;
+          console.log(value.first_name+ ' '+value.maternal_surname+ ' '+value.maternal_surname);
+          console.log("id: "+value.id);
+          newOptions.push(item);
+        });
+          
+        $('#master').empty();
+        $('#master').append(
+            $("<option></option>").attr("value", 0).text("Seleccione un maestro")
+        )
+        $.each(newOptions, function(key,value){
+          $('#master').append(
+            $("<option></option>").attr("value", value.id).text(value.first_name+ ' '+value.maternal_surname+ ' '+value.maternal_surname)
+          )
+        });
+      });
+  }
+
+  $('#show-table').click(function(){
+    var start_date = $('#start-date-input').val();
+    var end_date = $('#end-date-input').val();
+    var chief = $('#end-date-input').val();
+    var exe = $('#end-date-input').val();
+    var master = $('#end-date-input').val();
+
+    if(start_date != null && end_date != null) {
+      if(new Date(start_date) < new Date(end_date)) {
+        var parameters = { company_id: "#{@company}", front_chief: chief, executor: exe, master_builder: master, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+
+        load_items_delivery_order_ajax("#{get_report_production_analysis_of_valuations_path}", 'table-information-result', parameters);
+      } else {
+        alert('La fecha de fin debe ser mayor a la fecha de ingreso.')
+      }
+    } else {
+      alert('Por favor, especificar todos los datos necesarios.')
+    }
   });

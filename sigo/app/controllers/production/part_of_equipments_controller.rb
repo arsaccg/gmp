@@ -5,9 +5,10 @@ class Production::PartOfEquipmentsController < ApplicationController
     @subcontracts = SubcontractEquipment.all
     @article = Article.all
     @worker = Worker.all
-    Category.where("code LIKE ?", 32).each do |cat|
-      @fuel_articles = cat.subcategories
-    end
+    # Necessary!
+    @fuel_articles = Article.where("code LIKE ?", '__32%') # Esto va a cambiar
+    @working_group = WorkingGroup.first
+    @worker = CategoryOfWorker.find_by_name('Operador').workers.first
     render layout: false
   end
 
@@ -21,10 +22,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     @working_groups= WorkingGroup.all
 
     @subcontracts = SubcontractEquipment.all
-    @type = Array.new
-    Category.where("code LIKE ?",32).each do |cat|
-      @type=cat.subcategories
-    end
+    @type = Article.where("code LIKE ?", '__32%')
     @worker = Array.new
     CategoryOfWorker.where("name LIKE '%operador%'").each do |wo|
       @worker= wo.workers
@@ -54,15 +52,14 @@ class Production::PartOfEquipmentsController < ApplicationController
     @working_groups = WorkingGroup.all
     @partofequipment = PartOfEquipment.new
     @subcon = SubcontractEquipment.all
-    Category.where("code LIKE ?", 32).each do |cat|
-      @fuel_articles = cat.subcategories
-    end
+    @fuel_articles = Article.where("code LIKE ?", '__32%')
+    @sectors = Sector.where("code LIKE '__'")
     @worker = CategoryOfWorker.find_by_name('Operador').workers
     render layout: false
   end
 
   def create
-    part = PartOfEquipment.new(partOfEquipment_parameters)
+    part = PartOfEquipment.new(part_of_equipment_parameters)
     if part.save
       flash[:notice] = "Se ha creado correctamente el parte."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -80,13 +77,10 @@ class Production::PartOfEquipmentsController < ApplicationController
     @company = params[:company_id]
     @id = PartOfEquipment.find(params[:id]).equipment_id
     @partofequipment = PartOfEquipment.find(params[:id])
-
     @working_groups = WorkingGroup.all
     @subcon = SubcontractEquipment.all
     @type = Array.new
-    Category.where("code LIKE ?",32).each do |cat|
-      @type=cat.subcategories
-    end
+    @fuel_articles = Article.where("code LIKE ?", '__32%')
     @worker = Array.new
     CategoryOfWorker.where("name LIKE '%operador%'").each do |wo|
       @worker= wo.workers
@@ -103,7 +97,7 @@ class Production::PartOfEquipmentsController < ApplicationController
 
   def update
     part = PartOfEquipment.find(params[:id])
-    if part.update_attributes(partOfEquipment_parameters)
+    if part.update_attributes(part_of_equipment_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index, company_id: params[:company_id]
     else
@@ -154,7 +148,7 @@ class Production::PartOfEquipmentsController < ApplicationController
   end
 
   def add_more_register
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")
     @phases = Phase.where("code LIKE '__'")
     @working_groups = WorkingGroup.all
@@ -162,10 +156,10 @@ class Production::PartOfEquipmentsController < ApplicationController
   end
 
   private
-  def partOfEquipment_parameters
+  def part_of_equipment_parameters
     params.require(:part_of_equipment).permit(
       :code, 
-      :subcontract_of_equipment_id, 
+      :subcontract_equipment_id, 
       :equipment_id, 
       :worker_id, 
       :initial_km, 
@@ -175,12 +169,14 @@ class Production::PartOfEquipmentsController < ApplicationController
       :fuel_amount, 
       :h_stand_by, 
       :h_maintenance, 
-      :date, :total_hours, 
+      :date, 
+      :total_hours, 
       part_of_equipment_details_attributes: [
         :id, 
         :part_of_equipment_id, 
-        :work_group_id, 
-        :subphase_id, 
+        :working_group_id, 
+        :phase_id, 
+        :sector_id, 
         :effective_hours, 
         :unit, 
         :_destroy

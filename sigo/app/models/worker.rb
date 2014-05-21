@@ -2,6 +2,7 @@ class Worker < ActiveRecord::Base
 	belongs_to :category_of_worker
 	has_many :part_person_details
 	has_many :worker_details
+	has_many :part_of_equipments
 
 	accepts_nested_attributes_for :worker_details, :allow_destroy => true
 

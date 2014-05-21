@@ -168,6 +168,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def delivery_order_pdf
+    @company = Company.find(params[:company_id])
     @deliveryOrder = DeliveryOrder.find(params[:id])
     @deliveryOrderDetails = @deliveryOrder.delivery_order_details
 

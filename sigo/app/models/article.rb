@@ -15,4 +15,8 @@ class Article < ActiveRecord::Base
 	include ActiveModel::Validations
 	#validates :code, :uniqueness => { :scope => :name, :message => "El código debe ser único" }
 	validates :code, :uniqueness => { :message => "El código debe ser único."}
+
+	def self.find_article(id)
+		return self.find(id)
+	end
 end

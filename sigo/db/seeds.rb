@@ -44,4 +44,11 @@ Company.create(
   end
 end
 
+<<<<<<< HEAD
 user = Manager.create(email: 'mail@joelibaceta.com', password: 'r3dc0d3', dni: '46819233')
+=======
+Document.create(
+  [{ name: 'Ingreso a Almacén'}, { preffix: 'IWH' }],
+  [{ name: 'Salida de Almacén'}, { preffix: 'OWH' }]
+)
+>>>>>>> 070ecb9a4ee3f8fdb88a81808bb40ee91782c985
