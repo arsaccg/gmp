@@ -3941,3 +3941,306 @@ NameError (uninitialized constant Management::DashboardController::Project):
   Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.6ms)
   Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (2.3ms)
   Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (34.2ms)
+
+
+Started GET "/management/dashboard?project=2" for 127.0.0.1 at 2014-05-21 17:31:59 -0500
+  [1m[36mActiveRecord::SchemaMigration Load (0.6ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+
+ActiveRecord::PendingMigrationError (Migrations are pending; run 'rake db:migrate RAILS_ENV=development' to resolve this issue.):
+  activerecord (4.0.0) lib/active_record/migration.rb:379:in `check_pending!'
+  activerecord (4.0.0) lib/active_record/migration.rb:366:in `call'
+  actionpack (4.0.0) lib/action_dispatch/middleware/callbacks.rb:29:in `block in call'
+  activesupport (4.0.0) lib/active_support/callbacks.rb:373:in `_run__162992243844516438__call__callbacks'
+  activesupport (4.0.0) lib/active_support/callbacks.rb:80:in `run_callbacks'
+  actionpack (4.0.0) lib/action_dispatch/middleware/callbacks.rb:27:in `call'
+  actionpack (4.0.0) lib/action_dispatch/middleware/reloader.rb:64:in `call'
+  actionpack (4.0.0) lib/action_dispatch/middleware/remote_ip.rb:76:in `call'
+  actionpack (4.0.0) lib/action_dispatch/middleware/debug_exceptions.rb:17:in `call'
+  actionpack (4.0.0) lib/action_dispatch/middleware/show_exceptions.rb:30:in `call'
+  railties (4.0.0) lib/rails/rack/logger.rb:38:in `call_app'
+  railties (4.0.0) lib/rails/rack/logger.rb:21:in `block in call'
+  activesupport (4.0.0) lib/active_support/tagged_logging.rb:67:in `block in tagged'
+  activesupport (4.0.0) lib/active_support/tagged_logging.rb:25:in `tagged'
+  activesupport (4.0.0) lib/active_support/tagged_logging.rb:67:in `tagged'
+  railties (4.0.0) lib/rails/rack/logger.rb:21:in `call'
+  quiet_assets (1.0.2) lib/quiet_assets.rb:18:in `call_with_quiet_assets'
+  actionpack (4.0.0) lib/action_dispatch/middleware/request_id.rb:21:in `call'
+  rack (1.5.2) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.5.2) lib/rack/runtime.rb:17:in `call'
+  activesupport (4.0.0) lib/active_support/cache/strategy/local_cache.rb:83:in `call'
+  rack (1.5.2) lib/rack/lock.rb:17:in `call'
+  actionpack (4.0.0) lib/action_dispatch/middleware/static.rb:64:in `call'
+  railties (4.0.0) lib/rails/engine.rb:511:in `call'
+  railties (4.0.0) lib/rails/application.rb:97:in `call'
+  rack (1.5.2) lib/rack/content_length.rb:14:in `call'
+  thin (1.6.1) lib/thin/connection.rb:82:in `block in pre_process'
+  thin (1.6.1) lib/thin/connection.rb:80:in `catch'
+  thin (1.6.1) lib/thin/connection.rb:80:in `pre_process'
+  thin (1.6.1) lib/thin/connection.rb:55:in `process'
+  thin (1.6.1) lib/thin/connection.rb:41:in `receive_data'
+  eventmachine (1.0.3) lib/eventmachine.rb:187:in `run_machine'
+  eventmachine (1.0.3) lib/eventmachine.rb:187:in `run'
+  thin (1.6.1) lib/thin/backends/base.rb:73:in `start'
+  thin (1.6.1) lib/thin/server.rb:162:in `start'
+  rack (1.5.2) lib/rack/handler/thin.rb:16:in `run'
+  rack (1.5.2) lib/rack/server.rb:264:in `start'
+  railties (4.0.0) lib/rails/commands/server.rb:84:in `start'
+  railties (4.0.0) lib/rails/commands.rb:78:in `block in <top (required)>'
+  railties (4.0.0) lib/rails/commands.rb:73:in `tap'
+  railties (4.0.0) lib/rails/commands.rb:73:in `<top (required)>'
+  bin/rails:4:in `require'
+  bin/rails:4:in `<main>'
+
+
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_source.erb (1.3ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.8ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.5ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (41.0ms)
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+Migrating to RenameColumnSubcontractOfEquipmentsIdFromPartOfEquipments (20140521171030)
+  [1m[35m (368.4ms)[0m  ALTER TABLE `part_of_equipments` CHANGE `subcontract_of_equipment_id` `subcontract_equipment_id` int(11) DEFAULT NULL
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (52.6ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521171030')
+  [1m[36m (1.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnSectorIdToPartWorks (20140521180659)
+  [1m[35m (310.2ms)[0m  ALTER TABLE `part_works` ADD `sector_id` int(11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521180659')
+  [1m[36m (1.0ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnSectorIdToPartPersonDetails (20140521193148)
+  [1m[35m (222.2ms)[0m  ALTER TABLE `part_person_details` ADD `sector_id` int(11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521193148')
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+Migrating to RenameColumnSubphaseIdFromPartOfEquipmentDetails (20140521194814)
+  [1m[35m (167.6ms)[0m  ALTER TABLE `part_of_equipment_details` CHANGE `subphase_id` `phase_id` int(11) DEFAULT NULL
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521194814')
+  [1m[36m (1.0ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnSectorIdToPartOfEquipmentDetails (20140521195458)
+  [1m[35m (186.1ms)[0m  ALTER TABLE `part_of_equipment_details` ADD `sector_id` int(11)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521195458')
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+Migrating to RenameColumnWorkGroupIdFromPartOfEquipmentDetails (20140521195528)
+  [1m[35m (170.5ms)[0m  ALTER TABLE `part_of_equipment_details` CHANGE `work_group_id` `working_group_id` int(11) DEFAULT NULL
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521195528')
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mActiveRecord::SchemaMigration Load (1.0ms)[0m  SELECT `schema_migrations`.* FROM `schema_migrations`
+
+
+Started GET "/management/dashboard?project=2" for 127.0.0.1 at 2014-05-21 17:32:42 -0500
+  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+Processing by Management::DashboardController#index as HTML
+  Parameters: {"project"=>"2"}
+  [1m[35mManager Load (0.7ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mCostCenter Load (0.3ms)[0m  [1mSELECT `cost_centers`.* FROM `cost_centers` WHERE `cost_centers`.`id` = 2 LIMIT 1[0m
+Completed 500 Internal Server Error in 374ms
+
+NameError (uninitialized constant Management::DashboardController::Project):
+  app/controllers/management/dashboard_controller.rb:17:in `index'
+
+
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_source.erb (1.0ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.8ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.5ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (41.2ms)
+
+
+Started GET "/management/dashboard?project=2" for 127.0.0.1 at 2014-05-21 17:33:02 -0500
+Processing by Management::DashboardController#index as HTML
+  Parameters: {"project"=>"2"}
+  [1m[35mManager Load (0.4ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mCostCenter Load (0.3ms)[0m  [1mSELECT `cost_centers`.* FROM `cost_centers` WHERE `cost_centers`.`id` = 2 LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `cost_centers`.* FROM `cost_centers` WHERE `cost_centers`.`id` = 2 LIMIT 1  [["id", "2"]]
+  [1m[36mBudget Load (26.5ms)[0m  [1mSELECT `budgets`.* FROM `budgets` WHERE (`type_of_budget` = 1 AND `subbudget_code` IS NOT NULL AND `project_id` = ('2')) ORDER BY `budgets`.`id` ASC LIMIT 1[0m
+Mysql2::Error: Unknown column 'project_id' in 'where clause': SELECT  `budgets`.* FROM `budgets`  WHERE (`type_of_budget` = 1 AND `subbudget_code` IS NOT NULL AND `project_id` = ('2'))  ORDER BY `budgets`.`id` ASC LIMIT 1
+  [1m[35mBudget Load (0.9ms)[0m  SELECT `budgets`.* FROM `budgets` WHERE (`type_of_budget` = 2 AND `project_id` = ('2')) ORDER BY `budgets`.`id` ASC LIMIT 1
+Mysql2::Error: Unknown column 'project_id' in 'where clause': SELECT  `budgets`.* FROM `budgets`  WHERE (`type_of_budget` = 2 AND `project_id` = ('2'))  ORDER BY `budgets`.`id` ASC LIMIT 1
+  Rendered management/dashboard/index.haml within layouts/dashboard (142.2ms)
+Completed 200 OK in 5320ms (Views: 5011.6ms | ActiveRecord: 103.5ms)
+
+
+Started GET "/management/cost_centers/2/edit" for 127.0.0.1 at 2014-05-21 17:33:31 -0500
+Processing by Management::CostCentersController#edit as */*
+  Parameters: {"id"=>"2"}
+  [1m[36mManager Load (0.9ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mCostCenter Load (1.0ms)[0m  SELECT `cost_centers`.* FROM `cost_centers` WHERE `cost_centers`.`id` = 2 LIMIT 1
+  Rendered management/cost_centers/edit.haml (825.5ms)
+Completed 500 Internal Server Error in 860ms
+
+ActionView::Template::Error (undefined method `total_amount' for #<CostCenter:0x00000101ce3400>):
+    10:     .control-group
+    11:       %label(class="control-label") Costo Total
+    12:       .controls
+    13:         = f.input :total_amount, label: false, placeholder: "0.00"
+    14:     .control-group
+    15:       %label(class="control-label") Monto de Costo Directo
+    16:       .controls
+  app/views/management/cost_centers/edit.haml:13:in `block in _app_views_management_cost_centers_edit_haml___4513876963839445261_2162619940'
+  app/views/management/cost_centers/edit.haml:2:in `_app_views_management_cost_centers_edit_haml___4513876963839445261_2162619940'
+  app/controllers/management/cost_centers_controller.rb:11:in `edit'
+
+
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (2.3ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.6ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (23.4ms)
+
+
+Started GET "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:33:35 -0500
+Processing by Management::WbsitemsController#index as */*
+  [1m[36mManager Load (0.5ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.6ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.6ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.6ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.5ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.6ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.5ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  Rendered management/wbsitems/index.html.haml (102.6ms)
+Completed 200 OK in 227ms (Views: 106.1ms | ActiveRecord: 46.0ms)
+
+
+Started GET "/management/wbsitems.json" for 127.0.0.1 at 2014-05-21 17:33:36 -0500
+Processing by Management::WbsitemsController#index as JSON
+  [1m[36mManager Load (0.5ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.5ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.2ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.2ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (65.2ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '%') ORDER BY `wbsitems`.codewbs ASC[0m
+Completed 200 OK in 138ms (Views: 0.3ms | ActiveRecord: 68.1ms)
+
+
+Started GET "/management/wbsitems/get_items_json.json?project_id=2" for 127.0.0.1 at 2014-05-21 17:33:36 -0500
+Processing by Management::WbsitemsController#get_items_json as JSON
+  Parameters: {"project_id"=>"2"}
+  [1m[35mManager Load (0.5ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '21' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '22' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '23' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '24' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '25' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '26' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '27' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '28' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.7ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '29' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+Completed 200 OK in 14ms (Views: 0.1ms | ActiveRecord: 3.6ms)
+
+
+Started GET "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:33:37 -0500
+Processing by Management::WbsitemsController#index as */*
+  [1m[35mManager Load (0.4ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (2.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.6ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  Rendered management/wbsitems/index.html.haml (1.5ms)
+Completed 200 OK in 24ms (Views: 3.1ms | ActiveRecord: 5.8ms)
+
+
+Started GET "/management/wbsitems.json" for 127.0.0.1 at 2014-05-21 17:33:37 -0500
+Processing by Management::WbsitemsController#index as JSON
+  [1m[35mManager Load (0.5ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '%') ORDER BY `wbsitems`.codewbs ASC
+Completed 200 OK in 15ms (Views: 0.1ms | ActiveRecord: 3.7ms)
+
+
+Started GET "/management/wbsitems/get_items_json.json?project_id=2" for 127.0.0.1 at 2014-05-21 17:33:37 -0500
+Processing by Management::WbsitemsController#get_items_json as JSON
+  Parameters: {"project_id"=>"2"}
+  [1m[36mManager Load (0.9ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '21' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.5ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '22' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '23' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '24' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '25' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '26' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '27' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '28' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '29' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+Completed 200 OK in 13ms (Views: 0.1ms | ActiveRecord: 3.6ms)
+
+
+Started GET "/management/budgets/new" for 127.0.0.1 at 2014-05-21 17:33:43 -0500
+Processing by Management::BudgetsController#new as */*
+Completed 500 Internal Server Error in 39039ms
+
+Errno::ENOTCONN (Socket is not connected):
+  lib/sqlserver/dbconnector.rb:21:in `do_query'
+  app/models/budget.rb:21:in `load_dbs'
+  app/controllers/management/budgets_controller.rb:22:in `new'
+
+
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_source.erb (1.2ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (2.1ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.4ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (32.3ms)
+
+
+Started GET "/management/budgets/get_budget_by_project?project_id=2" for 127.0.0.1 at 2014-05-21 17:34:47 -0500
+  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+Processing by Management::BudgetsController#get_budget_by_project as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[35mBudget Load (0.7ms)[0m  SELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '0' AND project_id = '2' )
+Mysql2::Error: Unknown column 'project_id' in 'where clause': SELECT `budgets`.* FROM `budgets`  WHERE (type_of_budget = '0' AND project_id = '2' )
+  Rendered management/budgets/get_budget_by_project.haml (176.0ms)
+Completed 500 Internal Server Error in 639ms
+
+ActionView::Template::Error (Mysql2::Error: Unknown column 'project_id' in 'where clause': SELECT `budgets`.* FROM `budgets`  WHERE (type_of_budget = '0' AND project_id = '2' )):
+     5:     .individual-panel
+     6:       %table(class="table-bordered table-hover white-table small-font" width="100%")
+     7:         %tbody
+     8:           - @budgets_goal.each do |budget|
+     9:             %tr 
+    10:               -if (budget.cod_budget.length > 7)
+    11:                 %td 
+  app/views/management/budgets/get_budget_by_project.haml:8:in `_app_views_management_budgets_get_budget_by_project_haml__3297265815777261795_2156942980'
+  app/controllers/management/budgets_controller.rb:17:in `get_budget_by_project'
+
+
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (2.1ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.6ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (28.1ms)
+
+
+Started GET "/management/budgets/get_budget_by_project?project_id=2" for 127.0.0.1 at 2014-05-21 17:36:31 -0500
+Processing by Management::BudgetsController#get_budget_by_project as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[36mBudget Load (0.3ms)[0m  [1mSELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '0' AND cost_center_id = '2' )[0m
+  [1m[35mBudget Load (0.3ms)[0m  SELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '1' AND cost_center_id = '2' )
+  [1m[36mInput Load (0.3ms)[0m  [1mSELECT `inputs`.* FROM `inputs`[0m
+  Rendered management/budgets/get_budget_by_project.haml (39.8ms)
+Completed 200 OK in 121ms (Views: 12.2ms | ActiveRecord: 36.5ms)
+
+
+Started GET "/management/budgets/get_budget_by_project?project_id=2" for 127.0.0.1 at 2014-05-21 17:36:35 -0500
+Processing by Management::BudgetsController#get_budget_by_project as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[35mBudget Load (0.8ms)[0m  SELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '0' AND cost_center_id = '2' )
+  [1m[36mBudget Load (1.0ms)[0m  [1mSELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '1' AND cost_center_id = '2' )[0m
+  [1m[35mInput Load (0.3ms)[0m  SELECT `inputs`.* FROM `inputs`
+  Rendered management/budgets/get_budget_by_project.haml (8.7ms)
+Completed 200 OK in 18ms (Views: 14.3ms | ActiveRecord: 2.1ms)
