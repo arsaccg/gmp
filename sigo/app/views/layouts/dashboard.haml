@@ -279,6 +279,10 @@
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Grupos de Trabajo
                   %li
+                    %a{href: "#{production_subcontract_inputs_path}?company_id=#{@company.id}", title: 'Insumos de Subcontratos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Insumos Subcontrato
+                  %li
                     %a{href: "#{production_subcontracts_path}?company_id=#{@company.id}&type=subcontract", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Subcontrato
