@@ -5,6 +5,9 @@ class Production::PartOfEquipmentsController < ApplicationController
     @subcontracts = SubcontractEquipment.all
     @article = Article.all
     @worker = Worker.all
+    Category.where("code LIKE ?", 32).each do |cat|
+      @fuel_articles = cat.subcategories
+    end
     render layout: false
   end
 
@@ -51,9 +54,8 @@ class Production::PartOfEquipmentsController < ApplicationController
     @working_groups = WorkingGroup.all
     @partofequipment = PartOfEquipment.new
     @subcon = SubcontractEquipment.all
-    @type = Array.new
-    Category.where("code LIKE ?",32).each do |cat|
-      @type=cat.subcategories
+    Category.where("code LIKE ?", 32).each do |cat|
+      @fuel_articles = cat.subcategories
     end
     @worker = CategoryOfWorker.find_by_name('Operador').workers
     render layout: false

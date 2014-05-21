@@ -20,16 +20,15 @@
             %label.label Proveedor
             %label.input
               %select.form-control#ent{:name =>"part_of_equipment[subcontract_of_equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
-                -if @action =="edit"
-                  -@subcon.each do |subcon|
+                -@subcon.each do |subcon|
+                  -if @action =="edit"
                     -if @partofequipment.subcontract_of_equipment_id == subcon.id
                       %option{:value => "#{subcon.id}", :selected=>"selected"}
                         = subcon.entity.name
                     -else
                       %option{:value => "#{subcon.id}"}
                         = subcon.entity.name
-                -else
-                  -@subcon.each do |subcon|
+                  -else
                     %option{:value => "#{subcon.id}"}
                       = subcon.entity.name
 
@@ -38,22 +37,19 @@
             %label.input
               %select.form-control#equipment{:name =>"part_of_equipment[equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
 
-
-
           %section.col.col-4
             %label.label Operador
             %label.input
               %select.form-control#worker{:name =>"part_of_equipment[worker_id]", :style => 'width:100%;padding: 0;border: none;'}
-                -if @action =="edit"
-                  -@worker.each do |wo|
-                    -if @partofequipment.worker_id== wo.id
+                -@worker.each do |wo|
+                  -if @action =="edit"
+                    -if @partofequipment.worker_id == wo.id
                       %option{:value => "#{wo.id}", :selected=>"selected"}
                         = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
                     -else
                       %option{:value => "#{wo.id}"}
                         = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
-                -else
-                  -@worker.each do |wo|
+                  -else
                     %option{:value => "#{wo.id}"}
                       = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
         %br
@@ -78,16 +74,15 @@
             %label.label Tipo y cantidad de Combustible
             %label.input.col-sm-6
               %select.form-control#fuel{:name =>"part_of_equipment[subcategory_id]", :style => 'width:100%;padding: 0;border: none;'}
-                -if @action =="edit"
-                  -@type.each do |fuel|
+                -@fuel_articles.each do |fuel|
+                  -if @action =="edit"
                     -if @partofequipment.subcategory_id == fuel.id
                       %option{:value => "#{fuel.id}", :selected=>"selected"}
                         = fuel.name
                     -else
                       %option{:value => "#{fuel.id}"}
                         = fuel.name
-                -else
-                  -@type.each do |fuel|
+                  -else
                     %option{:value => "#{fuel.id}"}
                       = fuel.name
             %label.input.col-sm-6
