@@ -15,7 +15,7 @@ class Logistics::EntitiesController < ApplicationController
     @type_entities = TypeEntity.all
     @entity = Entity.new
     @company_id = params[:company_id]
-    @costCenter = CostCenter.where("company_id = #{params[:company_id]}")
+    @costCenter = Company.find(params[:company_id]).cost_centers
     render layout: false
   end
 

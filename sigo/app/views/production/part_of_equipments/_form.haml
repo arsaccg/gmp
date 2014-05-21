@@ -58,20 +58,20 @@
                       = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
         %br
         .row
-          .col.col-8
+          %section.col.col-10
             %label.label Horometro/Kilometraje
-            .col.col-4
-              %label.label Inicial
-              %label.input#hm
-                = f.input :initial_km, placeholder: "Inicial", input_html: { class: 'form-control'}, label: false,  :onchange =>'calculateHours();' 
-            .col.col-4
-              %label.label Final
-              %label.input#km
-                = f.input :final_km, placeholder: "Final", input_html: { class: 'form-control'}, label: false, :onchange =>'calculateHours();'  
-            .col.col-4
-              %label.label Diferencia
-              %label.input
-                = f.input :dif, input_html: { class: 'form-control' }, label: false, :readonly => true
+          .col.col-4
+            %label.label Inicial
+            %label.input#hm
+              = f.input :initial_km, placeholder: "Inicial", input_html: { class: 'form-control'}, label: false,  :onchange =>'calculateHours();' 
+          .col.col-4
+            %label.label Final
+            %label.input#km
+              = f.input :final_km, placeholder: "Final", input_html: { class: 'form-control'}, label: false, :onchange =>'calculateHours();'  
+          .col.col-4
+            %label.label Diferencia
+            %label.input
+              = f.input :dif, input_html: { class: 'form-control' }, label: false, :readonly => true
         %br
         .row
           .col.col-4

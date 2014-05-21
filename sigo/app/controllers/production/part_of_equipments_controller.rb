@@ -56,7 +56,7 @@ class Production::PartOfEquipmentsController < ApplicationController
       @type=cat.subcategories
     end
     @worker = Array.new
-    CategoryOfWorker.where("name LIKE '%operador%'").each do |wo|
+    CategoryOfWorker.where("name LIKE '%Operador%'").each do |wo|
       @worker= wo.workers
     end
     render layout: false
