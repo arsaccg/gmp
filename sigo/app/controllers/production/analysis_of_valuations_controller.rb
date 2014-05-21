@@ -55,7 +55,6 @@ class Production::AnalysisOfValuationsController < ApplicationController
     return workers_array
   end
 
-<<<<<<< HEAD
   def frontChief
     if params[:front_chief_id]=="0"
       TypeEntity.where("name LIKE '%Proveedores%'").each do |ex|
@@ -99,6 +98,4 @@ class Production::AnalysisOfValuationsController < ApplicationController
     end
     render json: {:master => @master}
   end
-=======
->>>>>>> fd3e46d3b1b1daadaa3c7d429b1e31dbdf715951
 end
