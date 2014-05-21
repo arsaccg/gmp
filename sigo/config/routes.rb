@@ -232,6 +232,8 @@ ArsacLogistica::Application.routes.draw do
     resources :analysis_of_valuations do
       collection do
         post 'get_report'
+        post 'frontChief'
+        post 'executor'
       end
     end
     resources :part_works do
