@@ -69,7 +69,7 @@
           %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_order_of_service_path(orderService.id)}', 'content', {company_id: '#{@company}', state_change: '#{get_next_state(orderService.state)}'}, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
             %i.fa.fa-flag
 
-          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{order_service_pdf_logistics_order_of_service_path(orderService.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
+          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{order_service_pdf_logistics_order_of_service_path(orderService.id)}.pdf?company_id=#{@company}", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
             %i.fa.fa-file
 
           - if current_user.has_role? :canceller
@@ -84,7 +84,7 @@
           %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_order_of_service_path(orderService.id)}', 'content', {company_id: '#{@company}', state_change: '#{get_next_state(orderService.state)}'}, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
             %i.fa.fa-flag
 
-          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{order_service_pdf_logistics_order_of_service_path(orderService.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
+          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{order_service_pdf_logistics_order_of_service_path(orderService.id)}.pdf?company_id=#{@company}", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
             %i.fa.fa-file
 
           - if current_user.has_role? :canceller
@@ -93,7 +93,7 @@
 
         - when 'canceled'
 
-          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{order_service_pdf_logistics_order_of_service_path(orderService.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
+          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{order_service_pdf_logistics_order_of_service_path(orderService.id)}.pdf?company_id=#{@company}", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
             %i.fa.fa-file
 
         - when 'approved'
@@ -104,7 +104,7 @@
           %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_order_of_service_path(orderService.id)}', 'content', {company_id: '#{@company}', state_change: '#{get_next_state(orderService.state)}'}, null, 'GET')", "data-original-title" => "Avanzar el estado", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar el estado"}
             %i.fa.fa-flag
 
-          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{order_service_pdf_logistics_order_of_service_path(orderService.id)}.pdf", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
+          %a.btn.btn-pdf.btn-xs{:target => "_blank", :href => "#{order_service_pdf_logistics_order_of_service_path(orderService.id)}.pdf?company_id=#{@company}", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver PDF"}
             %i.fa.fa-file
 
           - if current_user.has_role? :canceller

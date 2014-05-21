@@ -177,6 +177,7 @@ class Logistics::OrderOfServicesController < ApplicationController
   end
 
   def order_service_pdf
+    @company = Company.find(params[:company_id])
     @orderOfService = OrderOfService.find(params[:id])
     @orderServiceDetails = @orderOfService.order_of_service_details
     

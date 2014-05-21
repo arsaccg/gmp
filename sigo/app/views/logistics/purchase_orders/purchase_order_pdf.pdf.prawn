@@ -1,6 +1,6 @@
 repeat :all do
   bounding_box [bounds.left, bounds.bottom + 520], :width  => 100 do
-    image "/home/gguzman/sitios_web/gmp/sigo/app/assets/images/logo.png", :fit => [100, 50]
+    image_tag @company.avatar.url, :fit => [100, 50]
   end
   bounding_box [bounds.right - 650, bounds.bottom + 500], :width  => 500 do
     text "ORDEN DE COMPRA - #{@purchaseOrder.id.to_s.rjust(5, '0')}", :align => :center, :style => :bold
