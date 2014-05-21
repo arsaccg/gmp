@@ -225,6 +225,7 @@ ArsacLogistica::Application.routes.draw do
   end
 
   namespace :production do
+    resources :subcontract_inputs
     resources :workers do
       collection do
         post 'add_worker_item_field'

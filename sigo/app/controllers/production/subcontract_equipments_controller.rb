@@ -23,7 +23,7 @@ class Production::SubcontractEquipmentsController < ApplicationController
   def create
     subcontract = SubcontractEquipment.new(subcontracts_parameters)
     if subcontract.save
-      flash[:notice] = "Se ha creado correctamente el trabajador."
+      flash[:notice] = "Se ha creado correctamente el Subcontrato de Equipos."
       redirect_to :action => :index, company_id: params[:company_id]
     else
       subcontract.errors.messages.each do |attribute, error|
