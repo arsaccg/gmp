@@ -1,6 +1,8 @@
 class Production::SubcontractsController < ApplicationController
   def index
     # General
+    @supplier = TypeEntity.find_by_name('Proveedores').entities.first
+    @article = TypeOfArticle.find_by_name('subcontratos').articles.first
     @company = params[:company_id]
     @subcontracts = Subcontract.all
     render layout: false
@@ -13,14 +15,9 @@ class Production::SubcontractsController < ApplicationController
 
   def new
     @subcontract = Subcontract.new
-    TypeEntity.where("name LIKE '%Proveedores%'").each do |supply|
-      @suppliers = supply.entities
-    end
+    @suppliers = TypeEntity.find_by_name('Proveedores').entities
     @company = params[:company_id]
-    @articles= Array.new
-    TypeOfArticle.where("name LIKE '%subcontratos%'").each do |arti|
-      @articles = arti.articles
-    end
+    @articles = TypeOfArticle.find_by_name('subcontratos').articles
 
     render layout: false
   end
@@ -54,14 +51,10 @@ class Production::SubcontractsController < ApplicationController
 
   def edit
     @subcontract = Subcontract.find(params[:id])
-    TypeEntity.where("name LIKE '%Proveedores%'").each do |supply|
-      @suppliers = supply.entities
-    end
+    @suppliers = TypeEntity.find_by_name('Proveedores').entities
     @company = params[:company_id]
     @articles= Array.new
-    TypeOfArticle.where("name LIKE '%subcontratos%'").each do |arti|
-      @articles = arti.articles
-    end
+    @articles = TypeOfArticle.find_by_name('subcontratos').articles
 
     render layout: false
   end
