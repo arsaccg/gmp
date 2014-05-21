@@ -50,18 +50,24 @@
       .row
         .col-md-1
         .col-md-3
-          %label Fecha de ingreso
-          %input.form-control{'name'=>'date1', type: "date"}
+          %label Fecha de inicio
+          %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
 
         .col-md-3
-          %label Fecha de ingreso
-          %input.form-control{'name'=>'date2', type: "date"}
+          %label Fecha de fin
+          %input#end-date-input.string.optional.form-control{'name'=>'date2', type: "date"}
 
         .col-md-3
         %br
-          %button.btn.btn-primary{type: "btn"}
-            %i.fa.fa-save 
-              Consultar
+          %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
+            %i.fa.fa-search
+            Consultar
+      %br
+      .row
+      #widget-grid
+        .row
+          %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+            #table-information-result
     - else
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
@@ -91,4 +97,20 @@
 :javascript
   $(document).ready(function () {
     $('select').select2({ width:'200'});
+  });
+  $('#show-table').click(function(){
+    var start_date = $('#start-date-input').val();
+    var end_date = $('#end-date-input').val();
+
+    if(start_date != null && end_date != null) {
+      if(new Date(start_date) < new Date(end_date)) {
+        var parameters = { company_id: "#{@company}", start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+
+        load_items_delivery_order_ajax("#{get_report_production_analysis_of_valuations_path}", 'table-information-result', parameters);
+      } else {
+        alert('La fecha de fin debe ser mayor a la fecha de ingreso.')
+      }
+    } else {
+      alert('Por favor, especificar todos los datos necesarios.')
+    }
   });
