@@ -20,6 +20,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
   end
 
   def get_report
+    @totalprice = 0
     @company = params[:company_id]
     @working_group = WorkingGroup.all
     start_date = params[:start_date]
@@ -30,28 +31,35 @@ class Production::AnalysisOfValuationsController < ApplicationController
     end
     @cad = @cad.join(',')
     @workers_array = business_days_array(start_date, end_date, @cad)
+    @workers_array.each do |workerDetail|
+      @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
+    end
     render(partial: 'report_table', :layout => false)
   end
 
   def business_days_array(start_date, end_date, working_group_id)
-
     workers_array = ActiveRecord::Base.connection.execute("
-      SELECT  CONCAT( w.first_name, w.second_name, w.paternal_surname, w.maternal_surname ) AS name, 
-        cow.name AS category,
+      SELECT  cow.name AS category,
+        cow.normal_price,
+        cow.he_60_price,
+        cow.he_100_price,
         SUM( ppd.normal_hours ) AS normal_hours, 
         SUM( ppd.he_60 ) AS he_60, 
         SUM( ppd.he_100 ) AS he_100, 
-        SUM( ppd.total_hours ) AS total_hours, 
+        cow.normal_price*SUM( ppd.normal_hours ), 
+        cow.he_60_price*SUM( ppd.he_60 ), 
+        cow.he_100_price*SUM( ppd.he_100 ),
+        uom.name, 
         p.date_of_creation 
-      FROM part_people p, part_person_details ppd, workers w, category_of_workers cow
+      FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow
       WHERE p.working_group_id IN(" + working_group_id + ")
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.id = ppd.part_person_id 
       AND ppd.worker_id = w.id
       AND w.category_of_worker_id = cow.id
-      GROUP BY ppd.worker_id
+      AND uom.id = cow.unit_of_measurement_id
+      GROUP BY cow.name
     ")
-
     return workers_array
   end
 
