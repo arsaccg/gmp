@@ -24,7 +24,7 @@
           %label Jefe de Frente
           %br
           %label.input{for: "front_chief_id"}
-            %select.form-control{:name =>"working_group[front_chief_id]", :style => 'width:100%;padding: 0;border: none;'}
+            %select.form-control#chief{:name =>"working_group[front_chief_id]", :style => 'width:100%;padding: 0;border: none;'}
               %option{:value => "0", :selected => true, :disabled => true} Seleccionar Jefe de Frente
               - @front_chiefs.each do |front_chief|
                 %option{:value => "#{front_chief.id}"}
@@ -33,7 +33,7 @@
           %label Ejecutor
           %br
           %label.input{for: "executor_id"}
-            %select.form-control{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
+            %select.form-control#exe{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
               %option{:value => "0", :selected => true, :disabled => true} Seleccionar Proveedor
               - @executors.each do |executor|
                 %option{:value => "#{executor.id}"}
@@ -42,7 +42,7 @@
           %label Maestro de Obra
           %br
           %label.input{for: "master_builder_id"}
-            %select{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
+            %select.form-control#master{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
               %option{:value => "0", :selected => true, :disabled => true} Seleccionar Maestro de Obra
               - @master_builders.each do |master_builder|
                 %option{:value => "#{master_builder.id}"}
@@ -101,10 +101,13 @@
   $('#show-table').click(function(){
     var start_date = $('#start-date-input').val();
     var end_date = $('#end-date-input').val();
+    var chief = $('#end-date-input').val();
+    var exe = $('#end-date-input').val();
+    var master = $('#end-date-input').val();
 
     if(start_date != null && end_date != null) {
       if(new Date(start_date) < new Date(end_date)) {
-        var parameters = { company_id: "#{@company}", start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+        var parameters = { company_id: "#{@company}", front_chief: chief, executor: exe, master_builder: master, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
 
         load_items_delivery_order_ajax("#{get_report_production_analysis_of_valuations_path}", 'table-information-result', parameters);
       } else {
