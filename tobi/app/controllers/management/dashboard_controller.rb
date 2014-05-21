@@ -9,10 +9,10 @@ class Management::DashboardController < ApplicationController
     #  redirect_to :controller => "management/budgets", :action => :administrate_budget
     #end
 
-    @type_user = @user.kind
+    #@type_user = @user.kind
 
   	project_id = params['project']
-  	@project_selected = Project.find(project_id).to_json
+  	@project_selected = CostCenter.find(project_id).to_json
 
   	@project = Project.find(project_id)	
   	
