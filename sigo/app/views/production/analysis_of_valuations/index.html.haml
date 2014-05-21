@@ -14,6 +14,7 @@
           %br
           %label.input{for: "sector_id"}
             %select.form-control{:name =>"validation[sector_id]", :style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Sector
               -@sector.each do |sector|
                 %optgroup{:label => "#{sector.name}"}
                   - Sector.getSubSectors(sector.code).each do |subsector|
@@ -38,31 +39,37 @@
                 %option{:value => "#{ex.id}"}
                   = ex.name
 
-
         .col-md-2
           %label Maestro de Obra
           %br
           %label.input{for: "master_builder_id"}
             %select.form-control#master{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
               %option{:value => "0"} Seleccione un maestro
+
               - @master_builders.each do |master_builder|
                 %option{:value => "#{master_builder.id}"}
                   = master_builder.first_name + ' ' + master_builder.paternal_surname
       .row
         .col-md-1
         .col-md-3
-          %label Fecha de ingreso
-          %input.form-control{'name'=>'date1', type: "date"}
+          %label Fecha de inicio
+          %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
 
         .col-md-3
-          %label Fecha de ingreso
-          %input.form-control{'name'=>'date2', type: "date"}
+          %label Fecha de fin
+          %input#end-date-input.string.optional.form-control{'name'=>'date2', type: "date"}
 
         .col-md-3
-          %button.btn.btn-primary{type: "btn"}
-            %i.fa.fa-save 
-              Consultar
-
+        %br
+          %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
+            %i.fa.fa-search
+            Consultar
+      %br
+      .row
+      #widget-grid
+        .row
+          %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+            #table-information-result
     - else
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
@@ -87,6 +94,7 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
+
 
 :javascript
   $(document).ready(function () {
@@ -184,3 +192,20 @@
         });
       });
   }
+
+  $('#show-table').click(function(){
+    var start_date = $('#start-date-input').val();
+    var end_date = $('#end-date-input').val();
+
+    if(start_date != null && end_date != null) {
+      if(new Date(start_date) < new Date(end_date)) {
+        var parameters = { company_id: "#{@company}", start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+
+        load_items_delivery_order_ajax("#{get_report_production_analysis_of_valuations_path}", 'table-information-result', parameters);
+      } else {
+        alert('La fecha de fin debe ser mayor a la fecha de ingreso.')
+      }
+    } else {
+      alert('Por favor, especificar todos los datos necesarios.')
+    }
+  });

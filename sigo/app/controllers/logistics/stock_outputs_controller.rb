@@ -84,7 +84,7 @@ class Logistics::StockOutputsController < ApplicationController
   def show_rows_stock_inputs
     @head = Array.new
     @company = params[:company_id]
-    Company.find(@company).cost_centers.find(params[:cost_center_id]).stock_inputs.each do |x|
+    StockInput.where(company_id: @company).where(cost_center_id: params[:cost_center_id]).where(input: 0).each do |x|
       @head << x
     end
     render(partial: 'rows_stock_inputs', :layout => false)

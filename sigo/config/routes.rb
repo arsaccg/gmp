@@ -172,6 +172,7 @@ ArsacLogistica::Application.routes.draw do
     resources :documents
     resources :stock_inputs do
       collection do
+        post 'show_rows_stock_inputs'
         post 'add_items_from_pod'
         post 'more_items_from_pod'
       end
@@ -181,8 +182,8 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :stock_outputs do
       collection do
-        post 'add_stock_input_item_field'
         post 'show_rows_stock_inputs'
+        post 'add_stock_input_item_field'
       end
     end
     resources :working_groups
