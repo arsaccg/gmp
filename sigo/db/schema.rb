@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140521174746) do
+ActiveRecord::Schema.define(version: 20140521195528) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -555,18 +555,19 @@ ActiveRecord::Schema.define(version: 20140521174746) do
   end
 
   create_table "part_of_equipment_details", force: true do |t|
-    t.integer  "work_group_id"
-    t.integer  "subphase_id"
+    t.integer  "working_group_id"
+    t.integer  "phase_id"
     t.float    "effective_hours"
     t.string   "unit"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "part_of_equipment_id"
+    t.integer  "sector_id"
   end
 
   create_table "part_of_equipments", force: true do |t|
     t.string   "code"
-    t.integer  "subcontract_of_equipment_id"
+    t.integer  "subcontract_equipment_id"
     t.integer  "equipment_id"
     t.integer  "worker_id"
     t.string   "initial_km"
@@ -600,6 +601,7 @@ ActiveRecord::Schema.define(version: 20140521174746) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "part_person_id"
+    t.integer  "sector_id"
   end
 
   create_table "part_work_details", force: true do |t|
@@ -617,6 +619,7 @@ ActiveRecord::Schema.define(version: 20140521174746) do
     t.date     "date_of_creation"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sector_id"
   end
 
   create_table "phases", force: true do |t|
