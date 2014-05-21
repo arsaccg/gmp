@@ -11,8 +11,8 @@ class Management::BudgetsController < ApplicationController
 
   def get_budget_by_project
     @project_id = params[:project_id]
-    @budgets_goal = Budget.where("type_of_budget = ? AND project_id = ? ", '0', @project_id)
-    @budgets_sale = Budget.where("type_of_budget = ? AND project_id = ? ", '1', @project_id)
+    @budgets_goal = Budget.where("type_of_budget = ? AND cost_center_id = ? ", '0', @project_id)
+    @budgets_sale = Budget.where("type_of_budget = ? AND cost_center_id = ? ", '1', @project_id)
     @inputs = Input.all
     render :get_budget_by_project, layout: false
   end
