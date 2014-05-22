@@ -21,10 +21,9 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def get_report
     @totalprice = 0
+    @cad = Array.new
     @cad2 = Array.new
-    @cad3 = Array.new
     @company = params[:company_id]
-    @working_group = WorkingGroup.all
 
     if params[:front_chief]=="0" && params[:master_builder] == "0"
       CategoryOfWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
@@ -55,24 +54,21 @@ class Production::AnalysisOfValuationsController < ApplicationController
     end
 
     if params[:executor] != '0'
-      @cad3 << params[:executor]
-    else
-      TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
-        @executors = executor.entities
-      end
-      @executors.each do |ex|
-      @cad3 << ex.id
-      end
+      @working_group=WorkingGroup.where("executor_id LIKE ?", params[:executor])
+    else      
+      @working_group = WorkingGroup.all
     end
     start_date = params[:start_date]
     end_date = params[:end_date]
-    @cad = Array.new
-    @working_group.each do |wg|
-      @cad << wg.id
+    if @working_group.present?
+      @working_group.each do |wg|
+        @cad << wg.id
+      end
+      @cad = @cad.join(',')
+    else
+      @cad = '0'
     end
-    @cad = @cad.join(',')    
     @cad2 = @cad2.join(',')
-    @cad3 = @cad3.join(',')
     @workers_array = business_days_array(start_date, end_date, @cad, @cad2)
     @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2)
     @workers_array3 = business_days_array3(start_date, end_date, @cad, @cad2)
