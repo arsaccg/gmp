@@ -38,7 +38,7 @@
                       = @partofequipment.date
                     %td
                       -@subcontracts.each do |sb|
-                        -if sb.id==@partofequipment.subcontract_of_equipment_id
+                        -if sb.id==@partofequipment.subcontract_equipment_id
                           = sb.entity.name
                     %td
                       -@worker.each do |wk|
@@ -85,13 +85,13 @@
                     %tr.part-equi_item{id: "tr" + @reg_n.to_s}
                       %td.sector.col-lg-3
                         -@working_groups.each do |wg|
-                          -if part.work_group_id == wg.id
+                          -if part.working_group_id == wg.id
                             =wg.name
 
                       %td.phase.col-lg-2
                         - @phases.each do |phas|
                           - Phase.get_subphases(phas.code).each do |subphase|
-                            -if part.subphase_id == subphase.id
+                            -if part.phase_id == subphase.id
                               = "#{subphase.name}"
                       %td.effective-hours.col-lg-2
                         = part.effective_hours

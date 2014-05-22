@@ -6,31 +6,62 @@
   .widget-body
     = simple_form_for([:production, @subcontractInput], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
-        .row{ 'style' => 'display:none' }
-          %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
-        .row
-          %section.col.col-4
-            %label.label Insumo
-            %label.input
-              %select.form-control{:name =>"subcontract_input[article_id]", :style => 'width:100%;padding: 0;border: none;'}
-                -if @action =="edit"
-                  - @articles.each do |article|
-                    -if @subcontractInput.article_id== article.id
-                      %option{:value => "#{article.id}", :selected=>"selected"}
-                        = article.name
-                    -else
-                      %option{:value => "#{article.id}"}
-                        = article.name
-                -else
-                  - @articles.each do |article|
-                    %option{:value => "#{article.id}"}
-                      = article.name
+        - if @action=="edit"
+          .row{ 'style' => 'display:none' }
+            %input{ 'name' => 'subcontract_input[id]', 'value' => "#{@subcontractInput.id}", 'readonly' => true, 'style' => 'display:none' }
+            %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
+            %input{ 'name' => 'subcontract_input[type_article]', 'value' => "04", 'readonly' => true, 'style' => 'display:none' }
+          .row
+            %section.col.col-4
+              %label.label Insumo
+              %label.input
+                %select.form-control{:name =>"subcontract_input[article_id]", :style => 'width:100%;padding: 0;border: none;'}
+                  -if @subcontractInput.type_article == "03"
+                    - @equip.each do |article|
+                      -if @subcontractInput.article_id== article.id
+                        %option{:value => "#{article.id}", :selected=>"selected"}
+                          = article.name
+                      -else
+                        %option{:value => "#{article.id}"}
+                          = article.name
+                  -else
+                    - @sub.each do |article|
+                      -if @subcontractInput.article_id== article.id
+                        %option{:value => "#{article.id}", :selected=>"selected"}
+                          = article.name
+                      -else
+                        %option{:value => "#{article.id}"}
+                          = article.name
+            %section.col.col-4
+              %label.label Precio
+              %label.input{for: "price"}
+                %i.icon-append.fa.fa-credit-card
+                = f.input :price, placeholder: "Precio", input_html: { class: 'form-control' }, label: false
 
-          %section.col.col-4
-            %label.label Precio
-            %label.input{for: "price"}
-              %i.icon-append.fa.fa-credit-card
-              = f.input :price, placeholder: "Precio", input_html: { class: 'form-control' }, label: false
+        -else
+          .row
+            %label.label Tipo de Subcontrato
+            %label.radio_button
+              %input{'class'=>'sub' ,type: "radio", :value=> "04", onchange:'check1();', "name"=>"subcontract_input[type_article]"}
+                = "Subcontrato"
+              %br
+              %input{'class'=>'equip' ,type: "radio", :value=> "03", onchange:'check2();', "name"=>"subcontract_input[type_article]"}
+                = "Subcontrato de Equipo"
+
+          .row{ 'style' => 'display:none' }
+            %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
+          .row
+            %section.col.col-4
+              %label.label Insumo
+              %label.input
+                %select.form-control#insumo{:name =>"subcontract_input[article_id]", :style => 'width:100%;padding: 0;border: none;'}
+                  %option{:value =>' '}Seleccione un insumo
+
+            %section.col.col-4
+              %label.label Precio
+              %label.input{for: "price"}
+                %i.icon-append.fa.fa-credit-card
+                = f.input :price, placeholder: "Precio", input_html: { class: 'form-control' }, label: false
 
       %footer
         %button.btn.btn-primary{type: "submit"}
@@ -91,4 +122,65 @@
       error: function(xhr, status, error) {
       }
     });
+  }
+
+  function check1(){
+    subcontract("#{get_articles_production_subcontract_inputs_path}", "#{form_authenticity_token}", "0302");
+  }
+  function check2(){
+    equipment("#{get_articles_production_subcontract_inputs_path}", "#{form_authenticity_token}", "0302");
+  }
+
+  function subcontract(url, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: {authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.sub, function(key, value){
+          item = {};
+          item['id'] = value.id;
+          item['name'] = value.name;
+          newOptions.push(item);
+        });
+          
+        $('#insumo').empty();
+        $('#insumo').append(
+            $("<option></option>").attr("value", 0).text("Seleccione un insumo")
+        )
+        $.each(newOptions, function(key,value){
+          $('#insumo').append(
+            $("<option></option>").attr("value", value.id).text(value.name)
+          )
+        });
+      });
+  }
+
+  function equipment(url,form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.equip, function(key, value){
+          item = {};
+          item['id'] = value.id;
+          item['name'] = value.name;
+          newOptions.push(item);
+        });
+          
+        $('#insumo').empty();
+        $('#insumo').append(
+            $("<option></option>").attr("value", 0).text("Seleccione un insumo")
+        )
+        $.each(newOptions, function(key,value){
+          $('#insumo').append(
+            $("<option></option>").attr("value", value.id).text(value.name)
+          )
+        });
+      });
   }

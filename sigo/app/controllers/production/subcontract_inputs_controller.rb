@@ -8,7 +8,7 @@ class Production::SubcontractInputsController < ApplicationController
 
   def new
     @subcontractInput = SubcontractInput.new
-    @articles = Article.where("code LIKE ?", "04%")
+    
     @company = params[:company_id]
     render layout: false
   end
@@ -31,7 +31,8 @@ class Production::SubcontractInputsController < ApplicationController
   def edit
     @action = 'edit'
     @subcontractInput = SubcontractInput.find(params[:id])
-    @articles = Article.where("code LIKE ?", "04%")
+    @sub = Article.where("code LIKE ?", "04%")
+    @equip = Article.where("code LIKE ?", "03%")
     @company = params[:company_id]
     render layout: false
   end
@@ -57,8 +58,14 @@ class Production::SubcontractInputsController < ApplicationController
     render :json => subcontract
   end
 
+  def get_articles
+    @sub = Article.where("code LIKE ?", "04%")
+    @equip = Article.where("code LIKE ?", "03%")
+    render json: {:sub => @sub, :equip => @equip}
+  end
+
   private
   def subcontract_input_parameters
-    params.require(:subcontract_input).permit(:article_id, :price)
+    params.require(:subcontract_input).permit(:article_id, :price, :type_article)
   end
 end
