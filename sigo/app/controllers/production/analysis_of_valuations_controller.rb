@@ -75,6 +75,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     @cad3 = @cad3.join(',')
     @workers_array = business_days_array(start_date, end_date, @cad, @cad2)
     @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2)
+    @workers_array3 = business_days_array3(start_date, end_date, @cad, @cad2)
     @workers_array.each do |workerDetail|
       @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
     end
@@ -114,16 +115,38 @@ class Production::AnalysisOfValuationsController < ApplicationController
         art.name, 
         uom.name, 
         SUM( pwd.bill_of_quantitties ), 
+        si.price, 
+        si.price*SUM( pwd.bill_of_quantitties ), 
         p.date_of_creation 
-      FROM part_works p, part_work_details pwd, articles art, unit_of_measurements uom
+      FROM part_works p, part_work_details pwd, articles art, unit_of_measurements uom, subcontract_inputs si
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.working_group_id IN(" + working_group_id + ")
       AND p.id = pwd.part_work_id
       AND pwd.article_id = art.id
+      AND pwd.article_id = si.article_id
       AND uom.id = art.unit_of_measurement_id
       GROUP BY art.name
     ")
     return workers_array2
+  end
+
+  def business_days_array3(start_date, end_date, working_group_id, front_chief_id)
+    workers_array3 = ActiveRecord::Base.connection.execute("
+      SELECT  art.name, 
+      uom.name, 
+      SUM( poed.effective_hours ), 
+      si.price, 
+      si.price*SUM( poed.effective_hours) 
+      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_inputs si
+      WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND poe.id=poed.part_of_equipment_id
+      AND poe.equipment_id=art.id
+      AND poe.equipment_id=si.article_id
+      AND uom.id = art.unit_of_measurement_id
+      AND poed.working_group_id IN(" + working_group_id + ")
+      GROUP BY art.name
+    ")
+    return workers_array3
   end
 
   def frontChief

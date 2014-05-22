@@ -54,8 +54,8 @@
             %th= workerDetail2[1]
             %th= workerDetail2[2]
             %th= workerDetail2[3]
-            %th
-            %th
+            %th= workerDetail2[4]
+            %th= workerDetail2[5]
 
   %div
     .jarviswidget-editbox
@@ -64,15 +64,15 @@
         %thead
           %tr
             %th Descripcion
-            %th Tiempo Total
-            %th Unidad de Medida
-            %th Precio
-            %th Total
+            %th Cantidad
+            %th Unidad
+            %th P.U.
+            %th Parcial
         %tbody
         - @workers_array3.each do |workerDetail3|
           %tr
-            %th= workerDetail2[0]
-            %th= workerDetail2[1]
-            %th= workerDetail2[2]
-            %th= workerDetail2[3]
-            %th
+            %th= workerDetail3[0]
+            %th= workerDetail3[2]
+            %th= workerDetail3[1]
+            %th= workerDetail3[3]
+            %th= workerDetail3[4]
