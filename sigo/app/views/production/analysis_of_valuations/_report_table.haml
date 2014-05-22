@@ -34,3 +34,45 @@
           %th Total
           %th :
           %th= @totalprice
+
+  %div
+    .jarviswidget-editbox
+    .widget-body
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th Codigo
+            %th Partida
+            %th Unidad
+            %th Cantidad
+            %th P.U.
+            %th Parcial
+        %tbody
+        - @workers_array2.each do |workerDetail2|
+          %tr
+            %th= workerDetail2[0]
+            %th= workerDetail2[1]
+            %th= workerDetail2[2]
+            %th= workerDetail2[3]
+            %th
+            %th
+
+  %div
+    .jarviswidget-editbox
+    .widget-body
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th Descripcion
+            %th Tiempo Total
+            %th Unidad de Medida
+            %th Precio
+            %th Total
+        %tbody
+        - @workers_array3.each do |workerDetail3|
+          %tr
+            %th= workerDetail2[0]
+            %th= workerDetail2[1]
+            %th= workerDetail2[2]
+            %th= workerDetail2[3]
+            %th
