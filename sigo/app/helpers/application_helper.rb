@@ -84,4 +84,11 @@ module ApplicationHelper
         str_spanish="observed"
     end
   end
+
+  def get_company_cost_center
+    data = Array.new
+    data << Rails.cache.read('company')
+    data << Rails.cache.read('cost_center')
+    return data
+  end
 end

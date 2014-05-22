@@ -12,8 +12,8 @@ INSERT INTO `type_of_articles` (`name`, `code`, `created_at`, `updated_at`) VALU
 ('Personal', '01', NULL, NULL), 
 ('Material', '02', NULL, NULL), 
 ('Equipos', '03', NULL, NULL), 
-('Servicios', '04', NULL, NULL), 
-('SubContratos', '05', NULL, NULL);
+('Subcontratos', '04', NULL, NULL);
+('Servicios', '05', NULL, NULL), 
 
 -- Data for Company
 INSERT INTO `companies` (`name`, `ruc`, `created_at`, `updated_at`) VALUES 

@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Trabajadores
+    %h2 Lista de Cargos
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
@@ -12,37 +12,16 @@
           %tr
             %th N°
             %th Nombre
-            %th Unidad
-            %th Precio Normal
-            %th Precio 60
-            %th Precio 100
             %th Acciones
         %tbody
-          - @categoryOfWorker.each do |categoryOfWorker|
+          - @positionWorkers.each do |positionWorker|
             %tr
               %td
-                = categoryOfWorker.id
+                = positionWorker.id
               %td 
-                = categoryOfWorker.article.name
+                = positionWorker.name
               %td
-                = categoryOfWorker.article.unit_of_measurement.name
-              %td
-                - if categoryOfWorker.normal_price != nil
-                  = number_to_currency(categoryOfWorker.normal_price.to_f, unit: "S/.", precision: 2)
-                - else
-                  = "No tiene un precio Normal."
-              %td
-                - if categoryOfWorker.he_60_price != nil
-                  = number_to_currency(categoryOfWorker.he_60_price.to_f, unit: "S/.", precision: 2)
-                - else
-                  = "No tiene un precio 60%."
-              %td
-                - if categoryOfWorker.he_100_price != nil
-                  = number_to_currency(categoryOfWorker.he_100_price.to_f, unit: "S/.", precision: 2)
-                - else
-                  = "No tiene un precio 100%."
-              %td
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_category_of_worker_path(categoryOfWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_category_of_worker_path(positionWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
 
 :javascript

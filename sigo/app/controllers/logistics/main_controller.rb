@@ -11,6 +11,8 @@ class Logistics::MainController < ApplicationController
   end
 
   def show_panel
+    Rails.cache.write('company', params[:id])
+    Rails.cache.write('cost_center', params[:id])
     @namecomp=Company.find(params[:id])
     redirect_to :action => :index, :company =>@namecomp 
   end

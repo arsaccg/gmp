@@ -5,6 +5,7 @@ class Article < ActiveRecord::Base
   	has_many :subcontract_equipment_details
   	has_many :part_work_details
   	has_many :category_of_worker
+  	has_many :workers
   	has_one :subcontract_input
 	belongs_to :specific
 	belongs_to :type_of_article
