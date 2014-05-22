@@ -21,42 +21,34 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def get_report
     @totalprice = 0
+    @totalprice2 = 0
+    @totalprice3 = 0
     @cad = Array.new
-    @cad2 = Array.new
     @company = params[:company_id]
 
-    if params[:front_chief]=="0" && params[:master_builder] == "0"
-      CategoryOfWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
-        @front_chief = front_chief.workers
-      end
-      @front_chief.each do |fc|
-        @cad2 << fc.id
-      end
-      CategoryOfWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
-        @master_builders = master_builder.workers
-      end
-      @master_builders.each do |mb|
-        @cad2 << mb.id
-      end
-    end
-
-    if params[:front_chief]!="0" && params[:master_builder] == "0"
-      @cad2 << params[:front_chief]
-    end
-
-    if params[:front_chief]=="0" && params[:master_builder] != "0"
-      @cad2 << params[:master_builder]
-    end
-
-    if params[:front_chief]!="0" && params[:master_builder] != "0"
-      @cad2 << params[:front_chief]
-      @cad2 << params[:master_builder]
-    end
-
-    if params[:executor] != '0'
-      @working_group=WorkingGroup.where("executor_id LIKE ?", params[:executor])
-    else      
+    if params[:front_chief]=="0" && params[:executor]=="0" && params[:master_builder] == "0"
       @working_group = WorkingGroup.all
+    end
+    if params[:front_chief]!="0" && params[:executor]=="0" && params[:master_builder] == "0"
+      @working_group = WorkingGroup.where("front_chief_id LIKE ?", params[:front_chief])
+    end
+    if params[:front_chief]=="0" && params[:executor]!="0" && params[:master_builder] == "0"
+      @working_group = WorkingGroup.where("executor_id LIKE ?", params[:executor])
+    end
+    if params[:front_chief]=="0" && params[:executor]=="0" && params[:master_builder] != "0"
+      @working_group = WorkingGroup.where("master_builder_id LIKE ?", params[:master_builder])
+    end
+    if params[:front_chief]!="0" && params[:executor]!="0" && params[:master_builder] == "0"
+      @working_group = WorkingGroup.where("front_chief_id LIKE ? AND executor_id LIKE ?", params[:front_chief], params[:executor])
+    end
+    if params[:front_chief]!="0" && params[:executor]=="0" && params[:master_builder] != "0"
+      @working_group = WorkingGroup.where("front_chief_id LIKE ? AND master_builder_id LIKE ?", params[:front_chief], params[:master_builder])
+    end
+    if params[:front_chief]=="0" && params[:executor]!="0" && params[:master_builder] != "0"
+      @working_group = WorkingGroup.where("executor_id LIKE ? AND master_builder_id LIKE ?", params[:executor], params[:master_builder])
+    end
+    if params[:front_chief]!="0" && params[:executor]!="0" && params[:master_builder] != "0"
+      @working_group = WorkingGroup.where("front_chief_id LIKE ? AND executor_id LIKE ? AND master_builder_id LIKE ?", params[:front_chief], params[:executor], params[:master_builder])
     end
     start_date = params[:start_date]
     end_date = params[:end_date]
@@ -68,17 +60,23 @@ class Production::AnalysisOfValuationsController < ApplicationController
     else
       @cad = '0'
     end
-    @cad2 = @cad2.join(',')
-    @workers_array = business_days_array(start_date, end_date, @cad, @cad2)
-    @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2)
-    @workers_array3 = business_days_array3(start_date, end_date, @cad, @cad2)
+    @workers_array = business_days_array(start_date, end_date, @cad)
+    @workers_array2 = business_days_array2(start_date, end_date, @cad)
+    @workers_array3 = business_days_array3(start_date, end_date, @cad)
     @workers_array.each do |workerDetail|
       @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
     end
+    @workers_array2.each do |workerDetail|
+      @totalprice2 += workerDetail[5]
+    end
+    @workers_array3.each do |workerDetail|
+      @totalprice3 += workerDetail[4]
+    end
+    @totalprice4 = @totalprice2-@totalprice-@totalprice3
     render(partial: 'report_table', :layout => false)
   end
 
-  def business_days_array(start_date, end_date, working_group_id, front_chief_id)
+  def business_days_array(start_date, end_date, working_group_id)
     workers_array = ActiveRecord::Base.connection.execute("
       SELECT  cow.name AS category,
         cow.normal_price,
@@ -97,7 +95,6 @@ class Production::AnalysisOfValuationsController < ApplicationController
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.id = ppd.part_person_id 
       AND ppd.worker_id = w.id
-      AND w.id  IN(" + front_chief_id + ")
       AND w.category_of_worker_id = cow.id
       AND uom.id = cow.unit_of_measurement_id
       GROUP BY cow.name
@@ -105,7 +102,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     return workers_array
   end
 
-  def business_days_array2(start_date, end_date, working_group_id, front_chief_id)
+  def business_days_array2(start_date, end_date, working_group_id)
     workers_array2 = ActiveRecord::Base.connection.execute("
       SELECT  pwd.article_id, 
         art.name, 
@@ -126,7 +123,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     return workers_array2
   end
 
-  def business_days_array3(start_date, end_date, working_group_id, front_chief_id)
+  def business_days_array3(start_date, end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
       SELECT  art.name, 
       uom.name, 
