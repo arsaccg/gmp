@@ -63,6 +63,109 @@ class Production::AnalysisOfValuationsController < ApplicationController
     return workers_array
   end
 
+  def get_report2
+    @totalprice = 0
+    @company = params[:company_id]
+    if params[:subsector]!="0"
+      sector= Subsector.find(params[:subsector])
+    else
+      sector= Subsector.all
+    end
+
+    if params[:front_chief_id]=="0" && params[:executor_id]=="0" && params[:master_builder_id] == "0"
+      working_group = WorkingGroup.all
+    else
+      if params[:front_chief_id]!="0" && params[:executor_id]=="0" && params[:master_builder_id] == "0"
+        working_group = WorkingGroup.where("front_chief_id LIKE ?", params[:front_chief_id])
+      else
+        if params[:front_chief_id]=="0" && params[:executor_id]!="0" && params[:master_builder_id] == "0"
+          working_group = WorkingGroup.where("executor_id LIKE ?", params[:executor_id])
+        else
+          if params[:front_chief_id]=="0" && params[:executor_id]=="0" && params[:master_builder_id] != "0"
+            working_group = WorkingGroup.where("master_builder_id LIKE ?", params[:master_builder_id])
+          else
+            if params[:front_chief_id]!="0" && params[:executor_id]!="0" && params[:master_builder_id] == "0"
+              working_group = WorkingGroup.where("front_chief_id LIKE ? AND executor_id LIKE ?", params[:front_chief_id], params[:executor_id])
+            else
+              if params[:front_chief_id]!="0" && params[:executor_id]=="0" && params[:master_builder_id] != "0"
+                working_group = WorkingGroup.where("front_chief_id LIKE ? AND master_builder_id LIKE ?", params[:front_chief_id], params[:master_builder_id])
+              else
+                if params[:front_chief_id]=="0" && params[:executor_id]!="0" && params[:master_builder_id] != "0"
+                  working_group = WorkingGroup.where("executor_id LIKE ? AND master_builder_id LIKE ?", params[:executor_id], params[:master_builder_id])
+                else
+                  working_group = WorkingGroup.where("front_chief_id LIKE ? AND executor_id LIKE ?", params[:front_chief_id], params[:executor_id])
+                end
+              end
+            end
+          end
+        end  
+      end
+    end
+
+    @wg = Array.new
+    working_group.each do |wg|
+      @wg << wg.id
+    end
+    @wg = @wg.join(',')
+    @subsector =Array.new
+    sector.each do |sec|
+      @subsector << sec.id
+    end
+    @subsector= @subsector.join(',')
+    @detail = part_equip_detail(@wg, @subsector)
+    @detail = @detail.join(',')
+    @part_equip = part_equip(start_date, end_date, @detail)
+    @part_equip = @part_equip.join(',')
+
+    @subconequipde = subcontract_detail(@part_equip)
+    
+
+
+
+
+
+
+
+
+
+    @workers_array.each do |workerDetail|
+      @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
+    end
+    render(partial: 'report_table', :layout => false)
+  end
+
+  def part_equip_detail(wg,sector)
+    detail = ActiveRecord::Base.connection.execute("
+      SELECT part_of_equipment_id
+      FROM part_of_equipment_details
+      WHERE working_group_id IN ('"+wg+"')
+      AND sector_id IN ('"+sector+"')
+    ")
+    return detail
+  end
+
+  def part_equip(start_date, end_date, id)
+    part_equip = ActiveRecord::Base.connection.execute("
+      SELECT subcontract_equipment_id
+      FROM part_of_equipments 
+      WHERE date BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND id IN ('"+id+"')
+    ")
+    return part_equip
+  end
+
+  def subcontract_detail(subcontract)
+    subconequipde = ActiveRecord::Base.connection.execute("
+      SELECT *
+      FROM subcontract_equipment_details 
+      WHERE subcontract_equipment_id IN ('"+subcontract+"')
+    ")
+    return subconequipde
+    
+  end
+
+  
+
   def frontChief
     if params[:front_chief_id]=="0"
       TypeEntity.where("name LIKE '%Proveedores%'").each do |ex|

@@ -150,7 +150,7 @@
                                 =wg.name
                             -else
                               %option{:value => "#{wg.id}"}
-                                wg.name
+                                =wg.name
 
                       %td.sector
                         %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][sector_id]"}
