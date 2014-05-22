@@ -55,7 +55,8 @@ class Production::SubcontractsController < ApplicationController
     @company = params[:company_id]
     @articles= Array.new
     @articles = TypeOfArticle.find_by_name('subcontratos').articles
-
+    @reg_n = Time.now.to_i
+    @action="edit"
     render layout: false
   end
 

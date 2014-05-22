@@ -37,6 +37,10 @@
             .col-sm-10
               %input.form-control#unit-art{:disabled=>'disabled'}
         .row
+          .col.col-2
+            %label.label Código
+            .col-sm-10
+              = f.input :code,placeholder: "  Código", input_html: { class: 'form-control' }, label: false
           .col.col-10
             %section
               %label.label Descripción

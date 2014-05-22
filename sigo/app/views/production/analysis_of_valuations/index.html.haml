@@ -14,7 +14,7 @@
           %br
           %label.input{for: "sector_id"}
             %select.form-control{:name =>"validation[sector_id]", :style => 'width:100%;padding: 0;border: none;'}
-              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Sector
+              %option{:value => "0"} Seleccionar Sector
               -@sector.each do |sector|
                 %optgroup{:label => "#{sector.name}"}
                   - Sector.getSubSectors(sector.code).each do |subsector|

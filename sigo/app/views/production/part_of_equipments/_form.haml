@@ -143,14 +143,14 @@
                     = hidden_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][part_of_equipment_id]', @partofequipment.id
                     %tr.part-equi_item{id: "tr" + @reg_n.to_s}
                       %td.col-lg-3
-                        %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][work_group_id]"}
+                        %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][working_group_id]"}
                           -@working_groups.each do |wg|
                             -if part.working_group_id == wg.id
                               %option{:value => "#{wg.id}", :selected=>"selected"}
                                 =wg.name
                             -else
                               %option{:value => "#{wg.id}"}
-                                wg.name
+                                =wg.name
 
                       %td.sector
                         %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][sector_id]"}
