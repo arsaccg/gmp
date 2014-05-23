@@ -4,10 +4,10 @@ class Production::AnalysisOfValuationsController < ApplicationController
   	@workingGroups = WorkingGroup.all
     @sector = Sector.where("code LIKE '__'")
     @subsectors = Sector.where("code LIKE '____'")
-    CategoryOfWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
+    PositionWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
       @front_chiefs = front_chief.workers
     end
-    CategoryOfWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
+    PositionWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
       @master_builders = master_builder.workers
     end
     TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
