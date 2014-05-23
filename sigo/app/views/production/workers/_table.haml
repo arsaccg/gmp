@@ -16,6 +16,7 @@
             %th Apellido Paterno
             %th Apellido Materno
             %th Categoria
+            %th Cargo
             %th Email
             %th Fecha de nacimiento
             %th Dirección
@@ -34,8 +35,11 @@
               %td 
                 = worker.maternal_surname
               %td
-                - if worker.category_of_worker != nil
-                  = worker.category_of_worker.name
+                - if worker.article != nil
+                  = worker.article.name
+              %td
+                - if worker.position_worker != nil
+                  = worker.position_worker.name
               %td
                 = worker.email
               %td 

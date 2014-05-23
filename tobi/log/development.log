@@ -4244,3 +4244,734 @@ Processing by Management::BudgetsController#get_budget_by_project as */*
   [1m[35mInput Load (0.3ms)[0m  SELECT `inputs`.* FROM `inputs`
   Rendered management/budgets/get_budget_by_project.haml (8.7ms)
 Completed 200 OK in 18ms (Views: 14.3ms | ActiveRecord: 2.1ms)
+
+
+Started GET "/management/budgets/get_budget_by_project?project_id=2" for 127.0.0.1 at 2014-05-21 17:40:35 -0500
+  [1m[36mActiveRecord::SchemaMigration Load (0.8ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+Processing by Management::BudgetsController#get_budget_by_project as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[35mBudget Load (0.4ms)[0m  SELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '0' AND cost_center_id = '2' )
+  [1m[36mBudget Load (0.4ms)[0m  [1mSELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '1' AND cost_center_id = '2' )[0m
+  [1m[35mInput Load (0.5ms)[0m  SELECT `inputs`.* FROM `inputs`
+  Rendered management/budgets/get_budget_by_project.haml (73.3ms)
+Completed 200 OK in 344ms (Views: 159.2ms | ActiveRecord: 27.0ms)
+
+
+Started GET "/management/wbsitems/set_gantt?project_id=2" for 127.0.0.1 at 2014-05-21 17:40:37 -0500
+Processing by Management::WbsitemsController#set_gantt as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[36mManager Load (0.4ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '2%') ORDER BY `wbsitems`.codewbs ASC
+  Rendered management/wbsitems/_table_gantt.haml (82.0ms)
+  Rendered management/wbsitems/set_gantt.haml (112.4ms)
+Completed 200 OK in 274ms (Views: 118.6ms | ActiveRecord: 41.6ms)
+
+
+Started GET "/management/budgets/get_budget_by_project?project_id=2" for 127.0.0.1 at 2014-05-21 17:40:43 -0500
+Processing by Management::BudgetsController#get_budget_by_project as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[36mBudget Load (0.5ms)[0m  [1mSELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '0' AND cost_center_id = '2' )[0m
+  [1m[35mBudget Load (0.4ms)[0m  SELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '1' AND cost_center_id = '2' )
+  [1m[36mInput Load (0.3ms)[0m  [1mSELECT `inputs`.* FROM `inputs`[0m
+  Rendered management/budgets/get_budget_by_project.haml (6.1ms)
+Completed 200 OK in 16ms (Views: 12.9ms | ActiveRecord: 1.3ms)
+
+
+Started GET "/management/budgets/get_budget_by_project?project_id=2" for 127.0.0.1 at 2014-05-21 17:40:49 -0500
+Processing by Management::BudgetsController#get_budget_by_project as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[35mBudget Load (0.8ms)[0m  SELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '0' AND cost_center_id = '2' )
+  [1m[36mBudget Load (0.3ms)[0m  [1mSELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '1' AND cost_center_id = '2' )[0m
+  [1m[35mInput Load (1.1ms)[0m  SELECT `inputs`.* FROM `inputs`
+  Rendered management/budgets/get_budget_by_project.haml (9.7ms)
+Completed 200 OK in 19ms (Views: 14.9ms | ActiveRecord: 2.2ms)
+
+
+Started GET "/management/budgets/get_budget_by_project?project_id=2" for 127.0.0.1 at 2014-05-21 17:45:16 -0500
+Processing by Management::BudgetsController#get_budget_by_project as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[36mBudget Load (0.6ms)[0m  [1mSELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '0' AND cost_center_id = '2' )[0m
+  [1m[35mBudget Load (0.4ms)[0m  SELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '1' AND cost_center_id = '2' )
+  [1m[36mInput Load (0.3ms)[0m  [1mSELECT `inputs`.* FROM `inputs`[0m
+  Rendered management/budgets/get_budget_by_project.haml (3.7ms)
+Completed 200 OK in 61ms (Views: 58.3ms | ActiveRecord: 1.2ms)
+
+
+Started GET "/management/cost_centers/2/edit" for 127.0.0.1 at 2014-05-21 17:45:19 -0500
+Processing by Management::CostCentersController#edit as */*
+  Parameters: {"id"=>"2"}
+  [1m[35mManager Load (0.7ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mCostCenter Load (1.3ms)[0m  [1mSELECT `cost_centers`.* FROM `cost_centers` WHERE `cost_centers`.`id` = 2 LIMIT 1[0m
+  Rendered management/cost_centers/edit.haml (1072.5ms)
+Completed 500 Internal Server Error in 1307ms
+
+ActionView::Template::Error (undefined method `total_amount' for #<CostCenter:0x00000108152120>):
+    10:     .control-group
+    11:       %label(class="control-label") Costo Total
+    12:       .controls
+    13:         = f.input :total_amount, label: false, placeholder: "0.00"
+    14:     .control-group
+    15:       %label(class="control-label") Monto de Costo Directo
+    16:       .controls
+  app/views/management/cost_centers/edit.haml:13:in `block in _app_views_management_cost_centers_edit_haml___2566392351588628026_2215865440'
+  app/views/management/cost_centers/edit.haml:2:in `_app_views_management_cost_centers_edit_haml___2566392351588628026_2215865440'
+  app/controllers/management/cost_centers_controller.rb:11:in `edit'
+
+
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (3.1ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.6ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (31.7ms)
+
+
+Started GET "/management/budgets/get_budget_by_project?project_id=2" for 127.0.0.1 at 2014-05-21 17:45:54 -0500
+Processing by Management::BudgetsController#get_budget_by_project as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[35mBudget Load (0.6ms)[0m  SELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '0' AND cost_center_id = '2' )
+  [1m[36mBudget Load (0.4ms)[0m  [1mSELECT `budgets`.* FROM `budgets` WHERE (type_of_budget = '1' AND cost_center_id = '2' )[0m
+  [1m[35mInput Load (0.3ms)[0m  SELECT `inputs`.* FROM `inputs`
+  Rendered management/budgets/get_budget_by_project.haml (3.5ms)
+Completed 200 OK in 33ms (Views: 30.7ms | ActiveRecord: 1.2ms)
+
+
+Started GET "/management/cost_centers/2/edit" for 127.0.0.1 at 2014-05-21 17:46:03 -0500
+Processing by Management::CostCentersController#edit as */*
+  Parameters: {"id"=>"2"}
+  [1m[36mManager Load (0.4ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mCostCenter Load (0.4ms)[0m  SELECT `cost_centers`.* FROM `cost_centers` WHERE `cost_centers`.`id` = 2 LIMIT 1
+  Rendered management/cost_centers/edit.haml (10.9ms)
+Completed 200 OK in 42ms (Views: 37.4ms | ActiveRecord: 0.8ms)
+
+
+Started GET "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:46:40 -0500
+Processing by Management::WbsitemsController#index as */*
+  [1m[36mManager Load (0.4ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.2ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  Rendered management/wbsitems/index.html.haml (78.2ms)
+Completed 200 OK in 106ms (Views: 93.1ms | ActiveRecord: 3.0ms)
+
+
+Started GET "/management/wbsitems.json" for 127.0.0.1 at 2014-05-21 17:46:40 -0500
+Processing by Management::WbsitemsController#index as JSON
+  [1m[36mManager Load (0.6ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.5ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.7ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '%') ORDER BY `wbsitems`.codewbs ASC[0m
+Completed 200 OK in 165ms (Views: 0.2ms | ActiveRecord: 4.7ms)
+
+
+Started GET "/management/wbsitems/get_items_json.json?project_id=2" for 127.0.0.1 at 2014-05-21 17:46:41 -0500
+Processing by Management::WbsitemsController#get_items_json as JSON
+  Parameters: {"project_id"=>"2"}
+  [1m[35mManager Load (0.6ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '21' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '22' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '23' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '24' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '25' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '26' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '27' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '28' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '29' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+Completed 200 OK in 23ms (Views: 0.1ms | ActiveRecord: 3.5ms)
+
+
+Started GET "/management/wbsitems/new?project_id=2" for 127.0.0.1 at 2014-05-21 17:46:47 -0500
+Processing by Management::WbsitemsController#new as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[35mManager Load (0.5ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36m (48.6ms)[0m  [1mSELECT COUNT(*) FROM `wbsitems` WHERE (codewbs LIKE '2%')[0m
+  [1m[35mWbsitem Load (0.6ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '2%') ORDER BY `wbsitems`.codewbs ASC
+  Rendered management/wbsitems/new.html.haml (112.7ms)
+Completed 500 Internal Server Error in 145ms
+
+ActionView::Template::Error (undefined method `project_id' for #<Wbsitem:0x000001071b4970>):
+    22:         %label(class="control-label") Notas
+    23:         .controls
+    24:           = f.input :notes, :as => :text, label: false, input_html: { class: 'form-control' }
+    25:           = f.input :project_id, :as => :hidden, input_html: {id: 'input_project'}
+    26:       .form-actions
+    27:         %a{:href=>"javascript:post_to_url('" + management_wbsitems_path.to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
+    28:           Crear nuevo elemento
+  app/views/management/wbsitems/new.html.haml:25:in `block in _app_views_management_wbsitems_new_html_haml__4458175358484058154_2201186600'
+  app/views/management/wbsitems/new.html.haml:5:in `_app_views_management_wbsitems_new_html_haml__4458175358484058154_2201186600'
+  app/controllers/management/wbsitems_controller.rb:68:in `new'
+
+
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (3.0ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (2.1ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (33.5ms)
+
+
+Started GET "/management/wbsitems/new?project_id=2" for 127.0.0.1 at 2014-05-21 17:48:14 -0500
+Processing by Management::WbsitemsController#new as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[36mManager Load (0.6ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.4ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs LIKE '2%')
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '2%') ORDER BY `wbsitems`.codewbs ASC[0m
+  Rendered management/wbsitems/new.html.haml (21.2ms)
+Completed 200 OK in 32ms (Views: 27.3ms | ActiveRecord: 1.4ms)
+
+
+Started POST "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:48:29 -0500
+Processing by Management::WbsitemsController#create as */*
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"Bu/HsJpKHToh0mBBx0fY4TlmU2pEhQyegtLvpL+7T0Q=", "major_item"=>"2", "wbsitem"=>{"name"=>"Item 1", "description"=>"", "notes"=>"", "cost_center_id"=>"2"}}
+  [1m[35mManager Load (0.4ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`id` = 2 LIMIT 1[0m
+DEPRECATION WARNING: Calling #find(:all) is deprecated. Please call #all directly instead. You have also used finder options. These are also deprecated. Please build a scope instead of using finder options. (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:181)
+DEPRECATION WARNING: Relation#all is deprecated. If you want to eager-load a relation, you can call #load (e.g. `Post.where(published: true).load`). If you want to get an array of records from a relation, you can call #to_a (e.g. `Post.where(published: true).to_a`). (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:181)
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs like '2_')
+DEPRECATION WARNING: Calling #find(:all) is deprecated. Please call #all directly instead. You have also used finder options. These are also deprecated. Please build a scope instead of using finder options. (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:182)
+DEPRECATION WARNING: Relation#all is deprecated. If you want to eager-load a relation, you can call #load (e.g. `Post.where(published: true).load`). If you want to get an array of records from a relation, you can call #to_a (e.g. `Post.where(published: true).to_a`). (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:182)
+  [1m[36mWbsitem Load (1.1ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs like '2%')[0m
+Unpermitted parameters: cost_center_id
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `wbsitems` (`codewbs`, `created_at`, `description`, `name`, `notes`, `updated_at`) VALUES ('21', '2014-05-21 22:48:29', '', 'Item 1', '', '2014-05-21 22:48:29')[0m
+  [1m[35m (66.6ms)[0m  COMMIT
+Redirected to http://127.0.0.1:3000/management/wbsitems
+Completed 302 Found in 92ms (ActiveRecord: 69.6ms)
+
+
+Started GET "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:48:29 -0500
+Processing by Management::WbsitemsController#index as */*
+  [1m[36mManager Load (0.5ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.2ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  Rendered management/wbsitems/index.html.haml (13.2ms)
+Completed 200 OK in 46ms (Views: 35.2ms | ActiveRecord: 2.9ms)
+
+
+Started GET "/management/wbsitems.json" for 127.0.0.1 at 2014-05-21 17:48:29 -0500
+Processing by Management::WbsitemsController#index as JSON
+  [1m[36mManager Load (0.4ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.7ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '%') ORDER BY `wbsitems`.codewbs ASC[0m
+Completed 200 OK in 39ms (Views: 0.1ms | ActiveRecord: 4.0ms)
+
+
+Started GET "/management/wbsitems/get_items_json.json?project_id=2" for 127.0.0.1 at 2014-05-21 17:48:29 -0500
+Processing by Management::WbsitemsController#get_items_json as JSON
+  Parameters: {"project_id"=>"2"}
+  [1m[35mManager Load (1.7ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.6ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '21' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35m (3.3ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '21_')
+  [1m[36mWbsitem Load (0.8ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '22' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.5ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '23' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.7ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '24' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.5ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '25' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (1.0ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '26' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.5ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '27' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.7ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '28' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '29' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+Completed 200 OK in 26ms (Views: 0.1ms | ActiveRecord: 10.5ms)
+
+
+Started GET "/management/wbsitems/new?project_id=2" for 127.0.0.1 at 2014-05-21 17:49:10 -0500
+Processing by Management::WbsitemsController#new as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[36mManager Load (0.9ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.4ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs LIKE '2%')
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '2%') ORDER BY `wbsitems`.codewbs ASC[0m
+  Rendered management/wbsitems/new.html.haml (13.0ms)
+Completed 200 OK in 51ms (Views: 46.2ms | ActiveRecord: 1.7ms)
+
+
+Started POST "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:49:14 -0500
+Processing by Management::WbsitemsController#create as */*
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"Bu/HsJpKHToh0mBBx0fY4TlmU2pEhQyegtLvpL+7T0Q=", "major_item"=>"2", "wbsitem"=>{"name"=>"Item 2", "description"=>"", "notes"=>"", "cost_center_id"=>"2"}}
+  [1m[35mManager Load (0.5ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (1.9ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`id` = 2 LIMIT 1[0m
+DEPRECATION WARNING: Calling #find(:all) is deprecated. Please call #all directly instead. You have also used finder options. These are also deprecated. Please build a scope instead of using finder options. (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:181)
+DEPRECATION WARNING: Relation#all is deprecated. If you want to eager-load a relation, you can call #load (e.g. `Post.where(published: true).load`). If you want to get an array of records from a relation, you can call #to_a (e.g. `Post.where(published: true).to_a`). (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:181)
+  [1m[35mWbsitem Load (0.6ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs like '2_')
+DEPRECATION WARNING: Calling #find(:all) is deprecated. Please call #all directly instead. You have also used finder options. These are also deprecated. Please build a scope instead of using finder options. (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:182)
+DEPRECATION WARNING: Relation#all is deprecated. If you want to eager-load a relation, you can call #load (e.g. `Post.where(published: true).load`). If you want to get an array of records from a relation, you can call #to_a (e.g. `Post.where(published: true).to_a`). (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:182)
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs like '2%')[0m
+Unpermitted parameters: cost_center_id
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mINSERT INTO `wbsitems` (`codewbs`, `created_at`, `description`, `name`, `notes`, `updated_at`) VALUES ('22', '2014-05-21 22:49:14', '', 'Item 2', '', '2014-05-21 22:49:14')[0m
+  [1m[35m (26.1ms)[0m  COMMIT
+Redirected to http://127.0.0.1:3000/management/wbsitems
+Completed 302 Found in 47ms (ActiveRecord: 30.5ms)
+
+
+Started GET "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:49:14 -0500
+Processing by Management::WbsitemsController#index as */*
+  [1m[36mManager Load (0.4ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.6ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  Rendered management/wbsitems/index.html.haml (10.6ms)
+Completed 200 OK in 55ms (Views: 29.5ms | ActiveRecord: 3.5ms)
+
+
+Started GET "/management/wbsitems.json" for 127.0.0.1 at 2014-05-21 17:49:14 -0500
+Processing by Management::WbsitemsController#index as JSON
+  [1m[36mManager Load (0.9ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (1.0ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (1.2ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.7ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.5ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.5ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (4.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '%') ORDER BY `wbsitems`.codewbs ASC[0m
+Completed 200 OK in 27ms (Views: 0.1ms | ActiveRecord: 10.2ms)
+
+
+Started GET "/management/wbsitems/get_items_json.json?project_id=2" for 127.0.0.1 at 2014-05-21 17:49:15 -0500
+Processing by Management::WbsitemsController#get_items_json as JSON
+  Parameters: {"project_id"=>"2"}
+  [1m[35mManager Load (0.5ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '21' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '21_')
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '22' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.4ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '22_')
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '23' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '24' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '25' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.5ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '26' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (6.2ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '27' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '28' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.2ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '29' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+Completed 200 OK in 22ms (Views: 0.1ms | ActiveRecord: 10.2ms)
+
+
+Started GET "/management/wbsitems/get_items_from_project?project_id=2" for 127.0.0.1 at 2014-05-21 17:49:26 -0500
+Processing by Management::WbsitemsController#get_items_from_project as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[35mManager Load (0.6ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+Completed 500 Internal Server Error in 7099ms
+
+Errno::ECONNREFUSED (Connection refused - connect(2) for "192.168.2.60" port 8090):
+  lib/socket_connector/socket_connector.rb:10:in `initialize'
+  lib/socket_connector/socket_connector.rb:10:in `new'
+  lib/socket_connector/socket_connector.rb:10:in `ask_socket'
+  app/controllers/management/wbsitems_controller.rb:91:in `get_items_from_project'
+
+
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_source.erb (1.7ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (2.4ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.7ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (54.7ms)
+
+
+Started GET "/management/wbsitems?project_id=2" for 127.0.0.1 at 2014-05-21 17:49:38 -0500
+Processing by Management::WbsitemsController#index as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[36mManager Load (0.6ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  Rendered management/wbsitems/index.html.haml (10.7ms)
+Completed 200 OK in 44ms (Views: 31.8ms | ActiveRecord: 3.4ms)
+
+
+Started GET "/management/wbsitems.json" for 127.0.0.1 at 2014-05-21 17:49:39 -0500
+Processing by Management::WbsitemsController#index as JSON
+  [1m[36mManager Load (0.5ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '%') ORDER BY `wbsitems`.codewbs ASC[0m
+Completed 200 OK in 29ms (Views: 0.1ms | ActiveRecord: 3.4ms)
+
+
+Started GET "/management/wbsitems/get_items_json.json?project_id=2" for 127.0.0.1 at 2014-05-21 17:49:39 -0500
+Processing by Management::WbsitemsController#get_items_json as JSON
+  Parameters: {"project_id"=>"2"}
+  [1m[35mManager Load (0.4ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '21' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '21_')
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '22' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.4ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '22_')
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '23' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '24' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '25' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.5ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '26' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '27' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '28' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '29' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+Completed 200 OK in 16ms (Views: 0.1ms | ActiveRecord: 4.3ms)
+
+
+Started GET "/management/wbsitems/add_items_to_wbs?project_id=2&type_budget=0" for 127.0.0.1 at 2014-05-21 17:49:41 -0500
+Processing by Management::WbsitemsController#add_items_to_wbs as */*
+  Parameters: {"project_id"=>"2", "type_budget"=>"0"}
+  [1m[35mManager Load (0.7ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mBudget Load (0.7ms)[0m  [1mSELECT `budgets`.* FROM `budgets` WHERE (project_id = '2' AND type_of_budget = '0')[0m
+Mysql2::Error: Unknown column 'project_id' in 'where clause': SELECT `budgets`.* FROM `budgets`  WHERE (project_id = '2' AND type_of_budget = '0')
+Completed 500 Internal Server Error in 5ms
+
+ActiveRecord::StatementInvalid (Mysql2::Error: Unknown column 'project_id' in 'where clause': SELECT `budgets`.* FROM `budgets`  WHERE (project_id = '2' AND type_of_budget = '0')):
+  app/controllers/management/wbsitems_controller.rb:154:in `add_items_to_wbs'
+
+
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_source.erb (0.9ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.8ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.4ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (26.8ms)
+
+
+Started GET "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:50:36 -0500
+Processing by Management::WbsitemsController#index as */*
+  [1m[35mManager Load (0.5ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (1.9ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.5ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  Rendered management/wbsitems/index.html.haml (24.2ms)
+Completed 200 OK in 295ms (Views: 26.5ms | ActiveRecord: 157.7ms)
+
+
+Started GET "/management/wbsitems.json" for 127.0.0.1 at 2014-05-21 17:50:37 -0500
+Processing by Management::WbsitemsController#index as JSON
+  [1m[35mManager Load (0.4ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.6ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.9ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '%') ORDER BY `wbsitems`.codewbs ASC
+Completed 200 OK in 69ms (Views: 0.3ms | ActiveRecord: 4.2ms)
+
+
+Started GET "/management/wbsitems/get_items_json.json?project_id=2" for 127.0.0.1 at 2014-05-21 17:50:37 -0500
+Processing by Management::WbsitemsController#get_items_json as JSON
+  Parameters: {"project_id"=>"2"}
+  [1m[36mManager Load (0.5ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '21' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36m (0.4ms)[0m  [1mSELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '21_')[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '22' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36m (0.5ms)[0m  [1mSELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '22_')[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '23' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '24' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '25' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '26' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '27' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '28' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '29' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+Completed 200 OK in 26ms (Views: 0.1ms | ActiveRecord: 4.0ms)
+
+
+Started GET "/management/wbsitems/add_items_to_wbs?project_id=2&type_budget=0" for 127.0.0.1 at 2014-05-21 17:50:38 -0500
+Processing by Management::WbsitemsController#add_items_to_wbs as */*
+  Parameters: {"project_id"=>"2", "type_budget"=>"0"}
+  [1m[36mManager Load (0.5ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mBudget Load (0.4ms)[0m  SELECT `budgets`.* FROM `budgets` WHERE (cost_center_id = '2' AND type_of_budget = '0')
+  [1m[36mWbsitem Load (0.5ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '2%') ORDER BY `wbsitems`.codewbs ASC[0m
+  [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs LIKE '2%' )
+  [1m[36m (0.3ms)[0m  [1mSELECT COUNT(*) FROM `wbsitems` WHERE (codewbs LIKE '21%' )[0m
+  [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs LIKE '22%' )
+  Rendered management/wbsitems/add_items_to_wbs.haml (25.5ms)
+Completed 200 OK in 117ms (Views: 59.8ms | ActiveRecord: 5.5ms)
+
+
+Started GET "/management/wbsitems/get_items_by_budget?budget_id=null" for 127.0.0.1 at 2014-05-21 17:50:38 -0500
+Processing by Management::WbsitemsController#get_items_by_budget as */*
+  Parameters: {"budget_id"=>"null"}
+  [1m[36mManager Load (0.6ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mItembybudget Load (0.5ms)[0m  SELECT `itembybudgets`.* FROM `itembybudgets` WHERE `itembybudgets`.`budget_id` = 0
+  Rendered management/wbsitems/get_items_by_budget.haml (49.3ms)
+Completed 500 Internal Server Error in 92ms
+
+ActionView::Template::Error (undefined method `budget_id' for nil:NilClass):
+    16:         %th Precio
+    17:         %th Saldo
+    18:     %tbody
+    19:       - result_credit = get_credit(@items[0].budget_id)
+    20:       - itemwbs = itemswbs_from_budget(@items[0].budget_id)
+    21:       - @items.each do |itembudget|
+    22:         - title = get_title_or_description(itembudget)
+  app/views/management/wbsitems/get_items_by_budget.haml:19:in `_app_views_management_wbsitems_get_items_by_budget_haml__2187196217632188339_2223503620'
+  app/controllers/management/wbsitems_controller.rb:169:in `get_items_by_budget'
+
+
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.9ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.6ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (33.1ms)
+
+
+Started GET "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:50:52 -0500
+Processing by Management::WbsitemsController#index as */*
+  [1m[36mManager Load (0.4ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.5ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  Rendered management/wbsitems/index.html.haml (1.5ms)
+Completed 200 OK in 23ms (Views: 3.1ms | ActiveRecord: 3.3ms)
+
+
+Started GET "/management/wbsitems.json" for 127.0.0.1 at 2014-05-21 17:50:52 -0500
+Processing by Management::WbsitemsController#index as JSON
+  [1m[36mManager Load (0.4ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '%') ORDER BY `wbsitems`.codewbs ASC[0m
+Completed 200 OK in 23ms (Views: 0.1ms | ActiveRecord: 3.7ms)
+
+
+Started GET "/management/wbsitems/get_items_json.json?project_id=2" for 127.0.0.1 at 2014-05-21 17:50:52 -0500
+Processing by Management::WbsitemsController#get_items_json as JSON
+  Parameters: {"project_id"=>"2"}
+  [1m[35mManager Load (0.5ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '21' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35m (1.1ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '21_')
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '22' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '22_')
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '23' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '24' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '25' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '26' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '27' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '28' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '29' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+Completed 200 OK in 23ms (Views: 0.1ms | ActiveRecord: 5.1ms)
+
+
+Started GET "/management/wbsitems/add_items_to_wbs?project_id=2&type_budget=1" for 127.0.0.1 at 2014-05-21 17:50:53 -0500
+Processing by Management::WbsitemsController#add_items_to_wbs as */*
+  Parameters: {"project_id"=>"2", "type_budget"=>"1"}
+  [1m[35mManager Load (0.6ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mBudget Load (0.4ms)[0m  [1mSELECT `budgets`.* FROM `budgets` WHERE (cost_center_id = '2' AND type_of_budget = '1')[0m
+  [1m[35mWbsitem Load (0.8ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '2%') ORDER BY `wbsitems`.codewbs ASC
+  [1m[36m (0.5ms)[0m  [1mSELECT COUNT(*) FROM `wbsitems` WHERE (codewbs LIKE '2%' )[0m
+  [1m[35m (0.4ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs LIKE '21%' )
+  [1m[36m (0.3ms)[0m  [1mSELECT COUNT(*) FROM `wbsitems` WHERE (codewbs LIKE '22%' )[0m
+  Rendered management/wbsitems/add_items_to_wbs.haml (11.4ms)
+Completed 200 OK in 24ms (Views: 16.9ms | ActiveRecord: 3.0ms)
+
+
+Started GET "/management/wbsitems/get_items_by_budget?budget_id=null" for 127.0.0.1 at 2014-05-21 17:50:53 -0500
+Processing by Management::WbsitemsController#get_items_by_budget as */*
+  Parameters: {"budget_id"=>"null"}
+  [1m[35mManager Load (2.0ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mItembybudget Load (0.4ms)[0m  [1mSELECT `itembybudgets`.* FROM `itembybudgets` WHERE `itembybudgets`.`budget_id` = 0[0m
+  Rendered management/wbsitems/get_items_by_budget.haml (8.9ms)
+Completed 500 Internal Server Error in 24ms
+
+ActionView::Template::Error (undefined method `budget_id' for nil:NilClass):
+    16:         %th Precio
+    17:         %th Saldo
+    18:     %tbody
+    19:       - result_credit = get_credit(@items[0].budget_id)
+    20:       - itemwbs = itemswbs_from_budget(@items[0].budget_id)
+    21:       - @items.each do |itembudget|
+    22:         - title = get_title_or_description(itembudget)
+  app/views/management/wbsitems/get_items_by_budget.haml:19:in `_app_views_management_wbsitems_get_items_by_budget_haml__2187196217632188339_2223503620'
+  app/controllers/management/wbsitems_controller.rb:169:in `get_items_by_budget'
+
+
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_trace.erb (2.0ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.6ms)
+  Rendered /Users/joel/.rvm/gems/ruby-2.1.0@pmicg/gems/actionpack-4.0.0/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (23.3ms)
+
+
+Started GET "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:50:57 -0500
+Processing by Management::WbsitemsController#index as */*
+  [1m[35mManager Load (0.5ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.5ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  Rendered management/wbsitems/index.html.haml (1.6ms)
+Completed 200 OK in 24ms (Views: 3.2ms | ActiveRecord: 3.7ms)
+
+
+Started GET "/management/wbsitems.json" for 127.0.0.1 at 2014-05-21 17:50:57 -0500
+Processing by Management::WbsitemsController#index as JSON
+  [1m[35mManager Load (0.5ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '%') ORDER BY `wbsitems`.codewbs ASC
+Completed 200 OK in 25ms (Views: 0.1ms | ActiveRecord: 3.8ms)
+
+
+Started GET "/management/wbsitems/get_items_json.json?project_id=2" for 127.0.0.1 at 2014-05-21 17:50:57 -0500
+Processing by Management::WbsitemsController#get_items_json as JSON
+  Parameters: {"project_id"=>"2"}
+  [1m[36mManager Load (0.6ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.5ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '21' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36m (0.3ms)[0m  [1mSELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '21_')[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '22' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36m (0.3ms)[0m  [1mSELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '22_')[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '23' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '24' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '25' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '26' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '27' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '28' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '29' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+Completed 200 OK in 15ms (Views: 0.1ms | ActiveRecord: 3.9ms)
+
+
+Started GET "/management/wbsitems/new?project_id=2" for 127.0.0.1 at 2014-05-21 17:51:08 -0500
+Processing by Management::WbsitemsController#new as */*
+  Parameters: {"project_id"=>"2"}
+  [1m[36mManager Load (0.6ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.6ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs LIKE '2%')
+  [1m[36mWbsitem Load (0.8ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '2%') ORDER BY `wbsitems`.codewbs ASC[0m
+  Rendered management/wbsitems/new.html.haml (28.7ms)
+Completed 200 OK in 66ms (Views: 60.5ms | ActiveRecord: 2.0ms)
+
+
+Started POST "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:51:17 -0500
+Processing by Management::WbsitemsController#create as */*
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"Bu/HsJpKHToh0mBBx0fY4TlmU2pEhQyegtLvpL+7T0Q=", "major_item"=>"3", "wbsitem"=>{"name"=>"SubItem 1.1", "description"=>"", "notes"=>"", "cost_center_id"=>"2"}}
+  [1m[35mManager Load (0.4ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`id` = 3 LIMIT 1[0m
+DEPRECATION WARNING: Calling #find(:all) is deprecated. Please call #all directly instead. You have also used finder options. These are also deprecated. Please build a scope instead of using finder options. (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:181)
+DEPRECATION WARNING: Relation#all is deprecated. If you want to eager-load a relation, you can call #load (e.g. `Post.where(published: true).load`). If you want to get an array of records from a relation, you can call #to_a (e.g. `Post.where(published: true).to_a`). (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:181)
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs like '21_')
+DEPRECATION WARNING: Calling #find(:all) is deprecated. Please call #all directly instead. You have also used finder options. These are also deprecated. Please build a scope instead of using finder options. (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:182)
+DEPRECATION WARNING: Relation#all is deprecated. If you want to eager-load a relation, you can call #load (e.g. `Post.where(published: true).load`). If you want to get an array of records from a relation, you can call #to_a (e.g. `Post.where(published: true).to_a`). (called from create at /Users/joel/Documents/Inclouds Group/Proyectos/Arsac/gmp/gmp/tobi/app/controllers/management/wbsitems_controller.rb:182)
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs like '21%')[0m
+Unpermitted parameters: cost_center_id
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `wbsitems` (`codewbs`, `created_at`, `description`, `name`, `notes`, `updated_at`) VALUES ('211', '2014-05-21 22:51:17', '', 'SubItem 1.1', '', '2014-05-21 22:51:17')[0m
+  [1m[35m (0.7ms)[0m  COMMIT
+Redirected to http://127.0.0.1:3000/management/wbsitems
+Completed 302 Found in 22ms (ActiveRecord: 3.0ms)
+
+
+Started GET "/management/wbsitems" for 127.0.0.1 at 2014-05-21 17:51:17 -0500
+Processing by Management::WbsitemsController#index as */*
+  [1m[36mManager Load (0.5ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.2ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.2ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.2ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  Rendered management/wbsitems/index.html.haml (1.6ms)
+Completed 200 OK in 19ms (Views: 3.0ms | ActiveRecord: 2.9ms)
+
+
+Started GET "/management/wbsitems.json" for 127.0.0.1 at 2014-05-21 17:51:17 -0500
+Processing by Management::WbsitemsController#index as JSON
+  [1m[36mManager Load (0.4ms)[0m  [1mSELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.4ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '11' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '12' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '13' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '14' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '15' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '16' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '17' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '18' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '19' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE (codewbs LIKE '%') ORDER BY `wbsitems`.codewbs ASC[0m
+Completed 200 OK in 15ms (Views: 0.1ms | ActiveRecord: 3.3ms)
+
+
+Started GET "/management/wbsitems/get_items_json.json?project_id=2" for 127.0.0.1 at 2014-05-21 17:51:17 -0500
+Processing by Management::WbsitemsController#get_items_json as JSON
+  Parameters: {"project_id"=>"2"}
+  [1m[35mManager Load (0.6ms)[0m  SELECT `managers`.* FROM `managers` WHERE `managers`.`id` = 1 ORDER BY `managers`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '21' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '21_')
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '211' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '211_')
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '212' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '213' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '214' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '215' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '216' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.2ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '217' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '218' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '219' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.4ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '22' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM `wbsitems` WHERE (codewbs like '22_')
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '23' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '24' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '25' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '26' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '27' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+  [1m[35mWbsitem Load (0.3ms)[0m  SELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '28' ORDER BY `wbsitems`.`id` ASC LIMIT 1
+  [1m[36mWbsitem Load (0.3ms)[0m  [1mSELECT `wbsitems`.* FROM `wbsitems` WHERE `wbsitems`.`codewbs` = '29' ORDER BY `wbsitems`.`id` ASC LIMIT 1[0m
+Completed 200 OK in 25ms (Views: 0.1ms | ActiveRecord: 6.7ms)

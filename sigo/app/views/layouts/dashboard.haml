@@ -140,55 +140,42 @@
           %li
             %a{href: "#", title: "Compañias"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-              %span.menu-item-parent Logística
+              %span.menu-item-parent Mantenimientos
             %ul
               %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Mantenimientos
+                  %span.menu-item-parent Globales
                 %ul
+                  %li
+                    %a{href: "#{logistics_type_of_articles_path}", title: "Articulos"}
+                      %i.fa.fa-lg.fa-fw.fa-filter
+                      %span.menu-item-parent Tipo de Insumos
+                  %li
+                    %a{href: "#{logistics_categories_path}", title: "Fases"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Grupos
+                  %li
+                    %a{href: "#{logistics_articles_path}", title: "Articulos"}
+                      %i.fa.fa-lg.fa-fw.fa-desktop
+                      %span.menu-item-parent Articulos
+                  %li
+                    %a{href: "#{import_logistics_articles_path}", title: "Importar Artículos"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Import Articulos
                   %li
                     %a{href: "#{logistics_unit_of_measurements_path}", title: "Unidad de Medida"}
                       %i.fa.fa-lg.fa-fw.fa-home{'style'=>"position: relative;bottom: 11px;"}
                       %span.menu-item-parent{'style'=>"width: 100px;"}
                         Unidades de Medida
                   %li
-                    %a{href: "#{logistics_center_of_attentions_path}", title: "Centro de Atención"}
-                      %i.fa.fa-lg.fa-fw.fa-dot-circle-o{'style'=>"position: relative;bottom: 11px;"}
-                      %span.menu-item-parent{'style'=>"width: 100px;"}
-                        Centro de Atención
-                  %li
-                    %a{href: "#{logistics_cost_centers_path}?company_id=#{@company.id}", title: "Centro de Costos", company: "#{@company.id}"}
-                      %i.fa.fa-lg.fa-fw.fa-desktop
-                      %span.menu-item-parent Centro de Costos
-                  %li
-                    %a{href: "#{logistics_categories_path}", title: "Fases"}
-                      %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Grupos
-                  %li
-                    %a{href: "#{logistics_type_of_articles_path}", title: "Articulos"}
-                      %i.fa.fa-lg.fa-fw.fa-filter
-                      %span.menu-item-parent Tipo de Insumos
-                  %li
-                    %a{href: "#{logistics_articles_path}", title: "Articulos"}
-                      %i.fa.fa-lg.fa-fw.fa-desktop
-                      %span.menu-item-parent Articulos
-                  %li
-                    %a{href: "#{logistics_sectors_path}", title: "Sectores"}
-                      %i.fa.fa-lg.fa-fw.fa-map-marker
-                      %span.menu-item-parent Sectores
-                  %li
                     %a{href: "#{logistics_phases_path}", title: "Fases"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Fases
                   %li
-                    %a{href: "#{import_logistics_articles_path}", title: "Importar Artículos"}
+                    %a{href: "#{logistics_financial_variables_path}", title: "Variables Financieras"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Import Articulos
-                  %li
-                    %a{href: "#{logistics_method_of_payments_path}", title: "Formas de Pago"}
-                      %i.fa.fa-lg.fa-fw.fa-dot-circle-o
-                      %span.menu-item-parent Formas de Pago
+                      %span.menu-item-parent Variables Financieras
                   %li
                     %a{href: "#{logistics_money_index_path}", title: "Monedas"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
@@ -198,9 +185,35 @@
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Tipo de Cambio
                   %li
-                    %a{href: "#{logistics_financial_variables_path}", title: "Variables Financieras"}
+                    %a{href: "#{logistics_method_of_payments_path}", title: "Formas de Pago"}
+                      %i.fa.fa-lg.fa-fw.fa-dot-circle-o
+                      %span.menu-item-parent Formas de Pago
+                  %li
+                    %a{href: "#{logistics_banks_path}", title: "Bancos"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Variables Financieras
+                      %span.menu-item-parent Bancos
+              %li
+                %a{href: '#'}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Específicas
+                %ul
+                  %li
+                    %a{href: "#{logistics_cost_centers_path}?company_id=#{@company.id}", title: "Centro de Costos", company: "#{@company.id}"}
+                      %i.fa.fa-lg.fa-fw.fa-desktop
+                      %span.menu-item-parent Centro de Costos
+                  %li
+                    %a{href: "#{logistics_center_of_attentions_path}", title: "Centro de Atención"}
+                      %i.fa.fa-lg.fa-fw.fa-dot-circle-o{'style'=>"position: relative;bottom: 11px;"}
+                      %span.menu-item-parent{'style'=>"width: 100px;"}
+                        Centro de Atención
+                  %li
+                    %a{href: "#{logistics_working_groups_path}", title: "Grupos de Trabajo"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Grupos de Trabajo
+                  %li
+                    %a{href: "#{logistics_sectors_path}", title: "Sectores"}
+                      %i.fa.fa-lg.fa-fw.fa-map-marker
+                      %span.menu-item-parent Sectores
                   %li
                     %a{href: "#{logistics_warehouses_path}?company_id=#{@company.id}", title: "Almacenes", company: "#{@company.id}"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
@@ -213,14 +226,11 @@
                     %a{href: "#{logistics_documents_path}", title: "Documentos"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Documentos
-                  %li
-                    %a{href: "#{logistics_banks_path}", title: "Bancos"}
-                      %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Bancos
-                  %li
-                    %a{href: "#{logistics_working_groups_path}", title: "Grupos de Trabajo"}
-                      %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Grupos de Trabajo
+          %li
+            %a{href: "#", title: "Compañias"}
+              %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+              %span.menu-item-parent Logística
+            %ul
               %li
                 %a{href: "#{logistics_delivery_orders_path}?company_id=#{@company.id}", title: "Ordenes de Suministro", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
@@ -274,6 +284,10 @@
                     %a{href: "#{production_category_of_workers_path}?company_id=#{@company.id}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Categoria de Trabajadores
+                  %li
+                    %a{href: "#{production_position_workers_path}?company_id=#{@company.id}", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Cargo de Trabajadores
                   %li
                     %a{href: "#{production_working_groups_path}?company_id=#{@company.id}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o

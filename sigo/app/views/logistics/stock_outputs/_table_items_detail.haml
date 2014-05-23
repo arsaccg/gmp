@@ -7,6 +7,11 @@
       = x.delivery_order_detail.article.code
     %td
       = x.delivery_order_detail.article.description
+    %td.precio
+      %select.form-control{:name =>"stock_input[stock_input_details_attributes]['" + @reg_n.to_s + "'][sector_id]"}
+        - @sectors.each do |sect|
+          %option{:value => "#{sect.id}"}
+            = sect.name
     %td
       = x.delivery_order_detail.article.unit_of_measurement.symbol
     %td.unit-price

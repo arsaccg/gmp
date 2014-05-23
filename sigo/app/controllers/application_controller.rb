@@ -25,4 +25,15 @@ class ApplicationController < ActionController::Base
     return ActiveRecord::Base.connection.execute("SELECT  `value` FROM  `exchange_of_rates` WHERE DATE(`day`) = '#{date}' AND `money_id` = #{money} ORDER BY 1 DESC LIMIT 1")
   end
 
+  def get_company_cost_center(type)
+    case type
+      when 'company'
+        return Rails.cache.read('company')
+      when 'cost_center'
+        return Rails.cache.read('cost_center')
+      else
+        return false
+    end
+  end
+
 end

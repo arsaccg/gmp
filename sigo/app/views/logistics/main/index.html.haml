@@ -54,15 +54,31 @@
         / end logout button
     -if @company == nil
       - current_user.companies.each do |company| 
-        .col-sm-8.col-md-8.col-lg-4
+        .col-sm-8.col-md-8.col-lg-6
           .well
             .jumbotron{"style" => "overflow: hidden"}
-              .col-sm-12.col-md-12.col-lg-6
+              .col-sm-12.col-md-12.col-lg-12
                 %h1= company.name
                 %p= "RUC: #{company.ruc}"
                 %p
-                  %a.btn.btn-primary.btn-lg{ "role" => "button", "href"=> "#{show_panel_logistics_main_path(company.id)}", "data-method"=>"post"}
+                  %a.btn.btn-primary.btn-lg{ 'href' => 'javascript:void(0)', 'id' => "btn-#{company.id}", 'data-target' => "#modal-#{company.id}", "role" => "button" }
                     Ver información
+        .modal.fade{"id" => "modal-#{company.id}", "aria-hidden" => "true", "aria-labelledby" => "modalCompanyItemsLabel", role: "dialog", tabindex: "-1"}
+          .modal-dialog
+            .modal-content
+              .modal-header
+                %button.close{ 'type' => "button", 'data-dismiss' => "modal", 'aria-hidden' => "true" } ×
+                %h4= "Centro de Costos de " + company.name
+              .modal-body{ 'style' => 'overflow:hidden' }
+                - company.cost_centers.each do |cc|
+                  .col-sm-12.col-md-12.col-lg-12
+                    %h1= cc.name
+                    %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_logistics_main_path(company.id)}?cost_center=#{cc.id}", "data-method"=>"post" }
+                      Ingresar
+        :javascript
+          $("a#btn-#{company.id}").click(function(){
+            $('#modal-#{company.id}').modal('show');
+          });
 
     = javascript_include_tag '//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js'
     :javascript
@@ -79,34 +95,9 @@
       <script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script>
     / BOOTSTRAP JS
     = javascript_include_tag 'bootstrap/bootstrap'
-    = javascript_include_tag 'bootstrap/bootstrap-tooltip'
-    = javascript_include_tag 'bootstrap/bootstrap-confirmation'
-    / CUSTOM NOTIFICATION
-    = javascript_include_tag 'notification/SmartNotification.min'
-    / JARVIS WIDGETS
-    = javascript_include_tag 'smartwidgets/jarvis.widget.min'
-    / EASY PIE CHARTS
-    = javascript_include_tag 'plugin/easy-pie-chart/jquery.easy-pie-chart.min'
-    / SPARKLINES
-    = javascript_include_tag 'plugin/sparkline/jquery.sparkline.min'
-    / JQUERY VALIDATE
-    = javascript_include_tag 'plugin/jquery-validate/jquery.validate.min'
-    / JQUERY MASKED INPUT
-    = javascript_include_tag 'plugin/masked-input/jquery.maskedinput.min'
-    / JQUERY SELECT2 INPUT
-    = javascript_include_tag 'plugin/select2/select2.min'
-    / JQUERY UI + Bootstrap Slider
-    = javascript_include_tag 'plugin/bootstrap-slider/bootstrap-slider.min'
-    / browser msie issue fix
     = javascript_include_tag 'plugin/msie-fix/jquery.mb.browser.min'
-    / SmartClick: For mobile devices
-    = javascript_include_tag 'plugin/smartclick/smartclick'
-    / JQUERY FORM
-    = javascript_include_tag 'plugin/jquery-form/jquery-form.min'
     /[if IE 7]
       <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
-    / Demo purpose only
-    = javascript_include_tag 'demo'
     / MAIN APP JS FILE
     = javascript_include_tag 'app'
     / Your GOOGLE ANALYTICS CODE Below

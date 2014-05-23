@@ -1,6 +1,6 @@
 class Production::WorkersController < ApplicationController
   def index
-    @categoryOfWorker = CategoryOfWorker.first
+    @article = TypeOfArticle.find_by_code('01').articles.first
     @bank = Bank.first
     @company = params[:company_id]
     @workers = Worker.all
@@ -14,7 +14,8 @@ class Production::WorkersController < ApplicationController
 
   def new
     @worker = Worker.new
-    @categoryOfWorkers = CategoryOfWorker.all
+    @articles = TypeOfArticle.find_by_code('01').articles
+    @positionWorkers = PositionWorker.all
     @company = params[:company_id]
     @banks = Bank.all
     render layout: false
@@ -23,6 +24,12 @@ class Production::WorkersController < ApplicationController
   def create
     worker = Worker.new(worker_parameters)
     if worker.save
+      categoryOfWorker = CategoryOfWorker.new
+      if CategoryOfWorker.find_by_article_id(worker.article_id).blank?
+        categoryOfWorker.article_id = worker.article_id
+        categoryOfWorker.save
+      end
+
       flash[:notice] = "Se ha creado correctamente el trabajador."
       redirect_to :action => :index, company_id: params[:company_id]
     else
@@ -39,7 +46,8 @@ class Production::WorkersController < ApplicationController
     @worker = Worker.find(params[:id])
     @banks = Bank.all
     @reg_n = Time.now.to_i
-    @categoryOfWorkers = CategoryOfWorker.all
+    @articles = TypeOfArticle.find_by_code('01').articles
+    @positionWorkers = PositionWorker.all
     @company = params[:company_id]
     @action = 'edit'
     render layout: false
@@ -77,6 +85,6 @@ class Production::WorkersController < ApplicationController
 
   private
   def worker_parameters
-    params.require(:worker).permit(:first_name, :paternal_surname, :maternal_surname, :dni, :email, :phone, :date_of_birth, :address, :category_of_worker_id, :second_name, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy])
+    params.require(:worker).permit(:first_name, :paternal_surname, :maternal_surname, :dni, :email, :phone, :date_of_birth, :address, :article_id, :second_name, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy])
   end
 end

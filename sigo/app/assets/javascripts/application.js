@@ -19,24 +19,25 @@ $(document).ready(function(){
     $.company_global_id= $(this).attr("company");
   });
 
-  $.validator.addMethod(
-    "greaterThan",
-    function(value, element, params) {
-        var target = $(params).val();
-        var isValueNumeric = !isNaN(parseFloat(value)) && isFinite(value);
-        var isTargetNumeric = !isNaN(parseFloat(target)) && isFinite(target);
-        if (isValueNumeric && isTargetNumeric) {
-            return Number(value) >= Number(target);
-        }
+  if($.validator != 'undefined'){
+    $.validator.addMethod(
+      "greaterThan",
+      function(value, element, params) {
+          var target = $(params).val();
+          var isValueNumeric = !isNaN(parseFloat(value)) && isFinite(value);
+          var isTargetNumeric = !isNaN(parseFloat(target)) && isFinite(target);
+          if (isValueNumeric && isTargetNumeric) {
+              return Number(value) >= Number(target);
+          }
 
-        if (!/Invalid|NaN/.test(new Date(value))) {
-            return new Date(value) >= new Date(target);
-        }
+          if (!/Invalid|NaN/.test(new Date(value))) {
+              return new Date(value) >= new Date(target);
+          }
 
-        return false;
-    },
-    'Must be greater than {0}.');
-  
+          return false;
+      },
+      'Must be greater than {0}.');
+  }
 });
 
 function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */

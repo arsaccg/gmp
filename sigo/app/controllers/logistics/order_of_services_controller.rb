@@ -3,8 +3,9 @@ class Logistics::OrderOfServicesController < ApplicationController
     @article = Article.first
     @phase = Phase.first
     @sector = Sector.first
-    @company = params[:company_id]
-    @costcenters = CostCenter.where("company_id = #{@company}")
+    @company = get_company_cost_center('company')
+    @cost_center = get_company_cost_center('cost_center')
+    @orderOfServices = OrderOfService.where("cost_center_id = ?", @cost_center)
     render layout: false
   end
 
@@ -21,11 +22,11 @@ class Logistics::OrderOfServicesController < ApplicationController
   end
 
   def new
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     # Set default value
     @igv = 0.18+1
-    @cost_center = CostCenter.find(params[:cost_center_id])
-    @cost_center_id = @cost_center.id
+    @cost_center_id = get_company_cost_center('cost_center')
+    @cost_center = CostCenter.find(@cost_center_id)
     @orderOfService = OrderOfService.new
     @articles = Article.all
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
@@ -67,15 +68,6 @@ class Logistics::OrderOfServicesController < ApplicationController
     @unitOfMeasurementId = data_article_unit[1]
     
     render(partial: 'order_service_items', :layout => false)
-  end
-
-  def show_rows_orders_service
-    @orderOfServices = Array.new
-    @company = params[:company_id]
-    Company.find(@company).cost_centers.find(params[:cost_center_id]).order_of_services.each do |order_service|
-      @orderOfServices << order_service
-    end
-    render(partial: 'rows_order_of_services', :layout => false)
   end
 
   def edit

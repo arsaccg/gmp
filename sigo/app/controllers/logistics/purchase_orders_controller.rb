@@ -1,10 +1,10 @@
 class Logistics::PurchaseOrdersController < ApplicationController
   def index
     @company = params[:company_id]
-    @purchaseOrders = PurchaseOrder.all
-    @deliveryOrders = DeliveryOrder.all.where("state LIKE 'approved'")
-    @deliveryOrder = DeliveryOrder.all.first()
-    @costcenters = CostCenter.where("company_id = #{@company}")
+    @company = get_company_cost_center('company')
+    @cost_center = get_company_cost_center('cost_center')
+    @purchaseOrders = PurchaseOrder.where('cost_center_id = ?', @cost_center)
+    @deliveryOrders = DeliveryOrder.where("cost_center_id = ? AND state LIKE ?", @cost_center,'approved')
     render layout: false
   end
 
@@ -20,17 +20,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
     render layout: false
   end
 
-  def show_rows_purchase_orders
-    @purchaseOrders = Array.new
-    @company = params[:company_id]
-    Company.find(@company).cost_centers.find(params[:cost_center_id]).purchase_orders.each do |purchase_order|
-      @purchaseOrders << purchase_order
-    end
-    render(partial: 'rows_purchase_orders', :layout => false)
-  end
-
   def new
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
+    @cost_center = get_company_cost_center('cost_center')
     @purchaseOrder = PurchaseOrder.new
     #Calcular IGV
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
@@ -39,7 +31,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     TypeEntity.where("id = 1").each do |tent|
       @suppliers = tent.entities
     end
-    @cost_center = CostCenter.where("company_id = #{@company}")
+    @deliveryOrders = DeliveryOrder.where("cost_center_id = ? AND state LIKE ?", @cost_center,'approved')
     @moneys = Money.all
     @methodOfPayments = MethodOfPayment.all
     render layout: false
@@ -81,12 +73,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
       @delivery_orders_detail << @delivery_order_detail
     end
     render(partial: 'table_order_delivery_items', :layout => false)
-  end
-  
-  def show_delivery_order_item_field
-    cost_center = CostCenter.find(params[:id])
-    @deliveryOrders = cost_center.delivery_orders.where("state LIKE 'approved'")
-    render(partial: 'table_items_order', :layout => false)
   end
 
   def more_items_from_delivery_orders
