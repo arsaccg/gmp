@@ -83,6 +83,6 @@ class Production::SubcontractsController < ApplicationController
 
   private
   def subcontracts_parameters
-    params.require(:subcontract).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :guarantee_fund, :detraction, :contract_amount, :type, subcontract_details_attributes: [:id, :subcontract_id, :article_id, :amount, :unit_price, :partial, :description, :_destroy])
+    params.require(:subcontract).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :guarantee_fund, :detraction, :contract_amount, :igv, :type, subcontract_details_attributes: [:id, :subcontract_id, :article_id, :amount, :unit_price, :partial, :description, :_destroy])
   end
 end
