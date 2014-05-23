@@ -1,3 +1,5 @@
+DELIMITER //
+
 CREATE PROCEDURE REP_INV_KARDEX_CALENDAR
 (IN p_company INT, IN p_update_filter INT, IN p_report_type INT, IN p_kardex_type INT, IN p_user_id INT, IN p_from_date DATE, IN p_to_date DATE, IN p_cost_centers VARCHAR(500), IN p_warehouses VARCHAR(500), IN p_suppliers VARCHAR(500), IN p_responsibles VARCHAR(500), IN p_years VARCHAR(500), IN p_periods VARCHAR(500), IN p_formats VARCHAR(500), IN p_articles VARCHAR(500), IN p_moneys VARCHAR(500))
 BEGIN
