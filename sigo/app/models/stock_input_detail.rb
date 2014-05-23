@@ -10,21 +10,21 @@ class StockInputDetail < ActiveRecord::Base
     self.status = "A"
   end
 
-  def self.get_kardex_summary(updatefilter, user, report_type, date_type, from_date, to_date, cost_centers, warehouses, suppliers, years, periods, formats, articles, moneys)
+  def self.get_kardex_summary(company, updatefilter, user, report_type, date_type, from_date, to_date, cost_centers, warehouses, suppliers, responsibles, years, periods, formats, articles, moneys)
     case date_type
       when "1" # Periodo / Calendar
-        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_CALENDAR(#{updatefilter}, #{report_type}, 4, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
+        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_CALENDAR(#{company}, #{updatefilter}, #{report_type}, 4, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{responsibles}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
       when "2" # TimeLine by Cost Center
-        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_COST_CENTER(#{updatefilter}, #{report_type}, 4, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
+        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_COST_CENTER(#{company}, #{updatefilter}, #{report_type}, 4, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{responsibles}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
     end
   end
 
-  def self.get_kardex_daily(updatefilter, user, report_type, date_type, from_date, to_date, cost_centers, warehouses, suppliers, years, periods, formats, articles, moneys)
+  def self.get_kardex_daily(company, updatefilter, user, report_type, date_type, from_date, to_date, cost_centers, warehouses, suppliers, responsibles, years, periods, formats, articles, moneys)
     case date_type
       when "1" # Periodo / Calendar
-        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_CALENDAR(#{updatefilter}, #{report_type}, 3, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
+        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_CALENDAR(#{company}, #{updatefilter}, #{report_type}, 3, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{responsibles}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
       when "2" # TimeLine by Cost Center
-        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_COST_CENTER(#{updatefilter}, #{report_type}, 3, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
+        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_COST_CENTER(#{company}, #{updatefilter}, #{report_type}, 3, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{responsibles}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
       when "3" # Periodo / Calendar
         joins{stock_input.warehouse}
         .joins{stock_input.rep_inv_warehouse}
@@ -97,12 +97,12 @@ class StockInputDetail < ActiveRecord::Base
     end
   end
 
-  def self.get_kardex_monthly(updatefilter, user, report_type, date_type, from_date, to_date, cost_centers, warehouses, suppliers, years, periods, formats, articles, moneys)
+  def self.get_kardex_monthly(company, updatefilter, user, report_type, date_type, from_date, to_date, cost_centers, warehouses, suppliers, responsibles, years, periods, formats, articles, moneys)
     case date_type
       when "1" # Periodo / Calendar
-        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_CALENDAR(#{updatefilter}, #{report_type}, 2, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
+        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_CALENDAR(#{company}, #{updatefilter}, #{report_type}, 2, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{responsibles}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
       when "2" # TimeLine by Cost Center
-        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_COST_CENTER(#{updatefilter}, #{report_type}, 2, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
+        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_COST_CENTER(#{company}, #{updatefilter}, #{report_type}, 2, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{responsibles}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
       when "3" # Periodo / Calendar
       joins{stock_input.warehouse}
         .joins{stock_input.rep_inv_warehouse}
@@ -203,12 +203,12 @@ class StockInputDetail < ActiveRecord::Base
     end
   end
 
-  def self.get_kardex_yearly(updatefilter, user, report_type, date_type, from_date, to_date, cost_centers, warehouses, suppliers, years, periods, formats, articles, moneys)
+  def self.get_kardex_yearly(company, updatefilter, user, report_type, date_type, from_date, to_date, cost_centers, warehouses, suppliers, responsibles, years, periods, formats, articles, moneys)
     case date_type
       when "1" # Periodo / Calendar
-      ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_CALENDAR(#{updatefilter}, #{report_type}, 1, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
+      ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_CALENDAR(#{company}, #{updatefilter}, #{report_type}, 1, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{responsibles}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
       when "2" # TimeLine by Cost Center
-        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_COST_CENTER(#{updatefilter}, #{report_type}, 1, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
+        ActiveRecord::Base.connection.execute("CALL REP_INV_KARDEX_COST_CENTER(#{company}, #{updatefilter}, #{report_type}, 1, #{user}, '#{from_date}', '#{to_date}', '#{cost_centers}', '#{warehouses}', '#{suppliers}', '#{responsibles}', '#{years}', '#{periods}', '#{formats}', '#{articles}', '#{moneys}');")
       when "3" # Periodo / Calendar
         joins{stock_input.warehouse}
         .joins{stock_input.rep_inv_warehouse}

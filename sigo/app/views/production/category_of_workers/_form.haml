@@ -11,19 +11,16 @@
         .row
           %section.col.col-10
             %label.label Nombre
-            %label.input{for: "name"}
-              %select.form-control{:name => "category_of_worker[name]", :style => 'width:100%;padding: 0;border: none;'}
-                - @articles.each do |article|
-                  %option{:value => "#{article.name}"}
-                    = article.name
+            %label.input{for: "normal_price"}
+              %i.icon-append.fa.fa-user
+              = hidden_field_tag 'category_of_worker[article_id]', @categoryOfWorker.article_id
+              = text_field_tag 'category_of_worker[article_name]', @categoryOfWorker.article.name, class: "form-control", readonly: true
         .row
           %section.col.col-10
             %label.label Unidad
-            %label.input{for: "unit_of_measurement_id"}
-              %select.form-control{:name =>"category_of_worker[unit_of_measurement_id]", :style => 'width:100%;padding: 0;border: none;'}
-                - @unitOfMeasurements.each do |unitOfMeasurement|
-                  %option{:value => "#{unitOfMeasurement.id}"}
-                    = unitOfMeasurement.name
+            %label.input{for: "normal_price"}
+              %i.icon-append.fa.fa-user
+              = text_field_tag 'category_of_worker[article_unit_name]', @categoryOfWorker.article.unit_of_measurement.name, class: "form-control", readonly: true
         .row
           %section.col.col-10
             %label.label Precio Normal

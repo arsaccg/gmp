@@ -80,22 +80,6 @@
                         %i.fa.fa-calendar
 
           .row
-            .col-md-3
-              .form-group
-                %label.control-label Fases/Subfases
-                .input-group          
-                  %select.form-control{:name =>"stock_input[phase_id]"}
-                    - @phases.each do |phas|
-                      %optgroup{:label => "#{phas.name}"}
-                        - Phase.get_subphases(phas.code).each do |subphase|
-                          - if subphase.id == @head.phase_id
-                            %option{:value => "#{subphase.id}", :selected => true}
-                              = subphase.name
-                          - else
-                            %option{:value => "#{subphase.id}"}
-                              = subphase.name
-                  %span.input-group-addon
-                    %i.fa.fa-gears
             .col-md-9
               .form-group
                 %label.control-label Grupo de Trabajo
@@ -149,6 +133,8 @@
                   Unidad
                 %th{'style' => 'width: 5%;'}
                   Cantidad
+                %th Sector
+                %th Fases/Subfases
                 %th{'style' => 'width: 4%;'}
                   Equipo
                 %th{'style' => 'width: 4%;'}

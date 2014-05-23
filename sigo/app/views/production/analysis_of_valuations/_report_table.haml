@@ -3,34 +3,106 @@
     %span.widget-icon
       %i.fa.fa-table
     %h2
-      Tabla
-  %div
-    .jarviswidget-editbox
-    .widget-body
-      %table.table.table-bordered
-        %tbody
-          - @workers_array.each do |workerDetail|
+      Análisis de Producción
+  -if @workers_array.count>0 && @workers_array2.count>0 && @workers_array3.count>0
+    %div
+      Totales
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered{"style"=>"width:40%"}
+          %tbody
             %tr
-              %th= workerDetail[0]
-              %th= workerDetail[4]
-              %th= workerDetail[10]
-              %th= workerDetail[1]
-              %th= workerDetail[7]
+              %th{"style"=>"width:45%"} Total Partidas
+              %th= @totalprice2
             %tr
-              %th= workerDetail[0]+' HE 60%'
-              %th= workerDetail[5]
-              %th= workerDetail[10]
-              %th= workerDetail[2]
-              %th= workerDetail[8]
+              %th{"style"=>"width:45%"} Total Mano de Obra
+              %th= @totalprice
             %tr
-              %th= workerDetail[0]+' HE 100%'
-              %th= workerDetail[6]
-              %th= workerDetail[10]
-              %th= workerDetail[3]
-              %th= workerDetail[9]
-        %tr
-          %th
-          %th
-          %th Total
-          %th :
-          %th= @totalprice
+              %th{"style"=>"width:45%"} Total Equipos
+              %th= @totalprice3
+            %tr
+              %th{"style"=>"width:45%"} Total
+              %th
+                %span.label.label-danger{"style"=>"color:#fff"}
+                  = @totalprice4
+
+  -if @workers_array.count>0
+    %div
+      Mano de Obra
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered
+          %tbody
+            - @workers_array.each do |workerDetail|
+              %tr
+                %th= workerDetail[0]
+                %th= workerDetail[4]
+                %th= workerDetail[10]
+                %th= workerDetail[1]
+                %th= workerDetail[7]
+              %tr
+                %th= workerDetail[0]+' HE 60%'
+                %th= workerDetail[5]
+                %th= workerDetail[10]
+                %th= workerDetail[2]
+                %th= workerDetail[8]
+              %tr
+                %th= workerDetail[0]+' HE 100%'
+                %th= workerDetail[6]
+                %th= workerDetail[10]
+                %th= workerDetail[3]
+                %th= workerDetail[9]
+            %tr
+              %th Total
+              %th
+              %th 
+              %th 
+              %th
+                %span.label.label-danger{"style"=>"color:#fff"}
+                  = @totalprice
+
+  -if @workers_array2.count>0
+    %div
+      Parte de Obras
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th Codigo
+              %th Partida
+              %th Unidad
+              %th Cantidad
+              %th P.U.
+              %th Parcial
+          %tbody
+          - @workers_array2.each do |workerDetail2|
+            %tr
+              %th= workerDetail2[0]
+              %th= workerDetail2[1]
+              %th= workerDetail2[2]
+              %th= workerDetail2[3]
+              %th= workerDetail2[4]
+              %th= workerDetail2[5]
+
+  -if @workers_array3.count>0
+    %div
+      Parte de Equipos
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th Descripcion
+              %th Cantidad
+              %th Unidad
+              %th P.U.
+              %th Parcial
+          %tbody
+          - @workers_array3.each do |workerDetail3|
+            %tr
+              %th= workerDetail3[0]
+              %th= workerDetail3[2]
+              %th= workerDetail3[1]
+              %th= workerDetail3[3]
+              %th= workerDetail3[4]

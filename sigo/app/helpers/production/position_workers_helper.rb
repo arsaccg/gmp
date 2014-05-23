@@ -1,0 +1,2 @@
+module Production::PositionWorkersHelper
+end

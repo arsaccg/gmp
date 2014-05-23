@@ -7,10 +7,10 @@ class Production::WorkingGroupsController < ApplicationController
     TypeEntity.where("name LIKE '%Proveedores%'").each do |entity|
       @entity = entity.entities.first
     end
-    CategoryOfWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
+    PositionWorker.where("name LIKE 'Jefe de Frente'").each do |front_chief|
       @front_chief = front_chief.workers.first
     end
-    CategoryOfWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
+    PositionWorker.where("name LIKE 'Maestro de Obra'").each do |master_builder|
       @master_builder = master_builder.workers.first
     end
     render layout: false
@@ -23,11 +23,11 @@ class Production::WorkingGroupsController < ApplicationController
 
   def new
     @workingGroup = WorkingGroup.new
-    CategoryOfWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
+    PositionWorker.where("name LIKE 'Jefe de Frente'").each do |front_chief|
       @front_chiefs = front_chief.workers
     end
 
-    CategoryOfWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
+    PositionWorker.where("name LIKE 'Maestro de Obra'").each do |master_builder|
       @master_builders = master_builder.workers
     end
     TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
@@ -55,11 +55,11 @@ class Production::WorkingGroupsController < ApplicationController
 
   def edit
     @workingGroup = WorkingGroup.find(params[:id])
-    CategoryOfWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
+    PositionWorker.where("name LIKE 'Jefe de Frente'").each do |front_chief|
       @front_chiefs = front_chief.workers
     end
 
-    CategoryOfWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
+    PositionWorker.where("name LIKE 'Maestro de Obra'").each do |master_builder|
       @master_builders = master_builder.workers
     end
     TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|

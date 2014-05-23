@@ -19,11 +19,11 @@
         %strong Error!
         = flash[:error]
   .row
-    - if @categoryOfWorker.present? && @bank.present?
+    - if @bank.present? && @article.present?
       .col-sm-2
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_path}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
           Agregar Trabajador
-    - elsif @categoryOfWorker.blank? && @bank.blank?
+    - elsif @categoryOfWorker.blank? && @bank.blank? && @article.present?
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
           %a.close(data-dismiss="alert" href="#")
@@ -32,17 +32,7 @@
             %i.fa.fa-lock
               No puedes crear una Trabajador!
           %p
-            Verifica si tienes, por lo menos, 1 Banco y una Categoria de Trabajador.
-    - elsif @categoryOfWorker.blank?
-      .col-xs-12.col-sm-7.col-md-7.col-lg-12
-        .alert.alert-block.alert-danger
-          %a.close(data-dismiss="alert" href="#")
-            ×
-          %h4.alert-heading
-            %i.fa.fa-lock
-              No puedes crear una Trabajador!
-          %p
-            Verifica si tienes, por lo menos, 1 Categoria de Trabajador.
+            Verifica si tienes, por lo menos, 1 Insumo de tipo Personal (Cod. 01) y 1 Banco
     - elsif @bank.blank?
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
@@ -53,6 +43,16 @@
               No puedes crear una Trabajador!
           %p
             Verifica si tienes, por lo menos, 1 Banco.
+    - elsif @article.blank?
+      .col-xs-12.col-sm-7.col-md-7.col-lg-12
+        .alert.alert-block.alert-danger
+          %a.close(data-dismiss="alert" href="#")
+            ×
+          %h4.alert-heading
+            %i.fa.fa-lock
+              No puedes crear una Trabajador!
+          %p
+            Verifica si tienes, por lo menos, 1 Insumo de tipo Personal (Cod. 01).
   %br
   .row
   #widget-grid

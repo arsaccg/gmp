@@ -9,17 +9,28 @@
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
         .row
-          %section.col.col-10
+          %section.col.col-6
             %label.label Categoria del Trabajador
-            %label.input{for: "category_of_worker_id"}
-              %select.form-control{:name =>"worker[category_of_worker_id]", :style => 'width:100%;padding: 0;border: none;'}
-                - @categoryOfWorkers.each do |categoryOfWorker|
-                  - if @worker.category_of_worker_id == categoryOfWorker.id
-                    %option{:value => "#{categoryOfWorker.id}", :selected => true}
-                      = categoryOfWorker.name
+            %label.input{for: "article_id"}
+              %select.form-control{:name =>"worker[article_id]", :style => 'width:100%;padding: 0;border: none;'}
+                - @articles.each do |article|
+                  - if @worker.article_id == article.id
+                    %option{:value => "#{article.id}", :selected => true}
+                      = article.name
                   - else
-                    %option{:value => "#{categoryOfWorker.id}"}
-                      = categoryOfWorker.name
+                    %option{:value => "#{article.id}"}
+                      = article.name
+          %section.col.col-6
+            %label.label Cargo del Trabajador
+            %label.input{for: "category_of_worker_id"}
+              %select.form-control{:name =>"worker[position_worker_id]", :style => 'width:100%;padding: 0;border: none;'}
+                - @positionWorkers.each do |positionWorker|
+                  - if @worker.position_worker_id == positionWorker.id
+                    %option{:value => "#{positionWorker.id}", :selected => true}
+                      = positionWorker.name
+                  - else
+                    %option{:value => "#{positionWorker.id}"}
+                      = positionWorker.name
         .row
           %section.col.col-6
             %label.label Primer Nombre

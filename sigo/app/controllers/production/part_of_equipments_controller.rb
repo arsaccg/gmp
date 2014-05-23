@@ -27,8 +27,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     CategoryOfWorker.where("name LIKE '%operador%'").each do |wo|
       @worker= wo.workers
     end
-
-    subcontract_id=@partofequipment.subcontract_of_equipment_id
+    subcontract_id=@partofequipment.subcontract_equipment_id
     equip = Array.new
     @articles = Array.new
     unit=''

@@ -23,20 +23,27 @@
               %td
                 = categoryOfWorker.id
               %td 
-                = categoryOfWorker.name
+                = categoryOfWorker.article.name
               %td
-                = categoryOfWorker.unit_of_measurement.name
+                = categoryOfWorker.article.unit_of_measurement.name
               %td
-                = number_to_currency(categoryOfWorker.normal_price.to_f, unit: "S/.", precision: 2)
+                - if categoryOfWorker.normal_price != nil
+                  = number_to_currency(categoryOfWorker.normal_price.to_f, unit: "S/.", precision: 2)
+                - else
+                  = "No tiene un precio Normal."
               %td
-                = number_to_currency(categoryOfWorker.he_60_price.to_f, unit: "S/.", precision: 2)
-              %td 
-                = number_to_currency(categoryOfWorker.he_100_price.to_f, unit: "S/.", precision: 2)
+                - if categoryOfWorker.he_60_price != nil
+                  = number_to_currency(categoryOfWorker.he_60_price.to_f, unit: "S/.", precision: 2)
+                - else
+                  = "No tiene un precio 60%."
+              %td
+                - if categoryOfWorker.he_100_price != nil
+                  = number_to_currency(categoryOfWorker.he_100_price.to_f, unit: "S/.", precision: 2)
+                - else
+                  = "No tiene un precio 100%."
               %td
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_category_of_worker_path(categoryOfWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{categoryOfWorker.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_category_of_worker_path(categoryOfWorker.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_category_of_workers_path}?company_id=#{@company}')"}}
-                  Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

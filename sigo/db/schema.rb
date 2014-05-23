@@ -67,6 +67,21 @@ ActiveRecord::Schema.define(version: 20140521195528) do
     t.datetime "updated_at"
   end
 
+  create_table "budgets", force: true do |t|
+    t.string   "cod_budget"
+    t.string   "description"
+    t.integer  "term"
+    t.integer  "cost_center_id"
+    t.integer  "level"
+    t.string   "subbudget_code"
+    t.integer  "deleted"
+    t.string   "type_of_budget"
+    t.float    "utility"
+    t.float    "general_expenses"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "categories", force: true do |t|
     t.string   "code"
     t.string   "name"
@@ -290,6 +305,16 @@ ActiveRecord::Schema.define(version: 20140521195528) do
     t.integer  "cost_center_id"
     t.string   "files"
     t.float    "approved_mgg"
+<<<<<<< HEAD
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "financial_variables", force: true do |t|
+    t.string   "name"
+    t.float    "value"
+=======
+>>>>>>> 9e66466f2688c0116522485a52222b906892c396
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -889,6 +914,13 @@ ActiveRecord::Schema.define(version: 20140521195528) do
     t.string   "detraction"
     t.float    "contract_amount"
     t.string   "type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "subcontract_inputs", force: true do |t|
+    t.integer  "article_id"
+    t.float    "price"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

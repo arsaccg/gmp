@@ -124,6 +124,42 @@
                 %th Descripción
                 %th Eliminar
             %tbody(id="article_items_table")
+              -if @action=="edit"
+                - @subcontract.subcontract_details.each do |sub|
+                  = hidden_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][id]', sub.id
+                  = hidden_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][part_of_equipment_id]', @subcontract.id
+                  %tr.part-equi_item{id: "tr" + @reg_n.to_s}
+                    %td.article-id(style="display:none")
+                      = sub.article_id
+                    %td.col-md-2
+                      -@articles.each do |art|
+                        -if art.id == sub.article_id
+                          = art.name
+                    %td
+                      -@articles.each do |art|
+                        -if art.id == sub.article.id
+                          = art.unit_of_measurement.name
+                    %td.amount.col-md-1{:style => "width:5%"}
+                      = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][amount]', sub.amount , class: "form-control quantity", id: 'subcontract-amount', onfocusout: "calculatePartialAmount(this);"
+                    %td.unit-price.col-md-1
+                      = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][unit_price]', sub.unit_price , class: "form-control quantity", id: 'subcontract-unit_price', onfocusout: "calculatePartialUnitPrice(this);"
+                    %td.col-md-1.partial
+                      = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][partial]', sub.partial , class: "form-control quantity", id: 'subcontract-partial', :readonly => true
+                    %td
+                      = text_area_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][description]', sub.description, class: "form-control description"
+                    %td{:style => "width: 1%; text-align: center;"}
+                      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+                  - @reg_n+=1
+              
+
+
+
+
+
+
+
+
+
 
       %footer
         %button.btn.btn-primary{type: "submit"}
