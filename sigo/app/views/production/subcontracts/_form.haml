@@ -180,15 +180,10 @@
               - if @action == 'edit'
                 - @subcontract.subcontract_advances.each do |oos|
                   %tr
-                    %td.bank-id(style="display:none")
-                      = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][bank_id]', oos.bank.id
-                    %td.col-2=oos.bank.business_name
                     %td.col-5.advance
                       = text_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][advance]', oos.advance, class: "form-control advance-item", onkeypress: "return isNumber(event);"
                     %td(style="display:none")
                       = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][id]', oos.id
-                    %td(style="display:none")
-                      = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
                     %td.delete-item
                       %label.checkbox
                         = check_box 'subcontract[subcontract_advances_attributes]', '[' + @reg_n.to_s + '][_destroy]'
