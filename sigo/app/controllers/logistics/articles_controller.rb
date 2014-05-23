@@ -10,7 +10,7 @@ class Logistics::ArticlesController < ApplicationController
     @Article = Article.order("id DESC")
     @unitOfMeasurement = UnitOfMeasurement.first
     @group = Category.first
-    @subgroup = Subcategory.first
+    @subgroup = Category.where("code LIKE '____'",).first
     @typeOfArticle = TypeOfArticle.first
     @specific = Specific.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
@@ -47,12 +47,12 @@ class Logistics::ArticlesController < ApplicationController
     @typeOfArticles = TypeOfArticle.all
     # El Insumo
     @article = Article.find(params[:id])
+    puts @article.code[2,4]
     # El tipo especifico de Insumo
     @typeOfArticle = @article.type_of_article.id
     # Todas las categorias
-    @categories = Category.all
-    # La categoria al que pertenece
-    @specific_article = @article.specific.id rescue 1
+    @specifics = Category.where("code LIKE '______'")
+    @categories = Category.where("code LIKE '__'")
     # Traemos las SubCategorias
     # Traemos la subcategoria
     @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
@@ -123,8 +123,8 @@ class Logistics::ArticlesController < ApplicationController
 
   def new
     @article = Article.new
-    @specifics = Specific.all
-    @categories = Category.all
+    @specifics = Category.where("code LIKE '______'")
+    @categories = Category.where("code LIKE '__'")
     @unitOfMeasurement = UnitOfMeasurement.all
     @typeOfArticles = TypeOfArticle.all
     @reg_n = Time.now.to_i

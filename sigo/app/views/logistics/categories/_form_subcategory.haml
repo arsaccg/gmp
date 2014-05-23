@@ -4,31 +4,40 @@
       %i.fa.fa-eye
     %h2 Sub-Grupo
   .widget-body
-    = simple_form_for([:logistics, @SubCategories], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:logistics, @category], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-10
             %label.label Grupo
-            %label.input{for: "category_id"}
-              %select.form-control#category-select{:name =>"subcategory[category_id]"}
-                - @Categories.each do |category|
-                  %option{:value => "#{category.id}", :rel => "#{category.code}", :selected => @SubCategories.category_id == category.id}
-                    = category.name
+            %label.input
+              %select.form-control#category-select
+                -if @action=="edit"
+                  - @cate.each do |cat|
+                    -if @category.code[0,2] == cat.code
+                      %option{:value => "#{cat.id}", :rel => "#{cat.code}", :selected => "selected"}
+                        = cat.name
+                    -else
+                      %option{:value => "#{cat.id}", :rel => "#{cat.code}"}
+                        = cat.name
+                -else
+                  - @cate.each do |category|
+                    %option{:value => "#{category.id}", :rel => "#{category.code}"}
+                      = category.name
         .row
           %section.col.col-2
             %label.label Código
             %label.input{for: "code"}
               %i
-              - if @SubCategories.code != nil
-                = text_field(:extrafield, :first_code, class: "form-control", readonly: true, value: "#{@SubCategories.code[0,2]}")
+              - if @category.code != nil
+                = text_field(:extrafield, :first_code, class: "form-control", readonly: true, value: "#{@category.code[0,2]}")
               - else
                 = text_field(:extrafield, :first_code, class: "form-control", readonly: true)
           %section.col.col-6
             %label.label &nbsp;
             %label.input{for: "code"}
               %i.icon-append.fa.fa-superscript
-              - if @SubCategories.code != nil
-                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category', :value => "#{@SubCategories.code[2,4]}"}, label: false
+              - if @category.code != nil
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :id => 'code-category', :value => "#{@category.code[2,4]}"}, label: false
               - else
                 = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
         .row
@@ -52,7 +61,7 @@
       submit_validate($('form[id^="edit_"]'));
     }
     else{
-      submit_validate($('#new_subcategory'));
+      submit_validate($('#new_category'));
     }
   });
 

@@ -20,11 +20,11 @@
         = flash[:error]
   .row
     .col-sm-4{:style => "width: 50%;"}
-      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', null, null, 'GET')"}
+      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', {cat: 'cat'}, null, 'GET')"}
         Agregar Grupo
-      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_subcategory_path}', 'content', null, null, 'GET')"}
+      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', {cat: 'sub'}, null, 'GET')"}
         Agregar Subgrupo
-      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_specific_path}', 'content', null, null, 'GET')"}
+      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', {cat: 'spe'}, null, 'GET')"}
         Agregar Específico
   %br
   .row

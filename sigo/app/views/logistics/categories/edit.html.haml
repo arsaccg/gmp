@@ -7,7 +7,12 @@
   #widget-grid
     .row
       %article.col-sm-12.col-md-12.col-lg-6
-        = render :partial => 'form'
+        -if params[:cat]=='cat'
+          = render :partial => 'form'
+        -if params[:cat]=='sub'
+          = render :partial => 'form_subcategory'
+        -if params[:cat]=='spe'
+          = render :partial => 'form_specific'
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-groups{type: "button"}
     %i.fa.fa-arrow-left>
     Retornar al listado de grupos
