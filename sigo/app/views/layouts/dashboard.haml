@@ -169,6 +169,10 @@
                       %span.menu-item-parent{'style'=>"width: 100px;"}
                         Unidades de Medida
                   %li
+                    %a{href: "#{logistics_phases_path}", title: "Fases"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Fases
+                  %li
                     %a{href: "#{logistics_financial_variables_path}", title: "Variables Financieras"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Variables Financieras
@@ -180,6 +184,14 @@
                     %a{href: "#{logistics_exchange_of_rates_path}", title: "Tipo de Cambio"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Tipo de Cambio
+                  %li
+                    %a{href: "#{logistics_method_of_payments_path}", title: "Formas de Pago"}
+                      %i.fa.fa-lg.fa-fw.fa-dot-circle-o
+                      %span.menu-item-parent Formas de Pago
+                  %li
+                    %a{href: "#{logistics_banks_path}", title: "Bancos"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Bancos
               %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
@@ -203,14 +215,6 @@
                       %i.fa.fa-lg.fa-fw.fa-map-marker
                       %span.menu-item-parent Sectores
                   %li
-                    %a{href: "#{logistics_phases_path}", title: "Fases"}
-                      %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Fases
-                  %li
-                    %a{href: "#{logistics_method_of_payments_path}", title: "Formas de Pago"}
-                      %i.fa.fa-lg.fa-fw.fa-dot-circle-o
-                      %span.menu-item-parent Formas de Pago
-                  %li
                     %a{href: "#{logistics_warehouses_path}?company_id=#{@company.id}", title: "Almacenes", company: "#{@company.id}"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Almacenes
@@ -222,10 +226,6 @@
                     %a{href: "#{logistics_documents_path}", title: "Documentos"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Documentos
-                  %li
-                    %a{href: "#{logistics_banks_path}", title: "Bancos"}
-                      %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Bancos
           %li
             %a{href: "#", title: "Compañias"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
