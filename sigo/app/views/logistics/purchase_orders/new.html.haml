@@ -11,20 +11,16 @@
             .widget-body.fuelux
               .wizard
                 %ul.steps
-                  %li.active{"data-target" => "#step1"}
-                    %span.badge.badge-info> 1
-                    Seleccionar Centro de Costo
-                    %span.chevron
                   %li{"data-target" => "#step2"}
-                    %span.badge> 2
+                    %span.badge> 1
                     Seleccionar los Items de Ordenes de Suministro
                     %span.chevron
                   %li{"data-target" => "#step3"}
-                    %span.badge> 3
+                    %span.badge> 2
                     Llenar información de la Órden de Compra
                     %span.chevron
                   %li{"data-target" => "#step4"}
-                    %span.badge> 4
+                    %span.badge> 3
                     Guardar Información
                     %span.chevron
                 .actions
@@ -52,8 +48,6 @@
 
   $(document).ready(function(){
     get_exchange_rate();
-    $("#company_id").val("#{@company}");
-    $('#cost-center-selected').select2({ width: '100%' });
     $('#btn-add-more-items-do').click(function(){
       var ids_delivery_order = new Array();
 
@@ -305,22 +299,6 @@
 
       if(data.step == 1 && data.direction == 'next'){
 
-        if(!$('#cost-center-selected').val()){
-          e.preventDefault();
-          $.smallBox({
-            title: "Antes de continuar debes de haber seleccionado algún centro de costo.",
-            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-            color: "#c46a69",
-            iconSmall: "fa fa-times bounce animated",
-            timeout: 4000
-          });
-        } else {
-          cost_center_id = $('#cost-center-selected').val();
-          $.cost_center = cost_center_id
-          url = "/logistics/purchase_orders/" + cost_center_id + "/show_delivery_order_item_field";
-          data = { authenticity_token: "#{form_authenticity_token}" }
-          load_url_ajax(url, 'items-delivery-orders', data, 'avoid-opacity', 'PUT');
-        }
       }
 
       if(data.step == 2 && data.direction == 'next') {

@@ -42,7 +42,8 @@
                     %td
                       = translate_order_service_state(@orderOfService.state)
                     %td
-                      = @orderOfService.entity.name + ' ' + @orderOfService.entity.paternal_surname
+                      - if @orderOfService.entity.present?
+                        = @orderOfService.entity.name + ' ' + @orderOfService.entity.paternal_surname
                     %td
                       = @orderOfService.money.name
                     %td
@@ -179,9 +180,11 @@
                   - @orderOfServiceDetails.each do |orderServiceDetail|
                     %tr
                       %td
-                        = orderServiceDetail.article.code
+                        - if orderServiceDetail.article.present?
+                          = orderServiceDetail.article.code
                       %td
-                        = orderServiceDetail.article.name
+                        - if orderServiceDetail.article.present?
+                          = orderServiceDetail.article.name
                       %td
                         = orderServiceDetail.amount
                       %td

@@ -4,7 +4,7 @@
       %h1.page-title.txt-color-blueDark{ "style" => "margin-bottom: 10px;"}
         %i.fa.fa-pencil-square-o.fa-fw
         Ordenes de Servicio
-    - if @article != nil && @phase != nil && @sector != nil && @costcenters.first != nil
+    - if @article != nil && @phase != nil && @sector != nil
       .col-sm-3{ "style" => "margin-top: 10px;" }
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_order_of_service_path}', 'content', {company_id: #{@company}, cost_center_id: $('#cost-center-selected').val()}, null, 'GET')"}
           Agregar Nueva Orden de Servicio
@@ -17,7 +17,7 @@
             %i.fa.fa-lock
               No puedes crear Ordenes de Servicio!
           %p
-            Verifica si tienes, por lo menos, 1 insumo, 1 fase, 1 centro de costo y 1 sector
+            Verifica si tienes, por lo menos, 1 insumo, 1 fase y 1 sector
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"}
@@ -33,40 +33,10 @@
         %strong Error!
         = flash[:error]
   %br
-  .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
-      %div
-        .smart-form
-          %section
-            %label.label Selecciona el centro de costo para ver su información
-            %div
-              %select.select2-costcenter{ 'name' => 'cost_center_id', 'id' => 'cost-center-selected', 'style' => 'width:100%;padding: 0;border: none;' }
-                - @costcenters.each do |cc|
-                  %option{'value' => "#{cc.id}"}= cc.name
-              %i
   #widget-grid
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table'
-
-- if @costcenters.first != nil
-  :javascript
-
-    $(document).ready(function(){
-
-      $("#cost-center-selected").focus();
-      $('#cost-center-selected').select2({ width: '100%' });
-      load_items_delivery_order_ajax('#{show_rows_orders_service_logistics_order_of_services_path}', 'body-summary-service-orders', {company_id: '#{@company}', cost_center_id: $("#cost-center-selected").val(), authenticity_token: "#{form_authenticity_token}"});
-
-      $('#body-summary-purchase-orders tr td a').tooltip('hide');
-
-      $('#cost-center-selected').change(function(){
-        load_items_delivery_order_ajax('#{show_rows_orders_service_logistics_order_of_services_path}', 'body-summary-purchase-orders', {company_id: '#{@company}', cost_center_id: this.value, authenticity_token: "#{form_authenticity_token}"});
-
-        $('#body-summary-purchase-orders tr td a').tooltip('hide');
-      });
-
-    });
 
 :javascript
 
