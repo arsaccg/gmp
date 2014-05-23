@@ -22,7 +22,7 @@
         %label(class="control-label") Notas
         .controls
           = f.input :notes, :as => :text, label: false, input_html: { class: 'form-control' }
-          = f.input :project_id, :as => :hidden, input_html: {id: 'input_project'}
+          = f.input :cost_center_id, :as => :hidden, input_html: {id: 'input_project'}
       .form-actions
         %a{:href=>"javascript:post_to_url('" + management_wbsitems_path.to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
           Crear nuevo elemento
