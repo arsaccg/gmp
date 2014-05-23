@@ -23,6 +23,7 @@ class Production::WorkersController < ApplicationController
 
   def create
     worker = Worker.new(worker_parameters)
+    worker.cost_center_id = get_company_cost_center('cost_center')
     if worker.save
       categoryOfWorker = CategoryOfWorker.new
       if CategoryOfWorker.find_by_article_id(worker.article_id).blank?

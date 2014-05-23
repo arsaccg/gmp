@@ -136,13 +136,9 @@
                     %td.article-id(style="display:none")
                       = sub.article_id
                     %td.col-md-2
-                      -@articles.each do |art|
-                        -if art.id == sub.article_id
-                          = art.name
+                      = sub.article.name
                     %td
-                      -@articles.each do |art|
-                        -if art.id == sub.article.id
-                          = art.unit_of_measurement.name
+                      = sub.article.unit_of_measurement.name
                     %td.amount.col-md-1{:style => "width:5%"}
                       = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][amount]', sub.amount , class: "form-control quantity", id: 'subcontract-amount', onfocusout: "calculatePartialAmount(this);"
                     %td.unit-price.col-md-1
@@ -182,7 +178,7 @@
                 %th Eliminar
             %tbody(id="advance_items_table")
               - if @action == 'edit'
-                - @subcontract.subcontract_advaces.each do |oos|
+                - @subcontract.subcontract_advances.each do |oos|
                   %tr
                     %td.bank-id(style="display:none")
                       = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][bank_id]', oos.bank.id

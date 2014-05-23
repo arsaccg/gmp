@@ -15,6 +15,7 @@ class Logistics::CenterOfAttentionsController < ApplicationController
 
   def create
     centerOfAttention = CenterOfAttention.new(center_of_attentions_parameters)
+    centerOfAttention.cost_center_id = get_company_cost_center('cost_center')
     if centerOfAttention.save
       flash[:notice] = "Se ha creado correctamente el centro de atención."
       redirect_to :action => :index

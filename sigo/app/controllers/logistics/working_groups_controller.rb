@@ -25,7 +25,7 @@ class Logistics::WorkingGroupsController < ApplicationController
     flash[:error] = nil
     item = WorkingGroup.new(item_parameters)
     item.user_inserts_id = current_user.id
-
+    item.cost_center_id = get_company_cost_center('cost_center')
     if item.update_attributes(item_parameters)
       flash[:notice] = "Se ha creado correctamente el registro."
       redirect_to :action => :index

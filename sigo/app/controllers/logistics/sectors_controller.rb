@@ -16,7 +16,7 @@ class Logistics::SectorsController < ApplicationController
       sector.code = params[:extrafield]['first_code'].to_s + params[:sector]['code'].to_s
       sector.name = params[:sector]['name'].to_s
     end
-
+    sector.cost_center_id = get_company_cost_center('cost_center')
     if sector.save
       flash[:notice] = "Se ha creado correctamente el sector."
       redirect_to :action => :index
