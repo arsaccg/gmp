@@ -1,0 +1,121 @@
+#wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2
+      Análisis de Producción
+    %br
+
+    %div
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered{"style"=>"width:40%"}
+          %thead
+            %tr
+              %th{"style"=>"color:#5f5f5f"} Monto contratado
+              %th{"style"=>"color:#5f5f5f"} Adelanto
+              %th{"style"=>"color:#5f5f5f"} Amortización Acumulada
+              %th{"style"=>"color:#5f5f5f"} Saldo
+          %tbody
+            %th{"style"=>"color:#5f5f5f"}= @subcontract.contract_amount
+            %th{"style"=>"color:#5f5f5f"} 2
+            %th{"style"=>"color:#5f5f5f"} 3
+            %th{"style"=>"color:#5f5f5f"} 4
+
+    %div
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th{"style"=>"color:#5f5f5f"} Item
+              %th{"style"=>"color:#5f5f5f"} Descripcion
+              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"} Actual
+              %th{"style"=>"color:#5f5f5f"} Acumulado Anterior
+              %th{"style"=>"color:#5f5f5f"} Acumulado Actual
+          %tbody
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 1.00
+              %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @totalprice2
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 2.00
+              %th{"style"=>"color:#5f5f5f"} Amortización de Adelanto (SIN. I.G.V.)
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 3.00
+              %th{"style"=>"color:#5f5f5f"} Total a Facturar
+              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 4.00
+              %th{"style"=>"color:#5f5f5f"} I.G.V. del Total a Facturar
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"} Total Incluido IGV
+              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 6.00
+              %th{"style"=>"color:#5f5f5f"} Retenciones
+              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 6.01
+              %th{"style"=>"color:#5f5f5f"} Detracción del Total (Incl. I.G.V.)
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 6.02
+              %th{"style"=>"color:#5f5f5f"} Fondo de Garantía N°01
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 6.03
+              %th{"style"=>"color:#5f5f5f"} Fondo de Garantía N°02
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @totalprice
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 6.04
+              %th{"style"=>"color:#5f5f5f"} Descuento de Equipos
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @totalprice3
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 6.05
+              %th{"style"=>"color:#5f5f5f"} Descuento de Materiales
+              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 6.06
+              %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
+              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 07
+              %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
+              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
