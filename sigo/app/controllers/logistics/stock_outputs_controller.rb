@@ -3,14 +3,7 @@ class Logistics::StockOutputsController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 
   def index
-    if params[:company_id] != nil
-      @company = params[:company_id]
-      # Cache -> company_id
-      cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 120.minutes)
-      Rails.cache.write('company_id', @company)
-    else
-      @company = Rails.cache.read('company_id')
-    end
+    @company = get_company_cost_center('company')
     @cost_centers = CostCenter.where(company_id: "#{@company}")
     @head = StockInput.where("input = 0")
     @purchaseOrders = PurchaseOrder.all.where("state LIKE 'approved'")
@@ -34,7 +27,7 @@ class Logistics::StockOutputsController < ApplicationController
   end
 
   def new
-    @company = Rails.cache.read('company_id')
+    @company = get_company_cost_center('company')
     @head = StockInput.new
     @cost_centers = CostCenter.where(company_id: "#{@company}")
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
@@ -48,7 +41,7 @@ class Logistics::StockOutputsController < ApplicationController
   end
 
   def edit
-    @company = Rails.cache.read('company_id')
+    @company = get_company_cost_center('company')
     @head = StockInput.find(params[:id])
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @periods = LinkTime.group(:year, :month)
@@ -84,7 +77,7 @@ class Logistics::StockOutputsController < ApplicationController
 
   def show_rows_stock_inputs
     @head = Array.new
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     StockInput.where(company_id: @company).where(cost_center_id: params[:cost_center_id]).where(input: 0).each do |x|
       @head << x
     end

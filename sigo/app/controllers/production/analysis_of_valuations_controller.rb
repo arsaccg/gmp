@@ -1,13 +1,13 @@
 class Production::AnalysisOfValuationsController < ApplicationController
   def index
-  	@company = params[:company_id]
+  	@company = get_company_cost_center('company')
   	@workingGroups = WorkingGroup.all
     @sector = Sector.where("code LIKE '__'")
     @subsectors = Sector.where("code LIKE '____'")
-    CategoryOfWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
+    PositionWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
       @front_chiefs = front_chief.workers
     end
-    CategoryOfWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
+    PositionWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
       @master_builders = master_builder.workers
     end
     TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
@@ -78,7 +78,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def business_days_array(start_date, end_date, working_group_id)
     workers_array = ActiveRecord::Base.connection.execute("
-      SELECT  cow.name AS category,
+      SELECT  pwo.name AS category,
         cow.normal_price,
         cow.he_60_price,
         cow.he_100_price,
@@ -90,7 +90,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
         cow.he_100_price*SUM( ppd.he_100 ),
         uom.name, 
         p.date_of_creation 
-      FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow
+      FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow, position_workers pwo
       WHERE p.working_group_id IN(" + working_group_id + ")
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.id = ppd.part_person_id 

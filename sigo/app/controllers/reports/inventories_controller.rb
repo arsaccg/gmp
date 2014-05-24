@@ -1,13 +1,6 @@
 class Reports::InventoriesController < ApplicationController
   def index
-    if params[:company_id] != nil
-      @company = params[:company_id]
-      # Cache -> company_id
-      cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 120.minutes)
-      Rails.cache.write('company_id', @company)
-    else
-      @company = Rails.cache.read('company_id')
-    end
+    @company = get_company_cost_center('company')
     @cost_centers = CostCenter.where("company_id = " + @company)
     @warehouses = Warehouse.where("company_id = " + @company)
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
@@ -28,7 +21,7 @@ class Reports::InventoriesController < ApplicationController
   end
 
   def show_rows_results
-    @company = Rails.cache.read('company_id')
+    @company = get_company_cost_center('company')
     @user = current_user.id
 
     #-------------------------------
@@ -201,7 +194,7 @@ class Reports::InventoriesController < ApplicationController
   end
 
   def show_rows_results_pdf
-    @company = Rails.cache.read('company_id')
+    @company = get_company_cost_center('company')
     @user = current_user.id
 
     @report_type = params[:id][0,1]
@@ -230,7 +223,7 @@ class Reports::InventoriesController < ApplicationController
   end
 
   def show_group_results_pdf
-    @company = Rails.cache.read('company_id')
+    @company = get_company_cost_center('company')
     @user = current_user.id
 
     @report_type = params[:id][0,1]

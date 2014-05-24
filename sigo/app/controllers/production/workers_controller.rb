@@ -2,7 +2,7 @@ class Production::WorkersController < ApplicationController
   def index
     @article = TypeOfArticle.find_by_code('01').articles.first
     @bank = Bank.first
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     @workers = Worker.all
     render layout: false
   end
@@ -23,6 +23,7 @@ class Production::WorkersController < ApplicationController
 
   def create
     worker = Worker.new(worker_parameters)
+    worker.cost_center_id = get_company_cost_center('cost_center')
     if worker.save
       categoryOfWorker = CategoryOfWorker.new
       if CategoryOfWorker.find_by_article_id(worker.article_id).blank?
@@ -85,6 +86,6 @@ class Production::WorkersController < ApplicationController
 
   private
   def worker_parameters
-    params.require(:worker).permit(:first_name, :paternal_surname, :maternal_surname, :dni, :email, :phone, :date_of_birth, :address, :article_id, :second_name, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy])
+    params.require(:worker).permit(:first_name, :paternal_surname, :maternal_surname, :dni, :email, :phone, :date_of_birth, :address, :article_id, :second_name, :position_worker_id, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy])
   end
 end

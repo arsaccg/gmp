@@ -1,7 +1,7 @@
 class Logistics::EntitiesController < ApplicationController
   def index
     @type_entities = TypeEntity.all
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     render layout: false
   end
 

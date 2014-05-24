@@ -4,14 +4,7 @@ class Logistics::StockInputsController < ApplicationController
 
   def index
     #@input = params[:input]
-    if params[:company_id] != nil
-      @company = params[:company_id]
-      # Cache -> company_id
-      cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 120.minutes)
-      Rails.cache.write('company_id', @company)
-    else
-      @company = Rails.cache.read('company_id')
-    end
+    @company = get_company_cost_center('company')
     @cost_centers = CostCenter.where(company_id: "#{@company}")
     @head = StockInput.where("input = 1")
     @purchaseOrders = PurchaseOrder.get_approved_by_company(@company)
@@ -43,7 +36,7 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def new
-    @company = Rails.cache.read('company_id')
+    @company = get_company_cost_center('company')
     @head = StockInput.new
     @cost_centers = CostCenter.where(company_id: "#{@company}")
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
@@ -54,7 +47,7 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def edit
-    @company = Rails.cache.read('company_id')
+    @company = get_company_cost_center('company')
     @head = StockInput.find(params[:id])
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @periods = LinkTime.group(:year, :month)
@@ -86,7 +79,7 @@ class Logistics::StockInputsController < ApplicationController
 
   def show_rows_stock_inputs
     @head = Array.new
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     StockInput.where(company_id: @company).where(cost_center_id: params[:cost_center_id]).where(input: 1).each do |x|
       @head << x
     end
@@ -94,7 +87,7 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def show_purchase_order_item_field
-    @company = Rails.cache.read('company_id')
+    @company = get_company_cost_center('company')
     @tableItems = PurchaseOrder.get_approved_by_company_and_supplier(@company, params[:id])
     render(partial: 'table_items_order', :layout => false)
   end
@@ -109,7 +102,7 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def more_items_from_pod
-    @company = Rails.cache.read('company_id')
+    @company = get_company_cost_center('company')
     @reg_n = Time.now.to_i
     @ids_items = 0
     if (params[:ids_items] != nil)

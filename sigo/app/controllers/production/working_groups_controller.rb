@@ -1,6 +1,6 @@
 class Production::WorkingGroupsController < ApplicationController
   def index
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     @workingGroups = WorkingGroup.all
     @sector = Sector.where("code LIKE '__'")
     @subsectors = Sector.where("code LIKE '____'")
@@ -40,6 +40,7 @@ class Production::WorkingGroupsController < ApplicationController
 
   def create
     workingGroup = WorkingGroup.new(working_groups_parameters)
+    workingGroup.cost_center_id = get_company_cost_center('cost_center')
     if workingGroup.save
       flash[:notice] = "Se ha creado correctamente el trabajador."
       redirect_to :action => :index, company_id: params[:company_id]

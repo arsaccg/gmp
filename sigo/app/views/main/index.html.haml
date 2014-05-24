@@ -73,7 +73,7 @@
                 - company.cost_centers.each do |cc|
                   .col-sm-12.col-md-12.col-lg-12
                     %h1= cc.name
-                    %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_logistics_main_path(company.id)}?cost_center=#{cc.id}", "data-method"=>"post" }
+                    %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
                       Ingresar
         :javascript
           $("a#btn-#{company.id}").click(function(){

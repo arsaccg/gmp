@@ -1,6 +1,6 @@
 class Production::PositionWorkersController < ApplicationController
   def index
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     @positionWorkers = PositionWorker.all
     render layout: false
   end

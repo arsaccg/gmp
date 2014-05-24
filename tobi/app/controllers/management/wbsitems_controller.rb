@@ -149,7 +149,7 @@ class Management::WbsitemsController < ApplicationController
 
   	@wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs)
 
-  	@budgets = Budget.where("project_id = ? AND type_of_budget = ?", params[:project_id], params[:type_budget])
+  	@budgets = Budget.where("cost_center_id = ? AND type_of_budget = ?", params[:project_id], params[:type_budget])
   	@wbsitems_arr = Array.new
   	@budgets.each do |budget|
   		temp_wbsitems = budget.itembywbses

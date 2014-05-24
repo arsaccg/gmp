@@ -4,14 +4,7 @@ class Logistics::WarehousesController < ApplicationController
   
   def index
     flash[:error] = nil
-    if params[:company_id] != nil
-      @company = params[:company_id]
-      # Cache -> company_id
-      cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 120.minutes)
-      Rails.cache.write('company_id', @company)
-    else
-      @company = Rails.cache.read('company_id')
-    end
+    @company = get_company_cost_center('company')
     #logger.info "@company:" + @company + "."    
     @items = Warehouse.where(company_id: "#{@company}")
     render layout: false
@@ -32,9 +25,6 @@ class Logistics::WarehousesController < ApplicationController
     flash[:error] = nil
     item = Warehouse.new(item_parameters)
     item.user_inserts_id = current_user.id
-
-    @company = Rails.cache.read('company_id')
-    @cost_centers = CostCenter.where(company_id: "#{@company}")
     
     if item.update_attributes(item_parameters)
       flash[:notice] = "Se ha creado correctamente el registro."
@@ -63,8 +53,7 @@ class Logistics::WarehousesController < ApplicationController
     item = Warehouse.find(params[:id])
     item.user_updates_id = current_user.id
 
-    @company = Rails.cache.read('company_id')
-    @cost_centers = CostCenter.where(company_id: "#{@company}")
+    @company = get_company_cost_center('company')
 
     if item.update_attributes(item_parameters)
       flash[:notice] = "Se ha actualizado correctamente el registro."

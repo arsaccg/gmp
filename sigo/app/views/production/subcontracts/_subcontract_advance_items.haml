@@ -1,0 +1,7 @@
+%tr(class="subcontract_advance_item"){id: "tr" + @reg_n.to_s}
+  %td.amount
+    = text_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][advance]', @advance, class: "form-control advance-item"
+  %td.unit-price
+    %input#start-date-input.string.optional.form-control{ 'name' => 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][date_of_issue]', type: "date", value: @date }
+  %td{:style => "width: 1%; text-align: center;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

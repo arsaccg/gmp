@@ -3,7 +3,7 @@ class Production::SubcontractsController < ApplicationController
     # General
     @supplier = TypeEntity.find_by_name('Proveedores').entities.first
     @article = TypeOfArticle.find_by_name('subcontratos').articles.first
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     @subcontracts = Subcontract.all
     render layout: false
   end
@@ -17,13 +17,14 @@ class Production::SubcontractsController < ApplicationController
     @subcontract = Subcontract.new
     @suppliers = TypeEntity.find_by_name('Proveedores').entities
     @company = params[:company_id]
-    @articles = TypeOfArticle.find_by_name('subcontratos').articles
+    @articles = TypeOfArticle.find_by_code('04').articles
 
     render layout: false
   end
 
   def create
     subcontract = Subcontract.new(subcontracts_parameters)
+    subcontract.cost_center_id = get_company_cost_center('cost_center')
     if subcontract.save
       flash[:notice] = "Se ha creado correctamente el trabajador."
       redirect_to :action => :index, company_id: params[:company_id], type: params[:subcontract]['type']
@@ -39,7 +40,7 @@ class Production::SubcontractsController < ApplicationController
 
   def add_more_article
     @type = params[:type]
-    @reg_n = Time.now.to_i
+    @reg_n = (Time.now.to_f*1000).to_i
     @amount = params[:amount]
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
@@ -49,13 +50,19 @@ class Production::SubcontractsController < ApplicationController
     render(partial: 'subcontract_items', :layout => false)
   end
 
+  def add_more_advance
+    @advance = params[:advance]
+    @date = params[:date]
+    @reg_n = (Time.now.to_f*1000).to_i
+    render(partial: 'subcontract_advance_items', :layout => false)
+  end
+
   def edit
     @subcontract = Subcontract.find(params[:id])
     @suppliers = TypeEntity.find_by_name('Proveedores').entities
     @company = params[:company_id]
-    @articles= Array.new
-    @articles = TypeOfArticle.find_by_name('subcontratos').articles
-    @reg_n = Time.now.to_i
+    @articles = TypeOfArticle.find_by_code('04').articles
+    @reg_n = (Time.now.to_f*1000).to_i
     @action="edit"
     render layout: false
   end
@@ -83,6 +90,34 @@ class Production::SubcontractsController < ApplicationController
 
   private
   def subcontracts_parameters
-    params.require(:subcontract).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :guarantee_fund, :detraction, :contract_amount, :type, subcontract_details_attributes: [:id, :subcontract_id, :article_id, :amount, :unit_price, :partial, :description, :_destroy])
+    params.require(:subcontract).permit(
+      :entity_id, 
+      :valorization, 
+      :terms_of_payment, 
+      :initial_amortization_number, 
+      :initial_amortization_percent, 
+      :guarantee_fund, 
+      :detraction, 
+      :contract_amount, 
+      :igv, 
+      :type, 
+      subcontract_details_attributes: [
+        :id, 
+        :subcontract_id, 
+        :article_id, 
+        :amount, 
+        :unit_price, 
+        :partial, 
+        :description, 
+        :_destroy
+      ],
+      subcontract_advances_attributes: [
+        :id,
+        :subcontract_id,
+        :date_of_issue,
+        :advance,
+        :_destroy
+      ]
+    )
   end
 end
