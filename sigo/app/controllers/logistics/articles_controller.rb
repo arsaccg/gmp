@@ -10,9 +10,10 @@ class Logistics::ArticlesController < ApplicationController
     @Article = Article.order("id DESC")
     @unitOfMeasurement = UnitOfMeasurement.first
     @group = Category.first
+    @company = Company.find(get_company_cost_center("company"))
     @subgroup = Category.where("code LIKE '____'",).first
     @typeOfArticle = TypeOfArticle.first
-    if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
+    if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted' || params[:task] == 'import'
       render layout: 'dashboard'
     else
       render layout: false
@@ -122,6 +123,7 @@ class Logistics::ArticlesController < ApplicationController
     @unidades = UnitOfMeasurement.all  
     if !params[:file].nil?
       s = Roo::Excelx.new(params[:file].path,nil, :ignore)
+      category_id = 0
       matriz_exel = []
       code = 1
       cantidad = s.count.to_i
@@ -146,38 +148,25 @@ class Logistics::ArticlesController < ApplicationController
         ## creacion de Subgrupo
         if codigo_article != '00' and codigo_category != '00' and codigo_subcategory == '00' and codigo_subcategory_extencion == '00' and codigo.length == 8                    
 
-          category_last     =   Category.last
-          category_last_id  =   category_last.id
-          subcategory       =   Subcategory.new(:code => codigo_category, :name => name, :category_id => category_last_id)
+          codigo_g = codigo_article + codigo_category
+          subcategory = Category.new(:code => codigo_g, :name => name)
           subcategory.save
 
         end
-
-
-
-        ## creacion subcategory
+        ## creacion specific
         if codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
-          subcategory_last = Subcategory.last
-          subcategory_last_id = subcategory_last.id
-          specific = Specific.new(:code => codigo_subcategory, :name => name, :subcategory_id => subcategory_last_id)
-          specific.save
+          codigo_s = codigo_article + codigo_category + codigo_subcategory
+          subcategory = Category.new(:code => codigo_s, :name => name)
+          subcategory.save
+          category_id = Category.last.id
         elsif codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion != '00' and codigo.length == 8        
-          
-          specific_last         =     Specific.last
-          specific_last_id      =     specific_last.id
-          #subcategory_last = Subcategory.last
-          #subcategory_last_id = subcategory_last.id
-          #specific = Specific.new(:code => codigo_subcategory_extencion, :name => name, :subcategory_id => subcategory_last_id )
-          #specific.save
-
           ##### agregando articles
           unidad = UnitOfMeasurement.where("symbol LIKE ?","%#{unidad_symbol}%")
           count_unidad = unidad.count
           if count_unidad != 0
             unidad_last_id = unidad[0].id
           else
-            randon = rand(1000)
-            codigo_unidad = "#{code}#{randon}"
+            codigo_unidad = (UnitOfMeasurement.last.code.to_i + 1).to_s.rjust(2, '0')
             unidad_new = UnitOfMeasurement.new(:symbol => unidad_symbol, :code => codigo_unidad, :name => unidad_symbol)
             code += 1 
             unidad_new.save
@@ -185,14 +174,46 @@ class Logistics::ArticlesController < ApplicationController
             unidad_last_id = unidad_last.id            
           end
 
-          article = Article.new(:code => codigo, :name => name, :unit_of_measurement_id => unidad_last_id, :specific_id => specific_last_id)
+          if codigo_article.to_i <59
+            type = "02"
+            type_id = TypeOfArticle.where("code LIKE '", type).id
+          end
+          if 58 < codigo_article.to_i and codigo_article.to_i < 69
+            type="03"
+            TypeOfArticle.where("code LIKE ?", type).each do |toa|
+              type_id = toa.id
+            end
+          end
+          if codigo_article.to_i==71
+            type="01"
+            TypeOfArticle.where("code LIKE ?", type).each do |toa|
+              type_id = toa.id
+            end
+          end
+          if codigo_article.to_i==73
+            type="04"
+            TypeOfArticle.where("code LIKE ?", type).each do |toa|
+              type_id = toa.id
+            end
+          end
+          if codigo_article.to_i ==72 || codigo_article.to_i > 73
+            type="05"
+            TypeOfArticle.where("code LIKE ?", type).each do |toa|
+              type_id = toa.id
+            end
+          end
+
+          codigo = type + codigo
+
+          article = Article.new(:code => codigo, :name => name, :unit_of_measurement_id => unidad_last_id, :category_id => category_id, :type_of_article_id=> type_id)
           article.save
         end        
       end
       @temp = matriz_exel
-      redirect_to :action => :index
+      redirect_to :action => :index, :task => "import"
+    else
+      render :layout => false
     end
-    render layout: false
   end
 
   private
