@@ -146,18 +146,14 @@ ArsacLogistica::Application.routes.draw do
         delete 'delete'
       end
     end
-    resources :subcategories do
-      collection do
-        post 'get_subcategory_form_category'
-      end
-    end
-    resources :specifics do
+    resources :subcategories
+    resources :specifics
+    resources :categories do
       collection do
         post 'get_subcategory_form_category'
         post 'get_specific_from_subcategory'
       end
-    end
-    resources :categories    
+    end    
     resources :suppliers
     resources :method_of_payments
     resources :money do
