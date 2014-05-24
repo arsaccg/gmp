@@ -71,7 +71,7 @@ class Logistics::ArticlesController < ApplicationController
     article.code = params[:extrafield]['first_code'].to_s + params[:article]['code'].to_s
     article.name = params[:article]['name']
     article.description = params[:article]['description']
-    article.specific_id = params[:article]['specific_id']
+    article.category_id = params[:article]['category']
     article.type_of_article_id = params[:article]['type_of_article_id']
     article.unit_of_measurement_id = params[:article]['unit_of_measurement_id']
     if article.save
@@ -167,9 +167,6 @@ class Logistics::ArticlesController < ApplicationController
           specific_last_id      =     specific_last.id
           #subcategory_last = Subcategory.last
           #subcategory_last_id = subcategory_last.id
-
-
-
           #specific = Specific.new(:code => codigo_subcategory_extencion, :name => name, :subcategory_id => subcategory_last_id )
           #specific.save
 
@@ -200,6 +197,6 @@ class Logistics::ArticlesController < ApplicationController
 
   private
   def article_parameters
-    params.require(:article).permit(:code, :name, :description, :specific_id, :type_of_article_id, :unit_of_measurement_id)
+    params.require(:article).permit(:code, :name, :description, :category_id, :type_of_article_id, :unit_of_measurement_id)
   end
 end
