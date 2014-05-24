@@ -276,6 +276,7 @@ ArsacLogistica::Application.routes.draw do
     resources :subcontracts do
       collection do
         post 'add_more_article'
+        post 'add_more_advance'
       end
     end
     namespace :daily_works do

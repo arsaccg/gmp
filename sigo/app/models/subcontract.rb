@@ -4,4 +4,5 @@ class Subcontract < ActiveRecord::Base
   has_many :subcontract_advances
   belongs_to :entity
   accepts_nested_attributes_for :subcontract_details, :allow_destroy => true
+  accepts_nested_attributes_for :subcontract_advances, :allow_destroy => true
 end

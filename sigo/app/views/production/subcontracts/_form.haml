@@ -131,7 +131,7 @@
               -if @action=="edit"
                 - @subcontract.subcontract_details.each do |sub|
                   = hidden_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][id]', sub.id
-                  = hidden_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][part_of_equipment_id]', @subcontract.id
+                  = hidden_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][subcontract_id]', @subcontract.id
                   %tr.part-equi_item{id: "tr" + @reg_n.to_s}
                     %td.article-id(style="display:none")
                       = sub.article_id
@@ -163,14 +163,13 @@
           %section.col.col-3
             %input#start-date-input.string.optional.form-control{'name'=>'date_of_issue', type: "date"}
 
-
           %section.col.col-2
             %div
               %a(href="javascript:add_advance_item();" id="btn-add-advance" class="btn btn-success" role="button")
                 Agregar Adelanto
 
         .col-lg-12
-          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+          %table#summary-advance.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
                 %th.col-2 Adelanto
@@ -178,12 +177,16 @@
                 %th Eliminar
             %tbody(id="advance_items_table")
               - if @action == 'edit'
-                - @subcontract.subcontract_advances.each do |oos|
+                - @subcontract.subcontract_advances.each do |sa|
                   %tr
-                    %td.col-5.advance
-                      = text_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][advance]', oos.advance, class: "form-control advance-item", onkeypress: "return isNumber(event);"
+                    %td.advance
+                      = text_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][advance]', sa.advance, class: "form-control advance-item"
+                    %td.date_of_issue
+                      %input#start-date-input.string.optional.form-control{ 'name' => 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][date_of_issue]', type: "date", value: sa.date_of_issue }
                     %td(style="display:none")
-                      = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][id]', oos.id
+                      = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][id]', sa.id
+                    %td(style="display:none")
+                      = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][subcontract_id]', @subcontract.id
                     %td.delete-item
                       %label.checkbox
                         = check_box 'subcontract[subcontract_advances_attributes]', '[' + @reg_n.to_s + '][_destroy]'
@@ -304,8 +307,8 @@
   }
 
   function add_advance_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), amount: $("#article-amount").val()};
-    append_url_ajax('#{add_more_article_production_subcontracts_path}', 'article_items_table', str_item, 0, 'POST');
+    str_item = {authenticity_token: "#{form_authenticity_token}", advance: $("#advance").val(), date: $("#start-date-input").val()};
+    append_url_ajax('#{add_more_advance_production_subcontracts_path}', 'advance_items_table', str_item, 0, 'POST');
   }
 
   function calculatePartialAmount(element){
