@@ -45,7 +45,7 @@
           %section.col.col-5
             %label.label Específico
             %label.input{for: "specific_id"}
-              %select.form-control#specific-select{:name =>"article[specific_id]"}
+              %select.form-control#specific-select{:name =>"article[category_id]"}
                 %option{ :value => "0"} Seleccione un Especifico
                 
         .row
@@ -110,6 +110,13 @@
 
     var category_code = $("#category-select").val();
     complete_infocombo("#{get_subcategory_form_category_logistics_categories_path}", category_code, "#{form_authenticity_token}", "0302");
+    console.log("entró al complete");
+
+    if($('#subcategory-select').val()!=0){
+      console.log("entró al al if");
+      var subcategory_code = $('option:selected', $('#subcategory-select')).attr("rel");
+      complete_infocombo2("#{get_specific_from_subcategory_logistics_categories_path}", subcategory_code, "#{form_authenticity_token}, 0");
+    }
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -144,8 +151,10 @@
 
   $('#category-select').keyup(function(){
     if($(this).val()!=0){
+      console.log("entró al keyup");
       var category_code = $(this).val();
       complete_infocombo("#{get_subcategory_form_category_logistics_categories_path}", category_code, "#{form_authenticity_token}, 0");
+      console.log("se supone que salio del complete_info");
     }else{
       $('#subcategory-select').empty();
       $('#subcategory-select').append(
@@ -187,6 +196,12 @@
   });
 
   $('#specific-select').change(function(){
+    var es_code = $('option:selected', $(this)).attr("rel");
+    var code = $('option:selected', $('#type-article-select')).attr('rel') + es_code
+    $("#extrafield_first_code").val(code);
+  });
+
+  $('#specific-select').keyup(function(){
     var es_code = $('option:selected', $(this)).attr("rel");
     var code = $('option:selected', $('#type-article-select')).attr('rel') + es_code
     $("#extrafield_first_code").val(code);
@@ -303,11 +318,14 @@
             )
         $.each(newOptions, function(key,value){
           if ("#{@article.category_id} "== value.id){
+            console.log("entró al if dentro del ajax");
             $('#specific-select').append(
               $("<option></option>").attr("value", value.id).text(value.name).attr("selected", "selected").attr("rel", value.code)
             )
           } else {
+            console.log("entró al else dentro del ajax");
             $('#specific-select').append(
+
               $("<option></option>").attr("value", value.id).text(value.name).attr("rel", value.code)
             )
           }  

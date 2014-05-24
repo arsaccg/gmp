@@ -6,7 +6,7 @@ class Article < ActiveRecord::Base
   	has_many :category_of_worker
   	has_many :workers
   	has_one :subcontract_input
-	belongs_to :specific
+	belongs_to :category
 	belongs_to :type_of_article
 	belongs_to :unit_of_measurement#, :through => :article_unit_of_measurements
 	#accepts_nested_attributes_for :unit_of_measurements
