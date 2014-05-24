@@ -4,7 +4,8 @@ class Production::SubcontractsController < ApplicationController
     @supplier = TypeEntity.find_by_name('Proveedores').entities.first
     @article = TypeOfArticle.find_by_name('subcontratos').articles.first
     @company = get_company_cost_center('company')
-    @subcontracts = Subcontract.all
+    cost_center = get_company_cost_center('cost_center')
+    @subcontracts = Subcontract.where("cost_center_id = ?", cost_center)
     render layout: false
   end
 

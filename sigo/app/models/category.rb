@@ -1,4 +1,3 @@
-# enconding: utf-8
 class Category < ActiveRecord::Base
 	include ActiveModel::Validations
 	

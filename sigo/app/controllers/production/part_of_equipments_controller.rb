@@ -1,13 +1,14 @@
 class Production::PartOfEquipmentsController < ApplicationController
   def index
     @company = get_company_cost_center('company')
-    @partofequipment = PartOfEquipment.all
-    @subcontracts = SubcontractEquipment.all
+    cost_center = get_company_cost_center('cost_center')
+    @partofequipment = PartOfEquipment.where("cost_center_id = ?", cost_center)
+    @subcontracts = SubcontractEquipment.where("cost_center_id = ?", cost_center)
     @article = Article.all
-    @worker = Worker.all
+    @worker = Worker.where("cost_center_id = ?", cost_center)
     # Necessary!
     @fuel_articles = Article.where("code LIKE ?", '__32%') # Esto va a cambiar
-    @working_group = WorkingGroup.first
+    @working_group = WorkingGroup.where("cost_center_id = ?", cost_center).first
     @worker = CategoryOfWorker.find_by_name('Operador').workers.first
     render layout: false
   end
@@ -48,11 +49,12 @@ class Production::PartOfEquipmentsController < ApplicationController
 
   def new
     @company = params[:company_id]
-    @working_groups = WorkingGroup.all
+    cost_center = get_company_cost_center('cost_center')
+    @working_groups = WorkingGroup.where("cost_center_id = ?", cost_center)
     @partofequipment = PartOfEquipment.new
-    @subcon = SubcontractEquipment.all
+    @subcon = SubcontractEquipment.where("cost_center_id = ?", cost_center)
     @fuel_articles = Article.where("code LIKE ?", '__32%')
-    @sectors = Sector.where("code LIKE '__'")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center)
     @worker = CategoryOfWorker.find_by_name('Operador').workers
     render layout: false
   end
@@ -74,10 +76,11 @@ class Production::PartOfEquipmentsController < ApplicationController
 
   def edit
     @company = params[:company_id]
-    @id = PartOfEquipment.find(params[:id]).equipment_id
+    cost_center = get_company_cost_center('cost_center')
     @partofequipment = PartOfEquipment.find(params[:id])
-    @working_groups = WorkingGroup.all
-    @subcon = SubcontractEquipment.all
+    @id = @partofequipment.equipment_id
+    @working_groups = WorkingGroup.where("cost_center_id = ?", cost_center)
+    @subcon = SubcontractEquipment.where("cost_center_id = ?", cost_center)
     @type = Array.new
     @fuel_articles = Article.where("code LIKE ?", '__32%')
     @worker = Array.new

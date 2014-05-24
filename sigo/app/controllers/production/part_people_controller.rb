@@ -1,7 +1,8 @@
 class Production::PartPeopleController < ApplicationController
   def index
     @company = get_company_cost_center('company')
-    @part_people = PartPerson.all
+    cost_center = get_company_cost_center('cost_center')
+    @part_people = PartPerson.where("cost_center_id = ?", cost_center)
     @workinggroup = WorkingGroup.first
     render layout: false
   end

@@ -2,7 +2,7 @@
 INSERT INTO `type_entities` (`name`, `preffix`, `created_at`, `updated_at`) VALUES 
 ('Proveedores', 'P', NULL, NULL),
 ('Accionistas', 'P', NULL, NULL),
-('Trabajadores', 'P', NULL, NULL);
+('Trabajadores', 'P', NULL, NULL),
 ('Clientes', 'P', NULL, NULL),
 ('Jefes de Frente', 'P', NULL, NULL),
 ('Maestro de Obras', 'P', NULL, NULL);
@@ -12,8 +12,8 @@ INSERT INTO `type_of_articles` (`name`, `code`, `created_at`, `updated_at`) VALU
 ('Personal', '01', NULL, NULL), 
 ('Material', '02', NULL, NULL), 
 ('Equipos', '03', NULL, NULL), 
-('Subcontratos', '04', NULL, NULL);
-('Servicios', '05', NULL, NULL), 
+('Subcontratos', '04', NULL, NULL),
+('Servicios', '05', NULL, NULL);
 
 -- Data for Company
 INSERT INTO `companies` (`name`, `ruc`, `created_at`, `updated_at`) VALUES 
@@ -43,7 +43,7 @@ INSERT INTO `zip_codes` (`name`, `zip_code`, `created_at`, `updated_at`) VALUES
 ('Lince', 'Lima 14', NULL, NULL),
 ('Lurigancho', 'Lima 15', NULL, NULL),
 ('Lurín', 'Lima 16', NULL, NULL),
-('Magdalena	', 'Lima 17', NULL, NULL),
+('Magdalena ', 'Lima 17', NULL, NULL),
 ('Miraflores', 'Lima 18', NULL, NULL),
 ('Pachacamac', 'Lima 19', NULL, NULL),
 ('Pucusana', 'Lima 20', NULL, NULL),

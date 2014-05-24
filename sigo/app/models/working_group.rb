@@ -1,8 +1,9 @@
 class WorkingGroup < ActiveRecord::Base
-	belongs_to :sector
 	has_many :part_works
 	has_many :part_people
 	has_many :part_of_equipment_details
+	belongs_to :cost_center
+	belongs_to :sector
 	belongs_to :front_chief, :foreign_key => 'front_chief_id'
 	belongs_to :master_builder, :foreign_key => 'master_builder_id'
 	belongs_to :executor, :foreign_key => 'executor_id'

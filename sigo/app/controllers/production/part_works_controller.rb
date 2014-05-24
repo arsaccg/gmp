@@ -1,7 +1,8 @@
 class Production::PartWorksController < ApplicationController
   def index
     @company = get_company_cost_center('company')
-    @part_works = PartWork.all
+    cost_center = get_company_cost_center('cost_center')
+    @part_works = PartWork.where("cost_center_id = ?", cost_center)
     render layout: false
   end
 

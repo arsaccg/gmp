@@ -4,7 +4,8 @@ class Logistics::SectorsController < ApplicationController
   
   def index
     flash[:error] = nil
-    @Sectors = Sector.where("code LIKE '__'")
+    cost_center = get_company_cost_center('cost_center')
+    @Sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center)
     render layout: false
   end
 

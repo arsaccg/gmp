@@ -1,9 +1,10 @@
 class Production::WorkersController < ApplicationController
   def index
+    @company = get_company_cost_center('company')
+    cost_center = get_company_cost_center('cost_center')
     @article = TypeOfArticle.find_by_code('01').articles.first
     @bank = Bank.first
-    @company = get_company_cost_center('company')
-    @workers = Worker.all
+    @workers = Worker.where("cost_center_id = ?", cost_center)
     render layout: false
   end
 

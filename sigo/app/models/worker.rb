@@ -1,10 +1,11 @@
 class Worker < ActiveRecord::Base
-	belongs_to :category_of_worker
-	belongs_to :position_worker
-	belongs_to :article
 	has_many :part_person_details
 	has_many :worker_details
 	has_many :part_of_equipments
+	belongs_to :cost_center
+	belongs_to :category_of_worker
+	belongs_to :position_worker
+	belongs_to :article
 
 	accepts_nested_attributes_for :worker_details, :allow_destroy => true
 

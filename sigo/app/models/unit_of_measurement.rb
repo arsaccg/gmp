@@ -1,4 +1,3 @@
-# enconding: utf-8
 class UnitOfMeasurement < ActiveRecord::Base
 	include ActiveModel::Validations
 

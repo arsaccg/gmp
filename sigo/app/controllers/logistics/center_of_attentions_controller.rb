@@ -4,7 +4,8 @@ class Logistics::CenterOfAttentionsController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     flash[:error] = nil
-    @centerOfAttention = CenterOfAttention.all
+    cost_center = get_company_cost_center('cost_center')
+    @centerOfAttention = CenterOfAttention.where("cost_center_id = ?",@cost_center)
     render layout: false
   end
 

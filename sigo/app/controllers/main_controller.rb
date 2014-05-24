@@ -5,8 +5,12 @@ class MainController < ApplicationController
   end
 
   def home
-    @company = Company.find(get_company_cost_center('company'))
-    render :show_panel, layout: 'dashboard' 
+    if get_company_cost_center('company').present? && get_company_cost_center('cost_center').present?
+      @company = Company.find(get_company_cost_center('company'))
+      render :show_panel, layout: 'dashboard'
+    else
+      redirect_to :controller => "errors", :action => "error_500"
+    end
   end
 
   def show_panel

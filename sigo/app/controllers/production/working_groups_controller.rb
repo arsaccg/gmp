@@ -1,7 +1,8 @@
 class Production::WorkingGroupsController < ApplicationController
   def index
     @company = get_company_cost_center('company')
-    @workingGroups = WorkingGroup.all
+    cost_center = get_company_cost_center('cost_center')
+    @workingGroups = WorkingGroup.where("cost_center_id = ?", cost_center)
     @sector = Sector.where("code LIKE '__'")
     @subsectors = Sector.where("code LIKE '____'")
     TypeEntity.where("name LIKE '%Proveedores%'").each do |entity|

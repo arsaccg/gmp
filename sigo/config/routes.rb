@@ -11,6 +11,10 @@ ArsacLogistica::Application.routes.draw do
   get 'home' => 'main#home'
   post 'home' => 'main#home'
   
+  get "errors/error_404"
+  post "errors/error_404"
+  get "errors/error_500"
+  post "errors/error_500"
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

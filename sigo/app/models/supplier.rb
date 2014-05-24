@@ -1,4 +1,3 @@
-# enconding: utf-8
 class Supplier < Entity
 	has_many :purchase_orders
 	# Validaciones

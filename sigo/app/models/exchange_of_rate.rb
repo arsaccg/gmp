@@ -1,4 +1,3 @@
-# enconding: utf-8
 class ExchangeOfRate < ActiveRecord::Base
   belongs_to :money
   

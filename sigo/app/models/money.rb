@@ -1,4 +1,3 @@
-# enconding: utf-8
 class Money < ActiveRecord::Base
 	has_many :purchase_order
 	has_many :works

@@ -1,4 +1,3 @@
-# enconding: utf-8
 class Article < ActiveRecord::Base
 	has_many :deliver_orders
   	has_many :subcontract_details

@@ -7130,7 +7130,7 @@ a.DTTT_button, button.DTTT_button, div.DTTT_button {
     background: -webkit-gradient(linear, top left, bottom left, from(#fff), color-stop(89%, #f3f3f3), to(#f9f9f9));
     background: -webkit-linear-gradient(top, #fff 0, #f3f3f3 89%, #f9f9f9 100%);
     background: linear-gradient(top, #fff 0, #f3f3f3 89%, #f9f9f9 100%);
-    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f9f9f9', GradientType=0)
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f9f9f9', GradientType=0);
 }
 
 button.DTTT_button {
@@ -7154,7 +7154,7 @@ a.DTTT_button:hover, button.DTTT_button:hover, div.DTTT_button:hover {
     background: -webkit-gradient(linear, top left, bottom left, from(#f3f3f3), color-stop(89%, #e2e2e2), to(#f4f4f4));
     background: -webkit-linear-gradient(top, #f3f3f3 0, #e2e2e2 89%, #f4f4f4 100%);
     background: linear-gradient(top, #f3f3f3 0, #e2e2e2 89%, #f4f4f4 100%);
-    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#f3f3f3', endColorstr='#f4f4f4', GradientType=0)
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#f3f3f3', endColorstr='#f4f4f4', GradientType=0);
 }
 
 a.DTTT_disabled, button.DTTT_disabled, div.DTTT_disabled {
@@ -7165,7 +7165,7 @@ a.DTTT_disabled, button.DTTT_disabled, div.DTTT_disabled {
     background: -webkit-gradient(linear, top left, bottom left, from(#fff), color-stop(89%, #f9f9f9), to(#fafafa));
     background: -webkit-linear-gradient(top, #fff 0, #f9f9f9 89%, #fafafa 100%);
     background: linear-gradient(top, #fff 0, #f9f9f9 89%, #fafafa 100%);
-    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#fafafa', GradientType=0)
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#fafafa', GradientType=0);
 }
 
 table.DTTT_selectable tbody tr {

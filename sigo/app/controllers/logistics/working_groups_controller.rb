@@ -4,8 +4,9 @@ class Logistics::WorkingGroupsController < ApplicationController
   
   def index
     flash[:error] = nil
+    cost_center = get_company_cost_center('cost_center')
     #logger.info "@company:" + @company + "."    
-    @items = WorkingGroup.all
+    @items = WorkingGroup.where('cost_center_id = ?', cost_center)
     render layout: false
   end
 

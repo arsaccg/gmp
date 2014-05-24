@@ -1,4 +1,3 @@
-# enconding: utf-8
 class MethodOfPayment < ActiveRecord::Base
 	has_many :purchase_orders
 	has_many :order_of_services
