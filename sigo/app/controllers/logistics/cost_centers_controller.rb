@@ -4,13 +4,7 @@ class Logistics::CostCentersController < ApplicationController
   
   def index
     flash[:error] = nil
-    if params[:company_id] != nil
-      @company = params[:company_id]
-    else
-      # After Update: Cache -> company_id
-      cache = ActiveSupport::Cache::MemoryStore.new()
-      @company = Rails.cache.read('company_id')
-    end
+    @company = get_company_cost_center('company')
     #@own_cost_center = current_user.cost_centers
     @costCenters = CostCenter.where(company_id: "#{@company}")
     render layout: false
@@ -51,10 +45,6 @@ class Logistics::CostCentersController < ApplicationController
   def update
     flash[:error] = nil
     costCenter = CostCenter.find(params[:id])
-
-    # Cache -> company_id, becouse after save redirect to Index
-    cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 1.minutes)
-    Rails.cache.write('company_id', costCenter.company_id)
 
     if params[:timeline] == nil
       # Save Maintenance

@@ -1,7 +1,7 @@
 class Production::SubcontractEquipmentsController < ApplicationController
   def index
     @supplier = TypeEntity.find_by_name('Proveedores').entities.first
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     @subcontracts = SubcontractEquipment.all
     render layout: false
   end
@@ -22,6 +22,7 @@ class Production::SubcontractEquipmentsController < ApplicationController
 
   def create
     subcontract = SubcontractEquipment.new(subcontracts_parameters)
+    subcontract.cost_center_id = get_company_cost_center('cost_center')
     if subcontract.save
       flash[:notice] = "Se ha creado correctamente el Subcontrato de Equipos."
       redirect_to :action => :index, company_id: params[:company_id]

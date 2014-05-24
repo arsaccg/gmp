@@ -2,7 +2,7 @@ class Production::WorkersController < ApplicationController
   def index
     @article = TypeOfArticle.find_by_code('01').articles.first
     @bank = Bank.first
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     @workers = Worker.all
     render layout: false
   end

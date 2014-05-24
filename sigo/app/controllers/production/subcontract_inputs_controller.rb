@@ -2,7 +2,7 @@ class Production::SubcontractInputsController < ApplicationController
   def index
     @subcontractInputs = SubcontractInput.all
     @article = Article.where("code LIKE ?", "04%").first
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     render layout: false
   end
 

@@ -1,7 +1,7 @@
 class Production::CategoryOfWorkersController < ApplicationController
   def index
     @article = TypeOfArticle.find_by_code('01').articles.first
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     @categoryOfWorker = CategoryOfWorker.all
     render layout: false
   end

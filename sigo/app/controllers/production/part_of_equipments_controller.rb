@@ -1,6 +1,6 @@
 class Production::PartOfEquipmentsController < ApplicationController
   def index
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     @partofequipment = PartOfEquipment.all
     @subcontracts = SubcontractEquipment.all
     @article = Article.all

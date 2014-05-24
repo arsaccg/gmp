@@ -5,7 +5,12 @@ ArsacLogistica::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'logistics/main#index'
+  
+  root 'main#index'
+  get 'show_panel/:id' => 'main#show_panel', as: :show_panel_main
+  get 'home' => 'main#home'
+  post 'home' => 'main#home'
+  
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
@@ -92,15 +97,11 @@ ArsacLogistica::Application.routes.draw do
     resources :type_entities
     resources :type_of_articles
     resources :entities
-    resources :main do
-      member do
-        post 'show_panel'
-      end
-    end
     resources :delivery_orders do
       collection do
         post 'add_delivery_order_item_field'
         post 'show_rows_delivery_orders'
+        get 'show_tracking_orders'
       end
       member do
         get 'gorevise'
@@ -109,7 +110,6 @@ ArsacLogistica::Application.routes.draw do
         get 'goobserve'
         get 'delivery_order_pdf'
         post 'delivery_order_pdf'
-        get 'show_tracking_orders'
         delete 'delete'
       end
     end

@@ -1,6 +1,6 @@
 class Production::AnalysisOfValuationsController < ApplicationController
   def index
-  	@company = params[:company_id]
+  	@company = get_company_cost_center('company')
   	@workingGroups = WorkingGroup.all
     @sector = Sector.where("code LIKE '__'")
     @subsectors = Sector.where("code LIKE '____'")
