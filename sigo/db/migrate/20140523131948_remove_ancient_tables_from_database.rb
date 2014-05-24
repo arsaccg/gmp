@@ -1,16 +1,8 @@
 class RemoveAncientTablesFromDatabase < ActiveRecord::Migration
   def change
-  	if AttachmentArbitrationDocuments.table_exists?
-      drop_table :attachment_arbitration_documents
-  	end
-  	if AttachmentContractDocuments.table_exists?
-      drop_table :attachment_contract_documents
-  	end
-  	if AttachmentIntegratedBases_documents.table_exists?
-    drop_table :attachment_integrated_bases_documents
-	end
-	if AttachmentTestimonyOfConsortiumDocuments.table_exists?
-      drop_table :attachment_testimony_of_consortium_documents
-    end
+    drop_table :attachment_arbitration_documents if table_exists? :attachment_arbitration_documents
+    drop_table :attachment_contract_documents if table_exists? :attachment_contract_documents
+    drop_table :attachment_integrated_bases_documents if table_exists? :attachment_integrated_bases_documents
+    drop_table :attachment_testimony_of_consortium_documents if table_exists? :attachment_testimony_of_consortium_documents
   end
 end
