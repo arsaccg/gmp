@@ -7,6 +7,10 @@
     = simple_form_for([:logistics, @article], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         = f.hidden_field :subcategory_id_edit, :value => @subcategory_article
+        -if @action=="edit"
+          %input#code{:value => "#{@article.code[2,4]}", "style"=>"display:none;"}
+        -else
+          %input#code{:value => "0", "style"=>"display:none;"}
         .row
           %section.col.col-10
             %label.label Tipo de Articulo
@@ -166,6 +170,18 @@
       $('#specific-select').append(
         $("<option></option>").attr("value", 0).text("Seleccione un específico").attr("selected", "selected")
       )
+    }
+  });
+
+  $('#subcategory-select').keyup(function(){
+    if($(this).val()!=0){
+      var subcategory_code = $('option:selected', $(this)).attr("rel");
+      complete_infocombo2("#{get_specific_from_subcategory_logistics_categories_path}", subcategory_code, "#{form_authenticity_token}, 0");
+    }else{
+      $('#specific-select').empty();
+      $('#specific-select').append(
+        $("<option></option>").attr("value", 0).text("Seleccione un específico").attr("selected", "selected")
+      )
       var code = $('option:selected', $('#type-article-select')).attr('rel')
       $("#extrafield_first_code").val(code);
     }
@@ -254,7 +270,7 @@
               $("<option></option>").attr("value", "").text("Seleccione un Específico")
             )
         $.each(newOptions, function(key,value){
-          if ($('#subcategory-select') == value.code){
+          if ($('#code').val() == value.code){
             $('#subcategory-select').append(
               $("<option></option>").attr("value", value.id).text(value.name).attr("selected", "selected").attr("rel", value.code)
             )
@@ -284,7 +300,7 @@
         });
         $('#specific-select').empty();
         $('#specific-select').append(
-              $("<option></option>").attr("value", " ").text("Seleccione un específico").attr("selected", "selected")
+              $("<option></option>").attr("value", " ").text("Seleccione un específico").attr("selected", "selected").attr("rel", " ")
             )
         $.each(newOptions, function(key,value){
           if ("#{@article.category_id} "== value.id){
