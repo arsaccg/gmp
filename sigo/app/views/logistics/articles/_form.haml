@@ -6,7 +6,6 @@
   .widget-body
     = simple_form_for([:logistics, @article], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
-        = f.hidden_field :subcategory_id_edit, :value => @subcategory_article
         -if @action=="edit"
           %input#code{:value => "#{@article.code[2,4]}", "style"=>"display:none;"}
         -else

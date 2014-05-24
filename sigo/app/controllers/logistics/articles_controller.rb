@@ -12,7 +12,6 @@ class Logistics::ArticlesController < ApplicationController
     @group = Category.first
     @subgroup = Category.where("code LIKE '____'",).first
     @typeOfArticle = TypeOfArticle.first
-    @specific = Specific.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
       render layout: 'dashboard'
     else
@@ -55,15 +54,6 @@ class Logistics::ArticlesController < ApplicationController
     @categories = Category.where("code LIKE '__'")
     # Traemos las SubCategorias
     # Traemos la subcategoria
-    @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
-    @subcategory_article.each do |sub|
-      @subcategory_article = sub.code
-    end
-    @specific_article = Specific.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
-    @specific_article.each do |spe|
-      @specific_article = spe.code
-    end
-
     # Traemos las Unidades de Medida
     @unitOfMeasurement = UnitOfMeasurement.all
     @unitid = @article.unit_of_measurement_id
@@ -97,18 +87,9 @@ class Logistics::ArticlesController < ApplicationController
       @typeOfArticle = @article.type_of_article.id
       @specific = Specific.all
       # La categoria al que pertenece
-      @specific_article = @article.specific.id
+      @specific_article = @article.category.id
       # Traemos las SubCategorias
-      @subcategories = @article.category.subcategories
       # Traemos la subcategoria
-      @subcategory_article = Subcategory.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
-      @subcategory_article.each do |sub|
-        @subcategory_article = sub.code
-      end
-      @specific_article = Specific.where("code LIKE ?", "#{@article.code.first(6).from(2)}")
-      @specific_article.each do |spe|
-        @specific_article = spe.code
-      end
       # Traemos las Unidades de Medida
       @units = Array.new
       article.unit_of_measurements.each do |aunit|
