@@ -1,10 +1,12 @@
 class CreateFinancialVariables < ActiveRecord::Migration
   def change
-    create_table :financial_variables do |t|
-	  t.string :name
-	  t.float :value
+    if !table_exists? :financial_variables
+      create_table :financial_variables do |t|
+        t.string :name
+        t.float :value
 
-	  t.timestamps
-	end
+        t.timestamps
+      end
+    end
   end
 end

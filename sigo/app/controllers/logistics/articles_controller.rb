@@ -176,7 +176,7 @@ class Logistics::ArticlesController < ApplicationController
 
           if codigo_article.to_i <59
             type = "02"
-            type_id = TypeOfArticle.where("code LIKE '", type).id
+            type_id = TypeOfArticle.find_by_code(type).id
           end
           if 58 < codigo_article.to_i and codigo_article.to_i < 69
             type="03"
