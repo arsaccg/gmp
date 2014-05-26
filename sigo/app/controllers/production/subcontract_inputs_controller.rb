@@ -16,6 +16,7 @@ class Production::SubcontractInputsController < ApplicationController
 
   def create
     subcontract = SubcontractInput.new(subcontract_input_parameters)
+    subcontract.cost_center_id = get_company_cost_center('cost_center')
     if subcontract.save
       flash[:notice] = "Se ha creado correctamente el trabajador."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -32,8 +33,11 @@ class Production::SubcontractInputsController < ApplicationController
   def edit
     @action = 'edit'
     @subcontractInput = SubcontractInput.find(params[:id])
-    @sub = Article.where("code LIKE ?", "04%")
-    @equip = Article.where("code LIKE ?", "03%")
+    if @subcontractInput.type_article == '04'
+      @articles = Article.where("code LIKE ?", "04%")
+    elsif @subcontractInput.type_article == '03'
+      @articles = Article.where("code LIKE ?", "03%")
+    end
     @company = params[:company_id]
     render layout: false
   end
@@ -60,9 +64,13 @@ class Production::SubcontractInputsController < ApplicationController
   end
 
   def get_articles
-    @sub = Article.where("code LIKE ?", "04%")
-    @equip = Article.where("code LIKE ?", "03%")
-    render json: {:sub => @sub, :equip => @equip}
+    if params[:type] == 'subcontract'
+      @sub = Article.where("code LIKE ?", "04%")
+      render json: { :sub => @sub }
+    elsif params[:type] == 'equipment'
+      @equip = Article.where("code LIKE ?", "03%")
+      render json: { :equip => @equip }
+    end
   end
 
   private

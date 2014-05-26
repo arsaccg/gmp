@@ -24,6 +24,7 @@ class Production::PartWorksController < ApplicationController
 
   def create
     partwork = PartWork.new(part_work_parameters)
+    partwork.cost_center_id = get_company_cost_center('cost_center')
     if partwork.save
       flash[:notice] = "Se ha creado correctamente la parte de obra."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -50,7 +51,7 @@ class Production::PartWorksController < ApplicationController
   def edit
     @partwork = PartWork.find(params[:id])
     @working_groups = WorkingGroup.all
-    @partworkde = PartWorkDetail.where("part_work_id LIKE ?", params[:id])
+    @partworkde = @partwork.part_work_details
     @unit = UnitOfMeasurement.all
     @articles = TypeOfArticle.find(4).articles
     @sectors = Sector.where("code LIKE '__'")

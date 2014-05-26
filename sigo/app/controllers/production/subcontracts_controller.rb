@@ -2,7 +2,7 @@ class Production::SubcontractsController < ApplicationController
   def index
     # General
     @supplier = TypeEntity.find_by_name('Proveedores').entities.first
-    @article = TypeOfArticle.find_by_name('subcontratos').articles.first
+    @article = TypeOfArticle.find_by_code('04').articles.first
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
     @subcontracts = Subcontract.where("cost_center_id = ?", cost_center)
