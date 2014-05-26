@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140521195528) do
+ActiveRecord::Schema.define(version: 20140523044406) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -67,21 +67,6 @@ ActiveRecord::Schema.define(version: 20140521195528) do
     t.datetime "updated_at"
   end
 
-  create_table "budgets", force: true do |t|
-    t.string   "cod_budget"
-    t.string   "description"
-    t.integer  "term"
-    t.integer  "cost_center_id"
-    t.integer  "level"
-    t.string   "subbudget_code"
-    t.integer  "deleted"
-    t.string   "type_of_budget"
-    t.float    "utility"
-    t.float    "general_expenses"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "categories", force: true do |t|
     t.string   "code"
     t.string   "name"
@@ -90,13 +75,12 @@ ActiveRecord::Schema.define(version: 20140521195528) do
   end
 
   create_table "category_of_workers", force: true do |t|
-    t.string   "name"
     t.float    "normal_price"
     t.float    "he_60_price"
     t.float    "he_100_price"
-    t.integer  "unit_of_measurement_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "article_id"
   end
 
   create_table "center_of_attentions", force: true do |t|
@@ -305,16 +289,6 @@ ActiveRecord::Schema.define(version: 20140521195528) do
     t.integer  "cost_center_id"
     t.string   "files"
     t.float    "approved_mgg"
-<<<<<<< HEAD
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "financial_variables", force: true do |t|
-    t.string   "name"
-    t.float    "value"
-=======
->>>>>>> 9e66466f2688c0116522485a52222b906892c396
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -655,6 +629,12 @@ ActiveRecord::Schema.define(version: 20140521195528) do
     t.string   "code"
   end
 
+  create_table "position_workers", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "professionals", force: true do |t|
     t.string   "name"
     t.integer  "dni"
@@ -757,6 +737,14 @@ ActiveRecord::Schema.define(version: 20140521195528) do
     t.datetime "updated_at"
   end
 
+  create_table "rep_inv_responsibles", id: false, force: true do |t|
+    t.integer  "user"
+    t.integer  "id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "rep_inv_suppliers", id: false, force: true do |t|
     t.integer  "user"
     t.integer  "id"
@@ -831,10 +819,14 @@ ActiveRecord::Schema.define(version: 20140521195528) do
     t.integer  "article_id"
     t.integer  "equipment_id"
     t.decimal  "unit_cost",                precision: 15, scale: 5
+    t.integer  "sector_id"
+    t.integer  "phase_id"
   end
 
   add_index "stock_input_details", ["article_id"], name: "index_stock_input_details_on_article_id", using: :btree
+  add_index "stock_input_details", ["phase_id"], name: "index_stock_input_details_on_phase_id", using: :btree
   add_index "stock_input_details", ["purchase_order_detail_id"], name: "index_stock_input_details_on_purchase_order_detail_id", using: :btree
+  add_index "stock_input_details", ["sector_id"], name: "index_stock_input_details_on_sector_id", using: :btree
   add_index "stock_input_details", ["stock_input_id"], name: "index_stock_input_details_on_stock_input_id", using: :btree
 
   create_table "stock_inputs", force: true do |t|
@@ -902,6 +894,7 @@ ActiveRecord::Schema.define(version: 20140521195528) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "subcontract_equipment_id"
+    t.string   "code"
   end
 
   create_table "subcontract_equipments", force: true do |t|
@@ -923,6 +916,7 @@ ActiveRecord::Schema.define(version: 20140521195528) do
     t.float    "price"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type_article"
   end
 
   create_table "subcontracts", force: true do |t|
@@ -1121,8 +1115,9 @@ ActiveRecord::Schema.define(version: 20140521195528) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "dni"
-    t.integer  "category_of_worker_id"
     t.string   "second_name"
+    t.integer  "position_worker_id"
+    t.integer  "article_id"
   end
 
   create_table "working_groups", force: true do |t|

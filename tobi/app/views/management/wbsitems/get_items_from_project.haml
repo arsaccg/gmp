@@ -39,7 +39,7 @@
   .modal-body
     %table(class="table-bordered table-hover white-table table-condensed table ")
       %thead
-        %th(colspan="3")
+        %th
           Codigo
         %th
           Descripcion
@@ -47,14 +47,12 @@
         - @data.each do |item|
           %tr
             %td
-              = item[0].unpack('U*').pack('U*')
+              = item.code
             %td
-              = item[1].unpack('U*').pack('U*')
+              = item.name
             %td
-              = item[2].unpack('U*').pack('U*')
-            %td
-              %a{href: "javascript:selected_phase('" + item[0].to_s + item[1].to_s + item[2].to_s + item[3].unpack('U*').pack('U*').to_s + "', '" + item[0].to_s + item[1].to_s + item[2].to_s + "')"}
-                = item[3].unpack('U*').pack('U*')
+              %a{href: "javascript:selected_phase('" + item.code + " " + item.name + "', '" + item.code + "')"}
+                Seleccionar
       
   .modal-footer
     %button(class="btn"){'data-dismiss'=>"modal", 'aria-hidden'=>"true"}
