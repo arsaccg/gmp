@@ -298,10 +298,6 @@
       var data_delivery_order = new Array();
 
       if(data.step == 1 && data.direction == 'next'){
-
-      }
-
-      if(data.step == 2 && data.direction == 'next') {
         var index = 0;
         $('#items-delivery-orders #dt_basic tbody tr td .checkbox .order_check').each(function(){
           if( $(this).is(':checked') ){
@@ -336,11 +332,16 @@
         }
       }
 
-      if(data.step == 3 && data.direction == 'next') {
+      if(data.step == 2 && data.direction == 'next') {
         var $valid = $("#new_purchase_order").valid();
         if (!$valid) {
           e.preventDefault();
-        }
+        }        
+        
+      }
+
+      if(data.step == 3 && data.direction == 'next') {
+
       }
 
     });
