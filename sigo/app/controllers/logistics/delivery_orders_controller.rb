@@ -66,7 +66,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @reg_n = Time.now.to_i
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
-    @sectors = Sector.all
+    @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.where("category LIKE 'phase'")
     @amount = params[:amount].to_f
     @centerOfAttention = CenterOfAttention.all

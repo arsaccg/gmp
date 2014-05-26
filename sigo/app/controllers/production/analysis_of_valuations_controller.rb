@@ -78,7 +78,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def business_days_array(start_date, end_date, working_group_id)
     workers_array = ActiveRecord::Base.connection.execute("
-      SELECT  pwo.name AS category,
+      SELECT  art.name AS category,
         cow.normal_price,
         cow.he_60_price,
         cow.he_100_price,
@@ -90,14 +90,15 @@ class Production::AnalysisOfValuationsController < ApplicationController
         cow.he_100_price*SUM( ppd.he_100 ),
         uom.name, 
         p.date_of_creation 
-      FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow, position_workers pwo
+      FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow, articles art
       WHERE p.working_group_id IN(" + working_group_id + ")
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
-      AND p.id = ppd.part_person_id 
+      AND p.id = ppd.part_person_id
+      AND w.article_id = art.id
       AND ppd.worker_id = w.id
-      AND w.category_of_worker_id = cow.id
-      AND uom.id = cow.unit_of_measurement_id
-      GROUP BY cow.name
+      AND w.article_id = cow.article_id
+      AND uom.id = art.unit_of_measurement_id
+      GROUP BY art.name
     ")
     return workers_array
   end

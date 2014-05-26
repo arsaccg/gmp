@@ -244,6 +244,11 @@ ArsacLogistica::Application.routes.draw do
         post 'get_report'
       end
     end
+    resources :machinery_reports do
+      collection do
+        post 'get_report'
+      end
+    end
     resources :part_works do
       collection do
         post 'add_more_article'

@@ -4,7 +4,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
     @purchaseOrders = PurchaseOrder.where('cost_center_id = ?', cost_center)
-    @deliveryOrders = DeliveryOrder.where("cost_center_id = ? AND state LIKE ?", @cost_center,'approved')
+    @deliveryOrders = DeliveryOrder.where("cost_center_id = ? AND state LIKE ?", cost_center,'approved')
     render layout: false
   end
 
