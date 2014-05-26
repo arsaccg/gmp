@@ -14,19 +14,7 @@
           %section.col.col-4
             %label.label Artículo
             %label.input
-              %select.form-control#article{:name =>"subcontract_equipment_detail[article_id]", :style => 'width:100%;padding: 0;border: none;', onchange: 'artiSelectCH();'}
-                -if @action =="edit"
-                  - @article.each do |arti|
-                    -if @partequi.article_id== arti.id
-                      %option{:value => "#{arti.id}", :selected=>"selected"}
-                        = arti.name
-                    -else
-                      %option{:value => "#{arti.id}"}
-                        = arti.name
-                -else
-                  - @article.each do |arti|
-                    %option{:value => "#{arti.id}"}
-                      = arti.name
+              %input#article.select2.bigdrop.select2-offscreen.form-control{'name' => 'subcontract_equipment_detail[article_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'onchange' => 'artiSelectCH()'}
 
           .col.col-4
             %label.label Código de Articulo      
@@ -153,6 +141,30 @@
     complete_infocombo("#{get_component_from_article_production_subcontract_equipment_details_path}", article_id, "#{form_authenticity_token}", 0);
 
     $('select').select2();
+    $('#article').select2({
+      placeholder: "Buscar Insumos...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_articles_production_subcontract_equipment_details_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.name + '</div>' },
+      formatSelection: function(node){ return node.name },
+      escapeMarkup: function (m) { return m; }
+    });
+
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
