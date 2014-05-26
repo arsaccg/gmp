@@ -2,11 +2,20 @@ class Production::SubcontractsController < ApplicationController
   def index
     # General
     @supplier = TypeEntity.find_by_name('Proveedores').entities.first
-    @article = TypeOfArticle.find_by_code('04').articles.first
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
     @subcontracts = Subcontract.where("cost_center_id = ?", cost_center)
     render layout: false
+  end
+
+  def display_articles
+    word = params[:q]
+    article_hash = Array.new
+    articles = ActiveRecord::Base.connection.execute("SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol FROM articles a, unit_of_measurements u WHERE a.code LIKE '04%' AND a.name LIKE '%#{word}%' AND a.unit_of_measurement_id = u.id")
+    articles.each do |art|
+      article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}
+    end
+    render json: {:articles => article_hash}  
   end
 
   def show
@@ -40,6 +49,7 @@ class Production::SubcontractsController < ApplicationController
   end
 
   def add_more_article
+    puts params[:article_id]
     @type = params[:type]
     @reg_n = (Time.now.to_f*1000).to_i
     @amount = params[:amount]

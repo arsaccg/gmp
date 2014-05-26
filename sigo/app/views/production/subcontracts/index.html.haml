@@ -19,11 +19,11 @@
         %strong Error!
         = flash[:error]
   .row
-    - if @supplier.present? && @article.present?
+    - if @supplier.present?
       .col-sm-2
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_subcontract_path}', 'content', {company_id: '#{@company}', type: '#{@type}'}, null, 'GET')"}
           Agregar Subcontrato
-    - elsif @supplier.blank? && @article.blank?
+    - else @supplier.blank?
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
           %a.close(data-dismiss="alert" href="#")
@@ -32,27 +32,7 @@
             %i.fa.fa-lock
               No puedes crear un SubContrato!
           %p
-            Verifica si tienes, por lo menos, 1 Proveedor y una articulo de categoria Subcontrato.
-    - elsif @supplier.blank?
-      .col-xs-12.col-sm-7.col-md-7.col-lg-12
-        .alert.alert-block.alert-danger
-          %a.close(data-dismiss="alert" href="#")
-            ×
-          %h4.alert-heading
-            %i.fa.fa-lock
-              No puedes crear una Trabajador!
-          %p
             Verifica si tienes, por lo menos, 1 Proveedor.
-    - elsif @article.blank?
-      .col-xs-12.col-sm-7.col-md-7.col-lg-12
-        .alert.alert-block.alert-danger
-          %a.close(data-dismiss="alert" href="#")
-            ×
-          %h4.alert-heading
-            %i.fa.fa-lock
-              No puedes crear una Trabajador!
-          %p
-            Verifica si tienes, por lo menos, 1 articulo de categoria Subcontrato.
   %br
   .row
   #widget-grid

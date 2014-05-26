@@ -29,14 +29,15 @@
                 %i.icon-append.fa.fa-credit-card
                 = f.input :price, placeholder: "Precio", input_html: { class: 'form-control' }, label: false
 
-        -else
+        - else
+
           .row
             %label.label Tipo de Subcontrato
-            %label.radio_button
-              %input{'class'=>'sub' ,type: "radio", :value=> "04", onchange:'check1();', "name"=>"subcontract_input[type_article]"}
+            .radio_button
+              %input{'class'=>'sub', type: "radio", :value => "04", "name"=>"subcontract_input[type_article]"}
                 = "Subcontrato"
               %br
-              %input{'class'=>'equip' ,type: "radio", :value=> "03", onchange:'check2();', "name"=>"subcontract_input[type_article]"}
+              %input{'class'=>'equip', type: "radio", :value => "03", "name"=>"subcontract_input[type_article]"}
                 = "Subcontrato de Equipo"
 
           .row{ 'style' => 'display:none' }
@@ -45,8 +46,7 @@
             %section.col.col-4
               %label.label Insumo
               %label.input
-                %select.form-control#insumo{:name =>"subcontract_input[article_id]", :style => 'width:100%;padding: 0;border: none;'}
-                  %option{:value =>' '}Seleccione un insumo
+                %input#insumo.select2.bigdrop.select2-offscreen.form-control{'name' => 'subcontract_input[article_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
 
             %section.col.col-4
               %label.label Precio
@@ -62,7 +62,38 @@
 :javascript
   $(document).ready(function () {
 
-    $('select').select2();
+    $('#insumo').select2({
+      placeholder: "Buscar Insumos...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_articles_production_subcontract_inputs_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          var code = "";
+          if( $('input.sub').is(':checked') )
+            code = "04"
+
+          if( $('input.equip').is(':checked') )
+            code = "03"
+
+          return {
+            q: term,
+            page: page,
+            code: code,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.name + '</div>' },
+      formatSelection: function(node){ return (node.name) },
+      escapeMarkup: function (m) { return m; }
+    });
+
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -113,65 +144,4 @@
       error: function(xhr, status, error) {
       }
     });
-  }
-
-  function check1(){
-    subcontract("#{get_articles_production_subcontract_inputs_path}", "#{form_authenticity_token}", "0302");
-  }
-  function check2(){
-    equipment("#{get_articles_production_subcontract_inputs_path}", "#{form_authenticity_token}", "0302");
-  }
-
-  function subcontract(url, form_token, default_value){
-    $.ajax({
-        type: "POST",
-        url: url,
-        async: false,
-        data: {authenticity_token: form_token, type: 'subcontract'}
-      }).done(function( data ) {
-        newOptions = [];
-        $.each(data.sub, function(key, value){
-          item = {};
-          item['id'] = value.id;
-          item['name'] = value.name;
-          newOptions.push(item);
-        });
-          
-        $('#insumo').empty();
-        $('#insumo').append(
-            $("<option></option>").attr("value", 0).text("Seleccione un insumo")
-        )
-        $.each(newOptions, function(key,value){
-          $('#insumo').append(
-            $("<option></option>").attr("value", value.id).text(value.name)
-          )
-        });
-      });
-  }
-
-  function equipment(url,form_token, default_value){
-    $.ajax({
-        type: "POST",
-        url: url,
-        async: false,
-        data: { authenticity_token: form_token, type: 'equipment'}
-      }).done(function( data ) {
-        newOptions = [];
-        $.each(data.equip, function(key, value){
-          item = {};
-          item['id'] = value.id;
-          item['name'] = value.name;
-          newOptions.push(item);
-        });
-          
-        $('#insumo').empty();
-        $('#insumo').append(
-            $("<option></option>").attr("value", 0).text("Seleccione un insumo")
-        )
-        $.each(newOptions, function(key,value){
-          $('#insumo').append(
-            $("<option></option>").attr("value", value.id).text(value.name)
-          )
-        });
-      });
   }

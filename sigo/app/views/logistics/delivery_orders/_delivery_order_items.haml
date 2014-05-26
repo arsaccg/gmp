@@ -15,8 +15,10 @@
     %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][sector_id]"}
       %option{:value => "0", :selected => true, :disabled => true} Seleccionar Sector
       - @sectors.each do |sector|
-        %option{:value => "#{sector.id}"}
-          = sector.name
+        %optgroup{:label => "#{sector.name}"}
+          -Sector.getSubSectors(sector.code).each do |subsector|
+            %option{:value => "#{subsector.id}"}
+              = subsector.name  
   %td
     %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][phase_id]"}
       %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase

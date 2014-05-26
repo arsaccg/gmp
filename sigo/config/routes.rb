@@ -224,6 +224,7 @@ ArsacLogistica::Application.routes.draw do
     resources :subcontract_inputs do
       collection do
         post 'get_articles'
+        post 'display_articles'
       end
     end
     resources :workers do
@@ -239,6 +240,11 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :sc_valuations do
+      collection do
+        post 'get_report'
+      end
+    end
+    resources :machinery_reports do
       collection do
         post 'get_report'
       end
@@ -264,6 +270,7 @@ ArsacLogistica::Application.routes.draw do
     resources :subcontract_equipment_details do
       collection do
         post 'get_component_from_article'
+        post 'display_articles'
       end
     end
     resources :rental_types
@@ -272,6 +279,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'add_more_article'
         post 'add_more_advance'
+        post 'display_articles'
       end
     end
     namespace :daily_works do

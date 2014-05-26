@@ -7,7 +7,7 @@ class Production::CategoryOfWorkersController < ApplicationController
   end
 
   def show
-    #@categoryOfWorker = CategoryOfWorker.find(params[:id])
+    @categoryOfWorker = CategoryOfWorker.all
     render layout: false
   end
 
