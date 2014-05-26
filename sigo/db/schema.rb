@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140523044406) do
+ActiveRecord::Schema.define(version: 20140526224234) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.string   "code"
     t.integer  "type_of_article_id"
     t.integer  "unit_of_measurement_id"
-    t.integer  "specific_id"
+    t.string   "category_id"
   end
 
   create_table "banks", force: true do |t|
@@ -88,6 +88,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "abbreviation"
+    t.integer  "cost_center_id"
   end
 
   create_table "certificates", force: true do |t|
@@ -293,6 +294,13 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.datetime "updated_at"
   end
 
+  create_table "financial_variables", force: true do |t|
+    t.string   "name"
+    t.float    "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "format_per_documents", force: true do |t|
     t.integer  "document_id"
     t.integer  "format_id"
@@ -343,6 +351,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.string   "unit"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_center_id"
   end
 
   add_index "inputbybudgetanditems", ["cod_input"], name: "cod_input_index", using: :btree
@@ -409,6 +418,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.string   "owneritem"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_center_id"
   end
 
   add_index "itembybudgets", ["item_id"], name: "itembybudges_item_id", using: :btree
@@ -580,6 +590,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.float    "total_hours"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_center_id"
   end
 
   create_table "part_people", force: true do |t|
@@ -588,6 +599,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.date     "date_of_creation"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_center_id"
   end
 
   create_table "part_person_details", force: true do |t|
@@ -619,6 +631,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sector_id"
+    t.integer  "cost_center_id"
   end
 
   create_table "phases", force: true do |t|
@@ -773,14 +786,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "code"
-  end
-
-  create_table "specifics", force: true do |t|
-    t.integer  "subcategory_id"
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "code"
+    t.integer  "cost_center_id"
   end
 
   create_table "state_per_order_details", force: true do |t|
@@ -859,12 +865,12 @@ ActiveRecord::Schema.define(version: 20140523044406) do
   add_index "stock_inputs", ["warehouse_id"], name: "index_stock_inputs_on_warehouse_id", using: :btree
   add_index "stock_inputs", ["working_group_id"], name: "index_stock_inputs_on_working_group_id", using: :btree
 
-  create_table "subcategories", force: true do |t|
-    t.string   "code"
-    t.string   "name"
+  create_table "subcontract_advances", force: true do |t|
+    t.date     "date_of_issue"
+    t.float    "advance"
+    t.integer  "subcontract_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "category_id"
   end
 
   create_table "subcontract_details", force: true do |t|
@@ -909,6 +915,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_center_id"
   end
 
   create_table "subcontract_inputs", force: true do |t|
@@ -917,6 +924,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type_article"
+    t.integer  "cost_center_id"
   end
 
   create_table "subcontracts", force: true do |t|
@@ -931,13 +939,8 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
-  end
-
-  create_table "suppliers", force: true do |t|
-    t.string "ruc"
-    t.string "name"
-    t.string "address"
-    t.string "phone"
+    t.float    "igv"
+    t.integer  "cost_center_id"
   end
 
   create_table "testimony_of_consortium_documents", force: true do |t|
@@ -1118,6 +1121,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.string   "second_name"
     t.integer  "position_worker_id"
     t.integer  "article_id"
+    t.integer  "cost_center_id"
   end
 
   create_table "working_groups", force: true do |t|
@@ -1130,6 +1134,7 @@ ActiveRecord::Schema.define(version: 20140523044406) do
     t.integer  "user_inserts_id"
     t.integer  "user_updates_id"
     t.string   "name"
+    t.integer  "cost_center_id"
   end
 
   create_table "works", force: true do |t|

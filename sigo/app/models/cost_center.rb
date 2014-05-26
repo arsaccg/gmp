@@ -17,6 +17,9 @@ class CostCenter < ActiveRecord::Base
 	has_many :part_people
 	has_many :part_of_equipments
 
+  has_many :items
+  has_many :budgets
+
 	belongs_to :company
 
 	# Access
