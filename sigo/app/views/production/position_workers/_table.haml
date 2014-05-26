@@ -21,7 +21,7 @@
               %td 
                 = positionWorker.name
               %td
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_category_of_worker_path(positionWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_position_worker_path(positionWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
 
 :javascript
