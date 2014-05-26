@@ -9,7 +9,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     # Necessary!
     @fuel_articles = Article.where("code LIKE ?", '__32%') # Esto va a cambiar
     @working_group = WorkingGroup.where("cost_center_id = ?", cost_center).first
-    @worker = CategoryOfWorker.find_by_name('Operador').workers.first
+    @worker = PositionWorker.find_by_name('Operador').workers.first
     render layout: false
   end
 
@@ -55,12 +55,13 @@ class Production::PartOfEquipmentsController < ApplicationController
     @subcon = SubcontractEquipment.where("cost_center_id = ?", cost_center)
     @fuel_articles = Article.where("code LIKE ?", '__32%')
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center)
-    @worker = CategoryOfWorker.find_by_name('Operador').workers
+    @worker = PositionWorker.find_by_name('Operador').workers
     render layout: false
   end
 
   def create
     part = PartOfEquipment.new(part_of_equipment_parameters)
+    part.cost_center_id = get_company_cost_center('cost_center')
     if part.save
       flash[:notice] = "Se ha creado correctamente el parte."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -83,10 +84,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     @subcon = SubcontractEquipment.where("cost_center_id = ?", cost_center)
     @type = Array.new
     @fuel_articles = Article.where("code LIKE ?", '__32%')
-    @worker = Array.new
-    CategoryOfWorker.where("name LIKE '%operador%'").each do |wo|
-      @worker= wo.workers
-    end
+    @worker = PositionWorker.find_by_name('Operador').workers
 
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
     @reg_n = Time.now.to_i

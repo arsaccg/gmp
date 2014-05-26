@@ -24,6 +24,7 @@ class Production::PartPeopleController < ApplicationController
 
   def create
     partperson = PartPerson.new(part_person_parameters)
+    partperson.cost_center_id = get_company_cost_center('cost_center')
     if partperson.save
       flash[:notice] = "Se ha creado correctamente la parte de obra."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -44,7 +45,7 @@ class Production::PartPeopleController < ApplicationController
     @worker = Worker.find(params[:worker_id])
     @id_worker = @worker.id
     @name_worker = @worker.first_name + ' ' + @worker.second_name + ' ' + @worker.paternal_surname + ' ' + @worker.maternal_surname
-    @category_worker = @worker.category_of_worker.name
+    @category_worker = @worker.article.name
     render(partial: 'part_people_items', :layout => false)
   end
 

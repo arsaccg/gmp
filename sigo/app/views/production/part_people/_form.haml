@@ -44,7 +44,7 @@
             %select#worker-select.select2.form-control(name='worker_id' style='width:100%;padding: 0;border: none;')
               - @workers.each do |worker|
                 %option(value = "#{worker.id}")
-                  = worker.category_of_worker.name + " - " + worker.first_name + " " + worker.second_name + " " + worker.paternal_surname + " " + worker.maternal_surname
+                  = worker.article.name + " - " + worker.first_name + " " + worker.second_name + " " + worker.paternal_surname + " " + worker.maternal_surname
 
           %section.col.col-2
             %div

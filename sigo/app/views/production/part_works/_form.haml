@@ -70,21 +70,20 @@
               -if @action == "edit"
                 - @partworkde.each do |part|
                   %tr.partwork_item{id: "tr" + @reg_n.to_s}
+                    %td.part-id{"style"=>"display:none"}
+                      = hidden_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][id]', part.id
+                    %td.article-id{"style"=>"display:none"}
+                      = hidden_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][part_work_id]', @partwork.id
                     %td.article-id{"style"=>"display:none"}
                       = hidden_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][article_id]', part.article_id
                     %td.col-md-2
-                      -@articles.each do |ar|
-                        - if part.article_id==ar.id
-                          = ar.name
+                      = part.article.name
                     %td.col-md-2
-                      -@unit.each do |u|
-                        -@articles.each do |ar|
-                          - if ar.unit_of_measurement_id==u.id
-                            = u.name
-                    %td.amount.col-md-1{:style => "width:5%"}
-                      = part.bill_of_quantitties
+                      = part.article.unit_of_measurement.name
+                    %td.bill-of-quantitties.col-md-1{:style => "width:5%"}
+                      = text_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][bill_of_quantitties]', part.bill_of_quantitties , class: "form-control bill-of-quantitties"
                     %td.description
-                      = part.description
+                      = text_area_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][description]', part.description, class: "form-control description"
                     %td{:style => "width: 1%; text-align: center;"}
                       %label.checkbox
                         = check_box 'part_work', '[part_work_details_attributes][' + @reg_n.to_s + '][_destroy]'

@@ -112,7 +112,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
         trabajadore = trabajador_detalle.worker
         id = trabajadore.id
         nombre = "#{trabajadore.paternal_surname + ' ' + trabajadore.maternal_surname}, #{trabajadore.first_name}  #{trabajadore.second_name}"
-        categoria = "#{trabajadore.category_of_worker.name}"              
+        categoria = "#{trabajadore.article.name}"              
         total_horas     = trabajador_detalle.total_hours.to_f
         total_normales  = trabajador_detalle.normal_hours.to_f
         total_60        = trabajador_detalle.he_60.to_f

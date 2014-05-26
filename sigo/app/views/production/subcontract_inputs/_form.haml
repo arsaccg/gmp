@@ -16,22 +16,13 @@
               %label.label Insumo
               %label.input
                 %select.form-control{:name =>"subcontract_input[article_id]", :style => 'width:100%;padding: 0;border: none;'}
-                  -if @subcontractInput.type_article == "03"
-                    - @equip.each do |article|
-                      -if @subcontractInput.article_id== article.id
-                        %option{:value => "#{article.id}", :selected=>"selected"}
-                          = article.name
-                      -else
-                        %option{:value => "#{article.id}"}
-                          = article.name
-                  -else
-                    - @sub.each do |article|
-                      -if @subcontractInput.article_id== article.id
-                        %option{:value => "#{article.id}", :selected=>"selected"}
-                          = article.name
-                      -else
-                        %option{:value => "#{article.id}"}
-                          = article.name
+                  - @articles.each do |article|
+                    -if @subcontractInput.article_id == article.id
+                      %option{:value => "#{article.id}", :selected=>"selected"}
+                        = article.name
+                    -else
+                      %option{:value => "#{article.id}"}
+                        = article.name
             %section.col.col-4
               %label.label Precio
               %label.input{for: "price"}
@@ -136,7 +127,7 @@
         type: "POST",
         url: url,
         async: false,
-        data: {authenticity_token: form_token}
+        data: {authenticity_token: form_token, type: 'subcontract'}
       }).done(function( data ) {
         newOptions = [];
         $.each(data.sub, function(key, value){
@@ -163,7 +154,7 @@
         type: "POST",
         url: url,
         async: false,
-        data: { authenticity_token: form_token}
+        data: { authenticity_token: form_token, type: 'equipment'}
       }).done(function( data ) {
         newOptions = [];
         $.each(data.equip, function(key, value){
