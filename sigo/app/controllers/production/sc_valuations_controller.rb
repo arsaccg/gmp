@@ -16,6 +16,7 @@ class Production::ScValuationsController < ApplicationController
     @totalprice = 0
     @totalprice2 = 0
     @totalprice3 = 0
+    @subadvances = 0
     @cad = Array.new
     @cad2 = Array.new
     @company = params[:company_id]
@@ -48,13 +49,19 @@ class Production::ScValuationsController < ApplicationController
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
     end
-    @totalprice4 = @totalprice2-@totalprice-@totalprice3
+    @subcontract.subcontract_advances.each do |subadvances|
+      @subadvances+=subadvances.advance
+    end
+    @totalbill= @totalprice2-@subcontract.initial_amortization_number
+    @totalbilligv= (@totalprice2-@subcontract.initial_amortization_number)*@subcontract.igv
+    @totalbillwigv= @totalbill+@totalbilligv
+    @retention=@subcontract.detraction.to_i+@subcontract.guarantee_fund.to_i+@totalprice+@totalprice3
     render(partial: 'report_table', :layout => false)
   end
 
   def business_days_array(start_date, end_date, working_group_id)
     workers_array = ActiveRecord::Base.connection.execute("
-      SELECT  cow.name AS category,
+      SELECT  art.name AS category,
         cow.normal_price,
         cow.he_60_price,
         cow.he_100_price,
@@ -66,14 +73,15 @@ class Production::ScValuationsController < ApplicationController
         cow.he_100_price*SUM( ppd.he_100 ),
         uom.name, 
         p.date_of_creation 
-      FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow
+      FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow, articles art
       WHERE p.working_group_id IN(" + working_group_id + ")
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
-      AND p.id = ppd.part_person_id 
+      AND p.id = ppd.part_person_id
+      AND w.article_id = art.id
       AND ppd.worker_id = w.id
-      AND w.category_of_worker_id = cow.id
-      AND uom.id = cow.unit_of_measurement_id
-      GROUP BY cow.name
+      AND w.article_id = cow.article_id
+      AND uom.id = art.unit_of_measurement_id
+      GROUP BY art.name
     ")
     return workers_array
   end

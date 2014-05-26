@@ -45,9 +45,11 @@
                   %td 
                     = article.code
                   %td
-                    = article.type_of_article.name
+                    - if article.type_of_article != nil
+                      = article.type_of_article.name
                   %td
-                    = article.category.name
+                    - if article.category != nil
+                      = article.category.name
                   %td
                     = article.name
                   %td
