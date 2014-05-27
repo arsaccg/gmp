@@ -17,9 +17,36 @@ class Production::ScValuationsController < ApplicationController
     @totalprice2 = 0
     @totalprice3 = 0
     @subadvances = 0
+    @valorizacionsinigv = 0
+    @amortizaciondeadelanto = 0
+    @amortizaciondeadelantoigv = 0
+    @totalfacturar = 0
+    @totalfacigv = 0
+    @totalincluidoigv = 0
+    @retenciones = 0
+    @detraccion = 0
+    @fondogarantia1 = 0
+    @fondogarantia2 = 0
+    @descuestoequipos = 0
+    @descuentomateriales = 0
+    @netoapagar = 0
+    @accumulated_valorizacionsinigv = 0
+    @accumulated_amortizaciondeadelanto = 0
+    @accumulated_totalfacturar = 0
+    @accumulated_totalfacigv = 0
+    @accumulated_totalincluidoigv = 0
+    @accumulated_retenciones = 0
+    @accumulated_detraccion = 0
+    @accumulated_fondogarantia1 = 0
+    @accumulated_fondogarantia2 = 0
+    @accumulated_descuestoequipos = 0
+    @accumulated_descuentomateriales = 0
+    @accumulated_netoapagar = 0
     @cad = Array.new
     @cad2 = Array.new
     @company = params[:company_id]
+    @numbercode = 1
+    @numbercode = @numbercode.to_s.rjust(3,'0')
     @entity= Entity.find_by_id(params[:executor])
     if params[:executor]=="0"
       @working_group = WorkingGroup.all
@@ -57,6 +84,19 @@ class Production::ScValuationsController < ApplicationController
     @totalbilligv= (@totalprice2-@subcontract.initial_amortization_number)*@subcontract.igv
     @totalbillwigv= @totalbill+@totalbilligv
     @retention=@subcontract.detraction.to_i+@subcontract.guarantee_fund.to_i+@totalprice+@totalprice3
+    @accumulated_valorizacionsinigv = @totalprice2+@valorizacionsinigv
+    @accumulated_amortizaciondeadelanto = @subcontract.initial_amortization_number+@amortizaciondeadelantoigv
+    @accumulated_totalfacturar = @totalbill+@totalfacturar
+    @accumulated_totalfacigv = @totalbilligv+@totalfacigv
+    @accumulated_totalincluidoigv = @totalbillwigv+@totalincluidoigv
+    @accumulated_retenciones = @retention+@retenciones
+    @accumulated_detraccion = @subcontract.detraction.to_f+@retenciones
+    @accumulated_fondogarantia1 = @subcontract.guarantee_fund.to_f+@fondogarantia1
+    @accumulated_fondogarantia2 = @totalprice+@fondogarantia2
+    @accumulated_descuestoequipos = @totalprice3+@descuestoequipos
+    @accumulated_descuentomateriales = @descuentomateriales
+    @accumulated_netoapagar = @netoapagar
+    @balance = @subcontract.contract_amount - @subadvances + @accumulated_amortizaciondeadelanto
     render(partial: 'report_table', :layout => false)
   end
 
