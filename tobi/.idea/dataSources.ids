@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source source="LOCAL" name="Rails tobi: development" uuid="c75dd289-dd68-4606-9b8e-464bbd4f2257">
+    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
+  </data-source>
+  <data-source source="LOCAL" name="Rails tobi: test" uuid="82a1878e-63f6-4d28-9716-41786fe23d57">
+    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
+  </data-source>
+  <data-source source="LOCAL" name="Rails tobi: poduction" uuid="ca25b9e0-33f1-414a-b0e5-c6d45e46fa32">
+    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
+  </data-source>
+</component>

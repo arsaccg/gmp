@@ -11,7 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140525055718) do
+
+ActiveRecord::Schema.define(version: 20140526224234) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -354,6 +355,7 @@ ActiveRecord::Schema.define(version: 20140525055718) do
     t.string   "unit"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_center_id"
   end
 
   add_index "inputbybudgetanditems", ["cod_input"], name: "cod_input_index", using: :btree
@@ -420,6 +422,7 @@ ActiveRecord::Schema.define(version: 20140525055718) do
     t.string   "owneritem"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_center_id"
   end
 
   add_index "itembybudgets", ["item_id"], name: "itembybudges_item_id", using: :btree
@@ -930,8 +933,8 @@ ActiveRecord::Schema.define(version: 20140525055718) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
-    t.integer  "cost_center_id"
     t.float    "igv"
+    t.integer  "cost_center_id"
   end
 
   create_table "testimony_of_consortium_documents", force: true do |t|

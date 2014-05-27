@@ -87,24 +87,7 @@ class Management::WbsitemsController < ApplicationController
 
   def get_items_from_project
     @wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs)  
-    @data = Array.new
-    data = ask_socket("select * from log_fases")
-    data.each do |item|
-      arr = Array.new
-      arr_str = item.gsub("(", "[").gsub(")", "]").gsub("None", "''").gsub("EOF", "")
-      begin
-        puts arr_str.to_s
-        begin
-            @data << eval(arr_str)
-        rescue Exception => exc
-            puts "RESCUED!"
-        end
-        
-      rescue 
-        puts "ERROR : " + arr_str.to_s
-      end
-    end
-
+    @data = Phase.all
     render :get_items_from_project, layout: false
   end
 

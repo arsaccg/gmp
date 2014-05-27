@@ -9,9 +9,19 @@ class Production::SubcontractInputsController < ApplicationController
 
   def new
     @subcontractInput = SubcontractInput.new
-    
     @company = params[:company_id]
     render layout: false
+  end
+
+  def display_articles
+    word = params[:q]
+    code = params[:code]
+    article_hash = Array.new
+    articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE code LIKE '#{code}%' AND name LIKE '#{word}%'")
+    articles.each do |art|
+      article_hash << {'id' => art[0], 'name' => art[1]}
+    end
+    render json: {:articles => article_hash}  
   end
 
   def create
@@ -61,16 +71,6 @@ class Production::SubcontractInputsController < ApplicationController
     subcontract = SubcontractInput.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el Detalle del Insumo."
     render :json => subcontract
-  end
-
-  def get_articles
-    if params[:type] == 'subcontract'
-      @sub = Article.where("code LIKE ?", "04%")
-      render json: { :sub => @sub }
-    elsif params[:type] == 'equipment'
-      @equip = Article.where("code LIKE ?", "03%")
-      render json: { :equip => @equip }
-    end
   end
 
   private

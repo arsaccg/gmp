@@ -4,11 +4,18 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
     @subcontract = params[:subcontract]
     @partequi = SubcontractEquipmentDetail.where("subcontract_equipment_id= ?", @subcontract)
     @article= Array.new
-    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
-      @article = arti.articles
-    end
-    
+    @article = TypeOfArticle.find_by_code("03").articles
     render layout: false
+  end
+
+  def display_articles
+    word = params[:q]
+    article_hash = Array.new
+    articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE code LIKE '03%' AND name LIKE '%#{word}%'")
+    articles.each do |art|
+      article_hash << {'id' => art[0], 'name' => art[1]}
+    end
+    render json: {:articles => article_hash}  
   end
 
   def show
@@ -20,10 +27,7 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
     @company = params[:company_id]
     @subcontract = params[:subcontract]
     @partequi = SubcontractEquipmentDetail.new
-    @article= Array.new
-    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
-      @article = arti.articles
-    end
+    @article = TypeOfArticle.find_by_code("03").articles
     @rental = RentalType.all
     render layout: false
   end
@@ -47,10 +51,6 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
     @company = params[:company_id]
     @subcontract = params[:subcontract]
     @partequi = SubcontractEquipmentDetail.find(params[:id])
-    @article = Array.new
-    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
-      @article = arti.articles
-    end
     @rental = RentalType.all
     @action="edit"
     render layout: false
