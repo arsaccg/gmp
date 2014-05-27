@@ -8,23 +8,17 @@
     .row
       .col-md-1
       .col-md-2
-        %label Equipo
-        %br
-        %label.input{for: "article_id"}
-          %select.form-control#article{:name =>"marchinery_report[article_id]", :style => 'width:100%;padding: 0;border: none;'}
-            %option{:value => "0"} Seleccione un equipo
-            - @article.each do |art|
-              %option{:value => "#{art.id}"}
-                = art.name
+        %label.input
+          %select.form-control.select2#select-1{:style => 'width:100%;padding: 0;border: none;'}
+            %option{:value => "0"} Seleccione
+            %option{:value => "specific"} Especifico
+            %option{:value => "operador"} Operador
+            %option{:value => "frente"} Frente
+            %option{:value => "equipment"} Equipo
       .col-md-2
-        %label Equipo
-        %br
-        %label.input{for: "article_id"}
-          %select.form-control#article{:name =>"marchinery_report[article_id]", :style => 'width:100%;padding: 0;border: none;'}
-            %option{:value => "0"} Seleccione un equipo
-            - @article.each do |art|
-              %option{:value => "#{art.id}"}
-                = art.name
+        %label.input
+          %select.form-control#article{:style => 'width:100%;padding: 0;border: none;'}
+            %option{:value => "0"} Seleccione
       .col-md-3
         %label Fecha de inicio
         %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
@@ -34,7 +28,6 @@
         %input#end-date-input.string.optional.form-control{'name'=>'date2', type: "date"}
 
       .col-md-2
-      %br
         %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
           %i.fa.fa-search
           Consultar
@@ -63,6 +56,8 @@
 :javascript
   $(document).ready(function () {
     $('select').select2({width:'200'});
+    var chosen = $('#select-1').val();
+    complete("#{complete_production_equipment_reports_path}", chosen, "#{form_authenticity_token}", 0);
   });
 
   $('#show-table').click(function(){
@@ -82,3 +77,32 @@
       alert('Por favor, especificar todos los datos necesarios.')
     }
   });
+
+  $('#select-1').change(function(){
+    var chosen = $('#select-1').val();
+    complete("#{complete_production_equipment_reports_path}", chosen, "#{form_authenticity_token}", 0);
+  });
+
+  function complete(url, chosen, form_token, default_value){
+    var str_html = "";
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { chosen: chosen, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.combo, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#article').empty();
+      $.each(newOptions, function(key,value){
+        $('#article').append(
+          $("<option></option>").attr("value", value.id).text(value.name)
+        )
+      });
+    });
+  }

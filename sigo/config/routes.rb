@@ -254,6 +254,7 @@ ArsacLogistica::Application.routes.draw do
     resources :equipment_reports do
       collection do
         post 'get_report'
+        post 'complete'
       end
     end
     resources :valuation_of_equipments do
