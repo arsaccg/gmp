@@ -14,7 +14,7 @@
           %select.form-control#subcontractequipment{:name =>"marchinery_report[subcontract_equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
             %option{:value => "0"} Seleccione un equipo
             - @subcontractequipmentdetail.each do |sced|
-              %option{:value => "#{sced.subcontract_equipment_id}"}
+              %option{:value => "#{sced.article.id}"}
                 = sced.subcontract_equipment.entity.name + ' ' + sced.article.name
       .col-md-3
         %label Fecha de inicio
