@@ -1,21 +1,30 @@
 #content-inside
   .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+    .col-xs-15.col-sm-7.col-md-7.col-lg-4
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
-        Reporte de trabajo de maquinarias
+        Reporte de Equipos
   .row
     .row
       .col-md-1
       .col-md-2
         %label Equipo
         %br
-        %label.input{for: "subcontract_equipment_id"}
-          %select.form-control#subcontractequipment{:name =>"marchinery_report[subcontract_equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
+        %label.input{for: "article_id"}
+          %select.form-control#article{:name =>"marchinery_report[article_id]", :style => 'width:100%;padding: 0;border: none;'}
             %option{:value => "0"} Seleccione un equipo
-            - @subcontractequipmentdetail.each do |sced|
-              %option{:value => "#{sced.subcontract_equipment_id}"}
-                = sced.subcontract_equipment.entity.name + ' ' + sced.article.name
+            - @article.each do |art|
+              %option{:value => "#{art.id}"}
+                = art.name
+      .col-md-2
+        %label Equipo
+        %br
+        %label.input{for: "article_id"}
+          %select.form-control#article{:name =>"marchinery_report[article_id]", :style => 'width:100%;padding: 0;border: none;'}
+            %option{:value => "0"} Seleccione un equipo
+            - @article.each do |art|
+              %option{:value => "#{art.id}"}
+                = art.name
       .col-md-3
         %label Fecha de inicio
         %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
@@ -24,7 +33,7 @@
         %label Fecha de fin
         %input#end-date-input.string.optional.form-control{'name'=>'date2', type: "date"}
 
-      .col-md-3
+      .col-md-2
       %br
         %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
           %i.fa.fa-search
@@ -59,11 +68,11 @@
   $('#show-table').click(function(){
     var start_date = $('#start-date-input').val();
     var end_date = $('#end-date-input').val();
-    var subcontractequipment = $('#subcontractequipment').val();
+    var article = $('#article').val();
 
     if(start_date != null && end_date != null) {
       if(new Date(start_date) < new Date(end_date)) {
-        var parameters = { company_id: "#{@company}", subcontractequipment: subcontractequipment, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+        var parameters = { company_id: "#{@company}", article: article, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
 
         load_items_delivery_order_ajax("#{get_report_production_machinery_reports_path}", 'table-information-result', parameters);
       } else {

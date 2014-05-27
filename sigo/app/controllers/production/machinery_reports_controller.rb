@@ -2,18 +2,24 @@ class Production::MachineryReportsController < ApplicationController
 	def index
 		@company = get_company_cost_center('company')
   	@workingGroups = WorkingGroup.all
-    @article = Article.where("type_of_article_id = 3")
+    @subcontractequipmentdetail = SubcontractEquipmentDetail.all
     render layout: false
 	end
 
 	def get_report
 		@cad = Array.new
+    @cad2 = 0
+    @cad3 = 0
+    @cad4 = 0
 		@poe_group=PartOfEquipment.where("equipment_id LIKE ?", params[:article])
 		start_date = params[:start_date]
     end_date = params[:end_date]
     if @poe_group.present?
       @poe_group.each do |wg|
         @cad << wg.id
+        @cad2 += wg.dif.to_i
+        @cad3 += wg.total_hours
+        @cad4 += wg.fuel_amount
       end
       @cad = @cad.join(',')
     else
@@ -34,7 +40,7 @@ class Production::MachineryReportsController < ApplicationController
     end
     return business_days
   end
-
+  
 	def poe_array(start_date, end_date, working_group_id)
     poe_array = ActiveRecord::Base.connection.execute("
       SELECT poe.code, poe.date, poe.initial_km, poe.final_km, poe.dif, poe.total_hours, art.name, poe.fuel_amount
@@ -46,4 +52,5 @@ class Production::MachineryReportsController < ApplicationController
     ")
     return poe_array
   end
+
 end
