@@ -13,11 +13,20 @@ class Production::PartWorksController < ApplicationController
     render layout: false
   end
 
+  def display_articles
+    word = params[:q]
+    article_hash = Array.new
+    articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE code LIKE '04%' AND name LIKE '%#{word}%'")
+    articles.each do |art|
+      article_hash << {'id' => art[0], 'name' => art[1]}
+    end
+    render json: {:articles => article_hash}  
+  end
+
   def new
     @partwork = PartWork.new
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
-    @articles = TypeOfArticle.find(4).articles
     @company = params[:company_id]
     render layout: false
   end
@@ -53,7 +62,6 @@ class Production::PartWorksController < ApplicationController
     @working_groups = WorkingGroup.all
     @partworkde = @partwork.part_work_details
     @unit = UnitOfMeasurement.all
-    @articles = TypeOfArticle.find(4).articles
     @sectors = Sector.where("code LIKE '__'")
     @action = 'edit'
     @company = params[:company_id]

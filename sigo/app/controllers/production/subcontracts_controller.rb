@@ -72,7 +72,6 @@ class Production::SubcontractsController < ApplicationController
     @subcontract = Subcontract.find(params[:id])
     @suppliers = TypeEntity.find_by_name('Proveedores').entities
     @company = params[:company_id]
-    @articles = TypeOfArticle.find_by_code('04').articles
     @reg_n = (Time.now.to_f*1000).to_i
     @action="edit"
     render layout: false

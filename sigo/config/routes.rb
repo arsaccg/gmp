@@ -252,6 +252,7 @@ ArsacLogistica::Application.routes.draw do
     resources :part_works do
       collection do
         post 'add_more_article'
+        post 'display_articles'
       end
     end
     resources :part_people do
@@ -264,6 +265,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'get_equipment_form_subcontract'
         post 'add_more_register'
+        post 'display_fuel_articles'
       end
     end
     resources :working_groups

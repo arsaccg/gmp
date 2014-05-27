@@ -19,7 +19,7 @@
         %strong Error!
         = flash[:error]
   .row
-    - if @fuel_articles.first != nil && @working_group.present? && @worker.present?
+    - if @fuel_articles.present? && @working_group.present? && @worker.present?
       .col-sm-2
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_part_of_equipment_path}', 'content', {company_id: '#{@company}'} , null, 'GET')"}
           Agregar Parte de Equipo
