@@ -1,0 +1,53 @@
+.row
+  .col-md-1
+  .col-md-2
+    %label Ejecutor
+    %br
+    %label.input{for: "executor_id"}
+      %select.form-control#exe{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
+        %option{:value => "0"} Seleccione un ejecutor
+        - @executors.each do |ex|
+          %option{:value => "#{ex.id}"}
+            = ex.name
+  .col-md-3
+    %label Fecha de inicio
+    %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
+
+  .col-md-3
+    %label Fecha de fin
+    %input#end-date-input.string.optional.form-control{'name'=>'date2', type: "date"}
+
+  .col-md-3
+  %br
+    %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
+      %i.fa.fa-search
+      Consultar
+%br
+.row
+#widget-grid
+  .row
+    %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+      #table-information-result
+
+:javascript
+  $(document).ready(function () {
+    $('select').select2({width:'200'});
+  });
+
+  $('#show-table').click(function(){
+    var start_date = $('#start-date-input').val();
+    var end_date = $('#end-date-input').val();
+    var exe = $('#exe').val();
+
+    if(start_date != null && end_date != null) {
+      if(new Date(start_date) < new Date(end_date)) {
+        var parameters = { company_id: "#{@company}", executor: exe, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+
+        load_items_delivery_order_ajax("#{get_report_production_sc_valuations_path}", 'table-information-result', parameters);
+      } else {
+        alert('La fecha de fin debe ser mayor a la fecha de ingreso.')
+      }
+    } else {
+      alert('Por favor, especificar todos los datos necesarios.')
+    }
+  });
