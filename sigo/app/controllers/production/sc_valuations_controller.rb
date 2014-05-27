@@ -20,6 +20,7 @@ class Production::ScValuationsController < ApplicationController
     @cad = Array.new
     @cad2 = Array.new
     @company = params[:company_id]
+    @entity= Entity.find_by_id(params[:executor])
     if params[:executor]=="0"
       @working_group = WorkingGroup.all
     end
