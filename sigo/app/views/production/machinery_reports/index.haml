@@ -7,20 +7,19 @@
   .row
     .row
       .col-md-1
-      .col-md-2
+      .col-md-4
         %label Equipo
         %br
-        %label.input{for: "subcontract_equipment_id"}
-          %select.form-control#subcontractequipment{:name =>"marchinery_report[subcontract_equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
-            %option{:value => "0"} Seleccione un equipo
-            - @subcontractequipmentdetail.each do |sced|
-              %option{:value => "#{sced.article.id}"}
-                = sced.subcontract_equipment.entity.name + ' ' + sced.article.name
-      .col-md-3
+        %select.form-control#subcontractequipment{:name =>"marchinery_report[subcontract_equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
+          %option{:value => "0"} Seleccione un equipo
+          - @subcontractequipmentdetail.each do |sced|
+            %option{:value => "#{sced.article.id}"}
+              = sced.subcontract_equipment.entity.name + ' - ' + sced.article.name
+      .col-md-2
         %label Fecha de inicio
         %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
 
-      .col-md-3
+      .col-md-2
         %label Fecha de fin
         %input#end-date-input.string.optional.form-control{'name'=>'date2', type: "date"}
 
@@ -53,7 +52,7 @@
 
 :javascript
   $(document).ready(function () {
-    $('select').select2({width:'200'});
+    $('select').select2({width:'100%'});
   });
 
   $('#show-table').click(function(){

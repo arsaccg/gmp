@@ -1,7 +1,7 @@
 class Production::MachineryReportsController < ApplicationController
 	def index
 		@company = get_company_cost_center('company')
-  	@workingGroups = WorkingGroup.all
+  	#@workingGroups = WorkingGroup.all
     @subcontractequipmentdetail = SubcontractEquipmentDetail.all
     render layout: false
 	end
