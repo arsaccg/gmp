@@ -20,7 +20,7 @@ class Production::PartWorksController < ApplicationController
     articles.each do |art|
       article_hash << {'id' => art[0], 'name' => art[1]}
     end
-    render json: {:articles => article_hash}  
+    render json: {:articles => article_hash}
   end
 
   def new

@@ -99,6 +99,7 @@ ArsacLogistica::Application.routes.draw do
     resources :delivery_orders do
       collection do
         post 'add_delivery_order_item_field'
+        post 'display_articles'
         post 'show_rows_delivery_orders'
         get 'show_tracking_orders'
       end
@@ -134,6 +135,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'add_order_service_item_field'
         post 'show_rows_orders_service'
+        post 'display_articles'
       end
       member do
         get 'gorevise'
