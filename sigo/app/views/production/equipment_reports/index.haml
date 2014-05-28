@@ -1,0 +1,108 @@
+#content-inside
+  .row
+    .col-xs-15.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Reporte de Equipos
+  .row
+    .row
+      .col-md-1
+      .col-md-2
+        %label.input
+          %select.form-control.select2#select-1{:style => 'width:100%;padding: 0;border: none;'}
+            %option{:value => "0"} Seleccione
+            %option{:value => "specific"} Especifico
+            %option{:value => "operador"} Operador
+            %option{:value => "frente"} Frente
+            %option{:value => "equipment"} Equipo
+      .col-md-2
+        %label.input
+          %select.form-control#article{:style => 'width:100%;padding: 0;border: none;'}
+            %option{:value => "0"} Seleccione
+      .col-md-3
+        %label Fecha de inicio
+        %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
+
+      .col-md-3
+        %label Fecha de fin
+        %input#end-date-input.string.optional.form-control{'name'=>'date2', type: "date"}
+
+      .col-md-2
+        %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
+          %i.fa.fa-search
+          Consultar
+    %br
+    .row
+    #widget-grid
+      .row
+        %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+          #table-information-result
+    - if flash[:notice] != nil
+      .alert.alert-success.fade.in{"style" => "clear:both"}
+        %button.close{"data-dismiss" => "alert"}
+          ×
+        %i.fa-fw.fa.fa-check
+        %strong Éxito
+        = flash[:notice]
+    - if flash[:error] != nil
+      .alert.alert-danger.fade.in
+        %button.close{"data-dismiss" => "alert"}
+          ×
+        %i.fa-fw.fa.fa-times
+        %strong Error!
+        = flash[:error]
+
+
+:javascript
+  $(document).ready(function () {
+    $('select').select2({width:'200'});
+    var chosen = $('#select-1').val();
+    complete("#{complete_production_equipment_reports_path}", chosen, "#{form_authenticity_token}", 0);
+  });
+
+  $('#show-table').click(function(){
+    var start_date = $('#start-date-input').val();
+    var end_date = $('#end-date-input').val();
+    var article = $('#article').val();
+
+    if(start_date != null && end_date != null) {
+      if(new Date(start_date) < new Date(end_date)) {
+        var parameters = { company_id: "#{@company}", article: article, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+
+        load_items_delivery_order_ajax("#{get_report_production_machinery_reports_path}", 'table-information-result', parameters);
+      } else {
+        alert('La fecha de fin debe ser mayor a la fecha de ingreso.')
+      }
+    } else {
+      alert('Por favor, especificar todos los datos necesarios.')
+    }
+  });
+
+  $('#select-1').change(function(){
+    var chosen = $('#select-1').val();
+    complete("#{complete_production_equipment_reports_path}", chosen, "#{form_authenticity_token}", 0);
+  });
+
+  function complete(url, chosen, form_token, default_value){
+    var str_html = "";
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { chosen: chosen, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.combo, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#article').empty();
+      $.each(newOptions, function(key,value){
+        $('#article').append(
+          $("<option></option>").attr("value", value.id).text(value.name)
+        )
+      });
+    });
+  }

@@ -7,7 +7,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     @article = Article.all
     @worker = Worker.where("cost_center_id = ?", cost_center)
     # Necessary!
-    @fuel_articles = Article.where("code LIKE ?", '__32%') # Esto va a cambiar
+    @fuel_articles = Article.where("code LIKE ?", '__32%').first # Esto va a cambiar
     @working_group = WorkingGroup.where("cost_center_id = ?", cost_center).first
     @worker = PositionWorker.find_by_name('Operador').workers.first
     render layout: false
@@ -47,13 +47,31 @@ class Production::PartOfEquipmentsController < ApplicationController
     render layout: false
   end
 
+  def display_fuel_articles
+    if params[:element].blank?
+      word = params[:q]
+      article_hash = Array.new
+      articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE code LIKE '__32%' AND name LIKE '%#{word}%'")
+      articles.each do |art|
+        article_hash << { 'id' => art[0], 'name' => art[1] }
+      end
+      render json: {:articles => article_hash}
+    else
+      article_hash = Array.new
+      articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE id = #{params[:element]}")
+      articles.each do |art|
+        article_hash << { 'id' => art[0], 'name' => art[1] }
+      end
+      render json: {:articles => article_hash}
+    end
+  end
+
   def new
     @company = params[:company_id]
     cost_center = get_company_cost_center('cost_center')
     @working_groups = WorkingGroup.where("cost_center_id = ?", cost_center)
     @partofequipment = PartOfEquipment.new
     @subcon = SubcontractEquipment.where("cost_center_id = ?", cost_center)
-    @fuel_articles = Article.where("code LIKE ?", '__32%')
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center)
     @worker = PositionWorker.find_by_name('Operador').workers
     render layout: false

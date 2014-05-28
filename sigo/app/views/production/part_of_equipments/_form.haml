@@ -84,18 +84,7 @@
               %section.col.col-5
                 %label.label Tipo de Combustible
                 %label.input
-                  %select.form-control#fuel{:name =>"part_of_equipment[subcategory_id]", :style => 'width:100%;padding: 0;border: none;'}
-                    -@fuel_articles.each do |fuel|
-                      -if @action =="edit"
-                        -if @partofequipment.subcategory_id == fuel.id
-                          %option{:value => "#{fuel.id}", :selected=>"selected"}
-                            = fuel.name
-                        -else
-                          %option{:value => "#{fuel.id}"}
-                            = fuel.name
-                      -else
-                        %option{:value => "#{fuel.id}"}
-                          = fuel.name
+                  %input#fuel.select2.bigdrop.select2-offscreen.form-control{'name' => 'part_of_equipment[subcategory_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
 
               %section.col.col-3
                 %label.label Cantidad de Combustible
@@ -161,7 +150,7 @@
                                   = subsector.name
                           
                       %td.phase.col-lg-2
-                        %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][subphase_id]"}
+                        %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][phase_id]"}
                           - @phases.each do |phas|
                             %optgroup{:label => "#{phas.name}"}
                               - Phase.get_subphases(phas.code).each do |subphase|
@@ -190,10 +179,48 @@
 :javascript
   $(document).ready(function () {
     
-
     var subcontract_id = $("#ent").val();
     complete_equipment("#{get_equipment_form_subcontract_production_part_of_equipments_path}", subcontract_id, "#{form_authenticity_token}", "0302");
+
     $('select').select2();
+    $('#fuel').select2({
+      placeholder: "Buscar Combustible...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_fuel_articles_production_part_of_equipments_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      initSelection: function(element, callback) {
+        var id=$(element).val();
+        if (id != "") {
+          $.ajax("#{display_fuel_articles_production_part_of_equipments_path}", {
+            type: 'POST',
+            data: {
+              element: id,
+              authenticity_token: "#{form_authenticity_token}"
+            },
+            dataType: "json"
+          }).done(function(data) { 
+            callback(data.articles[0]);
+          });
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.name + '</div>' },
+      formatSelection: function(node){ return node.name },
+      escapeMarkup: function (m) { return m; }
+    });
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -339,8 +366,6 @@
         });
         $('#equipment').empty();
         $.each(newOptions, function(key,value){
-          console.log("id:"+"#{@id}");
-          console.log(value.id);
           if ("#{@id}" == value.id)
             $('#equipment').append(
               $("<option></option>").attr("value", value.id).attr("selected", "selected").text(value.name)

@@ -1,25 +1,24 @@
 class Production::MachineryReportsController < ApplicationController
 	def index
 		@company = get_company_cost_center('company')
-  	@workingGroups = WorkingGroup.all
-    @article = Article.where("type_of_article_id = 3")
+  	#@workingGroups = WorkingGroup.all
+    @subcontractequipmentdetail = SubcontractEquipmentDetail.all
     render layout: false
 	end
 
 	def get_report
-		@cad = Array.new
-		@poe_group=PartOfEquipment.where("equipment_id LIKE ?", params[:article])
+		@totaldif = 0
+    @totaltotalhours = 0
+    @totalfuel_amount = 0
+		@subcontractequipmentarticle= params[:subcontractequipment]
 		start_date = params[:start_date]
     end_date = params[:end_date]
-    if @poe_group.present?
-      @poe_group.each do |wg|
-        @cad << wg.id
-      end
-      @cad = @cad.join(',')
-    else
-      @cad = '0'
+		@poe_array = poe_array(start_date, end_date, @subcontractequipmentarticle)
+    @poe_array.each do |workerDetail|
+      @totaldif += workerDetail[4].to_i
+      @totaltotalhours += workerDetail[5]
+      @totalfuel_amount += workerDetail[7]
     end
-		@poe_array = poe_array(start_date, end_date, @cad)
 		@dias_habiles =  range_business_days(start_date,end_date)
 		render(partial: 'report_table', :layout => false)
 	end
@@ -34,16 +33,18 @@ class Production::MachineryReportsController < ApplicationController
     end
     return business_days
   end
-
+  
 	def poe_array(start_date, end_date, working_group_id)
     poe_array = ActiveRecord::Base.connection.execute("
       SELECT poe.code, poe.date, poe.initial_km, poe.final_km, poe.dif, poe.total_hours, art.name, poe.fuel_amount
-			FROM part_of_equipments poe, articles art
-			WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
-			AND poe.id IN(" + working_group_id + ")
-			AND poe.subcategory_id=art.id
-			ORDER BY poe.date
+      FROM part_of_equipments poe, articles art, subcontract_equipments sce
+      WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND sce.id=poe.subcontract_equipment_id
+      AND poe.subcategory_id=art.id
+      AND poe.equipment_id IN(" + working_group_id + ")
+      ORDER BY poe.date
     ")
     return poe_array
   end
+
 end

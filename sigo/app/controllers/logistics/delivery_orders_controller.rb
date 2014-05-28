@@ -10,11 +10,20 @@ class Logistics::DeliveryOrdersController < ApplicationController
     render layout: false
   end
 
+  def display_articles
+    word = params[:q]
+    article_hash = Array.new
+    articles = ActiveRecord::Base.connection.execute("SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol FROM articles a, unit_of_measurements u WHERE a.code LIKE '04%' AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) AND a.unit_of_measurement_id = u.id")
+    articles.each do |art|
+      article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}
+    end
+    render json: {:articles => article_hash}
+  end
+
   def new
     @company = params[:company_id]
     @cost_center = CostCenter.find(params[:cost_center_id])
     @deliveryOrder = DeliveryOrder.new
-    @articles = Article.all
     render layout: false
   end
 
@@ -46,7 +55,6 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def edit
     @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.find(params[:id])
-    @articles = Article.all
     @sectors = Sector.all
     @phases = Phase.where("category LIKE 'phase'")
     @centerOfAttentions = CenterOfAttention.all

@@ -14,7 +14,7 @@
           %section.col.col-4
             %label.label Artículo
             %label.input
-              %input#article.select2.bigdrop.select2-offscreen.form-control{'name' => 'subcontract_equipment_detail[article_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'onchange' => 'artiSelectCH()'}
+              %input#article.select2.bigdrop.select2-offscreen.form-control{'name' => 'subcontract_equipment_detail[article_id]', 'type' => 'hidden', 'value' => "#{@partequi.article_id}", 'style' => 'width:100%;padding: 0;border: none;', 'onchange' => 'artiSelectCH()'}
 
           .col.col-4
             %label.label Código de Articulo      
@@ -158,6 +158,21 @@
         },
         results: function(data, page){
           return {results: data.articles};
+        }
+      },
+      initSelection: function(element, callback) {
+        var id=$(element).val();
+        if (id != "") {
+          $.ajax("#{display_articles_production_subcontract_equipment_details_path}", {
+            type: 'POST',
+            data: {
+              element: id,
+              authenticity_token: "#{form_authenticity_token}"
+            },
+            dataType: "json"
+          }).done(function(data) { 
+            callback(data.articles[0]);
+          });
         }
       },
       formatResult: function(node){ return '<div>' + node.name + '</div>' },

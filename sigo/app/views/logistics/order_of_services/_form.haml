@@ -115,10 +115,7 @@
               .col-lg-12
                 %label(for="article_id" class="col-lg-2 control-label") Insumos
                 .col-lg-6 
-                  %select(name='article_id' class = 'select2 form-control' id = 'article-select' style='width:100%;padding: 0;border: none;')
-                    - @articles.each do |article|
-                      %option(value = "#{article.id}-#{article.unit_of_measurement.id}")
-                        = article.code + " - " + article.name + " - " + article.unit_of_measurement.symbol
+                  %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
                 .col-lg-1
                   = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
                 .col-lg-2 
@@ -217,8 +214,30 @@
 :javascript
   
   $(document).ready(function(){
-    loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
-    $('#article-select').select2();
+    $('#article-select').select2({
+      placeholder: "Buscar Insumos...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_articles_logistics_order_of_services_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name + ' - ' + node.symbol + '</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol) },
+      escapeMarkup: function (m) { return m; }
+    });
+    
     $.cost_center = "#{@company}";
 
     $('#new_order_of_service').ajaxForm({

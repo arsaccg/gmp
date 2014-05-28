@@ -19,11 +19,11 @@
         %strong Error!
         = flash[:error]
   .row
-    - if @fuel_articles.first != nil && @working_group.present? && @worker.present?
+    - if @fuel_articles.present? && @working_group.present? && @worker.present?
       .col-sm-2
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_part_of_equipment_path}', 'content', {company_id: '#{@company}'} , null, 'GET')"}
           Agregar Parte de Equipo
-    - elsif @fuel_articles.first.blank? && @working_group.blank? && @worker.blank?
+    - elsif @fuel_articles.blank? && @working_group.blank? && @worker.blank?
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
           %a.close(data-dismiss="alert" href="#")
@@ -33,7 +33,7 @@
               No puedes crear una Parte de Equipos!
           %p
             Verifica si tienes, por lo menos, 1 Insumo de tipo Combustible (Cod.32), 1 Grupo de Trabajo y 1 Operador.
-    - elsif @fuel_articles.first.blank? && @working_group.blank?
+    - elsif @fuel_articles.blank? && @working_group.blank?
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
           %a.close(data-dismiss="alert" href="#")
@@ -53,7 +53,7 @@
               No puedes crear una Parte de Equipos
           %p
             Verifica si tienes, por lo menos, 1 Grupo de Trabajo y 1 Operador.
-    - elsif @fuel_articles.first.blank?
+    - elsif @fuel_articles.blank?
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
           %a.close(data-dismiss="alert" href="#")

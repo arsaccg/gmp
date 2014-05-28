@@ -99,6 +99,7 @@ ArsacLogistica::Application.routes.draw do
     resources :delivery_orders do
       collection do
         post 'add_delivery_order_item_field'
+        post 'display_articles'
         post 'show_rows_delivery_orders'
         get 'show_tracking_orders'
       end
@@ -134,6 +135,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'add_order_service_item_field'
         post 'show_rows_orders_service'
+        post 'display_articles'
       end
       member do
         get 'gorevise'
@@ -249,9 +251,21 @@ ArsacLogistica::Application.routes.draw do
         post 'get_report'
       end
     end
+    resources :equipment_reports do
+      collection do
+        post 'get_report'
+        post 'complete'
+      end
+    end
+    resources :valuation_of_equipments do
+      collection do
+        post 'get_report'
+      end
+    end
     resources :part_works do
       collection do
         post 'add_more_article'
+        post 'display_articles'
       end
     end
     resources :part_people do
@@ -264,6 +278,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'get_equipment_form_subcontract'
         post 'add_more_register'
+        post 'display_fuel_articles'
       end
     end
     resources :working_groups

@@ -1,16 +1,16 @@
 #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
-  %header
-    %span.widget-icon
-      %i.fa.fa-table
-    %h2
-      Análisis de Producción
-    %br
+  = simple_form_for([:production, @scValuation], html: {autocomplete: 'off' }) do |f|
+    %header
+      %h2
+        Análisis de Producción
 
     %div
       .jarviswidget-editbox
       .widget-body
         %table.table.table-bordered{"style"=>"width:40%"}
           %thead
+            %tr
+              %th{'colspan' => 4, "style"=>"color:#5f5f5f"}= @entity.name + ' ' +@numbercode
             %tr
               %th{"style"=>"color:#5f5f5f"} Monto contratado
               %th{"style"=>"color:#5f5f5f"} Adelanto
@@ -19,9 +19,8 @@
           %tbody
             %th{"style"=>"color:#5f5f5f"}= @subcontract.contract_amount
             %th{"style"=>"color:#5f5f5f"}= @subadvances
-            %th{"style"=>"color:#5f5f5f"} 3
-            %th{"style"=>"color:#5f5f5f"} 4
-
+            %th{"style"=>"color:#5f5f5f"}= @accumulated_amortizaciondeadelanto
+            %th{"style"=>"color:#5f5f5f"}= @balance
     %div
       .jarviswidget-editbox
       .widget-body
@@ -39,74 +38,74 @@
               %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}= @totalprice2
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @valorizacionsinigv
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_valorizacionsinigv
             %tr
               %th{"style"=>"color:#5f5f5f"} 2.00
               %th{"style"=>"color:#5f5f5f"} Amortización de Adelanto (SIN. I.G.V.)
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}= @subcontract.initial_amortization_number
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @amortizaciondeadelantoigv
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_amortizaciondeadelanto
             %tr
               %th{"style"=>"color:#5f5f5f"} 3.00
               %th{"style"=>"color:#5f5f5f"} Total a Facturar
               %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @totalbill
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @totalfacturar
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_totalfacturar
             %tr
               %th{"style"=>"color:#5f5f5f"} 4.00
               %th{"style"=>"color:#5f5f5f"} I.G.V. del Total a Facturar
               %th{"style"=>"color:#5f5f5f"}= @subcontract.igv
               %th{"style"=>"color:#5f5f5f"}= @totalbilligv
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @totalfacigv
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_totalfacigv
             %tr
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"} Total Incluido IGV
               %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @totalbillwigv
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @totalincluidoigv
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_totalincluidoigv
             %tr
               %th{"style"=>"color:#5f5f5f"} 6.00
               %th{"style"=>"color:#5f5f5f"} Retenciones
               %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @retention
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @retenciones
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_retenciones
             %tr
               %th{"style"=>"color:#5f5f5f"} 6.01
               %th{"style"=>"color:#5f5f5f"} Detracción del Total (Incl. I.G.V.)
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}= @subcontract.detraction
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @retenciones
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_detraccion
             %tr
               %th{"style"=>"color:#5f5f5f"} 6.02
               %th{"style"=>"color:#5f5f5f"} Fondo de Garantía N°01
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}= @subcontract.guarantee_fund
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @fondogarantia1
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_fondogarantia1
             %tr
               %th{"style"=>"color:#5f5f5f"} 6.03
               %th{"style"=>"color:#5f5f5f"} Fondo de Garantía N°02
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}= @totalprice
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @fondogarantia2
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_fondogarantia2
             %tr
               %th{"style"=>"color:#5f5f5f"} 6.04
               %th{"style"=>"color:#5f5f5f"} Descuento de Equipos
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}= @totalprice3
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @descuestoequipos
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_descuestoequipos
             %tr
               %th{"style"=>"color:#5f5f5f"} 6.05
               %th{"style"=>"color:#5f5f5f"} Descuento de Materiales
               %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @descuentomateriales
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_descuentomateriales
             %tr
               %th{"style"=>"color:#5f5f5f"} 6.06
               %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
@@ -117,5 +116,40 @@
               %th{"style"=>"color:#5f5f5f"} 07
               %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
               %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @netoapagar
+              %th{"style"=>"color:#5f5f5f"}= @accumulated_netoapagar
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[start_date]', @entity.name
+              = hidden_field_tag 'sv_valuation[end_date]', @entity.name
+              = hidden_field_tag 'sv_valuation[working_group]', @entity.name
+              = hidden_field_tag 'sv_valuation[valuation]', @entity.name
+              = hidden_field_tag 'sv_valuation[initial_amortization_number]', @entity.name
+              = hidden_field_tag 'sv_valuation[initial_amortization_percentage]', @entity.name
+              = hidden_field_tag 'sv_valuation[bill]', @entity.name
+              = hidden_field_tag 'sv_valuation[billigv]', @entity.name
+              = hidden_field_tag 'sv_valuation[totalbill]', @entity.name
+              = hidden_field_tag 'sv_valuation[retention]', @entity.name
+              = hidden_field_tag 'sv_valuation[detraction]', @entity.name
+              = hidden_field_tag 'sv_valuation[guarantee_fund1]', @entity.name
+              = hidden_field_tag 'sv_valuation[guarantee_fund2]', @entity.name
+              = hidden_field_tag 'sv_valuation[equipment_discount]', @entity.name
+              = hidden_field_tag 'sv_valuation[material_discount]', @entity.name
+              = hidden_field_tag 'sv_valuation[hired_amount]', @entity.name
+              = hidden_field_tag 'sv_valuation[advances]', @entity.name
+              = hidden_field_tag 'sv_valuation[accumulated_amortization]', @entity.name
+              = hidden_field_tag 'sv_valuation[balance]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+            Guardar

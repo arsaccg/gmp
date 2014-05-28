@@ -9,13 +9,22 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
   end
 
   def display_articles
-    word = params[:q]
-    article_hash = Array.new
-    articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE code LIKE '03%' AND name LIKE '%#{word}%'")
-    articles.each do |art|
-      article_hash << {'id' => art[0], 'name' => art[1]}
+    if params[:element].blank?
+      word = params[:q]
+      article_hash = Array.new
+      articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE code LIKE '03%' AND name LIKE '%#{word}%'")
+      articles.each do |art|
+        article_hash << {'id' => art[0], 'name' => art[1]}
+      end
+      render json: {:articles => article_hash}
+    else
+      article_hash = Array.new
+      articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE id = #{params[:element]}")
+      articles.each do |art|
+        article_hash << { 'id' => art[0], 'name' => art[1] }
+      end
+      render json: {:articles => article_hash}
     end
-    render json: {:articles => article_hash}  
   end
 
   def show
