@@ -150,7 +150,7 @@
                                   = subsector.name
                           
                       %td.phase.col-lg-2
-                        %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][subphase_id]"}
+                        %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][phase_id]"}
                           - @phases.each do |phas|
                             %optgroup{:label => "#{phas.name}"}
                               - Phase.get_subphases(phas.code).each do |subphase|
