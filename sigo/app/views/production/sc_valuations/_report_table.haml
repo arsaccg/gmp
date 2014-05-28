@@ -119,36 +119,37 @@
               %th{"style"=>"color:#5f5f5f"}= @netoapagar
               %th{"style"=>"color:#5f5f5f"}= @accumulated_netoapagar
               = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[start_date]', @entity.name
-              = hidden_field_tag 'sv_valuation[end_date]', @entity.name
-              = hidden_field_tag 'sv_valuation[working_group]', @entity.name
-              = hidden_field_tag 'sv_valuation[valuation]', @entity.name
-              = hidden_field_tag 'sv_valuation[initial_amortization_number]', @entity.name
-              = hidden_field_tag 'sv_valuation[initial_amortization_percentage]', @entity.name
-              = hidden_field_tag 'sv_valuation[bill]', @entity.name
-              = hidden_field_tag 'sv_valuation[billigv]', @entity.name
-              = hidden_field_tag 'sv_valuation[totalbill]', @entity.name
-              = hidden_field_tag 'sv_valuation[retention]', @entity.name
-              = hidden_field_tag 'sv_valuation[detraction]', @entity.name
-              = hidden_field_tag 'sv_valuation[guarantee_fund1]', @entity.name
-              = hidden_field_tag 'sv_valuation[guarantee_fund2]', @entity.name
-              = hidden_field_tag 'sv_valuation[equipment_discount]', @entity.name
-              = hidden_field_tag 'sv_valuation[material_discount]', @entity.name
-              = hidden_field_tag 'sv_valuation[hired_amount]', @entity.name
-              = hidden_field_tag 'sv_valuation[advances]', @entity.name
-              = hidden_field_tag 'sv_valuation[accumulated_amortization]', @entity.name
-              = hidden_field_tag 'sv_valuation[balance]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[start_date]', @start_date
+              = hidden_field_tag 'sv_valuation[end_date]', @end_date
+              = hidden_field_tag 'sv_valuation[working_group]', @cad
+              = hidden_field_tag 'sv_valuation[valuation]', @totalprice2
+              = hidden_field_tag 'sv_valuation[initial_amortization_number]', @subcontract.initial_amortization_number
+              = hidden_field_tag 'sv_valuation[initial_amortization_percentage]', @amortizaciondeadelantoigv
+              = hidden_field_tag 'sv_valuation[bill]', @totalbill
+              = hidden_field_tag 'sv_valuation[billigv]', @subcontract.igv
+              = hidden_field_tag 'sv_valuation[totalbill]', @totalbillwigv
+              = hidden_field_tag 'sv_valuation[retention]', @retention
+              = hidden_field_tag 'sv_valuation[detraction]', @subcontract.detraction
+              = hidden_field_tag 'sv_valuation[guarantee_fund1]', @subcontract.guarantee_fund
+              = hidden_field_tag 'sv_valuation[guarantee_fund2]', @totalprice
+              = hidden_field_tag 'sv_valuation[equipment_discount]', @totalprice3
+              = hidden_field_tag 'sv_valuation[material_discount]', @descuentomateriales
+              = hidden_field_tag 'sv_valuation[hired_amount]', @subcontract.contract_amount
+              = hidden_field_tag 'sv_valuation[advances]', @subadvances
+              = hidden_field_tag 'sv_valuation[accumulated_amortization]', @accumulated_amortizaciondeadelanto
+              = hidden_field_tag 'sv_valuation[balance]', @balance
+              = hidden_field_tag 'sv_valuation[net_payment]', @netoapagar
+              = hidden_field_tag 'sv_valuation[accumulated_valuation]', @accumulated_valorizacionsinigv
+              = hidden_field_tag 'sv_valuation[accumulated_initial_amortization_number]', @accumulated_amortizaciondeadelanto
+              = hidden_field_tag 'sv_valuation[accumulated_bill]', @accumulated_totalfacturar
+              = hidden_field_tag 'sv_valuation[accumulated_billigv]', @accumulated_totalfacigv
+              = hidden_field_tag 'sv_valuation[accumulated_totalbill]', @accumulated_totalincluidoigv
+              = hidden_field_tag 'sv_valuation[accumulated_retention]', @accumulated_retenciones
+              = hidden_field_tag 'sv_valuation[accumulated_detraction]', @accumulated_detraccion
+              = hidden_field_tag 'sv_valuation[accumulated_guarantee_fund1]', @accumulated_fondogarantia1
+              = hidden_field_tag 'sv_valuation[accumulated_guarantee_fund2]', @accumulated_fondogarantia2
+              = hidden_field_tag 'sv_valuation[accumulated_equipment_discount]', @accumulated_descuestoequipos
+              = hidden_field_tag 'sv_valuation[accumulated_net_payment]', @accumulated_netoapagar
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 

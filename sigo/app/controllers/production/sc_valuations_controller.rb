@@ -4,11 +4,11 @@ class Production::ScValuationsController < ApplicationController
 		render layout: false
 	end
 
-	def new
-		
+	def new		
 		TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
 	      @executors = executor.entities
 	    end
+    @scvaluation = ScValuation.all
 		render layout: false
 	end
 
@@ -56,19 +56,19 @@ class Production::ScValuationsController < ApplicationController
       @working_group = WorkingGroup.where("executor_id LIKE ?", params[:executor])
     end
     @subcontract = Subcontract.find_by_entity_id(params[:executor])
-    start_date = params[:start_date]
-    end_date = params[:end_date]
+    @start_date = params[:start_date]
+    @end_date = params[:end_date]
     if @working_group.present?
       @working_group.each do |wg|
         @cad << wg.id
       end
       @cad = @cad.join(',')
     else
-      @cad = '0'
+      @cade = '0'
     end
-    @workers_array = business_days_array(start_date, end_date, @cad)
-    @workers_array2 = business_days_array2(start_date, end_date, @cad)
-    @workers_array3 = business_days_array3(start_date, end_date, @cad)
+    @workers_array = business_days_array(@start_date, @end_date, @cad)
+    @workers_array2 = business_days_array2(@start_date, @end_date, @cad)
+    @workers_array3 = business_days_array3(@start_date, @end_date, @cad)
     @workers_array.each do |workerDetail|
       @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
     end
@@ -166,5 +166,25 @@ class Production::ScValuationsController < ApplicationController
       GROUP BY art.name
     ")
     return workers_array3
+  end
+
+  def create
+    scvaluation = ScValuation.new(sc_valuation_parameters)
+    if scvaluation.save
+      flash[:notice] = "Se ha creado correctamente la valorizacion."
+      redirect_to :action => :index, company_id: params[:company_id]
+    else
+      scvaluation.errors.messages.each do |attribute, error|
+        puts error.to_s
+        puts error
+      end
+      flash[:error] =  "Ha ocurrido un error en el sistema."
+      redirect_to :action => :index, company_id: params[:company_id]
+    end
+  end
+
+  private
+  def sc_valuation_parameters
+    params.require(:sv_valuation).permit(:name, :start_date, :end_date, :working_group, :valuation, :initial_amortization_number, :initial_amortization_percentage, :bill, :billigv, :totalbill , :retention , :detraction , :guarantee_fund1 , :guarantee_fund2 , :equipment_discount , :material_discount , :hired_amount , :advances , :accumulated_amortization , :balance , :net_payment , :accumulated_valuation , :accumulated_initial_amortization_number , :accumulated_bill , :accumulated_billigv , :accumulated_totalbill , :accumulated_retention , :accumulated_detraction , :accumulated_guarantee_fund1 , :accumulated_guarantee_fund2 , :accumulated_equipment_discount , :accumulated_net_payment )
   end
 end
