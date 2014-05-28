@@ -6,18 +6,42 @@ class Logistics::ArticlesController < ApplicationController
   
   def index
     flash[:error] = nil
-    #@Article = Article.order("id DESC").group("name")
-    @Article = Article.order("id DESC")
     @unitOfMeasurement = UnitOfMeasurement.first
     @group = Category.first
     @company = Company.find(get_company_cost_center("company"))
-    @subgroup = Category.where("code LIKE '____'",).first
+    @subgroup = Category.where("code LIKE '____'").first
     @typeOfArticle = TypeOfArticle.first
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted' || params[:task] == 'import'
       render layout: 'dashboard'
     else
       render layout: false
     end
+  end
+
+  def display_articles
+    display_length = params[:iDisplayLength]
+    pager_number = params[:iDisplayStart]
+    array = Array.new
+    articles = ActiveRecord::Base.connection.execute("
+      SELECT a.id, 
+      a.code AS 'Codigo', 
+      toa.name AS 'Tipo de Articulo', 
+      c.name AS 'Especifico', 
+      a.name AS 'Nombre', 
+      a.description AS 'Descripcion', 
+      uom.name AS 'Unidad de Medida' 
+      FROM articles a, type_of_articles toa, categories c, unit_of_measurements uom 
+      WHERE a.type_of_article_id = toa.id 
+      AND a.category_id = c.id 
+      AND uom.id = a.unit_of_measurement_id 
+      LIMIT #{display_length}
+      OFFSET #{pager_number}"
+    )
+
+    articles.each do |article|
+      array << [article[1],article[2],article[3],article[4],article[5],article[6], "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit', 'content', null, null, 'GET')> Editar </a>" + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/articles/" + article[0].to_s + "?authenticity_token='" + 'params[:authenticity_token]' + "', 'content', '/logistics/articles') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item" + article[3].to_s + "' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"]
+    end
+    render json: { :aaData => array }
   end
 
   def show_article
