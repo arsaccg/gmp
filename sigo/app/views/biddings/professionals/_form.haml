@@ -472,12 +472,16 @@
                                 %label.select.components{'class'=>'comp-check'}
                         .row{'class'=>'comp'}
                           .col-sm-6
-                            .col-sm-4{'class'=>'comp', style: "display:none;"}
-                              -if @component !=nil
-                                - @component.each do |comp|
-                                  %input{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][component_work]", type: "checkbox", :value=> "#{comp.id}"}
-                                    = "#{comp.name}"
-                                  %br
+                            .col-sm-4{style: "display:none;"}
+                              =form_for :works do |ow|
+                                .form-group{'class'=> 'comp' ,style: "display:none;"}
+                                  = ow.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE '%Saneamiento%'")
+                                .form-group#compCiv{style: "display:none;"}
+                                  = ow.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE '%Civil%'")
+                                .form-group#compEle{style: "display:none;"}
+                                  = ow.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE '%Electromecanico%'")
+                                .form-group#compHidra{style: "display:none;"}
+                                  = ow.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE '%Hidraulica%'")
                         %fieldset
                           %legend Archivos a Adjuntar
                           .row

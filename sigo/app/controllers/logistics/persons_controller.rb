@@ -42,15 +42,6 @@ protect_from_forgery with: :null_session, :only => [:destroy, :delete]
         @allCostCenter << cc
       end
     end
-
-    #@allCostCenter.each do |completecc|
-    #  completecc.each do |wtf|
-    #    @other << { :id => wtf.id.to_i, :name => wtf.name.to_s}
-    #  end
-    #end
-
-    puts @other.inspect
-
     @user.cost_centers.each do |cc|
       @costCenter << cc.id
     end
