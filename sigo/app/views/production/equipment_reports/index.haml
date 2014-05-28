@@ -99,6 +99,9 @@
         newOptions.push(item);
       });
       $('#article').empty();
+      $('#article').append(
+          $("<option></option>").attr("value", "0").text("Seleccione")
+        )
       $.each(newOptions, function(key,value){
         $('#article').append(
           $("<option></option>").attr("value", value.id).text(value.name)
