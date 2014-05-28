@@ -121,7 +121,6 @@
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}
                 = text_field_tag 'scValuation[igv]', ' ', class: "form-control amount-item"
-
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}
             %tr
@@ -169,22 +168,9 @@
 :javascript
 
   $(document).ready(function(){
-    if($('#percent').val()!=""){
-      if($('#total').text()!=""){
-        var num =  $('#number').val()/parseInt($('#total').text())*100;
-        $('#percent').val(num.toFixed(2));
-      }else{
-        $('#number').val('Verifique que el valor no sea 0');
-      }
-    }
-
-    if($('#number').val()!=""){
-      if($('#total').text()!= ""){
-        var num = parseInt($('#total').text())*$('#percent').val()/100;
-        $('#number').val(num.toFixed(2));
-      }else{
-        $('#percent').val('Verifique que el valor no sea 0');
-      }
+    if($('#percent').val()!=0){
+      $("#flag").attr('checked', true);
+      check();
     }    
   });
 
