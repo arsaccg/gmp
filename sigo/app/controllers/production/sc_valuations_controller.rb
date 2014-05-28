@@ -5,7 +5,7 @@ class Production::ScValuationsController < ApplicationController
 	end
 
 	def new
-		@costCenter = CostCenter.new
+		
 		TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
 	      @executors = executor.entities
 	    end
@@ -13,6 +13,7 @@ class Production::ScValuationsController < ApplicationController
 	end
 
 	def get_report
+    @scValuation = ScValuation.new
     @totalprice = 0
     @totalprice2 = 0
     @totalprice3 = 0
