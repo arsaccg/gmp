@@ -79,22 +79,7 @@
         %th
           Unidades
       %tbody
-        - @inputs.each do |int|
-          %tr
-            %td= int.code
-            %td= int.name
-            %td
-              %table(class="table-hover white-table small-font table-light"  id="scroll-table" width="100%")
-
-                %tbody
-                  - InputUnit.where(input_id: int.id).each do |inpunit|
-                    %tr
-                      %td= int.code.to_s + inpunit.code.to_s
-                      %td= inpunit.unit.name rescue " "
-                      %td(style="text-align: right;" )
-                        %a{href: "#", class: "btn btn-success btn-mini"}
-                          Seleccionar
-
+        
 
 :javascript
   $(".individual-panel").height($(document).height()/2 -100 );
