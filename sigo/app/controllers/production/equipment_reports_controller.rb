@@ -53,10 +53,10 @@ class Production::EquipmentReportsController < ApplicationController
     end_date = params[:end_date]
 		@poe_array = poe_array(start_date, end_date, @article)
     @poe_array.each do |workerDetail|
-      @totaleffehours += workerDetail[2].to_f
-      @totalfuel += workerDetail[3].to_f
-      @totalratio += workerDetail[4].to_f
+      @totaleffehours += workerDetail[3].to_f
+      @totalfuel += workerDetail[4].to_f
     end
+    @totalratio = @totalfuel/@totaleffehours
 		render(partial: 'report_table', :layout => false)
 	end
 

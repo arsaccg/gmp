@@ -137,6 +137,8 @@
       var num = parseInt($('#total').text())*$('#percent').val()/100;
       $('#number').val(num.toFixed(2));
       $('#totalfac').text(parseInt($('#total').text())- $('#number').val());
+      $('#sv_valuation_initial_amortization_number').val($('#number').val());
+      $('#sv_valuation_initial_amortization_percentage').val($('#percent').val());
     }else{
       $('#number').val('Verifique que el valor no sea 0');
     }
@@ -148,6 +150,8 @@
       var num = $('#number').val()/parseInt($('#total').text())*100;
       $('#percent').val(num.toFixed(2));
       $('#totalfac').text(parseInt($('#total').text())- $('#number').val());
+      $('#sv_valuation_initial_amortization_number').val($('#number').val());
+      $('#sv_valuation_initial_amortization_percentage').val($('#percent').val());
     }else{
       $('#percent').val('Verifique que el valor no sea 0');
     }
