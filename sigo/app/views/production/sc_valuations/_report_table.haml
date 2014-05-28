@@ -37,20 +37,26 @@
               %th{"style"=>"color:#5f5f5f"} 1.00
               %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
               %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}= @totalprice2
+              %th#total{"style"=>"color:#5f5f5f"}= @totalprice2
               %th{"style"=>"color:#5f5f5f"}= @valorizacionsinigv
               %th{"style"=>"color:#5f5f5f"}= @accumulated_valorizacionsinigv
             %tr
               %th{"style"=>"color:#5f5f5f"} 2.00
-              %th{"style"=>"color:#5f5f5f"} Amortización de Adelanto (SIN. I.G.V.)
+              %th{"style"=>"color:#5f5f5f"} 
+                Amortización de Adelanto (SIN. I.G.V.)
+                %br
+                %input#flag{:type =>"checkbox", :onchange => 'check();'} Usar IGV
               %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}= @subcontract.initial_amortization_number
+                %input.form-control#percent{:value => "#{@amortizaciondeadelantoigv}", :readonly => true, "style"=> "width: 40%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}%
+              %th{"style"=>"color:#5f5f5f"}
+                %input.form-control#number{:value => "#{@subcontract.initial_amortization_number}", "style"=> "width: 50%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
               %th{"style"=>"color:#5f5f5f"}= @amortizaciondeadelantoigv
               %th{"style"=>"color:#5f5f5f"}= @accumulated_amortizaciondeadelanto
             %tr
               %th{"style"=>"color:#5f5f5f"} 3.00
               %th{"style"=>"color:#5f5f5f"} Total a Facturar
-              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @totalbill
+              %th{"style"=>"color:#5f5f5f"} 
+              %th#totalfac{"style"=>"color:#5f5f5f"}= @totalbill
               %th{"style"=>"color:#5f5f5f"}= @totalfacturar
               %th{"style"=>"color:#5f5f5f"}= @accumulated_totalfacturar
             %tr
@@ -63,13 +69,15 @@
             %tr
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"} Total Incluido IGV
-              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @totalbillwigv
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @totalbillwigv
               %th{"style"=>"color:#5f5f5f"}= @totalincluidoigv
               %th{"style"=>"color:#5f5f5f"}= @accumulated_totalincluidoigv
             %tr
               %th{"style"=>"color:#5f5f5f"} 6.00
               %th{"style"=>"color:#5f5f5f"} Retenciones
-              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @retention
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @retention
               %th{"style"=>"color:#5f5f5f"}= @retenciones
               %th{"style"=>"color:#5f5f5f"}= @accumulated_retenciones
             %tr
@@ -103,13 +111,16 @@
             %tr
               %th{"style"=>"color:#5f5f5f"} 6.05
               %th{"style"=>"color:#5f5f5f"} Descuento de Materiales
-              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}= @descuentomateriales
               %th{"style"=>"color:#5f5f5f"}= @accumulated_descuentomateriales
             %tr
               %th{"style"=>"color:#5f5f5f"} 6.06
               %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
-              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}
+                = text_field_tag 'scValuation[igv]', ' ', class: "form-control amount-item"
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}
             %tr
@@ -119,37 +130,100 @@
               %th{"style"=>"color:#5f5f5f"}= @netoapagar
               %th{"style"=>"color:#5f5f5f"}= @accumulated_netoapagar
               = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[start_date]', @entity.name
-              = hidden_field_tag 'sv_valuation[end_date]', @entity.name
-              = hidden_field_tag 'sv_valuation[working_group]', @entity.name
-              = hidden_field_tag 'sv_valuation[valuation]', @entity.name
-              = hidden_field_tag 'sv_valuation[initial_amortization_number]', @entity.name
-              = hidden_field_tag 'sv_valuation[initial_amortization_percentage]', @entity.name
-              = hidden_field_tag 'sv_valuation[bill]', @entity.name
-              = hidden_field_tag 'sv_valuation[billigv]', @entity.name
-              = hidden_field_tag 'sv_valuation[totalbill]', @entity.name
-              = hidden_field_tag 'sv_valuation[retention]', @entity.name
-              = hidden_field_tag 'sv_valuation[detraction]', @entity.name
-              = hidden_field_tag 'sv_valuation[guarantee_fund1]', @entity.name
-              = hidden_field_tag 'sv_valuation[guarantee_fund2]', @entity.name
-              = hidden_field_tag 'sv_valuation[equipment_discount]', @entity.name
-              = hidden_field_tag 'sv_valuation[material_discount]', @entity.name
-              = hidden_field_tag 'sv_valuation[hired_amount]', @entity.name
-              = hidden_field_tag 'sv_valuation[advances]', @entity.name
-              = hidden_field_tag 'sv_valuation[accumulated_amortization]', @entity.name
-              = hidden_field_tag 'sv_valuation[balance]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[start_date]', @start_date
+              = hidden_field_tag 'sv_valuation[end_date]', @end_date
+              = hidden_field_tag 'sv_valuation[working_group]', @cad
+              = hidden_field_tag 'sv_valuation[valuation]', @totalprice2
+              = hidden_field_tag 'sv_valuation[initial_amortization_number]', @subcontract.initial_amortization_number
+              = hidden_field_tag 'sv_valuation[initial_amortization_percentage]', @amortizaciondeadelantoigv
+              = hidden_field_tag 'sv_valuation[bill]', @totalbill
+              = hidden_field_tag 'sv_valuation[billigv]', @subcontract.igv
+              = hidden_field_tag 'sv_valuation[totalbill]', @totalbillwigv
+              = hidden_field_tag 'sv_valuation[retention]', @retention
+              = hidden_field_tag 'sv_valuation[detraction]', @subcontract.detraction
+              = hidden_field_tag 'sv_valuation[guarantee_fund1]', @subcontract.guarantee_fund
+              = hidden_field_tag 'sv_valuation[guarantee_fund2]', @totalprice
+              = hidden_field_tag 'sv_valuation[equipment_discount]', @totalprice3
+              = hidden_field_tag 'sv_valuation[material_discount]', @descuentomateriales
+              = hidden_field_tag 'sv_valuation[hired_amount]', @subcontract.contract_amount
+              = hidden_field_tag 'sv_valuation[advances]', @subadvances
+              = hidden_field_tag 'sv_valuation[accumulated_amortization]', @accumulated_amortizaciondeadelanto
+              = hidden_field_tag 'sv_valuation[balance]', @balance
+              = hidden_field_tag 'sv_valuation[net_payment]', @netoapagar
+              = hidden_field_tag 'sv_valuation[accumulated_valuation]', @accumulated_valorizacionsinigv
+              = hidden_field_tag 'sv_valuation[accumulated_initial_amortization_number]', @accumulated_amortizaciondeadelanto
+              = hidden_field_tag 'sv_valuation[accumulated_bill]', @accumulated_totalfacturar
+              = hidden_field_tag 'sv_valuation[accumulated_billigv]', @accumulated_totalfacigv
+              = hidden_field_tag 'sv_valuation[accumulated_totalbill]', @accumulated_totalincluidoigv
+              = hidden_field_tag 'sv_valuation[accumulated_retention]', @accumulated_retenciones
+              = hidden_field_tag 'sv_valuation[accumulated_detraction]', @accumulated_detraccion
+              = hidden_field_tag 'sv_valuation[accumulated_guarantee_fund1]', @accumulated_fondogarantia1
+              = hidden_field_tag 'sv_valuation[accumulated_guarantee_fund2]', @accumulated_fondogarantia2
+              = hidden_field_tag 'sv_valuation[accumulated_equipment_discount]', @accumulated_descuestoequipos
+              = hidden_field_tag 'sv_valuation[accumulated_net_payment]', @accumulated_netoapagar
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
             Guardar
+
+:javascript
+
+  $(document).ready(function(){
+    if($('#percent').val()!=0){
+      $("#flag").attr('checked', true);
+      check();
+    }    
+  });
+
+  function check(){
+    $('#percent').attr("readonly", !$('#flag').is(':checked'));
+    $('#number').attr("disabled", $('#flag').is(':checked'));
+  }
+
+  $('#percent').change(function(){
+    if($('#total').text()!=""){
+      $('#number').val(' ');
+      var num = parseInt($('#total').text())*$('#percent').val()/100;
+      $('#number').val(num.toFixed(2));
+      $('#totalfac').text(parseInt($('#total').text())- $('#number').val());
+      $('#sv_valuation_initial_amortization_number').val($('#number').val());
+      $('#sv_valuation_initial_amortization_percentage').val($('#percent').val());
+    }else{
+      $('#number').val('Verifique que el valor no sea 0');
+    }
+  });
+
+  $('#number').change(function(){
+    if($('#total').text()!= ""){
+      $('#percent').text(' ');
+      var num = $('#number').val()/parseInt($('#total').text())*100;
+      $('#percent').val(num.toFixed(2));
+      $('#totalfac').text(parseInt($('#total').text())- $('#number').val());
+      $('#sv_valuation_initial_amortization_number').val($('#number').val());
+      $('#sv_valuation_initial_amortization_percentage').val($('#percent').val());
+    }else{
+      $('#percent').val('Verifique que el valor no sea 0');
+    }
+  });)
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 47 && charCode < 58 || charCode==46) {
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  function minmax(value, min, max){
+    if($('#flag').is(':checked')){
+      max = 100;
+    }else{
+      max = parseFloat($('#total').text());
+    }
+    
+    if(parseInt(value) < min || isNaN(value)) 
+      return min; 
+    else if(parseInt(value) > max) 
+      return max; 
+    else return value;
+  }

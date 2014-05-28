@@ -13,44 +13,22 @@
         %thead
           %tr
             %th #
-            %th #Parte
-            %th Fecha
-            %th H.inicio
-            %th H.fin
-            %th H.horas
+            %th Nombre encargado
+            %th Nombre Tarea/Fase
             %th H.Efectivas
-            %th Suministro
-            %th Combustible
+            %th Combustible (gln)
+            %th Ratio real (gln/hr)
         %tbody
-        - index = 1
-        -@dias_habiles.each do |dia|
           - @poe_array.each do |workerDetail|
-            -if workerDetail[1]==dia
-              %tr
-                %th= index
-                %th= workerDetail[0]
-                %th= workerDetail[1]
-                %th= workerDetail[2]
-                %th= workerDetail[3]
-                %th= workerDetail[4]
-                %th= workerDetail[5]
-                %th= workerDetail[6]
-                %th= workerDetail[7]
-            -else
-              %tr
-                %th= index
-                %th --
-                %th= dia
-                %th --
-                %th --
-                %th --
-                %th --
-                %th --
-                %th --
-          - index += 1
-        %tr
-          %th{'colspan' => 5}
-          %th= @cad2
-          %th= @cad3
-          %th
-          %th= @cad4
+            %tr
+              %th= workerDetail[0]
+              %th= workerDetail[1]
+              %th= workerDetail[2]
+              %th= workerDetail[3]
+              %th= workerDetail[4]
+              %th= workerDetail[5]
+          %tr
+            %th{'colspan' => 3} Total
+            %th= @totaleffehours
+            %th= @totalfuel
+            %th= @totalratio
