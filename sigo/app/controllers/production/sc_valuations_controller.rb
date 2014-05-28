@@ -1,6 +1,7 @@
 class Production::ScValuationsController < ApplicationController
 	def index
 		@company = get_company_cost_center('company')
+    @scvaluation = ScValuation.all
 		render layout: false
 	end
 
@@ -8,7 +9,6 @@ class Production::ScValuationsController < ApplicationController
 		TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
 	      @executors = executor.entities
 	    end
-    @scvaluation = ScValuation.all
 		render layout: false
 	end
 
