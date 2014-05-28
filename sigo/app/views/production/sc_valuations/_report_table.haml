@@ -1,10 +1,8 @@
 #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
-  %header
-    %span.widget-icon
-      %i.fa.fa-table
-    %h2
-      Análisis de Producción
-    %br
+  = simple_form_for([:production, @scValuation], html: {autocomplete: 'off' }) do |f|
+    %header
+      %h2
+        Análisis de Producción
 
     %div
       .jarviswidget-editbox
@@ -120,3 +118,38 @@
               %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}= @netoapagar
               %th{"style"=>"color:#5f5f5f"}= @accumulated_netoapagar
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[start_date]', @entity.name
+              = hidden_field_tag 'sv_valuation[end_date]', @entity.name
+              = hidden_field_tag 'sv_valuation[working_group]', @entity.name
+              = hidden_field_tag 'sv_valuation[valuation]', @entity.name
+              = hidden_field_tag 'sv_valuation[initial_amortization_number]', @entity.name
+              = hidden_field_tag 'sv_valuation[initial_amortization_percentage]', @entity.name
+              = hidden_field_tag 'sv_valuation[bill]', @entity.name
+              = hidden_field_tag 'sv_valuation[billigv]', @entity.name
+              = hidden_field_tag 'sv_valuation[totalbill]', @entity.name
+              = hidden_field_tag 'sv_valuation[retention]', @entity.name
+              = hidden_field_tag 'sv_valuation[detraction]', @entity.name
+              = hidden_field_tag 'sv_valuation[guarantee_fund1]', @entity.name
+              = hidden_field_tag 'sv_valuation[guarantee_fund2]', @entity.name
+              = hidden_field_tag 'sv_valuation[equipment_discount]', @entity.name
+              = hidden_field_tag 'sv_valuation[material_discount]', @entity.name
+              = hidden_field_tag 'sv_valuation[hired_amount]', @entity.name
+              = hidden_field_tag 'sv_valuation[advances]', @entity.name
+              = hidden_field_tag 'sv_valuation[accumulated_amortization]', @entity.name
+              = hidden_field_tag 'sv_valuation[balance]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @entity.name
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+            Guardar

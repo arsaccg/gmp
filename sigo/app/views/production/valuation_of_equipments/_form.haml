@@ -43,7 +43,7 @@
       if(new Date(start_date) < new Date(end_date)) {
         var parameters = { company_id: "#{@company}", executor: exe, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
 
-        load_items_delivery_order_ajax("#{get_report_production_sc_valuations_path}", 'table-information-result', parameters);
+        load_items_delivery_order_ajax("#{get_report_production_valuation_of_equipments_path}", 'table-information-result', parameters);
       } else {
         alert('La fecha de fin debe ser mayor a la fecha de ingreso.')
       }
