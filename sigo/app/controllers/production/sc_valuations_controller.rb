@@ -1,14 +1,22 @@
 class Production::ScValuationsController < ApplicationController
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 	def index
 		@company = get_company_cost_center('company')
     @scvaluation = ScValuation.all
 		render layout: false
 	end
 
+  def show
+    render layout: false
+  end
+
 	def new		
 		TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
-	      @executors = executor.entities
-	    end
+      @executors = executor.entities
+    end
+    last=ScValuation.last
+    @start = last.start_date
+    @end = last.end_date
 		render layout: false
 	end
 
