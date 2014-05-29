@@ -6,7 +6,7 @@
       Análisis de Producción
 
   %div
-    Parte de Obras
+    Parte de Equipos por Trabajador
     .jarviswidget-editbox
     .widget-body
       %table.table.table-bordered
@@ -32,3 +32,24 @@
             %th= @totaleffehours
             %th= @totalfuel
             %th= @totalratio
+
+  %div
+    Resumen Parte de Equipos
+    .jarviswidget-editbox
+    .widget-body
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th #
+            %th Nombre Tarea/Fase
+            %th H.Efectivas
+            %th Combustible (gln)
+            %th Ratio real (gln/hr)
+        %tbody
+          - @poe_array2.each do |workerDetail2|
+            %tr
+              %th= workerDetail2[0]
+              %th= workerDetail2[1]
+              %th= workerDetail2[2]
+              %th= workerDetail2[3]
+              %th= workerDetail2[4]

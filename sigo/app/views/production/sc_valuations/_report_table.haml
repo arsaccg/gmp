@@ -10,7 +10,7 @@
         %table.table.table-bordered{"style"=>"width:40%"}
           %thead
             %tr
-              %th{'colspan' => 4, "style"=>"color:#5f5f5f"}= @entity.name + ' ' +@numbercode
+              %th{'colspan' => 4, "style"=>"color:#5f5f5f"}= @name
             %tr
               %th{"style"=>"color:#5f5f5f"} Monto contratado
               %th{"style"=>"color:#5f5f5f"} Adelanto
@@ -126,10 +126,10 @@
             %tr
               %th{"style"=>"color:#5f5f5f"} 07
               %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
-              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
+              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @netoactualpagar
               %th{"style"=>"color:#5f5f5f"}= @netoapagar
               %th{"style"=>"color:#5f5f5f"}= @accumulated_netoapagar
-              = hidden_field_tag 'sv_valuation[name]', @entity.name
+              = hidden_field_tag 'sv_valuation[name]', @name
               = hidden_field_tag 'sv_valuation[start_date]', @start_date
               = hidden_field_tag 'sv_valuation[end_date]', @end_date
               = hidden_field_tag 'sv_valuation[working_group]', @cad
@@ -149,7 +149,7 @@
               = hidden_field_tag 'sv_valuation[advances]', @subadvances
               = hidden_field_tag 'sv_valuation[accumulated_amortization]', @accumulated_amortizaciondeadelanto
               = hidden_field_tag 'sv_valuation[balance]', @balance
-              = hidden_field_tag 'sv_valuation[net_payment]', @netoapagar
+              = hidden_field_tag 'sv_valuation[net_payment]', @netoapagaractual
               = hidden_field_tag 'sv_valuation[accumulated_valuation]', @accumulated_valorizacionsinigv
               = hidden_field_tag 'sv_valuation[accumulated_initial_amortization_number]', @accumulated_amortizaciondeadelanto
               = hidden_field_tag 'sv_valuation[accumulated_bill]', @accumulated_totalfacturar

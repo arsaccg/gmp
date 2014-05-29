@@ -30,6 +30,7 @@ class Production::ScValuationsController < ApplicationController
     @fondogarantia2 = 0
     @descuestoequipos = 0
     @descuentomateriales = 0
+    @netoactualpagar = 0
     @netoapagar = 0
     @accumulated_valorizacionsinigv = 0
     @accumulated_amortizaciondeadelanto = 0
@@ -49,6 +50,8 @@ class Production::ScValuationsController < ApplicationController
     @numbercode = 1
     @numbercode = @numbercode.to_s.rjust(3,'0')
     @entity= Entity.find_by_id(params[:executor])
+    @valuationgroup = getsc_valuation(@start_date, @end_date, @entity.name)
+    @name = @entity.name.to_s + ' ' + @numbercode.to_s
     if params[:executor]=="0"
       @working_group = WorkingGroup.all
     end
@@ -96,7 +99,8 @@ class Production::ScValuationsController < ApplicationController
     @accumulated_fondogarantia2 = @totalprice+@fondogarantia2
     @accumulated_descuestoequipos = @totalprice3+@descuestoequipos
     @accumulated_descuentomateriales = @descuentomateriales
-    @accumulated_netoapagar = @netoapagar
+    @netoactualpagar=@totalbillwigv-@retention
+    @accumulated_netoapagar = @accumulated_totalincluidoigv-@accumulated_retenciones
     @balance = @subcontract.contract_amount - @subadvances + @accumulated_amortizaciondeadelanto
     render(partial: 'report_table', :layout => false)
   end
@@ -168,8 +172,28 @@ class Production::ScValuationsController < ApplicationController
     return workers_array3
   end
 
+  def getsc_valuation(start_date, end_date, entityname)
+    valuationgroup = ActiveRecord::Base.connection.execute("
+      SELECT accumulated_valuation, 
+      accumulated_initial_amortization_number, 
+      accumulated_bill, accumulated_billigv, 
+      accumulated_totalbill, 
+      accumulated_retention, 
+      accumulated_detraction, 
+      accumulated_guarantee_fund1, 
+      accumulated_guarantee_fund2, 
+      accumulated_equipment_discount, 
+      accumulated_net_payment 
+      FROM sc_valuations 
+      WHERE name LIKE '" + entityname + "'
+      ORDER BY id DESC LIMIT 1
+    ")
+    return valuationgroup
+  end
+
   def create
     scvaluation = ScValuation.new(sc_valuation_parameters)
+    scvaluation.state
     if scvaluation.save
       flash[:notice] = "Se ha creado correctamente la valorizacion."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -181,6 +205,12 @@ class Production::ScValuationsController < ApplicationController
       flash[:error] =  "Ha ocurrido un error en el sistema."
       redirect_to :action => :index, company_id: params[:company_id]
     end
+  end
+
+  def destroy
+    scvaluation = ScValuation.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente el trabajador."
+    render :json => scvaluation
   end
 
   private
