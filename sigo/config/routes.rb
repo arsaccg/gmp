@@ -71,6 +71,7 @@ ArsacLogistica::Application.routes.draw do
         post 'show_article'
       end
       collection do
+        post 'display_articles'
         post 'import'
         get 'import'
       end
