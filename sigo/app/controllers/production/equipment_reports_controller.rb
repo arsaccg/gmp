@@ -51,11 +51,13 @@ class Production::EquipmentReportsController < ApplicationController
 		start_date = params[:start_date]
     end_date = params[:end_date]
 		@poe_array = poe_array(start_date, end_date, @article)
+		@poe_array2 = poe_array2(start_date, end_date, @article)
     @poe_array.each do |workerDetail|
       @totaleffehours += workerDetail[3].to_f
       @totalfuel += workerDetail[4].to_f
     end
     @totalratio = @totalfuel/@totaleffehours
+    @totalratio =(@totalratio).round(2)
 		render(partial: 'report_table', :layout => false)
 	end
 
@@ -72,6 +74,22 @@ class Production::EquipmentReportsController < ApplicationController
 			AND poed.phase_id=pha.id
     ")
     return poe_array
+  end
+
+  def poe_array2(start_date, end_date, working_group_id)
+    poe_array2 = ActiveRecord::Base.connection.execute("
+      SELECT pha.id, pha.name , SUM(poed.effective_hours) , SUM(poe.fuel_amount), ROUND((SUM(poe.fuel_amount)/SUM(poed.effective_hours)), 2) 
+			FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
+			WHERE sced.code IN(123) 
+			AND poe.date BETWEEN '2014-05-01' AND '2014-05-10'
+			AND poe.worker_id=wo.id 
+			AND poe.equipment_id=sced.article_id 
+			AND poe.id=poed.part_of_equipment_id 
+			AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
+			AND poed.phase_id=pha.id
+			GROUP BY poed.phase_id
+    ")
+    return poe_array2
   end
 
 end
