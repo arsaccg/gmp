@@ -9,7 +9,6 @@ class Production::EquipmentReportsController < ApplicationController
 	def complete
 		@combo=Array.new
 		i=0
-
 		if params[:chosen] == "0"
 		elsif params[:chosen] == "specific"
 			puts "entra"
