@@ -32,7 +32,13 @@
               %td
                 = unit.state
               %td
-                %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_sc_valuation_path(unit.id)}', 'content', null, null, 'GET')"}
+                %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{production_sc_valuation_path(unit.id)}', 'content', null, null, 'GET')"}
                   Ver información
                 %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_sc_valuation_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_sc_valuations_path}?company_id=#{@company}')"}}
                   Eliminar
+
+:javascript
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });                  

@@ -5,6 +5,10 @@ class Production::ScValuationsController < ApplicationController
 		render layout: false
 	end
 
+  def show
+    render layout: false
+  end
+
 	def new		
 		TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
       @executors = executor.entities
