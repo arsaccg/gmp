@@ -7,8 +7,11 @@ class Production::ScValuationsController < ApplicationController
 
 	def new		
 		TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
-	      @executors = executor.entities
-	    end
+      @executors = executor.entities
+    end
+    last=ScValuation.last
+    @start = last.start_date
+    @end = last.end_date
 		render layout: false
 	end
 
