@@ -15,8 +15,10 @@ class Production::ScValuationsController < ApplicationController
       @executors = executor.entities
     end
     last=ScValuation.last
-    @start = last.start_date
-    @end = last.end_date
+    if !last.nil?
+      @start = last.start_date
+      @end = last.end_date
+    end
 		render layout: false
 	end
 

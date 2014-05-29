@@ -41,8 +41,8 @@
             %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
             %th{"style"=>"color:#5f5f5f"}
             %th{"style"=>"color:#5f5f5f"}= @totalprice
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{"style"=>"color:#5f5f5f"}= @valorizacionsinigv
+            %th{"style"=>"color:#5f5f5f"}= @totalprice+@valorizacionsinigv
           %tr
             %th{"style"=>"color:#5f5f5f"} 2.00
             %th{"style"=>"color:#5f5f5f"} 
@@ -53,66 +53,65 @@
               %input.form-control#percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 40%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}%
             %th{"style"=>"color:#5f5f5f"}
               %input.form-control#number{:value => "#{@subcontractequipment.initial_amortization_number}", "style"=> "width: 50%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{"style"=>"color:#5f5f5f"}= @amortizaciondeadelanto
             %th{"style"=>"color:#5f5f5f"}
           %tr
             %th{"style"=>"color:#5f5f5f"} 3.00
             %th{"style"=>"color:#5f5f5f"} Total a Facturar
             %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @bill
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{"style"=>"color:#5f5f5f"}= @totalfacturar
+            %th{"style"=>"color:#5f5f5f"}= @bill+@totalfacturar
           %tr
             %th{"style"=>"color:#5f5f5f"} 4.00
             %th{"style"=>"color:#5f5f5f"} I.G.V. del Total a Facturar
-            %th{"style"=>"color:#5f5f5f"}= @billigv
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @billigv
+            %th{"style"=>"color:#5f5f5f"}= @igvtotalfacturar
+            %th{"style"=>"color:#5f5f5f"}= @billigv+@igvtotalfacturar
           %tr
             %th{"style"=>"color:#5f5f5f"}
             %th{"style"=>"color:#5f5f5f"} Total Incluido IGV
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @bill-@billigv
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th#total-igv{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @bill+@billigv
+            %th{"style"=>"color:#5f5f5f"}= @totalmasigv
+            %th{"style"=>"color:#5f5f5f"}= @bill+@billigv+@totalmasigv
           %tr
             %th{"style"=>"color:#5f5f5f"} 5.00
-            %th{"style"=>"color:#5f5f5f"} Retenciones
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{ 'colspan' => 5, "style"=>"color:#5f5f5f"} Retenciones
           %tr
             %th{"style"=>"color:#5f5f5f"} 5.01
             %th{"style"=>"color:#5f5f5f"} Detracción del Total (Incl. I.G.V.)
             %th{"style"=>"color:#5f5f5f"}
             %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.detraction
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{"style"=>"color:#5f5f5f"}= @detracciontotal
+            %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.detraction.to_f+@detracciontotal
           %tr
             %th{"style"=>"color:#5f5f5f"} 5.02
             %th{"style"=>"color:#5f5f5f"} Descuento de Combustible
             %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @fuel_discount
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}= @accumulated_fuel_discount
+            %th{"style"=>"color:#5f5f5f"}= @descuentocombustible
+            %th{"style"=>"color:#5f5f5f"}= @fuel_discount+@descuentocombustible
           %tr
             %th{"style"=>"color:#5f5f5f"} 5.03
             %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
             %th{"style"=>"color:#5f5f5f"}
             %th{"style"=>"color:#5f5f5f"}                            
-              = text_field_tag 'scValuation[igv]', '5', class: "form-control amount-item"
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+              = text_field_tag 'scValuation[otherdiscounts]', nil, id: "otherdiscounts", class: "form-control amount-item"
+            %th#other-discounts{"style"=>"color:#5f5f5f"}= @descuentootros
+            %th#total-other-discounts{"style"=>"color:#5f5f5f"}
           %tr
             %th{"style"=>"color:#5f5f5f"}
             %th{"style"=>"color:#5f5f5f"} TOTAL RETENCIONES
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @subcontractequipment.detraction.to_i+@fuel_discount.to_i
-            %th{"style"=>"color:#5f5f5f"}
+            %th#totalretention{ 'colspan' => 2, "style"=>"color:#5f5f5f", 'original' => "#{@subcontractequipment.detraction.to_i+@fuel_discount.to_i}"}= @subcontractequipment.detraction.to_i+@fuel_discount.to_i
+            %th{"style"=>"color:#5f5f5f"}= @totalretenciones
             %th{"style"=>"color:#5f5f5f"}
           %tr
             %th{"style"=>"color:#5f5f5f"} 06
             %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
+            %th#net-pay{ 'colspan' => 2, "style"=>"color:#5f5f5f", 'original' => "#{(@bill-@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i)}"}= (@bill-@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i)
+            %th{"style"=>"color:#5f5f5f"}= @netoapagar
             %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+
+            
+    = hidden_field_tag 'totalretention', @subcontractequipment.detraction.to_i+@fuel_discount.to_i, 'id' => 'input-totalretention'
 
     %footer
       %button.btn.btn-primary{type: "submit"}
@@ -132,6 +131,34 @@
     $('#percent').attr("readonly", !$('#flag').is(':checked'));
     $('#number').attr("disabled", $('#flag').is(':checked'));
   }
+
+  $('#otherdiscounts').change(function(){
+    var otherdiscount=$(this).val();
+    var other_discount = $('#other-discounts').text();
+
+    if(otherdiscount=='' || otherdiscount==0){
+
+      $('#totalretention').html($('#totalretention').attr('original'));
+      $('#input-totalretention').val($('#totalretention').attr('original'));
+      $('#total-other-discounts').html(parseFloat($('#totalretention')) + parseFloat(other_discount));
+
+    } else {
+
+      var totalretention=parseFloat($('#totalretention').text())
+      var other_discount = $('#other-discounts').text();
+
+      $('#totalretention').html(parseFloat(otherdiscount)+parseFloat($('#totalretention').attr('original')));
+      $('#input-totalretention').val(parseFloat(otherdiscount)+parseFloat($('#totalretention').attr('original')));
+      $('#total-other-discounts').html(parseFloat(otherdiscount) + parseFloat(other_discount))
+    }
+
+  });
+
+  $('#input-totalretention').change(function(){
+    var retention = parseFloat($(this).text());
+    var total_igv = parseFloat($('#total-igv').text());
+    $('#net-pay').html(total_igv-retention)
+  })
 
   $('#percent').change(function(){
     if($('#total').text()!=""){

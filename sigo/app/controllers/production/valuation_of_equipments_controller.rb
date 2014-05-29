@@ -23,10 +23,19 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @subadvances = 0
     @fuel_discount = 0
     @initial_amortization_percent = 0
-    @accumulated_fuel_discount = 0
     @accumulated_amortizaciondeadelanto = 0
     @totalprice = 0
     @bill = 0
+    @valorizacionsinigv = 0
+    @amortizaciondeadelanto = 0
+    @totalfacturar = 0
+    @igvtotalfacturar = 0
+    @totalmasigv = 0
+    @detracciontotal = 0
+    @descuentocombustible = 0
+    @descuentootros = 0
+    @totalretenciones = 0
+    @netoapagar = 0
 		@subcontractequipment.subcontract_equipment_advances.each do |subadvances|
       @subadvances+=subadvances.advance
     end
