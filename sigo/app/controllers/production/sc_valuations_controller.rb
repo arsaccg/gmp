@@ -1,4 +1,5 @@
 class Production::ScValuationsController < ApplicationController
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 	def index
 		@company = get_company_cost_center('company')
     @scvaluation = ScValuation.all

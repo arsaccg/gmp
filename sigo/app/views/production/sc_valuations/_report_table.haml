@@ -37,6 +37,9 @@
               %th{"style"=>"color:#5f5f5f"} 1.00
               %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
               %th{"style"=>"color:#5f5f5f"}
+                %span{"style"=>"width=20px"}
+                  %a.btn.bg-color-blueDark{:onclick => "'#{}', 'content', null, null, 'GET')"}
+                    %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
               %th#total{"style"=>"color:#5f5f5f"}= @totalprice2
               %th{"style"=>"color:#5f5f5f"}= @valorizacionsinigv
               %th{"style"=>"color:#5f5f5f"}= @accumulated_valorizacionsinigv
@@ -63,21 +66,21 @@
               %th{"style"=>"color:#5f5f5f"} 4.00
               %th{"style"=>"color:#5f5f5f"} I.G.V. del Total a Facturar
               %th{"style"=>"color:#5f5f5f"}= @subcontract.igv
-              %th{"style"=>"color:#5f5f5f"}= @totalbilligv
+              %th#igvRestar{"style"=>"color:#5f5f5f"}= @totalbilligv
               %th{"style"=>"color:#5f5f5f"}= @totalfacigv
               %th{"style"=>"color:#5f5f5f"}= @accumulated_totalfacigv
             %tr
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"} Total Incluido IGV
               %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}= @totalbillwigv
+              %th#totalInIgv{"style"=>"color:#5f5f5f"}= @totalbillwigv
               %th{"style"=>"color:#5f5f5f"}= @totalincluidoigv
               %th{"style"=>"color:#5f5f5f"}= @accumulated_totalincluidoigv
             %tr
               %th{"style"=>"color:#5f5f5f"} 6.00
               %th{"style"=>"color:#5f5f5f"} Retenciones
               %th{"style"=>"color:#5f5f5f"}
-              %th{"style"=>"color:#5f5f5f"}= @retention
+              %th#ret{"style"=>"color:#5f5f5f"}= @retention
               %th{"style"=>"color:#5f5f5f"}= @retenciones
               %th{"style"=>"color:#5f5f5f"}= @accumulated_retenciones
             %tr
@@ -98,6 +101,9 @@
               %th{"style"=>"color:#5f5f5f"} 6.03
               %th{"style"=>"color:#5f5f5f"} Fondo de Garantía N°02
               %th{"style"=>"color:#5f5f5f"}
+                %span{"style"=>"width=20px"}
+                  %a.btn.bg-color-blueDark{:onclick => "'#{}', 'content', null, null, 'GET')"}
+                    %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}        
               %th{"style"=>"color:#5f5f5f"}= @totalprice
               %th{"style"=>"color:#5f5f5f"}= @fondogarantia2
               %th{"style"=>"color:#5f5f5f"}= @accumulated_fondogarantia2
@@ -126,9 +132,11 @@
             %tr
               %th{"style"=>"color:#5f5f5f"} 07
               %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
-              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}= @netoactualpagar
+              %th{"style"=>"color:#5f5f5f"}
+              %th#netpay{"style"=>"color:#5f5f5f"}= @netoactualpagar
               %th{"style"=>"color:#5f5f5f"}= @netoapagar
               %th{"style"=>"color:#5f5f5f"}= @accumulated_netoapagar
+
               = hidden_field_tag 'sv_valuation[name]', @entity.name
               = hidden_field_tag 'sv_valuation[code]', @numbercode
               = hidden_field_tag 'sv_valuation[start_date]', @start_date
@@ -201,8 +209,15 @@
       var num = $('#number').val()/parseInt($('#total').text())*100;
       $('#percent').val(num.toFixed(2));
       $('#totalfac').text((parseInt($('#total').text())- $('#number').val()).toFixed(2));
+      $('#totalInIgv').text(parseFloat($('#totalfac').text()) +  parseFloat($('#igvRestar').text()));
+      $('#netpay').text(parseFloat($('#totalInIgv').text()) -  parseFloat($('#ret').text()));
+
+
       $('#sv_valuation_initial_amortization_number').val($('#number').val());
       $('#sv_valuation_initial_amortization_percentage').val($('#percent').val());
+      $('#sv_valuation_totalbill').val( $('#totalInIgv').text());
+      $('#sv_valuation_net_payment').val( $('#netpay').text());
+
     }else{
       $('#percent').val('Verifique que el valor no sea 0');
     }
