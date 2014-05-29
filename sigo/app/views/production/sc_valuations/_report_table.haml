@@ -47,7 +47,7 @@
                 %br
                 %input#flag{:type =>"checkbox", :onchange => 'check();'} Usar IGV
               %th{"style"=>"color:#5f5f5f"}
-                %input.form-control#percent{:value => "#{@amortizaciondeadelantoigv}", :readonly => true, "style"=> "width: 40%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}%
+                %input.form-control#percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 40%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}%
               %th{"style"=>"color:#5f5f5f"}
                 %input.form-control#number{:value => "#{@subcontract.initial_amortization_number}", "style"=> "width: 50%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
               %th{"style"=>"color:#5f5f5f"}= @amortizaciondeadelanto
@@ -146,6 +146,7 @@
               = hidden_field_tag 'sv_valuation[guarantee_fund2]', @totalprice
               = hidden_field_tag 'sv_valuation[equipment_discount]', @totalprice3
               = hidden_field_tag 'sv_valuation[material_discount]', @descuentomateriales
+              = hidden_field_tag 'sv_valuation[otherdiscount]', 0
               = hidden_field_tag 'sv_valuation[hired_amount]', @subcontract.contract_amount
               = hidden_field_tag 'sv_valuation[advances]', @subadvances
               = hidden_field_tag 'sv_valuation[accumulated_amortization]', @accumulated_amortizaciondeadelanto
@@ -161,6 +162,7 @@
               = hidden_field_tag 'sv_valuation[accumulated_guarantee_fund1]', @accumulated_fondogarantia1
               = hidden_field_tag 'sv_valuation[accumulated_guarantee_fund2]', @accumulated_fondogarantia2
               = hidden_field_tag 'sv_valuation[accumulated_equipment_discount]', @accumulated_descuestoequipos
+              = hidden_field_tag 'sv_valuation[accumulated_otherdiscount]', 0
               = hidden_field_tag 'sv_valuation[accumulated_net_payment]', @accumulated_netoapagar
       %footer
         %button.btn.btn-primary{type: "submit"}

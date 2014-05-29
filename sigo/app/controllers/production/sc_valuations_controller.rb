@@ -21,6 +21,7 @@ class Production::ScValuationsController < ApplicationController
     @valorizacionsinigv = 0
     @amortizaciondeadelanto = 0
     @amortizaciondeadelantoigv = 0
+    @initial_amortization_percent = 0
     @totalfacturar = 0
     @totalfacigv = 0
     @totalincluidoigv = 0
@@ -48,7 +49,6 @@ class Production::ScValuationsController < ApplicationController
     @cad2 = Array.new
     @company = params[:company_id]
     @numbercode = 1
-    @numbercode = @numbercode.to_s.rjust(3,'0')
     @entity= Entity.find_by_id(params[:executor])
     if params[:executor]=="0"
       @working_group = WorkingGroup.all
@@ -57,6 +57,9 @@ class Production::ScValuationsController < ApplicationController
       @working_group = WorkingGroup.where("executor_id LIKE ?", params[:executor])
     end
     @subcontract = Subcontract.find_by_entity_id(params[:executor])
+    if @subcontract.initial_amortization_percent != nil
+      @initial_amortization_percent = @subcontract.initial_amortization_percent
+    end
     @start_date = params[:start_date]
     @end_date = params[:end_date]
     if @working_group.present?
@@ -65,7 +68,7 @@ class Production::ScValuationsController < ApplicationController
       end
       @cad = @cad.join(',')
     else
-      @cade = '0'
+      @cad = '0'
     end
     @workers_array = business_days_array(@start_date, @end_date, @cad)
     @workers_array2 = business_days_array2(@start_date, @end_date, @cad)
@@ -104,8 +107,8 @@ class Production::ScValuationsController < ApplicationController
       end
       @numbercode=@numbercode.to_i
       @numbercode += 1
-      @numbercode = @numbercode.to_s.rjust(3,'0')
     end
+    @numbercode = @numbercode.to_s.rjust(3,'0')
     @accumulated_valorizacionsinigv = @totalprice2+@valorizacionsinigv
     @accumulated_amortizaciondeadelanto = @subcontract.initial_amortization_number+@amortizaciondeadelantoigv
     @accumulated_totalfacturar = @totalbill+@totalfacturar
@@ -119,7 +122,7 @@ class Production::ScValuationsController < ApplicationController
     @accumulated_descuentomateriales = @descuentomateriales
     @netoactualpagar=@totalbillwigv-@retention
     @accumulated_netoapagar = @accumulated_totalincluidoigv-@accumulated_retenciones
-    @balance = @subcontract.contract_amount - @subadvances + @accumulated_amortizaciondeadelanto
+    @balance = @subadvances + @accumulated_amortizaciondeadelanto
     render(partial: 'report_table', :layout => false)
   end
 
@@ -234,6 +237,6 @@ class Production::ScValuationsController < ApplicationController
 
   private
   def sc_valuation_parameters
-    params.require(:sv_valuation).permit(:name, :start_date, :end_date, :working_group, :valuation, :initial_amortization_number, :initial_amortization_percentage, :bill, :billigv, :totalbill , :retention , :detraction , :guarantee_fund1 , :guarantee_fund2 , :equipment_discount , :material_discount , :hired_amount , :advances , :accumulated_amortization , :balance , :net_payment , :accumulated_valuation , :accumulated_initial_amortization_number , :accumulated_bill , :accumulated_billigv , :accumulated_totalbill , :accumulated_retention , :accumulated_detraction , :accumulated_guarantee_fund1 , :accumulated_guarantee_fund2 , :accumulated_equipment_discount , :accumulated_net_payment , :code)
+    params.require(:sv_valuation).permit(:name, :start_date, :end_date, :working_group, :valuation, :initial_amortization_number, :initial_amortization_percentage, :bill, :billigv, :totalbill , :retention , :detraction , :guarantee_fund1 , :guarantee_fund2 , :equipment_discount , :material_discount , :hired_amount , :advances , :accumulated_amortization , :balance , :net_payment , :accumulated_valuation , :accumulated_initial_amortization_number , :accumulated_bill , :accumulated_billigv , :accumulated_totalbill , :accumulated_retention , :accumulated_detraction , :accumulated_guarantee_fund1 , :accumulated_guarantee_fund2 , :accumulated_equipment_discount , :accumulated_net_payment , :code, :otherdiscount, :accumulated_otherdiscount)
   end
 end
