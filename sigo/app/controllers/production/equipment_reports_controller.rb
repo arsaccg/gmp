@@ -53,7 +53,7 @@ class Production::EquipmentReportsController < ApplicationController
     @totalfuel = 0
     @totalratio = 0
     poe_array = ActiveRecord::Base.connection.execute("
-      SELECT pha.id, wo.first_name, pha.name , SUM( poed.effective_hours ) , SUM( poe.fuel_amount ) , ROUND( (SUM( poe.fuel_amount ) / SUM( poed.effective_hours ) ), 2)
+      SELECT pha.id, CONCAT( wo.first_name,  ' ', wo.second_name,  ' ', wo.paternal_surname,  ' ', wo.maternal_surname ) as 'worker', pha.name , SUM( poed.effective_hours ) , SUM( poe.fuel_amount ) , ROUND( (SUM( poe.fuel_amount ) / SUM( poed.effective_hours ) ), 2)
       FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
       WHERE sced.code IN(" + working_group_id + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
