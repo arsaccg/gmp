@@ -5,10 +5,17 @@ class Production::ScValuationsController < ApplicationController
 		render layout: false
 	end
 
+  def show
+    render layout: false
+  end
+
 	def new		
 		TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
-	      @executors = executor.entities
-	    end
+      @executors = executor.entities
+    end
+    last=ScValuation.last
+    @start = last.start_date
+    @end = last.end_date
 		render layout: false
 	end
 
@@ -30,6 +37,7 @@ class Production::ScValuationsController < ApplicationController
     @fondogarantia2 = 0
     @descuestoequipos = 0
     @descuentomateriales = 0
+    @netoactualpagar = 0
     @netoapagar = 0
     @accumulated_valorizacionsinigv = 0
     @accumulated_amortizaciondeadelanto = 0
@@ -85,6 +93,26 @@ class Production::ScValuationsController < ApplicationController
     @totalbilligv= (@totalprice2-@subcontract.initial_amortization_number)*@subcontract.igv
     @totalbillwigv= @totalbill+@totalbilligv
     @retention=@subcontract.detraction.to_i+@subcontract.guarantee_fund.to_i+@totalprice+@totalprice3
+    @valuationgroup = getsc_valuation(@start_date, @end_date, @entity.name)
+    if @valuationgroup.count > 0
+      @valuationgroup.each do |workerDetail|
+        @valorizacionsinigv = workerDetail[0]
+        @amortizaciondeadelanto = workerDetail[1]
+        @totalfacturar = workerDetail[2]
+        @totalfacigv = workerDetail[3]
+        @totalincluidoigv = workerDetail[4]
+        @retenciones = workerDetail[5]
+        @detraccion = workerDetail[6]
+        @fondogarantia1 = workerDetail[7]
+        @fondogarantia2 = workerDetail[8]
+        @descuestoequipos = workerDetail[9]
+        @netoapagar = workerDetail[10]
+        @numbercode = workerDetail[11]
+      end
+      @numbercode=@numbercode.to_i
+      @numbercode += 1
+      @numbercode = @numbercode.to_s.rjust(3,'0')
+    end
     @accumulated_valorizacionsinigv = @totalprice2+@valorizacionsinigv
     @accumulated_amortizaciondeadelanto = @subcontract.initial_amortization_number+@amortizaciondeadelantoigv
     @accumulated_totalfacturar = @totalbill+@totalfacturar
@@ -96,7 +124,8 @@ class Production::ScValuationsController < ApplicationController
     @accumulated_fondogarantia2 = @totalprice+@fondogarantia2
     @accumulated_descuestoequipos = @totalprice3+@descuestoequipos
     @accumulated_descuentomateriales = @descuentomateriales
-    @accumulated_netoapagar = @netoapagar
+    @netoactualpagar=@totalbillwigv-@retention
+    @accumulated_netoapagar = @accumulated_totalincluidoigv-@accumulated_retenciones
     @balance = @subcontract.contract_amount - @subadvances + @accumulated_amortizaciondeadelanto
     render(partial: 'report_table', :layout => false)
   end
@@ -168,8 +197,29 @@ class Production::ScValuationsController < ApplicationController
     return workers_array3
   end
 
+  def getsc_valuation(start_date, end_date, entityname)
+    valuationgroup = ActiveRecord::Base.connection.execute("
+      SELECT accumulated_valuation, 
+      accumulated_initial_amortization_number, 
+      accumulated_bill, accumulated_billigv, 
+      accumulated_totalbill, 
+      accumulated_retention, 
+      accumulated_detraction, 
+      accumulated_guarantee_fund1, 
+      accumulated_guarantee_fund2, 
+      accumulated_equipment_discount, 
+      accumulated_net_payment, 
+      code 
+      FROM sc_valuations 
+      WHERE name LIKE '" + entityname + "'
+      ORDER BY id DESC LIMIT 1
+    ")
+    return valuationgroup
+  end
+
   def create
     scvaluation = ScValuation.new(sc_valuation_parameters)
+    scvaluation.state
     if scvaluation.save
       flash[:notice] = "Se ha creado correctamente la valorizacion."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -183,8 +233,14 @@ class Production::ScValuationsController < ApplicationController
     end
   end
 
+  def destroy
+    scvaluation = ScValuation.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente el trabajador."
+    render :json => scvaluation
+  end
+
   private
   def sc_valuation_parameters
-    params.require(:sv_valuation).permit(:name, :start_date, :end_date, :working_group, :valuation, :initial_amortization_number, :initial_amortization_percentage, :bill, :billigv, :totalbill , :retention , :detraction , :guarantee_fund1 , :guarantee_fund2 , :equipment_discount , :material_discount , :hired_amount , :advances , :accumulated_amortization , :balance , :net_payment , :accumulated_valuation , :accumulated_initial_amortization_number , :accumulated_bill , :accumulated_billigv , :accumulated_totalbill , :accumulated_retention , :accumulated_detraction , :accumulated_guarantee_fund1 , :accumulated_guarantee_fund2 , :accumulated_equipment_discount , :accumulated_net_payment )
+    params.require(:sv_valuation).permit(:name, :start_date, :end_date, :working_group, :valuation, :initial_amortization_number, :initial_amortization_percentage, :bill, :billigv, :totalbill , :retention , :detraction , :guarantee_fund1 , :guarantee_fund2 , :equipment_discount , :material_discount , :hired_amount , :advances , :accumulated_amortization , :balance , :net_payment , :accumulated_valuation , :accumulated_initial_amortization_number , :accumulated_bill , :accumulated_billigv , :accumulated_totalbill , :accumulated_retention , :accumulated_detraction , :accumulated_guarantee_fund1 , :accumulated_guarantee_fund2 , :accumulated_equipment_discount , :accumulated_net_payment , :code)
   end
 end

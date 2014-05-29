@@ -1,0 +1,11 @@
+HOla
+
+%br
+%button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Valorisaciones SC
+:javascript
+
+  $('#backlist').click(function(){
+      load_url_ajax("#{production_sc_valuations_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+  });
