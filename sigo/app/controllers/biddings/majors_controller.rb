@@ -1,4 +1,5 @@
 class Biddings::MajorsController < ApplicationController
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     flash[:error] = nil
     @major = Major.all
