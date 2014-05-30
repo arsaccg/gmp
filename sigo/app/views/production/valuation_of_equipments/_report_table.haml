@@ -1,128 +1,158 @@
 #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
-  %header
-    %span.widget-icon
-      %i.fa.fa-table
-    %h2
-      Valorización de Equipo
-    %br
+  = simple_form_for([:production, @valuationofequipment], html: {autocomplete: 'off' }) do |f|
+    %header
+      %span.widget-icon
+        %i.fa.fa-table
+      %h2
+        Valorización de Equipo
+      %br
 
-  %div
-    .jarviswidget-editbox
-    .widget-body
-      %table.table.table-bordered{"style"=>"width:40%"}
-        %thead
-          %tr
-            %th{'colspan' => 4, "style"=>"color:#5f5f5f"}= @subcontractequipment.entity.name + ' ' + @numbercode
-          %tr
-            %th{"style"=>"color:#5f5f5f"} Monto contratado
-            %th{"style"=>"color:#5f5f5f"} Adelanto
-            %th{"style"=>"color:#5f5f5f"} Amortización Acumulada
-            %th{"style"=>"color:#5f5f5f"} Saldo
-        %tbody
-          %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.contract_amount
-          %th{"style"=>"color:#5f5f5f"}= @subadvances
-          %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.initial_amortization_number+@amortizaciondeadelanto
-          %th{"style"=>"color:#5f5f5f"}= @balance
-
-  %div
-    .jarviswidget-editbox
-    .widget-body
-      %table.table.table-bordered
-        %thead
-          %tr
-            %th{"style"=>"color:#5f5f5f"} Item
-            %th{"style"=>"color:#5f5f5f"} Descripcion
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"} Actual
-            %th{"style"=>"color:#5f5f5f"} Acumulado Anterior
-            %th{"style"=>"color:#5f5f5f"} Acumulado Actual
-        %tbody
-          %tr
-            %th{"style"=>"color:#5f5f5f"} 1.00
-            %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
-            %th{"style"=>"color:#5f5f5f"}
-            %th#total{"style"=>"color:#5f5f5f"}= @totalprice
-            %th{"style"=>"color:#5f5f5f"}= @valorizacionsinigv
-            %th{"style"=>"color:#5f5f5f"}= @totalprice+@valorizacionsinigv
-          %tr
-            %th{"style"=>"color:#5f5f5f"} 2.00
-            %th{"style"=>"color:#5f5f5f"} 
-              Amortización de Adelanto (SIN. I.G.V.)
-              %br
-              %input#flag{:type =>"checkbox", :onchange => 'check();'} Usar IGV
-            %th{"style"=>"color:#5f5f5f"}
-              %input.form-control#percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 40%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}%
-            %th{"style"=>"color:#5f5f5f"}
-              %input.form-control#number{:value => "#{@subcontractequipment.initial_amortization_number}", "style"=> "width: 50%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
-            %th{"style"=>"color:#5f5f5f"}= @amortizaciondeadelanto
+    %div
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered{"style"=>"width:40%"}
+          %thead
+            %tr
+              %th{'colspan' => 4, "style"=>"color:#5f5f5f"}= @subcontractequipment.entity.name + ' ' + @numbercode
+            %tr
+              %th{"style"=>"color:#5f5f5f"} Monto contratado
+              %th{"style"=>"color:#5f5f5f"} Adelanto
+              %th{"style"=>"color:#5f5f5f"} Amortización Acumulada
+              %th{"style"=>"color:#5f5f5f"} Saldo
+          %tbody
+            %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.contract_amount
+            %th{"style"=>"color:#5f5f5f"}= @subadvances
             %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.initial_amortization_number+@amortizaciondeadelanto
-          %tr
-            %th{"style"=>"color:#5f5f5f"} 3.00
-            %th{"style"=>"color:#5f5f5f"} Total a Facturar
-            %th{"style"=>"color:#5f5f5f"}
-            %th#totalfac{"style"=>"color:#5f5f5f"}= @bill
-            %th{"style"=>"color:#5f5f5f"}= @totalfacturar
-            %th{"style"=>"color:#5f5f5f"}= @bill+@totalfacturar
-          %tr
-            %th{"style"=>"color:#5f5f5f"} 4.00
-            %th{"style"=>"color:#5f5f5f"} I.G.V. del Total a Facturar
-            %th{"style"=>"color:#5f5f5f"}
-            %th#igv{"style"=>"color:#5f5f5f"}= @billigv
-            %th{"style"=>"color:#5f5f5f"}= @igvtotalfacturar
-            %th{"style"=>"color:#5f5f5f"}= @billigv+@igvtotalfacturar
-          %tr
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"} Total Incluido IGV
-            %th{"style"=>"color:#5f5f5f"}
-            %th#total-igv{"style"=>"color:#5f5f5f"}= @bill+@billigv
-            %th{"style"=>"color:#5f5f5f"}= @totalmasigv
-            %th{"style"=>"color:#5f5f5f"}= @bill+@billigv+@totalmasigv
-          %tr
-            %th{"style"=>"color:#5f5f5f"} 5.00
-            %th{ 'colspan' => 5, "style"=>"color:#5f5f5f"} Retenciones
-          %tr
-            %th{"style"=>"color:#5f5f5f"} 5.01
-            %th{"style"=>"color:#5f5f5f"} Detracción del Total (Incl. I.G.V.)
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.detraction
-            %th{"style"=>"color:#5f5f5f"}= @detracciontotal
-            %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.detraction.to_f+@detracciontotal
-          %tr
-            %th{"style"=>"color:#5f5f5f"} 5.02
-            %th{"style"=>"color:#5f5f5f"} Descuento de Combustible
-            %th{"style"=>"color:#5f5f5f"}
-            %th{ "style"=>"color:#5f5f5f"}= @fuel_discount
-            %th{"style"=>"color:#5f5f5f"}= @descuentocombustible
-            %th{"style"=>"color:#5f5f5f"}= @fuel_discount+@descuentocombustible
-          %tr
-            %th{"style"=>"color:#5f5f5f"} 5.03
-            %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}                            
-              = text_field_tag 'scValuation[otherdiscounts]', nil, id: "otherdiscounts", class: "form-control amount-item"
-            %th#other-discounts{"style"=>"color:#5f5f5f"}= @descuentootros
-            %th#total-other-discounts{"style"=>"color:#5f5f5f"}
-          %tr
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"} TOTAL RETENCIONES
-            %th{"style"=>"color:#5f5f5f"}
-            %th#totalretention{"style"=>"color:#5f5f5f", 'original' => "#{@subcontractequipment.detraction.to_i+@fuel_discount.to_i}"}= @subcontractequipment.detraction.to_i+@fuel_discount.to_i
-            %th{"style"=>"color:#5f5f5f"}= @totalretenciones
-            %th{"style"=>"color:#5f5f5f"}
-          %tr
-            %th{"style"=>"color:#5f5f5f"} 06
-            %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
-            %th{"style"=>"color:#5f5f5f"}
-            %th#net-pay{ "style"=>"color:#5f5f5f", 'original' => "#{(@bill-@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i)}"}= (@bill-@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i)
-            %th{"style"=>"color:#5f5f5f"}= @netoapagar
-            %th{"style"=>"color:#5f5f5f"}
+            %th{"style"=>"color:#5f5f5f"}= @balance
 
-            
-    = hidden_field_tag 'totalretention', @subcontractequipment.detraction.to_i+@fuel_discount.to_i, 'id' => 'input-totalretention'
+    %div
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th{"style"=>"color:#5f5f5f"} Item
+              %th{"style"=>"color:#5f5f5f"} Descripcion
+              %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"} Actual
+              %th{"style"=>"color:#5f5f5f"} Acumulado Anterior
+              %th{"style"=>"color:#5f5f5f"} Acumulado Actual
+          %tbody
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 1.00
+              %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
+              %th{"style"=>"color:#5f5f5f"}
+              %th#total{"style"=>"color:#5f5f5f"}= @totalprice
+              %th{"style"=>"color:#5f5f5f"}= @valorizacionsinigv
+              %th{"style"=>"color:#5f5f5f"}= @totalprice+@valorizacionsinigv
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 2.00
+              %th{"style"=>"color:#5f5f5f"} 
+                Amortización de Adelanto (SIN. I.G.V.)
+                %br
+                %input#flag{:type =>"checkbox", :onchange => 'check();'} Usar IGV
+              %th{"style"=>"color:#5f5f5f"}
+                %input.form-control#percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 40%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}%
+              %th{"style"=>"color:#5f5f5f"}
+                %input.form-control#number{:value => "#{@subcontractequipment.initial_amortization_number}", "style"=> "width: 50%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
+              %th{"style"=>"color:#5f5f5f"}= @amortizaciondeadelanto
+              %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.initial_amortization_number+@amortizaciondeadelanto
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 3.00
+              %th{"style"=>"color:#5f5f5f"} Total a Facturar
+              %th{"style"=>"color:#5f5f5f"}
+              %th#totalfac{"style"=>"color:#5f5f5f"}= @bill
+              %th{"style"=>"color:#5f5f5f"}= @totalfacturar
+              %th{"style"=>"color:#5f5f5f"}= @bill+@totalfacturar
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 4.00
+              %th{"style"=>"color:#5f5f5f"} I.G.V. del Total a Facturar
+              %th{"style"=>"color:#5f5f5f"}
+              %th#igv{"style"=>"color:#5f5f5f"}= @billigv
+              %th{"style"=>"color:#5f5f5f"}= @igvtotalfacturar
+              %th{"style"=>"color:#5f5f5f"}= @billigv+@igvtotalfacturar
+            %tr
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"} Total Incluido IGV
+              %th{"style"=>"color:#5f5f5f"}
+              %th#total-igv{"style"=>"color:#5f5f5f"}= @bill+@billigv
+              %th{"style"=>"color:#5f5f5f"}= @totalmasigv
+              %th{"style"=>"color:#5f5f5f"}= @bill+@billigv+@totalmasigv
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 5.00
+              %th{ 'colspan' => 5, "style"=>"color:#5f5f5f"} Retenciones
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 5.01
+              %th{"style"=>"color:#5f5f5f"} Detracción del Total (Incl. I.G.V.)
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.detraction
+              %th{"style"=>"color:#5f5f5f"}= @detracciontotal
+              %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.detraction.to_f+@detracciontotal
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 5.02
+              %th{"style"=>"color:#5f5f5f"} Descuento de Combustible
+              %th{"style"=>"color:#5f5f5f"}
+              %th{ "style"=>"color:#5f5f5f"}= @fuel_discount
+              %th{"style"=>"color:#5f5f5f"}= @descuentocombustible
+              %th{"style"=>"color:#5f5f5f"}= @fuel_discount+@descuentocombustible
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 5.03
+              %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"}                            
+                = text_field_tag 'scValuation[otherdiscounts]', nil, id: "otherdiscounts", class: "form-control amount-item"
+              %th#other-discounts{"style"=>"color:#5f5f5f"}= @descuentootros
+              %th#total-other-discounts{"style"=>"color:#5f5f5f"}
+            %tr
+              %th{"style"=>"color:#5f5f5f"}
+              %th{"style"=>"color:#5f5f5f"} TOTAL RETENCIONES
+              %th{"style"=>"color:#5f5f5f"}
+              %th#totalretention{"style"=>"color:#5f5f5f", 'original' => "#{@subcontractequipment.detraction.to_i+@fuel_discount.to_i}"}= @subcontractequipment.detraction.to_i+@fuel_discount.to_i
+              %th{"style"=>"color:#5f5f5f"}= @totalretenciones
+              %th{"style"=>"color:#5f5f5f"}= @subcontractequipment.detraction.to_i+@fuel_discount.to_i + @totalretenciones
+            %tr
+              %th{"style"=>"color:#5f5f5f"} 06
+              %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
+              %th{"style"=>"color:#5f5f5f"}
+              %th#net-pay{ "style"=>"color:#5f5f5f", 'original' => "#{(@bill-@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i)}"}= (@bill+@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i)
+              %th{"style"=>"color:#5f5f5f"}= @netoapagar
+              %th{"style"=>"color:#5f5f5f"}
 
-    %footer
-      %button.btn.btn-primary{type: "submit"}
-        %i.fa.fa-save
-          Guardar
+              
+      = hidden_field_tag 'totalretention', @subcontractequipment.detraction.to_i+@fuel_discount.to_i, 'id' => 'input-totalretention'
+      = hidden_field_tag 'valuation_of_equipment[name]', @subcontractequipment.entity.name
+      = hidden_field_tag 'valuation_of_equipment[code]', @numbercode
+      = hidden_field_tag 'valuation_of_equipment[start_date]', @start_date
+      = hidden_field_tag 'valuation_of_equipment[end_date]', @end_date
+      = hidden_field_tag 'valuation_of_equipment[working_group]', @cad
+      = hidden_field_tag 'valuation_of_equipment[valuation]', @totalprice
+      = hidden_field_tag 'valuation_of_equipment[initial_amortization_number]', @subcontractequipment.initial_amortization_number
+      = hidden_field_tag 'valuation_of_equipment[initial_amortization_percentage]', @initial_amortization_percent
+      = hidden_field_tag 'valuation_of_equipment[bill]', @bill
+      = hidden_field_tag 'valuation_of_equipment[billigv]', @billigv
+      = hidden_field_tag 'valuation_of_equipment[totalbill]', @bill+@billigv
+      = hidden_field_tag 'valuation_of_equipment[retention]', @subcontractequipment.detraction.to_i+@fuel_discount.to_i
+      = hidden_field_tag 'valuation_of_equipment[detraction]', @subcontractequipment.detraction
+      = hidden_field_tag 'valuation_of_equipment[fuel_discount]', @fuel_discount
+      = hidden_field_tag 'valuation_of_equipment[hired_amount]', @subcontractequipment.contract_amount
+      = hidden_field_tag 'valuation_of_equipment[advances]', @subadvances
+      = hidden_field_tag 'valuation_of_equipment[accumulated_amortization]', @subcontractequipment.initial_amortization_number+@amortizaciondeadelanto
+      = hidden_field_tag 'valuation_of_equipment[balance]', @balance
+      = hidden_field_tag 'valuation_of_equipment[net_payment]', 0
+      = hidden_field_tag 'valuation_of_equipment[accumulated_valuation]', @totalprice+@valorizacionsinigv
+      = hidden_field_tag 'valuation_of_equipment[accumulated_initial_amortization_number]', @subcontractequipment.initial_amortization_number+@amortizaciondeadelanto
+      = hidden_field_tag 'valuation_of_equipment[accumulated_bill]', @bill+@totalfacturar
+      = hidden_field_tag 'valuation_of_equipment[accumulated_billigv]', @billigv+@igvtotalfacturar
+      = hidden_field_tag 'valuation_of_equipment[accumulated_totalbill]', @bill+@billigv+@totalmasigv
+      = hidden_field_tag 'valuation_of_equipment[accumulated_retention ]', @subcontractequipment.detraction.to_i+@fuel_discount.to_i + @totalretenciones
+      = hidden_field_tag 'valuation_of_equipment[accumulated_detraction]', @subcontractequipment.detraction.to_f+@detracciontotal
+      = hidden_field_tag 'valuation_of_equipment[accumulated_fuel_discount]', @fuel_discount+@descuentocombustible
+      = hidden_field_tag 'valuation_of_equipment[accumulated_other_discount]', 0
+      = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]', 0
+
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save
+            Guardar
 
 :javascript
 
