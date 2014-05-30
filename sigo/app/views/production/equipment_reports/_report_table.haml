@@ -23,19 +23,27 @@
               - data[1].each do |value|
                 - value['data'].each do |data|
                   %tr
-                    %th= data[0]
-                    %th= data[1]
-                    %th= data[2]
-                    %th= data[3]
-                    %th= data[4]
+                    %th{ 'style' => 'font-weight: normal;' }
+                      = data[0]
+                    %th{ 'style' => 'font-weight: normal;' }
+                      = data[1]
+                    %th{ 'style' => 'font-weight: normal;' }
+                      = data[2]
+                    %th{ 'style' => 'font-weight: normal;' }
+                      = data[3]
+                    %th{ 'style' => 'font-weight: normal;' }
+                      = data[4]
                 %tr
                   %th{'colspan' => 2} Total
-                  %th= value['hours']
-                  %th= value['fuel']
-                  %th= value['ratio']
+                  %th
+                    = value['hours']
+                  %th
+                    = value['fuel']
+                  %th
+                    = value['ratio']
 
   %div
-    Resumen Parte de Equipos
+    %h1.page-title.txt-color-blueDark Resumen Parte de Equipos
     .jarviswidget-editbox
     .widget-body
       %table.table.table-bordered
@@ -49,8 +57,13 @@
         %tbody
           - @poe_array2.each do |workerDetail2|
             %tr
-              %th= workerDetail2[0]
-              %th= workerDetail2[1]
-              %th= workerDetail2[2]
-              %th= workerDetail2[3]
-              %th= workerDetail2[4]
+              %th{'style' => 'font-weight: normal;'}
+                = workerDetail2[0]
+              %th{'style' => 'font-weight: normal;'}
+                = workerDetail2[1]
+              %th{'style' => 'font-weight: normal;'}
+                = workerDetail2[2]
+              %th{'style' => 'font-weight: normal;'}
+                = workerDetail2[3]
+              %th{'style' => 'font-weight: normal;'}
+                = workerDetail2[4]

@@ -54,13 +54,15 @@ class Production::EquipmentReportsController < ApplicationController
     workers = PartOfEquipment.get_workers(working_group_id, start_date, end_date)
     workers.each do |w|
       array = Array.new
+      index = 1
       @totaleffehours = 0
       @totalfuel = 0
       @totalratio = 0
       PartOfEquipment.get_report_per_worker(working_group_id, start_date, end_date, w[0]).each do |rpw|
-        array << [rpw[0], rpw[1], rpw[2], rpw[3], rpw[4]]
+        array << [index, rpw[1], rpw[2], rpw[3], rpw[4]]
         @totaleffehours += rpw[2].to_f
         @totalfuel += rpw[3].to_f
+        index += 1
       end
       @ratio = @totalfuel / @totaleffehours
       @result << [w[1] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
@@ -86,12 +88,3 @@ class Production::EquipmentReportsController < ApplicationController
   end
 
 end
-#SELECT wo.first_name, pha.name , poed.effective_hours , poe.fuel_amount, ROUND((poe.fuel_amount/poed.effective_hours), 2)
-#FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
-#WHERE sced.code=123 
-#AND poe.date BETWEEN '2014-05-01' AND '2014-05-10' 
-#AND poe.worker_id=wo.id 
-#AND poe.equipment_id=sced.article_id 
-#AND poe.id=poed.part_of_equipment_id
-#AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
-#AND poed.phase_id=pha.id
