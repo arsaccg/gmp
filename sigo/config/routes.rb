@@ -245,6 +245,9 @@ ArsacLogistica::Application.routes.draw do
     resources :sc_valuations do
       collection do
         post 'get_report'
+        post 'part_work'
+        post 'part_people'
+        post 'part_equipment'        
       end
     end
     resources :machinery_reports do

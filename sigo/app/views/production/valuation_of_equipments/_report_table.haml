@@ -169,11 +169,11 @@
   $('#percent').change(function(){
     if($('#total').text()!=""){
       $('#number').val(' ');
-      var num = parseInt($('#total').text())*$('#percent').val()/100;
-      $('#number').val(num.toFixed(2));
+      var num = (parseInt($('#total').text())*$('#percent').val()/100).toFixed(2);
+      $('#number').val(num);
       $('#totalfac').text(parseInt($('#total').text())- $('#number').val());
-      $('#total-igv').text(parseFloat($('#total').text()) + parseFloat($('#igv').text()));
-      console.log(parseFloat($('#total').text()) + parseFloat($('#igv').text()));
+      $('#total-igv').text(parseInt($('#totalfac').text()) + parseInt($('#igv').text()));
+      console.log(parseInteger($('#totalfac').text()) + parseFloat($('#igv').text().toFixed(2)));
       $('#sv_valuation_initial_amortization_number').val($('#number').val());
       $('#sv_valuation_initial_amortization_percentage').val($('#percent').val());
     }else{
