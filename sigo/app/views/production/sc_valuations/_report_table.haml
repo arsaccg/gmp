@@ -183,7 +183,7 @@
     %br
     %div#part-work
     %br
-    %div#part-people
+    #part-people.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
     %br
     %div#part-equipment
 
@@ -267,7 +267,11 @@
 
   function part_people() {
     data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}" };
-    append_url_ajax('#{part_people_production_sc_valuations_path}', 'part-people', data, '', 'POST');
+    load_url_ajax('#{part_people_production_sc_valuations_path}', 'part-people', data, '', 'POST');
+    $('#part-people').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
   }
 
   function part_equipment() {
