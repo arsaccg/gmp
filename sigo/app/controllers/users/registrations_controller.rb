@@ -13,9 +13,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
 	  resource_saved = resource.save
 	  yield resource if block_given?
 	  if resource_saved
+      Company.all.each do |com|
+        ActiveRecord::Base.connection.execute("INSERT INTO companies_users (company_id , user_id) VALUES ("+com.id.to_s+", "+@user.id.to_s+")")
+      end
+      CostCenter.all.each do |com|
+        ActiveRecord::Base.connection.execute("INSERT INTO cost_centers_users (cost_center_id , user_id) VALUES ("+com.id.to_s+", "+@user.id.to_s+")")
+      end
 	    if resource.active_for_authentication?
 	      set_flash_message :notice, :signed_up if is_flashing_format?
 	      sign_up(resource_name, resource)
+
 	      respond_with resource, location: after_sign_up_path_for(resource)
 	    else
 	      set_flash_message :notice, :"signed_up_but_#{resource.inactive_message}" if is_flashing_format?
