@@ -160,7 +160,10 @@
     if($('#percent').val()!=0){
       $("#flag").attr('checked', true);
       check();
-    }    
+    }
+    $('#new_valuation_of_equipment').ajaxForm({
+      target: '#content'
+    });
   });
 
   function check(){
