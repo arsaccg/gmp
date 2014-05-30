@@ -8,6 +8,38 @@ class Production::ScValuationsController < ApplicationController
 
   def show
     @scvaluation=ScValuation.find_by_id(params[:id])
+    @valorizacionsinigv = 0
+    @amortizaciondeadelanto = 0
+    @totalfacturar = 0
+    @totalfacigv = 0
+    @totalincluidoigv = 0
+    @retenciones = 0
+    @detraccion = 0
+    @fondogarantia1 = 0
+    @fondogarantia2 = 0
+    @descuentoequipos = 0
+    @otrosdescuentos = 0
+    @netoapagar = 0
+    @code = 0
+    @code = @scvaluation.code.to_i - 1
+    @code = @code.to_s.rjust(3,'0')
+    @valuationgroup = getsc_valuation2(@scvaluation.start_date, @scvaluation.end_date, @scvaluation.name, @code)
+    if @valuationgroup.count > 0
+      @valuationgroup.each do |workerDetail|
+        @valorizacionsinigv = workerDetail[0]
+        @amortizaciondeadelanto = workerDetail[1]
+        @totalfacturar = workerDetail[2]
+        @totalfacigv = workerDetail[3]
+        @totalincluidoigv = workerDetail[4]
+        @retenciones = workerDetail[5]
+        @detraccion = workerDetail[6]
+        @fondogarantia1 = workerDetail[7]
+        @fondogarantia2 = workerDetail[8]
+        @descuentoequipos = workerDetail[9]
+        @otrosdescuentos = workerDetail[10]
+        @netoapagar = workerDetail[11]
+      end
+    end
     render layout: false
   end
 
@@ -222,6 +254,28 @@ class Production::ScValuationsController < ApplicationController
       code 
       FROM sc_valuations 
       WHERE name LIKE '" + entityname + "'
+      ORDER BY id DESC LIMIT 1
+    ")
+    return valuationgroup
+  end
+
+  def getsc_valuation2(start_date, end_date, entityname, code)
+    valuationgroup = ActiveRecord::Base.connection.execute("
+      SELECT accumulated_valuation, 
+      accumulated_initial_amortization_number, 
+      accumulated_bill, accumulated_billigv, 
+      accumulated_totalbill, 
+      accumulated_retention, 
+      accumulated_detraction, 
+      accumulated_guarantee_fund1, 
+      accumulated_guarantee_fund2, 
+      accumulated_equipment_discount, 
+      accumulated_otherdiscount, 
+      accumulated_net_payment, 
+      code 
+      FROM sc_valuations 
+      WHERE name LIKE '" + entityname + "' 
+      AND code LIKE '" + code + "'
       ORDER BY id DESC LIMIT 1
     ")
     return valuationgroup

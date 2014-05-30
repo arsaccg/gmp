@@ -36,92 +36,102 @@
             %th{"style"=>"color:#5f5f5f"} 1.00
             %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
             %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+              %span{"style"=>"width=20px"}
+                %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_work();'}
+                  %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.valuation
+            %th{"style"=>"color:#5f5f5f"}=@valorizacionsinigv
             %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_valuation
           %tr
             %th{"style"=>"color:#5f5f5f"} 2.00
             %th{"style"=>"color:#5f5f5f"} 
               Amortización de Adelanto (SIN. I.G.V.)
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.initial_amortization_percentage
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.initial_amortization_number
+            %th{"style"=>"color:#5f5f5f"}=@amortizaciondeadelanto
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_initial_amortization_number
           %tr
             %th{"style"=>"color:#5f5f5f"} 3.00
             %th{"style"=>"color:#5f5f5f"} Total a Facturar
-            %th{"style"=>"color:#5f5f5f"} 
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@scvaluation.bill
+            %th{"style"=>"color:#5f5f5f"}=@totalfacturar
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_bill
           %tr
             %th{"style"=>"color:#5f5f5f"} 4.00
             %th{"style"=>"color:#5f5f5f"} I.G.V. del Total a Facturar
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@scvaluation.billigv
+            %th{"style"=>"color:#5f5f5f"}=@totalfacigv
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_billigv
           %tr
             %th{"style"=>"color:#5f5f5f"}
             %th{"style"=>"color:#5f5f5f"} Total Incluido IGV
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@scvaluation.totalbill
+            %th{"style"=>"color:#5f5f5f"}=@totalincluidoigv
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_totalbill
           %tr
             %th{"style"=>"color:#5f5f5f"} 6.00
             %th{"style"=>"color:#5f5f5f"} Retenciones
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@scvaluation.retention
+            %th{"style"=>"color:#5f5f5f"}=@retenciones
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_retention
           %tr
             %th{"style"=>"color:#5f5f5f"} 6.01
             %th{"style"=>"color:#5f5f5f"} Detracción del Total (Incl. I.G.V.)
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@scvaluation.detraction
+            %th{"style"=>"color:#5f5f5f"}=@detraccion
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_detraction
           %tr
             %th{"style"=>"color:#5f5f5f"} 6.02
             %th{"style"=>"color:#5f5f5f"} Fondo de Garantía N°01
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@scvaluation.guarantee_fund1
+            %th{"style"=>"color:#5f5f5f"}=@fondogarantia1
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_guarantee_fund1
           %tr
             %th{"style"=>"color:#5f5f5f"} 6.03
             %th{"style"=>"color:#5f5f5f"} Fondo de Garantía N°02
             %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+              %span{"style"=>"width=20px"}
+                %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_people();'}
+                  %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}      
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.guarantee_fund2
+            %th{"style"=>"color:#5f5f5f"}=@fondogarantia2
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_guarantee_fund2
           %tr
             %th{"style"=>"color:#5f5f5f"} 6.04
             %th{"style"=>"color:#5f5f5f"} Descuento de Equipos
             %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+              %span{"style"=>"width=20px"}
+                %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_equipment();'}
+                  %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.equipment_discount
+            %th{"style"=>"color:#5f5f5f"}=@descuentoequipos
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_equipment_discount
           %tr
             %th{"style"=>"color:#5f5f5f"} 6.05
             %th{"style"=>"color:#5f5f5f"} Descuento de Materiales
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
             %th{"style"=>"color:#5f5f5f"}
             %th{"style"=>"color:#5f5f5f"}
           %tr
             %th{"style"=>"color:#5f5f5f"} 6.06
             %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@scvaluation.otherdiscount
+            %th{"style"=>"color:#5f5f5f"}=@otrosdescuentos
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_otherdiscount
           %tr
             %th{"style"=>"color:#5f5f5f"} 07
             %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
-            %th{"style"=>"color:#5f5f5f"}
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@scvaluation.net_payment
+            %th{"style"=>"color:#5f5f5f"}=@netoapagar
+            %th{"style"=>"color:#5f5f5f"}=@scvaluation.accumulated_net_payment
+    %br
+    %br
+    #part-work.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+    %br
+    #part-people.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+    %br
+    #part-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+
 %br
 %button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
   %i.fa.fa-arrow-left>
@@ -131,3 +141,30 @@
   $('#backlist').click(function(){
       load_url_ajax("#{production_sc_valuations_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
   });
+
+  function part_work() {
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@scvaluation.start_date}", end_date: "#{@scvaluation.end_date}", cad: "#{@scvaluation.working_group}" };
+    load_url_ajax('#{part_work_production_sc_valuations_path}', 'part-work', data, '', 'POST');
+    $('#part-work').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function part_people() {
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@scvaluation.start_date}", end_date: "#{@scvaluation.end_date}", cad: "#{@scvaluation.working_group}" };
+    load_url_ajax('#{part_people_production_sc_valuations_path}', 'part-people', data, '', 'POST');
+    $('#part-people').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function part_equipment() {
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@scvaluation.start_date}", end_date: "#{@scvaluation.end_date}", cad: "#{@scvaluation.working_group}" };
+    load_url_ajax('#{part_equipment_production_sc_valuations_path}', 'part-equipment', data, '', 'POST');
+    $('#part-equipment').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
