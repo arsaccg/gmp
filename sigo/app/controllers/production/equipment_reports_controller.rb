@@ -44,9 +44,6 @@ class Production::EquipmentReportsController < ApplicationController
     start_date = params[:start_date]
     end_date = params[:end_date]
     @poe_array = poe_array(start_date, end_date, @article)
-
-    puts @poe_array.inspect
-
 		@poe_array2 = poe_array2(start_date, end_date, @article)
 		render(partial: 'report_table', :layout => false)
 	end
@@ -76,8 +73,8 @@ class Production::EquipmentReportsController < ApplicationController
     poe_array2 = ActiveRecord::Base.connection.execute("
       SELECT pha.id, pha.name , SUM(poed.effective_hours) , SUM(poe.fuel_amount), ROUND((SUM(poe.fuel_amount)/SUM(poed.effective_hours)), 2) 
 			FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
-			WHERE sced.code IN(123) 
-			AND poe.date BETWEEN '2014-05-01' AND '2014-05-10'
+			WHERE sced.code IN(" + working_group_id + ")
+			AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
 			AND poe.worker_id=wo.id 
 			AND poe.equipment_id=sced.article_id 
 			AND poe.id=poed.part_of_equipment_id 
