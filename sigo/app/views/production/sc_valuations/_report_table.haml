@@ -157,7 +157,7 @@
               = hidden_field_tag 'sv_valuation[guarantee_fund2]', @totalprice
               = hidden_field_tag 'sv_valuation[equipment_discount]', @totalprice3
               = hidden_field_tag 'sv_valuation[material_discount]', @descuentomateriales
-              = hidden_field_tag 'sv_valuation[otherdiscount]', 0
+              = hidden_field_tag 'sv_valuation[otherdiscount]', nil
               = hidden_field_tag 'sv_valuation[hired_amount]', @subcontract.contract_amount
               = hidden_field_tag 'sv_valuation[advances]', @subadvances
               = hidden_field_tag 'sv_valuation[accumulated_amortization]', @accumulated_amortizaciondeadelanto
@@ -173,7 +173,7 @@
               = hidden_field_tag 'sv_valuation[accumulated_guarantee_fund1]', @accumulated_fondogarantia1
               = hidden_field_tag 'sv_valuation[accumulated_guarantee_fund2]', @accumulated_fondogarantia2
               = hidden_field_tag 'sv_valuation[accumulated_equipment_discount]', @accumulated_descuestoequipos
-              = hidden_field_tag 'sv_valuation[accumulated_otherdiscount]', 0
+              = hidden_field_tag 'sv_valuation[accumulated_otherdiscount]', nil
               = hidden_field_tag 'sv_valuation[accumulated_net_payment]', @accumulated_netoapagar
       %footer
         %button.btn.btn-primary{type: "submit"}
@@ -207,7 +207,7 @@
       var num = parseInt($('#total').text())*$('#percent').val()/100;
       $('#number').val(num.toFixed(2));
       $('#sv_valuation_initial_amortization_number').val(num.toFixed(2));
-      $('#sv_valuation_initial_amortization_percent').val($('#percent').val());
+      $('#sv_valuation_initial_amortization_percentage').val($('#percent').val());
 
       $('#totalfac').text((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
       $('#sv_valuation_bill').val((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
@@ -235,17 +235,16 @@
 
       $('#acumnetpay').text((parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2));
       $('#sv_valuation_accumulated_net_payment').val((parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2));
-
     }
   });
 
   $('#number').change(function(){
     if($('#total').text()!= ""){
       $('#percent').text(' ');
-      var num = ($('#number').val()/parseInt($('#total').text())*100).toFixed(2);
-      $('#percent').val(num);
+      $('#percent').val(($('#number').val()/parseInt($('#total').text())*100).toFixed(2));
       $('#sv_valuation_initial_amortization_number').val($('#number').val());
-      $('#sv_valuation_initial_amortization_percent').val(num);
+
+      $('#sv_valuation_initial_amortization_percentage').val(($('#number').val()/parseInt($('#total').text())*100).toFixed(2));
 
       $('#totalfac').text((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
       $('#sv_valuation_bill').val((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
@@ -281,23 +280,25 @@
       if($('#other').val()==0){
         $('#ret').text("#{@retention}");
         $('#sv_valuation_retention').val("#{@retention}");
-
+        $('#sv_valuation_otherdiscount').val($('#other').val());
         $('#netpay').text($('#totalInIgv').text() - $('#ret').text());
         $('#sv_valuation_net_payment').val($('#totalInIgv').text() - $('#ret').text());
 
-        var acumRet = ( parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2);
-        $('#acumRet').text(acumRet);
+        $('#acumRet').text((parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2));
+        $('#sv_valuation_accumulated_retention').val((parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2));
 
-        var netpay = ( parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2);
-        $('#acumnetpay').text(netpay);
+        $('#acumnetpay').text((parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2));
+        $('#sv_valuation_accumulated_net_payment').val((parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2));
 
-        var acumOther = ( parseFloat($('#lastOther').text()) + parseFloat($('#other').val())).toFixed(2);
-        $('#acumOther').text(acumOther);
+        $('#acumOther').text((parseFloat($('#lastOther').text()) + parseFloat($('#other').val())).toFixed(2));
+        $('#sv_valuation_accumulated_otherdiscount').val((parseFloat($('#lastOther').text()) + parseFloat($('#other').val())).toFixed(2));
 
       }else{
+        $('#sv_valuation_otherdiscount').val($('#other').val());
         $('#ret').text("#{@retention}");
         $('#ret').text((parseFloat($('#ret').text()) + parseFloat($('#other').val())).toFixed(2));
         $('#sv_valuation_retention').val((parseFloat($('#ret').text()) + parseFloat($('#other').val())).toFixed(2));
+
 
         $('#acumRet').text((parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2));      
         $('#sv_valuation_accumulated_retention').val((parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2));
@@ -314,14 +315,19 @@
       }
     }else{
       $('#ret').text("#{@retention}");
-      var netpay = $('#totalInIgv').text() - $('#ret').text();
-      $('#netpay').text(netpay);
-      var acumRet = ( parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2);
-      $('#acumRet').text(acumRet);  
-      var netpay = ( parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2);
-      $('#acumnetpay').text(netpay);
-      var acumOther = (parseFloat($('#lastOther').text())).toFixed(2);
-      $('#acumOther').text(acumOther);
+      $('#sv_valuation_retention').val("#{@retention}");
+
+      $('#netpay').text($('#totalInIgv').text() - $('#ret').text());
+      $('#sv_valuation_net_payment').val($('#totalInIgv').text() - $('#ret').text());
+
+      $('#acumRet').text((parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2));  
+      $('#sv_valuation_accumulated_retention').val((parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2));
+
+      $('#acumnetpay').text((parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2));
+      $('#sv_valuation_accumulated_net_payment').val((parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2));
+
+      $('#acumOther').text((parseFloat($('#lastOther').text())).toFixed(2));
+      $('#sv_valuation_accumulated_otherdiscount').val((parseFloat($('#lastOther').text()) + parseFloat($('#other').val())).toFixed(2));
     }
   });
 
