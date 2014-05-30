@@ -41,6 +41,7 @@ class Production::ScValuationsController < ApplicationController
     @fondogarantia2 = 0
     @descuestoequipos = 0
     @descuentomateriales = 0
+    @otrosdescuentos = 0
     @netoactualpagar = 0
     @netoapagar = 0
     @accumulated_valorizacionsinigv = 0
@@ -112,8 +113,9 @@ class Production::ScValuationsController < ApplicationController
         @fondogarantia1 = workerDetail[7]
         @fondogarantia2 = workerDetail[8]
         @descuestoequipos = workerDetail[9]
-        @netoapagar = workerDetail[10]
-        @numbercode = workerDetail[11]
+        @otrosdescuentos = workerDetail[10]
+        @netoapagar = workerDetail[11]
+        @numbercode = workerDetail[12]
       end
       @numbercode=@numbercode.to_i
       @numbercode += 1
@@ -214,6 +216,7 @@ class Production::ScValuationsController < ApplicationController
       accumulated_guarantee_fund1, 
       accumulated_guarantee_fund2, 
       accumulated_equipment_discount, 
+      accumulated_otherdiscount, 
       accumulated_net_payment, 
       code 
       FROM sc_valuations 
