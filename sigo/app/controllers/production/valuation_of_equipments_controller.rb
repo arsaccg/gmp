@@ -1,7 +1,8 @@
 class Production::ValuationOfEquipmentsController < ApplicationController
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 	def index
 		@company = get_company_cost_center('company')
-  	#@workingGroups = WorkingGroup.all
+  	@valuationofequipment = ValuationOfEquipment.all
     @subcontractequipmentdetail = SubcontractEquipmentDetail.all
     render layout: false
 	end
@@ -10,10 +11,16 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 		TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
 	      @executors = executor.entities
 	    end
+    last=ValuationOfEquipment.last
+    if !last.nil?
+      @start = last.start_date
+      @end = last.end_date
+    end
 		render layout: false
 	end
 
 	def get_report
+    @valuationofequipment = ValuationOfEquipment.new
 		@cad = Array.new
     @start_date = params[:start_date]
     @end_date = params[:end_date]
@@ -78,5 +85,32 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       GROUP BY art.name
     ")
     return workers_array3
+  end
+
+  def create
+    valuationofequipment = ValuationOfEquipment.new(valuation_of_equipment_parameters)
+    valuationofequipment.state
+    if valuationofequipment.save
+      flash[:notice] = "Se ha creado correctamente la valorizacion."
+      redirect_to :action => :index, company_id: params[:company_id]
+    else
+      valuationofequipment.errors.messages.each do |attribute, error|
+        puts error.to_s
+        puts error
+      end
+      flash[:error] =  "Ha ocurrido un error en el sistema."
+      redirect_to :action => :index, company_id: params[:company_id]
+    end
+  end
+
+  def destroy
+    valuationofequipment = ValuationOfEquipment.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente el trabajador."
+    render :json => valuationofequipment
+  end
+
+  private
+  def valuation_of_equipment_parameters
+    params.require(:valuation_of_equipment).permit(:name , :code , :start_date , :end_date , :working_group , :valuation , :initial_amortization_number , :initial_amortization_percentage , :bill , :billigv , :totalbill , :retention , :detraction , :fuel_discount , :othvaluation_of_equipmenter_discount , :hired_amount , :advances , :accumulated_amortization , :balance , :net_payment , :accumulated_valuation , :accumulated_initial_amortization_number , :accumulated_bill , :accumulated_billigv , :accumulated_totalbill , :accumulated_retention , :accumulated_detraction , :accumulated_fuel_discount , :accumulated_other_discount , :accumulated_net_payment)
   end
 end

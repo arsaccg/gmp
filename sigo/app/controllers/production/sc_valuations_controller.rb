@@ -7,6 +7,7 @@ class Production::ScValuationsController < ApplicationController
 	end
 
   def show
+    @scvaluation=ScValuation.find_by_id(params[:id])
     render layout: false
   end
 
