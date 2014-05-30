@@ -193,7 +193,11 @@
     if($('#percent').val()!=0){
       $("#flag").attr('checked', true);
       check();
-    }    
+    }
+
+    $('#new_sc_valuation').ajaxForm({
+      target: '#content'
+    });
   });
 
   function check(){
