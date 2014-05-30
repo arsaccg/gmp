@@ -167,7 +167,7 @@ class Production::ScValuationsController < ApplicationController
     @accumulated_descuentomateriales = @descuentomateriales
     @netoactualpagar=@totalbillwigv-@retention
     @accumulated_netoapagar = @accumulated_totalincluidoigv-@accumulated_retenciones
-    @balance = @subadvances + @accumulated_amortizaciondeadelanto
+    @balance = @subadvances - @accumulated_amortizaciondeadelanto
     render(partial: 'report_table', :layout => false)
   end
 

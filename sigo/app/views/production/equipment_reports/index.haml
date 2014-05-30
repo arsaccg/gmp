@@ -8,6 +8,7 @@
     .row
       .col-md-1
       .col-md-2
+        %label Seleccione
         %label.input
           %select.form-control.select2#select-1{:style => 'width:100%;padding: 0;border: none;'}
             %option{:value => "0"} Seleccione
@@ -16,6 +17,7 @@
             %option{:value => "frente"} Frente
             %option{:value => "equipment"} Equipo
       .col-md-2
+        %label Seleccione
         %label.input
           %select.form-control#article{:style => 'width:100%;padding: 0;border: none;'}
             %option{:value => "0"} Seleccione
@@ -26,8 +28,9 @@
       .col-md-3
         %label Fecha de fin
         %input#end-date-input.string.optional.form-control{'name'=>'date2', type: "date"}
-
-      .col-md-2
+    .row
+      .col-md-9
+      .col-md-1
         %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
           %i.fa.fa-search
           Consultar
