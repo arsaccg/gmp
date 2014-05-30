@@ -6,9 +6,9 @@
       Análisis de Producción
 
   %div
-    - @poe_array.each do |workerDetail|
-      - workerDetail['workers'].each do |worker|
-        %h1.page-title.txt-color-blueDark= worker[0]
+    - @poe_array.each do |poe|
+      - poe[0].each do |data|
+        %h1.page-title.txt-color-blueDark= data[0]
         .jarviswidget-editbox
         .widget-body
           %table.table.table-bordered
@@ -20,18 +20,19 @@
                 %th Combustible (gln)
                 %th Ratio real (gln/hr)
             %tbody
-              - worker[1].each do |w|
+              - data[1].each do |value|
+                - value['data'].each do |data|
+                  %tr
+                    %th= data[0]
+                    %th= data[1]
+                    %th= data[2]
+                    %th= data[3]
+                    %th= data[4]
                 %tr
-                  %th= w[1]
-                  %th= w[2]
-                  %th= w[3]
-                  %th= w[4]
-                  %th= w[5]
-              %tr
-                %th{'colspan' => 2} Total
-                %th= workerDetail['hours']
-                %th= workerDetail['fuel']
-                %th= workerDetail['ratio']
+                  %th{'colspan' => 2} Total
+                  %th= value['hours']
+                  %th= value['fuel']
+                  %th= value['ratio']
 
   %div
     Resumen Parte de Equipos

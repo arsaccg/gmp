@@ -44,37 +44,32 @@ class Production::EquipmentReportsController < ApplicationController
     start_date = params[:start_date]
     end_date = params[:end_date]
     @poe_array = poe_array(start_date, end_date, @article)
+
+    puts @poe_array.inspect
+
 		@poe_array2 = poe_array2(start_date, end_date, @article)
 		render(partial: 'report_table', :layout => false)
 	end
 
   def poe_array(start_date, end_date, working_group_id)
     @result = Array.new
-    @totaleffehours = 0
-    @totalfuel = 0
-    @totalratio = 0
-    poe_array = ActiveRecord::Base.connection.execute("
-      SELECT pha.id, CONCAT( wo.first_name,  ' ', wo.second_name,  ' ', wo.paternal_surname,  ' ', wo.maternal_surname ) as 'worker', pha.name , SUM( poed.effective_hours ) , SUM( poe.fuel_amount ) , ROUND( (SUM( poe.fuel_amount ) / SUM( poed.effective_hours ) ), 2)
-      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
-      WHERE sced.code IN(" + working_group_id + ") 
-      AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
-      AND poe.worker_id=wo.id 
-      AND poe.equipment_id=sced.article_id 
-      AND poe.id=poed.part_of_equipment_id 
-      AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
-      AND poed.phase_id=pha.id
-      GROUP BY pha.name
-    ")
 
-    poe_array.each do |array|
-      @result << [array[1], array[0], array[2], array[3], array[4], array[5]]
-      @totaleffehours += array[3].to_f
-      @totalfuel += array[4].to_f
+    workers = PartOfEquipment.get_workers(working_group_id, start_date, end_date)
+    workers.each do |w|
+      array = Array.new
+      @totaleffehours = 0
+      @totalfuel = 0
+      @totalratio = 0
+      PartOfEquipment.get_report_per_worker(working_group_id, start_date, end_date, w[0]).each do |rpw|
+        array << [rpw[0], rpw[1], rpw[2], rpw[3], rpw[4]]
+        @totaleffehours += rpw[2].to_f
+        @totalfuel += rpw[3].to_f
+      end
+      @ratio = @totalfuel / @totaleffehours
+      @result << [w[1] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
     end
 
-    @result = @result.group_by(&:first)
-    @totalratio = @totalfuel / @totaleffehours
-    return ['workers' => @result, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @totalratio]
+    return @result
   end
 
   def poe_array2(start_date, end_date, working_group_id)
