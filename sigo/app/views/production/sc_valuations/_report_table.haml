@@ -129,8 +129,8 @@
               %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
               %th{"style"=>"color:#5f5f5f"}
               %th{"style"=>"color:#5f5f5f"}
-                %input#other.form-control{}
-              %th{"style"=>"color:#5f5f5f"}
+                %input.form-control{}
+              %th{"style"=>"color:#5f5f5f"}= @otrosdescuentos
               %th{"style"=>"color:#5f5f5f"}
             %tr
               %th{"style"=>"color:#5f5f5f"} 07
@@ -179,9 +179,12 @@
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
             Guardar
-
+    %br
+    %br
     %div#part-work
+    %br
     %div#part-people
+    %br
     %div#part-equipment
 
 :javascript
@@ -335,16 +338,16 @@
   }
 
   function part_work() {
-    data = { authenticity_token: "#{form_authenticity_token}"};
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}" };
     append_url_ajax('#{part_work_production_sc_valuations_path}', 'part-work', data, '', 'POST');
   }
 
   function part_people() {
-    data = { authenticity_token: "#{form_authenticity_token}"};
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}" };
     append_url_ajax('#{part_people_production_sc_valuations_path}', 'part-people', data, '', 'POST');
   }
 
   function part_equipment() {
-    data = { authenticity_token: "#{form_authenticity_token}"};
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}" };
     append_url_ajax('#{part_equipment_production_sc_valuations_path}', 'part-equipment', data, '', 'POST');
   }

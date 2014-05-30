@@ -41,6 +41,7 @@ class Production::ScValuationsController < ApplicationController
     @fondogarantia2 = 0
     @descuestoequipos = 0
     @descuentomateriales = 0
+    @otrosdescuentos = 0
     @netoactualpagar = 0
     @netoapagar = 0
     @accumulated_valorizacionsinigv = 0
@@ -112,8 +113,9 @@ class Production::ScValuationsController < ApplicationController
         @fondogarantia1 = workerDetail[7]
         @fondogarantia2 = workerDetail[8]
         @descuestoequipos = workerDetail[9]
-        @netoapagar = workerDetail[10]
-        @numbercode = workerDetail[11]
+        @otrosdescuentos = workerDetail[10]
+        @netoapagar = workerDetail[11]
+        @numbercode = workerDetail[12]
       end
       @numbercode=@numbercode.to_i
       @numbercode += 1
@@ -214,6 +216,7 @@ class Production::ScValuationsController < ApplicationController
       accumulated_guarantee_fund1, 
       accumulated_guarantee_fund2, 
       accumulated_equipment_discount, 
+      accumulated_otherdiscount, 
       accumulated_net_payment, 
       code 
       FROM sc_valuations 
@@ -246,12 +249,36 @@ class Production::ScValuationsController < ApplicationController
   end
 
   def part_work
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+    cad = params[:cad]
+    @totalprice2 = 0
+    @workers_array2 = business_days_array2(start_date, end_date, cad)
+    @workers_array2.each do |workerDetail|
+      @totalprice2 += workerDetail[5]
+    end
     render layout: false
   end
   def part_people
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+    cad = params[:cad]
+    @totalprice = 0
+    @workers_array = business_days_array(start_date, end_date, cad)
+    @workers_array.each do |workerDetail|
+      @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
+    end
     render layout: false
   end
   def part_equipment
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+    cad = params[:cad]
+    @totalprice3 = 0
+    @workers_array3 = business_days_array3(start_date, end_date, cad)
+    @workers_array3.each do |workerDetail|
+      @totalprice3 += workerDetail[4]
+    end
     render layout: false
   end
 

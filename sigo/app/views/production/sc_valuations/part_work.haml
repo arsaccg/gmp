@@ -1,1 +1,24 @@
-HOLA!!
+-if @workers_array2.count>0
+  %div
+    Parte de Obras
+    .jarviswidget-editbox
+    .widget-body
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th Codigo
+            %th Partida
+            %th Unidad
+            %th Cantidad
+            %th P.U.
+            %th Parcial
+            
+        %tbody
+        - @workers_array2.each do |workerDetail2|
+          %tr
+            %th= workerDetail2[0]
+            %th= workerDetail2[1]
+            %th= workerDetail2[2]
+            %th= workerDetail2[3]
+            %th= workerDetail2[4]
+            %th= workerDetail2[5]
