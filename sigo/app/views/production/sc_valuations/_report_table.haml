@@ -18,9 +18,9 @@
               %th{"style"=>"color:#5f5f5f"} Saldo
           %tbody
             %th{"style"=>"color:#5f5f5f"}= @subcontract.contract_amount
-            %th{"style"=>"color:#5f5f5f"}= @subadvances
+            %th#adelanto{"style"=>"color:#5f5f5f"}= @subadvances
             %th#amortAcum2{"style"=>"color:#5f5f5f"}= @accumulated_amortizaciondeadelanto
-            %th{"style"=>"color:#5f5f5f"}= @balance
+            %th#saldo{"style"=>"color:#5f5f5f"}= @balance
     %div
       .jarviswidget-editbox
       .widget-body
@@ -226,7 +226,10 @@
       $('#sv_valuation_net_payment').val($('#totalInIgv').text() - $('#ret').text());
 
       $('#amortAcum').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
+      $('#amortAcum2').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
+      $('#saldo').text((parseInt($('#adelanto').text())-parseFloat($('#amortAcum2').text())).toFixed(2));
       $('#sv_valuation_accumulated_amortization').val((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
+      $('#sv_valuation_balance').val((parseInt($('#adelanto').text())-parseFloat($('#amortAcum2').text())).toFixed(2));
 
       $('#acumTotalFac').text((parseFloat($('#lastTotalFac').text()) + parseFloat($('#totalfac').text())).toFixed(2));
       $('#sv_valuation_accumulated_bill').val((parseFloat($('#lastTotalFac').text()) + parseFloat($('#totalfac').text())).toFixed(2));
@@ -263,6 +266,8 @@
       $('#sv_valuation_net_payment').val($('#totalInIgv').text() - $('#ret').text());
 
       $('#amortAcum').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
+      $('#amortAcum2').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
+      $('#saldo').text((parseInt($('#adelanto').text())-parseFloat($('#amortAcum2').text())).toFixed(2));
       $('#sv_valuation_accumulated_amortization').val((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
 
       $('#acumTotalFac').text((parseFloat($('#lastTotalFac').text()) + parseFloat($('#totalfac').text())).toFixed(2));
