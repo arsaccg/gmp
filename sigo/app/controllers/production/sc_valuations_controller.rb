@@ -245,6 +245,16 @@ class Production::ScValuationsController < ApplicationController
     render :json => scvaluation
   end
 
+  def part_work
+    render layout: false
+  end
+  def part_people
+    render layout: false
+  end
+  def part_equipment
+    render layout: false
+  end
+
   private
   def sc_valuation_parameters
     params.require(:sv_valuation).permit(:name, :start_date, :end_date, :working_group, :valuation, :initial_amortization_number, :initial_amortization_percentage, :bill, :billigv, :totalbill , :retention , :detraction , :guarantee_fund1 , :guarantee_fund2 , :equipment_discount , :material_discount , :hired_amount , :advances , :accumulated_amortization , :balance , :net_payment , :accumulated_valuation , :accumulated_initial_amortization_number , :accumulated_bill , :accumulated_billigv , :accumulated_totalbill , :accumulated_retention , :accumulated_detraction , :accumulated_guarantee_fund1 , :accumulated_guarantee_fund2 , :accumulated_equipment_discount , :accumulated_net_payment , :code, :otherdiscount, :accumulated_otherdiscount)
