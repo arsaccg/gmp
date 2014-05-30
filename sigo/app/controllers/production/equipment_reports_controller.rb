@@ -44,9 +44,6 @@ class Production::EquipmentReportsController < ApplicationController
     start_date = params[:start_date]
     end_date = params[:end_date]
     @poe_array = poe_array(start_date, end_date, @article)
-
-    puts @poe_array.inspect
-
 		@poe_array2 = poe_array2(start_date, end_date, @article)
 		render(partial: 'report_table', :layout => false)
 	end
