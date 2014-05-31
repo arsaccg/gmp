@@ -7,6 +7,8 @@ class Article < ActiveRecord::Base
   	has_many :workers
 	has_many :part_work_details
   	has_one :subcontract_input
+    
+    has_many :inputbybudgetanditems
 	belongs_to :category
 	belongs_to :type_of_article
 	belongs_to :unit_of_measurement#, :through => :article_unit_of_measurements

@@ -79,6 +79,23 @@
         %th
           Unidades
       %tbody
+        -# @articles.each do |article|
+          %tr
+            %td 
+              = article.code
+            %td
+              - if article.type_of_article != nil
+                = article.type_of_article.name
+            %td
+              - if article.category != nil
+                = article.category.name
+            %td
+              = article.name
+            %td
+              = article.description
+            %td
+              - if article.unit_of_measurement != nil
+                = article.unit_of_measurement.name
         
 
 :javascript

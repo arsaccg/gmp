@@ -1,7 +1,7 @@
 module ApplicationHelper
 
-	def get_total_cost(str_order, budget_id)
-		items=ActiveRecord::Base.connection.execute("SELECT get_total_cost('#{str_order}', '#{budget_id}')")
+	def get_total_cost(str_order, cost_center_id)
+		items=ActiveRecord::Base.connection.execute("SELECT get_total_cost('#{str_order}', '#{cost_center_id}')")
 		items.each do |item|
 			return item[0]
 		end
