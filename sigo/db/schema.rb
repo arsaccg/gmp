@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140531154309) do
+ActiveRecord::Schema.define(version: 20140531164133) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -806,6 +806,21 @@ ActiveRecord::Schema.define(version: 20140531154309) do
     t.float    "net_payment"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "accumulated_valuation"
+    t.integer  "accumulated_initial_amortization_number"
+    t.integer  "accumulated_bill"
+    t.integer  "accumulated_billigv"
+    t.integer  "accumulated_totalbill"
+    t.integer  "accumulated_retention"
+    t.integer  "accumulated_detraction"
+    t.integer  "accumulated_guarantee_fund1"
+    t.integer  "accumulated_guarantee_fund2"
+    t.integer  "accumulated_equipment_discount"
+    t.integer  "accumulated_net_payment"
+    t.string   "state"
+    t.string   "code"
+    t.float    "otherdiscount"
+    t.float    "accumulated_otherdiscount"
   end
 
   create_table "sectors", force: true do |t|
@@ -911,6 +926,14 @@ ActiveRecord::Schema.define(version: 20140531154309) do
     t.integer  "subcontract_id"
   end
 
+  create_table "subcontract_equipment_advances", force: true do |t|
+    t.date     "date_of_issue"
+    t.float    "advance"
+    t.integer  "subcontract_equipment_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "subcontract_equipment_details", force: true do |t|
     t.integer  "article_id"
     t.string   "description"
@@ -939,7 +962,7 @@ ActiveRecord::Schema.define(version: 20140531154309) do
     t.string   "guarantee_fund"
     t.string   "detraction"
     t.float    "contract_amount"
-    t.string   "type"
+    t.string   "igv"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
@@ -1072,6 +1095,42 @@ ActiveRecord::Schema.define(version: 20140531154309) do
     t.datetime "updated_at"
   end
 
+  create_table "valuation_of_equipments", force: true do |t|
+    t.string   "name"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "working_group"
+    t.float    "valuation"
+    t.float    "initial_amortization_number"
+    t.float    "initial_amortization_percentage"
+    t.float    "bill"
+    t.float    "billigv"
+    t.float    "totalbill"
+    t.float    "retention"
+    t.float    "detraction"
+    t.float    "fuel_discount"
+    t.float    "other_discount"
+    t.float    "hired_amount"
+    t.float    "advances"
+    t.float    "accumulated_amortization"
+    t.float    "balance"
+    t.float    "net_payment"
+    t.float    "accumulated_valuation"
+    t.float    "accumulated_initial_amortization_number"
+    t.float    "accumulated_bill"
+    t.float    "accumulated_billigv"
+    t.float    "accumulated_totalbill"
+    t.float    "accumulated_retention"
+    t.float    "accumulated_detraction"
+    t.float    "accumulated_fuel_discount"
+    t.float    "accumulated_other_discount"
+    t.float    "accumulated_net_payment"
+    t.string   "state"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "code"
+  end
+
   create_table "warehouses", force: true do |t|
     t.string   "name"
     t.string   "location"
@@ -1109,6 +1168,7 @@ ActiveRecord::Schema.define(version: 20140531154309) do
     t.string   "fase"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "phase_id"
   end
 
   create_table "work_partners", force: true do |t|

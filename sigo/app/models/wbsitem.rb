@@ -1,5 +1,6 @@
 class Wbsitem < ActiveRecord::Base
-	belongs_to :project
+	belongs_to :cost_center
+  belongs_to :phase
 	has_many :itembywbses
 
 	def self.get_color(amount)

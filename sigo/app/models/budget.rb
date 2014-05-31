@@ -5,7 +5,7 @@ class Budget < ActiveRecord::Base
 
   include DBConnector
 
-  has_many :itemsbybudgets
+  has_many :itembybudgets
   has_many :inputbybudgetanditems
   has_many :itembywbses
   has_many :valorizations

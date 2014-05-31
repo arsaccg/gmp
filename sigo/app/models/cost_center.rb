@@ -19,6 +19,8 @@ class CostCenter < ActiveRecord::Base
 
   has_many :items
   has_many :budgets
+  
+  has_many :wbsitems
 
 	belongs_to :company
 
