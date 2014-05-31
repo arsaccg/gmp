@@ -79,9 +79,10 @@
         %th
           Unidades
       %tbody
+        %input{name: 'article_name', onchange: 'load_articles'}
         -# @articles.each do |article|
           %tr
-            %td 
+            %td
               = article.code
             %td
               - if article.type_of_article != nil
@@ -102,3 +103,15 @@
   $(".individual-panel").height($(document).height()/2 -100 );
   $(".content-load").height($(document).height()/2 - 100); 
   $(".botom-load").height($(document).height()/2 - 100); 
+  
+  function load_articles(){
+    $.ajax({
+      url: "test.html",
+      context: document.body
+    }).done(function() {
+      $( this ).addClass( "done" );
+    });
+    
+  }
+  
+  

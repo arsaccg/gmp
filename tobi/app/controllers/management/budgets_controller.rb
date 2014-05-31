@@ -44,20 +44,19 @@ class Management::BudgetsController < ApplicationController
   end
 
   def destroy
+    
     budget=Budget.find(params[:id])
 
     project_id = budget.cost_center_id
 
-
     budgets = Budget.where("id LIKE ? and cost_center_id = ?", budget.id.to_s + "%", project_id.to_s)
+    
     budgets.each do |budget_item|
-
       #Inputbybudgetanditem.where(budget_id: budget_item.id).destroy_all
-
       ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM inputbybudgetanditems where budget_id='#{budget_item.id}'")
       ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM itembybudgets where budget_id='#{budget_item.id}'")
       ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM itembywbses where budget_id='#{budget_item.id}'")
-
+      
     end
     
     budgets.destroy_all
@@ -65,7 +64,6 @@ class Management::BudgetsController < ApplicationController
     ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM budgets where cod_budget LIKE '#{budget.cod_budget}' and cost_center_id = '#{budget.cost_center_id}'")
     
     ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM items where budget_code LIKE '#{budget.cod_budget}' and cost_center_id = '#{budget.cost_center_id}'")
-
 
     #DESTROY
 
