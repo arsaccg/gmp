@@ -304,6 +304,7 @@ class Management::WbsitemsController < ApplicationController
     @phase = params[:phase_id]
     @wbsitem = Wbsitem.find(wbsitem_id)
     @wbsitem.fase = @phase
+    @wbsitem.phase_id = Phase.where(code: ((@phase.split(' '))[0]).to_i).first.id
     @wbsitem.save
   end
 
