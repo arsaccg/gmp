@@ -25,7 +25,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     @subcontracts = SubcontractEquipment.all
     @type = Article.where("code LIKE ?", '__32%')
     @worker = Array.new
-    CategoryOfWorker.where("name LIKE '%operador%'").each do |wo|
+    PositionWorker.where("name LIKE '%operador%'").each do |wo|
       @worker= wo.workers
     end
     subcontract_id=@partofequipment.subcontract_equipment_id
