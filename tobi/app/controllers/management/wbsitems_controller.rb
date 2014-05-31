@@ -34,7 +34,6 @@ class Management::WbsitemsController < ApplicationController
       }
     end
 
-
   end
 
   def get_items_json 
