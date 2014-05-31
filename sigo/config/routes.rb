@@ -1,6 +1,6 @@
 ArsacLogistica::Application.routes.draw do
 
-  devise_for :users
+  devise_for :users, :controllers => {:registrations => "users/registrations"}
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -71,6 +71,7 @@ ArsacLogistica::Application.routes.draw do
         post 'show_article'
       end
       collection do
+        post 'display_articles'
         post 'import'
         get 'import'
       end
@@ -244,6 +245,9 @@ ArsacLogistica::Application.routes.draw do
     resources :sc_valuations do
       collection do
         post 'get_report'
+        post 'part_work'
+        post 'part_people'
+        post 'part_equipment'        
       end
     end
     resources :machinery_reports do

@@ -1,0 +1,34 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
+        \×
+      %h4.modal-title Valorización sin IGV
+    .modal-body
+      -if @workers_array2.count>0
+        %h1.page-title.txt-color-blueDark Parte de Obra
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th Codigo
+              %th Partida
+              %th Unidad
+              %th Cantidad
+              %th P.U.
+              %th Parcial
+              
+          %tbody
+          - @workers_array2.each do |workerDetail2|
+            %tr
+              %th= workerDetail2[0]
+              %th= workerDetail2[1]
+              %th= workerDetail2[2]
+              %th= workerDetail2[3]
+              %th= workerDetail2[4]
+              %th= workerDetail2[5]
+      - else
+        %h4.modal-title No hay datos.
+        %br
+      %footer
+        %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+          Salir

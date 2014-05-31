@@ -1,0 +1,41 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
+        \×
+      %h4.modal-title Fondo de Garantía N°02
+    .modal-body
+      -if @workers_array.count > 0
+        %h1.page-title.txt-color-blueDark Mano de Obra
+        %table.table.table-bordered
+          %tbody
+            - @workers_array.each do |workerDetail|
+              %tr
+                %th= workerDetail[0]
+                %th= workerDetail[4]
+                %th= workerDetail[10]
+                %th= workerDetail[1]
+                %th= workerDetail[7]
+              %tr
+                %th= workerDetail[0]+' HE 60%'
+                %th= workerDetail[5]
+                %th= workerDetail[10]
+                %th= workerDetail[2]
+                %th= workerDetail[8]
+              %tr
+                %th= workerDetail[0]+' HE 100%'
+                %th= workerDetail[6]
+                %th= workerDetail[10]
+                %th= workerDetail[3]
+                %th= workerDetail[9]
+            %tr
+              %th{'colspan' => 4} Total
+              %th
+                %span.label.label-danger{"style"=>"color:#fff"}
+                  = @totalprice
+      - else
+        %h4.modal-title No hay datos.
+        %br
+      %footer
+        %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+          Salir

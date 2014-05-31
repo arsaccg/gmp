@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date_of_issue: 2014-05-29
+  advance: 1.5
+  subcontract_id: 1
+
+two:
+  date_of_issue: 2014-05-29
+  advance: 1.5
+  subcontract_id: 1

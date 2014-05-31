@@ -133,9 +133,9 @@
                     %td.article-id(style="display:none")
                       = sub.article_id
                     %td.col-md-2
-                      = sub.article.name
+                      = sub.article.name rescue " "
                     %td
-                      = sub.article.unit_of_measurement.name
+                      = sub.article.unit_of_measurement.name rescue " "
                     %td.amount.col-md-1{:style => "width:5%"}
                       = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][amount]', sub.amount , class: "form-control quantity", id: 'subcontract-amount', onfocusout: "calculatePartialAmount(this);"
                     %td.unit-price.col-md-1
@@ -144,8 +144,10 @@
                       = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][partial]', sub.partial , class: "form-control quantity", id: 'subcontract-partial', :readonly => true
                     %td
                       = text_area_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][description]', sub.description, class: "form-control description"
-                    %td{:style => "width: 1%; text-align: center;"}
-                      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'subcontract[subcontract_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
                   - @reg_n+=1
 
       %fieldset

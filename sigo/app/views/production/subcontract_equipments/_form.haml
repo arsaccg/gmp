@@ -335,6 +335,48 @@
             %label.input{for: "contract_amount"}
               = f.input :contract_amount, placeholder: "Monto contratado", input_html: { class: 'form-control' }, label: false
 
+      %fieldset
+        %legend Adelantos
+        .row
+          %section.col.col-2
+            %label.control-label(for="bank_id") Adelantos
+
+          %section.col.col-3
+            = text_field_tag 'advance', nil, class: 'form-control', id: 'advance', placeholder: 'Adelanto'
+
+          %section.col.col-3
+            %input#start-date-input.string.optional.form-control{'name'=>'date_of_issue', type: "date"}
+
+          %section.col.col-2
+            %div
+              %a(href="javascript:add_advance_item();" id="btn-add-advance" class="btn btn-success" role="button")
+                Agregar Adelanto
+
+        .col-lg-12
+          %table#summary-advance.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th.col-2 Adelanto
+                %th.col-5 Fecha
+                %th Eliminar
+            %tbody(id="advance_items_table")
+              - if @action == 'edit'
+                - @subcontract.subcontract_advances.each do |sa|
+                  %tr
+                    %td.advance
+                      = text_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][advance]', sa.advance, class: "form-control advance-item"
+                    %td.date_of_issue
+                      %input#start-date-input.string.optional.form-control{ 'name' => 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][date_of_issue]', type: "date", value: sa.date_of_issue }
+                    %td(style="display:none")
+                      = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][id]', sa.id
+                    %td(style="display:none")
+                      = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][subcontract_id]', @subcontract.id
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'subcontract[subcontract_advances_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1         
+
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 

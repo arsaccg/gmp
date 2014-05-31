@@ -1,4 +1,4 @@
-class ScValuation < ActiveRecord::Base
+class ValuationOfEquipment < ActiveRecord::Base
 
 	state_machine :state, :initial => :disapproved do
 
@@ -7,5 +7,5 @@ class ScValuation < ActiveRecord::Base
     end
 
   end
-
+  
 end
