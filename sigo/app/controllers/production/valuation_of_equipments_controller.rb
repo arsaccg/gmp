@@ -6,6 +6,10 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @subcontractequipmentdetail = SubcontractEquipmentDetail.all
     render layout: false
 	end
+    
+  def show
+    render layout: false
+  end
 	def new
 		@costCenter = CostCenter.new
 		TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
