@@ -180,6 +180,11 @@
       $('#totalretention').html($('#totalretention').attr('original'));
       $('#input-totalretention').val($('#totalretention').attr('original'));
       $('#total-other-discounts').html(parseFloat($('#totalretention')) + parseFloat(other_discount));
+      $(acumtr).text($('#totalretention').text()+$('#lasttr').text());
+      $('#net-pay').text($('#total-igv').text() - $('#totalretention').text());
+      $('#sv_valuation_net_payment').val($('#totalInIgv').text() - $('#totalretention').text());
+      $('#acumnetpay').text((parseFloat($('#lastnetpay').text()) + parseFloat($('#net-pay').text())).toFixed(2));
+      $('#sv_valuation_accumulated_net_payment').val((parseFloat($('#lastnetpay').text()) + parseFloat($('#net-pay').text())).toFixed(2));
 
 
     } else {
@@ -190,7 +195,7 @@
       $('#totalretention').html(parseFloat(otherdiscount)+parseFloat($('#totalretention').attr('original')));
       $('#input-totalretention').val(parseFloat(otherdiscount)+parseFloat($('#totalretention').attr('original')));
       $('#total-other-discounts').html(parseFloat(otherdiscount) + parseFloat(other_discount));
-      $(acumtr).text($('#totalretention').text()+$('#lasttr').text());
+      $(acumtr).text(parseFloat($('#totalretention').text())+parseFloat($('#lasttr').text()));
       $('#net-pay').text($('#total-igv').text() - $('#totalretention').text());
       $('#sv_valuation_net_payment').val($('#totalInIgv').text() - $('#totalretention').text());
       $('#acumnetpay').text((parseFloat($('#lastnetpay').text()) + parseFloat($('#net-pay').text())).toFixed(2));
