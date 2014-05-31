@@ -71,6 +71,9 @@
       Insumos
   .modal-body
     %table(class="table-hover white-table small-font table-light"  id="scroll-table" width="100%")
+      %input{name: 'article_name', id: 'article_name'}
+      %a(href="javascript:load_articles();" class="btn btn-success")
+        Buscar
       %thead
         %th
           Codigo
@@ -79,7 +82,7 @@
         %th
           Unidades
       %tbody
-        %input{name: 'article_name', onchange: 'load_articles'}
+        
         -# @articles.each do |article|
           %tr
             %td
@@ -98,18 +101,17 @@
               - if article.unit_of_measurement != nil
                 = article.unit_of_measurement.name
         
-
 :javascript
   $(".individual-panel").height($(document).height()/2 -100 );
   $(".content-load").height($(document).height()/2 - 100); 
   $(".botom-load").height($(document).height()/2 - 100); 
   
   function load_articles(){
+    var q = $('#article_name').val();
     $.ajax({
-      url: "test.html",
-      context: document.body
-    }).done(function() {
-      $( this ).addClass( "done" );
+      url: "#{display_articles_management_budgets_path}?q=" + q
+    }).done(function(data) {
+      console.log(data);
     });
     
   }
