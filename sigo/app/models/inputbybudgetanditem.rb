@@ -101,7 +101,7 @@ class Inputbybudgetanditem < ActiveRecord::Base
 					input_new.order = item[7] 
 					input_new.unit = item[9]
 					input_new.budget_id = budget_temp.id rescue nil
-          a = Articles.where(code: item[4]).first
+          a = Article.where(code: item[4]).first
           
 					input_new.article_id = a.id rescue nil
 					input_new.item_id = item_temp.id rescue nil
