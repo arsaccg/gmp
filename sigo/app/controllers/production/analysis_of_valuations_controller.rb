@@ -24,6 +24,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     @totalprice2 = 0
     @totalprice3 = 0
     @cad = Array.new
+    @cad2 = Array.new
     @company = params[:company_id]
 
     if params[:front_chief]=="0" && params[:executor]=="0" && params[:master_builder] == "0"
@@ -60,9 +61,18 @@ class Production::AnalysisOfValuationsController < ApplicationController
     else
       @cad = '0'
     end
-    @workers_array = business_days_array(start_date, end_date, @cad)
-    @workers_array2 = business_days_array2(start_date, end_date, @cad)
-    @workers_array3 = business_days_array3(start_date, end_date, @cad)
+    if params[:sector] != "0"
+      @cad2 = params[:sector]
+    else
+      @sector = Sector.all
+      @sector.each do |st|
+        @cad2 << st.id
+      end
+      @cad2 = @cad2.join(',')
+    end
+    @workers_array = business_days_array(start_date, end_date, @cad, @cad2)
+    @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2)
+    @workers_array3 = business_days_array3(start_date, end_date, @cad, @cad2)
     @workers_array.each do |workerDetail|
       @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
     end
@@ -76,7 +86,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     render(partial: 'report_table', :layout => false)
   end
 
-  def business_days_array(start_date, end_date, working_group_id)
+  def business_days_array(start_date, end_date, working_group_id,sector_id)
     workers_array = ActiveRecord::Base.connection.execute("
       SELECT  art.name AS category,
         cow.normal_price,
@@ -93,6 +103,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow, articles art
       WHERE p.working_group_id IN(" + working_group_id + ")
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND ppd.sector_id IN(" + sector_id + ")
       AND p.id = ppd.part_person_id
       AND w.article_id = art.id
       AND ppd.worker_id = w.id
@@ -103,7 +114,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     return workers_array
   end
 
-  def business_days_array2(start_date, end_date, working_group_id)
+  def business_days_array2(start_date, end_date, working_group_id,sector_id)
     workers_array2 = ActiveRecord::Base.connection.execute("
       SELECT  pwd.article_id, 
         art.name, 
@@ -114,6 +125,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
         p.date_of_creation 
       FROM part_works p, part_work_details pwd, articles art, unit_of_measurements uom, subcontract_inputs si
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND p.sector_id IN(" + sector_id + ")
       AND p.working_group_id IN(" + working_group_id + ")
       AND p.id = pwd.part_work_id
       AND pwd.article_id = art.id
@@ -124,7 +136,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     return workers_array2
   end
 
-  def business_days_array3(start_date, end_date, working_group_id)
+  def business_days_array3(start_date, end_date, working_group_id,sector_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
       SELECT  art.name, 
       uom.name, 
@@ -133,6 +145,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       si.price*SUM( poed.effective_hours) 
       FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_inputs si
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND poed.sector_id IN(" + sector_id + ")
       AND poe.id=poed.part_of_equipment_id
       AND poe.equipment_id=art.id
       AND poe.equipment_id=si.article_id
