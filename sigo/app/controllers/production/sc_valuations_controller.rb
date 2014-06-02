@@ -23,7 +23,7 @@ class Production::ScValuationsController < ApplicationController
     @code = 0
     @code = @scvaluation.code.to_i - 1
     @code = @code.to_s.rjust(3,'0')
-    @valuationgroup = getsc_valuation2(@scvaluation.start_date, @scvaluation.end_date, @scvaluation.name, @code)
+    @valuationgroup = getsc_valuation(@scvaluation.start_date, @scvaluation.end_date, @scvaluation.name, @code)
     if @valuationgroup.count > 0
       @valuationgroup.each do |workerDetail|
         @valorizacionsinigv = workerDetail[0]
@@ -278,9 +278,8 @@ class Production::ScValuationsController < ApplicationController
       accumulated_net_payment, 
       code 
       FROM sc_valuations 
-      WHERE name LIKE '" + entityname + "' 
+      WHERE name LIKE '" + entityname + "'
       AND code LIKE '" + code + "'
-      ORDER BY id DESC LIMIT 1
     ")
     return valuationgroup
   end

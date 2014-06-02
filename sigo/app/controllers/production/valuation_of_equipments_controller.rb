@@ -22,21 +22,21 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @code = 0
     @code = @valuationofequipment.code.to_i - 1
     @code = @code.to_s.rjust(3,'0')
-    #@valuationofequipment2 = getsc_valuation2(@valuationofequipment.start_date, @valuationofequipment.end_date, @valuationofequipment.name, @code)
-    #if @valuationofequipment2.count > 0
-    #  @valuationofequipment2.each do |workerDetail|
-    #    @valorizacionsinigv = 0
-    #    @amortizaciondeadelanto = 0
-    #    @totalfacturar = 0
-    #    @totalfacigv = 0
-    #    @totalincluidoigv = 0
-    #    @retenciones = 0
-    #    @detraccion = 0
-    #    @descuentocombustible = 0
-    #    @otrosdescuentos = 0
-    #    @netoapagar = 0
-    #  end
-    #end
+    @valuationofequipment2 = getsc_valuation2(@valuationofequipment.start_date, @valuationofequipment.end_date, @valuationofequipment.name, @code)
+    if @valuationofequipment2.count > 0
+      @valuationofequipment2.each do |workerDetail|
+        @valorizacionsinigv = 0
+        @amortizaciondeadelanto = 0
+        @totalfacturar = 0
+        @totalfacigv = 0
+        @totalincluidoigv = 0
+        @retenciones = 0
+        @detraccion = 0
+        @descuentocombustible = 0
+        @otrosdescuentos = 0
+        @netoapagar = 0
+      end
+    end
     render layout: false
   end
 	def new
@@ -122,6 +122,28 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       GROUP BY art.name
     ")
     return workers_array3
+  end
+
+  def getsc_valuation2(start_date, end_date, entityname, code)
+    valuationgroup = ActiveRecord::Base.connection.execute("
+      SELECT accumulated_valuation, 
+      accumulated_initial_amortization_number, 
+      accumulated_bill, accumulated_billigv, 
+      accumulated_totalbill, 
+      accumulated_retention, 
+      accumulated_detraction, 
+      accumulated_guarantee_fund1, 
+      accumulated_guarantee_fund2, 
+      accumulated_equipment_discount, 
+      accumulated_otherdiscount, 
+      accumulated_net_payment, 
+      code 
+      FROM sc_valuations 
+      WHERE name LIKE '" + entityname + "' 
+      AND code LIKE '" + code + "'
+      ORDER BY id DESC LIMIT 1
+    ")
+    return valuationgroup
   end
 
   def create
