@@ -80,6 +80,7 @@ class Production::PartOfEquipmentsController < ApplicationController
   def create
     part = PartOfEquipment.new(part_of_equipment_parameters)
     part.cost_center_id = get_company_cost_center('cost_center')
+    part.block = 0
     if part.save
       flash[:notice] = "Se ha creado correctamente el parte."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -177,6 +178,7 @@ class Production::PartOfEquipmentsController < ApplicationController
   def part_of_equipment_parameters
     params.require(:part_of_equipment).permit(
       :code, 
+      :block, 
       :subcontract_equipment_id, 
       :equipment_id, 
       :worker_id, 

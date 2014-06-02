@@ -41,6 +41,9 @@
               %th{"style"=>"color:#5f5f5f"} 1.00
               %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
               %th{"style"=>"color:#5f5f5f"}
+                %span{"style"=>"width=20px"}
+                  %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_equipment();'}
+                    %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
               %th#total{"style"=>"color:#5f5f5f"}= @totalprice
               %th{"style"=>"color:#5f5f5f"}= @valorizacionsinigv
               %th{"style"=>"color:#5f5f5f"}= @totalprice+@valorizacionsinigv
@@ -116,6 +119,9 @@
               %th#net-pay{ "style"=>"color:#5f5f5f", 'original' => "#{(@bill-@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i)}"}= (@bill+@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i)
               %th#lastnetpay{"style"=>"color:#5f5f5f"}= @netoapagar
               %th#acumnetpay{"style"=>"color:#5f5f5f"}= @bill+@billigv-@subcontractequipment.detraction.to_i+@fuel_discount.to_i + @netoapagar
+
+    %br
+    #part-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
 
               
       = hidden_field_tag 'totalretention', @subcontractequipment.detraction.to_i+@fuel_discount.to_i, 'id' => 'input-totalretention'
@@ -300,4 +306,14 @@
     else if(parseInt(value) > max) 
       return max; 
     else return value;
+  }
+
+
+  function part_equipment() {
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}", name: "#{@subcontractequipment.entity.name}", code: "#{@numbercode}" };
+    load_url_ajax('#{part_equipment_production_valuation_of_equipments_path}', 'part-equipment', data, '', 'POST');
+    $('#part-equipment').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
   }

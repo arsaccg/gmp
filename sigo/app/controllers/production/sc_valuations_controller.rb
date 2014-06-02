@@ -281,10 +281,25 @@ class Production::ScValuationsController < ApplicationController
     return valuationgroup
   end
 
+  def updateParts(start_date, end_date)
+    ActiveRecord::Base.connection.execute("
+      Update part_works set block = 1 where date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
+    ")
+    ActiveRecord::Base.connection.execute("
+      Update part_people set block = 1 where date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
+    ")
+    ActiveRecord::Base.connection.execute("
+      Update part_of_equipments set block = 1 where date BETWEEN '" + start_date + "' AND '" + end_date + "'
+    ")
+  end
+
   def create
     scvaluation = ScValuation.new(sc_valuation_parameters)
     scvaluation.state
+    start_date = params[:sv_valuation]['start_date']
+    end_date = params[:sv_valuation]['end_date']
     if scvaluation.save
+      updateParts(start_date,end_date)
       flash[:notice] = "Se ha creado correctamente la valorizacion."
       redirect_to :action => :index, company_id: params[:company_id]
     else

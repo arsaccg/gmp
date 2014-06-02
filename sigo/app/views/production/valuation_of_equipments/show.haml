@@ -114,7 +114,7 @@
   });
 
   function part_equipment() {
-    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@valuationofequipment.start_date}", end_date: "#{@valuationofequipment.end_date}", cad: "#{@valuationofequipment.working_group}", id: "#{@valuationofequipment.id}" };
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@valuationofequipment.start_date}", end_date: "#{@valuationofequipment.end_date}", cad: "#{@valuationofequipment.working_group}", name: "#{@valuationofequipment.name}", code: "#{@valuationofequipment.code}" };
     load_url_ajax('#{part_equipment_production_valuation_of_equipments_path}', 'part-equipment', data, '', 'POST');
     $('#part-equipment').modal({
       keyboard: false,
