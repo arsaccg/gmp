@@ -107,13 +107,17 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       uom.name, 
       SUM( poed.effective_hours ), 
       si.price, 
-      si.price*SUM( poed.effective_hours) 
-      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_inputs si
+      si.price*SUM( poed.effective_hours), 
+      sed.code, 
+      art.id 
+      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_inputs si, subcontract_equipment_details sed
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.equipment_id=art.id
       AND poe.equipment_id=si.article_id
       AND uom.id = art.unit_of_measurement_id
+      AND poe.subcontract_equipment_id = sed.subcontract_equipment_id
+      AND art.id = sed.article_id
       AND poed.working_group_id IN(" + working_group_id + ")
       GROUP BY art.name
     ")
@@ -145,11 +149,11 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   def part_equipment
     @name = params[:name]
     @code = params[:code]
-    start_date = params[:start_date]
-    end_date = params[:end_date]
-    cad = params[:cad]
+    @start_date = params[:start_date]
+    @end_date = params[:end_date]
+    @cad = params[:cad]
     @totalprice3 = 0
-    @workers_array3 = business_days_array3(start_date, end_date, cad)
+    @workers_array3 = business_days_array3(@start_date, @end_date, @cad)
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
     end
@@ -170,7 +174,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @totalfuel_amount += workerDetail[7]
     end
     @dias_habiles =  range_business_days(start_date,end_date)
-    render(partial: 'report_table', :layout => false)
+    render layout: false
   end
 
   def range_business_days(start_date, end_date)
