@@ -33,11 +33,11 @@
                 - when 'disapproved'
                   %td.label-status
                     %span.label.label-warning
-                      = translate_sc_valuation_state(unit.state)
+                      = translate_valuations_state(unit.state)
                 - when 'approved'
                   %td.label-status
                     %span.label.label-success
-                      = translate_sc_valuation_state(unit.state)
+                      = translate_valuations_state(unit.state)
               %td
                 %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_sc_valuation_path(unit.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Ver información
