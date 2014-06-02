@@ -39,7 +39,7 @@
     var end_date = $('#end-date-input').val();
     var exe = $('#exe').val();
 
-    if(start_date != null && end_date != null) {
+    if(start_date != null && end_date != null && exe !=0) {
       if(new Date(start_date) < new Date(end_date)) {
         var parameters = { company_id: "#{@company}", executor: exe, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
 
