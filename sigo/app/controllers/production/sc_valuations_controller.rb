@@ -57,7 +57,7 @@ class Production::ScValuationsController < ApplicationController
 
 	def get_report
     name = Entity.find_by_id(params[:executor]).name
-    last = ValuationOfEquipment.where("name LIKE ? ", name).last
+    last = ScValuation.where("name LIKE ? ", name).last
     end_date = last.end_date
     if end_date.to_s < params[:start_date]
       @scValuation = ScValuation.new
