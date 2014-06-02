@@ -43,14 +43,21 @@ class Production::EquipmentReportsController < ApplicationController
     @article= params[:article]
     start_date = params[:start_date]
     end_date = params[:end_date]
-    @poe_array = poe_array(start_date, end_date, @article)
-		@poe_array2 = poe_array2(start_date, end_date, @article)
+    @select1 = params[:select1]
+    if @select1 == 'specific'
+      @poe_array = poe_arrayworker(start_date, end_date, @article)
+  		@poe_array2 = poe_array2(start_date, end_date, @article)
+      @subcontract = SubcontractEquipmentDetail.find_by_code(params[:article])
+    elsif @select1 == 'operador'
+      @poe_array = poe_arrayequipment(start_date, end_date, @article)
+      @poe_array2 = poe_array2(start_date, end_date, @article)
+      @worker = Worker.find_by_id(params[:article])
+    end
 		render(partial: 'report_table', :layout => false)
 	end
 
-  def poe_array(start_date, end_date, working_group_id)
+  def poe_arrayworker(start_date, end_date, working_group_id)
     @result = Array.new
-
     workers = PartOfEquipment.get_workers(working_group_id, start_date, end_date)
     workers.each do |w|
       array = Array.new
@@ -65,9 +72,31 @@ class Production::EquipmentReportsController < ApplicationController
         index += 1
       end
       @ratio = @totalfuel / @totaleffehours
+      @ratio = @ratio.round(2)
       @result << [w[1] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
     end
+    return @result
+  end
 
+  def poe_arrayequipment(start_date, end_date, working_group_id)
+    @result = Array.new
+    equipments = PartOfEquipment.get_equipments(working_group_id, start_date, end_date)
+    equipments.each do |w|
+      array = Array.new
+      index = 1
+      @totaleffehours = 0
+      @totalfuel = 0
+      @totalratio = 0
+      PartOfEquipment.get_report_per_equipments(working_group_id, start_date, end_date, w[0]).each do |rpw|
+        array << [index, rpw[1], rpw[2], rpw[3], rpw[4]]
+        @totaleffehours += rpw[2].to_f
+        @totalfuel += rpw[3].to_f
+        index += 1
+      end
+      @ratio = @totalfuel / @totaleffehours
+      @ratio = @ratio.round(2)
+      @result << [w[1] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
+    end
     return @result
   end
 
@@ -75,7 +104,7 @@ class Production::EquipmentReportsController < ApplicationController
     poe_array2 = ActiveRecord::Base.connection.execute("
       SELECT pha.id, pha.name , SUM(poed.effective_hours) , SUM(poe.fuel_amount), ROUND((SUM(poe.fuel_amount)/SUM(poed.effective_hours)), 2) 
 			FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
-			WHERE sced.code IN(" + working_group_id + ")
+			WHERE poe.worker_id IN(" + working_group_id + ") 
 			AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
 			AND poe.worker_id=wo.id 
 			AND poe.equipment_id=sced.article_id 
