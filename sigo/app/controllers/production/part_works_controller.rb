@@ -16,7 +16,7 @@ class Production::PartWorksController < ApplicationController
   def display_articles
     word = params[:q]
     article_hash = Array.new
-    articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE code LIKE '04%' AND name LIKE '%#{word}%'")
+    articles = PartWork.getOwnArticles(word)
     articles.each do |art|
       article_hash << {'id' => art[0], 'name' => art[1]}
     end

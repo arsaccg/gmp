@@ -17,7 +17,7 @@ class Production::SubcontractInputsController < ApplicationController
     word = params[:q]
     code = params[:code]
     article_hash = Array.new
-    articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE code LIKE '#{code}%' AND name LIKE '#{word}%'")
+    articles = SubcontractInput.getOwnArticles(word)
     articles.each do |art|
       article_hash << {'id' => art[0], 'name' => art[1]}
     end

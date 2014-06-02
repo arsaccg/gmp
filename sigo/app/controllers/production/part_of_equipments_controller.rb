@@ -51,7 +51,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     if params[:element].blank?
       word = params[:q]
       article_hash = Array.new
-      articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE code LIKE '__32%' AND name LIKE '%#{word}%'")
+      articles = PartOfEquipment.getOwnFuelArticles(word)
       articles.each do |art|
         article_hash << { 'id' => art[0], 'name' => art[1] }
       end
