@@ -25,16 +25,16 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @valuationofequipment2 = getsc_valuation2(@valuationofequipment.start_date, @valuationofequipment.end_date, @valuationofequipment.name, @code)
     if @valuationofequipment2.count > 0
       @valuationofequipment2.each do |workerDetail|
-        @valorizacionsinigv = 0
-        @amortizaciondeadelanto = 0
-        @totalfacturar = 0
-        @totalfacigv = 0
-        @totalincluidoigv = 0
-        @retenciones = 0
-        @detraccion = 0
-        @descuentocombustible = 0
-        @otrosdescuentos = 0
-        @netoapagar = 0
+        @valorizacionsinigv = workerDetail[0]
+        @amortizaciondeadelanto = workerDetail[1]
+        @totalfacturar = workerDetail[2]
+        @totalfacigv = workerDetail[3]
+        @totalincluidoigv = workerDetail[4]
+        @retenciones = workerDetail[5]
+        @detraccion = workerDetail[6]
+        @descuentocombustible = workerDetail[7]
+        @otrosdescuentos = workerDetail[8]
+        @netoapagar = workerDetail[9]
       end
     end
     render layout: false
@@ -74,8 +74,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         @valorizacionsinigv = 0
         @amortizaciondeadelanto = 0
         @totalfacturar = 0
-        @igvtotalfacturar = 0
-        @totalmasigv = 0
+        @totalfacigv = 0
+        @totalincluidoigv = 0
         @detracciontotal = 0
         @descuentocombustible = 0
         @descuentootros = 0
@@ -95,6 +95,24 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         else
           @cad = '0'
         end
+        @valuationgroup = getsc_valuation(@start_date, @end_date, @subcontractequipment.entity.name)
+        if @valuationgroup.count > 0
+          @valuationgroup.each do |workerDetail|
+            @valorizacionsinigv = workerDetail[0]
+            @amortizaciondeadelanto = workerDetail[1]
+            @totalfacturar = workerDetail[2]
+            @totalfacigv = workerDetail[3]
+            @totalincluidoigv = workerDetail[4]
+            @retenciones = workerDetail[5]
+            @detraccion = workerDetail[6]
+            @descuesto = workerDetail[7]
+            @descuentocombustible = workerDetail[8]
+            @netoapagar = workerDetail[9]
+            @numbercode = workerDetail[10]
+          end
+          @numbercode=@numbercode.to_i
+          @numbercode += 1
+        end
         @workers_array3 = business_days_array3(@start_date, @end_date, @cad)
         @workers_array3.each do |workerDetail|
           @totalprice += workerDetail[4]
@@ -105,7 +123,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         @numbercode = @numbercode.to_s.rjust(3,'0')
         @flag = "ok"
       else
-        @flag= "no"      
+        @flag= "no"
       end
     else
       @valuationofequipment = ValuationOfEquipment.new
@@ -124,8 +142,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @valorizacionsinigv = 0
       @amortizaciondeadelanto = 0
       @totalfacturar = 0
-      @igvtotalfacturar = 0
-      @totalmasigv = 0
+      @totalfacigv = 0
+      @totalincluidoigv = 0
       @detracciontotal = 0
       @descuentocombustible = 0
       @descuentootros = 0
@@ -154,7 +172,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @billigv = @bill*0.18
       @numbercode = @numbercode.to_s.rjust(3,'0')
       @flag = "ok"
-
     end
     
     
@@ -185,6 +202,25 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     return workers_array3
   end
 
+  def getsc_valuation(start_date, end_date, entityname)
+    valuationgroup = ActiveRecord::Base.connection.execute("
+      SELECT accumulated_valuation, 
+      accumulated_initial_amortization_number, 
+      accumulated_bill, accumulated_billigv, 
+      accumulated_totalbill, 
+      accumulated_retention, 
+      accumulated_detraction,
+      accumulated_fuel_discount, 
+      accumulated_other_discount, 
+      accumulated_net_payment, 
+      code 
+      FROM valuation_of_equipments
+      WHERE name LIKE '" + entityname + "'
+      ORDER BY id DESC LIMIT 1
+    ")
+    return valuationgroup
+  end
+
   def getsc_valuation2(start_date, end_date, entityname, code)
     valuationgroup = ActiveRecord::Base.connection.execute("
       SELECT accumulated_valuation, 
@@ -192,17 +228,14 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       accumulated_bill, accumulated_billigv, 
       accumulated_totalbill, 
       accumulated_retention, 
-      accumulated_detraction, 
-      accumulated_guarantee_fund1, 
-      accumulated_guarantee_fund2, 
-      accumulated_equipment_discount, 
-      accumulated_otherdiscount, 
+      accumulated_detraction,
+      accumulated_fuel_discount, 
+      accumulated_other_discount, 
       accumulated_net_payment, 
       code 
-      FROM sc_valuations 
+      FROM valuation_of_equipments 
       WHERE name LIKE '" + entityname + "' 
       AND code LIKE '" + code + "'
-      ORDER BY id DESC LIMIT 1
     ")
     return valuationgroup
   end
