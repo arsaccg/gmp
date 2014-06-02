@@ -101,9 +101,11 @@
         item['id'] = value.id;
         newOptions.push(item);
       });
+      var cad = document.getElementById("s2id_article").getElementsByClassName("select2-chosen")[0];
+      cad.innerHTML = "Seleccione";
       $('#article').empty();
       $('#article').append(
-          $("<option></option>").attr("value", "0").text("Seleccione")
+          $("<option></option>").attr("value", "0").text("Seleccione").attr("selected","selected")
         )
       $.each(newOptions, function(key,value){
         $('#article').append(
