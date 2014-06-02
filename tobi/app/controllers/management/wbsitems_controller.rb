@@ -322,7 +322,7 @@ class Management::WbsitemsController < ApplicationController
 
   private
   def wbsitem_parameters
-    params.require(:wbsitem).permit(:codewbs, :name, :description, :notes, :project_id, :item_id)
+    params.require(:wbsitem).permit(:codewbs, :name, :description, :notes, :cost_center_id, :item_id)
   end
 
 end
