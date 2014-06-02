@@ -61,6 +61,16 @@ module ApplicationHelper
     end
   end
 
+  def translate_sc_valuation_state(str_value)
+    str_spanish = ""
+    case str_value
+      when "disapproved"
+        str_spanish="DESAPROBADO"
+      when "approved"
+        str_spanish="APROBADO"
+    end
+  end
+
   def get_next_state(str_state)
     str_spanish = ""
     case str_state

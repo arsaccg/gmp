@@ -333,6 +333,7 @@ class Production::ScValuationsController < ApplicationController
     end
     render layout: false
   end
+
   def part_people
     start_date = params[:start_date]
     end_date = params[:end_date]
@@ -344,6 +345,7 @@ class Production::ScValuationsController < ApplicationController
     end
     render layout: false
   end
+
   def part_equipment
     start_date = params[:start_date]
     end_date = params[:end_date]
@@ -354,6 +356,12 @@ class Production::ScValuationsController < ApplicationController
       @totalprice3 += workerDetail[4]
     end
     render layout: false
+  end
+
+  def approve
+    scvaluation = ScValuation.find(params[:id])
+    scvaluation.approve
+    redirect_to :action => :index
   end
 
   private
