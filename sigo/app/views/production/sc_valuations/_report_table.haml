@@ -1,6 +1,6 @@
 #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
   -if @flag=="no"
-    %strong Por favor escoja otro fecha, ya que la fecha de inicio es menor a la última valorizacoin
+    %strong Por favor escoja otro fecha, ya que la fecha de inicio es menor a la última valorización
   -else
     = simple_form_for([:production, @scValuation], html: {autocomplete: 'off' }) do |f|
       %header
@@ -213,38 +213,6 @@
         $('#number').val(' ');
         var num = parseInt($('#total').text())*$('#percent').val()/100;
         $('#number').val(num.toFixed(2));
-        $('#sv_valuation_initial_amortization_number').val(num.toFixed(2));
-        $('#sv_valuation_initial_amortization_percentage').val($('#percent').val());
-
-        $('#totalfac').text((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
-        $('#sv_valuation_bill').val((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
-
-        $('#igvTotal').text(($('#totalfac').text()*$('#igv').text()).toFixed(2));
-        $('#sv_valuation_billigv').val(($('#totalfac').text()*$('#igv').text()).toFixed(2));
-
-        $('#totalInIgv').text((parseFloat($('#igvTotal').text()) + parseFloat($('#totalfac').text())).toFixed(2));
-        $('#sv_valuation_billigv').val((parseFloat($('#igvTotal').text()) + parseFloat($('#totalfac').text())).toFixed(2));
-
-        $('#netpay').text($('#totalInIgv').text() - $('#ret').text());
-        $('#sv_valuation_net_payment').val($('#totalInIgv').text() - $('#ret').text());
-
-        $('#amortAcum').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
-        $('#amortAcum2').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
-        $('#saldo').text((parseInt($('#adelanto').text())-parseFloat($('#amortAcum2').text())).toFixed(2));
-        $('#sv_valuation_accumulated_amortization').val((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
-        $('#sv_valuation_balance').val((parseInt($('#adelanto').text())-parseFloat($('#amortAcum2').text())).toFixed(2));
-
-        $('#acumTotalFac').text((parseFloat($('#lastTotalFac').text()) + parseFloat($('#totalfac').text())).toFixed(2));
-        $('#sv_valuation_accumulated_bill').val((parseFloat($('#lastTotalFac').text()) + parseFloat($('#totalfac').text())).toFixed(2));
-
-        $('#acumIgv').text((parseFloat($('#lastIgv').text()) + parseFloat($('#igvTotal').text())).toFixed(2));
-        $('#sv_valuation_accumulated_billigv').val((parseFloat($('#lastIgv').text()) + parseFloat($('#igvTotal').text())).toFixed(2));
-
-        $('#acumTotal').text((parseFloat($('#lastTotal').text()) + parseFloat($('#totalInIgv').text())).toFixed(2));
-        $('#sv_valuation_accumulated_totalbill').val((parseFloat($('#lastTotal').text()) + parseFloat($('#totalInIgv').text())).toFixed(2));
-
-        $('#acumnetpay').text((parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2));
-        $('#sv_valuation_accumulated_net_payment').val((parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2));
       }
     });
 
@@ -252,8 +220,8 @@
       if($('#total').text()!= ""){
         $('#percent').text(' ');
         $('#percent').val(($('#number').val()/parseInt($('#total').text())*100).toFixed(2));
-        $('#sv_valuation_initial_amortization_number').val($('#number').val());
 
+        $('#sv_valuation_initial_amortization_number').val($('#number').val());
         $('#sv_valuation_initial_amortization_percentage').val(($('#number').val()/parseInt($('#total').text())*100).toFixed(2));
 
         $('#totalfac').text((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
@@ -263,7 +231,7 @@
         $('#sv_valuation_billigv').val(($('#totalfac').text()*$('#igv').text()).toFixed(2));
 
         $('#totalInIgv').text((parseFloat($('#igvTotal').text()) + parseFloat($('#totalfac').text())).toFixed(2));
-        $('#sv_valuation_billigv').val((parseFloat($('#igvTotal').text()) + parseFloat($('#totalfac').text())).toFixed(2));
+        $('#sv_valuation_totalbill').val((parseFloat($('#igvTotal').text()) + parseFloat($('#totalfac').text())).toFixed(2));
 
         $('#netpay').text($('#totalInIgv').text() - $('#ret').text());
         $('#sv_valuation_net_payment').val($('#totalInIgv').text() - $('#ret').text());
@@ -272,6 +240,7 @@
         $('#amortAcum2').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
         $('#saldo').text((parseInt($('#adelanto').text())-parseFloat($('#amortAcum2').text())).toFixed(2));
         $('#sv_valuation_accumulated_amortization').val((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
+        $('#sv_valuation_initial_amortization_number').val((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
 
         $('#acumTotalFac').text((parseFloat($('#lastTotalFac').text()) + parseFloat($('#totalfac').text())).toFixed(2));
         $('#sv_valuation_accumulated_bill').val((parseFloat($('#lastTotalFac').text()) + parseFloat($('#totalfac').text())).toFixed(2));
@@ -298,6 +267,7 @@
 
           $('#acumRet').text((parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2));
           $('#sv_valuation_accumulated_retention').val((parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2));
+          $('#sv_valuation_retention').val(parseFloat($('#ret').text()).toFixed(2));
 
           $('#acumnetpay').text((parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2));
           $('#sv_valuation_accumulated_net_payment').val((parseFloat($('#lastnetpay').text()) + parseFloat($('#netpay').text())).toFixed(2));
@@ -314,6 +284,7 @@
 
           $('#acumRet').text((parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2));      
           $('#sv_valuation_accumulated_retention').val((parseFloat($('#lastRet').text()) + parseFloat($('#ret').text())).toFixed(2));
+          $('#sv_valuation_retention').val(parseFloat($('#ret').text()).toFixed(2));
 
           $('#netpay').text($('#totalInIgv').text() - $('#ret').text());
           $('#sv_valuation_net_payment').val($('#totalInIgv').text() - $('#ret').text());
