@@ -4,11 +4,110 @@
       %i.fa.fa-table
     %h2
       Análisis de Producción
+  -if @select1 == 'specific'
+    %div
+      - @poe_array.each do |poe|
+        - poe[0].each do |data|
+          %h1.page-title.txt-color-blueDark= data[0]
+          .jarviswidget-editbox
+          .widget-body
+            %table.table.table-bordered
+              %thead
+                %tr
+                  %th #
+                  %th Nombre Tarea/Fase
+                  %th H.Efectivas
+                  %th Combustible (gln)
+                  %th Ratio real (gln/hr)
+              %tbody
+                - data[1].each do |value|
+                  - value['data'].each do |data|
+                    %tr
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[0]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[1]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[2]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[3]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[4]
+                  %tr
+                    %th{'colspan' => 2} Total
+                    %th
+                      = value['hours']
+                    %th
+                      = value['fuel']
+                    %th
+                      = value['ratio']
 
-  %div
-    - @poe_array.each do |poe|
-      - poe[0].each do |data|
-        %h1.page-title.txt-color-blueDark= data[0]
+    %div
+      %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @subcontract.code + ' ' + @subcontract.article.name
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th #
+              %th Nombre Tarea/Fase
+              %th H.Efectivas
+              %th Combustible (gln)
+              %th Ratio real (gln/hr)
+          %tbody
+            - @poe_array2.each do |workerDetail2|
+              %tr
+                %th{'style' => 'font-weight: normal;'}
+                  = workerDetail2[0]
+                %th{'style' => 'font-weight: normal;'}
+                  = workerDetail2[1]
+                %th{'style' => 'font-weight: normal;'}
+                  = workerDetail2[2]
+                %th{'style' => 'font-weight: normal;'}
+                  = workerDetail2[3]
+                %th{'style' => 'font-weight: normal;'}
+                  = workerDetail2[4]
+
+  -if @select1 == 'operador'
+    %div
+      - @poe_array.each do |poe|
+        - poe[0].each do |data|
+          %h1.page-title.txt-color-blueDark= data[0]
+          .jarviswidget-editbox
+          .widget-body
+            %table.table.table-bordered
+              %thead
+                %tr
+                  %th #
+                  %th Nombre Tarea/Fase
+                  %th H.Efectivas
+                  %th Combustible (gln)
+                  %th Ratio real (gln/hr)
+              %tbody
+                - data[1].each do |value|
+                  - value['data'].each do |data|
+                    %tr
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[0]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[1]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[2]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[3]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[4]
+                  %tr
+                    %th{'colspan' => 2} Total
+                    %th
+                      = value['hours']
+                    %th
+                      = value['fuel']
+                    %th
+                      = value['ratio']
+  
+      %div
+        %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @worker.first_name + ' ' + @worker.second_name + ' ' + @worker.paternal_surname + ' ' + @worker.maternal_surname
         .jarviswidget-editbox
         .widget-body
           %table.table.table-bordered
@@ -20,50 +119,143 @@
                 %th Combustible (gln)
                 %th Ratio real (gln/hr)
             %tbody
-              - data[1].each do |value|
-                - value['data'].each do |data|
-                  %tr
-                    %th{ 'style' => 'font-weight: normal;' }
-                      = data[0]
-                    %th{ 'style' => 'font-weight: normal;' }
-                      = data[1]
-                    %th{ 'style' => 'font-weight: normal;' }
-                      = data[2]
-                    %th{ 'style' => 'font-weight: normal;' }
-                      = data[3]
-                    %th{ 'style' => 'font-weight: normal;' }
-                      = data[4]
+              - @poe_array2.each do |workerDetail2|
                 %tr
-                  %th{'colspan' => 2} Total
-                  %th
-                    = value['hours']
-                  %th
-                    = value['fuel']
-                  %th
-                    = value['ratio']
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[0]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[1]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[2]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[3]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[4]
 
-  %div
-    %h1.page-title.txt-color-blueDark Resumen Parte de Equipos
-    .jarviswidget-editbox
-    .widget-body
-      %table.table.table-bordered
-        %thead
-          %tr
-            %th #
-            %th Nombre Tarea/Fase
-            %th H.Efectivas
-            %th Combustible (gln)
-            %th Ratio real (gln/hr)
-        %tbody
-          - @poe_array2.each do |workerDetail2|
-            %tr
-              %th{'style' => 'font-weight: normal;'}
-                = workerDetail2[0]
-              %th{'style' => 'font-weight: normal;'}
-                = workerDetail2[1]
-              %th{'style' => 'font-weight: normal;'}
-                = workerDetail2[2]
-              %th{'style' => 'font-weight: normal;'}
-                = workerDetail2[3]
-              %th{'style' => 'font-weight: normal;'}
-                = workerDetail2[4]
+  -if @select1 == 'frente'
+    %div
+      - @poe_array.each do |poe|
+        - poe[0].each do |data|
+          %h1.page-title.txt-color-blueDark= data[0]
+          .jarviswidget-editbox
+          .widget-body
+            %table.table.table-bordered
+              %thead
+                %tr
+                  %th #
+                  %th Nombre Tarea/Fase
+                  %th H.Efectivas
+                  %th Combustible (gln)
+                  %th Ratio real (gln/hr)
+              %tbody
+                - data[1].each do |value|
+                  - value['data'].each do |data|
+                    %tr
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[0]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[1]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[2]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[3]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[4]
+                  %tr
+                    %th{'colspan' => 2} Total
+                    %th
+                      = value['hours']
+                    %th
+                      = value['fuel']
+                    %th
+                      = value['ratio']
+  
+      %div
+        %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @sector.name
+        .jarviswidget-editbox
+        .widget-body
+          %table.table.table-bordered
+            %thead
+              %tr
+                %th #
+                %th Nombre Tarea/Fase
+                %th H.Efectivas
+                %th Combustible (gln)
+                %th Ratio real (gln/hr)
+            %tbody
+              - @poe_array2.each do |workerDetail2|
+                %tr
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[0]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[1]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[2]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[3]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[4]
+
+  -if @select1 == 'equipment'
+    %div
+      - @poe_array.each do |poe|
+        - poe[0].each do |data|
+          %h1.page-title.txt-color-blueDark= data[0]
+          .jarviswidget-editbox
+          .widget-body
+            %table.table.table-bordered
+              %thead
+                %tr
+                  %th #
+                  %th Nombre Tarea/Fase
+                  %th H.Efectivas
+                  %th Combustible (gln)
+                  %th Ratio real (gln/hr)
+              %tbody
+                - data[1].each do |value|
+                  - value['data'].each do |data|
+                    %tr
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[0]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[1]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[2]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[3]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[4]
+                  %tr
+                    %th{'colspan' => 2} Total
+                    %th
+                      = value['hours']
+                    %th
+                      = value['fuel']
+                    %th
+                      = value['ratio']
+  
+      %div
+        %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @article.name
+        .jarviswidget-editbox
+        .widget-body
+          %table.table.table-bordered
+            %thead
+              %tr
+                %th #
+                %th Nombre Tarea/Fase
+                %th H.Efectivas
+                %th Combustible (gln)
+                %th Ratio real (gln/hr)
+            %tbody
+              - @poe_array2.each do |workerDetail2|
+                %tr
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[0]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[1]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[2]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[3]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[4]

@@ -249,6 +249,9 @@ ArsacLogistica::Application.routes.draw do
         post 'part_people'
         post 'part_equipment'        
       end
+      member do
+        get 'approve'
+      end
     end
     resources :machinery_reports do
       collection do
@@ -264,6 +267,11 @@ ArsacLogistica::Application.routes.draw do
     resources :valuation_of_equipments do
       collection do
         post 'get_report'
+        post 'part_equipment'
+        post 'report_of_equipment'
+      end
+      member do
+        get 'approve'
       end
     end
     resources :part_works do

@@ -1,5 +1,109 @@
-HOLA 
+%header
+  %h2
+    Valorizacion de Equipo
 
+  %div
+    .jarviswidget-editbox
+    .widget-body
+      %table.table.table-bordered{"style"=>"width:40%"}
+        %thead
+          %tr
+            %th{'colspan' => 4, "style"=>"color:#5f5f5f"}= @valuationofequipment.name + ' ' + @valuationofequipment.code
+          %tr
+            %th{"style"=>"color:#5f5f5f"} Monto contratado
+            %th{"style"=>"color:#5f5f5f"} Adelanto
+            %th{"style"=>"color:#5f5f5f"} Amortización Acumulada
+            %th{"style"=>"color:#5f5f5f"} Saldo
+        %tbody
+          %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.hired_amount
+          %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.advances
+          %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.accumulated_amortization
+          %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.balance
+  %br
+  %div
+    .jarviswidget-editbox
+    .widget-body
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th{"style"=>"color:#5f5f5f"} Item
+            %th{"style"=>"color:#5f5f5f"} Descripcion
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"} Actual
+            %th{"style"=>"color:#5f5f5f"} Acumulado Anterior
+            %th{"style"=>"color:#5f5f5f"} Acumulado Actual
+        %tbody
+          %tr
+            %th{"style"=>"color:#5f5f5f"} 1.00
+            %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
+            %th{"style"=>"color:#5f5f5f"}
+              %span{"style"=>"width=20px"}
+                %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_equipment();'}
+                  %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.valuation
+            %th{"style"=>"color:#5f5f5f"}=@valorizacionsinigv
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.accumulated_valuation
+          %tr
+            %th{"style"=>"color:#5f5f5f"} 2.00
+            %th{"style"=>"color:#5f5f5f"} Amortización de Adelanto (SIN. I.G.V.)
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.initial_amortization_percentage
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.initial_amortization_number
+            %th{"style"=>"color:#5f5f5f"}=@amortizaciondeadelanto
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.accumulated_initial_amortization_number
+          %tr
+            %th{"style"=>"color:#5f5f5f"} 3.00
+            %th{"style"=>"color:#5f5f5f"} Total a Facturar
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@valuationofequipment.bill
+            %th{"style"=>"color:#5f5f5f"}=@totalfacturar
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.accumulated_bill
+          %tr
+            %th{"style"=>"color:#5f5f5f"} 4.00
+            %th{"style"=>"color:#5f5f5f"} I.G.V. del Total a Facturar
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@valuationofequipment.billigv
+            %th{"style"=>"color:#5f5f5f"}=@totalfacigv
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.accumulated_billigv
+          %tr
+            %th{"style"=>"color:#5f5f5f"}
+            %th{"style"=>"color:#5f5f5f"} Total Incluido IGV
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@valuationofequipment.totalbill
+            %th{"style"=>"color:#5f5f5f"}=@totalincluidoigv
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.accumulated_totalbill
+          %tr
+            %th{"style"=>"color:#5f5f5f"} 5.00
+            %th{ 'colspan' => 5, "style"=>"color:#5f5f5f"} Retenciones
+          %tr
+            %th{"style"=>"color:#5f5f5f"} 5.01
+            %th{"style"=>"color:#5f5f5f"} Detracción del Total (Incl. I.G.V.)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@valuationofequipment.detraction
+            %th{"style"=>"color:#5f5f5f"}=@detraccion
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.accumulated_detraction
+          %tr
+            %th{"style"=>"color:#5f5f5f"} 5.02
+            %th{"style"=>"color:#5f5f5f"} Descuento de Combustible (Incl. I.G.V.)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@valuationofequipment.fuel_discount
+            %th{"style"=>"color:#5f5f5f"}=@descuentocombustible
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.accumulated_fuel_discount
+          %tr
+            %th{"style"=>"color:#5f5f5f"} 5.03
+            %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@valuationofequipment.other_discount
+            %th{"style"=>"color:#5f5f5f"}=@otrosdescuentos
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.accumulated_other_discount
+          %tr
+            %th{"style"=>"color:#5f5f5f"}
+            %th{"style"=>"color:#5f5f5f"} TOTAL RETENCIONES
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@valuationofequipment.retention
+            %th{"style"=>"color:#5f5f5f"}=@retenciones
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.accumulated_retention
+          %tr
+            %th{"style"=>"color:#5f5f5f"} 6.00
+            %th{"style"=>"color:#5f5f5f"} NETO A PAGAR: TOTAL (INCL. I.G.V.) - TOTAL RETEN.
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}=@valuationofequipment.net_payment
+            %th{"style"=>"color:#5f5f5f"}=@netoapagar
+            %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.accumulated_net_payment
+    %br
+    %br
+    #part-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}    
+    #report-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
 %br
 %button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
   %i.fa.fa-arrow-left>
@@ -9,3 +113,12 @@ HOLA
   $('#backlist').click(function(){
       load_url_ajax("#{production_valuation_of_equipments_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
   });
+
+  function part_equipment() {
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@valuationofequipment.start_date}", end_date: "#{@valuationofequipment.end_date}", cad: "#{@valuationofequipment.working_group}", name: "#{@valuationofequipment.name}", code: "#{@valuationofequipment.code}" };
+    load_url_ajax('#{part_equipment_production_valuation_of_equipments_path}', 'part-equipment', data, '', 'POST');
+    $('#part-equipment').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }

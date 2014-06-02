@@ -16,7 +16,7 @@ class Production::PartWorksController < ApplicationController
   def display_articles
     word = params[:q]
     article_hash = Array.new
-    articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE code LIKE '04%' AND name LIKE '%#{word}%'")
+    articles = PartWork.getOwnArticles(word)
     articles.each do |art|
       article_hash << {'id' => art[0], 'name' => art[1]}
     end
@@ -34,6 +34,7 @@ class Production::PartWorksController < ApplicationController
   def create
     partwork = PartWork.new(part_work_parameters)
     partwork.cost_center_id = get_company_cost_center('cost_center')
+    partwork.block = 0
     if partwork.save
       flash[:notice] = "Se ha creado correctamente la parte de obra."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -91,6 +92,6 @@ class Production::PartWorksController < ApplicationController
 
   private
   def part_work_parameters
-    params.require(:part_work).permit(:working_group_id, :sector_id, :number_working_group, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :article_id, :bill_of_quantitties, :description])
+    params.require(:part_work).permit(:working_group_id, :block, :sector_id, :number_working_group, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :article_id, :bill_of_quantitties, :description])
   end
 end
