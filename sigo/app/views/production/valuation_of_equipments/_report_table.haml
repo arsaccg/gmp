@@ -13,7 +13,7 @@
         %table.table.table-bordered{"style"=>"width:40%"}
           %thead
             %tr
-              %th{'colspan' => 4, "style"=>"color:#5f5f5f"}= @valuationofequipment.name + ' ' + @code
+              %th{'colspan' => 4, "style"=>"color:#5f5f5f"}= @subcontractequipment.entity.name + ' ' + @numbercode
             %tr
               %th{"style"=>"color:#5f5f5f"} Monto contratado
               %th{"style"=>"color:#5f5f5f"} Adelanto
@@ -120,8 +120,8 @@
               %th#lastnetpay{"style"=>"color:#5f5f5f"}= @netoapagar
               %th#acumnetpay{"style"=>"color:#5f5f5f"}= @bill+@billigv-@subcontractequipment.detraction.to_i+@fuel_discount.to_i + @netoapagar
 
-    %br
-    #part-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+      %br
+      #part-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
 
               
       = hidden_field_tag 'totalretention', @subcontractequipment.detraction.to_i+@fuel_discount.to_i, 'id' => 'input-totalretention'
