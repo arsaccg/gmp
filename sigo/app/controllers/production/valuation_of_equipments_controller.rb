@@ -197,6 +197,11 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     return poe_array
   end
 
+  def approve
+    valuationOfEquipment = ValuationOfEquipment.find(params[:id])
+    valuationOfEquipment.approve
+    redirect_to :action => :index
+  end
 
   private
   def valuation_of_equipment_parameters
