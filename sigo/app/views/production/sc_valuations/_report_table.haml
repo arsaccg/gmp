@@ -50,7 +50,7 @@
                 %br
                 %input#flag{:type =>"checkbox", :onchange => 'check();'} Usar IGV
               %th{"style"=>"color:#5f5f5f"}
-                %input.form-control#percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 40%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}%
+                %input.form-control#percent{:value => "#{@subcontract.initial_amortization_percent}", :readonly => true, "style"=> "width: 40%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}%
               %th{"style"=>"color:#5f5f5f"}
                 %input.form-control#number{:value => "#{@subcontract.initial_amortization_number}", "style"=> "width: 50%", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
               %th#amortLast{"style"=>"color:#5f5f5f"}= @amortizaciondeadelanto
@@ -147,7 +147,7 @@
               = hidden_field_tag 'sv_valuation[working_group]', @cad
               = hidden_field_tag 'sv_valuation[valuation]', @totalprice2
               = hidden_field_tag 'sv_valuation[initial_amortization_number]', @subcontract.initial_amortization_number
-              = hidden_field_tag 'sv_valuation[initial_amortization_percentage]', @amortizaciondeadelantoigv
+              = hidden_field_tag 'sv_valuation[initial_amortization_percentage]', @subcontract.initial_amortization_percent
               = hidden_field_tag 'sv_valuation[bill]', @totalbill
               = hidden_field_tag 'sv_valuation[billigv]', @subcontract.igv
               = hidden_field_tag 'sv_valuation[totalbill]', @totalbillwigv

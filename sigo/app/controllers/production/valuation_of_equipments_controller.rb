@@ -22,9 +22,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @code = 0
     @code = @valuationofequipment.code.to_i - 1
     @code = @code.to_s.rjust(3,'0')
-    #@valuationofequipment = getsc_valuation2(@scvaluation.start_date, @scvaluation.end_date, @scvaluation.name, @code)
-    #if @valuationofequipment.count > 0
-    #  @valuationofequipment.each do |workerDetail|
+    #@valuationofequipment2 = getsc_valuation2(@valuationofequipment.start_date, @valuationofequipment.end_date, @valuationofequipment.name, @code)
+    #if @valuationofequipment2.count > 0
+    #  @valuationofequipment2.each do |workerDetail|
     #    @valorizacionsinigv = 0
     #    @amortizaciondeadelanto = 0
     #    @totalfacturar = 0

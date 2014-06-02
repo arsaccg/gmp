@@ -129,6 +129,10 @@ class Production::ScValuationsController < ApplicationController
     @subcontract.subcontract_advances.each do |subadvances|
       @subadvances+=subadvances.advance
     end
+    if @subcontract.initial_amortization_number.to_f>@subadvances || @subcontract.initial_amortization_percent.to_f>@subadvances
+      @subcontract.initial_amortization_number=0
+      @subcontract.initial_amortization_percent=0
+    end
     @totalbill= @totalprice2-@subcontract.initial_amortization_number
     @totalbilligv= (@totalprice2-@subcontract.initial_amortization_number)*@subcontract.igv
     @totalbillwigv= @totalbill+@totalbilligv

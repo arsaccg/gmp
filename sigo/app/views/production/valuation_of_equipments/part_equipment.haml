@@ -1,0 +1,50 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
+        \×
+      %h4.modal-title Descuento de Equipos
+    .modal-body
+      -if @workers_array3.count>0
+        %h1.page-title.txt-color-blueDark Parte de Equipos
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th{'colspan' => 11, "style"=>"color:#5f5f5f"}=@name + ' ' + @code
+            %tr
+              %th #
+              %th Equipo
+              %th Und
+              %th Precio U.
+              %th Metrado Anterior
+              %th Monto Anterior
+              %th Metrado Actual
+              %th Monto Actual
+              %th Metrado Acumulado
+              %th Monto Acumulado
+              %th Accion
+          %tbody
+          - index = 1
+          - @workers_array3.each do |workerDetail3|
+            %tr
+              %th= index
+              %th= workerDetail3[0]
+              %th= workerDetail3[1]
+              %th= workerDetail3[3]
+              %th
+              %th
+              %th= workerDetail3[2]
+              %th= workerDetail3[4]
+              %th
+              %th= workerDetail3[4]
+              %th
+                %span{"style"=>"width=20px"}
+                  %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'report_of_equipment();'}
+                    %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
+            - index += 1
+      -else
+        %h4.modal-title No hay datos.
+        %br
+      %footer
+        %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+          Salir

@@ -1,0 +1,85 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
+        \×
+      %h4.modal-title Descuento de Equipos
+    .modal-body
+      %h1.page-title.txt-color-blueDark Parte de Equipos
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th #
+            %th #Parte
+            %th Fecha
+            %th H.inicio
+            %th H.fin
+            %th H.horas
+            %th H.Efectivas
+            %th Suministro
+            %th Combustible
+        %tbody
+        - index = 1
+        - status = false
+        - row1 = ""
+        - row2 = ""
+        - row3 = ""
+        - row4 = ""
+        - row5 = ""
+        - row6 = ""
+        - row7 = ""
+        - row8 = ""
+        - @dias_habiles.each do |dia|
+          - @poe_array.each do |workerDetail|
+            -if workerDetail[1]==dia
+              - if !status
+                - status = true
+                - row1 = workerDetail[0]
+                - row2 = workerDetail[1]
+                - row3 = workerDetail[2]
+                - row4 = workerDetail[3]
+                - row5 = workerDetail[4]
+                - row6 = workerDetail[5]
+                - row7 = workerDetail[6]
+                - row8 = workerDetail[7]
+                - break
+            -else
+              - status = false
+              - row1 = '--'
+              - row2 = dia
+              - row3 = '--'
+              - row4 = '--'
+              - row5 = '--'
+              - row6 = '--'
+              - row7 = '--'
+              - row8 = '--'
+          %tr
+            %th{'style' => 'font-weight: normal;'}
+              = index
+            %th{'style' => 'font-weight: normal;'}
+              = row1
+            %th{'style' => 'font-weight: normal;'}
+              = row2
+            %th{'style' => 'font-weight: normal;'}
+              = row3
+            %th{'style' => 'font-weight: normal;'}
+              = row4
+            %th{'style' => 'font-weight: normal;'}
+              = row5
+            %th{'style' => 'font-weight: normal;'}
+              = row6
+            %th{'style' => 'font-weight: normal;'}
+              = row7
+            %th{'style' => 'font-weight: normal;'}
+              = row8
+          - index += 1
+        %tr
+          %th{'colspan' => 5}
+            TOTAL
+          %th= @totaldif
+          %th= @totaltotalhours
+          %th
+          %th= @totalfuel_amount
+    %footer
+      %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+        Salir
