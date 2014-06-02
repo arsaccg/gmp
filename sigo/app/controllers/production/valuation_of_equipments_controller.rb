@@ -8,6 +8,35 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 	end
     
   def show
+    @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+    @valorizacionsinigv = 0
+    @amortizaciondeadelanto = 0
+    @totalfacturar = 0
+    @totalfacigv = 0
+    @totalincluidoigv = 0
+    @retenciones = 0
+    @detraccion = 0
+    @descuentocombustible = 0
+    @otrosdescuentos = 0
+    @netoapagar = 0
+    @code = 0
+    @code = @valuationofequipment.code.to_i - 1
+    @code = @code.to_s.rjust(3,'0')
+    #@valuationofequipment = getsc_valuation2(@scvaluation.start_date, @scvaluation.end_date, @scvaluation.name, @code)
+    #if @valuationofequipment.count > 0
+    #  @valuationofequipment.each do |workerDetail|
+    #    @valorizacionsinigv = 0
+    #    @amortizaciondeadelanto = 0
+    #    @totalfacturar = 0
+    #    @totalfacigv = 0
+    #    @totalincluidoigv = 0
+    #    @retenciones = 0
+    #    @detraccion = 0
+    #    @descuentocombustible = 0
+    #    @otrosdescuentos = 0
+    #    @netoapagar = 0
+    #  end
+    #end
     render layout: false
   end
 	def new
@@ -111,6 +140,27 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     valuationofequipment = ValuationOfEquipment.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el trabajador."
     render :json => valuationofequipment
+  end
+
+  def part_equipment
+    @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+    cad = params[:cad]
+    @totalprice3 = 0
+    @workers_array3 = business_days_array3(start_date, end_date, cad)
+    @workers_array3.each do |workerDetail|
+      @totalprice3 += workerDetail[4]
+    end
+    render layout: false
+  end
+
+  def report_of_equipment
+    @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+    cad = params[:cad]
+    render layout: false
   end
 
   private

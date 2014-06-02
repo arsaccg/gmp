@@ -115,7 +115,7 @@
               %th{"style"=>"color:#5f5f5f"}
               %th#net-pay{ "style"=>"color:#5f5f5f", 'original' => "#{(@bill-@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i)}"}= (@bill+@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i)
               %th#lastnetpay{"style"=>"color:#5f5f5f"}= @netoapagar
-              %th#acumnetpay{"style"=>"color:#5f5f5f"}
+              %th#acumnetpay{"style"=>"color:#5f5f5f"}= @bill+@billigv-@subcontractequipment.detraction.to_i+@fuel_discount.to_i + @netoapagar
 
               
       = hidden_field_tag 'totalretention', @subcontractequipment.detraction.to_i+@fuel_discount.to_i, 'id' => 'input-totalretention'
@@ -137,7 +137,7 @@
       = hidden_field_tag 'valuation_of_equipment[advances]', @subadvances
       = hidden_field_tag 'valuation_of_equipment[accumulated_amortization]', @subcontractequipment.initial_amortization_number+@amortizaciondeadelanto
       = hidden_field_tag 'valuation_of_equipment[balance]', @balance
-      = hidden_field_tag 'valuation_of_equipment[net_payment]', 0
+      = hidden_field_tag 'valuation_of_equipment[net_payment]', @bill+@billigv-@subcontractequipment.detraction.to_i+@fuel_discount.to_i
       = hidden_field_tag 'valuation_of_equipment[accumulated_valuation]', @totalprice+@valorizacionsinigv
       = hidden_field_tag 'valuation_of_equipment[accumulated_initial_amortization_number]', @subcontractequipment.initial_amortization_number+@amortizaciondeadelanto
       = hidden_field_tag 'valuation_of_equipment[accumulated_bill]', @bill+@totalfacturar
@@ -147,7 +147,7 @@
       = hidden_field_tag 'valuation_of_equipment[accumulated_detraction]', @subcontractequipment.detraction.to_f+@detracciontotal
       = hidden_field_tag 'valuation_of_equipment[accumulated_fuel_discount]', @fuel_discount+@descuentocombustible
       = hidden_field_tag 'valuation_of_equipment[accumulated_other_discount]', 0
-      = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]', 0
+      = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]', @bill+@billigv-@subcontractequipment.detraction.to_i+@fuel_discount.to_i + @netoapagar
 
       %footer
         %button.btn.btn-primary{type: "submit"}
