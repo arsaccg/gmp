@@ -67,10 +67,11 @@
     var start_date = $('#start-date-input').val();
     var end_date = $('#end-date-input').val();
     var article = $('#article').val();
+    var select1 = $('#select-1').val();
 
     if(start_date != null && end_date != null) {
       if(new Date(start_date) < new Date(end_date)) {
-        var parameters = { company_id: "#{@company}", article: article, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+        var parameters = { company_id: "#{@company}", article: article, start_date: start_date, end_date: end_date, select1: select1, authenticity_token: "#{form_authenticity_token}" };
 
         load_items_delivery_order_ajax("#{get_report_production_equipment_reports_path}", 'table-information-result', parameters);
       } else {
