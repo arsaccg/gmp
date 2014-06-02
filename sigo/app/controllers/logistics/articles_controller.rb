@@ -190,7 +190,11 @@ class Logistics::ArticlesController < ApplicationController
           if count_unidad != 0
             unidad_last_id = unidad[0].id
           else
-            codigo_unidad = (UnitOfMeasurement.last.code.to_i + 1).to_s.rjust(2, '0')
+            if UnitOfMeasurement.last.present?
+              codigo_unidad = (UnitOfMeasurement.last.code.to_i + 1).to_s.rjust(2, '0')
+            else
+              codigo_unidad = 1.to_s.rjust(2, '0')
+            end
             unidad_new = UnitOfMeasurement.new(:symbol => unidad_symbol, :code => codigo_unidad, :name => unidad_symbol)
             code += 1 
             unidad_new.save
