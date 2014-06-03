@@ -13,7 +13,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def display_articles
     word = params[:q]
     article_hash = Array.new
-    articles = DeliveryOrder.getOwnArticles(word)
+    articles = DeliveryOrder.getOwnArticles(word, get_company_cost_center('cost_center'))
     articles.each do |art|
       article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}
     end
