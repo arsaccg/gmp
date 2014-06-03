@@ -1,4 +1,4 @@
-
+# encoding: utf-8
 class Sector < ActiveRecord::Base
 	has_many :deliver_orders
 	has_many :working_groups
