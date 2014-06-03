@@ -12,7 +12,7 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
     if params[:element].blank?
       word = params[:q]
       article_hash = Array.new
-      articles = SubcontractEquipmentDetail.getOwnArticles(word)
+      articles = SubcontractEquipmentDetail.getOwnArticles(word, get_company_cost_center('cost_center'))
       articles.each do |art|
         article_hash << {'id' => art[0], 'name' => art[1]}
       end

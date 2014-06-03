@@ -17,7 +17,7 @@ class Production::SubcontractInputsController < ApplicationController
     word = params[:q]
     code = params[:code]
     article_hash = Array.new
-    articles = SubcontractInput.getOwnArticles(word)
+    articles = SubcontractInput.getOwnArticles(word, get_company_cost_center('cost_center'))
     articles.each do |art|
       article_hash << {'id' => art[0], 'name' => art[1]}
     end
