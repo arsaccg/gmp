@@ -1,6 +1,9 @@
 #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
   -if @flag=="no"
-    %strong Por favor escoja otro fecha, ya que la fecha de inicio es menor a la última valorización
+    -if @nhsub=="no"
+      %strong No se encontró ninguna subcontrato con ese proveedor
+    -else
+      %strong Por favor escoja otro fecha, ya que la fecha de inicio es menor a la última valorización
   -else
     = simple_form_for([:production, @valuationofequipment], html: {autocomplete: 'off' }) do |f|
       %header
@@ -205,7 +208,7 @@
           $('#input-totalretention').val(parseFloat(otherdiscount)+parseFloat($('#totalretention').attr('original')));
           $('#valuation_of_equipment_retention').val(parseFloat(otherdiscount)+parseFloat($('#totalretention').attr('original')));
           $('#total-other-discounts').html(parseFloat(otherdiscount) + parseFloat(other_discount));
-          $(acumtr).text(parseFloat($('#totalretention').text())+parseFloat($('#lasttr').text()));
+          $(acumtr).text($('#totalretention').text()+$('#lasttr').text());
           $('#valuation_of_equipment_accumulated_retention').val(parseFloat($('#totalretention').text())+parseFloat($('#lasttr').text()));
           $('#valuation_of_equipment_other_discount').val($('#otherdiscounts').val());
           $('#valuation_of_equipment_accumulated_other_discount').val(parseFloat($('#total-other-discounts').text()));
