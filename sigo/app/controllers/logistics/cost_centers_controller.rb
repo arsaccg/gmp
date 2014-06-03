@@ -24,8 +24,22 @@ class Logistics::CostCentersController < ApplicationController
     flash[:error] = nil
     costCenter = CostCenter.new(cost_center_parameters)
     if costCenter.save
-      flash[:notice] = "Se ha creado correctamente el centro de costo."
-      redirect_to :action => :index
+      wbsitem = Wbsitem.new
+      wbsitem.codewbs = costCenter.id
+      wbsitem.name = costCenter.name
+      wbsitem.cost_center_id = costCenter.id
+      if wbsitem.save
+        flash[:notice] = "Se ha creado correctamente el centro de costo."
+        redirect_to :action => :index
+      else
+        #"Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
+        wbsitem.errors.messages.each do |attribute, error|
+          flash[:error] =  flash[:error].to_s + error.to_s + "  "
+        end
+        @costCenter = costCenter
+        render :new, layout: false
+      end
+
     else
       #"Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
       costCenter.errors.messages.each do |attribute, error|
