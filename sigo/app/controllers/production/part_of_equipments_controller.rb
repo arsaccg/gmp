@@ -198,6 +198,7 @@ class Production::PartOfEquipmentsController < ApplicationController
         :phase_id, 
         :sector_id, 
         :effective_hours, 
+        :fuel, 
         :unit, 
         :_destroy
       ]

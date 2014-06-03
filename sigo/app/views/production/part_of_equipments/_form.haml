@@ -87,9 +87,9 @@
                   %input#fuel.select2.bigdrop.select2-offscreen.form-control{'name' => 'part_of_equipment[subcategory_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
 
               %section.col.col-3
-                %label.label Cantidad de Combustible
+                %label.label Cantidad de Combustible Total
                 %label.input
-                  = f.input :fuel_amount, input_html: { class: 'form-control' }, label: false
+                  = f.input :fuel_amount, input_html: { class: 'form-control', onchange: 'gotosumHours();' }, label: false
 
             .row
               %section.col.col-5
@@ -123,6 +123,7 @@
                   %th.col-lg-2 Sector
                   %th.col-lg-2 Fase
                   %th.col-lg-2 Horas Efectivas
+                  %th.col-lg-2 Combustible
                   %th.col-lg-2 Unidad de Medida
                   %th.col-lg-1 Eliminar
               %tbody(id="part_register_table")
@@ -163,6 +164,8 @@
 
                       %td.effective-hours.col-lg-2
                         = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][effective_hours]', part.effective_hours , class: "form-control effective-hours", onchange: "sumHours(this);"
+                      %td.fuel.col-lg-2
+                        = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][fuel]', part.fuel , class: "form-control fuel"
                       %td.unit-of-measumente.col-lg-1
                         = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][unit]', '' , class: "form-control unit", readonly: true
                       %td.delete-item
@@ -346,6 +349,26 @@
     }
   });
 
+  function sumHours(element){
+    var total = Number(0);
+    var hours = document.getElementsByClassName("form-control effective-hours");
+    $.each(hours, function(){
+      total = total + Number($(this).val());
+    });
+    $('#part_of_equipment_total_hours').empty();
+    $('#part_of_equipment_total_hours').val(total);
+
+    var totalfuel = document.getElementById("part_of_equipment_fuel_amount").value;
+    var totalhours = document.getElementById("part_of_equipment_total_hours").value;
+    var fuelhour = totalfuel/totalhours;
+    $.each(hours, function(){
+      fuelforthis = fuelhour*Number($(this).val());
+      fuelforthis = fuelforthis.toFixed(1);
+      $(this).parent('.effective-hours').siblings('.fuel').find('input').val(fuelforthis)
+      console.log(hours)
+    });
+  }
+
   function complete_equipment(url, subcontract_id, form_token, default_value){
     $.ajax({
         type: "POST",
@@ -377,4 +400,17 @@
           $('.form-control.unit').attr("value", value.unit)
         });
       });
+  }
+
+  function gotosumHours(){
+    var hours = document.getElementsByClassName("form-control effective-hours");
+    var totalfuel = document.getElementById("part_of_equipment_fuel_amount").value;
+    var totalhours = document.getElementById("part_of_equipment_total_hours").value;
+    var fuelhour = totalfuel/totalhours;
+    $.each(hours, function(key,value){
+      console.log(value)
+      fuelforthis = fuelhour*Number(value.value);
+      fuelforthis = fuelforthis.toFixed(1);
+      $(value).parent('.effective-hours').siblings('.fuel').find('input').val(fuelforthis)
+    });
   }

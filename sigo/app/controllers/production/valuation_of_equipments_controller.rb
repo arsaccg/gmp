@@ -53,79 +53,27 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 	end
 
 	def get_report
-    name = Entity.find_by_id(params[:executor]).name
-    if ValuationOfEquipment.count > 0
-      last = ValuationOfEquipment.where("name LIKE ? ", name).last
-      end_date = last.end_date
-      if end_date.to_s < params[:start_date]
-        @valuationofequipment = ValuationOfEquipment.new
-        @cad = Array.new
-        @start_date = params[:start_date]
-        @end_date = params[:end_date]
-        @subcontractequipment = SubcontractEquipment.find_by_entity_id(params[:executor])
-        @working_group = WorkingGroup.where("executor_id LIKE ?", params[:executor])
-        @numbercode = 1
-        @subadvances = 0
-        @fuel_discount = 0
-        @initial_amortization_percent = 0
-        @accumulated_amortizaciondeadelanto = 0
-        @totalprice = 0
-        @bill = 0
-        @valorizacionsinigv = 0
-        @amortizaciondeadelanto = 0
-        @totalfacturar = 0
-        @totalfacigv = 0
-        @totalincluidoigv = 0
-        @detracciontotal = 0
-        @descuentocombustible = 0
-        @descuentootros = 0
-        @totalretenciones = 0
-        @netoapagar = 0
-        @subcontractequipment.subcontract_equipment_advances.each do |subadvances|
-          @subadvances+=subadvances.advance
-        end
-        if @subcontractequipment.initial_amortization_percent != nil
-          @initial_amortization_percent = @subcontractequipment.initial_amortization_percent
-        end
-        if @working_group.present?
-          @working_group.each do |wg|
-            @cad << wg.id
+    @name = Entity.find_by_id(params[:executor]).name
+
+    if SubcontractEquipment.find_by_entity_id(params[:executor])!=nil
+      if ValuationOfEquipment.count > 0
+        last = ValuationOfEquipment.where("name LIKE ? ", @name).last
+        if last!=nil 
+          end_date = last.end_date
+          if end_date.to_s < params[:start_date]
+            @ejecutar="ok"
           end
-          @cad = @cad.join(',')
         else
-          @cad = '0'
+          @ejecutar="ok"
         end
-        @valuationgroup = getsc_valuation(@start_date, @end_date, @subcontractequipment.entity.name)
-        if @valuationgroup.count > 0
-          @valuationgroup.each do |workerDetail|
-            @valorizacionsinigv = workerDetail[0]
-            @amortizaciondeadelanto = workerDetail[1]
-            @totalfacturar = workerDetail[2]
-            @totalfacigv = workerDetail[3]
-            @totalincluidoigv = workerDetail[4]
-            @retenciones = workerDetail[5]
-            @detraccion = workerDetail[6]
-            @descuesto = workerDetail[7]
-            @descuentocombustible = workerDetail[8]
-            @netoapagar = workerDetail[9]
-            @numbercode = workerDetail[10]
-          end
-          @numbercode=@numbercode.to_i
-          @numbercode += 1
-        end
-        @workers_array3 = business_days_array3(@start_date, @end_date, @cad)
-        @workers_array3.each do |workerDetail|
-          @totalprice += workerDetail[4]
-        end
-        @balance = @subadvances + @accumulated_amortizaciondeadelanto
-        @bill = @totalprice-@subcontractequipment.initial_amortization_number
-        @billigv = @bill*0.18
-        @numbercode = @numbercode.to_s.rjust(3,'0')
-        @flag = "ok"
       else
-        @flag= "no"
+        @ejecutar="ok"
       end
     else
+      @nhsub="no"
+    end
+
+    if @ejecutar == "ok"
       @valuationofequipment = ValuationOfEquipment.new
       @cad = Array.new
       @start_date = params[:start_date]
@@ -172,10 +120,10 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @billigv = @bill*0.18
       @numbercode = @numbercode.to_s.rjust(3,'0')
       @flag = "ok"
+
+    else
+      @flag="no"
     end
-    
-    
-    
     render(partial: 'report_table', :layout => false)
   end
 
@@ -200,6 +148,24 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       GROUP BY art.name
     ")
     return workers_array3
+  end
+
+  def last(end_date, working_group_id, article)
+    last = ActiveRecord::Base.connection.execute("
+      SELECT poed.effective_hours , si.price, si.price *poed.effective_hours
+      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_inputs si, subcontract_equipment_details sed
+      WHERE poe.date <'" + end_date.to_s + "'
+      AND poe.id = poed.part_of_equipment_id
+      AND poe.equipment_id = art.id
+      AND poe.equipment_id = si.article_id
+      AND uom.id = art.unit_of_measurement_id
+      AND poe.subcontract_equipment_id = sed.subcontract_equipment_id
+      AND art.id IN(" + article + ")
+      AND poe.block=1
+      AND poed.working_group_id IN(" + working_group_id + ")
+      GROUP BY art.name
+    ")
+    return last
   end
 
   def getsc_valuation(start_date, end_date, entityname)
@@ -273,6 +239,67 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
     end
+
+    @art = Array.new
+    @workers_array3.each do |workerDetail|
+      @art << workerDetail[6]
+    end
+    @art = @art.join(',')
+
+    if ValuationOfEquipment.where("name LIKE ? ", @name).last.present?
+      thelast = ValuationOfEquipment.where("name LIKE ? ", @name).last
+      @last_end = thelast.end_date
+      @last = last(@last_end, @cad, @art)
+      @try = "last"
+    else
+      @last = Array.new
+      @workers_array3.each do |wa3|
+        @last << [[0,0,0]]
+      end
+    end
+    @array = Array.new
+    @first = Array.new
+    @second = Array.new
+    @workers_array3.each do |wa3|
+      @first << wa3
+    end
+    @last.each do |wa3|
+      @second << wa3
+    end
+
+    puts "------------------------------------------------------array---------------------------------------"
+    puts "second:"
+    puts @second
+    puts @second.count
+    puts "---"
+    @first.each do |arr|
+      i=0
+      @second.each do |sec|
+        if @second.count == 1 && i==0
+          puts "--------------------------entro al if------------"
+          if arr[3]==sec[1]
+            @array << (arr + sec).to_a
+            puts (arr + sec).to_a
+          else
+            cero = [0,0,0]
+            @array << (arr+ cero).to_a
+          end 
+          
+          puts "--------------------------i------------"
+          puts "i:"
+          puts i
+          puts "--------------------------i------------"
+        else
+          puts "--------------------------entro al else------------"
+          sec[i]
+          @array << (arr + sec[i]).to_a
+        end
+        break
+      end
+      i+=1
+    end
+    puts "------------------------------------------------------array---------------------------------------"
+    #  arreglo resultante  => [0,1,2,3,4,5,6,  0,1,2] segundo 1 no se usa
     render layout: false
   end
 

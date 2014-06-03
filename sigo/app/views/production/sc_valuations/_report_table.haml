@@ -1,6 +1,9 @@
 #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
   -if @flag=="no"
-    %strong Por favor escoja otro fecha, ya que la fecha de inicio es menor a la última valorización
+    -if @nhsub=="no"
+      %strong No se encontró ninguna subcontrato con ese proveedor
+    -else
+      %strong Por favor escoja otro fecha, ya que la fecha de inicio es menor a la última valorización
   -else
     = simple_form_for([:production, @scValuation], html: {autocomplete: 'off' }) do |f|
       %header
