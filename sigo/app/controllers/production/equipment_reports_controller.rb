@@ -158,7 +158,7 @@ class Production::EquipmentReportsController < ApplicationController
 
   def poe_array2(start_date, end_date, working_group_id)
     poe_array2 = ActiveRecord::Base.connection.execute("
-      SELECT pha.id, pha.name , SUM(poed.effective_hours) , SUM(poe.fuel_amount), ROUND((SUM(poe.fuel_amount)/SUM(poed.effective_hours)), 2) 
+      SELECT pha.id, pha.name , SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2)
 			FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
 			WHERE sced.code IN(" + working_group_id + ") 
 			AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
@@ -174,7 +174,7 @@ class Production::EquipmentReportsController < ApplicationController
 
   def poe_array3(start_date, end_date, working_group_id)
     poe_array2 = ActiveRecord::Base.connection.execute("
-      SELECT sced.code, art.name , SUM(poed.effective_hours) , SUM(poe.fuel_amount), ROUND((SUM(poe.fuel_amount)/SUM(poed.effective_hours)), 2) 
+      SELECT sced.code, art.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2)
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sced, articles art 
       WHERE poe.worker_id IN(" + working_group_id + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "' 
@@ -189,7 +189,7 @@ class Production::EquipmentReportsController < ApplicationController
 
   def poe_array4(start_date, end_date, working_group_id)
     poe_array2 = ActiveRecord::Base.connection.execute("
-      SELECT sced.code, art.name, SUM(poed.effective_hours) , SUM(poe.fuel_amount), ROUND((SUM(poe.fuel_amount)/SUM(poed.effective_hours)), 2) 
+      SELECT sced.code, art.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2)
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sced, articles art 
       WHERE poed.sector_id IN(" + working_group_id + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
@@ -204,7 +204,7 @@ class Production::EquipmentReportsController < ApplicationController
 
   def poe_array5(start_date, end_date, working_group_id)
     poe_array2 = ActiveRecord::Base.connection.execute("
-      SELECT sced.code, art.name , SUM(poed.effective_hours) , SUM(poe.fuel_amount), ROUND((SUM(poe.fuel_amount)/SUM(poed.effective_hours)), 2) 
+      SELECT sced.code, art.name , SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2)
       FROM part_of_equipments poe, part_of_equipment_details poed,subcontract_equipment_details sced, articles art 
       WHERE poe.equipment_id IN(" + working_group_id + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'

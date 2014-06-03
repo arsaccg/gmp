@@ -35,8 +35,8 @@
                 -if partwork.block == 0
                   %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_part_work_path(partwork.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                     Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{partwork.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_part_work_path(partwork.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_part_works_path}?company_id=#{@company}')"}}
-                  Eliminar
+                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{partwork.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_part_work_path(partwork.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_part_works_path}?company_id=#{@company}')"}}
+                    Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
