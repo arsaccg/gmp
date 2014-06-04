@@ -57,20 +57,24 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
   def search_weekly_work
     @inicio                = params[:start_date]
     @fin                   = params[:end_date]
-
+    @cad = Array.new
     if @inicio.present? && @fin.present?        
       @dias_habiles =  range_business_days(@inicio,@fin)
-      gruposdetrabajos = WorkingGroup.all
+      @gruposdetrabajos = WorkingGroup.all
+      @gruposdetrabajos.each do |wg|
+        @cad << wg.id
+      end
       @tareos_total_arrays = []
       @subcontratista_arrays = []
-      gruposdetrabajos.each do |gruposdetrabajo|
+      @gruposdetrabajos.each do |gruposdetrabajo|
         temp_tareo = []
-        temp_tareo = business_days_array(@inicio,@fin,gruposdetrabajo.id,@dias_habiles)          
+        temp_tareo = business_days_array(@inicio,@fin,@cad,@dias_habiles)          
         if temp_tareo.length != 0 
           @tareos_total_arrays << temp_tareo
           subcontratista_nombre = "#{gruposdetrabajo.name} - #{Worker.find_name_front_chief(gruposdetrabajo.front_chief_id)} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Worker.find_name_master_builder(gruposdetrabajo.master_builder_id)}"
           @subcontratista_arrays << subcontratista_nombre
         end
+        break
       end
 
       if @dias_habiles.length == 0
@@ -106,7 +110,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
 
     personals_array = []
     trabajadores_array = []
-    partediariodepersonals = PartPerson.where("working_group_id = ? and date_of_creation BETWEEN ? AND ?", working_group_id,start_date,end_date)
+    partediariodepersonals = PartPerson.where("working_group_id IN (?) and date_of_creation BETWEEN ? AND ?", working_group_id,start_date,end_date)
     partediariodepersonals.each do |partediariodepersonal|
       partediariodepersonal.part_person_details.each do |trabajador_detalle|
         trabajadore = trabajador_detalle.worker

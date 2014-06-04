@@ -361,7 +361,7 @@
                 %th Eliminar
             %tbody(id="advance_items_table")
               - if @action == 'edit'
-                - @subcontract.subcontract_advances.each do |sa|
+                - @subcontractEquipment.subcontract_equipment_advances.each do |sa|
                   %tr
                     %td.advance
                       %div
@@ -372,7 +372,7 @@
                     %td(style="display:none")
                       = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][id]', sa.id
                     %td(style="display:none")
-                      = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][subcontract_id]', @subcontract.id
+                      = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][subcontract_id]', @subcontractEquipment.id
                     %td.delete-item
                       %label.checkbox
                         = check_box 'subcontract[subcontract_advances_attributes]', '[' + @reg_n.to_s + '][_destroy]'

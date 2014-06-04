@@ -39,7 +39,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   def edit
     @company = params[:company_id]
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     @purchaseOrder = PurchaseOrder.find(params[:id])
     #Calcular IGV
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
@@ -56,7 +56,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def add_items_from_delivery_orders
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     @delivery_orders_detail = Array.new
     params[:ids_delivery_order].each do |ido|
       @delivery_order_detail = DeliveryOrderDetail.find(ido)
@@ -76,7 +76,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def more_items_from_delivery_orders
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     delivery_ids = params[:ids_delivery_order].join(",")
     @delivery_orders_detail = Array.new
     @cost_center = CostCenter.find(params[:cost_center_id])

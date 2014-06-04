@@ -49,7 +49,7 @@ class Production::PartWorksController < ApplicationController
   end
 
   def add_more_article
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
     @id_article = @article.id

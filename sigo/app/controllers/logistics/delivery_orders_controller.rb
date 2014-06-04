@@ -71,7 +71,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def add_delivery_order_item_field
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
     @sectors = Sector.where("code LIKE '__' ")

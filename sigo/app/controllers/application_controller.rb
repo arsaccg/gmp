@@ -28,9 +28,9 @@ class ApplicationController < ActionController::Base
   def get_company_cost_center(type)
     case type
       when 'company'
-        return Rails.cache.read('company')
+        return session[:company]
       when 'cost_center'
-        return Rails.cache.read('cost_center')
+        return session[:cost_center]
       else
         return false
     end

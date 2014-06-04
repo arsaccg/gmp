@@ -78,13 +78,14 @@
                     %td.col-md-2
                       = part.article.unit_of_measurement.name
                     %td.bill-of-quantitties.col-md-1{:style => "width:5%"}
-                      = text_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][bill_of_quantitties]', part.bill_of_quantitties , class: "form-control bill-of-quantitties"
+                      = text_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][bill_of_quantitties]', part.bill_of_quantitties , class: "form-control bill-of-quantitties", :required => true, title:'No puede dejar este campo vacio'
                     %td.description
                       = text_area_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][description]', part.description, class: "form-control description"
                     %td{:style => "width: 1%; text-align: center;"}
                       %label.checkbox
                         = check_box 'part_work', '[part_work_details_attributes][' + @reg_n.to_s + '][_destroy]'
                         %i
+                  - @reg_n+=1
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
