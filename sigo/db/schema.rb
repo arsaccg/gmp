@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
+ActiveRecord::Schema.define(version: 20140529180403) do
+=======
 ActiveRecord::Schema.define(version: 20140531164133) do
+>>>>>>> ee34cd77f6255429b7a482cf8807cf16b3bc7694
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -200,7 +204,11 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.date     "start_date"
     t.date     "end_date"
     t.string   "status"
+<<<<<<< HEAD
+    t.integer  "deleted",    default: 0
+=======
     t.integer  "deleted"
+>>>>>>> ee34cd77f6255429b7a482cf8807cf16b3bc7694
   end
 
   create_table "cost_centers_users", force: true do |t|
