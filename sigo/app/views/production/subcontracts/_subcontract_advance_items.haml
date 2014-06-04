@@ -4,6 +4,6 @@
       = text_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][advance]', @advance, class: "form-control advance-item", :required => true, title:'No puede dejar este campo vacio'
   %td.unit-price
     %div
-      %input#start-date-input.string.optional.form-control{ 'name' => 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][date_of_issue]', type: "date", value: @date , :required => true, title:'No puede dejar este campo vacio'}
+      %input.string.optional.form-control{ 'name' => 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][date_of_issue]', type: "date", value: @date , :required => true, title:'No puede dejar este campo vacio'}
   %td{:style => "width: 1%; text-align: center;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

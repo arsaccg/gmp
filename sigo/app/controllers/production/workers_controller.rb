@@ -71,7 +71,7 @@ class Production::WorkersController < ApplicationController
   end
 
   def add_worker_item_field
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     data_bank_unit = params[:bank_id].split('-')
     @bank = Bank.find(data_bank_unit[0])
     @account_number = params[:account_number].to_f

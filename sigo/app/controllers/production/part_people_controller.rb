@@ -40,7 +40,7 @@ class Production::PartPeopleController < ApplicationController
   end
 
   def add_more_worker
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")
     @phases = Phase.where("code LIKE '__'")
     @worker = Worker.find(params[:worker_id])

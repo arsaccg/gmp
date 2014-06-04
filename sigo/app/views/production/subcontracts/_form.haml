@@ -181,7 +181,7 @@
                     %td.advance
                       = text_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][advance]', sa.advance, class: "form-control advance-item"
                     %td.date_of_issue
-                      %input#start-date-input.string.optional.form-control{ 'name' => 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][date_of_issue]', type: "date", value: sa.date_of_issue }
+                      %input.string.optional.form-control{ 'name' => 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][date_of_issue]', type: "date", value: sa.date_of_issue }
                     %td(style="display:none")
                       = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][id]', sa.id
                     %td(style="display:none")

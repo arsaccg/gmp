@@ -11,7 +11,7 @@
     = @unitOfMeasurement
   %td.col-md-1.smart-form{:style => "width:5%"}
     %div
-      = text_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", id: 'article-amount', :required => true, title:'No puede dejar este campo vacio'
+      = text_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
   %td.sector.col-md-1.smart-form
     %div
       %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
