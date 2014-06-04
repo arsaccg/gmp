@@ -315,6 +315,23 @@
 
   function delete_item(code){
     $("#tr" + code).remove();
+    var total = Number(0);
+    var hours = document.getElementsByClassName("form-control effective-hours");
+    $.each(hours, function(){
+      total = total + Number($(this).val());
+    });
+    $('#part_of_equipment_total_hours').empty();
+    $('#part_of_equipment_total_hours').val(total);
+
+    var totalfuel = document.getElementById("part_of_equipment_fuel_amount").value;
+    var totalhours = document.getElementById("part_of_equipment_total_hours").value;
+    var fuelhour = totalfuel/totalhours;
+    $.each(hours, function(){
+      fuelforthis = fuelhour*Number($(this).val());
+      fuelforthis = fuelforthis.toFixed(1);
+      $(this).parent('.effective-hours').siblings('.fuel').find('input').val(fuelforthis)
+      console.log(hours)
+    });
   }
 
   $('#ent').change(function(){
