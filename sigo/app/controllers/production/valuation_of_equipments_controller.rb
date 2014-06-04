@@ -137,7 +137,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       sed.code, 
       art.id 
       FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_inputs si, subcontract_equipment_details sed
-      WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
+      WHERE poe.date >= '" + start_date + "' AND poe.date <= '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.equipment_id=art.id
       AND poe.equipment_id=si.article_id
@@ -152,17 +152,17 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
   def last(end_date, working_group_id, article)
     last = ActiveRecord::Base.connection.execute("
-      SELECT poed.effective_hours , si.price, si.price *poed.effective_hours
-      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_inputs si, subcontract_equipment_details sed
-      WHERE poe.date <'" + end_date.to_s + "'
-      AND poe.id = poed.part_of_equipment_id
+      SELECT art.name, SUM( poed.effective_hours ) , si.price*SUM( poed.effective_hours )
+      FROM articles art, part_of_equipments poe, part_of_equipment_details poed, subcontract_inputs si, subcontract_equipment_details sed
+      WHERE poe.date <  '" + end_date.to_s + "'
+      AND poe.block =1
+      AND poe.subcontract_equipment_id = sed.id
       AND poe.equipment_id = art.id
+      AND poe.id = poed.part_of_equipment_id
       AND poe.equipment_id = si.article_id
-      AND uom.id = art.unit_of_measurement_id
-      AND poe.subcontract_equipment_id = sed.subcontract_equipment_id
-      AND art.id IN(" + article + ")
-      AND poe.block=1
-      AND poed.working_group_id IN(" + working_group_id + ")
+      AND poe.equipment_id = sed.article_id
+      AND poed.working_group_id IN (" + working_group_id + ")
+      AND art.id IN (" + article + ")
       GROUP BY art.name
     ")
     return last
@@ -206,10 +206,20 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     return valuationgroup
   end
 
+  def updateParts(start_date, end_date, id)
+    ActiveRecord::Base.connection.execute("
+      Update part_of_equipments set block = 1 where date BETWEEN '" + start_date + "' AND '" + end_date + "' AND subcontract_equipment_id=" + id.to_s + "
+    ")
+  end
+
   def create
     valuationofequipment = ValuationOfEquipment.new(valuation_of_equipment_parameters)
     valuationofequipment.state
+    start_date = params[:valuation_of_equipment]['start_date']
+    end_date = params[:valuation_of_equipment]['end_date']
+    id =  Entity.find_by_name(params[:valuation_of_equipment]['name']).id
     if valuationofequipment.save
+      updateParts(start_date,end_date,id)
       flash[:notice] = "Se ha creado correctamente la valorizacion."
       redirect_to :action => :index, company_id: params[:company_id]
     else
@@ -239,7 +249,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
     end
-
     @art = Array.new
     @workers_array3.each do |workerDetail|
       @art << workerDetail[6]
@@ -266,31 +275,19 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @last.each do |wa3|
       @second << wa3
     end
-
-    puts "------------------------------------------------------array---------------------------------------"
-    puts "second:"
-    puts @second
-    puts @second.count
-    puts "---"
+    
     @first.each do |arr|
       i=0
       @second.each do |sec|
         if @second.count == 1 && i==0
-          puts "--------------------------entro al if------------"
-          if arr[3]==sec[1]
+          if arr[0]==sec[0]
             @array << (arr + sec).to_a
             puts (arr + sec).to_a
           else
             cero = [0,0,0]
             @array << (arr+ cero).to_a
           end 
-          
-          puts "--------------------------i------------"
-          puts "i:"
-          puts i
-          puts "--------------------------i------------"
         else
-          puts "--------------------------entro al else------------"
           sec[i]
           @array << (arr + sec[i]).to_a
         end
@@ -298,7 +295,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       end
       i+=1
     end
-    puts "------------------------------------------------------array---------------------------------------"
     #  arreglo resultante  => [0,1,2,3,4,5,6,  0,1,2] segundo 1 no se usa
     render layout: false
   end

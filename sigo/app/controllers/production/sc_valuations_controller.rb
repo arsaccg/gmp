@@ -316,9 +316,6 @@ class Production::ScValuationsController < ApplicationController
     ActiveRecord::Base.connection.execute("
       Update part_people set block = 1 where date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
     ")
-    ActiveRecord::Base.connection.execute("
-      Update part_of_equipments set block = 1 where date BETWEEN '" + start_date + "' AND '" + end_date + "'
-    ")
   end
 
   def create

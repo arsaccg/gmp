@@ -25,18 +25,18 @@
               %th Accion
           %tbody
           - index = 1
-          - @workers_array3.each do |workerDetail3|
+          - @array.each do |workerDetail3|
             %tr
               %th= index
               %th= workerDetail3[5] + ' ' + workerDetail3[0]
               %th= workerDetail3[1]
               %th= workerDetail3[3]
-              %th= workerDetail3[7]
+              %th= workerDetail3[8]
               %th= workerDetail3[9]
               %th= workerDetail3[2]
               %th= workerDetail3[4]
-              %th
-              %th= workerDetail3[4]
+              %th= workerDetail3[8] + workerDetail3[2]
+              %th= workerDetail3[4] + workerDetail3[9]
               %th
                 %span{"style"=>"width=20px"}
                   %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "report_of_equipment(#{workerDetail3[6]})"}
