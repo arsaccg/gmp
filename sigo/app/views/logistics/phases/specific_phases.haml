@@ -13,13 +13,13 @@
         #nestable.dd
           %ol.dd-list
             - @phases.each do |phase|
-              %li.dd-item{"data-id" => "#{phase[0]}"}
+              %li.dd-item{"data-id" => "#{phase.id}"}
                 .dd-handle
                   .row
                     .col-xs-8
-                      = phase[1]
+                      = phase.name
                       %span
-                        = "- Código #{phase[2]}"
+                        = "- Código #{phase.code}"
                     .col-xs-4
                       %em.pull-right.badge.bg-color-green.padding-5{"data-original-title" => "Fase Seleccionada", "data-placement" => "top", rel: "tooltip", title: ""}
                         %i.fa.fa-check.fa-lg.txt-color-white

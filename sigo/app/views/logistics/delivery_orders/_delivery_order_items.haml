@@ -13,7 +13,7 @@
     = text_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", id: 'article-amount'
   %td.sector.col-md-1
     %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][sector_id]"}
-      %option{:value => "0", :selected => true, :disabled => true} Seleccionar Sector
+      %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
       - @sectors.each do |sector|
         %optgroup{:label => "#{sector.name}"}
           -Sector.getSubSectors(sector.code).each do |subsector|
@@ -21,15 +21,13 @@
               = subsector.name  
   %td
     %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][phase_id]"}
-      %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
+      %option{:value => nil, :selected => true, :disabled => true} Seleccionar Fase
       - @phases.each do |phase|
-        %optgroup{:label => "#{phase.name}"}
-          - Phase.get_subphases(phase.code).each do |subphase|
-            %option{:value => "#{subphase.id}"}
-              = subphase.name
+        %option{:value => "#{phase.id}"}
+          = phase.name
   %td.order_delivery_centro_atencion
     %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][center_of_attention_id]"}
-      %option{:value => "0", :selected => true, :disabled => true} Seleccionar Centro de atención
+      %option{:value => nil, :selected => true, :disabled => true} Seleccionar Centro de atención
       - @centerOfAttention.each do |centerAttention|
         %option{:value => "#{centerAttention.id}"}
           = centerAttention.name
