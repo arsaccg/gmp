@@ -6,7 +6,8 @@
   %td.col-md-2
     = @unitOfMeasurement
   %td.amount.col-md-1{:style => "width:5%"}
-    = text_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][bill_of_quantitties]', nil , class: "form-control quantity", id: 'bill_of_quantitties-amount'
+    %div
+      = text_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][bill_of_quantitties]', nil , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
   %td.description
     = text_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][description]', nil , class: "form-control quantity", id: 'description-part_work'
   %td{:style => "width: 1%; text-align: center;"}

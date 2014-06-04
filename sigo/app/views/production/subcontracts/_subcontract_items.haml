@@ -6,9 +6,11 @@
   %td
     = @unitOfMeasurement
   %td.amount.col-md-1{:style => "width:5%"}
-    = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", id: 'subcontract-amount', onfocusout: "calculatePartialAmount(this);"
+    %div
+      = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", onfocusout: "calculatePartialAmount(this);", :required => true, title:'No puede dejar este campo vacio'
   %td.unit-price.col-md-1
-    = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][unit_price]', nil , class: "form-control quantity", id: 'subcontract-unit_price', onfocusout: "calculatePartialUnitPrice(this);"
+    %div
+      = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][unit_price]', nil , class: "form-control quantity", onfocusout: "calculatePartialUnitPrice(this);", :required => true, title:'No puede dejar este campo vacio'
   %td.col-md-1.partial
     = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][partial]', nil , class: "form-control quantity", id: 'subcontract-partial', :readonly => true
   %td

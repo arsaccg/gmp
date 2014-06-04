@@ -23,7 +23,7 @@ class Phase < ActiveRecord::Base
     #  AND w.phase_id = p.id
     #  AND w.phase_id IS NOT NULL 
     #")
-    mysql_result = Phase.find(:all, :select =>"DISTINCT p.id, p.name, p.code", :from => 'wbsitems w, phases p', :conditions => ["w.cost_center_id = ? AND w.phase_id = p.id", 5])
+    mysql_result = Phase.find(:all, :select =>"DISTINCT p.id, p.name, p.code", :from => 'wbsitems w, phases p', :conditions => ["w.cost_center_id = ? AND w.phase_id = p.id", cost_center_id])
     return mysql_result
   end
 end

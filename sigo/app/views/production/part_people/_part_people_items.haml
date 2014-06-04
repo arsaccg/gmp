@@ -20,11 +20,14 @@
             %option{:value => "#{subphase.id}"}
               = subphase.name
   %td.normal-hours
-    = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][normal_hours]', 0 , class: "form-control normal-hours", onfocusout: "calculateHours(this, 'normal');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)"
+    %div
+      = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][normal_hours]', 0 , class: "form-control normal-hours", onfocusout: "calculateHours(this, 'normal');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
   %td.he-60
-    = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][he_60]', 0 , class: "form-control he-60", onfocusout: "calculateHours(this, '60');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)"
+    %div
+      = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][he_60]', 0 , class: "form-control he-60", onfocusout: "calculateHours(this, '60');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
   %td.he-100
-    = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][he_100]', 0 , class: "form-control he-100", onfocusout: "calculateHours(this, '100');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)"
+    %div
+      = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][he_100]', 0 , class: "form-control he-100", onfocusout: "calculateHours(this, '100');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
   %td.total-hours
     = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][total_hours]', 0 , class: "form-control total-hours", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", readonly: true
   %td{:style => "width: 1%; text-align: center;"}

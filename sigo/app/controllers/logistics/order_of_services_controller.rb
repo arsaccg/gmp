@@ -65,7 +65,7 @@ class Logistics::OrderOfServicesController < ApplicationController
   end
 
   def add_order_service_item_field
-    @reg_n = ((Time.now.to_f)*10000000).to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
     @sectors = Sector.where("code LIKE '__'")
@@ -81,7 +81,7 @@ class Logistics::OrderOfServicesController < ApplicationController
 
   def edit
     @company = params[:company_id]
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     # Set default value
     @igv = 0.18+1
     @orderOfService = OrderOfService.find(params[:id])
