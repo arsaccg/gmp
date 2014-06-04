@@ -17,7 +17,7 @@ class Phase < ActiveRecord::Base
 
   def self.getSpecificPhases(cost_center_id)
     mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT DISTINCT p.id, p.name
+      SELECT DISTINCT p.id, p.name, p.code
       FROM wbsitems w, phases p
       WHERE w.cost_center_id = #{cost_center_id}
       AND w.phase_id = p.id
