@@ -43,6 +43,7 @@ class Production::SubcontractEquipmentsController < ApplicationController
     @suppliers = TypeEntity.find_by_name('Proveedores').entities
     @company = params[:company_id]
     @action="edit"
+    @reg_n= Time.now.to_i
     render layout: false
   end
 

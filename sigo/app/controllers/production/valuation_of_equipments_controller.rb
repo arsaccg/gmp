@@ -254,16 +254,29 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @art << workerDetail[6]
     end
     @art = @art.join(',')
-
-    if ValuationOfEquipment.where("name LIKE ? ", @name).last.present?
-      thelast = ValuationOfEquipment.where("name LIKE ? ", @name).last
-      @last_end = thelast.end_date
-      @last = last(@last_end, @cad, @art)
-      @try = "last"
+    if params[:id]==nil
+      if ValuationOfEquipment.where("name LIKE ? ", @name).last.present?
+        thelast = ValuationOfEquipment.where("name LIKE ? ", @name).last
+        @last_end = thelast.end_date
+        @last = last(@last_end, @cad, @art)
+        @try = "last"
+      else
+        @last = Array.new
+        @workers_array3.each do |wa3|
+          @last << [[0,0,0]]
+        end
+      end
     else
-      @last = Array.new
-      @workers_array3.each do |wa3|
-        @last << [[0,0,0]]
+      @last_end =ValuationOfEquipment.find(params[:id]).start_date
+      @last = last(@last_end, @cad, @art)
+      puts "@last.count-------------------------------------------"
+      puts @last.count
+      if @last.count==0
+        @last=nil
+        @last = Array.new
+        @workers_array3.each do |wa3|
+          @last << [[0,0,0]]
+        end
       end
     end
     @array = Array.new
