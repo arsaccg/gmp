@@ -122,7 +122,8 @@ class Management::WbsitemsController < ApplicationController
       end
     end
 
-    @wbsitems = Wbsitem.order(:codewbs)
+    @wbsitems = Wbsitem.order(:codewbs)  
+    @data = Phase.all
     render :get_items_from_project, layout: false
 
   end
