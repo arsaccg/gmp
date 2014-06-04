@@ -82,7 +82,7 @@ ArsacLogistica::Application.routes.draw do
     resources :phases do
       collection do
         get 'addsub'
-        
+        get 'getSpecificsPhases'
       end
       member do
         get 'editsub' 

@@ -69,7 +69,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
     @sectors = Sector.where("code LIKE '__'")
-    @phases = Phase.where("category LIKE 'phase'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @amount = params[:amount].to_f
     @centerOfAttention = CenterOfAttention.all
     @code_article, @name_article, @id_article = @article.code, @article.name, @article.id
@@ -86,7 +86,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @igv = 0.18+1
     @orderOfService = OrderOfService.find(params[:id])
     @sectors = Sector.all
-    @phases = Phase.where("category LIKE 'phase'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @costcenters = Company.find(@company).cost_centers
     @methodOfPayments = MethodOfPayment.all
     @cost_center_id = @orderOfService.cost_center_id
