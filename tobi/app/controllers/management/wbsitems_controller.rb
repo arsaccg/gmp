@@ -34,7 +34,6 @@ class Management::WbsitemsController < ApplicationController
       }
     end
 
-
   end
 
   def get_items_json 
@@ -304,7 +303,9 @@ class Management::WbsitemsController < ApplicationController
     @phase = params[:phase_id]
     @wbsitem = Wbsitem.find(wbsitem_id)
     @wbsitem.fase = @phase
+    @wbsitem.phase_id = Phase.where(code: ((@phase.split(' '))[0]).to_i).first.id
     @wbsitem.save
+    render false, layout: false
   end
 
   def showperitem_gantt
@@ -322,7 +323,7 @@ class Management::WbsitemsController < ApplicationController
 
   private
   def wbsitem_parameters
-    params.require(:wbsitem).permit(:codewbs, :name, :description, :notes, :project_id, :item_id)
+    params.require(:wbsitem).permit(:codewbs, :name, :description, :notes, :cost_center_id, :item_id)
   end
 
 end

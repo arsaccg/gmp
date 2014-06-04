@@ -13,7 +13,7 @@
           %label Sector
           %br
           %label.input{for: "sector_id"}
-            %select.form-control{:name =>"validation[sector_id]", :style => 'width:100%;padding: 0;border: none;'}
+            %select.form-control#sector{:name =>"validation[sector_id]", :style => 'width:100%;padding: 0;border: none;'}
               %option{:value => "0"} Seleccionar Sector
               -@sector.each do |sector|
                 %optgroup{:label => "#{sector.name}"}
@@ -197,10 +197,11 @@
     var chief = $('#chief').val();
     var exe = $('#exe').val();
     var master = $('#master').val();
+    var sector = $('#sector').val();
 
     if(start_date != null && end_date != null) {
       if(new Date(start_date) < new Date(end_date)) {
-        var parameters = { company_id: "#{@company}", front_chief: chief, executor: exe, master_builder: master, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+        var parameters = { company_id: "#{@company}", front_chief: chief, executor: exe, master_builder: master, start_date: start_date, end_date: end_date, sector: sector, authenticity_token: "#{form_authenticity_token}" };
 
         load_items_delivery_order_ajax("#{get_report_production_analysis_of_valuations_path}", 'table-information-result', parameters);
       } else {

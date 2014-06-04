@@ -15,3 +15,35 @@
             %th Fecha
             %th Estado
             %th Acciones
+        %tbody
+          - @valuationofequipment.each do |unit|
+            %tr
+              %td= unit.id
+              %td= unit.name + ' ' + unit.code
+              %td= unit.valuation
+              %td= unit.start_date.to_s + " - " + unit.end_date.to_s
+              - case unit.state
+                - when 'disapproved'
+                  %td.label-status
+                    %span.label.label-warning
+                      = translate_valuations_state(unit.state)
+                - when 'approved'
+                  %td.label-status
+                    %span.label.label-success
+                      = translate_valuations_state(unit.state)
+              %td
+                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_valuation_of_equipment_path(unit.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                  Ver información
+                - case unit.state
+                  - when 'disapproved'
+                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{approve_production_valuation_of_equipment_path(unit.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                      Aprobar
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_valuation_of_equipment_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_valuation_of_equipments_path}?company_id=#{@company}')"}}
+                  Eliminar
+
+
+:javascript
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });                  

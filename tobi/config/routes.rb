@@ -96,6 +96,8 @@ Pmicg::Application.routes.draw do
         get 'administrate_budget'
         get 'get_budgets'
         post 'get_budgets'
+        get 'display_articles'
+        post 'display_articles'
       end
       member do
         delete 'destroy_admin'

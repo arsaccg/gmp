@@ -12,9 +12,18 @@ class Management::BudgetsController < ApplicationController
   def get_budget_by_project
     @project_id = params[:project_id]
     @budgets_goal = Budget.where("type_of_budget = ? AND cost_center_id = ? ", '0', @project_id)
-    @budgets_sale = Budget.where("type_of_budget = ? AND cost_center_id = ? ", '1', @project_id)
-    @inputs = Article.all
+    @budgets_sale = Budget.where("type_of_budget = ? AND cost_center_id = ? ", '1', @project_id) 
     render :get_budget_by_project, layout: false
+  end
+  
+  def display_articles
+    word = params[:q]
+    article_hash = Array.new
+    articles = ActiveRecord::Base.connection.execute("SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol FROM articles a, unit_of_measurements u WHERE a.code LIKE '04%' AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) AND a.unit_of_measurement_id = u.id")
+    articles.each do |art|
+      article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}
+    end
+    render json: {:articles => article_hash}
   end
 
   def new
@@ -35,33 +44,31 @@ class Management::BudgetsController < ApplicationController
   end
 
   def destroy
+    
     budget=Budget.find(params[:id])
 
-    project_id = budget.project_id
+    project_id = budget.cost_center_id
 
-
-    budgets = Budget.where("id LIKE ? and project_id = ?", budget.id.to_s + "%", project_id.to_s)
+    budgets = Budget.where("id LIKE ? and cost_center_id = ?", budget.id.to_s + "%", project_id.to_s)
+    
     budgets.each do |budget_item|
-
       #Inputbybudgetanditem.where(budget_id: budget_item.id).destroy_all
-
       ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM inputbybudgetanditems where budget_id='#{budget_item.id}'")
       ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM itembybudgets where budget_id='#{budget_item.id}'")
       ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM itembywbses where budget_id='#{budget_item.id}'")
-
+      
     end
     
     budgets.destroy_all
 
-    ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM budgets where cod_budget LIKE '#{budget.cod_budget}' and project_id = '#{budget.project_id}'")
+    ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM budgets where cod_budget LIKE '#{budget.cod_budget}' and cost_center_id = '#{budget.cost_center_id}'")
     
-    ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM items where budget_code LIKE '#{budget.cod_budget}' and project_id = '#{budget.project_id}'")
-
+    ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM items where budget_code LIKE '#{budget.cod_budget}' and cost_center_id = '#{budget.cost_center_id}'")
 
     #DESTROY
 
-    @budgets_goal = Budget.where("type_of_budget = ? AND project_id = ? ", '0', project_id)
-    @budgets_sale = Budget.where("type_of_budget = ? AND project_id = ? ", '1', project_id)
+    @budgets_goal = Budget.where("type_of_budget = ? AND cost_center_id = ? ", '0', project_id)
+    @budgets_sale = Budget.where("type_of_budget = ? AND cost_center_id = ? ", '1', project_id)
     render :get_budget_by_project, layout: false
 
   end
@@ -88,7 +95,7 @@ class Management::BudgetsController < ApplicationController
   end
 
   def administrate_budget
-    project = Project.find(params[:project_id])
+    project = CostCenter.find(params[:project_id])
     @valorization = project.valorizations
     @budget = project.budgets
     render :administrate_budget, layout: false
@@ -123,7 +130,6 @@ class Management::BudgetsController < ApplicationController
   def destroy_admin
     budget=Budget.find(params[:id])
     project_id = budget.project_id
-
 
     budgets = Budget.where("cod_budget LIKE ? and project_id = ?", budget.cod_budget + "%", project_id)
     budgets.each do |budget_item|

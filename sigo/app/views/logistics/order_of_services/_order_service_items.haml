@@ -23,10 +23,8 @@
     %select.form-control{:name =>"order_of_service[order_of_service_details_attributes][#{@reg_n.to_s}][phase_id]"}
       %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
       - @phases.each do |phase|
-        %optgroup{:label => "#{phase.name}"}
-          - Phase.get_subphases(phase.code).each do |subphase|
-            %option{:value => "#{subphase.id}"}
-              = subphase.name
+        %option{:value => "#{phase.id}"}
+          = phase.name
   %td.unit-price
     = text_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][unit_price]', nil, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);"
   %td.price-without-igv

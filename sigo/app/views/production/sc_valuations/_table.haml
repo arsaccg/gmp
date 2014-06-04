@@ -2,38 +2,49 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
+    %h2 Valorizaciones SC
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
-      .widget-body-toolbar
       %table#summary-purchase-orders.table.table-striped.table-bordered.table-hover
         %thead
           %tr
-            %th Subcontratista
             %th N°
+            %th Subcontratista
             %th Val. Actual
             %th Neto a Pagar
-            %th Fecha
+            %th Fechas
             %th Estado
             %th Acciones
         %tbody
           - @scvaluation.each do |unit|
             %tr
+              %td
+                = unit.id
               %td 
                 = unit.name + ' ' + unit.code
               %td
-                = unit.id
+                = number_to_currency(unit.valuation, unit: 'S/. ', precision: 2)
               %td
-                = unit.valuation
-              %td
-                = unit.net_payment
+                = number_to_currency(unit.net_payment, unit: 'S/. ', precision: 2)
               %td
                 = unit.start_date.to_s + " - " + unit.end_date.to_s
+              - case unit.state
+                - when 'disapproved'
+                  %td.label-status
+                    %span.label.label-warning
+                      = translate_valuations_state(unit.state)
+                - when 'approved'
+                  %td.label-status
+                    %span.label.label-success
+                      = translate_valuations_state(unit.state)
               %td
-                = unit.state
-              %td
-                %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{production_sc_valuation_path(unit.id)}', 'content', null, null, 'GET')"}
+                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_sc_valuation_path(unit.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Ver información
+                - case unit.state
+                  - when 'disapproved'
+                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{approve_production_sc_valuation_path(unit.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                      Aprobar
                 %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_sc_valuation_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_sc_valuations_path}?company_id=#{@company}')"}}
                   Eliminar
 

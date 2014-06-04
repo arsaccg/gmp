@@ -77,6 +77,16 @@
           / end footer
         / END AJAX-DROPDOWN
       / projects dropdown
+      #project-context
+        %span.label Centro de Costo:
+        %span#project-selector.popover-trigger-element.dropdown-toggle{"data-toggle" => "dropdown"}
+          = @cost_center_name
+          %i.fa.fa-angle-down
+        %ul.dropdown-menu
+          %li
+            %a{href: "#{root_path}"}
+              %i.fa.fa-power-off
+              Salir
       / pulled right: nav area
       .pull-right
         / collapse menu button
@@ -96,11 +106,6 @@
           %span
             %a{href: "javascript:void(0)", title: "Search"}
               %i.fa.fa-search
-
-        #return-company.btn-header.transparent.pull-right
-          %span
-            %a{href: "#{root_path}", title: "Ver Compañias"}
-              %i.fa.fa-briefcase
         / end search mobile button
         / input: search field
       / end pulled right: nav area
@@ -198,6 +203,14 @@
                   %i.fa.fa-lg.fa-fw.fa-list-alt
                   %span.menu-item-parent Específicas
                 %ul
+                  %li
+                    %a{href: "#{specifics_articles_logistics_articles_path}", title: "Articulos por Centro de Costo"}
+                      %i.fa.fa-lg.fa-fw.fa-desktop
+                      %span.menu-item-parent Articulos Específicos
+                  %li
+                    %a{href: "#{getSpecificsPhases_logistics_phases_path}", title: "Fases por Centro de Costo"}
+                      %i.fa.fa-lg.fa-fw.fa-desktop
+                      %span.menu-item-parent Fases Específicas
                   %li
                     %a{href: "#{logistics_cost_centers_path}", title: "Centro de Costos", company: "#{@company.id}"}
                       %i.fa.fa-lg.fa-fw.fa-desktop

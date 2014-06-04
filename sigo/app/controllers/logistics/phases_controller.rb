@@ -1,6 +1,7 @@
 class Logistics::PhasesController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+
   def index
     flash[:error] = nil
     @phases = Phase.where("category LIKE 'phase'")
@@ -9,6 +10,11 @@ class Logistics::PhasesController < ApplicationController
     else
       render layout: false
     end
+  end
+
+  def getSpecificsPhases
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    render :specific_phases, layout: false
   end
 
   def create

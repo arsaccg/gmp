@@ -13,7 +13,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def display_articles
     word = params[:q]
     article_hash = Array.new
-    articles = ActiveRecord::Base.connection.execute("SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol FROM articles a, unit_of_measurements u WHERE a.code LIKE '04%' AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) AND a.unit_of_measurement_id = u.id")
+    articles = DeliveryOrder.getOwnArticles(word, get_company_cost_center('cost_center'))
     articles.each do |art|
       article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}
     end
@@ -56,7 +56,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.find(params[:id])
     @sectors = Sector.all
-    @phases = Phase.where("category LIKE 'phase'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @centerOfAttentions = CenterOfAttention.all
     @costcenters = Company.find(@company).cost_centers
     @action = 'edit'
@@ -75,7 +75,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
     @sectors = Sector.where("code LIKE '__' ")
-    @phases = Phase.where("category LIKE 'phase'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @amount = params[:amount].to_f
     @centerOfAttention = CenterOfAttention.all
     @code_article, @name_article, @id_article = @article.code, @article.name, @article.id

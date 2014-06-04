@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class CostCenter < ActiveRecord::Base
 	
 	has_many :delivery_orders
@@ -19,6 +20,8 @@ class CostCenter < ActiveRecord::Base
 
   has_many :items
   has_many :budgets
+  
+  has_many :wbsitems
 
 	belongs_to :company
 

@@ -1,0 +1,114 @@
+#content
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        = "Lista de Articulos del Centro de Costo #{@name}"
+  %br
+  .row
+  #widget-grid
+    .row
+      %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2
+              = "Lista de Articulos del Centro de Costo #{@name}"
+          / widget div
+          %div
+            / widget edit box
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            / end widget edit box
+            / widget content
+            .widget-body.no-padding
+              .widget-body-toolbar
+              #dt_basic_wrapper.dataTables_wrapper.form-inline{:role => 'grid'}
+                .dt-top-row
+                  #dt_basic_length.dataTables_length
+                    %span.smart-form
+                      %label.select{style: "width:60px"}
+                        %select{"aria-controls" => "dt_basic", name: "dt_basic_length", size: "1"}
+                          %option{selected: "selected", value: "10"} 10
+                          %option{value: "25"} 25
+                          %option{value: "50"} 50
+                          %option{value: "100"} 100
+                        %i
+                  #dt_basic_filter.dataTables_filter
+                    .input-group
+                      %span.input-group-addon
+                        %i.fa.fa-search
+                      %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
+                .dt-wrapper
+                  %table#dt_basic.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th Código
+                        %th Tipo de Artículo
+                        %th Específico
+                        %th Nombre
+                        %th Descripcion
+                        %th Unidad de Medida
+                        %th Acciones
+                    %tbody
+                      
+
+        :javascript
+          // DO NOT REMOVE : GLOBAL FUNCTIONS!
+          pageSetUp();
+          
+          $(document).ready(function () {
+            $('[data-toggle="confirmation"]').confirmation();
+          });
+          // PAGE RELATED SCRIPTS
+
+          loadDataTableScripts();
+          function loadDataTableScripts() {
+
+            loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
+
+            function dt_2() {
+              loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
+            }
+
+            function dt_3() {
+              loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
+            }
+
+            function dt_4() {
+              loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
+            }
+
+            function dt_5() {
+              loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
+            }
+
+            function dt_6() {
+              loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
+            }
+
+            function dt_7() {
+              loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
+            }
+
+          }
+
+          function runDataTables() {
+
+            /*
+             * BASIC
+             */
+            $('#dt_basic').dataTable({
+              bProcessing  : true,
+              sProcessing  : true,
+              bServerSide  : true,
+              sServerMethod: 'POST',
+              sAjaxSource  : "#{json_specifics_articles_logistics_articles_path}",
+              fnServerParams: function ( aoData ) {
+                aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
+              },
+              sPaginationType : 'bootstrap_full'
+            });
+
+          }

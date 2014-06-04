@@ -7,6 +7,39 @@ class Production::ScValuationsController < ApplicationController
 	end
 
   def show
+    @scvaluation=ScValuation.find_by_id(params[:id])
+    @valorizacionsinigv = 0
+    @amortizaciondeadelanto = 0
+    @totalfacturar = 0
+    @totalfacigv = 0
+    @totalincluidoigv = 0
+    @retenciones = 0
+    @detraccion = 0
+    @fondogarantia1 = 0
+    @fondogarantia2 = 0
+    @descuentoequipos = 0
+    @otrosdescuentos = 0
+    @netoapagar = 0
+    @code = 0
+    @code = @scvaluation.code.to_i - 1
+    @code = @code.to_s.rjust(3,'0')
+    @valuationgroup = getsc_valuation2(@scvaluation.start_date, @scvaluation.end_date, @scvaluation.name, @code)
+    if @valuationgroup.count > 0
+      @valuationgroup.each do |workerDetail|
+        @valorizacionsinigv = workerDetail[0]
+        @amortizaciondeadelanto = workerDetail[1]
+        @totalfacturar = workerDetail[2]
+        @totalfacigv = workerDetail[3]
+        @totalincluidoigv = workerDetail[4]
+        @retenciones = workerDetail[5]
+        @detraccion = workerDetail[6]
+        @fondogarantia1 = workerDetail[7]
+        @fondogarantia2 = workerDetail[8]
+        @descuentoequipos = workerDetail[9]
+        @otrosdescuentos = workerDetail[10]
+        @netoapagar = workerDetail[11]
+      end
+    end
     render layout: false
   end
 
@@ -23,116 +56,147 @@ class Production::ScValuationsController < ApplicationController
 	end
 
 	def get_report
-    @scValuation = ScValuation.new
-    @totalprice = 0
-    @totalprice2 = 0
-    @totalprice3 = 0
-    @subadvances = 0
-    @valorizacionsinigv = 0
-    @amortizaciondeadelanto = 0
-    @amortizaciondeadelantoigv = 0
-    @initial_amortization_percent = 0
-    @totalfacturar = 0
-    @totalfacigv = 0
-    @totalincluidoigv = 0
-    @retenciones = 0
-    @detraccion = 0
-    @fondogarantia1 = 0
-    @fondogarantia2 = 0
-    @descuestoequipos = 0
-    @descuentomateriales = 0
-    @netoactualpagar = 0
-    @netoapagar = 0
-    @accumulated_valorizacionsinigv = 0
-    @accumulated_amortizaciondeadelanto = 0
-    @accumulated_totalfacturar = 0
-    @accumulated_totalfacigv = 0
-    @accumulated_totalincluidoigv = 0
-    @accumulated_retenciones = 0
-    @accumulated_detraccion = 0
-    @accumulated_fondogarantia1 = 0
-    @accumulated_fondogarantia2 = 0
-    @accumulated_descuestoequipos = 0
-    @accumulated_descuentomateriales = 0
-    @accumulated_netoapagar = 0
-    @cad = Array.new
-    @cad2 = Array.new
-    @company = params[:company_id]
-    @numbercode = 1
-    @entity= Entity.find_by_id(params[:executor])
-    if params[:executor]=="0"
-      @working_group = WorkingGroup.all
-    end
-    if params[:executor]!="0"
-      @working_group = WorkingGroup.where("executor_id LIKE ?", params[:executor])
-    end
-    @subcontract = Subcontract.find_by_entity_id(params[:executor])
-    if @subcontract.initial_amortization_percent != nil
-      @initial_amortization_percent = @subcontract.initial_amortization_percent
-    end
-    @start_date = params[:start_date]
-    @end_date = params[:end_date]
-    if @working_group.present?
-      @working_group.each do |wg|
-        @cad << wg.id
+    name = Entity.find_by_id(params[:executor]).name
+
+    if Subcontract.find_by_entity_id(params[:executor])!=nil
+      if ScValuation.count > 0
+        last = ScValuation.where("name LIKE ? ", name).last
+        if last!=nil 
+          end_date = last.end_date
+          if end_date.to_s < params[:start_date]
+            @ejecutar="ok"
+          end
+        else
+          @ejecutar="ok"
+        end
+      else
+        @ejecutar="ok"
       end
-      @cad = @cad.join(',')
     else
-      @cad = '0'
+      @nhsub="no"
     end
-    @workers_array = business_days_array(@start_date, @end_date, @cad)
-    @workers_array2 = business_days_array2(@start_date, @end_date, @cad)
-    @workers_array3 = business_days_array3(@start_date, @end_date, @cad)
-    @workers_array.each do |workerDetail|
-      @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
-    end
-    @workers_array2.each do |workerDetail|
-      @totalprice2 += workerDetail[5]
-    end
-    @workers_array3.each do |workerDetail|
-      @totalprice3 += workerDetail[4]
-    end
-    @subcontract.subcontract_advances.each do |subadvances|
-      @subadvances+=subadvances.advance
-    end
-    @totalbill= @totalprice2-@subcontract.initial_amortization_number
-    @totalbilligv= (@totalprice2-@subcontract.initial_amortization_number)*@subcontract.igv
-    @totalbillwigv= @totalbill+@totalbilligv
-    @retention=@subcontract.detraction.to_i+@subcontract.guarantee_fund.to_i+@totalprice+@totalprice3
-    @valuationgroup = getsc_valuation(@start_date, @end_date, @entity.name)
-    if @valuationgroup.count > 0
-      @valuationgroup.each do |workerDetail|
-        @valorizacionsinigv = workerDetail[0]
-        @amortizaciondeadelanto = workerDetail[1]
-        @totalfacturar = workerDetail[2]
-        @totalfacigv = workerDetail[3]
-        @totalincluidoigv = workerDetail[4]
-        @retenciones = workerDetail[5]
-        @detraccion = workerDetail[6]
-        @fondogarantia1 = workerDetail[7]
-        @fondogarantia2 = workerDetail[8]
-        @descuestoequipos = workerDetail[9]
-        @netoapagar = workerDetail[10]
-        @numbercode = workerDetail[11]
+
+    if @ejecutar=="ok"
+      @scValuation = ScValuation.new
+      @totalprice = 0
+      @totalprice2 = 0
+      @totalprice3 = 0
+      @subadvances = 0
+      @valorizacionsinigv = 0
+      @amortizaciondeadelanto = 0
+      @amortizaciondeadelantoigv = 0
+      @initial_amortization_percent = 0
+      @totalfacturar = 0
+      @totalfacigv = 0
+      @totalincluidoigv = 0
+      @retenciones = 0
+      @detraccion = 0
+      @fondogarantia1 = 0
+      @fondogarantia2 = 0
+      @descuestoequipos = 0
+      @descuentomateriales = 0
+      @otrosdescuentos = 0
+      @netoactualpagar = 0
+      @netoapagar = 0
+      @accumulated_valorizacionsinigv = 0
+      @accumulated_amortizaciondeadelanto = 0
+      @accumulated_totalfacturar = 0
+      @accumulated_totalfacigv = 0
+      @accumulated_totalincluidoigv = 0
+      @accumulated_retenciones = 0
+      @accumulated_detraccion = 0
+      @accumulated_fondogarantia1 = 0
+      @accumulated_fondogarantia2 = 0
+      @accumulated_descuestoequipos = 0
+      @accumulated_descuentomateriales = 0
+      @accumulated_netoapagar = 0
+      @cad = Array.new
+      @cad2 = Array.new
+      @company = params[:company_id]
+      @numbercode = 1
+      @entity= Entity.find_by_id(params[:executor])
+      if params[:executor]=="0"
+        @working_group = WorkingGroup.all
       end
-      @numbercode=@numbercode.to_i
-      @numbercode += 1
+      if params[:executor]!="0"
+        @working_group = WorkingGroup.where("executor_id LIKE ?", params[:executor])
+      end
+      @subcontract = Subcontract.find_by_entity_id(params[:executor])
+      if @subcontract.initial_amortization_percent != nil
+        @initial_amortization_percent = @subcontract.initial_amortization_percent
+      end
+      @start_date = params[:start_date]
+      @end_date = params[:end_date]
+      if @working_group.present?
+        @working_group.each do |wg|
+          @cad << wg.id
+        end
+        @cad = @cad.join(',')
+      else
+        @cad = '0'
+      end
+      @workers_array = business_days_array(@start_date, @end_date, @cad)
+      @workers_array2 = business_days_array2(@start_date, @end_date, @cad)
+      @workers_array3 = business_days_array3(@start_date, @end_date, @cad)
+      @workers_array.each do |workerDetail|
+        @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
+      end
+      @workers_array2.each do |workerDetail|
+        @totalprice2 += workerDetail[5]
+      end
+      @workers_array3.each do |workerDetail|
+        @totalprice3 += workerDetail[4]
+      end
+      @subcontract.subcontract_advances.each do |subadvances|
+        @subadvances+=subadvances.advance
+      end
+      if @subcontract.initial_amortization_number.to_f>@subadvances || @subcontract.initial_amortization_percent.to_f>@subadvances
+        @subcontract.initial_amortization_number=0
+        @subcontract.initial_amortization_percent=0
+      end
+      @totalbill= @totalprice2-@subcontract.initial_amortization_number
+      @totalbilligv= (@totalprice2-@subcontract.initial_amortization_number)*@subcontract.igv
+      @totalbillwigv= @totalbill+@totalbilligv
+      @retention=@subcontract.detraction.to_i+@subcontract.guarantee_fund.to_i+@totalprice+@totalprice3
+      @valuationgroup = getsc_valuation(@start_date, @end_date, @entity.name)
+      if @valuationgroup.count > 0
+        @valuationgroup.each do |workerDetail|
+          @valorizacionsinigv = workerDetail[0]
+          @amortizaciondeadelanto = workerDetail[1]
+          @totalfacturar = workerDetail[2]
+          @totalfacigv = workerDetail[3]
+          @totalincluidoigv = workerDetail[4]
+          @retenciones = workerDetail[5]
+          @detraccion = workerDetail[6]
+          @fondogarantia1 = workerDetail[7]
+          @fondogarantia2 = workerDetail[8]
+          @descuestoequipos = workerDetail[9]
+          @otrosdescuentos = workerDetail[10]
+          @netoapagar = workerDetail[11]
+          @numbercode = workerDetail[12]
+        end
+        @numbercode=@numbercode.to_i
+        @numbercode += 1
+      end
+      @numbercode = @numbercode.to_s.rjust(3,'0')
+      @accumulated_valorizacionsinigv = @totalprice2+@valorizacionsinigv
+      @accumulated_amortizaciondeadelanto = @subcontract.initial_amortization_number+@amortizaciondeadelanto
+      @accumulated_totalfacturar = @totalbill+@totalfacturar
+      @accumulated_totalfacigv = @totalbilligv+@totalfacigv
+      @accumulated_totalincluidoigv = @totalbillwigv+@totalincluidoigv
+      @accumulated_retenciones = @retention+@retenciones
+      @accumulated_detraccion = @subcontract.detraction.to_f+@retenciones
+      @accumulated_fondogarantia1 = @subcontract.guarantee_fund.to_f+@fondogarantia1
+      @accumulated_fondogarantia2 = @totalprice+@fondogarantia2
+      @accumulated_descuestoequipos = @totalprice3+@descuestoequipos
+      @accumulated_descuentomateriales = @descuentomateriales
+      @netoactualpagar=@totalbillwigv-@retention
+      @accumulated_netoapagar = @accumulated_totalincluidoigv-@accumulated_retenciones
+      @balance = @subadvances - @accumulated_amortizaciondeadelanto    
+      @flag="ok"
+    else
+      @flag="no"
     end
-    @numbercode = @numbercode.to_s.rjust(3,'0')
-    @accumulated_valorizacionsinigv = @totalprice2+@valorizacionsinigv
-    @accumulated_amortizaciondeadelanto = @subcontract.initial_amortization_number+@amortizaciondeadelantoigv
-    @accumulated_totalfacturar = @totalbill+@totalfacturar
-    @accumulated_totalfacigv = @totalbilligv+@totalfacigv
-    @accumulated_totalincluidoigv = @totalbillwigv+@totalincluidoigv
-    @accumulated_retenciones = @retention+@retenciones
-    @accumulated_detraccion = @subcontract.detraction.to_f+@retenciones
-    @accumulated_fondogarantia1 = @subcontract.guarantee_fund.to_f+@fondogarantia1
-    @accumulated_fondogarantia2 = @totalprice+@fondogarantia2
-    @accumulated_descuestoequipos = @totalprice3+@descuestoequipos
-    @accumulated_descuentomateriales = @descuentomateriales
-    @netoactualpagar=@totalbillwigv-@retention
-    @accumulated_netoapagar = @accumulated_totalincluidoigv-@accumulated_retenciones
-    @balance = @subadvances + @accumulated_amortizaciondeadelanto
     render(partial: 'report_table', :layout => false)
   end
 
@@ -214,6 +278,7 @@ class Production::ScValuationsController < ApplicationController
       accumulated_guarantee_fund1, 
       accumulated_guarantee_fund2, 
       accumulated_equipment_discount, 
+      accumulated_otherdiscount, 
       accumulated_net_payment, 
       code 
       FROM sc_valuations 
@@ -223,10 +288,46 @@ class Production::ScValuationsController < ApplicationController
     return valuationgroup
   end
 
+  def getsc_valuation2(start_date, end_date, entityname, code)
+    valuationgroup = ActiveRecord::Base.connection.execute("
+      SELECT accumulated_valuation, 
+      accumulated_initial_amortization_number, 
+      accumulated_bill, accumulated_billigv, 
+      accumulated_totalbill, 
+      accumulated_retention, 
+      accumulated_detraction, 
+      accumulated_guarantee_fund1, 
+      accumulated_guarantee_fund2, 
+      accumulated_equipment_discount, 
+      accumulated_otherdiscount, 
+      accumulated_net_payment, 
+      code 
+      FROM sc_valuations 
+      WHERE name LIKE '" + entityname + "'
+      AND code LIKE '" + code + "'
+    ")
+    return valuationgroup
+  end
+
+  def updateParts(start_date, end_date)
+    ActiveRecord::Base.connection.execute("
+      Update part_works set block = 1 where date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
+    ")
+    ActiveRecord::Base.connection.execute("
+      Update part_people set block = 1 where date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
+    ")
+    ActiveRecord::Base.connection.execute("
+      Update part_of_equipments set block = 1 where date BETWEEN '" + start_date + "' AND '" + end_date + "'
+    ")
+  end
+
   def create
     scvaluation = ScValuation.new(sc_valuation_parameters)
     scvaluation.state
+    start_date = params[:sv_valuation]['start_date']
+    end_date = params[:sv_valuation]['end_date']
     if scvaluation.save
+      updateParts(start_date,end_date)
       flash[:notice] = "Se ha creado correctamente la valorizacion."
       redirect_to :action => :index, company_id: params[:company_id]
     else
@@ -243,6 +344,48 @@ class Production::ScValuationsController < ApplicationController
     scvaluation = ScValuation.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el trabajador."
     render :json => scvaluation
+  end
+
+  def part_work
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+    cad = params[:cad]
+    @totalprice2 = 0
+    @workers_array2 = business_days_array2(start_date, end_date, cad)
+    @workers_array2.each do |workerDetail|
+      @totalprice2 += workerDetail[5]
+    end
+    render layout: false
+  end
+
+  def part_people
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+    cad = params[:cad]
+    @totalprice = 0
+    @workers_array = business_days_array(start_date, end_date, cad)
+    @workers_array.each do |workerDetail|
+      @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
+    end
+    render layout: false
+  end
+
+  def part_equipment
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+    cad = params[:cad]
+    @totalprice3 = 0
+    @workers_array3 = business_days_array3(start_date, end_date, cad)
+    @workers_array3.each do |workerDetail|
+      @totalprice3 += workerDetail[4]
+    end
+    render layout: false
+  end
+
+  def approve
+    scvaluation = ScValuation.find(params[:id])
+    scvaluation.approve
+    redirect_to :action => :index
   end
 
   private

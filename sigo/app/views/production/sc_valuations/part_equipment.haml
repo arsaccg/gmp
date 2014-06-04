@@ -1,0 +1,31 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
+        \×
+      %h4.modal-title Descuento de Equipos
+    .modal-body
+      -if @workers_array3.count>0
+        %h1.page-title.txt-color-blueDark Parte de Equipos
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th Descripcion
+              %th Cantidad
+              %th Unidad
+              %th P.U.
+              %th Parcial
+          %tbody
+          - @workers_array3.each do |workerDetail3|
+            %tr
+              %th= workerDetail3[0]
+              %th= workerDetail3[2]
+              %th= workerDetail3[1]
+              %th= workerDetail3[3]
+              %th= workerDetail3[4]
+      - else
+        %h4.modal-title No hay datos.
+        %br
+      %footer
+        %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+          Salir
