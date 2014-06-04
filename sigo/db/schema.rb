@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 20140526224234) do
+ActiveRecord::Schema.define(version: 20140529180403) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -96,6 +95,7 @@ ActiveRecord::Schema.define(version: 20140526224234) do
     t.integer  "professional_id"
     t.integer  "work_id"
     t.integer  "charge_id"
+    t.string   "contractor"
     t.date     "start_date"
     t.date     "finish_date"
     t.integer  "componetns_id"
@@ -162,11 +162,6 @@ ActiveRecord::Schema.define(version: 20140526224234) do
 
   add_index "components_works", ["work_id", "component_id"], name: "index_components_works_on_work_id_and_component_id", using: :btree
 
-  create_table "componet", id: false, force: true do |t|
-    t.integer "id",   null: false
-    t.integer "type", null: false
-  end
-
   create_table "componets_other_works", force: true do |t|
     t.integer  "component_id"
     t.integer  "other_works_id"
@@ -205,6 +200,7 @@ ActiveRecord::Schema.define(version: 20140526224234) do
     t.date     "start_date"
     t.date     "end_date"
     t.string   "status"
+    t.integer  "deleted",    default: 0
   end
 
   create_table "cost_centers_users", force: true do |t|
@@ -488,6 +484,30 @@ ActiveRecord::Schema.define(version: 20140526224234) do
     t.datetime "updated_at"
   end
 
+  create_table "managers", force: true do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.integer  "failed_attempts",        default: 3
+    t.string   "unlock_token"
+    t.datetime "locked_at"
+    t.string   "authentication_token"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "dni"
+  end
+
+  add_index "managers", ["authentication_token"], name: "index_managers_on_authentication_token", unique: true, using: :btree
+  add_index "managers", ["email"], name: "index_managers_on_email", unique: true, using: :btree
+  add_index "managers", ["reset_password_token"], name: "index_managers_on_reset_password_token", unique: true, using: :btree
+
   create_table "method_of_payments", force: true do |t|
     t.string "name"
     t.string "symbol"
@@ -628,20 +648,6 @@ ActiveRecord::Schema.define(version: 20140526224234) do
     t.datetime "updated_at"
   end
 
-  create_table "professional_certificates", force: true do |t|
-    t.integer  "professional_id"
-    t.integer  "certificate_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "professional_trainings", force: true do |t|
-    t.integer  "professional_id"
-    t.integer  "training_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "professionals", force: true do |t|
     t.string   "name"
     t.integer  "dni"
@@ -775,6 +781,47 @@ ActiveRecord::Schema.define(version: 20140526224234) do
     t.datetime "updated_at"
   end
 
+  create_table "sc_valuations", force: true do |t|
+    t.string   "name"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "working_group"
+    t.float    "valuation"
+    t.float    "initial_amortization_number"
+    t.float    "initial_amortization_percentage"
+    t.float    "bill"
+    t.float    "billigv"
+    t.float    "totalbill"
+    t.float    "retention"
+    t.float    "detraction"
+    t.float    "guarantee_fund1"
+    t.float    "guarantee_fund2"
+    t.float    "equipment_discount"
+    t.float    "material_discount"
+    t.float    "hired_amount"
+    t.float    "advances"
+    t.float    "accumulated_amortization"
+    t.float    "balance"
+    t.float    "net_payment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "accumulated_valuation"
+    t.integer  "accumulated_initial_amortization_number"
+    t.integer  "accumulated_bill"
+    t.integer  "accumulated_billigv"
+    t.integer  "accumulated_totalbill"
+    t.integer  "accumulated_retention"
+    t.integer  "accumulated_detraction"
+    t.integer  "accumulated_guarantee_fund1"
+    t.integer  "accumulated_guarantee_fund2"
+    t.integer  "accumulated_equipment_discount"
+    t.integer  "accumulated_net_payment"
+    t.string   "state"
+    t.string   "code"
+    t.float    "otherdiscount"
+    t.float    "accumulated_otherdiscount"
+  end
+
   create_table "sectors", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -878,6 +925,14 @@ ActiveRecord::Schema.define(version: 20140526224234) do
     t.integer  "subcontract_id"
   end
 
+  create_table "subcontract_equipment_advances", force: true do |t|
+    t.date     "date_of_issue"
+    t.float    "advance"
+    t.integer  "subcontract_equipment_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "subcontract_equipment_details", force: true do |t|
     t.integer  "article_id"
     t.string   "description"
@@ -906,7 +961,7 @@ ActiveRecord::Schema.define(version: 20140526224234) do
     t.string   "guarantee_fund"
     t.string   "detraction"
     t.float    "contract_amount"
-    t.string   "type"
+    t.string   "igv"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
@@ -1133,7 +1188,7 @@ ActiveRecord::Schema.define(version: 20140526224234) do
 
   create_table "works", force: true do |t|
     t.string   "specialty"
-    t.string   "name",                                 limit: 500
+    t.string   "name"
     t.float    "amount_of_contract"
     t.string   "participation_of_arsac"
     t.date     "date_signature_of_contract"
