@@ -50,6 +50,7 @@ class Production::WorkersController < ApplicationController
     @worker = Worker.find(params[:id])
     @banks = Bank.all
     @reg_n = Time.now.to_i
+    @entities = TypeEntity.find_by_name('Trabajadores').entities
     @articles = TypeOfArticle.find_by_code('01').articles
     @positionWorkers = PositionWorker.all
     @entites = TypeEntity.find_by_name('Trabajadores').entities
@@ -77,7 +78,7 @@ class Production::WorkersController < ApplicationController
     @reg_n = ((Time.now.to_f)*100).to_i
     data_bank_unit = params[:bank_id].split('-')
     @bank = Bank.find(data_bank_unit[0])
-    @account_number = params[:account_number].to_f
+    @account_number = params[:account_number].to_s
     @business_name_bank, @id_bank = @bank.business_name, @bank.id
     render(partial: 'worker_items', :layout => false)
   end
