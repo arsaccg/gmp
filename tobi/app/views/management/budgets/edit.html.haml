@@ -32,6 +32,5 @@
       %a{:href=>"javascript:post_to_url('" + management_budget_path(@budget.id).to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
         Guardar
 
-      %a{:href=>"javascript:load_url_ondiv('" + administrate_budget_management_budgets_path.to_s + "\', 'right-area');"}(class="btn btn-danger")
+      %a{:href=>"javascript:load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id="+@budget.cost_center_id.to_s+"', 'right-area');", class: "btn btn-danger"}
         Cancelar
-
