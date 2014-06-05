@@ -162,36 +162,28 @@
 
         if($(element).val()==""){
           h_normal = 0;
-          console.log(h_normal);
         }else{
           h_normal = parseInt($(element).val());
-          console.log(h_normal);
         }
 
         if($(element).parent().parent().siblings('.he-60').find('input').val()==""){
           he_60 =0;
-          console.log(he_60);
         }else{
           he_60 = parseInt($(element).parent().parent().siblings('.he-60').find('input').val());
-          console.log(he_60);
         }
 
         if($(element).parent().parent().siblings('.he-100').find('input').val()==""){
           he_100 = 0;
-          console.log(he_100);
         }else{
           he_100 = parseInt($(element).parent().parent().siblings('.he-100').find('input').val());
-          console.log(he_100);
         }
 
         total_hours = h_normal + he_60 + he_100;
 
         if(isNaN(total_hours)){
           total_hours  = 0;
-          console.log(total_hours);
         }else{
           total_hours
-          console.log(total_hours);
         }
 
         $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours);
@@ -201,36 +193,28 @@
 
         if($(element).parent().parent().siblings('.normal-hours').find('input').val()==""){
           h_normal = 0;
-          console.log(h_normal);
         }else{
           h_normal = parseInt($(element).parent().parent().siblings('.normal-hours').find('input').val());
-          console.log(h_normal);
         }
 
         if($(element).val()==""){
           he_60 =0;
-          console.log(he_60);
         }else{
           he_60 = parseInt($(element).val());
-          console.log(he_60);
         }
 
         if($(element).parent().parent().siblings('.he-100').find('input').val()==""){
           he_100 = 0;
-          console.log(he_100);
         }else{
           he_100 = parseInt($(element).parent().parent().siblings('.he-100').find('input').val());
-          console.log(he_100);
         }
 
         total_hours = h_normal + he_60 + he_100;
 
         if(isNaN(total_hours)){
           total_hours = 0;
-          console.log(total_hours);
         }else{
           total_hours
-          console.log(total_hours);
         }
 
         $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours)
@@ -240,38 +224,28 @@
 
         if($(element).parent().parent().siblings('.normal-hours').find('input').val()==""){
           h_normal = 0;
-          console.log(h_normal);
         }else{
           h_normal = parseInt($(element).parent().parent().siblings('.normal-hours').find('input').val());
-          console.log(h_normal);
         }
 
         if($(element).parent().parent().siblings('.he-60').find('input').val()==""){
           he_60 =0;
-          console.log(he_60);
         }else{
           he_60 = parseInt($(element).parent().parent().siblings('.he-60').find('input').val());
-          console.log(he_60);
         }
 
         if($(element).val()==""){
-          console.log($(element).val());
           he_100 = 0;
-          console.log(he_100);
         }else{
-          console.log($(element).val());
           he_100 = parseInt($(element).val());
-          console.log(he_100);
         }
 
         total_hours = h_normal + he_60 + he_100;
 
         if(isNaN(total_hours)){
           total_hours  = 0;
-          console.log(total_hours);
         }else{
           total_hours
-          console.log(total_hours);
         }
 
         $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours)
