@@ -16,7 +16,7 @@ class Management::ExtensionscontrolsController < ApplicationController
     extensionscontrol.status
     extensionscontrol.project_id = @project_id
     extensionscontrol.save
-    redirect_to :action => :index, :project_id => @project_id, :layout => false
+    redirect_to :action => :index, :cost_center_id => @project_id, :layout => false
   end
 
   def update
@@ -44,7 +44,7 @@ class Management::ExtensionscontrolsController < ApplicationController
 
   private
   def extensions_parameters
-    params.require(:extensionscontrol).permit(:motive, :requested_deadline, :approved_deadline, :requested_mgg, :approved_mgg, :resolution, :observation, :files)
+    params.require(:extensionscontrol).permit(:motive, :requested_deadline, :approved_deadline, :requested_mgg, :approved_mgg, :resolution, :observation, :files, :cost_center_id)
   end
 
 end

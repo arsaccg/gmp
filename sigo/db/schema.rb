@@ -11,7 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140605144500) do
+
+ActiveRecord::Schema.define(version: 20140604193000) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -199,7 +200,7 @@ ActiveRecord::Schema.define(version: 20140605144500) do
     t.date     "start_date"
     t.date     "end_date"
     t.string   "status"
-    t.integer  "deleted"
+    t.integer  "deleted",    default: 0
   end
 
   create_table "cost_centers_users", force: true do |t|
@@ -359,6 +360,14 @@ ActiveRecord::Schema.define(version: 20140605144500) do
   add_index "inputbybudgetanditems", ["id"], name: "inputbybudgets_id", using: :btree
   add_index "inputbybudgetanditems", ["item_id"], name: "inputbybudgets_item_id", using: :btree
   add_index "inputbybudgetanditems", ["order"], name: "inputbybudgets_order", using: :btree
+
+  create_table "inputcategories", force: true do |t|
+    t.integer  "category_id"
+    t.integer  "level_n"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "inputs", force: true do |t|
     t.string   "code"

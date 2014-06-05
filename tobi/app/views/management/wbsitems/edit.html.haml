@@ -19,7 +19,7 @@
         %label(class="control-label") Notas
         .controls
           = f.input :notes, :as => :text, label: false
-          = f.input :project_id, :as => :hidden, input_html: {id: 'input_project'}
+          = f.input :cost_center_id, :as => :hidden, input_html: {id: 'input_project'}
       .form-actions
         %a{:href=>"javascript:post_to_url('" + management_wbsitem_path(@wbsitem.id).to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
           Guardar

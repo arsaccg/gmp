@@ -12,7 +12,6 @@
           %tr
             %th N°
             %th Primer Nombre
-            %th Segundo Nombre
             %th Apellido Paterno
             %th Apellido Materno
             %th Categoria
@@ -27,32 +26,25 @@
               %td
                 = worker.id
               %td 
-                = worker.first_name
+                = worker.entity.name rescue ""
+              %td
+                = worker.entity.paternal_surname rescue ""
               %td 
-                = worker.second_name
+                = worker.entity.maternal_surname rescue ""
               %td
-                = worker.paternal_surname
+                = worker.article.name rescue ""
               %td 
-                = worker.maternal_surname
+                = worker.position_worker.name rescue ""
               %td
-                - if worker.article != nil
-                  = worker.article.name
-              %td
-                - if worker.position_worker != nil
-                  = worker.position_worker.name
-              %td
-                = worker.email
+                = worker.email rescue ""
               %td 
-                = worker.date_of_birth
+                = worker.date_of_birth rescue ""
               %td
-                - if worker.address != ''
-                  = worker.address
-                - else
-                  = "No tiene dirección este trabajador."
+                = worker.entity.address rescue "No tiene dirección este trabajador."
               %td
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_worker_path(worker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{worker.first_name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_worker_path(worker.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_workers_path}?company_id=#{@company}')"}}
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{worker.entity.name rescue ''}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_worker_path(worker.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_workers_path}?company_id=#{@company}')"}}
                   Eliminar
 
 :javascript

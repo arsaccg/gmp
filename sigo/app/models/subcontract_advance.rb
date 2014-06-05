@@ -1,3 +1,3 @@
 class SubcontractAdvance < ActiveRecord::Base
-	belongs_to :subcontract
+  belongs_to :subcontract
 end

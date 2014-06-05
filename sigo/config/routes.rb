@@ -303,7 +303,11 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :rental_types
-    resources :subcontract_equipments
+    resources :subcontract_equipments do
+      collection do
+        post 'add_more_advance'
+      end
+    end
     resources :subcontracts do
       collection do
         post 'add_more_article'
