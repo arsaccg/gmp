@@ -25,7 +25,7 @@
               %td
                 = partofequipment.subcontract_equipment.entity.name
               %td
-                = partofequipment.worker.first_name + ' ' + partofequipment.worker.paternal_surname + ' ' + partofequipment.worker.maternal_surname
+                = partofequipment.worker.entity.name + ' ' + partofequipment.worker.entity.paternal_surname + ' ' + partofequipment.worker.entity.maternal_surname
               %td 
                 = Article.find_article(partofequipment.equipment_id).name
               %td
