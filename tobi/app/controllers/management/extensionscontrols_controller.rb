@@ -2,7 +2,7 @@ class Management::ExtensionscontrolsController < ApplicationController
   before_filter :authorize_manager
 
   def index
-    @extensionscontrol = Extensionscontrol.where(:project_id => params[:project_id])
+    @extensionscontrol = Extensionscontrol.where(:cost_center_id => params[:project_id])
     @project = Project.find(params[:project_id])
     render :index, :layout => false
   end
@@ -14,7 +14,7 @@ class Management::ExtensionscontrolsController < ApplicationController
     extensionscontrol = Extensionscontrol.new(extensions_parameters)
     @project_id = params[:project_id]
     extensionscontrol.status
-    extensionscontrol.project_id = @project_id
+    extensionscontrol.cost_center_id = @project_id
     extensionscontrol.save
     redirect_to :action => :index, :cost_center_id => @project_id, :layout => false
   end
