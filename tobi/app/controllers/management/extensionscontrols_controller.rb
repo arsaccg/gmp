@@ -2,8 +2,8 @@ class Management::ExtensionscontrolsController < ApplicationController
   before_filter :authorize_manager
 
   def index
-    @extensionscontrol = Extensionscontrol.where(:cost_center_id => params[:project_id])
-    @project = Project.find(params[:project_id])
+    @extensionscontrol = Extensionscontrol.where(:cost_center_id => params[:cost_center_id]) rescue Extensionscontrol.where(:cost_center_id => params[:project_id])
+    @project = CostCenter.find(params[:cost_center_id]) rescue CostCenter.find(params[:project_id])
     render :index, :layout => false
   end
 
