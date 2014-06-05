@@ -25,12 +25,6 @@ class Article < ActiveRecord::Base
     
   	validates :code, :uniqueness => { :message => "El código debe ser único."}
 
-<<<<<<< HEAD
-  	def self.find_article(id)
-  		return self.find(id)
-  	end
-    
-=======
 	def self.find_article(id)
 		return self.find(id)
 	end
@@ -53,5 +47,4 @@ class Article < ActiveRecord::Base
 
       return mysql_result
     end
->>>>>>> d2b41fa656d990b66f9d4a64997a5a33cc5f0da1
 end
