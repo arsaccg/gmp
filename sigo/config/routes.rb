@@ -332,6 +332,15 @@ ArsacLogistica::Application.routes.draw do
     end
   end
 
+  namespace :share do
+    resources :graphers do
+      collection do
+        get 'paint'
+        post 'paint'
+      end
+    end
+  end
+
 end
 
   
