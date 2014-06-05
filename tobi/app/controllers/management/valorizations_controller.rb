@@ -2,7 +2,7 @@ class Management::ValorizationsController < ApplicationController
   before_filter :authorize_manager
   
   def index
-    @budgets=Budget.where(:project_id => params[:project_id])
+    @budgets=Budget.where(:cost_center_id => params[:project_id])
     render :index, :layout => false
   end
   
@@ -20,7 +20,7 @@ class Management::ValorizationsController < ApplicationController
     @valorization = Valorization.find(params[:id])
     @budget = Budget.where(:id => @valorization.budget_id).first
 
-    @valorizationitem = Valorizationitem.where(:valorization_id => @valorization.id)
+    @valorizationitem = Valorizationitem.where(:valorization_id => @valorization.id) rescue 0
  
 
     str_query = "SELECT  itembybudgets.id, 
@@ -50,7 +50,9 @@ class Management::ValorizationsController < ApplicationController
     valorization.month = "Valorizacion : " + valorization.valorization_date.strftime("%B %Y")
     valorization.save
 
-    redirect_to :controller => "management/budgets", :action => :administrate_budget
+    cost_center_id = Budget.find(valorization.budget_id).cost_center_id
+
+    redirect_to :controller => "management/budgets", project_id: cost_center_id, :action => :administrate_budget
   end
 
   def edit
@@ -61,7 +63,10 @@ class Management::ValorizationsController < ApplicationController
   def finalize
     @valorization = Valorization.find(params[:id])
     @valorization.complete!
-    redirect_to :controller => "management/budgets", :action => :administrate_budget
+
+    cost_center_id = Budget.find(@valorization.budget_id).cost_center_id
+
+    redirect_to :controller => "management/budgets", project_id: cost_center_id ,:action => :administrate_budget
   end
 
   def show_data
@@ -141,7 +146,7 @@ class Management::ValorizationsController < ApplicationController
 
     @valorizationitem = Valorizationitem.where(:valorization_id => @valorization.id)
 
-    @project = Project.find(params[:project_id])
+    @project = CostCenter.find(@budget.cost_center_id)
 
     @itembybudgets_main = Itembybudget.select('id, `title`, `order`, CHAR_LENGTH(`order`)').where('CHAR_LENGTH(`order`) < 3')
     #SELECT `order`,CHAR_LENGTH(`order`) WHERE CHAR_LENGTH(`order`) < 3

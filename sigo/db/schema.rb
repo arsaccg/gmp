@@ -11,7 +11,6 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
 ActiveRecord::Schema.define(version: 20140604193000) do
 
   create_table "advances", force: true do |t|
@@ -257,6 +256,7 @@ ActiveRecord::Schema.define(version: 20140604193000) do
     t.text     "address"
     t.string   "maternal_surname"
     t.integer  "cost_center_id"
+    t.string   "second_name"
   end
 
   create_table "entities_type_entities", force: true do |t|
@@ -1237,20 +1237,16 @@ ActiveRecord::Schema.define(version: 20140604193000) do
   end
 
   create_table "workers", force: true do |t|
-    t.string   "first_name"
-    t.string   "paternal_surname"
-    t.string   "maternal_surname"
-    t.string   "email"
     t.string   "phone"
     t.date     "date_of_birth"
-    t.text     "address"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "dni"
-    t.string   "second_name"
     t.integer  "position_worker_id"
     t.integer  "article_id"
     t.integer  "cost_center_id"
+    t.integer  "entity_id"
+    t.string   "email"
   end
 
   create_table "working_groups", force: true do |t|
