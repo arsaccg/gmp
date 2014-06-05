@@ -45,13 +45,13 @@
                       -if @action =="edit"
                         -if @partofequipment.worker_id == wo.id
                           %option{:value => "#{wo.id}", :selected=>"selected"}
-                            = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
+                            = wo.entity.name + ' ' + wo.entity.paternal_surname + ' ' + wo.entity.maternal_surname
                         -else
                           %option{:value => "#{wo.id}"}
-                            = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
+                            = wo.entity.name + ' ' + wo.entity.paternal_surname + ' ' + wo.entity.maternal_surname
                       -else
                         %option{:value => "#{wo.id}"}
-                          = wo.first_name + ' ' + wo.paternal_surname + ' ' + wo.maternal_surname
+                          = wo.entity.name + ' ' + wo.entity.paternal_surname + ' ' + wo.entity.maternal_surname
 
           %section.col.col-6
             .row

@@ -22,13 +22,13 @@
                   - if @action == 'edit'
                     - if @partperson.working_group_id == working_group.id
                       %option{:value => "#{working_group.id}", :selected => true}
-                        = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                        = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.second_name
                     - else
                       %option{:value => "#{working_group.id}"}
-                        = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                        = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.second_name
                   - else
                     %option{:value => "#{working_group.id}"}
-                      = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                      = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.second_name
 
           %section.col.col-2
             %label.input{for: "date_of_creation"}
@@ -44,7 +44,7 @@
             %select#worker-select.select2.form-control(name='worker_id' style='width:100%;padding: 0;border: none;')
               - @workers.each do |worker|
                 %option(value = "#{worker.id}")
-                  = worker.article.name + " - " + worker.first_name + " " + worker.second_name + " " + worker.paternal_surname + " " + worker.maternal_surname
+                  = worker.article.name + " - " + worker.entity.name + " " + worker.entity.second_name + " " + worker.entity.paternal_surname + " " + worker.entity.maternal_surname
 
           %section.col.col-2
             %div
@@ -70,8 +70,8 @@
                   %tr
                     %td.bank-id(style="display:none")
                       = hidden_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][worker_id]', oos.worker.id
-                    %td.col-2=oos.worker.dni
-                    %td.col-2=oos.worker.first_name
+                    %td.col-2=oos.worker.entity.dni
+                    %td.col-2=oos.worker.entity.name
                     %td.col-2=oos.sector.name
                     %td.col-2=oos.phase.name
                     %td.col-2=oos.normal_hours
