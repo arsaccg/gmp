@@ -4,6 +4,7 @@ class Logistics::DocumentsController < ApplicationController
   
   def index
     flash[:error] = nil
+    @formats = Format.all
     @items = Document.all #.where(company_id: "#{params[:company_id]}")
     render layout: false
   end
