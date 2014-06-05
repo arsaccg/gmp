@@ -83,7 +83,9 @@
                     %td.he-100
                       %div
                         = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][he_100]', oos.he_100 , class: "form-control he-100", onfocusout: "calculateHours(this, '100');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
-                    %td.col-2=oos.total_hours
+                    %td.total-hours
+                      %div
+                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][total_hours]', oos.total_hours , class: "form-control total-hours", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", readonly: true
                     %td(style="display:none")
                       = hidden_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td.delete-item
