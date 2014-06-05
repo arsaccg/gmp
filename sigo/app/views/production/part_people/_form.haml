@@ -160,40 +160,40 @@
     switch(str){
       case 'normal':
         h_normal = parseInt($(element).val());
-        he_60 = parseInt($(element).parent().siblings('.he-60').find('input').val())
-        he_100 = parseInt($(element).parent().siblings('.he-100').find('input').val())
 
-        total_hours = h_normal + he_60 + he_100
+        he_60 = parseInt($(element).parent().parent().siblings('.he-60').find('input').val());
+        
+        he_100 = parseInt($(element).parent().parent().siblings('.he-100').find('input').val())
 
-        $(element).parent().siblings('.total-hours').find('input').val(total_hours)
+        total_hours = h_normal + he_60 + he_100;
+
+        $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours);
         break;
 
       case '60':
-        h_normal = parseInt($(element).parent().siblings('.normal-hours').find('input').val());
-        he_60 = parseInt($(element).val())
-        he_100 = parseInt($(element).parent().siblings('.he-100').find('input').val())
-
-        total_hours = h_normal + he_60 + he_100
+        h_normal = parseInt($(element).parent().parent().siblings('.normal-hours').find('input').val());
+        he_60 = parseInt($(element).val());
+        he_100 = parseInt($(element).parent().parent().siblings('.he-100').find('input').val());
+        total_hours = h_normal + he_60 + he_100;
 
         if(isNaN(total_hours)){
           total_hours
         }
 
-        $(element).parent().siblings('.total-hours').find('input').val(total_hours)
+        $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours)
         break;
 
       case '100':
-        h_normal = parseInt($(element).parent().siblings('.normal-hours').find('input').val());
-        he_60 = parseInt($(element).parent().siblings('.he-60').find('input').val())
-        he_100 = parseInt($(element).val())
-
-        total_hours = h_normal + he_60 + he_100
+        h_normal = parseInt($(element).parent().parent().siblings('.normal-hours').find('input').val());
+        he_60 = parseInt($(element).parent().parent().siblings('.he-60').find('input').val());
+        he_100 = parseInt($(element).val());
+        total_hours = h_normal + he_60 + he_100;
 
         if(isNaN(total_hours)){
           total_hours
         }
 
-        $(element).parent().siblings('.total-hours').find('input').val(total_hours)
+        $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours)
         break;
     }
   }
