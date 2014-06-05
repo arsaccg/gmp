@@ -55,6 +55,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
   end
 
   def search_weekly_work
+    @weekly_worker = WeeklyWorker.new
     @inicio                = params[:start_date]
     @fin                   = params[:end_date]
     @cad = Array.new
@@ -184,5 +185,4 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
     end    
     return array_order.sort_by{|k| k[1]}    
   end
-
 end

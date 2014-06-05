@@ -11,6 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema.define(version: 20140604193000) do
 
   create_table "advances", force: true do |t|
@@ -95,7 +96,6 @@ ActiveRecord::Schema.define(version: 20140604193000) do
     t.integer  "professional_id"
     t.integer  "work_id"
     t.integer  "charge_id"
-    t.string   "contractor"
     t.date     "start_date"
     t.date     "finish_date"
     t.integer  "componetns_id"
@@ -432,7 +432,7 @@ ActiveRecord::Schema.define(version: 20140604193000) do
 
   add_index "itembybudgets", ["item_id"], name: "itembybudges_item_id", using: :btree
 
-  create_table "itembywbses", force: true do |t|
+  create_table "itembywbs", force: true do |t|
     t.string   "wbscode"
     t.integer  "itembywbs_id"
     t.string   "coditem"
@@ -1195,6 +1195,22 @@ ActiveRecord::Schema.define(version: 20140604193000) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "phase_id"
+  end
+
+  create_table "weekly_tables", force: true do |t|
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "working_group"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "weekly_workers", force: true do |t|
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "working_group"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "work_partners", force: true do |t|

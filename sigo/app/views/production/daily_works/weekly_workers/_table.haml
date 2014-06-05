@@ -1,0 +1,45 @@
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Tareo de Obreros Semanal
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      %table#summary-purchase-orders.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th N°
+            %th Fechas
+            %th Acciones
+        %tbody
+          - @weeklyworker.each do |unit|
+            %tr
+              %td
+                = unit.id
+              %td
+                = unit.start_date.to_s + " - " + unit.end_date.to_s
+              %td
+                %span{"style"=>"width=20px"}
+                  %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "weekly_table(#{unit.id});"}
+                    %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_daily_works_weekly_worker_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_daily_works_weekly_workers_path}?company_id=#{@company}')"}}
+                  Eliminar
+      %br
+      %br
+      #weekly-table.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+
+:javascript
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });
+
+  function weekly_table(id) {
+    data = { authenticity_token: "#{form_authenticity_token}", id: id};
+    load_url_ajax('#{weekly_table_production_daily_works_weekly_workers_path}', 'weekly-table', data, '', 'POST');
+    $('#weekly-table').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
