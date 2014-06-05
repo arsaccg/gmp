@@ -5,6 +5,7 @@ class Production::WorkersController < ApplicationController
     @article = TypeOfArticle.find_by_code('01').articles.first
     @bank = Bank.first
     @workers = Worker.where("cost_center_id = ?", cost_center)
+    @entity = TypeEntity.find_by_name('Trabajadores').entities.first
     render layout: false
   end
 
@@ -19,6 +20,7 @@ class Production::WorkersController < ApplicationController
     @positionWorkers = PositionWorker.all
     @company = params[:company_id]
     @banks = Bank.all
+    @entities = TypeEntity.find_by_name('Trabajadores').entities
     render layout: false
   end
 
@@ -50,6 +52,7 @@ class Production::WorkersController < ApplicationController
     @reg_n = Time.now.to_i
     @articles = TypeOfArticle.find_by_code('01').articles
     @positionWorkers = PositionWorker.all
+    @entites = TypeEntity.find_by_name('Trabajadores').entities
     @company = params[:company_id]
     @action = 'edit'
     render layout: false
@@ -87,6 +90,6 @@ class Production::WorkersController < ApplicationController
 
   private
   def worker_parameters
-    params.require(:worker).permit(:first_name, :paternal_surname, :maternal_surname, :dni, :email, :phone, :date_of_birth, :address, :article_id, :second_name, :position_worker_id, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy])
+    params.require(:worker).permit(:email, :phone, :date_of_birth, :article_id, :entity_id, :position_worker_id, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy])
   end
 end

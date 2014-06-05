@@ -2,6 +2,7 @@ class Worker < ActiveRecord::Base
 	has_many :part_person_details
 	has_many :worker_details
 	has_many :part_of_equipments
+	belongs_to :entity
 	belongs_to :cost_center
 	belongs_to :position_worker
 	belongs_to :article
