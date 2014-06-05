@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20140529180403) do
-=======
-ActiveRecord::Schema.define(version: 20140531164133) do
->>>>>>> ee34cd77f6255429b7a482cf8807cf16b3bc7694
+ActiveRecord::Schema.define(version: 20140604193000) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -204,11 +200,7 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.date     "start_date"
     t.date     "end_date"
     t.string   "status"
-<<<<<<< HEAD
     t.integer  "deleted",    default: 0
-=======
-    t.integer  "deleted"
->>>>>>> ee34cd77f6255429b7a482cf8807cf16b3bc7694
   end
 
   create_table "cost_centers_users", force: true do |t|
@@ -368,6 +360,14 @@ ActiveRecord::Schema.define(version: 20140531164133) do
   add_index "inputbybudgetanditems", ["id"], name: "inputbybudgets_id", using: :btree
   add_index "inputbybudgetanditems", ["item_id"], name: "inputbybudgets_item_id", using: :btree
   add_index "inputbybudgetanditems", ["order"], name: "inputbybudgets_order", using: :btree
+
+  create_table "inputcategories", force: true do |t|
+    t.integer  "category_id"
+    t.integer  "level_n"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "inputs", force: true do |t|
     t.string   "code"
@@ -581,6 +581,7 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.datetime "updated_at"
     t.integer  "part_of_equipment_id"
     t.integer  "sector_id"
+    t.float    "fuel"
   end
 
   create_table "part_of_equipments", force: true do |t|
@@ -600,6 +601,7 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
+    t.integer  "block"
   end
 
   create_table "part_people", force: true do |t|
@@ -609,6 +611,7 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
+    t.integer  "block"
   end
 
   create_table "part_person_details", force: true do |t|
@@ -641,6 +644,7 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.datetime "updated_at"
     t.integer  "sector_id"
     t.integer  "cost_center_id"
+    t.integer  "block"
   end
 
   create_table "phases", force: true do |t|
@@ -653,6 +657,20 @@ ActiveRecord::Schema.define(version: 20140531164133) do
 
   create_table "position_workers", force: true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "professional_certificates", force: true do |t|
+    t.integer  "professional_id"
+    t.integer  "certificate_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "professional_trainings", force: true do |t|
+    t.integer  "professional_id"
+    t.integer  "training_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -814,17 +832,17 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.float    "net_payment"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "accumulated_valuation"
-    t.integer  "accumulated_initial_amortization_number"
-    t.integer  "accumulated_bill"
-    t.integer  "accumulated_billigv"
-    t.integer  "accumulated_totalbill"
-    t.integer  "accumulated_retention"
-    t.integer  "accumulated_detraction"
-    t.integer  "accumulated_guarantee_fund1"
-    t.integer  "accumulated_guarantee_fund2"
-    t.integer  "accumulated_equipment_discount"
-    t.integer  "accumulated_net_payment"
+    t.float    "accumulated_valuation"
+    t.float    "accumulated_initial_amortization_number"
+    t.float    "accumulated_bill"
+    t.float    "accumulated_billigv"
+    t.float    "accumulated_totalbill"
+    t.float    "accumulated_retention"
+    t.float    "accumulated_detraction"
+    t.float    "accumulated_guarantee_fund1"
+    t.float    "accumulated_guarantee_fund2"
+    t.float    "accumulated_equipment_discount"
+    t.float    "accumulated_net_payment"
     t.string   "state"
     t.string   "code"
     t.float    "otherdiscount"
