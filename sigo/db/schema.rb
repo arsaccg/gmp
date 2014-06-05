@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140605204308) do
+ActiveRecord::Schema.define(version: 20140605205820) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -202,6 +202,7 @@ ActiveRecord::Schema.define(version: 20140605204308) do
     t.string   "status"
     t.integer  "deleted",             default: 0
     t.float    "overhead_percentage"
+    t.float    "igv"
   end
 
   create_table "cost_centers_users", force: true do |t|
