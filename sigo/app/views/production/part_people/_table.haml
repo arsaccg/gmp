@@ -22,11 +22,11 @@
               %td
                 = partperson.number_part
               %td
-                = Worker.find(partperson.working_group.front_chief_id).first_name + ' ' + Worker.find(partperson.working_group.front_chief_id).second_name  + ' ' + Worker.find(partperson.working_group.front_chief_id).paternal_surname  + ' ' + Worker.find(partperson.working_group.front_chief_id).maternal_surname
+                = Worker.find(partperson.working_group.front_chief_id).entity.name + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.second_name  + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.paternal_surname  + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.maternal_surname
               %td 
                 = Entity.find(partperson.working_group.executor_id).name
               %td
-                = Worker.find(partperson.working_group.master_builder_id).first_name + ' ' + Worker.find(partperson.working_group.front_chief_id).second_name  + ' ' + Worker.find(partperson.working_group.front_chief_id).paternal_surname  + ' ' + Worker.find(partperson.working_group.front_chief_id).maternal_surname
+                = Worker.find(partperson.working_group.master_builder_id).entity.name + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.second_name  + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.paternal_surname  + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.maternal_surname
               %td 
                 = partperson.date_of_creation
               %td
@@ -35,8 +35,8 @@
                 -if partperson.block == 0
                   %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_part_person_path(partperson.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                     Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{partperson.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_part_person_path(partperson.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_part_people_path}?company_id=#{@company}')"}}
-                  Eliminar
+                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{partperson.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_part_person_path(partperson.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_part_people_path}?company_id=#{@company}')"}}
+                    Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

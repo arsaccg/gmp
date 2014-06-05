@@ -57,8 +57,6 @@
   .modal-footer
     %button(class="btn"){'data-dismiss'=>"modal", 'aria-hidden'=>"true"}
       Close
-    %button(class="btn btn-primary")
-      Guardar
 
 :javascript
 
@@ -78,5 +76,8 @@
       url: "#{add_phases_to_item_management_wbsitems_path}?wbsitem_id=" + item_selected_phase + "&phase_id=" + data
     });
 
+    $("#myModal").modal('hide');
+
   }
+    
 

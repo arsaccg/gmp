@@ -37,7 +37,7 @@
             %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
             %th{"style"=>"color:#5f5f5f"}
               %span{"style"=>"width=20px"}
-                %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_equipment();'}
+                %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "part_equipment(#{@valuationofequipment.id});"}
                   %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
             %th{"style"=>"color:#5f5f5f"}=@valuationofequipment.valuation
             %th{"style"=>"color:#5f5f5f"}=@valorizacionsinigv
@@ -114,8 +114,8 @@
       load_url_ajax("#{production_valuation_of_equipments_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
   });
 
-  function part_equipment() {
-    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@valuationofequipment.start_date}", end_date: "#{@valuationofequipment.end_date}", cad: "#{@valuationofequipment.working_group}", name: "#{@valuationofequipment.name}", code: "#{@valuationofequipment.code}" };
+  function part_equipment(id) {
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@valuationofequipment.start_date}", end_date: "#{@valuationofequipment.end_date}", cad: "#{@valuationofequipment.working_group}", name: "#{@valuationofequipment.name}", code: "#{@valuationofequipment.code}", id:id };
     load_url_ajax('#{part_equipment_production_valuation_of_equipments_path}', 'part-equipment', data, '', 'POST');
     $('#part-equipment').modal({
       keyboard: false,

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class CostCenter < ActiveRecord::Base
 	
 	has_many :delivery_orders
@@ -38,5 +39,15 @@ class CostCenter < ActiveRecord::Base
     def do_activecreate
       self.status = "A"
     end
+
+  def valorizations
+    array_valorizations = Array.new
+    budgets.each do |budget|
+      budget.valorizations.each do |valorization|
+        array_valorizations << valorization
+      end
+    end
+    return array_valorizations
+  end
 
 end

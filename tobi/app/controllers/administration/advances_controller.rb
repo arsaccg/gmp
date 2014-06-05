@@ -2,13 +2,13 @@ class Administration::AdvancesController < ApplicationController
 	before_filter :authorize_manager
 
 	def index
-		@advances = Advance.where(:project_id => params[:project_id])
+		@advances = Advance.where(:cost_center_id => params[:project_id])
 		render :index, :layout => false
 	end
 
 	def new
 		@advance = Advance.new
-		@advance.project_id = params[:project_id]
+		@advance.cost_center_id = params[:project_id]
 		render :new, :layout => false
 	end
 
@@ -26,7 +26,7 @@ class Administration::AdvancesController < ApplicationController
 
 	def create
 		@advance = Advance.new(advances_parameters)
-		@advance.project_id = params[:project_id]
+		@advance.cost_center_id = params[:project_id]
 		@advance.save
 
 		redirect_to :action => :index

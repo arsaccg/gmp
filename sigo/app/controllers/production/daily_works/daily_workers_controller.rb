@@ -15,7 +15,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
       @dias_habiles =  range_business_days(@inicio,@fin)
       @trabajadores_array = business_days_array(@inicio,@fin,@gruposdetrabajo_id,@dias_habiles)
       gruposdetrabajo = WorkingGroup.find_by_id(@gruposdetrabajo_id)
-      @subcontratista_nombre = "#{gruposdetrabajo.name} - #{Worker.find_name_front_chief(gruposdetrabajo.front_chief_id)} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Worker.find_name_master_builder(gruposdetrabajo.master_builder_id)}"
+      @subcontratista_nombre = "#{gruposdetrabajo.name} - #{Entity.find(Worker.find(gruposdetrabajo.front_chief_id).entity_id).name} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Entity.find(Worker.find(gruposdetrabajo.master_builder_id).entity_id).name}"
 
       if @trabajadores_array.length != 0
         @pase = 1
@@ -36,7 +36,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
         temp_tareo = business_days_array(@inicio,@fin,gruposdetrabajo.id,@dias_habiles)          
         if temp_tareo.length != 0 
           @tareos_total_arrays << temp_tareo
-          subcontratista_nombre = "#{gruposdetrabajo.name} - #{Worker.find_name_front_chief(gruposdetrabajo.front_chief_id)} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Worker.find_name_master_builder(gruposdetrabajo.master_builder_id)}"
+          subcontratista_nombre = "#{gruposdetrabajo.name} - #{Entity.find(Worker.find(gruposdetrabajo.front_chief_id).entity_id).name} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Entity.find(Worker.find(gruposdetrabajo.master_builder_id).entity_id).name}"
           @subcontratista_arrays << subcontratista_nombre
         end
       end
@@ -55,22 +55,27 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
   end
 
   def search_weekly_work
+    @weekly_worker = WeeklyWorker.new
     @inicio                = params[:start_date]
     @fin                   = params[:end_date]
-
+    @cad = Array.new
     if @inicio.present? && @fin.present?        
       @dias_habiles =  range_business_days(@inicio,@fin)
-      gruposdetrabajos = WorkingGroup.all
+      @gruposdetrabajos = WorkingGroup.all
+      @gruposdetrabajos.each do |wg|
+        @cad << wg.id
+      end
       @tareos_total_arrays = []
       @subcontratista_arrays = []
-      gruposdetrabajos.each do |gruposdetrabajo|
+      @gruposdetrabajos.each do |gruposdetrabajo|
         temp_tareo = []
-        temp_tareo = business_days_array(@inicio,@fin,gruposdetrabajo.id,@dias_habiles)          
+        temp_tareo = business_days_array(@inicio,@fin,@cad,@dias_habiles)          
         if temp_tareo.length != 0 
           @tareos_total_arrays << temp_tareo
-          subcontratista_nombre = "#{gruposdetrabajo.name} - #{Worker.find_name_front_chief(gruposdetrabajo.front_chief_id)} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Worker.find_name_master_builder(gruposdetrabajo.master_builder_id)}"
+          subcontratista_nombre = "#{gruposdetrabajo.name} - #{Entity.find(Worker.find(gruposdetrabajo.front_chief_id).entity_id).name} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Entity.find(Worker.find(gruposdetrabajo.master_builder_id).entity_id).name}"
           @subcontratista_arrays << subcontratista_nombre
         end
+        break
       end
 
       if @dias_habiles.length == 0
@@ -106,12 +111,12 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
 
     personals_array = []
     trabajadores_array = []
-    partediariodepersonals = PartPerson.where("working_group_id = ? and date_of_creation BETWEEN ? AND ?", working_group_id,start_date,end_date)
+    partediariodepersonals = PartPerson.where("working_group_id IN (?) and date_of_creation BETWEEN ? AND ?", working_group_id,start_date,end_date)
     partediariodepersonals.each do |partediariodepersonal|
       partediariodepersonal.part_person_details.each do |trabajador_detalle|
         trabajadore = trabajador_detalle.worker
         id = trabajadore.id
-        nombre = "#{trabajadore.paternal_surname + ' ' + trabajadore.maternal_surname}, #{trabajadore.first_name}  #{trabajadore.second_name}"
+        nombre = "#{trabajadore.entity.paternal_surname + ' ' + trabajadore.entity.maternal_surname}, #{trabajadore.entity.name}  #{trabajadore.entity.second_name}"
         categoria = "#{trabajadore.article.name}"              
         total_horas     = trabajador_detalle.total_hours.to_f
         total_normales  = trabajador_detalle.normal_hours.to_f
@@ -180,5 +185,4 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
     end    
     return array_order.sort_by{|k| k[1]}    
   end
-
 end

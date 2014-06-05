@@ -17,7 +17,27 @@
             %th Responsable
             %th Formato
             %th Acciones
-        %tbody{ :id => "body-summary-stock-inputs" }
+        %tbody
+          - @head.each do |unit|
+            - if @cost_centers.to_i == unit.cost_center_id
+              %tr
+                %td 
+                  = unit.warehouse.name
+                %td
+                  = unit.period
+                %td
+                  = unit.issue_date
+                %td
+                  = unit.document
+                %td
+                  = Entity.find(unit.supplier_id).name
+                %td
+                  = unit.format.name
+                %td
+                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_stock_input_path(unit.id)}', 'content', null, null, 'GET')"}
+                    Editar
+                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_stock_input_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_stock_inputs_path}?company_id=#{@company}')"}}
+                    Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

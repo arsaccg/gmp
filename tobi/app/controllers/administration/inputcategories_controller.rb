@@ -12,12 +12,12 @@ class Administration::InputcategoriesController < ApplicationController
 
 	def feo_of_work
 
-		project_id = params[:project_id]
+		project_id =  params[:project_id]
 
-		@budget_sale = Budget.find(params[:budget_sale]) rescue Budget.where(:cost_center_id project_id).last
-		@budget_goal = Budget.find(params[:budget_goal]) rescue Budget.where(:cost_center_id project_id).last
+		@budget_sale = Budget.find(params[:budget_sale]) rescue Budget.where(:cost_center_id => project_id).last
+		@budget_goal = Budget.find(params[:budget_goal]) rescue @budget_sale #Budget.where(:cost_center_id).last
 
-		@wbsitems = Wbsitem.where(project_id: project_id).order(:codewbs)
+		@wbsitems = Wbsitem.where(cost_center_id: project_id).order(:codewbs)
 		@inputcategories = Inputcategory.all
 
 		@data_w = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s)

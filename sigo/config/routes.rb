@@ -72,6 +72,8 @@ ArsacLogistica::Application.routes.draw do
       end
       collection do
         post 'display_articles'
+        get 'specifics_articles'
+        post 'json_specifics_articles'
         post 'import'
         get 'import'
       end
@@ -80,7 +82,7 @@ ArsacLogistica::Application.routes.draw do
     resources :phases do
       collection do
         get 'addsub'
-        
+        get 'getSpecificsPhases'
       end
       member do
         get 'editsub' 
@@ -301,7 +303,11 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :rental_types
-    resources :subcontract_equipments
+    resources :subcontract_equipments do
+      collection do
+        post 'add_more_advance'
+      end
+    end
     resources :subcontracts do
       collection do
         post 'add_more_article'
@@ -317,7 +323,21 @@ ArsacLogistica::Application.routes.draw do
         end
       end
 
-      resources :weekly_workers
+      resources :weekly_workers do
+        collection do
+          post 'search_daily_work'
+          post 'weekly_table'
+        end
+      end
+    end
+  end
+
+  namespace :share do
+    resources :graphers do
+      collection do
+        get 'paint'
+        post 'paint'
+      end
     end
   end
 

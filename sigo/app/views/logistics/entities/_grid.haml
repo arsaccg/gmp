@@ -37,7 +37,7 @@
                       - type_entity.entities.each do |entity|
                         %tr
                           %td
-                            = entity.name
+                            = entity.name rescue "" + entity.second_name rescue ""
                           %td
                             -if entity.paternal_surname != nil && entity.maternal_surname != nil
                               = entity.paternal_surname + entity.maternal_surname
@@ -80,7 +80,7 @@
                       - type_entity.entities.each do |entity|
                         %tr
                           %td
-                            = entity.name
+                            = entity.name rescue "" + entity.second_name rescue ""
                           %td
                             - if entity.paternal_surname != nil && entity.maternal_surname != nil
                               = entity.paternal_surname + entity.maternal_surname

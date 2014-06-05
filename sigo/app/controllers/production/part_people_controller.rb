@@ -40,12 +40,12 @@ class Production::PartPeopleController < ApplicationController
   end
 
   def add_more_worker
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")
     @phases = Phase.where("code LIKE '__'")
     @worker = Worker.find(params[:worker_id])
     @id_worker = @worker.id
-    @name_worker = @worker.first_name + ' ' + @worker.second_name + ' ' + @worker.paternal_surname + ' ' + @worker.maternal_surname
+    @name_worker = @worker.entity.name + ' ' + @worker.entity.second_name + ' ' + @worker.entity.paternal_surname + ' ' + @worker.entity.maternal_surname
     @category_worker = @worker.article.name
     render(partial: 'part_people_items', :layout => false)
   end

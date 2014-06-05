@@ -122,7 +122,8 @@ class Management::WbsitemsController < ApplicationController
       end
     end
 
-    @wbsitems = Wbsitem.order(:codewbs)
+    @wbsitems = Wbsitem.order(:codewbs)  
+    @data = Phase.all
     render :get_items_from_project, layout: false
 
   end
@@ -305,6 +306,7 @@ class Management::WbsitemsController < ApplicationController
     @wbsitem.fase = @phase
     @wbsitem.phase_id = Phase.where(code: ((@phase.split(' '))[0]).to_i).first.id
     @wbsitem.save
+    render false, layout: false
   end
 
   def showperitem_gantt

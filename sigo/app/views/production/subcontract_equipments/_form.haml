@@ -361,19 +361,21 @@
                 %th Eliminar
             %tbody(id="advance_items_table")
               - if @action == 'edit'
-                - @subcontract.subcontract_advances.each do |sa|
+                - @subcontractEquipment.subcontract_equipment_advances.each do |sa|
                   %tr
                     %td.advance
-                      = text_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][advance]', sa.advance, class: "form-control advance-item"
+                      %div
+                        = text_field_tag 'subcontract_equipment[subcontract_equipment_advances_attributes][' + @reg_n.to_s + '][advance]', sa.advance, class: "form-control advance-item", :required => true, title:'No puede dejar este campo vacio'
                     %td.date_of_issue
-                      %input#start-date-input.string.optional.form-control{ 'name' => 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][date_of_issue]', type: "date", value: sa.date_of_issue }
+                      %div
+                        %input#start-date-input.string.optional.form-control{ 'name' => 'subcontract_equipment[subcontract_equipment_advances_attributes][' + @reg_n.to_s + '][date_of_issue]', type: "date", value: sa.date_of_issue , :required => true, title:'No puede dejar este campo vacio'}
                     %td(style="display:none")
-                      = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][id]', sa.id
+                      = hidden_field_tag 'subcontract_equipment[subcontract_equipment_advances_attributes][' + @reg_n.to_s + '][id]', sa.id
                     %td(style="display:none")
-                      = hidden_field_tag 'subcontract[subcontract_advances_attributes][' + @reg_n.to_s + '][subcontract_id]', @subcontract.id
+                      = hidden_field_tag 'subcontract_equipment[subcontract_equipment_advances_attributes][' + @reg_n.to_s + '][subcontract_equipment_id]', @subcontractEquipment.id
                     %td.delete-item
                       %label.checkbox
-                        = check_box 'subcontract[subcontract_advances_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        = check_box 'subcontract_equipment[subcontract_equipment_advances_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1         
 
@@ -466,4 +468,13 @@
       error: function(xhr, status, error) {
       }
     });
+  }
+
+  function add_advance_item(){
+    str_item = {authenticity_token: "#{form_authenticity_token}", advance: $("#advance").val(), date: $("#start-date-input").val()};
+    append_url_ajax('#{add_more_advance_production_subcontract_equipments_path}', 'advance_items_table', str_item, 0, 'POST');
+  }
+
+  function delete_item(code){
+    $("#tr" + code).remove();
   }

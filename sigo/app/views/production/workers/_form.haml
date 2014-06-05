@@ -9,7 +9,7 @@
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
         .row
-          %section.col.col-6
+          %section.col.col-4
             %label.label Categoria del Trabajador
             %label.input{for: "article_id"}
               %select.form-control{:name =>"worker[article_id]", :style => 'width:100%;padding: 0;border: none;'}
@@ -20,7 +20,7 @@
                   - else
                     %option{:value => "#{article.id}"}
                       = article.name
-          %section.col.col-6
+          %section.col.col-4
             %label.label Cargo del Trabajador
             %label.input{for: "category_of_worker_id"}
               %select.form-control{:name =>"worker[position_worker_id]", :style => 'width:100%;padding: 0;border: none;'}
@@ -31,34 +31,18 @@
                   - else
                     %option{:value => "#{positionWorker.id}"}
                       = positionWorker.name
-        .row
-          %section.col.col-6
-            %label.label Primer Nombre
-            %label.input{for: "first_name"}
-              %i.icon-append.fa.fa-user
-              = f.input :first_name, placeholder: "Primer Nombre", input_html: { class: 'form-control' }, label: false
-          %section.col.col-6
-            %label.label Segundo Nombre
-            %label.input{for: "second_name"}
-              %i.icon-append.fa.fa-user
-              = f.input :second_name, placeholder: "Segundo Nombre", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-6
-            %label.label Apellido Paterno
-            %label.input{for: "paternal_surname"}
-              %i.icon-append.fa.fa-user
-              = f.input :paternal_surname, placeholder: "Apellido Paterno", input_html: { class: 'form-control' }, label: false
-          %section.col.col-6
-            %label.label Apellido Materno
-            %label.input{for: "maternal_surname"}
-              %i.icon-append.fa.fa-user
-              = f.input :maternal_surname, placeholder: "Apellido Materno", input_html: { class: 'form-control' }, label: false
-        .row
           %section.col.col-4
-            %label.label DNI
-            %label.input{for: "dni"}
-              %i.icon-append.fa.fa-credit-card
-              = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
+            %label.label Entidad Trabajador
+            %label.input{for: "entity_id"}
+              %select.form-control{:name =>"worker[entity_id]", :style => 'width:100%;padding: 0;border: none;'}
+                - @entities.each do |entity|
+                  - if @worker.entity_id == entity.id
+                    %option{:value => "#{entity.id}", :selected => true}
+                      = entity.name + ' ' + entity.second_name + ' ' + entity.paternal_surname + ' ' + entity.maternal_surname
+                  - else
+                    %option{:value => "#{entity.id}"}
+                      = entity.name + ' ' + entity.second_name + ' ' + entity.paternal_surname + ' ' + entity.maternal_surname
+        .row
           %section.col.col-4
             %label.label Email
             %label.input{for: "email"}
@@ -68,16 +52,10 @@
             %label.label Teléfono
             %label.input{for: "phone"}
               = f.input :phone, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
+          %section.col.col-4
             %label.label Fecha de Nacimiento
             %label.input{for: "date_of_birth"}
               = f.input :date_of_birth, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
-        .row
-          %section.col.col-10
-            %label.label Dirección
-            %label.input{for: "address"}
-              = f.input :address, input_html: { class: 'form-control' }, label: false
 
       %fieldset
         %legend Bancos
@@ -240,7 +218,7 @@
   function isNumber(evt) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 45) {
         return false;
     }
     return true;

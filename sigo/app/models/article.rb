@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Article < ActiveRecord::Base
   
     include ActiveModel::Validations 
@@ -24,8 +25,33 @@ class Article < ActiveRecord::Base
     
   	validates :code, :uniqueness => { :message => "El código debe ser único."}
 
+<<<<<<< HEAD
   	def self.find_article(id)
   		return self.find(id)
   	end
     
+=======
+	def self.find_article(id)
+		return self.find(id)
+	end
+
+	def self.getSpecificArticles(cost_center_id, display_length, pager_number)
+      mysql_result = ActiveRecord::Base.connection.execute("
+        SELECT DISTINCT a.id, a.code, toa.name, c.name, a.name, a.description, u.name
+        FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u, type_of_articles toa, categories c
+        WHERE b.id = ibi.budget_id
+        AND b.type_of_budget =0
+        AND b.cost_center_id = #{cost_center_id}
+        AND ibi.article_id IS NOT NULL 
+        AND ibi.article_id = a.id
+        AND a.unit_of_measurement_id = u.id
+        AND a.category_id = c.id 
+      	AND u.id = a.unit_of_measurement_id
+      	LIMIT #{display_length}
+      	OFFSET #{pager_number}
+      ")
+
+      return mysql_result
+    end
+>>>>>>> d2b41fa656d990b66f9d4a64997a5a33cc5f0da1
 end

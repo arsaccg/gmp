@@ -5,7 +5,7 @@
 =simple_form_for [:management, @valorization], class: "form-horizontal", :id => "v_form" do |f|
   = f.input :valorization_date, :label => "Mes"
  
-  - all_budgets = Budget.where(:project_id => @budget.project_id)
+  - all_budgets = Budget.where(:cost_center_id => @budget.cost_center_id)
   - num_val = 0
   - all_budgets.each do |ab|
     - num_val = num_val + Valorization.where(:budget_id => ab.id).count

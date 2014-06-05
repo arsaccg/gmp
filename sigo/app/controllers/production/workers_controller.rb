@@ -5,6 +5,7 @@ class Production::WorkersController < ApplicationController
     @article = TypeOfArticle.find_by_code('01').articles.first
     @bank = Bank.first
     @workers = Worker.where("cost_center_id = ?", cost_center)
+    @entity = TypeEntity.find_by_name('Trabajadores').entities.first
     render layout: false
   end
 
@@ -19,6 +20,7 @@ class Production::WorkersController < ApplicationController
     @positionWorkers = PositionWorker.all
     @company = params[:company_id]
     @banks = Bank.all
+    @entities = TypeEntity.find_by_name('Trabajadores').entities
     render layout: false
   end
 
@@ -48,8 +50,10 @@ class Production::WorkersController < ApplicationController
     @worker = Worker.find(params[:id])
     @banks = Bank.all
     @reg_n = Time.now.to_i
+    @entities = TypeEntity.find_by_name('Trabajadores').entities
     @articles = TypeOfArticle.find_by_code('01').articles
     @positionWorkers = PositionWorker.all
+    @entites = TypeEntity.find_by_name('Trabajadores').entities
     @company = params[:company_id]
     @action = 'edit'
     render layout: false
@@ -71,10 +75,10 @@ class Production::WorkersController < ApplicationController
   end
 
   def add_worker_item_field
-    @reg_n = Time.now.to_i
+    @reg_n = ((Time.now.to_f)*100).to_i
     data_bank_unit = params[:bank_id].split('-')
     @bank = Bank.find(data_bank_unit[0])
-    @account_number = params[:account_number].to_f
+    @account_number = params[:account_number].to_s
     @business_name_bank, @id_bank = @bank.business_name, @bank.id
     render(partial: 'worker_items', :layout => false)
   end
@@ -87,6 +91,6 @@ class Production::WorkersController < ApplicationController
 
   private
   def worker_parameters
-    params.require(:worker).permit(:first_name, :paternal_surname, :maternal_surname, :dni, :email, :phone, :date_of_birth, :address, :article_id, :second_name, :position_worker_id, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy])
+    params.require(:worker).permit(:email, :phone, :date_of_birth, :article_id, :entity_id, :position_worker_id, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy])
   end
 end

@@ -5,6 +5,7 @@ class Entity < ActiveRecord::Base
 	has_many :subcontracts
 	has_many :subcontract_equipments
 	has_and_belongs_to_many :type_entities
+	has_many :workers
 	belongs_to :cost_center
 
 	accepts_nested_attributes_for :type_entities, :allow_destroy => true
@@ -14,6 +15,10 @@ class Entity < ActiveRecord::Base
 	validates :dni, :uniqueness => { :message => "El DNI debe ser único."}, :allow_blank => true, :case_sensitive => false
 
 	def self.find_name_executor(executor_id)
+		return Entity.find(executor_id).name
+	end
+
+	def self.find_name_supplier(supplier_id)
 		return Entity.find(executor_id).name
 	end
 end

@@ -17,7 +17,7 @@ class PartOfEquipment < ActiveRecord::Base
 	end
 
 	def self.get_report_per_worker(subcontract_equip_id, start_date, end_date, worker_id)
-	  return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), SUM(poe.fuel_amount), ROUND( ( SUM(poe.fuel_amount) / SUM(poed.effective_hours) ), 2)
+	  return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2)
       FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
       WHERE sced.code IN(" + subcontract_equip_id + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
@@ -43,7 +43,7 @@ class PartOfEquipment < ActiveRecord::Base
   end
 
   def self.get_report_per_equipments(subcontract_equip_id, start_date, end_date, worker_id)
-    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), SUM(poe.fuel_amount), ROUND( ( SUM(poe.fuel_amount) / SUM(poed.effective_hours) ), 2)
+    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2)
       FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
       WHERE sced.code IN(" + worker_id.to_s + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
@@ -69,7 +69,7 @@ class PartOfEquipment < ActiveRecord::Base
   end
 
   def self.get_report_per_equipments_per_sector(subcontract_equip_id, start_date, end_date, worker_id)
-    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), SUM(poe.fuel_amount), ROUND( ( SUM(poe.fuel_amount) / SUM(poed.effective_hours) ), 2)
+    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2)
       FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
       WHERE sced.code IN(" + worker_id.to_s + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
@@ -95,7 +95,7 @@ class PartOfEquipment < ActiveRecord::Base
   end
 
   def self.get_report_per_equipments_per_article(subcontract_equip_id, start_date, end_date, worker_id)
-    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), SUM(poe.fuel_amount), ROUND( ( SUM(poe.fuel_amount) / SUM(poed.effective_hours) ), 2)
+    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2)
       FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
       WHERE sced.code IN(" + worker_id.to_s + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
@@ -109,13 +109,13 @@ class PartOfEquipment < ActiveRecord::Base
       ")
   end
 
-  def self.getOwnFuelArticles(word)
+  def self.getOwnFuelArticles(word, cost_center_id)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT DISTINCT a.id, a.name
       FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u 
       WHERE b.id = ibi.budget_id
       AND b.type_of_budget =0
-      AND b.cost_center_id =5
+      AND b.cost_center_id = #{cost_center_id}
       AND ibi.article_id IS NOT NULL 
       AND ibi.article_id = a.id
       AND a.code LIKE '__32%'

@@ -1,8 +1,9 @@
 #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
   %header
     %span.widget-icon
-      %i.fa.fa-eye
-    %h2 Orden de Suministro
+      %i.fa.fa-pencil-square-o.fa-fw 
+    %h2
+      %strong Orden de Suministro
   %div{:style => "padding-top: 0"}
     .jarviswidget-editbox
     .widget-body 
@@ -126,14 +127,12 @@
                           %td
                             %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
                               - @phases.each do |phas|
-                                %optgroup{:label => "#{phas.name}"}
-                                  - Phase.get_subphases(phas.code).each do |subphase|
-                                    - if subphase.id == dod.phase.id
-                                      %option{:value => "#{subphase.id}", :selected => true}
-                                        = subphase.name
-                                    - else
-                                      %option{:value => "#{subphase.id}"}
-                                        = subphase.name
+                                - if phas.id == dod.phase_id
+                                  %option{:value => "#{phas.id}", :selected => true}
+                                    = phas.name
+                                - else
+                                  %option{:value => "#{phas.id}"}
+                                    = phas.name
                           %td(class="order_delivery_centro_atencion")
                             %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][center_of_attention_id]"}
                               - @centerOfAttentions.each do |centerOfAttention|

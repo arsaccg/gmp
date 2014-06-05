@@ -46,12 +46,12 @@
         %td
           =@budget.created_at
     %tr
-      -if @budget.project_id
+      -if @budget.cost_center_id
         %td
           %label
             Código Projecto
         %td
-          =@budget.project_id
+          =@budget.cost_center_id
     %tr
       -if @budget.level
         %td
