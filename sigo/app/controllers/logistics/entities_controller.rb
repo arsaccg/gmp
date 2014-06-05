@@ -38,10 +38,10 @@ class Logistics::EntitiesController < ApplicationController
   end
 
   def edit
-    @company_id = params[:company_id]
+    @company_id = get_company_cost_center('company')
     @reg_ed = Time.now.to_i
     @entity = Entity.find(params[:id])
-    @costCenter = Company.find(params[:company_id]).cost_centers
+    @costCenter = Company.find(@company_id).cost_centers
     @all_entity_types = Array.new
     @own_entity_types = Array.new
     # Comenzando lógica
