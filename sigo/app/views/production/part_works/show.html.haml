@@ -35,11 +35,11 @@
                     %td
                       = @partwork.number_working_group
                     %td
-                      = Worker.find(@partwork.working_group.front_chief_id).first_name + ' ' + Worker.find(@partwork.working_group.front_chief_id).second_name + ' ' + Worker.find(@partwork.working_group.front_chief_id).paternal_surname + ' ' + Worker.find(@partwork.working_group.front_chief_id).maternal_surname
+                      = Worker.find(@partwork.working_group.front_chief_id).entity.name + ' ' + Worker.find(@partwork.working_group.front_chief_id).entity.second_name + ' ' + Worker.find(@partwork.working_group.front_chief_id).entity.paternal_surname + ' ' + Worker.find(@partwork.working_group.front_chief_id).entity.maternal_surname
                     %td
                       = Entity.find(@partwork.working_group.executor_id).name
                     %td
-                      = Worker.find(@partwork.working_group.master_builder_id).first_name + ' ' + Worker.find(@partwork.working_group.master_builder_id).second_name + ' ' + Worker.find(@partwork.working_group.master_builder_id).paternal_surname + ' ' + Worker.find(@partwork.working_group.master_builder_id).maternal_surname
+                      = Worker.find(@partwork.working_group.master_builder_id).entity.name + ' ' + Worker.find(@partwork.working_group.master_builder_id).entity.second_name + ' ' + Worker.find(@partwork.working_group.master_builder_id).entity.paternal_surname + ' ' + Worker.find(@partwork.working_group.master_builder_id).entity.maternal_surname
                     %td
                       = @partwork.date_of_creation
 
