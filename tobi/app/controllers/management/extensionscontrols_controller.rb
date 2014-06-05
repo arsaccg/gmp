@@ -3,7 +3,7 @@ class Management::ExtensionscontrolsController < ApplicationController
 
   def index
     @extensionscontrol = Extensionscontrol.where(:cost_center_id => params[:project_id])
-    @project = Project.find(params[:project_id])
+    @project = CostCenter.find(params[:project_id])
     render :index, :layout => false
   end
 
