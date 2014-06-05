@@ -17,4 +17,8 @@ class Entity < ActiveRecord::Base
 	def self.find_name_executor(executor_id)
 		return Entity.find(executor_id).name
 	end
+
+	def self.find_name_supplier(supplier_id)
+		return Entity.find(executor_id).name
+	end
 end

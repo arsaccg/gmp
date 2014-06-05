@@ -25,7 +25,7 @@ class Logistics::WarehousesController < ApplicationController
     flash[:error] = nil
     item = Warehouse.new(item_parameters)
     item.user_inserts_id = current_user.id
-    
+    item.cost_center_id = get_company_cost_center('cost_center')
     if item.update_attributes(item_parameters)
       flash[:notice] = "Se ha creado correctamente el registro."
       redirect_to :action => :index
@@ -86,6 +86,6 @@ class Logistics::WarehousesController < ApplicationController
 
   private
   def item_parameters
-    params.require(:warehouse).permit(:name, :location, :cost_center_id, :company_id)
+    params.require(:warehouse).permit(:name, :location, :company_id)
   end
 end
