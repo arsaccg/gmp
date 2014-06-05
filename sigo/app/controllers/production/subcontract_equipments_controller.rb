@@ -72,9 +72,23 @@ class Production::SubcontractEquipmentsController < ApplicationController
     render :json => subcontract
   end
 
+  def add_more_advance
+    @advance = params[:advance]
+    @date = params[:date]
+    @reg_n = (Time.now.to_f*1000).to_i
+    render(partial: 'subcontract_equipment_advance_items', :layout => false)
+  end
+
   private
   def subcontracts_parameters
-    params.require(:subcontract_equipment).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :guarantee_fund, :detraction, :contract_amount)
+    params.require(:subcontract_equipment).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :guarantee_fund, :detraction, :contract_amount,
+      subcontract_equipment_advances_attributes: [
+        :id,
+        :subcontract_equipment_id,
+        :date_of_issue,
+        :advance,
+        :_destroy
+      ])
   end
 end
 
