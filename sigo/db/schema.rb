@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20140529180403) do
-=======
-ActiveRecord::Schema.define(version: 20140531164133) do
->>>>>>> ee34cd77f6255429b7a482cf8807cf16b3bc7694
+ActiveRecord::Schema.define(version: 20140605144500) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -99,7 +95,6 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.integer  "professional_id"
     t.integer  "work_id"
     t.integer  "charge_id"
-    t.string   "contractor"
     t.date     "start_date"
     t.date     "finish_date"
     t.integer  "componetns_id"
@@ -204,11 +199,7 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.date     "start_date"
     t.date     "end_date"
     t.string   "status"
-<<<<<<< HEAD
-    t.integer  "deleted",    default: 0
-=======
     t.integer  "deleted"
->>>>>>> ee34cd77f6255429b7a482cf8807cf16b3bc7694
   end
 
   create_table "cost_centers_users", force: true do |t|
@@ -432,7 +423,7 @@ ActiveRecord::Schema.define(version: 20140531164133) do
 
   add_index "itembybudgets", ["item_id"], name: "itembybudges_item_id", using: :btree
 
-  create_table "itembywbses", force: true do |t|
+  create_table "itembywbs", force: true do |t|
     t.string   "wbscode"
     t.integer  "itembywbs_id"
     t.string   "coditem"
@@ -581,6 +572,7 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.datetime "updated_at"
     t.integer  "part_of_equipment_id"
     t.integer  "sector_id"
+    t.float    "fuel"
   end
 
   create_table "part_of_equipments", force: true do |t|
@@ -600,6 +592,7 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
+    t.integer  "block"
   end
 
   create_table "part_people", force: true do |t|
@@ -609,6 +602,7 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
+    t.integer  "block"
   end
 
   create_table "part_person_details", force: true do |t|
@@ -641,6 +635,7 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.datetime "updated_at"
     t.integer  "sector_id"
     t.integer  "cost_center_id"
+    t.integer  "block"
   end
 
   create_table "phases", force: true do |t|
@@ -653,6 +648,20 @@ ActiveRecord::Schema.define(version: 20140531164133) do
 
   create_table "position_workers", force: true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "professional_certificates", force: true do |t|
+    t.integer  "professional_id"
+    t.integer  "certificate_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "professional_trainings", force: true do |t|
+    t.integer  "professional_id"
+    t.integer  "training_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -814,17 +823,17 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.float    "net_payment"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "accumulated_valuation"
-    t.integer  "accumulated_initial_amortization_number"
-    t.integer  "accumulated_bill"
-    t.integer  "accumulated_billigv"
-    t.integer  "accumulated_totalbill"
-    t.integer  "accumulated_retention"
-    t.integer  "accumulated_detraction"
-    t.integer  "accumulated_guarantee_fund1"
-    t.integer  "accumulated_guarantee_fund2"
-    t.integer  "accumulated_equipment_discount"
-    t.integer  "accumulated_net_payment"
+    t.float    "accumulated_valuation"
+    t.float    "accumulated_initial_amortization_number"
+    t.float    "accumulated_bill"
+    t.float    "accumulated_billigv"
+    t.float    "accumulated_totalbill"
+    t.float    "accumulated_retention"
+    t.float    "accumulated_detraction"
+    t.float    "accumulated_guarantee_fund1"
+    t.float    "accumulated_guarantee_fund2"
+    t.float    "accumulated_equipment_discount"
+    t.float    "accumulated_net_payment"
     t.string   "state"
     t.string   "code"
     t.float    "otherdiscount"
@@ -1177,6 +1186,22 @@ ActiveRecord::Schema.define(version: 20140531164133) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "phase_id"
+  end
+
+  create_table "weekly_tables", force: true do |t|
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "working_group"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "weekly_workers", force: true do |t|
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "working_group"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "work_partners", force: true do |t|

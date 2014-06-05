@@ -1,68 +1,84 @@
-- if @pase == 4
-  - indice_title = 0
-  - @tareos_total_arrays.each do |trabajadores_array|
-    #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
-      %header
-        %span.widget-icon
-          %i.fa.fa-table
-        %h2
-          = @subcontratista_arrays[indice_title]
-        - indice_title += 1
-      %div
-        .jarviswidget-editbox
-        .widget-body
-          %table.table.table-bordered
-            %thead
-              %tr
-                %th Item
-                %th Apellidos y Nombres
-                %th Categoria
-                - @dias_habiles.each do |date|
-                  %th= date.to_time.strftime("%d/%m/%y")
-                %th T. Normales
-                %th T. 60%
-                %th T. 100%
-                %th Total Horas
-            %tbody
-              - item = 1
-              - sumariza_total_normales= 0
-              - sumariza_total_60 = 0
-              - sumariza_total_100 = 0
-              - sumariza_total_horas = 0
-              - array_suma = Array.new(@dias_habiles.length, 0.00)
-              - trabajadores_array.each do |trabajador|
+= simple_form_for([:production_daily_works, @weekly_worker], html: {autocomplete: 'off' }) do |f|
+  - if @pase == 4
+    - indice_title = 0
+    - @tareos_total_arrays.each do |trabajadores_array|
+      #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+        %header
+          %span.widget-icon
+            %i.fa.fa-table
+          %h2
+            Reporte Semanal
+          - indice_title += 1
+        %div
+          .jarviswidget-editbox
+          .widget-body
+            %table.table.table-bordered
+              %thead
                 %tr
-                  %td= item
-                  %td= trabajador[1]
-                  %td= trabajador[2]
-                  - index = 0
-                  - trabajador[3].each do |date|
-                    %td= date.to_f == 0 ? ' -- ' : (number_to_currency date.to_f, unit: '')
-                    - array_suma[index] += date.to_f
-                    - index += 1
-                  %td= number_to_currency trabajador[5], unit: ''
-                  %td= number_to_currency trabajador[6], unit: ''
-                  %td= number_to_currency trabajador[7], unit: ''
-                  %td= number_to_currency trabajador[4], unit: ''
-                - item += 1
-                - sumariza_total_normales += trabajador[5]
-                - sumariza_total_60 += trabajador[6]
-                - sumariza_total_100 += trabajador[7]
-                - sumariza_total_horas += trabajador[4]
-              %tr.danger
-                %td
-                %td{ 'colspan' => 2 }
-                  %b Total
-                - array_suma.each do |arraysum|
+                  %th Item
+                  %th Apellidos y Nombres
+                  %th Categoria
+                  - @dias_habiles.each do |date|
+                    %th= date.to_time.strftime("%d/%m/%y")
+                  %th T. Normales
+                  %th T. 60%
+                  %th T. 100%
+                  %th Total Horas
+              %tbody
+                - item = 1
+                - sumariza_total_normales= 0
+                - sumariza_total_60 = 0
+                - sumariza_total_100 = 0
+                - sumariza_total_horas = 0
+                - array_suma = Array.new(@dias_habiles.length, 0.00)
+                - trabajadores_array.each do |trabajador|
+                  %tr
+                    %td= item
+                    %td= trabajador[1]
+                    %td= trabajador[2]
+                    - index = 0
+                    - trabajador[3].each do |date|
+                      %td= date.to_f == 0 ? ' -- ' : (number_to_currency date.to_f, unit: '')
+                      - array_suma[index] += date.to_f
+                      - index += 1
+                    %td= number_to_currency trabajador[5], unit: ''
+                    %td= number_to_currency trabajador[6], unit: ''
+                    %td= number_to_currency trabajador[7], unit: ''
+                    %td= number_to_currency trabajador[4], unit: ''
+                  - item += 1
+                  - sumariza_total_normales += trabajador[5]
+                  - sumariza_total_60 += trabajador[6]
+                  - sumariza_total_100 += trabajador[7]
+                  - sumariza_total_horas += trabajador[4]
+                %tr.danger
+                  %td
+                  %td{ 'colspan' => 2 }
+                    %b Total
+                  - array_suma.each do |arraysum|
+                    %td{ :style => "text-align: right;"}
+                      %b= arraysum.to_f == 0 ? ' -- ' : (number_to_currency arraysum.to_f, unit: '')
                   %td{ :style => "text-align: right;"}
-                    %b= arraysum.to_f == 0 ? ' -- ' : (number_to_currency arraysum.to_f, unit: '')
-                %td{ :style => "text-align: right;"}
-                  %b= number_to_currency sumariza_total_normales, unit: ''
-                %td{ :style => "text-align: right;"}
-                  %b= number_to_currency sumariza_total_60, unit: ''
-                %td{ :style => "text-align: right;"}
-                  %b= number_to_currency sumariza_total_100, unit: ''
-                %td{ :style => "text-align: right;"}
-                  %b= number_to_currency sumariza_total_horas, unit: ''
-- else
-  %h4 No existen Registros para esos Datos.
+                    %b= number_to_currency sumariza_total_normales, unit: ''
+                  %td{ :style => "text-align: right;"}
+                    %b= number_to_currency sumariza_total_60, unit: ''
+                  %td{ :style => "text-align: right;"}
+                    %b= number_to_currency sumariza_total_100, unit: ''
+                  %td{ :style => "text-align: right;"}
+                    %b= number_to_currency sumariza_total_horas, unit: ''
+                  = hidden_field_tag 'weekly_worker[start_date]', @inicio
+                  = hidden_field_tag 'weekly_worker[end_date]', @fin
+                  = hidden_field_tag 'weekly_worker[working_group]', @cad
+          %footer
+            %button.btn.btn-primary{type: "submit"}
+              %i.fa.fa-save 
+                Guardar
+  - else
+    %h4 No existen Registros para esos Datos.
+
+:javascript
+
+  $(document).ready(function(){
+    $('#new_weekly_worker').ajaxForm({
+      target: '#content'
+    });
+  });
