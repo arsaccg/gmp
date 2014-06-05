@@ -22,13 +22,13 @@
                   - if @action == 'edit'
                     - if @partperson.working_group_id == working_group.id
                       %option{:value => "#{working_group.id}", :selected => true}
-                        = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.second_name
+                        = Worker.find(working_group.front_chief_id).entity.name rescue '' + ' ' + Worker.find(working_group.front_chief_id).entity.second_name rescue '' + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name rescue '' + ' ' + Worker.find(working_group.master_builder_id).entity.second_name rescue ''
                     - else
                       %option{:value => "#{working_group.id}"}
-                        = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.second_name
+                        = Worker.find(working_group.front_chief_id).entity.name rescue '' + ' ' + Worker.find(working_group.front_chief_id).entity.second_name rescue '' + ' - ' + Entity.find(working_group.executor_id).name rescue '' + ' - ' + Worker.find(working_group.master_builder_id).entity.name rescue '' + ' ' + Worker.find(working_group.master_builder_id).entity.second_name rescue ''
                   - else
                     %option{:value => "#{working_group.id}"}
-                      = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.second_name
+                      = Worker.find(working_group.front_chief_id).entity.name rescue '' + ' ' + Worker.find(working_group.front_chief_id).entity.second_name rescue '' + ' - ' + Entity.find(working_group.executor_id).name rescue '' + ' - ' + Worker.find(working_group.master_builder_id).entity.name rescue '' + ' ' + Worker.find(working_group.master_builder_id).entity.second_name rescue ''
 
           %section.col.col-2
             %label.input{for: "date_of_creation"}
