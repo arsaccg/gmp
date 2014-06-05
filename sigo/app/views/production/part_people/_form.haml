@@ -22,13 +22,13 @@
                   - if @action == 'edit'
                     - if @partperson.working_group_id == working_group.id
                       %option{:value => "#{working_group.id}", :selected => true}
-                        = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                        = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.second_name
                     - else
                       %option{:value => "#{working_group.id}"}
-                        = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                        = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.second_name
                   - else
                     %option{:value => "#{working_group.id}"}
-                      = Worker.find(working_group.front_chief_id).first_name + ' ' + Worker.find(working_group.front_chief_id).second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).first_name + ' ' + Worker.find(working_group.master_builder_id).second_name
+                      = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.second_name
 
           %section.col.col-2
             %label.input{for: "date_of_creation"}
@@ -44,7 +44,7 @@
             %select#worker-select.select2.form-control(name='worker_id' style='width:100%;padding: 0;border: none;')
               - @workers.each do |worker|
                 %option(value = "#{worker.id}")
-                  = worker.article.name + " - " + worker.first_name + " " + worker.second_name + " " + worker.paternal_surname + " " + worker.maternal_surname
+                  = worker.article.name + " - " + worker.entity.name + " " + worker.entity.second_name + " " + worker.entity.paternal_surname + " " + worker.entity.maternal_surname
 
           %section.col.col-2
             %div
@@ -70,14 +70,22 @@
                   %tr
                     %td.bank-id(style="display:none")
                       = hidden_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][worker_id]', oos.worker.id
-                    %td.col-2=oos.worker.dni
-                    %td.col-2=oos.worker.first_name
+                    %td.col-2=oos.worker.entity.dni
+                    %td.col-2=oos.worker.entity.name
                     %td.col-2=oos.sector.name
                     %td.col-2=oos.phase.name
-                    %td.col-2=oos.normal_hours
-                    %td.col-2=oos.he_60
-                    %td.col-2=oos.he_100
-                    %td.col-2=oos.total_hours
+                    %td.normal-hours
+                      %div
+                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][normal_hours]', oos.normal_hours , class: "form-control normal-hours", onfocusout: "calculateHours(this, 'normal');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
+                    %td.he-60
+                      %div
+                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][he_60]', oos.he_60 , class: "form-control he-60", onfocusout: "calculateHours(this, '60');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
+                    %td.he-100
+                      %div
+                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][he_100]', oos.he_100 , class: "form-control he-100", onfocusout: "calculateHours(this, '100');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
+                    %td.total-hours
+                      %div
+                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][total_hours]', oos.total_hours , class: "form-control total-hours", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", readonly: true
                     %td(style="display:none")
                       = hidden_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td.delete-item
@@ -159,41 +167,96 @@
   function calculateHours(element, str){
     switch(str){
       case 'normal':
-        h_normal = parseInt($(element).val());
-        he_60 = parseInt($(element).parent().siblings('.he-60').find('input').val())
-        he_100 = parseInt($(element).parent().siblings('.he-100').find('input').val())
 
-        total_hours = h_normal + he_60 + he_100
+        if($(element).val()==""){
+          h_normal = 0;
+        }else{
+          h_normal = parseInt($(element).val());
+        }
 
-        $(element).parent().siblings('.total-hours').find('input').val(total_hours)
+        if($(element).parent().parent().siblings('.he-60').find('input').val()==""){
+          he_60 =0;
+        }else{
+          he_60 = parseInt($(element).parent().parent().siblings('.he-60').find('input').val());
+        }
+
+        if($(element).parent().parent().siblings('.he-100').find('input').val()==""){
+          he_100 = 0;
+        }else{
+          he_100 = parseInt($(element).parent().parent().siblings('.he-100').find('input').val());
+        }
+
+        total_hours = h_normal + he_60 + he_100;
+
+        if(isNaN(total_hours)){
+          total_hours  = 0;
+        }else{
+          total_hours
+        }
+
+        $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours);
         break;
 
       case '60':
-        h_normal = parseInt($(element).parent().siblings('.normal-hours').find('input').val());
-        he_60 = parseInt($(element).val())
-        he_100 = parseInt($(element).parent().siblings('.he-100').find('input').val())
 
-        total_hours = h_normal + he_60 + he_100
+        if($(element).parent().parent().siblings('.normal-hours').find('input').val()==""){
+          h_normal = 0;
+        }else{
+          h_normal = parseInt($(element).parent().parent().siblings('.normal-hours').find('input').val());
+        }
+
+        if($(element).val()==""){
+          he_60 =0;
+        }else{
+          he_60 = parseInt($(element).val());
+        }
+
+        if($(element).parent().parent().siblings('.he-100').find('input').val()==""){
+          he_100 = 0;
+        }else{
+          he_100 = parseInt($(element).parent().parent().siblings('.he-100').find('input').val());
+        }
+
+        total_hours = h_normal + he_60 + he_100;
 
         if(isNaN(total_hours)){
+          total_hours = 0;
+        }else{
           total_hours
         }
 
-        $(element).parent().siblings('.total-hours').find('input').val(total_hours)
+        $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours)
         break;
 
       case '100':
-        h_normal = parseInt($(element).parent().siblings('.normal-hours').find('input').val());
-        he_60 = parseInt($(element).parent().siblings('.he-60').find('input').val())
-        he_100 = parseInt($(element).val())
 
-        total_hours = h_normal + he_60 + he_100
+        if($(element).parent().parent().siblings('.normal-hours').find('input').val()==""){
+          h_normal = 0;
+        }else{
+          h_normal = parseInt($(element).parent().parent().siblings('.normal-hours').find('input').val());
+        }
+
+        if($(element).parent().parent().siblings('.he-60').find('input').val()==""){
+          he_60 =0;
+        }else{
+          he_60 = parseInt($(element).parent().parent().siblings('.he-60').find('input').val());
+        }
+
+        if($(element).val()==""){
+          he_100 = 0;
+        }else{
+          he_100 = parseInt($(element).val());
+        }
+
+        total_hours = h_normal + he_60 + he_100;
 
         if(isNaN(total_hours)){
+          total_hours  = 0;
+        }else{
           total_hours
         }
 
-        $(element).parent().siblings('.total-hours').find('input').val(total_hours)
+        $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours)
         break;
     }
   }

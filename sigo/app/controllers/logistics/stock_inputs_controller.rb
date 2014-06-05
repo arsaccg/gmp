@@ -5,7 +5,7 @@ class Logistics::StockInputsController < ApplicationController
   def index
     #@input = params[:input]
     @company = get_company_cost_center('company')
-    @cost_centers = CostCenter.where(company_id: "#{@company}")
+    @cost_centers = get_company_cost_center('cost_center')
     @head = StockInput.where("input = 1")
     @purchaseOrders = PurchaseOrder.get_approved_by_company(@company)
     render layout: false
