@@ -15,17 +15,20 @@
             %th Acumulado
         %tbody
           %tr
-            %th= @partwork
-            %th= @partwork
+            %th= (@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations).round(2)
+            %th= (@partwork2+@partequipment2+@partpeople2+@orderofservice2+@scvaluations2).round(2)
           %tr
-            %th= @partequipment
-            %th= @partequipment
+            %th= @partwork.round(2)
+            %th= @partwork2.round(2)
           %tr
-            %th= @partpeople
-            %th= @partpeople
+            %th= @partequipment.round(2)
+            %th= @partequipment2.round(2)
           %tr
-            %th= @orderofservice
-            %th= @orderofservice
+            %th= @partpeople.round(2)
+            %th= @partpeople2.round(2)
           %tr
-            %th= @scvaluations
-            %th= @scvaluations
+            %th= @orderofservice.round(2)
+            %th= @orderofservice2.round(2)
+          %tr
+            %th= @scvaluations.round(2)
+            %th= @scvaluations2.round(2)
