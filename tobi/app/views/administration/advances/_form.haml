@@ -21,5 +21,6 @@
     %div(class="col-lg-offset-2 col-lg-10")
       %a(href="javascript:post_to_url('#{administration_advances_path}?project_id=#{@advance.cost_center_id}', 'new_advance', 'right-area')" class="btn btn-success")
         Enviar
-      %a(href="javascript:goBack()" class="btn btn-danger")
+        
+      %a{href: "javascript:load_url_ondiv('"+administration_advances_path().to_s+"?project_id="+@advance.cost_center_id.to_s+"', 'right-area');", class: "btn btn-danger"}
         Cancelar
