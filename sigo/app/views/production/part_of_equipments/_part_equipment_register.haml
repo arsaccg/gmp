@@ -1,6 +1,6 @@
 %tr.part-equi_item{id: "tr" + @reg_n.to_s}
   %td.sector.col-lg-3
-    %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][work_group_id]"}
+    %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][working_group_id]"}
       -@working_groups.each do |wg|
         %option{:value => "#{wg.id}"}
           =wg.name

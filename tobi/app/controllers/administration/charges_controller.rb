@@ -40,7 +40,7 @@ class Administration::ChargesController < ApplicationController
 		@invoices.observations = sum
 		@invoices.save
 
-		redirect_to :action => :index
+		redirect_to :action => :index, invoice_id: @invoices.id
 
 	end
 

@@ -83,6 +83,8 @@ ArsacLogistica::Application.routes.draw do
       collection do
         get 'addsub'
         get 'getSpecificsPhases'
+        post 'import'
+        get 'import'
       end
       member do
         get 'editsub' 
