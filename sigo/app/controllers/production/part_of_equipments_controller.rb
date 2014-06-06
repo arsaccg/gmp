@@ -164,6 +164,12 @@ class Production::PartOfEquipmentsController < ApplicationController
     render json: {:equipment => @equipment, :unit =>@unit}  
   end
 
+  def get_unit
+    unit = Article.find(params[:article]).unit_of_measurement_id
+    @symbol = UnitOfMeasurement.find(unit).symbol
+    render json: {:symbol =>@symbol}  
+  end
+
   def add_more_register
     @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")
