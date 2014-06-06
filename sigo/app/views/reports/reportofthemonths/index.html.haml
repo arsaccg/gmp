@@ -1,0 +1,46 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw
+        %br
+        = @d
+        %br
+        = @dia
+        %br
+        = @dia2
+        %br
+        = @partwork
+        %br
+        = @partequipment
+        %br
+        = @partpeople
+        %br
+        = @orderofservice
+        %br
+        = @scvaluations
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      .widget-body-toolbar
+      %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th Actual
+            %th Acumulado
+        %tbody
+          %tr
+            %th= @partwork
+            %th= @partwork
+          %tr
+            %th= @partequipment
+            %th= @partequipment
+          %tr
+            %th= @partpeople
+            %th= @partpeople
+          %tr
+            %th= @orderofservice
+            %th= @orderofservice
+          %tr
+            %th= @scvaluations
+            %th= @scvaluations

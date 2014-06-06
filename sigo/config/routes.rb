@@ -226,6 +226,7 @@ ArsacLogistica::Application.routes.draw do
         get 'show_group_results_pdf'
       end
     end
+    resources :reportofthemonths
   end
 
   namespace :production do
