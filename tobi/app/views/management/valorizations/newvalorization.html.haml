@@ -5,7 +5,7 @@
 =simple_form_for [:management, @valorization], class: "form-horizontal", :id => "v_form" do |f|
   = f.input :valorization_date, :label => "Mes"
  
-  - all_budgets = Budget.where(:project_id => @budget.project_id)
+  - all_budgets = Budget.where(:cost_center_id => @budget.cost_center_id)
   - num_val = 0
   - all_budgets.each do |ab|
     - num_val = num_val + Valorization.where(:budget_id => ab.id).count
@@ -20,7 +20,7 @@
 
 %a{:href=>"javascript:post_to_url('" + management_valorizations_path.to_s + "', 'new_valorization', 'right-area');", :class=>"btn btn-success"}
   Guardar Valorizacion
-%a{href: "javascript:load_back('"+administrate_budget_management_budgets_path().to_s+"')", class: "btn btn-danger"}
+%a{href: "javascript:load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id="+@budget.cost_center_id.to_s+"', 'right-area');", class: "btn btn-danger"}
   Cancelar
 
 :javascript 

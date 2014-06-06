@@ -46,12 +46,12 @@
         %td
           =@budget.created_at
     %tr
-      -if @budget.project_id
+      -if @budget.cost_center_id
         %td
           %label
             Código Projecto
         %td
-          =@budget.project_id
+          =@budget.cost_center_id
     %tr
       -if @budget.level
         %td
@@ -82,5 +82,5 @@
         %td
           =@budget.general_expenses
 
-%a{:href=>"javascript:load_url_ondiv('" + administrate_budget_management_budgets_path.to_s + "\', 'right-area');"}(class="btn btn-danger")
+%a{:href=>"javascript:load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id="+@budget.cost_center_id.to_s+"', 'right-area');"}(class="btn btn-danger")
   Volver

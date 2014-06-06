@@ -2,19 +2,11 @@
   #step1.step-pane.active
     %h3
       %strong Paso 1
-      \- Seleccionar CC / Proveedor
+      \- Seleccionar Proveedor
 
     %fieldset
       .row
-        .col-md-1
-        .col-md-4
-          .form-group
-            %label.control-label Centro de Costo
-            .input-group
-              %select(name='stock_input[cost_center_id]' class = 'select2 form-control' id = 'cost-center-selected' style='width:100%;padding: 0;border: none;')
-                - @cost_centers.each do |x|
-                  %option(value = "#{x.id}")
-                    = x.name
+        = hidden_field_tag 'stock_input[cost_center_id]', @cost_center, class: 'form-control', id: 'cost-center-selected'
       .row
         .col-md-1
         .col-md-4

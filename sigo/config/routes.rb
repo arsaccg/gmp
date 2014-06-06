@@ -213,6 +213,10 @@ ArsacLogistica::Application.routes.draw do
   end
 
   namespace :reports do
+    resources :graphs do
+      get 'do_graph'
+      post 'do_graph'
+    end
     resources :inventories do
       collection do
         post 'show_rows_results'

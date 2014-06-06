@@ -1,5 +1,5 @@
 -budget = Budget.where(:id => @valorization.budget_id).first
--igv = Project.where(:id => budget.project_id).last.igv.to_f
+-igv = CostCenter.where(:id => budget.cost_center_id).last.igv.to_f
 
 -puts "IGV : " + igv.to_s
 

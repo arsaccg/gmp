@@ -129,9 +129,9 @@ class Management::BudgetsController < ApplicationController
 
   def destroy_admin
     budget=Budget.find(params[:id])
-    project_id = budget.project_id
+    project_id = budget.cost_center_id
 
-    budgets = Budget.where("cod_budget LIKE ? and project_id = ?", budget.cod_budget + "%", project_id)
+    budgets = Budget.where("cod_budget LIKE ? and cost_center_id = ?", budget.cod_budget + "%", project_id)
     budgets.each do |budget_item|
       #Inputbybudgetanditem.where(budget_id: budget_item.id).destroy_all
 
@@ -141,8 +141,8 @@ class Management::BudgetsController < ApplicationController
     end
     
     budgets.destroy_all
-    ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM budgets where cod_budget LIKE '#{budget.cod_budget}' and project_id = '#{budget.project_id}'")
-    ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM items where budget_code LIKE '#{budget.cod_budget}' and project_id = '#{budget.project_id}'")
+    ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM budgets where cod_budget LIKE '#{budget.cod_budget}' and cost_center_id = '#{budget.cost_center_id}'")
+    ActiveRecord::Base.connection.send(:delete_sql,"DELETE FROM items where budget_code LIKE '#{budget.cod_budget}' and cost_center_id = '#{budget.cost_center_id}'")
 
     #DESTROY
     #@budgets_goal = Budget.where("type_of_budget = ? AND project_id = ? ", '0', project_id)
@@ -153,6 +153,6 @@ class Management::BudgetsController < ApplicationController
 
   private
   def budget_parameters
-    params.require(:budget).permit(:cod_budget, :description, :term, :project_id, :level, :subbudget_code, :deleted, :type_of_budget, :utility, :general_expenses)
+    params.require(:budget).permit(:cod_budget, :description, :term, :cost_center_id, :level, :subbudget_code, :deleted, :type_of_budget, :utility, :general_expenses)
   end
 end

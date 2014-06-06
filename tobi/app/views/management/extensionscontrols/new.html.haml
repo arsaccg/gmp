@@ -40,5 +40,5 @@
       %a(href="javascript:post_to_url('#{management_extensionscontrols_path}?project_id=#{@project_id}','new_extensionscontrol', 'right-area')" class="btn btn-success" id="upload_pic")
         Enviar
       =# f.button :submit, value: 'Crear nueva ampliación', class: "btn btn-success"
-      %a(href="#"){class: "btn btn-danger"}
+      %a{:href => "javascript:load_url_ondiv('"+management_extensionscontrols_path().to_s+"?project_id="+@project_id+"', 'right-area');", class: "btn btn-danger"}
         Cancelar
