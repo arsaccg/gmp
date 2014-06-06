@@ -440,7 +440,7 @@ ActiveRecord::Schema.define(version: 20140605205820) do
 
   add_index "itembybudgets", ["item_id"], name: "itembybudges_item_id", using: :btree
 
-  create_table "itembywbses", force: true do |t|
+  create_table "itembywbs", force: true do |t|
     t.string   "wbscode"
     t.integer  "itembywbs_id"
     t.string   "coditem"
@@ -659,26 +659,12 @@ ActiveRecord::Schema.define(version: 20140605205820) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "category"
     t.string   "code"
+    t.string   "category"
   end
 
   create_table "position_workers", force: true do |t|
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "professional_certificates", force: true do |t|
-    t.integer  "professional_id"
-    t.integer  "certificate_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "professional_trainings", force: true do |t|
-    t.integer  "professional_id"
-    t.integer  "training_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
