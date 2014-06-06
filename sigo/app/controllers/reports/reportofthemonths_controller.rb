@@ -2,11 +2,6 @@ class Reports::ReportofthemonthsController < ApplicationController
 
   def index
   	@company = get_company_cost_center('company')
-  	@partwork=0
-  	@partequipment=0
-  	@partpeople=0
-  	@orderofservice=0
-  	@scvaluations=0
   	@d = Date.today-1.month
   	@dia = @d.at_beginning_of_month.strftime
   	@dia2 = @d.at_end_of_month.strftime
@@ -22,6 +17,10 @@ class Reports::ReportofthemonthsController < ApplicationController
 		@part_people = part_people(@dia, @dia2, @cost_center)
 		@part_people.each do |workerDetail|
       @partpeople = workerDetail[0]
+    end
+		@order_of_service = order_of_service(@dia, @dia2, @cost_center)
+		@order_of_service.each do |workerDetail|
+      @orderofservice = workerDetail[0]
     end
 		@sc_valuations = sc_valuations(@dia, @dia2, @cost_center)
 		@sc_valuations.each do |workerDetail|
@@ -112,22 +111,22 @@ class Reports::ReportofthemonthsController < ApplicationController
 
   def order_of_service(start_date, end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT SUM(oosd.unit_price_igv) AS ORDER
+      SELECT SUM(oosd.unit_price_igv)
 			FROM order_of_services oos, order_of_service_details oosd
 			WHERE oosd.order_of_service_id = oos.id
 			AND oos.date_of_service BETWEEN '" + start_date + "' AND '" + end_date + "'
-      AND oos.cost_center_id IN(" + working_group_id + ")
+			AND oos.cost_center_id IN(" + working_group_id + ")
     ")
     return workers_array3
   end
 
   def order_of_service2(start_date, end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT SUM(oosd.unit_price_igv) AS ORDER
+      SELECT SUM(oosd.unit_price_igv)
 			FROM order_of_services oos, order_of_service_details oosd
 			WHERE oosd.order_of_service_id = oos.id
 			AND oos.date_of_service BETWEEN '" + start_date + "' AND '" + end_date + "'
-      AND oos.cost_center_id IN(" + working_group_id + ")
+			AND oos.cost_center_id IN(" + working_group_id + ")
     ")
     return workers_array3
   end
