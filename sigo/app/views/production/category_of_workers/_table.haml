@@ -25,7 +25,7 @@
               %td 
                 = categoryOfWorker.article.name
               %td
-                = categoryOfWorker.article.unit_of_measurement.name
+                = categoryOfWorker.article.unit_of_measurement.name rescue 'No tiene una unidad de medida'
               %td
                 - if categoryOfWorker.normal_price != nil
                   = number_to_currency(categoryOfWorker.normal_price.to_f, unit: "S/.", precision: 2)
