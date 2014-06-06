@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140605205820) do
+ActiveRecord::Schema.define(version: 20140606173331) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -125,6 +125,12 @@ ActiveRecord::Schema.define(version: 20140605205820) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "amount"
+    t.date     "charge_date"
+    t.float    "payment_amount"
+    t.string   "financial_agent_client"
+    t.string   "financial_agent_destiny"
+    t.integer  "invoice_id"
   end
 
   create_table "companies", force: true do |t|

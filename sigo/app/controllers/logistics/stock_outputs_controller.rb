@@ -29,7 +29,7 @@ class Logistics::StockOutputsController < ApplicationController
   def new
     @company = get_company_cost_center('company')
     @head = StockInput.new
-    @cost_centers = CostCenter.where(company_id: "#{@company}")
+    @cost_center = get_company_cost_center('cost_center')
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")

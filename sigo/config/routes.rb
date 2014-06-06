@@ -295,6 +295,7 @@ ArsacLogistica::Application.routes.draw do
     resources :part_of_equipments do
       collection do
         post 'get_equipment_form_subcontract'
+        post 'get_unit'
         post 'add_more_register'
         post 'display_fuel_articles'
       end
@@ -332,15 +333,6 @@ ArsacLogistica::Application.routes.draw do
           post 'search_daily_work'
           post 'weekly_table'
         end
-      end
-    end
-  end
-
-  namespace :share do
-    resources :graphers do
-      collection do
-        get 'paint'
-        post 'paint'
       end
     end
   end

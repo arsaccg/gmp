@@ -9,26 +9,24 @@ class Production::PartOfEquipmentsController < ApplicationController
     # Necessary!
     @fuel_articles = Article.where("code LIKE ?", '__32%').first # Esto va a cambiar
     @working_group = WorkingGroup.where("cost_center_id = ?", cost_center).first
-    @worker = PositionWorker.find_by_name('Operador').workers.first
+    @worker = Worker.first
     render layout: false
   end
 
   def show
     @company = params[:company_id]
-    @partofequipment = PartOfEquipment.find(params[:id])
+    cost_center = get_company_cost_center('cost_center')
 
+    @partofequipment = PartOfEquipment.find(params[:id])
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
     @sectors = Sector.where("code LIKE '__'")
     @phases = Phase.where("code LIKE '__'")
     @working_groups= WorkingGroup.all
-
     @subcontracts = SubcontractEquipment.all
     @type = Article.where("code LIKE ?", '__32%')
     @worker = Array.new
-    PositionWorker.where("name LIKE '%operador%'").each do |wo|
-      @worker= wo.workers
-    end
-    subcontract_id=@partofequipment.subcontract_equipment_id
+    @worker = Worker.where("cost_center_id = ?", cost_center)
+    subcontract_id = @partofequipment.subcontract_equipment_id
     equip = Array.new
     @articles = Array.new
     unit=''
@@ -73,7 +71,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     @partofequipment = PartOfEquipment.new
     @subcon = SubcontractEquipment.where("cost_center_id = ?", cost_center)
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center)
-    @worker = PositionWorker.find_by_name('Operador').workers
+    @worker = Worker.where("cost_center_id = ?", cost_center)
     render layout: false
   end
 
@@ -103,7 +101,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     @subcon = SubcontractEquipment.where("cost_center_id = ?", cost_center)
     @type = Array.new
     @fuel_articles = Article.where("code LIKE ?", '__32%')
-    @worker = PositionWorker.find_by_name('Operador').workers
+    @worker = Worker.where("cost_center_id = ?", cost_center)
 
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
     @reg_n = Time.now.to_i
@@ -164,6 +162,12 @@ class Production::PartOfEquipmentsController < ApplicationController
     end
     @unit = UnitOfMeasurement.find(unit).name
     render json: {:equipment => @equipment, :unit =>@unit}  
+  end
+
+  def get_unit
+    unit = Article.find(params[:article]).unit_of_measurement_id
+    @symbol = UnitOfMeasurement.find(unit).symbol
+    render json: {:symbol =>@symbol}  
   end
 
   def add_more_register

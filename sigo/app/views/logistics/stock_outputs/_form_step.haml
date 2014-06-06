@@ -6,15 +6,7 @@
 
     %fieldset
       .row
-        .col-md-1
-        .col-md-4
-          .form-group
-            %label.control-label Centro de Costo
-            .input-group
-              %select(name='stock_input[cost_center_id]' class = 'select2 form-control' id = 'cost-center-selected' style='width:100%;padding: 0;border: none;')
-                - @cost_centers.each do |x|
-                  %option(value = "#{x.id}")
-                    = x.name
+        = hidden_field_tag 'stock_input[cost_center_id]', @cost_center, class: 'form-control', id: 'cost-center-selected'
       .row
         .col-md-1
         .col-md-4
@@ -97,7 +89,7 @@
               %select(name='stock_input[working_group_id]' class = 'select2 form-control' id = 'working_group-select' style='width:100%;padding: 0;border: none;')
                 - @working_groups.each do |x|
                   %option(value = "#{x.id}")
-                    = x.front_chief.name + " - " + x.master_builder.name + " - " + x.executor.name
+                    = x.front_chief.name  rescue "" + " - " + x.master_builder.name  rescue "" + " - " + x.executor.name 
       .row
         .col-md-12
           .form-group
