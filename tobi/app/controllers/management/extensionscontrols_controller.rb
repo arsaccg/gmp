@@ -8,7 +8,7 @@ class Management::ExtensionscontrolsController < ApplicationController
     if @extensionscontrol == nil
       @extensionscontrol = Extensionscontrol.where(:cost_center_id => params[:cost_center_id])
     end
-    @project = CostCenter.find(params[:project_id]) rescue 
+    @project = CostCenter.find(params[:project_id]) 
     if @project == nil
        @project = CostCenter.find(params[:cost_center_id])
     end

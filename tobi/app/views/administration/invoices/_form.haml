@@ -32,5 +32,5 @@
       %a(href="javascript:post_to_url('#{administration_invoice_path(@invoice.id)}', '#{@action}', 'right-area')" class="btn btn-success")
         Enviar
       =# f.submit @action_label, :class=>"btn btn-success"
-      %a(href="javascript:goBack()" class="btn btn-danger")
+      %a{href: "javascript:load_url_ondiv('"+administration_invoices_path().to_s+"?budget_id="+Valorization.find(@invoice.valorization_id).budget_id.to_s+"', 'right-area');", class: "btn btn-danger"}
         Cancelar
