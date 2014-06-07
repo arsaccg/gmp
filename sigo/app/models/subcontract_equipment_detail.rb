@@ -5,7 +5,7 @@ class SubcontractEquipmentDetail < ActiveRecord::Base
 
 	def self.getOwnArticles(word, cost_center_id)
     mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT DISTINCT a.id, a.name, u.name
+      SELECT DISTINCT a.id, a.name, u.name, a.code
       FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u
       WHERE b.id = ibi.budget_id
       AND b.type_of_budget =0
