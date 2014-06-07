@@ -38,7 +38,7 @@
                 - @entities.each do |entity|
                   - if @worker.entity_id == entity.id
                     %option{:value => "#{entity.id}", :selected => true}
-                      = entity.name  + ' ' + entity.second_name + ' ' + entity.paternal_surname + ' ' + entity.maternal_surname 
+                      = entity.name  + ' ' + entity.second_name rescue ''+ ' ' + entity.paternal_surname + ' ' + entity.maternal_surname 
                   - else
                     %option{:value => "#{entity.id}"}
                       = entity.name  + ' ' + entity.second_name + ' ' + entity.paternal_surname + ' ' + entity.maternal_surname 
