@@ -7,6 +7,9 @@ class Logistics::PhasesController < ApplicationController
     @company = Company.find(get_company_cost_center("company"))
     @phases = Phase.where("category LIKE 'phase'")
     puts Phase.all.count
+    cad = "hola"
+    puts "cad:"
+    puts cad.to_i
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted' || params[:task] == 'import'
       render layout: 'dashboard'
     else
@@ -132,7 +135,7 @@ class Logistics::PhasesController < ApplicationController
         puts "----------------name------------------"
         puts name
         ## creacion de PHases
-        if codigo.to_i
+        if codigo.to_i != 0
           if codigo_phase != "00" and codigo_subphase == "00" and codigo.length == 4
             category = Phase.new(:code => codigo_phase, :name => name, :category => "phase")
             category.save
