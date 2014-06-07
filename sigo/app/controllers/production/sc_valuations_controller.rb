@@ -135,9 +135,10 @@ class Production::ScValuationsController < ApplicationController
       else
         @cad = '0'
       end
-      @workers_array = business_days_array(@start_date, @end_date, @cad)
-      @workers_array2 = business_days_array2(@start_date, @end_date, @cad)
-      @workers_array3 = business_days_array3(@start_date, @end_date, @cad)
+      @cc = get_company_cost_center('cost_center')
+      @workers_array = business_days_array(@start_date, @end_date, @cad, @cc)
+      @workers_array2 = business_days_array2(@start_date, @end_date, @cad, @cc)
+      @workers_array3 = business_days_array3(@start_date, @end_date, @cad, @cc)
       @workers_array.each do |workerDetail|
         @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
       end
@@ -200,7 +201,7 @@ class Production::ScValuationsController < ApplicationController
     render(partial: 'report_table', :layout => false)
   end
 
-  def business_days_array(start_date, end_date, working_group_id)
+  def business_days_array(start_date, end_date, working_group_id,cost_center)
     workers_array = ActiveRecord::Base.connection.execute("
       SELECT  art.name AS category,
         cow.normal_price,
@@ -218,6 +219,8 @@ class Production::ScValuationsController < ApplicationController
       WHERE p.working_group_id IN(" + working_group_id + ")
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.id = ppd.part_person_id
+      AND p.cost_center_id = '"+ cost_center +"'
+      AND w.cost_center_id = '"+ cost_center +"'
       AND w.article_id = art.id
       AND ppd.worker_id = w.id
       AND w.article_id = cow.article_id
@@ -227,7 +230,7 @@ class Production::ScValuationsController < ApplicationController
     return workers_array
   end
 
-  def business_days_array2(start_date, end_date, working_group_id)
+  def business_days_array2(start_date, end_date, working_group_id, cost_center)
     workers_array2 = ActiveRecord::Base.connection.execute("
       SELECT  pwd.article_id, 
         art.name, 
@@ -240,6 +243,8 @@ class Production::ScValuationsController < ApplicationController
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.working_group_id IN(" + working_group_id + ")
       AND p.id = pwd.part_work_id
+      AND si.cost_center_id = '"+ cost_center +"'
+      AND p.cost_center_id = '"+ cost_center +"'
       AND pwd.article_id = art.id
       AND pwd.article_id = si.article_id
       AND uom.id = art.unit_of_measurement_id
@@ -248,7 +253,7 @@ class Production::ScValuationsController < ApplicationController
     return workers_array2
   end
 
-  def business_days_array3(start_date, end_date, working_group_id)
+  def business_days_array3(start_date, end_date, working_group_id, cost_center)
     workers_array3 = ActiveRecord::Base.connection.execute("
       SELECT  art.name, 
       uom.name, 
@@ -259,6 +264,8 @@ class Production::ScValuationsController < ApplicationController
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.equipment_id=art.id
+      AND poe.cost_center_id = '"+ cost_center +"'
+      AND si.cost_center_id = '"+ cost_center +"'
       AND poe.equipment_id=si.article_id
       AND uom.id = art.unit_of_measurement_id
       AND poed.working_group_id IN(" + working_group_id + ")
@@ -348,7 +355,8 @@ class Production::ScValuationsController < ApplicationController
     end_date = params[:end_date]
     cad = params[:cad]
     @totalprice2 = 0
-    @workers_array2 = business_days_array2(start_date, end_date, cad)
+    cc = get_company_cost_center("cost_center")
+    @workers_array2 = business_days_array2(start_date, end_date, cad,cc)
     @workers_array2.each do |workerDetail|
       @totalprice2 += workerDetail[5]
     end
