@@ -328,6 +328,7 @@ class Production::ScValuationsController < ApplicationController
   def create
     scvaluation = ScValuation.new(sc_valuation_parameters)
     scvaluation.state
+    scvaluation.cost_center_id = get_company_cost_center('cost_center')
     start_date = params[:sv_valuation]['start_date']
     end_date = params[:sv_valuation]['end_date']
     if scvaluation.save
