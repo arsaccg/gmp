@@ -11,26 +11,73 @@
       %table#dt_basic.table.table-striped.table-bordered.table-hover
         %thead
           %tr
+            %th{'colspan' => 2, "style"=>"text-align:center"} Costo Directo
+          %tr
             %th{'colspan' => 2, "style"=>"text-align:center"} REAL
           %tr
             %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
             %th{"style"=>"text-align:center"} Acumulado
         %tbody
           %tr
-            %th{"style"=>"text-align:center"}= (@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations).round(2)
-            %th{"style"=>"text-align:center"}= (@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2).round(2)
+            %th{"style"=>"text-align:center"}= (@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations).round(2) rescue 0
+            %th{"style"=>"text-align:center"}= (@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2).round(2) rescue 0
           %tr
-            %th{"style"=>"text-align:center"}= @partwork.round(2)
-            %th{"style"=>"text-align:center"}= @partwork2.round(2)
+            %th{"style"=>"text-align:center"}= @partwork.round(2) rescue 0
+            %th{"style"=>"text-align:center"}= @partwork2.round(2) rescue 0
           %tr
-            %th{"style"=>"text-align:center"}= @partequipment.round(2)
-            %th{"style"=>"text-align:center"}= @partequipment2.round(2)
+            %th{"style"=>"text-align:center"}= @partequipment.round(2) rescue 0
+            %th{"style"=>"text-align:center"}= @partequipment2.round(2) rescue 0
           %tr
-            %th{"style"=>"text-align:center"}= @partpeople.round(2)
-            %th{"style"=>"text-align:center"}= @partpeople2.round(2)
+            %th{"style"=>"text-align:center"}= @partpeople.round(2) rescue 0
+            %th{"style"=>"text-align:center"}= @partpeople2.round(2) rescue 0
           %tr
-            %th{"style"=>"text-align:center"}= @orderofservice.round(2)
-            %th{"style"=>"text-align:center"}= @orderofservice2.round(2)
+            %th{"style"=>"text-align:center"}= @orderofservice.round(2) rescue 0
+            %th{"style"=>"text-align:center"}= @orderofservice2.round(2) rescue 0
           %tr
-            %th{"style"=>"text-align:center"}= @scvaluations.round(2)
-            %th{"style"=>"text-align:center"}= @scvaluations2.round(2)
+            %th{"style"=>"text-align:center"}= @scvaluations.round(2) rescue 0
+            %th{"style"=>"text-align:center"}= @scvaluations2.round(2) rescue 0
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      .widget-body-toolbar
+      %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th{'colspan' => 2, "style"=>"text-align:center"} Gastos Generales
+          %tr
+            %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
+            %th{"style"=>"text-align:center"} Acumulado
+        %tbody
+          %tr
+            %th{"style"=>"text-align:center"}= (@partequipment3+@partpeople3+@orderofservice3).round(2) rescue 0
+            %th{"style"=>"text-align:center"}= (@partequipment4+@partpeople4+@orderofservice4).round(2) rescue 0
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      .widget-body-toolbar
+      %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th{'colspan' => 2, "style"=>"text-align:center"} Utilidad
+          %tr
+            %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
+            %th{"style"=>"text-align:center"} Acumulado
+        %tbody
+          %tr
+            %th{"style"=>"text-align:center"}= (@partequipment5+@partpeople5+@orderofservice5).round(2) rescue 0
+            %th{"style"=>"text-align:center"}= (@partequipment6+@partpeople6+@orderofservice6).round(2) rescue 0
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      .widget-body-toolbar
+      %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th{'colspan' => 2, "style"=>"text-align:center"} Gastos de Gestión
+          %tr
+            %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
+            %th{"style"=>"text-align:center"} Acumulado
+        %tbody
+          %tr
+            %th{"style"=>"text-align:center"}= (@partequipment7+@partpeople7+@orderofservice7).round(2) rescue 0
+            %th{"style"=>"text-align:center"}= (@partequipment8+@partpeople8+@orderofservice8).round(2) rescue 0
