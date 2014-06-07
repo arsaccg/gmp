@@ -52,6 +52,38 @@ class Reports::ReportofthemonthsController < ApplicationController
       @scvaluations2 = workerDetail[0]
     end
 
+    if @partwork.nil?
+      @partwork=0
+    end
+    if @partwork2.nil?
+      @partwork2=0
+    end
+    if @partequipment.nil?
+      @partequipment=0
+    end
+    if @partequipment2.nil?
+      @partequipment2=0
+    end
+    if @partpeople.nil?
+      @partpeople=0
+    end
+    if @partpeople2.nil?
+      @partpeople2=0
+    end
+    if @orderofservice.nil?
+      @orderofservice=0
+    end
+    if @orderofservice2.nil?
+      @orderofservice2=0
+    end
+    if @scvaluations.nil?
+      @scvaluations=0
+    end
+
+    if @scvaluations2.nil?
+      @scvaluations2=0
+    end
+    
 		render layout: false
   end
 
@@ -90,6 +122,7 @@ class Reports::ReportofthemonthsController < ApplicationController
 			AND poe.equipment_id = art.id
 			AND si.article_id = poe.equipment_id
       AND poe.cost_center_id IN(" + working_group_id + ")
+      AND poed.phase_id < 8999
     ")
     return workers_array3
   end
@@ -103,6 +136,7 @@ class Reports::ReportofthemonthsController < ApplicationController
 			AND poe.equipment_id = art.id
 			AND si.article_id = poe.equipment_id
       AND poe.cost_center_id IN(" + working_group_id + ")
+      AND poed.phase_id < 8999
     ")
     return workers_array3
   end
@@ -117,6 +151,7 @@ class Reports::ReportofthemonthsController < ApplicationController
 			AND wo.article_id = art.id
 			AND art.id = cow.article_id
       AND pp.cost_center_id IN(" + working_group_id + ")
+      AND ppd.phase_id < 8999
     ")
     return workers_array3
   end
@@ -131,6 +166,7 @@ class Reports::ReportofthemonthsController < ApplicationController
 			AND wo.article_id = art.id
 			AND art.id = cow.article_id
       AND pp.cost_center_id IN(" + working_group_id + ")
+      AND ppd.phase_id < 8999
     ")
     return workers_array3
   end
@@ -142,6 +178,7 @@ class Reports::ReportofthemonthsController < ApplicationController
 			WHERE oosd.order_of_service_id = oos.id
 			AND oos.date_of_service BETWEEN '" + start_date + "' AND '" + end_date + "'
 			AND oos.cost_center_id IN(" + working_group_id + ")
+      AND oosd.phase_id < 8999
     ")
     return workers_array3
   end
@@ -153,6 +190,7 @@ class Reports::ReportofthemonthsController < ApplicationController
 			WHERE oosd.order_of_service_id = oos.id
 			AND oos.date_of_service < '" + end_date + "'
 			AND oos.cost_center_id IN(" + working_group_id + ")
+      AND oosd.phase_id < 8999
     ")
     return workers_array3
   end

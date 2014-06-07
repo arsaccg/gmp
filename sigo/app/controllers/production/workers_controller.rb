@@ -91,6 +91,6 @@ class Production::WorkersController < ApplicationController
 
   private
   def worker_parameters
-    params.require(:worker).permit(:email, :phone, :date_of_birth, :article_id, :entity_id, :position_worker_id, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy])
+    params.require(:worker).permit(:email, :phone,  :article_id, :entity_id, :position_worker_id, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy])
   end
 end

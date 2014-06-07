@@ -110,17 +110,26 @@ class Logistics::PhasesController < ApplicationController
   def import    
     if !params[:file].nil?
       s = Roo::Excelx.new(params[:file].path,nil, :ignore)
-      category_id = 0
       matriz_exel = []
       code = 1
       cantidad = s.count.to_i
-      (1..cantidad).each do |fila|  
+      puts "------cantidad----------------------------"
+      puts cantidad
+      (1..cantidad).each do |fila|
+        puts "-------------fila---------------------"
+        puts fila  
         codigo             =       "#{s.cell('A',fila)}#{s.cell('B',fila)}"
+        puts "-----------codigo-----------------------"
+        puts codigo
         codigo_phase       =       s.cell('A',fila).to_s   # PH           --->    PHASE
-        codigo_subphase    =       s.cell('B',fila).to_s   # SPH            --->    SUBPHASE
+        puts "----------codigo_phase------------------------"
+        puts codigo_phase
+        codigo_subphase    =       s.cell('B',fila).to_s   # SPH          --->    SUBPHASE
+        puts "----------codigo_subphase------------------------"
+        puts codigo_subphase
         name               =       s.cell('C',fila).to_s 
-        
-
+        puts "----------------name------------------"
+        puts name
         ## creacion de PHases
         if codigo_phase != "00" and codigo_subphase == "00" and codigo.length == 4
           category = Phase.new(:code => codigo_phase, :name => name, :category => "phase")
@@ -133,7 +142,6 @@ class Logistics::PhasesController < ApplicationController
           category.save
         end
       end
-      @temp = matriz_exel
       redirect_to url_for(:controller => :phases, :action => :index, :task => "import")
     else
       render :layout => false
