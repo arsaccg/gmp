@@ -2,7 +2,7 @@ class SubcontractInput < ActiveRecord::Base
 	belongs_to :article
 	belongs_to :cost_center
 
-	def getOwnArticles(word, cost_center_id)
+	def self.getOwnArticles(word, cost_center_id)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT DISTINCT a.id, a.name
       FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u 
