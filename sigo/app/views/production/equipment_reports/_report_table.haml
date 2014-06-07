@@ -107,7 +107,7 @@
                       = value['ratio']
   
       %div
-        %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @worker.first_name + ' ' + @worker.second_name + ' ' + @worker.paternal_surname + ' ' + @worker.maternal_surname
+        %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @worker.entity.name + ' ' + @worker.entity.second_name + ' ' + @worker.entity.paternal_surname + ' ' + @worker.entity.maternal_surname
         .jarviswidget-editbox
         .widget-body
           %table.table.table-bordered

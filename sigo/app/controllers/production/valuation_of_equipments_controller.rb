@@ -111,7 +111,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       else
         @cad = '0'
       end
-      @workers_array3 = business_days_array3(@start_date, @end_date, @cad)
+      @cc = get_company_cost_center('cost_center')
+      @workers_array3 = business_days_array3(@start_date, @end_date, @cad, @cc)
       @workers_array3.each do |workerDetail|
         @totalprice += workerDetail[4]
       end
@@ -127,7 +128,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     render(partial: 'report_table', :layout => false)
   end
 
-  def business_days_array3(start_date, end_date, working_group_id)
+  def business_days_array3(start_date, end_date, working_group_id, cost_center)
     workers_array3 = ActiveRecord::Base.connection.execute("
       SELECT  art.name, 
       uom.name, 
@@ -140,6 +141,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       WHERE poe.date >= '" + start_date + "' AND poe.date <= '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.equipment_id=art.id
+      AND poe.cost_center_id = '"+ cost_center +"'
+      AND si.cost_center_id = '"+ cost_center +"'
       AND poe.equipment_id=si.article_id
       AND uom.id = art.unit_of_measurement_id
       AND poe.subcontract_equipment_id = sed.subcontract_equipment_id
@@ -150,7 +153,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     return workers_array3
   end
 
-  def last(end_date, working_group_id, article)
+  def last(end_date, working_group_id, article, cost_center)
     last = ActiveRecord::Base.connection.execute("
       SELECT art.name, SUM( poed.effective_hours ) , si.price*SUM( poed.effective_hours )
       FROM articles art, part_of_equipments poe, part_of_equipment_details poed, subcontract_inputs si, subcontract_equipment_details sed
@@ -159,6 +162,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       AND poe.subcontract_equipment_id = sed.id
       AND poe.equipment_id = art.id
       AND poe.id = poed.part_of_equipment_id
+      AND poe.cost_center_id = '"+ cost_center +"'
+      AND si.cost_center_id = '"+ cost_center +"'
       AND poe.equipment_id = si.article_id
       AND poe.equipment_id = sed.article_id
       AND poed.working_group_id IN (" + working_group_id + ")
@@ -245,7 +250,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @end_date = params[:end_date]
     @cad = params[:cad]
     @totalprice3 = 0
-    @workers_array3 = business_days_array3(@start_date, @end_date, @cad)
+    @cc = get_company_cost_center('cost_center')
+    @workers_array3 = business_days_array3(@start_date, @end_date, @cad,@cc)
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
     end
@@ -258,7 +264,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       if ValuationOfEquipment.where("name LIKE ? ", @name).last.present?
         thelast = ValuationOfEquipment.where("name LIKE ? ", @name).last
         @last_end = thelast.end_date
-        @last = last(@last_end, @cad, @art)
+        @cc = get_company_cost_center('cost_center')
+        @last = last(@last_end, @cad, @art, @cc)
         @try = "last"
       else
         @last = Array.new
@@ -267,9 +274,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         end
       end
     else
+      @cc = get_company_cost_center('cost_center')
       @last_end =ValuationOfEquipment.find(params[:id]).start_date
-      @last = last(@last_end, @cad, @art)
-      puts "@last.count-------------------------------------------"
+      @last = last(@last_end, @cad, @art, @cc)
       puts @last.count
       if @last.count==0
         @last=nil
@@ -308,7 +315,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       end
       i+=1
     end
-    #  arreglo resultante  => [0,1,2,3,4,5,6,  0,1,2] segundo 1 no se usa
     render layout: false
   end
 
