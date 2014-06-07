@@ -4,8 +4,9 @@ class Logistics::PhasesController < ApplicationController
 
   def index
     flash[:error] = nil
+    @company = Company.find(get_company_cost_center("company"))
     @phases = Phase.where("category LIKE 'phase'")
-    if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted'
+    if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted' || params[:task] == 'import'
       render layout: 'dashboard'
     else
       render layout: false
@@ -104,6 +105,39 @@ class Logistics::PhasesController < ApplicationController
     flash[:notice] = "Se ha eliminado correctamente la fase seleccionado."
     render :json => phase
     #redirect_to :action => :index, :task => 'deleted'
+  end
+
+  def import    
+    if !params[:file].nil?
+      s = Roo::Excelx.new(params[:file].path,nil, :ignore)
+      category_id = 0
+      matriz_exel = []
+      code = 1
+      cantidad = s.count.to_i
+      (1..cantidad).each do |fila|  
+        codigo             =       "#{s.cell('A',fila)}#{s.cell('B',fila)}"
+        codigo_phase       =       s.cell('A',fila).to_s   # PH           --->    PHASE
+        codigo_subphase    =       s.cell('B',fila).to_s   # SPH            --->    SUBPHASE
+        name               =       s.cell('C',fila).to_s 
+        
+
+        ## creacion de PHases
+        if codigo_phase != "00" and codigo_subphase == "00" and codigo.length == 4
+          category = Phase.new(:code => codigo_phase, :name => name, :category => "phase")
+          category.save
+        end
+        ## creacion de Subphases
+        if codigo_phase != "00" and codigo_subphase != "00" and codigo.length == 4
+          codigo = codigo_phase + codigo_subphase
+          category = Phase.new(:code => codigo, :name => name, :category => "subphase")
+          category.save
+        end
+      end
+      @temp = matriz_exel
+      redirect_to url_for(:controller => :phases, :action => :index, :task => "import")
+    else
+      render :layout => false
+    end
   end
 
   private

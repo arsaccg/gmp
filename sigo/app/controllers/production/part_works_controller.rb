@@ -65,6 +65,7 @@ class Production::PartWorksController < ApplicationController
     @unit = UnitOfMeasurement.all
     @sectors = Sector.where("code LIKE '__'")
     @action = 'edit'
+    @reg_n = Time.now.to_i
     @company = params[:company_id]
     render layout: false
   end

@@ -24,7 +24,7 @@ class Production::EquipmentReportsController < ApplicationController
         end
       end
       Worker.where("position_worker_id LIKE ?", pw_id).each do |w|
-        @combo << { 'id' => w.id.to_i, 'name' => w.first_name + ' '+ w.paternal_surname+' '+w.maternal_surname }
+        @combo << { 'id' => w.id.to_i, 'name' => w.entity.name + ' '+ w.entity.paternal_surname+' '+w.entity.maternal_surname }
         i+=1
       end
     elsif params[:chosen] == 'frente'

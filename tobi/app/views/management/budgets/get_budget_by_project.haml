@@ -81,8 +81,8 @@
           Nombre
         %th
           Unidades
-      %tbody
-        
+      %tbody#articles-t
+        -#cadena = cadena + '<tr><td>' + value.code + '</td><td><a href=\'javascript: load_url_ondiv(\'' + link + '?coditem=000&cod_input=0&quantity=0&price=0&order=0&input=0&budget_id=0&subbudget_code=0&item_id=0&unit=und\', \'botom-load\');\''>' + value.name + '</a></td><td>' + value.symbol + '</td></tr>' ;
         -# @articles.each do |article|
           %tr
             %td
@@ -100,6 +100,7 @@
             %td
               - if article.unit_of_measurement != nil
                 = article.unit_of_measurement.name
+
         
 :javascript
   $(".individual-panel").height($(document).height()/2 -100 );
@@ -112,8 +113,25 @@
       url: "#{display_articles_management_budgets_path}?q=" + q
     }).done(function(data) {
       console.log(data);
+      console.log(data.articles[0].code);
+
+
+      var arr = $('#articles-t');
+
+      var cadena = '';
+
+      $.each(data.articles, function(index, value){
+        console.log(value.code);
+
+        var link = '#{add_management_inputbybudgetanditems_path.to_s}';
+
+        cadena = cadena + '<tr><td>' + value.code + '</td><td>' + value.name + '</td><td>' + value.symbol + '</td></tr>' ;
+
+      });
+
+      arr[0].innerHTML = cadena;
+      
     });
     
   }
-  
   

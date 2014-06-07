@@ -113,6 +113,7 @@ Pmicg::Application.routes.draw do
     resources :inputbybudgetanditems do
       collection do
         get 'filter_by_budget_and_item'
+        get 'add'
       end
     end
 

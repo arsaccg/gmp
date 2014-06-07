@@ -83,6 +83,8 @@ ArsacLogistica::Application.routes.draw do
       collection do
         get 'addsub'
         get 'getSpecificsPhases'
+        post 'import'
+        get 'import'
       end
       member do
         get 'editsub' 
@@ -226,6 +228,7 @@ ArsacLogistica::Application.routes.draw do
         get 'show_group_results_pdf'
       end
     end
+    resources :reportofthemonths
   end
 
   namespace :production do
@@ -295,6 +298,7 @@ ArsacLogistica::Application.routes.draw do
     resources :part_of_equipments do
       collection do
         post 'get_equipment_form_subcontract'
+        post 'get_unit'
         post 'add_more_register'
         post 'display_fuel_articles'
       end
