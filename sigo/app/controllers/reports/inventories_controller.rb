@@ -1,8 +1,8 @@
 class Reports::InventoriesController < ApplicationController
   def index
     @company = get_company_cost_center('company')
-    @cost_centers = CostCenter.where("company_id = " + @company)
-    @warehouses = Warehouse.where("company_id = " + @company)
+    @cost_center = get_company_cost_center('cost_center')
+    @warehouses = Warehouse.where("cost_center_id = " + @cost_center)
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @years = Array.new
@@ -22,18 +22,19 @@ class Reports::InventoriesController < ApplicationController
 
   def show_rows_results
     @company = get_company_cost_center('company')
+    @cost_center = get_company_cost_center('cost_center')
     @user = current_user.id
 
     #-------------------------------
     # CostCenter
     #-------------------------------
-    @cost_centers = ""
-    if params[:cost_center_id] != ""
-      @cost_centers = ","
-      params[:cost_center_id].each.with_index(1) do |x, i|
-        @cost_centers += x.to_s + ","
-      end
-    end
+    #@cost_centers = ""
+    #if params[:cost_center_id] != ""
+    #  @cost_centers = ","
+    #  params[:cost_center_id].each.with_index(1) do |x, i|
+    #    @cost_centers += x.to_s + ","
+    #  end
+    #end
     #-------------------------------
     # Warehouses
     #-------------------------------
@@ -146,7 +147,7 @@ class Reports::InventoriesController < ApplicationController
       when "1" # Find
         case params[:kardex_type]
           when "1"
-            @reportRows = StockInputDetail.get_kardex_yearly(@company, 1, @user, @report_type, @date_type, @since_date, @to_date, @cost_centers, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
+            @reportRows = StockInputDetail.get_kardex_yearly(1, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
             case @report_type
               when "4" then
               render(partial: 'show_group_kardex_yearly', :layout => false)
@@ -154,7 +155,7 @@ class Reports::InventoriesController < ApplicationController
               render(partial: 'show_row_kardex_yearly', :layout => false)
             end
           when "2"
-            @reportRows = StockInputDetail.get_kardex_monthly(@company, 1, @user, @report_type, @date_type, @since_date, @to_date, @cost_centers, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
+            @reportRows = StockInputDetail.get_kardex_monthly(1, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
             case @report_type
               when "4" then
               render(partial: 'show_group_kardex_monthly', :layout => false)
@@ -162,7 +163,7 @@ class Reports::InventoriesController < ApplicationController
               render(partial: 'show_row_kardex_monthly', :layout => false)
             end
           when "3"
-            @reportRows = StockInputDetail.get_kardex_daily(@company, 1, @user, @report_type, @date_type, @since_date, @to_date, @cost_centers, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
+            @reportRows = StockInputDetail.get_kardex_daily(1, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
             case @report_type
               when "4" then
               render(partial: 'show_group_kardex_daily', :layout => false)
@@ -170,7 +171,7 @@ class Reports::InventoriesController < ApplicationController
               render(partial: 'show_row_kardex_daily', :layout => false)
             end
           when "4"
-            @reportRows = StockInputDetail.get_kardex_summary(@company, 1, @user, @report_type, @date_type, @since_date, @to_date, @cost_centers, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
+            @reportRows = StockInputDetail.get_kardex_summary(1, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
             case @report_type
               when "4" then
               render(partial: 'show_group_kardex_summary', :layout => false)
@@ -195,6 +196,7 @@ class Reports::InventoriesController < ApplicationController
 
   def show_rows_results_pdf
     @company = get_company_cost_center('company')
+    @cost_center = get_company_cost_center('cost_center')
     @user = current_user.id
 
     @report_type = params[:id][0,1]
@@ -207,16 +209,16 @@ class Reports::InventoriesController < ApplicationController
     case @kardex_type
       when "1"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_yearly(@company, 0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_yearly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
       when "2"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_monthly(@company, 0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_monthly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
       when "3"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_daily(@company, 0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_daily(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
       when "4"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_summary(@company, 0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_summary(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
     end    
 
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape, :margin => [10, 40, 50, 40] }
@@ -224,28 +226,29 @@ class Reports::InventoriesController < ApplicationController
 
   def show_group_results_pdf
     @company = get_company_cost_center('company')
+    @cost_center = get_company_cost_center('cost_center')
     @user = current_user.id
 
     @report_type = params[:id][0,1]
     @kardex_type = params[:id][1,1]
     @date_type = params[:id][2,1]
 
-    @since_date = Rails.cache.read('since_date')#Date.strptime("01/01/1900", '%d/%m/%Y')
-    @to_date = Rails.cache.read('to_date')  #Date.strptime("31/12/2050", '%d/%m/%Y')
+    @since_date = Rails.cache.read('since_date') #Date.strptime("01/01/1900", '%d/%m/%Y')
+    @to_date = Rails.cache.read('to_date') #Date.strptime("31/12/2050", '%d/%m/%Y')
 
     case @kardex_type
       when "1"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_yearly(@company, 0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_yearly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
       when "2"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_monthly(@company, 0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_monthly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
       when "3"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_daily(@company, 0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_daily(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
       when "4"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_summary(0, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_summary(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
     end    
     
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape, :margin => [10, 40, 50, 40] }

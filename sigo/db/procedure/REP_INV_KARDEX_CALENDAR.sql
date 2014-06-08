@@ -1,7 +1,9 @@
-DELIMITER //
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `REP_INV_KARDEX_CALENDAR`$$
 
 CREATE PROCEDURE REP_INV_KARDEX_CALENDAR
-(IN p_company INT, IN p_update_filter INT, IN p_report_type INT, IN p_kardex_type INT, IN p_user_id INT, IN p_from_date DATE, IN p_to_date DATE, IN p_cost_centers VARCHAR(500), IN p_warehouses VARCHAR(500), IN p_suppliers VARCHAR(500), IN p_responsibles VARCHAR(500), IN p_years VARCHAR(500), IN p_periods VARCHAR(500), IN p_formats VARCHAR(500), IN p_articles VARCHAR(500), IN p_moneys VARCHAR(500))
+(IN p_update_filter INT, IN p_company_id INT, IN p_cost_center INT, IN p_report_type INT, IN p_kardex_type INT, IN p_user_id INT, IN p_from_date DATE, IN p_to_date DATE, IN p_warehouses VARCHAR(500), IN p_suppliers VARCHAR(500), IN p_responsibles VARCHAR(500), IN p_years VARCHAR(500), IN p_periods VARCHAR(500), IN p_formats VARCHAR(500), IN p_articles VARCHAR(500), IN p_moneys VARCHAR(500))
 BEGIN
 
 DECLARE v_finished INTEGER DEFAULT FALSE;
@@ -12,20 +14,20 @@ declare v_i_amount, v_i_unit_cost, v_i_total_cost, v_o_amount, v_o_unit_cost, v_
 
 DEClARE cur_RepInvSummary CURSOR FOR 
       SELECT warehouse_id, warehouse_name, article_id, article_code, article_name, article_symbol, SUM(Case When input = 1 Then Amount Else 0 End) As I, Coalesce(SUM(Case When input = 1 Then Amount * Unit_Cost Else null End), 0) As i_TC, Coalesce(SUM(Case When input = 0 Then Amount Else 0 End), 0) As o_aomunt, Coalesce(SUM(Case When input = 0 Then Amount * Unit_Cost Else null End), 0) As o_TC
-	FROM	 TmpRepInv
-	GROUP BY warehouse_id, warehouse_name, article_id, article_code, article_name, article_symbol;
+  FROM   TmpRepInv
+  GROUP BY warehouse_id, warehouse_name, article_id, article_code, article_name, article_symbol;
 DEClARE cur_RepInvDaily CURSOR FOR 
       SELECT warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol, SUM(Case When input = 1 Then Amount Else 0 End) As I, Coalesce(SUM(Case When input = 1 Then Amount * Unit_Cost Else null End), 0) As i_TC, SUM(Case When input = 0 Then Amount Else 0 End) As o_aomunt, Coalesce(SUM(Case When input = 0 Then Amount * Unit_Cost Else null End), 0) As o_TC
-	FROM	 TmpRepInv
-	GROUP BY warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol;
+  FROM   TmpRepInv
+  GROUP BY warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol;
 DEClARE cur_RepInvMonthly CURSOR FOR 
       SELECT  warehouse_id, warehouse_name, year, period, article_id, article_code, article_name, article_symbol, SUM(Case When input = 1 Then Amount Else 0 End) As I, Coalesce(SUM(Case When input = 1 Then Amount * Unit_Cost Else null End), 0) As i_TC, SUM(Case When input = 0 Then Amount Else 0 End) As o_aomunt, Coalesce(SUM(Case When input = 0 Then Amount * Unit_Cost Else null End), 0) As o_TC
-	FROM	 TmpRepInv
-	GROUP BY warehouse_id, warehouse_name, year, period, article_id, article_code, article_name, article_symbol;
+  FROM   TmpRepInv
+  GROUP BY warehouse_id, warehouse_name, year, period, article_id, article_code, article_name, article_symbol;
 DEClARE cur_RepInvYearly CURSOR FOR 
       SELECT  warehouse_id, warehouse_name, year, article_id, article_code, article_name, article_symbol, SUM(Case When input = 1 Then Amount Else 0 End) As I, Coalesce(SUM(Case When input = 1 Then Amount * Unit_Cost Else null End), 0) As i_TC, SUM(Case When input = 0 Then Amount Else 0 End) As o_aomunt, Coalesce(SUM(Case When input = 0 Then Amount * Unit_Cost Else null End), 0) As o_TC
-	FROM	 TmpRepInv
-	GROUP BY warehouse_id, warehouse_name, year, article_id, article_code, article_name, article_symbol;
+  FROM   TmpRepInv
+  GROUP BY warehouse_id, warehouse_name, year, article_id, article_code, article_name, article_symbol;
 
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_finished = TRUE;
 
@@ -40,86 +42,97 @@ Create Table TmpRepInvGroup (warehouse_id int, warehouse_name varchar(256), year
 
 /* Create Filters Out Controller */
 IF  p_update_filter = 1 THEN
-	CALL REP_INV_KARDEX_FILTER(p_company, p_user_id, p_cost_centers, p_warehouses, p_suppliers, p_responsibles, p_years, p_periods, p_formats, p_articles, p_moneys);
+  CALL REP_INV_KARDEX_FILTER(p_company_id, p_user_id, p_cost_center, p_warehouses, p_suppliers, p_responsibles, p_years, p_periods, p_formats, p_articles, p_moneys);
 END IF;
 
 /* Report Inventory Temporal */
+# Stock Inputs
 INSERT INTO  TmpRepInv ( input, warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol, amount, unit_cost )
 SELECT
-`stock_inputs`.`input`,
-`stock_inputs`.`warehouse_id`,
-`warehouses`.`name` AS warehouse_name,
-`stock_inputs`.`year`,
-`stock_inputs`.`period`,
-`stock_inputs`.`issue_date`,
-`delivery_order_details`.`article_id` AS article_id,
-`articles`.`code` AS article_code,
-`articles`.`name` AS article_name,
-unit_of_measurements.symbol AS article_symbol,
-stock_input_details.amount,
-stock_input_details.unit_cost
-FROM `stock_input_details` 
-INNER JOIN `stock_inputs` ON `stock_inputs`.`id` = `stock_input_details`.`stock_input_id` AND `stock_inputs`.`status` = 'A'
-INNER JOIN `warehouses` ON `warehouses`.`id` = `stock_inputs`.`warehouse_id` AND `warehouses`.`status` = 'A'
-INNER JOIN `rep_inv_cost_centers` ON `rep_inv_cost_centers`.`id` = `warehouses`.`cost_center_id`
-INNER JOIN `rep_inv_warehouses` ON `rep_inv_warehouses`.`id` = `stock_inputs`.`warehouse_id`
-INNER JOIN `rep_inv_suppliers` ON `rep_inv_suppliers`.`id` = `stock_inputs`.`supplier_id`
-INNER JOIN `rep_inv_years` ON `rep_inv_years`.`id` = `stock_inputs`.`year`
-INNER JOIN `rep_inv_periods` ON `rep_inv_periods`.`id` = `stock_inputs`.`period` INNER JOIN `rep_inv_formats` ON `rep_inv_formats`.`id` = `stock_inputs`.`format_id`
-INNER JOIN `purchase_order_details` ON `purchase_order_details`.`id` = `stock_input_details`.`purchase_order_detail_id`
-INNER JOIN `delivery_order_details` ON `delivery_order_details`.`id` = `purchase_order_details`.`delivery_order_detail_id`
-INNER JOIN `articles` ON `articles`.`id` = `delivery_order_details`.`article_id`
-INNER JOIN `rep_inv_articles` `rep_inv_articles_delivery_order_details` ON `rep_inv_articles_delivery_order_details`.`id` = `delivery_order_details`.`article_id`
-INNER JOIN `unit_of_measurements` ON `unit_of_measurements`.`id` = `articles`.`unit_of_measurement_id`
-INNER JOIN `purchase_orders` ON `purchase_orders`.`id` = `purchase_order_details`.`purchase_order_id`
-INNER JOIN `rep_inv_moneys` ON `rep_inv_moneys`.`id` = `purchase_orders`.`money_id`
-WHERE `stock_inputs`.`input` = 1
-AND `stock_input_details`.`status` = 'A'
-AND `rep_inv_warehouses`.`user` =  p_user_id
-AND `rep_inv_suppliers`.`user` =  p_user_id
-AND `rep_inv_years`.`user` =  p_user_id
-AND `rep_inv_periods`.`user` =  p_user_id
-AND `rep_inv_formats`.`user` =  p_user_id
-AND `stock_inputs`.`issue_date` >=  p_from_date
-AND `stock_inputs`.`issue_date` <=  p_to_date
-AND `rep_inv_articles_delivery_order_details`.`user` = p_user_id
+si.`input`,
+si.`warehouse_id`,
+riw.`name` AS warehouse_name,
+si.`year`,
+si.`period`,
+si.`issue_date`,
+dod.`article_id` AS article_id,
+a.`code` AS article_code,
+a.`name` AS article_name,
+um.symbol AS article_symbol,
+sid.amount,
+sid.unit_cost
+FROM `stock_input_details` sid
+INNER JOIN `stock_inputs` si ON sid.`stock_input_id` = si.`id` AND si.`status` = 'A'
+#INNER JOIN `warehouses` w ON w.`id` = si.`warehouse_id`
+#INNER JOIN `rep_inv_cost_centers` ric ON ric.`id` = si.`cost_center_id`
+INNER JOIN `rep_inv_warehouses` riw ON si.`warehouse_id` = riw.`id`
+INNER JOIN `rep_inv_suppliers` ris ON si.`supplier_id` = ris.`id`
+INNER JOIN `rep_inv_years` riy ON si.`year` = riy.`id`
+INNER JOIN `rep_inv_periods` rip ON si.`period` = rip.`id`
+INNER JOIN `rep_inv_formats` rif ON si.`format_id` = rif.`id`
+INNER JOIN `purchase_order_details` pod ON sid.`purchase_order_detail_id` = pod.`id`
+INNER JOIN `delivery_order_details` dod ON pod.`delivery_order_detail_id` = dod.`id`
+INNER JOIN `rep_inv_articles` ria ON dod.`article_id` = ria.`id`
+INNER JOIN `articles` a ON a.`id` = dod.`article_id`
+INNER JOIN `unit_of_measurements` um ON um.`id` = a.`unit_of_measurement_id`
+#INNER JOIN `purchase_orders` po ON po.`id` = pod.`purchase_order_id`
+#INNER JOIN `rep_inv_moneys` rim ON rim.`id` = po.`money_id`
+WHERE si.`input` = 1
+AND si.`company_id` = p_company_id
+AND si.`cost_center_id` = p_cost_center
+AND sid.`status` = 'A'
+#AND ric.`user` =  p_user_id
+AND riw.`user` =  p_user_id
+AND ris.`user` =  p_user_id
+AND riy.`user` =  p_user_id
+AND rip.`user` =  p_user_id
+AND rif.`user` =  p_user_id
+AND ria.`user` = p_user_id
+#AND rim.`user` = p_user_id
+AND si.`issue_date` >=  p_from_date
+AND si.`issue_date` <=  p_to_date
 ORDER BY 5, 6, 9, 1 DESC;
 
+# Stock Outputs
 INSERT INTO  TmpRepInv ( input, warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol, amount, unit_cost )
 SELECT
-`stock_inputs`.`input`,
-`stock_inputs`.`warehouse_id`,
-`warehouses`.`name` AS warehouse_name,
-`stock_inputs`.`year`,
-`stock_inputs`.`period`,
-`stock_inputs`.`issue_date`,
-`stock_input_details`.`article_id` AS article_id,
-`articles`.`code` AS article_code,
-`articles`.`name` AS article_name,
-unit_of_measurements.symbol AS article_symbol,
-stock_input_details.amount,
-stock_input_details.unit_cost
-FROM `stock_input_details` 
-INNER JOIN `stock_inputs` ON `stock_inputs`.`id` = `stock_input_details`.`stock_input_id` AND `stock_inputs`.`status` = 'A'
-INNER JOIN `warehouses` ON `warehouses`.`id` = `stock_inputs`.`warehouse_id` AND `warehouses`.`status` = 'A'
-INNER JOIN `rep_inv_cost_centers` ON `rep_inv_cost_centers`.`id` = `warehouses`.`cost_center_id`
-INNER JOIN `rep_inv_warehouses` ON `rep_inv_warehouses`.`id` = `stock_inputs`.`warehouse_id`
-INNER JOIN `rep_inv_responsibles` ON `rep_inv_responsibles`.`id` = `stock_inputs`.`responsible_id`
-INNER JOIN `rep_inv_years` ON `rep_inv_years`.`id` = `stock_inputs`.`year`
-INNER JOIN `rep_inv_periods` ON `rep_inv_periods`.`id` = `stock_inputs`.`period` INNER JOIN `rep_inv_formats` ON `rep_inv_formats`.`id` = `stock_inputs`.`format_id`
-INNER JOIN `articles` ON `articles`.`id` = `stock_input_details`.`article_id`
-INNER JOIN `unit_of_measurements` ON `unit_of_measurements`.`id` = `articles`.`unit_of_measurement_id`
-INNER JOIN `rep_inv_articles` ON `rep_inv_articles`.`id` = `articles`.`id`
-WHERE `stock_inputs`.`input` = 0
-AND `stock_input_details`.`status` = 'A'
-AND `rep_inv_warehouses`.`user` =  p_user_id
-AND `rep_inv_responsibles`.`user` =  p_user_id
-AND `rep_inv_years`.`user` =  p_user_id
-AND `rep_inv_periods`.`user` =  p_user_id
-AND `rep_inv_formats`.`user` =  p_user_id
-AND `stock_inputs`.`issue_date` >=  p_from_date
-AND `stock_inputs`.`issue_date` <=  p_to_date
-AND `rep_inv_articles`.`user` = p_user_id
+si.`input`,
+si.`warehouse_id`,
+riw.`name` AS warehouse_name,
+si.`year`,
+si.`period`,
+si.`issue_date`,
+sid.`article_id` AS article_id,
+a.`code` AS article_code,
+a.`name` AS article_name,
+um.symbol AS article_symbol,
+sid.amount,
+sid.unit_cost
+FROM `stock_input_details` sid
+INNER JOIN `stock_inputs` si ON si.`id` = sid.`stock_input_id` AND si.`status` = 'A'
+#INNER JOIN `warehouses` w ON w.`id` = si.`warehouse_id`
+#INNER JOIN `rep_inv_cost_centers` ric ON ric.`id` = si.`cost_center_id`
+INNER JOIN `rep_inv_warehouses` riw ON si.`warehouse_id` = riw.`id`
+INNER JOIN `rep_inv_responsibles` rir ON si.`responsible_id` = rir.`id`
+INNER JOIN `rep_inv_years` riy ON si.`year` = riy.`id`
+INNER JOIN `rep_inv_periods` rip ON si.`period` = rip.`id`
+INNER JOIN `rep_inv_formats` rif ON si.`format_id` = rif.`id`
+INNER JOIN `rep_inv_articles` ria ON ria.`id` = sid.`article_id`
+INNER JOIN `articles` a ON a.`id` = sid.`article_id`
+INNER JOIN `unit_of_measurements` um ON um.`id` = a.`unit_of_measurement_id`
+WHERE si.`input` = 0
+AND si.`company_id` = p_company_id
+AND si.`cost_center_id` = p_cost_center
+AND sid.`status` = 'A'
+#AND ric.`user` =  p_user_id
+AND riw.`user` =  p_user_id
+AND rir.`user` =  p_user_id
+AND riy.`user` =  p_user_id
+AND rip.`user` =  p_user_id
+AND rif.`user` =  p_user_id
+AND ria.`user` = p_user_id
+AND si.`issue_date` >=  p_from_date
+AND si.`issue_date` <=  p_to_date
 
 ORDER BY 5, 6, 9, 1 DESC;
 
@@ -127,13 +140,13 @@ IF  p_report_type = 5 THEN
 CASE  p_kardex_type
     WHEN 4 THEN
       SELECT input, warehouse_id, warehouse_name, year, period, DATE_FORMAT(issue_date, '%d/%m/%Y'), article_id, article_code, article_name, article_symbol, amount, coalesce(unit_cost, 0), coalesce(amount * unit_cost, 0)
-	FROM	 TmpRepInv a
-	ORDER BY a.warehouse_id, a.article_id, a.year, a.period, a.issue_date, a.input;
+  FROM   TmpRepInv a
+  ORDER BY a.warehouse_id, a.article_id, a.year, a.period, a.issue_date, a.input;
     WHEN 3 THEN
       SELECT  input, warehouse_id, warehouse_name, year, period, DATE_FORMAT(issue_date, '%d/%m/%Y'), article_id, article_code, article_name, article_symbol, amount, case when amount = 0 then 0 else total_cost / amount end as total_cost, total_cost
        FROM (
        SELECT input, warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol, SUM(amount) as amount, coalesce(SUM(amount * unit_cost), 0) as total_cost
-	FROM	 TmpRepInv
+  FROM   TmpRepInv
        GROUP BY input, warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol
        ) a
        ORDER BY a.warehouse_id, a.article_id, a.year, a.period, a.issue_date, a.input;
@@ -141,18 +154,18 @@ CASE  p_kardex_type
           SELECT  input, warehouse_id, warehouse_name, year, period, article_id, article_code, article_name, article_symbol, amount, case when amount = 0 then 0 else total_cost / amount end as total_cost, total_cost
        FROM (
       SELECT  input, warehouse_id, warehouse_name, year, period, article_id, article_code, article_name, article_symbol, SUM(amount) as amount, coalesce(SUM(amount * unit_cost), 0) as total_cost
-	FROM	 TmpRepInv
-	GROUP BY input, warehouse_id, warehouse_name, year, period, article_id, article_code, article_name, article_symbol
+  FROM   TmpRepInv
+  GROUP BY input, warehouse_id, warehouse_name, year, period, article_id, article_code, article_name, article_symbol
        ) a
-	ORDER BY a.warehouse_id, a.article_id, a.year, a.period, a.input;
+  ORDER BY a.warehouse_id, a.article_id, a.year, a.period, a.input;
     WHEN 1 THEN
           SELECT  input, warehouse_id, warehouse_name, year, article_id, article_code, article_name, article_symbol, amount, case when amount = 0 then 0 else total_cost / amount end as total_cost, total_cost
        FROM (
       SELECT  input, warehouse_id, warehouse_name, year, article_id, article_code, article_name, article_symbol, SUM(amount) as amount, coalesce(SUM(amount * unit_cost), 0) as total_cost
-	FROM	 TmpRepInv
-	GROUP BY input, warehouse_id, warehouse_name, year, article_id, article_code, article_name, article_symbol
+  FROM   TmpRepInv
+  GROUP BY input, warehouse_id, warehouse_name, year, article_id, article_code, article_name, article_symbol
       ) a
-	ORDER BY a.warehouse_id, a.article_id, a.year, a.input;
+  ORDER BY a.warehouse_id, a.article_id, a.year, a.input;
 END CASE;
 END IF;
 
@@ -178,7 +191,7 @@ If v_o_amount > 0 Then
   SET v_o_unit_cost := v_o_total_cost / v_o_amount;
 End If;
 
--- build Report With Group
+-- Build Report With Group
 INSERT INTO  TmpRepInvGroup (warehouse_id, warehouse_name, article_id, article_code, article_name, article_symbol, i_amount, i_unit_cost, i_total_cost, o_amount, o_unit_cost, o_total_cost)
 VALUES ( v_warehouse_id, v_warehouse_name, v_article_id, v_article_code, v_article_name, v_article_symbol, v_i_amount, v_i_unit_cost, v_i_total_cost, v_o_amount, v_o_unit_cost, v_o_total_cost );
 
@@ -206,7 +219,7 @@ If v_o_amount > 0 Then
   SET v_o_unit_cost := v_o_total_cost / v_o_amount;
 End If;
 
--- build Report With Group
+-- Build Report With Group
 INSERT INTO  TmpRepInvGroup (warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol, i_amount, i_unit_cost, i_total_cost, o_amount, o_unit_cost, o_total_cost)
 VALUES ( v_warehouse_id, v_warehouse_name, v_year, v_period, v_issue_date, v_article_id, v_article_code, v_article_name, v_article_symbol, v_i_amount, v_i_unit_cost, v_i_total_cost, v_o_amount, v_o_unit_cost, v_o_total_cost );
 
@@ -234,7 +247,7 @@ If v_o_amount > 0 Then
   SET v_o_unit_cost := v_o_total_cost / v_o_amount;
 End If;
 
--- build Report With Group
+-- Build Report With Group
 INSERT INTO  TmpRepInvGroup (warehouse_id, warehouse_name, year, period, article_id, article_code, article_name, article_symbol, i_amount, i_unit_cost, i_total_cost, o_amount, o_unit_cost, o_total_cost)
 VALUES ( v_warehouse_id, v_warehouse_name, v_year, v_period, v_article_id, v_article_code, v_article_name, v_article_symbol, v_i_amount, v_i_unit_cost, v_i_total_cost, v_o_amount, v_o_unit_cost, v_o_total_cost );
 
@@ -262,7 +275,7 @@ If v_o_amount > 0 Then
   SET v_o_unit_cost := v_o_total_cost / v_o_amount;
 End If;
 
--- build Report With Group
+-- Build Report With Group
 INSERT INTO  TmpRepInvGroup (warehouse_id, warehouse_name, year, article_id, article_code, article_name, article_symbol, i_amount, i_unit_cost, i_total_cost, o_amount, o_unit_cost, o_total_cost)
 VALUES ( v_warehouse_id, v_warehouse_name, v_year, v_article_id, v_article_code, v_article_name, v_article_symbol, v_i_amount, v_i_unit_cost, v_i_total_cost, v_o_amount, v_o_unit_cost, v_o_total_cost );
 
@@ -272,10 +285,10 @@ CLOSE cur_RepInvYearly;
 END CASE;
 
 SELECT warehouse_id, warehouse_name, year, period, DATE_FORMAT(issue_date, '%d/%m/%Y'), article_id, article_code, article_name, article_symbol, i_amount, i_unit_cost, i_total_cost, o_amount, o_unit_cost, o_total_cost
-FROM	 TmpRepInvGroup;
+FROM   TmpRepInvGroup;
 
 END IF;
 
 
-END //
+END $$
 DELIMITER ;
