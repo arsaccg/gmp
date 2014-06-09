@@ -167,7 +167,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       AND poe.equipment_id = si.article_id
       AND poe.equipment_id = sed.article_id
       AND poed.working_group_id IN (" + working_group_id + ")
-      AND art.id IN (" + article + ")
+      AND art.id IN (" + article.to_s + ")
       GROUP BY art.name
     ")
     return last
@@ -225,21 +225,18 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     id =  Entity.find_by_name(params[:valuation_of_equipment]['name']).id
     if valuationofequipment.save
       updateParts(start_date,end_date,id)
-      flash[:notice] = "Se ha creado correctamente la valorizacion."
       redirect_to :action => :index, company_id: params[:company_id]
     else
       valuationofequipment.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
-      flash[:error] =  "Ha ocurrido un error en el sistema."
       redirect_to :action => :index, company_id: params[:company_id]
     end
   end
 
   def destroy
     valuationofequipment = ValuationOfEquipment.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente el trabajador."
     render :json => valuationofequipment
   end
 
@@ -260,6 +257,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @art << workerDetail[6]
     end
     @art = @art.join(',')
+    if @art==''
+      @art=0
+    end
     if params[:id]==nil
       if ValuationOfEquipment.where("name LIKE ? ", @name).last.present?
         thelast = ValuationOfEquipment.where("name LIKE ? ", @name).last

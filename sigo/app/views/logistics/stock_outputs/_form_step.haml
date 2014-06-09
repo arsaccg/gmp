@@ -89,7 +89,7 @@
               %select(name='stock_input[working_group_id]' class = 'select2 form-control' id = 'working_group-select' style='width:100%;padding: 0;border: none;')
                 - @working_groups.each do |x|
                   %option(value = "#{x.id}")
-                    = x.front_chief.name  rescue "" + " - " + x.master_builder.name  rescue "" + " - " + x.executor.name 
+                    = x.name
       .row
         .col-md-12
           .form-group
@@ -107,8 +107,8 @@
               .input-group
                 %select(name='stock_input[article_id]' class = 'select2 form-control' id = 'article-select' style='width:100%;padding: 0;border: none;')
                   - @articles.each do |x|
-                    %option(value = "#{x.id}")
-                      = x.code + " - " + x.name + " - " + x.unit_of_measurement.symbol
+                    %option(value = "#{x[0]}")
+                      = x[1] + " - " + x[4] + " - " + x[6]
           .col-md-2
             .form-group
               %label.control-label &nbsp;
