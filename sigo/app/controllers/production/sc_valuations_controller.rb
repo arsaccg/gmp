@@ -366,8 +366,9 @@ class Production::ScValuationsController < ApplicationController
     start_date = params[:start_date]
     end_date = params[:end_date]
     cad = params[:cad]
+    cost_center = get_company_cost_center('cost_center')
     @totalprice = 0
-    @workers_array = business_days_array(start_date, end_date, cad)
+    @workers_array = business_days_array(start_date, end_date, cad,cost_center)
     @workers_array.each do |workerDetail|
       @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
     end
@@ -377,9 +378,10 @@ class Production::ScValuationsController < ApplicationController
   def part_equipment
     start_date = params[:start_date]
     end_date = params[:end_date]
+    cost_center = get_company_cost_center('cost_center')
     cad = params[:cad]
     @totalprice3 = 0
-    @workers_array3 = business_days_array3(start_date, end_date, cad)
+    @workers_array3 = business_days_array3(start_date, end_date, cad,cost_center)
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
     end
