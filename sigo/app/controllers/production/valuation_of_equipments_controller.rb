@@ -167,7 +167,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       AND poe.equipment_id = si.article_id
       AND poe.equipment_id = sed.article_id
       AND poed.working_group_id IN (" + working_group_id + ")
-      AND art.id IN (" + article + ")
+      AND art.id IN (" + article.to_s + ")
       GROUP BY art.name
     ")
     return last
@@ -237,7 +237,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
   def destroy
     valuationofequipment = ValuationOfEquipment.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente el trabajador."
     render :json => valuationofequipment
   end
 
@@ -258,6 +257,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @art << workerDetail[6]
     end
     @art = @art.join(',')
+    if @art==''
+      @art=0
+    end
     if params[:id]==nil
       if ValuationOfEquipment.where("name LIKE ? ", @name).last.present?
         thelast = ValuationOfEquipment.where("name LIKE ? ", @name).last
