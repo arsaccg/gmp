@@ -345,7 +345,6 @@ class Production::ScValuationsController < ApplicationController
 
   def destroy
     scvaluation = ScValuation.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente el trabajador."
     render :json => scvaluation
   end
 

@@ -237,7 +237,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
   def destroy
     valuationofequipment = ValuationOfEquipment.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente el trabajador."
     render :json => valuationofequipment
   end
 
