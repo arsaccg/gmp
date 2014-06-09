@@ -44,14 +44,15 @@
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
-  pageSetUp();
   
-  $(document).ready(function () {
-    $('[data-toggle="confirmation"]').confirmation();
-  });
   // PAGE RELATED SCRIPTS
-
+  pageSetUp();
   loadDataTableScripts();
+
+  $(document).ready(function(){
+    $('[data-toggle="confirmation"]').confirmation()
+  });
+
   function loadDataTableScripts() {
 
     loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
@@ -79,14 +80,9 @@
     function dt_7() {
       loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
     }
-
   }
 
   function runDataTables() {
-
-    /*
-     * BASIC
-     */
     $('#dt_basic').dataTable({
       bProcessing  : true,
       sProcessing  : true,
@@ -98,5 +94,4 @@
       },
       sPaginationType : 'bootstrap_full'
     });
-
   }
