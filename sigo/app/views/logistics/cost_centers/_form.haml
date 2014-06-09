@@ -35,7 +35,7 @@
             %label.input{for: "company_id"}
               %select.form-control#category-select{:name =>"cost_center[company_id]", :style => "width:100%;padding: 0;border: none;"}
                 - @companies.each do |company|
-                  - if @costCenter.company_id == company.id
+                  - if @companyselected.to_i == company.id
                     %option{:value => "#{company.id}", :rel => "", :selected => true}
                       = company.name
                   - else
