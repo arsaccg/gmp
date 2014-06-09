@@ -17,6 +17,7 @@ class Logistics::CostCentersController < ApplicationController
   def new
     @costCenter = CostCenter.new
     @companies = Company.all
+    @companyselected = get_company_cost_center('company')
     render :new, layout: false
   end
 

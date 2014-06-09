@@ -1,8 +1,8 @@
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `REP_INV_KARDEX_CALENDAR`$$
+DROP PROCEDURE IF EXISTS `REP_INV_KARDEX_COST_CENTER`$$
 
-CREATE PROCEDURE REP_INV_KARDEX_CALENDAR
+CREATE PROCEDURE REP_INV_KARDEX_COST_CENTER
 (IN p_update_filter INT, IN p_company_id INT, IN p_cost_center INT, IN p_report_type INT, IN p_kardex_type INT, IN p_user_id INT, IN p_from_date DATE, IN p_to_date DATE, IN p_warehouses VARCHAR(500), IN p_suppliers VARCHAR(500), IN p_responsibles VARCHAR(500), IN p_years VARCHAR(500), IN p_periods VARCHAR(500), IN p_formats VARCHAR(500), IN p_articles VARCHAR(500), IN p_moneys VARCHAR(500))
 BEGIN
 
@@ -32,13 +32,13 @@ DEClARE cur_RepInvYearly CURSOR FOR
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_finished = TRUE;
 
 
-Drop Table If Exists TmpRepInv;
+Drop Temporary Table If Exists TmpRepInv;
 
-Create Table TmpRepInv (input int, warehouse_id int, warehouse_name varchar(256), year int, period int, issue_date date,  article_id int, article_code varchar(12), article_name varchar(256), article_symbol varchar(256), amount decimal(18,4), unit_cost decimal(18,4));
+Create Temporary Table TmpRepInv (input int, warehouse_id int, warehouse_name varchar(256), year int, period int, issue_date date,  article_id int, article_code varchar(12), article_name varchar(256), article_symbol varchar(256), amount decimal(18,4), unit_cost decimal(18,4)) ENGINE=memory;
 
-Drop Table If Exists TmpRepInvGroup;
+Drop Temporary Table If Exists TmpRepInvGroup;
 
-Create Table TmpRepInvGroup (warehouse_id int, warehouse_name varchar(256), year int, period int, issue_date date,  article_id int, article_code varchar(12), article_name varchar(256), article_symbol varchar(256), i_amount decimal(18,4), i_unit_cost decimal(18,4), i_total_cost decimal(18,4), o_amount decimal(18,4), o_unit_cost decimal(18,4), o_total_cost decimal(18,4));
+Create Temporary Table TmpRepInvGroup (warehouse_id int, warehouse_name varchar(256), year int, period int, issue_date date,  article_id int, article_code varchar(12), article_name varchar(256), article_symbol varchar(256), i_amount decimal(18,4), i_unit_cost decimal(18,4), i_total_cost decimal(18,4), o_amount decimal(18,4), o_unit_cost decimal(18,4), o_total_cost decimal(18,4)) ENGINE=memory;
 
 /* Create Filters Out Controller */
 IF  p_update_filter = 1 THEN
@@ -52,8 +52,8 @@ SELECT
 si.`input`,
 si.`warehouse_id`,
 riw.`name` AS warehouse_name,
-si.`year`,
-si.`period`,
+cct.`year`,
+cct.`period`,
 si.`issue_date`,
 dod.`article_id` AS article_id,
 a.`code` AS article_code,
@@ -63,8 +63,9 @@ sid.amount,
 sid.unit_cost
 FROM `stock_input_details` sid
 INNER JOIN `stock_inputs` si ON sid.`stock_input_id` = si.`id` AND si.`status` = 'A'
-#INNER JOIN `warehouses` w ON w.`id` = si.`warehouse_id`
+INNER JOIN `warehouses` w ON w.`id` = si.`warehouse_id`
 #INNER JOIN `rep_inv_cost_centers` ric ON ric.`id` = si.`cost_center_id`
+INNER JOIN `cost_center_timelines` cct ON cct.`cost_center_id` = w.`cost_center_id` AND cct.`date` = si.`issue_date`
 INNER JOIN `rep_inv_warehouses` riw ON si.`warehouse_id` = riw.`id`
 INNER JOIN `rep_inv_suppliers` ris ON si.`supplier_id` = ris.`id`
 INNER JOIN `rep_inv_years` riy ON si.`year` = riy.`id`
@@ -99,8 +100,8 @@ SELECT
 si.`input`,
 si.`warehouse_id`,
 riw.`name` AS warehouse_name,
-si.`year`,
-si.`period`,
+cct.`year`,
+cct.`period`,
 si.`issue_date`,
 sid.`article_id` AS article_id,
 a.`code` AS article_code,
@@ -110,8 +111,9 @@ sid.amount,
 sid.unit_cost
 FROM `stock_input_details` sid
 INNER JOIN `stock_inputs` si ON si.`id` = sid.`stock_input_id` AND si.`status` = 'A'
-#INNER JOIN `warehouses` w ON w.`id` = si.`warehouse_id`
+INNER JOIN `warehouses` w ON w.`id` = si.`warehouse_id`
 #INNER JOIN `rep_inv_cost_centers` ric ON ric.`id` = si.`cost_center_id`
+INNER JOIN `cost_center_timelines` cct ON cct.`cost_center_id` = w.`cost_center_id` AND cct.`date` = si.`issue_date`
 INNER JOIN `rep_inv_warehouses` riw ON si.`warehouse_id` = riw.`id`
 INNER JOIN `rep_inv_responsibles` rir ON si.`responsible_id` = rir.`id`
 INNER JOIN `rep_inv_years` riy ON si.`year` = riy.`id`

@@ -333,14 +333,12 @@ class Production::ScValuationsController < ApplicationController
     end_date = params[:sv_valuation]['end_date']
     if scvaluation.save
       updateParts(start_date,end_date)
-      flash[:notice] = "Se ha creado correctamente la valorizacion."
       redirect_to :action => :index, company_id: params[:company_id]
     else
       scvaluation.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
-      flash[:error] =  "Ha ocurrido un error en el sistema."
       redirect_to :action => :index, company_id: params[:company_id]
     end
   end

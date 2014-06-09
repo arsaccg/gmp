@@ -1,11 +1,13 @@
-DELIMITER //
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `REP_INV_KARDEX_FILTER`$$
 
 CREATE PROCEDURE REP_INV_KARDEX_FILTER
-(IN p_company INT, IN p_user_id INT, IN p_cost_centers VARCHAR(500), IN p_warehouses VARCHAR(500), IN p_suppliers VARCHAR(500), IN p_responsibles VARCHAR(500), IN p_years VARCHAR(500), IN p_periods VARCHAR(500), IN p_formats VARCHAR(500), IN p_articles VARCHAR(500), IN p_moneys VARCHAR(500))
+(IN p_company INT, IN p_user_id INT, IN p_cost_center INT, IN p_warehouses VARCHAR(500), IN p_suppliers VARCHAR(500), IN p_responsibles VARCHAR(500), IN p_years VARCHAR(500), IN p_periods VARCHAR(500), IN p_formats VARCHAR(500), IN p_articles VARCHAR(500), IN p_moneys VARCHAR(500))
 BEGIN
 
 /* Cost Centers */
-DELETE FROM rep_inv_cost_centers WHERE user = p_user_id;
+/*DELETE FROM rep_inv_cost_centers WHERE user = p_user_id;
 
 IF  p_cost_centers = '' THEN
 	INSERT INTO rep_inv_cost_centers (id, name, user, created_at)
@@ -19,7 +21,7 @@ ELSE
 	WHERE  company_id = p_company
         AND	 p_cost_centers LIKE CONCAT('%,', id, ',%');
 END IF;
-
+*/
 /* Warehouses */
 DELETE FROM rep_inv_warehouses WHERE user = p_user_id;
 
@@ -114,14 +116,12 @@ DELETE FROM rep_inv_formats WHERE user = p_user_id;
 IF  p_formats = '' THEN
 	INSERT INTO rep_inv_formats (id, name, user, created_at)
 	SELECT	 id, name, p_user_id, sysdate()
-	FROM	formats
-	WHERE status = 'A';
+	FROM	formats;
 ELSE
 	INSERT INTO rep_inv_formats (id, name, user, created_at)
 	SELECT	 id, name, p_user_id, sysdate()
 	FROM	formats
-	WHERE  status = 'A'
-	  AND	 p_formats LIKE CONCAT('%,', id, ',%');
+	WHERE   p_formats LIKE CONCAT('%,', id, ',%');
 END IF;
 
 /* Articles */
@@ -156,5 +156,5 @@ ELSE
 	WHERE  p_moneys LIKE CONCAT('%,', id, ',%');
 END IF;
 
-END //
+END $$
 DELIMITER ;

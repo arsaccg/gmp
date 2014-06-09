@@ -38,10 +38,10 @@
                 - @entities.each do |entity|
                   - if @worker.entity_id == entity.id
                     %option{:value => "#{entity.id}", :selected => true}
-                      = entity.name  + ' ' + entity.second_name rescue ''+ ' ' + entity.paternal_surname rescue '' + ' ' + entity.maternal_surname rescue '' 
+                      = entity.paternal_surname
                   - else
                     %option{:value => "#{entity.id}"}
-                      = entity.name  + ' ' + entity.second_name rescue '' + ' ' + entity.paternal_surname rescue '' + ' ' + entity.maternal_surname  rescue ''
+                      = entity.paternal_surname + ' ' + entity.maternal_surname + ', ' + entity.name
         .row
           %section.col.col-4
             %label.label Email

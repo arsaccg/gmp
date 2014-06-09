@@ -50,15 +50,15 @@
                     %label.radio-inline
                       %input.radiobox.style-0{:name =>'rad_kardex_type', :type => 'radio', :value => 1}
                       %span Anual
-            .row
-              .section.col.col-md-2
-                %label.label Centro Costo
-              .section.col.col-md-10
-                %label.input{for: "cos_center_id"}
-                %select#cost_center-select.form-control.select2{:name =>"report_inventory[cos_center_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Centro de Costos"}
-                  - @cost_centers.each do |x|
-                    %option{:value => "#{x.id}"}
-                      = x.name
+            //.row
+            //  .section.col.col-md-2
+            //    %label.label Centro Costo
+            //  .section.col.col-md-10
+            //    %label.input{for: "cos_center_id"}
+            //    %select#cost_center-select.form-control.select2{:name =>"report_inventory[cos_center_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Centro de Costos"}
+            //      - @cost_centers.each do |x|
+            //        %option{:value => "#{x.id}"}
+            //          = x.name
             .row
               .section.col.col-md-2
                 %label.label Almacén
@@ -78,7 +78,7 @@
                   - @suppliers.each do |x|
                     %option{:value => "#{x.id}"}
                       = x.name
-            .row#rowResponsible{:style => 'display: none'}
+            .row#rowResponsible
               .section.col.col-md-2
                 %label.label Responsable
               .section.col.col-md-10
@@ -288,7 +288,7 @@
         case 4:
           $('#rowKardexType').show();
           $('#rowSupplier').show();
-          $('#rowResponsible').hide();
+          $('#rowResponsible').show();
           $('#rowYear').show();
           $('#rowFormat').show();
           $('#rowDocument').hide();
