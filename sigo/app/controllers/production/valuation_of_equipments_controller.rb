@@ -225,14 +225,12 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     id =  Entity.find_by_name(params[:valuation_of_equipment]['name']).id
     if valuationofequipment.save
       updateParts(start_date,end_date,id)
-      flash[:notice] = "Se ha creado correctamente la valorizacion."
       redirect_to :action => :index, company_id: params[:company_id]
     else
       valuationofequipment.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
-      flash[:error] =  "Ha ocurrido un error en el sistema."
       redirect_to :action => :index, company_id: params[:company_id]
     end
   end
