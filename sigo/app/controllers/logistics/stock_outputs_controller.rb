@@ -33,9 +33,8 @@ class Logistics::StockOutputsController < ApplicationController
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
-    @articles = Article.all
+    @articles = Article.getSpecificArticlesforStockOutputs(@cost_center)
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
-    @phases = Phase.where("category LIKE 'phase'")
     @working_groups = WorkingGroup.all
     render layout: false
   end
@@ -88,16 +87,17 @@ class Logistics::StockOutputsController < ApplicationController
     @reg_n = Time.now.to_i
     data_article_unit = params[:article_id].split('-')
     @company_id = params[:company_id]
+    @cost_center = get_company_cost_center('cost_center')
     @article = Article.find(data_article_unit[0])
     @amount = params[:amount].to_i
     @sectors = Sector.all
-    @phases = Phase.where("category LIKE 'phase'")
+    @phases = Phase.getSpecificPhases(@cost_center)
     
     render(partial: 'add_item', :layout => false)
   end
 
   private
   def stock_input_parameters
-    params.require(:stock_input).permit(:responsible_id, :warehouse_id, :period, :format_id, :document, :issue_date, :description, :input, :phase_id, :working_group_id, :company_id, :cost_center_id, stock_input_details_attributes: [:id, :stock_input_id, :article_id, :amount, :sector_id, :phase_id, :equipment_id, :_destroy])
+    params.require(:stock_input).permit(:responsible_id, :warehouse_id, :period, :format_id, :document, :issue_date, :description, :input, :working_group_id, :company_id, :cost_center_id, stock_input_details_attributes: [:id, :stock_input_id, :article_id, :amount, :sector_id, :phase_id, :equipment_id, :_destroy])
   end
 end
