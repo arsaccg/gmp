@@ -240,6 +240,22 @@
                     %a{href: "#{logistics_documents_path}", title: "Documentos"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Documentos
+                  %li
+                    %a{href: "#{production_workers_path}", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Trabajadores
+                  %li
+                    %a{href: "#{production_category_of_workers_path}", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Categoria de Trabajadores
+                  %li
+                    %a{href: "#{production_position_workers_path}", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Cargo de Trabajadores
+                  %li
+                    %a{href: "#{production_working_groups_path}", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Grupos de Trabajo
           %li
             %a{href: "#", title: "Compañias"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
@@ -288,24 +304,9 @@
               %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Generales
+                  %span.menu-item-parent Contratos
                 %ul
-                  %li
-                    %a{href: "#{production_workers_path}", title: 'Trabajadores'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Trabajadores
-                  %li
-                    %a{href: "#{production_category_of_workers_path}", title: 'Trabajadores'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Categoria de Trabajadores
-                  %li
-                    %a{href: "#{production_position_workers_path}", title: 'Trabajadores'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Cargo de Trabajadores
-                  %li
-                    %a{href: "#{production_working_groups_path}", title: 'Trabajadores'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Grupos de Trabajo
+                  
                   %li
                     %a{href: "#{production_subcontract_inputs_path}", title: 'Insumos de Subcontratos'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
