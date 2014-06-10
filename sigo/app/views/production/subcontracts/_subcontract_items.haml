@@ -1,6 +1,12 @@
 %tr(class="subcontract_item"){id: "tr" + @reg_n.to_s}
   %td.article-id(style="display:none")
     = hidden_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article.to_i
+  %td.phase
+    %select.form-control{:name =>"subcontract[subcontract_details_attributes][#{@reg_n.to_s}][phase_id]"}
+      %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
+      - @phases.each do |phase|
+        %option{:value => "#{phase.id}"}
+          = phase.name
   %td.col-md-2
     = @name_article
   %td

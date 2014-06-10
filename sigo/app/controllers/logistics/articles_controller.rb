@@ -31,7 +31,7 @@ class Logistics::ArticlesController < ApplicationController
     articles = Article.getSpecificArticles(get_company_cost_center('cost_center'), display_length, pager_number)
 
     articles.each do |article|
-      array << [article[1],article[2],article[3],article[4],article[5],article[6], "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit', 'content', null, null, 'GET')> Editar </a>" + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/articles/" + article[0].to_s + "', 'content', '/logistics/articles') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item" + article[3].to_s + "' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"]
+      array << [article[1],article[2],article[3],article[4],article[5],article[6]]
     end
     render json: { :aaData => array }
   end
