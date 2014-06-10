@@ -55,6 +55,7 @@ class Production::SubcontractsController < ApplicationController
     @amount = params[:amount]
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @id_article = @article.id
     @name_article = @article.name
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).name
@@ -115,6 +116,7 @@ class Production::SubcontractsController < ApplicationController
         :id, 
         :subcontract_id, 
         :article_id, 
+        :phase_id, 
         :amount, 
         :unit_price, 
         :partial, 

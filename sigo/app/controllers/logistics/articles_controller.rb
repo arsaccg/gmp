@@ -31,7 +31,7 @@ class Logistics::ArticlesController < ApplicationController
     articles = Article.getSpecificArticles(get_company_cost_center('cost_center'), display_length, pager_number)
 
     articles.each do |article|
-      array << [article[1],article[2],article[3],article[4],article[5],article[6], "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit', 'content', null, null, 'GET')> Editar </a>" + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/articles/" + article[0].to_s + "', 'content', '/logistics/articles') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item" + article[3].to_s + "' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"]
+      array << [article[1],article[2],article[3],article[4],article[5],article[6]]
     end
     render json: { :aaData => array }
   end
@@ -39,23 +39,44 @@ class Logistics::ArticlesController < ApplicationController
   def display_articles
     display_length = params[:iDisplayLength]
     pager_number = params[:iDisplayStart]
+    @pagenumber = params[:iDisplayStart]
     array = Array.new
-    articles = ActiveRecord::Base.connection.execute("
-      SELECT a.id, 
-      a.code AS 'Codigo', 
-      toa.name AS 'Tipo de Articulo', 
-      c.name AS 'Especifico', 
-      a.name AS 'Nombre', 
-      a.description AS 'Descripcion', 
-      uom.name AS 'Unidad de Medida' 
-      FROM articles a, type_of_articles toa, categories c, unit_of_measurements uom 
-      WHERE a.type_of_article_id = toa.id 
-      AND a.category_id = c.id 
-      AND uom.id = a.unit_of_measurement_id 
-      LIMIT #{display_length}
-      OFFSET #{pager_number}"
-    )
-
+    puts @pagenumber.inspect
+    if @pagenumber == 'NaN'
+      articles = ActiveRecord::Base.connection.execute("
+        SELECT a.id, 
+        a.code AS 'Codigo', 
+        toa.name AS 'Tipo de Articulo', 
+        c.name AS 'Especifico', 
+        a.name AS 'Nombre', 
+        a.description AS 'Descripcion', 
+        uom.name AS 'Unidad de Medida' 
+        FROM articles a, type_of_articles toa, categories c, unit_of_measurements uom 
+        WHERE a.type_of_article_id = toa.id 
+        AND a.category_id = c.id 
+        AND uom.id = a.unit_of_measurement_id 
+        ORDER BY a.id DESC
+        LIMIT #{display_length}"
+      )
+      puts '-----Hola Soy NaN-----'
+    else
+      articles = ActiveRecord::Base.connection.execute("
+        SELECT a.id, 
+        a.code AS 'Codigo', 
+        toa.name AS 'Tipo de Articulo', 
+        c.name AS 'Especifico', 
+        a.name AS 'Nombre', 
+        a.description AS 'Descripcion', 
+        uom.name AS 'Unidad de Medida' 
+        FROM articles a, type_of_articles toa, categories c, unit_of_measurements uom 
+        WHERE a.type_of_article_id = toa.id 
+        AND a.category_id = c.id 
+        AND uom.id = a.unit_of_measurement_id 
+        LIMIT #{display_length}
+        OFFSET #{pager_number}"
+      )
+      puts '-----Chau------'
+    end
     articles.each do |article|
       array << [article[1],article[2],article[3],article[4],article[5],article[6], "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit', 'content', null, null, 'GET')> Editar </a>" + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/articles/" + article[0].to_s + "', 'content', '/logistics/articles') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item" + article[3].to_s + "' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"]
     end

@@ -117,12 +117,13 @@
           %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-articles" aria-describedby="data-table_info")
             %thead
               %tr
+                %th{:style => "width:30%"} Fase
                 %th Insumo
                 %th Unidad
                 %th Cantidad
                 %th Precio Unitario
                 %th Parcial
-                %th Descripción
+                %th{:style => "width:30%"} Descripción
                 %th Eliminar
             %tbody(id="article_items_table")
               -if @action=="edit"
@@ -132,6 +133,8 @@
                   %tr.part-equi_item{id: "tr" + @reg_n.to_s}
                     %td.article-id(style="display:none")
                       = sub.article_id
+                    %td.col-md-2
+                      = sub.phase.name rescue " "
                     %td.col-md-2
                       = sub.article.name rescue " "
                     %td
