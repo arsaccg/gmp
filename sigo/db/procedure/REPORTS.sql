@@ -52,11 +52,13 @@ BEGIN
   DECLARE measured_cursor CURSOR FOR 
     SELECT b.id, vi.itembybudget_id, vi.actual_measured 
     FROM `budgets` b, `itembybudgets` ibb, `valorizationitems` vi 
-  WHERE b.type_of_budget = 1 
-  AND b.cost_center_id = cost_center_id 
-  AND ibb.budget_id = b.id 
-  AND vi.itembybudget_id = ibb.id;
+    WHERE b.type_of_budget = 1 
+    AND b.cost_center_id = cost_center_id 
+    AND ibb.budget_id = b.id 
+    AND vi.itembybudget_id = ibb.id;
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  SET i_measured = 0;
 
   OPEN measured_cursor;
 
@@ -88,7 +90,11 @@ BEGIN
     ORDER BY category_id
       );
 
-      SET i_measured  = i_measured + (SELECT @i_measured);
+    IF @i_measured IS NULL THEN
+      SET @i_measured = 0;
+    END IF;
+
+    SET i_measured  = i_measured + @i_measured;
 
     END LOOP;
 

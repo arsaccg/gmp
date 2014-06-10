@@ -1,13 +1,64 @@
 #content-inside
   .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+    .col-md-2
+    .col-xs-12.col-sm-12.col-md-8.col-lg-12
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw
-        Reporte Semanal
-  %div
-    .jarviswidget-editbox
-    .widget-body.no-padding
-      .widget-body-toolbar
+        = "CUADRO DE ESTADO - " + Time.now.strftime("%B %Y")
+    .col-md-2
+  .row.col-md-2{ 'style' => 'width: 10%;' }
+    .widget-body
+      %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th{'colspan' => 4, "style"=>"text-align:center;padding-top: 93px;"}
+        %tbody
+          %tr
+            %th COSTO DIRECTO
+          %tr
+            %th{"style"=>"text-align:center"} MO
+          %tr
+            %th{"style"=>"text-align:center"} MAT
+          %tr
+            %th{"style"=>"text-align:center"} EQ
+          %tr
+            %th{"style"=>"text-align:center"} SC
+          %tr
+            %th GASTOS GENERALES
+          %tr
+            %th UTILIDAD
+          %tr
+            %th GASTOS DE GESTIÓN
+  .row.col-md-5
+    .widget-body
+      %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th{'colspan' => 4, "style"=>"text-align:center"} VENTA
+          %tr
+            %th{'colspan' => 2, "style"=>"text-align:center"} PROGRAMADO
+            %th{'colspan' => 2, "style"=>"text-align:center"} VALORIZADO
+          %tr
+            %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
+            %th{"style"=>"text-align:center"} Acumulado
+            %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
+            %th{"style"=>"text-align:center"} Acumulado
+        %tbody
+          %tr
+            %th{"style"=>"text-align:center"}= 0
+            %th{"style"=>"text-align:center"}= 0
+            %th{"style"=>"text-align:center"}= 0
+            %th{"style"=>"text-align:center"}= 0
+            
+          - @direct_cost.each do |cost|
+            %tr
+              %th{"style"=>"text-align:center"}= cost[0]
+              %th{"style"=>"text-align:center"}= cost[0]
+              %th{"style"=>"text-align:center"}= 0
+              %th{"style"=>"text-align:center"}= 0
+
+  .row.col-md-5
+    .widget-body
       %table#dt_basic.table.table-striped.table-bordered.table-hover
         %thead
           %tr
@@ -36,48 +87,15 @@
           %tr
             %th{"style"=>"text-align:center"}= @scvaluations.round(2) rescue 0
             %th{"style"=>"text-align:center"}= @scvaluations2.round(2) rescue 0
-  %div
-    .jarviswidget-editbox
-    .widget-body.no-padding
-      .widget-body-toolbar
-      %table#dt_basic.table.table-striped.table-bordered.table-hover
-        %thead
-          %tr
-            %th{'colspan' => 2, "style"=>"text-align:center"} Gastos Generales
-          %tr
-            %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
-            %th{"style"=>"text-align:center"} Acumulado
-        %tbody
+          // Gastos Generales
           %tr
             %th{"style"=>"text-align:center"}= (@partequipment3+@partpeople3+@orderofservice3).round(2) rescue 0
             %th{"style"=>"text-align:center"}= (@partequipment4+@partpeople4+@orderofservice4).round(2) rescue 0
-  %div
-    .jarviswidget-editbox
-    .widget-body.no-padding
-      .widget-body-toolbar
-      %table#dt_basic.table.table-striped.table-bordered.table-hover
-        %thead
-          %tr
-            %th{'colspan' => 2, "style"=>"text-align:center"} Utilidad
-          %tr
-            %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
-            %th{"style"=>"text-align:center"} Acumulado
-        %tbody
+          // Utilidad
           %tr
             %th{"style"=>"text-align:center"}= (@partequipment5+@partpeople5+@orderofservice5).round(2) rescue 0
             %th{"style"=>"text-align:center"}= (@partequipment6+@partpeople6+@orderofservice6).round(2) rescue 0
-  %div
-    .jarviswidget-editbox
-    .widget-body.no-padding
-      .widget-body-toolbar
-      %table#dt_basic.table.table-striped.table-bordered.table-hover
-        %thead
-          %tr
-            %th{'colspan' => 2, "style"=>"text-align:center"} Gastos de Gestión
-          %tr
-            %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
-            %th{"style"=>"text-align:center"} Acumulado
-        %tbody
+          // Gastos de Gestion
           %tr
             %th{"style"=>"text-align:center"}= (@partequipment7+@partpeople7+@orderofservice7).round(2) rescue 0
             %th{"style"=>"text-align:center"}= (@partequipment8+@partpeople8+@orderofservice8).round(2) rescue 0
