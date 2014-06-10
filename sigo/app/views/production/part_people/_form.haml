@@ -1,8 +1,8 @@
 #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
   %header
     %span.widget-icon
-      %i.fa.fa-eye
-    %h2 Subcontrato
+      %i.fa.fa-pencil-square-o.fa-fw
+    %h2 Nuevo Parte de Personal
   .widget-body
     = simple_form_for([:production, @partperson], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
@@ -22,13 +22,13 @@
                   - if @action == 'edit'
                     - if @partperson.working_group_id == working_group.id
                       %option{:value => "#{working_group.id}", :selected => true}
-                        = Worker.find(working_group.front_chief_id).entity.name rescue '' + ' ' + Worker.find(working_group.front_chief_id).entity.second_name + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name rescue '' + ' ' + Worker.find(working_group.master_builder_id).entity.second_name rescue ''
+                        = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname
                     - else
                       %option{:value => "#{working_group.id}"}
-                        = Worker.find(working_group.front_chief_id).entity.name rescue '' + ' ' + Worker.find(working_group.front_chief_id).entity.second_name rescue '' + ' - ' + Entity.find(working_group.executor_id).name rescue '' + ' - ' + Worker.find(working_group.master_builder_id).entity.name rescue '' + ' ' + Worker.find(working_group.master_builder_id).entity.second_name rescue ''
+                        = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname
                   - else
                     %option{:value => "#{working_group.id}"}
-                      = Worker.find(working_group.front_chief_id).entity.name rescue '' + ' ' + Worker.find(working_group.front_chief_id).entity.second_name  + ' - ' + Entity.find(working_group.executor_id).name  + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.second_name
+                      = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname
 
           %section.col.col-2
             %label.input{for: "date_of_creation"}
@@ -44,7 +44,7 @@
             %select#worker-select.select2.form-control(name='worker_id' style='width:100%;padding: 0;border: none;')
               - @workers.each do |worker|
                 %option(value = "#{worker.id}")
-                  = worker.article.name rescue '' + " - " + worker.entity.name rescue '' + " " + worker.entity.second_name rescue '' + " " + worker.entity.paternal_surname rescue '' + " " + worker.entity.maternal_surname rescue ''
+                  = worker.entity.dni + ' ' + worker.entity.name + ' ' + worker.entity.second_name + ' ' + worker.entity.paternal_surname + ' ' + worker.entity.maternal_surname + ' ' + worker.article.name
 
           %section.col.col-2
             %div
