@@ -87,32 +87,29 @@
             %th{"style"=>"text-align:center"} Acumulado
         %tbody
           %tr
-            %th{"style"=>"text-align:center"}= (@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations).round(2) rescue 0
-            %th{"style"=>"text-align:center"}= (@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2).round(2) rescue 0
+            %th{"style"=>"text-align:center"}= number_to_currency((@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency((@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2).round(2), unit: "S/. ")
           %tr
-            %th{"style"=>"text-align:center"}= @partwork.round(2) rescue 0
-            %th{"style"=>"text-align:center"}= @partwork2.round(2) rescue 0
+            %th{"style"=>"text-align:center"}= number_to_currency(@partwork.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@partwork2.round(2), unit: "S/. ")
           %tr
-            %th{"style"=>"text-align:center"}= @partequipment.round(2) rescue 0
-            %th{"style"=>"text-align:center"}= @partequipment2.round(2) rescue 0
+            %th{"style"=>"text-align:center"}= number_to_currency(@partequipment.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@partequipment2.round(2), unit: "S/. ")
           %tr
-            %th{"style"=>"text-align:center"}= @partpeople.round(2) rescue 0
-            %th{"style"=>"text-align:center"}= @partpeople2.round(2) rescue 0
+            %th{"style"=>"text-align:center"}= number_to_currency(@partpeople.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@partpeople2.round(2), unit: "S/. ")
           %tr
-            %th{"style"=>"text-align:center"}= @orderofservice.round(2) rescue 0
-            %th{"style"=>"text-align:center"}= @orderofservice2.round(2) rescue 0
-          %tr
-            %th{"style"=>"text-align:center"}= @scvaluations.round(2) rescue 0
-            %th{"style"=>"text-align:center"}= @scvaluations2.round(2) rescue 0
+            %th{"style"=>"text-align:center"}= number_to_currency(@orderofservice.round(2) + @scvaluations.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@orderofservice2.round(2) + @scvaluations.round(2), unit: "S/. ")
           // Gastos Generales
           %tr
-            %th{"style"=>"text-align:center"}= (@partequipment3+@partpeople3+@orderofservice3).round(2) rescue 0
-            %th{"style"=>"text-align:center"}= (@partequipment4+@partpeople4+@orderofservice4).round(2) rescue 0
+            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment3+@partpeople3+@orderofservice3).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment4+@partpeople4+@orderofservice4).round(2), unit: "S/. ")
           // Utilidad
           %tr
-            %th{"style"=>"text-align:center"}= (@partequipment5+@partpeople5+@orderofservice5).round(2) rescue 0
-            %th{"style"=>"text-align:center"}= (@partequipment6+@partpeople6+@orderofservice6).round(2) rescue 0
+            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment5+@partpeople5+@orderofservice5).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment6+@partpeople6+@orderofservice6).round(2), unit: "S/. ")
           // Gastos de Gestion
           %tr
-            %th{"style"=>"text-align:center"}= (@partequipment7+@partpeople7+@orderofservice7).round(2) rescue 0
-            %th{"style"=>"text-align:center"}= (@partequipment8+@partpeople8+@orderofservice8).round(2) rescue 0
+            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment7+@partpeople7+@orderofservice7).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment8+@partpeople8+@orderofservice8).round(2), unit: "S/. ")
