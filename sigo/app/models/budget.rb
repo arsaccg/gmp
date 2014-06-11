@@ -98,51 +98,7 @@ class Budget < ActiveRecord::Base
       #end
       #data_thread.join
         #arr.each {|t| t.join }
-    type = Budget.find_by_cod_budget(@cod).type_of_budget
-    puts "----------------------------------------------------------------------------------------------------------------------"
-    puts type
-    puts "----------------------------------------------------------------------------------------------------------------------"
-    puts "-------------------------------------------crear tabla en adelante----------------------------------------------------"
-    if type == "0"
-      cost_center=Budget.find_by_cod_budget(@cod).cost_center_id
-      @cost_center = CostCenter.find(cost_center)
-      ActiveRecord::Base.connection.execute("DROP TABLE IF EXISTS articles_from_"+@cost_center.name.downcase.tr(' ', '_')+";")
-      ActiveRecord::Base.connection.execute("
-        CREATE TABLE articles_from_"+@cost_center.name.downcase.tr(' ', '_')+" 
-          (
-            id int(11),
-            code varchar(255),
-            type_of_article_id int(11),
-            category_id int(11),
-            name varchar(255),
-            description varchar(255),
-            unit_of_measurement_id int(11),
-            cost_center_id int(11)
-          );")
-      @match= ActiveRecord::Base.connection.execute("
-              SELECT DISTINCT a.id, a.code, toa.id, c.id, a.name, a.description, u.id
-              FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u, type_of_articles toa, categories c
-              WHERE b.id = ibi.budget_id
-              AND b.type_of_budget =0
-              AND b.cost_center_id = #{cost_center_id}
-              AND ibi.article_id = a.id
-              AND a.unit_of_measurement_id = u.id
-              AND a.category_id = c.id 
-              AND u.id = a.unit_of_measurement_id
-              AND toa.id = a.type_of_article_id
-            ")
-      @match.each do |art|
-        if art[5]==nil
-          desc="No hay descripción para este artículo"
-        else
-          desc=art[5]
-        end
-        ActiveRecord::Base.connection.execute("
-          INSERT INTO articles_from_"+@cost_center.name.downcase.tr(' ', '_')+"
-          VALUES ("+art[0].to_i.to_s+",'"+art[1].to_s+"',"+art[2].to_i.to_s+","+art[3].to_i.to_s+",'"+art[4].to_s+"','"+desc.to_s+"',"+art[6].to_i.to_s+","+@cost_center.id.to_i.to_s+")
-        ")
-      end
-    end
+    
   end
 end
 
