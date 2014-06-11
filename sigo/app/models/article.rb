@@ -12,7 +12,6 @@ class Article < ActiveRecord::Base
   	has_many :workers
 	  has_many :part_work_details
     
-  	has_one :subcontract_input
     
     has_many :inputbybudgetanditems
   	belongs_to :category
