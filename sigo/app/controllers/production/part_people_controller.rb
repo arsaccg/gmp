@@ -56,6 +56,7 @@ class Production::PartPeopleController < ApplicationController
   def edit
     @partperson = PartPerson.find(params[:id])
     @reg_n = Time.now.to_i
+    @numbercode = @partperson.number_part
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
     @action = 'edit'
