@@ -134,11 +134,13 @@ class Reports::ReportofthemonthsController < ApplicationController
     end
 
     # Venta Valorizada
-
+    @acumulated_valorized_sale_current_month = 0
     @direct_cost = Array.new
     4.times do |index|
       index += 1
-      @direct_cost << [get_valorized_sale(index, @cost_center)]
+      current_valorized = get_valorized_sale(index, @cost_center)
+      @direct_cost << [current_valorized]
+      @acumulated_valorized_sale_current_month += current_valorized
     end
 
 		render layout: false
@@ -221,7 +223,7 @@ class Reports::ReportofthemonthsController < ApplicationController
     result = ""
     mysql_result = ActiveRecord::Base.connection.execute("SELECT get_valorized_sale(" + type_article.to_s + "," + cost_center_id.to_s + ") FROM DUAL;")
     mysql_result.each do |mysql|
-      result = mysql.to_s
+      result = mysql[0]
     end
     return result
   end
