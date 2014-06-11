@@ -3,6 +3,7 @@ class Phase < ActiveRecord::Base
   has_many :deliver_orders
   has_many :part_person_details
   has_many :part_of_equipment_details
+  has_many :subcontract_details
   has_many :wbsitems
   
   #Validaciones

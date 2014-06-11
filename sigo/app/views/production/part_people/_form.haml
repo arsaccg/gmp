@@ -11,7 +11,7 @@
         .row
           %section.col.col-2
             %label.input{for: "number_part"}
-              = f.input :number_part, placeholder: "Numero", input_html: { class: 'form-control' }, label: false
+              = f.input :number_part, placeholder: "Numero", input_html: {:value => "#{@numbercode}", class: 'form-control' }, label: false
 
           %section.col.col-8
             %label.input{for: "working_group_id"}
@@ -44,7 +44,7 @@
             %select#worker-select.select2.form-control(name='worker_id' style='width:100%;padding: 0;border: none;')
               - @workers.each do |worker|
                 %option(value = "#{worker.id}")
-                  = worker.entity.dni + ' ' + worker.entity.name + ' ' + worker.entity.second_name + ' ' + worker.entity.paternal_surname + ' ' + worker.entity.maternal_surname + ' ' + worker.article.name
+                  = worker.entity.dni.to_s + ' - ' + worker.entity.name.to_s + ' ' + worker.entity.second_name.to_s + ' ' + worker.entity.paternal_surname.to_s + ' ' + worker.entity.maternal_surname.to_s + ' - ' + worker.article.name.to_s
 
           %section.col.col-2
             %div
@@ -76,16 +76,16 @@
                     %td.col-2=oos.phase.name
                     %td.normal-hours
                       %div
-                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][normal_hours]', oos.normal_hours , class: "form-control normal-hours", onfocusout: "calculateHours(this, 'normal');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
+                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][normal_hours]', oos.normal_hours , class: "form-control normal-hours", onfocusout: "calculateHours(this, 'normal');", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
                     %td.he-60
                       %div
-                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][he_60]', oos.he_60 , class: "form-control he-60", onfocusout: "calculateHours(this, '60');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
+                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][he_60]', oos.he_60 , class: "form-control he-60", onfocusout: "calculateHours(this, '60');", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
                     %td.he-100
                       %div
-                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][he_100]', oos.he_100 , class: "form-control he-100", onfocusout: "calculateHours(this, '100');", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
+                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][he_100]', oos.he_100 , class: "form-control he-100", onfocusout: "calculateHours(this, '100');", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
                     %td.total-hours
                       %div
-                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][total_hours]', oos.total_hours , class: "form-control total-hours", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 24)", readonly: true
+                        = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][total_hours]', oos.total_hours , class: "form-control total-hours", onchange: "this.value = minmax(this.value, 0, 24)", readonly: true
                     %td(style="display:none")
                       = hidden_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td.delete-item
@@ -171,19 +171,19 @@
         if($(element).val()==""){
           h_normal = 0;
         }else{
-          h_normal = parseInt($(element).val());
+          h_normal = parseFloat($(element).val());
         }
 
         if($(element).parent().parent().siblings('.he-60').find('input').val()==""){
           he_60 =0;
         }else{
-          he_60 = parseInt($(element).parent().parent().siblings('.he-60').find('input').val());
+          he_60 = parseFloat($(element).parent().parent().siblings('.he-60').find('input').val());
         }
 
         if($(element).parent().parent().siblings('.he-100').find('input').val()==""){
           he_100 = 0;
         }else{
-          he_100 = parseInt($(element).parent().parent().siblings('.he-100').find('input').val());
+          he_100 = parseFloat($(element).parent().parent().siblings('.he-100').find('input').val());
         }
 
         total_hours = h_normal + he_60 + he_100;
@@ -202,19 +202,19 @@
         if($(element).parent().parent().siblings('.normal-hours').find('input').val()==""){
           h_normal = 0;
         }else{
-          h_normal = parseInt($(element).parent().parent().siblings('.normal-hours').find('input').val());
+          h_normal = parseFloat($(element).parent().parent().siblings('.normal-hours').find('input').val());
         }
 
         if($(element).val()==""){
           he_60 =0;
         }else{
-          he_60 = parseInt($(element).val());
+          he_60 = parseFloat($(element).val());
         }
 
         if($(element).parent().parent().siblings('.he-100').find('input').val()==""){
           he_100 = 0;
         }else{
-          he_100 = parseInt($(element).parent().parent().siblings('.he-100').find('input').val());
+          he_100 = parseFloat($(element).parent().parent().siblings('.he-100').find('input').val());
         }
 
         total_hours = h_normal + he_60 + he_100;
@@ -233,19 +233,19 @@
         if($(element).parent().parent().siblings('.normal-hours').find('input').val()==""){
           h_normal = 0;
         }else{
-          h_normal = parseInt($(element).parent().parent().siblings('.normal-hours').find('input').val());
+          h_normal = parseFloat($(element).parent().parent().siblings('.normal-hours').find('input').val());
         }
 
         if($(element).parent().parent().siblings('.he-60').find('input').val()==""){
           he_60 =0;
         }else{
-          he_60 = parseInt($(element).parent().parent().siblings('.he-60').find('input').val());
+          he_60 = parseFloat($(element).parent().parent().siblings('.he-60').find('input').val());
         }
 
         if($(element).val()==""){
           he_100 = 0;
         }else{
-          he_100 = parseInt($(element).val());
+          he_100 = parseFloat($(element).val());
         }
 
         total_hours = h_normal + he_60 + he_100;
@@ -262,20 +262,11 @@
   }
 
   function minmax(value, min, max){
-    if(parseInt(value) < min || isNaN(value)) 
+    if(parseFloat(value) < min || isNaN(value)) 
       return min; 
-    else if(parseInt(value) > max) 
+    else if(parseFloat(value) > max) 
       return max; 
     else return value;
-  }
-
-  function isNumber(evt) {
-    evt = (evt) ? evt : window.event;
-    var charCode = (evt.which) ? evt.which : evt.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-        return false;
-    }
-    return true;
   }
 
   function delete_item(code){

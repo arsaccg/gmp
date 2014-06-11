@@ -7,48 +7,48 @@ class Reports::ReportofthemonthsController < ApplicationController
   	@dia2 = @d.at_end_of_month.strftime
     @cost_center = get_company_cost_center('cost_center')
 
-		@part_work = part_work(@dia, @dia2, @cost_center)
-		@part_work.each do |workerDetail|
+    @part_work = part_work(@dia, @dia2, @cost_center)
+    @part_work.each do |workerDetail|
       @partwork = workerDetail[0]
     end
     @part_work2 = part_work2(@dia2, @cost_center)
-		@part_work2.each do |workerDetail|
+    @part_work2.each do |workerDetail|
       @partwork2 = workerDetail[0]
     end
 
-		@part_equipment = part_equipment(@dia, @dia2, @cost_center, '1', '8999')
-		@part_equipment.each do |workerDetail|
+    @part_equipment = part_equipment(@dia, @dia2, @cost_center, '1', '8999')
+    @part_equipment.each do |workerDetail|
       @partequipment = workerDetail[0]
     end
     @part_equipment2 = part_equipment2(@dia2, @cost_center, '1', '8999')
-		@part_equipment2.each do |workerDetail|
+    @part_equipment2.each do |workerDetail|
       @partequipment2 = workerDetail[0]
     end
 
-		@part_people = part_people(@dia, @dia2, @cost_center, '1', '8999')
-		@part_people.each do |workerDetail|
+    @part_people = part_people(@dia, @dia2, @cost_center, '1', '8999')
+    @part_people.each do |workerDetail|
       @partpeople = workerDetail[0]
     end
     @part_people2 = part_people2(@dia2, @cost_center, '1', '8999')
-		@part_people2.each do |workerDetail|
+    @part_people2.each do |workerDetail|
       @partpeople2 = workerDetail[0]
     end
 
-		@order_of_service = order_of_service(@dia, @dia2, @cost_center, '1', '8999')
-		@order_of_service.each do |workerDetail|
+    @order_of_service = order_of_service(@dia, @dia2, @cost_center, '1', '8999')
+    @order_of_service.each do |workerDetail|
       @orderofservice = workerDetail[0]
     end
     @order_of_service2 = order_of_service2(@dia2, @cost_center, '1', '8999')
-		@order_of_service2.each do |workerDetail|
+    @order_of_service2.each do |workerDetail|
       @orderofservice2 = workerDetail[0]
     end
 
-		@sc_valuations = sc_valuations(@dia, @dia2, @cost_center)
-		@sc_valuations.each do |workerDetail|
+    @sc_valuations = sc_valuations(@dia, @dia2, @cost_center)
+    @sc_valuations.each do |workerDetail|
       @scvaluations = workerDetail[0]
     end
     @sc_valuations2 = sc_valuations2(@dia2, @cost_center)
-		@sc_valuations2.each do |workerDetail|
+    @sc_valuations2.each do |workerDetail|
       @scvaluations2 = workerDetail[0]
     end
    
@@ -132,6 +132,15 @@ class Reports::ReportofthemonthsController < ApplicationController
     @order_of_service8.each do |workerDetail|
       @orderofservice8 = workerDetail[0]
     end
+
+    # Venta Valorizada
+
+    @direct_cost = Array.new
+    4.times do |index|
+      index += 1
+      @direct_cost << [get_valorized_sale(index, @cost_center)]
+    end
+
 		render layout: false
   end
 
@@ -203,6 +212,18 @@ class Reports::ReportofthemonthsController < ApplicationController
       SELECT scValuations2('" + end_date + "'," + working_group_id + ") FROM DUAL
     ")
     return workers_array3
+  end
+
+
+  # Venta Valorizada
+
+  def get_valorized_sale(type_article, cost_center_id)
+    result = ""
+    mysql_result = ActiveRecord::Base.connection.execute("SELECT get_valorized_sale(" + type_article.to_s + "," + cost_center_id.to_s + ") FROM DUAL;")
+    mysql_result.each do |mysql|
+      result = mysql.to_s
+    end
+    return result
   end
 
 end

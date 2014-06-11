@@ -15,6 +15,9 @@ class Production::PartPeopleController < ApplicationController
   end
 
   def new
+    @partpersonlast = PartPerson.count
+    @numbercode = @partpersonlast+1
+    @numbercode = @numbercode.to_s.rjust(5,'0')
     @partperson = PartPerson.new
     @working_groups = WorkingGroup.all
     @workers = Worker.all
