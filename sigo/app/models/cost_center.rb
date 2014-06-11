@@ -11,7 +11,6 @@ class CostCenter < ActiveRecord::Base
 	has_many :working_groups
 	has_many :sectors
 	has_many :workers
-	has_many :subcontract_inputs
 	has_many :subcontracts
 	has_many :subcontract_equipments
 	has_many :part_works

@@ -10,8 +10,8 @@ BEGIN
   DECLARE v_total FLOAT; 
   DECLARE v_sum FLOAT;
   DECLARE quantity_cursor CURSOR FOR 
-    SELECT pwd.bill_of_quantitties*si.price as `total`
-    FROM `part_works` pw, `part_work_details` pwd, `articles` art, `subcontract_inputs` si
+    SELECT pwd.bill_of_quantitties*si.unit_price as `total`
+    FROM `part_works` pw, `part_work_details` pwd, `articles` art, `subcontract_details` si
     WHERE pw.date_of_creation BETWEEN start_date AND end_date
   AND pw.id = pwd.part_work_id
   AND pwd.article_id = art.id
@@ -45,8 +45,8 @@ BEGIN
   DECLARE v_total FLOAT; 
   DECLARE v_sum FLOAT;
   DECLARE quantity_cursor CURSOR FOR 
-    SELECT pwd.bill_of_quantitties*si.price as `total`
-    FROM `part_works` pw, `part_work_details` pwd, `articles` art, `subcontract_inputs` si
+    SELECT pwd.bill_of_quantitties*si.unit_price as `total`
+    FROM `part_works` pw, `part_work_details` pwd, `articles` art, `subcontract_details` si
     WHERE pw.date_of_creation < end_date
   AND pw.id = pwd.part_work_id
   AND pwd.article_id = art.id
@@ -80,8 +80,8 @@ BEGIN
   DECLARE v_total FLOAT; 
   DECLARE v_sum FLOAT;
   DECLARE quantity_cursor CURSOR FOR 
-    SELECT poed.effective_hours*si.price as `total`
-    FROM `part_of_equipments` poe, `part_of_equipment_details` poed, `articles` art, `subcontract_inputs` si
+    SELECT poed.effective_hours*si.price_no_igv as `total`
+    FROM `part_of_equipments` poe, `part_of_equipment_details` poed, `articles` art, `subcontract_equipment_details` si
     WHERE poe.date BETWEEN start_date AND end_date
   AND poe.id = poed.part_of_equipment_id
   AND poe.equipment_id = art.id
@@ -116,8 +116,8 @@ BEGIN
   DECLARE v_total FLOAT; 
   DECLARE v_sum FLOAT;
   DECLARE quantity_cursor CURSOR FOR 
-    SELECT poed.effective_hours*si.price as `total`
-    FROM `part_of_equipments` poe, `part_of_equipment_details` poed, `articles` art, `subcontract_inputs` si
+    SELECT poed.effective_hours*si.price_no_igv as `total`
+    FROM `part_of_equipments` poe, `part_of_equipment_details` poed, `articles` art, `subcontract_equipment_details` si
     WHERE poe.date < end_date
   AND poe.id = poed.part_of_equipment_id
   AND poe.equipment_id = art.id

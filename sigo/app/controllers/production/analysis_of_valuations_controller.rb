@@ -120,10 +120,10 @@ class Production::AnalysisOfValuationsController < ApplicationController
         art.name, 
         uom.name, 
         SUM( pwd.bill_of_quantitties ), 
-        si.price, 
-        si.price*SUM( pwd.bill_of_quantitties ), 
+        si.unit_price, 
+        si.unit_price*SUM( pwd.bill_of_quantitties ), 
         p.date_of_creation 
-      FROM part_works p, part_work_details pwd, articles art, unit_of_measurements uom, subcontract_inputs si
+      FROM part_works p, part_work_details pwd, articles art, unit_of_measurements uom, subcontract_details si
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.sector_id IN(" + sector_id + ")
       AND p.working_group_id IN(" + working_group_id + ")
@@ -141,9 +141,9 @@ class Production::AnalysisOfValuationsController < ApplicationController
       SELECT  art.name, 
       uom.name, 
       SUM( poed.effective_hours ), 
-      si.price, 
-      si.price*SUM( poed.effective_hours) 
-      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_inputs si
+      si.price_no_igv, 
+      si.price_no_igv*SUM( poed.effective_hours) 
+      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_equipment_details si
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poed.sector_id IN(" + sector_id + ")
       AND poe.id=poed.part_of_equipment_id

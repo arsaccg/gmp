@@ -133,17 +133,17 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       SELECT  art.name, 
       uom.name, 
       SUM( poed.effective_hours ), 
-      si.price, 
-      si.price*SUM( poed.effective_hours), 
+      sed.price_no_igv, 
+      sed.price_no_igv*SUM( poed.effective_hours), 
       sed.code, 
       art.id 
-      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_inputs si, subcontract_equipment_details sed
+      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_equipment_details sed
       WHERE poe.date >= '" + start_date + "' AND poe.date <= '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.equipment_id=art.id
       AND poe.cost_center_id = '"+ cost_center +"'
       AND si.cost_center_id = '"+ cost_center +"'
-      AND poe.equipment_id=si.article_id
+      AND poe.equipment_id=sed.article_id
       AND uom.id = art.unit_of_measurement_id
       AND poe.subcontract_equipment_id = sed.subcontract_equipment_id
       AND art.id = sed.article_id
@@ -156,7 +156,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   def last(end_date, working_group_id, article, cost_center)
     last = ActiveRecord::Base.connection.execute("
       SELECT art.name, SUM( poed.effective_hours ) , si.price*SUM( poed.effective_hours )
-      FROM articles art, part_of_equipments poe, part_of_equipment_details poed, subcontract_inputs si, subcontract_equipment_details sed
+      FROM articles art, part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
       WHERE poe.date <  '" + end_date.to_s + "'
       AND poe.block =1
       AND poe.subcontract_equipment_id = sed.id
@@ -164,7 +164,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       AND poe.id = poed.part_of_equipment_id
       AND poe.cost_center_id = '"+ cost_center +"'
       AND si.cost_center_id = '"+ cost_center +"'
-      AND poe.equipment_id = si.article_id
       AND poe.equipment_id = sed.article_id
       AND poed.working_group_id IN (" + working_group_id + ")
       AND art.id IN (" + article.to_s + ")
