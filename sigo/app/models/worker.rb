@@ -16,4 +16,12 @@ class Worker < ActiveRecord::Base
 	def self.find_name_master_builder(master_builder_id)
 	  return Worker.find(master_builder_id).first_name + ' ' + Worker.find(master_builder_id).second_name + ' ' + Worker.find(master_builder_id).paternal_surname + ' ' + Worker.find(master_builder_id).maternal_surname
 	end
+
+	state_machine :state, :initial => :disapproved do
+
+    event :approve do
+      transition :disapproved => :approved
+    end
+
+  end
 end

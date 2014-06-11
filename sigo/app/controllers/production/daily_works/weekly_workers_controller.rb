@@ -1,4 +1,6 @@
 class Production::DailyWorks::WeeklyWorkersController < ApplicationController
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
   	@workingGroups = WorkingGroup.all
     @weeklyworker = WeeklyWorker.all
@@ -6,17 +8,25 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   end
   def create
     weekly_worker = WeeklyWorker.new(weekly_table_parameters)
+    weekly_worker.state
     if weekly_worker.save
-      flash[:notice] = "Se ha creado correctamente el tareo semanal de obreros."
       redirect_to :action => :index, company_id: params[:company_id]
     else
       weekly_worker.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
-      flash[:error] =  "Ha ocurrido un error en el sistema."
       redirect_to :action => :index, company_id: params[:company_id]
     end
+  end
+
+  def approve
+    start_date = params[:start_date].inspect
+    end_date = params[:end_date].inspect
+    updateParts(start_date,end_date)
+    weekly_worker = WeeklyWorker.find(params[:id])
+    weekly_worker.approve
+    redirect_to :action => :index
   end
 
   def destroy
@@ -74,7 +84,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
 
     personals_array = []
     trabajadores_array = []
-    partediariodepersonals = PartPerson.where("working_group_id IN (?) and date_of_creation BETWEEN ? AND ?", working_group_id,start_date,end_date)
+    partediariodepersonals = PartPerson.where("working_group_id IN (?) and block2 = 1 and date_of_creation BETWEEN ? AND ?", working_group_id,start_date,end_date)
     partediariodepersonals.each do |partediariodepersonal|
       partediariodepersonal.part_person_details.each do |trabajador_detalle|
         trabajadore = trabajador_detalle.worker
@@ -106,6 +116,12 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     end
     return filter_array_business_days(trabajadores_array)
 
+  end
+
+  def updateParts(start_date, end_date)
+    ActiveRecord::Base.connection.execute("
+      Update part_people set block2 = 1 where date_of_creation BETWEEN " + start_date + " AND " + end_date + "
+    ")
   end
 
   def filter_array_business_days(array_order)
