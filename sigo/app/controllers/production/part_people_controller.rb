@@ -48,7 +48,7 @@ class Production::PartPeopleController < ApplicationController
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @worker = Worker.find(params[:worker_id])
     @id_worker = @worker.id
-    @name_worker = @worker.entity.name + ' ' + @worker.entity.second_name + ' ' + @worker.entity.paternal_surname + ' ' + @worker.entity.maternal_surname
+    @name_worker = @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s + ' ' + @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s
     @category_worker = @worker.article.name
     render(partial: 'part_people_items', :layout => false)
   end

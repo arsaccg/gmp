@@ -55,7 +55,7 @@ class Production::SubcontractsController < ApplicationController
     @amount = params[:amount]
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
-    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @prebudgets = getsc_prebudgets()
     @id_article = @article.id
     @name_article = @article.name
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).name
@@ -97,6 +97,18 @@ class Production::SubcontractsController < ApplicationController
     subcontract = Subcontract.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el Grupo de Trabajo."
     render :json => subcontract
+  end
+
+  def getsc_prebudgets()
+    valuationgroup = ActiveRecord::Base.connection.execute("
+      SELECT ibb.order, ibb.id, ibb.subbudgetdetail 
+      FROM itembybudgets ibb , budgets bg 
+      WHERE bg.id = ibb.budget_id 
+      AND bg.type_of_budget LIKE '0' 
+      AND ibb.measured IS NOT NULL
+      GROUP BY ibb.order
+    ")
+    return valuationgroup
   end
 
   private

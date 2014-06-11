@@ -8,10 +8,8 @@ class Itembybudget < ActiveRecord::Base
 
 	belongs_to :item
 	belongs_to :budget
-
+	has_many :subcontract_details
 	has_many :itembywbses
-
-	
 
 	def set_data(budget_id, database)
 		
