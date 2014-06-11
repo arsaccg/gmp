@@ -44,35 +44,35 @@
         %tbody
           // Valores totalizados
           %tr
-            %th{"style"=>"text-align:center"}= 0
-            %th{"style"=>"text-align:center"}= 0
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_valorized_sale_current_month.round(2), unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_valorized_sale_current_month.round(2), unit: "S/. ")
             
           - @direct_cost.each do |cost|
             %tr
-              %th{"style"=>"text-align:center"}= 0
-              %th{"style"=>"text-align:center"}= 0
+              %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+              %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
               %th{"style"=>"text-align:center"}= number_to_currency(cost[0].round(2), unit: "S/. ")
               %th{"style"=>"text-align:center"}= number_to_currency(cost[0].round(2), unit: "S/. ")
-          // G.Generales, Utilidad y Gastos Gestion
+          // G.Generales
           %tr
-            %th{"style"=>"text-align:center"}= 0
-            %th{"style"=>"text-align:center"}= 0
-            %th{"style"=>"text-align:center"}= 0
-            %th{"style"=>"text-align:center"}= 0
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@gg_valorized_sale_current_month, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@gg_valorized_sale_current_month, unit: "S/. ")
           // Utilidad
           %tr
-            %th{"style"=>"text-align:center"}= 0
-            %th{"style"=>"text-align:center"}= 0
-            %th{"style"=>"text-align:center"}= 0
-            %th{"style"=>"text-align:center"}= 0
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
           // Gastos Gestion
           %tr
-            %th{"style"=>"text-align:center"}= 0
-            %th{"style"=>"text-align:center"}= 0
-            %th{"style"=>"text-align:center"}= 0
-            %th{"style"=>"text-align:center"}= 0
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
 
   .row.col-md-5
     .widget-body
