@@ -117,7 +117,7 @@
           %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-articles" aria-describedby="data-table_info")
             %thead
               %tr
-                %th{:style => "width:30%"} Fase
+                %th{:style => "width:30%"} Partidas
                 %th Insumo
                 %th Unidad
                 %th Cantidad
@@ -134,7 +134,7 @@
                     %td.article-id(style="display:none")
                       = sub.article_id
                     %td.col-md-2
-                      = sub.phase.name rescue " "
+                      = sub.itembybudget.subbudgetdetail rescue " "
                     %td.col-md-2
                       = sub.article.name rescue " "
                     %td
@@ -338,21 +338,21 @@
   }
 
   function calculatePartialAmount(element){
-    var unitprice = parseFloat($(element).parent().siblings('.unit-price').find('input').val());
+    var unitprice = parseFloat($(element).parent().parent().siblings('.unit-price').find('input').val());
     var amount = parseInt($(element).val());
 
     var price_without_igv = parseFloat(unitprice * amount).toFixed(2);
 
-    $(element).parent().siblings('.partial').find('input').val(price_without_igv);
+    $(element).parent().parent().siblings('.partial').find('input').val(price_without_igv);
   }
 
   function calculatePartialUnitPrice(element){
-    var amount = parseFloat($(element).parent().siblings('.amount').find('input').val());
+    var amount = parseFloat($(element).parent().parent().siblings('.amount').find('input').val());
     var unitprice = parseInt($(element).val());
 
     var price_without_igv = parseFloat(unitprice * amount).toFixed(2);
 
-    $(element).parent().siblings('.partial').find('input').val(price_without_igv);
+    $(element).parent().parent().siblings('.partial').find('input').val(price_without_igv);
   }
 
   function delete_item(code){
