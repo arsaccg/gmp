@@ -17,7 +17,7 @@
       %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
       - @phases.each do |phase|
         %option{:value => "#{phase.id}"}
-          = phase.name
+          = phase.code + ' - ' + phase.name
   %td.normal-hours
     %div
       = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][normal_hours]', 0 , class: "form-control normal-hours", onfocusout: "calculateHours(this, 'normal');", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
