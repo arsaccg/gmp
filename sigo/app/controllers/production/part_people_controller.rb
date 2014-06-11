@@ -45,7 +45,7 @@ class Production::PartPeopleController < ApplicationController
   def add_more_worker
     @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")
-    @phases = Phase.where("code LIKE '__'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @worker = Worker.find(params[:worker_id])
     @id_worker = @worker.id
     @name_worker = @worker.entity.name + ' ' + @worker.entity.second_name + ' ' + @worker.entity.paternal_surname + ' ' + @worker.entity.maternal_surname

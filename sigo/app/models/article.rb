@@ -41,6 +41,7 @@ class Article < ActiveRecord::Base
         AND a.unit_of_measurement_id = u.id
         AND a.category_id = c.id 
       	AND u.id = a.unit_of_measurement_id
+        AND toa.id = a.type_of_article_id
       	LIMIT #{display_length}
       	OFFSET #{pager_number}
       ")
@@ -60,8 +61,8 @@ class Article < ActiveRecord::Base
         AND a.unit_of_measurement_id = u.id
         AND a.category_id = c.id 
         AND u.id = a.unit_of_measurement_id
+        AND toa.id = a.type_of_article_id
       ")
-
       return mysql_result
     end
 end

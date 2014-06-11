@@ -14,11 +14,10 @@
               = subsector.name
   %td.phase.col-md-2
     %select.form-control{:name =>"part_person[part_person_details_attributes][#{@reg_n.to_s}][phase_id]", :style => 'width:100%;padding: 0;border: none;'}
-      - @phases.each do |phas|
-        %optgroup{:label => "#{phas.name}"}
-          - Phase.get_subphases(phas.code).each do |subphase|
-            %option{:value => "#{subphase.id}"}
-              = subphase.name
+      %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
+      - @phases.each do |phase|
+        %option{:value => "#{phase.id}"}
+          = phase.name
   %td.normal-hours
     %div
       = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][normal_hours]', 0 , class: "form-control normal-hours", onfocusout: "calculateHours(this, 'normal');", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'

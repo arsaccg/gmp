@@ -52,8 +52,8 @@
                 .form-group
                   %label.col-md-4.control-label Fecha de Servicio
                   .col-md-8
-                    .input-group
-                      = f.input :date_of_service, placeholder: "Fecha de servicio", as: :string, :input_html => {:class => 'form-control', type: "date"}, label: false
+                    .input-group.smart-form
+                      = f.input :date_of_service, placeholder: "Fecha de servicio", as: :string, :input_html => {:class => 'form-control', type: "date", :required => true}, label: false
                       %span.input-group-addon
                         %i.fa.fa-calendar
             .row
@@ -259,6 +259,9 @@
             },
             'order_of_service[delivery_date]': {
               required: true
+            },
+            'order_of_service[date_of_service]': {
+              required: true
             }
           },
 
@@ -269,7 +272,8 @@
             'order_of_service[method_of_payment_id]': "Porfavor, especifica el método de págo.",
             'order_of_service[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
             'order_of_service[expiration_date]': "Porfavor, especifica la fecha de expiración.",
-            'order_of_service[delivery_date]': "Porfavor, especifica la fecha de entrega."
+            'order_of_service[delivery_date]': "Porfavor, especifica la fecha de entrega.",
+            'order_of_service[date_of_service]': {required: 'Porfavor, especifica la fecha de servicio.'}
           },
           // Do not change code below
           errorPlacement : function(error, element) {
@@ -341,12 +345,20 @@
   });
 
   function calculatePriceWithourIgv(element){
-    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
+    var amount = parseInt($(element).parent().parent().siblings('.amount').find('input').val());
 
     var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
 
-    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
-    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+    $(element).parent().parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  function calculatePriceWithourIgvAmount(element){
+    var unit = parseInt($(element).parent().parent().siblings('.unit-price').children().children().val());
+    var price_without_igv = parseFloat($(element).val() * unit).toFixed(2);
+
+    $(element).parent().parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
   }
 
   function enableFieldsForIgv(element){

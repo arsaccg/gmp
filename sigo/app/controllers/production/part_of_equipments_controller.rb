@@ -20,7 +20,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     @partofequipment = PartOfEquipment.find(params[:id])
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
     @sectors = Sector.where("code LIKE '__'")
-    @phases = Phase.where("code LIKE '__'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @working_groups= WorkingGroup.all
     @subcontracts = SubcontractEquipment.all
     @type = Article.where("code LIKE ?", '__32%')
@@ -37,11 +37,11 @@ class Production::PartOfEquipmentsController < ApplicationController
     equip.each do |eq|
       @articles.each do |ar|
         if ar.id==eq.article_id
-          unit = ar.unit_of_measurement_id
+          @unit1 = ar.unit_of_measurement_id
         end
       end
     end
-    @unit = UnitOfMeasurement.find(unit).name
+    @unit = UnitOfMeasurement.find(@unit1).name
     render layout: false
   end
 
@@ -106,7 +106,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
     @reg_n = Time.now.to_i
     @sectors = Sector.where("code LIKE '__'")
-    @phases = Phase.where("code LIKE '__'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @working_groups= WorkingGroup.all
     @action="edit"
     render layout: false
@@ -173,7 +173,7 @@ class Production::PartOfEquipmentsController < ApplicationController
   def add_more_register
     @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")
-    @phases = Phase.where("code LIKE '__'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @working_groups = WorkingGroup.all
     render(partial: 'part_equipment_register', :layout => false)
   end

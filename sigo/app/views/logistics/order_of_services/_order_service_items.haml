@@ -11,7 +11,7 @@
     = @unitOfMeasurement
   %td.col-md-1.amount{:style => "width:5%"}
     %div
-      = text_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+      = text_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", onfocusout: "calculatePriceWithourIgvAmount(this);", :required => true, title:'No puede dejar este campo vacio'
   %td
     %div
       %select.form-control{:name =>"order_of_service[order_of_service_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
