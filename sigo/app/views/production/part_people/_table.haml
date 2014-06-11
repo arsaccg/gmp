@@ -22,11 +22,11 @@
               %td
                 = partperson.number_part
               %td
-                = Worker.find(partperson.working_group.front_chief_id).entity.name + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.second_name  + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.paternal_surname  + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.maternal_surname
+                = Worker.find(partperson.working_group.front_chief_id).entity.name.to_s + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.second_name.to_s  + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.paternal_surname.to_s + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.maternal_surname.to_s
               %td 
                 = Entity.find(partperson.working_group.executor_id).name
               %td
-                = Worker.find(partperson.working_group.master_builder_id).entity.name + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.second_name  + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.paternal_surname  + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.maternal_surname
+                = Worker.find(partperson.working_group.master_builder_id).entity.name.to_s + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.second_name.to_s  + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.paternal_surname.to_s + ' ' + Worker.find(partperson.working_group.front_chief_id).entity.maternal_surname.to_s
               %td 
                 = partperson.date_of_creation
               %td
