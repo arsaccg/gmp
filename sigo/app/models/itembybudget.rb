@@ -14,8 +14,6 @@ class Itembybudget < ActiveRecord::Base
 	
 
 	def set_data(budget_id, database)
-		
-
 		# Cargar Partidas desde base de datos remota
 		#=================================================
 		# SELECT     
