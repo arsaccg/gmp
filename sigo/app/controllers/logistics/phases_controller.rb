@@ -117,22 +117,16 @@ class Logistics::PhasesController < ApplicationController
       matriz_exel = []
       code = 1
       cantidad = s.count.to_i
-      puts "------cantidad----------------------------"
       puts cantidad
       (1..cantidad).each do |fila|
-        puts "-------------fila---------------------"
         puts fila  
         codigo             =       "#{s.cell('A',fila).to_s.to(1)}#{s.cell('B',fila).to_s.to(1)}"
-        puts "-----------codigo-----------------------"
         puts codigo
         codigo_phase       =       s.cell('A',fila).to_s.to(1)   # PH           --->    PHASE
-        puts "----------codigo_phase------------------------"
         puts codigo_phase
         codigo_subphase    =       s.cell('B',fila).to_s.to(1)   # SPH          --->    SUBPHASE
-        puts "----------codigo_subphase------------------------"
         puts codigo_subphase
         name               =       s.cell('C',fila).to_s 
-        puts "----------------name------------------"
         puts name
         ## creacion de PHases
         if codigo.to_i != 0

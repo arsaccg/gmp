@@ -11,6 +11,9 @@ class Logistics::ArticlesController < ApplicationController
     @company = Company.find(get_company_cost_center("company"))
     @subgroup = Category.where("code LIKE '____'").first
     @typeOfArticle = TypeOfArticle.first
+    puts "---------------------------------------------------------------------------------------------------------------------------------------------"
+    puts Article.all.count
+    puts "---------------------------------------------------------------------------------------------------------------------------------------------"
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted' || params[:task] == 'import'
       render layout: 'dashboard'
     else
@@ -31,7 +34,7 @@ class Logistics::ArticlesController < ApplicationController
     articles = Article.getSpecificArticles(get_company_cost_center('cost_center'), display_length, pager_number)
 
     articles.each do |article|
-      array << [article[1],article[2],article[3],article[4],article[5],article[6], "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit', 'content', null, null, 'GET')> Editar </a>" + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/articles/" + article[0].to_s + "', 'content', '/logistics/articles') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item" + article[3].to_s + "' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"]
+      array << [article[1],article[2],article[3],article[4],article[5],article[6], "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit','content',null,null,'GET')> Editar </a>" + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/articles/" + article[0].to_s + "','content','/logistics/articles') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item" + article[4].to_s + "' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a> "]
     end
     render json: { :aaData => array }
   end
@@ -57,7 +60,7 @@ class Logistics::ArticlesController < ApplicationController
     )
 
     articles.each do |article|
-      array << [article[1],article[2],article[3],article[4],article[5],article[6], "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit', 'content', null, null, 'GET')> Editar </a>" + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/articles/" + article[0].to_s + "', 'content', '/logistics/articles') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item" + article[3].to_s + "' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"]
+      array << [article[1],article[2],article[3],article[4],article[5],article[6], "<a class='btn btn-warning btn-xs' onclick = javascript:load_url_ajax('/logistics/articles/"+article[0].to_s+"/edit','content',null,null,'GET')> Editar </a>" + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/articles/"+article[0].to_s+"','content','/logistics/articles') data-placement='left' data-popout='true' data-singleton='true' data-toggle='confirmation' data-title='Esta seguro de eliminar el item " + article[4].to_s + "'  data-original-title='' title=''> Eliminar </a>"]
     end
     render json: { :aaData => array }
   end
@@ -169,93 +172,109 @@ class Logistics::ArticlesController < ApplicationController
       matriz_exel = []
       code = 1
       cantidad = s.count.to_i
+      @log = Array.new
       (1..cantidad).each do |fila|  
-        codigo                        =       "#{s.cell('A',fila)}#{s.cell('B',fila)}#{s.cell('C',fila)}#{s.cell('D',fila)}" 
-        codigo_article                =       s.cell('A',fila).to_s   # GRUP           --->    GRUPO
-        codigo_category               =       s.cell('B',fila).to_s   # SUB            --->    SUBGRUPO
-        codigo_subcategory            =       s.cell('C',fila).to_s   # ESPECIFICO 1   --->    ESPECIFIC
-        codigo_subcategory_extencion  =       s.cell('D',fila).to_s   # ESPECIFICO 2   --->    ARTICLE
+        codigo                        =       "#{s.cell('A',fila).to_s.to(1)}#{s.cell('B',fila).to_s.to(1)}#{s.cell('C',fila).to_s.to(1)}#{s.cell('D',fila).to_s.to(1)}" 
+        codigo_article                =       s.cell('A',fila).to_s.to(1)   # GRUP           --->    GRUPO
+        codigo_category               =       s.cell('B',fila).to_s.to(1)   # SUB            --->    SUBGRUPO
+        codigo_subcategory            =       s.cell('C',fila).to_s.to(1)   # ESPECIFICO 1   --->    ESPECIFIC
+        codigo_subcategory_extencion  =       s.cell('D',fila).to_s.to(1)   # ESPECIFICO 2   --->    ARTICLE
 
         name                          =       s.cell('E',fila).to_s   
         unidad_symbol                 =       s.cell('F',fila).to_s
         
-
-        ## creacion de Grupos
-        if codigo_article != "00" and codigo_category == "00" and codigo_subcategory == '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
-          category = Category.new(:code => codigo_article, :name => name)
-          category.save
-        end
-
-
-        ## creacion de Subgrupo
-        if codigo_article != '00' and codigo_category != '00' and codigo_subcategory == '00' and codigo_subcategory_extencion == '00' and codigo.length == 8                    
-
-          codigo_g = codigo_article + codigo_category
-          subcategory = Category.new(:code => codigo_g, :name => name)
-          subcategory.save
-
-        end
-        ## creacion specific
-        if codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
-          codigo_s = codigo_article + codigo_category + codigo_subcategory
-          subcategory = Category.new(:code => codigo_s, :name => name)
-          subcategory.save
-          category_id = Category.last.id
-        elsif codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion != '00' and codigo.length == 8        
-          ##### agregando articles
-          unidad = UnitOfMeasurement.where("symbol LIKE ?","%#{unidad_symbol}%")
-          count_unidad = unidad.count
-          if count_unidad != 0
-            unidad_last_id = unidad[0].id
-          else
-            if UnitOfMeasurement.last.present?
-              codigo_unidad = (UnitOfMeasurement.last.code.to_i + 1).to_s.rjust(2, '0')
+        if codigo.to_i != 0
+          ## creacion de Grupos
+          if codigo_article != "00" and codigo_category == "00" and codigo_subcategory == '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
+            category = Category.new(:code => codigo_article, :name => name)
+            category.save
+            if !category.save
+              @log << fila
+            end
+          end
+          ## creacion de Subgrupo
+          if codigo_article != '00' and codigo_category != '00' and codigo_subcategory == '00' and codigo_subcategory_extencion == '00' and codigo.length == 8                    
+            codigo_g = codigo_article + codigo_category
+            subcategory = Category.new(:code => codigo_g, :name => name)
+            subcategory.save
+            if !subcategory.save
+              @log << fila
+            end
+          end
+          ## creacion specific
+          if codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion == '00' and codigo.length == 8
+            codigo_s = codigo_article + codigo_category + codigo_subcategory
+            subcategory = Category.new(:code => codigo_s, :name => name)
+            subcategory.save
+            if !subcategory.save
+              @log << fila
+            end
+            category_id = Category.last.id
+          elsif codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion != '00' and codigo.length == 8        
+            ##### agregando articles
+            unidad = UnitOfMeasurement.where("symbol LIKE ?","%#{unidad_symbol}%")
+            count_unidad = unidad.count
+            if count_unidad != 0
+              unidad_last_id = unidad[0].id
             else
-              codigo_unidad = 1.to_s.rjust(2, '0')
+              if UnitOfMeasurement.last.present?
+                codigo_unidad = (UnitOfMeasurement.last.code.to_i + 1).to_s.rjust(2, '0')
+              else
+                codigo_unidad = 1.to_s.rjust(2, '0')
+              end
+              unidad_new = UnitOfMeasurement.new(:symbol => unidad_symbol, :code => codigo_unidad, :name => unidad_symbol)
+              code += 1 
+              unidad_new.save
+              unidad_last = UnitOfMeasurement.last
+              unidad_last_id = unidad_last.id            
             end
-            unidad_new = UnitOfMeasurement.new(:symbol => unidad_symbol, :code => codigo_unidad, :name => unidad_symbol)
-            code += 1 
-            unidad_new.save
-            unidad_last = UnitOfMeasurement.last
-            unidad_last_id = unidad_last.id            
-          end
 
-          if codigo_article.to_i <59
-            type = "02"
-            type_id = TypeOfArticle.find_by_code(type).id
-          end
-          if 58 < codigo_article.to_i and codigo_article.to_i < 69
-            type="03"
-            TypeOfArticle.where("code LIKE ?", type).each do |toa|
-              type_id = toa.id
+            if codigo_article.to_i <59
+              type = "02"
+              type_id = TypeOfArticle.find_by_code(type).id
             end
-          end
-          if codigo_article.to_i==71
-            type="01"
-            TypeOfArticle.where("code LIKE ?", type).each do |toa|
-              type_id = toa.id
+            if 58 < codigo_article.to_i and codigo_article.to_i < 69
+              type="03"
+              TypeOfArticle.where("code LIKE ?", type).each do |toa|
+                type_id = toa.id
+              end
             end
-          end
-          if codigo_article.to_i==73
-            type="04"
-            TypeOfArticle.where("code LIKE ?", type).each do |toa|
-              type_id = toa.id
+            if codigo_article.to_i==71
+              type="01"
+              TypeOfArticle.where("code LIKE ?", type).each do |toa|
+                type_id = toa.id
+              end
             end
-          end
-          if codigo_article.to_i ==72 || codigo_article.to_i > 73
-            type="05"
-            TypeOfArticle.where("code LIKE ?", type).each do |toa|
-              type_id = toa.id
+            if codigo_article.to_i==73
+              type="04"
+              TypeOfArticle.where("code LIKE ?", type).each do |toa|
+                type_id = toa.id
+              end
             end
-          end
+            if codigo_article.to_i ==72 || codigo_article.to_i > 73
+              type="05"
+              TypeOfArticle.where("code LIKE ?", type).each do |toa|
+                type_id = toa.id
+              end
+            end
 
-          codigo = type + codigo
+            codigo = type + codigo
 
-          article = Article.new(:code => codigo, :name => name, :unit_of_measurement_id => unidad_last_id, :category_id => category_id, :type_of_article_id=> type_id)
-          article.save
+            article = Article.new(:code => codigo, :name => name, :unit_of_measurement_id => unidad_last_id, :category_id => category_id, :type_of_article_id=> type_id)
+            article.save
+
+            if !article.save
+              @log <<fila
+            end
+          end
         end        
       end
       @temp = matriz_exel
+      puts "------------------------------------------------------------------------------------------------------------------"
+      @log.each do |log|
+        puts log
+      end
+      puts "------------------------------------------------------------------------------------------------------------------"
       redirect_to :action => :index, :task => "import"
     else
       render :layout => false
