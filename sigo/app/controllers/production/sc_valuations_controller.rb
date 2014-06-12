@@ -391,7 +391,7 @@ class Production::ScValuationsController < ApplicationController
   def approve
     start_date = params[:start_date]
     end_date = params[:end_date]
-    updateParts(start_date,end_date)
+    #updateParts(start_date,end_date)
     scvaluation = ScValuation.find(params[:id])
     scvaluation.approve
     redirect_to :action => :index

@@ -28,7 +28,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   def approve
     start_date = params[:start_date].inspect
     end_date = params[:end_date].inspect
-    updateParts(start_date,end_date)
+    #updateParts(start_date,end_date)
     weekly_worker = WeeklyWorker.find(params[:id])
     weekly_worker.approve
     redirect_to :action => :index
@@ -89,7 +89,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
 
     personals_array = []
     trabajadores_array = []
-    partediariodepersonals = PartPerson.where("working_group_id IN (?) and block2 = 1 and date_of_creation BETWEEN ? AND ?", working_group_id,start_date,end_date)
+    partediariodepersonals = PartPerson.where("working_group_id IN (?) and blockweekly = 1 and date_of_creation BETWEEN ? AND ?", working_group_id,start_date,end_date)
     partediariodepersonals.each do |partediariodepersonal|
       partediariodepersonal.part_person_details.each do |trabajador_detalle|
         trabajadore = trabajador_detalle.worker
@@ -125,7 +125,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
 
   def updateParts(start_date, end_date)
     ActiveRecord::Base.connection.execute("
-      Update part_people set block2 = 1 where date_of_creation BETWEEN " + start_date + " AND " + end_date + "
+      Update part_people set blockweekly = 1 where date_of_creation BETWEEN " + start_date + " AND " + end_date + "
     ")
   end
 
