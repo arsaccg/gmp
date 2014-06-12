@@ -1,5 +1,5 @@
 require 'roo'
-require "iconv"
+#require 'iconv'
 
 class Distribution < ActiveRecord::Base
   has_many :distribution_items
@@ -11,12 +11,13 @@ class Distribution < ActiveRecord::Base
     
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
+      puts row["CODIGO"].inspect
       d = Distribution.new
       d.code = row["CODIGO"]
       d.description = row["DESCRIPCION"]
       d.und = row["UND"]
       d.measured = row["METRADO TOTAL"]
-      d.cost_center_id=cost_center_id
+      d.cost_center_id = cost_center_id
       d.save
       
       
@@ -35,7 +36,7 @@ class Distribution < ActiveRecord::Base
   
   def self.open_spreadsheet(file)
     case File.extname(file.original_filename)
-    when ".csv" then Roo::Csv.new(file.path , csv_options: {encoding:Encoding::ISO_8859_1, :col_sep => ";"})
+    when ".csv" then Roo::CSV.new(file.path , csv_options: {encoding:Encoding::ISO_8859_1, :col_sep => ";"})
     when ".xls" then Roo::Excel.new(file.path)
     when ".xlsx" then Roo::Excelx.new(file.path)
     else raise "Unknown file type: #{file.original_filename}"
