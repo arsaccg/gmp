@@ -29,6 +29,7 @@ class Production::PartPeopleController < ApplicationController
     partperson = PartPerson.new(part_person_parameters)
     partperson.cost_center_id = get_company_cost_center('cost_center')
     partperson.block = 0
+    partperson.block2 = 0
     if partperson.save
       flash[:notice] = "Se ha creado correctamente la parte de obra."
       redirect_to :action => :index, company_id: params[:company_id]

@@ -335,6 +335,9 @@ ArsacLogistica::Application.routes.draw do
           post 'search_daily_work'
           post 'weekly_table'
         end
+        member do
+          get 'approve'
+        end
       end
     end
   end

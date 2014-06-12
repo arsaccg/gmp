@@ -135,12 +135,21 @@ class Reports::ReportofthemonthsController < ApplicationController
 
     # Venta Valorizada
     @acumulated_valorized_sale_current_month = 0
+    @gg_valorized_sale_current_month = 0
     @direct_cost = Array.new
     4.times do |index|
       index += 1
       current_valorized = get_valorized_sale(index, @cost_center)
       @direct_cost << [current_valorized]
       @acumulated_valorized_sale_current_month += current_valorized
+    end
+
+    # Gastos Generales ¿percent o calculated?
+    overhead_percentage = CostCenter.find(@cost_center).overhead_percentage
+    if overhead_percentage != nil
+      @gg_valorized_sale_current_month = @acumulated_valorized_sale_current_month*overhead_percentage
+    else
+      @gg_valorized_sale_current_month = 0
     end
 
 		render layout: false
