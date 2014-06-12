@@ -18,3 +18,28 @@
           %button#show-table.btn.btn-primary.btn-default{:type => 'button'}
             %i.fa.fa-search
             Buscar
+
+    %br
+  .row
+    #widget-grid
+      .row
+        %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+          #table-information-result
+
+:javascript
+  $('#show-table').click(function(){
+    var start_date = $('#start-date-input').val();
+    var end_date = $('#end-date-input').val();
+
+    if(start_date != null && end_date != null) {
+      if(new Date(start_date) < new Date(end_date)) {
+        var parameters = { company_id: "#{@company}", start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+
+        load_items_delivery_order_ajax("#{search_weekly_work_production_daily_works_daily_workers_path}", 'table-information-result', parameters);
+      } else {
+        alert('La fecha de inicio debe ser mayor a la fecha fin.')
+      }
+    } else {
+      alert('Por favor, especificar todos los datos necesarios.')
+    }
+  });
