@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140606173331) do
+ActiveRecord::Schema.define(version: 20140612045650) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -244,6 +244,24 @@ ActiveRecord::Schema.define(version: 20140606173331) do
     t.integer  "cost_center_id"
   end
 
+  create_table "distribution_items", force: true do |t|
+    t.integer  "distribution_id"
+    t.string   "month"
+    t.float    "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "distributions", force: true do |t|
+    t.string   "code"
+    t.string   "description"
+    t.string   "und"
+    t.float    "measured"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "cost_center_id"
+  end
+
   create_table "documents", force: true do |t|
     t.string   "name"
     t.string   "description"
@@ -266,6 +284,7 @@ ActiveRecord::Schema.define(version: 20140606173331) do
     t.string   "maternal_surname"
     t.integer  "cost_center_id"
     t.string   "second_name"
+    t.date     "date_of_birth"
   end
 
   create_table "entities_type_entities", force: true do |t|
@@ -626,15 +645,16 @@ ActiveRecord::Schema.define(version: 20140606173331) do
     t.datetime "updated_at"
     t.integer  "cost_center_id"
     t.integer  "block"
+    t.integer  "block2"
   end
 
   create_table "part_person_details", force: true do |t|
     t.integer  "worker_id"
     t.integer  "phase_id"
-    t.integer  "normal_hours"
-    t.integer  "he_60"
-    t.integer  "he_100"
-    t.integer  "total_hours"
+    t.float    "normal_hours"
+    t.float    "he_60"
+    t.float    "he_100"
+    t.float    "total_hours"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "part_person_id"
@@ -847,6 +867,7 @@ ActiveRecord::Schema.define(version: 20140606173331) do
     t.string   "code"
     t.float    "otherdiscount"
     t.float    "accumulated_otherdiscount"
+    t.integer  "cost_center_id"
   end
 
   create_table "sectors", force: true do |t|
@@ -905,9 +926,7 @@ ActiveRecord::Schema.define(version: 20140606173331) do
 
   create_table "stock_inputs", force: true do |t|
     t.integer  "warehouse_id"
-    t.integer  "supplier_id"
     t.integer  "period"
-    t.string   "series"
     t.string   "document"
     t.integer  "format_id"
     t.date     "issue_date"
@@ -919,7 +938,6 @@ ActiveRecord::Schema.define(version: 20140606173331) do
     t.datetime "updated_at"
     t.integer  "input"
     t.integer  "year"
-    t.integer  "phase_id"
     t.integer  "working_group_id"
     t.integer  "company_id"
     t.integer  "cost_center_id"
@@ -929,7 +947,6 @@ ActiveRecord::Schema.define(version: 20140606173331) do
   add_index "stock_inputs", ["company_id"], name: "index_stock_inputs_on_company_id", using: :btree
   add_index "stock_inputs", ["cost_center_id"], name: "index_stock_inputs_on_cost_center_id", using: :btree
   add_index "stock_inputs", ["format_id"], name: "index_stock_inputs_on_format_id", using: :btree
-  add_index "stock_inputs", ["phase_id"], name: "index_stock_inputs_on_phase_id", using: :btree
   add_index "stock_inputs", ["warehouse_id"], name: "index_stock_inputs_on_warehouse_id", using: :btree
   add_index "stock_inputs", ["working_group_id"], name: "index_stock_inputs_on_working_group_id", using: :btree
 
@@ -950,6 +967,7 @@ ActiveRecord::Schema.define(version: 20140606173331) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "subcontract_id"
+    t.integer  "itembybudget_id"
   end
 
   create_table "subcontract_equipment_advances", force: true do |t|
@@ -991,15 +1009,6 @@ ActiveRecord::Schema.define(version: 20140606173331) do
     t.string   "igv"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "cost_center_id"
-  end
-
-  create_table "subcontract_inputs", force: true do |t|
-    t.integer  "article_id"
-    t.float    "price"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "type_article"
     t.integer  "cost_center_id"
   end
 
@@ -1203,6 +1212,7 @@ ActiveRecord::Schema.define(version: 20140606173331) do
     t.string   "working_group"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "state"
   end
 
   create_table "work_partners", force: true do |t|
@@ -1230,7 +1240,6 @@ ActiveRecord::Schema.define(version: 20140606173331) do
 
   create_table "workers", force: true do |t|
     t.string   "phone"
-    t.date     "date_of_birth"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "dni"
