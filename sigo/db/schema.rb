@@ -633,7 +633,6 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.float    "total_hours"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "cost_center_id"
     t.integer  "block"
   end
 
@@ -643,7 +642,6 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.date     "date_of_creation"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "cost_center_id"
     t.integer  "block"
     t.integer  "block2"
   end
@@ -677,7 +675,6 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sector_id"
-    t.integer  "cost_center_id"
     t.integer  "block"
   end
 
@@ -685,7 +682,6 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "code"
     t.string   "category"
   end
 
@@ -874,7 +870,6 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "code"
     t.integer  "cost_center_id"
   end
 
@@ -1009,7 +1004,6 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.string   "igv"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "cost_center_id"
   end
 
   create_table "subcontracts", force: true do |t|
@@ -1025,7 +1019,6 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.datetime "updated_at"
     t.string   "type"
     t.float    "igv"
-    t.integer  "cost_center_id"
   end
 
   create_table "testimony_of_consortium_documents", force: true do |t|
