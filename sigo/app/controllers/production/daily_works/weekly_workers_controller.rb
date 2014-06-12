@@ -20,6 +20,11 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     end
   end
 
+  def new
+    @workingGroups = WorkingGroup.all
+    render layout: false
+  end
+
   def approve
     start_date = params[:start_date].inspect
     end_date = params[:end_date].inspect
