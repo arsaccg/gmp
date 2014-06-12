@@ -33,7 +33,7 @@
 
     if(start_date != null && end_date != null) {
       if(new Date(start_date) < new Date(end_date)) {
-        var parameters = { company_id: "#{@company}", start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+        var parameters = { company_id: "#{@company}", start_date: start_date, end_date: end_date, blockweekly: 0, authenticity_token: "#{form_authenticity_token}" };
 
         load_items_delivery_order_ajax("#{search_weekly_work_production_daily_works_daily_workers_path}", 'table-information-result', parameters);
       } else {
