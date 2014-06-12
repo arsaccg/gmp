@@ -45,8 +45,8 @@
                   - when 'disapproved'
                     %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{approve_production_sc_valuation_path(unit.id)}', 'content', {company_id: '#{@company}', start_date: '#{unit.start_date}', end_date: '#{unit.end_date}'}, null, 'GET')"}
                       Aprobar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_sc_valuation_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_sc_valuations_path}?company_id=#{@company}')"}}
-                  Eliminar
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_sc_valuation_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_sc_valuations_path}?company_id=#{@company}')"}}
+                      Eliminar
 
 :javascript
 

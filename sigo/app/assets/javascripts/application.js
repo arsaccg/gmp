@@ -13,6 +13,12 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery_nested_form
+//= require raphael
+//= require g.raphael
+//= require g.bar
+//= require g.line
+//= require g.pie
+//= require turbolinks
 
 $(document).ready(function(){
   $("#left-panel ul li a").click(function(){

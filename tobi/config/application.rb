@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'csv'
+require 'iconv'
 require 'rails/all'
 
 # Require the plugins listed in Gemfile, including any plugins

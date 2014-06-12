@@ -1,0 +1,83 @@
+= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true
+= javascript_include_tag "application", "data-turbolinks-track" => true
+
+
+
+%body
+
+  :javascript
+  
+    var x = #{@graph_x},
+      y = #{@graph_y},
+      xlen = #{@graph_width}-20,
+      ylen = #{@graph_height},
+      gutter = 20
+    
+      var xdata= [#{@graph_data.to_s}];
+
+    var r = Raphael(#{@canvas_x}, #{@canvas_y}, #{@canvas_width}, #{@canvas_height});
+  
+    switch(#{@graph_type}) {
+        case 1: 
+          fin = function () {
+              this.flag = r.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
+          }
+          fout = function () {
+              this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+          }
+          var bar = r.barchart(#{@graph_x}, #{@graph_y}, #{@graph_width}, #{@graph_height}, #{@graph_data.to_s}, {gutter: gutter, nostroke: false, axis: "0 0 0 1", symbol: "circle"}).hover(fin, fout);
+          Raphael.g.axis(
+              x + 10 + gutter,
+              y + ylen - gutter, //y pos
+              xlen - 2 * gutter, null, null, 
+              xdata[0].length - 1, // number of steps 
+              0, #{@graph_options}, // the labels
+              r // you need to provide the Raphael object
+          ); 
+          
+          break;
+        case 2: 
+          var bar = r.linechart(#{@graph_x}, #{@graph_y}, #{@graph_width}, #{@graph_height}, #{@graph_data.to_s}, {gutter: gutter, nostroke: false, nostroke: false, axis: "0 0 0 1", symbol: "circle"});
+          Raphael.g.axis(
+              x + 10 + gutter,
+              y + ylen - gutter, 
+              xlen - 2 * gutter, null, null, 
+              xdata[0].length - 1, // number of steps 
+              0, #{@graph_options}, // the labels
+              r // you need to provide the Raphael object
+          ); 
+          break;
+        case 3:
+          var bar = r.linechart(#{@graph_x}, #{@graph_y}, #{@graph_width}, #{@graph_height}, #{@graph_data.to_s}, {gutter: gutter, nostroke: false,nostroke: false, axis: "0 0 0 1", symbol: "circle", smooth: true});
+          Raphael.g.axis(
+              x + 10 + gutter,
+              y + ylen - gutter, //y pos
+              xlen - 2 * gutter, null, null, 
+              xdata[0].length - 1, // number of steps 
+              0, #{@graph_options}, // the labels
+              r // you need to provide the Raphael object
+          ); 
+          break;
+        case 4:
+          pie = r.piechart(#{@graph_x}, #{@graph_y}, #{@graph_width}, #{@graph_data.to_s}, {legend: #{@graph_options}});
+          pie.hover(function () {
+              this.sector.stop();
+              this.sector.scale(1.1, 1.1, this.cx, this.cy);
+
+              if (this.label) {
+                  this.label[0].stop();
+                  this.label[0].attr({ r: 7.5 });
+                  this.label[1].attr({ "font-weight": 800 });
+              }
+          }, function () {
+              this.sector.animate({ transform: 's1 1 ' + this.cx + ' ' + this.cy }, 500, "bounce");
+
+              if (this.label) {
+                  this.label[0].animate({ r: 5 }, 500, "bounce");
+                  this.label[1].attr({ "font-weight": 400 });
+              }
+          });
+          break;
+        
+        
+    }

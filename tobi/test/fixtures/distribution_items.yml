@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  distribution_id: 1
+  month: MyString
+  value: 1.5
+
+two:
+  distribution_id: 1
+  month: MyString
+  value: 1.5
