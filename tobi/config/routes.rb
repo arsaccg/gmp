@@ -67,6 +67,16 @@ Pmicg::Application.routes.draw do
         post 'disprove'
       end
     end
+    
+    resources :distributions do
+      collection do
+        get 'import_distributions'
+        post 'import_distributions'
+        get 'do_import'
+        post 'do_import'
+      end
+    end
+    
     resources :wbsitems do
       collection do
         get 'get_json_data'

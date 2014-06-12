@@ -25,6 +25,7 @@ gem 'jquery-ui-rails', '4.0.5', path: 'vendor/plugins/jquery-ui-rails-4.0.5'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 gem 'roo'	#gema para excel
+gem 'iconv'
 
 gem 'actionpack-action_caching'
 

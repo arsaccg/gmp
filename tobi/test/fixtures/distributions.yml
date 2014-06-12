@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  code: MyString
+  description: MyString
+  und: MyString
+  measured: 1.5
+
+two:
+  code: MyString
+  description: MyString
+  und: MyString
+  measured: 1.5

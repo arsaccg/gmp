@@ -31,6 +31,11 @@
 
               %a{:href=>"javascript:load_gantt_by_project();"}
                 Diagrama Gantt
+            %p(class="small-font")
+              =image_tag('icon_taskgantt.png', :width =>"16px")
+
+              %a{:href=>"javascript:load_import_distribution();"}
+                Importar xls de distribucion
             %br
           %h4
             Control
@@ -150,6 +155,10 @@
 
   function load_inputs(){
     load_url_ondiv("#{inputs_path}?project_id=#{(@project.id.to_s).to_s}", 'right-area');
+  }
+  
+  function load_import_distribution(){
+    load_url_ondiv("#{import_distributions_management_distributions_path}?project_id=#{(@project.id.to_s).to_s}", 'right-area');
   }
 
 
