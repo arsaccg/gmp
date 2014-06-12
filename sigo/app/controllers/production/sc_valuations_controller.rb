@@ -223,6 +223,7 @@ class Production::ScValuationsController < ApplicationController
       AND w.cost_center_id = '"+ cost_center +"'
       AND w.article_id = art.id
       AND ppd.worker_id = w.id
+      AND p.block=0 
       AND w.article_id = cow.article_id
       AND uom.id = art.unit_of_measurement_id
       GROUP BY art.name
@@ -243,10 +244,10 @@ class Production::ScValuationsController < ApplicationController
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.working_group_id IN(" + working_group_id + ")
       AND p.id = pwd.part_work_id
-      AND si.cost_center_id = '"+ cost_center +"'
       AND p.cost_center_id = '"+ cost_center +"'
       AND pwd.article_id = art.id
       AND pwd.article_id = si.article_id
+      AND p.block=0 
       AND uom.id = art.unit_of_measurement_id
       GROUP BY art.name
     ")
@@ -258,15 +259,15 @@ class Production::ScValuationsController < ApplicationController
       SELECT  art.name, 
       uom.name, 
       SUM( poed.effective_hours ), 
-      si.unit_price, 
-      si.unit_price*SUM( poed.effective_hours) 
+      si.price_no_igv, 
+      si.price_no_igv*SUM( poed.effective_hours) 
       FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_equipment_details si
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.equipment_id=art.id
       AND poe.cost_center_id = '"+ cost_center +"'
-      AND si.cost_center_id = '"+ cost_center +"'
       AND poe.equipment_id=si.article_id
+      AND poe.block=0 
       AND uom.id = art.unit_of_measurement_id
       AND poed.working_group_id IN(" + working_group_id + ")
       GROUP BY art.name
@@ -323,16 +324,16 @@ class Production::ScValuationsController < ApplicationController
     ActiveRecord::Base.connection.execute("
       Update part_people set block = 1 where date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
     ")
+    ActiveRecord::Base.connection.execute("
+      Update part_of_equipments set block = 1 where date BETWEEN '" + start_date + "' AND '" + end_date + "'
+    ")
   end
 
   def create
     scvaluation = ScValuation.new(sc_valuation_parameters)
     scvaluation.state
     scvaluation.cost_center_id = get_company_cost_center('cost_center')
-    start_date = params[:sv_valuation]['start_date']
-    end_date = params[:sv_valuation]['end_date']
     if scvaluation.save
-      updateParts(start_date,end_date)
       redirect_to :action => :index, company_id: params[:company_id]
     else
       scvaluation.errors.messages.each do |attribute, error|
@@ -388,6 +389,9 @@ class Production::ScValuationsController < ApplicationController
   end
 
   def approve
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+    updateParts(start_date,end_date)
     scvaluation = ScValuation.find(params[:id])
     scvaluation.approve
     redirect_to :action => :index
