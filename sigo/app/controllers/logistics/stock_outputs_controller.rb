@@ -14,6 +14,8 @@ class Logistics::StockOutputsController < ApplicationController
     @head = StockInput.new(stock_input_parameters)
     @head.year = @head.period.to_s[0,4]
     @head.user_inserts_id = current_user.id
+    @head.series = 0
+    @head.supplier_id = 0
     if @head.save
       flash[:notice] = "Se ha creado correctamente el registro."
       redirect_to :action => :index
