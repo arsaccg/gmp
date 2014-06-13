@@ -16,7 +16,7 @@
               %select(name='stock_input[responsible_id]' class = 'select2 form-control' id = 'responsible-select' style='width:100%;padding: 0;border: none;')
                 - @responsibles.each do |x|
                   %option(value = "#{x.id}")
-                    = x.name
+                    = x.name.to_s + ' ' + x.second_name.to_s + ' ' + x.paternal_surname.to_s + ' ' + x.maternal_surname.to_s
 
   #step2.step-pane
     %h3
