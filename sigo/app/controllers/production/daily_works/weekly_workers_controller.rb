@@ -25,10 +25,45 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     render layout: false
   end
 
+  def show
+    @weekly_work=WeeklyWorker.find_by_id(params[:id])
+    @blockweekly = params[:blockweekly]
+    @inicio = @weekly_work.start_date
+    @fin = @weekly_work.end_date
+    @cad = @weekly_work.working_group
+    @dias_habiles =  range_business_days(@inicio,@fin)
+    @gruposdetrabajos = WorkingGroup.all
+    @tareos_total_arrays = []
+    @subcontratista_arrays = []
+    @gruposdetrabajos.each do |gruposdetrabajo|
+      temp_tareo = []
+      temp_tareo = business_days_array(@inicio,@fin,@cad,@dias_habiles,@blockweekly)          
+      if temp_tareo.length != 0 
+        @tareos_total_arrays << temp_tareo
+        subcontratista_nombre = "#{gruposdetrabajo.name} - #{Entity.find(Worker.find(gruposdetrabajo.front_chief_id).entity_id).name} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Entity.find(Worker.find(gruposdetrabajo.master_builder_id).entity_id).name}"
+        @subcontratista_arrays << subcontratista_nombre
+      end
+      break
+    end
+
+    if @dias_habiles.length == 0
+      @pase = 3
+      render layout: false
+    else
+      if @tareos_total_arrays.length != 0
+        @pase = 4
+        render layout: false
+      else
+        @pase = 2
+        render layout: false
+      end
+    end
+  end
+
   def approve
     start_date = params[:start_date].inspect
     end_date = params[:end_date].inspect
-    #updateParts(start_date,end_date)
+    updateParts(start_date,end_date)
     weekly_worker = WeeklyWorker.find(params[:id])
     weekly_worker.approve
     redirect_to :action => :index
@@ -42,6 +77,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
 
   def weekly_table
     @weekly_work=WeeklyWorker.find_by_id(params[:id])
+    @blockweekly = params[:blockweekly]
     @inicio = @weekly_work.start_date
     @fin = @weekly_work.end_date
     @cad = @weekly_work.working_group
@@ -51,7 +87,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     @subcontratista_arrays = []
     @gruposdetrabajos.each do |gruposdetrabajo|
       temp_tareo = []
-      temp_tareo = business_days_array(@inicio,@fin,@cad,@dias_habiles)          
+      temp_tareo = business_days_array(@inicio,@fin,@cad,@dias_habiles,@blockweekly)          
       if temp_tareo.length != 0 
         @tareos_total_arrays << temp_tareo
         subcontratista_nombre = "#{gruposdetrabajo.name} - #{Entity.find(Worker.find(gruposdetrabajo.front_chief_id).entity_id).name} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Entity.find(Worker.find(gruposdetrabajo.master_builder_id).entity_id).name}"
@@ -85,11 +121,11 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     return business_days
   end
 
-  def business_days_array(start_date, end_date, working_group_id, business_days)
+  def business_days_array(start_date, end_date, working_group_id, business_days,blockweekly)
 
     personals_array = []
     trabajadores_array = []
-    partediariodepersonals = PartPerson.where("working_group_id IN (?) and blockweekly = 1 and date_of_creation BETWEEN ? AND ?", working_group_id,start_date,end_date)
+    partediariodepersonals = PartPerson.where("working_group_id IN (?) and blockweekly = ? and date_of_creation BETWEEN ? AND ?", working_group_id, blockweekly,start_date,end_date)
     partediariodepersonals.each do |partediariodepersonal|
       partediariodepersonal.part_person_details.each do |trabajador_detalle|
         trabajadore = trabajador_detalle.worker

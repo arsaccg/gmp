@@ -1,0 +1,91 @@
+- if @pase == 4
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Tareo de Obreros Semanal
+    %br
+    - case @weekly_work.state
+      - when 'disapproved'
+        %a.btn.btn-success.btn-xs#aprove{type: "button"}
+          %i.fa.fa-check>
+            Aprobar
+
+
+  - indice_title = 0
+  - @tareos_total_arrays.each do |trabajadores_array|
+    %div
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th Item
+              %th Apellidos y Nombres
+              %th Categoria
+              - @dias_habiles.each do |date|
+                %th= date.to_time.strftime("%d/%m/%y")
+              %th T. Normales
+              %th T. 60%
+              %th T. 100%
+              %th Total Horas
+          %tbody
+            - item = 1
+            - sumariza_total_normales= 0
+            - sumariza_total_60 = 0
+            - sumariza_total_100 = 0
+            - sumariza_total_horas = 0
+            - array_suma = Array.new(@dias_habiles.length, 0.00)
+            - trabajadores_array.each do |trabajador|
+              %tr
+                %td{ :style => "text-align: center;"}= item
+                %td= trabajador[1]
+                %td{ :style => "text-align: center;"}= trabajador[2]
+                - index = 0
+                - trabajador[3].each do |date|
+                  %td{ :style => "text-align: center;"}= date.to_f == 0 ? ' -- ' : (number_to_currency date.to_f, unit: '')
+                  - array_suma[index] += date.to_f
+                  - index += 1
+                %td{ :style => "text-align: center;"}= number_to_currency trabajador[5], unit: ''
+                %td{ :style => "text-align: center;"}= number_to_currency trabajador[6], unit: ''
+                %td{ :style => "text-align: center;"}= number_to_currency trabajador[7], unit: ''
+                %td{ :style => "text-align: center;"}= number_to_currency trabajador[4], unit: ''
+              - item += 1
+              - sumariza_total_normales += trabajador[5]
+              - sumariza_total_60 += trabajador[6]
+              - sumariza_total_100 += trabajador[7]
+              - sumariza_total_horas += trabajador[4]
+            %tr.danger
+              %td
+              %td{ 'colspan' => 2 }
+                %b Total
+              - array_suma.each do |arraysum|
+                %td{ :style => "text-align: center;"}
+                  %b= arraysum.to_f == 0 ? ' -- ' : (number_to_currency arraysum.to_f, unit: '')
+              %td{ :style => "text-align: center;"}
+                %b= number_to_currency sumariza_total_normales, unit: ''
+              %td{ :style => "text-align: center;"}
+                %b= number_to_currency sumariza_total_60, unit: ''
+              %td{ :style => "text-align: center;"}
+                %b= number_to_currency sumariza_total_100, unit: ''
+              %td{ :style => "text-align: center;"}
+                %b= number_to_currency sumariza_total_horas, unit: ''
+
+- else
+  %h4.modal-title No hay datos.
+
+%br
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-sector{type: "button"}
+  %i.fa.fa-arrow-left>
+    Retornar al listado de Tareos
+
+:javascript
+
+  $('#backlist-sector').click(function(){
+      load_url_ajax("#{production_daily_works_weekly_workers_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+  });
+
+  $('#aprove').click(function(){
+      load_url_ajax('#{approve_production_daily_works_weekly_worker_path(@weekly_work.id)}', 'content', {company_id: '#{@company}', start_date: '#{@weekly_work.start_date}', end_date: '#{@weekly_work.end_date}'}, null, 'GET');
+  });
