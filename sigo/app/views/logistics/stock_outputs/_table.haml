@@ -26,7 +26,10 @@
                 %td
                   = unit.period
                 %td
-                  = unit.issue_date
+                  -if unit.issue_date.nil?
+                    No se a registrado la fecha
+                  -else
+                    = unit.issue_date.strftime('%d/%m/%Y')
                 %td
                   = unit.document
                 %td
