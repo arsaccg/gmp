@@ -80,7 +80,7 @@
                   .form-group
                     %label.control-label Fecha
                     .input-group
-                      = text_field(:stock_input, :issue_date, :value => "#{@head.issue_date.strftime("%d/%m/%Y")}", class: "form-control")
+                      = text_field(:stock_input, :issue_date, :value => "#{@head.issue_date.strftime("%d/%m/%Y") rescue Time.now.strftime("%d/%m/%Y")}", class: "form-control")
                       %span.input-group-addon
                         %i.fa.fa-calendar
           .row

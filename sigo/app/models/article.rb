@@ -51,12 +51,12 @@ class Article < ActiveRecord::Base
   def self.getSpecificArticlesforStockOutputs(cost_center_id)
       mysql_result = ActiveRecord::Base.connection.execute("
         SELECT DISTINCT a.id, a.code, toa.name, c.name, a.name, a.description, u.name
-        FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u, type_of_articles toa, categories c
-        WHERE b.id = ibi.budget_id
-        AND b.type_of_budget =0
-        AND b.cost_center_id = #{cost_center_id}
-        AND ibi.article_id IS NOT NULL 
-        AND ibi.article_id = a.id
+        FROM delivery_orders do, delivery_order_details dod, purchase_order_details pod, articles a, unit_of_measurements u, type_of_articles toa, categories c 
+        WHERE dod.id = pod.delivery_order_detail_id
+        AND pod.received = 1
+        AND dod.delivery_order_id=do.id 
+        AND do.cost_center_id = #{cost_center_id}
+        AND dod.article_id = a.id
         AND a.unit_of_measurement_id = u.id
         AND a.category_id = c.id 
         AND u.id = a.unit_of_measurement_id
