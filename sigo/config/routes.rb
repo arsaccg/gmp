@@ -73,6 +73,11 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'display_articles'
         get 'specifics_articles'
+        post 'create_specific'
+        post 'update_specific'
+        delete 'delete_specific'
+        get 'new_specific'
+        get 'edit_specific'
         post 'json_specifics_articles'
         post 'import'
         get 'import'

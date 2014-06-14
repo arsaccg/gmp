@@ -70,10 +70,7 @@ class Logistics::StockInputsController < ApplicationController
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     @reg_n = Time.now.to_i
-    @arrItems = Array.new
-    @head.stock_input_details.each do |sid|
-      @arrItems << StockInputDetail.find(sid)
-    end
+    @arrItems = @head.stock_input_details
     render layout: false
   end
 

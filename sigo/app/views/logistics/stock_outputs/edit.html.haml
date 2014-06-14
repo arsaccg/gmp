@@ -29,11 +29,6 @@
 
   $(document).ready(function(){
     //$('#stock_input_issue_date').datepicker.noConflict;
-    $('#stock_input_issue_date').datepicker({
-      format: "dd/mm/yyyy", language: "es", autoclose: true, orientation: "auto right"
-    });
-    $("#stock_input_issue_date").mask('99/99/9999');
-
     // Back
     $('#backlist').click(function(){
       load_url_ajax("#{logistics_stock_outputs_path}", 'content', null, null, 'GET');
