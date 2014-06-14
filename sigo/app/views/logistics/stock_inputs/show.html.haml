@@ -2,171 +2,89 @@
   .row
     .col-xs-12.col-sm-7.col-md-7.col-lg-4
       %h1.page-title.txt-color-blueDark
-        %i.fa.fa-pencil-square-o.fa-eye
-        Orden de Compra #
-        = @purchaseOrder.id.to_s.rjust(5, '0')
-  %section#widget-grid
-    .row
-      %article.col-sm-12.col-md-12.col-lg-8
-        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
-          %header
-            %span.widget-icon
-              %i.fa.fa-table
-            %h2 
-            = 'Orden de Compra N° ' + @purchaseOrder.id.to_s.rjust(5, '0')
-          %div
-            .jarviswidget-editbox
-              / This area used as dropdown edit box
-            .widget-body.no-padding
-              .alert.alert-info.no-margin.fade.in
-                %button.close{"data-dismiss" => "alert"}
-                  ×
-                %i.fa-fw.fa.fa-info
-                Cabecera de la Orden de Compra
-              %table.table.table-hover
-                %thead
-                  %tr
-                    %th Código
-                    %th Estado
-                    %th Proveedor
-                    %th Forma de pago
-                    %th Fecha de Emisión
-                    %th Fecha de Expiración
-                    %th Fecha de Entrega
-                    %th Responsable
-                    %th Descripcion
-                %tbody(id="article_items_table")
-                  %tr
-                    %td
-                      = @purchaseOrder.id.to_s.rjust(5, '0')
-                    %td
-                      = translate_purchase_order_state(@purchaseOrder.state)
-                    %td
-                      = @purchaseOrder.supplier.name
-                    %td
-                      = @purchaseOrder.method_of_payment.name
-                    %td
-                      = @purchaseOrder.date_of_issue.strftime("%d/%m/%Y")
-                    %td
-                      = @purchaseOrder.expiration_date.strftime("%d/%m/%Y")
-                    %td
-                      = @purchaseOrder.delivery_date.strftime("%d/%m/%Y")
-                    %td
-                      = @purchaseOrder.user.first_name + ' ' + @purchaseOrder.user.last_name
-                    %td
-                      = @purchaseOrder.description
-      - if @state_change != nil
-        %h1.page-title.txt-color-blueDark
-          %i.fa.fa-pencil-square-o.fa-fw 
-          Cambiar estado de la Orden
-        %article.col-sm-12.col-md-12.col-lg-4
-          - case @state_change
-            - when 'issued'
-              %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goissue_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
-                Emitir
-            - when 'observed'
-              %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goobserve_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
-                Observar
-            - when 'revised'
-              %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{gorevise_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
-                Dar visto bueno
-            - when 'canceled'
-              %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_purchase_orders_path}')"}
-                Anular
-            - when 'approved'
-              %a.btn.btn-primary.btn-lg{:onclick => "javascript:load_url_ajax('#{goapprove_logistics_purchase_order_path(@purchaseOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content')"}
-                Aprobar
-      - else
-        %article.col-sm-12.col-md-12.col-lg-4
-          #wid-id-3.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
-            %header
-              %span.widget-icon
-                %i.fa.fa-table
-              %h2 
-              = 'Historial de Estado de la Orden de Compra N° ' + @purchaseOrder.id.to_s.rjust(5, '0')
-            %div
-              .jarviswidget-editbox
-                / This area used as dropdown edit box
-              .widget-body.no-padding
-                .alert.alert-info.no-margin.fade.in
-                  %button.close{"data-dismiss" => "alert"}
-                    ×
-                  %i.fa-fw.fa.fa-info
-                  Historial de Estados
-                %table.table.table-hover
-                  %thead
-                    %tr
-                      %th Estado
-                      %th Fecha
-                      %th Quien fue
-                  %tbody
-                    - @purchasePerState.each do |purchaseState|
-                      %tr
-                        %td
-                          = translate_purchase_order_state(purchaseState.state)
-                        %td
-                          = purchaseState.created_at.strftime("%d/%m/%Y")
-                        %td
-                          = purchaseState.user.first_name + " " + purchaseState.user.last_name
-      %article.col-sm-12.col-md-12.col-lg-12
-        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
-          %header
-            %span.widget-icon
-              %i.fa.fa-table
-            %h2 Detalle de la Orden de Compra
-          %div
-            .jarviswidget-editbox
-              / This area used as dropdown edit box
-            .widget-body.no-padding
-              .alert.alert-info.no-margin.fade.in
-                %button.close{"data-dismiss" => "alert"}
-                  ×
-                %i.fa-fw.fa.fa-info
-                Detalle de la Orden de Compra
-              %table.table.table-hover
-                %thead
-                  %tr
-                    %th Codigo
-                    %th Insumo
-                    %th Cantidad
-                    %th Unidad de Medida
-                    %th Precio Unitario
-                    %th Total antes de IGV
-                    %th Total después de IGV
-                    %th Glosa
-                %tbody(id="purchase_detail_items_table")
-                  - @purchaseOrderDetails.each do |purchasedetail|
-                    %tr
-                      %td
-                        = purchasedetail.delivery_order_detail.article.code
-                      %td
-                        = purchasedetail.delivery_order_detail.article.name
-                      %td
-                        = purchasedetail.delivery_order_detail.amount
-                      %td
-                        - if purchasedetail.delivery_order_detail.unit_of_measurement != nil
-                          = purchasedetail.delivery_order_detail.unit_of_measurement.name
-                        - else
-                          = "No tiene Unidad de Medida"
-                      %td
-                        = number_to_currency(purchasedetail.unit_price.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
-                      %td
-                        = number_to_currency((purchasedetail.delivery_order_detail.amount.to_i * purchasedetail.unit_price.to_f).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
-                      %td
-                        = number_to_currency(purchasedetail.unit_price_igv.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
-                      %td
-                        = purchasedetail.description
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Ingreso a Almacén
 
-= javascript_include_tag 'plugin/flot/jquery.flot.cust'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
-= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
-= javascript_include_tag 'plugin/flot/jquery.flot.resize'
-= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
-= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
-= javascript_include_tag 'plugin/datatables/ColReorder.min'
-= javascript_include_tag 'plugin/datatables/FixedColumns.min'
-= javascript_include_tag 'plugin/datatables/ColVis.min'
-= javascript_include_tag 'plugin/datatables/ZeroClipboard'
-= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
-= javascript_include_tag 'plugin/datatables/DT_bootstrap'
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Ingreso a Almacén
+  %div{:style => "padding-top: 0"}
+    .jarviswidget-editbox
+    .widget-body
+      = simple_form_for([:logistics, @head], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
+        %fieldset
+
+        %br
+
+          .row          
+            %table.table.table-bordered{ style: "width: 700px;margin: 0 auto" }
+              %thead
+                %tr
+                  %th{"style"=>"text-align:center"} Almacen
+                  %th{"style"=>"text-align:center"} Formato
+                  %th{"style"=>"text-align:center"} Periodo
+                  %th{"style"=>"text-align:center"} Serie
+                  %th{"style"=>"text-align:center"} N° Documento
+                  %th{"style"=>"text-align:center"} Fecha
+              %tbody
+                %th{"style"=>"text-align:center;font-weight: 300;"}= @head.warehouse.name
+                %th{"style"=>"text-align:center;font-weight: 300;"}= @head.format.name
+                %th{"style"=>"text-align:center;font-weight: 300;"}= @head.period.to_s[0,4] + ' - ' + @head.period.to_s[4,6]
+                %th{"style"=>"text-align:center;font-weight: 300;"}= @head.series
+                %th{"style"=>"text-align:center;font-weight: 300;"}= @head.document
+                %th{"style"=>"text-align:center;font-weight: 300;"}= @head.issue_date
+                %tr
+                  %th{"style"=>"text-align:center"} Descripción
+                  %th{'colspan' => 5, "style"=>"font-weight: 300;"}= @head.description
+
+        %br
+          
+        %fieldset
+          %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-pod" aria-describedby="data-table_info")
+            %thead
+              %tr
+                %th Codigo
+                %th Descripción
+                %th{'style' => 'width: 4%;'}
+                  Unidad
+                %th{'style' => 'width: 5%;'}
+                  Cantidad Total
+                %th{'style' => 'width: 4%;'}
+                  Cantidad Pendiente
+                %th{'style' => 'width: 6%;'}
+                  Cantidad Recibida
+            %tbody(id="table-items-paso2")
+              - @arrItems.each do |x|
+                - @pod = x.purchase_order_detail
+                - @article = x.purchase_order_detail.delivery_order_detail.article
+                - @pending = @pod.amount.to_i - PurchaseOrderDetail.get_total_received(@pod.id).to_i
+                %tr{id: "tr" + @reg_n.to_s}
+                  %td(style="display:none" class="pod-di")
+                    = hidden_field_tag 'stock_input[stock_input_details_attributes][' + @reg_n.to_s + '][purchase_order_detail_id]', @pod.id.to_i
+                  %td(style="display:none")
+                    = hidden_field_tag 'stock_input[stock_input_details_attributes][' + @reg_n.to_s + '][id]', x.id
+                  %td
+                    = @article.code
+                  %td
+                    = @article.name
+                  %td
+                    = @article.unit_of_measurement.symbol
+                  %td.amount
+                    = @pod.amount
+                  %td.amount
+                    = @pending
+                  %td.unit-price{"style"=>"text-align:center"}
+                    = x.amount
+                - @reg_n += 1
+
+  %button.btn.btn-primary#backlist{type: "button"}
+    %i.fa.fa-arrow-left
+      Retornar
+
+:javascript
+
+  $('#backlist').click(function(){
+      load_url_ajax("#{logistics_stock_inputs_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+  });
