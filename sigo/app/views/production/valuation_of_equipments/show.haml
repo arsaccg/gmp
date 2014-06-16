@@ -1,7 +1,12 @@
 %header
   %h2
     Valorizacion de Equipo
-
+  %br
+    - case @valuationofequipment.state
+      - when 'disapproved'
+        %a.btn.btn-success.btn-xs#aprove{type: "button"}
+          %i.fa.fa-check>
+            Aprobar
   %div
     .jarviswidget-editbox
     .widget-body
@@ -112,6 +117,9 @@
 
   $('#backlist').click(function(){
       load_url_ajax("#{production_valuation_of_equipments_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+  });
+  $('#aprove').click(function(){
+      load_url_ajax('#{approve_production_sc_valuation_path(@valuationofequipment.id)}', 'content', {company_id: '#{@company}', start_date: '#{@valuationofequipment.start_date}', end_date: '#{@valuationofequipment.end_date}'}, null, 'GET');
   });
 
   function part_equipment(id) {
