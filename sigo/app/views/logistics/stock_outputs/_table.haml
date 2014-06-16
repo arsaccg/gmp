@@ -26,7 +26,10 @@
                 %td
                   = unit.period
                 %td
-                  = unit.issue_date
+                  -if unit.issue_date.nil?
+                    No se a registrado la fecha
+                  -else
+                    = unit.issue_date.strftime('%d/%m/%Y')
                 %td
                   = unit.document
                 %td
@@ -34,9 +37,9 @@
                 %td
                   = unit.format.name
                 %td
-                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_stock_input_path(unit.id)}', 'content', null, null, 'GET')"}
+                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_stock_output_path(unit.id)}', 'content', null, null, 'GET')"}
                     Editar
-                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_stock_input_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_stock_inputs_path}?company_id=#{@company}')"}}
+                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_stock_output_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_stock_outputs_path}?company_id=#{@company}')"}}
                     Eliminar
 
 :javascript
