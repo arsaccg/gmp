@@ -165,6 +165,7 @@
     var workertodelete = $('#worker-select').get(0).selectedIndex;
     console.log(workertodelete)
     $('#worker-select option:eq(' + workertodelete + ')').remove();
+    $("#worker-select").select2("val", "");
   }
 
   function calculateHours(element, str){
