@@ -197,6 +197,11 @@ BEGIN
 	    IF done THEN
 			LEAVE read_loop;
 		END IF;
+
+		IF v_measured IS NULL THEN
+	      SET v_measured = 0;
+	    END IF;
+    
 		SET v_total = v_total + (v_measured * IFNULL(get_partial_cost(t_order), 0));
 	END LOOP;
 	CLOSE sub_elements;

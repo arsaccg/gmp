@@ -13,15 +13,11 @@ class Distribution < ActiveRecord::Base
       row = Hash[[header, spreadsheet.row(i)].transpose]
       puts row["CODIGO"].inspect
       d = Distribution.new
-      d.code = row["CODIGO"]
-      d.description = row["DESCRIPCION"]
-      d.und = row["UND"]
-      d.measured = row["METRADO TOTAL"]
+      d.code = row["CODIGO"]  
       d.cost_center_id = cost_center_id
       d.save
       
-      
-      items_months = row.keys - ["CODIGO", "DESCRIPCION", "UND", "METRADO TOTAL"]
+      items_months = row.keys - ["CODIGO"]
       items_months.each do |key|
         item=DistributionItem.new
         item.distribution_id = d.id
@@ -29,8 +25,6 @@ class Distribution < ActiveRecord::Base
         item.value = row[key]
         item.save
       end 
-      
-      
     end
   end
   
