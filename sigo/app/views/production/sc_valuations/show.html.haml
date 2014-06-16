@@ -1,3 +1,9 @@
+%br
+  - case @scvaluation.state
+    - when 'disapproved'
+      %a.btn.btn-success.btn-xs#aprove{type: "button"}
+        %i.fa.fa-check>
+          Aprobar
 %div
   .jarviswidget-editbox
   .widget-body
@@ -136,6 +142,9 @@
 
   $('#backlist').click(function(){
       load_url_ajax("#{production_sc_valuations_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+  });
+  $('#aprove').click(function(){
+      load_url_ajax('#{approve_production_sc_valuation_path(@scvaluation.id)}', 'content', {company_id: '#{@company}', start_date: '#{@scvaluation.start_date}', end_date: '#{@scvaluation.end_date}'}, null, 'GET');
   });
 
   function part_work() {
