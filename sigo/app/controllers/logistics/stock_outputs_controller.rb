@@ -41,6 +41,26 @@ class Logistics::StockOutputsController < ApplicationController
     render layout: false
   end
 
+  def show
+    @company = get_company_cost_center('company')
+    @cost_center = get_company_cost_center('cost_center')
+    @head = StockInput.find(params[:id])
+    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
+    @periods = LinkTime.group(:year, :month)
+    @warehouses = Warehouse.where(company_id: "#{@company}").where(cost_center_id: "#{@head.cost_center_id}")
+    @articles = Article.getSpecificArticlesforStockOutputs(@cost_center)
+    @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
+    @sectors = Sector.all
+    @phases = Phase.getSpecificPhases(@cost_center)
+    @working_groups = WorkingGroup.all
+    @reg_n = Time.now.to_i
+    @arrItems = Array.new
+    @head.stock_input_details.each do |sid|
+      @arrItems << StockInputDetail.find(sid)
+    end
+    render layout: false
+  end
+
   def edit
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
