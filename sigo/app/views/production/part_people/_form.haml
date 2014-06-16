@@ -162,6 +162,10 @@
   function add_worker_item(){
     str_item = {authenticity_token: "#{form_authenticity_token}", worker_id: $("#worker-select").val(), amount: $("#article-amount").val()};
     append_url_ajax('#{add_more_worker_production_part_people_path}', 'worker_items_table', str_item, 0, 'POST');
+    var workertodelete = $('#worker-select').get(0).selectedIndex;
+    console.log(workertodelete)
+    $('#worker-select option:eq(' + workertodelete + ')').remove();
+    $("#worker-select").select2("val", "");
   }
 
   function calculateHours(element, str){

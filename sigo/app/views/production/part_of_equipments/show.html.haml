@@ -43,7 +43,7 @@
                     %td
                       -@worker.each do |wk|
                         -if wk.id==@partofequipment.worker_id
-                          = wk.first_name + ' '+ wk.paternal_surname+' '+wk.maternal_surname
+                          = wk.entity.name + ' '+ wk.entity.paternal_surname+' '+wk.entity.maternal_surname
                     %td
                       -@articles.each do |ar|
                         -if ar.id==@partofequipment.equipment_id
