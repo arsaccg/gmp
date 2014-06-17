@@ -35,8 +35,10 @@
       %strong Paso 2
       \- Escoger artículos
     %fieldset
+      .row#select_table_per_warehouse
+
       .row
-        %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %table#dt_basic.table-striped.table-bordered.table-hover
           %thead
             %tr
               %th Código de Artículo
@@ -44,21 +46,8 @@
               %th Unidad
               %th Cantidad Total en Almacen
               %th Seleccionar
-          %tbody
-            - @articles.each do |art|
-              %tr
-                %td
-                  = art[1]
-                %td
-                  = art[4]
-                %td
-                  = art[5]
-                %td 
-                  = art[6] - Article.getSpecificArticlesforStockOutputs4(@cost_center,art[0].to_i).first.at(0).to_i
-                %td
-                  %label.checkbox
-                    = check_box("order_delivery", "approved", { class: 'order_check' }, art[0])
-                    %i
+          %tbody#partial_table_per_warehouse
+        
   #step3.step-pane
     %h3
       %strong Paso 3

@@ -48,30 +48,43 @@ class Article < ActiveRecord::Base
     return mysql_result
   end
 
-  def self.getSpecificArticlesforStockOutputs(cost_center_id)
+  def self.getSpecificArticlesPerWarehouse(warehouse_id)
     mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT a.id, a.code, toa.name, c.name, a.name, u.name, SUM(sid.amount)
-      FROM articles a, unit_of_measurements u, type_of_articles toa, categories c, stock_inputs si, stock_input_details sid 
-      WHERE a.id = sid.article_id 
-      AND si.input = 1 
-      AND si.id = sid.stock_input_id 
-      AND si.cost_center_id = #{cost_center_id} 
-      AND a.unit_of_measurement_id = u.id 
-      AND a.category_id = c.id 
-      AND toa.id = a.type_of_article_id
+      SELECT a.id, a.code, a.name, u.name, SUM( sid.amount ) 
+      FROM articles a, unit_of_measurements u, stock_inputs si, stock_input_details sid
+      WHERE a.id = sid.article_id
+      AND si.input =1
+      AND si.id = sid.stock_input_id
+      AND si.warehouse_id = #{warehouse_id}
+      AND a.unit_of_measurement_id = u.id
       GROUP BY a.code
     ")
     return mysql_result
   end
 
-  def self.getSpecificArticlesforStockOutputs2(cost_center_id,articles)
+  def self.getSpecificArticlePerConsult(warehouse_id, article_id)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT a.id, a.code, a.name, u.name, SUM( sid.amount ) 
+      FROM articles a, unit_of_measurements u, stock_inputs si, stock_input_details sid
+      WHERE a.id = sid.article_id
+      AND a.id = #{article_id}
+      AND si.input =1
+      AND si.id = sid.stock_input_id
+      AND si.warehouse_id = #{warehouse_id}
+      AND a.unit_of_measurement_id = u.id
+      GROUP BY a.code
+    ")
+    return mysql_result
+  end
+
+  def self.getSpecificArticlesforStockOutputs2(warehouse_id,articles)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT a.id, a.code, toa.name, c.name, a.name, u.name, SUM(sid.amount)
       FROM articles a, unit_of_measurements u, type_of_articles toa, categories c, stock_inputs si, stock_input_details sid 
       WHERE a.id = sid.article_id 
       AND si.id = sid.stock_input_id 
       AND si.input = 1 
-      AND si.cost_center_id = #{cost_center_id} 
+      AND si.warehouse_id = #{warehouse_id} 
       AND a.unit_of_measurement_id = u.id 
       AND a.category_id = c.id 
       AND toa.id = a.type_of_article_id
@@ -81,14 +94,14 @@ class Article < ActiveRecord::Base
     return mysql_result
   end
 
-  def self.getSpecificArticlesforStockOutputs4(cost_center_id,article)
+  def self.getSpecificArticlesforStockOutputs4(warehouse_id,article)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT SUM(sid.amount) AS 'salida'
       FROM articles a, unit_of_measurements u, type_of_articles toa, categories c, stock_inputs si, stock_input_details sid 
       WHERE a.id = sid.article_id 
       AND si.id = sid.stock_input_id 
       AND si.input = 0 
-      AND si.cost_center_id = #{cost_center_id} 
+      AND si.warehouse_id = #{warehouse_id} 
       AND a.unit_of_measurement_id = u.id 
       AND a.category_id = c.id 
       AND toa.id = a.type_of_article_id

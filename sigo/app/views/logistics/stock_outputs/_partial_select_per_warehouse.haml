@@ -1,0 +1,7 @@
+.col-md-8
+  %select{:name => 'article_selected', :class => 'select2 form-control', :id => 'article-select-warehouse', :style => 'width:100%;padding: 0;border: none;'}
+    - @articles.each do |art|
+      %option{:value => "#{art[0]}-#{@warehouse}"}
+        = art[1] + ' - ' + art[2] + ' - ' + art[3]
+.col-md-4
+  %button{'type' => 'button', 'onclick' => 'javascript:add_article_item()'} Ver Insumo

@@ -173,6 +173,11 @@
               iconSmall: "fa fa-times bounce animated",
               timeout: 4000
             });
+          } else {
+            var warehouse_id = $("#warehouse-select").val();
+            str_item = { authenticity_token: "#{form_authenticity_token}", warehouse_id: warehouse_id };
+
+            load_url_ajax('#{partial_select_per_warehouse_logistics_stock_outputs_path}', 'select_table_per_warehouse', str_item, 0, 'POST');
           }
         }
 
@@ -180,7 +185,7 @@
 
           if( $.trim($('#dt_basic').html()).length ) {
             var index = 0;
-            $('#dt_basic tbody tr td .checkbox .order_check').each(function(){
+            $('#dt_basic tbody#partial_table_per_warehouse tr td .checkbox .order_check').each(function(){
               if( $(this).is(':checked') ){
                 status = true
                 data_items_sel[index] = $(this).val();
@@ -189,7 +194,8 @@
             });
 
             if(status){
-              data = { ids_items: data_items_sel, authenticity_token: "#{form_authenticity_token}" };
+              var warehouse_id = $("#warehouse-select").val();
+              data = { ids_items: data_items_sel, authenticity_token: "#{form_authenticity_token}", warehouse_id2: warehouse_id };
               load_items_delivery_order_ajax('#{add_items_from_pod_logistics_stock_outputs_path}', 'table-items-paso2', data);
 
               $.smallBox({
@@ -253,12 +259,10 @@
 
   function add_article_item(){
 
-    //alert("123");
+    var data = $("#article-select-warehouse").val();
+    str_item = { authenticity_token: "#{form_authenticity_token}", data: data };
 
-    //var article_id = $("#article-select").val();
-    //str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), amount: $("#article-amount").val()};
-
-    //append_url_ajax('#{add_delivery_order_item_field_logistics_delivery_orders_path}', 'article_items_table', str_item, 0, 'POST');
+    append_url_ajax('#{partial_table_per_warehouse_logistics_stock_outputs_path}', 'partial_table_per_warehouse', str_item, 0, 'POST');
   }
 
   function delete_item(code){
