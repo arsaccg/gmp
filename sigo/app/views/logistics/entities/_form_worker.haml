@@ -10,11 +10,39 @@
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
         .row
           %section.col.col-10
-            %label.label Razón Social
+            %label.label Nombre o Razón Social
             %label.input{for: "name"}
               %i.icon-append.fa.fa-user
               = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
-        
+        .row
+          %section.col.col-10
+            %label.label Segundo Nombre
+            %label.input{for: "second_name"}
+              %i.icon-append.fa.fa-user
+              = f.input :second_name, placeholder: "Segundo Nombre", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Apellido Paterno
+            %label.input{for: "paternal_surname"}
+              %i.icon-append.fa.fa-user
+              = f.input :paternal_surname, placeholder: "Apellido Paterno", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Apellido Materno
+            %label.input{for: "maternal_surname"}
+              %i.icon-append.fa.fa-user
+              = f.input :maternal_surname, placeholder: "Apellido Materno", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Fecha de Nacimiento
+            %label.input{for: "date_of_birth"}
+              = f.input :date_of_birth, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+        .row
+          %section.col.col-10
+            %label.label DNI
+            %label.input{for: "dni"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
             %label.label RUC
@@ -31,7 +59,6 @@
             %label.label Tipo
             .col.col-10.inline-group
               = f.association :type_entities, :as => :check_boxes, :label => false
-
         .row#cost-center-select{ 'style' => 'display:none' }
           %section.col.col-10
             %label.label Centro de Costo
@@ -95,16 +122,7 @@
           // Rules for form validation
           rules : {
             'entity[name]' : {
-              required : true
-            },
-            'entity[ruc]' : {
               required : true,
-              digits : true,
-              minlength : 11,
-              maxlength : 11
-            },
-            'entity[address]' : {
-              required : true
             }
           },
 
@@ -112,15 +130,6 @@
           messages : {
             'entity[name]' : {
               required : 'Por favor, ingresar el nombre.'
-            },
-            'entity[ruc]' : {
-              required : 'Por favor, ingresar el RUC.',
-              digits : 'Por favor, ingresar solo dígitos.',
-              maxlength: 'Solo son 11 dígitos',
-              minlength: 'Solo son 11 dígitos'
-            },
-            'entity[address]' : {
-              required : 'Por favor, ingresar la dirección.'
             }
           },
 

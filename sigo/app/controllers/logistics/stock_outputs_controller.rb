@@ -38,6 +38,7 @@ class Logistics::StockOutputsController < ApplicationController
     @articles = Article.getSpecificArticlesforStockOutputs(@cost_center)
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
     @working_groups = WorkingGroup.all
+    @reg_n = Time.now.to_i
     render layout: false
   end
 
@@ -117,6 +118,26 @@ class Logistics::StockOutputsController < ApplicationController
     @phases = Phase.getSpecificPhases(@cost_center)
     
     render(partial: 'add_item', :layout => false)
+  end
+
+  def add_items_from_pod
+    @reg_n = Time.now.to_i
+    @array1 = Array.new
+    @array2 = Array.new
+    @arrItems = Array.new
+    ids_items = params[:ids_items]
+    puts ids_items.inspect
+    ids_items = ids_items.join(',')
+    puts ids_items.inspect
+    @costcenterid = get_company_cost_center('cost_center')
+    @sectors = Sector.where("code LIKE '__'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @arrItems = Article.getSpecificArticlesforStockOutputs2(get_company_cost_center('cost_center'),ids_items)
+    @arrItems.each do |ai|
+      @array1 << ai
+      puts ai.inspect
+    end
+    render(partial: 'table_items_detail', :layout => false)
   end
 
   private
