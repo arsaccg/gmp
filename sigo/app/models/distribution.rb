@@ -4,7 +4,7 @@ require 'roo'
 class Distribution < ActiveRecord::Base
   has_many :distribution_items
   
-  def self.import_data_from_excel(file, cost_center_id,quantity)
+  def self.import_data_from_excel(file, cost_center_id,quantity,budget_id)
     spreadsheet = open_spreadsheet(file)
     
     header = spreadsheet.row(1)
@@ -15,6 +15,7 @@ class Distribution < ActiveRecord::Base
       d = Distribution.new
       d.code = row["CODIGO"]  
       d.cost_center_id = cost_center_id
+      d.budget_id = budget_id
       d.save
       
       items_months = row.keys - ["CODIGO"]
