@@ -75,6 +75,9 @@ Pmicg::Application.routes.draw do
         get 'do_import'
         post 'do_import'
       end
+      member do
+        get 'show_form'
+      end
     end
     
     resources :wbsitems do

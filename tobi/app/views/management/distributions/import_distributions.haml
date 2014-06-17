@@ -1,8 +1,24 @@
-- if @distribution.nil?
-  =form_tag do_import_management_distributions_path, multipart: true do
-    = hidden_field_tag 'cost_center_id', @cost_center_id
-    = file_field_tag :file  
-    = submit_tag "Importar"
-  %span *Subir el archivo en format CSV
-- else
-  %h2 Ya se cargó el archivo correctamente.
+.span4
+  .group-bar
+    %strong{style: "padding-left: 10px; font-size: 12px;"} Presupuestos Venta
+  .individual-panel
+    %table.table-bordered.table-hover.white-table.small-font{width: "100%"}
+      %tbody
+        - @budgets.each do |budget|
+          %tr
+            %td
+              %a.small-font{href: "#"}
+                = budget.description
+            %td
+              %strong
+                = budget.cod_budget
+            %td
+            %td
+              %a{href: "javascript:load_url_ondiv('#{show_form_management_distribution_path(budget.id)}?project_id=#{@cost_center_id}', 'content-load');"}
+                %i.icon-upload
+.span8
+  .group-bar
+    %strong{style: "padding-left: 10px; font-size: 12px;"} Programado
+  .row-fluid
+    .span12
+      .content-load{style: "height: 124px;"}
