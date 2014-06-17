@@ -17,10 +17,13 @@
                     %span.chevron
                   %li{"data-target" => "#step2"}
                     %span.badge> 2
-                    Llenar Información
-                    %span.chevron
+                    Escoger Artículos
                   %li{"data-target" => "#step3"}
                     %span.badge> 3
+                    Llenar Información
+                    %span.chevron
+                  %li{"data-target" => "#step4"}
+                    %span.badge> 4
                     Guardar Información
                     %span.chevron
                 .actions
@@ -174,9 +177,52 @@
         }
 
         if(data.step == 2 && data.direction == 'next'){
-          var $valid = $("#new_stock_input").valid();
-          if (!$valid) {
+
+          if( $.trim($('#dt_basic').html()).length ) {
+            var index = 0;
+            $('#dt_basic tbody tr td .checkbox .order_check').each(function(){
+              if( $(this).is(':checked') ){
+                status = true
+                data_items_sel[index] = $(this).val();
+                index++;
+              }
+            });
+
+            if(status){
+              data = { ids_items: data_items_sel, authenticity_token: "#{form_authenticity_token}" };
+              load_items_delivery_order_ajax('#{add_items_from_pod_logistics_stock_outputs_path}', 'table-items-paso2', data);
+
+              $.smallBox({
+                title: "Completa el <font color=yellow>Ingreso a Almacén</font>.",
+                content: "<i class='fa fa-clock-o'></i> <i>Hace unos segundos...</i>",
+                color: "#5F895F",
+                iconSmall: "fa fa-check bounce animated",
+                timeout: 4000
+              });
+
+            } else {
+
+              e.preventDefault();
+              $.smallBox({
+                title: "Para continuar <font color=yellow>seleccionar items</font>.",
+                content: "<i class='fa fa-clock-o'></i> <i>Hace unos segundos...</i>",
+                color: "#c46a69",
+                iconSmall: "fa fa-times bounce animated",
+                timeout: 4000
+              });
+            }
+
+          } else {
+
             e.preventDefault();
+            $.smallBox({
+              title: "Para continuar <font color=yellow>buscar items</font>.",
+              content: "<i class='fa fa-clock-o'></i> <i>Hace unos segundos...</i>",
+              color: "#c46a69",
+              iconSmall: "fa fa-times bounce animated",
+              timeout: 4000
+            });
+
           }
         }
 

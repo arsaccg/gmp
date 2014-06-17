@@ -136,6 +136,6 @@ class Logistics::StockInputsController < ApplicationController
 
   private
   def stock_input_parameters
-    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :series, :document, :issue_date, :description, :input, :company_id, :cost_center_id, stock_input_details_attributes: [:id, :stock_input_id, :purchase_order_detail_id, :amount, :_destroy])
+    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :series, :document, :issue_date, :description, :input, :company_id, :cost_center_id, stock_input_details_attributes: [:id, :stock_input_id, :purchase_order_detail_id, :article_id, :amount, :_destroy])
   end
 end
