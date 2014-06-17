@@ -20,8 +20,10 @@
           = flash[:error]
   .row
     .col-sm-4
-      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_entity_path}', 'content', {company_id : '#{@company}'}, null, 'GET')"}
+      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_entity_path}', 'content', {company_id : '#{@company}', type: 'entity'}, null, 'GET')"}
         Agregar Entidad
+      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_entity_path}', 'content', {company_id : '#{@company}', type: 'worker'}, null, 'GET')"}
+        Agregar Trabajador
   %br
   .row
     #widget-grid 
