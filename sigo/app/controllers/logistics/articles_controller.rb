@@ -11,9 +11,6 @@ class Logistics::ArticlesController < ApplicationController
     @company = Company.find(get_company_cost_center("company"))
     @subgroup = Category.where("code LIKE '____'").first
     @typeOfArticle = TypeOfArticle.first
-    puts "---------------------------------------------------------------------------------------------------------------------------------------------"
-    puts Article.all.count
-    puts "---------------------------------------------------------------------------------------------------------------------------------------------"
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted' || params[:task] == 'import'
       render layout: 'dashboard'
     else
@@ -22,9 +19,138 @@ class Logistics::ArticlesController < ApplicationController
   end
 
   def specifics_articles
-    cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-    @name = cost_center.name
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    @budget = Budget.where("type_of_budget = 0 AND cost_center_id = ?", @cost_center.id)
+    @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    @articles = ActiveRecord::Base.connection.execute("
+      SELECT *
+      FROM articles_from_"+@name+" 
+    ")
+    @articles.each do |art|
+      type = TypeOfArticle.find(art[3]).name
+      category = Category.find(art[4]).name
+      unit = UnitOfMeasurement.find(art[7]).name
+      art[3] = type
+      art[4] = category
+      art[7] = unit
+    end
     render layout: false
+  end
+
+  def new_specific
+    @specifics = Category.where("code LIKE '______'")
+    @categories = Category.where("code LIKE '__'")
+    @unitOfMeasurement = UnitOfMeasurement.all
+    @typeOfArticles = TypeOfArticle.all
+    @reg_n = Time.now.to_i
+    render layout: false
+  end
+
+  def display_articles_specific
+    word = params[:q]
+    article_hash = Array.new
+    articles = Article.getArticles(word)
+    articles.each do |art|
+      article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}
+    end
+    render json: {:articles => article_hash}
+  end
+
+  def create_specific
+    if params[:article]!= nil
+      @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+      @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+      data_article_unit = params[:article].to_s.split('-')
+      flag=ActiveRecord::Base.connection.execute("
+          SELECT DISTINCT a.*
+          FROM articles_from_"+@name+" a
+          WHERE a.id = "+data_article_unit[0]+"
+        ")
+      if flag != nil
+        @article = Article.find(data_article_unit[0])
+        ActiveRecord::Base.connection.execute("
+          INSERT INTO articles_from_"+@name+" (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id)
+          VALUES ("""+@article.id.to_i.to_s+",'"+@article.code.to_s+"',"+@article.type_of_article_id.to_i.to_s+","+@article.category_id.to_i.to_s+",'"+@article.name.to_s+"','"+@article.description.to_s+"',"+@article.unit_of_measurement_id.to_i.to_s+","+@cost_center.id.to_i.to_s+""")
+        ")
+        flash[:notice] = "Se ha creado correctamente el articulo."
+        redirect_to :action => :specifics_articles  
+      else
+        render :new_specific, layout: false
+      end
+    else
+      render :new_specific, layout: false
+    end
+  end
+
+  def edit_specific
+    @id=params[:id]
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    arsm=ActiveRecord::Base.connection.execute("
+          SELECT DISTINCT a.*
+          FROM articles_from_"+@name+" a
+          WHERE a.id = "+@id+"
+        ")
+    arsm.each do |my|
+      @ars=my
+    end
+    @id = @ars[0]
+    @art_id = @ars[1]
+    @type = @ars[3]
+    @unit = @ars[7] 
+    @code = @ars[2]
+    @category = @ars[4]
+    @desc = @ars[6]
+    @name = @ars[5]
+    @specifics = Category.where("code LIKE '______'")
+    @categories = Category.where("code LIKE '__'")
+    @unitOfMeasurement = UnitOfMeasurement.all
+    @typeOfArticles = TypeOfArticle.all
+    render layout: false
+  end
+
+  def update_specific
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+
+    @id = params[:articles]['id'].to_i.to_s
+    @artid = params[:articles]['article_id'].to_i.to_s
+    @code = params[:extrafield]['first_code'].to_s + params[:articles]['code'].to_s
+    @artty = params[:article]['type_of_article_id'].to_i.to_s
+    @artcat = params[:article]['category_id'].to_i.to_s
+    @artname = params[:articles]['name'].to_s
+    @artdesc = params[:articles]['description'].to_s
+    @artunit = params[:article]['unit_of_measurement_id'].to_i.to_s
+    if @id!=nil && @artid !=nil && @code !=nil && @artty !=nil && @artcat !=nil && @artname !=nil && @artdesc !=nil && @artunit
+      ActiveRecord::Base.connection.execute("
+        UPDATE articles_from_"+@name+" SET
+        article_id = "+@artid+",
+        code = '"+@code+"',
+        type_of_article_id = "+@artty+",
+        category_id = "+@artcat+",
+        name = '"+@artname+"', 
+        description = '"+@artdesc+"',
+        unit_of_measurement_id = "+@artunit+",
+        cost_center_id = "+@cost_center.id.to_i.to_s+"
+        WHERE id = "+@id+"
+      ")
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :specifics_articles
+    else
+      render :edit_specific, layout: false
+    end
+    
+  end
+
+  def delete_specific
+    id = params[:id]
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    article = ActiveRecord::Base.connection.execute("
+      DELETE FROM articles_from_"+@name+" WHERE id = "+id+"
+    ")
+    flash[:notice] = "Se ha eliminado correctamente el articulo seleccionado."
+    render :json => article
   end
 
   def json_specifics_articles
@@ -32,7 +158,6 @@ class Logistics::ArticlesController < ApplicationController
     pager_number = params[:iDisplayStart]
     array = Array.new
     articles = Article.getSpecificArticles(get_company_cost_center('cost_center'), display_length, pager_number)
-
     articles.each do |article|
       array << [article[1],article[2],article[3],article[4],article[5],article[6]]
     end

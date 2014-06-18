@@ -25,11 +25,28 @@ class Logistics::CostCentersController < ApplicationController
     flash[:error] = nil
     costCenter = CostCenter.new(cost_center_parameters)
     if costCenter.save
+      @name = costCenter.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
       wbsitem = Wbsitem.new
       wbsitem.codewbs = costCenter.id
       wbsitem.name = costCenter.name
       wbsitem.cost_center_id = costCenter.id
       if wbsitem.save
+        ActiveRecord::Base.connection.execute("
+          CREATE TABLE articles_from_"+@name+" 
+            (
+              id int NOT NULL AUTO_INCREMENT,
+              article_id int(11),
+              code varchar(255),
+              type_of_article_id int(11),
+              category_id int(11),
+              name varchar(255),
+              description varchar(255),
+              unit_of_measurement_id int(11),
+              cost_center_id int(11),
+              input_by_budget_and_items_id int(11),
+              budget_id int(11),
+              primary key (id)
+          );")
         flash[:notice] = "Se ha creado correctamente el centro de costo."
         redirect_to :action => :index
       else
