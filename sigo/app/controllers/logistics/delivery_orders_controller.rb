@@ -74,15 +74,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @reg_n = ((Time.now.to_f)*100).to_i
     data_article_unit = params[:article_id].split('-')
     @article = Article.find(data_article_unit[0])
-    @sectors = Sector.where("code LIKE '__' ")
-    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
-    @amount = params[:amount].to_f
-    @centerOfAttention = CenterOfAttention.all
     @code_article, @name_article, @id_article = @article.code, @article.name, @article.id
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
     @unitOfMeasurementId = data_article_unit[1]
-    
-    render(partial: 'delivery_order_items', :layout => false)
+    render(partial: 'items', :layout => false)
   end
 
   def show_tracking_orders
