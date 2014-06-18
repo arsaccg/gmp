@@ -48,20 +48,20 @@ class Article < ActiveRecord::Base
   end
 
   def self.getSpecificArticlesforStockOutputs(cost_center_id)
-      mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT DISTINCT a.id, a.code, toa.name, c.name, a.name, a.description, u.name
-        FROM delivery_orders do, delivery_order_details dod, purchase_order_details pod, articles a, unit_of_measurements u, type_of_articles toa, categories c 
-        WHERE dod.id = pod.delivery_order_detail_id
-        AND pod.received = 1
-        AND dod.delivery_order_id=do.id 
-        AND do.cost_center_id = #{cost_center_id}
-        AND dod.article_id = a.id
-        AND a.unit_of_measurement_id = u.id
-        AND a.category_id = c.id 
-        AND u.id = a.unit_of_measurement_id
-        AND toa.id = a.type_of_article_id
-      ")
-      return mysql_result
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT DISTINCT a.id, a.code, toa.name, c.name, a.name, a.description, u.name
+      FROM delivery_orders do, delivery_order_details dod, purchase_order_details pod, articles a, unit_of_measurements u, type_of_articles toa, categories c 
+      WHERE dod.id = pod.delivery_order_detail_id
+      AND pod.received = 1
+      AND dod.delivery_order_id=do.id 
+      AND do.cost_center_id = #{cost_center_id}
+      AND dod.article_id = a.id
+      AND a.unit_of_measurement_id = u.id
+      AND a.category_id = c.id 
+      AND u.id = a.unit_of_measurement_id
+      AND toa.id = a.type_of_article_id
+    ")
+    return mysql_result
   end
 
   def self.getArticles(word)

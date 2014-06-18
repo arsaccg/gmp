@@ -3,6 +3,7 @@ class Logistics::EntitiesController < ApplicationController
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
     @type_entities = TypeEntity.all
+    @i=0
     render layout: false
   end
 
@@ -41,6 +42,7 @@ class Logistics::EntitiesController < ApplicationController
     @company_id = get_company_cost_center('company')
     @reg_ed = Time.now.to_i
     @entity = Entity.find(params[:id])
+    @type = params[:type]
     @costCenter = Company.find(@company_id).cost_centers
     @all_entity_types = Array.new
     @own_entity_types = Array.new
