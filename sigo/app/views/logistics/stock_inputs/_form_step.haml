@@ -34,7 +34,7 @@
       %strong Paso 3
       \- Llenar información
     %fieldset
-      = hidden_field_tag "stock_input[company_id]"
+      = hidden_field_tag "stock_input[company_id]", session[:company]
       = hidden_field_tag "stock_input[input]", "1"
       .row
         .col-md-3

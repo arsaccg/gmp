@@ -103,3 +103,24 @@
               %th= workerDetail3[1]
               %th= workerDetail3[3]
               %th= workerDetail3[4]
+  -if @workers_array4.count>0
+    %div
+      Consumo de Materiales
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th Nombre
+              %th Unidad
+              %th Cantidad
+              %th P.U.
+              %th Parcial
+          %tbody
+          - @workers_array4.each do |workerDetail4|
+            %tr
+              %th= workerDetail4[1]
+              %th= workerDetail4[2]
+              %th= workerDetail4[3]
+              %th= Article.getSpecificArticlesforStockOutputs5(workerDetail4[0].to_i)
+              %th= workerDetail4[3]*Article.getSpecificArticlesforStockOutputs5(workerDetail4[0].to_i)

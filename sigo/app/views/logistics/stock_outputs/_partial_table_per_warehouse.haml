@@ -1,0 +1,14 @@
+- @article.each do |art|
+  %tr
+    %td
+      = art[1]
+    %td
+      = art[2]
+    %td
+      = art[3]
+    %td 
+      = art[4] - Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i).first.at(0).to_i
+    %td
+      %label.checkbox
+        = check_box("order_delivery", "approved", { class: 'order_check' }, art[0])
+        %i
