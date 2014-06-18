@@ -30,7 +30,8 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     @blockweekly = params[:blockweekly]
     @inicio = @weekly_work.start_date
     @fin = @weekly_work.end_date
-    @cad = @weekly_work.working_group
+    @cad = @weekly_work.working_group.split(" ")
+    @cad = @cad.join(',')
     @dias_habiles =  range_business_days(@inicio,@fin)
     @gruposdetrabajos = WorkingGroup.all
     @tareos_total_arrays = []
@@ -125,7 +126,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
 
     personals_array = []
     trabajadores_array = []
-    partediariodepersonals = PartPerson.where("working_group_id IN (?) and blockweekly = ? and date_of_creation BETWEEN ? AND ?", working_group_id, blockweekly,start_date,end_date)
+    partediariodepersonals = PartPerson.where("working_group_id IN ("+working_group_id+") and blockweekly = ? and date_of_creation BETWEEN ? AND ?", blockweekly,start_date,end_date)
     partediariodepersonals.each do |partediariodepersonal|
       partediariodepersonal.part_person_details.each do |trabajador_detalle|
         trabajadore = trabajador_detalle.worker
