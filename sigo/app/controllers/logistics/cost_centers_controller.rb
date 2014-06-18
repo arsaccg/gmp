@@ -29,7 +29,18 @@ class Logistics::CostCentersController < ApplicationController
       wbsitem.codewbs = costCenter.id
       wbsitem.name = costCenter.name
       wbsitem.cost_center_id = costCenter.id
+      puts params[:startdate2].inspect
       if wbsitem.save
+        ActiveRecord::Base.connection.execute("
+          CREATE TABLE weeks_for_cost_center_"+costCenter.id.to_s+" 
+            (
+              id int NOT NULL AUTO_INCREMENT,
+              name varchar(255),
+              start_date DATE,
+              end_date DATE,
+              primary key (id)
+          );")
+        add_weeks_table(costCenter.id,params[:startdate2])
         flash[:notice] = "Se ha creado correctamente el centro de costo."
         redirect_to :action => :index
       else
@@ -113,6 +124,24 @@ class Logistics::CostCentersController < ApplicationController
       true
     else
       false
+    end
+  end
+
+  def add_weeks_table(cost_center_id,start_date)
+    @weeknumber = 1
+    @count= 1
+    @start_date = start_date.to_date
+    while @count < 531  do
+      @end_date = @start_date + 6.day
+      @week = 'Semana ' + @weeknumber.to_s + ' ' + @start_date.year.to_s
+      
+      if @start_date.year.to_i!=@end_date.year.to_i ||  @weeknumber ==53 || (@end_date.day.to_i==31 && @end_date.month.to_i==12)
+        @weeknumber = 1
+      else
+        @weeknumber +=1
+      end
+      @start_date = @start_date + 7.day
+      @count +=1
     end
   end
 
