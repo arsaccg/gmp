@@ -81,7 +81,8 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     @blockweekly = params[:blockweekly]
     @inicio = @weekly_work.start_date
     @fin = @weekly_work.end_date
-    @cad = @weekly_work.working_group
+    @cad = @weekly_work.working_group.split(" ")
+    @cad = @cad.join(',')
     @dias_habiles =  range_business_days(@inicio,@fin)
     @gruposdetrabajos = WorkingGroup.all
     @tareos_total_arrays = []
