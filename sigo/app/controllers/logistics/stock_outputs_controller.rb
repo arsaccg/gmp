@@ -126,7 +126,7 @@ class Logistics::StockOutputsController < ApplicationController
     @cost_center = get_company_cost_center('cost_center')
     @article = Article.find(data_article_unit[0])
     @amount = params[:amount].to_i
-    @sectors = Sector.all
+    @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(@cost_center)
     
     render(partial: 'add_item', :layout => false)
