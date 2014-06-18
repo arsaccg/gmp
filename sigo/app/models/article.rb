@@ -46,7 +46,7 @@ class Article < ActiveRecord::Base
       ")
 
       return mysql_result
-    end
+  end
 
   def self.getSpecificArticlesforStockOutputs(cost_center_id)
       mysql_result = ActiveRecord::Base.connection.execute("
@@ -63,5 +63,17 @@ class Article < ActiveRecord::Base
         AND toa.id = a.type_of_article_id
       ")
       return mysql_result
-    end
+  end
+
+  def self.getArticles(word)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT DISTINCT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol
+      FROM articles a, unit_of_measurements u 
+      WHERE (a.code LIKE '04%' || a.code LIKE '03%' || a.code LIKE '02%')
+      AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) 
+      AND a.unit_of_measurement_id = u.id
+    ")
+    return mysql_result
+  end
+
 end
