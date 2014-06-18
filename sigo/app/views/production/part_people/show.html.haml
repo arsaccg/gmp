@@ -76,7 +76,7 @@
                       %td
                         = partpersondetail.sector.name
                       %td
-                        = partpersondetail.phase.code + ' - ' + partpersondetail.phase.name
+                        = partpersondetail.phase.code rescue 'No tiene definido una fase' + ' - ' + partpersondetail.phase.name
                       %td
                         = partpersondetail.normal_hours
                       %td
