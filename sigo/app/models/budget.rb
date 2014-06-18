@@ -10,6 +10,7 @@ class Budget < ActiveRecord::Base
   has_many :itembywbses
   has_many :valorizations
   belongs_to :cost_center
+  has_many :distributions
 
   queue = Queue.new
 

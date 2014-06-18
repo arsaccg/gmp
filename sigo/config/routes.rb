@@ -69,18 +69,19 @@ ArsacLogistica::Application.routes.draw do
       member do
         get 'show_article'
         post 'show_article'
+        delete 'delete_specific'
+        get 'edit_specific'
+        post 'update_specific'
       end
       collection do
         post 'display_articles'
         get 'specifics_articles'
         post 'create_specific'
-        post 'update_specific'
-        delete 'delete_specific'
         get 'new_specific'
-        get 'edit_specific'
         post 'json_specifics_articles'
         post 'import'
         get 'import'
+        post 'display_articles_specific'
       end
     end
     resources :sectors
