@@ -15,7 +15,18 @@ class Management::DistributionsController < ApplicationController
   
   def do_import
   	if !params[:file].nil?
-      Distribution.import_data_from_excel(params[:file], params[:cost_center_id], params[:quantity], params[:budget_id])
+      @budget = Budget.find(params[:budget_id])
+      if @budget.distributions.first.nil?
+        Distribution.import_data_from_excel(params[:file], params[:cost_center_id], params[:quantity], params[:budget_id])
+      else
+        @budget.distributions.each do |distro|
+          Distribution.destroy(distro.id)
+          distro.distribution_items.each do |distro_item|
+            DistributionItem.destroy(distro_item.id)
+          end
+        end
+        Distribution.import_data_from_excel(params[:file], params[:cost_center_id], params[:quantity], params[:budget_id])
+      end
   	end
     redirect_to :action => :import_distributions
   end

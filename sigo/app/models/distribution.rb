@@ -3,6 +3,7 @@ require 'roo'
 
 class Distribution < ActiveRecord::Base
   has_many :distribution_items
+  belongs_to :budget
   
   def self.import_data_from_excel(file, cost_center_id,quantity,budget_id)
     spreadsheet = open_spreadsheet(file)
