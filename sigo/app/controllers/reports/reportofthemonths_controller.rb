@@ -137,12 +137,14 @@ class Reports::ReportofthemonthsController < ApplicationController
     @acumulated_valorized_sale_current_month = 0
     @gg_valorized_sale_current_month = 0
     @direct_cost = Array.new
-    4.times do |index|
-      index += 1
-      current_valorized = get_valorized_sale(index, @cost_center)
+    4.times do |i|
+      i += 1
+      current_valorized = get_valorized_sale(i, @cost_center)
       @direct_cost << [current_valorized]
       @acumulated_valorized_sale_current_month += current_valorized
     end
+
+    # Venta Programado
 
     # Gastos Generales ¿percent o calculated?
     overhead_percentage = CostCenter.find(@cost_center).overhead_percentage
@@ -152,8 +154,36 @@ class Reports::ReportofthemonthsController < ApplicationController
       @gg_valorized_sale_current_month = 0
     end
 
+    # Costo Meta (Con la valorizacion del presupuesto Meta) y el Costo Real
+    @acumulated_cost_goal_current_month = 0
+    @cost_goal_current_month = 0
+    @cost_goal = Array.new
+    # Cost_Goal Have
+    # [1] => Direct Cost Actual
+    # [2] => Direct Cost Acummulate
+    # [3] => Meta Cost Actual
+    # [4] => Meta Cost Acummulate
+    # Each row is differente by MO, MAT, EQ, SC y SERV.
+
+    4.times do |j|
+      j += 1
+      current_cost = get_cost_goal(j, @cost_center)
+      if j == 1
+        @cost_goal << [@partpeople, @partpeople2, current_cost]
+      elsif j == 2
+        @cost_goal << [@partwork, @partwork2, current_cost]
+      elsif j == 3
+        @cost_goal << [@partequipment, @partequipment2, current_cost]
+      elsif j == 4
+        @cost_goal << [@orderofservice + @scvaluations, @orderofservice2 + @scvaluations, current_cost]
+      end
+      @acumulated_cost_goal_current_month += current_cost
+    end
+
 		render layout: false
   end
+
+  # Helper Functions
 
   def part_work(start_date, end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
@@ -231,6 +261,16 @@ class Reports::ReportofthemonthsController < ApplicationController
   def get_valorized_sale(type_article, cost_center_id)
     result = ""
     mysql_result = ActiveRecord::Base.connection.execute("SELECT get_valorized_sale(" + type_article.to_s + "," + cost_center_id.to_s + ") FROM DUAL;")
+    mysql_result.each do |mysql|
+      result = mysql[0]
+    end
+    return result
+  end
+
+  # Costo Meta
+  def get_cost_goal(type_article, cost_center_id)
+    result = ""
+    mysql_result = ActiveRecord::Base.connection.execute("SELECT get_cost_goal(" + type_article.to_s + "," + cost_center_id.to_s + ") FROM DUAL;")
     mysql_result.each do |mysql|
       result = mysql[0]
     end
