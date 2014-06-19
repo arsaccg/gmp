@@ -90,6 +90,106 @@ function load_graphic(div_id){
   });
 }
 
+function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1, serie2, serie3){
+  $('#'+div_id).highcharts({
+    chart: {
+      type: 'line'
+    },
+    title: {
+      text: title
+    },
+    subtitle: {
+      text: subtitle
+    },
+    xAxis: {
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    },
+    yAxis: {
+      title: {
+          text: 'Costo (S/.)'
+      }
+    },
+    plotOptions: {
+      line: {
+          dataLabels: {
+              enabled: true
+          },
+          enableMouseTracking: false
+      }
+    },
+    series: [{
+      name: serie1,
+      data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+    }, {
+      name: serie2,
+      data: [1.0, 2.0, 7.0, 5.0, 11.0, 11.2, 13.7, 11.1, 18.2, 5.3, 6.1, 3.8]
+    }, {
+      name: serie3,
+      data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+    }]
+  });
+}
+
+function load_bar_graphic_for_general_report(div_id, title, subtitle){
+  $('#'+div_id).highcharts({
+    chart: {
+      type: 'column'
+    },
+    title: {
+      text: title
+    },
+    subtitle: {
+      text: subtitle
+    },
+    xAxis: {
+      categories: [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec'
+      ]
+    },
+    yAxis: {
+      min: 0,
+      title: {
+        text: 'Costo (S/.)'
+      }
+    },
+    tooltip: {
+      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+          '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+      footerFormat: '</table>',
+      shared: true,
+      useHTML: true
+    },
+    plotOptions: {
+      column: {
+        pointPadding: 0.2,
+        borderWidth: 0
+      }
+    },
+    series: [{
+      name: 'Programado',
+      data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+    }, {
+      name: 'Valorizado',
+      data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
+    }, {
+      name: 'Costo Real',
+      data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
+    }]
+  });
+}
+
 function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
   var url_str = url;
   var div_name = div_id; 
