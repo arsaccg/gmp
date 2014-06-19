@@ -40,9 +40,12 @@
       .row
         %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
           #table-information-result
+
+    / Aqui esta el Gráfico!
     %br
     .row
       #container-graphic
+    
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"}
