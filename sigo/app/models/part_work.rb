@@ -6,19 +6,19 @@ class PartWork < ActiveRecord::Base
 	accepts_nested_attributes_for :part_work_details, :allow_destroy => true
 
 	def self.getOwnArticles(word, cost_center_id)
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
     mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT DISTINCT a.id, a.name
-      FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u, subcontract_details sd
-      WHERE b.id = ibi.budget_id
-      AND b.type_of_budget =0
-      AND b.cost_center_id = #{cost_center_id}
-      AND ibi.article_id IS NOT NULL 
-      AND ibi.article_id = a.id
-      AND sd.article_id=a.id
+      SELECT a.id, a.name
+      FROM articles_from_"+@name+" a
       AND a.code LIKE '04%'
       AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
+      LIMIT #{display_length}
+      OFFSET #{pager_number}
     ")
-
     return mysql_result
   end
 end
+
+
+
