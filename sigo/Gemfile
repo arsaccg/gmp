@@ -7,8 +7,6 @@ gem 'rails', '4.0.3'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 
-# Use highchart for draw the graphs
-gem 'highcharts-rails', '~> 4.0.1'
 # Use mysql2
 gem 'mysql2'
 
