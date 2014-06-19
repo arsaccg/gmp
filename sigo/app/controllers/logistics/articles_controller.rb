@@ -11,9 +11,6 @@ class Logistics::ArticlesController < ApplicationController
     @company = Company.find(get_company_cost_center("company"))
     @subgroup = Category.where("code LIKE '____'").first
     @typeOfArticle = TypeOfArticle.first
-    puts "---------------------------------------------------------------------------------------------------------------------------------------------"
-    puts Article.all.count
-    puts "---------------------------------------------------------------------------------------------------------------------------------------------"
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted' || params[:task] == 'import'
       render layout: 'dashboard'
     else

@@ -146,6 +146,7 @@ class Reports::ReportofthemonthsController < ApplicationController
 
     # Venta Programado
 
+
     # Gastos Generales ¿percent o calculated?
     overhead_percentage = CostCenter.find(@cost_center).overhead_percentage
     if overhead_percentage != nil
@@ -265,6 +266,18 @@ class Reports::ReportofthemonthsController < ApplicationController
       result = mysql[0]
     end
     return result
+  end
+
+  # Venta programada
+
+  def get_planned_sale(budget_id)
+    @budgets = Budget.select(:id).where('type_of_budget = ?', 1)
+    @budgets.each do |budget|
+      @distributions = Distribution.select(:id,:code).where('budget_id = ?', budget.id)
+      @distributions.each do |distribution|
+        @measured = distribution.measured rescue 0
+      end
+    end
   end
 
   # Costo Meta
