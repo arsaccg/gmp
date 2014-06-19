@@ -1,4 +1,5 @@
 DELIMITER $$
+
 --
 -- Functions
 --
@@ -53,6 +54,69 @@ BEGIN
     SELECT b.id, vi.itembybudget_id, vi.actual_measured 
     FROM `budgets` b, `itembybudgets` ibb, `valorizationitems` vi 
     WHERE b.type_of_budget = 1 
+    AND b.cost_center_id = cost_center_id 
+    AND ibb.budget_id = b.id 
+    AND vi.itembybudget_id = ibb.id;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  SET i_measured = 0;
+
+  OPEN measured_cursor;
+
+    read_loop: LOOP
+    FETCH measured_cursor INTO v_budget_id, v_itembybudget_id, v_actual_measured;
+
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+
+      SET @i_measured = (
+    SELECT DISTINCT SUM(items.price * items.quantity * items.measured)
+    FROM inputcategories,
+    (
+      SELECT  inputs.cod_input, inputs.quantity, inputs.price, itembybudgets.measured, inputs.item_id, inputs.`order`
+      FROM itembybudgets,
+      (
+        SELECT quantity, price, `order`, item_id, cod_input, budget_id
+        FROM inputbybudgetanditems
+      ) AS inputs
+      WHERE inputs.item_id = itembybudgets.item_id AND
+        inputs.`order` = itembybudgets.`order` AND
+        inputs.budget_id = itembybudgets.budget_id AND
+        itembybudgets.budget_id = v_budget_id AND
+        itembybudgets.id = v_itembybudget_id
+    ) AS items
+    WHERE items.cod_input LIKE CONCAT('0', CONCAT(type_article, '%'))
+    GROUP BY category_id
+    ORDER BY category_id
+      );
+
+    IF @i_measured IS NULL THEN
+      SET @i_measured = 0;
+    END IF;
+
+    SET i_measured  = i_measured + @i_measured;
+
+    END LOOP;
+
+  CLOSE measured_cursor;
+
+  RETURN ROUND(i_measured, 2);
+END$$
+
+DROP FUNCTION IF EXISTS `get_cost_goal`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `get_cost_goal`( type_article INT, cost_center_id INT ) RETURNS FLOAT
+BEGIN
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE v_budget_id INT; 
+  DECLARE v_itembybudget_id INT; 
+  DECLARE v_actual_measured FLOAT;
+  DECLARE i_measured FLOAT;
+
+  DECLARE measured_cursor CURSOR FOR 
+    SELECT b.id, vi.itembybudget_id, vi.actual_measured 
+    FROM `budgets` b, `itembybudgets` ibb, `valorizationitems` vi 
+    WHERE b.type_of_budget = 0 
     AND b.cost_center_id = cost_center_id 
     AND ibb.budget_id = b.id 
     AND vi.itembybudget_id = ibb.id;
