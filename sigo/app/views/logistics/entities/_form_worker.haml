@@ -10,7 +10,7 @@
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
         .row
           %section.col.col-10
-            %label.label Nombre o Razón Social
+            %label.label Nombre
             %label.input{for: "name"}
               %i.icon-append.fa.fa-user
               = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
@@ -45,38 +45,15 @@
               = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
-            %label.label RUC
-            %label.input{for: "surname"}
-              %i.icon-append.fa.fa-credit-card
-              = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
             %label.label Dirección
             %label.input{for: "address"}
               = f.input :address, input_html: { class: 'form-control' }, label: false
-        .row
+        .row{"style"=>"display: none;"}
           %section.col.col-10
             %label.label Tipo
             .col.col-10.inline-group
-              = f.association :type_entities, :as => :check_boxes, :label => false
-        .row#cost-center-select{ 'style' => 'display:none' }
-          %section.col.col-10
-            %label.label Centro de Costo
-            %label.input
-              %select.form-control#cost-center-select{:name =>"cost_center_id"}
-                %option{:value => ""} Seleccionar Centro de Costo
-                - if @costCenter.present?
-                  - @costCenter.each do |costCenter|
-                    - if @action == 'edit'
-                      - if @entity.cost_center_id == costCenter.id
-                        %option{:value => "#{costCenter.id}", :selected => true}
-                          = costCenter.name
-                      - else
-                        %option{:value => "#{costCenter.id}"}
-                          = costCenter.name
-                    - else
-                      %option{:value => "#{costCenter.id}"}
-                        = costCenter.name
+              = f.association :type_entities, :as => :check_boxes,  collection: TypeEntity.where('id = 3'), :label => false, :input_html => { :checked => true }
+
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 

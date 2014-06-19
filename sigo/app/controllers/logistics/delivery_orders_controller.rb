@@ -81,7 +81,6 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @code_article, @name_article, @id_article = @article.code, @article.name, @article.id
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
     @unitOfMeasurementId = data_article_unit[1]
-    
     render(partial: 'delivery_order_items', :layout => false)
   end
 

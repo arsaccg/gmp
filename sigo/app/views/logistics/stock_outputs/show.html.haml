@@ -45,16 +45,18 @@
           %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-pod" aria-describedby="data-table_info")
             %thead
               %tr
-                %th Codigo
-                %th Descripción
-                %th{'style' => 'width: 4%;'}
+                %th{'style' => 'width: 13%;'}
+                  Codigo
+                %th{'style' => 'width: 25%;'}
+                  Nombre
+                %th{'style' => 'width: 10%;'}
                   Unidad
-                %th{'style' => 'width: 5%;'}
-                  Cantidad Total
-                %th{'style' => 'width: 4%;'}
+                %th{'style' => 'width: 6%;'}
+                  Cantidad de Salida
+                %th{'style' => 'width: 20%;'}
                   Sector
-                %th{'style' => 'width: 4%;'}
-                  Fase
+                %th{'style' => 'width: 20%;'}
+                  Fases
             %tbody(id="table-items-paso2")
               - @arrItems.each do |x|
                 - @article = x.article

@@ -7,7 +7,11 @@
   #widget-grid
     .row
       %article.col-sm-12.col-md-12.col-lg-6
-        = render :partial => 'form'
+        -if @type == "worker"
+          = render :partial => 'form_worker'
+        -else
+          = render :partial => 'form'
+
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-entity{type: "button"}
     %i.fa.fa-arrow-left>
     Retornar al Listado de Entidades
