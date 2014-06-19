@@ -151,7 +151,10 @@ class Logistics::CostCentersController < ApplicationController
     while @count < 531  do
       @end_date = @start_date + 6.day
       @week = 'Semana ' + @weeknumber.to_s + ' ' + @start_date.year.to_s
-      
+      ActiveRecord::Base.connection.execute("
+        INSERT INTO weeks_for_cost_center_"+cost_center_id.to_s+"  (name, start_date, end_date)
+        VALUES ('"+@week+"', '"+@start_date.to_s+"', '"+@end_date.to_s+"')
+        ;")
       if @start_date.year.to_i!=@end_date.year.to_i ||  @weeknumber ==53 || (@end_date.day.to_i==31 && @end_date.month.to_i==12)
         @weeknumber = 1
       else
