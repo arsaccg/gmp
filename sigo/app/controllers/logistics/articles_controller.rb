@@ -20,20 +20,14 @@ class Logistics::ArticlesController < ApplicationController
 
   def specifics_articles
     @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-    @budget = Budget.where("type_of_budget = 0 AND cost_center_id = ?", @cost_center.id)
     @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
     @articles = ActiveRecord::Base.connection.execute("
-      SELECT *
-      FROM articles_from_"+@name+" 
+      SELECT especific.id, especific.code, toa.name, especific.name, especific.description, uom.name 
+      FROM articles_from_" + @name + " especific, type_of_articles toa, unit_of_measurements uom 
+      WHERE especific.unit_of_measurement_id = uom.id 
+      AND especific.type_of_article_id = toa.id
+      GROUP BY 2 
     ")
-    @articles.each do |art|
-      type = TypeOfArticle.find(art[3]).name
-      category = Category.find(art[4]).name
-      unit = UnitOfMeasurement.find(art[7]).name
-      art[3] = type
-      art[4] = category
-      art[7] = unit
-    end
     render layout: false
   end
 

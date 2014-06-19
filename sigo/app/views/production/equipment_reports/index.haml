@@ -40,6 +40,9 @@
       .row
         %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
           #table-information-result
+    %br
+    .row
+      #container-graphic
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"}
@@ -61,6 +64,7 @@
     $('select').select2({width:'200'});
     var chosen = $('#select-1').val();
     complete("#{complete_production_equipment_reports_path}", chosen, "#{form_authenticity_token}", 0);
+    load_graphic('container-graphic');
   });
 
   $('#show-table').click(function(){

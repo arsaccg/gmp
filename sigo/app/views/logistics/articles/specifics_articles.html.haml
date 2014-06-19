@@ -61,7 +61,6 @@
                       %tr
                         %th Código
                         %th Tipo de Artículo
-                        %th Específico
                         %th Nombre
                         %th Descripcion
                         %th Unidad de Medida
@@ -70,6 +69,8 @@
                       -@articles.each do |art|
                         %tr
                           %td 
+                            = art[1]
+                          %td 
                             = art[2]
                           %td 
                             = art[3]
@@ -77,10 +78,6 @@
                             = art[4]
                           %td 
                             = art[5]
-                          %td 
-                            = art[6]
-                          %td 
-                            = art[7]
                           %td
                             %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_specific_logistics_article_path("#{art[0]}")}', 'content', null, null, 'GET')"}
                               Editar
