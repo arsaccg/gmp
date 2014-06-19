@@ -102,7 +102,7 @@ function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1,
       text: subtitle
     },
     xAxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      categories: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     },
     yAxis: {
       title: {
