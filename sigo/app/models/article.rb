@@ -11,7 +11,7 @@ class Article < ActiveRecord::Base
   	has_many :category_of_worker
   	has_many :workers
 	  has_many :part_work_details
-    
+    has_many :theoretical_values
     
     has_many :inputbybudgetanditems
   	belongs_to :category

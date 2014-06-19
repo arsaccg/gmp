@@ -62,6 +62,11 @@ ArsacLogistica::Application.routes.draw do
         post 'getCostCentersPerCompany'
       end
     end
+    resources :theoretical_values do
+      collection do
+        post 'partial_table'
+      end
+    end
     resources :banks
     resources :center_of_attentions
     resources :financial_variables
