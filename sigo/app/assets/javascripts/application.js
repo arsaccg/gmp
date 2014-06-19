@@ -143,18 +143,7 @@ function load_bar_graphic_for_general_report(div_id, title, subtitle){
     },
     xAxis: {
       categories: [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec'
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
       ]
     },
     yAxis: {
