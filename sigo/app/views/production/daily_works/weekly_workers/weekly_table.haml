@@ -69,13 +69,15 @@
                       %b= number_to_currency sumariza_total_horas, unit: ''
         %br
         %br
-        %div#container1
-          Histograma por Semana: Cantidad de Horas - Categoría de trabajador
+        %div
+          Histograma por Semana: Cantidad de Horas- Categoría de trabajador
+          %div#container1
 
         %br
         %br
-        %div#container2
+        %div
           Histograma por Semana: Cantidad de Personas - Categoría de trabajador
+          %div#container2
           
       - else
         %h4.modal-title No hay datos.
@@ -83,3 +85,7 @@
       %footer
         %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
           Salir
+
+:javascript
+  bar_graph_category('container1', "#{@names}", 'Histograma: Cantidad de Horas - Categoría');
+  console.log("#{@serieh}.inspect");
