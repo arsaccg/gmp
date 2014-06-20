@@ -10,7 +10,7 @@
           %section.col.col-10
             %label.label Id Artículo
             %label.input{for: "article_id"}
-              = @articles.name
+              = @articles.id.to_s + @articles.name
               = hidden_field_tag 'theoretical_value[article_id]', @articles.id, class: 'form-control', id: 'article_id'
         .row
           %section.col.col-10
