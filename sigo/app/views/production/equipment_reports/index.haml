@@ -16,18 +16,21 @@
             %option{:value => "operador"} Operador
             %option{:value => "frente"} Frente
             %option{:value => "equipment"} Equipo
+      .col-md-1
       .col-md-2
         %label Seleccione
         %label.input
           %select.form-control#article{:style => 'width:100%;padding: 0;border: none;'}
             %option{:value => "0"} Seleccione
+      .col-md-1
       .col-md-3
-        %label Fecha de inicio
-        %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
+        %label Seleccione la Semana en consulta
+        %select.form-control#start-date-input{:name =>'date1', :style => 'width:100%;padding: 0;border: none;'}
+          %option{:value => "0"} Seleccione una fecha
+          - @week.each do |week|
+            %option{:value => "#{week[0]},#{week[2]},#{week[3]}"}
+              = week[1] + ' - ' + week[2].to_s + ' - ' + week[3].to_s
 
-      .col-md-3
-        %label Fecha de fin
-        %input#end-date-input.string.optional.form-control{'name'=>'date2', type: "date"}
     .row
       .col-md-9
       .col-md-1
@@ -72,21 +75,12 @@
 
   $('#show-table').click(function(){
     var start_date = $('#start-date-input').val();
-    var end_date = $('#end-date-input').val();
     var article = $('#article').val();
     var select1 = $('#select-1').val();
+    
+    var parameters = { company_id: "#{@company}", article: article, start_date: start_date, select1: select1, authenticity_token: "#{form_authenticity_token}" };
 
-    if(start_date != null && end_date != null) {
-      if(new Date(start_date) < new Date(end_date)) {
-        var parameters = { company_id: "#{@company}", article: article, start_date: start_date, end_date: end_date, select1: select1, authenticity_token: "#{form_authenticity_token}" };
-
-        load_items_delivery_order_ajax("#{get_report_production_equipment_reports_path}", 'table-information-result', parameters);
-      } else {
-        alert('La fecha de fin debe ser mayor a la fecha de ingreso.')
-      }
-    } else {
-      alert('Por favor, especificar todos los datos necesarios.')
-    }
+    load_items_delivery_order_ajax("#{get_report_production_equipment_reports_path}", 'table-information-result', parameters);
   });
 
   $('#select-1').change(function(){

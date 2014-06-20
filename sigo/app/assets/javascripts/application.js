@@ -44,20 +44,20 @@ $(document).ready(function(){
 function load_graphic(div_id){
   $('#'+div_id).highcharts({
     title: {
-        text: 'Monthly Average Temperature',
+        text: 'Promedio Semanal Consumo de Combustible',
         x: -20 //center
     },
     subtitle: {
-        text: 'Source: WorldClimate.com',
+        text: 'Gráfico Histograma Semanal',
         x: -20
     },
     xAxis: {
         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Diciembre']
     },
     yAxis: {
         title: {
-            text: 'Temperature (°C)'
+            text: 'Consumo de Combustible'
         },
         plotLines: [{
             value: 0,
@@ -77,12 +77,6 @@ function load_graphic(div_id){
     series: [{
         name: 'Tokyo',
         data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-    }, {
-        name: 'New York',
-        data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
-    }, {
-        name: 'Berlin',
-        data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
     }, {
         name: 'London',
         data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
@@ -312,5 +306,121 @@ function show_report_inventory(url, parameters, wurl, wname, wparameters){
     error : function(xhr, ajaxOptions, thrownError) {
       container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
     }
+  });
+}
+
+
+function bar_graph_category(div, categoria, title_c){
+  $(function () {
+    $('#'+div).highcharts({
+      chart: {
+        zoomType: 'xy'
+      },
+      title: {
+        text: title_c
+      },
+      xAxis: [{
+        categories: categoria
+      }],
+      yAxis: [
+        { // First yAxis
+          title: {
+            text: '',
+            style: {
+              color: Highcharts.getOptions().colors[0]
+            }
+          }
+        },
+        { // Secondary yAxis
+          gridLineWidth: 0,
+          title: {
+            text: 'Horas',
+            style: {
+              color: Highcharts.getOptions().colors[18]
+            }
+          },
+          labels: {
+            format: '{value} hh',
+            style: {
+              color: Highcharts.getOptions().colors[0]
+            }
+          }
+
+        },
+        { // Third yAxis
+          title: {
+            text: '',
+            style: {
+              color: Highcharts.getOptions().colors[0]
+            }
+          }
+        }],
+      
+      tooltip: {
+        shared: true,
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+      },
+
+      plotOptions: {
+        column: {
+          pointPadding: 0.2,
+          borderWidth: 0
+        }
+      },
+      legend: {
+          layout: 'vertical',
+          align: 'left',
+          x: 120,
+          verticalAlign: 'top',
+          y: 80,
+          floating: true,
+          backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+      },
+      series: [{
+          name: 'Horas',
+          type: 'column',
+          
+          yAxis: 1,
+          data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+          tooltip: {
+              valueSuffix: ' hh',
+              
+          },
+      },{
+          name: 'H1oras',
+          type: 'column',
+          
+          yAxis: 1,
+          data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+          tooltip: {
+              valueSuffix: ' hh'
+          }
+
+      },{
+          name: 'Hora2s',
+          type: 'column',
+          
+          yAxis: 1,
+          data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+          tooltip: {
+              valueSuffix: ' hh'
+          }
+
+      },{
+          name: 'Hora122s',
+          type: 'column',
+          
+          yAxis: 1,
+          data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+          tooltip: {
+              valueSuffix: ' hh'
+          }
+
+      }]
+    });
   });
 }

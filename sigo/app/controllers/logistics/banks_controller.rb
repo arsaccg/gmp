@@ -5,6 +5,12 @@ class Logistics::BanksController < ApplicationController
   def index
     flash[:error] = nil
     @banks = Bank.all
+    com_art= Article.where("code LIKE  '__58______' OR code LIKE '__76______'")
+    com_art.each do |art|
+      puts "-----------------------------------------------------------------------"
+      puts art.id
+      puts "-----------------------------------------------------------------------"
+    end
     render layout: false
   end
 
