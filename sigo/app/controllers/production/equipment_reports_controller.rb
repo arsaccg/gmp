@@ -3,6 +3,24 @@ class Production::EquipmentReportsController < ApplicationController
     @company = get_company_cost_center('company')
     @workingGroups = WorkingGroup.all
     @article = Article.where("type_of_article_id = 3")
+    @week3 = Array.new
+    @week = CostCenter.getWeek(get_company_cost_center('cost_center'),Time.now.to_date.to_s)
+    puts @week.count.inspect
+    if @week.count>=10
+      @week3 = CostCenter.getWeek3(get_company_cost_center('cost_center'),Time.now.to_date.to_s,10)
+    else
+      @week2 = CostCenter.getWeek2(get_company_cost_center('cost_center'),Time.now.to_date.to_s,10-@week.count)
+      puts @week2.count.inspect
+      @week.each do |week|
+        @week3 << week
+      end
+      @week2.each do |week|
+        @week3 << week
+      end
+    end
+    @week3.each do|week|
+      puts week.inspect
+    end
     render layout: false
   end
 
@@ -44,9 +62,10 @@ class Production::EquipmentReportsController < ApplicationController
   end
 
   def get_report
+    @result = params[:start_date].split(/,/)
     @article= params[:article]
-    start_date = params[:start_date]
-    end_date = params[:end_date]
+    start_date = @result[1]
+    end_date = @result[2]
     @select1 = params[:select1]
     if @select1 == 'specific'
       @poe_array = poe_arrayworker(start_date, end_date, @article)
