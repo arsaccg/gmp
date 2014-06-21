@@ -62,6 +62,11 @@ ArsacLogistica::Application.routes.draw do
         post 'getCostCentersPerCompany'
       end
     end
+    resources :theoretical_values do
+      collection do
+        post 'partial_table'
+      end
+    end
     resources :banks
     resources :center_of_attentions
     resources :financial_variables
@@ -69,13 +74,19 @@ ArsacLogistica::Application.routes.draw do
       member do
         get 'show_article'
         post 'show_article'
+        delete 'delete_specific'
+        get 'edit_specific'
+        post 'update_specific'
       end
       collection do
         post 'display_articles'
         get 'specifics_articles'
+        post 'create_specific'
+        get 'new_specific'
         post 'json_specifics_articles'
         post 'import'
         get 'import'
+        post 'display_articles_specific'
       end
     end
     resources :sectors
@@ -186,6 +197,9 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'show_rows_stock_inputs'
         post 'add_stock_input_item_field'
+        post 'add_items_from_pod'
+        post 'partial_select_per_warehouse'
+        post 'partial_table_per_warehouse'
       end
     end
     resources :working_groups

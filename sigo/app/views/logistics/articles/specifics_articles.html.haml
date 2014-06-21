@@ -1,9 +1,24 @@
 #content
   .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+    .col-lg-12
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
-        = "Lista de Articulos del Centro de Costo #{@name}"
+        = "Lista de Articulos del Centro de Costo: #{@cost_center.name}"
+
+  - if @budget != nil
+    .row
+      .col-sm-4
+        %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{ new_specific_logistics_articles_path}', 'content', null, null, 'GET')"}
+          Agregar Articulo
+  - else
+    .alert.alert-block.alert-danger
+      %a.close(data-dismiss="alert" href="#")
+        ×
+      %h4.alert-heading
+        %i.fa.fa-lock
+          No puedes crear Artículos!
+      %p
+        Verifica si tienes, por lo menos, 1 presupuesto meta importado
   %br
   .row
   #widget-grid
@@ -14,7 +29,7 @@
             %span.widget-icon
               %i.fa.fa-table
             %h2
-              = "Lista de Articulos del Centro de Costo #{@name}"
+              = "Lista de Articulos del Centro de Costo: #{@cost_center.name}"
           / widget div
           %div
             / widget edit box
@@ -46,11 +61,29 @@
                       %tr
                         %th Código
                         %th Tipo de Artículo
-                        %th Específico
                         %th Nombre
                         %th Descripcion
                         %th Unidad de Medida
+                        %th Acciones
                     %tbody
+                      -@articles.each do |art|
+                        %tr
+                          %td 
+                            = art[1]
+                          %td 
+                            = art[2]
+                          %td 
+                            = art[3]
+                          %td 
+                            = art[4]
+                          %td 
+                            = art[5]
+                          %td
+                            %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_specific_logistics_article_path("#{art[0]}")}', 'content', null, null, 'GET')"}
+                              Editar
+                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{art[4]}", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{delete_specific_logistics_article_path(art[0])}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{specifics_articles_logistics_articles_path}?company_id=#{@company}')"}}
+                              Eliminar
+
                       
 
         :javascript
@@ -61,53 +94,85 @@
             $('[data-toggle="confirmation"]').confirmation();
           });
           // PAGE RELATED SCRIPTS
-
           loadDataTableScripts();
           function loadDataTableScripts() {
-
             loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
-
             function dt_2() {
               loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
             }
-
             function dt_3() {
               loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
             }
-
             function dt_4() {
               loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
             }
-
             function dt_5() {
               loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
             }
-
             function dt_6() {
               loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
             }
-
             function dt_7() {
               loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
             }
-
           }
 
           function runDataTables() {
-
-            /*
-             * BASIC
-             */
             $('#dt_basic').dataTable({
-              bProcessing  : true,
-              sProcessing  : true,
-              bServerSide  : true,
-              sServerMethod: 'POST',
-              sAjaxSource  : "#{json_specifics_articles_logistics_articles_path}",
-              fnServerParams: function ( aoData ) {
-                aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
-              },
-              sPaginationType : 'bootstrap_full'
+              "sPaginationType" : "bootstrap_full"
             });
-
+            /* END BASIC */
+            /* Add the events etc before DataTables hides a column */
+            $("#dt_basic thead input").keyup(function() {
+              oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+            });
+            $("#dt_basic thead input").each(function(i) {
+              this.initVal = this.value;
+            });
+            $("#datatable_fixed_column thead input").focus(function() {
+              if (this.className == "search_init") {
+                this.className = "";
+                this.value = "";
+              }
+            });
+            $("#dt_basic thead input").blur(function(i) {
+              if (this.value == "") {
+                this.className = "search_init";
+                this.value = this.initVal;
+              }
+            });   
+            var oTable = $('#datatable_fixed_column').dataTable({
+              "sDom" : "<'dt-top-row'><'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+              //"sDom" : "t<'row dt-wrapper'<'col-sm-6'i><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'>>",
+              "oLanguage" : {
+                "sSearch" : "Search all columns:"
+              },
+              "bSortCellsTop" : true
+            });   
+            $('#datatable_col_reorder').dataTable({
+              "sPaginationType" : "bootstrap",
+              "sDom" : "R<'dt-top-row'Clf>r<'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+              "fnInitComplete" : function(oSettings, json) {
+                $('.ColVis_Button').addClass('btn btn-default btn-sm').html('Columns <i class="icon-arrow-down"></i>');
+              }
+            });
+            /* END COL ORDER */
+            /* TABLE TOOLS */
+            $('#datatable_tabletools').dataTable({
+              "sDom" : "<'dt-top-row'Tlf>r<'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+              "oTableTools" : {
+                "aButtons" : ["copy", "print", {
+                  "sExtends" : "collection",
+                  "sButtonText" : 'Save <span class="caret" />',
+                  "aButtons" : ["csv", "xls", "pdf"]
+                }],
+                "sSwfPath" : "#{ asset_path 'javascript/plugin/datatables/media/swf/copy_csv_xls_pdf.swf'}"
+              },
+              "fnInitComplete" : function(oSettings, json) {
+                $(this).closest('#dt_table_tools_wrapper').find('.DTTT.btn-group').addClass('table_tools_group').children('a.btn').each(function() {
+                  $(this).addClass('btn-sm btn-default');
+                });
+              }
+            });
+            /* END TABLE TOOLS */
           }

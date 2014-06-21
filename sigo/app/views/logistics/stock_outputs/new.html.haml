@@ -17,10 +17,13 @@
                     %span.chevron
                   %li{"data-target" => "#step2"}
                     %span.badge> 2
-                    Llenar Información
-                    %span.chevron
+                    Escoger Artículos
                   %li{"data-target" => "#step3"}
                     %span.badge> 3
+                    Llenar Información
+                    %span.chevron
+                  %li{"data-target" => "#step4"}
+                    %span.badge> 4
                     Guardar Información
                     %span.chevron
                 .actions
@@ -170,13 +173,62 @@
               iconSmall: "fa fa-times bounce animated",
               timeout: 4000
             });
+          } else {
+            var warehouse_id = $("#warehouse-select").val();
+            str_item = { authenticity_token: "#{form_authenticity_token}", warehouse_id: warehouse_id };
+
+            load_url_ajax('#{partial_select_per_warehouse_logistics_stock_outputs_path}', 'select_table_per_warehouse', str_item, 0, 'POST');
           }
         }
 
         if(data.step == 2 && data.direction == 'next'){
-          var $valid = $("#new_stock_input").valid();
-          if (!$valid) {
+
+          if( $.trim($('#dt_basic').html()).length ) {
+            var index = 0;
+            $('#dt_basic tbody#partial_table_per_warehouse tr td .checkbox .order_check').each(function(){
+              if( $(this).is(':checked') ){
+                status = true
+                data_items_sel[index] = $(this).val();
+                index++;
+              }
+            });
+
+            if(status){
+              var warehouse_id = $("#warehouse-select").val();
+              data = { ids_items: data_items_sel, authenticity_token: "#{form_authenticity_token}", warehouse_id2: warehouse_id };
+              load_items_delivery_order_ajax('#{add_items_from_pod_logistics_stock_outputs_path}', 'table-items-paso2', data);
+
+              $.smallBox({
+                title: "Completa el <font color=yellow>Ingreso a Almacén</font>.",
+                content: "<i class='fa fa-clock-o'></i> <i>Hace unos segundos...</i>",
+                color: "#5F895F",
+                iconSmall: "fa fa-check bounce animated",
+                timeout: 4000
+              });
+
+            } else {
+
+              e.preventDefault();
+              $.smallBox({
+                title: "Para continuar <font color=yellow>seleccionar items</font>.",
+                content: "<i class='fa fa-clock-o'></i> <i>Hace unos segundos...</i>",
+                color: "#c46a69",
+                iconSmall: "fa fa-times bounce animated",
+                timeout: 4000
+              });
+            }
+
+          } else {
+
             e.preventDefault();
+            $.smallBox({
+              title: "Para continuar <font color=yellow>buscar items</font>.",
+              content: "<i class='fa fa-clock-o'></i> <i>Hace unos segundos...</i>",
+              color: "#c46a69",
+              iconSmall: "fa fa-times bounce animated",
+              timeout: 4000
+            });
+
           }
         }
 
@@ -207,12 +259,10 @@
 
   function add_article_item(){
 
-    //alert("123");
+    var data = $("#article-select-warehouse").val();
+    str_item = { authenticity_token: "#{form_authenticity_token}", data: data };
 
-    //var article_id = $("#article-select").val();
-    //str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), amount: $("#article-amount").val()};
-
-    //append_url_ajax('#{add_delivery_order_item_field_logistics_delivery_orders_path}', 'article_items_table', str_item, 0, 'POST');
+    append_url_ajax('#{partial_table_per_warehouse_logistics_stock_outputs_path}', 'partial_table_per_warehouse', str_item, 0, 'POST');
   }
 
   function delete_item(code){

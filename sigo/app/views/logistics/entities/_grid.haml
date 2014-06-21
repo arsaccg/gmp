@@ -56,12 +56,13 @@
                           %td
                             - if entity.ruc != nil
                               = entity.ruc
+                              
                             - else
                               = '-'
                           %td
                             %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_entity_path(entity.id)}', 'content', null, null, 'GET')"}
                               Ver Detalle
-                            %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_entity_path(entity.id)}', 'content', {company_id : '#{@company}'}, null, 'GET')"}
+                            %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_entity_path(entity.id)}', 'content', {company_id : '#{@company}', type: 'entity'}, null, 'GET')"}
                               Editar
                             %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{entity.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_entity_path(entity.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_entities_path}')"}}
                               Eliminar
@@ -99,7 +100,15 @@
                           %td
                             %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_entity_path(entity.id)}', 'content', null, null, 'GET')"}
                               Ver Detalle
-                            %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_entity_path(entity.id)}', 'content', null, null, 'GET')"}
-                              Editar
+                            - entity.type_entities.each do |ent|
+                              -if ent.id==3
+                                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_entity_path(entity.id)}', 'content', {company_id : '#{@company}', type: 'worker'}, null, 'GET')"}
+                                  Editar
+                                -@i+=1 
+                              -else
+                                -if @i==0
+                                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_entity_path(entity.id)}', 'content', {company_id : '#{@company}', type: 'entity'}, null, 'GET')"}
+                                    Editar
+                            
                             %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{entity.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_entity_path(entity.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_entities_path}?company_id=#{@company}')"}}
                               Eliminar

@@ -1,5 +1,6 @@
 class WorkingGroup < ActiveRecord::Base
 	has_many :part_works
+	has_many :stock_outputs
 	has_many :part_people
 	has_many :part_of_equipment_details
 	belongs_to :cost_center

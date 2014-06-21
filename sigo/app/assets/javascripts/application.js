@@ -13,11 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery_nested_form
-//= require raphael
-//= require g.raphael
-//= require g.bar
-//= require g.line
-//= require g.pie
 //= require turbolinks
 
 $(document).ready(function(){
@@ -45,6 +40,149 @@ $(document).ready(function(){
       'Must be greater than {0}.');
   }
 });
+
+function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, semana6, semana7, semana8, semana9, semana10, theoretical_value, valor1, valor2, valor3, valor4, valor5, valor6, valor7, valor8, valor9, valor10){
+  theoretical_value = parseFloat(theoretical_value)
+  valor1 = parseFloat(valor1)
+  valor2 = parseFloat(valor2)
+  valor3 = parseFloat(valor3)
+  valor4 = parseFloat(valor4)
+  valor5 = parseFloat(valor5)
+  valor6 = parseFloat(valor6)
+  valor7 = parseFloat(valor7)
+  valor8 = parseFloat(valor8)
+  valor9 = parseFloat(valor9)
+  valor10 = parseFloat(valor10)
+  $('#'+div_id).highcharts({
+    title: {
+        text: 'Promedio Semanal Consumo de Combustible',
+        x: -20 //center
+    },
+    subtitle: {
+        text: 'Gráfico Histograma Semanal',
+        x: -20
+    },
+    xAxis: {
+        categories: [semana1, semana2, semana3, semana4, semana5, semana6,
+            semana7, semana8, semana9, semana10]
+    },
+    yAxis: {
+        title: {
+            text: 'Consumo de Combustible'
+        },
+        plotLines: [{
+            value: 0,
+            width: 1,
+            color: '#808080'
+        }]
+    },
+    tooltip: {
+        valueSuffix: 'gln/hr'
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle',
+        borderWidth: 0
+    },
+    series: [{
+        name: 'Reales',
+        data: [valor1, valor2, valor3, valor4, valor5, valor6, valor7, valor8, valor9, valor10]
+    }, {
+        name: 'Teórico',
+        data: [theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value]
+    }]
+  });
+}
+
+function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1, serie2, serie3){
+  $('#'+div_id).highcharts({
+    chart: {
+      type: 'line'
+    },
+    title: {
+      text: title
+    },
+    subtitle: {
+      text: subtitle
+    },
+    xAxis: {
+      categories: ['En', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    },
+    yAxis: {
+      title: {
+          text: 'Costo (S/.)'
+      }
+    },
+    plotOptions: {
+      line: {
+          dataLabels: {
+              enabled: true
+          },
+          enableMouseTracking: false
+      }
+    },
+    series: [{
+      name: serie1,
+      data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+    }, {
+      name: serie2,
+      data: [1.0, 2.0, 7.0, 5.0, 11.0, 11.2, 13.7, 11.1, 18.2, 5.3, 6.1, 3.8]
+    }, {
+      name: serie3,
+      data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+    }]
+  });
+}
+
+function load_bar_graphic_for_general_report(div_id, title, subtitle){
+  $('#'+div_id).highcharts({
+    chart: {
+      type: 'column'
+    },
+    title: {
+      text: title
+    },
+    subtitle: {
+      text: subtitle
+    },
+    xAxis: {
+      categories: [
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ]
+    },
+    yAxis: {
+      min: 0,
+      title: {
+        text: 'Costo (S/.)'
+      }
+    },
+    tooltip: {
+      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+          '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+      footerFormat: '</table>',
+      shared: true,
+      useHTML: true
+    },
+    plotOptions: {
+      column: {
+        pointPadding: 0.2,
+        borderWidth: 0
+      }
+    },
+    series: [{
+      name: 'Programado',
+      data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0]
+    }, {
+      name: 'Valorizado',
+      data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5]
+    }, {
+      name: 'Costo Real',
+      data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3]
+    }]
+  });
+}
 
 function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
   var url_str = url;
@@ -179,5 +317,82 @@ function show_report_inventory(url, parameters, wurl, wname, wparameters){
     error : function(xhr, ajaxOptions, thrownError) {
       container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
     }
+  });
+}
+
+
+function bar_graph_category(div, categoria, series2, title_c, tipo, abrev){
+  var arreglo = categoria.split(',')
+
+  $('#'+div).highcharts({
+    chart: {
+      zoomType: 'xy'
+    },
+    title: {
+      text: title_c
+    },
+    xAxis: [{
+      categories: arreglo
+    }],
+    yAxis: [
+      { // First yAxis
+        title: {
+          text: '',
+          style: {
+            color: Highcharts.getOptions().colors[0]
+          }
+        }
+
+      },
+      { // Secondary yAxis
+        gridLineWidth: 0,
+        title: {
+          text: tipo,
+          style: {
+            color: Highcharts.getOptions().colors[18]
+          }
+        },
+        labels: {
+          format: '{value} '+abrev,
+          style: {
+            color: Highcharts.getOptions().colors[18]
+          }
+        }
+
+      },
+      { // Third yAxis
+        title: {
+          text: '',
+          style: {
+            color: Highcharts.getOptions().colors[0]
+          }
+        }
+      }],
+    
+    tooltip: {
+      shared: true,
+      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+      footerFormat: '</table>',
+      shared: true,
+      useHTML: true
+    },
+
+    plotOptions: {
+      column: {
+        pointPadding: 0.2,
+        borderWidth: 0
+      }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'left',
+        x: 120,
+        verticalAlign: 'top',
+        y: 80,
+        floating: true,
+        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+    },
+    series: series2
   });
 }

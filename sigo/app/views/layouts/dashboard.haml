@@ -187,6 +187,10 @@
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Variables Financieras
                   %li
+                    %a{href: "#{logistics_theoretical_values_path}", title: "Valores Teóricos"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      %span.menu-item-parent Valores Teóricos
+                  %li
                     %a{href: "#{logistics_money_index_path}", title: "Monedas"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Monedas
@@ -513,6 +517,9 @@
     = javascript_include_tag 'plugin/smartclick/smartclick'
     / JQUERY FORM
     = javascript_include_tag 'plugin/jquery-form/jquery-form.min'
+    / HIGHCHARTS
+    = javascript_include_tag 'highchart/highcharts'
+    = javascript_include_tag 'highchart/modules/exporting'
     /[if IE 7]
       <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
     / Demo purpose only

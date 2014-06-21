@@ -1,4 +1,4 @@
-#content-inside
+#content-inside{:style => 'overflow:hidden'}
   .row
     .col-xs-12.col-sm-12.col-md-8.col-lg-12{:style => 'text-align: center;'}
       %h1.page-title.txt-color-blueDark
@@ -79,37 +79,70 @@
       %table#dt_basic.table.table-striped.table-bordered.table-hover
         %thead
           %tr
-            %th{'colspan' => 2, "style"=>"text-align:center"} Costo Directo
+            %th{'colspan' => 4, "style"=>"text-align:center"} Costo Directo
           %tr
             %th{'colspan' => 2, "style"=>"text-align:center"} REAL
+            %th{'colspan' => 2, "style"=>"text-align:center"} META
           %tr
+            %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
+            %th{"style"=>"text-align:center"} Acumulado
             %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
             %th{"style"=>"text-align:center"} Acumulado
         %tbody
           %tr
             %th{"style"=>"text-align:center"}= number_to_currency((@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations).round(2), unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency((@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2).round(2), unit: "S/. ")
-          %tr
-            %th{"style"=>"text-align:center"}= number_to_currency(@partwork.round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@partwork2.round(2), unit: "S/. ")
-          %tr
-            %th{"style"=>"text-align:center"}= number_to_currency(@partequipment.round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@partequipment2.round(2), unit: "S/. ")
-          %tr
-            %th{"style"=>"text-align:center"}= number_to_currency(@partpeople.round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@partpeople2.round(2), unit: "S/. ")
-          %tr
-            %th{"style"=>"text-align:center"}= number_to_currency(@orderofservice.round(2) + @scvaluations.round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@orderofservice2.round(2) + @scvaluations.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_cost_goal_current_month.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_cost_goal_current_month.round(2), unit: "S/. ")
+            
+          - @cost_goal.each do |cost|
+            %tr
+              %th{"style"=>"text-align:center"}= number_to_currency(cost[0].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center"}= number_to_currency(cost[1].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center"}= number_to_currency(cost[2].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center"}= number_to_currency(cost[2].round(2), unit: "S/. ")
           // Gastos Generales
           %tr
             %th{"style"=>"text-align:center"}= number_to_currency((@partequipment3+@partpeople3+@orderofservice3).round(2), unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency((@partequipment4+@partpeople4+@orderofservice4).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
           // Utilidad
           %tr
             %th{"style"=>"text-align:center"}= number_to_currency((@partequipment5+@partpeople5+@orderofservice5).round(2), unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency((@partequipment6+@partpeople6+@orderofservice6).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
           // Gastos de Gestion
           %tr
             %th{"style"=>"text-align:center"}= number_to_currency((@partequipment7+@partpeople7+@orderofservice7).round(2), unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency((@partequipment8+@partpeople8+@orderofservice8).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+  %br
+  .row.col-md-12
+    .col-md-6
+      #first-lineal-chart
+    .col-md-6
+      #second-lineal-chart
+  
+  %br
+  .row.col-md-12
+    .col-md-6
+      #third-lineal-chart
+    .col-md-6
+      #bar-chart
+
+  %br
+  .row.col-md-12
+    .col-md-12
+      #four-lineal-chart
+
+
+:javascript
+
+  load_lineal_graphic_for_general_report('first-lineal-chart', 'MARGEN DE OBRA CD', '', 'Valorizado', 'Costo Real', 'Diferencia');
+  load_lineal_graphic_for_general_report('second-lineal-chart', 'MARGEN DE GASTOS GENERALES', '', 'Valorizado', 'Costo Real', 'Diferencia');
+  load_lineal_graphic_for_general_report('third-lineal-chart', 'MARGEN TOTAL DE OBRA', '', 'Valorizado', 'Costo Real', 'Diferencia');
+  load_lineal_graphic_for_general_report('four-lineal-chart', 'CURVA CONTROL DE COSTO DE OBRA', '', 'Programado', 'Valorizado,', 'Costo Real');
+  load_bar_graphic_for_general_report('bar-chart', 'RESULTADO ÚLTIMO 6 MESES', '');

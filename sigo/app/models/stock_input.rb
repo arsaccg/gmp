@@ -4,6 +4,7 @@ class StockInput < ActiveRecord::Base
   belongs_to :responsible, :foreign_key => 'responsible_id'
   belongs_to :warehouse
   belongs_to :format
+  belongs_to :working_group
   #belongs_to :rep_inv_cost_center, :foreign_key => 'warehouse_id'
   belongs_to :rep_inv_warehouse, :foreign_key => 'warehouse_id'
   belongs_to :rep_inv_supplier, :foreign_key => 'supplier_id'

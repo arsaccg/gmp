@@ -41,6 +41,10 @@
                   - else
                     %option{:value => "#{company.id}", :rel => ""}
                       = company.name
+        .row
+          .col-md-3
+            %label Fecha de Inicio
+            %input#startdate2.string.optional.form-control{'name'=>"startdate2", type: "date"}
           
       %footer
         %button.btn.btn-primary{type: "submit"}
@@ -67,6 +71,9 @@
             'cost_center[code]' : {
               required : true
             },
+            'startdate2' : {
+              required : true
+            },
             'cost_center[name]' : {
               required : true
             }
@@ -77,6 +84,9 @@
             'cost_center[code]' : {
               required : '(*)'
              },
+            'startdate2' : {
+              required : '(*)'
+            },
             'cost_center[name]' : {
               required : '(*)'
              }

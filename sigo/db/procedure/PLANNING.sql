@@ -154,13 +154,14 @@ BEGIN
 END$$
 
 DROP FUNCTION IF EXISTS `get_partial_cost`$$
-CREATE DEFINER=`root`@`localhost` FUNCTION `get_partial_cost`(v_order TEXT) RETURNS float
+CREATE DEFINER=`root`@`localhost` FUNCTION `get_partial_cost`(v_order TEXT, v_budget_id INT) RETURNS float
 BEGIN
 	SET @v_total='';
 	SELECT SUM(price * quantity) into @v_total
 	FROM inputbybudgetanditems 
 	WHERE `order`
-	LIKE CONVERT(CONCAT(v_order, '%') USING latin1);
+	LIKE CONVERT(CONCAT(v_order, '%') USING latin1)
+	AND budget_id = v_budget_id;
 	RETURN @v_total;
 END$$
 
@@ -197,7 +198,12 @@ BEGIN
 	    IF done THEN
 			LEAVE read_loop;
 		END IF;
-		SET v_total = v_total + (v_measured * IFNULL(get_partial_cost(t_order), 0));
+
+		IF v_measured IS NULL THEN
+	      SET v_measured = 0;
+	    END IF;
+    
+		SET v_total = v_total + (v_measured * IFNULL(get_partial_cost(t_order, v_budget_id), 0));
 	END LOOP;
 	CLOSE sub_elements;
 RETURN v_total;

@@ -73,6 +73,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     @workers_array = business_days_array(start_date, end_date, @cad, @cad2)
     @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2)
     @workers_array3 = business_days_array3(start_date, end_date, @cad, @cad2)
+    @workers_array4 = business_days_array4(start_date, end_date, @cad, @cad2)
     @workers_array.each do |workerDetail|
       @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
     end
@@ -152,6 +153,26 @@ class Production::AnalysisOfValuationsController < ApplicationController
       AND uom.id = art.unit_of_measurement_id
       AND poed.working_group_id IN(" + working_group_id + ")
       GROUP BY art.name
+    ")
+    return workers_array3
+  end
+
+  def business_days_array4(start_date, end_date, working_group_id,sector_id)
+    workers_array3 = ActiveRecord::Base.connection.execute("
+      SELECT  a.id, a.name, 
+      u.symbol, 
+      SUM(sid.amount) 
+      FROM articles a, unit_of_measurements u, type_of_articles toa, categories c, stock_inputs si, stock_input_details sid 
+      WHERE si.issue_date BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND sid.sector_id IN(" + sector_id + ")
+      AND a.id = sid.article_id 
+      AND si.input = 0 
+      AND si.id = sid.stock_input_id 
+      AND a.unit_of_measurement_id = u.id 
+      AND a.category_id = c.id 
+      AND toa.id = a.type_of_article_id
+      AND si.working_group_id IN(" + working_group_id + ")
+      GROUP BY a.code
     ")
     return workers_array3
   end

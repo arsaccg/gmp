@@ -36,13 +36,13 @@
                       %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "weekly_table(#{unit.id},1);"}
                         %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
                     %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_daily_works_weekly_worker_path(unit.id)}', 'content', {company_id: '#{@company}', blockweekly: 1}, null, 'GET')"}
-                      Ver información
+                      Aprobar
                   - when 'disapproved'
                     %span{"style"=>"width=20px"}
                       %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "weekly_table(#{unit.id},0);"}
                         %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
-                    %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_daily_works_weekly_worker_path(unit.id)}', 'content', {company_id: '#{@company}', blockweekly: 0}, null, 'GET')"}
-                      Ver información
+                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{production_daily_works_weekly_worker_path(unit.id)}', 'content', {company_id: '#{@company}', blockweekly: 0}, null, 'GET')"}
+                      Aprobar
                     %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_daily_works_weekly_worker_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_daily_works_weekly_workers_path}?company_id=#{@company}')"}}
                       Eliminar
       %br

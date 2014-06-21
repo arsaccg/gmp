@@ -1,0 +1,19 @@
+- @article.each do |art|
+  -rest=Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i)
+  -if rest.count>0
+    -rest=Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i).first.at(0).to_i
+  -else
+    -rest=0
+  %tr
+    %td
+      = art[1]
+    %td
+      = art[2]
+    %td
+      = art[3]
+    %td 
+      = art[4] - rest
+    %td
+      %label.checkbox
+        = check_box("order_delivery", "approved", { class: 'order_check' }, art[0])
+        %i

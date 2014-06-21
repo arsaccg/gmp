@@ -11,7 +11,7 @@ class Article < ActiveRecord::Base
   	has_many :category_of_worker
   	has_many :workers
 	  has_many :part_work_details
-    
+    has_many :theoretical_values
     
     has_many :inputbybudgetanditems
   	belongs_to :category
@@ -29,39 +29,124 @@ class Article < ActiveRecord::Base
 	end
 
 	def self.getSpecificArticles(cost_center_id, display_length, pager_number)
-      mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT DISTINCT a.id, a.code, toa.name, c.name, a.name, a.description, u.name
-        FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u, type_of_articles toa, categories c
-        WHERE b.id = ibi.budget_id
-        AND b.type_of_budget =0
-        AND b.cost_center_id = #{cost_center_id}
-        AND ibi.article_id IS NOT NULL 
-        AND ibi.article_id = a.id
-        AND a.unit_of_measurement_id = u.id
-        AND a.category_id = c.id 
-      	AND u.id = a.unit_of_measurement_id
-        AND toa.id = a.type_of_article_id
-      	LIMIT #{display_length}
-      	OFFSET #{pager_number}
-      ")
-
-      return mysql_result
-    end
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT *
+      FROM articles_from_"+@name+" 
+    	LIMIT #{display_length}
+    	OFFSET #{pager_number}
+    ")
+    return mysql_result
+  end
 
   def self.getSpecificArticlesforStockOutputs(cost_center_id)
-      mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT DISTINCT a.id, a.code, toa.name, c.name, a.name, a.description, u.name
-        FROM delivery_orders do, delivery_order_details dod, purchase_order_details pod, articles a, unit_of_measurements u, type_of_articles toa, categories c 
-        WHERE dod.id = pod.delivery_order_detail_id
-        AND pod.received = 1
-        AND dod.delivery_order_id=do.id 
-        AND do.cost_center_id = #{cost_center_id}
-        AND dod.article_id = a.id
-        AND a.unit_of_measurement_id = u.id
-        AND a.category_id = c.id 
-        AND u.id = a.unit_of_measurement_id
-        AND toa.id = a.type_of_article_id
-      ")
-      return mysql_result
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT DISTINCT a.id, a.code, toa.name, c.name, a.name, a.description, u.name
+      FROM delivery_orders do, delivery_order_details dod, purchase_order_details pod, articles a, unit_of_measurements u, type_of_articles toa, categories c 
+      WHERE dod.id = pod.delivery_order_detail_id
+      AND pod.received = 1
+      AND dod.delivery_order_id=do.id 
+      AND do.cost_center_id = #{cost_center_id}
+      AND dod.article_id = a.id
+      AND a.unit_of_measurement_id = u.id
+      AND a.category_id = c.id 
+      AND u.id = a.unit_of_measurement_id
+      AND toa.id = a.type_of_article_id
+    ")
+    return mysql_result
+  end
+
+  def self.getArticles(word)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT DISTINCT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol
+      FROM articles a, unit_of_measurements u 
+      WHERE (a.code LIKE '04%' || a.code LIKE '03%' || a.code LIKE '02%')
+      AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) 
+      AND a.unit_of_measurement_id = u.id
+    ")
+    return mysql_result
+  end
+
+  def self.getSpecificArticlesPerWarehouse(warehouse_id)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT a.id, a.code, a.name, u.name, SUM( sid.amount ) 
+      FROM articles a, unit_of_measurements u, stock_inputs si, stock_input_details sid
+      WHERE a.id = sid.article_id
+      AND si.input =1
+      AND si.id = sid.stock_input_id
+      AND si.warehouse_id = #{warehouse_id}
+      AND a.unit_of_measurement_id = u.id
+      GROUP BY a.code
+    ")
+    return mysql_result
+  end
+
+  def self.getSpecificArticlePerConsult(warehouse_id, article_id)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT a.id, a.code, a.name, u.name, SUM( sid.amount ) 
+      FROM articles a, unit_of_measurements u, stock_inputs si, stock_input_details sid
+      WHERE a.id = sid.article_id
+      AND a.id = #{article_id}
+      AND si.input =1
+      AND si.id = sid.stock_input_id
+      AND si.warehouse_id = #{warehouse_id}
+      AND a.unit_of_measurement_id = u.id
+      GROUP BY a.code
+    ")
+    return mysql_result
+  end
+
+  def self.getSpecificArticlesforStockOutputs2(warehouse_id,articles)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT a.id, a.code, toa.name, c.name, a.name, u.name, SUM(sid.amount)
+      FROM articles a, unit_of_measurements u, type_of_articles toa, categories c, stock_inputs si, stock_input_details sid 
+      WHERE a.id = sid.article_id 
+      AND si.id = sid.stock_input_id 
+      AND si.input = 1 
+      AND si.warehouse_id = #{warehouse_id} 
+      AND a.unit_of_measurement_id = u.id 
+      AND a.category_id = c.id 
+      AND toa.id = a.type_of_article_id
+      AND a.id IN( #{articles} )
+      GROUP BY a.code
+    ")
+    return mysql_result
+  end
+
+  def self.getSpecificArticlesforStockOutputs4(warehouse_id,article)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT SUM(sid.amount) AS 'salida'
+      FROM articles a, unit_of_measurements u, type_of_articles toa, categories c, stock_inputs si, stock_input_details sid 
+      WHERE a.id = sid.article_id 
+      AND si.id = sid.stock_input_id 
+      AND si.input = 0 
+      AND si.warehouse_id = #{warehouse_id} 
+      AND a.unit_of_measurement_id = u.id 
+      AND a.category_id = c.id 
+      AND toa.id = a.type_of_article_id
+      AND a.id IN( #{article} )
+      GROUP BY a.code
+    ")
+    return mysql_result
+  end
+  def self.getSpecificArticlesforStockOutputs5(article)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT art.name, pod.unit_price
+      FROM articles art, purchase_order_details pod, delivery_order_details dod
+      WHERE pod.delivery_order_detail_id = dod.id
+      AND dod.article_id = art.id
+      AND dod.article_id IN( #{article} )
+      AND pod.received = 1
+      ORDER BY pod.created_at DESC
+      LIMIT 2
+    ")
+    @totalprice = 0
+    cont = 0
+    mysql_result.each do |workerDetail|
+      @totalprice += workerDetail[1]
+      cont += 1
     end
+    return @totalprice/cont
+  end
 end

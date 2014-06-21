@@ -1,6 +1,7 @@
 #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
   -if @select1 == 'specific'
     %div
+      - index = 0
       - @poe_array.each do |poe|
         - poe[0].each do |data|
           %h1.page-title.txt-color-blueDark= data[0]
@@ -36,7 +37,15 @@
                       = value['fuel']
                     %th
                       = value['ratio']
-
+          / Aqui esta el Gráfico!
+          :javascript
+            $(document).ready(function () {
+              load_graphic('container-graphic-#{index}','#{@cad[0]}','#{@cad[1]}','#{@cad[2]}','#{@cad[3]}','#{@cad[4]}','#{@cad[5]}','#{@cad[6]}','#{@cad[7]}','#{@cad[8]}','#{@cad[9]}','#{@theoretical_value.to_f}','#{@cad3[0]}','#{@cad3[1]}','#{@cad3[2]}','#{@cad3[3]}','#{@cad3[4]}','#{@cad3[5]}','#{@cad3[6]}','#{@cad3[7]}','#{@cad3[8]}','#{@cad3[9]}');
+            });
+          %br
+          .row
+            %div{:id => "container-graphic-#{index}"}
+          -index += 1
     %div
       %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @subcontract.code + ' ' + @subcontract.article.name
       .jarviswidget-editbox
@@ -49,6 +58,7 @@
               %th H.Efectivas
               %th Combustible (gln)
               %th Ratio real (gln/hr)
+              %th Valor Teórico
           %tbody
             - @poe_array2.each do |workerDetail2|
               %tr
@@ -62,6 +72,8 @@
                   = workerDetail2[3]
                 %th{'style' => 'font-weight: normal;'}
                   = workerDetail2[4]
+                %th{'style' => 'font-weight: normal;'}
+                  = workerDetail2[5]
 
   -if @select1 == 'operador'
     %div
@@ -113,6 +125,7 @@
                 %th H.Efectivas
                 %th Combustible (gln)
                 %th Ratio real (gln/hr)
+                %th Valor Teórico
             %tbody
               - @poe_array2.each do |workerDetail2|
                 %tr
@@ -126,6 +139,11 @@
                     = workerDetail2[3]
                   %th{'style' => 'font-weight: normal;'}
                     = workerDetail2[4]
+                  %th 10
+      / Aqui esta el Gráfico!
+      %br
+      .row
+        #container-graphic
 
   -if @select1 == 'frente'
     %div
@@ -177,6 +195,7 @@
                 %th H.Efectivas
                 %th Combustible (gln)
                 %th Ratio real (gln/hr)
+                %th Valor Teórico
             %tbody
               - @poe_array2.each do |workerDetail2|
                 %tr
@@ -190,6 +209,11 @@
                     = workerDetail2[3]
                   %th{'style' => 'font-weight: normal;'}
                     = workerDetail2[4]
+                  %th 10
+      / Aqui esta el Gráfico!
+      %br
+      .row
+        #container-graphic
 
   -if @select1 == 'equipment'
     %div
@@ -230,7 +254,7 @@
                       = value['ratio']
   
       %div
-        %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @article.name
+        %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @article.name.to_s
         .jarviswidget-editbox
         .widget-body
           %table.table.table-bordered
@@ -241,6 +265,7 @@
                 %th H.Efectivas
                 %th Combustible (gln)
                 %th Ratio real (gln/hr)
+                %th Valor Teórico
             %tbody
               - @poe_array2.each do |workerDetail2|
                 %tr
@@ -254,3 +279,5 @@
                     = workerDetail2[3]
                   %th{'style' => 'font-weight: normal;'}
                     = workerDetail2[4]
+                  %th{'style' => 'font-weight: normal;'}
+                    = workerDetail2[5]

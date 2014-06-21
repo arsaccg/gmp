@@ -1,11 +1,13 @@
 class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+  
   def index
   	@workingGroups = WorkingGroup.all
     @weeklyworker = WeeklyWorker.all
-  	render layout: false
+    render layout: false
   end
+
   def create
     weekly_worker = WeeklyWorker.new(weekly_table_parameters)
     weekly_worker.state
@@ -30,7 +32,8 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     @blockweekly = params[:blockweekly]
     @inicio = @weekly_work.start_date
     @fin = @weekly_work.end_date
-    @cad = @weekly_work.working_group
+    @cad = @weekly_work.working_group.split(" ")
+    @cad = @cad.join(',')
     @dias_habiles =  range_business_days(@inicio,@fin)
     @gruposdetrabajos = WorkingGroup.all
     @tareos_total_arrays = []
@@ -76,11 +79,209 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   end
 
   def weekly_table
+    @names= Array.new
+    @costcenter = get_company_cost_center('cost_center')
+    @now = Time.now.to_date.to_s
+    weeks = ActiveRecord::Base.connection.execute("
+      SELECT wcc.id
+      FROM  weeks_for_cost_center_"+@costcenter+" wcc
+      WHERE  wcc.start_date <  '"+@now+"' AND wcc.end_date >  '"+@now+"'"
+    )
+    weeks.each do |id|
+      if id[0].to_i<13
+        @weeks = ActiveRecord::Base.connection.execute("
+          SELECT wcc.name, wcc.start_date, wcc.end_date
+          FROM  weeks_for_cost_center_"+@costcenter+" wcc
+          WHERE  wcc.end_date <  '"+id[2].to_date.to_s+"'
+        ")
+      else
+        first_id = id[0].to_i-9
+        last_id = id[0].to_i + 1
+        @weeks = ActiveRecord::Base.connection.execute("
+          SELECT wcc.name, wcc.start_date, wcc.end_date
+          FROM  weeks_for_cost_center_"+@costcenter+" wcc
+          WHERE  wcc.id >="+first_id.to_i.to_s+" AND wcc.id < "+last_id.to_s+"
+        ")
+      end
+    end
+    @weekhh =Array.new
+    @weekcp =Array.new
+    @weeks.each do|inter|
+      @weekhh << ActiveRecord::Base.connection.execute("
+        SELECT c.name, ppd.total_hours AS total_h, pp.date_of_creation
+        FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
+        WHERE pp.date_of_creation BETWEEN '"+inter[1].to_date.to_s+"' AND '"+inter[2].to_date.to_s+"'
+        AND pp.blockweekly=0
+        AND ppd.part_person_id=pp.id
+        AND ppd.worker_id=w.id
+        AND w.article_id=a.id
+        AND a.category_id = c.id
+        GROUP BY c.name
+      ")
+
+      @weekcp << ActiveRecord::Base.connection.execute("
+        SELECT c.name AS C_name, Sum(1) AS Cantidad_personas, pp.date_of_creation
+        FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
+        WHERE pp.date_of_creation BETWEEN '"+inter[1].to_date.to_s+"' AND '"+ inter[2].to_date.to_s+"'
+        AND pp.blockweekly=0
+        AND ppd.part_person_id=pp.id
+        AND ppd.worker_id=w.id
+        AND w.article_id=a.id
+        AND a.category_id = c.id
+        GROUP BY c.name
+      ")
+
+      @names << inter[0].to_s+" ("+inter[1].to_time.strftime("%d/%m")+" - "+inter[2].to_time.strftime("%d/%m")+")"  
+    end
+    @names = @names.join(",")
+    @theweek = @names.to_s
+    @catehh = Array.new
+    @catecp = Array.new
+
+    @weekhh.each do |a|
+      a.each do |b|
+        @catehh << b[0]
+      end
+    end
+    @catehh = @catehh.uniq 
+    
+    @weekcp.each do |a|
+      a.each do |b|
+        puts b
+        @catecp << b[0]
+      end
+    end
+    @catecp = @catecp.uniq
+    
+    @catwh = Array.new
+    @catwp = Array.new
+    @catehh.each do |cat|
+      @weeks.each do |w|
+        catwh = ActiveRecord::Base.connection.execute("
+          SELECT SUM(ppd.total_hours)
+          FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
+          WHERE pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
+          AND pp.blockweekly=0
+          AND ppd.part_person_id = pp.id
+          AND ppd.worker_id = w.id
+          AND w.article_id = a.id
+          AND a.category_id = c.id
+          AND c.name LIKE '"+cat.to_s+"'
+          GROUP BY c.name
+        ")
+        if catwh.count==1
+          catwh.each do |c|
+            @catwh << c[0].to_f
+          end
+        else
+          @catwh<<0
+        end
+      end
+    end
+
+    @catecp.each do |cat|
+      @weeks.each do |w|
+        catwp = ActiveRecord::Base.connection.execute("
+          SELECT SUM(1)
+          FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
+          WHERE pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
+          AND pp.blockweekly=0
+          AND ppd.part_person_id = pp.id
+          AND ppd.worker_id = w.id
+          AND w.article_id = a.id
+          AND a.category_id = c.id
+          AND c.name LIKE '"+cat.to_s+"'
+          GROUP BY c.name
+        ")
+        if catwp.count==1
+          catwp.each do |c|
+            @catwp << c[0].to_f
+          end
+        else
+          @catwp<<0
+        end
+      end
+    end
+
+    # GLOBAL Variables
+    type = 'column'
+    type2 = 'spline'
+    valueSuffix = ' hh'
+    valueSuffix2 = ' p.'
+
+    @i=0
+    @serieh = Array.new
+    @seriep = Array.new
+
+    @serie1 = Array.new
+    @spline1 = Array.new
+
+    @serie2 = Array.new
+    @spline2 = Array.new
+    @catehh.each do |c|
+      f=@i+9
+      @parteh = @catwh[@i.to_i..f.to_i]
+      @serie1 << {
+                  name: c,
+                  type: type,
+                  yAxis: 1,
+                  data: @parteh,
+                  tooltip: {
+                    valueSuffix: valueSuffix,
+                  }
+                }
+      @spline1 << {
+                  name: c,
+                  type: type2,
+                  yAxis: 1,
+                  data: @partep,
+                  tooltip: {
+                    valueSuffix: valueSuffix,
+                  }
+                }
+      @i+=10
+    end
+    @i2=0
+    @catecp.each do |c|
+      f=@i2+9
+      @partep = @catwp[@i2.to_i..f.to_i]
+      @serie2 << {
+                  name: c,
+                  type: type,
+                  yAxis: 1,
+                  data: @partep,
+                  tooltip: {
+                    valueSuffix: valueSuffix2,
+                  }
+                }
+
+      @spline2 << {
+                  name: c,
+                  type: type2,
+                  yAxis: 1,
+                  data: @partep,
+                  tooltip: {
+                    valueSuffix: valueSuffix2,
+                  }
+                }
+
+      @i2+=10
+    end
+    @serieh = @serie1 + @spline1
+    @seriep = @serie2 + @spline2
+
+    puts "-----------------------------------@serieh--arreglo--------------------------------------------"
+    puts @serieh
+    puts "-----------------------------------------------------------------------------------------------"
+    # @seriep = @seriep.join(",")
+
+
     @weekly_work=WeeklyWorker.find_by_id(params[:id])
     @blockweekly = params[:blockweekly]
     @inicio = @weekly_work.start_date
     @fin = @weekly_work.end_date
-    @cad = @weekly_work.working_group
+    @cad = @weekly_work.working_group.split(" ")
+    @cad = @cad.join(',')
     @dias_habiles =  range_business_days(@inicio,@fin)
     @gruposdetrabajos = WorkingGroup.all
     @tareos_total_arrays = []
@@ -108,6 +309,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
         render layout: false
       end
     end
+    
   end
 
   def range_business_days(start_date, end_date)
@@ -122,10 +324,9 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   end
 
   def business_days_array(start_date, end_date, working_group_id, business_days,blockweekly)
-
     personals_array = []
     trabajadores_array = []
-    partediariodepersonals = PartPerson.where("working_group_id IN (?) and blockweekly = ? and date_of_creation BETWEEN ? AND ?", working_group_id, blockweekly,start_date,end_date)
+    partediariodepersonals = PartPerson.where("working_group_id IN ("+working_group_id+") and blockweekly = ? and date_of_creation BETWEEN ? AND ?", blockweekly,start_date,end_date)
     partediariodepersonals.each do |partediariodepersonal|
       partediariodepersonal.part_person_details.each do |trabajador_detalle|
         trabajadore = trabajador_detalle.worker
@@ -156,13 +357,16 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
       end
     end
     return filter_array_business_days(trabajadores_array)
-
   end
 
   def updateParts(start_date, end_date)
     ActiveRecord::Base.connection.execute("
       Update part_people set blockweekly = 1 where date_of_creation BETWEEN " + start_date + " AND " + end_date + "
     ")
+  end
+
+  def graphs
+    
   end
 
   def filter_array_business_days(array_order)

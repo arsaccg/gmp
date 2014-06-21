@@ -340,19 +340,24 @@
   function calculatePartialAmount(element){
     var unitprice = parseFloat($(element).parent().parent().siblings('.unit-price').find('input').val());
     var amount = parseInt($(element).val());
-
-    var price_without_igv = parseFloat(unitprice * amount).toFixed(2);
-
-    $(element).parent().parent().siblings('.partial').find('input').val(price_without_igv);
+    if(isNaN(unitprice) || isNaN(amount) ){
+      $(element).parent().parent().siblings('.partial').find('input').val(' ');
+    }else{
+      var price_without_igv = parseFloat(unitprice * amount).toFixed(2);
+      $(element).parent().parent().siblings('.partial').find('input').val(price_without_igv);
+    }
+    
   }
 
   function calculatePartialUnitPrice(element){
     var amount = parseFloat($(element).parent().parent().siblings('.amount').find('input').val());
     var unitprice = parseInt($(element).val());
-
-    var price_without_igv = parseFloat(unitprice * amount).toFixed(2);
-
-    $(element).parent().parent().siblings('.partial').find('input').val(price_without_igv);
+    if(isNaN(amount) || isNaN(unitprice)){
+      $(element).parent().parent().siblings('.partial').find('input').val(' ');
+    }else{
+      var price_without_igv = parseFloat(unitprice * amount).toFixed(2);
+      $(element).parent().parent().siblings('.partial').find('input').val(price_without_igv);
+    }
   }
 
   function delete_item(code){

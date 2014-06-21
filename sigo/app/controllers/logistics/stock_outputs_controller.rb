@@ -35,22 +35,56 @@ class Logistics::StockOutputsController < ApplicationController
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
-    @articles = Article.getSpecificArticlesforStockOutputs(@cost_center)
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
     @working_groups = WorkingGroup.all
+    @reg_n = Time.now.to_i
+    render layout: false
+  end
+
+  def partial_select_per_warehouse
+    @warehouse = params[:warehouse_id]
+    @articles = Article.getSpecificArticlesPerWarehouse(@warehouse)
+    render(:partial => 'partial_select_per_warehouse', layout: false)
+  end
+
+  def partial_table_per_warehouse
+    article_warehouse = params[:data].split('-')
+    @warehouse = article_warehouse[1]
+    @article = Article.getSpecificArticlePerConsult(article_warehouse[1], article_warehouse[0])
+    render(:partial => 'partial_table_per_warehouse', layout: false)
+  end
+
+  def show
+    @company = get_company_cost_center('company')
+    @cost_center = get_company_cost_center('cost_center')
+    @head = StockInput.find(params[:id])
+    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
+    @periods = LinkTime.group(:year, :month)
+    @warehouses = Warehouse.where(company_id: "#{@company}").where(cost_center_id: "#{@head.cost_center_id}")
+    @articles = Article.getSpecificArticlesforStockOutputs(@cost_center)
+    @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
+    @sectors = Sector.all
+    @phases = Phase.getSpecificPhases(@cost_center)
+    @working_groups = WorkingGroup.all
+    @reg_n = Time.now.to_i
+    @arrItems = Array.new
+    @head.stock_input_details.each do |sid|
+      @arrItems << StockInputDetail.find(sid)
+    end
     render layout: false
   end
 
   def edit
     @company = get_company_cost_center('company')
+    @cost_center = get_company_cost_center('cost_center')
     @head = StockInput.find(params[:id])
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}").where(cost_center_id: "#{@head.cost_center_id}")
-    @articles = Article.all
+    @articles = Article.getSpecificArticlesforStockOutputs(@cost_center)
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
     @sectors = Sector.all
-    @phases = Phase.where("category LIKE 'phase'")
+    @phases = Phase.getSpecificPhases(@cost_center)
     @working_groups = WorkingGroup.all
     @reg_n = Time.now.to_i
     @arrItems = Array.new
@@ -92,10 +126,30 @@ class Logistics::StockOutputsController < ApplicationController
     @cost_center = get_company_cost_center('cost_center')
     @article = Article.find(data_article_unit[0])
     @amount = params[:amount].to_i
-    @sectors = Sector.all
+    @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(@cost_center)
     
     render(partial: 'add_item', :layout => false)
+  end
+
+  def add_items_from_pod
+    puts '---------------'
+    puts params[:warehouse_id2]
+    puts '---------------'
+    @reg_n = Time.now.to_i
+    @array1 = Array.new
+    @array2 = Array.new
+    @arrItems = Array.new
+    ids_items = params[:ids_items]
+    ids_items = ids_items.join(',')
+    @warehouse_id = params[:warehouse_id2]
+    @sectors = Sector.where("code LIKE '__'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @arrItems = Article.getSpecificArticlesforStockOutputs2(@warehouse_id,ids_items)
+    @arrItems.each do |ai|
+      @array1 << ai
+    end
+    render(partial: 'table_items_detail', :layout => false)
   end
 
   private

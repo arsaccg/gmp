@@ -1,4 +1,4 @@
-.modal-dialog{ style: "width: 1300px;" }
+.modal-dialog{ style: "width: 100%;" }
   .modal-content
     .modal-header
       %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
@@ -13,7 +13,7 @@
             - indice_title += 1
           %div
             .jarviswidget-editbox
-            .widget-body
+            .widget-body{"style"=>" overflow-x: scroll; "}
               %table.table.table-bordered
                 %thead
                   %tr
@@ -67,9 +67,28 @@
                       %b= number_to_currency sumariza_total_100, unit: ''
                     %td{ :style => "text-align: center;"}
                       %b= number_to_currency sumariza_total_horas, unit: ''
+        %br
+        %br
+        %div.col-md-12
+          Histograma por Semana: Cantidad de Horas- Categoría de trabajador
+          %div#container1
+
+        %br
+        %br
+        %div
+          Histograma por Semana: Cantidad de Personas - Categoría de trabajador
+          %div#container2
+          
       - else
         %h4.modal-title No hay datos.
         %br
       %footer
         %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
           Salir
+
+:javascript
+  bar_graph_category('container1', "#{@names}", jQuery.parseJSON("#{escape_javascript @serieh.to_json}"), 'Histograma: Cantidad de Horas - Categoría', 'Horas', 'hh');
+  bar_graph_category('container2', "#{@names}", jQuery.parseJSON("#{escape_javascript @seriep.to_json}"), 'Histograma: Cantidad de Trabajadores - Categoría', 'Trabajadores', 'per.');
+  //console.log(jQuery.parseJSON("#{escape_javascript @serieh.to_json}"));  
+  //console.log("hasta");  
+  //console.log(jQuery.parseJSON("#{escape_javascript @seriep.to_json}"));  

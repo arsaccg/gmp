@@ -133,6 +133,7 @@ class Production::SubcontractsController < ApplicationController
         :unit_price, 
         :partial, 
         :description, 
+        :itembybudget_id,
         :_destroy
       ],
       subcontract_advances_attributes: [
