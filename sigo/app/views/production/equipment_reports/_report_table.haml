@@ -1,7 +1,7 @@
 #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
   -if @select1 == 'specific'
     %div
-      - index = 1
+      - index = 0
       - @poe_array.each do |poe|
         - poe[0].each do |data|
           %h1.page-title.txt-color-blueDark= data[0]
@@ -40,7 +40,7 @@
           / Aqui esta el Gráfico!
           :javascript
             $(document).ready(function () {
-              load_graphic('container-graphic-#{index}','#{@cad[0]}','#{@cad[1]}','#{@cad[2]}','#{@cad[3]}','#{@cad[4]}','#{@cad[5]}','#{@cad[6]}','#{@cad[7]}','#{@cad[8]}','#{@cad[9]}','#{@theoretical_value.to_f}');
+              load_graphic('container-graphic-#{index}','#{@cad[0]}','#{@cad[1]}','#{@cad[2]}','#{@cad[3]}','#{@cad[4]}','#{@cad[5]}','#{@cad[6]}','#{@cad[7]}','#{@cad[8]}','#{@cad[9]}','#{@theoretical_value.to_f}','#{@cad3[0]}','#{@cad3[1]}','#{@cad3[2]}','#{@cad3[3]}','#{@cad3[4]}','#{@cad3[5]}','#{@cad3[6]}','#{@cad3[7]}','#{@cad3[8]}','#{@cad3[9]}');
             });
           %br
           .row

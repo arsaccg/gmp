@@ -47,7 +47,8 @@ class Production::EquipmentReportsController < ApplicationController
   def get_report
     @week3 = Array.new
     @cad = Array.new
-    cad2 = Array.new
+    @cad2 = Array.new
+    @cad3 = Array.new
     @week = CostCenter.getWeek(get_company_cost_center('cost_center'),Time.now.to_date.to_s)
     if @week.count>=10
       @week3 = CostCenter.getWeek3(get_company_cost_center('cost_center'),Time.now.to_date.to_s,10)
@@ -79,11 +80,17 @@ class Production::EquipmentReportsController < ApplicationController
       @poe_array2.each do |pa|
         @theoretical_value = pa[5]
       end
-      workers = PartOfEquipment.get_workers(@article, start_date, end_date)
-      workers.each do |w|
-        cad2<<w[0]
+      @week3.each do |week3|
+        @cad2 << poe_arrayworker2(week3[2], week3[3], @article)
       end
-      puts cad2.inspect
+      @cad2.each do |ca|
+        if ca[0].nil?
+          @cad3 << 0
+        else
+          @cad3 << ca[0]
+        end
+      end
+      @cad3.reverse!
     elsif @select1 == 'operador'
       @poe_array = poe_arrayequipment(start_date, end_date, @article)
       @poe_array2 = poe_array3(start_date, end_date, @article)
@@ -119,6 +126,27 @@ class Production::EquipmentReportsController < ApplicationController
       @ratio = @ratio.round(2)
       @result << [w[1] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
     end
+    return @result
+  end
+
+  def poe_arrayworker2(start_date, end_date, working_group_id)
+    @result = Array.new
+    workers = PartOfEquipment.get_workers(working_group_id, start_date, end_date)
+    workers.each do |w|
+      @totaleffehours = 0
+      @totalfuel = 0
+      PartOfEquipment.get_report_per_worker(working_group_id, start_date, end_date, w[0]).each do |rpw|
+        @totaleffehours += rpw[2].to_f
+        @totalfuel += rpw[3].to_f
+      end
+      if @totaleffehours==0
+        @totaleffehours=1
+      end
+      @ratio = @totalfuel / @totaleffehours
+      @ratio = @ratio.round(2)
+      @result << @ratio
+    end
+    puts @result.inspect
     return @result
   end
 

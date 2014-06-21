@@ -41,8 +41,18 @@ $(document).ready(function(){
   }
 });
 
-function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, semana6, semana7, semana8, semana9, semana10, theoretical_value){
+function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, semana6, semana7, semana8, semana9, semana10, theoretical_value, valor1, valor2, valor3, valor4, valor5, valor6, valor7, valor8, valor9, valor10){
   theoretical_value = parseFloat(theoretical_value)
+  valor1 = parseFloat(valor1)
+  valor2 = parseFloat(valor2)
+  valor3 = parseFloat(valor3)
+  valor4 = parseFloat(valor4)
+  valor5 = parseFloat(valor5)
+  valor6 = parseFloat(valor6)
+  valor7 = parseFloat(valor7)
+  valor8 = parseFloat(valor8)
+  valor9 = parseFloat(valor9)
+  valor10 = parseFloat(valor10)
   $('#'+div_id).highcharts({
     title: {
         text: 'Promedio Semanal Consumo de Combustible',
@@ -76,8 +86,8 @@ function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, seman
         borderWidth: 0
     },
     series: [{
-        name: 'Tokyo',
-        data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 0 , 26.5, 23.3, 18.3]
+        name: 'Reales',
+        data: [valor1, valor2, valor3, valor4, valor5, valor6, valor7, valor8, valor9, valor10]
     }, {
         name: 'Teórico',
         data: [theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value, theoretical_value]
