@@ -16,7 +16,7 @@
       %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
       - @phases.each do |phase|
         %option{:value => "#{phase.id}"}
-          = phase.name
+          = phase.code.to_s + ' ' + phase.name
   %td.effective-hours.col-lg-2
     %div
       = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][effective_hours]', nil , class: "form-control effective-hours", onchange: "sumHours(this);", :required => true, title:'No puede dejar este campo vacio'
