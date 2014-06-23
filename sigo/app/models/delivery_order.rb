@@ -30,17 +30,13 @@ class DeliveryOrder < ActiveRecord::Base
       end
     end
     
-    def self.getOwnArticles(word, cost_center_id)
-      @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-      @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    def self.getOwnArticles(word, name)
       mysql_result = ActiveRecord::Base.connection.execute("
         SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol
-        FROM articles_from_"+@name+" a, unit_of_measurements u 
+        FROM articles_from_"+name+" a, unit_of_measurements u 
         WHERE (a.code LIKE '04%' || a.code LIKE '03%' || a.code LIKE '02%')
         AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
         AND a.unit_of_measurement_id = u.id
-        LIMIT #{display_length}
-        OFFSET #{pager_number}
       ")
       return mysql_result
     end

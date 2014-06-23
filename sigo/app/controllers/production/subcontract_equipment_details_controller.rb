@@ -11,8 +11,10 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
   def display_articles
     if params[:element].blank?
       word = params[:q]
+      cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+      name = cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
       article_hash = Array.new
-      articles = SubcontractEquipmentDetail.getOwnArticles(word, get_company_cost_center('cost_center'))
+      articles = SubcontractEquipmentDetail.getOwnArticles(word, name)
       articles.each do |art|
         article_hash << {'id' => art[0], 'name' => art[3] + ' - ' + art[1] + ' - ' + art[2]}
       end
