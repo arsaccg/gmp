@@ -20,6 +20,11 @@ class Logistics::ArticlesController < ApplicationController
 
   def specifics_articles
     @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    
+    Budget.where("type_of_budget = 0 AND cost_center_id = ?", @cost_center.id).each do |budget|
+      @budget = budget
+    end
+
     @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
     @articles = ActiveRecord::Base.connection.execute("
       SELECT especific.id, especific.code, toa.name, especific.name, especific.description, uom.name 
