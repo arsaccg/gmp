@@ -341,6 +341,7 @@ ArsacLogistica::Application.routes.draw do
 
       resources :weekly_workers do
         collection do
+          post 'graph'
           post 'search_daily_work'
           post 'weekly_table'
         end
