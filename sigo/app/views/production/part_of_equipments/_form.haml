@@ -1,8 +1,9 @@
 #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
   %header
     %span.widget-icon
-      %i.fa.fa-eye
-    %h2 Parte de Equipo
+      %i.fa.fa-pencil-square-o.fa-fw 
+    %h2 Crear Parte de Equipo
+        
   .widget-body
     = simple_form_for([:production, @partofequipment], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
@@ -15,11 +16,21 @@
                 %label.label Número de Parte
                 %label.input
                   = f.input :code, placeholder: "Numero", input_html: { class: 'form-control' }, label: false
+              %section.col.col-5
+                %label.label Fecha
+                .col.col-12
+                  .form-group
+                    .input-group
+                      = f.input :date,as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-calendar.fa-md.fa-fw
             .row
               %section.col.col-6
                 %label.label Proveedor
                 %label.input
-                  %select.form-control#ent{:name =>"part_of_equipment[subcontract_equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
+                  %select.form-control#ent{:name =>"part_of_equipment[subcontract_equipment_id]", :style => 'width:400px;padding: 0;border: none;'}
+                    %option{:value => ''}
+                      = 'Seleccione Grupo de Trabajo'
                     -@subcon.each do |subcon|
                       -if @action =="edit"
                         -if @partofequipment.subcontract_equipment_id == subcon.id
@@ -35,12 +46,14 @@
               %section.col.col-6
                 %label.label Equipos
                 %label.input
-                  %select.form-control#equipment{:name =>"part_of_equipment[equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
+                  %select.form-control#equipment{:name =>"part_of_equipment[equipment_id]", :style => 'width:400px;padding: 0;border: none;'}
             .row
               %section.col.col-6
                 %label.label Operador
                 %label.input
-                  %select.form-control#worker{:name =>"part_of_equipment[worker_id]", :style => 'width:100%;padding: 0;border: none;'}
+                  %select.form-control#worker{:name =>"part_of_equipment[worker_id]", :style => 'width:400px;padding: 0;border: none;'}
+                    %option{:value => ''}
+                      = 'Seleccione Operador'
                     -@worker.each do |wo|
                       -if @action =="edit"
                         -if @partofequipment.worker_id == wo.id
@@ -69,7 +82,7 @@
                 %i.fa.fa-exchange
               %section.col.col-2
                 %label.input
-                  = f.input :dif, input_html: { class: 'form-control' }, label: false, :readonly => true
+                  = f.input :dif, input_html: { class: 'form-control', :style => 'background: beige;'}, label: false, :readonly => true
             .row
               %section.col.col-3
                 %label.label H. stand by
@@ -80,6 +93,10 @@
                 %label.label H. Mantenimiento
                 %label.input
                   = f.input :h_maintenance, placeholder: "  H. Mantenimiento", input_html: { class: 'form-control' }, label: false
+              %section.col.col-3
+                %label.label Total de Horas Efectivas
+                %label.input
+                  = f.input :total_hours, input_html: { class: 'form-control'}, label: false, :readonly => true
             .row
               %section.col.col-5
                 %label.label Tipo de Combustible
@@ -90,22 +107,6 @@
                 %label.label Cantidad de Combustible Total
                 %label.input
                   = f.input :fuel_amount, input_html: { class: 'form-control', onchange: 'gotosumHours();' }, label: false
-
-            .row
-              %section.col.col-5
-                %label.label Fecha
-                .col.col-12
-                  .form-group
-                    .input-group
-                      = f.input :date,as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
-                      %span.input-group-addon
-                        %i.fa.fa-calendar.fa-md.fa-fw
-
-              %section.col.col-3
-                %label.label Total de Horas Efectivas
-                %label.input
-                  = f.input :total_hours, input_html: { class: 'form-control'}, label: false, :readonly => true
-
 
         %fieldset
           %legend Registro de Partidas
@@ -123,7 +124,6 @@
                   %th.col-lg-2 Sector
                   %th.col-lg-2 Fase
                   %th.col-lg-2 Horas Efectivas
-                  %th.col-lg-2 Combustible
                   %th.col-lg-2 Unidad de Medida
                   %th.col-lg-1 Eliminar
               %tbody(id="part_register_table")
@@ -164,8 +164,7 @@
 
                       %td.effective-hours.col-lg-2
                         = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][effective_hours]', part.effective_hours , class: "form-control effective-hours", onchange: "sumHours(this);"
-                      %td.fuel.col-lg-2
-                        = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][fuel]', part.fuel , class: "form-control fuel"
+                        = hidden_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][fuel]', part.fuel , class: "form-control fuel"
                       %td.unit-of-measumente.col-lg-1
                         = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][unit]', '' , class: "form-control unit", readonly: true
                       %td.delete-item
@@ -258,8 +257,16 @@
             },
             'part_of_equipment[date]':{
               required : true
+            },
+            'part_of_equipment[subcontract_equipment_id]':{
+              required : true
+            },
+            'part_of_equipment[equipment_id]':{
+              required : true
+            },
+            'part_of_equipment[worker_id]':{
+              required : true
             }
-            
           },
 
           // Messages for form validation
@@ -284,6 +291,15 @@
             },
             'part_of_equipment[date]':{
               required : 'Por favor, ingrese la fecha.'
+            },
+            'part_of_equipment[subcontract_equipment_id]':{
+              required : 'Por favor, seleccione el proveedor.'
+            },
+            'part_of_equipment[equipment_id]':{
+              required : 'Por favor, seleccione equipo.'
+            },
+            'part_of_equipment[worker_id]':{
+              required : 'Por favor, seleccione operador.'
             }
             
           },
@@ -354,7 +370,7 @@
     var hm = $('#part_of_equipment_initial_km').val();
     var km = $('#part_of_equipment_final_km').val();
     if(hm!='' && km!=''){
-      var dif= km-hm;
+      var dif= (km-hm).toFixed(2);
       $('#part_of_equipment_dif').val(dif);
     }else{
       $('#part_of_equipment_dif').val('');
@@ -365,7 +381,7 @@
     var hm = $('#part_of_equipment_initial_km').val();
     var km = $('#part_of_equipment_final_km').val();
     if(hm!='' && km!=''){
-      var dif= km-hm;
+      var dif= (km-hm).toFixed(2);
       $('#part_of_equipment_dif').val(dif);
     }else{
       $('#part_of_equipment_dif').val('');

@@ -179,7 +179,9 @@ class Production::PartOfEquipmentsController < ApplicationController
   def add_more_register
     @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")
+
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @phases = @phases.sort! { |a,b| a.code <=> b.code }
     @working_groups = WorkingGroup.all
     render(partial: 'part_equipment_register', :layout => false)
   end
