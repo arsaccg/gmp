@@ -30,7 +30,7 @@
                 %label.input
                   %select.form-control#ent{:name =>"part_of_equipment[subcontract_equipment_id]", :style => 'width:400px;padding: 0;border: none;'}
                     %option{:value => ''}
-                      = 'Seleccione Grupo de Trabajo'
+                      = 'Seleccione Proveedor'
                     -@subcon.each do |subcon|
                       -if @action =="edit"
                         -if @partofequipment.subcontract_equipment_id == subcon.id
@@ -70,19 +70,22 @@
             .row
               %section.col.col-3
                 %label.label Horometro/Kilometraje
-              %section.col.col-2
                 %label.input#hm
                   = f.input :initial_km, placeholder: "Inicial", input_html: { class: 'form-control'}, label: false,  :onchange =>'calculateHours();'
               %section.col.col-1
+                %label.label '
                 %i.fa.fa-minus
               %section.col.col-2
+                %label.label '
                 %label.input#km
                   = f.input :final_km, placeholder: "Final", input_html: { class: 'form-control'}, label: false, :onchange =>'calculateHours();'
               %section.col.col-1
+                %label.label '
                 %i.fa.fa-exchange
               %section.col.col-2
+                %label.label '
                 %label.input
-                  = f.input :dif, input_html: { class: 'form-control', :style => 'background: beige;'}, label: false, :readonly => true
+                  = f.input :dif, input_html: { class: 'form-control', :style => 'background: beige;' }, label: false, :readonly => true
             .row
               %section.col.col-3
                 %label.label H. stand by
@@ -93,10 +96,6 @@
                 %label.label H. Mantenimiento
                 %label.input
                   = f.input :h_maintenance, placeholder: "  H. Mantenimiento", input_html: { class: 'form-control' }, label: false
-              %section.col.col-3
-                %label.label Total de Horas Efectivas
-                %label.input
-                  = f.input :total_hours, input_html: { class: 'form-control'}, label: false, :readonly => true
             .row
               %section.col.col-5
                 %label.label Tipo de Combustible
@@ -108,7 +107,14 @@
                 %label.input
                   = f.input :fuel_amount, input_html: { class: 'form-control', onchange: 'gotosumHours();' }, label: false
 
-        %fieldset
+            .row
+              %section.col.col-3
+                %label.label Total de Horas Efectivas
+                %label.input
+                  = f.input :total_hours, input_html: { class: 'form-control', :style => 'background: beige;'}, label: false, :readonly => true
+
+
+        %fieldset#fieldtable{ 'style' => 'display:none' }
           %legend Registro de Partidas
           .row
             %section.col.col-2
@@ -182,6 +188,11 @@
   $(document).ready(function () {
     var subcontract_id = $("#ent").val();
     complete_equipment("#{get_equipment_form_subcontract_production_part_of_equipments_path}", subcontract_id, "#{form_authenticity_token}", "0302");
+
+    $('#ent').change(function(){
+      var subcontract_id = $(this).val();
+      complete_equipment("#{get_equipment_form_subcontract_production_part_of_equipments_path}", subcontract_id, "#{form_authenticity_token}", "0302");
+    });
 
     $('select').select2();
     $('#fuel').select2({
@@ -353,13 +364,10 @@
   $('#equipment').change(function(){
     var article = $('#equipment').val();
     unit("#{get_unit_production_part_of_equipments_path}", article, "#{form_authenticity_token}", "0302");
-    
+    $("#fieldtable").fadeIn("fast");
   });
 
-  $('#ent').change(function(){
-    var subcontract_id = $(this).val();
-    complete_equipment("#{get_equipment_form_subcontract_production_part_of_equipments_path}", subcontract_id, "#{form_authenticity_token}", "0302");
-  });
+  
 
   $('#ent').keyup(function(){
     var subcontract_id = $(this).val();
@@ -427,6 +435,9 @@
           newOptions.push(item);
         });
         $('#equipment').empty();
+        $('#equipment').append(
+              $("<option></option>").attr("value", 0).attr("selected", "selected").text('Seleccione Artículo')
+            )
         $.each(newOptions, function(key,value){
           if ("#{@id}" == value.id)
             $('#equipment').append(
@@ -434,7 +445,7 @@
             )
           else
             $('#equipment').append(
-              $("<option></option>").attr("value", value.id).text(code + ' '+value.name)
+              $("<option></option>").attr("value", value.id).text(code[key] + ' '+value.name)
             )
           
         });
