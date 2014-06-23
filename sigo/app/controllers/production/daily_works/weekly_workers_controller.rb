@@ -206,8 +206,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     # GLOBAL Variables
     type = 'column'
     type2 = 'spline'
-    valueSuffix = ' hh'
-    valueSuffix2 = ' p.'
+
 
     @i=0
     @serieh = Array.new
@@ -225,19 +224,13 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
                   name: c,
                   type: type,
                   yAxis: 1,
-                  data: @parteh,
-                  tooltip: {
-                    valueSuffix: valueSuffix,
-                  }
+                  data: @parteh
                 }
       @spline1 << {
                   name: c,
                   type: type2,
                   yAxis: 1,
-                  data: @partep,
-                  tooltip: {
-                    valueSuffix: valueSuffix,
-                  }
+                  data: @parteh
                 }
       @i+=10
     end
@@ -249,20 +242,14 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
                   name: c,
                   type: type,
                   yAxis: 1,
-                  data: @partep,
-                  tooltip: {
-                    valueSuffix: valueSuffix2,
-                  }
+                  data: @partep
                 }
 
       @spline2 << {
                   name: c,
                   type: type2,
                   yAxis: 1,
-                  data: @partep,
-                  tooltip: {
-                    valueSuffix: valueSuffix2,
-                  }
+                  data: @partep
                 }
 
       @i2+=10
