@@ -7,7 +7,7 @@ class Distribution < ActiveRecord::Base
   
   def self.import_data_from_excel(file, cost_center_id,quantity,budget_id)
     spreadsheet = open_spreadsheet(file)
-    
+    cost_center_month = CostCenter.find(cost_center_id).start_date rescue Time.now
     header = spreadsheet.row(1)
     
     (2..spreadsheet.last_row).each do |i|
@@ -23,9 +23,10 @@ class Distribution < ActiveRecord::Base
       items_months.each do |key|
         item=DistributionItem.new
         item.distribution_id = d.id
-        item.month = key
+        item.month = cost_center_month
         item.value = row[key]
         item.save
+        cost_center_month += 1.months
       end 
     end
   end
