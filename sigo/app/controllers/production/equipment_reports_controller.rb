@@ -49,6 +49,7 @@ class Production::EquipmentReportsController < ApplicationController
     @cad = Array.new
     @cad2 = Array.new
     @cad3 = Array.new
+    @cad4 = Array.new
     @week = CostCenter.getWeek(get_company_cost_center('cost_center'),Time.now.to_date.to_s)
     if @week.count>=10
       @week3 = CostCenter.getWeek3(get_company_cost_center('cost_center'),Time.now.to_date.to_s,10)
@@ -81,16 +82,29 @@ class Production::EquipmentReportsController < ApplicationController
         @theoretical_value = pa[5]
       end
       @week3.each do |week3|
-        @cad2 << poe_arrayworker2(week3[2], week3[3], @article)
-      end
-      @cad2.each do |ca|
-        if ca[0].nil?
-          @cad3 << 0
-        else
-          @cad3 << ca[0]
+        @cad2 = PartOfEquipment.get_workers(@article, week3[2], week3[3])
+        @cad2.each do |cad|
+          @cad3 << cad[0]
         end
       end
-      @cad3.reverse!
+      @cad3 = @cad3.uniq
+      @cad3.each do |cad3|
+        @week3.each do |week3|
+          @totaleffehours = 0
+          @totalfuel = 0
+          @ratio = 0
+          PartOfEquipment.get_report_per_worker(@article, week3[2], week3[3], cad3).each do |rpw|
+            @totaleffehours += rpw[2].to_f
+            @totalfuel += rpw[3].to_f
+          end
+          if @totaleffehours==0
+            @totaleffehours=1
+          end
+          @ratio = @totalfuel / @totaleffehours
+          @ratio = @ratio.round(2)
+          @cad4 << @ratio
+        end
+      end
     elsif @select1 == 'operador'
       @poe_array = poe_arrayequipment(start_date, end_date, @article)
       @poe_array2 = poe_array3(start_date, end_date, @article)
