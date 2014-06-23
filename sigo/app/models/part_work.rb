@@ -11,7 +11,7 @@ class PartWork < ActiveRecord::Base
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT a.id, a.name
       FROM articles_from_"+@name+" a
-      AND a.code LIKE '04%'
+      WHERE a.code LIKE '04%'
       AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
       LIMIT #{display_length}
       OFFSET #{pager_number}
