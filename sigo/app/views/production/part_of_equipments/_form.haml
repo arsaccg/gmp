@@ -181,7 +181,6 @@
 
 :javascript
   $(document).ready(function () {
-    
     var subcontract_id = $("#ent").val();
     complete_equipment("#{get_equipment_form_subcontract_production_part_of_equipments_path}", subcontract_id, "#{form_authenticity_token}", "0302");
 
@@ -402,6 +401,7 @@
         var unit = data.unit;
         $('.form-control.unit').empty();
         $('.form-control.unit').val(unit);
+        code = data.code
         newOptions = [];
         $.each(data.equipment, function(key, value){
           item = {};
@@ -418,7 +418,7 @@
             )
           else
             $('#equipment').append(
-              $("<option></option>").attr("value", value.id).text(value.name)
+              $("<option></option>").attr("value", value.id).text(code + ' '+value.name)
             )
           
         });
