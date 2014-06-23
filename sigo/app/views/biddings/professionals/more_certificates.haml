@@ -16,53 +16,25 @@
             -@work.each do |wc|
               %option{value: "#{wc.id}"} 
                 = "#{wc.name}"
-          %input{'class'=>'change-check' ,type: "checkbox", :value=> "otros", onchange:'check(this);'}
-            = "No es una de las Obras?"
-        .col-sm-4{'class' =>'another_work' ,style: "display:none;"}
-          %label Nombre de Otra Obra
-          %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][name]"}
+          
         .col-sm-2
           %label Inicio de la obra: 
-          %label.input{'class'=>'start_other_works', 'style'=>'display:none;'}
-            %input.form-control{name:"professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][start]",  as: :date, type:  "date"}
           %label.input{'class'=>'start_certificate'}
             %input.form-control{:disabled=>"disabled", as: :date, type:  "date"}
         .col-sm-2
           %label Termino de la obra: 
-          %label.input{'class'=>'finish_other_works', 'style'=>'display:none;'}
-            %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][end]", as: :date, type:  "date"}
           %label.input{'class'=>'finish_certificate'}
             %input.form-control{:disabled=>"disabled", as: :date, type:  "date"}
-        .col-sm-4{'class'=>'specialty-select', style: "display:none;"}
-          %label Especialidad
-          %br
-          .input-group
-            %select.form-control{:name =>"professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][specialty]"}
-              %option 
-              %option{:value => "Saneamiento"} Saneamiento
-              %option{:value => "Civil"} Civil
-              %option{:value => "Electromecanico"} Electromecanico
-              %option{:value => "Hidraulica"} Hidráulica
-            %span.input-group-addon
-              %i.fa.fa-money
       %br
       .row{'class'=>'2'}
         .col-sm-4
           %label Entidad contratante
-          .input-group{'class'=>'entity_other_works', 'style'=>'display:none;'}
-            %input.form-control{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][entity]"}
-            %span.input-group-addon
-              %i.fa.fa-gears
           .input-group{'class'=>'entity'}
             %input.form-control{:disabled=>"disabled"}
             %span.input-group-addon
               %i.fa.fa-gears
         .col-sm-4
           %label Contratista
-          .input-group{'class'=>'contractor_other_works', 'style'=>'display:none;'}
-            %input.form-control{ name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][contractor]"}
-            %span.input-group-addon
-              %i.fa.fa-gears
           .input-group{'class'=>'contractor'}
             %input.form-control{:disabled=>"disabled"}
             %span.input-group-addon
@@ -113,14 +85,7 @@
           .col-sm-4
             %label#get-comp
               %label.select.components{'class'=>'comp-check'}
-      .row{'class'=>'comp'}
-        .col-sm-6
-          .col-sm-4{'class'=>'comp', style: "display:none;"}
-            -if @component !=nil
-              - @component.each do |comp|
-                %input{name: "professional[certificates_attributes][" + @reg.to_s + "][other_work_attributes][component_work]", type: "checkbox", :value=> "#{comp.id}"}
-                  = "#{comp.name}"
-                %br
+          %br
       %fieldset
         %legend Archivos a Adjuntar
         .row
@@ -161,37 +126,6 @@
       $(element).parent().parent().parent().parent().parent().children('.3.row').children('.col-sm-4').children('.form-control.worked-day').val(dias);
     }else{
       $(element).parent().parent().parent().parent().parent().children('.3.row').children('.col-sm-4').children('.form-control.worked-day').val("Ingrese correctamente ambas fechas");
-    }
-  }
-
-  function check(element){
-    $(element).parent().find('select').attr("disabled", $(element).is(':checked'));
-
-    if ($(element).parent().children('.change-check').is(':checked')){
-      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').fadeOut('fast');
-      $(element).parent().parent().children().children('.start_certificate').find('input').fadeOut('fast');
-      $(element).parent().parent().children().children('.finish_certificate').find('input').fadeOut('fast');
-      $(element).parent().parent().children('.another_work').fadeIn('fast');
-      $(element).parent().parent().children('.specialty-select').fadeIn('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').fadeOut('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').fadeOut('fast');$(element).parent().parent().children().children('.start_other_works').fadeIn('fast');
-      $(element).parent().parent().children().children('.finish_other_works').fadeIn('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity_other_works.input-group').fadeIn('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor_other_works.input-group').fadeIn('fast');
-      $(element).parent().parent().parent().children('.comp.row').children('.col-sm-6').children('.col-sm-4.comp').fadeIn('fast');
-    }else{
-      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').fadeIn('fast');
-      $(element).parent().parent().children().children('.start_certificate').find('input').fadeIn('fast');
-      $(element).parent().parent().children().children('.finish_certificate').find('input').fadeIn('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').fadeIn('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').fadeIn('fast');
-      $(element).parent().parent().children('.another_work').fadeOut('fast');
-      $(element).parent().parent().children('.specialty-select').fadeOut('fast');
-      $(element).parent().parent().children().children('.start_other_works').fadeOut('fast');
-      $(element).parent().parent().children().children('.finish_other_works').fadeOut('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity_other_works.input-group').fadeOut('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor_other_works.input-group').fadeOut('fast');
-      $(element).parent().parent().parent().children('.comp.row').children('.col-sm-6').children('.col-sm-4.comp').fadeOut('fast');
     }
   }
 
