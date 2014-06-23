@@ -11,9 +11,7 @@
         %thead
           %tr
             %th N°
-            %th Jefe de Frente
-            %th Ejecutor
-            %th Maestro de Obra
+            %th Grupo de Trabajo
             %th Fecha
             %th Acciones
         %tbody
@@ -22,11 +20,7 @@
               %td
                 = partwork.number_working_group
               %td
-                = Worker.find(partwork.working_group.front_chief_id).entity.name + ' ' + Worker.find(partwork.working_group.front_chief_id).entity.second_name  + ' ' + Worker.find(partwork.working_group.front_chief_id).entity.paternal_surname  + ' ' + Worker.find(partwork.working_group.front_chief_id).entity.maternal_surname
-              %td 
-                = Entity.find(partwork.working_group.executor_id).name
-              %td
-                = Worker.find(partwork.working_group.master_builder_id).entity.name + ' ' + Worker.find(partwork.working_group.front_chief_id).entity.second_name  + ' ' + Worker.find(partwork.working_group.front_chief_id).entity.paternal_surname  + ' ' + Worker.find(partwork.working_group.front_chief_id).entity.maternal_surname
+                = partwork.working_group.group
               %td 
                 = partwork.date_of_creation
               %td

@@ -17,18 +17,18 @@
             %label.input{for: "working_group_id"}
               %select.form-control{:name =>"part_person[working_group_id]", :style => 'width:100%;padding: 0;border: none;'}
                 %option{:value => ''}
-                  = 'JEFEDEFRENTE - EJECUTOR - MAESTRO DE OBRA'
+                  = 'Seleccione Grupo de Trabajo'
                 - @working_groups.each do |working_group|
                   - if @action == 'edit'
                     - if @partperson.working_group_id == working_group.id
                       %option{:value => "#{working_group.id}", :selected => true}
-                        = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname
+                        = working_group.name
                     - else
                       %option{:value => "#{working_group.id}"}
-                        = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname
+                        = working_group.name
                   - else
                     %option{:value => "#{working_group.id}"}
-                      = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname
+                      = working_group.name
 
           %section.col.col-2
             %label.input{for: "date_of_creation"}

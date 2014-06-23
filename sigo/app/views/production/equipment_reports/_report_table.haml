@@ -15,6 +15,7 @@
                   %th H.Efectivas
                   %th Combustible (gln)
                   %th Ratio real (gln/hr)
+                  %th Valor Teórico (gln/hr)
               %tbody
                 - data[1].each do |value|
                   - value['data'].each do |data|
@@ -29,6 +30,8 @@
                         = data[3]
                       %th{ 'style' => 'font-weight: normal;' }
                         = data[4]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[5]
                   %tr
                     %th{'colspan' => 2} Total
                     %th
@@ -37,6 +40,8 @@
                       = value['fuel']
                     %th
                       = value['ratio']
+                    %th
+                      = @theoretical_value.to_f
           / Aqui esta el Gráfico!
           :javascript
             $(document).ready(function () {
@@ -251,6 +256,7 @@
                   %th H.Efectivas
                   %th Combustible (gln)
                   %th Ratio real (gln/hr)
+                  %th Valor Teórico (gln/hr)
               %tbody
                 - data[1].each do |value|
                   - value['data'].each do |data|
@@ -265,6 +271,8 @@
                         = data[3]
                       %th{ 'style' => 'font-weight: normal;' }
                         = data[4]
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = data[5]
                   %tr
                     %th{'colspan' => 2} Total
                     %th
@@ -273,6 +281,8 @@
                       = value['fuel']
                     %th
                       = value['ratio']
+                    %th
+                      = @theoretical_value.to_f
           / Aqui esta el Gráfico!
           :javascript
             $(document).ready(function () {
