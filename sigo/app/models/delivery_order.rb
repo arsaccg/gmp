@@ -36,7 +36,7 @@ class DeliveryOrder < ActiveRecord::Base
       mysql_result = ActiveRecord::Base.connection.execute("
         SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol
         FROM articles_from_"+@name+" a, unit_of_measurements u 
-        AND (a.code LIKE '04%' || a.code LIKE '03%' || a.code LIKE '02%')
+        WHERE (a.code LIKE '04%' || a.code LIKE '03%' || a.code LIKE '02%')
         AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
         AND a.unit_of_measurement_id = u.id
         LIMIT #{display_length}

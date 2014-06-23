@@ -56,8 +56,9 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
 
   def search_weekly_work
     @weekly_worker = WeeklyWorker.new
-    @inicio                = params[:start_date]
-    @fin                   = params[:end_date]
+    @week = params[:date1].split(',')
+    @inicio                = @week[1]
+    @fin                   = @week[2]
     @cad = Array.new
     if @inicio.present? && @fin.present?        
       @dias_habiles =  range_business_days(@inicio,@fin)
