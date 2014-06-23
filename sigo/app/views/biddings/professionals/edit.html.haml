@@ -10,21 +10,6 @@
   %i.fa.fa-arrow-left>
   Retornar al listado de profesionales
 
-
-= javascript_include_tag 'plugin/flot/jquery.flot.cust'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
-= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
-= javascript_include_tag 'plugin/flot/jquery.flot.resize'
-= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
-= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
-= javascript_include_tag 'plugin/datatables/ColReorder.min'
-= javascript_include_tag 'plugin/datatables/FixedColumns.min'
-= javascript_include_tag 'plugin/datatables/ColVis.min'
-= javascript_include_tag 'plugin/datatables/ZeroClipboard'
-= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
-= javascript_include_tag 'plugin/datatables/DT_bootstrap'
-
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
@@ -293,37 +278,6 @@
     }
   }
 
-  function check(element){
-    $(element).parent().find('select').attr("disabled", $(element).is(':checked'));
-    if ($(element).parent().children('.change-check').is(':checked')){
-      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').fadeOut('fast');
-      $(element).parent().parent().children().children('.start_certificate').find('input').fadeOut('fast');
-      $(element).parent().parent().children().children('.finish_certificate').find('input').fadeOut('fast');
-      $(element).parent().parent().children('.another_work').fadeIn('fast');
-      $(element).parent().parent().children('.specialty-select').fadeIn('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').fadeOut('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').fadeOut('fast');
-      $(element).parent().parent().children().children('.start_other_works').fadeIn('fast');
-      $(element).parent().parent().children().children('.finish_other_works').fadeIn('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity_other_works.input-group').fadeIn('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor_other_works.input-group').fadeIn('fast');
-      $(element).parent().parent().parent().children('.comp.row').children('.col-sm-6').children('.col-sm-4.comp').fadeIn('fast');
-    }else{
-      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').fadeIn('fast');
-      $(element).parent().parent().children().children('.start_certificate').find('input').fadeIn('fast');
-      $(element).parent().parent().children().children('.finish_certificate').find('input').fadeIn('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').fadeIn('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').fadeIn('fast');
-      $(element).parent().parent().children('.another_work').fadeOut('fast');
-      $(element).parent().parent().children('.specialty-select').fadeOut('fast');
-      $(element).parent().parent().children().children('.start_other_works').fadeOut('fast');
-      $(element).parent().parent().children().children('.finish_other_works').fadeOut('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity_other_works.input-group').fadeOut('fast');
-      $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor_other_works.input-group').fadeOut('fast');
-      $(element).parent().parent().parent().children('.comp.row').children('.col-sm-6').children('.col-sm-4.comp').fadeOut('fast');
-    }
-  }
-
   function workSelectCH(element){
     if($(element).val()==''){
       $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').html('');
@@ -387,7 +341,7 @@
       $.each(newOptions, function(key,value){
         str_html = str_html + "<label> <strong> > </strong> " + value.name + "</label><br/>"
       });
-      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').html(str_html);
+      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-12').children('.col-sm-8').children('#get-comp').children('.comp-check.components.select').html(str_html);
       $(element).parent().parent().children().children('.start_certificate').find('input').empty();
       $(element).parent().parent().children().children('.start_certificate').find('input').val(start);
       $(element).parent().parent().children().children('.finish_certificate').find('input').empty();
