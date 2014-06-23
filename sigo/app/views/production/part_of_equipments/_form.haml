@@ -1,8 +1,9 @@
 #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
   %header
     %span.widget-icon
-      %i.fa.fa-eye
-    %h2 Parte de Equipo
+      %i.fa.fa-pencil-square-o.fa-fw 
+    %h2 Crear Parte de Equipo
+        
   .widget-body
     = simple_form_for([:production, @partofequipment], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
