@@ -133,26 +133,42 @@ class Reports::ReportofthemonthsController < ApplicationController
       @orderofservice8 = workerDetail[0]
     end
 
-    # Venta Valorizada
+    # Venta Valorizada y Venta Programado
     @acumulated_valorized_sale_current_month = 0
     @gg_valorized_sale_current_month = 0
-    @direct_cost = Array.new
+
+    @acumulated_scheduled_sale_current_month = 0
+    @gg_scheduled_sale_current_month = 0
+
+    @sale_goal = Array.new
     4.times do |i|
       i += 1
-      current_valorized = get_valorized_sale(i, @cost_center)
-      @direct_cost << [current_valorized]
+      # Valorizado
+      current_valorized = get_valorized_sale(i, @cost_center) rescue 0
+      # Programado
+      current_scheduled = get_planned_sale(i, @cost_center) rescue 0
+      
+      # Acumulado Valorizado
       @acumulated_valorized_sale_current_month += current_valorized
+      # Acumulado Programado
+      @acumulated_scheduled_sale_current_month += current_scheduled
+
+      # Arreglo total del VENTA
+      # 0 => Venta Programado de la fecha
+      # 1 => Venta Programado acumulado hasta la fecha
+      # 2 => Venta Valorizado de la fecha
+      # 3 => Venta Valorizado acumulado hasta la fecha
+      @sale_goal << [current_scheduled, current_scheduled, current_valorized, current_valorized]
     end
-
-    # Venta Programado
-
 
     # Gastos Generales ¿percent o calculated?
     overhead_percentage = CostCenter.find(@cost_center).overhead_percentage
     if overhead_percentage != nil
       @gg_valorized_sale_current_month = @acumulated_valorized_sale_current_month*overhead_percentage
+      @gg_scheduled_sale_current_month = @gg_scheduled_sale_current_month*overhead_percentage
     else
       @gg_valorized_sale_current_month = 0
+      @gg_scheduled_sale_current_month = 0
     end
 
     # Costo Meta (Con la valorizacion del presupuesto Meta) y el Costo Real
@@ -261,7 +277,7 @@ class Reports::ReportofthemonthsController < ApplicationController
 
   def get_valorized_sale(type_article, cost_center_id)
     result = ""
-    mysql_result = ActiveRecord::Base.connection.execute("SELECT get_valorized_sale(" + type_article.to_s + "," + cost_center_id.to_s + ") FROM DUAL;")
+    mysql_result = ActiveRecord::Base.connection.execute("SELECT get_valorized_sale(" +  type_article.to_s + "," + cost_center_id.to_s + ") FROM DUAL;")
     mysql_result.each do |mysql|
       result = mysql[0]
     end
@@ -270,20 +286,19 @@ class Reports::ReportofthemonthsController < ApplicationController
 
   # Venta programada
 
-  def get_planned_sale(budget_id)
-    @budgets = Budget.select(:id).where('type_of_budget = ?', 1)
-    @budgets.each do |budget|
-      @distributions = Distribution.select(:id,:code).where('budget_id = ?', budget.id)
-      @distributions.each do |distribution|
-        @measured = distribution.measured rescue 0
-      end
+  def get_planned_sale(type_article, cost_center_id)
+    result = ""
+    mysql_result = ActiveRecord::Base.connection.execute("SELECT get_scheduled_sale(" + type_article.to_s + "," + cost_center_id.to_s + ") FROM DUAL;")
+    mysql_result.each do |mysql|
+      result = mysql[0]
     end
+    return result
   end
 
   # Costo Meta
   def get_cost_goal(type_article, cost_center_id)
     result = ""
-    mysql_result = ActiveRecord::Base.connection.execute("SELECT get_cost_goal(" + type_article.to_s + "," + cost_center_id.to_s + ") FROM DUAL;")
+    mysql_result = ActiveRecord::Base.connection.execute("SELECT get_cost_goal(" +  type_article.to_s + "," + cost_center_id.to_s + ") FROM DUAL;")
     mysql_result.each do |mysql|
       result = mysql[0]
     end
