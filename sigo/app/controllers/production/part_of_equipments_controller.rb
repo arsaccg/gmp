@@ -71,7 +71,11 @@ class Production::PartOfEquipmentsController < ApplicationController
     @partofequipment = PartOfEquipment.new
     @subcon = SubcontractEquipment.where("cost_center_id = ?", cost_center)
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center)
-    @worker = Worker.where("cost_center_id = ?", cost_center)
+    pw_id = 0
+    PositionWorker.where("name LIKE '%operador%'").each do |pw|
+      pw_id = pw.id
+    end
+    @worker = Worker.where("cost_center_id = ? AND position_worker_id LIKE ?", cost_center, pw_id)
     render layout: false
   end
 
