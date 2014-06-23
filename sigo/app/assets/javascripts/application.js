@@ -321,7 +321,7 @@ function show_report_inventory(url, parameters, wurl, wname, wparameters){
 }
 
 
-function bar_graph_category(div, categoria, title_c){
+function bar_graph_category(div, categoria, series2, title_c, tipo, abrev){
   var arreglo = categoria.split(',')
 
   $('#'+div).highcharts({
@@ -342,19 +342,20 @@ function bar_graph_category(div, categoria, title_c){
             color: Highcharts.getOptions().colors[0]
           }
         }
+
       },
       { // Secondary yAxis
         gridLineWidth: 0,
         title: {
-          text: 'Horas',
+          text: tipo,
           style: {
             color: Highcharts.getOptions().colors[18]
           }
         },
         labels: {
-          format: '{value} hh',
+          format: '{value} '+abrev,
           style: {
-            color: Highcharts.getOptions().colors[0]
+            color: Highcharts.getOptions().colors[18]
           }
         }
 
@@ -392,46 +393,6 @@ function bar_graph_category(div, categoria, title_c){
         floating: true,
         backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
     },
-    series: [{
-        name: 'Horas',
-        type: 'column',
-        
-        yAxis: 1,
-        data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1],
-        tooltip: {
-            valueSuffix: ' hh',
-            
-        }
-    },{
-        name: 'H1oras',
-        type: 'column',
-        
-        yAxis: 1,
-        data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1],
-        tooltip: {
-            valueSuffix: ' hh'
-        }
-
-    },{
-        name: 'Hora2s',
-        type: 'column',
-        
-        yAxis: 1,
-        data: [0, 0000, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1],
-        tooltip: {
-            valueSuffix: ' hh'
-        }
-
-    },{
-        name: 'Hora122s',
-        type: 'column',
-        
-        yAxis: 1,
-        data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1],
-        tooltip: {
-            valueSuffix: ' hh'
-        }
-
-    }]
+    series: series2
   });
 }

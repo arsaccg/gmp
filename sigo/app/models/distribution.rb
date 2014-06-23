@@ -19,6 +19,10 @@ class Distribution < ActiveRecord::Base
       d.budget_id = budget_id
       d.save
       
+<<<<<<< HEAD
+      
+=======
+>>>>>>> e1e0026167fde6bcf89924db74ac7c604902f9c1
       items_months = row.keys - ["CODIGO"]
       items_months.each do |key|
         item=DistributionItem.new

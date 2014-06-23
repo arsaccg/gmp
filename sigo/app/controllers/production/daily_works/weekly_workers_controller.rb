@@ -203,41 +203,77 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
       end
     end
 
+    # GLOBAL Variables
+    type = 'column'
+    type2 = 'spline'
+    valueSuffix = ' hh'
+    valueSuffix2 = ' p.'
+
     @i=0
     @serieh = Array.new
     @seriep = Array.new
+
+    @serie1 = Array.new
+    @spline1 = Array.new
+
+    @serie2 = Array.new
+    @spline2 = Array.new
     @catehh.each do |c|
       f=@i+9
       @parteh = @catwh[@i.to_i..f.to_i]
-      @serieh << "{
-                  name: '"+c.to_s+"',
-                  type: 'column',
-                  yAxis: 0,
-                  data: "+@parteh.to_s+",
+      @serie1 << {
+                  name: c,
+                  type: type,
+                  yAxis: 1,
+                  data: @parteh,
                   tooltip: {
-                    valueSuffix: ' hh',
+                    valueSuffix: valueSuffix,
                   }
-                }"
+                }
+      @spline1 << {
+                  name: c,
+                  type: type2,
+                  yAxis: 1,
+                  data: @partep,
+                  tooltip: {
+                    valueSuffix: valueSuffix,
+                  }
+                }
       @i+=10
     end
     @i2=0
     @catecp.each do |c|
       f=@i2+9
       @partep = @catwp[@i2.to_i..f.to_i]
-      @seriep << "{
-                  name: '"+c.to_s+"',
-                  type: 'column',
-                  yAxis: 0,
-                  data: "+@partep.to_s+",
+      @serie2 << {
+                  name: c,
+                  type: type,
+                  yAxis: 1,
+                  data: @partep,
                   tooltip: {
-                    valueSuffix: ' hh',
+                    valueSuffix: valueSuffix2,
                   }
-                }"
+                }
+
+      @spline2 << {
+                  name: c,
+                  type: type2,
+                  yAxis: 1,
+                  data: @partep,
+                  tooltip: {
+                    valueSuffix: valueSuffix2,
+                  }
+                }
+
       @i2+=10
     end
+    @serieh = @serie1 + @spline1
+    @seriep = @serie2 + @spline2
 
-    @serieh = @serieh.join("....")
-    @seriep = @seriep.join(",")
+    puts "-----------------------------------@serieh--arreglo--------------------------------------------"
+    puts @serieh
+    puts "-----------------------------------------------------------------------------------------------"
+    # @seriep = @seriep.join(",")
 
 
     @weekly_work=WeeklyWorker.find_by_id(params[:id])
