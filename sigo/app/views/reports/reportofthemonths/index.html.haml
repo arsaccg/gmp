@@ -42,23 +42,23 @@
             %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
             %th{"style"=>"text-align:center"} Acumulado
         %tbody
-          // Valores totalizados
+          // Valores Venta totalizados
           %tr
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_scheduled_sale_current_month.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_scheduled_sale_current_month.round(2), unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_valorized_sale_current_month.round(2), unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_valorized_sale_current_month.round(2), unit: "S/. ")
             
-          - @direct_cost.each do |cost|
+          - @sale_goal.each do |cost|
             %tr
-              %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
-              %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
               %th{"style"=>"text-align:center"}= number_to_currency(cost[0].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center"}= number_to_currency(cost[0].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center"}= number_to_currency(cost[1].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center"}= number_to_currency(cost[2].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center"}= number_to_currency(cost[3].round(2), unit: "S/. ")
           // G.Generales
           %tr
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@gg_scheduled_sale_current_month, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@gg_scheduled_sale_current_month, unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency(@gg_valorized_sale_current_month, unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency(@gg_valorized_sale_current_month, unit: "S/. ")
           // Utilidad
@@ -89,12 +89,14 @@
             %th{"style"=>"text-align:center;color:#38C0FB"} Mes Actual
             %th{"style"=>"text-align:center"} Acumulado
         %tbody
+          // Valores Totalizados de Costo Directo
           %tr
             %th{"style"=>"text-align:center"}= number_to_currency((@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations).round(2), unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency((@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2).round(2), unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_cost_goal_current_month.round(2), unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_cost_goal_current_month.round(2), unit: "S/. ")
-            
+          
+          // Datos de Costo Directo
           - @cost_goal.each do |cost|
             %tr
               %th{"style"=>"text-align:center"}= number_to_currency(cost[0].round(2), unit: "S/. ")
