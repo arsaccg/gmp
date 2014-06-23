@@ -109,14 +109,89 @@ class Production::EquipmentReportsController < ApplicationController
       @poe_array = poe_arrayequipment(start_date, end_date, @article)
       @poe_array2 = poe_array3(start_date, end_date, @article)
       @worker = Worker.find_by_id(params[:article])
+      @theoretical_value = 1
+      @week3.each do |week3|
+        @cad2 = PartOfEquipment.get_equipments(@article, week3[2], week3[3])
+        @cad2.each do |cad|
+          @cad3 << cad[0]
+        end
+      end
+      @cad3 = @cad3.uniq
+      @cad3.each do |cad3|
+        @week3.each do |week3|
+          @totaleffehours = 0
+          @totalfuel = 0
+          @ratio = 0
+          PartOfEquipment.get_report_per_equipments(@article, week3[2], week3[3], cad3).each do |rpw|
+            @totaleffehours += rpw[2].to_f
+            @totalfuel += rpw[3].to_f
+          end
+          if @totaleffehours==0
+            @totaleffehours=1
+          end
+          @ratio = @totalfuel / @totaleffehours
+          @ratio = @ratio.round(2)
+          @cad4 << @ratio
+        end
+      end
     elsif @select1 == 'frente'
       @poe_array = poe_arraysector(start_date, end_date, @article)
       @poe_array2 = poe_array3(start_date, end_date, @article)
       @sector = Sector.find_by_id(params[:article])
+      @theoretical_value = 1
+      @week3.each do |week3|
+        @cad2 = PartOfEquipment.get_equipments_per_sector(@article, week3[2], week3[3])
+        @cad2.each do |cad|
+          @cad3 << cad[0]
+        end
+      end
+      @cad3 = @cad3.uniq
+      @cad3.each do |cad3|
+        @week3.each do |week3|
+          @totaleffehours = 0
+          @totalfuel = 0
+          @ratio = 0
+          PartOfEquipment.get_report_per_equipments_per_sector(@article, week3[2], week3[3], cad3).each do |rpw|
+            @totaleffehours += rpw[2].to_f
+            @totalfuel += rpw[3].to_f
+          end
+          if @totaleffehours==0
+            @totaleffehours=1
+          end
+          @ratio = @totalfuel / @totaleffehours
+          @ratio = @ratio.round(2)
+          @cad4 << @ratio
+        end
+      end
     elsif @select1 == 'equipment'
       @poe_array = poe_arrayarticle(start_date, end_date, @article)
       @poe_array2 = poe_array3(start_date, end_date, @article)
-      @article = Article.find_by_id(params[:article])
+      @article2 = Article.find_by_id(params[:article])
+      @theoretical_value = 1
+      @week3.each do |week3|
+        @cad2 = PartOfEquipment.get_equipments_per_article(@article, week3[2], week3[3])
+        @cad2.each do |cad|
+          @cad3 << cad[0]
+        end
+      end
+      @cad3 = @cad3.uniq
+      @cad3.each do |cad3|
+        @week3.each do |week3|
+          @totaleffehours = 0
+          @totalfuel = 0
+          @ratio = 0
+          PartOfEquipment.get_report_per_equipments_per_article(@article, week3[2], week3[3], cad3).each do |rpw|
+            @totaleffehours += rpw[2].to_f
+            @totalfuel += rpw[3].to_f
+          end
+          if @totaleffehours==0
+            @totaleffehours=1
+          end
+          @ratio = @totalfuel / @totaleffehours
+          @ratio = @ratio.round(2)
+          @cad4 << @ratio
+        end
+      end
     end
 		render(partial: 'report_table', :layout => false)
 	end
@@ -140,27 +215,6 @@ class Production::EquipmentReportsController < ApplicationController
       @ratio = @ratio.round(2)
       @result << [w[1] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
     end
-    return @result
-  end
-
-  def poe_arrayworker2(start_date, end_date, working_group_id)
-    @result = Array.new
-    workers = PartOfEquipment.get_workers(working_group_id, start_date, end_date)
-    workers.each do |w|
-      @totaleffehours = 0
-      @totalfuel = 0
-      PartOfEquipment.get_report_per_worker(working_group_id, start_date, end_date, w[0]).each do |rpw|
-        @totaleffehours += rpw[2].to_f
-        @totalfuel += rpw[3].to_f
-      end
-      if @totaleffehours==0
-        @totaleffehours=1
-      end
-      @ratio = @totalfuel / @totaleffehours
-      @ratio = @ratio.round(2)
-      @result << @ratio
-    end
-    puts @result.inspect
     return @result
   end
 
