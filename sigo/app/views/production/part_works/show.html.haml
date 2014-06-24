@@ -26,6 +26,7 @@
                 %thead
                   %tr
                     %th Número
+                    %th Grupo de Trabajo
                     %th Jefe de Frente
                     %th Ejecutor
                     %th Maestro de Obra
@@ -34,6 +35,8 @@
                   %tr
                     %td
                       = @partwork.number_working_group
+                    %td
+                      = @partwork.working_group.name
                     %td
                       = Worker.find(@partwork.working_group.front_chief_id).entity.name + ' ' + Worker.find(@partwork.working_group.front_chief_id).entity.second_name + ' ' + Worker.find(@partwork.working_group.front_chief_id).entity.paternal_surname + ' ' + Worker.find(@partwork.working_group.front_chief_id).entity.maternal_surname
                     %td

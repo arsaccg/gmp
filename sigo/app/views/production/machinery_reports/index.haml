@@ -14,7 +14,7 @@
           %option{:value => "0"} Seleccione un equipo
           - @subcontractequipmentdetail.each do |sced|
             %option{:value => "#{sced.article.id}-#{sced.subcontract_equipment.entity.id}"}
-              = sced.subcontract_equipment.entity.name + ' - ' + sced.article.name
+              =  sced.code + ' - ' + sced.article.name + ' - ' + sced.subcontract_equipment.entity.name
       .col-md-2
         %label Fecha de inicio
         %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
