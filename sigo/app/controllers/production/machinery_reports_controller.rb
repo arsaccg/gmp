@@ -11,14 +11,15 @@ class Production::MachineryReportsController < ApplicationController
     @totaltotalhours = 0
     @totalfuel_amount = 0
     @result = Array.new
-    @result = params[:subcontractequipment].split(/-/)
+    @result = params[:subcontractequipment]
 		start_date = params[:start_date]
     end_date = params[:end_date]
-		@poe_array = poe_array(start_date, end_date, @result[0], @result[1])
+		@poe_array = poe_array(start_date, end_date, @result)
     @poe_array.each do |workerDetail|
-      @totaldif += workerDetail[4].to_i
-      @totaltotalhours += workerDetail[5].round(2)
-      @totalfuel_amount += workerDetail[7]
+      @totaldif += workerDetail[4].to_f.round(2)
+      @totaltotalhours += workerDetail[5].to_f.round(2)
+      @totalfuel_amount += workerDetail[7].to_f.round(2)
+      puts @totaldif.inspect
     end
 		@dias_habiles =  range_business_days(start_date,end_date)
 		render(partial: 'report_table', :layout => false)
@@ -35,15 +36,14 @@ class Production::MachineryReportsController < ApplicationController
     return business_days
   end
   
-	def poe_array(start_date, end_date, working_group_id,entity_id)
+	def poe_array(start_date, end_date, sub_equipment_id)
     poe_array = ActiveRecord::Base.connection.execute("
       SELECT poe.code, poe.date, poe.initial_km, poe.final_km, poe.dif, poe.total_hours, art.name, poe.fuel_amount
       FROM part_of_equipments poe, articles art, subcontract_equipments sce
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND sce.id=poe.subcontract_equipment_id
       AND poe.subcategory_id=art.id
-      AND poe.equipment_id IN(" + working_group_id + ")
-      AND sce.entity_id IN(" + entity_id + ")
+      AND poe.equipment_id IN(" + sub_equipment_id + ")
       ORDER BY poe.date
     ")
     return poe_array
