@@ -236,6 +236,7 @@
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
+      $("#fieldtable").fadeIn("fast");
     }else{
       submit_validate($('#new_part_of_equipment'));
     }
@@ -440,9 +441,9 @@
               $("<option></option>").attr("value", 0).attr("selected", "selected").text('Seleccione Artículo')
             )
         $.each(newOptions, function(key,value){
-          if ("#{@id}" == value.id)
+          if ("#{@id}" == sedid[key])
             $('#equipment').append(
-              $("<option></option>").attr("value", sedid[key]).attr("selected", "selected").text(value.name)
+              $("<option></option>").attr("value", sedid[key]).attr("selected", "selected").text(code[key] + ' '+value.name)
             )
           else
             $('#equipment').append(

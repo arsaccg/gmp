@@ -27,9 +27,9 @@
               %td
                 = partofequipment.worker.entity.name rescue '' + ' ' + partofequipment.worker.entity.paternal_surname rescue '' + ' ' + partofequipment.worker.entity.maternal_surname rescue ''
               %td 
-                = Article.find_article(partofequipment.equipment_id).name
+                = SubcontractEquipmentDetail.find_by_id(partofequipment.equipment_id).code + ' ' + SubcontractEquipmentDetail.find_by_id(partofequipment.equipment_id).article.name
               %td
-                =partofequipment.dif
+                = partofequipment.dif
               %td 
                 = partofequipment.date
               %td
