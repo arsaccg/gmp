@@ -16,7 +16,9 @@ class Production::PartWorksController < ApplicationController
   def display_articles
     word = params[:q]
     article_hash = Array.new
-    articles = PartWork.getOwnArticles(word, get_company_cost_center('cost_center'))
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    articles = PartWork.getOwnArticles(word, name)
     articles.each do |art|
       article_hash << {'id' => art[0], 'name' => art[1]}
     end

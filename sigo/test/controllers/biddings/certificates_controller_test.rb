@@ -6,11 +6,6 @@ class Biddings::CertificatesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should get show" do
-    get :show
-    assert_response :success
-  end
-
   test "should get new" do
     get :new
     assert_response :success
@@ -31,8 +26,8 @@ class Biddings::CertificatesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should get delete" do
-    get :delete
+  test "should get destroy" do
+    get :destroy
     assert_response :success
   end
 

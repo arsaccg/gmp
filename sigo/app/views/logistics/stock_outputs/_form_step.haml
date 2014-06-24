@@ -16,7 +16,7 @@
               %select(name='stock_input[responsible_id]' class = 'select2 form-control' id = 'responsible-select' style='width:100%;padding: 0;border: none;')
                 - @responsibles.each do |x|
                   %option(value = "#{x.id}")
-                    = x.name.to_s + ' ' + x.second_name.to_s + ' ' + x.paternal_surname.to_s + ' ' + x.maternal_surname.to_s
+                    = x.entity.name.to_s + ' ' + x.entity.second_name.to_s + ' ' + x.entity.paternal_surname.to_s + ' ' + x.entity.maternal_surname.to_s
         .col-md-2
         .col-md-3
           .row
@@ -36,16 +36,16 @@
       \- Escoger artículos
     %fieldset
       .row#select_table_per_warehouse
-
+      %br
       .row
-        %table#dt_basic.table-striped.table-bordered.table-hover
+        %table#dt_basic.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form{ style: "width: 1000px;margin: 0 auto" }
           %thead
             %tr
-              %th Código de Artículo
-              %th Artículo
-              %th Unidad
-              %th Cantidad Total en Almacen
-              %th Seleccionar
+              %th{ 'style' => 'width: 20%;text-align:center' } Código
+              %th{ 'style' => 'width: 30%;text-align:center' } Artículo
+              %th{ 'style' => 'width: 15%;text-align:center' } Unidad
+              %th{ 'style' => 'width: 20%;text-align:center' } Cantidad Total en Almacen
+              %th{ 'style' => 'width: 15%;text-align:center' } Seleccionar
           %tbody#partial_table_per_warehouse
         
   #step3.step-pane
@@ -159,6 +159,7 @@
 :javascript
   $(document).ready(function(){
     //$('#stock_input_issue_date').datepicker.noConflict;
+    $('select_table_per_warehouse').select2({width:'200px'});
     $("#stock_input_company_id").val($.company_global_id);
   });
 

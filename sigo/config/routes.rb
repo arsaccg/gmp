@@ -212,6 +212,7 @@ ArsacLogistica::Application.routes.draw do
         post 'get_components_by_speciality'
       end
     end
+    resources :certificates
     resources :work_partners
     resources :professionals do
       collection do
@@ -341,6 +342,7 @@ ArsacLogistica::Application.routes.draw do
 
       resources :weekly_workers do
         collection do
+          post 'graph'
           post 'search_daily_work'
           post 'weekly_table'
         end

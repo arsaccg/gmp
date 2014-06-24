@@ -32,7 +32,7 @@ class Logistics::StockOutputsController < ApplicationController
     @company = get_company_cost_center('company')
     @head = StockInput.new
     @cost_center = get_company_cost_center('cost_center')
-    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
+    @responsibles = Worker.where("cost_center_id = ?",@cost_center)
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}

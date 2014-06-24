@@ -79,7 +79,6 @@
                     %th Grupo de Trabajo
                     %th Fase
                     %th Horas Efectivas
-                    %th Combustible
                     %th Unidad de Medida
                 %tbody(id="part_register_table")
                   -@partdetail.each do |part|
@@ -96,8 +95,6 @@
                               = "#{subphase.name}"
                       %td.effective-hours.col-lg-2
                         = part.effective_hours
-                      %td.effective-hours.col-lg-2
-                        = part.fuel
                       %td.unit-of-measumente.col-lg-1
                         = @unit
 

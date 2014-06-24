@@ -87,8 +87,8 @@
           Salir
 
 :javascript
-  bar_graph_category('container1', "#{@names}", jQuery.parseJSON("#{escape_javascript @serieh.to_json}"), 'Histograma: Cantidad de Horas - Categoría', 'Horas', 'hh');
-  bar_graph_category('container2', "#{@names}", jQuery.parseJSON("#{escape_javascript @seriep.to_json}"), 'Histograma: Cantidad de Trabajadores - Categoría', 'Trabajadores', 'per.');
-  //console.log(jQuery.parseJSON("#{escape_javascript @serieh.to_json}"));  
-  //console.log("hasta");  
-  //console.log(jQuery.parseJSON("#{escape_javascript @seriep.to_json}"));  
+  var array = jQuery.parseJSON("#{escape_javascript @serie1.to_json}") + jQuery.parseJSON("#{escape_javascript @spline1.to_json}")
+  bar_graph_category('container1', "#{@names}", jQuery.parseJSON("#{escape_javascript @serieh.to_json}"), 'Histograma: Cantidad de Horas - Categoría', 'Horas', 'hh', ' hh');
+  bar_graph_category('container2', "#{@names}", jQuery.parseJSON("#{escape_javascript @seriep.to_json}"), 'Histograma: Cantidad de Trabajadores - Categoría', 'Trabajadores', 'per.', ' p.');
+  console.log(jQuery.parseJSON("#{escape_javascript @serieh.to_json}"));  
+  console.log("hasta");  

@@ -4,40 +4,67 @@ DELIMITER $$
 -- Functions
 --
 
-DROP FUNCTION IF EXISTS `scheduled_sale`$$
-CREATE DEFINER=`root`@`localhost` FUNCTION `scheduled_sale`( type_article CHAR(2), cost_center_id INT ) RETURNS float
+DROP FUNCTION IF EXISTS `get_scheduled_sale`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `get_scheduled_sale`( type_article INT, cost_center_id INT ) RETURNS FLOAT
 BEGIN
   DECLARE done INT DEFAULT FALSE;
-  DECLARE v_total FLOAT; 
-  DECLARE v_sum FLOAT;
-  DECLARE quantity_cursor CURSOR FOR 
-    SELECT DISTINCT ibi.quantity*ibi.price as `total`
-	  FROM `inputbybudgetanditems` ibi, `articles` a, `budgets` b 
-	  WHERE b.cost_center_id = cost_center_id 
-    AND b.type_of_budget = 1 
-    AND ibi.budget_id = b.id 
-    AND ibi.article_id = a.id 
-    AND ibi.cod_input 
-    LIKE CONVERT(CONCAT(type_article, "%") using utf8) collate utf8_spanish_ci;
+  DECLARE v_budget_id INT; 
+  DECLARE v_code_item VARCHAR(100);
+  DECLARE v_distribution_value FLOAT;
+  DECLARE v_distribution_month VARCHAR(100);
+  DECLARE i_scheduled FLOAT;
+
+  DECLARE scheduled_cursor CURSOR FOR 
+    SELECT d.budget_id, d.code, di.value, di.month 
+    FROM distributions d, budgets b, distribution_items di 
+    WHERE d.budget_id = b.id 
+    AND di.distribution_id = d.id 
+    AND d.cost_center_id = cost_center_id
+    AND di.value IS NOT NULL
+    AND MONTH( di.month ) = MONTH(NOW());
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-  SET v_sum = 0;
+  SET i_scheduled = 0;
 
-  OPEN quantity_cursor;
+  DROP TEMPORARY TABLE IF EXISTS debugger_temp;
+  CREATE TEMPORARY TABLE debugger_temp (
+  id INT NOT NULL AUTO_INCREMENT,
+  budget_id int,
+  order_str varchar(120),
+  result float,
+  PRIMARY KEY(id)
+  ) ENGINE=memory;
+
+  OPEN scheduled_cursor;
 
     read_loop: LOOP
-	  FETCH quantity_cursor INTO v_total;
+      FETCH scheduled_cursor INTO v_budget_id, v_code_item, v_distribution_value, v_distribution_month;
 
-	  IF done THEN
-	    LEAVE read_loop;
-	  END IF;
+      IF done THEN LEAVE read_loop; END IF;
 
-	  SET v_sum = v_sum + IFNULL(v_total, 0);
+      SET @i_scheduled = (
+        SELECT SUM((ibi.quantity * ibi.price))
+        FROM inputbybudgetanditems ibi, budgets b 
+        WHERE b.type_of_budget = 1 
+        AND b.id = ibi.budget_id 
+        AND ibi.budget_id = v_budget_id 
+        AND ibi.order = v_code_item
+        AND ibi.cod_input LIKE CONCAT('0', type_article, '%')
+      );
+
+    INSERT INTO debugger_temp(`budget_id`, `order_str`, `result`) VALUES(v_budget_id, v_code_item, @i_scheduled);
+
+      IF @i_scheduled IS NULL THEN
+        SET @i_scheduled = 0;
+      END IF;
+
+      SET i_scheduled  = i_scheduled + (@i_scheduled*v_distribution_value);
+
     END LOOP;
 
-  CLOSE quantity_cursor;
+  CLOSE scheduled_cursor;
 
-  RETURN ROUND(v_sum, 2);
+  RETURN ROUND(i_scheduled, 2);
 END$$
 
 
@@ -86,7 +113,7 @@ BEGIN
         itembybudgets.budget_id = v_budget_id AND
         itembybudgets.id = v_itembybudget_id
     ) AS items
-    WHERE items.cod_input LIKE CONCAT('0', CONCAT(type_article, '%'))
+    WHERE items.cod_input LIKE CONCAT('0', type_article, '%')
     GROUP BY category_id
     ORDER BY category_id
       );
@@ -149,7 +176,7 @@ BEGIN
         itembybudgets.budget_id = v_budget_id AND
         itembybudgets.id = v_itembybudget_id
     ) AS items
-    WHERE items.cod_input LIKE CONCAT('0', CONCAT(type_article, '%'))
+    WHERE items.cod_input LIKE CONCAT('0', type_article, '%')
     GROUP BY category_id
     ORDER BY category_id
       );

@@ -25,7 +25,7 @@
               %td
                 -@article.each do |arti|
                   -if part.article_id == arti.id
-                    =arti.name
+                    = part.code + ' ' + arti.name
               %td
                 =part.brand
               %td

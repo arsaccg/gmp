@@ -321,8 +321,9 @@ function show_report_inventory(url, parameters, wurl, wname, wparameters){
 }
 
 
-function bar_graph_category(div, categoria, series2, title_c, tipo, abrev){
+function bar_graph_category(div, categoria, series2, title_c, tipo, abrev, suffix){
   var arreglo = categoria.split(',')
+  console.log(suffix);
 
   $('#'+div).highcharts({
     chart: {
@@ -372,12 +373,11 @@ function bar_graph_category(div, categoria, series2, title_c, tipo, abrev){
     tooltip: {
       shared: true,
       headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + '<td style="padding:0"><b>{point.y:.1f}'+suffix+'</b></td></tr>',
       footerFormat: '</table>',
       shared: true,
       useHTML: true
     },
-
     plotOptions: {
       column: {
         pointPadding: 0.2,

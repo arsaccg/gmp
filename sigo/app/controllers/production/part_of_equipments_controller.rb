@@ -71,7 +71,11 @@ class Production::PartOfEquipmentsController < ApplicationController
     @partofequipment = PartOfEquipment.new
     @subcon = SubcontractEquipment.where("cost_center_id = ?", cost_center)
     @sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center)
-    @worker = Worker.where("cost_center_id = ?", cost_center)
+    pw_id = 0
+    PositionWorker.where("name LIKE '%operador%'").each do |pw|
+      pw_id = pw.id
+    end
+    @worker = Worker.where("cost_center_id = ? AND position_worker_id LIKE ?", cost_center, pw_id)
     render layout: false
   end
 
@@ -147,12 +151,15 @@ class Production::PartOfEquipmentsController < ApplicationController
     equip = Array.new
     articles = Array.new
     @equipment = Array.new
+    @code = Array.new
     unit=''
     equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", params[:subcontract_id])
+    
     TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
       articles = arti.articles
     end
     equip.each do |eq|
+      @code << eq.code
       articles.each do |ar|
         if ar.id==eq.article_id
           @equipment << ar
@@ -160,8 +167,10 @@ class Production::PartOfEquipmentsController < ApplicationController
         end
       end
     end
+    puts @code.inspect
+    puts @equipment.inspect
     @unit = UnitOfMeasurement.find(unit).name
-    render json: {:equipment => @equipment, :unit =>@unit}  
+    render json: {:equipment => @equipment, :unit =>@unit, :code => @code}  
   end
 
   def get_unit
@@ -173,7 +182,9 @@ class Production::PartOfEquipmentsController < ApplicationController
   def add_more_register
     @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")
+
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @phases = @phases.sort! { |a,b| a.code <=> b.code }
     @working_groups = WorkingGroup.all
     render(partial: 'part_equipment_register', :layout => false)
   end
