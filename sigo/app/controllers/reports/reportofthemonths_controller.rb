@@ -165,7 +165,7 @@ class Reports::ReportofthemonthsController < ApplicationController
     overhead_percentage = CostCenter.find(@cost_center).overhead_percentage
     if overhead_percentage != nil
       @gg_valorized_sale_current_month = @acumulated_valorized_sale_current_month*overhead_percentage
-      @gg_scheduled_sale_current_month = @gg_scheduled_sale_current_month*overhead_percentage
+      @gg_scheduled_sale_current_month = @acumulated_scheduled_sale_current_month*overhead_percentage
     else
       @gg_valorized_sale_current_month = 0
       @gg_scheduled_sale_current_month = 0

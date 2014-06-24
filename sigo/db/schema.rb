@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140612045650) do
+ActiveRecord::Schema.define(version: 20140619160547) do
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -95,7 +95,6 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.integer  "professional_id"
     t.integer  "work_id"
     t.integer  "charge_id"
-    t.string   "contractor"
     t.date     "start_date"
     t.date     "finish_date"
     t.integer  "componetns_id"
@@ -260,6 +259,7 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
+    t.integer  "budget_id"
   end
 
   create_table "documents", force: true do |t|
@@ -465,7 +465,7 @@ ActiveRecord::Schema.define(version: 20140612045650) do
 
   add_index "itembybudgets", ["item_id"], name: "itembybudges_item_id", using: :btree
 
-  create_table "itembywbs", force: true do |t|
+  create_table "itembywbses", force: true do |t|
     t.string   "wbscode"
     t.integer  "itembywbs_id"
     t.string   "coditem"
@@ -633,6 +633,7 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.float    "total_hours"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_center_id"
     t.integer  "block"
   end
 
@@ -642,8 +643,9 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.date     "date_of_creation"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_center_id"
     t.integer  "block"
-    t.integer  "block2"
+    t.integer  "blockweekly"
   end
 
   create_table "part_person_details", force: true do |t|
@@ -675,6 +677,7 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sector_id"
+    t.integer  "cost_center_id"
     t.integer  "block"
   end
 
@@ -683,10 +686,25 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "category"
+    t.string   "code"
   end
 
   create_table "position_workers", force: true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "professional_certificates", force: true do |t|
+    t.integer  "professional_id"
+    t.integer  "certificate_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "professional_trainings", force: true do |t|
+    t.integer  "professional_id"
+    t.integer  "training_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -870,6 +888,7 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "code"
     t.integer  "cost_center_id"
   end
 
@@ -900,7 +919,7 @@ ActiveRecord::Schema.define(version: 20140612045650) do
   create_table "stock_input_details", force: true do |t|
     t.integer  "stock_input_id"
     t.integer  "purchase_order_detail_id"
-    t.decimal  "amount",                   precision: 15, scale: 5
+    t.float    "amount"
     t.string   "status"
     t.integer  "user_inserts_id"
     t.integer  "user_updates_id"
@@ -908,7 +927,7 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.datetime "updated_at"
     t.integer  "article_id"
     t.integer  "equipment_id"
-    t.decimal  "unit_cost",                precision: 15, scale: 5
+    t.float    "unit_cost"
     t.integer  "sector_id"
     t.integer  "phase_id"
   end
@@ -937,6 +956,8 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.integer  "company_id"
     t.integer  "cost_center_id"
     t.integer  "responsible_id"
+    t.integer  "supplier_id"
+    t.string   "series"
   end
 
   add_index "stock_inputs", ["company_id"], name: "index_stock_inputs_on_company_id", using: :btree
@@ -1004,6 +1025,7 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.string   "igv"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_center_id"
   end
 
   create_table "subcontracts", force: true do |t|
@@ -1019,6 +1041,7 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.datetime "updated_at"
     t.string   "type"
     t.float    "igv"
+    t.integer  "cost_center_id"
   end
 
   create_table "testimony_of_consortium_documents", force: true do |t|
@@ -1028,6 +1051,13 @@ ActiveRecord::Schema.define(version: 20140612045650) do
     t.string   "attachment_file_size"
     t.datetime "attachment_update_at"
     t.integer  "work_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "theoretical_values", force: true do |t|
+    t.integer  "article_id"
+    t.float    "theoretical_value"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1258,7 +1288,7 @@ ActiveRecord::Schema.define(version: 20140612045650) do
 
   create_table "works", force: true do |t|
     t.string   "specialty"
-    t.string   "name"
+    t.string   "name",                                 limit: 500
     t.float    "amount_of_contract"
     t.string   "participation_of_arsac"
     t.date     "date_signature_of_contract"

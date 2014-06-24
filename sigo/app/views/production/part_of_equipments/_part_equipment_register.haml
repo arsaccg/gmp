@@ -20,8 +20,7 @@
   %td.effective-hours.col-lg-2
     %div
       = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][effective_hours]', nil , class: "form-control effective-hours", onchange: "sumHours(this);", :required => true, title:'No puede dejar este campo vacio'
-  %td.fuel.col-lg-2
-    = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][fuel]', nil , class: "form-control fuel", readonly: true
+    = hidden_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][fuel]', nil , class: "form-control fuel", readonly: true
   %td.unit-of-measumente.col-lg-1
     = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][unit]', '' , class: "form-control unit", readonly: true
   %td{:style => "width: 1%; text-align: center;"}

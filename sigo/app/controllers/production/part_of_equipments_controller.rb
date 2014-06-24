@@ -151,6 +151,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     equip = Array.new
     articles = Array.new
     @equipment = Array.new
+    @code = Array.new
     unit=''
     equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", params[:subcontract_id])
     
@@ -158,7 +159,7 @@ class Production::PartOfEquipmentsController < ApplicationController
       articles = arti.articles
     end
     equip.each do |eq|
-      @code = eq.code
+      @code << eq.code
       articles.each do |ar|
         if ar.id==eq.article_id
           @equipment << ar
@@ -166,6 +167,8 @@ class Production::PartOfEquipmentsController < ApplicationController
         end
       end
     end
+    puts @code.inspect
+    puts @equipment.inspect
     @unit = UnitOfMeasurement.find(unit).name
     render json: {:equipment => @equipment, :unit =>@unit, :code => @code}  
   end
