@@ -4,14 +4,18 @@
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Tareo de Obreros Semanal
-
-    .col-md-7{ "style" => "margin-top: 10px;" }
+    %br
+    %br
+  %row
+    .col-sm-4
       %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_daily_works_weekly_worker_path}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
         Nuevo
-
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{graph_production_daily_works_weekly_workers_path}', 'content', {company_id: '#{@company}'}, null, 'POST')"}
+        Ver Gráficos
+  %br
+  %br
   %br
   #widget-grid
     .row
       %article.col-xs-12
         = render :partial => 'table'
-

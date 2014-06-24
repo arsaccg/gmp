@@ -10,6 +10,7 @@
         %thead
           %tr
             %th N°
+            %th Semana
             %th Fechas
             %th Estado
             %th Acciones
@@ -19,7 +20,9 @@
               %td
                 = unit.id
               %td
-                = unit.start_date.to_s + " - " + unit.end_date.to_s
+                
+              %td
+                = unit.start_date.strftime('%d-%m-%Y').to_s + " - " + unit.end_date.strftime('%d-%m-%Y').to_s
               - case unit.state
                 - when 'disapproved'
                   %td.label-status
