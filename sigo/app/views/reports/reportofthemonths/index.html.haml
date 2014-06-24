@@ -14,13 +14,13 @@
           %tr
             %th COSTO DIRECTO
           %tr
-            %th{"style"=>"text-align:center"} MO
+            %th{"style"=>"text-align:center; font-weight: normal;"} MO
           %tr
-            %th{"style"=>"text-align:center"} MAT
+            %th{"style"=>"text-align:center; font-weight: normal;"} MAT
           %tr
-            %th{"style"=>"text-align:center"} EQ
+            %th{"style"=>"text-align:center; font-weight: normal;"} EQ
           %tr
-            %th{"style"=>"text-align:center"} SC y SERV
+            %th{"style"=>"text-align:center; font-weight: normal;"} SC y SERV
           %tr
             %th GASTOS GENERALES
           %tr
@@ -51,10 +51,10 @@
             
           - @sale_goal.each do |cost|
             %tr
-              %th{"style"=>"text-align:center"}= number_to_currency(cost[0].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center"}= number_to_currency(cost[1].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center"}= number_to_currency(cost[2].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center"}= number_to_currency(cost[3].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[0].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[1].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[2].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[3].round(2), unit: "S/. ")
           // G.Generales
           %tr
             %th{"style"=>"text-align:center"}= number_to_currency(@gg_scheduled_sale_current_month, unit: "S/. ")
@@ -99,10 +99,10 @@
           // Datos de Costo Directo
           - @cost_goal.each do |cost|
             %tr
-              %th{"style"=>"text-align:center"}= number_to_currency(cost[0].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center"}= number_to_currency(cost[1].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center"}= number_to_currency(cost[2].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center"}= number_to_currency(cost[2].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[0].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[1].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[2].round(2), unit: "S/. ")
+              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[2].round(2), unit: "S/. ")
           // Gastos Generales
           %tr
             %th{"style"=>"text-align:center"}= number_to_currency((@partequipment3+@partpeople3+@orderofservice3).round(2), unit: "S/. ")

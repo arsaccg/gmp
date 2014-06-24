@@ -28,6 +28,18 @@ class Article < ActiveRecord::Base
 		return self.find(id)
 	end
 
+  def self.find_article_in_specific(id, cost_center_id)
+    @cost_center = CostCenter.find(cost_center_id)
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT id, name, article_id, code
+      FROM articles_from_"+name+" 
+      WHERE id =" + id.to_s + " 
+    ")
+
+    return mysql_result
+  end
+
 	def self.getSpecificArticles(cost_center_id, display_length, pager_number)
     @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
