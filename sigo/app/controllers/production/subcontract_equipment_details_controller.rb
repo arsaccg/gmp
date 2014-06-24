@@ -89,10 +89,13 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
   end
 
   def get_component_from_article
-    @article = Article.find(params[:article_id])
-    @code = @article.code
-    unit = UnitOfMeasurement.find(@article.unit_of_measurement_id)
-    @unit = unit.name
+    @article = Article.find_article_in_specific(params[:article_id], get_company_cost_center('cost_center'))
+    
+    @article.each do |a|
+      @code = a[3]
+      @unit = a[4]
+    end
+
     render json: {:code=>@code, :unit=>@unit}  
   end
 

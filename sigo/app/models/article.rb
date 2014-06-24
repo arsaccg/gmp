@@ -32,9 +32,10 @@ class Article < ActiveRecord::Base
     @cost_center = CostCenter.find(cost_center_id)
     name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
     mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT id, name, article_id, code
-      FROM articles_from_"+name+" 
-      WHERE id =" + id.to_s + " 
+      SELECT af.id, af.name, af.article_id, af.code, u.name
+      FROM articles_from_"+name+" af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.id =" + id.to_s + " 
     ")
 
     return mysql_result
