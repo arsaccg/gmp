@@ -35,7 +35,7 @@ class OrderOfService < ActiveRecord::Base
   def self.getOwnArticles(word, name)
     
     mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol
+      SELECT DISTINCT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol
       FROM articles_from_"+name+" a, unit_of_measurements u 
       WHERE (a.code LIKE '04%' || a.code LIKE '03%')
       AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )

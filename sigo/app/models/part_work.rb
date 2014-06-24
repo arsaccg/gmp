@@ -8,7 +8,7 @@ class PartWork < ActiveRecord::Base
 	def self.getOwnArticles(word, name)
     
     mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT a.id, a.name
+      SELECT DISTINCT a.id, a.name
       FROM articles_from_"+name+" a
       WHERE a.code LIKE '04%'
       AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
