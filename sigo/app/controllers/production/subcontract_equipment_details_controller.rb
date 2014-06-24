@@ -3,8 +3,8 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
     @company = params[:company_id]
     @subcontract = params[:subcontract]
     @partequi = SubcontractEquipmentDetail.where("subcontract_equipment_id= ?", @subcontract)
-    @article= Array.new
-    @article = TypeOfArticle.find_by_code("03").articles
+    @cost_center_id = get_company_cost_center('cost_center')
+    #@article = TypeOfArticle.find_by_code("03").articles
     render layout: false
   end
 

@@ -23,9 +23,8 @@
               %td
                 =part.id
               %td
-                -@article.each do |arti|
-                  -if part.article_id == arti.id
-                    = part.code + ' ' + arti.name
+                - Article.find_article_in_specific(part.article_id, @cost_center_id).each do |arti|
+                  = part.code + ' ' + arti[1].to_s
               %td
                 =part.brand
               %td
