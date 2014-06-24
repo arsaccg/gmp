@@ -171,15 +171,15 @@ class Reports::ReportofthemonthsController < ApplicationController
       @gg_scheduled_sale_current_month = 0
     end
 
-    # Costo Meta (Con la valorizacion del presupuesto Meta) y el Costo Real
+    # Costo Meta (Con la valorizacion de los presupuestos Meta) y el Costo Real
     @acumulated_cost_goal_current_month = 0
     @cost_goal_current_month = 0
     @cost_goal = Array.new
     # Cost_Goal Have
-    # [1] => Direct Cost Actual
-    # [2] => Direct Cost Acummulate
-    # [3] => Meta Cost Actual
-    # [4] => Meta Cost Acummulate
+    # [1] => Costo Directo Actual
+    # [2] => Costo Directo Acumulado
+    # [3] => Costo Meta Actual
+    # [4] => Costo Meta Acummulado
     # Each row is differente by MO, MAT, EQ, SC y SERV.
 
     4.times do |j|
