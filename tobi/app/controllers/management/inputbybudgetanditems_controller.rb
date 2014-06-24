@@ -31,14 +31,14 @@ class Management::InputbybudgetanditemsController < ApplicationController
     @item.cod_input = params[:cod_input]
     @item.quantity = params[:quantity]
     @item.price = params[:price]
-    @item.order = params[:order]
-    @item.input = params[:input]
+    @item.order = params[:order].gsub('a', '.')
+    @item.input = params[:input].gsub('_', ' ')
     @item.budget_id = params[:budget_id]
     @item.subbudget_code = params[:subbudget_code]
     @item.unit = params[:unit]
 
     p "****************Inputbybudgetanditem*****************"
-    p @item.attributes
+    @item.save
 
     render :nothing => true, :status => 200, :content_type => 'text/html', layout: false
     #render :filter_by_budget_and_item, budget_id: @item.budget_id, item_id: @item.item_id, order: @item.order, :layout => false
