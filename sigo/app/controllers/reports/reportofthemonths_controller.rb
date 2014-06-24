@@ -161,18 +161,9 @@ class Reports::ReportofthemonthsController < ApplicationController
       @sale_goal << [current_scheduled, current_scheduled, current_valorized, current_valorized]
     end
 
-    # Gastos Generales ¿percent o calculated?
-    overhead_percentage = CostCenter.find(@cost_center).overhead_percentage
-    if overhead_percentage != nil
-      @gg_valorized_sale_current_month = @acumulated_valorized_sale_current_month*overhead_percentage
-      @gg_scheduled_sale_current_month = @acumulated_scheduled_sale_current_month*overhead_percentage
-    else
-      @gg_valorized_sale_current_month = 0
-      @gg_scheduled_sale_current_month = 0
-    end
-
     # Costo Meta (Con la valorizacion de los presupuestos Meta) y el Costo Real
     @acumulated_cost_goal_current_month = 0
+    @gg_cost_goal_current_month = 0
     @cost_goal_current_month = 0
     @cost_goal = Array.new
     # Cost_Goal Have
@@ -195,6 +186,14 @@ class Reports::ReportofthemonthsController < ApplicationController
         @cost_goal << [@orderofservice + @scvaluations, @orderofservice2 + @scvaluations, current_cost]
       end
       @acumulated_cost_goal_current_month += current_cost
+    end
+
+    # Gastos Generales ¿percent o calculated?
+    overhead_percentage = CostCenter.find(@cost_center).overhead_percentage
+    if overhead_percentage != nil
+      @gg_valorized_sale_current_month = @acumulated_valorized_sale_current_month*overhead_percentage
+      @gg_scheduled_sale_current_month = @acumulated_scheduled_sale_current_month*overhead_percentage
+      @gg_cost_goal_current_month = @gg_cost_goal_current_month*overhead_percentage
     end
 
 		render layout: false

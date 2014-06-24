@@ -121,6 +121,28 @@
             %th{"style"=>"text-align:center"}= number_to_currency((@partequipment8+@partpeople8+@orderofservice8).round(2), unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
             %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+  .row.col-md-5
+    .widget-body
+      %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th{'colspan' => 4, "style"=>"text-align:center"} TOTAL
+          %tr
+            %th{"style"=>"text-align:center;"}= @acumulated_scheduled_sale_current_month + @gg_scheduled_sale_current_month
+          %tr
+            %th{"style"=>"text-align:center;"}= @acumulated_scheduled_sale_current_month + @gg_scheduled_sale_current_month
+          %tr
+            %th{"style"=>"text-align:center;"}= @acumulated_valorized_sale_current_month + @gg_valorized_sale_current_month
+          %tr
+            %th{"style"=>"text-align:center;"}= @acumulated_valorized_sale_current_month + @gg_valorized_sale_current_month
+          %tr
+            %th{"style"=>"text-align:center;"}= number_to_currency((@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations+@partequipment3+@partpeople3+@orderofservice3+@partequipment5+@partpeople5+@orderofservice5+@partequipment7+@partpeople7+@orderofservice7).round(2), unit: "S/. ")
+          %tr
+            %th{"style"=>"text-align:center;"}= number_to_currency((@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2+@partequipment4+@partpeople4+@orderofservice4+@partequipment6+@partpeople6+@orderofservice6+@partequipment8+@partpeople8+@orderofservice8).round(2), unit: "S/. ")
+          %tr
+            %th{"style"=>"text-align:center;"}= @acumulated_cost_goal_current_month + @gg_cost_goal_current_month
+          %tr
+            %th{"style"=>"text-align:center;"}= @acumulated_cost_goal_current_month + @gg_cost_goal_current_month
   %br
   .row.col-md-12
     .col-md-6
