@@ -149,28 +149,27 @@ class Production::PartOfEquipmentsController < ApplicationController
 
   def get_equipment_form_subcontract
     equip = Array.new
-    articles = Array.new
     @equipment = Array.new
     @code = Array.new
     @sedid = Array.new
     unit=''
     equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", params[:subcontract_id])
     
-    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
-      articles = arti.articles
-    end
+    cost_center = get_company_cost_center('cost_center')
+    articles = Article.get_article_per_type('03', cost_center)
+
     equip.each do |eq|
       @code << eq.code
       @sedid << eq.id
       articles.each do |ar|
-        if ar.id==eq.article_id
+        if ar[0]==eq.article_id
           @equipment << ar
-          unit = ar.unit_of_measurement_id
+          unit = ar[4]
         end
       end
     end
-    puts @sedid.inspect
-    puts @equipment.inspect
+    #puts @sedid.inspect
+    #puts @equipment.inspect
     @unit = UnitOfMeasurement.find(unit).name
     render json: {:equipment => @equipment, :unit =>@unit, :code => @code, :sedid => @sedid}  
   end
