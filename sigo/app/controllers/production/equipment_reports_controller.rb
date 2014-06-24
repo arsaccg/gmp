@@ -13,7 +13,7 @@ class Production::EquipmentReportsController < ApplicationController
 
     if params[:chosen] == "0"
     elsif params[:chosen] == "specific"
-      articles = ActiveRecord::Base.connection.execute("SELECT sed.code, CONCAT( sed.code,  ' ', a.name ) AS name FROM  `subcontract_equipment_details` sed,  `articles` a,  `part_of_equipments` pe WHERE sed.article_id = a.id AND pe.equipment_id = a.id GROUP BY pe.equipment_id")
+      articles = ActiveRecord::Base.connection.execute("SELECT sed.code, CONCAT( sed.code,  ' ', a.name ) AS name FROM  `subcontract_equipment_details` sed,  `articles` a,  `part_of_equipments` pe WHERE sed.article_id = a.id AND sed.article_id = a.id")
       articles.each do |part|
         @combo << { 'id' => part[0], 'name' => part[1]}
       end
@@ -33,7 +33,7 @@ class Production::EquipmentReportsController < ApplicationController
         @combo << art
       end
     elsif params[:chosen] == "equipment"
-      SubcontractEquipmentDetail.all.each do |sed|
+      SubcontractEquipmentDetail.all.group('article_id').each do |sed|
         Article.where("code LIKE '03________' AND code NOT LIKE '0332______'").each do |art|
           if sed.article_id == art.id
             @combo << art
@@ -213,6 +213,9 @@ class Production::EquipmentReportsController < ApplicationController
         @totalfuel += rpw[3].to_f
         index += 1
       end
+      if @totaleffehours==0
+        @totaleffehours=1
+      end
       @ratio = @totalfuel / @totaleffehours
       @ratio = @ratio.round(2)
       @result << [w[1] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
@@ -234,6 +237,9 @@ class Production::EquipmentReportsController < ApplicationController
         @totaleffehours += rpw[2].to_f
         @totalfuel += rpw[3].to_f
         index += 1
+      end
+      if @totaleffehours==0
+        @totaleffehours=1
       end
       @ratio = @totalfuel / @totaleffehours
       @ratio = @ratio.round(2)
@@ -257,6 +263,9 @@ class Production::EquipmentReportsController < ApplicationController
         @totalfuel += rpw[3].to_f
         index += 1
       end
+      if @totaleffehours==0
+        @totaleffehours=1
+      end
       @ratio = @totalfuel / @totaleffehours
       @ratio = @ratio.round(2)
       @result << [w[1] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
@@ -279,6 +288,9 @@ class Production::EquipmentReportsController < ApplicationController
         @totalfuel += rpw[3].to_f
         index += 1
       end
+      if @totaleffehours==0
+        @totaleffehours=1
+      end
       @ratio = @totalfuel / @totaleffehours
       @ratio = @ratio.round(2)
       @result << [w[1] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
@@ -290,11 +302,11 @@ class Production::EquipmentReportsController < ApplicationController
     poe_array2 = ActiveRecord::Base.connection.execute("
       SELECT pha.id, pha.name , SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2), tv.theoretical_value 
 			FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced , theoretical_values tv 
-			WHERE sced.code IN(" + working_group_id + ") 
+			WHERE sced.code LIKE '" + working_group_id + "' 
 			AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
 			AND poe.worker_id=wo.id 
-			AND poe.equipment_id=sced.article_id 
-      AND poe.equipment_id=tv.article_id
+			AND poe.equipment_id=sced.id 
+      AND sced.article_id=tv.article_id
 			AND poe.id=poed.part_of_equipment_id 
 			AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
 			AND poed.phase_id=pha.id
@@ -309,9 +321,9 @@ class Production::EquipmentReportsController < ApplicationController
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sced, articles art , theoretical_values tv 
       WHERE poe.worker_id IN(" + working_group_id + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "' 
-      AND poe.equipment_id=sced.article_id 
-      AND poe.equipment_id=art.id
-      AND poe.equipment_id=tv.article_id
+      AND poe.equipment_id=sced.id 
+      AND sced.article_id=art.id
+      AND sced.article_id=tv.article_id
       AND poe.id=poed.part_of_equipment_id 
       AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
       GROUP BY sced.code
@@ -325,8 +337,9 @@ class Production::EquipmentReportsController < ApplicationController
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sced, articles art , theoretical_values tv 
       WHERE poed.sector_id IN(" + working_group_id + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
-      AND poe.equipment_id=sced.article_id 
-      AND poe.equipment_id=art.id
+      AND poe.equipment_id=sced.id 
+      AND sced.article_id=art.id
+      AND sced.article_id=tv.article_id
       AND poe.id=poed.part_of_equipment_id 
       AND poe.subcontract_equipment_id=sced.subcontract_equipment_id
       GROUP BY sced.code
@@ -338,10 +351,11 @@ class Production::EquipmentReportsController < ApplicationController
     poe_array2 = ActiveRecord::Base.connection.execute("
       SELECT sced.code, art.name , SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2), tv.theoretical_value 
       FROM part_of_equipments poe, part_of_equipment_details poed,subcontract_equipment_details sced, articles art , theoretical_values tv 
-      WHERE poe.equipment_id IN(" + working_group_id + ") 
+      WHERE sced.article_id IN(" + working_group_id + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
-      AND poe.equipment_id=sced.article_id 
-      AND poe.equipment_id=art.id
+      AND poe.equipment_id=sced.id 
+      AND sced.article_id=art.id
+      AND sced.article_id=tv.article_id
       AND poe.id=poed.part_of_equipment_id 
       AND poe.subcontract_equipment_id=sced.subcontract_equipment_id
       GROUP BY sced.code
