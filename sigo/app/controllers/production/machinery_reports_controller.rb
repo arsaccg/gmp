@@ -17,7 +17,7 @@ class Production::MachineryReportsController < ApplicationController
 		@poe_array = poe_array(start_date, end_date, @result[0], @result[1])
     @poe_array.each do |workerDetail|
       @totaldif += workerDetail[4].to_i
-      @totaltotalhours += workerDetail[5]
+      @totaltotalhours += workerDetail[5].round(2)
       @totalfuel_amount += workerDetail[7]
     end
 		@dias_habiles =  range_business_days(start_date,end_date)

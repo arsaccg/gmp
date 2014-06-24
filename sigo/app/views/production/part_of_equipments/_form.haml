@@ -426,6 +426,7 @@
         $('.form-control.unit').empty();
         $('.form-control.unit').val(unit);
         code = data.code
+        sedid = data.sedid
         newOptions = [];
         $.each(data.equipment, function(key, value){
           item = {};
@@ -441,11 +442,11 @@
         $.each(newOptions, function(key,value){
           if ("#{@id}" == value.id)
             $('#equipment').append(
-              $("<option></option>").attr("value", value.id).attr("selected", "selected").text(value.name)
+              $("<option></option>").attr("value", sedid[key]).attr("selected", "selected").text(value.name)
             )
           else
             $('#equipment').append(
-              $("<option></option>").attr("value", value.id).text(code[key] + ' '+value.name)
+              $("<option></option>").attr("value", sedid[key]).text(code[key] + ' '+value.name)
             )
           
         });

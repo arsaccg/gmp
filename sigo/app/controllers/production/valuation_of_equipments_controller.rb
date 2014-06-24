@@ -1,11 +1,11 @@
 class Production::ValuationOfEquipmentsController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
-	def index
-		@company = get_company_cost_center('company')
-  	@valuationofequipment = ValuationOfEquipment.all
+  def index
+    @company = get_company_cost_center('company')
+    @valuationofequipment = ValuationOfEquipment.all
     @subcontractequipmentdetail = SubcontractEquipmentDetail.all
     render layout: false
-	end
+  end
     
   def show
     @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
@@ -39,20 +39,18 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     end
     render layout: false
   end
-	def new
-		@costCenter = CostCenter.new
-		TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
-	      @executors = executor.entities
-	    end
+  def new
+    @costCenter = CostCenter.new
+    @executors = SubcontractEquipment.all
     last=ValuationOfEquipment.last
     if !last.nil?
       @start = last.start_date
       @end = last.end_date
     end
-		render layout: false
-	end
+    render layout: false
+  end
 
-	def get_report
+  def get_report
     @name = Entity.find_by_id(params[:executor]).name
 
     if SubcontractEquipment.find_by_entity_id(params[:executor])!=nil
@@ -117,7 +115,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         @totalprice += workerDetail[4]
       end
       @balance = @subadvances + @accumulated_amortizaciondeadelanto
-      @bill = @totalprice-@subcontractequipment.initial_amortization_number
+      @bill = @totalprice-@subcontractequipment.initial_amortization_number.to_f
       @billigv = @bill*0.18
       @numbercode = @numbercode.to_s.rjust(3,'0')
       @flag = "ok"

@@ -16,7 +16,6 @@ class Production::PartOfEquipmentsController < ApplicationController
   def show
     @company = params[:company_id]
     cost_center = get_company_cost_center('cost_center')
-
     @partofequipment = PartOfEquipment.find(params[:id])
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
     @sectors = Sector.where("code LIKE '__'")
@@ -152,6 +151,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     articles = Array.new
     @equipment = Array.new
     @code = Array.new
+    @sedid = Array.new
     unit=''
     equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", params[:subcontract_id])
     
@@ -160,6 +160,7 @@ class Production::PartOfEquipmentsController < ApplicationController
     end
     equip.each do |eq|
       @code << eq.code
+      @sedid << eq.id
       articles.each do |ar|
         if ar.id==eq.article_id
           @equipment << ar
@@ -167,10 +168,10 @@ class Production::PartOfEquipmentsController < ApplicationController
         end
       end
     end
-    puts @code.inspect
+    puts @sedid.inspect
     puts @equipment.inspect
     @unit = UnitOfMeasurement.find(unit).name
-    render json: {:equipment => @equipment, :unit =>@unit, :code => @code}  
+    render json: {:equipment => @equipment, :unit =>@unit, :code => @code, :sedid => @sedid}  
   end
 
   def get_unit

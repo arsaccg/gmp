@@ -5,10 +5,10 @@
     %br
     %label.input{for: "executor_id"}
       %select.form-control#exe{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
-        %option{:value => "0"} Seleccione un ejecutor
+        %option{:value => "0"} Seleccione un Proveedor
         - @executors.each do |ex|
-          %option{:value => "#{ex.id}"}
-            = ex.name
+          %option{:value => "#{ex.entity_id}"}
+            = ex.entity.name
   .col-md-3
     %label Fecha de inicio
     %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
