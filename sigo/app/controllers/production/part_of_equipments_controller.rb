@@ -2,14 +2,14 @@ class Production::PartOfEquipmentsController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @company = get_company_cost_center('company')
-    cost_center = get_company_cost_center('cost_center')
-    @partofequipment = PartOfEquipment.where("cost_center_id = ?", cost_center)
-    @subcontracts = SubcontractEquipment.where("cost_center_id = ?", cost_center)
+    @cost_center = get_company_cost_center('cost_center')
+    @partofequipment = PartOfEquipment.where("cost_center_id = ?", @cost_center)
+    @subcontracts = SubcontractEquipment.where("cost_center_id = ?", @cost_center)
     @article = Article.all
-    @worker = Worker.where("cost_center_id = ?", cost_center)
+    @worker = Worker.where("cost_center_id = ?", @cost_center)
     # Necessary!
     @fuel_articles = Article.where("code LIKE ?", '__32%').first # Esto va a cambiar
-    @working_group = WorkingGroup.where("cost_center_id = ?", cost_center).first
+    @working_group = WorkingGroup.where("cost_center_id = ?", @cost_center).first
     @worker = Worker.first
     render layout: false
   end

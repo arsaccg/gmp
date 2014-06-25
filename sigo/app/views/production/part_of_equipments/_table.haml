@@ -27,7 +27,7 @@
               %td
                 = partofequipment.worker.entity.name.to_s + ' ' + partofequipment.worker.entity.paternal_surname.to_s + ' ' + partofequipment.worker.entity.maternal_surname.to_s
               %td 
-                = SubcontractEquipmentDetail.find(partofequipment.equipment_id).code.to_s + ' ' + SubcontractEquipmentDetail.find(partofequipment.equipment_id).article.name.to_s
+                = SubcontractEquipmentDetail.find(partofequipment.equipment_id).code.to_s + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find(partofequipment.equipment_id).article.id, @cost_center)
               %td
                 = partofequipment.dif
               %td 
