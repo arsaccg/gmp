@@ -134,7 +134,7 @@
                 %select.form-control{:name =>"purchase_order[entity_id]"}
                   - @suppliers.each do |supp|
                     %option{:value => "#{supp.id}"}
-                      = supp.name + ' ' + supp.paternal_surname
+                      = supp.name.to_s + ' ' + supp.paternal_surname.to_s
                 %span.input-group-addon
                   %i.fa.fa-truck
         .col-md-4
