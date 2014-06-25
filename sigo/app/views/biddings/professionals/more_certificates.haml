@@ -1,11 +1,12 @@
 //Los fields que son de otras obras tienen other_works_attributes dentro de certificates_attributes
-.panel.panel-default
+.panel.panel-default{id: "tr" + @reg.to_s}
   .panel-heading
     %h4.panel-title
       %a{"data-parent" => "#accordion-ce", "data-toggle" => "collapse", href: "#collapse"+@reg.to_s+"-1"}
         %i.fa.fa-fw.fa-plus-circle.txt-color-green
         %i.fa.fa-fw.fa-minus-circle.txt-color-red
         Certificados
+      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')", "style"=>"  width: 50px; float: right; color: white; background: #2070a8; "}(class="btn") X
   .panel-collapse.collapse.in{ 'id'=> "collapse"+@reg.to_s+"-1"}
     .panel-body
       .row
@@ -173,4 +174,8 @@
       $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').empty();
       $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').val(contractor);
     });
+  }
+
+  function delete_item(code){
+    $("#tr" + code).remove();
   }

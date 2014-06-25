@@ -116,10 +116,13 @@
                             %i.fa.fa-fw.fa-plus-circle.txt-color-green
                             %i.fa.fa-fw.fa-minus-circle.txt-color-red
                             Certificados
+                          %div{"style"=>"width: 50px; float: right; color: white; background: #2070a8;  text-align: center;"}
+                            = check_box 'professional[certificates_attributes]', '[' + @reg.to_s  + '][_destroy]'
                       .panel-collapse.collapse{ 'id'=> "collapse"+@reg.to_s+"-1"}
                         .panel-body
                           = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][id]', cert.id
                           = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][professional_id]', @professional.id
+
                           .row
                             .col-sm-4
                               %label Nombre de la obra
@@ -227,20 +230,21 @@
                     - @reg = @reg + 1
 
                 -else
-                  .panel.panel-default
+                  .panel.panel-default{id: "tr" + @reg.to_s}
                     .panel-heading
                       %h4.panel-title
                         %a{"data-parent" => "#accordion-ce", "data-toggle" => "collapse", href: "#collapse"+@reg.to_s+"-1"}
                           %i.fa.fa-fw.fa-plus-circle.txt-color-green
                           %i.fa.fa-fw.fa-minus-circle.txt-color-red
                           Certificados
+                        %a{href: "javascript:delete_item('"+ @reg.to_s+"')", "style"=>"  width: 50px; float: right; color: white; background: #2070a8; ", class: "btn"} X
                     .panel-collapse.collapse.in{ 'id'=> "collapse"+@reg.to_s+"-1"}
                       .panel-body
                         .row
                           .col-sm-4
                             %label Nombre de la obra
                             %select.form-control{'class'=>'work-select', name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onkeyup:'workSelectKU(this);'}
-                              %option
+                              %option{value: "0"} Seleccione una obra
                               -@work.each do |wc|
                                 %option{value: "#{wc.id}"} 
                                   = "#{wc.name}"
@@ -277,6 +281,7 @@
                           .col-sm-4
                             %label Cargo
                             %select.form-control#charge{name: "professional[certificates_attributes][" + @reg.to_s + "][charge_id]"}
+                              %option{value: "0"} Seleccione un cargo
                               -@charge.each do |wc|
                                 %option{value: "#{wc.id}"} 
                                   = "#{wc.name}"
@@ -363,6 +368,8 @@
                             %i.fa.fa-fw.fa-plus-circle.txt-color-green
                             %i.fa.fa-fw.fa-minus-circle.txt-color-red
                             Capacitación N°1
+                          %div{"style"=>"width: 50px; float: right; color: white; background: #2070a8;  text-align: center;"}
+                            = check_box 'professional[certificates_attributes]', '[' + @reg.to_s  + '][_destroy]'
                       .panel-collapse.collapse.in{ 'id'=> "collapse" + @reg.to_s + "-2"}
                         .panel-body
                           .row
@@ -427,13 +434,14 @@
                                   = file_field_tag "professional[trainings_attributes][" + @reg.to_s + "][training]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
                     - @reg = @reg + 1
                 -else
-                  .panel.panel-default
+                  .panel.panel-default{id: "tra" + @reg.to_s}
                     .panel-heading
                       %h4.panel-title
                         %a{"data-parent" => "#accordion-tr", "data-toggle" => "collapse", href: "#collapse"+@reg.to_s+"-2"}
                           %i.fa.fa-fw.fa-plus-circle.txt-color-green
                           %i.fa.fa-fw.fa-minus-circle.txt-color-red
                           Capacitación N°1
+                        %a{href: "javascript:delete_item1('"+ @reg.to_s+"')", "style"=>"  width: 50px; float: right; color: white; background: #2070a8; "}(class="btn") X
                     .panel-collapse.collapse.in{ 'id'=> "collapse"+@reg.to_s+"-2"}
                       .panel-body
                         .row
