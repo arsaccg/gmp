@@ -75,12 +75,15 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def add_delivery_order_item_field
     @reg_n = ((Time.now.to_f)*100).to_i
     data_article_unit = params[:article_id].split('-')
-    @article = Article.find(data_article_unit[0])
+    @article = Article.find_article_in_specific(data_article_unit[0], get_company_cost_center('cost_center'))
     @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @amount = params[:amount].to_f
     @centerOfAttention = CenterOfAttention.all
-    @code_article, @name_article, @id_article = @article.code, @article.name, @article.id
+
+    @article.each do |art|
+      @code_article, @name_article, @id_article = art[3], art[1], art[2]
+    end
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
     @unitOfMeasurementId = data_article_unit[1]
     render(partial: 'delivery_order_items', :layout => false)
