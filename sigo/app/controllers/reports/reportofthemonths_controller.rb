@@ -196,6 +196,31 @@ class Reports::ReportofthemonthsController < ApplicationController
       @gg_cost_goal_current_month = @gg_cost_goal_current_month*overhead_percentage
     end
 
+    # VALORES para los GRÁFICOS
+    @start_date_cost_center = CostCenter.find(@cost_center).start_date
+    @now = Time.now
+    target = 0
+    @values_y_axis = Array.new
+    @values_x_axis = Array.new
+
+    @acumulates_real_cost_current_month = (@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2)
+    
+    if @acumulated_valorized_sale_current_month > @acumulates_real_cost_current_month
+      target = @acumulated_valorized_sale_current_month
+    else
+      target = @acumulates_real_cost_current_month
+    end
+
+    3.times do |month|
+      @values_x_axis << @start_date_cost_center.strftime('%b-%Y')
+      @now -= 1.months
+      if @now < @start_date_cost_center
+        break
+      end
+    end
+
+    @values_y_axis = [*0..target].sample(11).sort
+
 		render layout: false
   end
 
