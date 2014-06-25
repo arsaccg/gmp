@@ -27,21 +27,20 @@ class Production::PartOfEquipmentsController < ApplicationController
     @worker = Array.new
     @worker = Worker.where("cost_center_id = ?", cost_center)
     subcontract_id = @partofequipment.subcontract_equipment_id
-    equip = Array.new
-    @articles = Array.new
     unit=''
     equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", subcontract_id)
-    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
-      @articles = arti.articles
-    end
+
+    @articles = Article.get_article_per_type('03', cost_center)
+
     equip.each do |eq|
       @articles.each do |ar|
-        if ar.id==eq.article_id
-          @unit1 = ar.unit_of_measurement_id
+        if ar[0]==eq.article_id
+          @unit1 = ar[4]
+          break
         end
       end
     end
-    @unit = UnitOfMeasurement.find(@unit1).name
+    @unit = UnitOfMeasurement.find(@unit1).name rescue ''
     render layout: false
   end
 
