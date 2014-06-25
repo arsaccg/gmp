@@ -108,127 +108,182 @@
             .widget-body.no-padding
               #accordion-ce.panel-group.smart-accordion-default
                 - if @action=="edit"
-                  -@professional.certificates.each do |cert|
-                    .panel.panel-default
-                      .panel-heading
-                        %h4.panel-title
-                          %a{"data-parent" => "#accordion-ce", "data-toggle" => "collapse", href: "#collapse"+@reg.to_s+"-1"}
-                            %i.fa.fa-fw.fa-plus-circle.txt-color-green
-                            %i.fa.fa-fw.fa-minus-circle.txt-color-red
-                            Certificados
-                          %div{"style"=>"width: 50px; float: right; color: white; background: #2070a8;  text-align: center;"}
-                            = check_box_tag 'professional[certificates_attributes][' + @reg.to_s  + '][_destroy]'
-                      .panel-collapse.collapse{ 'id'=> "collapse"+@reg.to_s+"-1"}
-                        .panel-body
-                          = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][id]', cert.id
-                          = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][professional_id]', @professional.id
-
-                          .row
-                            .col-sm-4
-                              %label Nombre de la obra
-                              %select.form-control#work-id{'class'=>'work-select', name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onkeyup:'workSelectKU(this);'}
-                                %option Seleccione Una Obra
-                                -@work.each do |wc|
-                                  -if wc.id == cert.work_id
-                                    %option{value: "#{wc.id}", :selected=>'selected'} 
-                                      = "#{wc.name}"
-                                  -else
-                                    %option{value: "#{wc.id}"} 
-                                      = "#{wc.name}"
-
-                            .col-sm-2
-                              %label Inicio de la obra: 
-
-                              %label.input{'class'=>'start_certificate'}
-                                %input.form-control{:disabled=>"disabled", as: :date, type:  "date"}
-                            .col-sm-2
-                              %label Termino de la obra: 
-
-                              %label.input{'class'=>'finish_certificate'}
-                                %input.form-control{:disabled=>"disabled", as: :date, type:  "date"}
-                            
-                          %br
-                          .row{'class'=>'2'}
-                            .col-sm-4
-                              %label Entidad contratante
-
-                              .input-group{'class'=>'entity'}
-                                %input.form-control{:disabled=>"disabled"}
-                                %span.input-group-addon
-                                  %i.fa.fa-gears
-                            .col-sm-4
-                              %label Contratista
-                              
-                              .input-group{'class'=>'contractor'}
-                                %input.form-control{:disabled=>"disabled"}
-                                %span.input-group-addon
-                                  %i.fa.fa-gears
-
-                            .col-sm-4
-                              %label Cargo
-                              %select.form-control#charge{name: "professional[certificates_attributes][" + @reg.to_s + "][charge_id]"}
-                                %option Seleccione un cargo
-                                -@charge.each do |wc|
-                                  - if wc.id==cert.charge_id
-                                    %option{value: "#{wc.id}", :selected=>"selected"} 
-                                      = "#{wc.name}"
-                                  -else
-                                    %option{value: "#{wc.id}"} 
-                                      = "#{wc.name}"
-
-                          %br
-                          .row{'class'=>'3'} 
-                            .col-sm-4
-                              %label Cantidad de días trabajados
-                              %input.form-control{'class'=>'worked-day',name: "professional[certificates_attributes][" + @reg.to_s + "][num_days]", :disabled=>"disabled", :value=> "#{cert.num_days}"}
-                          
-                          %br
-                          .row
-                            .col-sm-2
-                              //%a.btn.btn-primary{href: 'javascript:void(0);', :onclick => 'add_dates(this);'} Agregar más fechas
-
-                          %br
-                          .row{'class'=>'fechas'}
-                            .col-sm-4
-                              %label.col-sm-4 Fecha de Inicio:
-                              .col-sm-8
-                                .input-group
-                                  %input.form-control{'class'=>'start-worker', name: "professional[certificates_attributes][" + @reg.to_s + "][start_date]", as: :date, type:  "date", :value=>"#{cert.start_date}", onchange:'calculateDays2(this);'}
-                                  %span.input-group-addon
-                                    %i.fa.fa-calendar
-                          
-                            .col-sm-4
-                              %label.col-sm-4.control-label Fecha de Termino:
-                              .col-sm-8
-                                .input-group
-                                  %input.form-control{'class'=>'finish-worker', name:"professional[certificates_attributes][" + @reg.to_s + "][finish_date]", as: :date, type:  "date", onchange:'calculateDays(this);', :value=>"#{cert.finish_date}"}
-                                  %span.input-group-addon
-                                    %i.fa.fa-calendar
-                          %br
-                          .row
-                            .col-sm-12
-                              #new-date 
-                          .row{'class'=>'comp2'}
-                            .col-sm-12
-                              %label Componentes de la obra:
-                              %br
-                              .col-sm-8
-                                %label#get-comp
-                                  %label.select.components{'class'=>'comp-check'}
-                          %fieldset
-                            %legend Archivos a Adjuntar
+                  -if @professional.certificates != nil
+                    -@professional.certificates.each do |cert|
+                      .panel.panel-default
+                        .panel-heading
+                          %h4.panel-title
+                            %a{"data-parent" => "#accordion-ce", "data-toggle" => "collapse", href: "#collapse"+@reg.to_s+"-1"}
+                              %i.fa.fa-fw.fa-plus-circle.txt-color-green
+                              %i.fa.fa-fw.fa-minus-circle.txt-color-red
+                              Certificados
+                            %div{"style"=>"width: 50px; float: right; color: white; background: #2070a8;  text-align: center;"}
+                              = check_box_tag 'professional[certificates_attributes][' + @reg.to_s  + '][_destroy]'
+                        .panel-collapse.collapse{ 'id'=> "collapse"+@reg.to_s+"-1"}
+                          .panel-body
+                            = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][id]', cert.id
+                            = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][professional_id]', @professional.id
                             .row
-                              .col-sm-6
-                                %label.col-sm-2 Certificado
-                                .col-sm-10
-                                  .button
-                                    = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][certificate]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
-                              .col-sm-6
-                                %label.col-sm-2 Otro
-                                .col-sm-10
-                                  .button
-                                    = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][other]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
-                    - @reg = @reg + 1
+                              .col-sm-4
+                                %label Nombre de la obra
+                                %select.form-control#work-id{'class'=>'work-select', name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onkeyup:'workSelectKU(this);'}
+                                  %option Seleccione Una Obra
+                                  -@work.each do |wc|
+                                    -if wc.id == cert.work_id
+                                      %option{value: "#{wc.id}", :selected=>'selected'} 
+                                        = "#{wc.name}"
+                                    -else
+                                      %option{value: "#{wc.id}"} 
+                                        = "#{wc.name}"
+
+                              .col-sm-2
+                                %label Inicio de la obra: 
+
+                                %label.input{'class'=>'start_certificate'}
+                                  %input.form-control{:disabled=>"disabled", as: :date, type:  "date"}
+                              .col-sm-2
+                                %label Termino de la obra: 
+
+                                %label.input{'class'=>'finish_certificate'}
+                                  %input.form-control{:disabled=>"disabled", as: :date, type:  "date"}
+                              
+                            %br
+                            .row{'class'=>'2'}
+                              .col-sm-4
+                                %label Entidad contratante
+
+                                .input-group{'class'=>'entity'}
+                                  %input.form-control{:disabled=>"disabled"}
+                                  %span.input-group-addon
+                                    %i.fa.fa-gears
+                              .col-sm-4
+                                %label Contratista
+                                
+                                .input-group{'class'=>'contractor'}
+                                  %input.form-control{:disabled=>"disabled"}
+                                  %span.input-group-addon
+                                    %i.fa.fa-gears
+
+                              .col-sm-4
+                                %label Cargo
+                                %select.form-control#charge{name: "professional[certificates_attributes][" + @reg.to_s + "][charge_id]"}
+                                  %option Seleccione un cargo
+                                  -@charge.each do |wc|
+                                    - if wc.id==cert.charge_id
+                                      %option{value: "#{wc.id}", :selected=>"selected"} 
+                                        = "#{wc.name}"
+                                    -else
+                                      %option{value: "#{wc.id}"} 
+                                        = "#{wc.name}"
+
+                            %br
+                            .row{'class'=>'3'} 
+                              .col-sm-4
+                                %label Cantidad de días trabajados
+                                %input.form-control{'class'=>'worked-day', name: "professional[certificates_attributes][" + @reg.to_s + "][num_days]", :disabled=>"disabled", :value=> "#{cert.num_days}"}
+                            
+                            %br
+                            .row
+                              .col-sm-2
+                                //%a.btn.btn-primary{href: 'javascript:void(0);', :onclick => 'add_dates(this);'} Agregar más fechas
+
+                            %br
+                            .row{'class'=>'fechas'}
+                              .col-sm-4
+                                %label.col-sm-4 Fecha de Inicio:
+                                .col-sm-8
+                                  .input-group
+                                    %input.form-control{'class'=>'start-worker', name: "professional[certificates_attributes][" + @reg.to_s + "][start_date]", as: :date, type:  "date", :value=>"#{cert.start_date}", onchange:'calculateDays2(this);'}
+                                    %span.input-group-addon
+                                      %i.fa.fa-calendar
+                            
+                              .col-sm-4
+                                %label.col-sm-4.control-label Fecha de Termino:
+                                .col-sm-8
+                                  .input-group
+                                    %input.form-control{'class'=>'finish-worker', name:"professional[certificates_attributes][" + @reg.to_s + "][finish_date]", as: :date, type:  "date", onchange:'calculateDays(this);', :value=>"#{cert.finish_date}"}
+                                    %span.input-group-addon
+                                      %i.fa.fa-calendar
+                            %br
+                            .row
+                              .col-sm-12
+                                #new-date 
+                            .row{'class'=>'comp2'}
+                              .col-sm-12
+                                %label Componentes de la obra:
+                                %br
+                                .col-sm-8
+                                  %label#get-comp
+                                    %label.select.components{'class'=>'comp-check'}
+                            %fieldset
+                              %legend Archivos a Adjuntar
+                              .row
+                                .col-sm-6
+                                  %label.col-sm-2 Certificado
+                                  .col-sm-10
+                                    .button
+                                      = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][certificate]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                                .col-sm-6
+                                  %label.col-sm-2 Otro
+                                  .col-sm-10
+                                    .button
+                                      = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][other]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                        :javascript
+                          $(document).ready(function(){
+                            var work=$('#work-id');
+                            workSelectKU(work);
+                          });
+                          function workSelectKU(element){
+                            if($(element).val()==''){
+                              $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').html('');
+                              $(element).parent().parent().children().children('.start_certificate').find('input').empty();
+                              $(element).parent().parent().children().children('.start_certificate').find('input').val('');
+                              $(element).parent().parent().children().children('.finish_certificate').find('input').empty();
+                              $(element).parent().parent().children().children('.finish_certificate').find('input').val('');
+                              $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').find('input').empty();
+                              $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').find('input').val('');
+                              $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').empty();
+                              $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').val('');
+                            }else{
+                              var work_id = $(element).val();
+                              complete_infocombo(element, "#{get_component_from_work_biddings_professionals_path}", work_id, "#{form_authenticity_token}", 0);
+                            }
+                          }
+                          function complete_infocombo(element, url, work_id, form_token, default_value){
+                            var str_html = "";
+                            $.ajax({
+                                type: "POST",
+                                url: url,
+                                async: false,
+                                data: { work_id: work_id, authenticity_token: form_token}
+                            }).done(function( data ) {
+                              var start = data.start;
+                              var finish = data.finish;
+                              var entity = data.entity;
+                              var contractor = data.contractor;
+                              newOptions = [];
+                              $.each(data.component_work, function(key, value){
+                                item = {};
+                                item['name'] = value.name;
+                                item['id'] = value.id;
+                                newOptions.push(item);
+                              });
+                              $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').empty();
+                              $.each(newOptions, function(key,value){
+                                str_html = str_html + "<label> <strong> > </strong> " + value.name + "</label><br/>"
+                              });
+                              $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-12').children('.col-sm-8').children('#get-comp').children('.comp-check.components.select').html(str_html);
+                              $(element).parent().parent().children().children('.start_certificate').find('input').empty();
+                              $(element).parent().parent().children().children('.start_certificate').find('input').val(start);
+                              $(element).parent().parent().children().children('.finish_certificate').find('input').empty();
+                              $(element).parent().parent().children().children('.finish_certificate').find('input').val(finish);
+                              $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').find('input').empty();
+                              $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.entity.input-group').find('input').val(entity);
+                              $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').empty();
+                              $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').val(contractor);
+                            });
+                          }
+                      - @reg = @reg + 1
 
                 -else
                   .panel.panel-default{id: "tr" + @reg.to_s}
