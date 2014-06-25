@@ -1,0 +1,305 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-pencil
+    %h2 Certificado
+  .widget-body
+    =simple_form_for([:biddings, @other_work], html: { multipart: true }) do |f|
+      -if @action == "edit"
+        = hidden_field_tag 'other_work[certificate_attributes][id]', @cert.id
+      = hidden_field_tag 'other_work[certificate_attributes][professional_id]', @pro_id
+      .row
+        .col-sm-4
+          %label Nombre de la obra
+          = f.input :name, placeholder: "Nombre de la obra", input_html: { class: 'form-control' }, label: false
+
+        .col-sm-2
+          %label Inicio de la obra: 
+          %label.input
+            = f.input :start , as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false
+
+        .col-sm-2
+          %label Termino de la obra: 
+          %label.input{'class'=>'finish_other_works'}
+            = f.input :end , as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false 
+
+        .col-sm-4{'class'=>'specialty-select'}
+          %label Especialidad
+          %br
+          .input-group
+            %select.form-control#specialty-select{:name =>"other_work[specialty]", onchange: 'selectCH();'}
+              -if @action == "edit"
+                -if @other_work.specialty=="Saneamiento"
+                  %option{:value => "0"} Seleccione una especialidad
+                  %option{:value => "Saneamiento", :selected => 'selected'} Saneamiento
+                  %option{:value => "Civil"} Civil
+                  %option{:value => "Electromecanico"} Electromecanico
+                  %option{:value => "Hidraulica"} Hidráulica
+                -if @other_work.specialty=="Civil"
+                  %option{:value => "0"} Seleccione una especialidad
+                  %option{:value => "Saneamiento"} Saneamiento
+                  %option{:value => "Civil", :selected => 'selected'} Civil
+                  %option{:value => "Electromecanico"} Electromecanico
+                  %option{:value => "Hidraulica"} Hidráulica
+                -if @other_work.specialty=="Electromecanico"
+                  %option{:value => "0"} Seleccione una especialidad
+                  %option{:value => "Saneamiento"} Saneamiento
+                  %option{:value => "Civil"} Civil
+                  %option{:value => "Electromecanico", :selected => 'selected'} Electromecanico
+                  %option{:value => "Hidraulica"} Hidráulica
+                -if @other_work.specialty=="Hidraulica"
+                  %option{:value => "0"} Seleccione una especialidad
+                  %option{:value => "Saneamiento"} Saneamiento
+                  %option{:value => "Civil"} Civil
+                  %option{:value => "Electromecanico"} Electromecanico
+                  %option{:value => "Hidraulica", :selected => 'selected'} Hidráulica
+              -else
+                %option{:value => "0"} Seleccione una especialidad
+                %option{:value => "Saneamiento"} Saneamiento
+                %option{:value => "Civil"} Civil
+                %option{:value => "Electromecanico"} Electromecanico
+                %option{:value => "Hidraulica"} Hidráulica
+            %span.input-group-addon
+              %i.fa.fa-money
+
+      %br
+      .row{'class'=>'2'}
+        .col-sm-4
+          %label Entidad contratante
+          .input-group{'class'=>'entity_other_works'}
+            = f.input :entity, placeholder: "Entidad", input_html: { class: 'form-control' }, label: false
+            %span.input-group-addon
+              %i.fa.fa-gears
+
+        .col-sm-4
+          %label Contratista
+          .input-group{'class'=>'contractor_other_works'}
+            = f.input :contractor, placeholder: "Contratista", input_html: { class: 'form-control' }, label: false
+            %span.input-group-addon
+              %i.fa.fa-gears
+
+        .col-sm-4
+          %label Cargo
+          %select.form-control#charge{name: "other_work[certificate_attributes][charge_id]"}
+            -if @action == "edit"
+              -@charge.each do |wc|
+                -if @cert.charge_id==wc.id
+                  %option{value: "#{wc.id}", :selected => "selected"} 
+                    = "#{wc.name}"
+                -else
+                  %option{value: "#{wc.id}"} 
+                    = "#{wc.name}"
+
+            -else
+              -@charge.each do |wc|
+                %option{value: "#{wc.id}"} 
+                  = "#{wc.name}"
+
+      %br
+      .row{'class'=>'3'} 
+        .col-sm-4
+          %label Cantidad de días trabajados
+          %input.form-control#worked-day{name: "other_work[certificate_attributes][num_days]", :disabled=>"disabled"}
+      
+      %br
+      .row
+        .col-sm-2
+          //%a.btn.btn-primary{href: 'javascript:void(0);', :onclick => 'add_dates(this);'} Agregar más fechas
+
+      %br
+      .row{'class'=>'fechas'}
+        .col-sm-4
+          %label.col-sm-4 Fecha de Inicio:
+          .col-sm-8
+            .input-group
+              -if @action == "edit"
+                %input.form-control#start-worker{name: "other_work[certificate_attributes][start_date]", as: :date, type:  "date", onchange:'calculateDays2(this);', :value => "#{@cert.start_date}"}
+              -else
+                %input.form-control#start-worker{name: "other_work[certificate_attributes][start_date]", as: :date, type:  "date", onchange:'calculateDays2(this);'}
+              %span.input-group-addon
+                %i.fa.fa-calendar
+      
+        .col-sm-4
+          %label.col-sm-4.control-label Fecha de Termino:
+          .col-sm-8
+            .input-group
+              -if @action == "edit"
+                %input.form-control#finish-worker{name:"other_work[certificate_attributes][finish_date]", as: :date, type:  "date", onchange:'calculateDays(this);', :value => "#{@cert.finish_date}"}
+              -else
+                %input.form-control#finish-worker{name:"other_work[certificate_attributes][finish_date]", as: :date, type:  "date", onchange:'calculateDays(this);'}
+              %span.input-group-addon
+                %i.fa.fa-calendar
+      %br
+      .row
+        .col-sm-12
+          .new-date 
+      %br
+      .row
+        .col-sm-12
+          %label Componentes de la obra:
+          #compSan{style: "display:none;"}
+            = f.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE 'Saneamiento'")
+          #compCiv{style: "display:none;"}
+            = f.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE 'Civil'")
+          #compEle{style: "display:none;"}
+            = f.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE 'Electromecanico'")
+          #compHidra{style: "display:none;"}
+            = f.association :components, as: :check_boxes, :label => false, collection: Component.where("specialty LIKE 'Hidraulica'")
+          %br
+      %fieldset
+        %legend Archivos a Adjuntar
+        .row
+          .col-sm-6
+            %label.col-sm-2 Certificado
+            .col-sm-10
+              .button
+                = file_field_tag "other_work[certificate_attributes][certificate]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+          .col-sm-6
+            %label.col-sm-2 Otro
+            .col-sm-10
+              .button
+                = file_field_tag "other_work[certificate_attributes][other]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+      %br/
+      %footer
+      %button.btn.btn-primary#save-professional.btn-center{type: "submit", "style"=>"float:right;"}
+        %i.fa.fa-save
+          Guardar
+      %br/
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  $(document).ready(function(){
+    $("#company_id").val("#{@company}");
+    $('#backlist-pros').click(function(){
+        load_url_ajax("#{biddings_professionals_path}", 'content', null, null, 'GET');
+    });
+
+    var spe = $('#specialty-select').val();
+    if(spe!=0){
+      selectCH();
+    }
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    } else {
+      submit_validate($('#new_other_work'));
+    }
+
+  });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'other_work[name]' : {
+              required : true
+            },
+            'other_work[start]' : {
+              required : true
+            },
+            'other_work[end]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'other_work[name]' : {
+              required : 'Porfavor, ingresar el nombre de la Obra'
+            },
+            'other_work[start]' : {
+              required : 'Porfavor, ingresar la fecha de la Obra'
+            },
+            'other_work[end]' : {
+              required : 'Porfavor, ingresar la fecha de la Obra'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
+
+  function add_dates() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    append_url_ajax('#{more_dates_biddings_professionals_path}', 'new-date', data, '', 'POST');
+  }
+
+  function selectCH(){
+    console.log("entro a al selecch")
+    var specialty = $("#specialty-select").val();
+    if($("#specialty-select").val() == "Saneamiento"){
+      $('#compSan').fadeIn('fast');
+    }else{
+      $('#compSan').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Civil"){
+      $('#compCiv').fadeIn('fast');
+    }else{
+      $('#compCiv').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Electromecanico"){
+      $('#compEle').fadeIn('fast');
+    }else{
+      $('#compEle').fadeOut('fast');
+    }
+    if($("#specialty-select").val() == "Hidraulica"){
+      $('#compHidra').fadeIn('fast');
+    }else{
+      $('#compHidra').fadeOut('fast');
+    }
+  }
+
+  function calculateDays(){
+    var di = $('#start-worker').val();
+    if(di!=''){
+      var d1 = di.split("-");
+      var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
+      var d2 = $('#finish-worker').val().split("-");
+      var dat2 = new Date(d2[0], parseFloat(d2[1])-1, parseFloat(d2[2]));
+      var fin = dat2.getTime() - dat1.getTime();
+      var dias = Math.floor(fin / (1000 * 60 * 60 * 24));
+      if(dias<0){
+        dias="Ingrese una fecha correcta"
+      }
+      $('#worked-day').val(dias);
+    }else{
+      $('#worked-day').val("Ingrese correctamente ambas fechas");
+    }
+  }
+
+  function calculateDays2(){
+    var di = $('#finish-worker').val();
+    if(di!=''){
+      var d1 = $('#start-worker').val().split("-");
+      var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
+      var d2 = di.split("-");
+      var dat2 = new Date(d2[0], parseFloat(d2[1])-1, parseFloat(d2[2]));
+      var fin = dat2.getTime() - dat1.getTime();
+      var dias = Math.floor(fin / (1000 * 60 * 60 * 24));
+      if(dias<0){
+        dias="Ingrese una fecha correcta"
+      }
+      $('#worked-day').val(dias);
+    }else{
+      $('#worked-day').val("Ingrese correctamente ambas fechas");
+    }
+  }

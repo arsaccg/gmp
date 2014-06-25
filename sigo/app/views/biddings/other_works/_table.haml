@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Profesionales
+    %h2 Lista de Certificados
   / widget div
   %div
     / widget edit box
@@ -32,38 +32,24 @@
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
-                %th Nombre
-                %th DNI
-                %th Profesión
-                %th Código de Colegiatura
-                %th Fecha de Titulación
-                %th Fecha de Colegiatura
+                %th Obra
+                %th Inicio de Obra
+                %th Fin de Obra
                 %th Acciones
             %tbody
-              - @professionals.each do |pro|
+              - @certificates.each do |pro|
                 %tr
                   %td
-                    = pro.name
+                    = pro.other_work.name
                   %td
-                    = pro.dni
+                    = pro.other_work.start
                   %td
-                    -pro.majors.each do |major|
-                      = major.name
-                      %br
+                    = pro.other_work.end
                   %td
-                    = pro.code_tuition
-                  %td
-                    = pro.professional_title_date 
-                  %td
-                    = pro.date_of_tuition
-                  %td
-                    %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{biddings_professional_path(pro.id)}', 'content', null, null, 'GET')"}
-                      Ver Información
-                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_biddings_professional_path(pro.id)}', 'content', null, null, 'GET')"}
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_biddings_other_work_path(pro.id)}', 'content', {pro_id: '#{@pro_id}'}, null, 'GET')"}
                       Editar
-                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{biddings_other_works_path}', 'content', {pro_id: '#{pro.id}'}, null, 'GET')"}
-                      Certificados de otras obras
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el profesional' , :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{biddings_professional_path(pro.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{biddings_professionals_path}')"}}
+
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el profesional' , :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{biddings_other_work_path(pro.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{biddings_other_works_path}'+'?pro_id=#{@pro_id}')"}}
                       Eliminar
 
 :javascript

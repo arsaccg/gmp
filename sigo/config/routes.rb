@@ -212,8 +212,8 @@ ArsacLogistica::Application.routes.draw do
         post 'get_components_by_speciality'
       end
     end
-    resources :certificates
     resources :work_partners
+    resources :other_works
     resources :professionals do
       collection do
         post 'get_component_from_work'
