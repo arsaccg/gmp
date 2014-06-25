@@ -3,14 +3,30 @@ class Biddings::OtherWorksController < ApplicationController
   def index
     @pro_id = params[:pro_id]
     other = OtherWork.all
-    @ids = Array.new
-    other.each do |dos|
-      @ids << dos.certificate_id
+    puts other.count
+    if other.count != 0
+      puts other.count
+      @ids = Array.new
+      other.each do |dos|
+        @ids << dos.certificate_id
+      end
+      @ids = @ids.join(",")
+      @certificates = Certificate.where('professional_id = ? AND id IN ('+@ids+')', @pro_id)
+    else
+      @certificates = Certificate.where('professional_id = ? AND work_id IS NULL', @pro_id)  
     end
-    @ids = @ids.join(",")
-    @certificates = Certificate.where('professional_id = ? AND id IN ('+@ids+')', @pro_id)
+    
     render layout: false
   end
+
+  def show
+    @pro_id = params[:pro_id]
+    @other = OtherWork.find_by_certificate_id(params[:id])
+    @cert = Certificate.find(params[:id])
+    @charge = Charge.all
+    render layout: false
+  end
+
 
   def new
     @pro_id = params[:pro_id]

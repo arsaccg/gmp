@@ -1,2 +1,125 @@
-%h1 Biddings::OtherWorks#show
-%p Find me in app/views/biddings/other_works/show.html.haml
+#content-inside
+ 
+  %section#widget-grid
+    
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+              = 'Obra: '+ @other.name+ ':'
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Obra
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Obra
+                    %th Fecha de Inicio de Obra
+                    %th Fecha de Termino de Obra
+                    %th Especialidad
+                    %th Entidad
+                    %th Contratista
+                    %th Componentes
+                %tbody
+                  %tr
+                    %td
+                      = @other.name
+                    %td
+                      = @other.start
+                    %td
+                      = @other.end
+                    %td
+                      = @other.specialty
+                    %td
+                      = @other.entity
+                    %td
+                      = @other.contractor
+                    %td
+                      - @other.components.each do |comp|
+                        = "- " +comp.name
+                        %br
+
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+              = 'Certificados correspondiente a la Obra: '+ @other.name+ ':'
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Certificado
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Cargo
+                    %th Fecha de Inicio
+                    %th Fecha de Termino
+                    %th Nombre del Documento
+                    %th Documento
+                %tbody
+                  %tr
+                    %td
+                      - @charge.each do |ch|
+                        -if @cert.charge_id == ch.id
+                          = ch.name
+                    %td
+                      = @cert.start_date
+                    %td
+                      = @cert.finish_date
+                    %td
+                      Certificado
+                      %br Otro
+                    %td
+                      - if @cert.certificate.exists?
+                        %a.btn.btn-info.btn-xs{:href =>"#{procert.certificate.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                      -else
+                        No hay ningun Archivo adjunto
+                      %br
+                      - if @cert.other.exists? 
+                        %a.btn.btn-info.btn-xs{:href =>"#{procert.other.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                      -else
+                        No hay ningun Archivo adjunto
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-pros{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Certidicados
+
+:javascript
+  $(document).ready(function(){
+    $('#backlist-pros').click(function(){
+      load_url_ajax("#{biddings_other_works_path}", 'content', {pro_id: '#{@pro_id}'}, null, 'GET');
+    });
+  });
+
+= javascript_include_tag 'plugin/flot/jquery.flot.cust'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
+= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
+= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
+= javascript_include_tag 'plugin/flot/jquery.flot.resize'
+= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
+= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
+= javascript_include_tag 'plugin/datatables/ColReorder.min'
+= javascript_include_tag 'plugin/datatables/FixedColumns.min'
+= javascript_include_tag 'plugin/datatables/ColVis.min'
+= javascript_include_tag 'plugin/datatables/ZeroClipboard'
+= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
+= javascript_include_tag 'plugin/datatables/DT_bootstrap'

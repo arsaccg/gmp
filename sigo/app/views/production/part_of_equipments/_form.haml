@@ -363,7 +363,7 @@
   }
 
   $('#equipment').change(function(){
-    var article = $('#equipment').val();
+    var article = $('option:selected', this).attr('article_id');
     unit("#{get_unit_production_part_of_equipments_path}", article, "#{form_authenticity_token}", "0302");
     $("#fieldtable").fadeIn("fast");
   });
@@ -444,11 +444,11 @@
         $.each(newOptions, function(key,value){
           if ("#{@id}" == sedid[key])
             $('#equipment').append(
-              $("<option></option>").attr("value", sedid[key]).attr("selected", "selected").text(code[key] + ' '+value.name)
+              $("<option></option>").attr("value", sedid[key]).attr("article_id", value.id).attr("selected", "selected").text(code[key] + ' '+value.name)
             )
           else
             $('#equipment').append(
-              $("<option></option>").attr("value", sedid[key]).text(code[key] + ' '+value.name)
+              $("<option></option>").attr("value", sedid[key]).attr("article_id", value.id).text(code[key] + ' '+value.name)
             )
           
         });

@@ -40,7 +40,13 @@ class Logistics::StockInputsController < ApplicationController
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
     @head = StockInput.new
-    @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
+    @ids=Array.new
+    po = PurchaseOrder.where('state LIKE "approved"')
+    po.each do |podo|
+      @ids << podo.entity_id
+    end
+    @ids = @ids.uniq.join(',')
+    @suppliers = Entity.where('id IN ('+@ids+')')
     @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}

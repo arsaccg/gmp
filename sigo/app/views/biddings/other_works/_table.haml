@@ -46,6 +46,9 @@
                   %td
                     = pro.other_work.end
                   %td
+                    %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{biddings_other_work_path(pro.id)}', 'content', {pro_id: '#{@pro_id}'}, null, 'GET')"}
+                      Ver Información
+                      
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_biddings_other_work_path(pro.id)}', 'content', {pro_id: '#{@pro_id}'}, null, 'GET')"}
                       Editar
 
