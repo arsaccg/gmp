@@ -62,7 +62,7 @@
                   = text_field(:deliveryOrder, :liable, class: "form-control", value: "#{current_user.first_name} #{current_user.last_name}", readonly: true)
               .form-group.col-md-8
                 %label.col-md-1{for: "description"} Glosa
-                .col-md-11= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+                .col-md-11.smart-form= f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
             
             = hidden_field_tag "company_id"
 
@@ -203,6 +203,9 @@
             'deliveryOrder[liable]' : {
               required : true,
             },
+            'delivery_order[description]' : {
+              required : true,
+            },
             'delivery_order[date_of_issue]' : {
               required : true
             },
@@ -226,6 +229,9 @@
             'delivery_order[scheduled]' : {
               required : 'La fecha programada es requerida.',
               greaterThan: 'Debe ser mayor que la fecha de emisión.'
+            },
+            'delivery_order[description]' : {
+              required : 'La descripción es requerida.'
             }
           },
 
@@ -247,6 +253,9 @@
           rules : {
             'delivery_order[state]' : {
               required : true
+            },
+            'delivery_order[description]' : {
+              required : true,
             },
             'deliveryOrder[liable]' : {
               required : true
@@ -272,6 +281,9 @@
             },
             'delivery_order[scheduled]' : {
               required : 'La fecha programada es requerida.'
+            },
+            'delivery_order[description]' : {
+              required : 'La descripción es requerida.'
             }
           },
 

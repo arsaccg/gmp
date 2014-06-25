@@ -12,6 +12,15 @@ class Biddings::OtherWorksController < ApplicationController
     render layout: false
   end
 
+  def show
+    @pro_id = params[:pro_id]
+    @other = OtherWork.find_by_certificate_id(params[:id])
+    @cert = Certificate.find(params[:id])
+    @charge = Charge.all
+    render layout: false
+  end
+
+
   def new
     @pro_id = params[:pro_id]
     @reg = Time.now.to_i
