@@ -117,7 +117,7 @@
                             %i.fa.fa-fw.fa-minus-circle.txt-color-red
                             Certificados
                           %div{"style"=>"width: 50px; float: right; color: white; background: #2070a8;  text-align: center;"}
-                            = check_box 'professional[certificates_attributes]', '[' + @reg.to_s  + '][_destroy]'
+                            = check_box_tag 'professional[certificates_attributes][' + @reg.to_s  + '][_destroy]'
                       .panel-collapse.collapse{ 'id'=> "collapse"+@reg.to_s+"-1"}
                         .panel-body
                           = hidden_field_tag 'professional[certificates_attributes][' + @reg.to_s + '][id]', cert.id
@@ -127,7 +127,7 @@
                             .col-sm-4
                               %label Nombre de la obra
                               %select.form-control#work-id{'class'=>'work-select', name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onkeyup:'workSelectKU(this);'}
-                                %option
+                                %option Seleccione Una Obra
                                 -@work.each do |wc|
                                   -if wc.id == cert.work_id
                                     %option{value: "#{wc.id}", :selected=>'selected'} 
@@ -167,6 +167,7 @@
                             .col-sm-4
                               %label Cargo
                               %select.form-control#charge{name: "professional[certificates_attributes][" + @reg.to_s + "][charge_id]"}
+                                %option Seleccione un cargo
                                 -@charge.each do |wc|
                                   - if wc.id==cert.charge_id
                                     %option{value: "#{wc.id}", :selected=>"selected"} 
