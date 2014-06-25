@@ -15,7 +15,7 @@ class Production::EquipmentReportsController < ApplicationController
     elsif params[:chosen] == "specific"
       @subcontractequipmentdetail = SubcontractEquipmentDetail.all
        @subcontractequipmentdetail.each do |sced|
-        @combo << { 'id' => sced.code, 'name' => sced.code + ' - ' + sced.article.name}
+        @combo << { 'id' => sced.code, 'name' => sced.code + ' - ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find(sced.id).article.id, session[:cost_center])}
       end
     elsif params[:chosen] == "operador"
       pw_id = Array.new

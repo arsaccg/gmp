@@ -1,6 +1,7 @@
 class Production::MachineryReportsController < ApplicationController
 	def index
 		@company = get_company_cost_center('company')
+    @cost_center=session[:cost_center]
   	#@workingGroups = WorkingGroup.all
     @subcontractequipmentdetail = SubcontractEquipmentDetail.all
     render layout: false
