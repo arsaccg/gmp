@@ -27,7 +27,7 @@
               %td
                 = partofequipment.worker.entity.name.to_s + ' ' + partofequipment.worker.entity.paternal_surname.to_s + ' ' + partofequipment.worker.entity.maternal_surname.to_s
               %td 
-                = SubcontractEquipmentDetail.find_by_article_id(partofequipment.equipment_id).code.to_s + ' ' + SubcontractEquipmentDetail.find_by_article_id(partofequipment.equipment_id).article.name.to_s
+                = SubcontractEquipmentDetail.find(partofequipment.equipment_id).code.to_s + ' ' + SubcontractEquipmentDetail.find(partofequipment.equipment_id).article.name.to_s
               %td
                 = partofequipment.dif
               %td 
