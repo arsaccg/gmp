@@ -10,6 +10,7 @@
       %table#dt_basic.table.table-striped.table-bordered.table-hover
         %thead
           %tr
+            %th Código del Artículo
             %th Nombre del Artículo
             %th Valor Teórico
             %th Acciones
@@ -20,6 +21,8 @@
                 = unit.id
               %td
                 = unit.name
+              %td
+                = TheoreticalValue.find_by_article_id(unit.id).theoretical_value rescue ''
               %td
                 %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{new_logistics_theoretical_value_path}', 'content', {id: '#{unit.id}'}, null, 'GET')"}
                   Agregar Valor Teórico
