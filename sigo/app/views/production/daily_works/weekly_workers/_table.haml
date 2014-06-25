@@ -20,7 +20,7 @@
               %td
                 = unit.id
               %td
-                
+                = WeeklyWorker.get_name_week_by_dates(unit.start_date, unit.end_date, @cost_center)
               %td
                 = unit.start_date.strftime('%d-%m-%Y').to_s + " - " + unit.end_date.strftime('%d-%m-%Y').to_s
               - case unit.state

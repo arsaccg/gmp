@@ -5,6 +5,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   def index
   	@workingGroups = WorkingGroup.all
     @weeklyworker = WeeklyWorker.all
+    @cost_center = get_company_cost_center('cost_center')
     render layout: false
   end
 

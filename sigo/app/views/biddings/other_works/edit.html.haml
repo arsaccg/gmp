@@ -2,15 +2,19 @@
   %header
     %span.widget-icon
       %i.fa.fa-check
-    %h2 Certificado
+    %h2 Editar Profesional
   %div{:style => 'overflow:hidden'}
     = render :partial => 'form'
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-pros{type: "button"}
   %i.fa.fa-arrow-left>
-  Retornar al listado de Certidicados
+  Retornar al listado de certificados
+
 
 :javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
   $(document).ready(function(){
     $('#backlist-pros').click(function(){
       load_url_ajax("#{biddings_other_works_path}", 'content', {pro_id: '#{@pro_id}'}, null, 'GET');

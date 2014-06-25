@@ -430,10 +430,11 @@
         sedid = data.sedid
         newOptions = [];
         $.each(data.equipment, function(key, value){
+          console.log(value);
           item = {};
-          item['name'] = value.name;
-          item['id'] = value.id;
-          item['unit'] = value.unit_of_measurement_id;
+          item['name'] = value[1];
+          item['id'] = value[0];
+          item['unit'] = value[5];
           newOptions.push(item);
         });
         $('#equipment').empty();

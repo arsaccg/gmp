@@ -129,7 +129,7 @@
           -index += 10
   
       %div
-        %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @worker.entity.name + ' ' + @worker.entity.second_name + ' ' + @worker.entity.paternal_surname + ' ' + @worker.entity.maternal_surname
+        %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s + ' ' + @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s
         .jarviswidget-editbox
         .widget-body
           %table.table.table-bordered

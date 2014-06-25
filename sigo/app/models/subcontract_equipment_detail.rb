@@ -5,11 +5,12 @@ class SubcontractEquipmentDetail < ActiveRecord::Base
 
 	def self.getOwnArticles(word, name)
     mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT DISTINCT a.id, a.name, u.name, a.code 
+      SELECT a.id, a.name, u.name, a.code 
       FROM articles_from_"+name+" a, unit_of_measurements u
       WHERE a.code LIKE '03%'
       AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
       AND u.id = a.unit_of_measurement_id
+      GROUP BY a.code
     ")
     return mysql_result
   end

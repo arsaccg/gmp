@@ -153,19 +153,7 @@ class Biddings::ProfessionalsController < ApplicationController
         :finish_date, 
         :certificate, 
         :other, 
-        :_destroy,
-        other_work_attributes: [
-          :id,
-          :certificate_id,
-          :name,
-          :start,
-          :entity,
-          :contractor,
-          :end,
-          :specialty,
-          {:component_work_ids => []}, 
-          :_destroy
-        ]
+        :_destroy
       ], 
       trainings_attributes: [
         :id, 

@@ -162,4 +162,15 @@ class Article < ActiveRecord::Base
     end
     return @totalprice/cont
   end
+
+  def self.get_article_per_type(type_article, cost_center)
+    name_cost_center = CostCenter.find(cost_center).name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.code, af.article_id, af.unit_of_measurement_id, u.name
+      FROM articles_from_"+name_cost_center+" af, unit_of_measurements u
+      WHERE af.code LIKE '#{type_article}%'
+      AND af.unit_of_measurement_id = u.id
+    ")
+    return mysql_result
+  end
 end
