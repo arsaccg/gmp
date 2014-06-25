@@ -33,7 +33,7 @@
                 %td
                   = unit.document
                 %td
-                  = Entity.find(unit.responsible_id).name + ' ' + Entity.find(unit.responsible_id).paternal_surname
+                  = Entity.find(Worker.find(unit.responsible_id).entity_id).name + ' ' + Entity.find(Worker.find(unit.responsible_id).entity_id).paternal_surname
                 %td
                   = unit.format.name
                 %td
