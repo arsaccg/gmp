@@ -7,11 +7,8 @@ class Biddings::OtherWorksController < ApplicationController
     other.each do |dos|
       @ids << dos.certificate_id
     end
-    @ids = @ids.join(',')
-    @certificates = Certificate.where('professional_id = ? AND id IN (?)', @pro_id, @ids)
-    puts "--------------------------------------------------------------------------------------------------"
-    puts @certificates.count
-    puts "--------------------------------------------------------------------------------------------------"
+    @ids = @ids.join(",")
+    @certificates = Certificate.where('professional_id = ? AND id IN ('+@ids+')', @pro_id)
     render layout: false
   end
 
@@ -70,12 +67,9 @@ class Biddings::OtherWorksController < ApplicationController
 
   def destroy
     @pro_id = params[:pro_id]
-    pro = OtherWork.find(params[:id])
-    certificates = Certificate.where('other_work_id = ?', pro)
-    certificates.each do |cert|
-      certificate = Certificate.destroy(cert.id)  
-    end
-    other_work = OtherWork.destroy(params[:id])
+    pro = OtherWork.find_by_certificate_id(params[:id])
+    certificate = Certificate.destroy(params[:id])
+    other_work = OtherWork.destroy(pro.id)
     flash[:notice] = "Se ha eliminado correctamente."
     render :json => other_work
   end
