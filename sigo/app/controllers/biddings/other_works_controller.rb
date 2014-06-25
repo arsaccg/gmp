@@ -3,17 +3,13 @@ class Biddings::OtherWorksController < ApplicationController
   def index
     @pro_id = params[:pro_id]
     other = OtherWork.all
-    puts other.count
     if other.count != 0
-      puts other.count
       @ids = Array.new
       other.each do |dos|
         @ids << dos.certificate_id
       end
       @ids = @ids.join(",")
       @certificates = Certificate.where('professional_id = ? AND id IN ('+@ids+')', @pro_id)
-    else
-      @certificates = Certificate.where('professional_id = ? AND work_id IS NULL', @pro_id)  
     end
     
     render layout: false
