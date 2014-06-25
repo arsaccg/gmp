@@ -6,7 +6,7 @@ class PartOfEquipment < ActiveRecord::Base
 	accepts_nested_attributes_for :part_of_equipment_details, :allow_destroy => true
 
 	def self.get_workers(subcontract_equip_id, start_date, end_date)
-	  return ActiveRecord::Base.connection.execute("SELECT DISTINCT wo.id, CONCAT( ent.name,  ' ', ent.second_name,  ' ', ent.paternal_surname,  ' ', ent.maternal_surname ) as 'worker'
+	  return ActiveRecord::Base.connection.execute("SELECT DISTINCT wo.id, CONCAT( ent.name,  ' ', ent.paternal_surname,  ' ', ent.maternal_surname ) as 'worker'
       FROM part_of_equipments poe, entities ent, workers wo, part_of_equipment_details poed,subcontract_equipment_details sced 
       WHERE sced.code LIKE '" + subcontract_equip_id + "' 
       AND poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "' 

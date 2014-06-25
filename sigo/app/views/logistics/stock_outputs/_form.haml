@@ -100,29 +100,6 @@
                   = text_area(:stock_input, :description, :value => "#{@head.description}", placeholder: "Glosa", class: "form-control")
                   %span.input-group-addon
                     %i.fa.fa-align-justify
-        
-          %fieldset
-            .row
-              .col-md-6
-                .form-group
-                  %label.control-label Articulo
-                  .input-group
-                    %select(name='stock_input[article_id]' class = 'select2 form-control' id = 'article-select' style='width:100%;padding: 0;border: none;')
-                      - @articles.each do |x|
-                        %option(value = "#{x[0]}")
-                          = x[1] + " - " + x[3] + " - " + x[6]
-              .col-md-2
-                .form-group
-                  %label.control-label &nbsp;
-                  .input-group
-                    = text_field_tag 'article-amount', nil, class: 'form-control col-md-3', id: 'article-amount', value: '1'
-              .col-md-2
-                .form-group
-                  %label.control-label &nbsp;
-                  .input-group
-                    %button.btn.btn-sm.btn-success#btn-add-article{'type' => 'button'}
-                      Agregar item
-          
         %fieldset
           %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-pod" aria-describedby="data-table_info")
             %thead

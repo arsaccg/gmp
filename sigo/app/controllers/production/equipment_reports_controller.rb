@@ -3,7 +3,7 @@ class Production::EquipmentReportsController < ApplicationController
     @company = get_company_cost_center('company')
     @workingGroups = WorkingGroup.all
     @article = Article.where("type_of_article_id = 3")
-    @week = CostCenter.getWeek(get_company_cost_center('cost_center'),Time.now.to_date.to_s)
+    @week = CostCenter.getWeek5(get_company_cost_center('cost_center'),Time.now.to_date.to_s)
     render layout: false
   end
 

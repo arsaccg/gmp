@@ -20,10 +20,10 @@
       .col-md-2
         %label Seleccione
         %label.input
-          %select.form-control#article{:style => 'width:100%;padding: 0;border: none;'}
+          %select.form-control#article{:style => 'padding: 0;border: none;'}
             %option{:value => "0"} Seleccione
-      .col-md-1
-      .col-md-3
+      .col-md-2
+      .col-md-2
         %label Seleccione la Semana en consulta
         %select.form-control#start-date-input{:name =>'date1', :style => 'width:100%;padding: 0;border: none;'}
           %option{:value => "0"} Seleccione una fecha
@@ -63,6 +63,7 @@
 :javascript
   $(document).ready(function () {
     $('select').select2({width:'200'});
+    $('#article').select2({width:'350'});
     var chosen = $('#select-1').val();
     complete("#{complete_production_equipment_reports_path}", chosen, "#{form_authenticity_token}", 0);
   });
