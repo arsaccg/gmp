@@ -13,9 +13,9 @@ class Production::EquipmentReportsController < ApplicationController
 
     if params[:chosen] == "0"
     elsif params[:chosen] == "specific"
-      articles = ActiveRecord::Base.connection.execute("SELECT sed.code, CONCAT( sed.code,  ' ', a.name ) AS name FROM  `subcontract_equipment_details` sed,  `articles` a,  `part_of_equipments` pe WHERE sed.article_id = a.id AND sed.article_id = a.id")
-      articles.each do |part|
-        @combo << { 'id' => part[0], 'name' => part[1]}
+      @subcontractequipmentdetail = SubcontractEquipmentDetail.all
+       @subcontractequipmentdetail.each do |sced|
+        @combo << { 'id' => sced.code, 'name' => sced.code + ' - ' + sced.article.name}
       end
     elsif params[:chosen] == "operador"
       pw_id = Array.new
