@@ -66,7 +66,6 @@ class Biddings::OtherWorksController < ApplicationController
   end
 
   def destroy
-    @pro_id = params[:pro_id]
     pro = OtherWork.find_by_certificate_id(params[:id])
     certificate = Certificate.destroy(params[:id])
     other_work = OtherWork.destroy(pro.id)

@@ -35,9 +35,6 @@
                 %th Obra
                 %th Inicio de Obra
                 %th Fin de Obra
-                %th Especialidad
-                %th Cargo 
-                %th 
                 %th Acciones
             %tbody
               - @certificates.each do |pro|
@@ -49,19 +46,10 @@
                   %td
                     = pro.other_work.end
                   %td
-                    = pro.other_work.specialty
-                  %td
-                    = pro.charge_id
-
-                  %td
-                    - pro.other_work.components.each do |comp|
-                      =comp.name
-                      %br
-                  %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_biddings_other_work_path(pro.id)}', 'content', {pro_id: '#{@pro_id}'}, null, 'GET')"}
                       Editar
 
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el profesional' , :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{biddings_other_work_path(pro.id)}' + '?authenticity_token=#{form_authenticity_token}'+'?pro_id=#{@pro_id}', 'content', '#{biddings_other_works_path}')"}}
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el profesional' , :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{biddings_other_work_path(pro.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{biddings_other_works_path}'+'?pro_id=#{@pro_id}')"}}
                       Eliminar
 
 :javascript
