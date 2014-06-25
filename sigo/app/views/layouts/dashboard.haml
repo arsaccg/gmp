@@ -245,9 +245,9 @@
                       %i.fa.fa-lg.fa-fw.fa-tasks
                       %span.menu-item-parent Documentos
                   %li
-                    %a{href: "#{production_workers_path}", title: 'Trabajadores'}
+                    %a{href: "#{production_rental_types_path}", title: 'Tipo de Alquiler'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Trabajadores
+                      %span.menu-item-parent Tipo de Alquiler
                   %li
                     %a{href: "#{production_category_of_workers_path}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
@@ -256,20 +256,22 @@
                     %a{href: "#{production_position_workers_path}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Cargo de Trabajadores
-                  %li
-                    %a{href: "#{production_working_groups_path}", title: 'Trabajadores'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Grupos de Trabajo
+                  
           %li
             %a{href: "#", title: "Compañias"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-              %span.menu-item-parent Logística
+              %span.menu-item-parent Pedidos y Compras
             %ul
               %li
                 %a{href: "#{logistics_delivery_orders_path}", title: "Ordenes de Suministro", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ordenes de Suministro
+              %li
+                %a{href: "#{show_tracking_orders_logistics_delivery_orders_path}", title: "Seguimiento de Ordenes"}
+                  %i.fa.fa-lg.fa-fw.fa-clipboard
+                  %span.menu-item-parent
+                    Seguimiento de Ordenes
               %li
                 %a{href: "#{logistics_purchase_orders_path}", title: "Ordenes de Compra", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
@@ -280,11 +282,11 @@
                   %i.fa.fa-lg.fa-fw.fa-clipboard
                   %span.menu-item-parent
                     Ordenes de Servicio
-              %li
-                %a{href: "#{show_tracking_orders_logistics_delivery_orders_path}", title: "Seguimiento de Ordenes"}
-                  %i.fa.fa-lg.fa-fw.fa-clipboard
-                  %span.menu-item-parent
-                    Seguimiento de Ordenes
+          %li
+            %a{href: "#", title: "Compañias"}
+              %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+              %span.menu-item-parent Almacenes
+            %ul
               %li
                 %a{href: "#{logistics_stock_inputs_path}", title: "Ingreso a Almacén", company: "#{@company.id}"}
                   %i.fa.fa-lg.fa-fw.fa-clipboard
@@ -301,87 +303,89 @@
                   %span.menu-item-parent
                     Consulta de Inventarios
           %li
-            %a{href: '#', title: "Producción"}
+            %a{href: '#', title: "Ejecución"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-              %span.menu-item-parent Producción
+              %span.menu-item-parent Ejecución
             %ul
+              %li
+                %a{href: '#', title: "Producción"}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Producción
+                %ul
+                  %li
+                    %a{href: "#{production_working_groups_path}", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Grupos de Trabajo
+                  %li
+                    %a{href: "#{production_part_works_path}", title: 'Parte Diario De Avance - Producción'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Parte Diario
+                  %li
+                    %a{href: "#{production_analysis_of_valuations_path}", title: 'Analisis de Producción'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Analisis Producción
+              %li
+                %a{href: '#', title: "Equipos"}
+                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                  %span.menu-item-parent Equipos
+                %ul
+                  %li
+                    %a{href: "#{production_subcontract_equipments_path}", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Contratos
+                  %li
+                    %a{href: "#{production_part_of_equipments_path}", title: 'Parte de Equipos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Parte diario
+                  %li
+                    %a{href: "#{production_machinery_reports_path}", title: 'Reporte de Maquinaria'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Consulta de Partes
+                  %li
+                    %a{href: "#{production_valuation_of_equipments_path}", title: 'Valorizar Equipos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Valorizar Equipos
+                  %li
+                    %a{href: "#{production_equipment_reports_path}", title: 'Reporte de Equipos'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Reporte de Equipos
+                  
               %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Contratos
+                  %span.menu-item-parent Subcontratos
                 %ul
                   %li
                     %a{href: "#{production_subcontracts_path}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Subcontrato
                   %li
-                    %a{href: "#{production_subcontract_equipments_path}", title: 'Trabajadores'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Subcontrato de Equipos
-              %li
-                %a{href: '#'}
-                  %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Producción
-                %ul
-                  %li
-                    %a{href: "#{production_part_works_path}", title: 'Parte Obras'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Parte Obras
-              %li
-                %a{href: '#', title: 'Personal'}
-                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Personal
-                %ul
-                  %li
-                    %a{href: "#{production_part_people_path}", title: 'Parte de Personal'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Parte de Personal
-                  %li
-                    %a{href: "#{production_daily_works_daily_workers_path}", title: 'Tareo Diario de Obra'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Tareo de Obreros
-                  %li
-                    %a{href: "#{production_daily_works_weekly_workers_path}", title: 'Tareo Semanal de Obra'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Tareo Semanal   
-              %li
-                %a{href: '#', title: 'Equipos'}
-                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Equipos
-                %ul
-                  %li
-                    %a{href: "#{production_rental_types_path}", title: 'Tipo de Alquiler'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Tipo de Alquiler
-                  %li
-                    %a{href: "#{production_part_of_equipments_path}", title: 'Parte de Equipos'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Parte de Equipos
-              %li
-                %a{href: '#', title: 'Valorizaciones'}
-                  %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Valorizaciones
-                %ul
-                  %li
-                    %a{href: "#{production_analysis_of_valuations_path}", title: 'Analisis de Producción'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Analisis de Producción
-                  %li
                     %a{href: "#{production_sc_valuations_path}", title: 'Valorizaciones SC'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       %span.menu-item-parent Valorizaciones SC
+              %li
+                %a{href: '#'}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Personal
+                %ul
                   %li
-                    %a{href: "#{production_equipment_reports_path}", title: 'Reporte de Equipos'}
+                    %a{href: "#{production_workers_path}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Reporte de Equipos
+                      %span.menu-item-parent Trabajadores
                   %li
-                    %a{href: "#{production_machinery_reports_path}", title: 'Reporte de Maquinaria'}
+                    %a{href: "#{production_part_people_path}", title: 'Parte de Personal'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Reporte de Maquinaria
+                      %span.menu-item-parent Parte diario
                   %li
-                    %a{href: "#{production_valuation_of_equipments_path}", title: 'Valorizar Equipos'}
+                    %a{href: "#{production_daily_works_daily_workers_path}", title: 'Tareo Diario de Obra'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Valorizar Equipos
+                      %span.menu-item-parent Consulta Partes
+                  %li
+                    %a{href: "#{production_daily_works_weekly_workers_path}", title: 'Tareo Semanal de Obra'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      %span.menu-item-parent Tareo Semanal  
+
+                  
           %li
             %a{href: "#", title: "Licitaciones"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
