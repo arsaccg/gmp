@@ -126,7 +126,7 @@
                             .row
                               .col-sm-4
                                 %label Nombre de la obra
-                                %select.form-control#work-id{'class'=>'work-select', name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onkeyup:'workSelectKU(this);'}
+                                %select.form-control#work-id{'class'=>'work-select', name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onload:'workSelectKU(this);' }
                                   %option Seleccione Una Obra
                                   -@work.each do |wc|
                                     -if wc.id == cert.work_id
@@ -229,10 +229,6 @@
                                     .button
                                       = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][other]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
                         :javascript
-                          $(document).ready(function(){
-                            var work=$('#work-id');
-                            workSelectKU(work);
-                          });
                           function workSelectKU(element){
                             if($(element).val()==''){
                               $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').html('');
@@ -346,7 +342,7 @@
                         .row{'class'=>'3'} 
                           .col-sm-4
                             %label Cantidad de días trabajados
-                            %input.form-control{'class'=>'worked-day', name: "professional[certificates_attributes][" + @reg.to_s + "][num_days]", :disabled=>"disabled"}
+                            %input.form-control#wdays{'class'=>'worked-day', name: "professional[certificates_attributes][" + @reg.to_s + "][num_days]", :disabled=>"disabled"}
                         
                         %br
                         .row
