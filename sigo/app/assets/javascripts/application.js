@@ -110,9 +110,7 @@ function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1,
       categories: ['En', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     },
     yAxis: {
-      title: {
-          text: 'Costo (S/.)'
-      }
+      title: { text: 'Costo (S/.)' }
     },
     plotOptions: {
       line: {
