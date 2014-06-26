@@ -63,9 +63,6 @@ class Biddings::ProfessionalsController < ApplicationController
       @entities << tent.entities
     end
     @certificates = Certificate.where("professional_id = ? AND work_id IS NOT NULL", params[:id])
-    puts "----------------------------------------------------------------------------------------"
-    puts @certificates.count
-    puts "----------------------------------------------------------------------------------------"
     @reg = Time.now.to_i
     @major = Major.all
     @action = 'edit'
