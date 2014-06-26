@@ -41,10 +41,10 @@
             = "Se necesita aprobar la Orden con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
-            - if dori.state_per_order_details.where("state LIKE 'revised'").first.nil?
+            - if dorr.state_per_order_details.where("state LIKE 'revised'").first.nil?
               = Time.now.strftime('%H:%M %p')
             - else
-              = dori.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+              = dorr.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
 :javascript
   //Gets tooltips activated
