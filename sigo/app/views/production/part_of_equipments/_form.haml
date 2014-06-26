@@ -130,6 +130,7 @@
                   %th.col-lg-2 Sector
                   %th.col-lg-2 Fase
                   %th.col-lg-2 Horas Efectivas
+                  %th.col-lg-2{"style"=>"display:none"} Combustible
                   %th.col-lg-2 Unidad de Medida
                   %th.col-lg-1 Eliminar
               %tbody(id="part_register_table")
@@ -153,8 +154,12 @@
                           - @sectors.each do |sector|
                             %optgroup{:label => "#{sector.name}"}
                               - Sector.getSubSectors(sector.code).each do |subsector|
-                                %option{:value => "#{subsector.id}"}
-                                  = subsector.name
+                                -if part.sector_id == subsector.id
+                                  %option{:value => "#{subsector.id}", :selected=>"selected"}
+                                    = subsector.name
+                                -else
+                                  %option{:value => "#{subsector.id}"}
+                                    = subsector.name
                           
                       %td.phase.col-lg-2
                         %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][phase_id]"}
@@ -170,7 +175,8 @@
 
                       %td.effective-hours.col-lg-2
                         = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][effective_hours]', part.effective_hours , class: "form-control effective-hours", onchange: "sumHours(this);"
-                        = hidden_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][fuel]', part.fuel , class: "form-control fuel"
+                      %td.fuel.col-lg-2{"style"=>"display:none"}
+                        = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][fuel]', part.fuel , class: "form-control fuel"
                       %td.unit-of-measumente.col-lg-1
                         = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][unit]', '' , class: "form-control unit", readonly: true
                       %td.delete-item
@@ -476,6 +482,7 @@
     $.each(hours, function(key,value){
       fuelforthis = fuelhour*Number(value.value);
       fuelforthis = fuelforthis.toFixed(1);
-      $(value).parent().parent().siblings('.fuel').find('input').val(fuelforthis)
+      $(value).parent().siblings('.fuel').find('input').removeAttr('value');
+      $(value).parent().siblings('.fuel').find('input').attr('value', fuelforthis);
     });
   }

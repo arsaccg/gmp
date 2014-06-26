@@ -78,9 +78,10 @@ class Production::EquipmentReportsController < ApplicationController
       @poe_array = poe_arrayworker(start_date, end_date, @article)
   		@poe_array2 = poe_array2(start_date, end_date, @article)
       @subcontract = SubcontractEquipmentDetail.find_by_code(params[:article])
-      @poe_array2.each do |pa|
-        @theoretical_value = pa[5]
-      end
+      @theoretical_value = TheoreticalValue.find_by_article_id(Article.find_article_global_by_specific_article(@subcontract.article_id,session[:cost_center]))
+      puts '*****************************************************************'
+      puts @theoretical_value
+      puts '*****************************************************************'
       @week3.each do |week3|
         @cad2 = PartOfEquipment.get_workers(@article, week3[2], week3[3])
         @cad2.each do |cad|
@@ -300,13 +301,12 @@ class Production::EquipmentReportsController < ApplicationController
 
   def poe_array2(start_date, end_date, working_group_id)
     poe_array2 = ActiveRecord::Base.connection.execute("
-      SELECT pha.id, pha.name , SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2), tv.theoretical_value 
-			FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced , theoretical_values tv 
+      SELECT pha.id, pha.name , SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2) 
+			FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
 			WHERE sced.code LIKE '" + working_group_id + "' 
 			AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
 			AND poe.worker_id=wo.id 
 			AND poe.equipment_id=sced.id 
-      AND sced.article_id=tv.article_id
 			AND poe.id=poed.part_of_equipment_id 
 			AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
 			AND poed.phase_id=pha.id
