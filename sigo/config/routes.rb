@@ -8,6 +8,11 @@ ArsacLogistica::Application.routes.draw do
   
   root 'main#index'
   get 'show_panel/:id' => 'main#show_panel', as: :show_panel_main
+  get 'inbox_task' => 'main#inbox_task', as: :inbox_task_main
+  get 'display_general_table_messages' => 'main#display_general_table_messages', as: :display_general_table_messages
+  get 'display_table_messages_os' => 'main#display_table_messages_os', as: :display_table_messages_os
+  get 'display_table_messages_oc' => 'main#display_table_messages_oc', as: :display_table_messages_oc
+  get 'display_table_messages_ose' => 'main#display_table_messages_ose', as: :display_table_messages_ose
   get 'home' => 'main#home'
   post 'home' => 'main#home'
   
