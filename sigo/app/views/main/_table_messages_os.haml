@@ -18,7 +18,10 @@
             = "Se necesita aprobar la Orden con fecha de emisión " + dori.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
-            = dori.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if dori.state_per_order_details.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = dori.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
     - @delivery_orders_revised.each do |dorr|
       %tr#msg1.unread
@@ -38,7 +41,10 @@
             = "Se necesita aprobar la Orden con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
-            = dorr.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if dori.state_per_order_details.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = dori.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
 :javascript
   //Gets tooltips activated

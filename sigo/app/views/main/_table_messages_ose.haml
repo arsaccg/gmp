@@ -19,7 +19,10 @@
 
         %td.inbox-data-date.hidden-xs
           %div
-            = ose.state_per_order_of_services.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if ose.state_per_order_of_services.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = ose.state_per_order_of_services.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
     - @order_services_revised.each do |ose|
       %tr#msg1.unread
@@ -40,7 +43,10 @@
 
         %td.inbox-data-date.hidden-xs
           %div
-            = ose.state_per_order_of_services.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if ose.state_per_order_of_services.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = ose.state_per_order_of_services.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
 :javascript
   //Gets tooltips activated

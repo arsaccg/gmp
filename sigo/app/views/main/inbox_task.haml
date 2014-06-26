@@ -121,3 +121,17 @@
   function loadInbox(path) {
     loadURL(path, $('#inbox-content > .table-wrap'))
   }
+
+  $('#inbox-content .inbox-side-bar ul li a').click(function(){
+    $(this).parent().addClass('active');
+    current_link = $(this).attr('id');
+
+    $('#inbox-content .inbox-side-bar ul li a').each(function(){
+      if ( $(this).parent().hasClass('active') ){
+        if ( $(this).attr('id') != current_link ) {
+          $(this).parent().removeClass('active');
+        }
+      }
+    });
+
+  });

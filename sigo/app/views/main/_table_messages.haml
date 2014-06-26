@@ -9,7 +9,7 @@
               %span
         %td.inbox-data-from.hidden-xs.hidden-sm
           %div
-            = "Orden de Suministro N° " + dor.id.to_s.rjust(5, '0')
+            = "Orden de Servicio N° " + dor.id.to_s.rjust(5, '0')
         %td.inbox-data-message
           %div
             %span
@@ -18,7 +18,10 @@
             = "Se necesita aprobar la Orden con fecha de emisión " + dor.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
-            = dor.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if dor.state_per_order_of_services.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = dor.state_per_order_of_services.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
     - @order_services_revised.each do |dor|
       %tr#msg1.unread
@@ -29,7 +32,7 @@
               %span
         %td.inbox-data-from.hidden-xs.hidden-sm
           %div
-            = "Orden de Suministro N° " + dor.id.to_s.rjust(5, '0')
+            = "Orden de Servicio N° " + dor.id.to_s.rjust(5, '0')
         %td.inbox-data-message
           %div
             %span
@@ -38,7 +41,10 @@
             = "Se necesita aprobar la Orden con fecha de emisión " + dor.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
-            = dor.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if dor.state_per_order_of_services.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = dor.state_per_order_of_services.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
     - @purchase_orders_issued.each do |po|
       %tr#msg1.unread
@@ -59,7 +65,10 @@
 
         %td.inbox-data-date.hidden-xs
           %div
-            = po.state_per_order_purchases.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if po.state_per_order_purchases.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = po.state_per_order_purchases.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
     - @purchase_orders_revised.each do |po|
       %tr#msg1.unread
@@ -80,7 +89,10 @@
 
         %td.inbox-data-date.hidden-xs
           %div
-            = po.state_per_order_purchases.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if po.state_per_order_purchases.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = po.state_per_order_purchases.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
     - @delivery_orders_issued.each do |dori|
       %tr#msg1.unread
@@ -100,7 +112,10 @@
             = "Se necesita aprobar la Orden con fecha de emisión " + dori.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
-            = dori.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if dori.state_per_order_details.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = dori.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
     - @delivery_orders_revised.each do |dorr|
       %tr#msg1.unread
@@ -120,7 +135,10 @@
             = "Se necesita aprobar la Orden con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
-            = dorr.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if dori.state_per_order_details.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = dori.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
 :javascript
   //Gets tooltips activated

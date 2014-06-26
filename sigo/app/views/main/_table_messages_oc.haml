@@ -19,9 +19,12 @@
 
         %td.inbox-data-date.hidden-xs
           %div
-            = po.state_per_order_purchases.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if po.state_per_order_purchases.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = po.state_per_order_purchases.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
-    - @delivery_orders_revised.each do |po|
+    - @purchase_orders_revised.each do |po|
       %tr#msg1.unread
         %td.inbox-table-icon
           .checkbox
@@ -40,7 +43,10 @@
 
         %td.inbox-data-date.hidden-xs
           %div
-            = po.state_per_order_purchases.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if po.state_per_order_purchases.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = po.state_per_order_purchases.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
 :javascript
   //Gets tooltips activated
