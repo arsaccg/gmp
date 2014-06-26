@@ -110,7 +110,7 @@
             %a{href: "#{inbox_task_main_path}", title: "Tareas"}
               %i.fa.fa-lg.fa-fw.fa-inbox
               %span.menu-item-parent Inbox
-              %span.badge.pull-right.inbox-badge 12
+              %span.badge.pull-right.inbox-badge= @total_pending
           - if current_user.has_role? :director
             %li
               %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}

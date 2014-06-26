@@ -17,6 +17,7 @@ class MainController < ApplicationController
     if get_company_cost_center('company').present? && get_company_cost_center('cost_center').present?
       @company = Company.find(get_company_cost_center('company'))
       @cost_center_name = CostCenter.find(get_company_cost_center('cost_center')).name
+      @total_pending = OrderOfService.where(" state LIKE 'issued' ").count + PurchaseOrder.where(" state LIKE 'issued' ").count + DeliveryOrder.where(" state LIKE 'issued' ").count + OrderOfService.where(" state LIKE 'revised' ").count + PurchaseOrder.where(" state LIKE 'revised' ").count + DeliveryOrder.where(" state LIKE 'revised' ").count
       render :show_panel, layout: 'dashboard'
     else
       redirect_to :controller => "errors", :action => "error_500"
