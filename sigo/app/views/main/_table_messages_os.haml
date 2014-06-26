@@ -39,7 +39,7 @@
             %span
               %span.label.bg-color-orange APROBAR
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
-            = "Se necesita aprobar la Orden en " + CostCenter.find(dori.cost_center_id).name.capitalize + " con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
+            = "Se necesita aprobar la Orden en " + CostCenter.find(dorr.cost_center_id).name.capitalize + " con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
 
         %td.inbox-data-date.hidden-xs
           %div
