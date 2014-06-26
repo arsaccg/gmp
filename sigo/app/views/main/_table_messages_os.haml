@@ -14,7 +14,7 @@
           %div
             %span
               %span.label.bg-color-orange DAR VISTO BUENO
-              = @user.name.capitalize
+              = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
             = "Se necesita aprobar la Orden con fecha de emisión " + dori.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
@@ -34,7 +34,7 @@
           %div
             %span
               %span.label.bg-color-orange APROBAR
-              = @user.name.capitalize
+              = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
             = "Se necesita aprobar la Orden con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
