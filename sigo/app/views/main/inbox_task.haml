@@ -9,16 +9,16 @@
       %i.fa.fa-caret-down
     %ul.dropdown-menu.pull-left
       %li
-        %a#inbox-load{href: "javascript:void(0);"}
+        %a#inbox-load-mobile{href: "javascript:void(0);"}
           Tareas
           %i.fa.fa-check
       %li
-        %a#inbox-delivery{href: "javascript:void(0);"} Ordenes de Suministro
+        %a#inbox-delivery-mobile{href: "javascript:void(0);"} Ordenes de Suministro
       %li
-        %a#inbox-service{href: "javascript:void(0);"} Ordenes de Servicio
+        %a#inbox-service-mobile{href: "javascript:void(0);"} Ordenes de Servicio
       %li.divider
       %li
-        %a#inbox-purchase{href: "javascript:void(0);"} Ordenes de Compra
+        %a#inbox-purchase-mobile{href: "javascript:void(0);"} Ordenes de Compra
   .inbox-checkbox-triggered
     .btn-group
       %a.deletebutton.btn.btn-default{"data-original-title" => "Delete", "data-placement" => "bottom", href: "javascript:void(0);", rel: "tooltip", title: ""}
@@ -118,6 +118,22 @@
     loadInbox("#{display_table_messages_oc_path}");
   });
 
+  $("#inbox-load-mobile").click(function() {
+    loadInbox("#{display_general_table_messages_path}");
+  });
+
+  $("#inbox-delivery-mobile").click(function() {
+    loadInbox("#{display_table_messages_os_path}");
+  });
+
+  $("#inbox-service-mobile").click(function() {
+    loadInbox("#{display_table_messages_ose_path}");
+  });
+
+  $("#inbox-purchase-mobile").click(function() {
+    loadInbox("#{display_table_messages_oc_path}");
+  });
+
   function loadInbox(path) {
     loadURL(path, $('#inbox-content > .table-wrap'))
   }
@@ -138,15 +154,10 @@
 
   $("#inbox-table .inbox-data-message").click(function() {
     $this = $(this);
-    getMail($this);
+    goToChangeState($this);
   });
 
-  $("#inbox-table .inbox-data-from").click(function() {
-    $this = $(this);
-    getMail($this);
-  });
-
-  function getMail($this) {
+  function goToChangeState($this) {
     //console.log($this.closest("tr").attr("id"));
-    loadURL("ajax/email-opened.html", $('#inbox-content > .table-wrap'));
+    loadURL("#{root_path}", $('#inbox-content > .table-wrap'));
   }
