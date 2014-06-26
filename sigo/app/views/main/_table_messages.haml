@@ -1,6 +1,27 @@
 %table#inbox-table.table.table-striped.table-hover
   %tbody
-    - @delivery_orders.each do |dor|
+
+    - @order_services_issued.each do |dor|
+      %tr#msg1.unread
+        %td.inbox-table-icon
+          .checkbox
+            %label
+              %input.checkbox.style-2{type: "checkbox"}/
+              %span
+        %td.inbox-data-from.hidden-xs.hidden-sm
+          %div
+            = "Orden de Suministro N° " + dor.id.to_s.rjust(5, '0')
+        %td.inbox-data-message
+          %div
+            %span
+              %span.label.bg-color-orange DAR VISTO BUENO
+              = @user.name.capitalize
+            = "Se necesita aprobar la Orden con fecha de emisión " + dor.date_of_issue.strftime('%d-%m-%Y')
+        %td.inbox-data-date.hidden-xs
+          %div
+            = dor.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+
+    - @order_services_revised.each do |dor|
       %tr#msg1.unread
         %td.inbox-table-icon
           .checkbox
@@ -20,7 +41,28 @@
           %div
             = dor.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
-    - @purchase_orders.each do |po|
+    - @purchase_orders_issued.each do |po|
+      %tr#msg1.unread
+        %td.inbox-table-icon
+          .checkbox
+            %label
+              %input.checkbox.style-2{type: "checkbox"}/
+              %span
+        %td.inbox-data-from.hidden-xs.hidden-sm
+          %div
+            = "Orden de Compra N° " + po.id.to_s.rjust(5, '0')
+        %td.inbox-data-message
+          %div
+            %span
+              %span.label.bg-color-orange DAR VISTO BUENO
+              = @user.name.capitalize
+            = "Se necesita aprobar la Orden con fecha de emisión " + po.date_of_issue.strftime('%d-%m-%Y')
+
+        %td.inbox-data-date.hidden-xs
+          %div
+            = po.state_per_order_purchases.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+
+    - @purchase_orders_revised.each do |po|
       %tr#msg1.unread
         %td.inbox-table-icon
           .checkbox
@@ -41,7 +83,7 @@
           %div
             = po.state_per_order_purchases.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
-    - @order_services.each do |ose|
+    - @delivery_orders_issued.each do |dori|
       %tr#msg1.unread
         %td.inbox-table-icon
           .checkbox
@@ -50,17 +92,36 @@
               %span
         %td.inbox-data-from.hidden-xs.hidden-sm
           %div
-            = "Orden de Servicio N° " + ose.id.to_s.rjust(5, '0')
+            = "Orden de Suministro N° " + dori.id.to_s.rjust(5, '0')
+        %td.inbox-data-message
+          %div
+            %span
+              %span.label.bg-color-orange DAR VISTO BUENO
+              = @user.name.capitalize
+            = "Se necesita aprobar la Orden con fecha de emisión " + dori.date_of_issue.strftime('%d-%m-%Y')
+        %td.inbox-data-date.hidden-xs
+          %div
+            = dori.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+
+    - @delivery_orders_revised.each do |dorr|
+      %tr#msg1.unread
+        %td.inbox-table-icon
+          .checkbox
+            %label
+              %input.checkbox.style-2{type: "checkbox"}/
+              %span
+        %td.inbox-data-from.hidden-xs.hidden-sm
+          %div
+            = "Orden de Suministro N° " + dorr.id.to_s.rjust(5, '0')
         %td.inbox-data-message
           %div
             %span
               %span.label.bg-color-orange APROBAR
               = @user.name.capitalize
-            = "Se necesita aprobar la Orden con fecha de emisión " + ose.date_of_issue.strftime('%d-%m-%Y')
-
+            = "Se necesita aprobar la Orden con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
-            = ose.state_per_order_of_services.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            = dorr.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
 :javascript
   //Gets tooltips activated

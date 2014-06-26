@@ -37,27 +37,36 @@ class MainController < ApplicationController
 
   def display_general_table_messages
     @user = current_user
-    @order_services = current_user.order_of_services.where(" state LIKE 'revised' ")
-    @purchase_orders = current_user.purchase_orders.where(" state LIKE 'revised' ")
-    @delivery_orders = current_user.delivery_orders.where(" state LIKE 'revised' ")
+
+    @order_services_issued = OrderOfService.where(" state LIKE 'issued' ")
+    @purchase_orders_issued = PurchaseOrder.where(" state LIKE 'issued' ")
+    @delivery_orders_issued = DeliveryOrder.where(" state LIKE 'issued' ")
+
+    @order_services_revised = OrderOfService.where(" state LIKE 'revised' ")
+    @purchase_orders_revised = PurchaseOrder.where(" state LIKE 'revised' ")
+    @delivery_orders_revised = DeliveryOrder.where(" state LIKE 'revised' ")
+
     render(partial: 'table_messages', :layout => false)
   end
 
   def display_table_messages_os
     @user = current_user
-    @delivery_orders = current_user.deliver_orders.where(" state LIKE 'revised' ")
+    @delivery_orders_issued = DeliveryOrder.where(" state LIKE 'issued' ")
+    @delivery_orders_revised = DeliveryOrder.where(" state LIKE 'revised' ")
     render(partial: 'table_messages_os', :layout => false)
   end
 
   def display_table_messages_oc
     @user = current_user
-    @purchase_orders = current_user.purchase_orders.where(" state LIKE 'revised' ")
+    @purchase_orders_issued = PurchaseOrder.where(" state LIKE 'issued' ")
+    @purchase_orders_revised = PurchaseOrder.where(" state LIKE 'revised' ")
     render(partial: 'table_messages_oc', :layout => false)
   end
 
   def display_table_messages_ose
     @user = current_user
-    @order_services = current_user.order_of_services.where(" state LIKE 'revised' ")
+    @order_services_issued = OrderOfService.where(" state LIKE 'issued' ")
+    @order_services_revised = OrderOfService.where(" state LIKE 'revised' ")
     render(partial: 'table_messages_ose', :layout => false)
   end
 

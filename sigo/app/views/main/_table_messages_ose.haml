@@ -1,6 +1,27 @@
 %table#inbox-table.table.table-striped.table-hover
   %tbody
-    - @order_services.each do |ose|
+    - @order_services_issued.each do |ose|
+      %tr#msg1.unread
+        %td.inbox-table-icon
+          .checkbox
+            %label
+              %input.checkbox.style-2{type: "checkbox"}/
+              %span
+        %td.inbox-data-from.hidden-xs.hidden-sm
+          %div
+            = "Orden de Servicio N° " + ose.id.to_s.rjust(5, '0')
+        %td.inbox-data-message
+          %div
+            %span
+              %span.label.bg-color-orange DAR VISTO BUENO
+              = @user.name.capitalize
+            = "Se necesita aprobar la Orden con fecha de emisión " + ose.date_of_issue.strftime('%d-%m-%Y')
+
+        %td.inbox-data-date.hidden-xs
+          %div
+            = ose.state_per_order_of_services.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+
+    - @order_services_revised.each do |ose|
       %tr#msg1.unread
         %td.inbox-table-icon
           .checkbox
