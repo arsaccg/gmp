@@ -55,10 +55,11 @@
           = @cost_center_name
           %i.fa.fa-angle-down
         %ul.dropdown-menu
-          %li
-            %a{href: "#{root_path}"}
-              %i.fa.fa-power-off
-              Salir
+          - @others_cost_centers.each do |other_cc|
+            %li
+              %a{href: "#{show_panel_main_path(@company.id)}?cost_center=#{other_cc.id}"}
+                %i.fa.fa-power-off
+                = other_cc.name
       / pulled right: nav area
       .pull-right
         / collapse menu button
