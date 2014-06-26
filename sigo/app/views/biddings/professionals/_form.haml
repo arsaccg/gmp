@@ -108,8 +108,8 @@
             .widget-body.no-padding
               #accordion-ce.panel-group.smart-accordion-default
                 - if @action=="edit"
-                  -if @professional.certificates != nil
-                    -@professional.certificates.each do |cert|
+                  -if @certificates.count != 0
+                    -@certificates.each do |cert|
                       .panel.panel-default
                         .panel-heading
                           %h4.panel-title
@@ -426,7 +426,7 @@
                             %i.fa.fa-fw.fa-minus-circle.txt-color-red
                             Capacitación N°1
                           %div{"style"=>"width: 50px; float: right; color: white; background: #2070a8;  text-align: center;"}
-                            = check_box 'professional[certificates_attributes]', '[' + @reg.to_s  + '][_destroy]'
+                            = check_box_tag 'professional[trainings_attributes][' + @reg.to_s  + '][_destroy]'
                       .panel-collapse.collapse.in{ 'id'=> "collapse" + @reg.to_s + "-2"}
                         .panel-body
                           .row

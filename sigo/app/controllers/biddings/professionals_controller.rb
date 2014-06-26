@@ -62,6 +62,10 @@ class Biddings::ProfessionalsController < ApplicationController
     TypeEntity.where("id IN (1,5)").each do |tent|
       @entities << tent.entities
     end
+    @certificates = Certificate.where("professional_id = ? AND work_id IS NOT NULL", params[:id])
+    puts "----------------------------------------------------------------------------------------"
+    puts @certificates.count
+    puts "----------------------------------------------------------------------------------------"
     @reg = Time.now.to_i
     @major = Major.all
     @action = 'edit'
