@@ -137,7 +137,7 @@ class Production::EquipmentReportsController < ApplicationController
       @sector = Sector.find_by_id(params[:article])
       @theoretical_value = 1
       @week3.each do |week3|
-        @cad2 = PartOfEquipment.get_equipments_per_sector(@article, week3[2], week3[3])
+        @cad2 = PartOfEquipment.get_equipments_per_sector(@article, week3[2], week3[3], session[:cost_center])
         @cad2.each do |cad|
           @cad3 << cad[0]
         end
@@ -248,7 +248,7 @@ class Production::EquipmentReportsController < ApplicationController
 
   def poe_arraysector(start_date, end_date, working_group_id)
     @result = Array.new
-    equipments = PartOfEquipment.get_equipments_per_sector(working_group_id, start_date, end_date)
+    equipments = PartOfEquipment.get_equipments_per_sector(working_group_id, start_date, end_date, session[:cost_center])
     equipments.each do |w|
       array = Array.new
       index = 1
@@ -266,7 +266,7 @@ class Production::EquipmentReportsController < ApplicationController
       end
       @ratio = @totalfuel / @totaleffehours
       @ratio = @ratio.round(2)
-      @result << [w[0] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
+      @result << [w[0] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio, 'theoretical_value' => w[2]]]
     end
     return @result
   end
@@ -333,14 +333,18 @@ class Production::EquipmentReportsController < ApplicationController
   end
 
   def poe_array4(start_date, end_date, working_group_id)
+    name_article = ""
+    @cost_center = CostCenter.find(session[:cost_center])
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
     poe_array2 = ActiveRecord::Base.connection.execute("
       SELECT sced.code, art.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2), tv.theoretical_value 
-      FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sced, articles art , theoretical_values tv 
+      FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sced, articles art , theoretical_values tv , articles_from_"+name+" af 
       WHERE poed.sector_id IN(" + working_group_id + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poe.equipment_id=sced.id 
       AND sced.article_id=art.id
-      AND sced.article_id=tv.article_id
+      AND sced.article_id=af.id
+      AND tv.article_id=af.article_id
       AND poe.id=poed.part_of_equipment_id 
       AND poe.subcontract_equipment_id=sced.subcontract_equipment_id
       GROUP BY sced.code
