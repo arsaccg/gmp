@@ -15,7 +15,7 @@
             %span
               %span.label.bg-color-orange DAR VISTO BUENO
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
-            = "Se necesita aprobar la Orden con fecha de emisión " + dor.date_of_issue.strftime('%d-%m-%Y')
+            = "Se necesita aprobar la Orden en " + CostCenter.find(dor.cost_center_id).name.capitalize + " con fecha de emisión " + dor.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
             - if dor.state_per_order_of_services.where("state LIKE 'revised'").first.nil?
@@ -38,7 +38,7 @@
             %span
               %span.label.bg-color-orange APROBAR
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
-            = "Se necesita aprobar la Orden con fecha de emisión " + dor.date_of_issue.strftime('%d-%m-%Y')
+            = "Se necesita aprobar la Orden en " + CostCenter.find(dor.cost_center_id).name.capitalize + " con fecha de emisión " + dor.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
             - if dor.state_per_order_of_services.where("state LIKE 'revised'").first.nil?
@@ -61,7 +61,7 @@
             %span
               %span.label.bg-color-orange DAR VISTO BUENO
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
-            = "Se necesita aprobar la Orden con fecha de emisión " + po.date_of_issue.strftime('%d-%m-%Y')
+            = "Se necesita aprobar la Orden en " + CostCenter.find(po.cost_center_id).name.capitalize + " con fecha de emisión " + po.date_of_issue.strftime('%d-%m-%Y')
 
         %td.inbox-data-date.hidden-xs
           %div
@@ -85,7 +85,7 @@
             %span
               %span.label.bg-color-orange APROBAR
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
-            = "Se necesita aprobar la Orden con fecha de emisión " + po.date_of_issue.strftime('%d-%m-%Y')
+            = "Se necesita aprobar la Orden en " + CostCenter.find(po.cost_center_id).name.capitalize + " con fecha de emisión " + po.date_of_issue.strftime('%d-%m-%Y')
 
         %td.inbox-data-date.hidden-xs
           %div
@@ -109,7 +109,7 @@
             %span
               %span.label.bg-color-orange DAR VISTO BUENO
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
-            = "Se necesita aprobar la Orden con fecha de emisión " + dori.date_of_issue.strftime('%d-%m-%Y')
+            = "Se necesita aprobar la Orden en " + CostCenter.find(dori.cost_center_id).name.capitalize + " con fecha de emisión " + dori.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
             - if dori.state_per_order_details.where("state LIKE 'revised'").first.nil?
@@ -132,13 +132,13 @@
             %span
               %span.label.bg-color-orange APROBAR
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
-            = "Se necesita aprobar la Orden con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
+            = "Se necesita aprobar la Orden en " + CostCenter.find(dorr.cost_center_id).name.capitalize + " con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
           %div
-            - if dori.state_per_order_details.where("state LIKE 'revised'").first.nil?
+            - if dorr.state_per_order_details.where("state LIKE 'revised'").first.nil?
               = Time.now.strftime('%H:%M %p')
             - else
-              = dori.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+              = dorr.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
 :javascript
   //Gets tooltips activated
