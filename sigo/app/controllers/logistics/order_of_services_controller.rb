@@ -26,6 +26,9 @@ class Logistics::OrderOfServicesController < ApplicationController
     @orderOfService = OrderOfService.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
+      if params[:type_of_order] != nil
+        @type_of_order = params[:type_of_order]
+      end
     else
       @orderOfServicePerState = @orderOfService.state_per_order_of_services
     end

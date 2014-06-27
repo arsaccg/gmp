@@ -10,7 +10,7 @@
         %td.inbox-data-from.hidden-xs.hidden-sm
           %div
             = "Orden de Suministro N° " + dori.id.to_s.rjust(5, '0')
-        %td.inbox-data-message
+        %td.inbox-data-message{:data => "#{dori.id}-#{dori.state}-dorder"}
           %div
             %span
               %span.label.bg-color-orange DAR VISTO BUENO
@@ -34,7 +34,7 @@
         %td.inbox-data-from.hidden-xs.hidden-sm
           %div
             = "Orden de Suministro N° " + dorr.id.to_s.rjust(5, '0')
-        %td.inbox-data-message
+        %td.inbox-data-message{:data => "#{dorr.id}-#{dorr.state}-dorder"}
           %div
             %span
               %span.label.bg-color-orange APROBAR
