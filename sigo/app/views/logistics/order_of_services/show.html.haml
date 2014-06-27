@@ -38,7 +38,7 @@
                       = translate_order_service_state(@orderOfService.state)
                     %td
                       - if @orderOfService.entity.present?
-                        = @orderOfService.entity.name + ' ' + @orderOfService.entity.paternal_surname
+                        = @orderOfService.entity.name.to_s + ' ' + @orderOfService.entity.paternal_surname.to_s
                     %td
                       = @orderOfService.money.name
                     %td
