@@ -225,9 +225,9 @@
 
   / row
   .row
-    %article.col-sm-12
+    %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
       / new widget
-      #wid-id-2.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
+      #wid-id-3.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
         %header
           %span.widget-icon
             %i.fa.fa-map-marker
@@ -465,18 +465,14 @@
       $this.parents('.dropdown-menu').find('li').removeClass('active');
       $this.parent().addClass('active');
   });
-  
-  /*
-   * TODO: add a way to add more todo's to list
-   */
 
   var colorful_style = [{
-    "featureType": "landscape",
-    "stylers": [{
-        "visibility": "off"
-      }]
-  }];
-  
+      "featureType": "landscape",
+      "stylers": [{
+          "visibility": "off"
+        }]
+    }];
+    
   // One color - Change the hue value for your desired color
   var mono_color_style = [{
       "stylers": [{
@@ -487,19 +483,16 @@
           "lightness": 1
       }]
   }];
-
-  var colorfulStyleMap = new google.maps.StyledMapType(colorful_style, {
-    name: "Colorful"
-  });
   
   /*
    * RUN PAGE GRAPHS
    */
-
-  generate_map_2();
   
   // Load FLOAT dependencies (related to page)
   loadScript("#{ asset_path 'plugin/flot/jquery.flot.cust.js', type: :javascript }", loadFlotResize);
+
+  $(window).bind('gMapsLoaded', initialize);
+  window.loadGoogleMaps();
   
   function loadFlotResize() {
     loadScript("#{ asset_path 'plugin/flot/jquery.flot.resize.js', type: :javascript }", loadFlotToolTip);
@@ -905,17 +898,32 @@
       });
   }
 
-  // colorful
-  function generate_map_2() {
+  function initialize() {
+  
+    $this = $("#map_canvas");
+    $zoom_level = ($this.data("gmap-zoom") || 5);
+    $data_lat = ($this.data("gmap-lat") || 29.895883);
+    $data_lng = ($this.data("gmap-lng") || -80.650635);
+    $xml_src = ($this.data("gmap-src") || "js/test.xml");
 
-    var mapOptions = {
-      center: new google.maps.LatLng(-9.9604725, -76.9194798),
-      zoom: 12,
-    };
-    map = new google.maps.Map(document.getElementById('map_canvas2'), mapOptions);
+    var colorfulStyleMap = new google.maps.StyledMapType(colorful_style, {
+            name: "Colorful"
+        });
 
-    // Setup skin for the map
-    map.mapTypes.set('colorful_style', colorfulStyleMap);
-    map.setMapTypeId('colorful_style');
+    // colorful
+    function generate_map_2() {
 
+        var mapOptions = {
+            center: new google.maps.LatLng(-9.6295248, -77.1746293),
+            zoom: 12,
+        };
+        map = new google.maps.Map(document.getElementById('map_canvas2'), mapOptions);
+
+        // Setup skin for the map
+        map.mapTypes.set('colorful_style', colorfulStyleMap);
+        map.setMapTypeId('colorful_style');
+
+    }
+
+    generate_map_2();
   }
