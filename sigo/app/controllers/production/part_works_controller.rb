@@ -27,8 +27,14 @@ class Production::PartWorksController < ApplicationController
 
   def new
     @partwork = PartWork.new
+    articles = Array.new
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
+    article = SubcontractDetail.all
+    article.each do |art|
+      articles << art.article_id
+    end
+    @articles = Article.where('id IN ('+articles.join(',')+')')
     @company = params[:company_id]
     render layout: false
   end
@@ -52,10 +58,9 @@ class Production::PartWorksController < ApplicationController
 
   def add_more_article
     @reg_n = ((Time.now.to_f)*100).to_i
-    data_article_unit = params[:article_id].split('-')
-    article = Article.find(data_article_unit[0])
+    article = Article.find(params[:article_id])
     cost_center = get_company_cost_center('cost_center')
-    @article = Article.find_article_in_specific(article.id, cost_center)
+    @article = Article.find_specific_in_article(article.id, cost_center)
     @article.each do |art|
       @id_article = art[0]
       @name_article = art[1]
