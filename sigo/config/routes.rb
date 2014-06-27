@@ -353,6 +353,11 @@ ArsacLogistica::Application.routes.draw do
     end
   end
 
+  namespace :libraries do
+    resources :interest_links
+    resources :type_of_law_and_regulations
+    resources :law_and_regulations
+  end
 end
 
   
