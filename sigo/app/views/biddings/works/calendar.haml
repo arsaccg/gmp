@@ -2,34 +2,8 @@
   .col-xs-12.col-sm-7.col-md-7.col-lg-4
     %h1.page-title.txt-color-blueDark
       %i.fa.fa-calendar.fa-fw
-      Calendar
-      %span
-        \>
-        Add events
-  .col-xs-12.col-sm-5.col-md-5.col-lg-8
-    %ul#sparks
-      %li.sparks-info
-        %h5
-          My Income
-          %span.txt-color-blue $47,171
-        .sparkline.txt-color-blue.hidden-mobile.hidden-md.hidden-sm
-          1300, 1877, 2500, 2577, 2000, 2100, 3000, 2700, 3631, 2471, 2700, 3631, 2471
-      %li.sparks-info
-        %h5
-          Site Traffic
-          %span.txt-color-purple
-            %i.fa.fa-arrow-circle-up{"data-rel" => "bootstrap-tooltip", title: "Increased"}>
-            \ 45%
-        .sparkline.txt-color-purple.hidden-mobile.hidden-md.hidden-sm
-          110,150,300,130,400,240,220,310,220,300, 270, 210
-      %li.sparks-info
-        %h5
-          Site Orders
-          %span.txt-color-greenDark
-            %i.fa.fa-shopping-cart>
-            \ 2447
-        .sparkline.txt-color-greenDark.hidden-mobile.hidden-md.hidden-sm
-          110,150,300,130,400,240,220,310,220,300, 270, 210
+      Calendar de Licitaciones
+
 / row
 .row
   .col-sm-12.col-md-12.col-lg-3
@@ -172,7 +146,7 @@
   /*
    * FULL CALENDAR JS
    */
-  loadScript("js/plugin/fullcalendar/jquery.fullcalendar.min.js", iniCalendar);
+  loadScript("#{ asset_path 'plugin/fullcalendar/jquery.fullcalendar.min.js', type: :javascript }", iniCalendar);
   
   function iniCalendar() {
       "use strict";
