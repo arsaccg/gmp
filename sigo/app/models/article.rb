@@ -41,6 +41,19 @@ class Article < ActiveRecord::Base
     return mysql_result
   end
 
+  def self.find_specific_in_article(id, cost_center_id)
+    @cost_center = CostCenter.find(cost_center_id)
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.article_id, af.code, u.name
+      FROM articles_from_"+name+" af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.article_id =" + id.to_s + " 
+    ")
+
+    return mysql_result
+  end
+
   def self.find_article_by_global_article(article_id, cost_center_id)
     name_article = ""
     @cost_center = CostCenter.find(cost_center_id)
