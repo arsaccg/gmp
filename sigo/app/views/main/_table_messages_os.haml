@@ -1,6 +1,6 @@
 %table#inbox-table.table.table-striped.table-hover
   %tbody
-    - @delivery_orders.each do |dor|
+    - @delivery_orders_issued.each do |dori|
       %tr#msg1.unread
         %td.inbox-table-icon
           .checkbox
@@ -9,16 +9,44 @@
               %span
         %td.inbox-data-from.hidden-xs.hidden-sm
           %div
-            = "Orden de Suministro N° " + dor.id.to_s.rjust(5, '0')
+            = "Orden de Suministro N° " + dori.id.to_s.rjust(5, '0')
+        %td.inbox-data-message
+          %div
+            %span
+              %span.label.bg-color-orange DAR VISTO BUENO
+              = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
+            = "Se necesita aprobar la Orden en " + CostCenter.find(dori.cost_center_id).name.capitalize + " con fecha de emisión " + dori.date_of_issue.strftime('%d-%m-%Y')
+
+        %td.inbox-data-date.hidden-xs
+          %div
+            - if dori.state_per_order_details.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = dori.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+
+    - @delivery_orders_revised.each do |dorr|
+      %tr#msg1.unread
+        %td.inbox-table-icon
+          .checkbox
+            %label
+              %input.checkbox.style-2{type: "checkbox"}/
+              %span
+        %td.inbox-data-from.hidden-xs.hidden-sm
+          %div
+            = "Orden de Suministro N° " + dorr.id.to_s.rjust(5, '0')
         %td.inbox-data-message
           %div
             %span
               %span.label.bg-color-orange APROBAR
-              = @user.name.capitalize
-            = "Se necesita aprobar la Orden con fecha de emisión " + dor.date_of_issue.strftime('%d-%m-%Y')
+              = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
+            = "Se necesita aprobar la Orden en " + CostCenter.find(dorr.cost_center_id).name.capitalize + " con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
+
         %td.inbox-data-date.hidden-xs
           %div
-            = dor.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if dorr.state_per_order_details.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = dorr.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
 :javascript
   //Gets tooltips activated

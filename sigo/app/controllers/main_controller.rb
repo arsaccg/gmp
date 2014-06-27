@@ -17,6 +17,8 @@ class MainController < ApplicationController
     if get_company_cost_center('company').present? && get_company_cost_center('cost_center').present?
       @company = Company.find(get_company_cost_center('company'))
       @cost_center_name = CostCenter.find(get_company_cost_center('cost_center')).name
+      @others_cost_centers = @company.cost_centers.where('id != ?', get_company_cost_center('cost_center'))
+      @total_pending = OrderOfService.where(" state LIKE 'issued' ").count + PurchaseOrder.where(" state LIKE 'issued' ").count + DeliveryOrder.where(" state LIKE 'issued' ").count + OrderOfService.where(" state LIKE 'revised' ").count + PurchaseOrder.where(" state LIKE 'revised' ").count + DeliveryOrder.where(" state LIKE 'revised' ").count
       render :show_panel, layout: 'dashboard'
     else
       redirect_to :controller => "errors", :action => "error_500"
@@ -37,27 +39,36 @@ class MainController < ApplicationController
 
   def display_general_table_messages
     @user = current_user
-    @order_services = current_user.order_of_services.where(" state LIKE 'revised' ")
-    @purchase_orders = current_user.purchase_orders.where(" state LIKE 'revised' ")
-    @delivery_orders = current_user.delivery_orders.where(" state LIKE 'revised' ")
+
+    @order_services_issued = OrderOfService.where(" state LIKE 'issued' ")
+    @purchase_orders_issued = PurchaseOrder.where(" state LIKE 'issued' ")
+    @delivery_orders_issued = DeliveryOrder.where(" state LIKE 'issued' ")
+
+    @order_services_revised = OrderOfService.where(" state LIKE 'revised' ")
+    @purchase_orders_revised = PurchaseOrder.where(" state LIKE 'revised' ")
+    @delivery_orders_revised = DeliveryOrder.where(" state LIKE 'revised' ")
+
     render(partial: 'table_messages', :layout => false)
   end
 
   def display_table_messages_os
     @user = current_user
-    @delivery_orders = current_user.deliver_orders.where(" state LIKE 'revised' ")
+    @delivery_orders_issued = DeliveryOrder.where(" state LIKE 'issued' ")
+    @delivery_orders_revised = DeliveryOrder.where(" state LIKE 'revised' ")
     render(partial: 'table_messages_os', :layout => false)
   end
 
   def display_table_messages_oc
     @user = current_user
-    @purchase_orders = current_user.purchase_orders.where(" state LIKE 'revised' ")
+    @purchase_orders_issued = PurchaseOrder.where(" state LIKE 'issued' ")
+    @purchase_orders_revised = PurchaseOrder.where(" state LIKE 'revised' ")
     render(partial: 'table_messages_oc', :layout => false)
   end
 
   def display_table_messages_ose
     @user = current_user
-    @order_services = current_user.order_of_services.where(" state LIKE 'revised' ")
+    @order_services_issued = OrderOfService.where(" state LIKE 'issued' ")
+    @order_services_revised = OrderOfService.where(" state LIKE 'revised' ")
     render(partial: 'table_messages_ose', :layout => false)
   end
 

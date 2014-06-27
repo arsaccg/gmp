@@ -9,16 +9,16 @@
       %i.fa.fa-caret-down
     %ul.dropdown-menu.pull-left
       %li
-        %a.inbox-load{href: "javascript:void(0);"}
+        %a#inbox-load-mobile{href: "javascript:void(0);"}
           Tareas
           %i.fa.fa-check
       %li
-        %a{href: "javascript:void(0);"} Ordenes de Suministro
+        %a#inbox-delivery-mobile{href: "javascript:void(0);"} Ordenes de Suministro
       %li
-        %a{href: "javascript:void(0);"} Ordenes de Servicio
+        %a#inbox-service-mobile{href: "javascript:void(0);"} Ordenes de Servicio
       %li.divider
       %li
-        %a{href: "javascript:void(0);"} Ordenes de Compra
+        %a#inbox-purchase-mobile{href: "javascript:void(0);"} Ordenes de Compra
   .inbox-checkbox-triggered
     .btn-group
       %a.deletebutton.btn.btn-default{"data-original-title" => "Delete", "data-placement" => "bottom", href: "javascript:void(0);", rel: "tooltip", title: ""}
@@ -118,6 +118,53 @@
     loadInbox("#{display_table_messages_oc_path}");
   });
 
+  $("#inbox-load-mobile").click(function() {
+    loadInbox("#{display_general_table_messages_path}");
+  });
+
+  $("#inbox-delivery-mobile").click(function() {
+    loadInbox("#{display_table_messages_os_path}");
+  });
+
+  $("#inbox-service-mobile").click(function() {
+    loadInbox("#{display_table_messages_ose_path}");
+  });
+
+  $("#inbox-purchase-mobile").click(function() {
+    loadInbox("#{display_table_messages_oc_path}");
+  });
+
   function loadInbox(path) {
     loadURL(path, $('#inbox-content > .table-wrap'))
+  }
+
+  $('#inbox-content .inbox-side-bar ul li a').click(function(){
+    $(this).parent().addClass('active');
+    current_link = $(this).attr('id');
+
+    $('#inbox-content .inbox-side-bar ul li a').each(function(){
+      if ( $(this).parent().hasClass('active') ){
+        if ( $(this).attr('id') != current_link ) {
+          $(this).parent().removeClass('active');
+        }
+      }
+    });
+
+  });
+
+  $("#inbox-table .inbox-data-message").click(function() {
+    $this = $(this);
+    goToChangeState($this);
+  });
+
+  function goToChangeState($this) {
+    data = $this.attr('data').split('-');
+
+    order_id = [0];
+    order_state = data[1];
+    company_id = data[2];
+    type = data[3];
+
+    console.log(data);
+    
   }

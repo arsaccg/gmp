@@ -100,8 +100,8 @@ class PartOfEquipment < ActiveRecord::Base
   end
 
   def self.get_report_per_equipments_per_article(subcontract_equip_id, start_date, end_date, worker_id)
-    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2), tv.theoretical_value
-      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced , theoretical_values tv 
+    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2) 
+      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
       WHERE sced.code LIKE '" + worker_id.to_s + "' 
       AND poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "'
       AND poe.worker_id=wo.id 
@@ -109,7 +109,6 @@ class PartOfEquipment < ActiveRecord::Base
       AND poe.id=poed.part_of_equipment_id 
       AND poe.equipment_id=sced.id 
       AND poed.phase_id=pha.id
-      AND sced.article_id=tv.article_id
       AND sced.article_id = " + subcontract_equip_id + "
       GROUP BY pha.name
       ")

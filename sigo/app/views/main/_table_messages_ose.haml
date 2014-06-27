@@ -1,6 +1,30 @@
 %table#inbox-table.table.table-striped.table-hover
   %tbody
-    - @order_services.each do |ose|
+    - @order_services_issued.each do |ose|
+      %tr#msg1.unread
+        %td.inbox-table-icon
+          .checkbox
+            %label
+              %input.checkbox.style-2{type: "checkbox"}/
+              %span
+        %td.inbox-data-from.hidden-xs.hidden-sm
+          %div
+            = "Orden de Servicio N° " + ose.id.to_s.rjust(5, '0')
+        %td.inbox-data-message
+          %div
+            %span
+              %span.label.bg-color-orange DAR VISTO BUENO
+              = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
+            = "Se necesita aprobar la Orden en " + CostCenter.find(ose.cost_center_id).name.capitalize + " con fecha de emisión " + ose.date_of_issue.strftime('%d-%m-%Y')
+        
+        %td.inbox-data-date.hidden-xs
+          %div
+            - if ose.state_per_order_of_services.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = ose.state_per_order_of_services.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+
+    - @order_services_revised.each do |ose|
       %tr#msg1.unread
         %td.inbox-table-icon
           .checkbox
@@ -14,12 +38,15 @@
           %div
             %span
               %span.label.bg-color-orange APROBAR
-              = @user.name.capitalize
-            = "Se necesita aprobar la Orden con fecha de emisión " + ose.date_of_issue.strftime('%d-%m-%Y')
-
+              = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
+            = "Se necesita aprobar la Orden en " + CostCenter.find(ose.cost_center_id).name.capitalize + " con fecha de emisión " + ose.date_of_issue.strftime('%d-%m-%Y')
+        
         %td.inbox-data-date.hidden-xs
           %div
-            = ose.state_per_order_of_services.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+            - if ose.state_per_order_of_services.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = ose.state_per_order_of_services.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
 
 :javascript
   //Gets tooltips activated
