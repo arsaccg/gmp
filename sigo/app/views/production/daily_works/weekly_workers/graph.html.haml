@@ -12,7 +12,7 @@
         %option{:value => "0"} Seleccione una fecha
         - @week.each do |week|
           %option{:value => "#{week[0]},#{week[2]},#{week[3]}"}
-            = week[1] + ' - ' + week[2].to_s + ' - ' + week[3].to_s
+            = week[1] + ' - ' + week[2].strftime('%d/%m/%Y').to_s + ' - ' + week[3].strftime('%d/%m/%Y').to_s
     .col-md-2
     .col-md-2
     %br
