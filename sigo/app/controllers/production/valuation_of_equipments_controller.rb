@@ -77,7 +77,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @start_date = params[:start_date]
       @end_date = params[:end_date]
       @subcontractequipment = SubcontractEquipment.find_by_entity_id(params[:executor])
-      @working_group = WorkingGroup.where("executor_id LIKE ?", params[:executor])
+      @cad = @subcontractequipment.id
       @numbercode = 1
       @subadvances = 0
       @fuel_discount = 0
@@ -101,14 +101,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       if @subcontractequipment.initial_amortization_percent != nil
         @initial_amortization_percent = @subcontractequipment.initial_amortization_percent
       end
-      if @working_group.present?
-        @working_group.each do |wg|
-          @cad << wg.id
-        end
-        @cad = @cad.join(',')
-      else
-        @cad = '0'
-      end
       @cc = get_company_cost_center('cost_center')
       @workers_array3 = business_days_array3(@start_date, @end_date, @cad, @cc)
       @workers_array3.each do |workerDetail|
@@ -128,42 +120,28 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
   def business_days_array3(start_date, end_date, working_group_id, cost_center)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT  art.name, 
-      uom.name, 
-      SUM( poed.effective_hours ), 
-      sed.price_no_igv, 
-      sed.price_no_igv*SUM( poed.effective_hours), 
-      sed.code, 
-      art.id 
-      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_equipment_details sed
-      WHERE poe.date >= '" + start_date + "' AND poe.date <= '" + end_date + "'
+      SELECT poe.equipment_id, sed.code, SUM(poed.effective_hours), sed.price_no_igv, SUM(poed.effective_hours)*sed.price_no_igv
+      FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
+      WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
-      AND poe.equipment_id=art.id
       AND poe.cost_center_id = '"+ cost_center +"'
-      AND poe.equipment_id=sed.article_id
-      AND uom.id = art.unit_of_measurement_id
-      AND poe.subcontract_equipment_id = sed.subcontract_equipment_id
-      AND art.id = sed.article_id
-      AND poed.working_group_id IN(" + working_group_id + ")
-      GROUP BY art.name
+      AND poe.equipment_id=sed.id
+      AND poe.subcontract_equipment_id = " + working_group_id.to_s + "
+      GROUP BY poe.equipment_id
     ")
     return workers_array3
   end
 
   def last(end_date, working_group_id, article, cost_center)
     last = ActiveRecord::Base.connection.execute("
-      SELECT art.name, SUM( poed.effective_hours ) , sed.price_no_igv*SUM( poed.effective_hours )
-      FROM articles art, part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
+      SELECT poe.equipment_id, sed.code, SUM(poed.effective_hours), sed.price_no_igv, SUM(poed.effective_hours)*sed.price_no_igv
+      FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
       WHERE poe.date <  '" + end_date.to_s + "'
-      AND poe.block =1
-      AND poe.subcontract_equipment_id = sed.id
-      AND poe.equipment_id = art.id
-      AND poe.id = poed.part_of_equipment_id
+      AND poe.id=poed.part_of_equipment_id
       AND poe.cost_center_id = '"+ cost_center +"'
-      AND poe.equipment_id = sed.article_id
-      AND poed.working_group_id IN (" + working_group_id + ")
-      AND art.id IN (" + article.to_s + ")
-      GROUP BY art.name
+      AND poe.equipment_id=sed.id
+      AND poe.subcontract_equipment_id = " + working_group_id.to_s + "
+      GROUP BY poe.equipment_id
     ")
     return last
   end
@@ -321,6 +299,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     start_date = params[:start_date]
     end_date = params[:end_date]
     @entityname = params[:name]
+    @name2 = SubcontractEquipmentDetail.find_by_id(@subcontractequipmentarticle).code + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_id(@subcontractequipmentarticle).article_id ,session[:cost_center])
+    puts @name2.inspect
     @poe_array = poe_array(start_date, end_date, @subcontractequipmentarticle, @entityname)
     @poe_array.each do |workerDetail|
       @totaldif += workerDetail[4].to_i
