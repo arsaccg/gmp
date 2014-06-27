@@ -23,7 +23,7 @@
           - @type_laws.each do |type_laws|
             - if type_laws.id == 1
               .tab-pane.active{:id => "tab-#{type_laws.id}"}
-                .col-md-11
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
@@ -51,7 +51,7 @@
                               Eliminar
             - else
               .tab-pane{:id => "tab-#{type_laws.id}"}
-                .col-md-11
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
