@@ -9,8 +9,17 @@ class Production::WeeklyReportsController < ApplicationController
   def get_report
   	@week3 = Array.new
     @cad = Array.new
+    @cad4 = Array.new
     @result = params[:start_date].split(/,/)
     @article= params[:article]
+    puts @article.inspect
+    if params[:article]=='0'
+      working = WorkingGroup.all
+      working.each do |wg|
+        @cad4 << wg.id
+      end
+      @article = @cad4.join(',')
+    end
     start_date = @result[1]
     end_date = @result[2]
     @week = CostCenter.getWeek(get_company_cost_center('cost_center'),Time.now.to_date.to_s)
@@ -33,11 +42,10 @@ class Production::WeeklyReportsController < ApplicationController
       end
     end
     @costcenter = get_company_cost_center('cost_center')
-    @now = Time.now.to_date.to_s
     weeks = ActiveRecord::Base.connection.execute("
       SELECT wcc.id
       FROM  weeks_for_cost_center_"+@costcenter+" wcc
-      WHERE  wcc.start_date <  '"+@now+"' AND wcc.end_date >  '"+@now+"'"
+      WHERE  wcc.start_date <  '"+end_date.to_s+"' AND wcc.end_date >  '"+start_date.to_s+"'"
     )
     weeks.each do |id|
       if id[0].to_i<13
@@ -68,6 +76,7 @@ class Production::WeeklyReportsController < ApplicationController
         AND ppd.worker_id=w.id
         AND w.article_id=a.id
         AND a.category_id = c.id
+        AND pp.working_group_id IN("+@article.to_s+")
         GROUP BY c.name
       ")
 
@@ -80,6 +89,7 @@ class Production::WeeklyReportsController < ApplicationController
         AND ppd.worker_id=w.id
         AND w.article_id=a.id
         AND a.category_id = c.id
+        AND pp.working_group_id IN("+@article.to_s+")
         GROUP BY c.name
       ")
     end
@@ -114,6 +124,7 @@ class Production::WeeklyReportsController < ApplicationController
           AND w.article_id = a.id
           AND a.category_id = c.id
           AND c.name LIKE '"+cat.to_s+"'
+          AND pp.working_group_id IN("+@article.to_s+")
           GROUP BY c.name
         ")
         if catwh.count==1
@@ -138,6 +149,7 @@ class Production::WeeklyReportsController < ApplicationController
           AND w.article_id = a.id
           AND a.category_id = c.id
           AND c.name LIKE '"+cat.to_s+"'
+          AND pp.working_group_id IN("+@article.to_s+")
           GROUP BY c.name
         ")
         if catwp.count==1
@@ -169,10 +181,6 @@ class Production::WeeklyReportsController < ApplicationController
                   name: c,
                   data: @parteh
                 }
-      @spline1 << {
-                  name: c,
-                  data: @parteh
-                }
       @i+=10
     end
     @i2=0
@@ -183,14 +191,10 @@ class Production::WeeklyReportsController < ApplicationController
                   name: c,
                   data: @partep
                 }
-      @spline2 << {
-                  name: c,
-                  data: @partep
-                }
       @i2+=10
     end
-    @serieh = @serie1 + @spline1
-    @seriep = @serie2 + @spline2
+    @serieh = @serie1
+    @seriep = @serie2
     render(partial: 'report_table', :layout => false)
   end
 end

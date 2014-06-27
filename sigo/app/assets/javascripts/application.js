@@ -95,13 +95,13 @@ function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, seman
   });
 }
 
-function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,week6,week7,week8,week9,week10,title,series2){
+function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,week6,week7,week8,week9,week10,title,series2,unit){
   $('#'+div_id).highcharts({
     chart: {
         type: 'area'
     },
     title: {
-        text: 'Reporte de Semana de Personal ' + title,
+        text: 'Reporte Semanal ' + title,
     },
     subtitle: {
         text: 'Desde ' + week1 + ' hasta ' + week10
@@ -115,7 +115,7 @@ function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,wee
     },
     yAxis: {
         title: {
-            text: 'Billions'
+            text: unit
         },
         labels: {
             formatter: function() {
