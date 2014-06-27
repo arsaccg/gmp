@@ -153,18 +153,21 @@
   });
 
   $("#inbox-table .inbox-data-message").click(function() {
-    $this = $(this);
-    goToChangeState($this);
+    data = $(this).attr('data').split('-');
+    if(data[2] == 'oservice'){
+      path = "/logistics/order_of_services/" + data[0] + "?state_change=" + data[1] + "&type_of_order=" + data[2]
+    } else {
+      if(data[2] == 'porder'){
+        path = "/logistics/purchase_orders/" + data[0] + "?state_change=" + data[1] + "&type_of_order=" + data[2]
+      } else {
+        if(data[2] == 'dorder'){
+          path = "/logistics/delivery_orders/" + data[0] + "?state_change=" + data[1] + "&type_of_order=" + data[2]
+        }
+      }
+    }
+    goToChangeState(path);
   });
 
-  function goToChangeState($this) {
-    data = $this.attr('data').split('-');
-
-    order_id = [0];
-    order_state = data[1];
-    company_id = data[2];
-    type = data[3];
-
-    console.log(data);
-    
+  function goToChangeState(path) {
+    loadURL(path, $('#inbox-content > .table-wrap'))
   }
