@@ -3,7 +3,7 @@
     .col-xs-15.col-sm-7.col-md-7.col-lg-4
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
-        Reporte de Semana de Personal
+        Reporte de Semanal
   .row
     .col-md-1
     .col-md-2
@@ -13,19 +13,19 @@
         - @week.each do |week|
           %option{:value => "#{week[0]},#{week[2]},#{week[3]}"}
             = week[1] + ' - ' + week[2].to_s + ' - ' + week[3].to_s
-    .col-md-3
+    .col-md-2
     .col-md-2
       %label Seleccione el grupo de trabajo
       %br
-      %label.input{for: "executor_id"}
+      %label.input{for: "working_group_id"}
         %select.form-control#workinggroup{:name =>"working_group", :style => 'width:100%;padding: 0;border: none;'}
           %option{:value => "0"} Seleccione un grupo de trabajo
           - @workingGroups.each do |ex|
             %option{:value => "#{ex.id}"}
               = ex.name
-  .row
-    .col-md-9
-    .col-md-1
+    %br
+    .col-md-2
+    .col-md-2
       %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
         %i.fa.fa-search
         Consultar

@@ -1,0 +1,2 @@
+module Libraries::TypeOfTechnicalLibrariesHelper
+end

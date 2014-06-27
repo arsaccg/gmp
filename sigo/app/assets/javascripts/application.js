@@ -95,16 +95,16 @@ function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, seman
   });
 }
 
-function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,week6,week7,week8,week9,week10){
+function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,week6,week7,week8,week9,week10,title,series2,unit){
   $('#'+div_id).highcharts({
     chart: {
         type: 'area'
     },
     title: {
-        text: 'Historic and Estimated Worldwide Population Growth by Region',
+        text: 'Reporte Semanal ' + title,
     },
     subtitle: {
-        text: 'Source: Wikipedia.org'
+        text: 'Desde ' + week1 + ' hasta ' + week10
     },
     xAxis: {
         categories: [week1, week2, week3, week4, week5, week6, week7, week8, week9, week10],
@@ -115,7 +115,7 @@ function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,wee
     },
     yAxis: {
         title: {
-            text: 'Billions'
+            text: unit
         },
         labels: {
             formatter: function() {
@@ -138,22 +138,7 @@ function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,wee
             }
         }
     },
-    series: [{
-        name: 'Asia',
-        data: [502, 635, 809, 947, 1402, 3634, 5268, 635, 809, 947]
-    }, {
-        name: 'Africa',
-        data: [106, 107, 111, 133, 221, 767, 1766, 635, 809, 947]
-    }, {
-        name: 'Europe',
-        data: [163, 203, 276, 408, 547, 729, 628, 635, 809, 947]
-    }, {
-        name: 'America',
-        data: [18, 31, 54, 156, 339, 818, 1201, 635, 809, 947]
-    }, {
-        name: 'Oceania',
-        data: [2, 2, 2, 6, 13, 30, 46, 635, 809, 947]
-    }]
+    series: series2
   });
 }
 

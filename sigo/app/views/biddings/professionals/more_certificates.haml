@@ -80,10 +80,10 @@
         .col-sm-12
           #new-date 
       .row{'class'=>'comp2'}
-        .col-sm-6
+        .col-sm-12
           %label Componentes de la obra:
           %br
-          .col-sm-4
+          .col-sm-8
             %label#get-comp
               %label.select.components{'class'=>'comp-check'}
           %br
@@ -164,7 +164,7 @@
       $.each(newOptions, function(key,value){
         str_html = str_html + "<label> <strong> > </strong> " + value.name + "</label><br/>"
       });
-      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').html(str_html);
+      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-12').children('.col-sm-8').children('#get-comp').children('.comp-check.components.select').html(str_html);
       $(element).parent().parent().children().children('.start_certificate').find('input').empty();
       $(element).parent().parent().children().children('.start_certificate').find('input').val(start);
       $(element).parent().parent().children().children('.finish_certificate').find('input').empty();

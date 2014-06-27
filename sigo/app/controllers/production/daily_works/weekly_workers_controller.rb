@@ -3,7 +3,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   
   def index
-  	@workingGroups = WorkingGroup.all
+    @workingGroups = WorkingGroup.all
     @weeklyworker = WeeklyWorker.all
     @cost_center = get_company_cost_center('cost_center')
     render layout: false
@@ -234,11 +234,10 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
         @catehh << b[0]
       end
     end
-    @catehh = @catehh.uniq 
+    @catehh = @catehh.uniq
     
     @weekcp.each do |a|
       a.each do |b|
-        puts b
         @catecp << b[0]
       end
     end
