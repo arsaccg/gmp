@@ -38,7 +38,7 @@
                       = translate_order_service_state(@orderOfService.state)
                     %td
                       - if @orderOfService.entity.present?
-                        = @orderOfService.entity.name + ' ' + @orderOfService.entity.paternal_surname
+                        = @orderOfService.entity.name.to_s + ' ' + @orderOfService.entity.paternal_surname.to_s
                     %td
                       = @orderOfService.money.name
                     %td
@@ -48,7 +48,7 @@
                     %td
                       = @orderOfService.date_of_service.strftime("%d/%m/%Y") rescue Time.now.strftime("%d/%m/%Y")
                     %td
-                      = @orderOfService.user.first_name + ' ' + @orderOfService.user.last_name
+                      = @orderOfService.user.first_name.to_s + ' ' + @orderOfService.user.last_name.to_s
                     %td
                       = @orderOfService.description
       - if @state_change != nil
