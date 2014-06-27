@@ -40,9 +40,9 @@
                       - if @orderOfService.entity.present?
                         = @orderOfService.entity.name.to_s + ' ' + @orderOfService.entity.paternal_surname.to_s
                     %td
-                      = @orderOfService.money.name
+                      = @orderOfService.money.name.to_s
                     %td
-                      = @orderOfService.method_of_payment.name
+                      = @orderOfService.method_of_payment.name.to_s
                     %td
                       = @orderOfService.date_of_issue.strftime("%d/%m/%Y")
                     %td
@@ -50,7 +50,7 @@
                     %td
                       = @orderOfService.user.first_name.to_s + ' ' + @orderOfService.user.last_name.to_s
                     %td
-                      = @orderOfService.description
+                      = @orderOfService.description.to_s
       - if @state_change != nil
         %h1.page-title.txt-color-blueDark
           %i.fa.fa-pencil-square-o.fa-fw 
