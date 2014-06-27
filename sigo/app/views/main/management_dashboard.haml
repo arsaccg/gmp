@@ -206,9 +206,28 @@
 
   / row
   .row
+    / NEW WIDGET START
+    %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+      / Widget ID (each widget will need unique ID)
+      #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
+
+        %header
+          %span.widget-icon
+            %i.fa.fa-map-marker
+          %h2 Mapa
+        / widget div
+        %div
+          / widget edit box
+          .jarviswidget-editbox
+            / This area used as dropdown edit box
+          .widget-body.no-padding
+            #map_canvas2.google_maps{:style => 'height: 500px;'}
+
+  / row
+  .row
     %article.col-sm-12
       / new widget
-      #wid-id-2.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+      #wid-id-2.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
         %header
           %span.widget-icon
             %i.fa.fa-map-marker
@@ -232,7 +251,7 @@
           / end widget edit box
           .widget-body.no-padding
             / content goes here
-            #vector-map.vector-map
+            / #vector-map.vector-map
             #heat-fill
               %span.fill-a 0
               %span.fill-b 5,000
@@ -450,10 +469,34 @@
   /*
    * TODO: add a way to add more todo's to list
    */
+
+  var colorful_style = [{
+    "featureType": "landscape",
+    "stylers": [{
+        "visibility": "off"
+      }]
+  }];
+  
+  // One color - Change the hue value for your desired color
+  var mono_color_style = [{
+      "stylers": [{
+          "hue": "#ff00aa"
+      }, {
+          "saturation": 1
+      }, {
+          "lightness": 1
+      }]
+  }];
+
+  var colorfulStyleMap = new google.maps.StyledMapType(colorful_style, {
+    name: "Colorful"
+  });
   
   /*
    * RUN PAGE GRAPHS
    */
+
+  generate_map_2();
   
   // Load FLOAT dependencies (related to page)
   loadScript("#{ asset_path 'plugin/flot/jquery.flot.cust.js', type: :javascript }", loadFlotResize);
@@ -860,4 +903,19 @@
               }
           }
       });
+  }
+
+  // colorful
+  function generate_map_2() {
+
+    var mapOptions = {
+      center: new google.maps.LatLng(-9.9604725, -76.9194798),
+      zoom: 12,
+    };
+    map = new google.maps.Map(document.getElementById('map_canvas2'), mapOptions);
+
+    // Setup skin for the map
+    map.mapTypes.set('colorful_style', colorfulStyleMap);
+    map.setMapTypeId('colorful_style');
+
   }
