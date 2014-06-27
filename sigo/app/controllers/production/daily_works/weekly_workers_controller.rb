@@ -3,7 +3,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   
   def index
-  	@workingGroups = WorkingGroup.all
+    @workingGroups = WorkingGroup.all
     @weeklyworker = WeeklyWorker.all
     @cost_center = get_company_cost_center('cost_center')
     render layout: false
