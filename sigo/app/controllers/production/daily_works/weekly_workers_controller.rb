@@ -234,11 +234,10 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
         @catehh << b[0]
       end
     end
-    @catehh = @catehh.uniq 
+    @catehh = @catehh.uniq
     
     @weekcp.each do |a|
       a.each do |b|
-        puts b
         @catecp << b[0]
       end
     end
