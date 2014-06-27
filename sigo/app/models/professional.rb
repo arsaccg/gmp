@@ -7,11 +7,11 @@ class Professional < ActiveRecord::Base
 	accepts_nested_attributes_for :trainings, :allow_destroy => true
 
 	has_attached_file :professional_title
-    validates_attachment_content_type :professional_title, :content_type => ['application/pdf', 'application/msword', 'text/plain']
+    validates_attachment_content_type :professional_title, :content_type => ['application/pdf', 'application/msword', 'text/plain', 'application/msexcel', /\Aimage\/.*\Z/]
 
     has_attached_file :tuition
-    validates_attachment_content_type :tuition, :content_type => ['application/pdf', 'application/msword', 'text/plain']
+    validates_attachment_content_type :tuition, :content_type => ['application/pdf', 'application/msword', 'text/plain', 'application/msexcel', /\Aimage\/.*\Z/]
     
     has_attached_file :cv
-    validates_attachment_content_type :cv, :content_type => ['application/pdf', 'application/msword', 'text/plain']
+    validates_attachment_content_type :cv, :content_type => ['application/pdf', 'application/msword', 'text/plain', 'application/msexcel', /\Aimage\/.*\Z/]
 end
