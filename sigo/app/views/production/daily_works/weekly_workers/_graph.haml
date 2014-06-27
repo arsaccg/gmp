@@ -1,0 +1,14 @@
+#wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+  %br
+  .row
+    %div{:id => "container1"}
+    
+  %br
+  %br
+  .row
+    %div{:id => "container2"}
+
+:javascript
+  bar_graph_category('container1', "#{@names}", jQuery.parseJSON("#{escape_javascript @serieh.to_json}"), 'Histograma: Cantidad de Horas - Categoría', 'Horas', 'hh', ' hh');
+  console.log("jwdbvbwedvbhsodvhbafivafvsbojfsisdfsbvhbdvdl");
+  bar_graph_category('container2', "#{@names}", jQuery.parseJSON("#{escape_javascript @seriep.to_json}"), 'Histograma: Cantidad de Trabajadores - Categoría', 'Trabajadores', 'per.', ' p.');
