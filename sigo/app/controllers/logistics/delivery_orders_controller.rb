@@ -47,6 +47,9 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @deliveryOrder = DeliveryOrder.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
+      if params[:type_of_order] != nil
+        @type_of_order = params[:type_of_order]
+      end
     else
       @deliverPerState = @deliveryOrder.state_per_order_details
     end

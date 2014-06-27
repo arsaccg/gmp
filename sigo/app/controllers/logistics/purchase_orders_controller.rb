@@ -14,6 +14,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @purchaseOrder = PurchaseOrder.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
+      if params[:type_of_order] != nil
+        @type_of_order = params[:type_of_order]
+      end
     else
       @purchasePerState = @purchaseOrder.state_per_order_purchases
     end
