@@ -128,7 +128,48 @@
           / Aqui esta el Gráfico!
           :javascript
             $(document).ready(function () {
-              load_graphic('container-graphic-#{index}','#{@cad[0]}','#{@cad[1]}','#{@cad[2]}','#{@cad[3]}','#{@cad[4]}','#{@cad[5]}','#{@cad[6]}','#{@cad[7]}','#{@cad[8]}','#{@cad[9]}','#{@theoretical_value.to_f}','#{@cad4[9+index]}','#{@cad4[8+index]}','#{@cad4[7+index]}','#{@cad4[6+index]}','#{@cad4[5+index]}','#{@cad4[4+index]}','#{@cad4[3+index]}','#{@cad4[2+index]}','#{@cad4[1+index]}','#{@cad4[0+index]}');
+              valor9='#{@cad4[9+index]}';
+              valor8='#{@cad4[8+index]}';
+              valor7='#{@cad4[7+index]}';
+              valor6='#{@cad4[6+index]}';
+              valor5='#{@cad4[5+index]}';
+              valor4='#{@cad4[4+index]}';
+              valor3='#{@cad4[3+index]}';
+              valor2='#{@cad4[2+index]}';
+              valor1='#{@cad4[1+index]}';
+              valor0='#{@cad4[0+index]}';
+              teorico='#{@theoretical_value.to_f}'
+              if(valor9==0){
+                valor9=teorico;
+              }
+              if(valor8==0){
+                valor8=teorico;
+              }
+              if(valor7==0){
+                valor7=teorico;
+              }
+              if(valor6==0){
+                valor6=teorico;
+              }
+              if(valor5==0){
+                valor5=teorico;
+              }
+              if(valor4==0){
+                valor4=teorico;
+              }
+              if(valor3==0){
+                valor3=teorico;
+              }
+              if(valor2==0){
+                valor2=teorico;
+              }
+              if(valor1==0){
+                valor1=teorico;
+              }
+              if(valor0==0){
+                valor0=teorico;
+              }
+              load_graphic('container-graphic-#{index}','#{@cad[0]}','#{@cad[1]}','#{@cad[2]}','#{@cad[3]}','#{@cad[4]}','#{@cad[5]}','#{@cad[6]}','#{@cad[7]}','#{@cad[8]}','#{@cad[9]}',teorico,valor9,valor8,valor7,valor6,valor5,valor4,valor3,valor2,valor1,valor0);
             });
           %br
           .row
@@ -215,7 +256,48 @@
           / Aqui esta el Gráfico!
           :javascript
             $(document).ready(function () {
-              load_graphic('container-graphic-#{index}','#{@cad[0]}','#{@cad[1]}','#{@cad[2]}','#{@cad[3]}','#{@cad[4]}','#{@cad[5]}','#{@cad[6]}','#{@cad[7]}','#{@cad[8]}','#{@cad[9]}','#{@theoretical_value.to_f}','#{@cad4[9+index]}','#{@cad4[8+index]}','#{@cad4[7+index]}','#{@cad4[6+index]}','#{@cad4[5+index]}','#{@cad4[4+index]}','#{@cad4[3+index]}','#{@cad4[2+index]}','#{@cad4[1+index]}','#{@cad4[0+index]}');
+              valor9='#{@cad4[9+index]}';
+              valor8='#{@cad4[8+index]}';
+              valor7='#{@cad4[7+index]}';
+              valor6='#{@cad4[6+index]}';
+              valor5='#{@cad4[5+index]}';
+              valor4='#{@cad4[4+index]}';
+              valor3='#{@cad4[3+index]}';
+              valor2='#{@cad4[2+index]}';
+              valor1='#{@cad4[1+index]}';
+              valor0='#{@cad4[0+index]}';
+              teorico='#{@theoretical_value.to_f}'
+              if(valor9==0){
+                valor9=teorico;
+              }
+              if(valor8==0){
+                valor8=teorico;
+              }
+              if(valor7==0){
+                valor7=teorico;
+              }
+              if(valor6==0){
+                valor6=teorico;
+              }
+              if(valor5==0){
+                valor5=teorico;
+              }
+              if(valor4==0){
+                valor4=teorico;
+              }
+              if(valor3==0){
+                valor3=teorico;
+              }
+              if(valor2==0){
+                valor2=teorico;
+              }
+              if(valor1==0){
+                valor1=teorico;
+              }
+              if(valor0==0){
+                valor0=teorico;
+              }
+              load_graphic('container-graphic-#{index}','#{@cad[0]}','#{@cad[1]}','#{@cad[2]}','#{@cad[3]}','#{@cad[4]}','#{@cad[5]}','#{@cad[6]}','#{@cad[7]}','#{@cad[8]}','#{@cad[9]}',teorico,valor9,valor8,valor7,valor6,valor5,valor4,valor3,valor2,valor1,valor0);
             });
           %br
           .row
