@@ -170,13 +170,20 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   end
 
   def graph
+    @week = CostCenter.getWeek5(get_company_cost_center('cost_center'),Time.now.to_date.to_s)
+    render layout: false
+  end
+
+  def graph_week
     @names= Array.new
+    @result = params[:start_date].split(/,/)
+    start_date = @result[1]
+    end_date = @result[2]
     @costcenter = get_company_cost_center('cost_center')
-    @now = Time.now.to_date.to_s
     weeks = ActiveRecord::Base.connection.execute("
       SELECT wcc.id
       FROM  weeks_for_cost_center_"+@costcenter+" wcc
-      WHERE  wcc.start_date <  '"+@now+"' AND wcc.end_date >  '"+@now+"'"
+      WHERE  wcc.start_date <  '"+end_date.to_s+"' AND wcc.end_date >  '"+start_date.to_s+"'"
     )
     weeks.each do |id|
       if id[0].to_i<13
@@ -343,7 +350,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     end
     @serieh = @serie1 + @spline1
     @seriep = @serie2 + @spline2
-    render layout: false
+    render(partial: 'graph', :layout => false)
   end
 
   def filter_array_business_days(array_order)
