@@ -1,4 +1,4 @@
-.modal-dialog{ style: "width: 900px;" }
+.modal-dialog{ style: "width: 1250px;" }
   .modal-content
     .modal-header
       %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
@@ -27,19 +27,19 @@
           - index = 1
           - @array.each do |workerDetail3|
             %tr
-              %th= index
-              %th= workerDetail3[5] + ' ' + workerDetail3[0]
-              %th= workerDetail3[1]
-              %th= workerDetail3[3]
-              %th= workerDetail3[8]
-              %th= workerDetail3[9]
-              %th= workerDetail3[2]
-              %th= workerDetail3[4]
-              %th= workerDetail3[8] + workerDetail3[2]
-              %th= workerDetail3[4] + workerDetail3[9]
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= index
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= workerDetail3[1] + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= index
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= workerDetail3[3]
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[5])
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[6])
+              %th{ 'style' => 'text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[2])
+              %th{ 'style' => 'text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[4])
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[5]+workerDetail3[2])
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[6]+workerDetail3[4])
               %th
                 %span{"style"=>"width=20px"}
-                  %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "report_of_equipment(#{workerDetail3[6]})"}
+                  %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "report_of_equipment(#{workerDetail3[0]})"}
                     %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
             - index += 1
       -else
