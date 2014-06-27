@@ -154,15 +154,17 @@
 
   $("#inbox-table .inbox-data-message").click(function() {
     $this = $(this);
-    /*goToChangeState($this);*/
+    goToChangeState($this);
   });
 
   function goToChangeState($this) {
     data = $this.attr('data').split('-');
 
-    load_url_ajax('#{logistics_purchase_order_path(data[0])}', 'content', {company_id: data[2], state_change: '#{get_next_state(data[1])}', type: }, null, 'GET')
+    order_id = [0];
+    order_state = data[1];
+    company_id = data[2];
+    type = data[3];
 
-    load_url_ajax('#{logistics_order_of_service_path(data[0])}', 'content', {company_id: data[2], state_change: '#{get_next_state(data[1])}'}, null, 'GET');
-
-    load_url_ajax('#{logistics_delivery_order_path(data[0])}', 'content', {company_id: data[2], state_change: '#{get_next_state(data[1])}'}, null, 'GET')
+    console.log(data);
+    
   }
