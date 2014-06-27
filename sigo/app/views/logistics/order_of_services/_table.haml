@@ -57,7 +57,7 @@
                   No tiene descripción alguna.
               %td
                 - if orderService.entity.present?
-                  = orderService.entity.name + ' ' + orderService.entity.paternal_surname
+                  = orderService.entity.name.to_s + ' ' + orderService.entity.paternal_surname.to_s
               %td
                 - if orderService.state_per_order_of_services.last != nil
                   = orderService.state_per_order_of_services.last.created_at.strftime("%d/%m/%Y")
@@ -66,7 +66,7 @@
               %td
                 = orderService.date_of_issue.strftime("%d/%m/%Y")
               %td
-                = orderService.user.first_name + " " + orderService.user.last_name
+                = orderService.user.first_name.to_s + " " + orderService.user.last_name.to_s
               %td
                 %a.btn.btn-view.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_order_of_service_path(orderService.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
                   %i.fa.fa-eye
