@@ -37,6 +37,10 @@ class MainController < ApplicationController
     render layout: false
   end
 
+  def management_dashboard
+    render layout: false
+  end
+
   def display_general_table_messages
     @user = current_user
 
