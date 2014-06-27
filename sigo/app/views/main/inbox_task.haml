@@ -1,0 +1,170 @@
+.inbox-nav-bar.no-content-padding
+  %h1.page-title.txt-color-blueDark.hidden-tablet
+    %i.fa.fa-fw.fa-inbox
+    Tareas
+
+  .btn-group.hidden-desktop.visible-tablet
+    %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
+      Tareas
+      %i.fa.fa-caret-down
+    %ul.dropdown-menu.pull-left
+      %li
+        %a#inbox-load-mobile{href: "javascript:void(0);"}
+          Tareas
+          %i.fa.fa-check
+      %li
+        %a#inbox-delivery-mobile{href: "javascript:void(0);"} Ordenes de Suministro
+      %li
+        %a#inbox-service-mobile{href: "javascript:void(0);"} Ordenes de Servicio
+      %li.divider
+      %li
+        %a#inbox-purchase-mobile{href: "javascript:void(0);"} Ordenes de Compra
+  .inbox-checkbox-triggered
+    .btn-group
+      %a.deletebutton.btn.btn-default{"data-original-title" => "Delete", "data-placement" => "bottom", href: "javascript:void(0);", rel: "tooltip", title: ""}
+        %strong
+          %i.fa.fa-trash-o.fa-lg
+  %a#compose-mail-mini.btn.btn-primary.pull-right.hidden-desktop.visible-tablet{href: "javascript:void(0);"}
+    %strong
+      %i.fa.fa-file.fa-lg
+  .btn-group.pull-right.inbox-paging
+    %a.btn.btn-default.btn-sm{href: "javascript:void(0);"}
+      %strong
+        %i.fa.fa-chevron-left
+    %a.btn.btn-default.btn-sm{href: "javascript:void(0);"}
+      %strong
+        %i.fa.fa-chevron-right
+  %span.pull-right
+    %strong 1-30
+    of
+    %strong 3,452
+#inbox-content.inbox-body.no-content-padding
+  .inbox-side-bar
+    %h6
+      Folder
+      %a.pull-right.txt-color-darken{"data-original-title" => "Refresh", "data-placement" => "right", href: "javascript:void(0);", rel: "tooltip", title: ""}
+        %i.fa.fa-refresh
+    %ul.inbox-menu-lg
+      %li.active
+        %a#inbox-load{href: "javascript:void(0);"} General
+      %li
+        %a#inbox-delivery{href: "javascript:void(0);"} Ordenes de Suministro
+      %li
+        %a#inbox-service{href: "javascript:void(0);"} Ordenes de Servicio
+      %li
+        %a#inbox-purchase{href: "javascript:void(0);"} Ordenes de Compra
+    
+    .air.air-bottom.inbox-space
+      
+  .table-wrap.custom-scroll.animated.fast.fadeInRight#body-tasks
+    / ajax will fill this area
+    LOADING...
+  .inbox-footer
+    .row
+      .col-xs-6.col-sm-1
+        
+      .col-xs-6.col-sm-11.text-right
+        .txt-color-white.inline-block
+          %i.txt-color-blueLight.hidden-mobile
+            Last account activity
+            %i.fa.fa-clock-o
+            52 mins ago
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  // PAGE RELATED SCRIPTS
+
+  /*
+   * Load delete row plugin
+   */
+  loadScript("#{ asset_path 'plugin/delete-table-row/delete-table-row.js', type: :javascript }");
+
+  /*
+   * Fixed table height
+   */
+  
+  tableHeightSize()
+  $(window).resize(function() {
+  	tableHeightSize()
+  })
+  
+  function tableHeightSize() {
+  	var tableHeight = $(window).height() - 212;
+  	$('.table-wrap').css('height', tableHeight + 'px');
+  }
+  
+  /*
+   * LOAD INBOX MESSAGES
+   */
+  loadInbox("#{display_general_table_messages_path}");
+
+  /*
+   * Buttons (compose mail and inbox load)
+   */
+  $("#inbox-load").click(function() {
+  	loadInbox("#{display_general_table_messages_path}");
+  });
+
+  $("#inbox-delivery").click(function() {
+    loadInbox("#{display_table_messages_os_path}");
+  });
+
+  $("#inbox-service").click(function() {
+    loadInbox("#{display_table_messages_ose_path}");
+  });
+
+  $("#inbox-purchase").click(function() {
+    loadInbox("#{display_table_messages_oc_path}");
+  });
+
+  $("#inbox-load-mobile").click(function() {
+    loadInbox("#{display_general_table_messages_path}");
+  });
+
+  $("#inbox-delivery-mobile").click(function() {
+    loadInbox("#{display_table_messages_os_path}");
+  });
+
+  $("#inbox-service-mobile").click(function() {
+    loadInbox("#{display_table_messages_ose_path}");
+  });
+
+  $("#inbox-purchase-mobile").click(function() {
+    loadInbox("#{display_table_messages_oc_path}");
+  });
+
+  function loadInbox(path) {
+    loadURL(path, $('#inbox-content > .table-wrap'))
+  }
+
+  $('#inbox-content .inbox-side-bar ul li a').click(function(){
+    $(this).parent().addClass('active');
+    current_link = $(this).attr('id');
+
+    $('#inbox-content .inbox-side-bar ul li a').each(function(){
+      if ( $(this).parent().hasClass('active') ){
+        if ( $(this).attr('id') != current_link ) {
+          $(this).parent().removeClass('active');
+        }
+      }
+    });
+
+  });
+
+  $("#inbox-table .inbox-data-message").click(function() {
+    $this = $(this);
+    goToChangeState($this);
+  });
+
+  function goToChangeState($this) {
+    data = $this.attr('data').split('-');
+
+    order_id = [0];
+    order_state = data[1];
+    company_id = data[2];
+    type = data[3];
+
+    console.log(data);
+    
+  }

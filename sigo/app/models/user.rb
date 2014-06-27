@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
   
-  has_many :deliver_orders
+  has_many :delivery_orders
   has_many :state_per_order_details
   has_many :purchase_orders
   has_many :state_per_order_purchases

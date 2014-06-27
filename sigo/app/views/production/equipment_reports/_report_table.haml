@@ -25,23 +25,23 @@
                       %th{ 'style' => 'font-weight: normal;' }
                         = data[1]
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[2]
+                        = sprintf('%.2f',data[2].to_f)
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[3]
+                        = sprintf('%.2f',data[3].to_f)
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[4]
+                        = sprintf('%.2f',data[4].to_f)
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[5]
+                        = sprintf('%.2f',@theoretical_value.to_f)
                   %tr
                     %th{'colspan' => 2} Total
                     %th
-                      = value['hours']
+                      = sprintf('%.2f',value['hours'].to_f)
                     %th
-                      = value['fuel']
+                      = sprintf('%.2f',value['fuel'].to_f)
                     %th
-                      = value['ratio']
+                      = sprintf('%.2f',value['ratio'].to_f)
                     %th
-                      = @theoretical_value.to_f
+                      = sprintf('%.2f',@theoretical_value.to_f)
           / Aqui esta el Gráfico!
           :javascript
             $(document).ready(function () {
@@ -52,7 +52,7 @@
             %div{:id => "container-graphic-#{index}"}
           -index += 10
     %div
-      %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @subcontract.code + ' ' + @subcontract.article.name
+      %h1.page-title.txt-color-blueDark= "Resumen Parte de Equipos" + ' ' + @subcontract.code + ' ' + Article.find_article_by_global_article(@subcontract.article_id,session[:cost_center])
       .jarviswidget-editbox
       .widget-body
         %table.table.table-bordered
@@ -72,20 +72,20 @@
                 %th{'style' => 'font-weight: normal;'}
                   = workerDetail2[1]
                 %th{'style' => 'font-weight: normal;'}
-                  = workerDetail2[2]
+                  = sprintf('%.2f',workerDetail2[2].to_f)
                 %th{'style' => 'font-weight: normal;'}
-                  = workerDetail2[3]
+                  = sprintf('%.2f',workerDetail2[3].to_f)
                 %th{'style' => 'font-weight: normal;'}
-                  = workerDetail2[4]
+                  = sprintf('%.2f',workerDetail2[4].to_f)
                 %th{'style' => 'font-weight: normal;'}
-                  = workerDetail2[5]
+                  = sprintf('%.2f',@theoretical_value.to_f)
 
   -if @select1 == 'operador'
     %div
       - index = 0
       - @poe_array.each do |poe|
         - poe[0].each do |data|
-          %h1.page-title.txt-color-blueDark= data[0]
+          %h1.page-title.txt-color-blueDark= data[0] + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(data[0]).article_id ,session[:cost_center])
           .jarviswidget-editbox
           .widget-body
             %table.table.table-bordered
@@ -96,28 +96,34 @@
                   %th H.Efectivas
                   %th Combustible (gln)
                   %th Ratio real (gln/hr)
+                  %th Valor Teórico (gln/hr)
               %tbody
                 - data[1].each do |value|
-                  - value['data'].each do |data|
+                  - value['data'].each do |data2|
                     %tr
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[0]
+                        = data2[0]
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[1]
+                        = data2[1]
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[2]
+                        = sprintf('%.2f',data2[2].to_f)
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[3]
+                        = sprintf('%.2f',data2[3].to_f)
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[4]
+                        = sprintf('%.2f',data2[4].to_f)
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
                   %tr
                     %th{'colspan' => 2} Total
                     %th
-                      = value['hours']
+                      = sprintf('%.2f',value['hours'].to_f)
                     %th
-                      = value['fuel']
+                      = sprintf('%.2f',value['fuel'].to_f)
                     %th
-                      = value['ratio']
+                      = sprintf('%.2f',value['ratio'].to_f)
+                    %th
+                      = TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
+                      - @theoretical_value=TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
           / Aqui esta el Gráfico!
           :javascript
             $(document).ready(function () {
@@ -136,7 +142,7 @@
             %thead
               %tr
                 %th #
-                %th Nombre Tarea/Fase
+                %th Artículo
                 %th H.Efectivas
                 %th Combustible (gln)
                 %th Ratio real (gln/hr)
@@ -147,14 +153,15 @@
                   %th{'style' => 'font-weight: normal;'}
                     = workerDetail2[0]
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[1]
+                    = Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail2[0]).article_id ,session[:cost_center])
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[2]
+                    = sprintf('%.2f',workerDetail2[2].to_f)
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[3]
+                    = sprintf('%.2f',workerDetail2[3].to_f)
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[4]
-                  %th 10
+                    = sprintf('%.2f',workerDetail2[4].to_f)
+                  %th{'style' => 'font-weight: normal;'}
+                    = sprintf('%.2f',workerDetail2[5].to_f)
       / Aqui esta el Gráfico!
       %br
       .row
@@ -165,7 +172,7 @@
       - index = 0
       - @poe_array.each do |poe|
         - poe[0].each do |data|
-          %h1.page-title.txt-color-blueDark= data[0]
+          %h1.page-title.txt-color-blueDark= data[0] + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(data[0]).article_id ,session[:cost_center])
           .jarviswidget-editbox
           .widget-body
             %table.table.table-bordered
@@ -176,28 +183,34 @@
                   %th H.Efectivas
                   %th Combustible (gln)
                   %th Ratio real (gln/hr)
+                  %th Valor Teórico (gln/hr)
               %tbody
                 - data[1].each do |value|
-                  - value['data'].each do |data|
+                  - value['data'].each do |data2|
                     %tr
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[0]
+                        = data2[0]
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[1]
+                        = data2[1]
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[2]
+                        = sprintf('%.2f',data2[2].to_f)
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[3]
+                        = sprintf('%.2f',data2[3].to_f)
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[4]
+                        = sprintf('%.2f',data2[4].to_f)
+                      %th{ 'style' => 'font-weight: normal;' }
+                        = TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
                   %tr
                     %th{'colspan' => 2} Total
                     %th
-                      = value['hours']
+                      = sprintf('%.2f',value['hours'].to_f)
                     %th
-                      = value['fuel']
+                      = sprintf('%.2f',value['fuel'].to_f)
                     %th
-                      = value['ratio']
+                      = sprintf('%.2f',value['ratio'].to_f)
+                    %th
+                      = TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
+                      - @theoretical_value=TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
           / Aqui esta el Gráfico!
           :javascript
             $(document).ready(function () {
@@ -216,7 +229,7 @@
             %thead
               %tr
                 %th #
-                %th Nombre Tarea/Fase
+                %th Artículo
                 %th H.Efectivas
                 %th Combustible (gln)
                 %th Ratio real (gln/hr)
@@ -227,14 +240,16 @@
                   %th{'style' => 'font-weight: normal;'}
                     = workerDetail2[0]
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[1]
+                    = Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail2[0]).article_id ,session[:cost_center])
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[2]
+                    = sprintf('%.2f',workerDetail2[2].to_f)
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[3]
+                    = sprintf('%.2f',workerDetail2[3].to_f)
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[4]
-                  %th 10
+                    = sprintf('%.2f',workerDetail2[4].to_f)
+                  %th{'style' => 'font-weight: normal;'}
+                    = sprintf('%.2f',workerDetail2[5].to_f)
+
       / Aqui esta el Gráfico!
       %br
       .row
@@ -245,7 +260,7 @@
       - index = 0
       - @poe_array.each do |poe|
         - poe[0].each do |data|
-          %h1.page-title.txt-color-blueDark= data[0]
+          %h1.page-title.txt-color-blueDark= data[0] + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(data[0]).article_id ,session[:cost_center])
           .jarviswidget-editbox
           .widget-body
             %table.table.table-bordered
@@ -266,23 +281,23 @@
                       %th{ 'style' => 'font-weight: normal;' }
                         = data[1]
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[2]
+                        = sprintf('%.2f',data[2].to_f)
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[3]
+                        = sprintf('%.2f',data[3].to_f)
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[4]
+                        = sprintf('%.2f',data[4].to_f)
                       %th{ 'style' => 'font-weight: normal;' }
-                        = data[5]
+                        = sprintf('%.2f',@theoretical_value.to_f)
                   %tr
                     %th{'colspan' => 2} Total
                     %th
-                      = value['hours']
+                      = sprintf('%.2f',value['hours'].to_f)
                     %th
-                      = value['fuel']
+                      = sprintf('%.2f',value['fuel'].to_f)
                     %th
-                      = value['ratio']
+                      = sprintf('%.2f',value['ratio'].to_f)
                     %th
-                      = @theoretical_value.to_f
+                      = sprintf('%.2f',@theoretical_value.to_f)
           / Aqui esta el Gráfico!
           :javascript
             $(document).ready(function () {
@@ -312,12 +327,12 @@
                   %th{'style' => 'font-weight: normal;'}
                     = workerDetail2[0]
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[1]
+                    = Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail2[0]).article_id ,session[:cost_center])
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[2]
+                    = sprintf('%.2f',workerDetail2[2].to_f)
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[3]
+                    = sprintf('%.2f',workerDetail2[3].to_f)
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[4]
+                    = sprintf('%.2f',workerDetail2[4].to_f)
                   %th{'style' => 'font-weight: normal;'}
-                    = workerDetail2[5]
+                    = sprintf('%.2f',@theoretical_value.to_f)

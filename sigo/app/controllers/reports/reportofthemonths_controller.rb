@@ -199,6 +199,11 @@ class Reports::ReportofthemonthsController < ApplicationController
     # VALORES para los GRÁFICOS
     @start_date_cost_center = CostCenter.find(@cost_center).start_date
     @now = Time.now
+    
+    if @start_date_cost_center.nil?
+      @start_date_cost_center = @now
+    end
+
     target = 0
     @values_y_axis = Array.new
     @values_x_axis = Array.new

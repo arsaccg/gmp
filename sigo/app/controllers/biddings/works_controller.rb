@@ -111,6 +111,10 @@ class Biddings::WorksController < ApplicationController
     render json: {:components => @components}  
   end
 
+  def calendar
+    render layout: false
+  end
+
   private
   def work_params
     params.require(:work).permit(
