@@ -114,6 +114,10 @@
               %span.badge.pull-right.inbox-badge= @total_pending
           - if current_user.has_role? :director
             %li
+              %a{href: "#{management_dashboard_path}", title: "Dashboard de Gestión"}
+                %i.fa.fa-lg.fa-fw.fa-home
+                %span.menu-item-parent Dashboard
+            %li
               %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
                 %i.fa.fa-lg.fa-fw.fa-gears
                 %span.menu-item-parent Companias
