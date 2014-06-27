@@ -215,6 +215,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'more_documents'
         post 'get_components_by_speciality'
+        get 'calendar'
       end
     end
     resources :work_partners

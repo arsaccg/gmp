@@ -55,10 +55,11 @@
           = @cost_center_name
           %i.fa.fa-angle-down
         %ul.dropdown-menu
-          %li
-            %a{href: "#{root_path}"}
-              %i.fa.fa-power-off
-              Salir
+          - @others_cost_centers.each do |other_cc|
+            %li
+              %a{href: "#{show_panel_main_path(@company.id)}?cost_center=#{other_cc.id}"}
+                %i.fa.fa-power-off
+                = other_cc.name
       / pulled right: nav area
       .pull-right
         / collapse menu button
@@ -110,7 +111,7 @@
             %a{href: "#{inbox_task_main_path}", title: "Tareas"}
               %i.fa.fa-lg.fa-fw.fa-inbox
               %span.menu-item-parent Inbox
-              %span.badge.pull-right.inbox-badge 12
+              %span.badge.pull-right.inbox-badge= @total_pending
           - if current_user.has_role? :director
             %li
               %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
@@ -397,6 +398,10 @@
                   %a{href: "#{biddings_professionals_path}", title: "Profesionales"}
                     %i.fa.fa-lg.fa-fw.fa-user
                     %span.menu-item-parent Profesionales
+              %li
+                %a{href: "#{calendar_biddings_works_path}"}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Calendario de Licitaciones
 
           %li
             %a{href: "#", title: "Reportes"}
