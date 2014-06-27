@@ -4,8 +4,8 @@ class Certificate < ActiveRecord::Base
 	belongs_to :professional
 
 	has_attached_file :certificate
-  validates_attachment_content_type :certificate, :content_type =>['application/pdf', 'application/msword', 'text/plain']
+  validates_attachment_content_type :certificate, :content_type => ['application/pdf', 'application/msword', 'text/plain', 'application/msexcel', /\Aimage\/.*\Z/]
 
   has_attached_file :other
-  validates_attachment_content_type :other, :content_type =>['application/pdf', 'application/msword', 'text/plain']
+  validates_attachment_content_type :other, :content_type => ['application/pdf', 'application/msword', 'text/plain', 'application/msexcel', /\Aimage\/.*\Z/]
 end
