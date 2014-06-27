@@ -25,7 +25,7 @@ class Biddings::ProfessionalsController < ApplicationController
 
   def new
     @reg = Time.now.to_i
-    @professional=Professional.new
+    @professional = Professional.new
     @work = Work.all
     @major = Major.all
     @charge = Charge.all
