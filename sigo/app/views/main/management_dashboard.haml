@@ -225,9 +225,9 @@
 
   / row
   .row
-    %article.col-sm-12
+    %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
       / new widget
-      #wid-id-2.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
+      #wid-id-3.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
         %header
           %span.widget-icon
             %i.fa.fa-map-marker
@@ -912,7 +912,7 @@
 
     // colorful
     function generate_map_2() {
-    
+
         var mapOptions = {
             center: new google.maps.LatLng(-9.6295248, -77.1746293),
             zoom: 12,

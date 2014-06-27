@@ -114,10 +114,11 @@ class Production::EquipmentReportsController < ApplicationController
             @totalfuel += rpw[3].to_f
           end
           if @totaleffehours==0
-            @totaleffehours=1
+            @ratio = @theoretical_value
+          else
+            @ratio = @totalfuel / @totaleffehours
+            @ratio = @ratio.round(2)
           end
-          @ratio = @totalfuel / @totaleffehours
-          @ratio = @ratio.round(2)
           @cad4 << @ratio
         end
       end
@@ -153,7 +154,6 @@ class Production::EquipmentReportsController < ApplicationController
       @poe_array = poe_arraysector(start_date, end_date, @article)
       @poe_array2 = poe_array4(start_date, end_date, @article)
       @sector = Sector.find_by_id(params[:article])
-      @theoretical_value = 1
       @week3.each do |week3|
         @cad2 = PartOfEquipment.get_equipments_per_sector(@article, week3[2], week3[3], session[:cost_center])
         @cad2.each do |cad|
@@ -178,6 +178,7 @@ class Production::EquipmentReportsController < ApplicationController
           @cad4 << @ratio
         end
       end
+      puts @cad4.inspect
     elsif @select1 == 'equipment'
       arti = Article.find_article_global_by_specific_article3(@article, session[:cost_center])
       puts arti.inspect
@@ -192,6 +193,7 @@ class Production::EquipmentReportsController < ApplicationController
         end
       end
       @cad3 = @cad3.uniq
+      @cad3 = @cad3.sort
       @cad3.each do |cad3|
         @week3.each do |week3|
           @totaleffehours = 0
@@ -202,10 +204,11 @@ class Production::EquipmentReportsController < ApplicationController
             @totalfuel += rpw[3].to_f
           end
           if @totaleffehours==0
-            @totaleffehours=1
+            @ratio = @theoretical_value
+          else
+            @ratio = @totalfuel / @totaleffehours
+            @ratio = @ratio.round(2)
           end
-          @ratio = @totalfuel / @totaleffehours
-          @ratio = @ratio.round(2)
           @cad4 << @ratio
         end
       end
