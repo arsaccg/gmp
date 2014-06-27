@@ -48,18 +48,21 @@
                     %td
                       = @professional.code_tuition
                     %td
+                      Título Profesional:
                       - if @professional.professional_title.exists?
                         %a.btn.btn-info.btn-xs{:href =>"#{@professional.professional_title.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
                       -else
                         No hay ningun Archivo adjunto
                       %br
+                      Colegiatura:
                       - if @professional.tuition.exists? 
                         %a.btn.btn-info.btn-xs{:href =>"#{@professional.tuition.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
                       -else
                         No hay ningun Archivo adjunto
                       %br
+                      CV:
                       - if @professional.cv.exists? 
                         %a.btn.btn-info.btn-xs{:href =>"#{@professional.cv.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
