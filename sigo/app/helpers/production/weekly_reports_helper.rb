@@ -1,0 +1,2 @@
+module Production::WeeklyReportsHelper
+end

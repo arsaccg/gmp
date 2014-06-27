@@ -167,12 +167,35 @@ class Production::EquipmentReportsController < ApplicationController
         end
       end
     elsif @select1 == 'equipment'
-      arti = Article.find_article_global_by_specific_article2(@article, session[:cost_center])
-      @poe_array = poe_arrayarticle(start_date, end_date, @article)
-      @poe_array2 = poe_array5(start_date, end_date, @article)
+      arti = Article.find_article_global_by_specific_article3(@article, session[:cost_center])
+      puts arti.inspect
+      @poe_array = poe_arrayarticle(start_date, end_date, arti.to_s)
+      @poe_array2 = poe_array5(start_date, end_date, arti.to_s)
       @article2 = Article.find_by_id(params[:article])
-      @poe_array2.each do |pa|
-        @theoretical_value = pa[5]
+      @theoretical_value = TheoreticalValue.find_by_article_id(@article).theoretical_value
+      @week3.each do |week3|
+        @cad2 = PartOfEquipment.get_equipments_per_article(arti.to_s, week3[2], week3[3])
+        @cad2.each do |cad|
+          @cad3 << cad[0]
+        end
+      end
+      @cad3 = @cad3.uniq
+      @cad3.each do |cad3|
+        @week3.each do |week3|
+          @totaleffehours = 0
+          @totalfuel = 0
+          @ratio = 0
+          PartOfEquipment.get_report_per_equipments_per_article(arti.to_s, week3[2], week3[3], cad3).each do |rpw|
+            @totaleffehours += rpw[2].to_f
+            @totalfuel += rpw[3].to_f
+          end
+          if @totaleffehours==0
+            @totaleffehours=1
+          end
+          @ratio = @totalfuel / @totaleffehours
+          @ratio = @ratio.round(2)
+          @cad4 << @ratio
+        end
       end
     end
 		render(partial: 'report_table', :layout => false)
@@ -274,7 +297,7 @@ class Production::EquipmentReportsController < ApplicationController
       end
       @ratio = @totalfuel / @totaleffehours
       @ratio = @ratio.round(2)
-      @result << [w[1] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
+      @result << [w[0] => ['data' => array, 'hours' => @totaleffehours, 'fuel' => @totalfuel, 'ratio' => @ratio]]
     end
     return @result
   end

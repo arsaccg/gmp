@@ -288,6 +288,11 @@ ArsacLogistica::Application.routes.draw do
         post 'complete'
       end
     end
+    resources :weekly_reports do
+      collection do
+        post 'get_report'
+      end
+    end
     resources :valuation_of_equipments do
       collection do
         post 'get_report'
