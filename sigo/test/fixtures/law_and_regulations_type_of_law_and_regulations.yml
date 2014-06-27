@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  law_and_regulation_id: 1
+  type_of_law_and_regulation_id: 1
+
+two:
+  law_and_regulation_id: 1
+  type_of_law_and_regulation_id: 1

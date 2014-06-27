@@ -1,0 +1,94 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Links
+  .widget-body
+    = simple_form_for([:libraries, @linkOfIn], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row
+          .col-md-4
+            %label.label Nombre 
+            %label.input
+              %i.icon-append.fa.fa-edit
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          .col-md-1
+          .col-md-6
+            %label.label Dirección 
+
+            %label.input
+              %i.icon-append.fa.fa-external-link
+              = f.input :url, placeholder: "URL", input_html: { class: 'form-control' }, label: false
+            %label Ejemplo: http://www.arsac.com
+        %br
+        .row
+          .col-md-12
+            %label.label Descripción 
+            %label.input
+              = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false, rows: 4
+
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save
+            Guardar
+
+:javascript
+  $(document).ready(function () {
+    $("#major_name").focus();
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }
+    else{
+      submit_validate($('#new_interest_link'));
+    }
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'links_of_interest[name]' : {
+              required : true
+            },
+            'links_of_interest[url]' : {
+              required : true
+            },
+            'links_of_interest[description]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'links_of_interest[name]' : {
+              required : 'Porfavor, ingresar el nombre'
+            },
+            'links_of_interest[url]' : {
+              required : 'Porfavor, ingresar el enlace'
+            },
+            'links_of_interest[description]' : {
+              required : 'Porfavor, ingresar una descripción del enlace'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
