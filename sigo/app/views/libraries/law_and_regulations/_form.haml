@@ -19,10 +19,11 @@
             %label.input
               = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false, rows: 4
         .row
-          %label.label Tipo
-          %section.col.col-10
-            = f.association :type_of_law_and_regulations, :as => :check_boxes, :label => false
-        %br
+          %section.col.col-md-12
+            %label.label Tipo
+            %section.col.col-10
+              = f.association :type_of_law_and_regulations, :as => :check_boxes, :label => false
+
         .row
           %section.col.col-md-12
             %label.label Documento
@@ -40,7 +41,7 @@
 
 :javascript
   $(document).ready(function () {
-
+    $('.check_boxes').attr("style", 'position: relative; left: 0;');
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{

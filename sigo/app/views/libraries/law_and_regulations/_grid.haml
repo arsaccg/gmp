@@ -47,7 +47,7 @@
                           %td
                             %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_libraries_law_and_regulation_path(lawre.id)}', 'content', null, null, 'GET')"}
                               Editar
-                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{libraries_law_and_regulation_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{libraries_law_and_regulations_path}')"}}
+                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{libraries_law_and_regulation_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token} + ?type=#{type_laws.id}', 'content', '#{libraries_law_and_regulations_path}')"}}
                               Eliminar
             - else
               .tab-pane{:id => "tab-#{type_laws.id}"}
@@ -75,7 +75,7 @@
                           %td
                             %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_libraries_law_and_regulation_path(lawre.id)}', 'content', null, null, 'GET')"}
                               Editar
-                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{libraries_law_and_regulation_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{libraries_law_and_regulations_path}')"}}
+                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{libraries_law_and_regulation_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token} + ?type=#{type_laws.id}, 'content', '#{libraries_law_and_regulations_path}')"}}
                               Eliminar
 
 :javascript

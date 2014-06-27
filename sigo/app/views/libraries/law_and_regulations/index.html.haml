@@ -1,6 +1,6 @@
 #content-inside
   .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+    .col-xs-12.col-sm-7.col-md-7.col-lg-12
       %h2.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Lista de Leyes y/o Regulaciones
@@ -19,9 +19,18 @@
           %strong Error!
           = flash[:error]
   .row
-    .col-sm-4
-      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_libraries_law_and_regulation_path}', 'content', null, null, 'GET')"}
-        Agregar Ley y/o Regulación
+    -if @type_laws.count == 0
+      .col-xs-12.col-sm-7.col-md-7.col-lg-12
+        .alert.alert-block.alert-danger
+          %a.close(data-dismiss="alert" href="#")
+            ×
+          %h4.alert-heading
+            %i.fa.fa-lock
+              Asegurese de tener por lo menos un tipo de Ley y Reglamento
+    -else
+      .col-sm-4
+        %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_libraries_law_and_regulation_path}', 'content', null, null, 'GET')"}
+          Agregar Ley y/o Reglamento
 
   %br
   .row
