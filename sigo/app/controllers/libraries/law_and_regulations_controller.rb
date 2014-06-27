@@ -54,7 +54,19 @@ class Libraries::LawAndRegulationsController < ApplicationController
   end
 
   def destroy
-    laws = LawAndRegulation.destroy(params[:id])    
+    type = params[:type]
+    puts "--------------------------------------------------------------------------------------------------------"
+    puts type
+    puts "--------------------------------------------------------------------------------------------------------"
+    laws = LawAndRegulation.find(params[:id])
+    if laws.type_of_law_and_regulations.count == 1
+      laws = LawAndRegulation.destroy(params[:id])  
+    else
+      ls = LawAndRegulationsTypeOfLawAndRegulations.where('law_and_regulation_id = '+laws.id.to_s+' AND type_of_law_and_regulation_id = '+type.to_s+'')
+      ls.each do |ls|
+        LawAndRegulationsTypeOfLawAndRegulations.destroy(ls.id)
+      end
+    end
     flash[:notice] = "Se ha eliminado correctamente."
     render :json => laws
   end
