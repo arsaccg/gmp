@@ -233,70 +233,70 @@ class Reports::ReportofthemonthsController < ApplicationController
 
   def part_work(start_date, end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT getPartWork('" + start_date + "','" + end_date + "', " + working_group_id + ") FROM DUAL
+      SELECT getPartWork('" + start_date + "','" + end_date + "', " + working_group_id.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def part_work2(end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT getPartWork2('" + end_date + "', " + working_group_id + ") FROM DUAL
+      SELECT getPartWork2('" + end_date + "', " + working_group_id.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def part_equipment(start_date, end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT partEquipment('" + start_date + "','" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT partEquipment('" + start_date + "','" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def part_equipment2(end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT partEquipment2('" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT partEquipment2('" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def part_people(start_date, end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT partPeople('" + start_date + "','" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT partPeople('" + start_date + "','" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def part_people2(end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT partPeople2('" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT partPeople2('" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def order_of_service(start_date, end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT orderOfService('" + start_date + "','" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT orderOfService('" + start_date + "','" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def order_of_service2(end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT orderOfService2('" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT orderOfService2('" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def sc_valuations(start_date, end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT scValuations('" + start_date + "','" + end_date + "'," + working_group_id + ") FROM DUAL
+      SELECT scValuations('" + start_date + "','" + end_date + "'," + working_group_id.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def sc_valuations2(end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT scValuations2('" + end_date + "'," + working_group_id + ") FROM DUAL
+      SELECT scValuations2('" + end_date + "'," + working_group_id.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
