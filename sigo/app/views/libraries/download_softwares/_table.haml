@@ -1,0 +1,56 @@
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Lista de Softwares
+  / widget div
+  %div
+    / widget edit box
+    .jarviswidget-editbox
+      / This area used as dropdown edit box
+    / end widget edit box
+    / widget content
+    .widget-body.no-padding
+      .widget-body-toolbar
+      #dt_basic_wrapper.dataTables_wrapper.form-inline{:role => 'grid'}
+        .dt-top-row
+          #dt_basic_length.dataTables_length
+            %span.smart-form
+              %label.select{style: "width:60px"}
+                %select{"aria-controls" => "dt_basic", name: "dt_basic_length", size: "1"}
+                  %option{selected: "selected", value: "10"} 10
+                  %option{value: "25"} 25
+                  %option{value: "50"} 50
+                  %option{value: "100"} 100
+                %i
+          #dt_basic_filter.dataTables_filter
+            .input-group
+              %span.input-group-addon
+                %i.fa.fa-search
+              %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
+        .dt-wrapper
+          %table#dt_basic.table.table-striped.table-bordered.table-hover
+            %thead
+              %tr
+                %th Nombres
+                %th Descripción
+                %th Documentos
+                %th Acciones
+            %tbody
+              - @soft.each do |stand|
+                %tr
+                  %td
+                    = stand.name.to_s
+                  %td
+                    = stand.description.to_s
+                  %td
+                    - if stand.file.exists?
+                      %a.btn.btn-info.btn-xs{:href =>"#{stand.file.url}", :target => "_blank"}
+                        %i.fa.fa-clipboard
+                    -else
+                      No hay ningun Archivo adjunto
+                  %td
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_libraries_download_software_path(stand.id)}', 'content', null, null, 'GET')"}
+                      Editar
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{stand.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{libraries_download_software_path(stand.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{libraries_download_softwares_path}')"}}
+                      Eliminar

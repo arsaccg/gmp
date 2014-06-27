@@ -76,21 +76,33 @@
               .col-sm-9
                 = f.input :professional_title, :input_html => { class: 'btn btn-default' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
                 %p.help-block
-                  Subir el archivo correspondiente
+                  - if @action == 'edit' && @professional.professional_title.exists?
+                    = 'Archivo subido: ' + File.basename(@professional.professional_title.path, File.extname(@professional.professional_title.path))
+                  - else
+                    Subir el archivo correspondiente
+            .col-sm-2
             .col-sm-4
               .col-sm-3
                 %label Colegiatura
               .col-sm-9
                 = f.input :tuition, :input_html => { class: 'btn btn-default' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
                 %p.help-block
-                  Subir el archivo correspondiente
+                  - if @action == 'edit' && @professional.tuition.exists?
+                    = 'Archivo subido: ' + File.basename(@professional.tuition.path, File.extname(@professional.tuition.path))
+                  - else
+                    Subir el archivo correspondiente
+          %br
+          .row
             .col-sm-4
               .col-sm-3
                 %label Curriculum Vitae
               .col-sm-9
                 = f.input :cv, :input_html => { class: 'btn btn-default' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
                 %p.help-block
-                  Subir el archivo correspondiente
+                  - if @action == 'edit' && @professional.cv.exists?
+                    = 'Archivo subido: ' + File.basename(@professional.cv.path, File.extname(@professional.cv.path))
+                  - else
+                    Subir el archivo correspondiente
 
       #tab2.tab-pane
         %br/
@@ -126,7 +138,7 @@
                             .row
                               .col-sm-4
                                 %label Nombre de la obra
-                                %select.form-control#work-id{'class'=>'work-select', name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onkeyup:'workSelectKU(this);'}
+                                %select.form-control#work-id{'class'=>'work-select', name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onload:'workSelectKU(this);' }
                                   %option Seleccione Una Obra
                                   -@work.each do |wc|
                                     -if wc.id == cert.work_id
@@ -223,16 +235,17 @@
                                   .col-sm-10
                                     .button
                                       = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][certificate]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                                      %p.help-block
+                                        - if cert.certificate.exists?
+                                          = 'Archivo subido: ' + File.basename(cert.certificate.path, File.extname(cert.certificate.path))
                                 .col-sm-6
                                   %label.col-sm-2 Otro
                                   .col-sm-10
                                     .button
                                       = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][other]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                                      - if cert.other.exists?
+                                        = 'Archivo subido: ' + File.basename(cert.other.path, File.extname(cert.other.path))
                         :javascript
-                          $(document).ready(function(){
-                            var work=$('#work-id');
-                            workSelectKU(work);
-                          });
                           function workSelectKU(element){
                             if($(element).val()==''){
                               $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').html('');
@@ -346,7 +359,7 @@
                         .row{'class'=>'3'} 
                           .col-sm-4
                             %label Cantidad de días trabajados
-                            %input.form-control{'class'=>'worked-day', name: "professional[certificates_attributes][" + @reg.to_s + "][num_days]", :disabled=>"disabled"}
+                            %input.form-control#wdays{'class'=>'worked-day', name: "professional[certificates_attributes][" + @reg.to_s + "][num_days]", :disabled=>"disabled"}
                         
                         %br
                         .row
@@ -393,11 +406,15 @@
                               .col-sm-10
                                 .button
                                   = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][certificate]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                                  %p.help-block
+                                    Subir el archivo correspondiente
                             .col-sm-6
                               %label.col-sm-2 Otro
                               .col-sm-10
                                 .button
                                   = file_field_tag "professional[certificates_attributes][" + @reg.to_s + "][other]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                                  %p.help-block
+                                    Subir el archivo correspondiente
       
       #tab3.tab-pane
         %br/
@@ -489,6 +506,8 @@
                                 %label.col-sm-2 Certificado de Capacitación
                                 .col-sm-10
                                   = file_field_tag "professional[trainings_attributes][" + @reg.to_s + "][training]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                                  - if tra.training.exists?
+                                    = 'Archivo subido: ' + File.basename(tra.training.path, File.extname(tra.training.path))
                     - @reg = @reg + 1
                 -else
                   .panel.panel-default{id: "tra" + @reg.to_s}
@@ -548,6 +567,8 @@
                               .col-sm-10
                                 .button
                                   = file_field_tag "professional[trainings_attributes][" + @reg.to_s + "][training]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+                                  %p.help-block
+                                    Subir el archivo correspondiente
       #tab4.tab-pane
         %br/
         %h3

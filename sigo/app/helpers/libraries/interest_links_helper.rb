@@ -1,0 +1,2 @@
+module Libraries::InterestLinksHelper
+end

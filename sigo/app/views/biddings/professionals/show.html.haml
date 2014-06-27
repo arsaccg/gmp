@@ -32,6 +32,7 @@
                     %th Fecha de Titulación
                     %th Fecha de Colegiatura
                     %th Código de Colegiatura
+                    %th Documento
                 %tbody
                   %tr
                     %td
@@ -46,6 +47,24 @@
                       = @professional.date_of_tuition
                     %td
                       = @professional.code_tuition
+                    %td
+                      - if @professional.professional_title.exists?
+                        %a.btn.btn-info.btn-xs{:href =>"#{@professional.professional_title.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                      -else
+                        No hay ningun Archivo adjunto
+                      %br
+                      - if @professional.tuition.exists? 
+                        %a.btn.btn-info.btn-xs{:href =>"#{@professional.tuition.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                      -else
+                        No hay ningun Archivo adjunto
+                      %br
+                      - if @professional.cv.exists? 
+                        %a.btn.btn-info.btn-xs{:href =>"#{@professional.cv.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                      -else
+                        No hay ningun Archivo adjunto
 
 
     .row

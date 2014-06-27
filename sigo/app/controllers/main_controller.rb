@@ -4,7 +4,7 @@ class MainController < ApplicationController
     @flag = params[:flag]
     if @flag.nil?
       company_id = current_user.companies.first.id
-      cost_center_id = current_user.cost_centers.find_by_company_id(company_id).id
+      cost_center_id = current_user.cost_centers.find_by_company_id(company_id).id rescue Company.first.id
       session[:company] = company_id
       session[:cost_center] = cost_center_id
       redirect_to :action => :home
