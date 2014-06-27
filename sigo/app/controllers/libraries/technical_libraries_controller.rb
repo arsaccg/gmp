@@ -61,6 +61,6 @@ class Libraries::TechnicalLibrariesController < ApplicationController
 
   private
   def lib_parameters
-    params.require(:technical_library).permit(:name, :description, :document, {:type_of_technical_libraries_ids => []})
+    params.require(:technical_library).permit(:name, :description, :document, {:type_of_technical_library_ids => []})
   end
 end
