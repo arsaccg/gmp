@@ -1,5 +1,22 @@
 class Production::EquipmentReportsController < ApplicationController
   def index
+    @cad = Array.new
+    @cad2 = Array.new
+    @cad3 = Array.new
+    @subcontractdetails = SubcontractEquipmentDetail.all
+    @subcontractdetails.each do |sed|
+      @cad << sed.article_id
+    end
+    @cad=@cad.uniq
+    @cad.each do |c|
+      @cad2 << Article.find_article_global_by_specific_article(c, session[:cost_center])
+    end
+    @cad2.each do |c2|
+      if TheoreticalValue.find_by_article_id(c2).nil?
+        @cad3 << c2
+      end
+    end
+    @specificArticles = @cad3.join(',')
     @company = get_company_cost_center('company')
     @workingGroups = WorkingGroup.all
     @article = Article.where("type_of_article_id = 3")

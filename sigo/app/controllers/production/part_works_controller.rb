@@ -53,10 +53,16 @@ class Production::PartWorksController < ApplicationController
   def add_more_article
     @reg_n = ((Time.now.to_f)*100).to_i
     data_article_unit = params[:article_id].split('-')
-    @article = Article.find(data_article_unit[0])
-    @id_article = @article.id
-    @name_article = @article.name
-    @unitOfMeasurement = @article.unit_of_measurement.name
+    article = Article.find(data_article_unit[0])
+    cost_center = get_company_cost_center('cost_center')
+    @article = Article.find_article_in_specific(article.id, cost_center)
+    @article.each do |art|
+      @id_article = art[0]
+      @name_article = art[1]
+      @unit = art[2]
+    end
+    
+    @unitOfMeasurement = Article.find(@unit).unit_of_measurement.name
     render(partial: 'partwork_items', :layout => false)
   end
 
