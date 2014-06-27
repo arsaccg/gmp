@@ -36,11 +36,6 @@ class Production::EquipmentReportsController < ApplicationController
       SubcontractEquipmentDetail.all.group('article_id').each do |sed|
         Article.where("code LIKE '03________' AND code NOT LIKE '0332______'").each do |art|
           arti = Article.find_article_global_by_specific_article(sed.article.id, session[:cost_center])
-          puts '***************************************************************************'
-          puts sed.article.id.inspect
-          puts '***************************************************************************'
-          puts arti
-          puts '***************************************************************************'
           if arti == art.id
             @combo << art
           end
