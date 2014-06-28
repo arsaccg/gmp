@@ -28,9 +28,7 @@
                     %thead
                       %tr
                         %th Nombres/Razón Social
-                        %th Apellidos
                         %th Dirección
-                        %th DNI
                         %th RUC
                         %th Acciones
                     %tbody
@@ -39,18 +37,8 @@
                           %td
                             = entity.name rescue "" + entity.second_name rescue ""
                           %td
-                            -if entity.paternal_surname != nil && entity.maternal_surname != nil
-                              = entity.paternal_surname + entity.maternal_surname
-                            - else
-                              = '-'
-                          %td
                             -if entity.address != nil
                               = entity.address
-                            - else
-                              = '-'
-                          %td
-                            - if entity.dni != ""
-                              = entity.dni
                             - else
                               = '-'
                           %td
@@ -73,30 +61,34 @@
                     %thead
                       %tr
                         %th Nombres
-                        %th Apellidos
-                        %th DNI
-                        %th RUC
+                        -if type_entity.id == 3
+                          %th Apellidos
+                          %th DNI
+                        -if type_entity.id != 3
+                          %th RUC
                         %th Acciones
                     %tbody
                       - type_entity.entities.each do |entity|
                         %tr
                           %td
                             = entity.name rescue "" + entity.second_name rescue ""
-                          %td
-                            - if entity.paternal_surname != nil && entity.maternal_surname != nil
-                              = entity.paternal_surname + entity.maternal_surname
-                            - else
-                              = '-'
-                          %td
-                            - if entity.dni != nil
-                              = entity.dni
-                            - else
-                              No aplica DNI
-                          %td
-                            - if entity.ruc != nil
-                              = entity.ruc
-                            - else
-                              No aplica RUC
+                          -if type_entity.id == 3
+                            %td
+                              - if entity.paternal_surname != nil && entity.maternal_surname != nil
+                                = entity.paternal_surname + " "+ entity.maternal_surname
+                              - else
+                                = '-'
+                            %td
+                              - if entity.dni != nil
+                                = entity.dni
+                              - else
+                                No aplica DNI
+                          -if type_entity.id != 3
+                            %td
+                              - if entity.ruc != nil
+                                = entity.ruc
+                              - else
+                                No aplica RUC
                           %td
                             %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_entity_path(entity.id)}', 'content', null, null, 'GET')"}
                               Ver Detalle
