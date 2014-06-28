@@ -80,7 +80,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     data_article_unit = params[:article_id].split('-')
     @article = Article.find_article_in_specific(data_article_unit[0], get_company_cost_center('cost_center'))
     @sectors = Sector.where("code LIKE '__' ")
-    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
     @amount = params[:amount].to_f
     @centerOfAttention = CenterOfAttention.all
 
