@@ -10,7 +10,7 @@
     / new widget
     .jarviswidget.jarviswidget-color-blueDark
       %header
-        %h2 Add Events
+        %h2 Eventos
       / widget div
       %div
         .widget-body
@@ -18,7 +18,7 @@
           %form#add-event-form
             %fieldset
               .form-group
-                %label Select Event Icon
+                %label Seleccionar ícono
                 .btn-group.btn-group-sm.btn-group-justified{"data-toggle" => "buttons"}
                   %label.btn.btn-default.active
                     %input#icon-1{checked: "checked", name: "iconselect", type: "radio", value: "fa-info"}/
@@ -39,14 +39,14 @@
                     %input#icon-6{name: "iconselect", type: "radio", value: "fa-clock-o"}/
                     %i.fa.fa-clock-o.text-muted
               .form-group
-                %label Event Title
+                %label Título del evento
                 %input#title.form-control{maxlength: "40", name: "title", placeholder: "Event Title", type: "text"}/
               .form-group
-                %label Event Description
-                %textarea#description.form-control{maxlength: "40", placeholder: "Please be brief", rows: "3"}
-                %p.note Maxlength is set to 40 characters
+                %label Descripción del evento
+                %textarea#description.form-control{maxlength: "100", placeholder: "Please be brief", rows: "3"}
+                %p.note Máximo 100 caracteres
               .form-group
-                %label Select Event Color
+                %label Seleccionar el color del evento
                 .btn-group.btn-group-justified.btn-select-tick{"data-toggle" => "buttons"}
                   %label.btn.bg-color-darken.active
                     %input#option1{checked: "checked", name: "priority", type: "radio", value: "bg-color-darken txt-color-white"}/
@@ -70,25 +70,20 @@
               .row
                 .col-md-12
                   %button#add-event.btn.btn-default{type: "button"}
-                    Add Event
+                    Añadir evento
           / end content
       / end widget div
     / end widget
     #event-container.well.well-sm
       %form
         %legend
-          Draggable Events
+          Arrastrar los eventos al Calendario
         %ul#external-events.list-unstyled
-          %li
-            %span.bg-color-darken.txt-color-white{"data-description" => "Currently busy", "data-icon" => "fa-time"} Office Meeting
-          %li
-            %span.bg-color-blue.txt-color-white{"data-description" => "No Description", "data-icon" => "fa-pie"} Lunch Break
-          %li
-            %span.bg-color-red.txt-color-white{"data-description" => "Urgent Tasks", "data-icon" => "fa-alert"} URGENT
+          
         .checkbox
           %label
             %input#drop-remove.checkbox.style-0{checked: "checked", type: "checkbox"}/
-            %span remove after drop
+            %span Remover eventos
   .col-sm-12.col-md-12.col-lg-9
     / new widget
     .jarviswidget.jarviswidget-color-blueDark
@@ -107,20 +102,20 @@
       %header
         %span.widget-icon
           %i.fa.fa-calendar
-        %h2 My Events
+        %h2 Evnetos
         .widget-toolbar
           / add: non-hidden - to disable auto hide
           .btn-group
             %button.btn.dropdown-toggle.btn-xs.btn-default{"data-toggle" => "dropdown"}
-              Showing
+              Mostrar por
               %i.fa.fa-caret-down
             %ul.dropdown-menu.js-status-update.pull-right
               %li
-                %a#mt{href: "javascript:void(0);"} Month
+                %a#mt{href: "javascript:void(0);"} Mes
               %li
                 %a#ag{href: "javascript:void(0);"} Agenda
               %li
-                %a#td{href: "javascript:void(0);"} Today
+                %a#td{href: "javascript:void(0);"} Hoy
       / widget div
       %div
         .widget-body.no-padding
@@ -265,55 +260,7 @@
               calendar.fullCalendar('unselect');
           },
   
-          events: [{
-              title: 'All Day Event',
-              start: new Date(y, m, 1),
-              description: 'long description',
-              className: ["event", "bg-color-greenLight"],
-              icon: 'fa-check'
-          }, {
-              title: 'Long Event',
-              start: new Date(y, m, d - 5),
-              end: new Date(y, m, d - 2),
-              className: ["event", "bg-color-red"],
-              icon: 'fa-lock'
-          }, {
-              id: 999,
-              title: 'Repeating Event',
-              start: new Date(y, m, d - 3, 16, 0),
-              allDay: false,
-              className: ["event", "bg-color-blue"],
-              icon: 'fa-clock-o'
-          }, {
-              id: 999,
-              title: 'Repeating Event',
-              start: new Date(y, m, d + 4, 16, 0),
-              allDay: false,
-              className: ["event", "bg-color-blue"],
-              icon: 'fa-clock-o'
-          }, {
-              title: 'Meeting',
-              start: new Date(y, m, d, 10, 30),
-              allDay: false,
-              className: ["event", "bg-color-darken"]
-          }, {
-              title: 'Lunch',
-              start: new Date(y, m, d, 12, 0),
-              end: new Date(y, m, d, 14, 0),
-              allDay: false,
-              className: ["event", "bg-color-darken"]
-          }, {
-              title: 'Birthday Party',
-              start: new Date(y, m, d + 1, 19, 0),
-              end: new Date(y, m, d + 1, 22, 30),
-              allDay: false,
-              className: ["event", "bg-color-darken"]
-          }, {
-              title: 'Smartadmin Open Day',
-              start: new Date(y, m, 28),
-              end: new Date(y, m, 29),
-              className: ["event", "bg-color-darken"]
-          }],
+          events: [],
   
           eventRender: function (event, element, icon) {
               if (!event.description == "") {

@@ -24,23 +24,23 @@
                         = data[0]
                       %th{ 'style' => 'font-weight: normal;' }
                         = data[1]
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data[2].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data[3].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data[4].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',@theoretical_value.to_f)
                   %tr
                     %th{'colspan' => 2} Total
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['hours'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['fuel'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['ratio'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',@theoretical_value.to_f)
           / Aqui esta el Gráfico!
           :javascript
@@ -71,13 +71,13 @@
                   = workerDetail2[0]
                 %th{'style' => 'font-weight: normal;'}
                   = workerDetail2[1]
-                %th{'style' => 'font-weight: normal;'}
+                %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                   = sprintf('%.2f',workerDetail2[2].to_f)
-                %th{'style' => 'font-weight: normal;'}
+                %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                   = sprintf('%.2f',workerDetail2[3].to_f)
-                %th{'style' => 'font-weight: normal;'}
+                %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                   = sprintf('%.2f',workerDetail2[4].to_f)
-                %th{'style' => 'font-weight: normal;'}
+                %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                   = sprintf('%.2f',@theoretical_value.to_f)
 
   -if @select1 == 'operador'
@@ -105,23 +105,23 @@
                         = data2[0]
                       %th{ 'style' => 'font-weight: normal;' }
                         = data2[1]
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data2[2].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data2[3].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data2[4].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
                   %tr
                     %th{'colspan' => 2} Total
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['hours'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['fuel'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['ratio'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
                       - @theoretical_value=TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
 
@@ -196,13 +196,13 @@
                     = workerDetail2[0]
                   %th{'style' => 'font-weight: normal;'}
                     = Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail2[0]).article_id ,session[:cost_center])
-                  %th{'style' => 'font-weight: normal;'}
+                  %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                     = sprintf('%.2f',workerDetail2[2].to_f)
-                  %th{'style' => 'font-weight: normal;'}
+                  %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                     = sprintf('%.2f',workerDetail2[3].to_f)
-                  %th{'style' => 'font-weight: normal;'}
+                  %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                     = sprintf('%.2f',workerDetail2[4].to_f)
-                  %th{'style' => 'font-weight: normal;'}
+                  %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                     = sprintf('%.2f',workerDetail2[5].to_f)
       / Aqui esta el Gráfico!
       %br
@@ -234,23 +234,23 @@
                         = data2[0]
                       %th{ 'style' => 'font-weight: normal;' }
                         = data2[1]
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data2[2].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data2[3].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data2[4].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
                   %tr
                     %th{'colspan' => 2} Total
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['hours'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['fuel'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['ratio'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
                       - @theoretical_value=TheoreticalValue.find_by_article_id(value['theoretical_value']).theoretical_value
           / Aqui esta el Gráfico!
@@ -363,23 +363,23 @@
                         = data[0]
                       %th{ 'style' => 'font-weight: normal;' }
                         = data[1]
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data[2].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data[3].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',data[4].to_f)
-                      %th{ 'style' => 'font-weight: normal;' }
+                      %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                         = sprintf('%.2f',@theoretical_value.to_f)
                   %tr
                     %th{'colspan' => 2} Total
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['hours'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['fuel'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',value['ratio'].to_f)
-                    %th
+                    %th{ 'style' => 'text-align:center;vertical-align: middle' }
                       = sprintf('%.2f',@theoretical_value.to_f)
           / Aqui esta el Gráfico!
           :javascript
@@ -411,11 +411,11 @@
                     = workerDetail2[0]
                   %th{'style' => 'font-weight: normal;'}
                     = Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail2[0]).article_id ,session[:cost_center])
-                  %th{'style' => 'font-weight: normal;'}
+                  %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                     = sprintf('%.2f',workerDetail2[2].to_f)
-                  %th{'style' => 'font-weight: normal;'}
+                  %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                     = sprintf('%.2f',workerDetail2[3].to_f)
-                  %th{'style' => 'font-weight: normal;'}
+                  %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                     = sprintf('%.2f',workerDetail2[4].to_f)
-                  %th{'style' => 'font-weight: normal;'}
+                  %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
                     = sprintf('%.2f',@theoretical_value.to_f)

@@ -12,7 +12,7 @@ class Management::InputbybudgetanditemsController < ApplicationController
 
     @pdf_table_array = Array.new
 
-  	@itembybudgetanditems = Inputbybudgetanditem.select("cod_input, sum(quantity) as quantity, price, input, unit").where("budget_id = ? AND inputbybudgetanditems.order LIKE ?", params[:budget_id],  @order + "%").group(' cod_input, price, input, unit').order(:cod_input)
+  	@itembybudgetanditems = Inputbybudgetanditem.select("id, cod_input, sum(quantity) as quantity, price, input, unit").where("budget_id = ? AND inputbybudgetanditems.order LIKE ?", params[:budget_id],  @order + "%").group(' cod_input, price, input, unit').order(:cod_input)
     p @itembybudgetanditems
     @pdf_table_array << ["Insumo", "Codigo", "Cantidad", "Unidad", "Precio", "Total"]
 
@@ -23,6 +23,14 @@ class Management::InputbybudgetanditemsController < ApplicationController
     end
 
     render :index, :layout => false
+  end
+  
+  def update_input
+    input = Inputbybudgetanditem.find(params[:input_id])
+    input.price = params[:price]
+    input.quantity = params[:quantity]
+    input.save
+    render :nothing => true, :status => 200, :content_type => 'text/html', layout: false
   end
 
   def add
