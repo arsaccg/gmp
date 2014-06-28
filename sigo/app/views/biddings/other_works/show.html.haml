@@ -88,13 +88,13 @@
                       %br Otro
                     %td
                       - if @cert.certificate.exists?
-                        %a.btn.btn-info.btn-xs{:href =>"#{procert.certificate.url}", :target => "_blank"}
+                        %a.btn.btn-info.btn-xs{:href =>"#{@cert.certificate.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
                       -else
                         No hay ningun Archivo adjunto
                       %br
                       - if @cert.other.exists? 
-                        %a.btn.btn-info.btn-xs{:href =>"#{procert.other.url}", :target => "_blank"}
+                        %a.btn.btn-info.btn-xs{:href =>"#{@cert.other.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
                       -else
                         No hay ningun Archivo adjunto
