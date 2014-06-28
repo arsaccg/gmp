@@ -19,10 +19,10 @@
           - @workers_array3.each do |workerDetail3|
             %tr
               %th= workerDetail3[0]
-              %th= workerDetail3[2]
+              %th= sprintf('%.2f',workerDetail3[2])
               %th= workerDetail3[1]
               %th= workerDetail3[3]
-              %th= workerDetail3[4]
+              %th= sprintf('%.2f',workerDetail3[4])
       - else
         %h4.modal-title No hay datos.
         %br

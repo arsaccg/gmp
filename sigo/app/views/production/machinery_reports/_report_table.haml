@@ -40,7 +40,7 @@
                 - row2 = workerDetail[1]
                 - row3 = workerDetail[2]
                 - row4 = workerDetail[3]
-                - row5 = workerDetail[4]
+                - row5 = sprintf('%.2f',workerDetail[4])
                 - row6 = workerDetail[5]
                 - row7 = workerDetail[6]
                 - row8 = workerDetail[7]
@@ -78,7 +78,7 @@
         %tr
           %th{'colspan' => 5}
             TOTAL
-          %th= @totaldif
-          %th= @totaltotalhours
+          %th= sprintf('%.2f',@totaldif)
+          %th= sprintf('%.2f',@totaltotalhours)
           %th
-          %th= @totalfuel_amount
+          %th= sprintf('%.2f',@totalfuel_amount)

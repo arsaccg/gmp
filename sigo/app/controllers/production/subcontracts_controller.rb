@@ -1,4 +1,6 @@
 class Production::SubcontractsController < ApplicationController
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     # General
     @supplier = TypeEntity.find_by_name('Proveedores').entities.first
@@ -29,8 +31,7 @@ class Production::SubcontractsController < ApplicationController
     @subcontract = Subcontract.new
     @suppliers = TypeEntity.find_by_name('Proveedores').entities
     @company = params[:company_id]
-    @articles = TypeOfArticle.find_by_code('04').articles
-
+    @prebudgets = getsc_prebudgets()
     render layout: false
   end
 
@@ -56,8 +57,7 @@ class Production::SubcontractsController < ApplicationController
     @reg_n = (Time.now.to_f*1000).to_i
     @amount = params[:amount]
     data_article_unit = params[:article_id].split('-')
-    @article = Article.find(data_article_unit[0])
-    @prebudgets = getsc_prebudgets()
+    @articles = TypeOfArticle.find_by_code('04').articles
     @id_article = @article.id
     @name_article = @article.name
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).name

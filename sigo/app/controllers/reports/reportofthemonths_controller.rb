@@ -161,25 +161,16 @@ class Reports::ReportofthemonthsController < ApplicationController
       @sale_goal << [current_scheduled, current_scheduled, current_valorized, current_valorized]
     end
 
-    # Gastos Generales ¿percent o calculated?
-    overhead_percentage = CostCenter.find(@cost_center).overhead_percentage
-    if overhead_percentage != nil
-      @gg_valorized_sale_current_month = @acumulated_valorized_sale_current_month*overhead_percentage
-      @gg_scheduled_sale_current_month = @acumulated_scheduled_sale_current_month*overhead_percentage
-    else
-      @gg_valorized_sale_current_month = 0
-      @gg_scheduled_sale_current_month = 0
-    end
-
-    # Costo Meta (Con la valorizacion del presupuesto Meta) y el Costo Real
+    # Costo Meta (Con la valorizacion de los presupuestos Meta) y el Costo Real
     @acumulated_cost_goal_current_month = 0
+    @gg_cost_goal_current_month = 0
     @cost_goal_current_month = 0
     @cost_goal = Array.new
     # Cost_Goal Have
-    # [1] => Direct Cost Actual
-    # [2] => Direct Cost Acummulate
-    # [3] => Meta Cost Actual
-    # [4] => Meta Cost Acummulate
+    # [1] => Costo Directo Actual
+    # [2] => Costo Directo Acumulado
+    # [3] => Costo Meta Actual
+    # [4] => Costo Meta Acummulado
     # Each row is differente by MO, MAT, EQ, SC y SERV.
 
     4.times do |j|
@@ -197,6 +188,44 @@ class Reports::ReportofthemonthsController < ApplicationController
       @acumulated_cost_goal_current_month += current_cost
     end
 
+    # Gastos Generales ¿percent o calculated?
+    overhead_percentage = CostCenter.find(@cost_center).overhead_percentage
+    if overhead_percentage != nil
+      @gg_valorized_sale_current_month = @acumulated_valorized_sale_current_month*overhead_percentage
+      @gg_scheduled_sale_current_month = @acumulated_scheduled_sale_current_month*overhead_percentage
+      @gg_cost_goal_current_month = @gg_cost_goal_current_month*overhead_percentage
+    end
+
+    # VALORES para los GRÁFICOS
+    @start_date_cost_center = CostCenter.find(@cost_center).start_date
+    @now = Time.now
+    
+    if @start_date_cost_center.nil?
+      @start_date_cost_center = @now
+    end
+
+    target = 0
+    @values_y_axis = Array.new
+    @values_x_axis = Array.new
+
+    @acumulates_real_cost_current_month = (@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2)
+    
+    if @acumulated_valorized_sale_current_month > @acumulates_real_cost_current_month
+      target = @acumulated_valorized_sale_current_month
+    else
+      target = @acumulates_real_cost_current_month
+    end
+
+    3.times do |month|
+      @values_x_axis << @start_date_cost_center.strftime('%b-%Y')
+      @now -= 1.months
+      if @now < @start_date_cost_center
+        break
+      end
+    end
+
+    @values_y_axis = [*0..target].sample(11).sort
+
 		render layout: false
   end
 
@@ -204,70 +233,70 @@ class Reports::ReportofthemonthsController < ApplicationController
 
   def part_work(start_date, end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT getPartWork('" + start_date + "','" + end_date + "', " + working_group_id + ") FROM DUAL
+      SELECT getPartWork('" + start_date + "','" + end_date + "', " + working_group_id.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def part_work2(end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT getPartWork2('" + end_date + "', " + working_group_id + ") FROM DUAL
+      SELECT getPartWork2('" + end_date + "', " + working_group_id.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def part_equipment(start_date, end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT partEquipment('" + start_date + "','" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT partEquipment('" + start_date + "','" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def part_equipment2(end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT partEquipment2('" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT partEquipment2('" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def part_people(start_date, end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT partPeople('" + start_date + "','" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT partPeople('" + start_date + "','" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def part_people2(end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT partPeople2('" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT partPeople2('" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def order_of_service(start_date, end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT orderOfService('" + start_date + "','" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT orderOfService('" + start_date + "','" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def order_of_service2(end_date, working_group_id, phase_id, phase_id2)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT orderOfService2('" + end_date + "', " + working_group_id + ", " + phase_id + ", " + phase_id2 + ") FROM DUAL
+      SELECT orderOfService2('" + end_date + "', " + working_group_id.to_s + ", " + phase_id.to_s + ", " + phase_id2.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def sc_valuations(start_date, end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT scValuations('" + start_date + "','" + end_date + "'," + working_group_id + ") FROM DUAL
+      SELECT scValuations('" + start_date + "','" + end_date + "'," + working_group_id.to_s + ") FROM DUAL
     ")
     return workers_array3
   end
 
   def sc_valuations2(end_date, working_group_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT scValuations2('" + end_date + "'," + working_group_id + ") FROM DUAL
+      SELECT scValuations2('" + end_date + "'," + working_group_id.to_s + ") FROM DUAL
     ")
     return workers_array3
   end

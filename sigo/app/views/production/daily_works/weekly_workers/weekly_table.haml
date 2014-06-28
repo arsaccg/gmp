@@ -67,18 +67,6 @@
                       %b= number_to_currency sumariza_total_100, unit: ''
                     %td{ :style => "text-align: center;"}
                       %b= number_to_currency sumariza_total_horas, unit: ''
-        %br
-        %br
-        %div.col-md-12
-          Histograma por Semana: Cantidad de Horas- Categoría de trabajador
-          %div#container1
-
-        %br
-        %br
-        %div
-          Histograma por Semana: Cantidad de Personas - Categoría de trabajador
-          %div#container2
-          
       - else
         %h4.modal-title No hay datos.
         %br
@@ -86,9 +74,3 @@
         %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
           Salir
 
-:javascript
-  var array = jQuery.parseJSON("#{escape_javascript @serie1.to_json}") + jQuery.parseJSON("#{escape_javascript @spline1.to_json}")
-  bar_graph_category('container1', "#{@names}", jQuery.parseJSON("#{escape_javascript @serieh.to_json}"), 'Histograma: Cantidad de Horas - Categoría', 'Horas', 'hh', ' hh');
-  bar_graph_category('container2', "#{@names}", jQuery.parseJSON("#{escape_javascript @seriep.to_json}"), 'Histograma: Cantidad de Trabajadores - Categoría', 'Trabajadores', 'per.', ' p.');
-  console.log(jQuery.parseJSON("#{escape_javascript @serieh.to_json}"));  
-  console.log("hasta");  

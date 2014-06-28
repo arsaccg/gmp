@@ -1,0 +1,79 @@
+%table#inbox-table.table.table-striped.table-hover
+  %tbody
+    - @delivery_orders_issued.each do |dori|
+      %tr#msg1.unread
+        %td.inbox-table-icon
+          .checkbox
+            %label
+              %input.checkbox.style-2{type: "checkbox"}/
+              %span
+        %td.inbox-data-from.hidden-xs.hidden-sm
+          %div
+            = "Orden de Suministro N° " + dori.id.to_s.rjust(5, '0')
+        %td.inbox-data-message{:data => "#{dori.id}-#{dori.state}-dorder"}
+          %div
+            %span
+              %span.label.bg-color-orange DAR VISTO BUENO
+              = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
+            = "Se necesita aprobar la Orden en " + CostCenter.find(dori.cost_center_id).name.capitalize + " con fecha de emisión " + dori.date_of_issue.strftime('%d-%m-%Y')
+
+        %td.inbox-data-date.hidden-xs
+          %div
+            - if dori.state_per_order_details.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = dori.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+
+    - @delivery_orders_revised.each do |dorr|
+      %tr#msg1.unread
+        %td.inbox-table-icon
+          .checkbox
+            %label
+              %input.checkbox.style-2{type: "checkbox"}/
+              %span
+        %td.inbox-data-from.hidden-xs.hidden-sm
+          %div
+            = "Orden de Suministro N° " + dorr.id.to_s.rjust(5, '0')
+        %td.inbox-data-message{:data => "#{dorr.id}-#{dorr.state}-dorder"}
+          %div
+            %span
+              %span.label.bg-color-orange APROBAR
+              = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
+            = "Se necesita aprobar la Orden en " + CostCenter.find(dorr.cost_center_id).name.capitalize + " con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
+
+        %td.inbox-data-date.hidden-xs
+          %div
+            - if dorr.state_per_order_details.where("state LIKE 'revised'").first.nil?
+              = Time.now.strftime('%H:%M %p')
+            - else
+              = dorr.state_per_order_details.where("state LIKE 'revised'").first.created_at.strftime('%H:%M %p')
+
+:javascript
+  //Gets tooltips activated
+  $("#inbox-table [rel=tooltip]").tooltip();
+
+  $("#inbox-table input[type='checkbox']").change(function() {
+  	$(this).closest('tr').toggleClass("highlight", this.checked);
+  });
+
+  $('.inbox-table-icon input:checkbox').click(function() {
+  	enableDeleteButton();
+  })
+
+  $(".deletebutton").click(function() {
+  	$('#inbox-table td input:checkbox:checked').parents("tr").rowslide();
+  	//$(".inbox-checkbox-triggered").removeClass('visible');
+  	//$("#compose-mail").show();
+  });
+
+  function enableDeleteButton() {
+  	var isChecked = $('.inbox-table-icon input:checkbox').is(':checked');
+
+  	if (isChecked) {
+  		$(".inbox-checkbox-triggered").addClass('visible');
+  		//$("#compose-mail").hide();
+  	} else {
+  		$(".inbox-checkbox-triggered").removeClass('visible');
+  		//$("#compose-mail").show();
+  	}
+  }

@@ -1,0 +1,51 @@
+#content-inside
+  .row
+    .col-xs-15.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Reporte de Semanal
+  .row
+    .col-md-1
+    .col-md-2
+      %label Seleccione la Semana
+      %select.form-control#start-date-input{:name =>'date1', :style => 'width:100%;padding: 0;border: none;'}
+        %option{:value => "0"} Seleccione una fecha
+        - @week.each do |week|
+          %option{:value => "#{week[0]},#{week[2]},#{week[3]}"}
+            = week[1] + ' - ' + week[2].to_s + ' - ' + week[3].to_s
+    .col-md-2
+    .col-md-2
+      %label Seleccione el grupo de trabajo
+      %br
+      %label.input{for: "working_group_id"}
+        %select.form-control#workinggroup{:name =>"working_group", :style => 'width:100%;padding: 0;border: none;'}
+          %option{:value => "0"} Seleccione un grupo de trabajo
+          - @workingGroups.each do |ex|
+            %option{:value => "#{ex.id}"}
+              = ex.name
+    %br
+    .col-md-2
+    .col-md-2
+      %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
+        %i.fa.fa-search
+        Consultar
+
+  %br
+  .row
+  #widget-grid
+    .row
+      %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+        #table-information-result
+
+
+:javascript
+  $(document).ready(function () {
+    $('select').select2({width:'300'});
+  });
+
+  $('#show-table').click(function(){
+    var start_date = $('#start-date-input').val();
+    var article = $('#workinggroup').val();    
+    var parameters = { company_id: "#{@company}", article: article, start_date: start_date, authenticity_token: "#{form_authenticity_token}" };
+    load_items_delivery_order_ajax("#{get_report_production_weekly_reports_path}", 'table-information-result', parameters);
+  });

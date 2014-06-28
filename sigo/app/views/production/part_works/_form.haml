@@ -47,7 +47,11 @@
             %label.control-label(for="article_id") Insumos
 
           %section.col.col-6
-            %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+            %select.form-control#article
+              %option Seleccione un articulo
+              -@articles.each do |art|
+                %option{:value=>art.id}
+                  = art.name
 
           %section.col.col-2
             %div
@@ -95,30 +99,6 @@
   $(document).ready(function () {
 
     $('select').select2();
-
-    $('#article-select').select2({
-      placeholder: "Buscar Insumos...",
-      minimumInputLength: 3,
-      ajax: {
-        url: "#{display_articles_production_part_works_path}",
-        dataType: 'json',
-        type: 'POST',
-        quietMillis: 100,
-        data: function(term, page){
-          return {
-            q: term,
-            page: page,
-            authenticity_token: "#{form_authenticity_token}"
-          };
-        },
-        results: function(data, page){
-          return {results: data.articles};
-        }
-      },
-      formatResult: function(node){ return '<div>' + node.name + '</div>' },
-      formatSelection: function(node){ return node.name },
-      escapeMarkup: function (m) { return m; }
-    });
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -184,7 +164,7 @@
   }
 
   function add_article_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), amount: $("#article-amount").val()};
+    str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article").val()};
     append_url_ajax('#{add_more_article_production_part_works_path}', 'article_items_table', str_item, 0, 'POST');
   }
 

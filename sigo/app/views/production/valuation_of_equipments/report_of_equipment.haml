@@ -1,11 +1,11 @@
-.modal-dialog
+.modal-dialog{ style: "width: 850px;" }
   .modal-content
     .modal-header
       %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
         \×
       %h4.modal-title Cuadro Resumen Equipo de subcontrato
     .modal-body
-      %h1.page-title.txt-color-blueDark Articulo
+      %h1.page-title.txt-color-blueDark= @name2
       %table.table.table-bordered
         %thead
           %tr
@@ -54,32 +54,32 @@
               - row7 = '--'
               - row8 = '--'
           %tr
-            %th{'style' => 'font-weight: normal;'}
+            %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
               = index
-            %th{'style' => 'font-weight: normal;'}
+            %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
               = row1
-            %th{'style' => 'font-weight: normal;'}
+            %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
               = row2
-            %th{'style' => 'font-weight: normal;'}
+            %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
               = row3
-            %th{'style' => 'font-weight: normal;'}
+            %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
               = row4
-            %th{'style' => 'font-weight: normal;'}
+            %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
               = row5
-            %th{'style' => 'font-weight: normal;'}
+            %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
               = row6
-            %th{'style' => 'font-weight: normal;'}
+            %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
               = row7
-            %th{'style' => 'font-weight: normal;'}
+            %th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}
               = row8
           - index += 1
         %tr
           %th{'colspan' => 5}
             TOTAL
-          %th= @totaldif
-          %th= @totaltotalhours
+          %th{'style' => 'text-align:center;vertical-align: middle'}= sprintf('%.2f',@totaldif)
+          %th{'style' => 'text-align:center;vertical-align: middle'}= sprintf('%.2f',@totaltotalhours)
           %th
-          %th= @totalfuel_amount
+          %th{'style' => 'text-align:center;vertical-align: middle'}= sprintf('%.2f',@totalfuel_amount)
     %footer
       %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
         Salir

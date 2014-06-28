@@ -45,9 +45,7 @@
                         -if wk.id==@partofequipment.worker_id
                           = wk.entity.name + ' '+ wk.entity.paternal_surname+' '+wk.entity.maternal_surname
                     %td
-                      -@articles.each do |ar|
-                        -if ar.id==@partofequipment.equipment_id
-                          = ar.name
+                      = SubcontractEquipmentDetail.find_by_id(@partofequipment.equipment_id).code + ' ' + SubcontractEquipmentDetail.find_by_id(@partofequipment.equipment_id).article.name
                     %td
                       = @partofequipment.dif
                     %td
@@ -107,17 +105,3 @@
   $('#backlist').click(function(){
       load_url_ajax("#{production_part_of_equipments_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
   });
-
-= javascript_include_tag 'plugin/flot/jquery.flot.cust'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
-= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
-= javascript_include_tag 'plugin/flot/jquery.flot.resize'
-= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
-= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
-= javascript_include_tag 'plugin/datatables/ColReorder.min'
-= javascript_include_tag 'plugin/datatables/FixedColumns.min'
-= javascript_include_tag 'plugin/datatables/ColVis.min'
-= javascript_include_tag 'plugin/datatables/ZeroClipboard'
-= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
-= javascript_include_tag 'plugin/datatables/DT_bootstrap'

@@ -10,9 +10,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     PositionWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
       @master_builders = master_builder.workers
     end
-    TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
-      @executors = executor.entities
-    end
+    @executors = Subcontract.all
     render layout: false
   end
 

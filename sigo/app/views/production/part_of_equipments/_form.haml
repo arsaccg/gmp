@@ -130,6 +130,7 @@
                   %th.col-lg-2 Sector
                   %th.col-lg-2 Fase
                   %th.col-lg-2 Horas Efectivas
+                  %th.col-lg-2{"style"=>"display:none"} Combustible
                   %th.col-lg-2 Unidad de Medida
                   %th.col-lg-1 Eliminar
               %tbody(id="part_register_table")
@@ -153,8 +154,12 @@
                           - @sectors.each do |sector|
                             %optgroup{:label => "#{sector.name}"}
                               - Sector.getSubSectors(sector.code).each do |subsector|
-                                %option{:value => "#{subsector.id}"}
-                                  = subsector.name
+                                -if part.sector_id == subsector.id
+                                  %option{:value => "#{subsector.id}", :selected=>"selected"}
+                                    = subsector.name
+                                -else
+                                  %option{:value => "#{subsector.id}"}
+                                    = subsector.name
                           
                       %td.phase.col-lg-2
                         %select.form-control{:name =>"part_of_equipment[part_of_equipment_details_attributes][" + @reg_n.to_s + "][phase_id]"}
@@ -170,7 +175,8 @@
 
                       %td.effective-hours.col-lg-2
                         = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][effective_hours]', part.effective_hours , class: "form-control effective-hours", onchange: "sumHours(this);"
-                        = hidden_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][fuel]', part.fuel , class: "form-control fuel"
+                      %td.fuel.col-lg-2{"style"=>"display:none"}
+                        = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][fuel]', part.fuel , class: "form-control fuel"
                       %td.unit-of-measumente.col-lg-1
                         = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][unit]', '' , class: "form-control unit", readonly: true
                       %td.delete-item
@@ -236,6 +242,7 @@
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
+      $("#fieldtable").fadeIn("fast");
     }else{
       submit_validate($('#new_part_of_equipment'));
     }
@@ -362,7 +369,7 @@
   }
 
   $('#equipment').change(function(){
-    var article = $('#equipment').val();
+    var article = $('option:selected', this).attr('article_id');
     unit("#{get_unit_production_part_of_equipments_path}", article, "#{form_authenticity_token}", "0302");
     $("#fieldtable").fadeIn("fast");
   });
@@ -426,12 +433,14 @@
         $('.form-control.unit').empty();
         $('.form-control.unit').val(unit);
         code = data.code
+        sedid = data.sedid
         newOptions = [];
         $.each(data.equipment, function(key, value){
+          console.log(value);
           item = {};
-          item['name'] = value.name;
-          item['id'] = value.id;
-          item['unit'] = value.unit_of_measurement_id;
+          item['name'] = value[1];
+          item['id'] = value[0];
+          item['unit'] = value[5];
           newOptions.push(item);
         });
         $('#equipment').empty();
@@ -439,13 +448,13 @@
               $("<option></option>").attr("value", 0).attr("selected", "selected").text('Seleccione Artículo')
             )
         $.each(newOptions, function(key,value){
-          if ("#{@id}" == value.id)
+          if ("#{@id}" == sedid[key])
             $('#equipment').append(
-              $("<option></option>").attr("value", value.id).attr("selected", "selected").text(value.name)
+              $("<option></option>").attr("value", sedid[key]).attr("article_id", value.id).attr("selected", "selected").text(code[key] + ' '+value.name)
             )
           else
             $('#equipment').append(
-              $("<option></option>").attr("value", value.id).text(code[key] + ' '+value.name)
+              $("<option></option>").attr("value", sedid[key]).attr("article_id", value.id).text(code[key] + ' '+value.name)
             )
           
         });
@@ -473,6 +482,7 @@
     $.each(hours, function(key,value){
       fuelforthis = fuelhour*Number(value.value);
       fuelforthis = fuelforthis.toFixed(1);
-      $(value).parent().parent().siblings('.fuel').find('input').val(fuelforthis)
+      $(value).parent().siblings('.fuel').find('input').removeAttr('value');
+      $(value).parent().siblings('.fuel').find('input').attr('value', fuelforthis);
     });
   }

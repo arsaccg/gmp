@@ -1,10 +1,11 @@
 class Production::DailyWorks::WeeklyWorkersController < ApplicationController
-  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update, :graph ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   
   def index
-  	@workingGroups = WorkingGroup.all
+    @workingGroups = WorkingGroup.all
     @weeklyworker = WeeklyWorker.all
+    @cost_center = get_company_cost_center('cost_center')
     render layout: false
   end
 
@@ -24,6 +25,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
 
   def new
     @workingGroups = WorkingGroup.all
+    @week = CostCenter.getWeek(get_company_cost_center('cost_center'),Time.now.to_date.to_s)
     render layout: false
   end
 
@@ -79,13 +81,109 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   end
 
   def weekly_table
+    @weekly_work=WeeklyWorker.find_by_id(params[:id])
+    @blockweekly = params[:blockweekly]
+    @inicio = @weekly_work.start_date
+    @fin = @weekly_work.end_date
+    @cad = @weekly_work.working_group.split(" ")
+    @cad = @cad.join(',')
+    @dias_habiles =  range_business_days(@inicio,@fin)
+    @gruposdetrabajos = WorkingGroup.all
+    @tareos_total_arrays = []
+    @subcontratista_arrays = []
+    @gruposdetrabajos.each do |gruposdetrabajo|
+      temp_tareo = []
+      temp_tareo = business_days_array(@inicio,@fin,@cad,@dias_habiles,@blockweekly)          
+      if temp_tareo.length != 0 
+        @tareos_total_arrays << temp_tareo
+        subcontratista_nombre = "#{gruposdetrabajo.name} - #{Entity.find(Worker.find(gruposdetrabajo.front_chief_id).entity_id).name} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Entity.find(Worker.find(gruposdetrabajo.master_builder_id).entity_id).name}"
+        @subcontratista_arrays << subcontratista_nombre
+      end
+      break
+    end
+
+    if @dias_habiles.length == 0
+      @pase = 3
+      render layout: false
+    else
+      if @tareos_total_arrays.length != 0
+        @pase = 4
+        render layout: false
+      else
+        @pase = 2
+        render layout: false
+      end
+    end
+  end
+
+  def range_business_days(start_date, end_date)
+    start_date_var = start_date.to_date
+    end_date_var = end_date.to_date
+    business_days = []
+    while end_date_var >= start_date_var
+      business_days << start_date_var
+      start_date_var = start_date_var + 1.day
+    end
+    return business_days
+  end
+
+  def business_days_array(start_date, end_date, working_group_id, business_days,blockweekly)
+    personals_array = []
+    trabajadores_array = []
+    partediariodepersonals = PartPerson.where("working_group_id IN ("+working_group_id+") and blockweekly = ? and date_of_creation BETWEEN ? AND ?", blockweekly,start_date,end_date)
+    partediariodepersonals.each do |partediariodepersonal|
+      partediariodepersonal.part_person_details.each do |trabajador_detalle|
+        trabajadore = trabajador_detalle.worker
+        id = trabajadore.id
+        nombre = "#{trabajadore.entity.paternal_surname + ' ' + trabajadore.entity.maternal_surname}, #{trabajadore.entity.name}  #{trabajadore.entity.second_name}"
+        categoria = "#{trabajadore.article.name}"              
+        total_horas     = trabajador_detalle.total_hours.to_f
+        total_normales  = trabajador_detalle.normal_hours.to_f
+        total_60        = trabajador_detalle.he_60.to_f
+        total_100       = trabajador_detalle.he_100.to_f
+        rango_dias = []
+        business_days.each do |dia|
+          if partediariodepersonal.date_of_creation  == dia.to_date
+            rango_dias << trabajador_detalle.total_hours.to_f
+          else
+            rango_dias << 0
+          end               
+        end              
+        # [0]     =>     id                           trabajadores
+        # [1]     =>     nombre                       nombreTrabajador
+        # [2]     =>     categoria                    catalogotrabajadores
+        # [3]     =>     Dias                         exterior calculo de dias
+        # [4]     =>     total_horas                  trabajadores 
+        # [5]     =>     total_normales               trabajadores
+        # [6]     =>     total_60                     trabajadores
+        # [7]     =>     total_100                    trabajadores
+        trabajadores_array << [id,nombre,categoria,rango_dias,total_horas,total_normales,total_60,total_100]
+      end
+    end
+    return filter_array_business_days(trabajadores_array)
+  end
+
+  def updateParts(start_date, end_date)
+    ActiveRecord::Base.connection.execute("
+      Update part_people set blockweekly = 1 where date_of_creation BETWEEN " + start_date + " AND " + end_date + "
+    ")
+  end
+
+  def graph
+    @week = CostCenter.getWeek5(get_company_cost_center('cost_center'),Time.now.to_date.to_s)
+    render layout: false
+  end
+
+  def graph_week
     @names= Array.new
+    @result = params[:start_date].split(/,/)
+    start_date = @result[1]
+    end_date = @result[2]
     @costcenter = get_company_cost_center('cost_center')
-    @now = Time.now.to_date.to_s
     weeks = ActiveRecord::Base.connection.execute("
       SELECT wcc.id
       FROM  weeks_for_cost_center_"+@costcenter+" wcc
-      WHERE  wcc.start_date <  '"+@now+"' AND wcc.end_date >  '"+@now+"'"
+      WHERE  wcc.start_date <  '"+end_date.to_s+"' AND wcc.end_date >  '"+start_date.to_s+"'"
     )
     weeks.each do |id|
       if id[0].to_i<13
@@ -143,11 +241,10 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
         @catehh << b[0]
       end
     end
-    @catehh = @catehh.uniq 
+    @catehh = @catehh.uniq
     
     @weekcp.each do |a|
       a.each do |b|
-        puts b
         @catecp << b[0]
       end
     end
@@ -207,16 +304,15 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     type = 'column'
     type2 = 'spline'
 
-
     @i=0
     @serieh = Array.new
     @seriep = Array.new
 
     @serie1 = Array.new
     @spline1 = Array.new
-
     @serie2 = Array.new
     @spline2 = Array.new
+
     @catehh.each do |c|
       f=@i+9
       @parteh = @catwh[@i.to_i..f.to_i]
@@ -244,116 +340,17 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
                   yAxis: 1,
                   data: @partep
                 }
-
       @spline2 << {
                   name: c,
                   type: type2,
                   yAxis: 1,
                   data: @partep
                 }
-
       @i2+=10
     end
     @serieh = @serie1 + @spline1
     @seriep = @serie2 + @spline2
-
-    puts "-----------------------------------@serieh--arreglo--------------------------------------------"
-    puts @serieh
-    puts "-----------------------------------------------------------------------------------------------"
-    # @seriep = @seriep.join(",")
-
-
-    @weekly_work=WeeklyWorker.find_by_id(params[:id])
-    @blockweekly = params[:blockweekly]
-    @inicio = @weekly_work.start_date
-    @fin = @weekly_work.end_date
-    @cad = @weekly_work.working_group.split(" ")
-    @cad = @cad.join(',')
-    @dias_habiles =  range_business_days(@inicio,@fin)
-    @gruposdetrabajos = WorkingGroup.all
-    @tareos_total_arrays = []
-    @subcontratista_arrays = []
-    @gruposdetrabajos.each do |gruposdetrabajo|
-      temp_tareo = []
-      temp_tareo = business_days_array(@inicio,@fin,@cad,@dias_habiles,@blockweekly)          
-      if temp_tareo.length != 0 
-        @tareos_total_arrays << temp_tareo
-        subcontratista_nombre = "#{gruposdetrabajo.name} - #{Entity.find(Worker.find(gruposdetrabajo.front_chief_id).entity_id).name} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Entity.find(Worker.find(gruposdetrabajo.master_builder_id).entity_id).name}"
-        @subcontratista_arrays << subcontratista_nombre
-      end
-      break
-    end
-
-    if @dias_habiles.length == 0
-      @pase = 3
-      render layout: false
-    else
-      if @tareos_total_arrays.length != 0
-        @pase = 4
-        render layout: false
-      else
-        @pase = 2
-        render layout: false
-      end
-    end
-    
-  end
-
-  def range_business_days(start_date, end_date)
-    start_date_var = start_date.to_date
-    end_date_var = end_date.to_date
-    business_days = []
-    while end_date_var >= start_date_var
-      business_days << start_date_var
-      start_date_var = start_date_var + 1.day
-    end
-    return business_days
-  end
-
-  def business_days_array(start_date, end_date, working_group_id, business_days,blockweekly)
-    personals_array = []
-    trabajadores_array = []
-    partediariodepersonals = PartPerson.where("working_group_id IN ("+working_group_id+") and blockweekly = ? and date_of_creation BETWEEN ? AND ?", blockweekly,start_date,end_date)
-    partediariodepersonals.each do |partediariodepersonal|
-      partediariodepersonal.part_person_details.each do |trabajador_detalle|
-        trabajadore = trabajador_detalle.worker
-        id = trabajadore.id
-        nombre = "#{trabajadore.entity.paternal_surname + ' ' + trabajadore.entity.maternal_surname}, #{trabajadore.entity.name}  #{trabajadore.entity.second_name}"
-        categoria = "#{trabajadore.article.name}"              
-        total_horas     = trabajador_detalle.total_hours.to_f
-        total_normales  = trabajador_detalle.normal_hours.to_f
-        total_60        = trabajador_detalle.he_60.to_f
-        total_100       = trabajador_detalle.he_100.to_f
-        rango_dias = []
-        business_days.each do |dia|
-          if partediariodepersonal.date_of_creation  == dia.to_date
-            rango_dias << trabajador_detalle.total_hours.to_f
-          else
-            rango_dias << 0
-          end               
-        end              
-        # [0]     =>     id                           trabajadores
-        # [1]     =>     nombre                       nombreTrabajador
-        # [2]     =>     categoria                    catalogotrabajadores
-        # [3]     =>     Dias                         exterior calculo de dias
-        # [4]     =>     total_horas                  trabajadores 
-        # [5]     =>     total_normales               trabajadores
-        # [6]     =>     total_60                     trabajadores
-        # [7]     =>     total_100                    trabajadores
-        trabajadores_array << [id,nombre,categoria,rango_dias,total_horas,total_normales,total_60,total_100]
-      end
-    end
-    return filter_array_business_days(trabajadores_array)
-  end
-
-  def updateParts(start_date, end_date)
-    ActiveRecord::Base.connection.execute("
-      Update part_people set blockweekly = 1 where date_of_creation BETWEEN " + start_date + " AND " + end_date + "
-    ")
-  end
-
-  def graphs
-    
+    render(partial: 'graph', :layout => false)
   end
 
   def filter_array_business_days(array_order)

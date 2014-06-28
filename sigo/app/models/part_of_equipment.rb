@@ -6,80 +6,82 @@ class PartOfEquipment < ActiveRecord::Base
 	accepts_nested_attributes_for :part_of_equipment_details, :allow_destroy => true
 
 	def self.get_workers(subcontract_equip_id, start_date, end_date)
-	  return ActiveRecord::Base.connection.execute("SELECT DISTINCT wo.id, CONCAT( ent.name,  ' ', ent.second_name,  ' ', ent.paternal_surname,  ' ', ent.maternal_surname ) as 'worker'
+	  return ActiveRecord::Base.connection.execute("SELECT DISTINCT wo.id, CONCAT( ent.name,  ' ', ent.paternal_surname,  ' ', ent.maternal_surname ) as 'worker'
       FROM part_of_equipments poe, entities ent, workers wo, part_of_equipment_details poed,subcontract_equipment_details sced 
-      WHERE sced.code IN(" + subcontract_equip_id + ") 
+      WHERE sced.code LIKE '" + subcontract_equip_id + "' 
       AND poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "' 
       AND poe.worker_id=wo.id 
       AND wo.entity_id = ent.id 
-      AND poe.equipment_id=sced.article_id 
+      AND poe.equipment_id=sced.id 
       AND poe.id=poed.part_of_equipment_id 
-      AND poe.subcontract_equipment_id=sced.subcontract_equipment_id")
+      AND poe.equipment_id=sced.id")
 	end
 
 	def self.get_report_per_worker(subcontract_equip_id, start_date, end_date, worker_id)
-	  return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2), tv.theoretical_value 
-      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced, theoretical_values tv 
-      WHERE sced.code IN(" + subcontract_equip_id + ") 
+	  return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2) 
+      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
+      WHERE sced.code LIKE '" + subcontract_equip_id + "'
       AND poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "'
       AND poe.worker_id=wo.id 
-      AND poe.equipment_id=sced.article_id 
+      AND poe.equipment_id=sced.id 
       AND poe.id=poed.part_of_equipment_id 
-      AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
+      AND poe.equipment_id=sced.id 
       AND poed.phase_id=pha.id
-      AND poe.equipment_id=tv.article_id
       AND wo.id = " + worker_id.to_s + "
       GROUP BY pha.name
       ")
 	end
 
-  def self.get_equipments(worker_id, start_date, end_date)
-    return ActiveRecord::Base.connection.execute("SELECT DISTINCT sced.code, art.name as 'article'
-      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,subcontract_equipment_details sced, articles art 
+  def self.get_equipments(worker_id, start_date, end_date,cost_center_id)
+    name_article = ""
+    @cost_center = CostCenter.find(cost_center_id)
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    return ActiveRecord::Base.connection.execute("SELECT DISTINCT sced.code, art.name as 'article', af.article_id
+      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,subcontract_equipment_details sced, articles art, articles_from_"+name+" af 
       WHERE poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "' 
       AND poe.worker_id IN(" + worker_id + ") 
-      AND poe.equipment_id=sced.article_id 
+      AND poe.equipment_id=sced.id 
       AND poe.id=poed.part_of_equipment_id 
-      AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
+      AND poe.equipment_id=sced.id 
+      AND sced.article_id=af.id
       AND sced.article_id = art.id")
   end
 
   def self.get_report_per_equipments(subcontract_equip_id, start_date, end_date, worker_id)
-    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2), tv.theoretical_value 
-      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced , theoretical_values tv 
-      WHERE sced.code IN(" + worker_id.to_s + ") 
+    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2) 
+      FROM part_of_equipments poe, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
+      WHERE sced.code LIKE '" + worker_id.to_s + "' 
       AND poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "'
-      AND poe.worker_id=wo.id 
-      AND poe.equipment_id=sced.article_id 
       AND poe.id=poed.part_of_equipment_id 
-      AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
+      AND poe.equipment_id=sced.id 
       AND poed.phase_id=pha.id
-      AND poe.equipment_id=tv.article_id
-      AND wo.id = " + subcontract_equip_id + "
+      AND poe.worker_id = " + subcontract_equip_id + "
       GROUP BY pha.name
       ")
   end
 
-  def self.get_equipments_per_sector(sector_id, start_date, end_date)
-    return ActiveRecord::Base.connection.execute("SELECT DISTINCT sced.code, art.name as 'article'
-      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,subcontract_equipment_details sced, articles art 
-      WHERE poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "' 
+  def self.get_equipments_per_sector(sector_id, start_date, end_date,cost_center_id)
+    name_article = ""
+    @cost_center = CostCenter.find(cost_center_id)
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    return ActiveRecord::Base.connection.execute("SELECT DISTINCT sed.code, art.name, af.article_id
+      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, subcontract_equipment_details sed, articles_from_"+name+" af 
+      WHERE poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "'
+      AND poe.equipment_id = sed.id
+      AND art.id = sed.article_id
+      AND poe.id = poed.part_of_equipment_id
+      AND sed.article_id=af.id
       AND poed.sector_id IN(" + sector_id + ") 
-      AND poe.equipment_id=sced.article_id 
-      AND poe.id=poed.part_of_equipment_id 
-      AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
-      AND sced.article_id = art.id")
+    ")
   end
 
   def self.get_report_per_equipments_per_sector(subcontract_equip_id, start_date, end_date, worker_id)
     return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2)
-      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
-      WHERE sced.code IN(" + worker_id.to_s + ") 
+      FROM part_of_equipments poe, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
+      WHERE sced.code LIKE '" + worker_id.to_s + "'
       AND poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "'
-      AND poe.worker_id=wo.id 
-      AND poe.equipment_id=sced.article_id 
       AND poe.id=poed.part_of_equipment_id 
-      AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
+      AND poe.equipment_id=sced.id 
       AND poed.phase_id=pha.id
       AND poed.sector_id = " + subcontract_equip_id + "
       GROUP BY pha.name
@@ -90,25 +92,24 @@ class PartOfEquipment < ActiveRecord::Base
     return ActiveRecord::Base.connection.execute("SELECT DISTINCT sced.code, art.name as 'article'
       FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,subcontract_equipment_details sced, articles art 
       WHERE poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "' 
-      AND poe.equipment_id IN(" + art_id + ") 
-      AND poe.equipment_id=sced.article_id 
+      AND poe.equipment_id=sced.id 
+      AND sced.article_id IN(" + art_id + ") 
       AND poe.id=poed.part_of_equipment_id 
-      AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
+      AND poe.equipment_id=sced.id 
       AND sced.article_id = art.id")
   end
 
   def self.get_report_per_equipments_per_article(subcontract_equip_id, start_date, end_date, worker_id)
-    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2), tv.theoretical_value
-      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced , theoretical_values tv 
-      WHERE sced.code IN(" + worker_id.to_s + ") 
+    return ActiveRecord::Base.connection.execute("SELECT pha.id, pha.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2) 
+      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,phases pha,subcontract_equipment_details sced 
+      WHERE sced.code LIKE '" + worker_id.to_s + "' 
       AND poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "'
       AND poe.worker_id=wo.id 
-      AND poe.equipment_id=sced.article_id 
+      AND poe.equipment_id=sced.id 
       AND poe.id=poed.part_of_equipment_id 
-      AND poe.subcontract_equipment_id=sced.subcontract_equipment_id 
+      AND poe.equipment_id=sced.id 
       AND poed.phase_id=pha.id
-      AND poe.equipment_id=tv.article_id
-      AND poe.equipment_id = " + subcontract_equip_id + "
+      AND sced.article_id = " + subcontract_equip_id + "
       GROUP BY pha.name
       ")
   end

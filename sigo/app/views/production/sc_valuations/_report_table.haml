@@ -54,7 +54,7 @@
                 %th{"style"=>"color:#5f5f5f;text-align:center"}
                   %input.form-control#percent{:value => "#{sprintf('%.2f',@subcontract.initial_amortization_percent)}", :readonly => true, "style"=> "width: 70;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
                 %th{"style"=>"color:#5f5f5f;text-align:center"}
-                  %input.form-control#number{:value => "#{sprintf('%.2f',@subcontract.initial_amortization_number)}", "style"=> "width: 80;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
+                  %input.form-control#number{:value => "#{sprintf('%.2f',@subcontract.initial_amortization_number.to_f)}", "style"=> "width: 80;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
                 %th#amortLast{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= sprintf('%.2f',@amortizaciondeadelanto)
                 %th#amortAcum{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= sprintf('%.2f',@accumulated_amortizaciondeadelanto)
               %tr
@@ -139,14 +139,13 @@
                 %th#netpay{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f', @netoactualpagar)
                 %th#lastnetpay{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@netoapagar)
                 %th#acumnetpay{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@accumulated_netoapagar)
-
                 = hidden_field_tag 'sv_valuation[name]', @entity.name
                 = hidden_field_tag 'sv_valuation[code]', @numbercode
                 = hidden_field_tag 'sv_valuation[start_date]', @start_date
                 = hidden_field_tag 'sv_valuation[end_date]', @end_date
                 = hidden_field_tag 'sv_valuation[working_group]', @cad
                 = hidden_field_tag 'sv_valuation[valuation]', @totalprice2
-                = hidden_field_tag 'sv_valuation[initial_amortization_number]', @subcontract.initial_amortization_number
+                = hidden_field_tag 'sv_valuation[initial_amortization_number]', @subcontract.initial_amortization_number.to_f
                 = hidden_field_tag 'sv_valuation[initial_amortization_percentage]', @subcontract.initial_amortization_percent
                 = hidden_field_tag 'sv_valuation[bill]', @totalbill
                 = hidden_field_tag 'sv_valuation[billigv]', @subcontract.igv
@@ -164,7 +163,7 @@
                 = hidden_field_tag 'sv_valuation[balance]', @balance
                 = hidden_field_tag 'sv_valuation[net_payment]', @netoactualpagar
                 = hidden_field_tag 'sv_valuation[accumulated_valuation]', @accumulated_valorizacionsinigv
-                = hidden_field_tag 'sv_valuation[accumulated_initial_amortization_number]', @accumulated_amortizaciondeadelanto
+                = hidden_field_tag 'sv_valuation[accumulated_initial_amortization_number]', @accumulated_amortizaciondeadelanto.to_f
                 = hidden_field_tag 'sv_valuation[accumulated_bill]', @accumulated_totalfacturar
                 = hidden_field_tag 'sv_valuation[accumulated_billigv]', @accumulated_totalfacigv
                 = hidden_field_tag 'sv_valuation[accumulated_totalbill]', @accumulated_totalincluidoigv

@@ -43,10 +43,8 @@ class Production::ScValuationsController < ApplicationController
     render layout: false
   end
 
-	def new		
-		TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
-      @executors = executor.entities
-    end
+	def new
+    @executors = Subcontract.all
     last=ScValuation.last
     if !last.nil?
       @start = last.start_date
@@ -141,7 +139,7 @@ class Production::ScValuationsController < ApplicationController
       @workers_array2 = business_days_array2(@start_date, @end_date, @cad, @cc)
       @workers_array3 = business_days_array3(@start_date, @end_date, @cad, @cc)
       @workers_array.each do |workerDetail|
-        @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
+        @totalprice += workerDetail[7].to_f + workerDetail[8].to_f + workerDetail[9].to_f
       end
       @workers_array2.each do |workerDetail|
         @totalprice2 += workerDetail[5]
@@ -156,8 +154,8 @@ class Production::ScValuationsController < ApplicationController
         @subcontract.initial_amortization_number=0
         @subcontract.initial_amortization_percent=0
       end
-      @totalbill= @totalprice2-@subcontract.initial_amortization_number
-      @totalbilligv= (@totalprice2-@subcontract.initial_amortization_number)*@subcontract.igv
+      @totalbill= @totalprice2.to_f-@subcontract.initial_amortization_number.to_f
+      @totalbilligv= (@totalprice2-@subcontract.initial_amortization_number.to_f)*@subcontract.igv
       @totalbillwigv= @totalbill+@totalbilligv
       @retention=@subcontract.detraction.to_i+@subcontract.guarantee_fund.to_i+@totalprice+@totalprice3
       @valuationgroup = getsc_valuation(@start_date, @end_date, @entity.name)
@@ -182,7 +180,7 @@ class Production::ScValuationsController < ApplicationController
       end
       @numbercode = @numbercode.to_s.rjust(3,'0')
       @accumulated_valorizacionsinigv = @totalprice2+@valorizacionsinigv
-      @accumulated_amortizaciondeadelanto = @subcontract.initial_amortization_number+@amortizaciondeadelanto
+      @accumulated_amortizaciondeadelanto = @subcontract.initial_amortization_number.to_f+@amortizaciondeadelanto
       @accumulated_totalfacturar = @totalbill+@totalfacturar
       @accumulated_totalfacigv = @totalbilligv+@totalfacigv
       @accumulated_totalincluidoigv = @totalbillwigv+@totalincluidoigv

@@ -15,6 +15,7 @@ class Subcontract < ActiveRecord::Base
       WHERE a.code LIKE '04%'
       AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
       AND u.id = a.unit_of_measurement_id
+      GROUP BY a.code
     ")
 
     return mysql_result

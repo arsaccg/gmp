@@ -1,0 +1,929 @@
+%section#widget-grid
+  / row
+  .row
+    %article.col-sm-12
+      / new widget
+      #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
+        %header
+          %span.widget-icon
+            %i.glyphicon.glyphicon-stats.txt-color-darken
+          %h2 Live Feeds
+          %ul#myTab.nav.nav-tabs.pull-right.in
+            %li.active
+              %a{"data-toggle" => "tab", href: "#s1"}
+                %i.fa.fa-clock-o
+                %span.hidden-mobile.hidden-tablet Live Stats
+            %li
+              %a{"data-toggle" => "tab", href: "#s2"}
+                %i.fa.fa-facebook
+                %span.hidden-mobile.hidden-tablet Social Network
+            %li
+              %a{"data-toggle" => "tab", href: "#s3"}
+                %i.fa.fa-dollar
+                %span.hidden-mobile.hidden-tablet Revenue
+        / widget div
+        .no-padding
+          / widget edit box
+          .jarviswidget-editbox
+            test
+          / end widget edit box
+          .widget-body
+            / content
+            #myTabContent.tab-content
+              #s1.tab-pane.fade.active.in.padding-10.no-padding-bottom
+                .row.no-space
+                  .col-xs-12.col-sm-12.col-md-8.col-lg-8
+                    %span.demo-liveupdate-1
+                      %span.onoffswitch-title Live switch
+                      %span.onoffswitch
+                        %input#start_interval.onoffswitch-checkbox{name: "start_interval", type: "checkbox"}/
+                        %label.onoffswitch-label{for: "start_interval"}
+                          %span.onoffswitch-inner{"data-swchoff-text" => "OFF", "data-swchon-text" => "ON"}
+                          %span.onoffswitch-switch
+                    #updating-chart.chart-large.txt-color-blue
+                  .col-xs-12.col-sm-12.col-md-4.col-lg-4.show-stats
+                    .row
+                      .col-xs-6.col-sm-6.col-md-12.col-lg-12
+                        %span.text
+                          My Tasks
+                          %span.pull-right 130/200
+                        .progress
+                          .progress-bar.bg-color-blueDark{style: "width: 65%;"}
+                      .col-xs-6.col-sm-6.col-md-12.col-lg-12
+                        %span.text
+                          Transfered
+                          %span.pull-right 440 GB
+                        .progress
+                          .progress-bar.bg-color-blue{style: "width: 34%;"}
+                      .col-xs-6.col-sm-6.col-md-12.col-lg-12
+                        %span.text
+                          Bugs Squashed
+                          %span.pull-right 77%
+                        .progress
+                          .progress-bar.bg-color-blue{style: "width: 77%;"}
+                      .col-xs-6.col-sm-6.col-md-12.col-lg-12
+                        %span.text
+                          User Testing
+                          %span.pull-right 7 Days
+                        .progress
+                          .progress-bar.bg-color-greenLight{style: "width: 84%;"}
+                      %span.show-stat-buttons
+                        %span.col-xs-12.col-sm-6.col-md-6.col-lg-6
+                          %a.btn.btn-default.btn-block.hidden-xs{href: "javascript:void(0);"} Generate PDF
+                        %span.col-xs-12.col-sm-6.col-md-6.col-lg-6
+                          %a.btn.btn-default.btn-block.hidden-xs{href: "javascript:void(0);"} Report a bug
+                .show-stat-microcharts
+                  .col-xs-12.col-sm-3.col-md-3.col-lg-3
+                    .easy-pie-chart.txt-color-orangeDark{"data-percent" => "33", "data-pie-size" => "50"}
+                      %span.percent.percent-sign 35
+                    %span.easy-pie-title
+                      Server Load
+                      %i.fa.fa-caret-up.icon-color-bad
+                    %ul.smaller-stat.hidden-sm.pull-right
+                      %li
+                        %span.label.bg-color-greenLight
+                          %i.fa.fa-caret-up
+                          97%
+                      %li
+                        %span.label.bg-color-blueLight
+                          %i.fa.fa-caret-down
+                          44%
+                    .sparkline.txt-color-greenLight.hidden-sm.hidden-md.pull-right{"data-fill-color" => "transparent", "data-sparkline-height" => "33px", "data-sparkline-type" => "line", "data-sparkline-width" => "70px"}
+                      130, 187, 250, 257, 200, 210, 300, 270, 363, 247, 270, 363, 247
+                  .col-xs-12.col-sm-3.col-md-3.col-lg-3
+                    .easy-pie-chart.txt-color-greenLight{"data-percent" => "78.9", "data-pie-size" => "50"}
+                      %span.percent.percent-sign 78.9
+                    %span.easy-pie-title
+                      Disk Space
+                      %i.fa.fa-caret-down.icon-color-good
+                    %ul.smaller-stat.hidden-sm.pull-right
+                      %li
+                        %span.label.bg-color-blueDark
+                          %i.fa.fa-caret-up
+                          76%
+                      %li
+                        %span.label.bg-color-blue
+                          %i.fa.fa-caret-down
+                          3%
+                    .sparkline.txt-color-blue.hidden-sm.hidden-md.pull-right{"data-fill-color" => "transparent", "data-sparkline-height" => "33px", "data-sparkline-type" => "line", "data-sparkline-width" => "70px"}
+                      257, 200, 210, 300, 270, 363, 130, 187, 250, 247, 270, 363, 247
+                  .col-xs-12.col-sm-3.col-md-3.col-lg-3
+                    .easy-pie-chart.txt-color-blue{"data-percent" => "23", "data-pie-size" => "50"}
+                      %span.percent.percent-sign 23
+                    %span.easy-pie-title
+                      Transfered
+                      %i.fa.fa-caret-up.icon-color-good
+                    %ul.smaller-stat.hidden-sm.pull-right
+                      %li
+                        %span.label.bg-color-darken 10GB
+                      %li
+                        %span.label.bg-color-blueDark
+                          %i.fa.fa-caret-up
+                          10%
+                    .sparkline.txt-color-darken.hidden-sm.hidden-md.pull-right{"data-fill-color" => "transparent", "data-sparkline-height" => "33px", "data-sparkline-type" => "line", "data-sparkline-width" => "70px"}
+                      200, 210, 363, 247, 300, 270, 130, 187, 250, 257, 363, 247, 270
+                  .col-xs-12.col-sm-3.col-md-3.col-lg-3
+                    .easy-pie-chart.txt-color-darken{"data-percent" => "36", "data-pie-size" => "50"}
+                      %span.percent.degree-sign
+                        36
+                        %i.fa.fa-caret-up
+                    %span.easy-pie-title
+                      Temperature
+                      %i.fa.fa-caret-down.icon-color-good
+                    %ul.smaller-stat.hidden-sm.pull-right
+                      %li
+                        %span.label.bg-color-red
+                          %i.fa.fa-caret-up
+                          124
+                      %li
+                        %span.label.bg-color-blue
+                          %i.fa.fa-caret-down
+                          40 F
+                    .sparkline.txt-color-red.hidden-sm.hidden-md.pull-right{"data-fill-color" => "transparent", "data-sparkline-height" => "33px", "data-sparkline-type" => "line", "data-sparkline-width" => "70px"}
+                      2700, 3631, 2471, 2700, 3631, 2471, 1300, 1877, 2500, 2577, 2000, 2100, 3000
+              / end s1 tab pane
+              #s2.tab-pane.fade
+                .widget-body-toolbar.bg-color-white
+                  %form.form-inline{role: "form"}
+                    .form-group
+                      %label.sr-only{for: "s123"} Show From
+                      %input#s123.form-control.input-sm{placeholder: "Show From", type: "email"}/
+                    .form-group
+                      %input#s124.form-control.input-sm{placeholder: "To", type: "email"}/
+                    .btn-group.hidden-phone.pull-right
+                      %a.btn.dropdown-toggle.btn-xs.btn-default{"data-toggle" => "dropdown"}
+                        %i.fa.fa-cog
+                        More
+                        %span.caret
+                      %ul.dropdown-menu.pull-right
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-file-text-alt
+                            Export to PDF
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-question-sign
+                            Help
+                .padding-10
+                  #statsChart.chart-large.has-legend-unique
+              / end s2 tab pane
+              #s3.tab-pane.fade
+                #rev-toggles.widget-body-toolbar.bg-color-white.smart-form
+                  .inline-group
+                    %label.checkbox{for: "gra-0"}
+                      %input#gra-0{checked: "checked", name: "gra-0", type: "checkbox"}/
+                      %i
+                      Target
+                    %label.checkbox{for: "gra-1"}
+                      %input#gra-1{checked: "checked", name: "gra-1", type: "checkbox"}/
+                      %i
+                      Actual
+                    %label.checkbox{for: "gra-2"}
+                      %input#gra-2{checked: "checked", name: "gra-2", type: "checkbox"}/
+                      %i
+                      Signups
+                  .btn-group.hidden-phone.pull-right
+                    %a.btn.dropdown-toggle.btn-xs.btn-default{"data-toggle" => "dropdown"}
+                      %i.fa.fa-cog
+                      More
+                      %span.caret
+                    %ul.dropdown-menu.pull-right
+                      %li
+                        %a{href: "javascript:void(0);"}
+                          %i.fa.fa-file-text-alt
+                          Export to PDF
+                      %li
+                        %a{href: "javascript:void(0);"}
+                          %i.fa.fa-question-sign
+                          Help
+                .padding-10
+                  #flotcontainer.chart-large.has-legend-unique
+              / end s3 tab pane
+            / end content
+        / end widget div
+      / end widget
+  / end row
+
+  / row
+  .row
+    / NEW WIDGET START
+    %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+      / Widget ID (each widget will need unique ID)
+      #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
+
+        %header
+          %span.widget-icon
+            %i.fa.fa-map-marker
+          %h2 Mapa
+        / widget div
+        %div
+          / widget edit box
+          .jarviswidget-editbox
+            / This area used as dropdown edit box
+          .widget-body.no-padding
+            #map_canvas2.google_maps{:style => 'height: 500px;'}
+
+  / row
+  .row
+    %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+      / new widget
+      #wid-id-3.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
+        %header
+          %span.widget-icon
+            %i.fa.fa-map-marker
+          %h2 Birds Eye
+          .widget-toolbar.hidden-mobile
+            %span.onoffswitch-title
+              %i.fa.fa-location-arrow
+              Realtime
+            %span.onoffswitch
+              %input#myonoffswitch.onoffswitch-checkbox{checked: "checked", name: "onoffswitch", type: "checkbox"}/
+              %label.onoffswitch-label{for: "myonoffswitch"}
+                %span.onoffswitch-inner{"data-swchoff-text" => "NO", "data-swchon-text" => "YES"}
+                %span.onoffswitch-switch
+        / widget div
+        %div
+          / widget edit box
+          .jarviswidget-editbox
+            %div
+              %label Title:
+              %input{type: "text"}/
+          / end widget edit box
+          .widget-body.no-padding
+            / content goes here
+            / #vector-map.vector-map
+            #heat-fill
+              %span.fill-a 0
+              %span.fill-b 5,000
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th Country
+                  %th Visits
+                  %th.text-align-center User Activity
+                  %th.text-align-center Online
+                  %th.text-align-center Demographic
+              %tbody
+                %tr
+                  %td
+                    %a{href: "javascript:void(0);"} USA
+                  %td 4,977
+                  %td.text-align-center
+                    .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
+                      2700, 3631, 2471, 1300, 1877, 2500, 2577, 2700, 3631, 2471, 2000, 2100, 3000
+                  %td.text-align-center 143
+                  %td.text-align-center
+                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
+                      17,83
+                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
+                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
+                        %i.fa.fa-cog.fa-lg
+                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
+                            = succeed "DF" do
+                              %u P
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
+                            = succeed "elete" do
+                              %u D
+                        %li.divider
+                        %li.text-align-center
+                          %a{href: "javascript:void(0);"} Cancel
+                %tr
+                  %td
+                    %a{href: "javascript:void(0);"} Australia
+                  %td 4,873
+                  %td.text-align-center
+                    .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
+                      1000, 1100, 3030, 1300, -1877, -2500, -2577, -2700, 3631, 2471, 4700, 1631, 2471
+                  %td.text-align-center 247
+                  %td.text-align-center
+                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
+                      22,88
+                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
+                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
+                        %i.fa.fa-cog.fa-lg
+                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
+                            = succeed "DF" do
+                              %u P
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
+                            = succeed "elete" do
+                              %u D
+                        %li.divider
+                        %li.text-align-center
+                          %a{href: "javascript:void(0);"} Cancel
+                %tr
+                  %td
+                    %a{href: "javascript:void(0);"} India
+                  %td 3,671
+                  %td.text-align-center
+                    .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
+                      3631, 1471, 2400, 3631, 471, 1300, 1177, 2500, 2577, 3000, 4100, 3000, 7700
+                  %td.text-align-center 373
+                  %td.text-align-center
+                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
+                      10,90
+                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
+                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
+                        %i.fa.fa-cog.fa-lg
+                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
+                            = succeed "DF" do
+                              %u P
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
+                            = succeed "elete" do
+                              %u D
+                        %li.divider
+                        %li.text-align-center
+                          %a{href: "javascript:void(0);"} Cancel
+                %tr
+                  %td
+                    %a{href: "javascript:void(0);"} Brazil
+                  %td 2,476
+                  %td.text-align-center
+                    .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
+                      2700, 1877, 2500, 2577, 2000, 3631, 2471, -2700, -3631, 2471, 1300, 2100, 3000,
+                  %td.text-align-center 741
+                  %td.text-align-center
+                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
+                      34,66
+                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
+                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
+                        %i.fa.fa-cog.fa-lg
+                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
+                            = succeed "DF" do
+                              %u P
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
+                            = succeed "elete" do
+                              %u D
+                        %li.divider
+                        %li.text-align-center
+                          %a{href: "javascript:void(0);"} Cancel
+                %tr
+                  %td
+                    %a{href: "javascript:void(0);"} Turkey
+                  %td 1,476
+                  %td.text-align-center
+                    .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
+                      1300, 1877, 2500, 2577, 2000, 2100, 3000, -2471, -2700, -3631, -2471, 2700, 3631
+                  %td.text-align-center 123
+                  %td.text-align-center
+                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
+                      75,25
+                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
+                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
+                        %i.fa.fa-cog.fa-lg
+                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
+                            = succeed "DF" do
+                              %u P
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
+                            = succeed "elete" do
+                              %u D
+                        %li.divider
+                        %li.text-align-center
+                          %a{href: "javascript:void(0);"} Cancel
+                %tr
+                  %td
+                    %a{href: "javascript:void(0);"} Canada
+                  %td 146
+                  %td.text-align-center
+                    .sparkline.txt-color-orange.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
+                      5, 34, 10, 1, 4, 6, -9, -1, 0, 0, 5, 6, 7
+                  %td.text-align-center 23
+                  %td.text-align-center
+                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
+                      50,50
+                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
+                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
+                        %i.fa.fa-cog.fa-lg
+                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
+                            = succeed "DF" do
+                              %u P
+                        %li
+                          %a{href: "javascript:void(0);"}
+                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
+                            = succeed "elete" do
+                              %u D
+                        %li.divider
+                        %li.text-align-center
+                          %a{href: "javascript:void(0);"} Cancel
+              %tfoot
+                %tr
+                  %td{colspan: "5"}
+                    %ul.pagination.pagination-xs.no-margin
+                      %li.prev.disabled
+                        %a{href: "javascript:void(0);"} Previous
+                      %li.active
+                        %a{href: "javascript:void(0);"} 1
+                      %li
+                        %a{href: "javascript:void(0);"} 2
+                      %li
+                        %a{href: "javascript:void(0);"} 3
+                      %li.next
+                        %a{href: "javascript:void(0);"} Next
+            / end content
+        / end widget div
+      / end widget
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+  
+  /*
+   * PAGE RELATED SCRIPTS
+   */
+  
+  $(".js-status-update a").click(function () {
+      var selText = $(this).text();
+      $this = $(this);
+      $this.parents('.btn-group').find('.dropdown-toggle').html(selText + ' <span class="caret"></span>');
+      $this.parents('.dropdown-menu').find('li').removeClass('active');
+      $this.parent().addClass('active');
+  });
+
+  var colorful_style = [{
+      "featureType": "landscape",
+      "stylers": [{
+          "visibility": "off"
+        }]
+    }];
+    
+  // One color - Change the hue value for your desired color
+  var mono_color_style = [{
+      "stylers": [{
+          "hue": "#ff00aa"
+      }, {
+          "saturation": 1
+      }, {
+          "lightness": 1
+      }]
+  }];
+  
+  /*
+   * RUN PAGE GRAPHS
+   */
+  
+  // Load FLOAT dependencies (related to page)
+  loadScript("#{ asset_path 'plugin/flot/jquery.flot.cust.js', type: :javascript }", loadFlotResize);
+
+  $(window).bind('gMapsLoaded', initialize);
+  window.loadGoogleMaps();
+  
+  function loadFlotResize() {
+    loadScript("#{ asset_path 'plugin/flot/jquery.flot.resize.js', type: :javascript }", loadFlotToolTip);
+  }
+  
+  function loadFlotToolTip() {
+    loadScript("#{ asset_path 'plugin/flot/jquery.flot.tooltip.js', type: :javascript }", generatePageGraphs);
+  }
+  
+  function generatePageGraphs() {
+  
+      /* TAB 1: UPDATING CHART */
+      // For the demo we use generated data, but normally it would be coming from the server
+  
+      var data = [],
+          totalPoints = 200,
+          $UpdatingChartColors = $("#updating-chart").css('color');
+  
+      function getRandomData() {
+          if (data.length > 0)
+              data = data.slice(1);
+  
+          // do a random walk
+          while (data.length < totalPoints) {
+              var prev = data.length > 0 ? data[data.length - 1] : 50;
+              var y = prev + Math.random() * 10 - 5;
+              if (y < 0)
+                  y = 0;
+              if (y > 100)
+                  y = 100;
+              data.push(y);
+          }
+  
+          // zip the generated y values with the x values
+          var res = [];
+          for (var i = 0; i < data.length; ++i)
+              res.push([i, data[i]])
+          return res;
+      }
+  
+      // setup control widget
+      var updateInterval = 1500;
+      $("#updating-chart").val(updateInterval).change(function () {
+  
+          var v = $(this).val();
+          if (v && !isNaN(+v)) {
+              updateInterval = +v;
+              $(this).val("" + updateInterval);
+          }
+  
+      });
+  
+      // setup plot
+      var options = {
+          yaxis: {
+              min: 0,
+              max: 100
+          },
+          xaxis: {
+              min: 0,
+              max: 100
+          },
+          colors: [$UpdatingChartColors],
+          series: {
+              lines: {
+                  lineWidth: 1,
+                  fill: true,
+                  fillColor: {
+                      colors: [{
+                          opacity: 0.4
+                      }, {
+                          opacity: 0
+                      }]
+                  },
+                  steps: false
+  
+              }
+          }
+      };
+  
+      var plot = $.plot($("#updating-chart"), [getRandomData()], options);
+  
+      /* live switch */
+      $('input[type="checkbox"]#start_interval').click(function () {
+          if ($(this).prop('checked')) {
+              $on = true;
+              updateInterval = 1500;
+              update();
+          } else {
+              clearInterval(updateInterval);
+              $on = false;
+          }
+      });
+  
+      function update() {
+          if ($on == true) {
+              plot.setData([getRandomData()]);
+              plot.draw();
+              setTimeout(update, updateInterval);
+  
+          } else {
+              clearInterval(updateInterval)
+          }
+  
+      }
+  
+      var $on = false;
+  
+      /*end updating chart*/
+  
+      /* TAB 2: Social Network  */
+  
+      $(function () {
+          // jQuery Flot Chart
+          var twitter = [
+              [1, 27],
+              [2, 34],
+              [3, 51],
+              [4, 48],
+              [5, 55],
+              [6, 65],
+              [7, 61],
+              [8, 70],
+              [9, 65],
+              [10, 75],
+              [11, 57],
+              [12, 59],
+              [13, 62]
+          ],
+              facebook = [
+                  [1, 25],
+                  [2, 31],
+                  [3, 45],
+                  [4, 37],
+                  [5, 38],
+                  [6, 40],
+                  [7, 47],
+                  [8, 55],
+                  [9, 43],
+                  [10, 50],
+                  [11, 47],
+                  [12, 39],
+                  [13, 47]
+              ],
+              data = [{
+                  label: "Twitter",
+                  data: twitter,
+                  lines: {
+                      show: true,
+                      lineWidth: 1,
+                      fill: true,
+                      fillColor: {
+                          colors: [{
+                              opacity: 0.1
+                          }, {
+                              opacity: 0.13
+                          }]
+                      }
+                  },
+                  points: {
+                      show: true
+                  }
+              }, {
+                  label: "Facebook",
+                  data: facebook,
+                  lines: {
+                      show: true,
+                      lineWidth: 1,
+                      fill: true,
+                      fillColor: {
+                          colors: [{
+                              opacity: 0.1
+                          }, {
+                              opacity: 0.13
+                          }]
+                      }
+                  },
+                  points: {
+                      show: true
+                  }
+              }];
+  
+          var options = {
+              grid: {
+                  hoverable: true
+              },
+              colors: ["#568A89", "#3276B1"],
+              tooltip: true,
+              tooltipOpts: {
+                  //content : "Value <b>$x</b> Value <span>$y</span>",
+                  defaultTheme: false
+              },
+              xaxis: {
+                  ticks: [
+                      [1, "JAN"],
+                      [2, "FEB"],
+                      [3, "MAR"],
+                      [4, "APR"],
+                      [5, "MAY"],
+                      [6, "JUN"],
+                      [7, "JUL"],
+                      [8, "AUG"],
+                      [9, "SEP"],
+                      [10, "OCT"],
+                      [11, "NOV"],
+                      [12, "DEC"],
+                      [13, "JAN+1"]
+                  ]
+              },
+              yaxes: {
+  
+              }
+          };
+  
+          var plot3 = $.plot($("#statsChart"), data, options);
+      });
+  
+      // END TAB 2
+  
+      // TAB THREE GRAPH //
+      /* TAB 3: Revenew  */
+  
+      $(function () {
+  
+          var trgt = [
+              [1354586000000, 153],
+              [1364587000000, 658],
+              [1374588000000, 198],
+              [1384589000000, 663],
+              [1394590000000, 801],
+              [1404591000000, 1080],
+              [1414592000000, 353],
+              [1424593000000, 749],
+              [1434594000000, 523],
+              [1444595000000, 258],
+              [1454596000000, 688],
+              [1464597000000, 364]
+          ],
+              prft = [
+                  [1354586000000, 53],
+                  [1364587000000, 65],
+                  [1374588000000, 98],
+                  [1384589000000, 83],
+                  [1394590000000, 980],
+                  [1404591000000, 808],
+                  [1414592000000, 720],
+                  [1424593000000, 674],
+                  [1434594000000, 23],
+                  [1444595000000, 79],
+                  [1454596000000, 88],
+                  [1464597000000, 36]
+              ],
+              sgnups = [
+                  [1354586000000, 647],
+                  [1364587000000, 435],
+                  [1374588000000, 784],
+                  [1384589000000, 346],
+                  [1394590000000, 487],
+                  [1404591000000, 463],
+                  [1414592000000, 479],
+                  [1424593000000, 236],
+                  [1434594000000, 843],
+                  [1444595000000, 657],
+                  [1454596000000, 241],
+                  [1464597000000, 341]
+              ],
+              toggles = $("#rev-toggles"),
+              target = $("#flotcontainer");
+  
+          var data = [{
+              label: "Target Profit",
+              data: trgt,
+              bars: {
+                  show: true,
+                  align: "center",
+                  barWidth: 30 * 30 * 60 * 1000 * 80
+              }
+          }, {
+              label: "Actual Profit",
+              data: prft,
+              color: '#3276B1',
+              lines: {
+                  show: true,
+                  lineWidth: 3
+              },
+              points: {
+                  show: true
+              }
+          }, {
+              label: "Actual Signups",
+              data: sgnups,
+              color: '#71843F',
+              lines: {
+                  show: true,
+                  lineWidth: 1
+              },
+              points: {
+                  show: true
+              }
+          }]
+  
+          var options = {
+              grid: {
+                  hoverable: true
+              },
+              tooltip: true,
+              tooltipOpts: {
+                  //content: '%x - %y',
+                  //dateFormat: '%b %y',
+                  defaultTheme: false
+              },
+              xaxis: {
+                  mode: "time"
+              },
+              yaxes: {
+                  tickFormatter: function (val, axis) {
+                      return "$" + val;
+                  },
+                  max: 1200
+              }
+  
+          };
+  
+          plot2 = null;
+  
+          function plotNow() {
+              var d = [];
+              toggles.find(':checkbox').each(function () {
+                  if ($(this).is(':checked')) {
+                      d.push(data[$(this).attr("name").substr(4, 1)]);
+                  }
+              });
+              if (d.length > 0) {
+                  if (plot2) {
+                      plot2.setData(d);
+                      plot2.draw();
+                  } else {
+                      plot2 = $.plot(target, d, options);
+                  }
+              }
+  
+          };
+  
+          toggles.find(':checkbox').on('change', function () {
+              plotNow();
+          });
+          plotNow()
+  
+      });
+  
+  }
+  
+  /*
+   * VECTOR MAP
+   */
+  
+  data_array = {
+      "US": 4977,
+      "AU": 4873,
+      "IN": 3671,
+      "BR": 2476,
+      "TR": 1476,
+      "CN": 146,
+      "CA": 134,
+      "BD": 100
+  };
+  
+  // Load Map dependency 1 then call for dependency 2
+  loadScript("#{ asset_path 'plugin/vectormap/jquery-jvectormap-1.2.2.min.js', type: :javascript }", loadMapFile);
+  
+  // Load Map dependency 2 then rendeder Map
+  function loadMapFile() {
+    loadScript("#{ asset_path 'plugin/vectormap/jquery-jvectormap-world-mill-en.js', type: :javascript }", renderVectorMap);
+  }
+  
+  function renderVectorMap() {
+      $('#vector-map').vectorMap({
+          map: 'world_mill_en',
+          backgroundColor: '#fff',
+          regionStyle: {
+              initial: {
+                  fill: '#c4c4c4'
+              },
+              hover: {
+                  "fill-opacity": 1
+              }
+          },
+          series: {
+              regions: [{
+                  values: data_array,
+                  scale: ['#85a8b6', '#4d7686'],
+                  normalizeFunction: 'polynomial'
+              }]
+          },
+          onRegionLabelShow: function (e, el, code) {
+              if (typeof data_array[code] == 'undefined') {
+                  e.preventDefault();
+              } else {
+                  var countrylbl = data_array[code];
+                  el.html(el.html() + ': ' + countrylbl + ' visits');
+              }
+          }
+      });
+  }
+
+  function initialize() {
+  
+    $this = $("#map_canvas");
+    $zoom_level = ($this.data("gmap-zoom") || 5);
+    $data_lat = ($this.data("gmap-lat") || 29.895883);
+    $data_lng = ($this.data("gmap-lng") || -80.650635);
+    $xml_src = ($this.data("gmap-src") || "js/test.xml");
+
+    var colorfulStyleMap = new google.maps.StyledMapType(colorful_style, {
+            name: "Colorful"
+        });
+
+    // colorful
+    function generate_map_2() {
+
+        var mapOptions = {
+            center: new google.maps.LatLng(-9.6295248, -77.1746293),
+            zoom: 12,
+        };
+        map = new google.maps.Map(document.getElementById('map_canvas2'), mapOptions);
+
+        // Setup skin for the map
+        map.mapTypes.set('colorful_style', colorfulStyleMap);
+        map.setMapTypeId('colorful_style');
+
+    }
+
+    generate_map_2();
+  }

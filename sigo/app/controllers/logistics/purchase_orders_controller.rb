@@ -1,4 +1,5 @@
 class Logistics::PurchaseOrdersController < ApplicationController
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @company = params[:company_id]
     @company = get_company_cost_center('company')
@@ -13,6 +14,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @purchaseOrder = PurchaseOrder.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
+      if params[:type_of_order] != nil
+        @type_of_order = params[:type_of_order]
+      end
     else
       @purchasePerState = @purchaseOrder.state_per_order_purchases
     end

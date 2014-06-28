@@ -1,4 +1,5 @@
 class Logistics::EntitiesController < ApplicationController
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')

@@ -28,6 +28,116 @@ class Article < ActiveRecord::Base
 		return self.find(id)
 	end
 
+  def self.find_article_in_specific(id, cost_center_id)
+    @cost_center = CostCenter.find(cost_center_id)
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.article_id, af.code, u.name
+      FROM articles_from_"+name+" af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.id =" + id.to_s + " 
+    ")
+
+    return mysql_result
+  end
+
+  def self.find_specific_in_article(id, cost_center_id)
+    @cost_center = CostCenter.find(cost_center_id)
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.article_id, af.code, u.name
+      FROM articles_from_"+name+" af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.article_id =" + id.to_s + " 
+    ")
+
+    return mysql_result
+  end
+
+  def self.find_article_by_global_article(article_id, cost_center_id)
+    name_article = ""
+    @cost_center = CostCenter.find(cost_center_id)
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.article_id, af.code, u.name
+      FROM articles_from_"+name+" af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.id =" + article_id.to_s + " 
+    ")
+
+    mysql_result.each do |data|
+      name_article = data[1]
+    end
+
+    return name_article
+  end
+
+  def self.find_article_global_by_specific_article(article_id, cost_center_id)
+    name_article = ""
+    @cost_center = CostCenter.find(cost_center_id)
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.article_id, af.code, u.name
+      FROM articles_from_"+name+" af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.id =" + article_id.to_s + " 
+    ")
+
+    mysql_result.each do |data|
+      name_article = data[2]
+    end
+
+    return name_article
+  end
+
+  def self.find_article_global_by_specific_article2(article_id, cost_center_id)
+    name_article = ""
+    @cost_center = CostCenter.find(cost_center_id)
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.article_id, af.code, u.name
+      FROM articles_from_"+name+" af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.article_id =" + article_id.to_s + " 
+    ")
+
+    mysql_result.each do |data|
+      name_article = data[0]
+    end
+
+    return name_article
+  end
+
+  def self.find_article_global_by_specific_article3(article_id, cost_center_id)
+    name_article = ""
+    @cost_center = CostCenter.find(cost_center_id)
+    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.article_id, af.code, u.name
+      FROM articles_from_"+name+" af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.article_id =" + article_id.to_s + " 
+      LIMIT 1
+    ")
+
+    mysql_result.each do |data|
+      name_article = data[0]
+    end
+
+    return name_article
+  end
+
+  def self.get_article_per_type(type_article, cost_center)
+    name_cost_center = CostCenter.find(cost_center).name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.code, af.article_id, af.unit_of_measurement_id, u.name
+      FROM articles_from_"+name_cost_center+" af, unit_of_measurements u
+      WHERE af.code LIKE '#{type_article}%'
+      AND af.unit_of_measurement_id = u.id
+    ")
+    return mysql_result
+  end
+
 	def self.getSpecificArticles(cost_center_id, display_length, pager_number)
     @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
@@ -149,4 +259,5 @@ class Article < ActiveRecord::Base
     end
     return @totalprice/cont
   end
+
 end

@@ -1,18 +1,18 @@
-//Los fields que son de otras obras tienen other_works_attributes dentro de certificates_attributes
-.panel.panel-default
+.panel.panel-default{id: "tr" + @reg.to_s}
   .panel-heading
     %h4.panel-title
       %a{"data-parent" => "#accordion-ce", "data-toggle" => "collapse", href: "#collapse"+@reg.to_s+"-1"}
         %i.fa.fa-fw.fa-plus-circle.txt-color-green
         %i.fa.fa-fw.fa-minus-circle.txt-color-red
         Certificados
+      %a{href: "javascript:delete_item('"+@reg.to_s+"')", "style"=>"  width: 50px; float: right; color: white; background: #2070a8; "}(class="btn") X
   .panel-collapse.collapse.in{ 'id'=> "collapse"+@reg.to_s+"-1"}
     .panel-body
       .row
         .col-sm-4
           %label Nombre de la obra
           %select.form-control{'class'=>'work-select' ,name: "professional[certificates_attributes][" + @reg.to_s + "][work_id]", onchange: 'workSelectCH(this);', onkeyup:'workSelectKU(this);'}
-            %option
+            %option Seleccione una obra
             -@work.each do |wc|
               %option{value: "#{wc.id}"} 
                 = "#{wc.name}"
@@ -43,6 +43,7 @@
         .col-sm-4
           %label Cargo
           %select.form-control#charge{name: "professional[certificates_attributes][" + @reg.to_s + "][charge_id]"}
+            %option Seleccione un cargo
             -@charge.each do |wc|
               %option{value: "#{wc.id}"} 
                 = "#{wc.name}"
@@ -79,10 +80,10 @@
         .col-sm-12
           #new-date 
       .row{'class'=>'comp2'}
-        .col-sm-6
+        .col-sm-12
           %label Componentes de la obra:
           %br
-          .col-sm-4
+          .col-sm-8
             %label#get-comp
               %label.select.components{'class'=>'comp-check'}
           %br
@@ -163,7 +164,7 @@
       $.each(newOptions, function(key,value){
         str_html = str_html + "<label> <strong> > </strong> " + value.name + "</label><br/>"
       });
-      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-6').children('.col-sm-4').children('#get-comp').children('.comp-check.components.select').html(str_html);
+      $(element).parent().parent().parent().children('.comp2.row').children('.col-sm-12').children('.col-sm-8').children('#get-comp').children('.comp-check.components.select').html(str_html);
       $(element).parent().parent().children().children('.start_certificate').find('input').empty();
       $(element).parent().parent().children().children('.start_certificate').find('input').val(start);
       $(element).parent().parent().children().children('.finish_certificate').find('input').empty();
@@ -173,4 +174,8 @@
       $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').empty();
       $(element).parent().parent().parent().children('.2.row').children('.col-sm-4').children('.contractor.input-group').find('input').val(contractor);
     });
+  }
+
+  function delete_item(code){
+    $("#tr" + code).remove();
   }

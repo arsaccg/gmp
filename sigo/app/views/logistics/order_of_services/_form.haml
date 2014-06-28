@@ -104,7 +104,7 @@
                 .form-group
                   %label.col-md-2.control-label Glosa
                   .col-md-10
-                    .input-group
+                    .input-group.smart-form
                       = f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
                       %span.input-group-addon
                         %i.fa.fa-align-justify
@@ -248,6 +248,9 @@
             'order_of_service[money_id]': {
               required: true
             },
+            'order_of_service[description]':{
+              required: true
+            },
             'order_of_service[method_of_payment_id]': {
               required: true
             },
@@ -273,7 +276,10 @@
             'order_of_service[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
             'order_of_service[expiration_date]': "Porfavor, especifica la fecha de expiración.",
             'order_of_service[delivery_date]': "Porfavor, especifica la fecha de entrega.",
-            'order_of_service[date_of_service]': {required: 'Porfavor, especifica la fecha de servicio.'}
+            'order_of_service[date_of_service]': {required: 'Porfavor, especifica la fecha de servicio.'},
+            'order_of_service[description]':{
+              required: 'Porfavor, especifica la descripción.'
+            }
           },
           // Do not change code below
           errorPlacement : function(error, element) {

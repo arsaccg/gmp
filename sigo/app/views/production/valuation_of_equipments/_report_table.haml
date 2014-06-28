@@ -23,10 +23,10 @@
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Amortización Acumulada
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Saldo
             %tbody
-              %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@subcontractequipment.contract_amount)
-              %th#adelanto{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@subadvances)
-              %th#amortAcum2{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@subcontractequipment.initial_amortization_number+@amortizaciondeadelanto)
-              %th#saldo{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@balance)
+              %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(sprintf('%.2f',@subcontractequipment.contract_amount.to_f), unit: 'S/. ', precision: 2)
+              %th#adelanto{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subadvances, unit: 'S/. ', precision: 2)
+              %th#amortAcum2{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.initial_amortization_number+@amortizaciondeadelanto, unit: 'S/. ', precision: 2)
+              %th#saldo{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@balance, unit: 'S/. ', precision: 2), unit: 'S/. ', precision: 2)
 
       %div
         .jarviswidget-editbox
@@ -47,11 +47,11 @@
                   %span{"style"=>"width=20px"}
                     %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_equipment();'}
                       %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
-                %th#total{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= sprintf('%.2f',@totalprice)
-                %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= sprintf('%.2f',@valorizacionsinigv)
-                %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= sprintf('%.2f',@totalprice+@valorizacionsinigv)
+                %th#total{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@totalprice, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@valorizacionsinigv, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@totalprice+@valorizacionsinigv, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f;vertical-align: middle"} 2.00
+                %th{"style"=>"color:#5f5f5f;vertical-align: middle"}= number_to_currency(2, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle"} 
                   Amortización de Adelanto (SIN. I.G.V.)
                   %br
@@ -60,103 +60,105 @@
                   %input.form-control#percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 40%;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
                 %th{"style"=>"color:#5f5f5f;text-align:center"}
                   %input.form-control#number{:value => "#{@subcontractequipment.initial_amortization_number}", "style"=> "width: 50%;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
-                %th#amortLast{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= sprintf('%.2f',@amortizaciondeadelanto)
-                %th#amortAcum{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= sprintf('%.2f',@subcontractequipment.initial_amortization_number+@amortizaciondeadelanto)
+                %th#amortLast{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@amortizaciondeadelanto, unit: 'S/. ', precision: 2)
+                %th#amortAcum{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@subcontractequipment.initial_amortization_number+@amortizaciondeadelanto, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f"} 3.00
+                %th{"style"=>"color:#5f5f5f"}= number_to_currency(3, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f"} Total a Facturar
                 %th{"style"=>"color:#5f5f5f"}
-                %th#totalfac{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@bill)
-                %th#lastTotalFac{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@totalfacturar)
-                %th#acumTotalFac{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@bill+@totalfacturar)
+                %th#totalfac{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@bill, unit: 'S/. ', precision: 2)
+                %th#lastTotalFac{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalfacturar, unit: 'S/. ', precision: 2)
+                %th#acumTotalFac{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@bill+@totalfacturar, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f"} 4.00
+                %th{"style"=>"color:#5f5f5f"}= number_to_currency(4, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f"} I.G.V. del Total a Facturar
                 %th{"style"=>"color:#5f5f5f"}
-                %th#igv{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@billigv)
-                %th#lastIgv{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@totalfacigv)
-                %th#acumIgv{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@billigv+@totalfacigv)
+                %th#igv{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@billigv, unit: 'S/. ', precision: 2)
+                %th#lastIgv{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalfacigv, unit: 'S/. ', precision: 2)
+                %th#acumIgv{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@billigv+@totalfacigv, unit: 'S/. ', precision: 2)
               %tr
                 %th{"style"=>"color:#5f5f5f"}
                 %th{"style"=>"color:#5f5f5f"} TOTAL INCLUIDO IGV
                 %th{"style"=>"color:#5f5f5f"}
-                %th#total-igv{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@bill+@billigv)
-                %th#lastTotal{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@totalincluidoigv)
-                %th#acumTotal{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@bill+@billigv+@totalincluidoigv)
+                %th#total-igv{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@bill+@billigv, unit: 'S/. ', precision: 2)
+                %th#lastTotal{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalincluidoigv, unit: 'S/. ', precision: 2)
+                %th#acumTotal{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@bill+@billigv+@totalincluidoigv, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f"} 5.00
+                %th{"style"=>"color:#5f5f5f"}= number_to_currency(5.00, unit: 'S/. ', precision: 2)
                 %th{ 'colspan' => 5, "style"=>"color:#5f5f5f"} Retenciones
               %tr
-                %th{"style"=>"color:#5f5f5f"} 5.01
+                %th{"style"=>"color:#5f5f5f"}= number_to_currency(5.01, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f"} Detracción del Total (Incl. I.G.V.)
                 %th{"style"=>"color:#5f5f5f"}
-                %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@subcontractequipment.detraction)
-                %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@detraccion.to_f)
-                %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@subcontractequipment.detraction.to_f+@detracciontotal)
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.detraction, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@detraccion, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.detraction+@detracciontotal, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f"} 5.02
+                %th{"style"=>"color:#5f5f5f"}= number_to_currency(5.02, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f"} Descuento de Combustible
                 %th{"style"=>"color:#5f5f5f"}
-                %th{ "style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@fuel_discount)
-                %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@descuentocombustible)
-                %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@fuel_discount+@descuentocombustible)
+                %th{ "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@fuel_discount, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@descuentocombustible, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@fuel_discount+@descuentocombustible, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f;vertical-align: middle"} 5.03
+                %th{"style"=>"color:#5f5f5f;vertical-align: middle"}= number_to_currency(5.03, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle"} Descuento de Otros (Incl. I.G.V.)
                 %th{"style"=>"color:#5f5f5f"}
                 %th{"style"=>"color:#5f5f5f"}                            
                   = text_field_tag 'valuation_of_equipment[other_discount]', nil, id: "otherdiscounts", class: "form-control amount-item"
-                %th#other-discounts{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= sprintf('%.2f',@descuentootros)
+                %th#other-discounts{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@descuentootros, unit: 'S/. ', precision: 2)
                 %th#total-other-discounts{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}
               %tr
                 %th{"style"=>"color:#5f5f5f"}
                 %th{"style"=>"color:#5f5f5f"} TOTAL RETENCIONES
                 %th{"style"=>"color:#5f5f5f"}
-                %th#totalretention{"style"=>"color:#5f5f5f;text-align:center", 'original' => "#{@subcontractequipment.detraction.to_i+@fuel_discount.to_i}"}= sprintf('%.2f',@subcontractequipment.detraction.to_i+@fuel_discount.to_i)
-                %th#lasttr{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@retenciones.to_f)
-                %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@subcontractequipment.detraction.to_i+@fuel_discount.to_i + @totalretenciones)
+                %th#totalretention{"style"=>"color:#5f5f5f;text-align:center", 'original' => "#{@subcontractequipment.detraction.to_f+@fuel_discount.to_f}"}= number_to_currency(@subcontractequipment.detraction+@fuel_discount, unit: 'S/. ', precision: 2)
+                %th#lasttr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@retenciones, unit: 'S/. ', precision: 2)
+                %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.detraction+@fuel_discount + @totalretenciones, unit: 'S/. ', precision: 2)
               %tr
                 %th{"style"=>"color:#5f5f5f"} 06
                 %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
                 %th{"style"=>"color:#5f5f5f"}
-                %th#net-pay{ "style"=>"color:#5f5f5f;text-align:center", 'original' => "#{(@bill-@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i)}"}= sprintf('%.2f',(@bill+@billigv)-(@subcontractequipment.detraction.to_i+@fuel_discount.to_i))
-                %th#lastnetpay{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@netoapagar)
-                %th#acumnetpay{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@bill+@billigv-@subcontractequipment.detraction.to_i+@fuel_discount.to_i + @netoapagar)
+                %th#net-pay{ "style"=>"color:#5f5f5f;text-align:center", 'original' => "#{(@bill-@billigv)-(@subcontractequipment.detraction.to_f+@fuel_discount.to_f)}"}= number_to_currency((@bill+@billigv)-(@subcontractequipment.detraction+@fuel_discount), unit: 'S/. ', precision: 2)
+                %th#lastnetpay{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@netoapagar.to_f, unit: 'S/. ', precision: 2)
+                %th#acumnetpay{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@bill+@billigv-@subcontractequipment.detraction+@fuel_discount + @netoapagar, unit: 'S/. ', precision: 2)
 
         %br
         #part-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+        %br
+        #report-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
 
                 
-        = hidden_field_tag 'totalretention', @subcontractequipment.detraction.to_i+@fuel_discount.to_i, 'id' => 'input-totalretention'
+        = hidden_field_tag 'totalretention', @subcontractequipment.detraction.to_f+@fuel_discount.to_f, 'id' => 'input-totalretention'
         = hidden_field_tag 'valuation_of_equipment[name]', @subcontractequipment.entity.name
         = hidden_field_tag 'valuation_of_equipment[code]', @numbercode
         = hidden_field_tag 'valuation_of_equipment[start_date]', @start_date
         = hidden_field_tag 'valuation_of_equipment[end_date]', @end_date
         = hidden_field_tag 'valuation_of_equipment[working_group]', @cad
         = hidden_field_tag 'valuation_of_equipment[valuation]', @totalprice
-        = hidden_field_tag 'valuation_of_equipment[initial_amortization_number]', @subcontractequipment.initial_amortization_number
+        = hidden_field_tag 'valuation_of_equipment[initial_amortization_number]', @subcontractequipment.initial_amortization_number.to_f
         = hidden_field_tag 'valuation_of_equipment[initial_amortization_percentage]', @initial_amortization_percent
         = hidden_field_tag 'valuation_of_equipment[bill]', @bill
         = hidden_field_tag 'valuation_of_equipment[billigv]', @billigv
         = hidden_field_tag 'valuation_of_equipment[totalbill]', @bill+@billigv
-        = hidden_field_tag 'valuation_of_equipment[retention]', @subcontractequipment.detraction.to_i+@fuel_discount.to_i
+        = hidden_field_tag 'valuation_of_equipment[retention]', @subcontractequipment.detraction.to_f+@fuel_discount.to_f
         = hidden_field_tag 'valuation_of_equipment[detraction]', @subcontractequipment.detraction
         = hidden_field_tag 'valuation_of_equipment[fuel_discount]', @fuel_discount
         = hidden_field_tag 'valuation_of_equipment[hired_amount]', @subcontractequipment.contract_amount
         = hidden_field_tag 'valuation_of_equipment[advances]', @subadvances
-        = hidden_field_tag 'valuation_of_equipment[accumulated_amortization]', @subcontractequipment.initial_amortization_number+@amortizaciondeadelanto
+        = hidden_field_tag 'valuation_of_equipment[accumulated_amortization]', @subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f
         = hidden_field_tag 'valuation_of_equipment[balance]', @balance
-        = hidden_field_tag 'valuation_of_equipment[net_payment]', @bill+@billigv-@subcontractequipment.detraction.to_i+@fuel_discount.to_i
+        = hidden_field_tag 'valuation_of_equipment[net_payment]', @bill+@billigv-@subcontractequipment.detraction.to_f+@fuel_discount.to_f
         = hidden_field_tag 'valuation_of_equipment[accumulated_valuation]', @totalprice+@valorizacionsinigv
-        = hidden_field_tag 'valuation_of_equipment[accumulated_initial_amortization_number]', @subcontractequipment.initial_amortization_number+@amortizaciondeadelanto
+        = hidden_field_tag 'valuation_of_equipment[accumulated_initial_amortization_number]', @subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f
         = hidden_field_tag 'valuation_of_equipment[accumulated_bill]', @bill+@totalfacturar
         = hidden_field_tag 'valuation_of_equipment[accumulated_billigv]', @billigv+@totalfacigv
         = hidden_field_tag 'valuation_of_equipment[accumulated_totalbill]', @bill+@billigv+@totalincluidoigv
-        = hidden_field_tag 'valuation_of_equipment[accumulated_retention]', @subcontractequipment.detraction.to_i+@fuel_discount.to_i + @totalretenciones
+        = hidden_field_tag 'valuation_of_equipment[accumulated_retention]', @subcontractequipment.detraction.to_f+@fuel_discount.to_f + @totalretenciones
         = hidden_field_tag 'valuation_of_equipment[accumulated_detraction]', @subcontractequipment.detraction.to_f+@detracciontotal
         = hidden_field_tag 'valuation_of_equipment[accumulated_fuel_discount]', @fuel_discount+@descuentocombustible
         = hidden_field_tag 'valuation_of_equipment[accumulated_other_discount]', 0
-        = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]', @bill+@billigv-@subcontractequipment.detraction.to_i+@fuel_discount.to_i + @netoapagar
+        = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]', @bill+@billigv-@subcontractequipment.detraction.to_f+@fuel_discount.to_f + @netoapagar
 
         %footer
           %button.btn.btn-primary{type: "submit"}

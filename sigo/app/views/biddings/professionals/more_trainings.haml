@@ -1,10 +1,11 @@
-.panel.panel-default
+.panel.panel-default{id: "tra" + @reg.to_s}
   .panel-heading
     %h4.panel-title
       %a{"data-parent" => "#accordion-tr", "data-toggle" => "collapse", href: "#collapse"+@reg.to_s+"-2"}
         %i.fa.fa-fw.fa-plus-circle.txt-color-green
         %i.fa.fa-fw.fa-minus-circle.txt-color-red
         Capacitación N°1
+      %a{href: "javascript:delete_item1('"+ @reg.to_s+"')", "style"=>"  width: 50px; float: right; color: white; background: #2070a8; "}(class="btn") X
   .panel-collapse.collapse.in{ 'id'=> "collapse" + @reg.to_s + "-2"}
     .panel-body
       .row
@@ -54,3 +55,7 @@
             .col-sm-10
               .button
                 = file_field_tag "professional[trainings_attributes][" + @reg.to_s + "][training]", class: 'btn btn-default', label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
+:javascript
+  function delete_item(code){
+    $("#tr1" + code).remove();
+  }

@@ -1,14 +1,15 @@
 class Production::PartOfEquipmentsController < ApplicationController
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @company = get_company_cost_center('company')
-    cost_center = get_company_cost_center('cost_center')
-    @partofequipment = PartOfEquipment.where("cost_center_id = ?", cost_center)
-    @subcontracts = SubcontractEquipment.where("cost_center_id = ?", cost_center)
+    @cost_center = get_company_cost_center('cost_center')
+    @partofequipment = PartOfEquipment.where("cost_center_id = ?", @cost_center)
+    @subcontracts = SubcontractEquipment.where("cost_center_id = ?", @cost_center)
     @article = Article.all
-    @worker = Worker.where("cost_center_id = ?", cost_center)
+    @worker = Worker.where("cost_center_id = ?", @cost_center)
     # Necessary!
     @fuel_articles = Article.where("code LIKE ?", '__32%').first # Esto va a cambiar
-    @working_group = WorkingGroup.where("cost_center_id = ?", cost_center).first
+    @working_group = WorkingGroup.where("cost_center_id = ?", @cost_center).first
     @worker = Worker.first
     render layout: false
   end
@@ -16,7 +17,6 @@ class Production::PartOfEquipmentsController < ApplicationController
   def show
     @company = params[:company_id]
     cost_center = get_company_cost_center('cost_center')
-
     @partofequipment = PartOfEquipment.find(params[:id])
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
     @sectors = Sector.where("code LIKE '__'")
@@ -27,21 +27,20 @@ class Production::PartOfEquipmentsController < ApplicationController
     @worker = Array.new
     @worker = Worker.where("cost_center_id = ?", cost_center)
     subcontract_id = @partofequipment.subcontract_equipment_id
-    equip = Array.new
-    @articles = Array.new
     unit=''
     equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", subcontract_id)
-    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
-      @articles = arti.articles
-    end
+
+    @articles = Article.get_article_per_type('03', cost_center)
+
     equip.each do |eq|
       @articles.each do |ar|
-        if ar.id==eq.article_id
-          @unit1 = ar.unit_of_measurement_id
+        if ar[0]==eq.article_id
+          @unit1 = ar[4]
+          break
         end
       end
     end
-    @unit = UnitOfMeasurement.find(@unit1).name
+    @unit = UnitOfMeasurement.find(@unit1).name rescue ''
     render layout: false
   end
 
@@ -149,28 +148,29 @@ class Production::PartOfEquipmentsController < ApplicationController
 
   def get_equipment_form_subcontract
     equip = Array.new
-    articles = Array.new
     @equipment = Array.new
     @code = Array.new
+    @sedid = Array.new
     unit=''
     equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", params[:subcontract_id])
     
-    TypeOfArticle.where("name LIKE '%equipos%'").each do |arti|
-      articles = arti.articles
-    end
+    cost_center = get_company_cost_center('cost_center')
+    articles = Article.get_article_per_type('03', cost_center)
+
     equip.each do |eq|
       @code << eq.code
+      @sedid << eq.id
       articles.each do |ar|
-        if ar.id==eq.article_id
+        if ar[0]==eq.article_id
           @equipment << ar
-          unit = ar.unit_of_measurement_id
+          unit = ar[4]
         end
       end
     end
-    puts @code.inspect
-    puts @equipment.inspect
+    #puts @sedid.inspect
+    #puts @equipment.inspect
     @unit = UnitOfMeasurement.find(unit).name
-    render json: {:equipment => @equipment, :unit =>@unit, :code => @code}  
+    render json: {:equipment => @equipment, :unit =>@unit, :code => @code, :sedid => @sedid}  
   end
 
   def get_unit

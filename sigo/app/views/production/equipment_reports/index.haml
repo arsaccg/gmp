@@ -3,46 +3,58 @@
     .col-xs-15.col-sm-7.col-md-7.col-lg-4
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
-        Reporte de Equipos
-  .row
+        Reporte de Consumo de Combustible
+  - if @specificArticles != ''
+    .col-xs-12.col-sm-7.col-md-7.col-lg-12
+      .alert.alert-block.alert-danger
+        %a.close(data-dismiss="alert" href="#")
+          ×
+        %h4.alert-heading
+          %i.fa.fa-lock
+            Para evitar errores porfavor agregue Valores Teóricos a los artículos.
+        %p
+          ='Los artículos que no tienen valor teórico son: ' + @specificArticles
+    
+  - else
     .row
-      .col-md-1
-      .col-md-2
-        %label Seleccione
-        %label.input
-          %select.form-control.select2#select-1{:style => 'width:100%;padding: 0;border: none;'}
-            %option{:value => "0"} Seleccione
-            %option{:value => "specific"} Especifico
-            %option{:value => "operador"} Operador
-            %option{:value => "frente"} Frente
-            %option{:value => "equipment"} Equipo
-      .col-md-1
-      .col-md-2
-        %label Seleccione
-        %label.input
-          %select.form-control#article{:style => 'width:100%;padding: 0;border: none;'}
-            %option{:value => "0"} Seleccione
-      .col-md-1
-      .col-md-3
-        %label Seleccione la Semana en consulta
-        %select.form-control#start-date-input{:name =>'date1', :style => 'width:100%;padding: 0;border: none;'}
-          %option{:value => "0"} Seleccione una fecha
-          - @week.each do |week|
-            %option{:value => "#{week[0]},#{week[2]},#{week[3]}"}
-              = week[1] + ' - ' + week[2].to_s + ' - ' + week[3].to_s
-
-    .row
-      .col-md-9
-      .col-md-1
-        %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
-          %i.fa.fa-search
-          Consultar
-    %br
-    .row
-    #widget-grid
       .row
-        %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
-          #table-information-result
+        .col-md-1
+        .col-md-2
+          %label Seleccione
+          %label.input
+            %select.form-control.select2#select-1{:style => 'width:100%;padding: 0;border: none;'}
+              %option{:value => "0"} Seleccione
+              %option{:value => "specific"} Especifico
+              %option{:value => "operador"} Operador
+              %option{:value => "frente"} Frente
+              %option{:value => "equipment"} Equipo
+        .col-md-1
+        .col-md-2
+          %label Seleccione
+          %label.input
+            %select.form-control#article{:style => 'padding: 0;border: none;'}
+              %option{:value => "0"} Seleccione
+        .col-md-2
+        .col-md-2
+          %label Seleccione la Semana en consulta
+          %select.form-control#start-date-input{:name =>'date1', :style => 'width:100%;padding: 0;border: none;'}
+            %option{:value => "0"} Seleccione una fecha
+            - @week.each do |week|
+              %option{:value => "#{week[0]},#{week[2]},#{week[3]}"}
+                = week[1] + ' - ' + week[2].to_s + ' - ' + week[3].to_s
+
+      .row
+        .col-md-9
+        .col-md-1
+          %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
+            %i.fa.fa-search
+            Consultar
+      %br
+      .row
+      #widget-grid
+        .row
+          %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+            #table-information-result
     
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
@@ -63,6 +75,7 @@
 :javascript
   $(document).ready(function () {
     $('select').select2({width:'200'});
+    $('#article').select2({width:'350'});
     var chosen = $('#select-1').val();
     complete("#{complete_production_equipment_reports_path}", chosen, "#{form_authenticity_token}", 0);
   });

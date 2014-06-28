@@ -38,19 +38,19 @@
                       = translate_order_service_state(@orderOfService.state)
                     %td
                       - if @orderOfService.entity.present?
-                        = @orderOfService.entity.name + ' ' + @orderOfService.entity.paternal_surname
+                        = @orderOfService.entity.name.to_s + ' ' + @orderOfService.entity.paternal_surname.to_s
                     %td
-                      = @orderOfService.money.name
+                      = @orderOfService.money.name.to_s
                     %td
-                      = @orderOfService.method_of_payment.name
+                      = @orderOfService.method_of_payment.name.to_s
                     %td
                       = @orderOfService.date_of_issue.strftime("%d/%m/%Y")
                     %td
                       = @orderOfService.date_of_service.strftime("%d/%m/%Y") rescue Time.now.strftime("%d/%m/%Y")
                     %td
-                      = @orderOfService.user.first_name + ' ' + @orderOfService.user.last_name
+                      = @orderOfService.user.first_name.to_s + ' ' + @orderOfService.user.last_name.to_s
                     %td
-                      = @orderOfService.description
+                      = @orderOfService.description.to_s
       - if @state_change != nil
         %h1.page-title.txt-color-blueDark
           %i.fa.fa-pencil-square-o.fa-fw 
@@ -186,17 +186,10 @@
                       %td
                         = orderServiceDetail.description
 
-%button.btn.btn-sm.btn-primary.btn-prev#backlist-service-order{type: "button"}
-  %i.fa.fa-arrow-left>
-  Retornar al listado de Ordenes de Servicio
-
-= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
-= javascript_include_tag 'plugin/datatables/ColReorder.min'
-= javascript_include_tag 'plugin/datatables/FixedColumns.min'
-= javascript_include_tag 'plugin/datatables/ColVis.min'
-= javascript_include_tag 'plugin/datatables/ZeroClipboard'
-= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
-= javascript_include_tag 'plugin/datatables/DT_bootstrap'
+- if @type_of_order.nil?
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-service-order{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado de Ordenes de Servicio
 
 :javascript
   

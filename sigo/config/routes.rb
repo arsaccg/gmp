@@ -1,5 +1,4 @@
 ArsacLogistica::Application.routes.draw do
-
   devise_for :users, :controllers => {:registrations => "users/registrations"}
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -8,6 +7,12 @@ ArsacLogistica::Application.routes.draw do
   
   root 'main#index'
   get 'show_panel/:id' => 'main#show_panel', as: :show_panel_main
+  get 'inbox_task' => 'main#inbox_task', as: :inbox_task_main
+  get 'display_general_table_messages' => 'main#display_general_table_messages', as: :display_general_table_messages
+  get 'display_table_messages_os' => 'main#display_table_messages_os', as: :display_table_messages_os
+  get 'display_table_messages_oc' => 'main#display_table_messages_oc', as: :display_table_messages_oc
+  get 'display_table_messages_ose' => 'main#display_table_messages_ose', as: :display_table_messages_ose
+  get 'management_dashboard' => 'main#management_dashboard', as: :management_dashboard
   get 'home' => 'main#home'
   post 'home' => 'main#home'
   
@@ -210,10 +215,11 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'more_documents'
         post 'get_components_by_speciality'
+        get 'calendar'
       end
     end
-    resources :certificates
     resources :work_partners
+    resources :other_works
     resources :professionals do
       collection do
         post 'get_component_from_work'
@@ -282,6 +288,11 @@ ArsacLogistica::Application.routes.draw do
         post 'complete'
       end
     end
+    resources :weekly_reports do
+      collection do
+        post 'get_report'
+      end
+    end
     resources :valuation_of_equipments do
       collection do
         post 'get_report'
@@ -343,6 +354,7 @@ ArsacLogistica::Application.routes.draw do
       resources :weekly_workers do
         collection do
           post 'graph'
+          post 'graph_week'
           post 'search_daily_work'
           post 'weekly_table'
         end
@@ -353,6 +365,13 @@ ArsacLogistica::Application.routes.draw do
     end
   end
 
+  namespace :libraries do
+    resources :interest_links
+    resources :type_of_law_and_regulations
+    resources :law_and_regulations
+    resources :technical_standards
+    resources :type_of_technical_libraries
+    resources :technical_libraries
+    resources :download_softwares
+  end
 end
-
-  

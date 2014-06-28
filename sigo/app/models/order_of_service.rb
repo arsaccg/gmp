@@ -40,6 +40,7 @@ class OrderOfService < ActiveRecord::Base
       WHERE (a.code LIKE '04%' || a.code LIKE '03%')
       AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
       AND a.unit_of_measurement_id = u.id
+      GROUP BY a.code
     ")
     return mysql_result
   end

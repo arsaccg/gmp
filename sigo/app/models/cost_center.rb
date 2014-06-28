@@ -57,6 +57,15 @@ class CostCenter < ActiveRecord::Base
     ")    
   end
 
+  def self.getWeek5(cost_center_id,end_date)
+    week_array = ActiveRecord::Base.connection.execute("
+      SELECT id,name,start_date,end_date
+      FROM weeks_for_cost_center_" + cost_center_id + " 
+      WHERE start_date < '" + end_date + "'
+      ORDER BY id DESC
+    ")    
+  end
+
   def self.getWeek2(cost_center_id,end_date,limit)
     week_array = ActiveRecord::Base.connection.execute("
       SELECT id,name,start_date,end_date

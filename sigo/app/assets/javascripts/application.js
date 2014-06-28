@@ -95,6 +95,53 @@ function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, seman
   });
 }
 
+function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,week6,week7,week8,week9,week10,title,series2,unit){
+  $('#'+div_id).highcharts({
+    chart: {
+        type: 'area'
+    },
+    title: {
+        text: 'Reporte Semanal ' + title,
+    },
+    subtitle: {
+        text: 'Desde ' + week1 + ' hasta ' + week10
+    },
+    xAxis: {
+        categories: [week1, week2, week3, week4, week5, week6, week7, week8, week9, week10],
+        tickmarkPlacement: 'on',
+        title: {
+            enabled: false
+        }
+    },
+    yAxis: {
+        title: {
+            text: unit
+        },
+        labels: {
+            formatter: function() {
+                return this.value / 1000;
+            }
+        }
+    },
+    tooltip: {
+        shared: true,
+        valueSuffix: ' millions'
+    },
+    plotOptions: {
+        area: {
+            stacking: 'normal',
+            lineColor: '#666666',
+            lineWidth: 1,
+            marker: {
+                lineWidth: 1,
+                lineColor: '#666666'
+            }
+        }
+    },
+    series: series2
+  });
+}
+
 function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1, serie2, serie3){
   $('#'+div_id).highcharts({
     chart: {
@@ -110,9 +157,7 @@ function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1,
       categories: ['En', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     },
     yAxis: {
-      title: {
-          text: 'Costo (S/.)'
-      }
+      title: { text: 'Costo (S/.)' }
     },
     plotOptions: {
       line: {

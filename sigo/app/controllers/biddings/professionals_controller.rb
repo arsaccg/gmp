@@ -25,7 +25,7 @@ class Biddings::ProfessionalsController < ApplicationController
 
   def new
     @reg = Time.now.to_i
-    @professional=Professional.new
+    @professional = Professional.new
     @work = Work.all
     @major = Major.all
     @charge = Charge.all
@@ -62,6 +62,7 @@ class Biddings::ProfessionalsController < ApplicationController
     TypeEntity.where("id IN (1,5)").each do |tent|
       @entities << tent.entities
     end
+    @certificates = Certificate.where("professional_id = ? AND work_id IS NOT NULL", params[:id])
     @reg = Time.now.to_i
     @major = Major.all
     @action = 'edit'
@@ -153,19 +154,7 @@ class Biddings::ProfessionalsController < ApplicationController
         :finish_date, 
         :certificate, 
         :other, 
-        :_destroy,
-        other_work_attributes: [
-          :id,
-          :certificate_id,
-          :name,
-          :start,
-          :entity,
-          :contractor,
-          :end,
-          :specialty,
-          {:component_work_ids => []}, 
-          :_destroy
-        ]
+        :_destroy
       ], 
       trainings_attributes: [
         :id, 

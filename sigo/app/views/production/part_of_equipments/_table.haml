@@ -25,11 +25,11 @@
               %td
                 = partofequipment.subcontract_equipment.entity.name
               %td
-                = partofequipment.worker.entity.name rescue '' + ' ' + partofequipment.worker.entity.paternal_surname rescue '' + ' ' + partofequipment.worker.entity.maternal_surname rescue ''
+                = partofequipment.worker.entity.name.to_s + ' ' + partofequipment.worker.entity.paternal_surname.to_s + ' ' + partofequipment.worker.entity.maternal_surname.to_s
               %td 
-                = Article.find_article(partofequipment.equipment_id).name
+                = SubcontractEquipmentDetail.find(partofequipment.equipment_id).code.to_s + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find(partofequipment.equipment_id).article.id, @cost_center)
               %td
-                =partofequipment.dif
+                = partofequipment.dif
               %td 
                 = partofequipment.date
               %td
