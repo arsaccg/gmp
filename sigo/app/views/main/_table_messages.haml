@@ -36,7 +36,7 @@
         %td.inbox-data-message{:data => "#{dor.id}-#{dor.state}-oservice"}
           %div
             %span
-              %span.label.bg-color-orange APROBAR
+              %span.label.bg-color-green APROBAR
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
             = "Se necesita aprobar la Orden en " + CostCenter.find(dor.cost_center_id).name.capitalize + " con fecha de emisión " + dor.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
@@ -83,7 +83,7 @@
         %td.inbox-data-message{:data => "#{po.id}-#{po.state}-porder"}
           %div
             %span
-              %span.label.bg-color-orange APROBAR
+              %span.label.bg-color-green APROBAR
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
             = "Se necesita aprobar la Orden en " + CostCenter.find(po.cost_center_id).name.capitalize + " con fecha de emisión " + po.date_of_issue.strftime('%d-%m-%Y')
 
@@ -130,7 +130,7 @@
         %td.inbox-data-message{:data => "#{dorr.id}-#{dorr.state}-dorder"}
           %div
             %span
-              %span.label.bg-color-orange APROBAR
+              %span.label.bg-color-green APROBAR
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
             = "Se necesita aprobar la Orden en " + CostCenter.find(dorr.cost_center_id).name.capitalize + " con fecha de emisión " + dorr.date_of_issue.strftime('%d-%m-%Y')
         %td.inbox-data-date.hidden-xs
