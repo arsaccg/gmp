@@ -127,6 +127,8 @@ Pmicg::Application.routes.draw do
       collection do
         get 'filter_by_budget_and_item'
         get 'add'
+        get 'update_input'
+        post 'update_input'
       end
     end
 
