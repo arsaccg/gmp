@@ -99,7 +99,7 @@
                 %th{"style"=>"color:#5f5f5f"}
                 %th{ "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@fuel_discount, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@descuentocombustible, unit: 'S/. ', precision: 2)
-                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@fuel_discount+@descuentocombustible, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@fuel_discount+@descuentocombustible), unit: 'S/. ', precision: 2)
               %tr
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle"}= number_to_currency(5.03, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle"} Descuento de Otros (Incl. I.G.V.)
@@ -114,7 +114,7 @@
                 %th{"style"=>"color:#5f5f5f"}
                 %th#totalretention{"style"=>"color:#5f5f5f;text-align:center", 'original' => "#{@subcontractequipment.detraction.to_f+@fuel_discount.to_f}"}= number_to_currency(@subcontractequipment.detraction+@fuel_discount, unit: 'S/. ', precision: 2)
                 %th#lasttr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@retenciones, unit: 'S/. ', precision: 2)
-                %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.detraction+@fuel_discount + @totalretenciones, unit: 'S/. ', precision: 2)
+                %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@subcontractequipment.detraction+@fuel_discount + @totalretenciones), unit: 'S/. ', precision: 2)
               %tr
                 %th{"style"=>"color:#5f5f5f"} 06
                 %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
