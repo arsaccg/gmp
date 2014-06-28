@@ -24,9 +24,9 @@
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Saldo
             %tbody
               %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.contract_amount, unit: 'S/. ', precision: 2)
-              %th#adelanto{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@subadvances)
-              %th#amortAcum2{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f)
-              %th#saldo{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@balance.to_f)
+              %th#adelanto{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subadvances, unit: 'S/. ', precision: 2)
+              %th#amortAcum2{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f), unit: 'S/. ', precision: 2)
+              %th#saldo{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@balance, unit: 'S/. ', precision: 2)
 
       %div
         .jarviswidget-editbox
@@ -41,17 +41,17 @@
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Acumulado Actual
             %tbody
               %tr
-                %th{"style"=>"color:#5f5f5f"} 1.00
+                %th{"style"=>"color:#5f5f5f"}= number_to_currency(1, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
                 %th{"style"=>"color:#5f5f5f;text-align:center"}
                   %span{"style"=>"width=20px"}
                     %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_equipment();'}
                       %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
-                %th#total{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= sprintf('%.2f',@totalprice.to_f)
-                %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= sprintf('%.2f',@valorizacionsinigv.to_f)
-                %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= sprintf('%.2f',@totalprice.to_f+@valorizacionsinigv.to_f)
+                %th#total{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@totalprice.to_f, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@valorizacionsinigv.to_f, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@totalprice.to_f+@valorizacionsinigv.to_f, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f;vertical-align: middle"} 2.00
+                %th{"style"=>"color:#5f5f5f;vertical-align: middle"}= number_to_currency(2, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle"} 
                   Amortización de Adelanto (SIN. I.G.V.)
                   %br
