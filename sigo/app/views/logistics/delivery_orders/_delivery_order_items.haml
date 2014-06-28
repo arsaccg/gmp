@@ -27,7 +27,7 @@
         %option{:value => nil, :selected => true, :disabled => true} Seleccionar Fase
         - @phases.each do |phase|
           %option{:value => "#{phase.id}"}
-            = phase.name
+            = phase.code + " " + phase.name
   %td.order_delivery_centro_atencion.smart-form
     %div
       %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][center_of_attention_id]", :required => true, title:'No puede dejar este campo vacio'}
