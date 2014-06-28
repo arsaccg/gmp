@@ -119,11 +119,11 @@
                 %th{"style"=>"color:#5f5f5f"} 06
                 %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
                 %th{"style"=>"color:#5f5f5f"}
-                %th#net-pay{ "style"=>"color:#5f5f5f;text-align:center", 'original' => "#{(@bill-@billigv)-(@subcontractequipment.detraction.to_f+@fuel_discount.to_f)}"}= number_to_currency(((@bill+@billigv)-(@subcontractequipment.detraction+@fuel_discount)), unit: 'S/. ', precision: 2)
+                %th#net-pay{ "style"=>"color:#5f5f5f;text-align:center", 'original' => "#{(@bill-@billigv)-(@subcontractequipment.detraction.to_f+@fuel_discount.to_f)}"}= number_to_currency((0), unit: 'S/. ', precision: 2)
                 %th#lastnetpay{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@netoapagar, unit: 'S/. ', precision: 2)
-                %th#acumnetpay{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@bill+@billigv-@subcontractequipment.detraction + @fuel_discount + @netoapagar), unit: 'S/. ', precision: 2)
+                %th#acumnetpay{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((0), unit: 'S/. ', precision: 2)
         %br
-        
+
         #part-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
         %br
         #report-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
