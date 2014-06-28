@@ -23,7 +23,7 @@
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Amortización Acumulada
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Saldo
             %tbody
-              %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@subcontractequipment.contract_amount.to_f)
+              %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.contract_amount, unit: 'S/. ', precision: 2)
               %th#adelanto{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@subadvances)
               %th#amortAcum2{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f)
               %th#saldo{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@balance.to_f)
