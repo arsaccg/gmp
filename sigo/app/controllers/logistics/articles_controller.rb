@@ -3,7 +3,6 @@ class Logistics::ArticlesController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   
-  
   def index
     flash[:error] = nil
     @unitOfMeasurement = UnitOfMeasurement.first

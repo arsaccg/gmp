@@ -1,5 +1,6 @@
 class Logistics::PersonsController < ApplicationController
-protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @persons = User.all.where('roles_mask NOT IN(31)')
     render layout: false

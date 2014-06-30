@@ -34,30 +34,30 @@ class Logistics::CostCentersController < ApplicationController
       if wbsitem.save
         ActiveRecord::Base.connection.execute("
           CREATE TABLE weeks_for_cost_center_"+costCenter.id.to_s+" 
-            (
-              id int NOT NULL AUTO_INCREMENT,
-              name varchar(255),
-              start_date DATE,
-              end_date DATE,
-              primary key (id)
-          );")
+          (
+            id int NOT NULL AUTO_INCREMENT,
+            name varchar(255),
+            start_date DATE,
+            end_date DATE,
+            primary key (id)
+          )ENGINE=MyISAM;")
         add_weeks_table(costCenter.id,params[:startdate2])
         ActiveRecord::Base.connection.execute("
-          CREATE TABLE articles_from_"+@name+" 
-            (
-              id int NOT NULL AUTO_INCREMENT,
-              article_id int(11),
-              code varchar(255),
-              type_of_article_id int(11),
-              category_id int(11),
-              name varchar(255),
-              description varchar(255),
-              unit_of_measurement_id int(11),
-              cost_center_id int(11),
-              input_by_budget_and_items_id int(11),
-              budget_id int(11),
-              primary key (id)
-          );")
+          CREATE TABLE articles_from_cost_center"+costCenter.id.to_s+" 
+          (
+            id int NOT NULL AUTO_INCREMENT,
+            article_id int(11),
+            code varchar(255),
+            type_of_article_id int(11),
+            category_id int(11),
+            name varchar(255),
+            description varchar(255),
+            unit_of_measurement_id int(11),
+            cost_center_id int(11),
+            input_by_budget_and_items_id int(11),
+            budget_id int(11),
+            primary key (id)
+          )ENGINE=MyISAM;")
         flash[:notice] = "Se ha creado correctamente el centro de costo."
         redirect_to :action => :index
       else
