@@ -1,4 +1,6 @@
 class Production::CategoryOfWorkersController < ApplicationController
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+
   def index
     @article = TypeOfArticle.find_by_code('01').articles.first
     @company = get_company_cost_center('company')
