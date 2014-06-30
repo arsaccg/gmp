@@ -182,7 +182,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     @costcenter = get_company_cost_center('cost_center')
     weeks = ActiveRecord::Base.connection.execute("
       SELECT wcc.id
-      FROM  weeks_for_cost_center_"+@costcenter+" wcc
+      FROM  weeks_for_cost_center_"+@costcenter.to_s+" wcc
       WHERE  wcc.start_date <  '"+end_date.to_s+"' AND wcc.end_date >  '"+start_date.to_s+"'"
     )
     weeks.each do |id|
@@ -197,7 +197,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
         last_id = id[0].to_i + 1
         @weeks = ActiveRecord::Base.connection.execute("
           SELECT wcc.name, wcc.start_date, wcc.end_date
-          FROM  weeks_for_cost_center_"+@costcenter+" wcc
+          FROM  weeks_for_cost_center_"+@costcenter.to_s+" wcc
           WHERE  wcc.id >="+first_id.to_i.to_s+" AND wcc.id < "+last_id.to_s+"
         ")
       end
