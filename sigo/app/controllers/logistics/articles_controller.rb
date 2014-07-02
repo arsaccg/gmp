@@ -24,14 +24,6 @@ class Logistics::ArticlesController < ApplicationController
       @budget = budget
     end
 
-    @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
-    @articles = ActiveRecord::Base.connection.execute("
-      SELECT especific.id, especific.code, toa.name, especific.name, especific.description, uom.name 
-      FROM articles_from_" + @name + " especific, type_of_articles toa, unit_of_measurements uom 
-      WHERE especific.unit_of_measurement_id = uom.id 
-      AND especific.type_of_article_id = toa.id
-      GROUP BY 2 
-    ")
     render layout: false
   end
 
@@ -151,6 +143,8 @@ class Logistics::ArticlesController < ApplicationController
     render :json => article
   end
 
+  # METHODS DataTables
+
   def json_specifics_articles
     display_length = params[:iDisplayLength]
     pager_number = params[:iDisplayStart]
@@ -162,12 +156,23 @@ class Logistics::ArticlesController < ApplicationController
     render json: { :aaData => array }
   end
 
+  def json_articles_from_specific_article_table
+    display_length = params[:iDisplayLength]
+    pager_number = params[:iDisplayStart]
+    array = Array.new
+    @name = CostCenter.find(get_company_cost_center('cost_center')).name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    articles = Article.find_articles_in_specific_table(@name, display_length, pager_number)
+    articles.each do |article|
+      array << [article[1],article[2],article[3],article[4],article[5],"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit_specific', 'content', null, null, 'GET')>Editar</a>"]
+    end
+    render json: { :aaData => array }
+  end
+
   def display_articles
     display_length = params[:iDisplayLength]
     pager_number = params[:iDisplayStart]
     @pagenumber = params[:iDisplayStart]
     array = Array.new
-    puts @pagenumber.inspect
     if @pagenumber == 'NaN'
       articles = ActiveRecord::Base.connection.execute("
         SELECT a.id, 
@@ -184,7 +189,6 @@ class Logistics::ArticlesController < ApplicationController
         ORDER BY a.id DESC
         LIMIT #{display_length}"
       )
-      puts '-----Hola Soy NaN-----'
     else
       articles = ActiveRecord::Base.connection.execute("
         SELECT a.id, 
@@ -201,13 +205,14 @@ class Logistics::ArticlesController < ApplicationController
         LIMIT #{display_length}
         OFFSET #{pager_number}"
       )
-      puts '-----Chau------'
     end
     articles.each do |article|
       array << [article[1],article[2],article[3],article[4],article[5],article[6], "<a class='btn btn-warning btn-xs' onclick = javascript:load_url_ajax('/logistics/articles/"+article[0].to_s+"/edit','content',null,null,'GET')> Editar </a>" + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/articles/"+article[0].to_s+"','content','/logistics/articles') data-placement='left' data-popout='true' data-singleton='true' data-toggle='confirmation' data-title='Esta seguro de eliminar el item " + article[4].to_s + "'  data-original-title='' title=''> Eliminar </a>"]
     end
     render json: { :aaData => array }
   end
+
+  # END METHODS DataTables
 
   def show_article
     @article = Article.find(params[:id])

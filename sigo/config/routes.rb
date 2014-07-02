@@ -89,6 +89,7 @@ ArsacLogistica::Application.routes.draw do
         post 'create_specific'
         get 'new_specific'
         post 'json_specifics_articles'
+        post 'json_articles_from_specific_article_table'
         post 'import'
         get 'import'
         post 'display_articles_specific'

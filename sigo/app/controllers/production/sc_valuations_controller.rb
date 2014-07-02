@@ -215,11 +215,11 @@ class Production::ScValuationsController < ApplicationController
         uom.name, 
         p.date_of_creation 
       FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow, articles art
-      WHERE p.working_group_id IN(" + working_group_id + ")
+      WHERE p.working_group_id IN(" + working_group_id.to_s + ")
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.id = ppd.part_person_id
-      AND p.cost_center_id = '"+ cost_center +"'
-      AND w.cost_center_id = '"+ cost_center +"'
+      AND p.cost_center_id = '" + cost_center.to_s + "'
+      AND w.cost_center_id = '" + cost_center.to_s + "'
       AND w.article_id = art.id
       AND ppd.worker_id = w.id
       AND p.block=0 
@@ -241,9 +241,9 @@ class Production::ScValuationsController < ApplicationController
         p.date_of_creation 
       FROM part_works p, part_work_details pwd, articles art, unit_of_measurements uom, subcontract_details si
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
-      AND p.working_group_id IN(" + working_group_id + ")
+      AND p.working_group_id IN(" + working_group_id.to_s + ")
       AND p.id = pwd.part_work_id
-      AND p.cost_center_id = '"+ cost_center +"'
+      AND p.cost_center_id = '" + cost_center.to_s + "'
       AND pwd.article_id = art.id
       AND pwd.article_id = si.article_id
       AND p.block=0 
@@ -264,11 +264,11 @@ class Production::ScValuationsController < ApplicationController
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.equipment_id=art.id
-      AND poe.cost_center_id = '"+ cost_center +"'
+      AND poe.cost_center_id = '" + cost_center.to_s + "'
       AND poe.equipment_id=si.article_id
       AND poe.block=0 
       AND uom.id = art.unit_of_measurement_id
-      AND poed.working_group_id IN(" + working_group_id + ")
+      AND poed.working_group_id IN(" + working_group_id.to_s + ")
       GROUP BY art.name
     ")
     return workers_array3

@@ -10,7 +10,7 @@
         %td.inbox-data-from.hidden-xs.hidden-sm
           %div
             = "Orden de Compra N° " + po.id.to_s.rjust(5, '0')
-        %td.inbox-data-message{:data => "#{po.id}-#{po.state}-porder"}
+        %td.inbox-data-message{:data => "#{po.id}-#{get_next_state(po.state)}-porder"}
           %div
             %span
               %span.label.bg-color-orange DAR VISTO BUENO
@@ -34,7 +34,7 @@
         %td.inbox-data-from.hidden-xs.hidden-sm
           %div
             = "Orden de Compra N° " + po.id.to_s.rjust(5, '0')
-        %td.inbox-data-message{:data => "#{po.id}-#{po.state}-porder"}
+        %td.inbox-data-message{:data => "#{po.id}-#{get_next_state(po.state)}-porder"}
           %div
             %span
               %span.label.bg-color-green APROBAR
