@@ -17,6 +17,7 @@ class Production::SubcontractEquipmentsController < ApplicationController
     @company = params[:company_id]
     @subcontractEquipment = SubcontractEquipment.new
     @suppliers = TypeEntity.find_by_name('Proveedores').entities
+    @igv = FinancialVariable.find_by_name("IGV").value
     @company = params[:company_id]
     render layout: false
   end
@@ -42,6 +43,7 @@ class Production::SubcontractEquipmentsController < ApplicationController
     @subcontractEquipment = SubcontractEquipment.find(params[:id])
     @suppliers = TypeEntity.find_by_name('Proveedores').entities
     @company = params[:company_id]
+    @igv = FinancialVariable.find_by_name("IGV").value
     @action="edit"
     @reg_n= Time.now.to_i
     render layout: false
@@ -81,7 +83,7 @@ class Production::SubcontractEquipmentsController < ApplicationController
 
   private
   def subcontracts_parameters
-    params.require(:subcontract_equipment).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :guarantee_fund, :detraction,
+    params.require(:subcontract_equipment).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :igv, :guarantee_fund, :detraction,
       subcontract_equipment_advances_attributes: [
         :id,
         :subcontract_equipment_id,

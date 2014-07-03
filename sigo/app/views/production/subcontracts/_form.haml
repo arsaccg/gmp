@@ -92,9 +92,14 @@
             %label.input{for: "contract_amount"}
               = f.input :contract_amount, placeholder: "Monto contratado", input_html: { class: 'form-control' }, label: false, readonly: true
           %section.col.col-4
-            %label.label I.G.V.
-            %label.input{for: "igv"}
-              = f.input :igv, placeholder: "I.G.V.", input_html: { class: 'form-control' }, label: false
+            %label.label IGV
+            %label.checkbox
+              - if @subcontract.igv.nil?
+                = check_box_tag 'subcontract[igv]', @igv, false
+                %i
+              - else
+                = check_box_tag 'subcontract_equipment[igv]', @igv, true
+                %i
             
       %fieldset
         %legend Partidas / Insumos
