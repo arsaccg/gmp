@@ -46,10 +46,19 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
   end
 
   def create
+    @sum_contract_amount = 0
     partequi = SubcontractEquipmentDetail.new(partequi_parameters)
     if partequi.save
-      flash[:notice] = "Se ha creado correctamente el trabajador."
-      redirect_to :action => :index, company_id: params[:company_id], subcontract: params[:subcontract]
+
+      subcontract_equipment = SubcontractEquipment.find(partequi.subcontract_equipment_id)
+      subcontract_equipment.subcontract_equipment_details.each do |subcontract_detail|
+        @sum_contract_amount += subcontract_detail.price_no_igv
+      end
+
+      if subcontract_equipment.update_attributes(:contract_amount => @sum_contract_amount)
+        flash[:notice] = "Se ha creado correctamente el trabajador."
+        redirect_to :action => :index, company_id: params[:company_id], subcontract: params[:subcontract]
+      end
     else
       partequi.errors.messages.each do |attribute, error|
         puts error.to_s
@@ -70,10 +79,19 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
   end
 
   def update
+    @sum_contract_amount = 0
     subcontract = SubcontractEquipmentDetail.find(params[:id])
     if subcontract.update_attributes(partequi_parameters)
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id], subcontract: params[:subcontract]
+
+      subcontract_equipment = SubcontractEquipment.find(subcontract.subcontract_equipment_id)
+      subcontract_equipment.subcontract_equipment_details.each do |subcontract_detail|
+        @sum_contract_amount += subcontract_detail.price_no_igv
+      end
+
+      if subcontract_equipment.update_attributes(:contract_amount => @sum_contract_amount)
+        flash[:notice] = "Se ha actualizado correctamente los datos."
+        redirect_to :action => :index, company_id: params[:company_id], subcontract: params[:subcontract]
+      end
     else
       subcontract.errors.messages.each do |attribute, error|
         flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
