@@ -335,11 +335,10 @@ class Production::EquipmentReportsController < ApplicationController
 
   def poe_array3(start_date, end_date, working_group_id)
     name_article = ""
-    @cost_center = CostCenter.find(session[:cost_center])
-    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    name = session[:cost_center]
     poe_array2 = ActiveRecord::Base.connection.execute("
       SELECT sced.code, art.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2) , tv.theoretical_value 
-      FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sced, articles art , theoretical_values tv, articles_from_"+name+" af 
+      FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sced, articles art , theoretical_values tv, articles_from_cost_center_" + name.to_s + " af 
       WHERE poe.worker_id IN(" + working_group_id + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "' 
       AND poe.equipment_id=sced.id 
@@ -355,11 +354,10 @@ class Production::EquipmentReportsController < ApplicationController
 
   def poe_array4(start_date, end_date, working_group_id)
     name_article = ""
-    @cost_center = CostCenter.find(session[:cost_center])
-    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    name = session[:cost_center]
     poe_array2 = ActiveRecord::Base.connection.execute("
       SELECT sced.code, art.name, SUM(poed.effective_hours), ROUND (SUM(poed.fuel),2), ROUND( ( SUM(poed.fuel) / SUM(poed.effective_hours) ), 2), tv.theoretical_value 
-      FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sced, articles art , theoretical_values tv , articles_from_"+name+" af 
+      FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sced, articles art , theoretical_values tv , articles_from_cost_center_" + name.to_s + " af 
       WHERE poed.sector_id IN(" + working_group_id + ") 
       AND poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poe.equipment_id=sced.id 

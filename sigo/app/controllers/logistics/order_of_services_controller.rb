@@ -14,8 +14,7 @@ class Logistics::OrderOfServicesController < ApplicationController
   def display_articles
     word = params[:q]
     article_hash = Array.new
-    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-    @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    @name = get_company_cost_center('cost_center')
     articles = OrderOfService.getOwnArticles(word, @name)
     articles.each do |art|
       article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}

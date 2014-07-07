@@ -11,7 +11,7 @@ class Subcontract < ActiveRecord::Base
     
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol
-      FROM articles_from_"+name+" a, unit_of_measurements u
+      FROM articles_from_cost_center_" + name.to_s + " a, unit_of_measurements u
       WHERE a.code LIKE '04%'
       AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
       AND u.id = a.unit_of_measurement_id

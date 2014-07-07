@@ -11,8 +11,7 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
   end
 
   def display_articles
-    cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-    name = cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    name = get_company_cost_center('cost_center')
     if params[:element].blank?
       word = params[:q]
       article_hash = Array.new
@@ -23,7 +22,7 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
       render json: {:articles => article_hash}
     else
       article_hash = Array.new
-      articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles_from_"+name+" WHERE id = #{params[:element]}")
+      articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles_from_cost_center_" + name.to_s + " WHERE id = #{params[:element]}")
       articles.each do |art|
         article_hash << { 'id' => art[0], 'name' => art[1] }
       end

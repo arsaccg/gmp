@@ -34,10 +34,8 @@ class PartOfEquipment < ActiveRecord::Base
 
   def self.get_equipments(worker_id, start_date, end_date,cost_center_id)
     name_article = ""
-    @cost_center = CostCenter.find(cost_center_id)
-    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
     return ActiveRecord::Base.connection.execute("SELECT DISTINCT sced.code, art.name as 'article', af.article_id
-      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,subcontract_equipment_details sced, articles art, articles_from_"+name+" af 
+      FROM part_of_equipments poe, workers wo, part_of_equipment_details poed,subcontract_equipment_details sced, articles art, articles_from_cost_center_" + cost_center_id.to_s + " af 
       WHERE poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "' 
       AND poe.worker_id IN(" + worker_id + ") 
       AND poe.equipment_id=sced.id 
@@ -62,10 +60,8 @@ class PartOfEquipment < ActiveRecord::Base
 
   def self.get_equipments_per_sector(sector_id, start_date, end_date,cost_center_id)
     name_article = ""
-    @cost_center = CostCenter.find(cost_center_id)
-    name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
     return ActiveRecord::Base.connection.execute("SELECT DISTINCT sed.code, art.name, af.article_id
-      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, subcontract_equipment_details sed, articles_from_"+name+" af 
+      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, subcontract_equipment_details sed, articles_from_cost_center_" + cost_center_id.to_s + " af 
       WHERE poe.date BETWEEN '" + start_date.to_s + "' AND '" + end_date.to_s + "'
       AND poe.equipment_id = sed.id
       AND art.id = sed.article_id

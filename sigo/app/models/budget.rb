@@ -105,8 +105,6 @@ class Budget < ActiveRecord::Base
       if @type != nil
         cost_center = Budget.find_by_cod_budget(@cod).cost_center_id
         @type_id = 0
-        @cost_center = CostCenter.find(cost_center)
-        @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
         @match= ActiveRecord::Base.connection.execute("
                 SELECT DISTINCT a.id, a.code, toa.id, c.id, a.name, a.description, u.id, ibi.id
                 FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u, type_of_articles toa, categories c
@@ -130,7 +128,7 @@ class Budget < ActiveRecord::Base
         	  @type_id = type.id
         	end
 
-          sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO articles_from_"+@name+" (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id, input_by_budget_and_items_id, budget_id) VALUES (?,?,?,?,?,?,?,?,?,?)", art[0].to_i, art[1].to_s, art[2].to_i, art[3].to_i, art[4].to_s, desc.to_s, art[6].to_i, cost_center.to_i, art[7].to_i, @type_id.to_i])
+          sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO articles_from_cost_center_" + cost_center.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id, input_by_budget_and_items_id, budget_id) VALUES (?,?,?,?,?,?,?,?,?,?)", art[0].to_i, art[1].to_s, art[2].to_i, art[3].to_i, art[4].to_s, desc.to_s, art[6].to_i, cost_center.to_i, art[7].to_i, @type_id.to_i])
         	result = ActiveRecord::Base.connection.execute(sql)
         end
 
@@ -138,7 +136,7 @@ class Budget < ActiveRecord::Base
         @cont=0
         com_art.each do |art|
           @cont+=1
-          sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO articles_from_"+@name+" (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id) VALUES (?,?,?,?,?,?,?,?)", art.id.to_i, art.code.to_s, art.type_of_article_id.to_i, art.category_id.to_i, art.name.to_s, art.description.to_s, art.unit_of_measurement_id.to_i, cost_center.to_i])
+          sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO articles_from_cost_center_" + cost_center.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id) VALUES (?,?,?,?,?,?,?,?)", art.id.to_i, art.code.to_s, art.type_of_article_id.to_i, art.category_id.to_i, art.name.to_s, art.description.to_s, art.unit_of_measurement_id.to_i, cost_center.to_i])
   	      result = ActiveRecord::Base.connection.execute(sql)
         end
       end

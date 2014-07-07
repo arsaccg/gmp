@@ -48,18 +48,17 @@ class Logistics::ArticlesController < ApplicationController
 
   def create_specific
     if params[:article]!= nil
-      @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-      @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+      @name = get_company_cost_center('cost_center')
       data_article_unit = params[:article].to_s.split('-')
       flag=ActiveRecord::Base.connection.execute("
           SELECT DISTINCT a.*
-          FROM articles_from_"+@name+" a
+          FROM articles_from_cost_center_" + @name.to_s + " a
           WHERE a.id = "+data_article_unit[0]+"
         ")
       if flag != nil
         @article = Article.find(data_article_unit[0])
         ActiveRecord::Base.connection.execute("
-          INSERT INTO articles_from_"+@name+" (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id)
+          INSERT INTO articles_from_cost_center_" + @name.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id)
           VALUES ("""+@article.id.to_i.to_s+",'"+@article.code.to_s+"',"+@article.type_of_article_id.to_i.to_s+","+@article.category_id.to_i.to_s+",'"+@article.name.to_s+"','"+@article.description.to_s+"',"+@article.unit_of_measurement_id.to_i.to_s+","+@cost_center.id.to_i.to_s+""")
         ")
         flash[:notice] = "Se ha creado correctamente el articulo."
@@ -74,12 +73,11 @@ class Logistics::ArticlesController < ApplicationController
 
   def edit_specific
     @id=params[:id]
-    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-    @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    @name = get_company_cost_center('cost_center')
     arsm=ActiveRecord::Base.connection.execute("
           SELECT DISTINCT a.*
-          FROM articles_from_"+@name+" a
-          WHERE a.id = "+@id+"
+          FROM articles_from_cost_center_" + @name.to_s + " a
+          WHERE a.id = " + @id + "
         ")
     arsm.each do |my|
       @ars=my
@@ -100,9 +98,7 @@ class Logistics::ArticlesController < ApplicationController
   end
 
   def update_specific
-    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-    @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
-
+    @name = get_company_cost_center('cost_center')
     @id = params[:articles]['id'].to_i.to_s
     @artid = params[:articles]['article_id'].to_i.to_s
     @code = params[:extrafield]['first_code'].to_s + params[:articles]['code'].to_s
@@ -113,7 +109,7 @@ class Logistics::ArticlesController < ApplicationController
     @artunit = params[:article]['unit_of_measurement_id'].to_i.to_s
     if @id!=nil && @artid !=nil && @code !=nil && @artty !=nil && @artcat !=nil && @artname !=nil && @artdesc !=nil && @artunit
       ActiveRecord::Base.connection.execute("
-        UPDATE articles_from_"+@name+" SET
+        UPDATE articles_from_cost_center_" + @name.to_s + " SET
         article_id = "+@artid+",
         code = '"+@code+"',
         type_of_article_id = "+@artty+",
@@ -134,10 +130,9 @@ class Logistics::ArticlesController < ApplicationController
 
   def delete_specific
     id = params[:id]
-    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-    @name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
+    @name = get_company_cost_center('cost_center')
     article = ActiveRecord::Base.connection.execute("
-      DELETE FROM articles_from_"+@name+" WHERE id = "+id+"
+      DELETE FROM articles_from_cost_center_" + @name.to_s + " WHERE id = " + id + "
     ")
     flash[:notice] = "Se ha eliminado correctamente el articulo seleccionado."
     render :json => article
@@ -160,8 +155,7 @@ class Logistics::ArticlesController < ApplicationController
     display_length = params[:iDisplayLength]
     pager_number = params[:iDisplayStart]
     array = Array.new
-    @name = CostCenter.find(get_company_cost_center('cost_center')).name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
-    articles = Article.find_articles_in_specific_table(@name, display_length, pager_number)
+    articles = Article.find_articles_in_specific_table(get_company_cost_center('cost_center'), display_length, pager_number)
     articles.each do |article|
       array << [article[1],article[2],article[3],article[4],article[5],"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit_specific', 'content', null, null, 'GET')>Editar</a>"]
     end

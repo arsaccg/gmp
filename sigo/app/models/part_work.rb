@@ -9,7 +9,7 @@ class PartWork < ActiveRecord::Base
     
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT DISTINCT a.id, a.name
-      FROM articles_from_"+name+" a
+      FROM articles_from_cost_center_" + name.to_s + " a
       WHERE a.code LIKE '04%'
       AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
     ")

@@ -3,10 +3,15 @@ class MainController < ApplicationController
   def index
     @flag = params[:flag]
     if @flag.nil?
-      company_id = current_user.companies.first.id
-      cost_center_id = current_user.cost_centers.find_by_company_id(company_id).id rescue Company.first.id
-      session[:company] = company_id
-      session[:cost_center] = cost_center_id
+      company_id = current_user.companies.first.id rescue nil
+      if !company_id.nil?
+        cost_center_id = current_user.cost_centers.find_by_company_id(company_id).id rescue CostCenter.first.id
+        session[:company] = company_id
+        session[:cost_center] = cost_center_id
+      else
+        session[:company] = 0
+        session[:cost_center] = 0
+      end
       redirect_to :action => :home
     else
       render layout: false
@@ -15,10 +20,12 @@ class MainController < ApplicationController
 
   def home
     if get_company_cost_center('company').present? && get_company_cost_center('cost_center').present?
-      @company = Company.find(get_company_cost_center('company'))
-      @cost_center_name = CostCenter.find(get_company_cost_center('cost_center')).name
-      @others_cost_centers = @company.cost_centers.where('id != ?', get_company_cost_center('cost_center'))
-      @total_pending = OrderOfService.where(" state LIKE 'issued' ").count + PurchaseOrder.where(" state LIKE 'issued' ").count + DeliveryOrder.where(" state LIKE 'issued' ").count + OrderOfService.where(" state LIKE 'revised' ").count + PurchaseOrder.where(" state LIKE 'revised' ").count + DeliveryOrder.where(" state LIKE 'revised' ").count
+      @company = Company.find(get_company_cost_center('company')) rescue nil
+      @cost_center_name = CostCenter.find(get_company_cost_center('cost_center')).name rescue nil
+      if !@company.nil? && !@cost_center_name.nil?
+        @others_cost_centers = @company.cost_centers.where('id != ?', get_company_cost_center('cost_center'))
+        @total_pending = OrderOfService.where(" state LIKE 'issued' ").count + PurchaseOrder.where(" state LIKE 'issued' ").count + DeliveryOrder.where(" state LIKE 'issued' ").count + OrderOfService.where(" state LIKE 'revised' ").count + PurchaseOrder.where(" state LIKE 'revised' ").count + DeliveryOrder.where(" state LIKE 'revised' ").count
+      end
       render :show_panel, layout: 'dashboard'
     else
       redirect_to :controller => "errors", :action => "error_500"
