@@ -9,9 +9,13 @@
         .row
           %section.col.col-10
             %label.label Id Artículo
-            %label.input{for: "article_id"}
-              = @articles.id.to_s + @articles.name
-              = hidden_field_tag 'theoretical_value[article_id]', @articles.id, class: 'form-control', id: 'article_id'
+            %label.input.form-control{for: "article_id"}
+              -if @action == "edit"
+                = @theoretical_value.article.id.to_s +" "+@theoretical_value.article.name
+                = hidden_field_tag 'theoretical_value[article_id]', @articles.id, class: 'form-control', id: 'article_id'
+              -else
+                = @articles.id.to_s +" "+@articles.name
+                = hidden_field_tag 'theoretical_value[article_id]', @articles.id, class: 'form-control', id: 'article_id'
         .row
           %section.col.col-10
             %label.label Valor Teórico del rendimiento de consumo de Combustible
