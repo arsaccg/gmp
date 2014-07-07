@@ -331,9 +331,14 @@
             %label.input{for: "detraction"}
               = f.input :detraction, placeholder: "Detracción", input_html: { class: 'form-control' }, label: false
           %section.col.col-4
-            %label.label Monto Contratado
-            %label.input{for: "contract_amount"}
-              = f.input :contract_amount, placeholder: "Monto contratado", input_html: { class: 'form-control' }, label: false
+            %label.label IGV
+            %label.checkbox
+              - if @subcontractEquipment.igv.nil?
+                = check_box_tag 'subcontract_equipment[igv]', @igv, false
+                %i
+              - else
+                = check_box_tag 'subcontract_equipment[igv]', @igv, true
+                %i
 
       %fieldset
         %legend Adelantos

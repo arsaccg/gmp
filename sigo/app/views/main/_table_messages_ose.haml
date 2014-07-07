@@ -10,7 +10,7 @@
         %td.inbox-data-from.hidden-xs.hidden-sm
           %div
             = "Orden de Servicio N° " + ose.id.to_s.rjust(5, '0')
-        %td.inbox-data-message{:data => "#{ose.id}-#{ose.state}-oservice"}
+        %td.inbox-data-message{:data => "#{ose.id}-#{get_next_state(ose.state)}-oservice"}
           %div
             %span
               %span.label.bg-color-orange DAR VISTO BUENO
@@ -34,7 +34,7 @@
         %td.inbox-data-from.hidden-xs.hidden-sm
           %div
             = "Orden de Servicio N° " + ose.id.to_s.rjust(5, '0')
-        %td.inbox-data-message{:data => "#{ose.id}-#{ose.state}-oservice"}
+        %td.inbox-data-message{:data => "#{ose.id}-#{get_next_state(ose.state)}-oservice"}
           %div
             %span
               %span.label.bg-color-green APROBAR

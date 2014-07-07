@@ -90,20 +90,25 @@
           %section.col.col-4
             %label.label Monto Contratado
             %label.input{for: "contract_amount"}
-              = f.input :contract_amount, placeholder: "Monto contratado", input_html: { class: 'form-control' }, label: false
+              = f.input :contract_amount, placeholder: "Monto contratado", input_html: { class: 'form-control' }, label: false, readonly: true
           %section.col.col-4
-            %label.label I.G.V.
-            %label.input{for: "igv"}
-              = f.input :igv, placeholder: "I.G.V.", input_html: { class: 'form-control' }, label: false
+            %label.label IGV
+            %label.checkbox
+              - if @subcontract.igv.nil?
+                = check_box_tag 'subcontract[igv]', @igv, false
+                %i
+              - else
+                = check_box_tag 'subcontract_equipment[igv]', @igv, true
+                %i
             
       %fieldset
-        %legend Insumos
+        %legend Partidas / Insumos
         .row
           %section.col.col-2
-            %label.control-label(for="article_id") Insumos
+            %label.control-label(for="itembybudget_id") Partidas
 
           %section.col.col-6
-            %select#part-select.form-control{:name =>"subcontract[subcontract_details_attributes][#{@reg_n.to_s}][itembybudget_id]", 'style' => 'width:100%;padding: 0;border: none;'}
+            %select#itembybudget-id.form-control{:name =>"itembybudget_id", :style => 'width:100%;padding: 0;border: none;'}
               %option{:value => "0", :selected => true, :disabled => true} Seleccionar Partida
               - @prebudgets.each do |phase|
                 %option{:value => "#{phase[1]}"}
@@ -111,16 +116,15 @@
 
           %section.col.col-2
             %div
-              %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
-                Agregar Insumo
+              %a{:href => "javascript:add_itembybudget_item();", :id => "btn-add-article", :class => "btn btn-success", :role => "button"}
+                Agregar Partida
 
         .col-lg-12
           %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-articles" aria-describedby="data-table_info")
             %thead
               %tr
-                %th{:style => "width:30%"} Partidas
+                %th{:style => "width:30%"} Partida
                 %th Insumo
-                %th Unidad
                 %th Cantidad
                 %th Precio Unitario
                 %th Parcial
@@ -138,8 +142,6 @@
                       = sub.itembybudget.subbudgetdetail rescue " "
                     %td.col-md-2
                       = sub.article.name rescue " "
-                    %td
-                      = sub.article.unit_of_measurement.name rescue " "
                     %td.amount.col-md-1{:style => "width:5%"}
                       = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][amount]', sub.amount , class: "form-control quantity", id: 'subcontract-amount', onfocusout: "calculatePartialAmount(this);"
                     %td.unit-price.col-md-1
@@ -168,7 +170,7 @@
 
           %section.col.col-2
             %div
-              %a(href="javascript:add_advance_item();" id="btn-add-advance" class="btn btn-success" role="button")
+              %a{:href => "javascript:add_advance_item();", :id => "btn-add-advance", :class => "btn btn-success", :role => "button"}
                 Agregar Adelanto
 
         .col-lg-12
@@ -205,29 +207,6 @@
   $(document).ready(function () {
 
     $('select').select2();
-    $('#article-select').select2({
-      placeholder: "Buscar Insumos...",
-      minimumInputLength: 3,
-      ajax: {
-        url: "#{display_articles_production_subcontracts_path}",
-        dataType: 'json',
-        type: 'POST',
-        quietMillis: 100,
-        data: function(term, page){
-          return {
-            q: term,
-            page: page,
-            authenticity_token: "#{form_authenticity_token}"
-          };
-        },
-        results: function(data, page){
-          return {results: data.articles};
-        }
-      },
-      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name + ' - ' + node.symbol + '</div>' },
-      formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol) },
-      escapeMarkup: function (m) { return m; }
-    });
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -328,8 +307,8 @@
     });
   }
 
-  function add_article_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#part-select").val()};
+  function add_itembybudget_item(){
+    str_item = {authenticity_token: "#{form_authenticity_token}", itembybudget_id: $("#itembybudget-id").val(), itembybudget_name: $("#itembybudget-id").find(":selected").text()};
     append_url_ajax('#{add_more_article_production_subcontracts_path}', 'article_items_table', str_item, 0, 'POST');
   }
 
@@ -339,6 +318,7 @@
   }
 
   function calculatePartialAmount(element){
+    var quantity = 0;
     var unitprice = parseFloat($(element).parent().parent().siblings('.unit-price').find('input').val());
     var amount = parseInt($(element).val());
     if(isNaN(unitprice) || isNaN(amount) ){
@@ -346,10 +326,16 @@
     }else{
       var price_without_igv = parseFloat(unitprice * amount).toFixed(2);
       $(element).parent().parent().siblings('.partial').find('input').val(price_without_igv);
+
+      $('#article_items_table tr td.partial input.quantity').each(function(){
+        quantity = quantity + parseFloat($(this).val());
+      });
+      $('#subcontract_contract_amount').val(quantity);
     }
   }
 
   function calculatePartialUnitPrice(element){
+    var quantity = 0;
     var amount = parseFloat($(element).parent().parent().siblings('.amount').find('input').val());
     var unitprice = parseInt($(element).val());
     if(isNaN(amount) || isNaN(unitprice)){
@@ -357,6 +343,11 @@
     }else{
       var price_without_igv = parseFloat(unitprice * amount).toFixed(2);
       $(element).parent().parent().siblings('.partial').find('input').val(price_without_igv);
+
+      $('#article_items_table tr td.partial input.quantity').each(function(){
+        quantity = quantity + parseFloat($(this).val());
+      });
+      $('#subcontract_contract_amount').val(quantity);
     }
   }
 

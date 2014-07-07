@@ -32,6 +32,7 @@ class Production::SubcontractsController < ApplicationController
    @suppliers = TypeEntity.find_by_name('Proveedores').entities
    @company = params[:company_id]
    @prebudgets = getsc_prebudgets()
+   @igv = FinancialVariable.find_by_name("IGV").value
    render layout: false
  end
 
@@ -52,16 +53,9 @@ class Production::SubcontractsController < ApplicationController
  end
 
  def add_more_article
-   puts params[:article_id]
-   @type = params[:type]
    @reg_n = (Time.now.to_f*1000).to_i
-   @amount = params[:amount]
-   data_article_unit = params[:article_id].split('-')
-   @articles = TypeOfArticle.find_by_code('04').articles
-   @id_article = @article.id
-
-   @name_article = @article.name
-   @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).name
+   @id_itembybudget = params[:itembybudget_id]
+   @name_itembybudget = params[:itembybudget_name]
    render(partial: 'subcontract_items', :layout => false)
  end
 
@@ -77,6 +71,8 @@ class Production::SubcontractsController < ApplicationController
    @suppliers = TypeEntity.find_by_name('Proveedores').entities
    @company = params[:company_id]
    @reg_n = (Time.now.to_f*1000).to_i
+   @prebudgets = getsc_prebudgets()
+   @igv = FinancialVariable.find_by_name("IGV").value
    @action="edit"
    render layout: false
  end

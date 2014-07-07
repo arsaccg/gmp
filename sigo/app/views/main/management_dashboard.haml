@@ -7,20 +7,20 @@
         %header
           %span.widget-icon
             %i.glyphicon.glyphicon-stats.txt-color-darken
-          %h2 Live Feeds
+          %h2 Ratios de Obra
           %ul#myTab.nav.nav-tabs.pull-right.in
             %li.active
               %a{"data-toggle" => "tab", href: "#s1"}
                 %i.fa.fa-clock-o
-                %span.hidden-mobile.hidden-tablet Live Stats
+                %span.hidden-mobile.hidden-tablet Avance Físico
             %li
               %a{"data-toggle" => "tab", href: "#s2"}
                 %i.fa.fa-facebook
-                %span.hidden-mobile.hidden-tablet Social Network
+                %span.hidden-mobile.hidden-tablet Ratio de Tiempo
             %li
               %a{"data-toggle" => "tab", href: "#s3"}
                 %i.fa.fa-dollar
-                %span.hidden-mobile.hidden-tablet Revenue
+                %span.hidden-mobile.hidden-tablet Pago a Proveedores
         / widget div
         .no-padding
           / widget edit box
@@ -34,7 +34,7 @@
                 .row.no-space
                   .col-xs-12.col-sm-12.col-md-8.col-lg-8
                     %span.demo-liveupdate-1
-                      %span.onoffswitch-title Live switch
+                      %span.onoffswitch-title Ver en Tiempo Real
                       %span.onoffswitch
                         %input#start_interval.onoffswitch-checkbox{name: "start_interval", type: "checkbox"}/
                         %label.onoffswitch-label{for: "start_interval"}
@@ -45,25 +45,25 @@
                     .row
                       .col-xs-6.col-sm-6.col-md-12.col-lg-12
                         %span.text
-                          My Tasks
+                          Avance Físico
                           %span.pull-right 130/200
                         .progress
                           .progress-bar.bg-color-blueDark{style: "width: 65%;"}
                       .col-xs-6.col-sm-6.col-md-12.col-lg-12
                         %span.text
-                          Transfered
+                          Ratio de Tiempo
                           %span.pull-right 440 GB
                         .progress
                           .progress-bar.bg-color-blue{style: "width: 34%;"}
                       .col-xs-6.col-sm-6.col-md-12.col-lg-12
                         %span.text
-                          Bugs Squashed
+                          Pago a Proveedores
                           %span.pull-right 77%
                         .progress
                           .progress-bar.bg-color-blue{style: "width: 77%;"}
                       .col-xs-6.col-sm-6.col-md-12.col-lg-12
                         %span.text
-                          User Testing
+                          Cantidad de Trabajadores
                           %span.pull-right 7 Days
                         .progress
                           .progress-bar.bg-color-greenLight{style: "width: 84%;"}
@@ -77,7 +77,7 @@
                     .easy-pie-chart.txt-color-orangeDark{"data-percent" => "33", "data-pie-size" => "50"}
                       %span.percent.percent-sign 35
                     %span.easy-pie-title
-                      Server Load
+                      Avance Físico
                       %i.fa.fa-caret-up.icon-color-bad
                     %ul.smaller-stat.hidden-sm.pull-right
                       %li
@@ -94,7 +94,7 @@
                     .easy-pie-chart.txt-color-greenLight{"data-percent" => "78.9", "data-pie-size" => "50"}
                       %span.percent.percent-sign 78.9
                     %span.easy-pie-title
-                      Disk Space
+                      Ratio de Tiempo
                       %i.fa.fa-caret-down.icon-color-good
                     %ul.smaller-stat.hidden-sm.pull-right
                       %li
@@ -111,7 +111,7 @@
                     .easy-pie-chart.txt-color-blue{"data-percent" => "23", "data-pie-size" => "50"}
                       %span.percent.percent-sign 23
                     %span.easy-pie-title
-                      Transfered
+                      Pago a Proveedores
                       %i.fa.fa-caret-up.icon-color-good
                     %ul.smaller-stat.hidden-sm.pull-right
                       %li
@@ -128,7 +128,7 @@
                         36
                         %i.fa.fa-caret-up
                     %span.easy-pie-title
-                      Temperature
+                      Cantidad de Trabajadores
                       %i.fa.fa-caret-down.icon-color-good
                     %ul.smaller-stat.hidden-sm.pull-right
                       %li
@@ -231,7 +231,7 @@
         %header
           %span.widget-icon
             %i.fa.fa-map-marker
-          %h2 Birds Eye
+          %h2 Centro de Costo
           .widget-toolbar.hidden-mobile
             %span.onoffswitch-title
               %i.fa.fa-location-arrow
@@ -258,20 +258,20 @@
             %table.table.table-striped.table-hover.table-condensed
               %thead
                 %tr
-                  %th Country
-                  %th Visits
-                  %th.text-align-center User Activity
-                  %th.text-align-center Online
-                  %th.text-align-center Demographic
+                  %th Centro de Costo
+                  %th N° de Centro de Costo
+                  %th.text-align-center Actividad
+                  %th.text-align-center Especialidad
+                  %th.text-align-center Ratios
               %tbody
                 %tr
                   %td
-                    %a{href: "javascript:void(0);"} USA
-                  %td 4,977
+                    %a{href: "javascript:void(0);"} C.C Arequipa - Aplao
+                  %td 7230
                   %td.text-align-center
                     .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
                       2700, 3631, 2471, 1300, 1877, 2500, 2577, 2700, 3631, 2471, 2000, 2100, 3000
-                  %td.text-align-center 143
+                  %td.text-align-center Saneamiento
                   %td.text-align-center
                     .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
                       17,83
@@ -294,12 +294,12 @@
                           %a{href: "javascript:void(0);"} Cancel
                 %tr
                   %td
-                    %a{href: "javascript:void(0);"} Australia
-                  %td 4,873
+                    %a{href: "javascript:void(0);"} C.C Saldos Rioja
+                  %td 7232
                   %td.text-align-center
                     .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
                       1000, 1100, 3030, 1300, -1877, -2500, -2577, -2700, 3631, 2471, 4700, 1631, 2471
-                  %td.text-align-center 247
+                  %td.text-align-center Saneamiento
                   %td.text-align-center
                     .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
                       22,88
@@ -322,12 +322,12 @@
                           %a{href: "javascript:void(0);"} Cancel
                 %tr
                   %td
-                    %a{href: "javascript:void(0);"} India
-                  %td 3,671
+                    %a{href: "javascript:void(0);"} C.C Bagua
+                  %td 7232
                   %td.text-align-center
                     .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
                       3631, 1471, 2400, 3631, 471, 1300, 1177, 2500, 2577, 3000, 4100, 3000, 7700
-                  %td.text-align-center 373
+                  %td.text-align-center Saneamiento
                   %td.text-align-center
                     .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
                       10,90
@@ -350,12 +350,12 @@
                           %a{href: "javascript:void(0);"} Cancel
                 %tr
                   %td
-                    %a{href: "javascript:void(0);"} Brazil
-                  %td 2,476
+                    %a{href: "javascript:void(0);"} C.C Huaraz
+                  %td 7232
                   %td.text-align-center
                     .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
                       2700, 1877, 2500, 2577, 2000, 3631, 2471, -2700, -3631, 2471, 1300, 2100, 3000,
-                  %td.text-align-center 741
+                  %td.text-align-center Eletromecanico
                   %td.text-align-center
                     .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
                       34,66
@@ -378,12 +378,12 @@
                           %a{href: "javascript:void(0);"} Cancel
                 %tr
                   %td
-                    %a{href: "javascript:void(0);"} Turkey
-                  %td 1,476
+                    %a{href: "javascript:void(0);"} C.C Huancavelica
+                  %td 7232
                   %td.text-align-center
                     .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
                       1300, 1877, 2500, 2577, 2000, 2100, 3000, -2471, -2700, -3631, -2471, 2700, 3631
-                  %td.text-align-center 123
+                  %td.text-align-center Eletromecanico
                   %td.text-align-center
                     .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
                       75,25
@@ -406,12 +406,12 @@
                           %a{href: "javascript:void(0);"} Cancel
                 %tr
                   %td
-                    %a{href: "javascript:void(0);"} Canada
+                    %a{href: "javascript:void(0);"} C.C Huancayo
                   %td 146
                   %td.text-align-center
                     .sparkline.txt-color-orange.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
                       5, 34, 10, 1, 4, 6, -9, -1, 0, 0, 5, 6, 7
-                  %td.text-align-center 23
+                  %td.text-align-center Eletromecanico
                   %td.text-align-center
                     .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
                       50,50
@@ -440,12 +440,6 @@
                         %a{href: "javascript:void(0);"} Previous
                       %li.active
                         %a{href: "javascript:void(0);"} 1
-                      %li
-                        %a{href: "javascript:void(0);"} 2
-                      %li
-                        %a{href: "javascript:void(0);"} 3
-                      %li.next
-                        %a{href: "javascript:void(0);"} Next
             / end content
         / end widget div
       / end widget
@@ -850,14 +844,12 @@
    */
   
   data_array = {
-      "US": 4977,
-      "AU": 4873,
-      "IN": 3671,
-      "BR": 2476,
-      "TR": 1476,
-      "CN": 146,
-      "CA": 134,
-      "BD": 100
+      "C.C Arequipa - Aplao": 7230,
+      "C.C Saldos Rioja": 7232,
+      "C.C Bagua": 7232,
+      "C.C Huaraz": 7232,
+      "C.C Huancavelica": 7232,
+      "C.C Huancayo": 7232
   };
   
   // Load Map dependency 1 then call for dependency 2

@@ -142,7 +142,7 @@ function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,wee
   });
 }
 
-function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1, serie2, serie3){
+function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1, serie2, serie3, data_serie1, data_serie2, data_serie3){
   $('#'+div_id).highcharts({
     chart: {
       type: 'line'
@@ -154,7 +154,7 @@ function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1,
       text: subtitle
     },
     xAxis: {
-      categories: ['En', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      categories: ['ENE.12', 'FEB.12', 'MAR.12', 'ABR.12', 'MAY.12', 'JUN.12', 'JUL.12', 'AGO.12', 'SET.12', 'OCT.12', 'NOV.12', 'DIC.12', 'ENE.13', 'FEB.13', 'MAR.13', 'ABR.13', 'MAY.13', 'JUN.13', 'JUL.13', 'AGOS.13', 'SET.13', 'OCT.13', 'NOV.13', 'DIC.13', 'ENE.14']
     },
     yAxis: {
       title: { text: 'Costo (S/.)' }
@@ -169,13 +169,13 @@ function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1,
     },
     series: [{
       name: serie1,
-      data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+      data: data_serie1
     }, {
       name: serie2,
-      data: [1.0, 2.0, 7.0, 5.0, 11.0, 11.2, 13.7, 11.1, 18.2, 5.3, 6.1, 3.8]
+      data: data_serie2
     }, {
       name: serie3,
-      data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+      data: data_serie3
     }]
   });
 }
@@ -193,7 +193,7 @@ function load_bar_graphic_for_general_report(div_id, title, subtitle){
     },
     xAxis: {
       categories: [
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        'AGOS.13', 'SET.13', 'OCT.13', 'NOV.13', 'DIC.13', 'ENE.14'
       ]
     },
     yAxis: {
@@ -218,13 +218,13 @@ function load_bar_graphic_for_general_report(div_id, title, subtitle){
     },
     series: [{
       name: 'Programado',
-      data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0]
+      data: [3874189.278, 4045632.531, 3586762.657, 2981715.844, 3078316.592, 2402520.912]
     }, {
       name: 'Valorizado',
-      data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5]
+      data: [1033305.21, 1658607.79, 1880477.29, 2149285.52, 1226151.00131, 1511088.597]
     }, {
       name: 'Costo Real',
-      data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3]
+      data: [764479, 952670.251, 858321.99, 1325361.336, 1330032.980, 1140183.798]
     }]
   });
 }

@@ -1,4 +1,5 @@
 class Logistics::PurchaseOrdersController < ApplicationController
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @company = params[:company_id]
@@ -140,58 +141,71 @@ class Logistics::PurchaseOrdersController < ApplicationController
   # Este es el cambio de estado
   def destroy
     @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
-    @purchaseOrder.cancel
-    stateOrderDetail = StatePerOrderPurchase.new
-    stateOrderDetail.state = @purchaseOrder.human_state_name
-    stateOrderDetail.purchase_order_id = params[:id]
-    stateOrderDetail.user_id = current_user.id
-    stateOrderDetail.save
+    if @purchaseOrder.cancel!
+      stateOrderDetail = StatePerOrderPurchase.new
+      stateOrderDetail.state = @purchaseOrder.human_state_name
+      stateOrderDetail.purchase_order_id = params[:id]
+      stateOrderDetail.user_id = current_user.id
+      stateOrderDetail.save
+    end
     #redirect_to :action => :index, company_id: params[:company_id]
     render :json => @purchaseOrder
   end
 
   def goissue
     @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
-    @purchaseOrder.issue
-    stateOrderDetail = StatePerOrderPurchase.new
-    stateOrderDetail.state = @purchaseOrder.human_state_name
-    stateOrderDetail.purchase_order_id = params[:id]
-    stateOrderDetail.user_id = current_user.id
-    stateOrderDetail.save
-    redirect_to :action => :index, company_id: params[:company_id]
+    if @purchaseOrder.issue!
+      stateOrderDetail = StatePerOrderPurchase.new
+      stateOrderDetail.state = @purchaseOrder.human_state_name
+      stateOrderDetail.purchase_order_id = params[:id]
+      stateOrderDetail.user_id = current_user.id
+      stateOrderDetail.save
+    end
+    redirect_to :action => :index
   end
 
   def gorevise
     @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
-    @purchaseOrder.revise
-    stateOrderDetail = StatePerOrderPurchase.new
-    stateOrderDetail.state = @purchaseOrder.human_state_name
-    stateOrderDetail.purchase_order_id = params[:id]
-    stateOrderDetail.user_id = current_user.id
-    stateOrderDetail.save
-    redirect_to :action => :index, company_id: params[:company_id]
+    if @purchaseOrder.revise!
+      stateOrderDetail = StatePerOrderPurchase.new
+      stateOrderDetail.state = @purchaseOrder.human_state_name
+      stateOrderDetail.purchase_order_id = params[:id]
+      stateOrderDetail.user_id = current_user.id
+      stateOrderDetail.save
+    end
+    if params[:flag] == ''
+      redirect_to :action => :index
+    else
+      redirect_to inbox_task_main_path
+    end
   end
 
   def goapprove
     @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
-    @purchaseOrder.approve
-    stateOrderDetail = StatePerOrderPurchase.new
-    stateOrderDetail.state = @purchaseOrder.human_state_name
-    stateOrderDetail.purchase_order_id = params[:id]
-    stateOrderDetail.user_id = current_user.id
-    stateOrderDetail.save
-    redirect_to :action => :index, company_id: params[:company_id]
+    if @purchaseOrder.approve!
+      stateOrderDetail = StatePerOrderPurchase.new
+      stateOrderDetail.state = @purchaseOrder.human_state_name
+      stateOrderDetail.purchase_order_id = params[:id]
+      stateOrderDetail.user_id = current_user.id
+      stateOrderDetail.save
+    end
+    if params[:flag] == ''
+      redirect_to :action => :index
+    else
+      redirect_to inbox_task_main_path
+    end
   end
 
   def goobserve
     @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
-    @purchaseOrder.observe
-    stateOrderDetail = StatePerOrderPurchase.new
-    stateOrderDetail.state = @purchaseOrder.human_state_name
-    stateOrderDetail.purchase_order_id = params[:id]
-    stateOrderDetail.user_id = current_user.id
-    stateOrderDetail.save
-    redirect_to :action => :index, company_id: params[:company_id]
+    if @purchaseOrder.observe!
+      stateOrderDetail = StatePerOrderPurchase.new
+      stateOrderDetail.state = @purchaseOrder.human_state_name
+      stateOrderDetail.purchase_order_id = params[:id]
+      stateOrderDetail.user_id = current_user.id
+      stateOrderDetail.save
+    end
+    redirect_to :action => :index
   end
 
   def purchase_order_pdf

@@ -41,6 +41,31 @@ class Article < ActiveRecord::Base
     return mysql_result
   end
 
+  def self.find_articles_in_specific_table(name, display_length, pager_number)
+    if pager_number != 'NaN'
+      mysql_result = ActiveRecord::Base.connection.execute("
+        SELECT especific.id, especific.code, toa.name, especific.name, especific.description, uom.name 
+        FROM articles_from_" + name + " especific, type_of_articles toa, unit_of_measurements uom 
+        WHERE especific.unit_of_measurement_id = uom.id 
+        AND especific.type_of_article_id = toa.id
+        GROUP BY 2
+        LIMIT " + display_length + "
+        OFFSET " + pager_number + "
+      ")
+    else
+      mysql_result = ActiveRecord::Base.connection.execute("
+        SELECT especific.id, especific.code, toa.name, especific.name, especific.description, uom.name 
+        FROM articles_from_" + name + " especific, type_of_articles toa, unit_of_measurements uom 
+        WHERE especific.unit_of_measurement_id = uom.id 
+        AND especific.type_of_article_id = toa.id
+        GROUP BY 2
+        LIMIT " + display_length
+      )
+    end
+
+    return mysql_result
+  end
+
   def self.find_specific_in_article(id, cost_center_id)
     @cost_center = CostCenter.find(cost_center_id)
     name = @cost_center.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
