@@ -29,7 +29,7 @@ class Logistics::TheoreticalValuesController < ApplicationController
   end
 
   def edit
-    @theoretical_value = TheoreticalValue.find(params[:id])
+    @theoretical_value = TheoreticalValue.find_by_article_id(params[:id])
     @action = 'edit'
     render layout: false
   end
