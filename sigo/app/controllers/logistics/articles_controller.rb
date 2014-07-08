@@ -233,9 +233,10 @@ class Logistics::ArticlesController < ApplicationController
         WHERE a.type_of_article_id = toa.id 
         AND a.category_id = c.id 
         AND uom.id = a.unit_of_measurement_id 
+        ORDER BY a.id DESC
         LIMIT #{display_length}
         OFFSET #{pager_number}
-        ORDER BY a.id DESC"
+        "
       )
     end
     articles.each do |article|
