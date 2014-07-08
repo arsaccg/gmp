@@ -1,5 +1,7 @@
 class AddColumnCodeToPhases < ActiveRecord::Migration
   def change
-    add_column :phases, :code, :string
+  	unless column_exists? :phases, :code
+      add_column :phases, :code, :string
+    end
   end
 end
