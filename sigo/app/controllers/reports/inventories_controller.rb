@@ -2,7 +2,7 @@ class Reports::InventoriesController < ApplicationController
   def index
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
-    @warehouses = Warehouse.where("cost_center_id = " + @cost_center)
+    @warehouses = Warehouse.where("cost_center_id = "+@cost_center.to_s)
     @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
     @years = Array.new
