@@ -41,4 +41,18 @@ class DeliveryOrder < ActiveRecord::Base
       ")
       return mysql_result
     end
+
+    def self.inspect_have_data(id)
+      flag = false
+      
+      DeliveryOrder.find(id).delivery_order_details.each do |dod|
+        purchase_order = dod.purchase_order_details
+        if purchase_order.count > 0
+          flag = true
+          break
+        end
+      end
+
+      return flag
+    end
 end

@@ -18,20 +18,20 @@
               No puedes crear Ordenes de Compra!
           %p
             Verifica si tienes, por lo menos, 1 Orden de Suministro generada y aprobada.
-    - if flash[:notice] != nil
-      .alert.alert-success.fade.in{"style" => "clear:both"}
-        %button.close{"data-dismiss" => "alert"}
-          ×
-        %i.fa-fw.fa.fa-check
-        %strong Éxito
-        = flash[:notice]
-    - if flash[:error] != nil
-      .alert.alert-danger.fade.in
-        %button.close{"data-dismiss" => "alert"}
-          ×
-        %i.fa-fw.fa.fa-times
-        %strong Error!
-        = flash[:error]
+  - if flash[:notice] != nil
+    .alert.alert-success.fade.in{"style" => "clear:both"}
+      %button.close{"data-dismiss" => "alert"}
+        ×
+      %i.fa-fw.fa.fa-check
+      %strong Éxito
+      = flash[:notice]
+  - if flash[:error] != nil
+    .alert.alert-danger.fade.in
+      %button.close{"data-dismiss" => "alert"}
+        ×
+      %i.fa-fw.fa.fa-times
+      %strong Error!
+      = flash[:error]
   %br
   #widget-grid
     .row

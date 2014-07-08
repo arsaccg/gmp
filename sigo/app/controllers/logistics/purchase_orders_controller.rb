@@ -131,9 +131,14 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   # DO DELETE row
   def delete
-    @purchaseOrder = PurchaseOrder.destroy(params[:id])
-    @purchaseOrder.purchase_order_details.each do |pod|
-      PurchaseOrderDetail.destroy(pod.id)
+    @purchaseOrder = PurchaseOrder.find(params[:id])
+    if !PurchaseOrder.inspect_have_data(params[:id])
+      @purchaseOrder = PurchaseOrder.destroy(params[:id])
+      @purchaseOrder.purchase_order_details.each do |pod|
+        PurchaseOrderDetail.destroy(pod.id)
+      end
+    else
+      flash[:error] = "La Orden de Compra N° " + @purchaseOrder.id.to_s.rjust(5, '0') + " no puede ser eliminada."
     end
     render :json => @purchaseOrder
   end
@@ -141,12 +146,16 @@ class Logistics::PurchaseOrdersController < ApplicationController
   # Este es el cambio de estado
   def destroy
     @purchaseOrder = PurchaseOrder.find_by_id(params[:id])
-    if @purchaseOrder.cancel!
-      stateOrderDetail = StatePerOrderPurchase.new
-      stateOrderDetail.state = @purchaseOrder.human_state_name
-      stateOrderDetail.purchase_order_id = params[:id]
-      stateOrderDetail.user_id = current_user.id
-      stateOrderDetail.save
+    if !PurchaseOrder.inspect_have_data(params[:id])
+      if @purchaseOrder.cancel!
+        stateOrderDetail = StatePerOrderPurchase.new
+        stateOrderDetail.state = @purchaseOrder.human_state_name
+        stateOrderDetail.purchase_order_id = params[:id]
+        stateOrderDetail.user_id = current_user.id
+        stateOrderDetail.save
+      end
+    else
+      flash[:error] = "La Orden de Compra N° " + @purchaseOrder.id.to_s.rjust(5, '0') + " no puede ser cancelada. Los datos de esta orden están siendo utilizados."
     end
     #redirect_to :action => :index, company_id: params[:company_id]
     render :json => @purchaseOrder
