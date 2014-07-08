@@ -101,9 +101,14 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   # DO DELETE row
   def delete
-    @deliveryOrder = DeliveryOrder.destroy(params[:id])
-    @deliveryOrder.delivery_order_details.each do |dod|
-      DeliveryOrderDetail.destroy(dod.id)
+    @deliveryOrder = DeliveryOrder.find(params[:id])
+    if !DeliveryOrder.inspect_have_data(params[:id])
+      @deliveryOrder = DeliveryOrder.destroy(params[:id])
+      @deliveryOrder.delivery_order_details.each do |dod|
+        DeliveryOrderDetail.destroy(dod.id)
+      end
+    else
+      flash[:error] = "La Orden de Servicio N° " + @deliveryOrder.id.to_s.rjust(5, '0') + " no puede ser eliminada. Los datos de esta orden están siendo utilizados."
     end
     render :json => @deliveryOrder
   end
@@ -111,12 +116,16 @@ class Logistics::DeliveryOrdersController < ApplicationController
   # Este es el cambio de estado
   def destroy
     @deliveryOrder = DeliveryOrder.find_by_id(params[:id])
-    if @deliveryOrder.cancel
-      stateOrderDetail = StatePerOrderDetail.new
-      stateOrderDetail.state = @deliveryOrder.human_state_name
-      stateOrderDetail.delivery_order_id = params[:id]
-      stateOrderDetail.user_id = current_user.id
-      stateOrderDetail.save
+    if !DeliveryOrder.inspect_have_data(params[:id])
+      if @deliveryOrder.cancel
+        stateOrderDetail = StatePerOrderDetail.new
+        stateOrderDetail.state = @deliveryOrder.human_state_name
+        stateOrderDetail.delivery_order_id = params[:id]
+        stateOrderDetail.user_id = current_user.id
+        stateOrderDetail.save
+      end
+    else
+      flash[:error] = "La Orden de Servicio N° " + @deliveryOrder.id.to_s.rjust(5, '0') + " no puede ser eliminada. Los datos de esta orden están siendo utilizados."
     end
     #redirect_to :action => :index, company_id: params[:company_id]
     render :json => @deliveryOrder

@@ -53,4 +53,18 @@ class PurchaseOrder < ActiveRecord::Base
            (purchase_orders.entity_id.eq "#{supplier_id}") &
            (purchase_orders.state.eq 'approved')}
   end
+
+  def self.inspect_have_data(id)
+    flag = false
+
+    PurchaseOrder.find(id).purchase_order_details.each do |pod|
+      stock_inputs = pod.stock_input_details
+      if stock_inputs.count > 0
+        flag = true
+        break
+      end
+    end
+
+    return flag
+  end
 end
