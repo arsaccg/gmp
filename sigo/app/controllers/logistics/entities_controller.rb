@@ -79,8 +79,22 @@ class Logistics::EntitiesController < ApplicationController
   end
 
   def destroy
-    entity = Entity.destroy(params[:id])    
-    flash[:notice] = "Se ha eliminado correctamente la entidad."
+    delete = 0
+    subcontract = Subcontract.where('entity_id = ?',params[:id])
+    subcontract.each do |del|
+      delete +=1
+    end
+    subcontractequip = SubcontractEquipment.where('entity_id = ?',params[:id])
+    subcontractequip.each do |del|
+      delete +=1
+    end
+    if delete > 0
+      flash[:error] = "No se puede eliminar la entidad."
+      entity = 'true'
+    else
+      flash[:notice] = "Se ha eliminado correctamente la entidad."
+      entity = Entity.destroy(params[:id])
+    end
     render :json => entity
   end
 

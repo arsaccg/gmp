@@ -90,8 +90,22 @@ class Production::WorkingGroupsController < ApplicationController
   end
 
   def destroy
-    workingGroup = WorkingGroup.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente el Grupo de Trabajo."
+    delete = 0
+    partwork = PartWork.where('working_group_id = ?',params[:id])
+    partwork.each do |del|
+      delete +=1
+    end
+    partpeople = PartPerson.where('working_group_id = ?',params[:id])
+    partpeople.each do |del|
+      delete +=1
+    end
+    if delete > 0
+      flash[:error] = "No se puede eliminar el Grupo de Trabajo."
+      workingGroup = 'true'
+    else
+      workingGroup = WorkingGroup.destroy(params[:id])
+      flash[:notice] = "Se ha eliminado correctamente el Grupo de Trabajo."
+    end
     render :json => workingGroup
   end
 

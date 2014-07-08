@@ -104,7 +104,7 @@ class Production::WorkersController < ApplicationController
       delete +=1
     end
     if delete > 0
-      flash[:error] = "No se puede eliminar al trabajador trabajador."
+      flash[:error] = "No se puede eliminar al trabajador."
       worker = 'true'
     else
       flash[:notice] = "Se ha eliminado correctamente el trabajador."
