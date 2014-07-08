@@ -34,6 +34,9 @@ class Logistics::CostCentersController < ApplicationController
         CostCenter.create_table_weeks(costCenter.id)
         CostCenter.create_table_articles(costCenter.id)
         add_weeks_table(costCenter.id,params[:startdate2])
+        if current_user.has_role? :director
+          ActiveRecord::Base.connection.execute("INSERT INTO cost_centers_users (cost_center_id , user_id) VALUES ("+costCenter.id.to_s+", "+current_user.id.to_s+")")
+        end
         flash[:notice] = "Se ha creado correctamente el centro de costo."
         redirect_to :action => :index
       else

@@ -30,7 +30,7 @@
             / end widget edit box
             / widget content
             .widget-body.no-padding
-              = simple_form_for([:logistics, @person], url: logistics_person_path, method: 'PATCH', html: {multipart: true,class: 'smart-form' }) do |f|
+              = simple_form_for([:logistics, @person], url: update_profile_logistics_persons_path, method: 'POST', html: {multipart: true,class: 'smart-form' }) do |f|
                 = hidden_field_tag "profile", true
                 %header
                   = @person.first_name
@@ -69,7 +69,6 @@
                   %button.btn.btn-primary{type: "submit"}
                     %i.fa.fa-save
                     Actualizar Datos
-
       %article.col-sm-12.col-md-12.col-lg-6
         #wid-id-2.jarviswidget{"data-widget-custombutton" => "false", "data-widget-editbutton" => "false"}
           %header
@@ -108,9 +107,6 @@
             required : true
           },
           'user[last_name]' : {
-            required : true
-          },
-          'user[surname]' : {
             required : true
           },
           'user[email]' : {
