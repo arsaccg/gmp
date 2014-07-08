@@ -16,7 +16,7 @@ INSERT INTO `type_of_articles` (`name`, `code`, `created_at`, `updated_at`) VALU
 ('Servicios', '05', NOW(), NOW());
 
 -- Data for Company
-INSERT INTO `companies` (`name`, `ruc`, `created_at`, `updated_at`) NOW() 
+INSERT INTO `companies` (`name`, `ruc`, `created_at`, `updated_at`) VALUES 
 ('ARSAC Contratistas Generales', '12345678978', NOW(), NOW()), 
 ('Consorcio Bagua', '20494052513', NOW(), NOW()),
 ('Consorcio San Francisco del Oriente', '20567151779', NOW(), NOW());

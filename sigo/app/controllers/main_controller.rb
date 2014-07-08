@@ -5,9 +5,14 @@ class MainController < ApplicationController
     if @flag.nil?
       company_id = current_user.companies.first.id rescue nil
       if !company_id.nil?
-        cost_center_id = current_user.cost_centers.find_by_company_id(company_id).id rescue CostCenter.first.id
-        session[:company] = company_id
-        session[:cost_center] = cost_center_id
+        if current_user.cost_centers.exists?
+          cost_center_id = current_user.cost_centers.find_by_company_id(company_id).id
+          session[:company] = company_id
+          session[:cost_center] = cost_center_id
+        else
+          session[:company] = 0
+          session[:cost_center] = 0
+        end
       else
         session[:company] = 0
         session[:cost_center] = 0
