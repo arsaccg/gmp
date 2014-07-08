@@ -52,9 +52,7 @@ class Logistics::PersonsController < ApplicationController
 
   def update
     @person = User.find(params[:id])
-    if @person.roles_mask != 31
-      @person.roles = [params[:role]]
-    end
+    @person.roles = [params[:role]]
     @person.update_attributes(user_params)
     flash[:notice] = "Se ha actualizado correctamente al usuario #{@person.first_name + ' ' + @person.last_name}."
     if current_user.has_role? :director
@@ -62,6 +60,13 @@ class Logistics::PersonsController < ApplicationController
     else
       redirect_to :action => 'show'
     end
+  end
+
+  def update_profile
+    @person = User.find(current_user.id)
+    @person.update_attributes(user_params)
+    flash[:notice] = "Se ha actualizado correctamente al usuario #{@person.first_name + ' ' + @person.last_name}."
+    redirect_to :layout => false
   end
 
   def destroy
