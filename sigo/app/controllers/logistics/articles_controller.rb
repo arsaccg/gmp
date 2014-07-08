@@ -18,10 +18,11 @@ class Logistics::ArticlesController < ApplicationController
   end
 
   def specifics_articles
-    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-    
-    Budget.where("type_of_budget = 0 AND cost_center_id = ?", @cost_center.id).each do |budget|
-      @budget = budget
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center')) rescue nil
+    if !@cost_center.nil?
+      Budget.where("type_of_budget = 0 AND cost_center_id = ?", @cost_center.id).each do |budget|
+        @budget = budget
+      end
     end
 
     render layout: false
