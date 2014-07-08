@@ -26,7 +26,8 @@ class Logistics::WarehousesController < ApplicationController
     item = Warehouse.new(item_parameters)
     item.user_inserts_id = current_user.id
     item.cost_center_id = get_company_cost_center('cost_center')
-    if item.update_attributes(item_parameters)
+    item.company_id = get_company_cost_center('company')
+    if item.save
       flash[:notice] = "Se ha creado correctamente el registro."
       redirect_to :action => :index
     else
@@ -89,3 +90,4 @@ class Logistics::WarehousesController < ApplicationController
     params.require(:warehouse).permit(:name, :location, :company_id)
   end
 end
+
