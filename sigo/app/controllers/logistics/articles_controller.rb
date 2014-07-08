@@ -155,8 +155,9 @@ class Logistics::ArticlesController < ApplicationController
   def json_articles_from_specific_article_table
     display_length = params[:iDisplayLength]
     pager_number = params[:iDisplayStart]
+    keyword = params[:sSearch]
     array = Array.new
-    articles = Article.find_articles_in_specific_table(get_company_cost_center('cost_center'), display_length, pager_number)
+    articles = Article.find_articles_in_specific_table(get_company_cost_center('cost_center'), display_length, pager_number, keyword)
     articles.each do |article|
       array << [article[1],article[2],article[3],article[4],article[5],"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit_specific', 'content', null, null, 'GET')>Editar</a>"]
     end
