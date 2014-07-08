@@ -45,7 +45,7 @@
                         = subcategory.name + " (cod. " + subcategory.code + ")"
                         %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_category_path(subcategory.id)}', 'content', {cat: 'sub'}, null, 'GET')"}
                           Editar
-                        %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{subcategory.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_subcategory_path(subcategory.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_categories_path}')"}}
+                        %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{subcategory.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_category_path(subcategory.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_categories_path}')"}}
                           Eliminar
                       %ul
                         - Category.get_specifics(subcategory.code).each do |specific|
@@ -55,7 +55,7 @@
                               = specific.name + "(cod. " + specific.code + ")"
                               %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_category_path(specific.id)}', 'content', {cat: 'spe'}, null, 'GET')"}
                                 Editar
-                              %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{specific.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_specific_path(specific.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_categories_path}')"}}
+                              %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{specific.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_category_path(specific.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_categories_path}')"}}
                                 Eliminar
       / end widget content
     / end widget div

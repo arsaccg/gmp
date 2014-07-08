@@ -129,24 +129,24 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'specific[code]' : {
+            'category[code]' : {
               required : true,
               minlength : 2,
               maxlength : 2
             },
-            'specific[name]' : {
+            'category[name]' : {
               required : true,
             }
           },
 
           // Messages for form validation
           messages : {
-            'specific[code]' : {
+            'category[code]' : {
               required : 'Por favor, ingresar el código del Específico',
               minlength : "Como mínimo debe tener 2 dígitos.",
               maxlength : "Como máximo debe tener 2 dígitos.",
             },
-            'specific[name]' : {
+            'category[name]' : {
               required : 'Por favor, ingresar el nombre del artículo.'
             }
           },

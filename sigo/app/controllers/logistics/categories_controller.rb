@@ -4,6 +4,7 @@ class Logistics::CategoriesController < ApplicationController
   def index
     flash[:error] = nil
     @categories =  Category.where("code LIKE '__' ")
+    @sub =  Category.where("code LIKE '____' ")
     render layout: false
   end
 
@@ -61,8 +62,27 @@ class Logistics::CategoriesController < ApplicationController
   end
 
   def destroy
-    category = Category.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente."
+    category = Category.find(params[:id])
+    
+    if category.code.length == 2
+      sub = Category.get_subcategories(category.code).count
+    else
+      sub = Category.get_specifics(category.code).count  
+    end
+    if sub == 0
+      puts "-------------------------------------------------------------------------------------------------"
+      puts "entro a sub = 0"
+      puts "-------------------------------------------------------------------------------------------------"
+      category = Category.destroy(params[:id])
+      flash[:notice] = "Se ha eliminado correctamente."
+    else
+      puts "----------------------------------------------------"
+      puts "erorr "
+      puts "----------------------------------------------------"
+      flash[:error] = "Elimine primero los hijos."
+      puts flash[:error]
+      category = 'true'
+    end
     render :json => category
     #redirect_to :action => :index, :task => 'deleted'
   end

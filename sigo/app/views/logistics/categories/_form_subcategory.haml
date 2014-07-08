@@ -71,24 +71,24 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'subcategory[code]' : {
+            'category[code]' : {
               required : true,
               minlength : 2,
               maxlength : 2
             },
-            'subcategory[name]' : {
+            'category[name]' : {
               required : true,
             }
           },
 
           // Messages for form validation
           messages : {
-            'subcategory[code]' : {
+            'category[code]' : {
               required : 'Porfavor, ingresar el código del SubGrupo',
               minlength : "Como mínimo debe tener 2 dígitos.",
               maxlength : "Como máximo debe tener 2 dígitos.",
             },
-            'subcategory[name]' : {
+            'category[name]' : {
               required : 'Porfavor, ingresar el nombre del SubGrupo.'
             }
           },

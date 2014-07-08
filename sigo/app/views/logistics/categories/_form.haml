@@ -12,6 +12,7 @@
             %label.input{for: "code"}
               %i.icon-append.fa.fa-superscript
               = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
+              = text_field(:extrafield, :first_code, class: "form-control", readonly: true, "style"=> "display:none;", value: "")
         .row
           %section.col.col-10
             %label.label Nombre
