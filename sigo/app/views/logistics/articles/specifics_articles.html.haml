@@ -45,33 +45,16 @@
             / widget content
             .widget-body.no-padding
               .widget-body-toolbar
-              #dt_basic_wrapper.dataTables_wrapper.form-inline{:role => 'grid'}
-                .dt-top-row
-                  #dt_basic_length.dataTables_length
-                    %span.smart-form
-                      %label.select{style: "width:60px"}
-                        %select{"aria-controls" => "dt_basic", name: "dt_basic_length", size: "1"}
-                          %option{selected: "selected", value: "10"} 10
-                          %option{value: "25"} 25
-                          %option{value: "50"} 50
-                          %option{value: "100"} 100
-                        %i
-                  #dt_basic_filter.dataTables_filter
-                    .input-group
-                      %span.input-group-addon
-                        %i.fa.fa-search
-                      %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
-                .dt-wrapper
-                  %table#dt_basic.table.table-striped.table-bordered.table-hover
-                    %thead
-                      %tr
-                        %th Código
-                        %th Tipo de Artículo
-                        %th Nombre
-                        %th Descripcion
-                        %th Unidad de Medida
-                        %th Acciones
-                    %tbody
+              %table#dt_basic.table.table-striped.table-bordered.table-hover
+                %thead
+                  %tr
+                    %th Código
+                    %th Tipo de Artículo
+                    %th Nombre
+                    %th Descripcion
+                    %th Unidad de Medida
+                    %th Acciones
+                %tbody
                       
 - if !@cost_center.nil?
   :javascript
@@ -116,5 +99,9 @@
           aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
         },
         sPaginationType : 'bootstrap_full'
+      });
+
+      $("#dt_basic_filter div input").keyup(function() {
+        oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
       });
     }

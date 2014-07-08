@@ -39,13 +39,35 @@ class Article < ActiveRecord::Base
     return mysql_result
   end
 
-  def self.find_articles_in_specific_table(name, display_length, pager_number)
-    if pager_number != 'NaN'
+  def self.find_articles_in_specific_table(cost_center_id, display_length, pager_number, keyword = '')
+    if pager_number != 'NaN' && keyword != ''
       mysql_result = ActiveRecord::Base.connection.execute("
         SELECT especific.id, especific.code, toa.name, especific.name, especific.description, uom.name 
-        FROM articles_from_cost_center_" + name.to_s + " especific, type_of_articles toa, unit_of_measurements uom 
+        FROM articles_from_cost_center_" + cost_center_id.to_s + " especific, type_of_articles toa, unit_of_measurements uom 
         WHERE especific.unit_of_measurement_id = uom.id 
         AND especific.type_of_article_id = toa.id
+        AND especific.name LIKE '%" + keyword + "%'
+        GROUP BY 2
+        LIMIT " + display_length + "
+        OFFSET " + pager_number + "
+      ")
+    elsif pager_number != 'NaN'
+      mysql_result = ActiveRecord::Base.connection.execute("
+        SELECT especific.id, especific.code, toa.name, especific.name, especific.description, uom.name 
+        FROM articles_from_cost_center_" + cost_center_id.to_s + " especific, type_of_articles toa, unit_of_measurements uom 
+        WHERE especific.unit_of_measurement_id = uom.id 
+        AND especific.type_of_article_id = toa.id
+        GROUP BY 2
+        LIMIT " + display_length + "
+        OFFSET " + pager_number + "
+      ")
+    elsif keyword != ''
+      mysql_result = ActiveRecord::Base.connection.execute("
+        SELECT especific.id, especific.code, toa.name, especific.name, especific.description, uom.name 
+        FROM articles_from_cost_center_" + cost_center_id.to_s + " especific, type_of_articles toa, unit_of_measurements uom 
+        WHERE especific.unit_of_measurement_id = uom.id 
+        AND especific.type_of_article_id = toa.id
+        AND especific.name LIKE '%" + keyword + "%'
         GROUP BY 2
         LIMIT " + display_length + "
         OFFSET " + pager_number + "

@@ -155,8 +155,9 @@ class Logistics::ArticlesController < ApplicationController
   def json_articles_from_specific_article_table
     display_length = params[:iDisplayLength]
     pager_number = params[:iDisplayStart]
+    keyword = params[:sSearch]
     array = Array.new
-    articles = Article.find_articles_in_specific_table(get_company_cost_center('cost_center'), display_length, pager_number)
+    articles = Article.find_articles_in_specific_table(get_company_cost_center('cost_center'), display_length, pager_number, keyword)
     articles.each do |article|
       array << [article[1],article[2],article[3],article[4],article[5],"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit_specific', 'content', null, null, 'GET')>Editar</a>"]
     end
@@ -167,8 +168,27 @@ class Logistics::ArticlesController < ApplicationController
     display_length = params[:iDisplayLength]
     pager_number = params[:iDisplayStart]
     @pagenumber = params[:iDisplayStart]
+    keyword = params[:sSearch]
     array = Array.new
-    if @pagenumber == 'NaN'
+    if @pagenumber != 'NaN' && keyword != ''
+      articles = ActiveRecord::Base.connection.execute("
+        SELECT a.id, 
+        a.code AS 'Codigo', 
+        toa.name AS 'Tipo de Articulo', 
+        c.name AS 'Especifico', 
+        a.name AS 'Nombre', 
+        a.description AS 'Descripcion', 
+        uom.name AS 'Unidad de Medida' 
+        FROM articles a, type_of_articles toa, categories c, unit_of_measurements uom 
+        WHERE a.type_of_article_id = toa.id 
+        AND a.category_id = c.id 
+        AND uom.id = a.unit_of_measurement_id 
+        AND a.name LIKE '%#{keyword}%'
+        ORDER BY a.id DESC
+        LIMIT #{display_length}
+        OFFSET #{pager_number}"
+      )
+    elsif @pagenumber == 'NaN'
       articles = ActiveRecord::Base.connection.execute("
         SELECT a.id, 
         a.code AS 'Codigo', 
@@ -184,6 +204,22 @@ class Logistics::ArticlesController < ApplicationController
         ORDER BY a.id DESC
         LIMIT #{display_length}"
       )
+    elsif keyword != ''
+      articles = ActiveRecord::Base.connection.execute("
+        SELECT a.id, 
+        a.code AS 'Codigo', 
+        toa.name AS 'Tipo de Articulo', 
+        c.name AS 'Especifico', 
+        a.name AS 'Nombre', 
+        a.description AS 'Descripcion', 
+        uom.name AS 'Unidad de Medida' 
+        FROM articles a, type_of_articles toa, categories c, unit_of_measurements uom 
+        WHERE a.type_of_article_id = toa.id 
+        AND a.category_id = c.id 
+        AND uom.id = a.unit_of_measurement_id 
+        AND a.name LIKE '%#{keyword}%'
+        ORDER BY a.id DESC"
+      )
     else
       articles = ActiveRecord::Base.connection.execute("
         SELECT a.id, 
@@ -197,8 +233,10 @@ class Logistics::ArticlesController < ApplicationController
         WHERE a.type_of_article_id = toa.id 
         AND a.category_id = c.id 
         AND uom.id = a.unit_of_measurement_id 
+        ORDER BY a.id DESC
         LIMIT #{display_length}
-        OFFSET #{pager_number}"
+        OFFSET #{pager_number}
+        "
       )
     end
     articles.each do |article|
