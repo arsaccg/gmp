@@ -12,7 +12,7 @@
         %strong Éxito
         = flash[:notice]
     - if flash[:error] != nil
-      .alert.alert-danger.fade.in
+      .alert.alert-danger.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"}
           ×
         %i.fa-fw.fa.fa-times

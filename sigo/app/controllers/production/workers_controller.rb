@@ -86,8 +86,30 @@ class Production::WorkersController < ApplicationController
   end
 
   def destroy
-    worker = Worker.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente el trabajador."
+    delete = 0
+    partofequip = PartOfEquipment.where('worker_id = ?',params[:id])
+    partofequip.each do |del|
+      delete +=1
+    end
+    workinggroup = WorkingGroup.where('master_builder_id = ? OR front_chief_id = ?',params[:id],params[:id])
+    workinggroup.each do |del|
+      delete +=1
+    end
+    partpersondetail = PartPersonDetail.where('worker_id = ?',params[:id])
+    partpersondetail.each do |del|
+      delete +=1
+    end
+    stockinput = StockInput.where('responsible_id = ?',params[:id])
+    stockinput.each do |del|
+      delete +=1
+    end
+    if delete > 0
+      flash[:error] = "No se puede eliminar al trabajador trabajador."
+      worker = 'true'
+    else
+      flash[:notice] = "Se ha eliminado correctamente el trabajador."
+      worker = Worker.destroy(params[:id])
+    end
     render :json => worker
   end
 
