@@ -43,7 +43,7 @@ class Article < ActiveRecord::Base
     if pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
         SELECT especific.id, especific.code, toa.name, especific.name, especific.description, uom.name 
-        FROM articles_from_cost_center_" + name + " especific, type_of_articles toa, unit_of_measurements uom 
+        FROM articles_from_cost_center_" + name.to_s + " especific, type_of_articles toa, unit_of_measurements uom 
         WHERE especific.unit_of_measurement_id = uom.id 
         AND especific.type_of_article_id = toa.id
         GROUP BY 2
@@ -53,7 +53,7 @@ class Article < ActiveRecord::Base
     else
       mysql_result = ActiveRecord::Base.connection.execute("
         SELECT especific.id, especific.code, toa.name, especific.name, especific.description, uom.name 
-        FROM articles_from_cost_center_" + name + " especific, type_of_articles toa, unit_of_measurements uom 
+        FROM articles_from_cost_center_" + name.to_s + " especific, type_of_articles toa, unit_of_measurements uom 
         WHERE especific.unit_of_measurement_id = uom.id 
         AND especific.type_of_article_id = toa.id
         GROUP BY 2
