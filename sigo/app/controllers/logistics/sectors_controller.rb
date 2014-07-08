@@ -87,7 +87,15 @@ class Logistics::SectorsController < ApplicationController
   end
 
   def destroy
-    sector = Sector.destroy(params[:id])
+    sector = Sector.find(params[:id])
+    sec = Sector.getSubSectors(sector.code).count
+    if sec == 0
+      sector = Sector.destroy(params[:id])
+      flash[:notice] = "Se ha eliminado correctamente."
+    else
+      flash[:error] = "Elimine primero los hijos."
+      sector = 'true'
+    end
     flash[:notice] = "Se ha eliminado correctamente el sector seleccionado."
     render :json => sector
     #redirect_to :action => :index

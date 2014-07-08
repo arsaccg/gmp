@@ -63,22 +63,15 @@ class Logistics::CategoriesController < ApplicationController
 
   def destroy
     category = Category.find(params[:id])
-    
     if category.code.length == 2
       sub = Category.get_subcategories(category.code).count
     else
       sub = Category.get_specifics(category.code).count  
     end
     if sub == 0
-      puts "-------------------------------------------------------------------------------------------------"
-      puts "entro a sub = 0"
-      puts "-------------------------------------------------------------------------------------------------"
       category = Category.destroy(params[:id])
       flash[:notice] = "Se ha eliminado correctamente."
     else
-      puts "----------------------------------------------------"
-      puts "erorr "
-      puts "----------------------------------------------------"
       flash[:error] = "Elimine primero los hijos."
       puts flash[:error]
       category = 'true'

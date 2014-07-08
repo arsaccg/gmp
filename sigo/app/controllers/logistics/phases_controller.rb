@@ -6,10 +6,6 @@ class Logistics::PhasesController < ApplicationController
     flash[:error] = nil
     @company = Company.find(get_company_cost_center("company"))
     @phases = Phase.where("category LIKE 'phase'")
-    puts Phase.all.count
-    cad = "hola"
-    puts "cad:"
-    puts cad.to_i
     if params[:task] == 'created' || params[:task] == 'edited' || params[:task] == 'failed' || params[:task] == 'deleted' || params[:task] == 'import'
       render layout: 'dashboard'
     else

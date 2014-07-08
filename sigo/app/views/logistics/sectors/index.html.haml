@@ -22,9 +22,10 @@
     .col-sm-2
       %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_sector_path}', 'content', null, null, 'GET')"}
         Agregar Sectores
-    .col-sm-2
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_sector_path}', 'content', {subsector: 1}, null, 'GET')"}
-        Agregar Sub Sectores
+    - if @Sectors.count != 0
+      .col-sm-2
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_sector_path}', 'content', {subsector: 1}, null, 'GET')"}
+          Agregar Sub Sectores
   %br
   .row
   #widget-grid

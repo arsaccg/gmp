@@ -94,6 +94,8 @@
           rules : {
             'sector[code]' : {
               required : true,
+              minlength : 2,
+              maxlength : 2
             },
             'sector[name]' : {
               required : true,
@@ -103,7 +105,9 @@
           // Messages for form validation
           messages : {
             'sector[code]' : {
-              required : 'Por favor, ingresar el código del Sector.'
+              required : 'Por favor, ingresar el código del Sector.',
+              minlength : "Como mínimo debe tener 2 dígitos.",
+              maxlength : "Como máximo debe tener 2 dígitos.",
             },
             'sector[name]' : {
               required : 'Por favor, ingresar el nombre del Sector.'
