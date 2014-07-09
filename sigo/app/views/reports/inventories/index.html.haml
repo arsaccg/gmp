@@ -123,8 +123,8 @@
                 %label.input{for: "article_id"}
                 %select#article-select.form-control.select2{:name =>"report_inventory[article_id][]", :style => "width:100%;;padding: 0;border: none;", :multiple => true, :placeholder => "Articulos"}
                   - @articles.each do |x|
-                    %option{:value => "#{x.id}"}
-                      = x.name
+                    %option{:value => "#{x[0]}"}
+                      = x[1]
             //.row
             //  .section.col.col-md-2
             //    %label.label Moneda

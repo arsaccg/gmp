@@ -89,9 +89,11 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def destroy
-    flash[:error] = nil
-    item = StockInput.find(params[:id])
-    item.update_attributes({status: "D", user_updates_id: params[:current_user_id]})
+    sinput = StockInput.find(params[:id])
+    sinput.stock_input_details.each do |sin|
+      sinputdetail = StockInputDetail.destroy(sin.id)
+    end
+    item = StockInput.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
     render :json => item
   end
