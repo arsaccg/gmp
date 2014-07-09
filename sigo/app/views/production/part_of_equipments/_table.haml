@@ -18,28 +18,6 @@
             %th Fecha
             %th Acciones
         %tbody
-          - @partofequipment.each do |partofequipment|
-            %tr
-              %td
-                = partofequipment.code
-              %td
-                = partofequipment.subcontract_equipment.entity.name
-              %td
-                = partofequipment.worker.entity.name.to_s + ' ' + partofequipment.worker.entity.paternal_surname.to_s + ' ' + partofequipment.worker.entity.maternal_surname.to_s
-              %td 
-                = SubcontractEquipmentDetail.find(partofequipment.equipment_id).code.to_s + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find(partofequipment.equipment_id).article.id, @cost_center)
-              %td
-                = partofequipment.dif
-              %td 
-                = partofequipment.date
-              %td
-                %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{production_part_of_equipment_path(partofequipment.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
-                  Ver Información
-                -if partofequipment.block == 0
-                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_part_of_equipment_path(partofequipment.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
-                    Editar
-                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{partofequipment.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_part_of_equipment_path(partofequipment.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_part_of_equipments_path}?company_id=#{@company}')"}}
-                    Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -84,13 +62,20 @@
 
   function runDataTables() {
 
-    /*
-     * BASIC
-     */
     $('#dt_basic').dataTable({
-      "sPaginationType" : "bootstrap_full"
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      sAjaxSource  : "#{show_part_of_equipments_production_part_of_equipments_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
+      },
+      sPaginationType : 'bootstrap_full'
     });
 
-    /* END BASIC */
-
+    $("#dt_basic_filter div input").keyup(function() {
+      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+    });
+    
   }

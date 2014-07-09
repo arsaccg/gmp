@@ -125,4 +125,57 @@ class PartOfEquipment < ActiveRecord::Base
 
     return mysql_result
   end
+
+  def self.get_part_of_equipments(cost_center_id, display_length, pager_number, keyword = '')
+    if keyword != '' && pager_number != 'NaN'
+      mysql_result = ActiveRecord::Base.connection.execute("
+        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block 
+        FROM part_of_equipments poe, workers w, subcontract_equipments se, entities e, entities ep, subcontract_equipment_details sed, articles_from_cost_center_" + cost_center_id.to_s + " af 
+        WHERE poe.cost_center_id = " + cost_center_id.to_s + "
+        AND w.id = poe.worker_id 
+        AND w.entity_id = e.id 
+        AND poe.subcontract_equipment_id = se.id 
+        AND se.entity_id = ep.id 
+        AND poe.equipment_id = sed.id
+        AND sed.article_id = af.id
+        AND (poe.code LIKE '%" + keyword + "%' OR ep.name LIKE '%" + keyword + "%' OR sed.code LIKE '%" + keyword + "%' OR af.name LIKE '%" + keyword + "%' OR e.paternal_surname LIKE '%" + keyword + "%' OR e.name LIKE '%" + keyword + "%' OR e.maternal_surname LIKE '%" + keyword + "%')
+        GROUP BY poe.code 
+        ORDER BY poe.id DESC
+        LIMIT " + display_length +
+        " OFFSET " + pager_number
+      )
+    elsif pager_number != 'NaN'
+      mysql_result = ActiveRecord::Base.connection.execute("
+        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block 
+        FROM part_of_equipments poe, workers w, subcontract_equipments se, entities e, entities ep, subcontract_equipment_details sed, articles_from_cost_center_" + cost_center_id.to_s + " af 
+        WHERE poe.cost_center_id = " + cost_center_id.to_s + "
+        AND w.id = poe.worker_id 
+        AND w.entity_id = e.id 
+        AND poe.subcontract_equipment_id = se.id 
+        AND se.entity_id = ep.id 
+        AND poe.equipment_id = sed.id
+        AND sed.article_id = af.id
+        GROUP BY poe.code 
+        ORDER BY poe.id DESC
+        LIMIT " + display_length +
+        " OFFSET " + pager_number
+      )
+    else
+      mysql_result = ActiveRecord::Base.connection.execute("
+        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block
+        FROM part_of_equipments poe, workers w, subcontract_equipments se, entities e, entities ep, subcontract_equipment_details sed, articles_from_cost_center_" + cost_center_id.to_s + " af 
+        WHERE poe.cost_center_id = " + cost_center_id.to_s + "
+        AND w.id = poe.worker_id 
+        AND w.entity_id = e.id 
+        AND poe.subcontract_equipment_id = se.id 
+        AND se.entity_id = ep.id 
+        AND poe.equipment_id = sed.id
+        AND sed.article_id = af.id
+        GROUP BY poe.code 
+        ORDER BY poe.id DESC
+        LIMIT " + display_length
+      )
+    end
+    return mysql_result
+  end
 end
