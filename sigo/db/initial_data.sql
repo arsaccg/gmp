@@ -21,6 +21,16 @@ INSERT INTO `companies` (`name`, `ruc`, `created_at`, `updated_at`) VALUES
 ('Consorcio Bagua', '20494052513', NOW(), NOW()),
 ('Consorcio San Francisco del Oriente', '20567151779', NOW(), NOW());
 
+INSERT INTO `entities` (`name`, `ruc`, `created_at`, `updated_at`) VALUES 
+('ARSAC Contratistas Generales', '12345678978', NOW(), NOW()), 
+('Consorcio Bagua', '20494052513', NOW(), NOW()),
+('Consorcio San Francisco del Oriente', '20567151779', NOW(), NOW());
+
+INSERT INTO `entities_type_entities` (`entity_id`, `type_entity_id`, `created_at`, `updated_at`) VALUES 
+(1, 1, NOW(), NOW()), 
+(2, 1, NOW(), NOW()),
+(3, 1, NOW(), NOW());
+
 -- Data for Financial Variables
 INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('IGV', '0.18', NOW(), NOW());
 INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('IPC', '114.63', NOW(), NOW());
