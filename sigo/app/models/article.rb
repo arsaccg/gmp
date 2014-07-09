@@ -165,7 +165,7 @@ class Article < ActiveRecord::Base
   def self.get_article_per_type(type_article, cost_center)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT af.id, af.name, af.code, af.article_id, af.unit_of_measurement_id, u.name
-      FROM articles_from_cost_center_"+cost_center_id.to_s+" af, unit_of_measurements u
+      FROM articles_from_cost_center_"+cost_center.to_s+" af, unit_of_measurements u
       WHERE af.code LIKE '#{type_article}%'
       AND af.unit_of_measurement_id = u.id
     ")

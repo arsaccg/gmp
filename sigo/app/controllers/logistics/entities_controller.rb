@@ -88,6 +88,10 @@ class Logistics::EntitiesController < ApplicationController
     subcontractequip.each do |del|
       delete +=1
     end
+    stockinput = StockInput.where('supplier_id = ?',params[:id])
+    stockinput.each do |del|
+      delete +=1
+    end
     if delete > 0
       flash[:error] = "No se puede eliminar la entidad."
       entity = 'true'
