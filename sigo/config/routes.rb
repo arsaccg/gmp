@@ -323,6 +323,7 @@ ArsacLogistica::Application.routes.draw do
         post 'get_unit'
         post 'add_more_register'
         post 'display_fuel_articles'
+        post 'show_part_of_equipments'
       end
     end
     resources :working_groups

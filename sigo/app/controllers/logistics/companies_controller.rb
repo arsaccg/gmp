@@ -15,7 +15,9 @@ class Logistics::CompaniesController < ApplicationController
 
   def create
     company = Company.new(company_parameters)
-    if company.save
+    entity = Entity.new(entity_parameters)
+    if company.save && entity.save
+      entitytypeentity = EntitiesTypeEntities.create(entity_id: entity.id, type_entity_id: 1)
       flash[:notice] = "Se ha creado correctamente la nueva compañia."
       redirect_to :action => :index
     else
@@ -58,5 +60,8 @@ class Logistics::CompaniesController < ApplicationController
   private
   def company_parameters
     params.require(:company).permit(:name, :ruc, :avatar)
+  end
+  def entity_parameters
+    params.require(:company).permit(:name, :ruc)
   end
 end

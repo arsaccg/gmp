@@ -37,66 +37,56 @@
       = hidden_field_tag "stock_input[company_id]", session[:company]
       = hidden_field_tag "stock_input[input]", "1"
       .row
-        .col-md-3
-          .row
-            .col-md-12
-              .form-group
-                %label.control-label Almacén
-                .input-group
-                  %select.form-control#warehouse-select{:name =>"stock_input[warehouse_id]"}
-                    - @warehouses.each do |x|
-                      %option{:value => "#{x.id}"}
-                        = x.name
-                  %span.input-group-addon
-                    %i.fa.fa-gears
-        .col-md-2
-          .row
-            .col-md-12
-              .form-group
-                %label.control-label Formato
-                .input-group
-                  %select.form-control#format-select{:name =>"stock_input[format_id]"}
-                    - @formats.each do |x|
-                      %option{:value => "#{x.id}"}
-                        = x.name
-                  %span.input-group-addon
-                    %i.fa.fa-gears
-        .col-md-2
-          .row
-            .col-md-12
-              .form-group
-                %label.control-label Periodo
-                .input-group
-                  %select(name='stock_input[period]' class = 'select2 form-control' id = 'period-select' style='width:100%;padding: 0;border: none;')
-                    - @periods.select(:year).uniq.each do |x|
-                      %optgroup{:label => "#{x.year.to_i}"}
-                        - @periods.where("year = ?", x.year).each do |y|
-                          %option(value = "#{y.year.to_s}#{y.month.to_s.rjust(2, "0")}")
-                            = y.year.to_s + " - " + y.month.to_s.rjust(2, "0")
         .col-md-1
-          .row
-            .col-md-12
-              .form-group
-                %label.control-label Serie
-                = text_field(:stock_input, :series, placeholder: "Serie", class: "form-control col-md-3")
         .col-md-2
-          .row
-            .col-md-12
-              .form-group
-                %label.control-label N° Documento
-                .input-group
-                  = text_field(:stock_input, :document, placeholder: "N° Documento", class: "form-control")
-                  %span.input-group-addon
-                    %i.fa.fa-file
+          %label.control-label Almacén
+          .input-group
+            %select.form-control#warehouse-select{:name =>"stock_input[warehouse_id]"}
+              - @warehouses.each do |x|
+                %option{:value => "#{x.id}"}
+                  = x.name
+            %span.input-group-addon
+              %i.fa.fa-gears
+
+        .col-md-1
         .col-md-2
-          .row
-            .col-md-12
-              .form-group
-                %label.control-label Fecha
-                .input-group
-                  = f.input :issue_date, placeholder: "Fecha", as: :string, :input_html => {:class => 'form-control', type: "date", :required => true}, label: false
-                  %span.input-group-addon
-                    %i.fa.fa-calendar
+          %label.control-label Formato
+          .input-group
+            %select.form-control#format-select{:name =>"stock_input[format_id]"}
+              - @formats.each do |x|
+                %option{:value => "#{x.id}"}
+                  = x.name
+            %span.input-group-addon
+              %i.fa.fa-gears
+        .col-md-1
+        .col-md-2
+          %label.control-label Periodo
+          .input-group
+            %select(name='stock_input[period]' class = 'select2 form-control' id = 'period-select' style='width:100%;padding: 0;border: none;')
+              - @periods.select(:year).uniq.each do |x|
+                %optgroup{:label => "#{x.year.to_i}"}
+                  - @periods.where("year = ?", x.year).each do |y|
+                    %option(value = "#{y.year.to_s}#{y.month.to_s.rjust(2, "0")}")
+                      = y.year.to_s + " - " + y.month.to_s.rjust(2, "0")
+      .row
+        .col-md-1
+        .col-md-2
+          %label.control-label Serie
+          = text_field(:stock_input, :series, placeholder: "Serie", class: "form-control col-md-3")
+        .col-md-1
+        .col-md-2
+          %label.control-label N° Documento
+          .input-group
+            = text_field(:stock_input, :document, placeholder: "N° Documento", class: "form-control")
+            %span.input-group-addon
+              %i.fa.fa-file
+        .col-md-1
+        .col-md-2
+          %label.control-label Fecha
+          .input-group
+            = f.input :issue_date, placeholder: "Fecha", as: :string, :input_html => {:class => 'form-control', type: "date", :required => true}, label: false
+            %span.input-group-addon
+              %i.fa.fa-calendar
       .row
         .col-md-12
           .form-group
@@ -105,7 +95,7 @@
               = text_area(:stock_input, :description, placeholder: "Glosa", class: "form-control")
               %span.input-group-addon
                 %i.fa.fa-align-justify
-    
+  
       %fieldset
         .row
           .col-md-6

@@ -4,8 +4,7 @@ class Manager < ActiveRecord::Base
   #  and :omniauthable, :confirmable,
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :lockable, :timeoutable, :authentication_keys => [:dni]
-  # :token_authenticatable
+         :lockable, :token_authenticatable, :timeoutable, :authentication_keys => [:dni]
   attr_accessor :login
 
   def self.find_first_by_auth_conditions(warden_conditions)

@@ -3,15 +3,15 @@ class Reports::InventoriesController < ApplicationController
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
     @warehouses = Warehouse.where("cost_center_id = "+@cost_center.to_s)
-    @suppliers = Entity.joins(:type_entities).where("type_entities.preffix" => "P")
-    @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
+    @suppliers = TypeEntity.find_by_preffix('P').entities
+    @responsibles = TypeEntity.find_by_preffix('T').entities
     @years = Array.new
     (2000..2050).each do |x|
       @years << x
     end
     @periods = LinkTime.group(:year, :month).uniq
     @formats = Format.all
-    @articles = Article.joins(:type_of_article).where("type_of_articles.code" => "02")
+    @articles = Article.get_article_per_type('02',session[:cost_center])
     @moneys = Money.all
     render layout: false
   end

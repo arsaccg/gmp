@@ -149,7 +149,7 @@ class Article < ActiveRecord::Base
     name_article = ""
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT af.id, af.name, af.article_id, af.code, u.name
-      FROM articles_from_cost_center_"+cost_center_id.to_s+" af, unit_of_measurements u
+      FROM articles_from_cost_center_" + cost_center_id.to_s + " af, unit_of_measurements u
       WHERE af.unit_of_measurement_id = u.id
       AND af.article_id =" + article_id.to_s + " 
       LIMIT 1
@@ -165,7 +165,7 @@ class Article < ActiveRecord::Base
   def self.get_article_per_type(type_article, cost_center)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT af.id, af.name, af.code, af.article_id, af.unit_of_measurement_id, u.name
-      FROM articles_from_cost_center_"+cost_center_id.to_s+" af, unit_of_measurements u
+      FROM articles_from_cost_center_" + cost_center.to_s + " af, unit_of_measurements u
       WHERE af.code LIKE '#{type_article}%'
       AND af.unit_of_measurement_id = u.id
     ")
@@ -175,7 +175,7 @@ class Article < ActiveRecord::Base
 	def self.getSpecificArticles(cost_center_id, display_length, pager_number)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT *
-      FROM articles_from_cost_center_"+cost_center_id.to_s+" 
+      FROM articles_from_cost_center_" + cost_center_id.to_s + " 
     	LIMIT #{display_length}
     	OFFSET #{pager_number}
     ")

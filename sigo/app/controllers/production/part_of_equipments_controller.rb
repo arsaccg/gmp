@@ -3,19 +3,50 @@ class Production::PartOfEquipmentsController < ApplicationController
   def index
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
-    @partofequipment = PartOfEquipment.where("cost_center_id = ?", @cost_center)
-    @subcontracts = SubcontractEquipment.where("cost_center_id = ?", @cost_center)
-    @article = Article.all
-    @worker = Worker.where("cost_center_id = ?", @cost_center)
     # Necessary!
+    @worker = Worker.where("cost_center_id = ?", @cost_center)
     @fuel_articles = Article.where("code LIKE ?", '__32%').first # Esto va a cambiar
     @working_group = WorkingGroup.where("cost_center_id = ?", @cost_center).first
     @worker = Worker.first
     render layout: false
   end
 
+  def show_part_of_equipments
+    display_length = params[:iDisplayLength]
+    pager_number = params[:iDisplayStart]
+    keyword = params[:sSearch]
+    array = Array.new
+    cost_center = get_company_cost_center('cost_center')
+
+    partofequipments = PartOfEquipment.get_part_of_equipments(cost_center, display_length, pager_number, keyword)
+    partofequipments.each do |partofequipment|
+      if partofequipment[7] == 0
+        array << [
+          partofequipment[1],
+          partofequipment[2],
+          partofequipment[4],
+          partofequipment[3],
+          partofequipment[5],
+          partofequipment[6],
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "','content',null,null,'GET')> Ver Información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/part_of_equipments/" + partofequipment[0].to_s + "','content','/production/part_of_equipments') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar la parte N°" + partofequipment[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+        ]
+      else
+        array << [
+          partofequipment[1],
+          partofequipment[2],
+          partofequipment[4],
+          partofequipment[3],
+          partofequipment[5],
+          partofequipment[6],
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "','content',null,null,'GET')> Ver Información </a>"
+        ]
+      end
+    end
+    render json: { :aaData => array }
+  end
+
   def show
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
     @partofequipment = PartOfEquipment.find(params[:id])
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
