@@ -99,6 +99,8 @@ class Budget < ActiveRecord::Base
       #end
       #data_thread.join
         #arr.each {|t| t.join }
+
+    # Poblando Articulos a la tabla especifica.
     if type_of_budget == 0
       @type = Budget.where("cod_budget LIKE ? AND type_of_budget = 0", @cod)
 
@@ -140,6 +142,15 @@ class Budget < ActiveRecord::Base
   	      result = ActiveRecord::Base.connection.execute(sql)
         end
       end
+    end
+
+    # Importando partidas al subcontrato
+    @itembybudgets = Itembybudget.get_item_by_budget
+    @company_name = Company.find(get_company_cost_center('company')).name
+    @entity_id = Entity.find_by_name(@company_name).id
+    @subcontract = Subcontract.find_by_entity_id(@entity_id)
+    @itembybudgets.each do |ibb|
+      SubcontractDetail.create(article_id: nil, amount: 0, unit_price: 0, partial: 0, description: nil, created_at: DateTime.now, update_at: DateTime.now, subcontract_id: @subcontract.id, itembybudget_id: ibb[1],)
     end
   end
 end
