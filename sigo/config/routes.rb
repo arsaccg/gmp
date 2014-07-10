@@ -314,6 +314,7 @@ ArsacLogistica::Application.routes.draw do
     resources :part_people do
       collection do
         post 'add_more_worker'
+        post 'show_part_people'
       end
     end
     resources :category_of_workers
