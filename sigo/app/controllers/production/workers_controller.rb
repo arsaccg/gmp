@@ -16,6 +16,16 @@ class Production::WorkersController < ApplicationController
     render layout: false
   end
 
+  def show_workers
+    display_length = params[:iDisplayLength]
+    pager_number = params[:iDisplayStart]
+    keyword = params[:sSearch]
+    array = Array.new
+    cost_center = get_company_cost_center('cost_center')
+    array = Worker.get_workers(cost_center, display_length, pager_number, keyword)
+    render json: { :aaData => array }
+  end
+
   def new
     @worker = Worker.new
     @articles = TypeOfArticle.find_by_code('01').articles

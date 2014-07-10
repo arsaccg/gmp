@@ -259,6 +259,7 @@ ArsacLogistica::Application.routes.draw do
     resources :workers do
       collection do
         post 'add_worker_item_field'
+        post 'show_workers'
       end
     end
     resources :analysis_of_valuations do
@@ -372,7 +373,11 @@ ArsacLogistica::Application.routes.draw do
   namespace :libraries do
     resources :interest_links
     resources :type_of_law_and_regulations
-    resources :law_and_regulations
+    resources :law_and_regulations do
+      collection do
+        post 'law_regulation'
+      end
+    end
     resources :technical_standards
     resources :type_of_technical_libraries
     resources :technical_libraries

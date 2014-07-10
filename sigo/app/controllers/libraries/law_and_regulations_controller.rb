@@ -71,6 +71,12 @@ class Libraries::LawAndRegulationsController < ApplicationController
     render :json => laws
   end
 
+  def law_regulation
+    word = params[:wordtosearch]
+    @lawsandregulation = LawAndRegulation.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%"')
+    render layout: false
+  end
+
   private
   def law_repo_parameters
     params.require(:law_and_regulation).permit(:name, :description, :document, {:type_of_law_and_regulation_ids => []})

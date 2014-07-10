@@ -31,9 +31,27 @@
       .col-sm-4
         %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_libraries_law_and_regulation_path}', 'content', null, null, 'GET')"}
           Agregar Ley y/o Reglamento
-
+      .col-md-3
+        = text_field_tag 'wordtosearch', nil, class: 'form-control', id: 'wordtosearch', placeholder: 'Escriba aqui su búsqueda'
+      .col-md-3
+        %button.btn.btn-primary.btn-default#show-table{href: 'javascript:void(0);', :onclick => 'law_regulation();'}
+          %i.fa.fa-search
+          Buscar
+      %br
+      #law-regulation.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
   %br
   .row
     #widget-grid 
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'grid'
+
+:javascript
+  function law_regulation() {
+    var word = $("#wordtosearch").val();
+    data = { authenticity_token: "#{form_authenticity_token}", wordtosearch: word};
+    load_url_ajax('#{law_regulation_libraries_law_and_regulations_path}', 'law-regulation', data, '', 'POST');
+    $('#law-regulation').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }

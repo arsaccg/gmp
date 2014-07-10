@@ -21,31 +21,6 @@
             %th Dirección
             %th Acciones
         %tbody
-          - @workers.each do |worker|
-            %tr
-              %td
-                = worker.id
-              %td 
-                = worker.entity.name rescue ""
-              %td
-                = worker.entity.paternal_surname rescue ""
-              %td 
-                = worker.entity.maternal_surname rescue ""
-              %td
-                = worker.article.name rescue ""
-              %td 
-                = worker.position_worker.name rescue ""
-              %td
-                = worker.email rescue ""
-              %td 
-                = worker.date_of_birth rescue ""
-              %td
-                = worker.entity.address rescue "No tiene dirección este trabajador."
-              %td
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_worker_path(worker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
-                  Editar
-                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{worker.entity.name rescue ''}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_worker_path(worker.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_workers_path}?company_id=#{@company}')"}}
-                  Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -90,13 +65,20 @@
 
   function runDataTables() {
 
-    /*
-     * BASIC
-     */
     $('#dt_basic').dataTable({
-      "sPaginationType" : "bootstrap_full"
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      sAjaxSource  : "#{show_workers_production_workers_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
+      },
+      sPaginationType : 'bootstrap_full'
     });
 
-    /* END BASIC */
+    $("#dt_basic_filter div input").keyup(function() {
+      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+    });
 
   }
