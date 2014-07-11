@@ -21,6 +21,14 @@
       .col-sm-4
         %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_article_path}', 'content', null, null, 'GET')"}
           Agregar Articulo
+      - if @article == nil
+        .col-sm-5
+          = form_tag import_logistics_articles_path,{ multipart: true } do
+            %label Seleccionar excel para importar:
+            = file_field_tag :file, class: 'btn btn-default'
+            %p.help-block
+              Seleccionar Archivo
+            = submit_tag 'Importar'
   - else
     .alert.alert-block.alert-danger
       %a.close(data-dismiss="alert" href="#")
