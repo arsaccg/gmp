@@ -26,8 +26,9 @@ class Logistics::EntitiesController < ApplicationController
   def create
     flash[:error] = nil
     entity = Entity.new(entity_parameters)
+    entity.cost_center_id = get_company_cost_center('cost_center')
     if entity.save
-      flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
+      flash[:notice] = "Se ha creado correctamente la entidad."
       redirect_to :action => :index, company_id: params[:company_id]
     else
       entity.errors.messages.each do |attribute, error|
@@ -65,6 +66,7 @@ class Logistics::EntitiesController < ApplicationController
 
   def update
     entity = Entity.find(params[:id])
+    entity.cost_center_id = get_company_cost_center('cost_center')
     if entity.update_attributes(entity_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -104,6 +106,6 @@ class Logistics::EntitiesController < ApplicationController
 
   private
   def entity_parameters
-    params.require(:entity).permit(:name, :second_name, :date_of_birth,:paternal_surname, :maternal_surname, :dni, :ruc, {:type_entity_ids => []}, :address)
+    params.require(:entity).permit(:name, :second_name, :date_of_birth,:paternal_surname, :maternal_surname, :dni, :ruc, :gender, {:type_entity_ids => []}, :address)
   end
 end

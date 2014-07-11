@@ -45,9 +45,13 @@
               = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
-            %label.label Dirección
-            %label.input{for: "address"}
-              = f.input :address, input_html: { class: 'form-control' }, label: false
+            %label.control-label Género
+            %br
+            .input-group
+              %select.col-sm-6.form-control#type{:name =>"entity[gender]", :required => true, title:'No puede dejar este campo vacio'}
+                %option{:value => "0", :selected => 'selected'} Seleccione un género
+                %option{:value => "masculino"} Masculino
+                %option{:value => "femenino"} Femenino
         .row{"style"=>"display: none;"}
           %section.col.col-10
             %label.label Tipo
@@ -100,12 +104,30 @@
           rules : {
             'entity[name]' : {
               required : true,
+            },
+            'entity[paternal_surname]' : {
+              required : true,
+            },
+            'entity[maternal_surname]' : {
+              required : true,
+            },
+            'entity[gender]' : {
+              required : true,
             }
           },
           // Messages for form validation
           messages : {
             'entity[name]' : {
               required : 'Por favor, ingresar el nombre.'
+            },
+            'entity[paternal_surname]' : {
+              required : 'Por favor, ingresar el apellido paterno.'
+            },
+            'entity[maternal_surname]' : {
+              required : 'Por favor, ingresar el apellido materno.'
+            },
+            'entity[gener]' : {
+              required : 'Por favor, ingresar el genero.'
             }
           },
           // Do not change code below
