@@ -16,12 +16,12 @@ INSERT INTO `type_of_articles` (`name`, `code`, `created_at`, `updated_at`) VALU
 ('Servicios', '05', NOW(), NOW());
 
 -- Data for Company
-INSERT INTO `companies` (`name`, `ruc`, `created_at`, `updated_at`) VALUES 
-('ARSAC Contratistas Generales', '12345678978', NOW(), NOW());
+INSERT INTO `companies` (`name`, `ruc`, `address`, `created_at`, `updated_at`) VALUES 
+('ARSAC Contratistas Generales', '12345678978', 'Calle Las Garzas 494 San Isidro', NOW(), NOW());
 
 -- Data for Entity
-INSERT INTO `entities` (`name`, `ruc`, `created_at`, `updated_at`) VALUES 
-('ARSAC Contratistas Generales', '12345678978', NOW(), NOW());
+INSERT INTO `entities` (`name`, `ruc`, `address`, `created_at`, `updated_at`) VALUES 
+('ARSAC Contratistas Generales', '12345678978', 'Calle Las Garzas 494 San Isidro', NOW(), NOW());
 
 -- Data for Entity Type Entity
 INSERT INTO `entities_type_entities` (`entity_id`, `type_entity_id`, `created_at`, `updated_at`) VALUES 
