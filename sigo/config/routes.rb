@@ -172,6 +172,8 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :subcategories
     resources :specifics
+    resources :order_service_extra_calculations
+    resources :extra_calculations
     resources :categories do
       collection do
         post 'get_subcategory_form_category'
