@@ -1,2 +1,35 @@
-%h1 DocumentaryControl::PhotoOfWorks#show
-%p Find me in app/views/documentary_control/photo_of_works/show.html.haml
+.row.hidden-mobile
+  .col-xs-12.col-sm-6.col-md-6.col-lg-6
+    %h1.page-title.txt-color-blueDark
+      %i.fa-fw.fa.fa-picture-o
+      Galeria
+      %span
+        \>
+        Fotos de Obra
+  .col-xs-12.col-sm-6.col-md-6.col-lg-6.text-align-right
+    .page-title
+.row
+  .superbox.col-sm-12
+    - @photo.each do |photo|
+      .superbox-list
+        %img.superbox-img{alt: "#{photo.description}", "data-img" => "#{photo.photo.url}", src: "#{photo.photo.url}", title: "#{photo.name}"}/
+    
+    .superbox-float
+  .superbox-show{style: "height:300px; display: none"}
+%button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado
+
+:javascript
+
+  $('#backlist').click(function(){
+    load_url_ajax("#{documentary_control_photo_of_works_path}", 'content', null, null, 'GET');
+  });
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+  // PAGE RELATED SCRIPTS
+  // load bootstrap-progress bar script
+  loadScript("#{ asset_path 'plugin/superbox/superbox.min.js', type: :javascript }", runSuperBox);
+  function runSuperBox() {
+    $('.superbox').SuperBox();
+  }
