@@ -1,0 +1,93 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Organigrama
+  .widget-body
+    = simple_form_for([:documentary_control, @flow], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row
+          %section.col.col-md-8
+            %label.label Nombre
+            %label.input{for: "name"}
+              %i.icon-append.fa.fa-user
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+        %br
+        .row
+          %section.col.col-md-12
+            %label.label Descripción 
+            %label.input
+              = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false, rows: 4
+
+        .row
+          %section.col.col-md-12
+            %label.label Foto:
+            = f.input :photo, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+            %p.help-block
+              - if @action == 'edit' && @flow.photo.exists?
+                = 'Archivo subido: ' + File.basename(@flow.photo.path, File.extname(@flow.photo.path))
+              - else
+                Subir el archivo correspondiente
+
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_flowchart'));
+    }
+
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'flowchart[name]' : {
+              required : true
+            },
+            'flowchart[description]' : {
+              required : true,
+            },
+            'flowchart[photo]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'flowchart[name]' : {
+              required : "Por favor, ingrese el nombre del documento"
+            },
+            'flowchart[description]' : {
+              required : "Por favor, ingrese una descripción para el documento"
+            },
+            'flowchart[photo]' : {
+              required : "Por favor, ingrese la imagen"
+            }
+          },
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }

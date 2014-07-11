@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  technical_file_id: 1
+  type_of_technical_file_id: 1
+
+two:
+  technical_file_id: 1
+  type_of_technical_file_id: 1
