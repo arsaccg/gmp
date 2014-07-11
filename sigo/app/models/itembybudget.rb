@@ -106,5 +106,16 @@ class Itembybudget < ActiveRecord::Base
 
 	end
 
+	def self.get_item_by_budget
+	  mysql_result =  ActiveRecord::Base.connection.execute("
+	    SELECT ibb.order, ibb.id, ibb.subbudgetdetail 
+	    FROM itembybudgets ibb , budgets bg 
+	    WHERE bg.id = ibb.budget_id 
+	    AND bg.type_of_budget LIKE '0' 
+	    AND ibb.measured IS NOT NULL
+	    GROUP BY ibb.order
+	  ")
 
+	  return mysql_result
+	end
 end

@@ -98,14 +98,7 @@ class Production::SubcontractsController < ApplicationController
  end
 
  def getsc_prebudgets()
-   valuationgroup = ActiveRecord::Base.connection.execute("
-     SELECT ibb.order, ibb.id, ibb.subbudgetdetail 
-     FROM itembybudgets ibb , budgets bg 
-     WHERE bg.id = ibb.budget_id 
-     AND bg.type_of_budget LIKE '0' 
-     AND ibb.measured IS NOT NULL
-     GROUP BY ibb.order
-   ")
+   valuationgroup = Itembybudget.get_item_by_budget
    return valuationgroup
  end
 

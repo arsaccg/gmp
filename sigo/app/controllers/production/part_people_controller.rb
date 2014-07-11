@@ -3,7 +3,7 @@ class Production::PartPeopleController < ApplicationController
   def index
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
-    @part_people = PartPerson.where("cost_center_id = ?", cost_center)
+    #@part_people = PartPerson.where("cost_center_id = ?", cost_center)
     @workinggroup = WorkingGroup.first
     render layout: false
   end
@@ -11,8 +11,19 @@ class Production::PartPeopleController < ApplicationController
   def show
     @partperson = PartPerson.find(params[:id])
     @partpersondetails = @partperson.part_person_details
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     render layout: false
+  end
+
+  def show_part_people
+    display_length = params[:iDisplayLength]
+    pager_number = params[:iDisplayStart]
+    keyword = params[:sSearch]
+    array = Array.new
+    cost_center = get_company_cost_center('cost_center')
+
+    array = PartPerson.get_part_people(cost_center, display_length, pager_number, keyword)
+    render json: { :aaData => array }
   end
 
   def new
@@ -62,7 +73,7 @@ class Production::PartPeopleController < ApplicationController
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
     @action = 'edit'
-    @company = params[:company_id]
+    @company = get_company_cost_center('company')
     @workers = Worker.all
     render layout: false
   end

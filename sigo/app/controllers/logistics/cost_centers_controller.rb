@@ -25,6 +25,7 @@ class Logistics::CostCentersController < ApplicationController
     flash[:error] = nil
     costCenter = CostCenter.new(cost_center_parameters)
     if costCenter.save
+      subcontract = Subcontract.create(entity_id: session[:company] , valorization: 'semanal' , terms_of_payment: 'contado' , initial_amortization_number: 0 , initial_amortization_percent: 0 , guarantee_fund: 0 , detraction: 0 , contract_amount: 0 , cost_center_id: session[:cost_center])
       @name = costCenter.name.delete("^a-zA-Z0-9-").gsub("-","_").downcase.tr(' ', '_')
       wbsitem = Wbsitem.new
       wbsitem.codewbs = costCenter.id
