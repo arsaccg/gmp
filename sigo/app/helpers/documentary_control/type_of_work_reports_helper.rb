@@ -1,0 +1,2 @@
+module DocumentaryControl::TypeOfWorkReportsHelper
+end

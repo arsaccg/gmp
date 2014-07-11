@@ -1,0 +1,29 @@
+.row.hidden-mobile
+  .col-xs-12.col-sm-6.col-md-6.col-lg-6
+    %h1.page-title.txt-color-blueDark
+      %i.fa-fw.fa.fa-picture-o
+      Galeria
+      %span
+        \>
+        Organigrama
+  .col-xs-12.col-sm-6.col-md-6.col-lg-6.text-align-right
+    .page-title
+      %a.btn.btn-default{:onclick => "javascript:load_url_ajax('#{new_documentary_control_flowchart_path}', 'content', null, null, 'GET')"} Subir Foto
+.row
+  .superbox.col-sm-12
+    - @flow.each do |flow|
+      .superbox-list
+        %img.superbox-img{alt: "#{flow.description}", "data-img" => "#{flow.photo.url}", src: "#{flow.photo.url}", title: "#{flow.name}"}/
+    
+    .superbox-float
+  .superbox-show{style: "height:300px; display: none"}
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+  // PAGE RELATED SCRIPTS
+  // load bootstrap-progress bar script
+  loadScript("#{ asset_path 'plugin/superbox/superbox.min.js', type: :javascript }", runSuperBox);
+  function runSuperBox() {
+    $('.superbox').SuperBox();
+  }

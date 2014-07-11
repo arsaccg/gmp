@@ -55,9 +55,6 @@ class Libraries::LawAndRegulationsController < ApplicationController
 
   def destroy
     type = params[:type]
-    puts "--------------------------------------------------------------------------------------------------------"
-    puts type
-    puts "--------------------------------------------------------------------------------------------------------"
     laws = LawAndRegulation.find(params[:id])
     if laws.type_of_law_and_regulations.count == 1
       laws = LawAndRegulation.destroy(params[:id])  

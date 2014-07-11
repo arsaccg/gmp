@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  book_work_id: 1
+  type_of_book_work_id: 1
+
+two:
+  book_work_id: 1
+  type_of_book_work_id: 1
