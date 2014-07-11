@@ -1,11 +1,14 @@
 repeat :all do
-  bounding_box [bounds.left, bounds.bottom + 720], :width  => 100 do
-    image_tag @company.avatar.path, :fit => [100, 50]
+  bounding_box [bounds.left, bounds.bottom + 720], :width  => 200 do
+    image @company.avatar.path, :fit => [200, 50]
+    text @company.name, :size => 9
+    text @company.address, :size => 9
+    text @company.ruc, :size => 9
   end
-  bounding_box [bounds.right - 530, bounds.bottom + 700], :width  => 500 do
+  bounding_box [bounds.right - 530, bounds.bottom + 680], :width  => 500 do
     text "ORDEN DE SUMINISTRO - #{@deliveryOrder.id.to_s.rjust(5, '0')}", :align => :center, :style => :bold
   end
-  move_down 10
+  move_down 30
 
   table([ ["CENTRO DE COSTO", "#{@deliveryOrder.cost_center.name}"], ["EMITIDO POR", "#{@deliveryOrder.user.first_name + ' ' + @deliveryOrder.user.last_name}", "FECHA EMISIÓN", "#{@deliveryOrder.date_of_issue.strftime("%d/%m/%Y")}"], ["ESTADO", "#{translate_delivery_order_state(@deliveryOrder.state)}", "FECHA A ATENDER", "#{@deliveryOrder.scheduled.strftime("%d/%m/%Y")}"] ], :width => 540, :cell_style => {:height => 18}, :column_widths => [150]) do
         style(columns(0..3), :size => 9)
