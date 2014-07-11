@@ -9,12 +9,12 @@
       %article.col-sm-12.col-md-12.col-lg-6
         = render :partial => 'form'
 
-  %button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-tyarticles{type: "button"}
     %i.fa.fa-arrow-left>
     Retornar al listado
 
 :javascript
 
-  $('#backlist').click(function(){
+  $('#backlist-tyarticles').click(function(){
     load_url_ajax("#{documentary_control_flowcharts_path}", 'content', null, null, 'GET');
   });

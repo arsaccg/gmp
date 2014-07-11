@@ -7,7 +7,7 @@ class DocumentaryControl::FlowchartsController < ApplicationController
   end
 
   def show
-    @flow = Flowchart.find(params[:id])
+    @flow = Flowchart.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     render layout: false
   end
 
