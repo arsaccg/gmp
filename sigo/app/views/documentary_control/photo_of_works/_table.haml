@@ -34,23 +34,23 @@
               %tr
                 %th Nombres
                 %th Descripción
-                %th Documento
+                %th Imagen
                 %th Acciones
             %tbody
-              - @flow.each do |flow|
+              - @photo.each do |photo|
                 %tr
                   %td
-                    = flow.name.to_s
+                    = photo.name.to_s
                   %td
-                    = flow.description.to_s
+                    = photo.description.to_s
                   %td
-                    - if flow.photo.exists?
-                      %a.btn.btn-info.btn-xs{:href =>"#{flow.photo.url}", :target => "_blank"}
+                    - if photo.photo.exists?
+                      %a.btn.btn-info.btn-xs{:href =>"#{photo.photo.url}", :target => "_blank"}
                         %i.fa.fa-clipboard
                     -else
                       No hay ningun Archivo adjunto
                   %td
-                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_flowchart_path(flow.id)}', 'content', null, null, 'GET')"}
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_photo_of_work_path(photo.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{flow.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_flowchart_path(flow.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_flowcharts_path}')"}}
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{photo.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_photo_of_work_path(photo.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_photo_of_works_path}')"}}
                       Eliminar
