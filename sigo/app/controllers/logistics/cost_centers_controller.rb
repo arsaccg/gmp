@@ -160,7 +160,7 @@ class Logistics::CostCentersController < ApplicationController
 
   private
   def cost_center_parameters
-    params.require(:cost_center).permit(:code, :name, :company_id, :overhead_percentage, :igv)
+    params.require(:cost_center).permit(:code, :name, :company_id)
   end
 
   def cost_center_parameters_timeline
