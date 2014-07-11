@@ -6,6 +6,7 @@ class Logistics::ArticlesController < ApplicationController
   def index
     flash[:error] = nil
     @unitOfMeasurement = UnitOfMeasurement.first
+    @article = Article.first
     @group = Category.first
     @company = Company.find(get_company_cost_center("company"))
     @subgroup = Category.where("code LIKE '____'").first
