@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  received_letter_id: 1
+  type_of_received_letter_id: 1
+
+two:
+  received_letter_id: 1
+  type_of_received_letter_id: 1

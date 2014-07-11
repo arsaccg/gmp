@@ -1,0 +1,2 @@
+module DocumentaryControl::TypeOfContestDocumentsHelper
+end
