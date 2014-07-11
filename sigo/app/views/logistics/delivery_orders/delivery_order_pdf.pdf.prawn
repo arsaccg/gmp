@@ -1,3 +1,7 @@
+index2 = 1
+bounding_box [bounds.right - 100, bounds.bottom + 720], :width  => 200 do
+  text "Página #{index2}", :size => 9
+end
 repeat :all do
   bounding_box [bounds.left, bounds.bottom + 720], :width  => 200 do
     image @company.avatar.path, :fit => [200, 50]
@@ -40,9 +44,12 @@ index=1
   stroke_horizontal_rule
   move_down 3
   index += 1
-  index += 1
   if cursor()<100
     start_new_page
+    index2 += 1
+    bounding_box [bounds.right - 100, bounds.bottom + 720], :width  => 200 do
+      text "Página #{index2}", :size => 9
+    end
     move_down 152
   end
 end
