@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  order_of_service_detail_id: 1
+  extra_calculation_id: 1
+  value: 1.5
+  apply: MyString
+  operation: MyString
+
+two:
+  order_of_service_detail_id: 1
+  extra_calculation_id: 1
+  value: 1.5
+  apply: MyString
+  operation: MyString
