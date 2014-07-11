@@ -1,3 +1,8 @@
+index2 = 1
+total = "#{pdf.page_count}"
+bounding_box [bounds.right - 100, bounds.bottom + 720], :width  => 200 do
+  text "Página #{index2}", :size => 9
+end
 repeat :all do
   bounding_box [bounds.left, bounds.bottom + 720], :width  => 200 do
     image @company.avatar.path, :fit => [200, 50]
@@ -40,9 +45,13 @@ index=1
   stroke_horizontal_rule
   move_down 3
   index += 1
-  index += 1
   if cursor()<100
     start_new_page
+    total = "#{pdf.page_count}"
+    index2 += 1
+    bounding_box [bounds.right - 100, bounds.bottom + 720], :width  => 200 do
+      text "Página #{index2}", :size => 9
+    end
     move_down 152
   end
 end
@@ -51,7 +60,11 @@ move_down 40
 
 text "Glosa", :style => :bold
 text "#{@deliveryOrder.description}"
-
+repeat :all do
+  bounding_box [bounds.right - 63, bounds.bottom + 720], :width  => 200 do
+    text "of #{total}", :size => 9
+  end
+end
 bounding_box [bounds.left, bounds.bottom + 50], :width  => bounds.width do
   table([ 
   ["#{@state_per_order_details_approved.user.first_name + ' ' + @state_per_order_details_approved.user.last_name + ' ' + @state_per_order_details_approved.user.surname }", "#{@state_per_order_details_revised.user.first_name + ' ' + @state_per_order_details_revised.user.last_name + ' ' + @state_per_order_details_revised.user.surname }"], ["#{@first_state} el #{@state_per_order_details_approved.created_at.strftime('%d/%m/%Y')}", "#{@second_state} OK"]
