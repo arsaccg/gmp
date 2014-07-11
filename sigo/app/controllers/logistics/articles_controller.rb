@@ -395,7 +395,7 @@ class Logistics::ArticlesController < ApplicationController
             category_id = Category.last.id
           elsif codigo_article != '00' and codigo_category != '00' and codigo_subcategory != '00' and codigo_subcategory_extencion != '00' and codigo.length == 8        
             ##### agregando articles
-            unidad = UnitOfMeasurement.where("symbol LIKE ?","%#{unidad_symbol}%")
+            unidad = UnitOfMeasurement.where("symbol LIKE ?","#{unidad_symbol}")
             count_unidad = unidad.count
             if count_unidad != 0
               unidad_last_id = unidad[0].id
