@@ -1,0 +1,2 @@
+module Logistics::OrderServiceExtraCalculationsHelper
+end
