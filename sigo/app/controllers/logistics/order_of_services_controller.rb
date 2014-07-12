@@ -87,6 +87,16 @@ class Logistics::OrderOfServicesController < ApplicationController
     render(partial: 'order_service_items', :layout => false)
   end
 
+  def add_modal_extra_operations
+    data_article_unit = params[:article_id].split('-')
+    Article.find_article_in_specific(data_article_unit[0], get_company_cost_center('cost_center')).each do |art| 
+      @id_article = art[2] 
+    end
+    @id_modal = 'modal-service-' + @id_article.to_s + '-' + params[:amount].to_s
+    @extra_calculations = ExtraCalculation.all
+    render(partial: 'extra_op', :layout => false)
+  end
+
   def edit
     @company = params[:company_id]
     @reg_n = ((Time.now.to_f)*100).to_i

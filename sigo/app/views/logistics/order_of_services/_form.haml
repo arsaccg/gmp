@@ -392,6 +392,15 @@
     str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), amount: $("#article-amount").val()};
 
     append_url_ajax('#{add_order_service_item_field_logistics_order_of_services_path}', 'article_items_table', str_item, 0, 'POST');
+    
+    if($('#new_order_of_service').length > 0){
+      append_url_ajax('#{add_modal_extra_operations_logistics_order_of_services_path}', 'new_order_of_service', str_item, 0, 'POST');
+    }
+
+    if($('form[id^="edit_order_of_service"]').length > 0){
+      append_url_ajax('#{add_modal_extra_operations_logistics_order_of_services_path}', $('form[id^="edit_order_of_service"]').attr('id'), str_item, 0, 'POST');
+    }
+    
   }
 
   function delete_item(code){
