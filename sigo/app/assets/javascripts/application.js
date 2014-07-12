@@ -41,6 +41,11 @@ $(document).ready(function(){
   }
 });
 
+function make_modal_div(target_id, id_new_div){
+  maked_div = "<div aria-hidden='true' aria-labelledby='modalLoadingLabel' class='modal fade' id='" + id_new_div + "' role='dialog' tabindex='-1'><div class='modal-dialog'><div class='modal-content'><div class='modal-body'><div class='row'></div></div></div></div></div>"
+  $("#" + target_id).append(maked_div);
+}
+
 function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, semana6, semana7, semana8, semana9, semana10, theoretical_value, valor1, valor2, valor3, valor4, valor5, valor6, valor7, valor8, valor9, valor10){
   theoretical_value = parseFloat(theoretical_value)
   valor1 = parseFloat(valor1)

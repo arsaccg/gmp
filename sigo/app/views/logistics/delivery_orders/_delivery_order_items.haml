@@ -42,7 +42,6 @@
           %label.input.state-success
             %i.icon-append.fa.fa-calendar
             %input.scheduled-date{:type => "date", :name => "delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][scheduled_date]", :required => true, title:'No puede dejar este campo vacio'}
-  //%td(class="order_delivery_equipos")
   %td
     = text_area_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][description]', nil,class: "form-control description"
   %td{:style => "width: 1%;"}

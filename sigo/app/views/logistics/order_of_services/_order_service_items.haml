@@ -40,6 +40,10 @@
   %td.price-with-igv
     = text_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil , class: "form-control unit-price-igv", :readonly => true
   //%td(class="order_delivery_equipos")
+  %td.aditional-operations{:style => 'text-align: center'}
+    %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-delivery-#{@reg_n.to_s}"}
+      %strong
+        %i.fa.fa-superscript
   %td
     = text_area_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][description]', nil,class: "form-control description"
   %td{:style => "width: 1%;"}

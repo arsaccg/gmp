@@ -1,2 +1,29 @@
-%h1 Logistics::ExtraCalculations#index
-%p Find me in app/views/logistics/extra_calculations/index.html.haml
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-12.col-lg-12
+      %h2.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Calculos Adicionales para Órdenes de Compra y Servicio
+    .row
+    - if flash[:notice] != nil
+      .alert.alert-success.fade.in{"style" => "clear:both"}
+        %button.close{"data-dismiss" => "alert"} ×
+        %i.fa-fw.fa.fa-check
+        %strong Éxito
+        = flash[:notice]
+    - if flash[:error] != nil
+      .alert.alert-danger.fade.in
+        %button.close{"data-dismiss" => "alert"} ×
+        %i.fa-fw.fa.fa-times
+        %strong Error!
+        = flash[:error]
+  .row
+    .col-sm-4
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_extra_calculation_path}', 'content', null, null, 'GET')"}
+        = t('activerecord.actions.add')
+      .row
+      %br
+  #widget-grid
+    .row
+      %article.col-xs-12
+        = render :partial => 'table'
