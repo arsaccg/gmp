@@ -185,7 +185,7 @@ class Logistics::ArticlesController < ApplicationController
         AND a.category_id = c.id 
         AND uom.id = a.unit_of_measurement_id 
         AND a.name LIKE '%#{keyword}%'
-        ORDER BY a.id DESC
+        ORDER BY a.id ASC
         LIMIT #{display_length}
         OFFSET #{pager_number}"
       )
@@ -202,7 +202,7 @@ class Logistics::ArticlesController < ApplicationController
         WHERE a.type_of_article_id = toa.id 
         AND a.category_id = c.id 
         AND uom.id = a.unit_of_measurement_id 
-        ORDER BY a.id DESC
+        ORDER BY a.id ASC
         LIMIT #{display_length}"
       )
     elsif keyword != ''
@@ -219,7 +219,7 @@ class Logistics::ArticlesController < ApplicationController
         AND a.category_id = c.id 
         AND uom.id = a.unit_of_measurement_id 
         AND a.name LIKE '%#{keyword}%'
-        ORDER BY a.id DESC"
+        ORDER BY a.id ASC"
       )
     else
       articles = ActiveRecord::Base.connection.execute("
@@ -234,7 +234,7 @@ class Logistics::ArticlesController < ApplicationController
         WHERE a.type_of_article_id = toa.id 
         AND a.category_id = c.id 
         AND uom.id = a.unit_of_measurement_id 
-        ORDER BY a.id DESC
+        ORDER BY a.id ASC
         LIMIT #{display_length}
         OFFSET #{pager_number}
         "
