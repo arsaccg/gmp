@@ -2,10 +2,88 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Cartas Emitidas
+    %h2 Documentos Emitidas
   .widget-body
     = simple_form_for([:documentary_control, @issu], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %input#last{"style"=>"display:none;"}
       %fieldset
+        .row
+          %section.col.col-10
+            %label.control-label Tipo de Documento
+            %br
+            .input-group
+              %select.col-sm-6.form-control#type{:name =>"issued_letter[type_of_doc]"}
+                -if @action=="edit"
+                  %option{:value => "0"} Seleccione un tipo
+                  -if @issu.type_of_doc == "Carta"
+                    %option{:value => "Carta", :selected => 'selected'} Carta
+                    %option{:value => "Solicitud"} Solicitud
+                    %option{:value => "Memorando"} Memorando
+                    %option{:value => "Informe"} Informe
+                    %option{:value => "Otros"} Otros
+
+                  -elsif @issu.type_of_doc =="Solicitud"
+                    %option{:value => "Carta"} Carta
+                    %option{:value => "Solicitud", :selected => 'selected'} Solicitud
+                    %option{:value => "Memorando"} Memorando
+                    %option{:value => "Informe"} Informe
+                    %option{:value => "Otros"} Otros
+
+                  -elsif @issu.type_of_doc =="Memorando"
+                    %option{:value => "Carta"} Carta
+                    %option{:value => "Solicitud"} Solicitud
+                    %option{:value => "Memorando", :selected => 'selected'} Memorando
+                    %option{:value => "Informe"} Informe
+                    %option{:value => "Otros"} Otros
+
+                  -elsif @issu.type_of_doc =="Informe"
+                    %option{:value => "Carta"} Carta
+                    %option{:value => "Solicitud"} Solicitud
+                    %option{:value => "Memorando"} Memorando
+                    %option{:value => "Informe", :selected => 'selected'} Informe
+                    %option{:value => "Otros"} Otros
+
+                  -elsif @issu.type_of_doc =="Otros"
+                    %option{:value => "Carta"} Carta
+                    %option{:value => "Solicitud"} Solicitud
+                    %option{:value => "Memorando"} Memorando
+                    %option{:value => "Informe"} Informe
+                    %option{:value => "Otros", :selected => 'selected'} Otros
+                -else
+                  %option{:value => "0"} Seleccione un tipo
+                  %option{:value => "Carta"} Carta
+                  %option{:value => "Solicitud"} Solicitud
+                  %option{:value => "Memorando"} Memorando
+                  %option{:value => "Informe"} Informe
+                  %option{:value => "Otros"} Otros
+              %span.input-group-addon
+                %i.fa.fa-book
+        .row
+          -if @action == "edit"
+            %section.col.col-md-6#year
+              %label.label Año
+              %label.input{for: "name"}
+                %i.icon-append.fa.fa-calendar-o
+                = f.input :year, placeholder: "Año", input_html: { class: 'form-control' }, label: false
+          -else  
+            %section.col.col-md-6#year{"style"=>"display:none"}
+              %label.label Año
+              %label.input{for: "name"}
+                %i.icon-append.fa.fa-calendar-o
+                = f.input :year, placeholder: "Año", input_html: { class: 'form-control' }, label: false
+
+          -if @action == "edit"
+            %section.col.col-md-6#code
+              %label.label Código
+              %label.input{for: "name"}
+                %i.icon-append.fa.fa-superscript
+                = f.input :code, placeholder: "Codigo", input_html: { class: 'form-control' }, label: false
+          -else
+            %section.col.col-md-6#code{"style"=>"display:none"}
+              %label.label Código
+              %label.input{for: "name"}
+                %i.icon-append.fa.fa-superscript
+                = f.input :code, placeholder: "Codigo", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-md-8
             %label.label Nombre
@@ -35,9 +113,14 @@
                 Subir el archivo correspondiente
 
       %footer
-        %button.btn.btn-primary{type: "submit"}
-          %i.fa.fa-save 
-          Guardar
+        -if @action == "edit"
+          %button.btn.btn-primary#submit{type: "submit"}
+            %i.fa.fa-save 
+            Guardar
+        -else
+          %button.btn.btn-primary#submit{type: "submit", "style"=>"display:none;"}
+            %i.fa.fa-save 
+            Guardar
 
 :javascript
   $(document).ready(function () {
@@ -67,6 +150,17 @@
             },
             'issued_letter[type_of_issued_letter_ids]':{
               required: true
+            },
+            'issued_letter[year]' : {
+              required : true,
+              digits: true,
+              minlength: 4,
+              maxlength: 4
+            },
+            'issued_letter[code]':{
+              required: true,
+              digits: true,
+              maxlength: 3
             }
           },
 
@@ -83,6 +177,17 @@
             },
             'issued_letter[type_of_issued_letter_ids]':{
               required: "Seleccione un tipo"
+            },
+            'issued_letter[year]' : {
+              required : "Por favor, ingrese el año",
+              digits: "Solo se acepta dígitos",
+              minlength: "Se necesitan 4 dígitos",
+              maxlength: "Se necesitan 4 dígitos",
+            },
+            'issued_letter[code]':{
+              required: "Seleccione un tipo",
+              digits: "Solo se acepta dígitos",
+              maxlength: "Solo son 3 dígitos",
             }
           },
 
@@ -104,3 +209,73 @@
       }
     });
   }
+
+  $('#issued_letter_year').change(function(){
+    var year = $(this).val();
+    if(!isNaN(year) && year.length == 4){
+      var type = $('#type').val();
+      lastcode("#{last_code_documentary_control_issued_letters_path}", year, type ,"#{form_authenticity_token}", "0302");
+      $('#code').attr("style","display:block");
+      $('#message').val(" ");
+    }else{
+      $.smallBox({
+        title : "Aviso",
+        content : "<i class='fa fa-clock-o'></i> <i>El año solo son números y de 4 dígitos</i>",
+        color : "#C46A69",
+        iconSmall : "fa fa-times fa-2x fadeInRight animated",
+        timeout : 4000
+      });
+      $('#issued_letter_year').val('');
+      $('#code').attr("style","display:none");
+    }
+  });
+
+  function lastcode(url, year, type, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { year: year, type:type, authenticity_token: form_token}
+      }).done(function( data ) {
+        $('#last').val(data.code);
+      });
+  }
+
+  $('#issued_letter_code').change(function(){
+    var codigo = $(this).val();
+    var last = parseInt($('#last').val());
+    if(!isNaN(codigo) && codigo.length < 4){
+      var dif = codigo - last;
+      if(dif==1){
+        $('#submit').attr("style","display:block");
+      }else{
+        $.smallBox({
+          title : "Aviso",
+          content : "<i class='fa fa-clock-o'></i> <i>El último código insertado fue el "+$('#last').val()+", asegure de que se haya ingresado los documentos de manera correlativa</i>",
+          color : "#C46A69",
+          iconSmall : "fa fa-times fa-2x fadeInRight animated",
+          timeout : 4000
+        });
+        $('#issued_letter_code').val('');
+        $('#submit').attr("style","display:none");
+      }
+    }else{
+      $.smallBox({
+        title : "Aviso",
+        content : "<i class='fa fa-clock-o'></i> <i>El código solo son números</i>",
+        color : "#C46A69",
+        iconSmall : "fa fa-times fa-2x fadeInRight animated",
+        timeout : 4000
+      });
+      $('#issued_letter_code').val('');
+    }
+  });
+
+  $('#type').change(function(){
+    console.log("entro al type");
+    if($(this).val()!=0){
+      $('#year').attr("style","display:block");
+    }else{
+      $('#year').attr("style","display:none");
+    }
+  });

@@ -37,9 +37,12 @@
               %input#startdate2.string.optional.form-control{'name'=>"startdate2", type: "date"}
           
       %footer
-        %button.btn.btn-primary{type: "submit"}
-          %i.fa.fa-save
-            Guardar
+        -if @action !="edit"
+          %a#smart-mod-eg1.btn.btn-success{href: "#"} Guardar
+        -else
+          %button.btn.btn-primary{type: "submit"}
+            %i.fa.fa-save
+              Guardar
 
 :javascript
   $(document).ready(function () {
@@ -100,3 +103,35 @@
       }
     });
   }
+
+  $("#smart-mod-eg1").click(function(e) {
+    var diasSemana = new Array("Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo");
+    var g=new Date(Date.parse($("#startdate2").val()));
+    $.SmartMessageBox({
+      title : "Verificación",
+      content : "Los días en que comenzaran las semanas es : " + diasSemana[g.getDay()] + ". ¿Está seguro?",
+      buttons : '[No][Yes]'
+    }, function(ButtonPressed) {
+      if (ButtonPressed === "Yes") {
+        $('#new_cost_center').submit();
+        $.smallBox({
+          title : "Exito",
+          content : "<i class='fa fa-clock-o'></i> <i>Haz creado el centro de costo</i>",
+          color : "#659265",
+          iconSmall : "fa fa-check fa-2x fadeInRight animated",
+          timeout : 4000
+        });
+      }
+      if (ButtonPressed === "No") {
+        $.smallBox({
+          title : "Aviso",
+          content : "<i class='fa fa-clock-o'></i> <i>Escoja el día en que comenzarán las semanas</i>",
+          color : "#C46A69",
+          iconSmall : "fa fa-times fa-2x fadeInRight animated",
+          timeout : 4000
+        });
+      }
+
+    });
+    e.preventDefault();
+  })

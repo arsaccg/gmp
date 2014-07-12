@@ -401,7 +401,11 @@ ArsacLogistica::Application.routes.draw do
     resources :type_of_record_of_meetings
     resources :received_letters
     resources :type_of_received_letters
-    resources :issued_letters
+    resources :issued_letters do
+      collection do
+        post 'last_code'
+      end    
+    end
     resources :type_of_issued_letters
     resources :work_reports
     resources :type_of_work_reports

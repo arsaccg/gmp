@@ -1,6 +1,6 @@
 #wid-id-5.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-custombutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-sortable" => "false", "data-widget-deletebutton" => "false"}
   %header
-    %h2 Lista de Cartas Emitidas
+    %h2 Lista de Documentos Emitidos
   %div
     .jarviswidget-editbox
     .widget-body
@@ -27,15 +27,21 @@
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
-                        %th Nombres
+                        %th Tipo
+                        %th Nombre
+                        %th Código-Año
                         %th Descripción
                         %th Documentos
                         %th Acciones
                     %tbody
-                      - type_issu.issued_letters.each do |lawre|
+                      - type_issu.issued_letters.order(:type_of_doc).each do |lawre|
                         %tr
                           %td
+                            = lawre.type_of_doc.to_s
+                          %td
                             = lawre.name.to_s
+                          %td
+                            =lawre.code.to_s + " - "+ lawre.year.to_s
                           %td
                             = lawre.description.to_s
                           %td
@@ -55,15 +61,21 @@
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
-                        %th Nombres
+                        %th Tipo
+                        %th Nombre
+                        %th Código-Año
                         %th Descripción
                         %th Documentos
                         %th Acciones
                     %tbody
-                      - type_issu.issued_letters.each do |lawre|
+                      - type_issu.issued_letters.order(:type_of_doc).each do |lawre|
                         %tr
                           %td
+                            = lawre.type_of_doc.to_s
+                          %td
                             = lawre.name.to_s
+                          %td
+                            =lawre.code.to_s + " - "+ lawre.year.to_s
                           %td
                             = lawre.description.to_s
                           %td
