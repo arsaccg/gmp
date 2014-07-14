@@ -22,7 +22,7 @@
           %section.col.col-md-12
             %label.label Tipo
             %section.col.col-10
-              = f.association :type_of_contest_documents, :as => :check_boxes, :label => false, collection: TypeOfContestDocument.where("cost_center_id = ?", @cost_center.to_s)
+              = f.association :type_of_contest_documents, :as => :radio_buttons, :label => false, collection: TypeOfContestDocument.where("cost_center_id = ?", @cost_center.to_s)
 
         .row
           %section.col.col-md-12
@@ -41,7 +41,7 @@
 
 :javascript
   $(document).ready(function () {
-    $('.check_boxes').attr("style", 'position: relative; left: 0;');
+    $('.radio_buttons').attr("style", 'position: relative; left: 0;');
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
