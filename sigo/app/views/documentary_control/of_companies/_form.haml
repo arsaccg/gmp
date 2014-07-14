@@ -22,7 +22,7 @@
           %section.col.col-md-12
             %label.label Tipo
             %section.col.col-10
-              = f.association :type_of_companies, :as => :check_boxes, :label => false, collection: TypeOfCompany.where("cost_center_id = ?", @cost_center.to_s)
+              = f.association :type_of_companies, :as => :radio_buttons, :label => false, collection: TypeOfCompany.where("cost_center_id = ?", @cost_center.to_s)
 
         .row
           %section.col.col-md-12
@@ -41,7 +41,7 @@
 
 :javascript
   $(document).ready(function () {
-    $('.check_boxes').attr("style", 'position: relative; left: 0;');
+    $('.radio_buttons').attr("style", 'position: relative; left: 0;');
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -62,9 +62,6 @@
             'of_company[description]' : {
               required : true,
             },
-            'of_company[document]' : {
-              required : true
-            },
             'of_company[type_of_company_ids]':{
               required: true
             }
@@ -77,9 +74,6 @@
             },
             'of_company[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
-            },
-            'of_company[document]' : {
-              required : "Por favor, ingrese el documento"
             },
             'of_company[type_of_company_ids]':{
               required: "Seleccione un tipo"

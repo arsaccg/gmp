@@ -22,7 +22,7 @@
           %section.col.col-md-12
             %label.label Tipo
             %section.col.col-10
-              = f.association :type_of_book_works, :as => :check_boxes, :label => false,  collection: TypeOfBookWork.where("cost_center_id = ?", @cost_center.to_s)
+              = f.association :type_of_book_works, :as => :radio_buttons, :label => false,  collection: TypeOfBookWork.where("cost_center_id = ?", @cost_center.to_s)
         .row
           %section.col.col-md-12
             %label.label Documento
@@ -40,7 +40,7 @@
 
 :javascript
   $(document).ready(function () {
-    $('.check_boxes').attr("style", 'position: relative; left: 0;');
+    $('.radio_buttons').attr("style", 'position: relative; left: 0;');
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -63,9 +63,6 @@
             },
             'book_work[document]' : {
               required : true
-            },
-            'book_work[type_of_book_work_ids]':{
-              required: true
             }
           },
 
@@ -79,9 +76,6 @@
             },
             'law_and_regulation[document]' : {
               required : "Por favor, ingrese el documento"
-            },
-            'law_and_regulation[type_of_book_work_ids]':{
-              required: "Seleccione un tipo"
             }
           },
 

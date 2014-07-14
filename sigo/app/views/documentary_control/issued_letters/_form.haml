@@ -100,7 +100,7 @@
           %section.col.col-md-12
             %label.label Tipo
             %section.col.col-10
-              = f.association :type_of_issued_letters, :as => :check_boxes, :label => false, collection: TypeOfIssuedLetter.where("cost_center_id = ?", @cost_center.to_s)
+              = f.association :type_of_issued_letters, :as => :radio_buttons, :label => false, collection: TypeOfIssuedLetter.where("cost_center_id = ?", @cost_center.to_s)
 
         .row
           %section.col.col-md-12
@@ -124,7 +124,7 @@
 
 :javascript
   $(document).ready(function () {
-    $('.check_boxes').attr("style", 'position: relative; left: 0;');
+    $('.radio_buttons').attr("style", 'position: relative; left: 0;');
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -144,9 +144,6 @@
             },
             'issued_letter[description]' : {
               required : true,
-            },
-            'issued_letter[document]' : {
-              required : true
             },
             'issued_letter[type_of_issued_letter_ids]':{
               required: true
@@ -171,9 +168,6 @@
             },
             'issued_letter[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
-            },
-            'issued_letter[document]' : {
-              required : "Por favor, ingrese el documento"
             },
             'issued_letter[type_of_issued_letter_ids]':{
               required: "Seleccione un tipo"

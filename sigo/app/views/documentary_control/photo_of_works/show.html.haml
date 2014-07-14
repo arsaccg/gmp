@@ -10,11 +10,10 @@
     .page-title
 .row
   .superbox.col-sm-12
-    - @photo.each do |photo|
-      .superbox-list
-        %img.superbox-img{alt: "#{photo.description}", "data-img" => "#{photo.photo.url}", src: "#{photo.photo.url}", title: "#{photo.name}"}/
-    
-    .superbox-float
+    .photos
+      = render :partial => 'photo'
+      .superbox-float
+      //%p#loading Cargando más Fotos.......
   .superbox-show{style: "height:300px; display: none"}
 
 %br
@@ -25,6 +24,9 @@
   Retornar al listado
 
 :javascript
+  $(document).ready(function(){
+    console.log("endless_scroññ");
+  });
 
   $('#backlist').click(function(){
     load_url_ajax("#{documentary_control_photo_of_works_path}", 'content', null, null, 'GET');
@@ -37,3 +39,4 @@
   function runSuperBox() {
     $('.superbox').SuperBox();
   }
+

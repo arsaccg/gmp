@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Cartas Recibidas
+    %h2 Documentos Recibidos
   .widget-body
     = simple_form_for([:documentary_control, @recei], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
@@ -22,7 +22,7 @@
           %section.col.col-md-12
             %label.label Tipo
             %section.col.col-10
-              = f.association :type_of_received_letters, :as => :check_boxes, :label => false, collection: TypeOfReceivedLetter.where("cost_center_id = ?", @cost_center.to_s)
+              = f.association :type_of_received_letters, :as => :radio_buttons, :label => false, collection: TypeOfReceivedLetter.where("cost_center_id = ?", @cost_center.to_s)
 
         .row
           %section.col.col-md-12
@@ -41,7 +41,7 @@
 
 :javascript
   $(document).ready(function () {
-    $('.check_boxes').attr("style", 'position: relative; left: 0;');
+    $('.radio_buttons').attr("style", 'position: relative; left: 0;');
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -62,9 +62,6 @@
             'received_letter[description]' : {
               required : true,
             },
-            'received_letter[document]' : {
-              required : true
-            },
             'received_letter[type_of_received_letter_ids]':{
               required: true
             }
@@ -77,9 +74,6 @@
             },
             'received_letter[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
-            },
-            'received_letter[document]' : {
-              required : "Por favor, ingrese el documento"
             },
             'received_letter[type_of_received_letter_ids]':{
               required: "Seleccione un tipo"
