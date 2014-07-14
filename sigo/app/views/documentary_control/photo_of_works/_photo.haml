@@ -1,0 +1,4 @@
+-@photo.each do |photo|
+  .superbox-list
+    %img.superbox-img{alt: "#{photo.description}", "data-img" => "#{photo.photo.url}", src: "#{photo.photo.url}", title: "#{photo.name}"}/
+

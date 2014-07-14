@@ -412,7 +412,11 @@ ArsacLogistica::Application.routes.draw do
     resources :type_of_work_reports
     resources :technical_files
     resources :type_of_technical_files
-    resources :photo_of_works
+    resources :photo_of_works do
+      collection do
+        post 'display_photos'
+      end
+    end
     resources :flowcharts
   end
 end

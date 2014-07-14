@@ -43,9 +43,9 @@
                   %td= type.name
                   %td= type.preffix
                   %td
-                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_libraries_type_of_technical_library_path(type.id)}', 'content', null, null, 'GET')"}
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_type_of_technical_file_path(type.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{type.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{libraries_type_of_technical_library_path(type.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{libraries_type_of_technical_libraries_path}')"}}
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{type.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_type_of_technical_file_path(type.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_type_of_technical_files_path}')"}}
                       Eliminar
 
 :javascript
