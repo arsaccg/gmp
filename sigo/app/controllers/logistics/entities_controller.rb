@@ -106,6 +106,6 @@ class Logistics::EntitiesController < ApplicationController
 
   private
   def entity_parameters
-    params.require(:entity).permit(:name, :second_name, :date_of_birth,:paternal_surname, :maternal_surname, :dni, :ruc, :gender, {:type_entity_ids => []}, :address)
+    params.require(:entity).permit(:name, :second_name, :date_of_birth,:paternal_surname, :maternal_surname, :dni, :ruc, :gender, :city, :province, :department, :driverlicense, :alienslicense, :maritalstatus, {:type_entity_ids => []}, :address)
   end
 end

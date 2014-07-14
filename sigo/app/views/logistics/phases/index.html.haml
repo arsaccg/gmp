@@ -25,7 +25,7 @@
       -if @phases.count != 0
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{addsub_logistics_phases_path}', 'content', null, null, 'GET')"}
           Agregar Sub-Fase
-    - if @phases == nil
+    - if @phases.count == 0
       .col-sm-5
         = form_tag import_logistics_phases_path,{ multipart: true } do
           %label Seleccionar excel para importar:
