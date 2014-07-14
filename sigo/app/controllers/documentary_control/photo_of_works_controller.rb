@@ -64,7 +64,7 @@ class DocumentaryControl::PhotoOfWorksController < ApplicationController
 
   def show
     @photo = PhotoOfWork.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s).order(:name)
-    #@photo = @photo.paginate(:page => params[:page], :per_page => 35)
+    @photo = @photo.paginate(:page => params[:page], :per_page => 35)
     #respond_to do |format|
      # format.html
       #format.js

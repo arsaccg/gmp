@@ -97,6 +97,22 @@ class Logistics::OrderOfServicesController < ApplicationController
     render(partial: 'extra_op', :layout => false)
   end
 
+  def add_more_row_form_extra_op
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @concept = params[:concept ]
+    @type = params[:type]
+    @value = params[:value]
+    @apply = params[:apply]
+    @operation = params[:operation]
+
+    @name_concept = params[:name_concept]
+    @name_type = params[:name_type]
+    @name_apply = params[:name_apply]
+    
+
+    render(partial: 'extra_op_form', :layout => false)
+  end
+
   def edit
     @company = params[:company_id]
     @reg_n = ((Time.now.to_f)*100).to_i
