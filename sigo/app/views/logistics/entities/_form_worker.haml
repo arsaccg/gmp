@@ -44,7 +44,7 @@
               %i.icon-append.fa.fa-credit-card
               = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
         .row
-          %section.col.col-10
+          %section.col.col-5
             %label.control-label Género
             %br
             .input-group
@@ -52,6 +52,46 @@
                 %option{:value => "0", :selected => 'selected'} Seleccione un género
                 %option{:value => "masculino"} Masculino
                 %option{:value => "femenino"} Femenino
+          %section.col.col-5
+            %label.control-label Estado Civil
+            %br
+            .input-group
+              %select.col-sm-6.form-control#type{:name =>"entity[maritalstatus]", :required => true, title:'No puede dejar este campo vacio'}
+                %option{:value => "0", :selected => 'selected'} Seleccione un estado
+                %option{:value => "soltero"} Soltero
+                %option{:value => "casado"} Casado
+                %option{:value => "divorciado"} Divorciado
+                %option{:value => "viudo"} Viudo
+        .row
+          %section.col.col-10
+            %label.label Licencia de Conducir
+            %label.input{for: "driverlicense"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :driverlicense, placeholder: "Licencia de Conducir", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Carnet de Extranjería
+            %label.input{for: "alienslicense"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :alienslicense, placeholder: "Carnet de Extranjería", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Ciudad
+            %label.input{for: "city"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :city, placeholder: "Ciudad", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Provincia
+            %label.input{for: "province"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :province, placeholder: "Provincia", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-10
+            %label.label Departamento
+            %label.input{for: "department"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :department, placeholder: "Departamento", input_html: { class: 'form-control' }, label: false
         .row{"style"=>"display: none;"}
           %section.col.col-10
             %label.label Tipo

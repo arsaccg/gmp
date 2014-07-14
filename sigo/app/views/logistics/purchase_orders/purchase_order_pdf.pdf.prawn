@@ -1,3 +1,8 @@
+index2 = 1
+total = "#{pdf.page_count}"
+bounding_box [bounds.right - 100, bounds.bottom + 520], :width  => 200 do
+  text "Página #{index2}", :size => 9
+end
 repeat :all do
   bounding_box [bounds.left, bounds.bottom + 520], :width  => 100 do
     image_tag @company.avatar.path, :fit => [100, 50]
@@ -65,6 +70,11 @@ index=1
   index += 1
   if cursor()<100
     start_new_page
+    total = "#{pdf.page_count}"
+    index2 += 1
+    bounding_box [bounds.right - 80, bounds.bottom + 520], :width  => 200 do
+      text "Página #{index2}", :size => 9
+    end
     move_down 152
   end
 end
@@ -73,6 +83,11 @@ move_down 10
 
 text "Glosa", :style => :bold
 text "#{@purchaseOrder.description}"
+repeat :all do
+  bounding_box [bounds.right - 63, bounds.bottom + 520], :width  => 200 do
+    text "of #{total}", :size => 9
+  end
+end
 bounding_box [bounds.left, bounds.bottom + 82], :width  => bounds.width do
   text "#{@total_neto.to_i.to_words.capitalize} y #{number_with_precision (@total_neto-@total_neto.to_i)*100, :precision => 0}/100 #{@purchaseOrder.money.name}"
 end
