@@ -121,7 +121,7 @@
                   = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
                 .col-lg-2 
                   %div(class="col-lg-3")
-                    %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
+                    %a{:href => "javascript:add_article_item();", :id => "btn-add-article", :class => "btn btn-success", :role => "button"}
                       Agregar Insumo
             .form-group
               .col-lg-3
@@ -417,9 +417,20 @@
     var operation = '#' + $(obj).attr('rel') + '-select-operation';
     var name_apply = '#' + $(obj).attr('rel') + '-select-apply option:selected';
 
-    var str_data = { concept: $(concept).val(), type: $(type).val(), value: $(value).val(), apply: $(apply).val(), operation: $(operation).val(), name_concept: $(name_concept).text(), name_type: $(name_type).text(), name_apply: $(name_apply).text() };
+    var reg_n = '#' + $(obj).attr('rel') + '-hidden';
+
+    console.log(reg_n)
+
+    var str_data = { concept: $(concept).val(), type: $(type).val(), value: $(value).val(), apply: $(apply).val(), operation: $(operation).val(), name_concept: $(name_concept).text(), name_type: $(name_type).text(), name_apply: $(name_apply).text(), reg_n: $(reg_n).val() };
 
     append_url_ajax('#{add_more_row_form_extra_op_logistics_order_of_services_path}', id_content, str_data, 0, 'POST');
+  }
+
+  function set_id_modeling(obj, id_modeling){
+    $current_tr_parent = $(obj).parent().parent().attr('id');
+    id_modal_target = $(obj).attr('data-target');
+    $id_generated = $current_tr_parent.split('-')[1];
+    $(id_modal_target + '-hidden').val($id_generated);
   }
 
   function delete_item(code){

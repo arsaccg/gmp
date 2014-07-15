@@ -186,6 +186,46 @@
                       %td
                         = orderServiceDetail.description
 
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 Operaciones extras de la Orden de Servicio
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Insumo
+                    %th Concepto
+                    %th Valor
+                    %th Aplica
+                %tbody(id="service_detail_items_table")
+                  - @orderOfServiceDetails.each do |orderServiceDetail|
+                    - orderServiceDetail.order_service_extra_calculations.each do |order_operation|
+                      %tr
+                        %td
+                          - if orderServiceDetail.article.present?
+                            = orderServiceDetail.article.name
+                        %td
+                          = order_operation.extra_calculation.concept
+                        %td
+                          - if order_operation.value != nil
+                            - if order_operation.type == 'soles'
+                              = 'S/.' + order_operation.value.to_s
+                            - elsif order_operation.type == 'percent'
+                              = order_operation.value.to_s + '%'
+                          - else
+                            = "No tiene valor alguno."
+                        %td
+                          - if order_operation.apply == 'before'
+                            = 'Antes de IGV'
+                          - elsif order_operation.apply == 'after'
+                            = 'Después de IGV'
+
 - if @type_of_order.nil?
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-service-order{type: "button"}
     %i.fa.fa-arrow-left>
