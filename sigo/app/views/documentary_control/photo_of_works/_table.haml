@@ -37,7 +37,7 @@
                 %th Imagen
                 %th Acciones
             %tbody
-              - @photo.each do |photo|
+              - @photo.order(:name).each do |photo|
                 %tr
                   %td
                     = photo.name.to_s

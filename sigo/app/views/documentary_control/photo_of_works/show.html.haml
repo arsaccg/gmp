@@ -9,11 +9,16 @@
   .col-xs-12.col-sm-6.col-md-6.col-lg-6.text-align-right
     .page-title
 .row
+  .col-sm-4
+    %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_photo_of_work_path}', 'content', null, null, 'GET')"} Subir Foto
+                                                                              
+    %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{documentary_control_photo_of_works_path()}', 'content', null, null, 'GET')"} Ver en Lista
+.row
   .superbox.col-sm-12
     .photos
       = render :partial => 'photo'
       %br
-      .div{"style"=>"float:right;"}
+      .div#paginate{"style"=>"float:right;"}
         = will_paginate @photo
       .superbox-float
       //%p#loading Cargando más Fotos.......
@@ -22,17 +27,21 @@
 %br
 %br
 %br
-%button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
-  %i.fa.fa-arrow-left>
-  Retornar al listado
+
 
 :javascript
   $(document).ready(function(){
-    console.log("endless_scroññ");
-  });
-
-  $('#backlist').click(function(){
-    load_url_ajax("#{documentary_control_photo_of_works_path}", 'content', null, null, 'GET');
+    var as=$('#paginate').children().find('a');
+    console.log(as);
+    as.each(function(){
+      var home = "/home#";
+      console.log(home);
+      var hrefi = $(this).attr('href');
+      var cad = home + hrefi;
+      console.log($(this).attr('href'));
+      console.log(cad);
+      $(this).attr('href',cad);
+    });
   });
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
