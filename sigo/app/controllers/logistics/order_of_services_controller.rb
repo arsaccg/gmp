@@ -105,6 +105,8 @@ class Logistics::OrderOfServicesController < ApplicationController
     @apply = params[:apply]
     @operation = params[:operation]
 
+    @reg_main = params[:reg_n]
+
     @name_concept = params[:name_concept]
     @name_type = params[:name_type]
     @name_apply = params[:name_apply]
@@ -279,6 +281,40 @@ class Logistics::OrderOfServicesController < ApplicationController
 
   private
   def order_service_parameters
-    params.require(:order_of_service).permit(:date_of_issue, :date_of_service, :method_of_payment_id, :entity_id, :cost_center_id, :money_id, :exchange_of_rate, :user_id, :description, order_of_service_details_attributes: [:id, :order_of_service_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :unit_price, :igv, :amount, :unit_price_igv, :description, :_destroy])
+    params.require(:order_of_service).permit(
+      :date_of_issue, 
+      :date_of_service, 
+      :method_of_payment_id, 
+      :entity_id, 
+      :cost_center_id, 
+      :money_id, 
+      :exchange_of_rate, 
+      :user_id, 
+      :description, 
+      order_of_service_details_attributes: [
+        :id, 
+        :order_of_service_id, 
+        :article_id, 
+        :unit_of_measurement_id, 
+        :sector_id, 
+        :phase_id, 
+        :unit_price, 
+        :igv, 
+        :amount, 
+        :unit_price_igv, 
+        :description, 
+        :_destroy,
+        order_service_extra_calculations_attributes: [
+          :id,
+          :order_of_service_detail_id,
+          :extra_calculation_id,
+          :value,
+          :apply,
+          :operation,
+          :type,
+          :_destroy
+        ]
+      ]
+    )
   end
 end

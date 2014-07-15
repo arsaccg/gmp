@@ -3,12 +3,12 @@
     %i.fa.fa-check
   .col.col-md-3
     = @name_concept
-    = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][extra_calculation_id]', @concept
-  = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][type]', @type
+    = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_main.to_s + '][order_service_extra_calculations_attributes][' + @reg_n.to_s + '][extra_calculation_id]', @concept
+  = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_main.to_s + '][order_service_extra_calculations_attributes][' + @reg_n.to_s + '][type]', @type
   .col.col-md-2
     = @value.to_s + ' ' + @name_type.to_s
-    = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][value]', @value
+    = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_main.to_s + '][order_service_extra_calculations_attributes][' + @reg_n.to_s + '][value]', @value
   .col.col-md-4
     = @name_apply
-    = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][apply]', @apply
-  = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][operation]', @operation
+    = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_main.to_s + '][order_service_extra_calculations_attributes][' + @reg_n.to_s + '][apply]', @apply
+  = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_main.to_s + '][order_service_extra_calculations_attributes][' + @reg_n.to_s + '][operation]', @operation
