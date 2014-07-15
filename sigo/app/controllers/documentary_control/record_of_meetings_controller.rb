@@ -13,6 +13,7 @@ class DocumentaryControl::RecordOfMeetingsController < ApplicationController
 
   def new
     @cost_center = get_company_cost_center('cost_center')
+    @type_rec = TypeOfRecordOfMeeting.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @rec = RecordOfMeeting.new
     render layout: false
   end
@@ -62,8 +63,14 @@ class DocumentaryControl::RecordOfMeetingsController < ApplicationController
     render :json => rec
   end
 
+  def record_meetings
+    word = params[:wordtosearch]
+    @rec = RecordOfMeeting.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%" AND cost_center_id = ?', get_company_cost_center('cost_center').to_s)
+    render layout: false
+  end
+
   private
   def rec_parameters
-    params.require(:record_of_meeting).permit(:name, :description, :document, {:type_of_record_of_meeting_ids => []})
+    params.require(:record_of_meeting).permit(:name, :description, :document, :type_of_record_of_meeting_id)
   end
 end

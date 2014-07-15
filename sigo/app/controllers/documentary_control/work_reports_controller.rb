@@ -13,6 +13,7 @@ class DocumentaryControl::WorkReportsController < ApplicationController
 
   def new
     @cost_center = get_company_cost_center('cost_center')
+    @type_wor = TypeOfWorkReport.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @wor = WorkReport.new
     render layout: false
   end
@@ -62,8 +63,14 @@ class DocumentaryControl::WorkReportsController < ApplicationController
     render :json => wor
   end
 
+  def work_reports
+    word = params[:wordtosearch]
+    @wor = WorkReport.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%" AND cost_center_id = ?', get_company_cost_center('cost_center').to_s)
+    render layout: false
+  end
+
   private
   def wor_parameters
-    params.require(:work_report).permit(:name, :description, :document, {:type_of_work_report_ids => []})
+    params.require(:work_report).permit(:name, :description, :document, :type_of_work_report_id)
   end
 end

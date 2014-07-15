@@ -12,6 +12,7 @@ class DocumentaryControl::TechnicalFilesController < ApplicationController
   end
 
   def new
+    @type_tech = TypeOfTechnicalFile.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @cost_center = get_company_cost_center('cost_center')
     @tech = TechnicalFile.new
     render layout: false
@@ -62,8 +63,14 @@ class DocumentaryControl::TechnicalFilesController < ApplicationController
     render :json => tech
   end
 
+  def technical_files
+    word = params[:wordtosearch]
+    @tech = TechnicalFile.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%" AND cost_center_id = ?', get_company_cost_center('cost_center').to_s)
+    render layout: false
+  end
+
   private
   def tech_parameters
-    params.require(:technical_file).permit(:name, :description, :document, {:type_of_technical_file_ids => []})
+    params.require(:technical_file).permit(:name, :description, :document, :type_of_technical_file_id)
   end
 end

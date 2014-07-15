@@ -12,6 +12,7 @@ class DocumentaryControl::ReceivedLettersController < ApplicationController
   end
 
   def new
+    @type_recei = TypeOfReceivedLetter.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @cost_center = get_company_cost_center('cost_center')
     @recei = ReceivedLetter.new
     render layout: false
@@ -62,8 +63,14 @@ class DocumentaryControl::ReceivedLettersController < ApplicationController
     render :json => recei
   end
 
+  def received_letters
+    word = params[:wordtosearch]
+    @recei = ContestDocument.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%" AND cost_center_id = ?', get_company_cost_center('cost_center').to_s)
+    render layout: false
+  end
+
   private
   def recei_parameters
-    params.require(:received_letter).permit(:name, :description, :document, {:type_of_received_letter_ids => []})
+    params.require(:received_letter).permit(:name, :description, :document, :type_of_received_letter_id)
   end
 end

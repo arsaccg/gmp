@@ -1,0 +1,35 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
+        \×
+      %h4.modal-title Resultado de su búsqueda de Notariales
+    .modal-body
+      -if @com.count>0
+        %h1.page-title.txt-color-blueDark Lista de Notariales
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th Nombres
+              %th Descripción
+              %th Documentos
+              
+          %tbody
+          - @com.each do |lawre|
+            %tr
+              %td
+                = lawre.name.to_s
+              %td
+                = lawre.description.to_s
+              %td
+                - if lawre.document.exists?
+                  %a.btn.btn-info.btn-xs{:href =>"#{lawre.document.url}", :target => "_blank"}
+                    %i.fa.fa-clipboard
+                -else
+                  No hay ningun Archivo adjunto
+      - else
+        %h4.modal-title No hay datos.
+        %br
+      %footer
+        %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+          Salir

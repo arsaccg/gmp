@@ -20,9 +20,29 @@
     .col-sm-4
       %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_contractual_document_path}', 'content', null, null, 'GET')"}
         Agregar Documento Contractual
+    .col-md-3
+      = text_field_tag 'wordtosearch', nil, class: 'form-control', id: 'wordtosearch', placeholder: 'Escriba aqui su búsqueda'
+    .col-md-3
+      %button.btn.btn-primary.btn-default#show-table{href: 'javascript:void(0);', :onclick => 'search();'}
+        %i.fa.fa-search
+        Buscar
+    %br
+    #contractual.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+
   %br
   .row
   #widget-grid
     .row
       %article.col-xs-12
         = render :partial => 'grid'
+
+:javascript
+  function search() {
+    var word = $("#wordtosearch").val();
+    data = { authenticity_token: "#{form_authenticity_token}", wordtosearch: word};
+    load_url_ajax('#{contractual_docs_documentary_control_contractual_documents_path}', 'contractual', data, '', 'POST');
+    $('#contractual').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }

@@ -14,6 +14,7 @@ class DocumentaryControl::ContestDocumentsController < ApplicationController
   def new
     @cont = ContestDocument.new
     @cost_center = get_company_cost_center('cost_center')
+    @type_cont = TypeOfContestDocument.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     render layout: false
   end
 
@@ -62,8 +63,14 @@ class DocumentaryControl::ContestDocumentsController < ApplicationController
     render :json => cont
   end
 
+  def contest_docs
+    word = params[:wordtosearch]
+    @cont = ContestDocument.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%" AND cost_center_id = ?', get_company_cost_center('cost_center').to_s)
+    render layout: false
+  end
+
   private
   def cont_parameters
-    params.require(:contest_document).permit(:name, :description, :document, {:type_of_contest_document_ids => []})
+    params.require(:contest_document).permit(:name, :description, :document, :type_of_contest_document_id)
   end
 end

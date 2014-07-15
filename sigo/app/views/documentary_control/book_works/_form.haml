@@ -22,7 +22,10 @@
           %section.col.col-md-12
             %label.label Tipo
             %section.col.col-10
-              = f.association :type_of_book_works, :as => :radio_buttons, :label => false,  collection: TypeOfBookWork.where("cost_center_id = ?", @cost_center.to_s)
+              -@type_book.each do |tb|
+                = f.radio_button :type_of_book_work_id, "#{tb.id}"
+                %label= tb.name
+                %br
         .row
           %section.col.col-md-12
             %label.label Documento
