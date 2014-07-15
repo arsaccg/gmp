@@ -21,7 +21,7 @@
       = render :partial => 'photo'
       %br
       .div#paginate{"style"=>"float:right; font-size: 14px;"}
-        - if @flag = 1
+        - if @flag == 1
           = will_paginate @photo
       .superbox-float
       //%p#loading Cargando más Fotos.......
