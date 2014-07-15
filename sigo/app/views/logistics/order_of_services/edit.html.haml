@@ -12,6 +12,6 @@
 
 :javascript
   
-  $('#backlist-purchase-order').click(function(){
+  $('#backlist-service-order').click(function(){
     load_url_ajax("#{logistics_order_of_services_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
   });

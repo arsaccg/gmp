@@ -125,6 +125,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @costcenters = Company.find(@company).cost_centers
     @methodOfPayments = MethodOfPayment.all
+    @extra_calculations = ExtraCalculation.all
     @cost_center_id = @orderOfService.cost_center_id
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       if val != nil

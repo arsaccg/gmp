@@ -46,7 +46,7 @@
         / PLACE YOUR LOGO HERE
         %span#logo
           - if !@company.nil?
-            = image_tag @company.avatar.url, alt: "#{@company.name}"
+            = image_tag @company.avatar.url, alt: "#{@company.name}", style: 'width: auto'
         / END LOGO PLACEHOLDER
         
       / projects dropdown
