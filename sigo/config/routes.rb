@@ -420,4 +420,9 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :flowcharts
   end
+
+  namespace :administration do
+    resources :document_provisions
+    resources :provisions
+  end
 end

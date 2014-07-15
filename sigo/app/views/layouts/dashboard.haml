@@ -44,7 +44,7 @@
     %header#header
       #logo-group
         / PLACE YOUR LOGO HERE
-        %span#logo
+        %span#logo{:style => 'margin-top: 9px;'}
           - if !@company.nil?
             = image_tag @company.avatar.url, alt: "#{@company.name}", style: 'width: auto'
         / END LOGO PLACEHOLDER
@@ -503,7 +503,20 @@
                   %li
                     %a{href: "#{production_weekly_reports_path}", title: 'Reporte Semanal de Obra'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Reporte Semanal                  
+                      %span.menu-item-parent Reporte Semanal
+          %li
+            %a{href: "#", title: "Administración"}
+              %i.fa.fa-lg.fa-fw.fa-calendar
+              %span.menu-item-parent Administración
+            %ul
+              %li
+                %a{href: "#{administration_document_provisions_path}", title: "Tipo de Documento para Provisiones"}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Tipo de Documento para Provisiones
+              %li
+                %a{href: "#{administration_provisions_path}", title: "Provisiones"}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Provisiones
           %li
             %a{href: "#", title: "Licitaciones"}
               %i.fa.fa-lg.fa-fw.fa-calendar
