@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  document_provision_id: 1
+  number_document_provision: MyString
+  accounting_date: 2014-07-15
+  series: MyString
+  entity_id: 1
+  purchase_order_id: 1
+  description: MyText
+
+two:
+  document_provision_id: 1
+  number_document_provision: MyString
+  accounting_date: 2014-07-15
+  series: MyString
+  entity_id: 1
+  purchase_order_id: 1
+  description: MyText
