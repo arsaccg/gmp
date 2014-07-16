@@ -13,6 +13,7 @@ class DocumentaryControl::BookWorksController < ApplicationController
 
   def new
     @cost_center = get_company_cost_center('cost_center')
+    @type_book = TypeOfBookWork.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @book = BookWork.new
     render layout: false
   end
@@ -36,6 +37,7 @@ class DocumentaryControl::BookWorksController < ApplicationController
   def edit
     @book = BookWork.find(params[:id])
     @cost_center = get_company_cost_center('cost_center')
+    @type_book = TypeOfBookWork.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @action = 'edit'
     render layout: false
   end
@@ -61,8 +63,14 @@ class DocumentaryControl::BookWorksController < ApplicationController
     render :json => book
   end
 
+  def book_works
+    word = params[:wordtosearch]
+    @book = BookWork.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%" AND cost_center_id = ?', get_company_cost_center('cost_center').to_s)
+    render layout: false
+  end
+
   private
   def book_parameters
-    params.require(:book_work).permit(:name, :description, :document, {:type_of_book_work_ids => []})
+    params.require(:book_work).permit(:name, :description, :document, :type_of_book_work_id)
   end
 end

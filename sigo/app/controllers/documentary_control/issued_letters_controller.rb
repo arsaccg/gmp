@@ -13,6 +13,7 @@ class DocumentaryControl::IssuedLettersController < ApplicationController
 
   def new
     @cost_center = get_company_cost_center('cost_center')
+    @type_issu = TypeOfIssuedLetter.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @issu = IssuedLetter.new
     render layout: false
   end
@@ -37,6 +38,7 @@ class DocumentaryControl::IssuedLettersController < ApplicationController
   def edit
     @issu = IssuedLetter.find(params[:id])
     @cost_center = get_company_cost_center('cost_center')
+    @type_issu = TypeOfIssuedLetter.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @action = 'edit'
     render layout: false
   end
@@ -75,8 +77,14 @@ class DocumentaryControl::IssuedLettersController < ApplicationController
     render :json => issu
   end
 
+  def issued_letters
+    word = params[:wordtosearch]
+    @issu = IssuedLetter.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%" AND cost_center_id = ?', get_company_cost_center('cost_center').to_s)
+    render layout: false
+  end
+
   private
   def issu_parameters
-    params.require(:issued_letter).permit(:name, :description, :type_of_doc, :year, :code, :document, {:type_of_issued_letter_ids => []})
+    params.require(:issued_letter).permit(:name, :description, :type_of_doc, :year, :code, :document, :type_of_issued_letter_id)
   end
 end

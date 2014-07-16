@@ -2,7 +2,7 @@ class DocumentaryControl::OfCompaniesController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @type_com = TypeOfCompany.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
+    @type_com = TypeOfCompany.where("company_id = ?", get_company_cost_center('company').to_s)
     render layout: false
   end
 
@@ -13,6 +13,7 @@ class DocumentaryControl::OfCompaniesController < ApplicationController
 
   def new
     @cost_center = get_company_cost_center('cost_center')
+    @type_com = TypeOfCompany.where("company_id = ?", get_company_cost_center('company').to_s)
     @com = OfCompany.new
     render layout: false
   end
@@ -20,7 +21,7 @@ class DocumentaryControl::OfCompaniesController < ApplicationController
   def create
     flash[:error] = nil
     com = OfCompany.new(com_parameters)
-    com.cost_center_id = get_company_cost_center('cost_center')
+    com.company_id = get_company_cost_center('company')
 
     if com.save
       flash[:notice] = "Se ha creado correctamente."
@@ -37,13 +38,14 @@ class DocumentaryControl::OfCompaniesController < ApplicationController
   def edit
     @com = OfCompany.find(params[:id])
     @cost_center = get_company_cost_center('cost_center')
+    @type_com = TypeOfCompany.where("company_id = ?", get_company_cost_center('company').to_s)
     @action = 'edit'
     render layout: false
   end
 
   def update
     com = OfCompany.find(params[:id])
-    com.cost_center_id = get_company_cost_center('cost_center')
+    com.company_id = get_company_cost_center('company')
     if com.update_attributes(com_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -63,8 +65,14 @@ class DocumentaryControl::OfCompaniesController < ApplicationController
     render :json => com
   end
 
+  def of_companies
+    word = params[:wordtosearch]
+    @com = OfCompany.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%" AND company_id = ?', get_company_cost_center('company').to_s)
+    render layout: false
+  end
+
   private
   def com_parameters
-    params.require(:of_company).permit(:name, :description, :document, {:type_of_company_ids => []})
+    params.require(:of_company).permit(:name, :description, :document, :type_of_company_id)
   end
 end

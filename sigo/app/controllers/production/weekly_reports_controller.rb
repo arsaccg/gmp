@@ -44,23 +44,23 @@ class Production::WeeklyReportsController < ApplicationController
     @costcenter = get_company_cost_center('cost_center')
     weeks = ActiveRecord::Base.connection.execute("
       SELECT wcc.id
-      FROM  weeks_for_cost_center_"+@costcenter+" wcc
-      WHERE  wcc.start_date <  '"+end_date.to_s+"' AND wcc.end_date >  '"+start_date.to_s+"'"
+      FROM  weeks_for_cost_center_" + @costcenter.to_s + " wcc
+      WHERE  wcc.start_date <  '" + end_date.to_s + "' AND wcc.end_date >  '" + start_date.to_s + "'"
     )
     weeks.each do |id|
       if id[0].to_i<13
         @weeks = ActiveRecord::Base.connection.execute("
           SELECT wcc.name, wcc.start_date, wcc.end_date
-          FROM  weeks_for_cost_center_"+@costcenter+" wcc
-          WHERE  wcc.end_date <  '"+id[2].to_date.to_s+"'
+          FROM  weeks_for_cost_center_" + @costcenter.to_s + " wcc
+          WHERE  wcc.end_date <  '" + id[2].to_date.to_s + "'
         ")
       else
         first_id = id[0].to_i-9
         last_id = id[0].to_i + 1
         @weeks = ActiveRecord::Base.connection.execute("
           SELECT wcc.name, wcc.start_date, wcc.end_date
-          FROM  weeks_for_cost_center_"+@costcenter+" wcc
-          WHERE  wcc.id >="+first_id.to_i.to_s+" AND wcc.id < "+last_id.to_s+"
+          FROM  weeks_for_cost_center_" + @costcenter.to_s + " wcc
+          WHERE  wcc.id >=" + first_id.to_i.to_s + " AND wcc.id < " + last_id.to_s + "
         ")
       end
     end
@@ -70,13 +70,13 @@ class Production::WeeklyReportsController < ApplicationController
       @weekhh << ActiveRecord::Base.connection.execute("
         SELECT c.name, ppd.total_hours AS total_h, pp.date_of_creation
         FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
-        WHERE pp.date_of_creation BETWEEN '"+inter[1].to_date.to_s+"' AND '"+inter[2].to_date.to_s+"'
+        WHERE pp.date_of_creation BETWEEN '" + inter[1].to_date.to_s + "' AND '" + inter[2].to_date.to_s + "'
         AND pp.blockweekly=0
         AND ppd.part_person_id=pp.id
         AND ppd.worker_id=w.id
         AND w.article_id=a.id
         AND a.category_id = c.id
-        AND pp.working_group_id IN("+@article.to_s+")
+        AND pp.working_group_id IN(" + @article.to_s + ")
         GROUP BY c.name
       ")
 

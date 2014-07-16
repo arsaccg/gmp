@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Documentos de Compañia
+    %h2 Documentos Notariales
   .widget-body
     = simple_form_for([:documentary_control, @com], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
@@ -22,7 +22,10 @@
           %section.col.col-md-12
             %label.label Tipo
             %section.col.col-10
-              = f.association :type_of_companies, :as => :radio_buttons, :label => false, collection: TypeOfCompany.where("cost_center_id = ?", @cost_center.to_s)
+              -@type_com.each do |tb|
+                = f.radio_button :type_of_company_id, "#{tb.id}"
+                %label= tb.name
+                %br
 
         .row
           %section.col.col-md-12

@@ -44,9 +44,9 @@
     %header#header
       #logo-group
         / PLACE YOUR LOGO HERE
-        %span#logo
+        %span#logo{:style => 'margin-top: 9px;'}
           - if !@company.nil?
-            = image_tag @company.avatar.url, alt: "#{@company.name}"
+            = image_tag @company.avatar.url, alt: "#{@company.name}", style: 'width: auto'
         / END LOGO PLACEHOLDER
         
       / projects dropdown
@@ -63,6 +63,8 @@
                   %a{href: "#{show_panel_main_path(@company.id)}?cost_center=#{other_cc.id}"}
                     %i.fa.fa-power-off
                     = other_cc.name
+      #logo-sigo
+        = image_tag asset_path('logo-sigo.png'), alt: "sigo"
       / pulled right: nav area
       .pull-right
         / collapse menu button
@@ -247,7 +249,7 @@
                   %li
                     %a{href: "#{documentary_control_type_of_companies_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Doc. Compañias
+                      %span.menu-item-parent Tipos Doc. Notariales
                   %li
                     %a{href: "#{documentary_control_type_of_contest_documents_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
@@ -283,7 +285,7 @@
               %li
                 %a{href: "#{documentary_control_of_companies_path}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-briefcase
-                  %span.menu-item-parent Compañia
+                  %span.menu-item-parent Notariales
               %li
                 %a{href: "#", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-gavel
@@ -331,7 +333,7 @@
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                   %span.menu-item-parent Organigrama
               %li
-                %a{href: "#{documentary_control_photo_of_works_path}", title: "Compañias"}
+                %a{href: "#{documentary_control_photo_of_work_path("show")}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                   %span.menu-item-parent Fotos de Obra    
                                 
@@ -503,7 +505,20 @@
                   %li
                     %a{href: "#{production_weekly_reports_path}", title: 'Reporte Semanal de Obra'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Reporte Semanal                  
+                      %span.menu-item-parent Reporte Semanal
+          %li
+            %a{href: "#", title: "Administración"}
+              %i.fa.fa-lg.fa-fw.fa-calendar
+              %span.menu-item-parent Administración
+            %ul
+              %li
+                %a{href: "#{administration_document_provisions_path}", title: "Tipo de Documento para Provisiones"}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Tipo de Documento para Provisiones
+              %li
+                %a{href: "#{administration_provisions_path}", title: "Provisiones"}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  %span.menu-item-parent Provisiones
           %li
             %a{href: "#", title: "Licitaciones"}
               %i.fa.fa-lg.fa-fw.fa-calendar

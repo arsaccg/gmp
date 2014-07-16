@@ -19,14 +19,15 @@
           %strong Error!
           = flash[:error]
   .row
-    .col-sm-4
-      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_photo_of_work_path}', 'content', null, null, 'GET')"} Subir Foto
-                                                                                
-      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{documentary_control_photo_of_work_path("show")}', 'content', null, null, 'GET')"} Ver en galeria
-
-
-  %br
-  .row
     #widget-grid 
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table'
+
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar a la galeria
+
+:javascript
+  $('#backlist').click(function(){
+    load_url_ajax("#{documentary_control_photo_of_work_path("show")}", 'content', null, null, 'GET');
+  });

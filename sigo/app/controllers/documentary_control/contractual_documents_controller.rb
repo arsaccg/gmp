@@ -13,6 +13,7 @@ class DocumentaryControl::ContractualDocumentsController < ApplicationController
 
   def new
     @cost_center = get_company_cost_center('cost_center')
+    @type_cont = TypeOfContractualDocument.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @cont = ContractualDocument.new
     render layout: false
   end
@@ -36,6 +37,7 @@ class DocumentaryControl::ContractualDocumentsController < ApplicationController
   def edit
     @cont = ContractualDocument.find(params[:id])
     @cost_center = get_company_cost_center('cost_center')
+    @type_cont = TypeOfContractualDocument.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @action = 'edit'
     render layout: false
   end
@@ -62,8 +64,14 @@ class DocumentaryControl::ContractualDocumentsController < ApplicationController
     render :json => cont
   end
 
+  def contractual_docs
+    word = params[:wordtosearch]
+    @cont = ContestDocument.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%" AND cost_center_id = ?', get_company_cost_center('cost_center').to_s)
+    render layout: false
+  end
+
   private
   def cont_parameters
-    params.require(:contractual_document).permit(:name, :description, :document, {:type_of_contractual_document_ids => []})
+    params.require(:contractual_document).permit(:name, :description, :document, :type_of_contractual_document_id)
   end
 end

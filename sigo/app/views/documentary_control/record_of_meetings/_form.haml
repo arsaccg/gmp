@@ -22,7 +22,10 @@
           %section.col.col-md-12
             %label.label Tipo
             %section.col.col-10
-              = f.association :type_of_record_of_meetings, :as => :radio_buttons, :label => false, collection: TypeOfRecordOfMeeting.where("cost_center_id = ?", @cost_center.to_s)
+              -@type_rec.each do |tb|
+                = f.radio_button :type_of_record_of_meeting_id, "#{tb.id}"
+                %label= tb.name
+                %br
 
         .row
           %section.col.col-md-12

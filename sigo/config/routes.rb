@@ -395,27 +395,60 @@ ArsacLogistica::Application.routes.draw do
   end
 
   namespace :documentary_control do
-    resources :of_companies
+    resources :of_companies do
+      collection do
+        post 'of_companies'
+      end
+    end
     resources :type_of_companies
-    resources :contest_documents
+    resources :contest_documents do
+      collection do
+        post 'contest_docs'
+      end
+    end
     resources :type_of_contest_documents
-    resources :contractual_documents
+    resources :contractual_documents do
+      collection do
+        post 'contractual_docs'
+      end
+    end
     resources :type_of_contractual_documents
-    resources :book_works
+    resources :book_works do
+      collection do
+        post 'book_works'
+      end
+    end
     resources :type_of_book_works
-    resources :record_of_meetings
+    resources :record_of_meetings do
+      collection do
+        post 'record_meetings'
+      end
+    end
     resources :type_of_record_of_meetings
-    resources :received_letters
+    resources :received_letters do
+      collection do
+        post 'received_letters'
+      end
+    end
     resources :type_of_received_letters
     resources :issued_letters do
       collection do
         post 'last_code'
+        post 'issued_letters'
       end    
     end
     resources :type_of_issued_letters
-    resources :work_reports
+    resources :work_reports do
+      collection do
+        post 'work_reports'
+      end
+    end
     resources :type_of_work_reports
-    resources :technical_files
+    resources :technical_files do
+      collection do
+        post 'technical_files'
+      end
+    end
     resources :type_of_technical_files
     resources :photo_of_works do
       collection do
@@ -423,5 +456,10 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :flowcharts
+  end
+
+  namespace :administration do
+    resources :document_provisions
+    resources :provisions
   end
 end
