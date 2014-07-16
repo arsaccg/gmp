@@ -16,7 +16,7 @@ class CostCenter < ActiveRecord::Base
 	has_many :part_works
 	has_many :part_people
 	has_many :part_of_equipments
-
+  has_many :provisions
   has_many :items
   has_many :budgets
   
@@ -69,7 +69,7 @@ class CostCenter < ActiveRecord::Base
   def self.getWeek2(cost_center_id,end_date,limit)
     week_array = ActiveRecord::Base.connection.execute("
       SELECT id,name,start_date,end_date
-      FROM weeks_for_cost_center_" + cost_center_id + " 
+      FROM weeks_for_cost_center_" + cost_center_id.to_s + " 
       WHERE start_date > '" + end_date + "'
       LIMIT " + limit.to_s + "
     ")    
@@ -78,7 +78,7 @@ class CostCenter < ActiveRecord::Base
   def self.getWeek3(cost_center_id,end_date,limit)
     week_array = ActiveRecord::Base.connection.execute("
       SELECT id,name,start_date,end_date
-      FROM weeks_for_cost_center_" + cost_center_id + " 
+      FROM weeks_for_cost_center_" + cost_center_id.to_s + " 
       WHERE start_date < '" + end_date + "'
       ORDER BY id DESC
       LIMIT " + limit.to_s + "
