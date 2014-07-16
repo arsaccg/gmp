@@ -41,7 +41,7 @@
                     Siguiente
                     %i.fa.fa-arrow-right
               .step-content
-        		= render :partial => 'form'
+                = render :partial => 'form'
 
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-provisions{type: "button"}
     %i.fa.fa-arrow-left>
@@ -56,8 +56,8 @@
   $(document).ready(function(){
   
     $('#backlist-provisions').click(function(){
-      load_url_ajax("#{biddings_charges_path}", 'content', null, null, 'GET');
-  	});
+      load_url_ajax("#{administration_provisions_path}", 'content', null, null, 'GET');
+    });
    
     $('#btn-add-more-items-do').click(function(){
       var ids_delivery_order = new Array();
@@ -134,21 +134,7 @@
     }
 
     $('#modalDeliveryItems').modal('hide');
-  };
-
-  /* Comentando una función que puede servir en un futuro...
-  function calculatePriceFromIgv(element){
-    var price_with_igv = parseFloat($(element).val()).toFixed(2);
-    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
-    var price_without_igv = parseFloat(price_with_igv / ((parseFloat("#{@igv}"))*amount)).toFixed(2);
-
-    $(element).parent().siblings('.unit-price').find('input').val(price_without_igv);
-
-    var price_with_amount_unit = parseFloat(amount * price_without_igv).toFixed(2);
-
-    $(element).parent().siblings('.price-without-igv').find('input').val(price_with_amount_unit);
   }
-  */
 
   function enableFieldsForIgv(element){
     if($(element).is(":checked")){
@@ -168,43 +154,41 @@
 
   function runBootstrapWizard() {
 
-    var $validator = $("#new_purchase_order").validate({
+    var $validator = $("#new_provision").validate({
 
       rules: {
-        'purchase_order[supplier_id]': {
+        'provision[document_provision_id]': {
           required: true
         },
-        'purchase_order[money_id]': {
+        'provision[number_document_provision]': {
           required: true
         },
-        'purchase_order[method_of_payment_id]': {
+        'provision[accounting_date]': {
           required: true
         },
-        'purchase_order[date_of_issue]': {
+        'provision[series]': {
           required: true
         },
-        'purchase_order[expiration_date]': {
-          required: true,
-          greaterThan: "#purchase_order_delivery_date"
-        },
-        'purchase_order[delivery_date]': {
-          required: true,
-          greaterThan: "#purchase_order_date_of_issue"
+        'provision[entity_id]': {
+          required: true
         }
       },
       
       messages: {
-        'purchase_order[supplier_id]': "Porfavor, especifica el proveedor.",
-        'purchase_order[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
-        'purchase_order[method_of_payment_id]': "Porfavor, especifica el método de págo.",
-        'purchase_order[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
-        'purchase_order[expiration_date]': {
-          required: "Porfavor, especifica la fecha de expiración.",
-          greaterThan: "La fecha de vencimiento debe ser mayor a la fecha de entrega."
+        'provision[document_provision_id]':  {
+          required: "Porfavor, especifica el tipo de Documento."
         },
-        'purchase_order[delivery_date]': { 
-          required: "Porfavor, especifica la fecha de entrega.",
-          greaterThan: "La fecha de entrega debe ser mayor a la fecha de emisión."
+        'provision[number_document_provision]':  {
+          required: "Porfavor, especifica el numero del documento."
+        },
+        'provision[accounting_date]':  {
+          required: "Porfavor, especifica la fecha."
+        },
+        'provision[series]':  {
+          required: "Porfavor, especifica la serie."
+         },
+        'provision[entity_id]': {
+          required: "Porfavor, especifica al proveedor."
         }
       },
       
@@ -237,9 +221,9 @@
     
       $.ajax({
         type: 'POST',
-        url: "/logistics/purchase_orders",
+        url: "#{administration_provisions_path}",
         async: false,
-        data: $('#new_purchase_order').serialize(),
+        data: $('#new_provision').serialize(),
         dataType : 'html',
         success: function(data) {
           $('#modalLoading').modal('hide');
@@ -255,53 +239,31 @@
     wizard.on('change', function(e, data){
 
       var status = false;
-      var data_delivery_order = new Array();
+      var data_orders = new Array();
 
       if(data.step == 1 && data.direction == 'next'){
-        var index = 0;
-        $('#items-delivery-orders #dt_basic tbody tr td .checkbox .order_check').each(function(){
-          if( $(this).is(':checked') ){
-            status = true
-            data_delivery_order[index] = $(this).val();
-            index++;
-          }
-        });
-
-        if(status){
-          data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
-          load_items_delivery_order_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'order_delivery_items_table', data);
-
-          $.smallBox({
-            title: "Ahora completa la información de la Orden de compra.",
-            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-            color: "#5F895F",
-            iconSmall: "fa fa-check bounce animated",
-            timeout: 4000
-          });
-
-        } else {
-
-          e.preventDefault();
-          $.smallBox({
-            title: "Antes de continuar debes de haber seleccionado Items de alguna Orden de Suministro.",
-            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-            color: "#c46a69",
-            iconSmall: "fa fa-times bounce animated",
-            timeout: 4000
-          });
-        }
+        console.log('1')
+        console.log(data)
       }
 
       if(data.step == 2 && data.direction == 'next') {
-        var $valid = $("#new_purchase_order").valid();
-        if (!$valid) {
-          e.preventDefault();
-        }        
-        
+        console.log('2')
+        console.log(data) 
       }
 
       if(data.step == 3 && data.direction == 'next') {
+        console.log('3')
+        console.log(data)
+      }
 
+      if(data.step == 4 && data.direction == 'next') {
+        console.log('4')
+        console.log(data)
+      }
+
+      if(data.step == 5 && data.direction == 'next') {
+        console.log('5')
+        console.log(data)
       }
 
     });

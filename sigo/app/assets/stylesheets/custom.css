@@ -61,3 +61,11 @@ form label { text-align: left !important; }
   position: relative;
   left: 0;
 }
+
+@media (min-width: 1200px){
+  #logo-sigo {
+    margin-left: 20em;
+    margin-top: 10px;
+    height: 0 !important;
+  }
+}

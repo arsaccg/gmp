@@ -7,6 +7,7 @@ class Administration::ProvisionsController < ApplicationController
   def new
     @provision = Provision.new
     @suppliers = TypeEntity.find_by_preffix("P").entities
+    @documentProvisions = DocumentProvision.all
     @cost_center = get_company_cost_center("cost_center")
     render layout: false
   end
