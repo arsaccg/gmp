@@ -26,16 +26,19 @@ class Production::WorkingGroupsController < ApplicationController
 
   def new
     @workingGroup = WorkingGroup.new
+    @workers = Worker.where("cost_center_id = ? AND position_worker_id IS NULL", get_company_cost_center('cost_center').to_s)
+    TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
+      @executors = executor.entities
+    end
     PositionWorker.where("name LIKE 'Jefe de Frente'").each do |front_chief|
       @front_chiefs = front_chief.workers
     end
+    @front_chiefs = @front_chiefs + @workers
 
     PositionWorker.where("name LIKE 'Maestro de Obra'").each do |master_builder|
       @master_builders = master_builder.workers
     end
-    TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
-      @executors = executor.entities
-    end
+    @master_builders = @master_builders + @workers
     @sectors = Sector.where("code LIKE '__'")
     @company = params[:company_id]
     render layout: false
@@ -45,6 +48,16 @@ class Production::WorkingGroupsController < ApplicationController
     workingGroup = WorkingGroup.new(working_groups_parameters)
     workingGroup.cost_center_id = get_company_cost_center('cost_center')
     if workingGroup.save
+      ActiveRecord::Base.connection.execute("
+          UPDATE workers SET
+          position_worker_id = 1
+          WHERE id = "+workingGroup.front_chief_id+"
+        ")
+      ActiveRecord::Base.connection.execute("
+          UPDATE workers SET
+          position_worker_id = 2
+          WHERE id = "+workingGroup.master_builder_id+"
+        ")      
       flash[:notice] = "Se ha creado correctamente el trabajador."
       redirect_to :action => :index, company_id: params[:company_id]
     else
@@ -58,6 +71,7 @@ class Production::WorkingGroupsController < ApplicationController
   end
 
   def edit
+    @action = "edit"
     @workingGroup = WorkingGroup.find(params[:id])
     PositionWorker.where("name LIKE 'Jefe de Frente'").each do |front_chief|
       @front_chiefs = front_chief.workers

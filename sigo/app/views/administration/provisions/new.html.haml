@@ -242,13 +242,67 @@
       var data_orders = new Array();
 
       if(data.step == 1 && data.direction == 'next'){
-        console.log('1')
-        console.log(data)
+        supplier = $('#supplier-selected').val();
+        type_order = $('#type-order-selected').val();
+        data = { type_of_order_consult: type_order, supplier: supplier, authenticity_token: "#{form_authenticity_token}" }
+        $.smallBox({
+          title: "Ahora selecciona alguna Orden de la siguiente lista.",
+          content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+          color: "#5F895F",
+          iconSmall: "fa fa-check bounce animated",
+          timeout: 4000
+        });
+        load_items_delivery_order_ajax('#{display_orders_administration_provisions_path}', 'items-orders', data);
       }
 
       if(data.step == 2 && data.direction == 'next') {
-        console.log('2')
-        console.log(data) 
+        if($('#list-orders tbody tr td.orders-checked').length > 0){
+
+          var index = 0;
+          $('#list-orders tbody tr td.orders-checked .checkbox .order_check').each(function(){
+            if( $(this).is(':checked') ){
+              status = true
+              data_orders[index] = $(this).val();
+              index++;
+            }
+          });
+
+          if(status){
+            data = { ids_orders: data_orders, authenticity_token: "#{form_authenticity_token}", type_of_order_selected: $('#type_of_order_selected').val() };
+            load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'items-orders', data);
+
+            $.smallBox({
+              title: "Ahora selecciona algun detalle de las ordenes seleccionadas.",
+              content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+              color: "#5F895F",
+              iconSmall: "fa fa-check bounce animated",
+              timeout: 4000
+            });
+
+          } else {
+
+            e.preventDefault();
+            $.smallBox({
+              title: "Antes de continuar debes de haber seleccionado alguna Orden.",
+              content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+              color: "#c46a69",
+              iconSmall: "fa fa-times bounce animated",
+              timeout: 4000
+            });
+          }
+
+        } else {
+
+          e.preventDefault();
+          $.smallBox({
+            title: "El proveedor seleccionado no tiene orden alguna asignada.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });
+
+        }
       }
 
       if(data.step == 3 && data.direction == 'next') {

@@ -15,6 +15,11 @@ INSERT INTO `type_of_articles` (`name`, `code`, `created_at`, `updated_at`) VALU
 ('Subcontratos', '04', NOW(), NOW()),
 ('Servicios', '05', NOW(), NOW());
 
+-- Data for Position Worker
+INSERT INTO `position_workers` (`name`, `id`, `created_at`, `updated_at`) VALUES 
+('Jefe de Frente', '1', NOW(), NOW()), 
+('Capataz', '2', NOW(), NOW());
+
 -- Data for Company
 INSERT INTO `companies` (`name`, `ruc`, `address`, `created_at`, `updated_at`) VALUES 
 ('ARSAC Contratistas Generales', '12345678978', 'Calle Las Garzas 494 San Isidro', NOW(), NOW());
