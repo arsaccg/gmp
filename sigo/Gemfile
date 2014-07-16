@@ -24,6 +24,7 @@ gem "erb2haml", :group => :development
 # Roles
 gem "role_model"
 gem 'cancan'
+gem 'will_paginate', '~> 3.0.7'
 
 # Number in words
 gem 'number_to_words', :git => 'https://github.com/mexpolk/number_to_words.git'
