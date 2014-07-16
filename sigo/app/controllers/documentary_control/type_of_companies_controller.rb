@@ -4,7 +4,7 @@ class DocumentaryControl::TypeOfCompaniesController < ApplicationController
 
   def index
     flash[:error] = nil
-    @typeOfComp = TypeOfCompany.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
+    @typeOfComp = TypeOfCompany.where("company_id = ?", get_company_cost_center('company').to_s)
     render layout: false
   end
 
@@ -16,7 +16,7 @@ class DocumentaryControl::TypeOfCompaniesController < ApplicationController
   def create
     flash[:error] = nil
     typeOfComp = TypeOfCompany.new(typeOfComp_parameters)
-    typeOfComp.cost_center_id = get_company_cost_center('cost_center')
+    typeOfComp.company_id = get_company_cost_center('company')
     if typeOfComp.save
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index
@@ -37,7 +37,7 @@ class DocumentaryControl::TypeOfCompaniesController < ApplicationController
 
   def update
     typeOfComp = TypeOfCompany.find(params[:id])
-    typeOfComp.cost_center_id = get_company_cost_center('cost_center')
+    typeOfComp.company_id = get_company_cost_center('company')
     if typeOfComp.update_attributes(typeOfComp_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index

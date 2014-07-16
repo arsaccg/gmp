@@ -28,10 +28,12 @@
           %section.col.col-10
             %label.label Logo
             %label.input.input-file{for: "avatar"}
-              .button
-                = f.input :avatar, html: { class: 'form-control' }, label: false, onchange: "this.parentNode.nextSibling.value = this.value", as: "file"
-                Browse
-              %input{readonly: "readonly", type: "text"}/
+            = f.input :avatar, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+            %p.help-block
+              - if @action == 'edit' && @company.avatar.exists?
+                = 'Archivo subido: ' + File.basename(@company.avatar.path, File.extname(@company.avatar.path))
+              - else
+                Subir el archivo correspondiente
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save

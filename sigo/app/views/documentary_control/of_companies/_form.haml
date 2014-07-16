@@ -22,7 +22,7 @@
           %section.col.col-md-12
             %label.label Tipo
             %section.col.col-10
-              -@type_comp.each do |tb|
+              -@type_com.each do |tb|
                 = f.radio_button :type_of_company_id, "#{tb.id}"
                 %label= tb.name
                 %br
