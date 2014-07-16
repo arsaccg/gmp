@@ -1,0 +1,27 @@
+%tr(class="experience_item"){id: "tr" + @reg_n.to_s}
+  %td.col-md-1.businessname{:style => "width:5%"}
+    %div
+      = text_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][businessname]', @businessname.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+  %td.col-md-1.businessaddress{:style => "width:5%"}
+    %div
+      = text_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][businessaddress]', @businessaddress.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+  %td.col-md-1.title{:style => "width:5%"}
+    %div
+      = text_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][title]', @title.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+  %td.col-md-1.salary{:style => "width:5%"}
+    %div
+      = text_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][salary]', @salary.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+  %td.col-md-1.bossincharge{:style => "width:5%"}
+    %div
+      = text_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][bossincharge]', @bossincharge.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+  %td.col-md-1.exitreason{:style => "width:5%"}
+    %div
+      = text_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][exitreason]', @exitreason.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+  %td.col-md-1.start_date{:style => "width:5%"}
+    %div
+      %input#familiar-start_date.string.optional.form-control{'name'=>'worker[worker_experiences_attributes][' + @reg_n.to_s + '][start_date]', type: "date", value: @start_date.to_s}
+  %td.col-md-1.end_date{:style => "width:5%"}
+    %div
+      %input#familiar-end_date.string.optional.form-control{'name'=>'worker[worker_experiences_attributes][' + @reg_n.to_s + '][end_date]', type: "date", value: @end_date.to_s}
+  %td{:style => "width: 1%;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

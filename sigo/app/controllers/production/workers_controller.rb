@@ -95,6 +95,48 @@ class Production::WorkersController < ApplicationController
     render(partial: 'worker_items', :layout => false)
   end
 
+  def add_familiar_item_field
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @paternal_surname = params[:paternal_surname]
+    @maternal_surname = params[:maternal_surname]
+    @names = params[:names]
+    @relationship = params[:relationship]
+    @dayofbirth = params[:dayofbirth]
+    @dni = params[:dni]
+    render(partial: 'familiar_items', :layout => false)
+  end
+
+  def add_centerofstudy_item_field
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @name = params[:nameu]
+    @profession = params[:profession]
+    @title = params[:title]
+    @numberoftuition = params[:numberoftuition]
+    @start_date = params[:start_date]
+    @end_date = params[:end_date]
+    render(partial: 'centerofstudy_items', :layout => false)
+  end
+
+  def add_otherstudy_item_field
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @study = params[:study]
+    @level = params[:level]
+    render(partial: 'otherstudy_items', :layout => false)
+  end
+
+  def add_experience_item_field
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @businessname = params[:businessname]
+    @businessaddress = params[:businessaddress]
+    @title = params[:title2]
+    @salary = params[:salary]
+    @bossincharge = params[:bossincharge]
+    @exitreason = params[:exitreason]
+    @start_date = params[:start_date2]
+    @end_date = params[:end_date2]
+    render(partial: 'experience_items', :layout => false)
+  end
+
   def destroy
     delete = 0
     partofequip = PartOfEquipment.where('worker_id = ?',params[:id])
@@ -125,6 +167,6 @@ class Production::WorkersController < ApplicationController
 
   private
   def worker_parameters
-    params.require(:worker).permit(:email, :phone,  :article_id, :entity_id, :position_worker_id, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy])
+    params.require(:worker).permit(:email,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :businessaddress, :title, :salary, :bossincharge, :exitreason, :_destroy])
   end
 end

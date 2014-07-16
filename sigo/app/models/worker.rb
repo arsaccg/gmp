@@ -1,6 +1,10 @@
 class Worker < ActiveRecord::Base
 	has_many :part_person_details
 	has_many :worker_details
+  has_many :worker_familiars
+  has_many :worker_center_of_studies
+  has_many :worker_otherstudies
+  has_many :worker_experiences
 	has_many :part_of_equipments
 	belongs_to :entity
 	belongs_to :cost_center
@@ -8,6 +12,40 @@ class Worker < ActiveRecord::Base
 	belongs_to :article
 
 	accepts_nested_attributes_for :worker_details, :allow_destroy => true
+  accepts_nested_attributes_for :worker_familiars, :allow_destroy => true
+  accepts_nested_attributes_for :worker_center_of_studies, :allow_destroy => true
+  accepts_nested_attributes_for :worker_otherstudies, :allow_destroy => true
+  accepts_nested_attributes_for :worker_experiences, :allow_destroy => true
+
+  has_attached_file :cv, :default_url => lambda { |image| ActionController::Base.helpers.asset_path('NotAvailable300.png') }
+  validates_attachment_content_type :cv, :content_type => [ 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',/\Aimage\/.*\Z/]
+
+  has_attached_file :antecedent_police, :default_url => lambda { |image| ActionController::Base.helpers.asset_path('NotAvailable300.png') }
+  validates_attachment_content_type :antecedent_police, :content_type => [ 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',/\Aimage\/.*\Z/]
+
+  has_attached_file :dni, :default_url => lambda { |image| ActionController::Base.helpers.asset_path('NotAvailable300.png') }
+  validates_attachment_content_type :dni, :content_type => [ 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',/\Aimage\/.*\Z/]
+
+  has_attached_file :cts_deposit_letter, :default_url => lambda { |image| ActionController::Base.helpers.asset_path('NotAvailable300.png') }
+  validates_attachment_content_type :cts_deposit_letter, :content_type => [ 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',/\Aimage\/.*\Z/]
+
+  has_attached_file :pension_funds_letter, :default_url => lambda { |image| ActionController::Base.helpers.asset_path('NotAvailable300.png') }
+  validates_attachment_content_type :pension_funds_letter, :content_type => [ 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',/\Aimage\/.*\Z/]
+
+  has_attached_file :affidavit, :default_url => lambda { |image| ActionController::Base.helpers.asset_path('NotAvailable300.png') }
+  validates_attachment_content_type :affidavit, :content_type => [ 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',/\Aimage\/.*\Z/]
+
+  has_attached_file :marriage_certificate, :default_url => lambda { |image| ActionController::Base.helpers.asset_path('NotAvailable300.png') }
+  validates_attachment_content_type :marriage_certificate, :content_type => [ 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',/\Aimage\/.*\Z/]
+
+  has_attached_file :birth_certificate_of_childer, :default_url => lambda { |image| ActionController::Base.helpers.asset_path('NotAvailable300.png') }
+  validates_attachment_content_type :birth_certificate_of_childer, :content_type => [ 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',/\Aimage\/.*\Z/]
+
+  has_attached_file :dni_wife_kids, :default_url => lambda { |image| ActionController::Base.helpers.asset_path('NotAvailable300.png') }
+  validates_attachment_content_type :dni_wife_kids, :content_type => [ 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',/\Aimage\/.*\Z/]
+
+  has_attached_file :schoolar_certificate, :default_url => lambda { |image| ActionController::Base.helpers.asset_path('NotAvailable300.png') }
+  validates_attachment_content_type :schoolar_certificate, :content_type => [ 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',/\Aimage\/.*\Z/]
 
 	def self.find_name_front_chief(front_chief_id)
 	  return Worker.find(front_chief_id).first_name + ' ' + Worker.find(front_chief_id).second_name + ' ' + Worker.find(front_chief_id).paternal_surname + ' ' + Worker.find(front_chief_id).maternal_surname

@@ -9,29 +9,7 @@
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
         .row
-          %section.col.col-4
-            %label.label Categoria del Trabajador
-            %label.input{for: "article_id"}
-              %select.form-control{:name =>"worker[article_id]", :style => 'width:100%;padding: 0;border: none;'}
-                - @articles.each do |article|
-                  - if @worker.article_id == article.id
-                    %option{:value => "#{article.id}", :selected => true}
-                      = article.name
-                  - else
-                    %option{:value => "#{article.id}"}
-                      = article.name
-          %section.col.col-4
-            %label.label Cargo del Trabajador
-            %label.input{for: "category_of_worker_id"}
-              %select.form-control{:name =>"worker[position_worker_id]", :style => 'width:100%;padding: 0;border: none;'}
-                - @positionWorkers.each do |positionWorker|
-                  - if @worker.position_worker_id == positionWorker.id
-                    %option{:value => "#{positionWorker.id}", :selected => true}
-                      = positionWorker.name
-                  - else
-                    %option{:value => "#{positionWorker.id}"}
-                      = positionWorker.name
-          %section.col.col-4
+          %section.col.col-10
             %label.label Entidad Trabajador
             %label.input{for: "entity_id"}
               %select.form-control{:name =>"worker[entity_id]", :style => 'width:100%;padding: 0;border: none;'}
@@ -52,6 +30,32 @@
             %label.label Teléfono
             %label.input{for: "phone"}
               = f.input :phone, input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label Celular
+            %label.input{for: "cellphone"}
+              = f.input :cellphone, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-8
+            %label.label Dirección
+            %label.input{for: "address"}
+              = f.input :address, placeholder: "Dirección", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label País
+            %label.input{for: "pais"}
+              = f.input :pais, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-4
+            %label.label Distrito
+            %label.input{for: "district"}
+              = f.input :district, placeholder: "Email", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label Provincia
+            %label.input{for: "province"}
+              = f.input :province, input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label Departamento
+            %label.input{for: "department"}
+              = f.input :department, input_html: { class: 'form-control' }, label: false
 
       %fieldset
         %legend Bancos
@@ -100,6 +104,414 @@
                         = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
+
+      %fieldset
+        %legend Datos familiares
+        .row
+          %section.col.col-2
+            %label.control-label(for="familiar_id") Familiares
+        .row
+          %section.col.col-3
+            = text_field_tag 'paternal_surname', nil, class: 'form-control', id: 'familiar-paternal_surname', placeholder: 'Apellido Paterno'
+          %section.col.col-3
+            = text_field_tag 'maternal_surname', nil, class: 'form-control', id: 'familiar-maternal_surname', placeholder: 'Apellido Materno'
+          %section.col.col-3
+            = text_field_tag 'names', nil, class: 'form-control', id: 'familiar-names', placeholder: 'Nombres'
+          %section.col.col-3
+            = text_field_tag 'dni', nil, class: 'form-control', id: 'familiar-dni', placeholder: 'DNI'
+        .row
+          %section.col.col-3
+            = text_field_tag 'relationship', nil, class: 'form-control', id: 'familiar-relationship', placeholder: 'Parentesco'
+          %section.col.col-3
+            %label Fecha de Nacimiento
+            %input#familiar-dayofbirth.string.optional.form-control{'name'=>'dayofbirth', type: "date"}
+
+          %section.col.col-2
+            %div
+              %a(href="javascript:add_familiar_item();" id="btn-add-familiar" class="btn btn-success" role="button")
+                Agregar Familiar
+
+        .col-lg-13
+          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th.col-2 Apellido Paterno
+                %th.col-2 Apellido Materno
+                %th.col-2 Nombres
+                %th.col-2 Parentesco
+                %th.col-2 Fecha de Nacimiento
+                %th.col-2 DNI
+                %th Eliminar
+            %tbody(id="familiar_items_table")
+              - if @action == 'edit'
+                - puts @worker.worker_details
+                - @worker.worker_details.each do |oos|
+                  %tr
+                    %td.bank-id(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][bank_id]', oos.bank.id
+                    %td.col-2=oos.bank.business_name
+                    %td.col-5.account_number
+                      = text_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][account_number]', oos.account_number, class: "form-control account_number-item", onkeypress: "return isNumber(event);"
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][id]', oos.id
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1
+      %fieldset
+        %legend Estudios
+        .row
+          %section.col.col-5
+            %label.label Colegio Primaria
+            %label.input{for: "primaryschool"}
+              = f.input :primaryschool, placeholder: "Colegio", input_html: { class: 'form-control' }, label: false
+          %section.col.col-3
+            %label.label Lugar
+            %label.input{for: "primarydistrict"}
+              = f.input :primarydistrict, input_html: { class: 'form-control' }, label: false
+          %section.col.col-2
+            %label.label Desde
+            %label.input{for: "primarystartdate"}
+              = f.input :primarystartdate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+          %section.col.col-2
+            %label.label Hasta
+            %label.input{for: "primaryenddate"}
+              = f.input :primaryenddate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+        .row
+          %section.col.col-5
+            %label.label Colegio Secundaria
+            %label.input{for: "highschool"}
+              = f.input :highschool, placeholder: "Colegio", input_html: { class: 'form-control' }, label: false
+          %section.col.col-3
+            %label.label Lugar
+            %label.input{for: "highschooldistrict"}
+              = f.input :highschooldistrict, input_html: { class: 'form-control' }, label: false
+          %section.col.col-2
+            %label.label Desde
+            %label.input{for: "highschoolstartdate"}
+              = f.input :highschoolstartdate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+          %section.col.col-2
+            %label.label Hasta
+            %label.input{for: "highschoolenddate"}
+              = f.input :highschoolenddate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+        .row
+          %section.col.col-5
+            %label.label Nivel de instruccion
+            %label.input{for: "levelofinstruction"}
+              = f.input :levelofinstruction, placeholder: "Nivel de Instruccion", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-2
+            %label.control-label(for="centerofstudy_id") Universidad / Instituto / Otros estudios
+        .row
+          %section.col.col-3
+            = text_field_tag 'name', nil, class: 'form-control', id: 'centerofstudy-name', placeholder: 'Universidad / Instituto / Otros estudios'
+          %section.col.col-3
+            = text_field_tag 'profession', nil, class: 'form-control', id: 'centerofstudy-profession', placeholder: 'Profesión'
+          %section.col.col-3
+            = text_field_tag 'title', nil, class: 'form-control', id: 'centerofstudy-title', placeholder: 'Titulo / Grado'
+          %section.col.col-3
+            = text_field_tag 'numberoftuition', nil, class: 'form-control', id: 'centerofstudy-numberoftuition', placeholder: 'N° de coleg.'
+        .row
+          %section.col.col-3
+            %label Desde
+            %input#centerofstudy-start_date.string.optional.form-control{'name'=>'start_date', type: "date"}
+          %section.col.col-3
+            %label Hasta
+            %input#centerofstudy-end_date.string.optional.form-control{'name'=>'end_date', type: "date"}
+
+          %section.col.col-2
+            %div
+              %a(href="javascript:add_centerofstudy_item();" id="btn-add-centerofstudy" class="btn btn-success" role="button")
+                Agregar Centro de Estudios
+
+        .col-lg-13
+          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th.col-2 Universidad/Instituto
+                %th.col-2 Profesion
+                %th.col-2 Título
+                %th.col-2 N° de Coleg.
+                %th.col-2 Fecha de Comienzo
+                %th.col-2 Fecha de Fin
+                %th Eliminar
+            %tbody(id="centerofstudy_items_table")
+              - if @action == 'edit'
+                - puts @worker.worker_details
+                - @worker.worker_details.each do |oos|
+                  %tr
+                    %td.bank-id(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][bank_id]', oos.bank.id
+                    %td.col-2=oos.bank.business_name
+                    %td.col-5.account_number
+                      = text_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][account_number]', oos.account_number, class: "form-control account_number-item", onkeypress: "return isNumber(event);"
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][id]', oos.id
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1
+        .row
+          %section.col.col-2
+            %label.control-label(for="otherstudy_id")Otros estudios
+        .row
+          %section.col.col-3
+            = text_field_tag 'study', nil, class: 'form-control', id: 'otherstudy-study', placeholder: 'Otros estudios'
+          %section.col.col-3
+            = text_field_tag 'level', nil, class: 'form-control', id: 'otherstudy-level', placeholder: 'Nivel'
+
+          %section.col.col-2
+            %div
+              %a(href="javascript:add_otherstudy_item();" id="btn-add-otherstudy" class="btn btn-success" role="button")
+                Agregar Otros de Estudios
+
+        .col-lg-13
+          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th.col-4 Otros Estudios
+                %th.col-4 Nivel
+                %th Eliminar
+            %tbody(id="otherstudy_items_table")
+              - if @action == 'edit'
+                - puts @worker.worker_details
+                - @worker.worker_details.each do |oos|
+                  %tr
+                    %td.bank-id(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][bank_id]', oos.bank.id
+                    %td.col-2=oos.bank.business_name
+                    %td.col-5.account_number
+                      = text_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][account_number]', oos.account_number, class: "form-control account_number-item", onkeypress: "return isNumber(event);"
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][id]', oos.id
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1
+      %fieldset
+        %legend Experiencia Laboral
+        .row
+          %section.col.col-2
+            %label.control-label(for="experience_id") Experiencia
+        .row
+          %section.col.col-6
+            = text_field_tag 'businessname', nil, class: 'form-control', id: 'experience-businessname', placeholder: 'Empresa'
+          %section.col.col-6
+            = text_field_tag 'businessaddress', nil, class: 'form-control', id: 'experience-businessaddress', placeholder: 'Dirección'
+        .row
+          %section.col.col-3
+            = text_field_tag 'title', nil, class: 'form-control', id: 'experience-title', placeholder: 'Cargo'
+          %section.col.col-3
+            = text_field_tag 'salary', nil, class: 'form-control', id: 'experience-salary', placeholder: 'Sueldo'
+          %section.col.col-3
+            = text_field_tag 'bossincharge', nil, class: 'form-control', id: 'experience-bossincharge', placeholder: 'Jefe inmediato'
+          %section.col.col-3
+            = text_field_tag 'exitreason', nil, class: 'form-control', id: 'experience-exitreason', placeholder: 'Motivo de Salida'
+        .row
+          %section.col.col-3
+            %label Desde
+            %input#experience-start_date.string.optional.form-control{'name'=>'start_date', type: "date"}
+          %section.col.col-3
+            %label Hasta
+            %input#experience-end_date.string.optional.form-control{'name'=>'end_date', type: "date"}
+
+          %section.col.col-2
+            %div
+              %a(href="javascript:add_experience_item();" id="btn-add-experience" class="btn btn-success" role="button")
+                Agregar Empresa
+
+        .col-lg-13
+          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th.col-2 Empresa
+                %th.col-2 Dirección
+                %th.col-2 Cargo
+                %th.col-2 Salario
+                %th.col-2 Jefe inmediato
+                %th.col-2 Motivo de Salida
+                %th.col-2 Fecha de Inicio
+                %th.col-2 Fecha de Fin
+                %th Eliminar
+            %tbody(id="experience_items_table")
+              - if @action == 'edit'
+                - puts @worker.worker_details
+                - @worker.worker_details.each do |oos|
+                  %tr
+                    %td.bank-id(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][bank_id]', oos.bank.id
+                    %td.col-2=oos.bank.business_name
+                    %td.col-5.account_number
+                      = text_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][account_number]', oos.account_number, class: "form-control account_number-item", onkeypress: "return isNumber(event);"
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][id]', oos.id
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1
+        .row
+          %section.col.col-5
+            %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?
+            %br
+            .input-group
+              %select.col-sm-5.form-control#type{:name =>"worker[quality]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
+                %option{:value => "0", :selected => 'selected'} Seleccione
+                %option{:value => "si"} Si
+                %option{:value => "no"} No
+          %section.col.col-5
+            %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE SEGURIDAD?
+            %br
+            .input-group
+              %select.col-sm-5.form-control#type{:name =>"worker[security]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
+                %option{:value => "0", :selected => 'selected'} Seleccione
+                %option{:value => "si"} Si
+                %option{:value => "no"} No
+        .row
+          %section.col.col-5
+            %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE MEDIOAMBIENTE?
+            %br
+            .input-group
+              %select.col-sm-5.form-control#type{:name =>"worker[enviroment]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
+                %option{:value => "0", :selected => 'selected'} Seleccione
+                %option{:value => "si"} Si
+                %option{:value => "no"} No
+          %section.col.col-5
+            %label.control-label TIENE CONOCIMIENTOS DE LA LEGISLACION LABORAL?
+            %br
+            .input-group
+              %select.col-sm-5.form-control#type{:name =>"worker[labor_legislation]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
+                %option{:value => "0", :selected => 'selected'} Seleccione
+                %option{:value => "si"} Si
+                %option{:value => "no"} No
+      %fieldset
+        %legend Documentación Adjunta
+        .row
+          %section.col.col-md-12
+            .col-md-5
+              %label.label Curriculum Vitae Documentado o
+              %label.label Constacias de Trabajo o Certifidaco de Calificacion
+            .col-md-7
+              = f.input :cv, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+              %p.help-block.col-md-
+                - if @action == 'edit' && @photo.photo.exists?
+                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - else
+                  Subir el archivo correspondiente
+        .row
+          %section.col.col-md-12
+            .col-md-5
+              %label.label Certificado de Antecedentes Policiales
+            .col-md-7
+              = f.input :antecedent_police, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+              %p.help-block
+                - if @action == 'edit' && @photo.photo.exists?
+                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - else
+                  Subir el archivo correspondiente
+        .row
+          %section.col.col-md-12
+            .col-md-5
+              %label.label Documento Nacional de Identidad
+            .col-md-7
+              = f.input :dni, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+              %p.help-block
+                - if @action == 'edit' && @photo.photo.exists?
+                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - else
+                  Subir el archivo correspondiente
+        .row
+          %section.col.col-md-12
+            .col-md-5
+              %label.label Carta de Deposito de C.T.S.
+            .col-md-7
+              = f.input :cts_deposit_letter, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+              %p.help-block
+                - if @action == 'edit' && @photo.photo.exists?
+                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - else
+                  Subir el archivo correspondiente
+        .row
+          %section.col.col-md-12
+            .col-md-5
+              %label.label Carta de Fondos Previsionales
+            .col-md-7
+              = f.input :pension_funds_letter, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+              %p.help-block
+                - if @action == 'edit' && @photo.photo.exists?
+                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - else
+                  Subir el archivo correspondiente
+        .row
+          %section.col.col-md-12
+            .col-md-5
+              %label.label Declaración Jurada
+            .col-md-7
+              = f.input :affidavit, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+              %p.help-block
+                - if @action == 'edit' && @photo.photo.exists?
+                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - else
+                  Subir el archivo correspondiente
+
+        .row
+          %section.col.col-md-12
+            .col-md-5
+              %label.label Certificado de Convivencia / Partida de Matrimonio
+            .col-md-7
+              = f.input :marriage_certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+              %p.help-block.col-md-
+                - if @action == 'edit' && @photo.photo.exists?
+                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - else
+                  Subir el archivo correspondiente
+
+        .row
+          %section.col.col-md-12
+            .col-md-5
+              %label.label Partida de Nacimiento de Hijos
+            .col-md-7
+              = f.input :birth_certificate_of_childer, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+              %p.help-block.col-md-
+                - if @action == 'edit' && @photo.photo.exists?
+                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - else
+                  Subir el archivo correspondiente
+
+        .row
+          %section.col.col-md-12
+            .col-md-5
+              %label.label DNI Hijos y Esposa
+            .col-md-7
+              = f.input :dni_wife_kids, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+              %p.help-block.col-md-
+                - if @action == 'edit' && @photo.photo.exists?
+                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - else
+                  Subir el archivo correspondiente
+
+        .row
+          %section.col.col-md-12
+            .col-md-5
+              %label.label Constancia de Matricula (Asig. Escolar)
+            .col-md-7
+              = f.input :schoolar_certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+              %p.help-block.col-md-
+                - if @action == 'edit' && @photo.photo.exists?
+                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - else
+                  Subir el archivo correspondiente
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -139,12 +551,6 @@
             },
             'worker[maternal_surname]' : {
               required : true,
-            },
-            'worker[dni]' : {
-              required : true,
-              digits: true,
-              maxlength: 8,
-              minlength: 8
             }
           },
 
@@ -164,12 +570,6 @@
             },
             'worker[maternal_surname]' : {
               required : 'Por favor, ingresar el apellido Materno.'
-            },
-            'worker[dni]' : {
-              required : 'Por favor, ingresar el DNI.',
-              digits: 'Por favor, ingresar un DNI válido',
-              maxlength: 'Por favor, ingresar un DNI válido',
-              minlength: 'Por favor, ingresar un DNI válido'
             }
           },
 
@@ -206,6 +606,30 @@
     str_item = {authenticity_token: "#{form_authenticity_token}", bank_id: $("#bank-select").val(), account_number: $("#bank-account_number").val()};
 
     append_url_ajax('#{add_worker_item_field_production_workers_path}', 'bank_items_table', str_item, 0, 'POST');
+  }
+
+  function add_familiar_item(){
+    str_item = {authenticity_token: "#{form_authenticity_token}", paternal_surname: $("#familiar-paternal_surname").val(), maternal_surname: $("#familiar-maternal_surname").val(), names: $("#familiar-names").val(), relationship: $("#familiar-relationship").val(), dayofbirth: $("#familiar-dayofbirth").val(), dni: $("#familiar-dni").val()};
+
+    append_url_ajax('#{add_familiar_item_field_production_workers_path}', 'familiar_items_table', str_item, 0, 'POST');
+  }
+
+  function add_centerofstudy_item(){
+    str_item = {authenticity_token: "#{form_authenticity_token}", nameu: $("#centerofstudy-name").val(), profession: $("#centerofstudy-profession").val(), title: $("#centerofstudy-title").val(), numberoftuition: $("#centerofstudy-numberoftuition").val(), start_date: $("#centerofstudy-start_date").val(), end_date: $("#centerofstudy-end_date").val()};
+
+    append_url_ajax('#{add_centerofstudy_item_field_production_workers_path}', 'centerofstudy_items_table', str_item, 0, 'POST');
+  }
+
+  function add_experience_item(){
+    str_item = {authenticity_token: "#{form_authenticity_token}", businessname: $("#experience-businessname").val(), businessaddress: $("#experience-businessaddress").val(), title2: $("#experience-title").val(), salary: $("#experience-salary").val(), bossincharge: $("#experience-bossincharge").val(), exitreason: $("#experience-exitreason").val(), start_date2: $("#experience-start_date").val(), end_date2: $("#experience-end_date").val()};
+
+    append_url_ajax('#{add_experience_item_field_production_workers_path}', 'experience_items_table', str_item, 0, 'POST');
+  }
+
+  function add_otherstudy_item(){
+    str_item = {authenticity_token: "#{form_authenticity_token}", study: $("#otherstudy-study").val(), level: $("#otherstudy-level").val()};
+
+    append_url_ajax('#{add_otherstudy_item_field_production_workers_path}', 'otherstudy_items_table', str_item, 0, 'POST');
   }
 
   function delete_item(code){
