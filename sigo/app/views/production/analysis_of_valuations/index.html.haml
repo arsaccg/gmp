@@ -39,7 +39,7 @@
                 %option{:value => "#{ex.entity_id}"}
                   = Entity.find_by_id(ex.entity_id).name
         .col-md-2
-          %label Maestro de Obra
+          %label Capataz
           %br
           %label.input{for: "master_builder_id"}
             %select.form-control#master{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
@@ -181,7 +181,7 @@
           
         $('#master').empty();
         $('#master').append(
-            $("<option></option>").attr("value", 0).text("Seleccione un maestro")
+            $("<option></option>").attr("value", 0).text("Seleccione un capataz")
         )
         $.each(newOptions, function(key,value){
           $('#master').append(
