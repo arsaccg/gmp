@@ -456,6 +456,11 @@ ArsacLogistica::Application.routes.draw do
 
   namespace :administration do
     resources :document_provisions
-    resources :provisions
+    resources :provisions do
+      collection do
+        post 'display_orders'
+        post 'display_details_orders'
+      end
+    end
   end
 end
