@@ -43,7 +43,7 @@
           %br
           %label.input{for: "master_builder_id"}
             %select.form-control#master{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
-              %option{:value => "0"} Seleccione un maestro
+              %option{:value => "0"} Seleccione un capataz
               - @master_builders.each do |master_builder|
                 %option{:value => "#{master_builder.id}"}
                   = master_builder.entity.name + ' ' + master_builder.entity.paternal_surname

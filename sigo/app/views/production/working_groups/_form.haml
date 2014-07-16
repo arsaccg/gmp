@@ -41,7 +41,7 @@
                       = executor.name
         .row
           %section.col.col-10
-            %label.label Maestro de Obra
+            %label.label Capataz
             %label.input{for: "master_builder_id"}
               %select.form-control{:name =>"working_group[master_builder_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @master_builders.each do |master_builder|
@@ -51,6 +51,7 @@
                   -else
                     %option{:value => "#{master_builder.id}"}
                       = master_builder.entity.name.to_s + ' ' + master_builder.entity.second_name.to_s + ' ' + master_builder.entity.paternal_surname.to_s + ' ' + master_builder.entity.maternal_surname.to_s
+
         .row
           %section.col.col-10
             %label.label Activo
