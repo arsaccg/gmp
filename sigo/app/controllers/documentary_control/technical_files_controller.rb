@@ -37,6 +37,7 @@ class DocumentaryControl::TechnicalFilesController < ApplicationController
   def edit
     @tech = TechnicalFile.find(params[:id])
     @cost_center = get_company_cost_center('cost_center')
+    @type_tech = TypeOfTechnicalFile.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @action = 'edit'
     render layout: false
   end

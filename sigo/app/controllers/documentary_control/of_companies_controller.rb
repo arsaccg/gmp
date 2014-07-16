@@ -38,6 +38,7 @@ class DocumentaryControl::OfCompaniesController < ApplicationController
   def edit
     @com = OfCompany.find(params[:id])
     @cost_center = get_company_cost_center('cost_center')
+    @type_com = TypeOfCompany.where("company_id = ?", get_company_cost_center('company').to_s)
     @action = 'edit'
     render layout: false
   end

@@ -37,6 +37,7 @@ class DocumentaryControl::WorkReportsController < ApplicationController
   def edit
     @cost_center = get_company_cost_center('cost_center')
     @wor = WorkReport.find(params[:id])
+    @type_wor = TypeOfWorkReport.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @action = 'edit'
     render layout: false
   end

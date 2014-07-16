@@ -37,6 +37,7 @@ class DocumentaryControl::RecordOfMeetingsController < ApplicationController
   def edit
     @rec = RecordOfMeeting.find(params[:id])
     @cost_center = get_company_cost_center('cost_center')
+    @type_rec = TypeOfRecordOfMeeting.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @action = 'edit'
     render layout: false
   end

@@ -38,6 +38,7 @@ class DocumentaryControl::IssuedLettersController < ApplicationController
   def edit
     @issu = IssuedLetter.find(params[:id])
     @cost_center = get_company_cost_center('cost_center')
+    @type_issu = TypeOfIssuedLetter.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @action = 'edit'
     render layout: false
   end
