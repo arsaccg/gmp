@@ -75,11 +75,13 @@
     $.SmartMessageBox({
       title : "Validación de DNI",
       content : "Por favor ingrese el DNI",
-      buttons : "[Validar]",
+      buttons : "[Cancelar][Validar]",
       input : "text",
       placeholder : "Ingrese aqui el DNI"
     }, function(ButtonPress, Value) {
-      load_url_ajax('#{new_production_worker_path}', 'content', {company_id: '#{@company}',dni: Value}, null, 'GET');
+      if(ButtonPress=='Validar'){
+        load_url_ajax('#{new_production_worker_path}', 'content', {company_id: '#{@company}',dni: Value}, null, 'GET');
+      }
     });
     e.preventDefault();
   })
