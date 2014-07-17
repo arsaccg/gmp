@@ -318,7 +318,7 @@
           });
 
           if(status_detail){
-            data = { ids_orders_details: data_orders_detail, authenticity_token: "#{form_authenticity_token}" };
+            data = { ids_orders_details: data_orders_detail, authenticity_token: "#{form_authenticity_token}", type_of_order: $('#type_of_order_name').val() };
             load_items_delivery_order_ajax('#{puts_details_in_provision_administration_provisions_path}', 'provisions_items_table', data);
 
             $.smallBox({

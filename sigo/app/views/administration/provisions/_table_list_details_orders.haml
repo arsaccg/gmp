@@ -1,4 +1,5 @@
 - if @data_orders.count > 0
+  = hidden_field_tag "type_of_order_name", @type_order, id: 'type_of_order_name'
   %table#list-orders-details.table.table-striped.table-bordered.table-hover.smart-form
     %thead
       %tr
