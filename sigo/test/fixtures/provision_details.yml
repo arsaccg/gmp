@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  provision_id: 1
+  order_detail_id: 1
+  type_of_order: MyString
+  account_accountant_id: 1
+  amount: 1
+  unit_price_igv: 1.5
+
+two:
+  provision_id: 1
+  order_detail_id: 1
+  type_of_order: MyString
+  account_accountant_id: 1
+  amount: 1
+  unit_price_igv: 1.5

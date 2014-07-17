@@ -1,0 +1,10 @@
+%tr(class="concept_item"){id: "tr" + @reg_n.to_s}
+  %td.bank-id(style="display:none")
+    = hidden_field_tag 'concept[concept_details_attributes][' + @reg_n.to_s + '][subconcept_id]', @subconcept.id.to_i
+    = hidden_field_tag 'concept[concept_details_attributes][' + @reg_n.to_s + '][category]', @category.to_s
+  %td.col-2
+    = @subconcept.name.to_s
+  %td.col-md-1.account_number{:style => "width:5%"}
+    = @category.to_s
+  %td{:style => "width: 1%;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
