@@ -467,5 +467,6 @@ ArsacLogistica::Application.routes.draw do
         post 'puts_details_in_provision'
       end
     end
+    resources :account_accountant
   end
 end
