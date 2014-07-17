@@ -55,7 +55,6 @@ class Administration::ProvisionsController < ApplicationController
         end
       end
     elsif @type_order == 'service_order'
-      puts 'entra'
       orders.each do |order_id|
         if OrderOfService.find(order_id).approved?
           puts 'aprovado'
@@ -66,8 +65,11 @@ class Administration::ProvisionsController < ApplicationController
         end
       end
     end
-    puts @data_orders.inspect
     render(:partial => 'table_list_details_orders', :layout => false)
+  end
+
+  def puts_details_in_provision
+    render(:partial => 'row_detail_provision', :layout => false)
   end
 
   private

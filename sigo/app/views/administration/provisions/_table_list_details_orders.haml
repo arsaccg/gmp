@@ -1,10 +1,11 @@
 - if @data_orders.count > 0
-  %table#list-orders.table.table-striped.table-bordered.table-hover.smart-form
+  %table#list-orders-details.table.table-striped.table-bordered.table-hover.smart-form
     %thead
       %tr
         %th Código del Insumo
         %th Nombre del Insumo
         %th Cantidad
+        %th Por atender
         %th Precio sin IGV
         %th Precio con IGV
         %th Descripción
@@ -17,6 +18,8 @@
           = order[1]
         %td
           = order[2]
+        %td
+
         %td
           = number_to_currency((order[4]*order[2]), unit: 'S/. ', precision: 2)
         %td
