@@ -1,0 +1,180 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Conceptos
+  .widget-body
+    = simple_form_for([:payrolls, @con], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row
+          %section.col.col-10
+            %label.label Nombre
+            %label.input
+              %i.icon-append.fa.fa-credit-card
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label Código
+            %label.input
+              = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label Porcentaje
+            %label.input
+              = f.input :percentage, placeholder: "Porcentaje", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-8
+            %label.label Monto
+            %label.input
+              = f.input :amount, placeholder: "Monto", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label Tope
+            %label.input
+              = f.input :top, placeholder: "Tope", input_html: { class: 'form-control' }, label: false
+
+      %fieldset
+        %legend Aportaciones a las que afecta
+        .row
+          %section.col.col-2
+            %label.control-label Detalle
+          %section.col.col-6
+            %select#conde.select2.form-control{"style"=>'width:100%;padding: 0;border: none;'}
+              %option{:value => "0"} Seleccione
+              - @conde.each do |con|
+                %option{:value => "#{con.id}"}
+                  = con.name
+          %section.col.col-4
+            %div
+              %a(href="javascript:add_concept();" id="btn-add-con" class="btn btn-success" role="button")
+                Agregar concepto
+
+        .row
+          .section.col.col-md-8
+            .form-group.in-line
+              .col-md-1
+              .col-md-10
+                %label.radio-inline
+                  %input.radiobox#t{:name=>"but",:type => 'radio', :value => "Trabajador"}
+                  %span Trabajador
+                %label.radio-inline
+                  %input.radiobox#e{:name=>"but",:type => 'radio', :value => "Empresa"}
+                    %span Empresa
+
+        %br  
+        %br
+
+        .col-lg-12
+          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th.col-2 Nombre
+                %th.col-5 Tipo
+                %th Eliminar
+            %tbody#concept_items_table
+              - if @action == 'edit'
+                - @coned.each do |oos|
+                  %tr
+                    %td(style="display:none")
+                      = hidden_field_tag 'concept[concept_details_attributes][' + @reg_n.to_s + '][id]', oos.id
+                    %td(style="display:none")
+                      = hidden_field_tag 'concept[concept_details_attributes][' + @reg_n.to_s + '][concept_id]', oos.concept_id
+                    %td(style="display:none")
+                      = hidden_field_tag 'concept[concept_details_attributes][' + @reg_n.to_s + '][subconcept_id]', oos.subconcept_id
+                    %td(style="display:none")
+                      = hidden_field_tag 'concept[concept_details_attributes][' + @reg_n.to_s + '][category]', oos.category
+                    %td=Concept.find(oos.subconcept_id).name.to_s
+                    %td= oos.category
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'concept[concept_details_attributes]', '[' + @reg_n.to_s + '][status]'
+                        %i
+                    - @reg_n += 1
+
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    $('select').select2();
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_concept'));
+    }
+
+  });
+  
+  function submit_validate(form){    
+    loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'concept[code]' : {
+              required : true
+            },
+            'concept[name]' : {
+              required : true
+            },
+            'concept[top]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'concept[code]' : {
+              required : 'Por favor, ingresar el código.'
+            },
+            'concept[name]' : {
+              required : 'Por favor, ingresar el nombre.'
+            },
+            'concept[top]' : {
+              required : 'Por favor, ingresar monto máximo.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
+
+  function add_concept(){
+    var cat = ""
+    if(document.getElementById('t').checked){
+      cat = $("#t").val()
+    }
+    if(document.getElementById('e').checked){
+      cat = $("#e").val()
+    }
+    console.log($("#conde").val());
+    console.log(cat);
+    console.log(cat.length);
+    if($("#conde").val() != 0 && cat.length > 1){
+      str_item = {authenticity_token: "#{form_authenticity_token}", subconcept: $("#conde").val(), category: cat};
+      append_url_ajax('#{add_subconcept_payrolls_concepts_path}', 'concept_items_table', str_item, 0, 'POST');
+    }else{
+      alert("Escoja un concepto a usar y de que tipo es");
+    }
+  }
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
+
