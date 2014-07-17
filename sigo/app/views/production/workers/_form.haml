@@ -8,18 +8,38 @@
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
+          %input{ 'name' => 'worker[entity_id]', 'value' => "#{@entity.id}", 'readonly' => true, 'style' => 'display:none' }
         .row
           %section.col.col-10
             %label.label Entidad Trabajador
             %label.input{for: "entity_id"}
-              %select.form-control{:name =>"worker[entity_id]", :style => 'width:100%;padding: 0;border: none;'}
-                - @entities.each do |entity|
-                  - if @worker.entity_id == entity.id
-                    %option{:value => "#{entity.id}", :selected => true}
-                      = entity.paternal_surname
-                  - else
-                    %option{:value => "#{entity.id}"}
-                      = entity.paternal_surname + ' ' + entity.maternal_surname + ', ' + entity.name
+              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname+' '+@entity.maternal_surname+' '+@entity.name, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+        .row
+          %section.col.col-3
+            %label Fecha de Nacimiento
+            %input#familiar-dayofbirth.string.optional.form-control{'name'=>'date_of_birth', type: "date", :value => "#{@entity.date_of_birth}", disabled: "disabled"}
+          %section.col.col-10
+            %label.label DNI
+            %label.input{for: "dni"}
+              = text_field_tag 'worker[dni]', @entity.dni, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+          %section.col.col-10
+            %label.label Carnet de Extranjeria
+            %label.input{for: "alienslicense"}
+              = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+        %label.label Lugar de Nacimiento
+        .row
+          %section.col.col-4
+            %label.label Ciudad
+            %label.input{for: "city"}
+              = text_field_tag 'worker[city]', @entity.city, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+          %section.col.col-4
+            %label.label Provincia
+            %label.input{for: "province"}
+              = text_field_tag 'worker[province]', @entity.province, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+          %section.col.col-4
+            %label.label Departamento
+            %label.input{for: "department"}
+              = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
         .row
           %section.col.col-4
             %label.label Email
@@ -34,6 +54,7 @@
             %label.label Celular
             %label.input{for: "cellphone"}
               = f.input :cellphone, input_html: { class: 'form-control' }, label: false
+        %label.label Residencia Actual
         .row
           %section.col.col-8
             %label.label Dirección
@@ -56,6 +77,22 @@
             %label.label Departamento
             %label.input{for: "department"}
               = f.input :department, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-5
+            %label.label Licencia de Conducir
+            %label.input{for: "driverlicense"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :driverlicense, placeholder: "Licencia de Conducir", input_html: { class: 'form-control' }, label: false
+          %section.col.col-5
+            %label.control-label Estado Civil
+            %br
+            .input-group
+              %select.col-sm-6.form-control#type{:name =>"worker[maritalstatus]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px' }
+                %option{:value => "0", :selected => 'selected'} Seleccione un estado
+                %option{:value => "soltero"} Soltero
+                %option{:value => "casado"} Casado
+                %option{:value => "divorciado"} Divorciado
+                %option{:value => "viudo"} Viudo
 
       %fieldset
         %legend Bancos
