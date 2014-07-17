@@ -238,8 +238,8 @@
 
     wizard.on('change', function(e, data){
 
-      var status = false;
-      var data_orders = new Array();
+      var status = false; var status_detail = false;
+      var data_orders = new Array(); var data_orders_detail = new Array();
 
       if(data.step == 1 && data.direction == 'next'){
         supplier = $('#supplier-selected').val();
@@ -306,18 +306,66 @@
       }
 
       if(data.step == 3 && data.direction == 'next') {
-        console.log('3')
-        console.log(data)
+        if($('#list-orders-details tbody tr td.orders-checked').length > 0){
+
+          var index = 0;
+          $('#list-orders-details tbody tr td.orders-checked .checkbox .order_check').each(function(){
+            if( $(this).is(':checked') ){
+              status_detail = true
+              data_orders_detail[index] = $(this).val();
+              index++;
+            }
+          });
+
+          if(status_detail){
+            data = { ids_orders_details: data_orders_detail, authenticity_token: "#{form_authenticity_token}", type_of_order: $('#type_of_order_name').val() };
+            load_items_delivery_order_ajax('#{puts_details_in_provision_administration_provisions_path}', 'provisions_items_table', data);
+
+            $.smallBox({
+              title: "Ahora puedes completar la información de la provisión.",
+              content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+              color: "#5F895F",
+              iconSmall: "fa fa-check bounce animated",
+              timeout: 4000
+            });
+
+          } else {
+
+            e.preventDefault();
+            $.smallBox({
+              title: "Antes de continuar debes de haber seleccionado alguna Orden.",
+              content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+              color: "#c46a69",
+              iconSmall: "fa fa-times bounce animated",
+              timeout: 4000
+            });
+          }
+
+        } else {
+
+          e.preventDefault();
+          $.smallBox({
+            title: "El proveedor seleccionado no tiene orden alguna asignada.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });
+
+        }
       }
 
       if(data.step == 4 && data.direction == 'next') {
-        console.log('4')
-        console.log(data)
-      }
-
-      if(data.step == 5 && data.direction == 'next') {
-        console.log('5')
-        console.log(data)
+        if($('#provisions_items_table').length < 2 ){
+          e.preventDefault();
+          $.smallBox({
+            title: "No se tiene datos en el Detalle de la Provisión.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });
+        }
       }
 
     });

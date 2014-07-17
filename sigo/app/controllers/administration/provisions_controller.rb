@@ -55,7 +55,6 @@ class Administration::ProvisionsController < ApplicationController
         end
       end
     elsif @type_order == 'service_order'
-      puts 'entra'
       orders.each do |order_id|
         if OrderOfService.find(order_id).approved?
           puts 'aprovado'
@@ -66,8 +65,28 @@ class Administration::ProvisionsController < ApplicationController
         end
       end
     end
-    puts @data_orders.inspect
     render(:partial => 'table_list_details_orders', :layout => false)
+  end
+
+  def puts_details_in_provision
+    @data_orders = Array.new
+    order_detail_ids = params[:ids_orders_details]
+    @type_of_order_name = params[:type_of_order]
+    @reg_n = ((Time.now.to_f)*100).to_i
+
+    if @type_of_order_name == 'purchase_order' 
+      order_detail_ids.each do |order_detail_id|
+        purchase_order_detail = PurchaseOrderDetail.find(order_detail_id)
+        @data_orders << [ purchase_order_detail.id, purchase_order_detail.article.code, purchase_order_detail.article.name, purchase_order_detail.article.unit_of_measurement.symbol, purchase_order_detail.amount, purchase_detail.unit_price, purchase_order_detail.unit_price_igv ]
+      end
+    elsif @type_of_order_name == 'service_order'
+      order_detail_ids.each do |order_detail_id|
+        service_order_detail = OrderOfServiceDetail.find(order_detail_id)
+        @data_orders << [ service_order_detail.id, service_order_detail.article.code, service_order_detail.article.name, service_order_detail.article.unit_of_measurement.symbol, service_order_detail.amount, service_order_detail.unit_price ,service_order_detail.unit_price_igv ]
+      end
+    end
+
+    render(:partial => 'row_detail_provision', :layout => false)
   end
 
   private
