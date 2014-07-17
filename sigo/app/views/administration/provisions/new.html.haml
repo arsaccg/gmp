@@ -81,22 +81,15 @@
   }
 
   // PAGE RELATED SCRIPTS
-  function calculatePriceWithourIgv(element){
-    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
-
-    var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
-
-    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
-    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
-  }
 
   function calculatePrice(element){
     var amount = parseInt($(element).val());
-
-    var price_without_igv = parseFloat($(element).parent().siblings('.unit-price').find('input').val() * amount).toFixed(2);
-
-    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
-    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+    var igv = parseFloat($(element).parent().siblings('.current-igv').find('input').val());
+    var unit_price = parseFloat($(element).parent().siblings('.unit-price').find('input').val()).toFixed(2);
+    console.log(amount*unit_price)
+    console.log(amount*unit_price*(1+igv))
+    var total_price = parseFloat(amount*unit_price*(1+igv)).toFixed(2);
+    $(element).parent().siblings('.price-with-igv').find('input').val(total_price);
   }
 
   function isNumber(evt) {
@@ -356,10 +349,11 @@
       }
 
       if(data.step == 4 && data.direction == 'next') {
-        if($('#provisions_items_table').length < 2 ){
+        var $valid = $("#new_provision").valid();
+        if (!$valid) {
           e.preventDefault();
           $.smallBox({
-            title: "No se tiene datos en el Detalle de la Provisión.",
+            title: "No se tiene datos necesarios de la Provisión.",
             content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
             color: "#c46a69",
             iconSmall: "fa fa-times bounce animated",

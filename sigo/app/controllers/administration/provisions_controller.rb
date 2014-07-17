@@ -73,16 +73,25 @@ class Administration::ProvisionsController < ApplicationController
     order_detail_ids = params[:ids_orders_details]
     @type_of_order_name = params[:type_of_order]
     @reg_n = ((Time.now.to_f)*100).to_i
+    @account_accountants = AccountAccountant.all
 
     if @type_of_order_name == 'purchase_order' 
       order_detail_ids.each do |order_detail_id|
         purchase_order_detail = PurchaseOrderDetail.find(order_detail_id)
-        @data_orders << [ purchase_order_detail.id, purchase_order_detail.article.code, purchase_order_detail.article.name, purchase_order_detail.article.unit_of_measurement.symbol, purchase_order_detail.amount, purchase_detail.unit_price, purchase_order_detail.unit_price_igv ]
+        igv = 0
+        if purchase_order_detail.igv != nil
+          igv = (purchase_order_detail.unit_price_igv/(purchase_order_detail.amount*purchase_order_detail.unit_price))-1
+        end
+        @data_orders << [ purchase_order_detail.id, purchase_order_detail.article.code, purchase_order_detail.article.name, purchase_order_detail.article.unit_of_measurement.symbol, purchase_order_detail.amount, purchase_detail.unit_price, purchase_order_detail.unit_price_igv, igv ]
       end
     elsif @type_of_order_name == 'service_order'
       order_detail_ids.each do |order_detail_id|
         service_order_detail = OrderOfServiceDetail.find(order_detail_id)
-        @data_orders << [ service_order_detail.id, service_order_detail.article.code, service_order_detail.article.name, service_order_detail.article.unit_of_measurement.symbol, service_order_detail.amount, service_order_detail.unit_price ,service_order_detail.unit_price_igv ]
+        igv = 0
+        if service_order_detail.igv != nil
+          igv = (service_order_detail.unit_price_igv/(service_order_detail.amount*service_order_detail.unit_price))-1
+        end
+        @data_orders << [ service_order_detail.id, service_order_detail.article.code, service_order_detail.article.name, service_order_detail.article.unit_of_measurement.symbol, service_order_detail.amount, service_order_detail.unit_price ,service_order_detail.unit_price_igv, igv ]
       end
     end
 
@@ -91,6 +100,24 @@ class Administration::ProvisionsController < ApplicationController
 
   private
   def provisions_parameters
-    params.require(:provision).permit(:cost_center_id, :entity_id, :document_provision_id, :number_document_provision, :accounting_date, :series, :description)
+    params.require(:provision).permit(
+      :cost_center_id, 
+      :entity_id, 
+      :document_provision_id, 
+      :number_document_provision, 
+      :accounting_date, 
+      :series, 
+      :description,
+      provision_details_attributtes: [
+        :id,
+        :provision_id,
+        :order_detail_id,
+        :type_of_order,
+        :account_accountant_id,
+        :amount,
+        :unit_price_igv,
+        :_destroy
+      ]
+    )
   end
 end
