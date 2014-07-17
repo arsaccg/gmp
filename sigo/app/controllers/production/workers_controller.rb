@@ -27,13 +27,23 @@ class Production::WorkersController < ApplicationController
   end
 
   def new
-    @worker = Worker.new
-    @articles = TypeOfArticle.find_by_code('01').articles
-    @positionWorkers = PositionWorker.all
-    @company = params[:company_id]
-    @banks = Bank.all
-    @entities = TypeEntity.find_by_name('Trabajadores').entities
-    render layout: false
+    @entity = Entity.find_by_dni(params[:dni])
+    if @entity.nil?
+      @reg_n = Time.now.to_i
+      @type_entities = TypeEntity.all
+      @entity = Entity.new
+      @company_id = params[:company_id]
+      @costCenter = Company.find(params[:company_id]).cost_centers
+      redirect_to url_for(:controller => "logistics/entities", :action => :new, :company_id => @company_id, :type => 'worker')
+    else      
+      @worker = Worker.new
+      @articles = TypeOfArticle.find_by_code('01').articles
+      @positionWorkers = PositionWorker.all
+      @company = params[:company_id]
+      @banks = Bank.all
+      @entities = TypeEntity.find_by_name('Trabajadores').entities
+      render layout: false
+    end
   end
 
   def create
