@@ -58,21 +58,19 @@
       .row
         .col-md-4
           .form-group
-            %label.col-md-4.control-label Fecha de Emisión
+            %label.col-md-4.control-label Tipo Documento
             .col-md-8
               .input-group
                 %select.select2.form-control{:name => 'provision[document_provision_id]', :style => 'width:100%;padding: 0;border: none;'}
                   - @documentProvisions.each do |x|
                     %option(value = "#{x.id}")
                       = x.name
-                %span.input-group-addon
-                  %i.fa.fa-calendar
         .col-md-4
           .form-group
             %label.col-md-4.control-label Numero de Documento
             .col-md-8
               .input-group
-                = f.input :number_document_provision, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                = f.input :number_document_provision, :input_html => {:class => 'form-control'}, label: false
                 %span.input-group-addon
                   %i.fa.fa-calendar
         .col-md-4
@@ -89,7 +87,7 @@
             %label.col-md-4.control-label Serie
             .col-md-8
               .input-group
-                = f.input :series, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+                = f.input :series, placeholder: "Serie", :input_html => {:class => 'form-control'}, label: false
                 %span.input-group-addon
                   %i.fa.fa-money
       .row
@@ -107,14 +105,14 @@
           %tr
             %th Codigo
             %th Nombre del Artículo
+            %th Cuenta Contable
             %th Unidad
-            %th Cantidad
+            %th Cantidad a atender
+            %th IGV
             %th Precio Unitario
-            %th Total antes de IGV
-            %th ¿Aplica IGV?
-            %th Total después de IGV
-            %th Descripción
-        %tbody(id="provisions_items_table")
+            %th Total
+            %th Acción
+        %tbody{:id => "provisions_items_table"}
 
   #step5.step-pane
     %h3

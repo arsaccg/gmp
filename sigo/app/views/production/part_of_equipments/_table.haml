@@ -67,6 +67,9 @@
       sProcessing  : true,
       bServerSide  : true,
       sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
       sAjaxSource  : "#{show_part_of_equipments_production_part_of_equipments_path}",
       fnServerParams: function ( aoData ) {
         aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );

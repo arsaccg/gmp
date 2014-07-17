@@ -1,0 +1,29 @@
+- @data_orders.each do |data_order_detail|
+  %tr{id: "tr" + @reg_n.to_s}
+    %td(style="display:none" class="provision-di")
+      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][order_detail_id]', data_order_detail[0]
+      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][type_of_order]', @type_of_order_name
+    %td= data_order_detail[1]
+    %td= data_order_detail[2]
+    %td
+      %select.form-control{:name =>"provision[provision_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :required => true, title:'No puede dejar este campo vacio'}
+        %option{:value => nil, :selected => true, :disabled => true} Seleccionar cuenta contable
+        - @account_accountants.each do |account_accountant|
+          %option{:value => "#{account_accountant.id}"}
+            = account_accountant.code
+    %td.unit-of-measurement
+      = data_order_detail[3]
+    %td.amount
+      = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount]', data_order_detail[4], class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{data_order_detail[4]})"
+      %code= "Por atender: #{data_order_detail[4]}"
+    %td.current-igv
+      = (data_order_detail[7]*100).round.to_s + '%'
+      = hidden_field_tag 'current_igv_'+@reg_n.to_s, data_order_detail[7], class: "igv-item"
+    %td.unit-price
+      = number_to_currency(data_order_detail[5], unit: 'S/.', precision: 2)
+      = hidden_field_tag 'current_unit_price_'+@reg_n.to_s, data_order_detail[5], class: "unit-price-item"
+    %td.price-with-igv
+      = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', data_order_detail[6] , class: "form-control unit-price-igv", :readonly => true
+    %td{:style => "width: 1%;"}
+      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+  - @reg_n += 1

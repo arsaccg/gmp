@@ -21,7 +21,7 @@
   .row
     - if @bank.present? && @article.present? && @entity.present?
       .col-sm-2
-        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_path}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+        %a#smart-mod-eg2.btn.btn-primary
           Agregar Trabajador
     - elsif @entity.blank? && @bank.blank? && @article.present?
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
@@ -69,3 +69,19 @@
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table'
+
+:javascript
+  $("#smart-mod-eg2").click(function(e) {
+    $.SmartMessageBox({
+      title : "Validación de DNI",
+      content : "Por favor ingrese el DNI",
+      buttons : "[Cancelar][Validar]",
+      input : "text",
+      placeholder : "Ingrese aqui el DNI"
+    }, function(ButtonPress, Value) {
+      if(ButtonPress=='Validar'){
+        load_url_ajax('#{new_production_worker_path}', 'content', {company_id: '#{@company}',dni: Value}, null, 'GET');
+      }
+    });
+    e.preventDefault();
+  })

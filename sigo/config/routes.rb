@@ -464,6 +464,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'display_orders'
         post 'display_details_orders'
+        post 'puts_details_in_provision'
       end
     end
   end

@@ -1,10 +1,12 @@
 - if @data_orders.count > 0
-  %table#list-orders.table.table-striped.table-bordered.table-hover.smart-form
+  = hidden_field_tag "type_of_order_name", @type_order, id: 'type_of_order_name'
+  %table#list-orders-details.table.table-striped.table-bordered.table-hover.smart-form
     %thead
       %tr
         %th Código del Insumo
         %th Nombre del Insumo
         %th Cantidad
+        %th Por atender
         %th Precio sin IGV
         %th Precio con IGV
         %th Descripción
@@ -18,14 +20,16 @@
         %td
           = order[2]
         %td
-          = order[3]
+
         %td
-          = order[4]
+          = number_to_currency((order[4]*order[2]), unit: 'S/. ', precision: 2)
+        %td
+          = number_to_currency(order[3], unit: 'S/. ', precision: 2)
         %td
           = order[5]
         %td.orders-checked
           %label.checkbox
-            = check_box("order_selected", "selected", { class: 'order_check' }, order.id)
+            = check_box("order_selected", "selected", { class: 'order_check' }, order[6])
             %i
 -  else
   %h3{:style => 'text-align:center;'}

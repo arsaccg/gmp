@@ -44,36 +44,25 @@
               %i.icon-append.fa.fa-credit-card
               = f.input :dni, placeholder: "DNI", input_html: { class: 'form-control' }, label: false
         .row
-          %section.col.col-5
+          .section.col.col-md-2
             %label.control-label Género
-            %br
-            .input-group
-              %select.col-sm-6.form-control#type{:name =>"entity[gender]", :required => true, title:'No puede dejar este campo vacio'}
-                %option{:value => "0", :selected => 'selected'} Seleccione un género
-                %option{:value => "masculino"} Masculino
-                %option{:value => "femenino"} Femenino
-          %section.col.col-5
-            %label.control-label Estado Civil
-            %br
-            .input-group
-              %select.col-sm-6.form-control#type{:name =>"entity[maritalstatus]", :required => true, title:'No puede dejar este campo vacio'}
-                %option{:value => "0", :selected => 'selected'} Seleccione un estado
-                %option{:value => "soltero"} Soltero
-                %option{:value => "casado"} Casado
-                %option{:value => "divorciado"} Divorciado
-                %option{:value => "viudo"} Viudo
-        .row
-          %section.col.col-10
-            %label.label Licencia de Conducir
-            %label.input{for: "driverlicense"}
-              %i.icon-append.fa.fa-credit-card
-              = f.input :driverlicense, placeholder: "Licencia de Conducir", input_html: { class: 'form-control' }, label: false
+          .section.col.col-md-8
+            .form-group
+              .col-md-12
+                %label.radio-inline
+                  %input.radiobox{:name =>'entity[gender]', :type => 'radio', :value => "masculino"}
+                  %span Masculino
+                %label.radio-inline
+                  %input.radiobox{:name =>'entity[gender]', :type => 'radio', :value => "femenino"}
+                  %span Femenino
+        %br
         .row
           %section.col.col-10
             %label.label Carnet de Extranjería
             %label.input{for: "alienslicense"}
               %i.icon-append.fa.fa-credit-card
               = f.input :alienslicense, placeholder: "Carnet de Extranjería", input_html: { class: 'form-control' }, label: false
+        %label.label Lugar de Nacimiento
         .row
           %section.col.col-10
             %label.label Ciudad
@@ -98,8 +87,13 @@
             .col.col-10.inline-group
               = f.association :type_entities, :as => :check_boxes,  collection: TypeEntity.where('id = 3'), :label => false, :input_html => { :checked => true }
 
+      %input{:name => 'button_id', :id => 'id_form_button', 'style' => 'display:none'}
+
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary#trabajadores{type: "submit"}
+          %i.fa.fa-save 
+          Guardar e Ir a Trabajadores
+        %button.btn.btn-primary#entidad{type: "submit"}
           %i.fa.fa-save 
           Guardar
 
@@ -137,7 +131,8 @@
   });
   
   function submit_validate(form){
-    $(form['selector']).ajaxForm({
+    $('button').click(function(){ $('#id_form_button').val($(this).attr('id')); });
+    $(form['selector']).ajaxForm({ 
       beforeSubmit: function() {
         $(form['selector']).validate({
           // Rules for form validation

@@ -81,22 +81,15 @@
   }
 
   // PAGE RELATED SCRIPTS
-  function calculatePriceWithourIgv(element){
-    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
-
-    var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
-
-    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
-    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
-  }
 
   function calculatePrice(element){
     var amount = parseInt($(element).val());
-
-    var price_without_igv = parseFloat($(element).parent().siblings('.unit-price').find('input').val() * amount).toFixed(2);
-
-    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
-    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+    var igv = parseFloat($(element).parent().siblings('.current-igv').find('input').val());
+    var unit_price = parseFloat($(element).parent().siblings('.unit-price').find('input').val()).toFixed(2);
+    console.log(amount*unit_price)
+    console.log(amount*unit_price*(1+igv))
+    var total_price = parseFloat(amount*unit_price*(1+igv)).toFixed(2);
+    $(element).parent().siblings('.price-with-igv').find('input').val(total_price);
   }
 
   function isNumber(evt) {
@@ -238,8 +231,8 @@
 
     wizard.on('change', function(e, data){
 
-      var status = false;
-      var data_orders = new Array();
+      var status = false; var status_detail = false;
+      var data_orders = new Array(); var data_orders_detail = new Array();
 
       if(data.step == 1 && data.direction == 'next'){
         supplier = $('#supplier-selected').val();
@@ -269,7 +262,7 @@
 
           if(status){
             data = { ids_orders: data_orders, authenticity_token: "#{form_authenticity_token}", type_of_order_selected: $('#type_of_order_selected').val() };
-            load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'items-orders', data);
+            load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'items-orders-details', data);
 
             $.smallBox({
               title: "Ahora selecciona algun detalle de las ordenes seleccionadas.",
@@ -306,18 +299,67 @@
       }
 
       if(data.step == 3 && data.direction == 'next') {
-        console.log('3')
-        console.log(data)
+        if($('#list-orders-details tbody tr td.orders-checked').length > 0){
+
+          var index = 0;
+          $('#list-orders-details tbody tr td.orders-checked .checkbox .order_check').each(function(){
+            if( $(this).is(':checked') ){
+              status_detail = true
+              data_orders_detail[index] = $(this).val();
+              index++;
+            }
+          });
+
+          if(status_detail){
+            data = { ids_orders_details: data_orders_detail, authenticity_token: "#{form_authenticity_token}", type_of_order: $('#type_of_order_name').val() };
+            load_items_delivery_order_ajax('#{puts_details_in_provision_administration_provisions_path}', 'provisions_items_table', data);
+
+            $.smallBox({
+              title: "Ahora puedes completar la información de la provisión.",
+              content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+              color: "#5F895F",
+              iconSmall: "fa fa-check bounce animated",
+              timeout: 4000
+            });
+
+          } else {
+
+            e.preventDefault();
+            $.smallBox({
+              title: "Antes de continuar debes de haber seleccionado alguna Orden.",
+              content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+              color: "#c46a69",
+              iconSmall: "fa fa-times bounce animated",
+              timeout: 4000
+            });
+          }
+
+        } else {
+
+          e.preventDefault();
+          $.smallBox({
+            title: "El proveedor seleccionado no tiene orden alguna asignada.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });
+
+        }
       }
 
       if(data.step == 4 && data.direction == 'next') {
-        console.log('4')
-        console.log(data)
-      }
-
-      if(data.step == 5 && data.direction == 'next') {
-        console.log('5')
-        console.log(data)
+        var $valid = $("#new_provision").valid();
+        if (!$valid) {
+          e.preventDefault();
+          $.smallBox({
+            title: "No se tiene datos necesarios de la Provisión.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });
+        }
       }
 
     });

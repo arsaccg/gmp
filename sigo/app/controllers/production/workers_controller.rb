@@ -27,13 +27,23 @@ class Production::WorkersController < ApplicationController
   end
 
   def new
-    @worker = Worker.new
-    @articles = TypeOfArticle.find_by_code('01').articles
-    @positionWorkers = PositionWorker.all
-    @company = params[:company_id]
-    @banks = Bank.all
-    @entities = TypeEntity.find_by_name('Trabajadores').entities
-    render layout: false
+    @entity = Entity.find_by_dni(params[:dni])
+    if @entity.nil?
+      @reg_n = Time.now.to_i
+      @type_entities = TypeEntity.all
+      @entity = Entity.new
+      @company_id = params[:company_id]
+      @costCenter = Company.find(params[:company_id]).cost_centers
+      redirect_to url_for(:controller => "logistics/entities", :action => :new, :company_id => @company_id, :type => 'worker')
+    else      
+      @worker = Worker.new
+      @articles = TypeOfArticle.find_by_code('01').articles
+      @positionWorkers = PositionWorker.all
+      @company = params[:company_id]
+      @banks = Bank.all
+      @entities = TypeEntity.find_by_name('Trabajadores').entities
+      render layout: false
+    end
   end
 
   def create
@@ -167,6 +177,6 @@ class Production::WorkersController < ApplicationController
 
   private
   def worker_parameters
-    params.require(:worker).permit(:email,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :businessaddress, :title, :salary, :bossincharge, :exitreason, :_destroy])
+    params.require(:worker).permit(:email, :driverlicense, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :businessaddress, :title, :salary, :bossincharge, :exitreason, :_destroy])
   end
 end

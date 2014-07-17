@@ -24,12 +24,17 @@ class Logistics::EntitiesController < ApplicationController
   end
 
   def create
+    puts params[:button_id].inspect
     flash[:error] = nil
     entity = Entity.new(entity_parameters)
     entity.cost_center_id = get_company_cost_center('cost_center')
     if entity.save
       flash[:notice] = "Se ha creado correctamente la entidad."
-      redirect_to :action => :index, company_id: params[:company_id]
+      if params[:button_id]=='trabajadores'
+        redirect_to url_for(:controller => "production/workers", :action => :new, :company_id => @company_id)
+      else
+        redirect_to :action => :index, company_id: params[:company_id]
+      end
     else
       entity.errors.messages.each do |attribute, error|
         puts flash[:error].to_s + error.to_s + "  "
@@ -106,6 +111,6 @@ class Logistics::EntitiesController < ApplicationController
 
   private
   def entity_parameters
-    params.require(:entity).permit(:name, :second_name, :date_of_birth,:paternal_surname, :maternal_surname, :dni, :ruc, :gender, :city, :province, :department, :driverlicense, :alienslicense, :maritalstatus, {:type_entity_ids => []}, :address)
+    params.require(:entity).permit(:name, :second_name, :date_of_birth,:paternal_surname, :maternal_surname, :dni, :ruc, :gender, :city, :province, :department, :alienslicense, {:type_entity_ids => []}, :address)
   end
 end
