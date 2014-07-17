@@ -269,7 +269,7 @@
 
           if(status){
             data = { ids_orders: data_orders, authenticity_token: "#{form_authenticity_token}", type_of_order_selected: $('#type_of_order_selected').val() };
-            load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'items-orders', data);
+            load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'items-orders-details', data);
 
             $.smallBox({
               title: "Ahora selecciona algun detalle de las ordenes seleccionadas.",
