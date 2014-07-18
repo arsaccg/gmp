@@ -124,13 +124,16 @@ class Administration::ProvisionsController < ApplicationController
         end
         # Lo que falta Atender
         pending = 0
+        total = 0
         provision = ProvisionDetail.find_by_order_detail_id(purchase_order_detail.id)
         if !provision.nil?
           pending = purchase_order_detail.amount - provision.amount
+          total = pending*purchase_detail.unit_price*(1+igv)
         else
           pending = purchase_order_detail.amount
+          total = purchase_order_detail.unit_price_igv
         end
-        @data_orders << [ purchase_order_detail.id, purchase_order_detail.article.code, purchase_order_detail.article.name, purchase_order_detail.article.unit_of_measurement.symbol, purchase_order_detail.amount, purchase_detail.unit_price, purchase_order_detail.unit_price_igv, igv, pending ]
+        @data_orders << [ purchase_order_detail.id, purchase_order_detail.article.code, purchase_order_detail.article.name, purchase_order_detail.article.unit_of_measurement.symbol, purchase_order_detail.amount, purchase_detail.unit_price, total, igv, pending ]
       end
     elsif @type_of_order_name == 'service_order'
       order_detail_ids.each do |order_detail_id|
@@ -141,13 +144,16 @@ class Administration::ProvisionsController < ApplicationController
         end
         # Lo que falta Atender
         pending = 0
+        total = 0
         provision = ProvisionDetail.find_by_order_detail_id(service_order_detail.id)
         if !provision.nil?
           pending = service_order_detail.amount - provision.amount
+          total = pending*service_order_detail.unit_price*(1+igv)
         else
           pending = service_order_detail.amount
+          total = service_order_detail.unit_price_igv
         end
-        @data_orders << [ service_order_detail.id, service_order_detail.article.code, service_order_detail.article.name, service_order_detail.article.unit_of_measurement.symbol, service_order_detail.amount, service_order_detail.unit_price ,service_order_detail.unit_price_igv, igv, pending ]
+        @data_orders << [ service_order_detail.id, service_order_detail.article.code, service_order_detail.article.name, service_order_detail.article.unit_of_measurement.symbol, service_order_detail.amount, service_order_detail.unit_price ,total, igv, pending ]
       end
     end
 
