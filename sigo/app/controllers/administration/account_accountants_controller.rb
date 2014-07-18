@@ -69,7 +69,7 @@ class Administration::AccountAccountantsController < ApplicationController
           accountAccountants_buffer << AccountAccountant.new(:code => codigo, :name => name)
         end        
       end
-      AccountAccountant.import accountAccountants_buffer
+      AccountAccountant.import(accountAccountants_buffer)
       redirect_to :action => :index
     else
       render :layout => false

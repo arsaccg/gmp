@@ -69,7 +69,7 @@ class Administration::SubDailiesController < ApplicationController
           sub_dailies_buffer << SubDaily.new(:code => codigo, :name => name)
         end        
       end
-      SubDaily.import sub_dailies_buffer
+      SubDaily.import(sub_dailies_buffer)
       redirect_to :action => :index
     else
       render :layout => false
