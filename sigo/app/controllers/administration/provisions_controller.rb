@@ -86,8 +86,8 @@ class Administration::ProvisionsController < ApplicationController
       orders.each do |order_id|
         if PurchaseOrder.find(order_id).approved?
           PurchaseOrder.find(order_id).purchase_order_details.each do |purchase_detail|
-            detail_order = purchase_detail.delivery_order_detail
-            if !detail_order.received_provision
+            if !purchase_detail.received_provision
+              detail_order = purchase_detail.delivery_order_detail
               # Lo que falta Atender
               pending = 0
               current_amount = 0
