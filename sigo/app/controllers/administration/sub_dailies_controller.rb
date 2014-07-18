@@ -1,4 +1,5 @@
 class Administration::SubDailiesController < ApplicationController
+  protect_from_forgery with: :null_session, :only => [:destroy]
   def index
     @subDailies = SubDaily.all
     render layout: false
@@ -56,23 +57,19 @@ class Administration::SubDailiesController < ApplicationController
   end
 
   def do_import
+    sub_dailies_buffer = Array.new
     if !params[:file].nil?
-      case File.extname(params[:file].path)
-        when ".csv" then s = Roo::Csv.new(params[:file].path, nil, :ignore)
-        when ".xls" then s = Roo::Excel.new(params[:file].path, nil, :ignore)
-        when ".xlsx" then s = Roo::Excelx.new(params[:file].path, nil, :ignore)
-        else raise "Unknown file type: #{params[:file].original_filename}"
-      end
+      s = Roo::Excelx.new(params[:file].path,nil, :ignore)
       cantidad = s.count.to_i
       (1..cantidad).each do |fila|  
         codigo                =       s.cell('A',fila).to_s
         name               =       s.cell('B',fila).to_s
 
         if codigo.to_s != ''
-          subDaily = SubDaily.new(:code => codigo, :name => name)
-          subDaily.save
+          sub_dailies_buffer << SubDaily.new(:code => codigo, :name => name)
         end        
       end
+      SubDaily.import sub_dailies_buffer
       redirect_to :action => :index
     else
       render :layout => false
