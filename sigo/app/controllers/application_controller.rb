@@ -36,4 +36,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def save_summary_data_accounting(account_accountant_id, sub_daily_id, accounting_date, amount)
+    summary = DataSummaryAccounting.new(:account_accountant_id => account_accountant_id, :sub_daily_id => sub_daily_id, :accounting_date => accounting_date, :amount => amount)
+    summary.save!
+  end
+
 end
