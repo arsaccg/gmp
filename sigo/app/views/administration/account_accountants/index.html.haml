@@ -1,2 +1,28 @@
-%h1 Administration::AccountAccountants#index
-%p Find me in app/views/administration/account_accountants/index.html.haml
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw
+        Cuentas Contables
+    - if flash[:notice] !=nil
+      .alert.alert-success.fade.in{"style" => "clear:both"}
+        %button.close{"data-dismiss" => "alert"} ×
+        %i.fa-fw.fa.fa-check
+        %strong Exito
+        = flash[:notice]
+    - if flash[:error] != nil
+      .alert.alert-danger.fade.in
+        %button.close{"data-dismiss" => "alert"} ×
+        %i.fa-fw.fa.fa-check
+        %strong Error!
+        = flash[:error]
+  .row
+    .col-sm-4
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_administration_account_accountant_path}', 'content', null, null, 'GET')"}
+        Agregar Cuenta Contable
+  %br
+  .row
+  #widget-grid
+    .row
+      %article.col-xs-12
+        = render :partial => 'table'
