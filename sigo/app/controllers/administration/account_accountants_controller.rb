@@ -52,6 +52,26 @@ class Administration::AccountAccountantsController < ApplicationController
   end
 
   def import
+    render layout: false
+  end
+
+  def do_import
+    if !params[:file].nil?
+      s = Roo::Excel.new(params[:file].path,nil, :ignore)
+      cantidad = s.count.to_i
+      (1..cantidad).each do |fila|  
+        codigo                =       s.cell('A',fila).to_s.to(1)
+        name               =       s.cell('B',fila).to_s.to(1)
+
+        if codigo.to_s != ''
+          accountAccountant = AccountAccountant.new(:code => codigo, :name => name)
+          accountAccountant.save
+        end        
+      end
+      redirect_to :action => :index
+    else
+      render :layout => false
+    end
   end
 
   private

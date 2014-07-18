@@ -470,13 +470,15 @@ ArsacLogistica::Application.routes.draw do
 
     resources :account_accountants do
       collection do
-        post 'import'
+        get 'import'
+        post 'do_import'
       end
     end
 
     resources :sub_dailies do
       collection do
-        post 'import'
+        get 'import'
+        post 'do_import'
       end
     end
   end

@@ -52,6 +52,31 @@ class Administration::SubDailiesController < ApplicationController
   end
 
   def import
+    render layout: false
+  end
+
+  def do_import
+    if !params[:file].nil?
+      case File.extname(params[:file].path)
+        when ".csv" then s = Roo::Csv.new(params[:file].path, nil, :ignore)
+        when ".xls" then s = Roo::Excel.new(params[:file].path, nil, :ignore)
+        when ".xlsx" then s = Roo::Excelx.new(params[:file].path, nil, :ignore)
+        else raise "Unknown file type: #{params[:file].original_filename}"
+      end
+      cantidad = s.count.to_i
+      (1..cantidad).each do |fila|  
+        codigo                =       s.cell('A',fila).to_s.to(1)
+        name               =       s.cell('B',fila).to_s.to(1)
+
+        if codigo.to_s != ''
+          subDaily = SubDaily.new(:code => codigo, :name => name)
+          subDaily.save
+        end        
+      end
+      redirect_to :action => :index
+    else
+      render :layout => false
+    end
   end
 
   private
