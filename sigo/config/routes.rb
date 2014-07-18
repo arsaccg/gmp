@@ -272,6 +272,7 @@ ArsacLogistica::Application.routes.draw do
         post 'show_workers'
       end
     end
+    resources :worker_contracts
     resources :analysis_of_valuations do
       collection do
         post 'get_report'
