@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  enterprise: MyString
+  percentage: 1.5
+  date_entry: 2014-07-18
+  status: 1
+
+two:
+  enterprise: MyString
+  percentage: 1.5
+  date_entry: 2014-07-18
+  status: 1

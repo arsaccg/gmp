@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  afp_id: 1
+  percentage: 1.5
+  date_entry: 2014-07-18
+  status: 1
+
+two:
+  afp_id: 1
+  percentage: 1.5
+  date_entry: 2014-07-18
+  status: 1

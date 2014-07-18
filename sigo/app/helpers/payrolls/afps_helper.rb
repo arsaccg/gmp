@@ -1,0 +1,2 @@
+module Payrolls::AfpsHelper
+end
