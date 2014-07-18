@@ -13,19 +13,45 @@ class Administration::ProvisionsController < ApplicationController
   end
 
   def create
-    redirect_to :action => :index
+    provision = Provision.new(provisions_parameters)
+    if provision.save
+      flash[:notice] = "Se ha creado correctamente la nueva provision."
+      redirect_to :action => :index
+    else
+      provision.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @provision = provision
+      render :new, layout: false
+    end
   end
 
   def edit
+    @provision = Provision.find(params[:id])
+    @action = 'edit'
     render layout: false
   end
 
   def update
-    redirect_to :action => :index
+    provision = Provision.find(params[:id])
+    if provision.update_attributes(provisions_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index
+    else
+      provision.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @provision = provision
+      render :edit, layout: false
+    end
   end
 
   def destroy
-    render :json => category
+    provision = Provision.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente."
+    render :json => provision
   end
 
   #CUSTOM METHODS

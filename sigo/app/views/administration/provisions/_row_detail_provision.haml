@@ -10,7 +10,7 @@
         %option{:value => nil, :selected => true, :disabled => true} Seleccionar cuenta contable
         - @account_accountants.each do |account_accountant|
           %option{:value => "#{account_accountant.id}"}
-            = account_accountant.code
+            = account_accountant.name
     %td.unit-of-measurement
       = data_order_detail[3]
     %td.amount
