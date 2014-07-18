@@ -81,3 +81,4 @@ class Administration::SubDailiesController < ApplicationController
     params.require(:sub_daily).permit!
   end
 end
+

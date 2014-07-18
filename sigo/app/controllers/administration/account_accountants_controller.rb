@@ -81,3 +81,4 @@ class Administration::AccountAccountantsController < ApplicationController
     params.require(:account_accountant).permit!
   end
 end
+

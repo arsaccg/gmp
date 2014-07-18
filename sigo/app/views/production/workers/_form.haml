@@ -6,6 +6,22 @@
   .widget-body
     = simple_form_for([:production, @worker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
+        .row
+          .section.col.col-md-2
+            %label.control-label Tipo de Trabajador
+          .section.col.col-md-8
+            .form-group
+              .col-md-12
+                %label.radio-inline
+                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado"}
+                  %span Empleado
+                %label.radio-inline
+                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero"}
+                  %span Obrero
+                %label.radio-inline
+                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo"}
+                  %span Externo
+        %br
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
           %input{ 'name' => 'worker[entity_id]', 'value' => "#{@entity.id}", 'readonly' => true, 'style' => 'display:none' }
@@ -78,12 +94,12 @@
             %label.input{for: "department"}
               = f.input :department, input_html: { class: 'form-control' }, label: false
         .row
-          %section.col.col-5
+          %section.col.col-4
             %label.label Licencia de Conducir
             %label.input{for: "driverlicense"}
               %i.icon-append.fa.fa-credit-card
               = f.input :driverlicense, placeholder: "Licencia de Conducir", input_html: { class: 'form-control' }, label: false
-          %section.col.col-5
+          %section.col.col-4
             %label.control-label Estado Civil
             %br
             .input-group
@@ -93,6 +109,18 @@
                 %option{:value => "casado"} Casado
                 %option{:value => "divorciado"} Divorciado
                 %option{:value => "viudo"} Viudo
+          %section.col.col-4
+            %label.control-label AFP
+            %br
+            .input-group
+              %select.col-sm-6.form-control#type{:name =>"worker[afp_id]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px' }
+                - @afp.each do |afp|
+                  - if @worker.afp_id == afp.id
+                    %option{:value => "#{afp.id}", :selected => true}
+                      = afp.enterprise
+                  - else
+                    %option{:value => "#{afp.id}"}
+                      = afp.enterprise
 
       %fieldset
         %legend Bancos
@@ -398,6 +426,11 @@
                         = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
+        .row
+          %section.col.col-4
+            %label.label Provincia
+            %label.input{for: "numberofchilds"}
+              = f.input :numberofchilds, input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-5
             %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?

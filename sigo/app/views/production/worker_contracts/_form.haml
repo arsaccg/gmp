@@ -1,0 +1,155 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2
+      = @typeofcontract
+  .widget-body
+    = simple_form_for([:production, @workercontract], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row{ 'style' => 'display:none' }
+          %input{ 'name' => 'worker_contract[worker_id]', 'value' => "#{@worker_id}", 'readonly' => true, 'style' => 'display:none' }
+        .row
+          %section.col.col-md-12
+            .col-md-2
+              %label.label Numero de Contrato
+            .col-md-1
+              %label.input{for: "numberofcontract"}
+                = f.input :numberofcontract, input_html: { class: 'form-control' }, label: false
+            .col-md-1
+            .col-md-2{ 'style' => 'display:none' }
+              %label.label Tipo de Contrato
+            .col-md-1{ 'style' => 'display:none' }
+              %label.input{for: "typeofcontract"}
+                = f.input :typeofcontract, input_html: { class: 'form-control', value: @typeofcontract}, label: false
+        .row
+          %section.col.col-4
+            %label.label Cargo del Trabajador
+            %label.input{for: "position_of_worker"}
+              %select.form-control{:name =>"worker_contract[position_of_worker]", :style => 'width:100%;padding: 0;border: none;'}
+                - @charges.each do |charges|
+                  %option{:value => "#{charges.id}"}
+                    = charges.name
+        .row
+          %section.col.col-md-12
+            .col-md-1
+              %label.label Campamento
+            .col-md-5
+              %label.input{for: "camp"}
+                = f.input :camp, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-md-12
+            .col-md-1
+              %label.label Destaque
+            .col-md-5
+              %label.input{for: "destaque"}
+                = f.input :destaque, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-md-12
+            .col-md-1
+              %label.label Salario
+            .col-md-5
+              %label.input{for: "salary"}
+                = f.input :salary, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-md-12
+            .col-md-1
+              %label.label Regimen
+            .col-md-5
+              %label.input{for: "regime"}
+                = f.input :regime, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-md-12
+            .col-md-1
+              %label.label Dias
+            .col-md-5
+              %label.input{for: "days"}
+                = f.input :days, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-1
+            %label.label Dia de Inicio
+          %section.col.col-2
+            %label.input{for: "start_date"}
+              = f.input :start_date, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
+          %section.col.col-1
+            %label.label Dia de Fin
+          %section.col.col-2
+            %label.input{for: "end_date"}
+              = f.input :end_date, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+
+    $('select').select2();
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_worker_contract'));
+    }
+
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'part_work[number_working_group]' : {
+              required : true
+            },
+            'part_work[working_group_id]' : {
+              required : true
+            },
+            'part_work[sector_id]' : {
+              required : true
+            },
+            'part_work[date_of_creation]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'part_work[number_working_group]' : {
+              required : 'Por favor, ingresar el grupo de trabajo.'
+            },
+            'part_work[working_group_id]' : {
+              required : 'Por favor, ingresar el grupo de trabajo.'
+            },
+            'part_work[sector_id]' : {
+              required : 'Por favor, ingresar el sector.'
+            },
+            'part_work[date_of_creation]' : {
+              required : 'Por favor, ingresar la fecha.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
+
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
