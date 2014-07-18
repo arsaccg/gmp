@@ -1,4 +1,5 @@
 class Administration::AccountAccountantsController < ApplicationController
+  protect_from_forgery with: :null_session, :only => [:destroy]
   def index
     @accountAccountants = AccountAccountant.all
     render layout: false
@@ -56,18 +57,19 @@ class Administration::AccountAccountantsController < ApplicationController
   end
 
   def do_import
+    accountAccountants_buffer = Array.new
     if !params[:file].nil?
-      s = Roo::Excel.new(params[:file].path,nil, :ignore)
+      s = Roo::Excelx.new(params[:file].path,nil, :ignore)
       cantidad = s.count.to_i
       (1..cantidad).each do |fila|  
-        codigo                =       s.cell('A',fila).to_s.to(1)
-        name               =       s.cell('B',fila).to_s.to(1)
+        codigo                =       s.cell('A',fila).to_s
+        name               =       s.cell('B',fila).to_s
 
         if codigo.to_s != ''
-          accountAccountant = AccountAccountant.new(:code => codigo, :name => name)
-          accountAccountant.save
+          accountAccountants_buffer << AccountAccountant.new(:code => codigo, :name => name)
         end        
       end
+      AccountAccountant.import accountAccountants_buffer
       redirect_to :action => :index
     else
       render :layout => false
