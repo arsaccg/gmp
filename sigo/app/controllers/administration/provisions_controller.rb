@@ -13,19 +13,45 @@ class Administration::ProvisionsController < ApplicationController
   end
 
   def create
-    redirect_to :action => :index
+    provision = Provision.new(provisions_parameters)
+    if provision.save
+      flash[:notice] = "Se ha creado correctamente la nueva provision."
+      redirect_to :action => :index
+    else
+      provision.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @provision = provision
+      render :new, layout: false
+    end
   end
 
   def edit
+    @provision = Provision.find(params[:id])
+    @action = 'edit'
     render layout: false
   end
 
   def update
-    redirect_to :action => :index
+    provision = Provision.find(params[:id])
+    if provision.update_attributes(provisions_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index
+    else
+      provision.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @provision = provision
+      render :edit, layout: false
+    end
   end
 
   def destroy
-    render :json => category
+    provision = Provision.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente."
+    render :json => provision
   end
 
   #CUSTOM METHODS
@@ -50,17 +76,31 @@ class Administration::ProvisionsController < ApplicationController
         if PurchaseOrder.find(order_id).approved?
           PurchaseOrder.find(order_id).purchase_order_details.each do |purchase_detail|
             detail_order = purchase_detail.delivery_order_detail
-            @data_orders << [ detail_order.article.code, detail_order.article.name, purchase_detail.amount, purchase_detail.unit_price_igv, purchase_detail.unit_price, purchase_detail.description, purchase_detail.id ]
+            # Lo que falta Atender
+            pending = 0
+            provision = ProvisionDetail.find_by_order_detail_id(purchase_detail.id)
+            if !provision.nil?
+              pending = purchase_detail.amount - provision.amount
+            else
+              pending = purchase_detail.amount
+            end
+            @data_orders << [ detail_order.article.code, detail_order.article.name, purchase_detail.amount, purchase_detail.unit_price_igv, purchase_detail.unit_price, purchase_detail.description, purchase_detail.id, pending ]
           end
         end
       end
     elsif @type_order == 'service_order'
       orders.each do |order_id|
         if OrderOfService.find(order_id).approved?
-          puts 'aprovado'
           OrderOfService.find(order_id).order_of_service_details.each do |service_detail|
-            puts service_detail.inspect
-            @data_orders << [ service_detail.article.code, service_detail.article.name, service_detail.amount, service_detail.unit_price_igv, service_detail.unit_price ,service_detail.description, service_detail.id ]
+            # Lo que falta Atender
+            pending = 0
+            provision = ProvisionDetail.find_by_order_detail_id(service_detail.id)
+            if !provision.nil?
+              pending = service_detail.amount - provision.amount
+            else
+              pending = service_detail.amount
+            end
+            @data_orders << [ service_detail.article.code, service_detail.article.name, service_detail.amount, service_detail.unit_price_igv, service_detail.unit_price ,service_detail.description, service_detail.id, pending ]
           end
         end
       end
@@ -82,7 +122,18 @@ class Administration::ProvisionsController < ApplicationController
         if purchase_order_detail.igv != nil
           igv = (purchase_order_detail.unit_price_igv/(purchase_order_detail.amount*purchase_order_detail.unit_price))-1
         end
-        @data_orders << [ purchase_order_detail.id, purchase_order_detail.article.code, purchase_order_detail.article.name, purchase_order_detail.article.unit_of_measurement.symbol, purchase_order_detail.amount, purchase_detail.unit_price, purchase_order_detail.unit_price_igv, igv ]
+        # Lo que falta Atender
+        pending = 0
+        total = 0
+        provision = ProvisionDetail.find_by_order_detail_id(purchase_order_detail.id)
+        if !provision.nil?
+          pending = purchase_order_detail.amount - provision.amount
+          total = pending*purchase_detail.unit_price*(1+igv)
+        else
+          pending = purchase_order_detail.amount
+          total = purchase_order_detail.unit_price_igv
+        end
+        @data_orders << [ purchase_order_detail.id, purchase_order_detail.article.code, purchase_order_detail.article.name, purchase_order_detail.article.unit_of_measurement.symbol, purchase_order_detail.amount, purchase_detail.unit_price, total, igv, pending ]
       end
     elsif @type_of_order_name == 'service_order'
       order_detail_ids.each do |order_detail_id|
@@ -91,7 +142,18 @@ class Administration::ProvisionsController < ApplicationController
         if service_order_detail.igv != nil
           igv = (service_order_detail.unit_price_igv/(service_order_detail.amount*service_order_detail.unit_price))-1
         end
-        @data_orders << [ service_order_detail.id, service_order_detail.article.code, service_order_detail.article.name, service_order_detail.article.unit_of_measurement.symbol, service_order_detail.amount, service_order_detail.unit_price ,service_order_detail.unit_price_igv, igv ]
+        # Lo que falta Atender
+        pending = 0
+        total = 0
+        provision = ProvisionDetail.find_by_order_detail_id(service_order_detail.id)
+        if !provision.nil?
+          pending = service_order_detail.amount - provision.amount
+          total = pending*service_order_detail.unit_price*(1+igv)
+        else
+          pending = service_order_detail.amount
+          total = service_order_detail.unit_price_igv
+        end
+        @data_orders << [ service_order_detail.id, service_order_detail.article.code, service_order_detail.article.name, service_order_detail.article.unit_of_measurement.symbol, service_order_detail.amount, service_order_detail.unit_price ,total, igv, pending ]
       end
     end
 
@@ -108,7 +170,7 @@ class Administration::ProvisionsController < ApplicationController
       :accounting_date, 
       :series, 
       :description,
-      provision_details_attributtes: [
+      provision_details_attributes: [
         :id,
         :provision_id,
         :order_detail_id,

@@ -2,17 +2,22 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Informe de Obra
+    %h2 Sub Diarios
   .widget-body
-    = simple_form_for([:administration, @documentProvision], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:administration, @subDaily], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
+        .row
+          %section.col.col-md-8
+            %label.label Código
+            %label.input{for: "code"}
+              %i.icon-append.fa.fa-user
+              = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-md-8
             %label.label Nombre
             %label.input{for: "name"}
               %i.icon-append.fa.fa-user
               = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
-
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -20,11 +25,10 @@
 
 :javascript
   $(document).ready(function () {
-    $('.radio_buttons').attr("style", 'position: relative; left: 0;');
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
-      submit_validate($('#new_document_provision'));
+      submit_validate($('#new_sub_daily'));
     }
 
   });
@@ -35,15 +39,21 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'document_provision[name]' : {
+            'sub_daily[code]' : {
+              required : true
+            },
+            'sub_daily[name]' : {
               required : true
             }
           },
 
           // Messages for form validation
           messages : {
-            'document_provision[name]' : {
-              required : "Por favor, ingrese el nombre del documento"
+            'sub_daily[code]' : {
+              required : "Por favor, ingrese el código del sub diario."
+            },
+            'sub_daily[name]' : {
+              required : "Por favor, ingrese el nombre del sub diario."
             }
           },
 

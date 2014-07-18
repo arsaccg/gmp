@@ -2,17 +2,22 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Informe de Obra
+    %h2 AFP
   .widget-body
-    = simple_form_for([:administration, @documentProvision], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:payrolls, @afp], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
-          %section.col.col-md-8
-            %label.label Nombre
-            %label.input{for: "name"}
-              %i.icon-append.fa.fa-user
-              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          %section.col.col-8
+            %label.label Nombre de la Compañia
+            %label.input
+              %i.icon-append.fa.fa-credit-card
+              = f.input :enterprise, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label Porcentage de descuento
+            %label.input
+              = f.input :percentage, placeholder: "Porcentaje", input_html: { class: 'form-control' }, label: false
 
+     
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -20,30 +25,36 @@
 
 :javascript
   $(document).ready(function () {
-    $('.radio_buttons').attr("style", 'position: relative; left: 0;');
+
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
-      submit_validate($('#new_document_provision'));
+      submit_validate($('#new_afp'));
     }
 
   });
   
-  function submit_validate(form){
+  function submit_validate(form){    
     $(form['selector']).ajaxForm({
       beforeSubmit: function() {
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'document_provision[name]' : {
+            'afp[enterprise]' : {
+              required : true
+            },
+            'afp[percentage]' : {
               required : true
             }
           },
 
           // Messages for form validation
           messages : {
-            'document_provision[name]' : {
-              required : "Por favor, ingrese el nombre del documento"
+            'afp[enterprise]' : {
+              required : 'Por favor, ingresar el nombre de la empresa.'
+            },
+            'afp[percentage]' : {
+              required : 'Por favor, ingresar el descuento a obtener.'
             }
           },
 

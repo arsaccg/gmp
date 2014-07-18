@@ -115,43 +115,78 @@
           %li
             %a{href: "#{inbox_task_main_path}", title: "Tareas"}
               %i.fa.fa-lg.fa-fw.fa-inbox
-              %span.menu-item-parent Inbox
+              Inbox
               %span.badge.pull-right.inbox-badge= @total_pending
           - if current_user.has_role? :director
             %li
               %a{href: "#{management_dashboard_path}", title: "Dashboard de Gestión"}
                 %i.fa.fa-lg.fa-fw.fa-home
-                %span.menu-item-parent Dashboard
+                Dashboard
             %li
               %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
                 %i.fa.fa-lg.fa-fw.fa-gears
-                %span.menu-item-parent Companias
+                Companias
             %li
               %a{href: "#{logistics_persons_path}", title: "Gestión de Usuarios"}
                 %i.fa.fa-lg.fa-fw.fa-group
-                %span.menu-item-parent Usuarios
+                Usuarios
           %li
             %a{href: "#", title: "Compañias"}
               %i.fa.fa-lg.fa-fw.fa-wrench
-              %span.menu-item-parent Mantenimientos
+              Mantenimientos
             %ul
               %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Globales
+                  Sistema
                 %ul
                   %li
                     %a{href: "#{logistics_type_of_articles_path}", title: "Articulos"}
                       %i.fa.fa-lg.fa-fw.fa-filter
-                      %span.menu-item-parent Tipo de Insumos
+                      Tipo de Insumos
+                  %li
+                    %a{href: "#{administration_account_accountants_path}", title: "Cuentas Contables"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      Cuentas Contables
+                    %ul
+                      %li
+                        %a{href: "#{import_administration_account_accountants_path}", title: "Importar Cuentas Contables"}
+                          %i.fa.fa-fw.fa-file-text
+                          Importar
+                  %li
+                    %a{href: "#{administration_sub_dailies_path}", title: "Sub Diarios"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      Sub Diarios
+                    %ul
+                      %li
+                        %a{href: "#{import_administration_sub_dailies_path}", title: "Importar Sub Diarios"}
+                          %i.fa.fa-fw.fa-file-text
+                          Importar
+                  %li
+                    %a{href: "#{logistics_extra_calculations_path}", title: "Operaciones Adicionales"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      Operaciones Adicionales
+                  %li
+                    %a{href: "#{logistics_financial_variables_path}", title: "Variables Financieras"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      Variables Financieras
+                  %li
+                    %a{href: "#{logistics_theoretical_values_path}", title: "Valores Teóricos"}
+                      %i.fa.fa-lg.fa-fw.fa-tasks
+                      Valores Teóricos
+              %li
+                %a{href: '#'}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  Globales
+                %ul
                   %li
                     %a{href: "#{logistics_categories_path}", title: "Fases"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Grupos
+                      Grupos
                   %li
                     %a{href: "#{logistics_articles_path}", title: "Articulos"}
                       %i.fa.fa-lg.fa-fw.fa-desktop
-                      %span.menu-item-parent Articulos
+                      Articulos
                   %li
                     %a{href: "#{logistics_unit_of_measurements_path}", title: "Unidad de Medida"}
                       %i.fa.fa-lg.fa-fw.fa-home{'style'=>"position: relative;bottom: 11px;"}
@@ -160,48 +195,36 @@
                   %li
                     %a{href: "#{logistics_phases_path}", title: "Fases"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Fases
-                  %li
-                    %a{href: "#{logistics_extra_calculations_path}", title: "Operaciones Adicionales"}
-                      %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Operaciones Adicionales
-                  %li
-                    %a{href: "#{logistics_financial_variables_path}", title: "Variables Financieras"}
-                      %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Variables Financieras
-                  %li
-                    %a{href: "#{logistics_theoretical_values_path}", title: "Valores Teóricos"}
-                      %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Valores Teóricos
+                      Fases
                   %li
                     %a{href: "#{logistics_money_index_path}", title: "Monedas"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Monedas
+                      Monedas
                   %li
                     %a{href: "#{logistics_exchange_of_rates_path}", title: "Tipo de Cambio"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Tipo de Cambio
+                      Tipo de Cambio
                   %li
                     %a{href: "#{logistics_method_of_payments_path}", title: "Formas de Pago"}
                       %i.fa.fa-lg.fa-fw.fa-dot-circle-o
-                      %span.menu-item-parent Formas de Pago
+                      Formas de Pago
                   %li
                     %a{href: "#{logistics_banks_path}", title: "Bancos"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Bancos
+                      Bancos
               %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Específicas
+                  Específicas
                 %ul
                   %li
                     %a{href: "#{specifics_articles_logistics_articles_path}", title: "Articulos por Centro de Costo"}
                       %i.fa.fa-lg.fa-fw.fa-desktop
-                      %span.menu-item-parent Articulos Específicos
+                      Articulos Específicos
                   %li
                     %a{href: "#{getSpecificsPhases_logistics_phases_path}", title: "Fases por Centro de Costo"}
                       %i.fa.fa-lg.fa-fw.fa-desktop
-                      %span.menu-item-parent Fases Específicas
+                      Fases Específicas
                   %li
                     %a{href: "#{logistics_center_of_attentions_path}", title: "Centro de Atención"}
                       %i.fa.fa-lg.fa-fw.fa-dot-circle-o{'style'=>"position: relative;bottom: 11px;"}
@@ -210,175 +233,175 @@
                   %li
                     %a{href: "#{logistics_sectors_path}", title: "Sectores"}
                       %i.fa.fa-lg.fa-fw.fa-map-marker
-                      %span.menu-item-parent Sectores
+                      Sectores
                   %li
                     %a{href: "#{logistics_warehouses_path}", title: "Almacenes" }
                       %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Almacenes
+                      Almacenes
                   %li
                     %a{href: "#{logistics_formats_path}", title: "Formatos"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Formatos
+                      Formatos
                   %li
                     %a{href: "#{logistics_documents_path}", title: "Documentos"}
                       %i.fa.fa-lg.fa-fw.fa-tasks
-                      %span.menu-item-parent Documentos
+                      Documentos
                   %li
                     %a{href: "#{production_rental_types_path}", title: 'Tipo de Alquiler'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Tipo de Alquiler
+                      Tipo de Alquiler
                   %li
                     %a{href: "#{production_category_of_workers_path}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Categoria de Trabajadores
+                      Categoria de Trabajadores
                   %li
                     %a{href: "#{production_position_workers_path}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Cargo de Trabajadores
+                      Cargo de Trabajadores
           
           %li
             %a{href: "#", title: "Compañias"}
               %i.fa.fa-lg.fa-fw.fa-book
-              %span.menu-item-parent Control Documentario
+              Control Documentario
             %ul
               %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Mantenimientos
+                  Mantenimientos
                 %ul
                   %li
                     %a{href: "#{documentary_control_type_of_companies_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Doc. Notariales
+                      Tipos Doc. Notariales
                   %li
                     %a{href: "#{documentary_control_type_of_contest_documents_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Doc. Concurso
+                      Tipos Doc. Concurso
                   %li
                     %a{href: "#{ documentary_control_type_of_contractual_documents_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Doc. Contractual
+                      Tipos Doc. Contractual
                   %li
                     %a{href: "#{documentary_control_type_of_book_works_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Cuaderno Obra
+                      Tipos Cuaderno Obra
                   %li
                     %a{href: "#{documentary_control_type_of_record_of_meetings_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Acta de Reunión
+                      Tipos Acta de Reunión
                   %li
                     %a{href: "#{documentary_control_type_of_received_letters_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Doc. Recibidos
+                      Tipos Doc. Recibidos
                   %li
                     %a{href: "#{documentary_control_type_of_issued_letters_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Doc. Emitidos
+                      Tipos Doc. Emitidos
                   %li
                     %a{href: "#{documentary_control_type_of_work_reports_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Informes de Obras
+                      Tipos Informes de Obras
                   %li
                     %a{href: "#{documentary_control_type_of_technical_files_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Expediente Técnico
+                      Tipos Expediente Técnico
               %li
                 %a{href: "#{documentary_control_of_companies_path}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-briefcase
-                  %span.menu-item-parent Notariales
+                  Notariales
               %li
                 %a{href: "#", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-gavel
-                  %span.menu-item-parent Área Legal
+                  Área Legal
                 %ul
                   %li
                     %a{href: "#{documentary_control_contest_documents_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Doc. del Concurso
+                      Doc. del Concurso
                   %li
                     %a{href: "#{documentary_control_contractual_documents_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Doc. Contractuales
+                      Doc. Contractuales
                   %li
                     %a{href: "#{documentary_control_book_works_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Cuaderno de Obra
+                      Cuaderno de Obra
               %li
                 %a{href: "#", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Documentación
+                  Documentación
                 %ul
                   %li
                     %a{href: "#{documentary_control_record_of_meetings_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Acta de Reunión
+                      Acta de Reunión
                   %li
                     %a{href: "#{documentary_control_received_letters_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Recibidas
+                      Recibidas
                   %li
                     %a{href: "#{documentary_control_issued_letters_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Emitidas
+                      Emitidas
               %li
                 %a{href: "#{documentary_control_work_reports_path}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-book
-                  %span.menu-item-parent Informes de Obra
+                  Informes de Obra
               %li
                 %a{href: "#{documentary_control_technical_files_path}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Expediente Técnico
+                  Expediente Técnico
               %li
                 %a{href: "#{documentary_control_flowcharts_path}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Organigrama
+                  Organigrama
               %li
                 %a{href: "#{documentary_control_photo_of_work_path("show")}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Fotos de Obra    
+                  Fotos de Obra    
                                 
           %li
             %a{href: "#", title: "Compañias"}
               %i.fa.fa-lg.fa-fw.fa-book
-              %span.menu-item-parent Biblioteca Técnica
+              Biblioteca Técnica
             %ul
               %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Mantenimientos
+                  Mantenimientos
                 %ul
                   %li
                     %a{href: "#{libraries_type_of_law_and_regulations_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Leyes y Reglamentos
+                      Tipos Leyes y Reglamentos
                   %li
                     %a{href: "#{libraries_type_of_technical_libraries_path}", title: "Compañias"}
                       %i.fa.fa-lg.fa-fw.fa-briefcase
-                      %span.menu-item-parent Tipos Librería Técnica
+                      Tipos Librería Técnica
               %li
                 %a{href: "#{libraries_law_and_regulations_path}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-briefcase
-                  %span.menu-item-parent Leyes y Reglamentos
+                  Leyes y Reglamentos
               %li
                 %a{href: "#{libraries_technical_standards_path}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Normas Técnicas
+                  Normas Técnicas
               %li
                 %a{href: "#{libraries_technical_libraries_path}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-book
-                  %span.menu-item-parent Librería Técnica
+                  Librería Técnica
               %li
                 %a{href: "#{libraries_download_softwares_path}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Download Software
+                  Download Software
               %li
                 %a{href: "#{libraries_interest_links_path}", title: "Compañias"}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Links de Interés
+                  Links de Interés
           %li
             %a{href: "#", title: "Compañias"}
               %i.fa.fa-lg.fa-fw.fa-shopping-cart
-              %span.menu-item-parent Pedidos y Compras
+              Pedidos y Compras
             %ul
               %li
                 %a{href: "#{logistics_delivery_orders_path}", title: "Ordenes de Suministro" }
@@ -403,7 +426,7 @@
           %li
             %a{href: "#", title: "Compañias"}
               %i.fa.fa-lg.fa-fw.fa-truck
-              %span.menu-item-parent Almacenes
+              Almacenes
             %ul
               %li
                 %a{href: "#{logistics_stock_inputs_path}", title: "Ingreso a Almacén" }
@@ -423,154 +446,158 @@
           %li
             %a{href: '#', title: "Ejecución"}
               %i.fa.fa-lg.fa-fw.fa-signal
-              %span.menu-item-parent Ejecución
+              Ejecución
             %ul
               %li
                 %a{href: '#', title: "Producción"}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Producción
+                  Producción
                 %ul
                   %li
                     %a{href: "#{production_working_groups_path}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Grupos de Trabajo
+                      Grupos de Trabajo
                   %li
                     %a{href: "#{production_part_works_path}", title: 'Parte Diario De Avance - Producción'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Parte Diario
+                      Parte Diario
                   %li
                     %a{href: "#{production_analysis_of_valuations_path}", title: 'Analisis de Producción'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Analisis Producción
+                      Analisis Producción
               %li
                 %a{href: '#', title: "Equipos"}
                   %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                  %span.menu-item-parent Equipos
+                  Equipos
                 %ul
                   %li
                     %a{href: "#{production_subcontract_equipments_path}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Contratos
+                      Contratos
                   %li
                     %a{href: "#{production_part_of_equipments_path}", title: 'Parte de Equipos'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Parte diario
+                      Parte diario
                   %li
                     %a{href: "#{production_machinery_reports_path}", title: 'Reporte de Maquinaria'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Consulta de Partes
+                      Consulta de Partes
                   %li
                     %a{href: "#{production_valuation_of_equipments_path}", title: 'Valorizar Equipos'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Valorizar Equipos
+                      Valorizar Equipos
                   %li
                     %a{href: "#{production_equipment_reports_path}", title: 'Reporte de Equipos'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Reporte de Equipos
+                      Reporte de Equipos
                   
               %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Subcontratos
+                  Subcontratos
                 %ul
                   %li
                     %a{href: "#{production_subcontracts_path}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Subcontrato
+                      Subcontrato
                   %li
                     %a{href: "#{production_sc_valuations_path}", title: 'Valorizaciones SC'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Valorizaciones SC
+                      Valorizaciones SC
               %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Personal
+                  Personal
                 %ul
                   %li
                     %a{href: "#{production_workers_path}", title: 'Trabajadores'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Trabajadores
+                      Trabajadores
                   %li
                     %a{href: "#{production_part_people_path}", title: 'Parte de Personal'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Parte diario
+                      Parte diario
                   %li
                     %a{href: "#{production_daily_works_daily_workers_path}", title: 'Tareo Diario de Obra'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Consulta Partes
+                      Consulta Partes
                   %li
                     %a{href: "#{production_daily_works_weekly_workers_path}", title: 'Tareo Semanal de Obra'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Tareo Semanal
+                      Tareo Semanal
                   %li
                     %a{href: "#{production_weekly_reports_path}", title: 'Reporte Semanal de Obra'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      %span.menu-item-parent Reporte Semanal
+                      Reporte Semanal
           %li
             %a{href: "#", title: "Administración"}
               %i.fa.fa-lg.fa-fw.fa-calendar
-              %span.menu-item-parent Administración
+              Administración
             %ul
               %li
                 %a{href: "#{administration_document_provisions_path}", title: "Tipo de Documento para Provisiones"}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Tipo de Documento para Provisiones
+                  Tipo de Documento para Provisiones
               %li
                 %a{href: "#{administration_provisions_path}", title: "Provisiones"}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Provisiones
+                  Provisiones
           %li
             %a{href: "#", title: "Planillas"}
-              %i.fa.fa-lg.fa-fw.fa-calendar
-              %span.menu-item-parent Planillas
+              %i.fa.fa-lg.fa-fw.fa-file-text
+              Planillas
             %ul
               %li
                 %a{href: "#{payrolls_concepts_path}", title: "Conceptos de Planilla"}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Conceptos de Planilla
+                  Conceptos de Planilla
+              %li
+                %a{href: "#{payrolls_afps_path}", title: "AFP's"}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  AFP's
           %li
             %a{href: "#", title: "Licitaciones"}
               %i.fa.fa-lg.fa-fw.fa-calendar
-              %span.menu-item-parent Licitaciones
+              Licitaciones
             %ul
               %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Mantenimientos
+                  Mantenimientos
                 %ul
                   %li
                     %a{href: "#{biddings_work_partners_path}", title: "Miembros Consorcio"}
                       %i.fa.fa-lg.fa-fw.fa-user
-                      %span.menu-item-parent Socios
+                      Socios
                   %li
                     %a{href: "#{biddings_majors_path}", title: "Profesionales"}
                       %i.fa.fa-lg.fa-fw.fa-book
-                      %span.menu-item-parent Profesiones
+                      Profesiones
                   %li
                     %a{href: "#{biddings_charges_path}", title: "Cargos"}
                       %i.fa.fa-lg.fa-fw.fa-group
-                      %span.menu-item-parent Cargos
+                      Cargos
                   %li
                     %a{href: "#{biddings_components_path}", title: "Componentes"}
                       %i.fa.fa-lg.fa-fw.fa-clipboard
-                      %span.menu-item-parent Componentes
+                      Componentes
                 %li
                   %a{href: "#{biddings_works_path}", title: "Obras"}
                     %i.fa.fa-lg.fa-fw.fa-home
-                    %span.menu-item-parent Obras
+                    Obras
                 %li
                   %a{href: "#{biddings_professionals_path}", title: "Profesionales"}
                     %i.fa.fa-lg.fa-fw.fa-user
-                    %span.menu-item-parent Profesionales
+                    Profesionales
               %li
                 %a{href: "#{calendar_biddings_works_path}"}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  %span.menu-item-parent Calendario de Licitaciones
+                  Calendario de Licitaciones
 
           %li
             %a{href: "#", title: "Reportes"}
               %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-              %span.menu-item-parent Reportes
+              Reportes
             %ul
               %li
                 %a{href: "#{reports_reportofthemonths_path}", title: "Reporte Mensual" }
@@ -580,15 +607,15 @@
           %li
             %a{href: "#{logistics_type_entities_path}", title: "Tipo de Entidades"}
               %i.fa.fa-lg.fa-fw.fa-sitemap
-              %span.menu-item-parent Tipo de Entidades
+              Tipo de Entidades
           %li
             %a{href: "#{logistics_entities_path}", title: "Entidades"}
               %i.fa.fa-lg.fa-fw.fa-group
-              %span.menu-item-parent Entidades
+              Entidades
           %li
             %a{href: "##{logistics_person_path(current_user.id)}", title: "Usuario"}
               %i.fa.fa-lg.fa-fw.fa-user
-              %span.menu-item-parent Mi Perfil
+              Mi Perfil
       %span.minifyme
         %i.fa.fa-arrow-circle-left.hit
     / END NAVIGATION

@@ -64,8 +64,12 @@ form label { text-align: left !important; }
 
 @media (min-width: 1200px){
   #logo-sigo {
-    margin-left: 20em;
     margin-top: 10px;
-    height: 0 !important;
+    height: 39px !important;
+    padding-left: 760px;
   }
+}
+
+@media only screen and (max-device-width: 480px) {
+  #logo-sigo { display: none; }
 }
