@@ -6,7 +6,7 @@ class Logistics::CostCentersController < ApplicationController
     flash[:error] = nil
     @company = get_company_cost_center('company')
     #@own_cost_center = current_user.cost_centers
-    @costCenters = CostCenter.all
+    @costCenters = CostCenter.where("company_id = ?", params[:company_id])
     render layout: false
   end
 
