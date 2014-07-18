@@ -15,6 +15,17 @@ class Administration::ProvisionsController < ApplicationController
   def create
     provision = Provision.new(provisions_parameters)
     if provision.save
+      provision_checked = Array.new
+      total_amount = 0
+      provision.provision_details.each do |detail|
+        if !provision_checked.include? detail
+          provision_checked << detail.order_detail_id
+          ProvisionDetail.where('order_detail_id = ?', detail.order_detail_id).each do |details|
+            total_amount += details.amount
+          end
+          Provision.update_received_order(total_amount, detail.order_detail_id, detail.type_of_order)
+        end
+      end
       flash[:notice] = "Se ha creado correctamente la nueva provision."
       redirect_to :action => :index
     else
@@ -76,15 +87,21 @@ class Administration::ProvisionsController < ApplicationController
         if PurchaseOrder.find(order_id).approved?
           PurchaseOrder.find(order_id).purchase_order_details.each do |purchase_detail|
             detail_order = purchase_detail.delivery_order_detail
-            # Lo que falta Atender
-            pending = 0
-            provision = ProvisionDetail.find_by_order_detail_id(purchase_detail.id)
-            if !provision.nil?
-              pending = purchase_detail.amount - provision.amount
-            else
-              pending = purchase_detail.amount
+            if !detail_order.received_provision
+              # Lo que falta Atender
+              pending = 0
+              current_amount = 0
+              provision = ProvisionDetail.where(order_detail_id: purchase_detail.id)
+              if provision.count > 0
+                provision.each do |prov|
+                  current_amount += prov.amount
+                end
+                pending = purchase_detail.amount - current_amount
+              else
+                pending = purchase_detail.amount
+              end
+              @data_orders << [ detail_order.article.code, detail_order.article.name, purchase_detail.amount, purchase_detail.unit_price_igv, purchase_detail.unit_price, purchase_detail.description, purchase_detail.id, pending ]
             end
-            @data_orders << [ detail_order.article.code, detail_order.article.name, purchase_detail.amount, purchase_detail.unit_price_igv, purchase_detail.unit_price, purchase_detail.description, purchase_detail.id, pending ]
           end
         end
       end
@@ -92,15 +109,21 @@ class Administration::ProvisionsController < ApplicationController
       orders.each do |order_id|
         if OrderOfService.find(order_id).approved?
           OrderOfService.find(order_id).order_of_service_details.each do |service_detail|
-            # Lo que falta Atender
-            pending = 0
-            provision = ProvisionDetail.find_by_order_detail_id(service_detail.id)
-            if !provision.nil?
-              pending = service_detail.amount - provision.amount
-            else
-              pending = service_detail.amount
+            if !service_detail.received
+              # Lo que falta Atender
+              pending = 0
+              current_amount = 0
+              provision = ProvisionDetail.where(order_detail_id: service_detail.id)
+              if provision.count > 0
+                provision.each do |prov|
+                  current_amount += prov.amount
+                end
+                pending = service_detail.amount - current_amount
+              else
+                pending = service_detail.amount
+              end
+              @data_orders << [ service_detail.article.code, service_detail.article.name, service_detail.amount, service_detail.unit_price_igv, service_detail.unit_price ,service_detail.description, service_detail.id, pending ]
             end
-            @data_orders << [ service_detail.article.code, service_detail.article.name, service_detail.amount, service_detail.unit_price_igv, service_detail.unit_price ,service_detail.description, service_detail.id, pending ]
           end
         end
       end
