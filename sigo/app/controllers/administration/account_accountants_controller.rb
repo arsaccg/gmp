@@ -57,7 +57,6 @@ class Administration::AccountAccountantsController < ApplicationController
   end
 
   def do_import
-    accountAccountants_buffer = Array.new
     if !params[:file].nil?
       s = Roo::Excelx.new(params[:file].path,nil, :ignore)
       cantidad = s.count.to_i
@@ -66,10 +65,10 @@ class Administration::AccountAccountantsController < ApplicationController
         name               =       s.cell('B',fila).to_s
 
         if codigo.to_s != ''
-          accountAccountants_buffer << AccountAccountant.new(:code => codigo, :name => name)
+          accountAccountant = AccountAccountant.new(:code => codigo, :name => name)
+          accountAccountant.save!
         end        
       end
-      AccountAccountant.import(accountAccountants_buffer)
       redirect_to :action => :index
     else
       render :layout => false

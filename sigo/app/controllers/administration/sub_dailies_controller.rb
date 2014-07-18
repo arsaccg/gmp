@@ -57,7 +57,6 @@ class Administration::SubDailiesController < ApplicationController
   end
 
   def do_import
-    sub_dailies_buffer = Array.new
     if !params[:file].nil?
       s = Roo::Excelx.new(params[:file].path,nil, :ignore)
       cantidad = s.count.to_i
@@ -66,10 +65,10 @@ class Administration::SubDailiesController < ApplicationController
         name               =       s.cell('B',fila).to_s
 
         if codigo.to_s != ''
-          sub_dailies_buffer << SubDaily.new(:code => codigo, :name => name)
+          sub_daily = SubDaily.new(:code => codigo, :name => name)
+          sub_daily.save!
         end        
       end
-      SubDaily.import(sub_dailies_buffer)
       redirect_to :action => :index
     else
       render :layout => false
