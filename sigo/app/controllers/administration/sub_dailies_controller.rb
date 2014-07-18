@@ -65,8 +65,8 @@ class Administration::SubDailiesController < ApplicationController
       end
       cantidad = s.count.to_i
       (1..cantidad).each do |fila|  
-        codigo                =       s.cell('A',fila).to_s.to(1)
-        name               =       s.cell('B',fila).to_s.to(1)
+        codigo                =       s.cell('A',fila).to_s
+        name               =       s.cell('B',fila).to_s
 
         if codigo.to_s != ''
           subDaily = SubDaily.new(:code => codigo, :name => name)
@@ -84,3 +84,4 @@ class Administration::SubDailiesController < ApplicationController
     params.require(:sub_daily).permit!
   end
 end
+

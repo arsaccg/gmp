@@ -57,15 +57,17 @@ class Administration::AccountAccountantsController < ApplicationController
 
   def do_import
     if !params[:file].nil?
-      s = Roo::Excel.new(params[:file].path,nil, :ignore)
+      s = Roo::Excelx.new(params[:file].path,nil, :ignore)
       cantidad = s.count.to_i
       (1..cantidad).each do |fila|  
         codigo                =       s.cell('A',fila).to_s.to(1)
         name               =       s.cell('B',fila).to_s.to(1)
 
         if codigo.to_s != ''
-          accountAccountant = AccountAccountant.new(:code => codigo, :name => name)
-          accountAccountant.save
+          #accountAccountant = AccountAccountant.new(:code => codigo, :name => name)
+          #accountAccountant.save
+          puts "codigo: "+codigo
+          puts "name: "+name
         end        
       end
       redirect_to :action => :index
@@ -79,3 +81,4 @@ class Administration::AccountAccountantsController < ApplicationController
     params.require(:account_accountant).permit!
   end
 end
+
