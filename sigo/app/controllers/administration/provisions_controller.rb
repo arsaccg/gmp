@@ -156,7 +156,7 @@ class Administration::ProvisionsController < ApplicationController
           pending = purchase_order_detail.amount
           total = purchase_order_detail.unit_price_igv
         end
-        @data_orders << [ purchase_order_detail.id, purchase_order_detail.article.code, purchase_order_detail.article.name, purchase_order_detail.article.unit_of_measurement.symbol, purchase_order_detail.amount, purchase_detail.unit_price, total, igv, pending ]
+        @data_orders << [ purchase_order_detail.id, purchase_order_detail.delivery_order_detail.article.code, purchase_order_detail.delivery_order_detail.article.name, purchase_order_detail.delivery_order_detail.article.unit_of_measurement.symbol, purchase_order_detail.amount, purchase_detail.unit_price, total, igv, pending ]
       end
     elsif @type_of_order_name == 'service_order'
       order_detail_ids.each do |order_detail_id|
