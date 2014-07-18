@@ -1,4 +1,4 @@
-class Administration::AccountAccountantController < ApplicationController
+class Administration::SubDailiesController < ApplicationController
   def index
   end
 
