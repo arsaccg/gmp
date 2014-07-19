@@ -97,7 +97,9 @@
   });
 
   function delete_item(code){
-    $("#tr" + code).remove();
+    id_modal = $("#tr-" + code + " td.aditional-operations a").attr('data-target');
+    $("#tr-" + code).remove();
+    $(id_modal).remove();
   }
 
   function get_exchange_rate(){
@@ -174,6 +176,7 @@
     if(status){
       data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
       append_url_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'order_delivery_items_table', data, '', 'POST');
+      append_url_ajax('#{add_modal_extra_operations_logistics_purchase_orders_path}', 'new_purchase_order', data, 0, 'POST');
     }
 
     $('#modalDeliveryItems').modal('hide');
@@ -314,6 +317,10 @@
           data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
           load_items_delivery_order_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'order_delivery_items_table', data);
 
+          if($('#new_purchase_order').length > 0){
+            append_url_ajax('#{add_modal_extra_operations_logistics_purchase_orders_path}', 'new_purchase_order', data, 0, 'POST');
+          }
+
           $.smallBox({
             title: "Ahora completa la información de la Orden de compra.",
             content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
@@ -349,4 +356,33 @@
 
     });
 
+  }
+
+  function add_extra_operation(obj){
+
+    var id_content = $(obj).attr('rel') + '-section';
+
+    var concept = '#' + $(obj).attr('rel') + '-select-calc';
+    var type = '#' + $(obj).attr('rel') + '-select-type';
+    var name_concept = '#' + $(obj).attr('rel') + '-select-calc option:selected';
+    var name_type = '#' + $(obj).attr('rel') + '-select-type option:selected';
+
+    var value = '#' + $(obj).attr('rel') + '-input-value';
+
+    var apply = '#' + $(obj).attr('rel') + '-select-apply';
+    var operation = '#' + $(obj).attr('rel') + '-select-operation';
+    var name_apply = '#' + $(obj).attr('rel') + '-select-apply option:selected';
+
+    var reg_n = '#' + $(obj).attr('rel') + '-hidden';
+
+    var str_data = { concept: $(concept).val(), type: $(type).val(), value: $(value).val(), apply: $(apply).val(), operation: $(operation).val(), name_concept: $(name_concept).text(), name_type: $(name_type).text(), name_apply: $(name_apply).text(), reg_n: $(reg_n).val() };
+
+    append_url_ajax('#{add_more_row_form_extra_op_logistics_purchase_orders_path}', id_content, str_data, 0, 'POST');
+  }
+
+  function set_id_modeling(obj, id_modeling){
+    $current_tr_parent = $(obj).parent().parent().attr('id');
+    id_modal_target = $(obj).attr('data-target');
+    $id_generated = $current_tr_parent.split('-')[1];
+    $(id_modal_target + '-hidden').val($id_generated);
   }

@@ -513,8 +513,6 @@
 
     var reg_n = '#' + $(obj).attr('rel') + '-hidden';
 
-    console.log(reg_n)
-
     var str_data = { concept: $(concept).val(), type: $(type).val(), value: $(value).val(), apply: $(apply).val(), operation: $(operation).val(), name_concept: $(name_concept).text(), name_type: $(name_type).text(), name_apply: $(name_apply).text(), reg_n: $(reg_n).val() };
 
     append_url_ajax('#{add_more_row_form_extra_op_logistics_order_of_services_path}', id_content, str_data, 0, 'POST');
