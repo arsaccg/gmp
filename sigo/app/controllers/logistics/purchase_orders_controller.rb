@@ -63,6 +63,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
   def add_items_from_delivery_orders
     @reg_n = ((Time.now.to_f)*100).to_i
     @delivery_orders_detail = Array.new
+    @for_id_modal = params[:ids_delivery_order]
     params[:ids_delivery_order].each do |ido|
       @delivery_order_detail = DeliveryOrderDetail.find(ido)
       total = @delivery_order_detail.amount
@@ -84,7 +85,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @reg_n = ((Time.now.to_f)*100).to_i
     delivery_ids = params[:ids_delivery_order].join(",")
     @delivery_orders_detail = Array.new
-    @cost_center = CostCenter.find(params[:cost_center_id])
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @cost_center.delivery_orders.where("state LIKE 'approved'").each do |deo|
       deo.delivery_order_details.where("id NOT IN (#{delivery_ids})").each do |dodw|
         @delivery_orders_detail << dodw
@@ -92,6 +93,34 @@ class Logistics::PurchaseOrdersController < ApplicationController
     end
     render(partial: 'modal_more_items_delivery', :layout => false)
   end
+
+  # BEGIN Extra Operations
+
+  def add_modal_extra_operations
+    @modals = params[:ids_delivery_order]
+    @extra_calculations = ExtraCalculation.all
+    render(partial: 'extra_op', :layout => false)
+  end
+
+  def add_more_row_form_extra_op
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @concept = params[:concept ]
+    @type = params[:type]
+    @value = params[:value]
+    @apply = params[:apply]
+    @operation = params[:operation]
+
+    @reg_main = params[:reg_n]
+
+    @name_concept = params[:name_concept]
+    @name_type = params[:name_type]
+    @name_apply = params[:name_apply]
+    
+
+    render(partial: 'extra_op_form', :layout => false)
+  end
+
+  # END Extra Operation
 
   def create
     @purchaseOrder = PurchaseOrder.new(purchase_order_parameters)
@@ -302,6 +331,39 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   private
   def purchase_order_parameters
-    params.require(:purchase_order).permit(:exchange_of_rate, :date_of_issue, :expiration_date, :delivery_date, :retention, :money_id, :method_of_payment_id, :entity_id, :cost_center_id, :state, :description, purchase_order_details_attributes: [:id, :puchase_order_id, :delivery_order_detail_id, :unit_price, :igv, :amount, :unit_price_igv, :description, :_destroy])
+    params.require(:purchase_order).permit(
+      :exchange_of_rate, 
+      :date_of_issue, 
+      :expiration_date, 
+      :delivery_date, 
+      :retention, 
+      :money_id, 
+      :method_of_payment_id, 
+      :entity_id, 
+      :cost_center_id, 
+      :state, 
+      :description, 
+      purchase_order_details_attributes: [
+        :id, 
+        :puchase_order_id, 
+        :delivery_order_detail_id, 
+        :unit_price, 
+        :igv, 
+        :amount, 
+        :unit_price_igv, 
+        :description, 
+        :_destroy,
+        purchase_order_extra_calculations_attributes: [
+          :id,
+          :puchase_order_detail_id,
+          :extra_calculation_id,
+          :value,
+          :apply,
+          :operation,
+          :type,
+          :_destroy
+        ]
+      ]
+    )
   end
 end

@@ -12,6 +12,12 @@
 
 :javascript
   
+  /*
+  if($('form[id^="edit_order_of_service"]').length > 0){
+    append_url_ajax('#{add_modal_extra_operations_logistics_order_of_services_path}', $('form[id^="edit_order_of_service"]').attr('id'), str_item, 0, 'POST');
+  }
+  */
+  
   $('#backlist-purchase-order').click(function(){
     load_url_ajax("#{logistics_purchase_orders_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
   });
