@@ -526,5 +526,7 @@
   }
 
   function delete_item(code){
-    $("#tr" + code).remove();
+    id_modal = $("#tr-" + code + " td.aditional-operations a").attr('data-target');
+    $("#tr-" + code).remove();
+    $(id_modal).remove();
   }
