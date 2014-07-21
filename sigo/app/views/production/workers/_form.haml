@@ -12,15 +12,47 @@
           .section.col.col-md-8
             .form-group
               .col-md-12
-                %label.radio-inline
-                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado"}
-                  %span Empleado
-                %label.radio-inline
-                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero"}
-                  %span Obrero
-                %label.radio-inline
-                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo"}
-                  %span Externo
+                -if @action = 'edit'
+                  -if @worker.typeofworker=="empleado"
+                    %label.radio-inline
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", checked: ""}
+                      %span Empleado
+                    %label.radio-inline
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero"}
+                      %span Obrero
+                    %label.radio-inline
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo"}
+                      %span Externo
+                  -elsif @worker.typeofworker=="obrero"
+                    %label.radio-inline
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado"}
+                      %span Empleado
+                    %label.radio-inline
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: ""}
+                      %span Obrero
+                    %label.radio-inline
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo"}
+                      %span Externo
+                  -elsif @worker.typeofworker=="externo"
+                    %label.radio-inline
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado"}
+                      %span Empleado
+                    %label.radio-inline
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero"}
+                      %span Obrero
+                    %label.radio-inline
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo",checked: ""}
+                      %span Externo
+                -else
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado"}
+                    %span Empleado
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero"}
+                    %span Obrero
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo"}
+                    %span Externo
         %br
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
@@ -104,11 +136,19 @@
             %br
             .input-group
               %select.col-sm-6.form-control#type{:name =>"worker[maritalstatus]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px' }
-                %option{:value => "0", :selected => 'selected'} Seleccione un estado
-                %option{:value => "soltero"} Soltero
-                %option{:value => "casado"} Casado
-                %option{:value => "divorciado"} Divorciado
-                %option{:value => "viudo"} Viudo
+                -if @action = 'edit'
+                  %option{:value => "0"} Seleccione un estado
+                  %option{:value => "soltero", :selected => "#{@worker.maritalstatus}"=="soltero"} Soltero
+                  %option{:value => "casado", :selected => "#{@worker.maritalstatus}"=="casado"} Casado
+                  %option{:value => "divorciado", :selected => "#{@worker.maritalstatus}"=="divorciado"} Divorciado
+                  %option{:value => "viudo", :selected => "#{@worker.maritalstatus}"=="viudo"} Viudo
+                -else
+                  %option{:value => "0", :selected => 'selected'} Seleccione un estado
+                  %option{:value => "soltero"} Soltero
+                  %option{:value => "casado"} Casado
+                  %option{:value => "divorciado"} Divorciado
+                  %option{:value => "viudo"} Viudo
+        .row
           %section.col.col-4
             %label.control-label AFP
             %br
@@ -121,6 +161,24 @@
                   - else
                     %option{:value => "#{afp.id}"}
                       = afp.enterprise
+          %section.col.col-4
+            %label.control-label Tipo AFP
+            %br
+            .input-group
+              %select.col-sm-6.form-control#type{:name =>"worker[afptype]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px' }
+                -if @action = 'edit'
+                  %option{:value => "0"} Seleccione un tipo
+                  %option{:value => "mixto", :selected => "#{@worker.afptype}"=="mixto"} Mixto
+                  %option{:value => "comision", :selected => "#{@worker.afptype}"=="comision"} Comisión
+                -else
+                  %option{:value => "0", :selected => 'selected'} Seleccione un tipo
+                  %option{:value => "mixto"} Mixto
+                  %option{:value => "comision"} Comisión
+          %section.col.col-4
+            %label.label Número de Carnet
+            %label.input{for: "afpnumber"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :afpnumber, placeholder: "Número de Carnet", input_html: { class: 'form-control' }, label: false
 
       %fieldset
         %legend Bancos
@@ -209,21 +267,22 @@
                 %th Eliminar
             %tbody(id="familiar_items_table")
               - if @action == 'edit'
-                - puts @worker.worker_details
-                - @worker.worker_details.each do |oos|
+                - puts @worker.worker_familiars
+                - @worker.worker_familiars.each do |oos|
                   %tr
-                    %td.bank-id(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][bank_id]', oos.bank.id
-                    %td.col-2=oos.bank.business_name
-                    %td.col-5.account_number
-                      = text_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][account_number]', oos.account_number, class: "form-control account_number-item", onkeypress: "return isNumber(event);"
+                    %td.col-2=oos.paternal_surname
+                    %td.col-2=oos.maternal_surname
+                    %td.col-2=oos.names
+                    %td.col-2=oos.relationship
+                    %td.col-2=oos.dayofbirth
+                    %td.col-2=oos.dni
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][id]', oos.id
+                      = hidden_field_tag 'worker[worker_familiars_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
+                      = hidden_field_tag 'worker[worker_familiars_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
                     %td.delete-item
                       %label.checkbox
-                        = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        = check_box 'worker[worker_familiars_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
       %fieldset
@@ -305,21 +364,22 @@
                 %th Eliminar
             %tbody(id="centerofstudy_items_table")
               - if @action == 'edit'
-                - puts @worker.worker_details
-                - @worker.worker_details.each do |oos|
+                - puts @worker.worker_center_of_studies
+                - @worker.worker_center_of_studies.each do |oos|
                   %tr
-                    %td.bank-id(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][bank_id]', oos.bank.id
-                    %td.col-2=oos.bank.business_name
-                    %td.col-5.account_number
-                      = text_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][account_number]', oos.account_number, class: "form-control account_number-item", onkeypress: "return isNumber(event);"
+                    %td.col-2=oos.name
+                    %td.col-2=oos.profession
+                    %td.col-2=oos.title
+                    %td.col-2=oos.numberoftuition
+                    %td.col-2=oos.start_date
+                    %td.col-2=oos.end_date
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][id]', oos.id
+                      = hidden_field_tag 'worker[worker_center_of_studies][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
+                      = hidden_field_tag 'worker[worker_center_of_studies][' + @reg_n.to_s + '][worker_id]', @worker.id
                     %td.delete-item
                       %label.checkbox
-                        = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        = check_box 'worker[worker_center_of_studies]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
         .row
@@ -345,21 +405,18 @@
                 %th Eliminar
             %tbody(id="otherstudy_items_table")
               - if @action == 'edit'
-                - puts @worker.worker_details
-                - @worker.worker_details.each do |oos|
+                - puts @worker.worker_otherstudies
+                - @worker.worker_otherstudies.each do |oos|
                   %tr
-                    %td.bank-id(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][bank_id]', oos.bank.id
-                    %td.col-2=oos.bank.business_name
-                    %td.col-5.account_number
-                      = text_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][account_number]', oos.account_number, class: "form-control account_number-item", onkeypress: "return isNumber(event);"
+                    %td.col-2=oos.study
+                    %td.col-2=oos.level
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][id]', oos.id
+                      = hidden_field_tag 'worker[worker_otherstudies][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
+                      = hidden_field_tag 'worker[worker_otherstudies][' + @reg_n.to_s + '][worker_id]', @worker.id
                     %td.delete-item
                       %label.checkbox
-                        = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        = check_box 'worker[worker_otherstudies]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
       %fieldset
@@ -409,21 +466,24 @@
                 %th Eliminar
             %tbody(id="experience_items_table")
               - if @action == 'edit'
-                - puts @worker.worker_details
-                - @worker.worker_details.each do |oos|
+                - puts @worker.worker_experiences
+                - @worker.worker_experiences.each do |oos|
                   %tr
-                    %td.bank-id(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][bank_id]', oos.bank.id
-                    %td.col-2=oos.bank.business_name
-                    %td.col-5.account_number
-                      = text_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][account_number]', oos.account_number, class: "form-control account_number-item", onkeypress: "return isNumber(event);"
+                    %td.col-2=oos.businessname
+                    %td.col-2=oos.businessaddress
+                    %td.col-2=oos.title
+                    %td.col-2=oos.salary
+                    %td.col-2=oos.bossincharge
+                    %td.col-2=oos.exitreason
+                    %td.col-2=oos.start_date
+                    %td.col-2=oos.end_date
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][id]', oos.id
+                      = hidden_field_tag 'worker[worker_experiences][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_details_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
+                      = hidden_field_tag 'worker[worker_experiences][' + @reg_n.to_s + '][worker_id]', @worker.id
                     %td.delete-item
                       %label.checkbox
-                        = check_box 'worker[worker_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        = check_box 'worker[worker_experiences]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
         .row
@@ -432,34 +492,54 @@
             %br
             .input-group
               %select.col-sm-5.form-control#type{:name =>"worker[quality]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                %option{:value => "0", :selected => 'selected'} Seleccione
-                %option{:value => "si"} Si
-                %option{:value => "no"} No
+                -if @action = 'edit'
+                  %option{:value => "0"} Seleccione
+                  %option{:value => "si", :selected => "#{@worker.quality}"=="si"} Si
+                  %option{:value => "no", :selected => "#{@worker.quality}"=="no"} No
+                -else
+                  %option{:value => "0", :selected => 'selected'} Seleccione
+                  %option{:value => "si"} Si
+                  %option{:value => "no"} No
           %section.col.col-5
             %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE SEGURIDAD?
             %br
             .input-group
               %select.col-sm-5.form-control#type{:name =>"worker[security]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                %option{:value => "0", :selected => 'selected'} Seleccione
-                %option{:value => "si"} Si
-                %option{:value => "no"} No
+                -if @action = 'edit'
+                  %option{:value => "0"} Seleccione
+                  %option{:value => "si", :selected => "#{@worker.security}"=="si"} Si
+                  %option{:value => "no", :selected => "#{@worker.security}"=="no"} No
+                -else
+                  %option{:value => "0", :selected => 'selected'} Seleccione
+                  %option{:value => "si"} Si
+                  %option{:value => "no"} No
         .row
           %section.col.col-5
             %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE MEDIOAMBIENTE?
             %br
             .input-group
               %select.col-sm-5.form-control#type{:name =>"worker[enviroment]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                %option{:value => "0", :selected => 'selected'} Seleccione
-                %option{:value => "si"} Si
-                %option{:value => "no"} No
+                -if @action = 'edit'
+                  %option{:value => "0"} Seleccione
+                  %option{:value => "si", :selected => "#{@worker.enviroment}"=="si"} Si
+                  %option{:value => "no", :selected => "#{@worker.enviroment}"=="no"} No
+                -else
+                  %option{:value => "0", :selected => 'selected'} Seleccione
+                  %option{:value => "si"} Si
+                  %option{:value => "no"} No
           %section.col.col-5
             %label.control-label TIENE CONOCIMIENTOS DE LA LEGISLACION LABORAL?
             %br
             .input-group
               %select.col-sm-5.form-control#type{:name =>"worker[labor_legislation]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                %option{:value => "0", :selected => 'selected'} Seleccione
-                %option{:value => "si"} Si
-                %option{:value => "no"} No
+                -if @action = 'edit'
+                  %option{:value => "0"} Seleccione
+                  %option{:value => "si", :selected => "#{@worker.labor_legislation}"=="si"} Si
+                  %option{:value => "no", :selected => "#{@worker.labor_legislation}"=="no"} No
+                -else
+                  %option{:value => "0", :selected => 'selected'} Seleccione
+                  %option{:value => "si"} Si
+                  %option{:value => "no"} No
         .row
           %section.col.col-4
             %label.label Numero de Hijos
@@ -475,8 +555,8 @@
             .col-md-7
               = f.input :cv, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block.col-md-
-                - if @action == 'edit' && @photo.photo.exists?
-                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - if @action == 'edit' && @worker.cv.exists?
+                  = 'Archivo subido: ' + File.basename(@worker.cv.path, File.extname(@worker.cv.path))
                 - else
                   Subir el archivo correspondiente
         .row
@@ -486,8 +566,8 @@
             .col-md-7
               = f.input :antecedent_police, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block
-                - if @action == 'edit' && @photo.photo.exists?
-                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - if @action == 'edit' && @worker.antecedent_police.exists?
+                  = 'Archivo subido: ' + File.basename(@worker.antecedent_police.path, File.extname(@worker.antecedent_police.path))
                 - else
                   Subir el archivo correspondiente
         .row
@@ -497,8 +577,8 @@
             .col-md-7
               = f.input :dni, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block
-                - if @action == 'edit' && @photo.photo.exists?
-                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - if @action == 'edit' && @worker.dni.exists?
+                  = 'Archivo subido: ' + File.basename(@worker.dni.path, File.extname(@worker.dni.path))
                 - else
                   Subir el archivo correspondiente
         .row
@@ -508,8 +588,8 @@
             .col-md-7
               = f.input :cts_deposit_letter, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block
-                - if @action == 'edit' && @photo.photo.exists?
-                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - if @action == 'edit' && @worker.cts_deposit_letter.exists?
+                  = 'Archivo subido: ' + File.basename(@worker.cts_deposit_letter.path, File.extname(@worker.cts_deposit_letter.path))
                 - else
                   Subir el archivo correspondiente
         .row
@@ -519,8 +599,8 @@
             .col-md-7
               = f.input :pension_funds_letter, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block
-                - if @action == 'edit' && @photo.photo.exists?
-                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - if @action == 'edit' && @worker.pension_funds_letter.exists?
+                  = 'Archivo subido: ' + File.basename(@worker.pension_funds_letter.path, File.extname(@worker.pension_funds_letter.path))
                 - else
                   Subir el archivo correspondiente
         .row
@@ -530,8 +610,8 @@
             .col-md-7
               = f.input :affidavit, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block
-                - if @action == 'edit' && @photo.photo.exists?
-                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - if @action == 'edit' && @worker.affidavit.exists?
+                  = 'Archivo subido: ' + File.basename(@worker.affidavit.path, File.extname(@worker.affidavit.path))
                 - else
                   Subir el archivo correspondiente
 
@@ -542,8 +622,8 @@
             .col-md-7
               = f.input :marriage_certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block.col-md-
-                - if @action == 'edit' && @photo.photo.exists?
-                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - if @action == 'edit' && @worker.marriage_certificate.exists?
+                  = 'Archivo subido: ' + File.basename(@worker.marriage_certificate.path, File.extname(@worker.marriage_certificate.path))
                 - else
                   Subir el archivo correspondiente
 
@@ -554,8 +634,8 @@
             .col-md-7
               = f.input :birth_certificate_of_childer, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block.col-md-
-                - if @action == 'edit' && @photo.photo.exists?
-                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - if @action == 'edit' && @worker.birth_certificate_of_childer.exists?
+                  = 'Archivo subido: ' + File.basename(@worker.birth_certificate_of_childer.path, File.extname(@worker.birth_certificate_of_childer.path))
                 - else
                   Subir el archivo correspondiente
 
@@ -566,8 +646,8 @@
             .col-md-7
               = f.input :dni_wife_kids, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block.col-md-
-                - if @action == 'edit' && @photo.photo.exists?
-                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - if @action == 'edit' && @worker.dni_wife_kids.exists?
+                  = 'Archivo subido: ' + File.basename(@worker.dni_wife_kids.path, File.extname(@worker.dni_wife_kids.path))
                 - else
                   Subir el archivo correspondiente
 
@@ -578,8 +658,8 @@
             .col-md-7
               = f.input :schoolar_certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block.col-md-
-                - if @action == 'edit' && @photo.photo.exists?
-                  = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
+                - if @action == 'edit' && @worker.schoolar_certificate.exists?
+                  = 'Archivo subido: ' + File.basename(@worker.schoolar_certificate.path, File.extname(@worker.schoolar_certificate.path))
                 - else
                   Subir el archivo correspondiente
       %footer
