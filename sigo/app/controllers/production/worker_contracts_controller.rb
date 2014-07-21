@@ -4,7 +4,7 @@ class Production::WorkerContractsController < ApplicationController
   
   def index
     flash[:error] = nil
-    @worker_id = 2
+    @worker_id = params[:worker_id]
     @company = get_company_cost_center('company')
     #@own_cost_center = current_user.cost_centers
     @workercontracts = WorkerContract.where("worker_id = ?", @worker_id)
@@ -16,11 +16,25 @@ class Production::WorkerContractsController < ApplicationController
   end
 
   def new
-  	@worker_id = params[:worker_id]
-    @workercontract = WorkerContract.new
-    @cost_center = session[:cost_center]
+    @typeofcontract = params[:typeofcontract]
     @charges = Charge.all
-    @typeofcontract = 'Contrato'
+    @cost_center = session[:cost_center]
+    if @typeofcontract == 'Contrato'
+      @workercontract = WorkerContract.new
+    	@worker_id = params[:worker_id]
+    end
+    if @typeofcontract == 'Adenda'
+      @workercontract = WorkerContract.find_by_id(params[:contract])
+      @worker_id = @workercontract.worker_id
+    end
+    if @typeofcontract == 'Renovación'
+      @workercontract = WorkerContract.find_by_id(params[:contract])
+      @worker_id = @workercontract.worker_id
+      @diff = (@workercontract.end_date - @workercontract.start_date).to_i
+      @workercontract.start_date = @workercontract.end_date.to_date + 1.days
+      @workercontract.end_date = @workercontract.end_date.to_date + @diff.days
+      puts @diff.inspect
+    end
     render :new, layout: false
   end
 
@@ -30,7 +44,7 @@ class Production::WorkerContractsController < ApplicationController
     workercontract.end_date_2 = params[:worker_contract]['end_date']
     if workercontract.save
       flash[:notice] = "Se ha creado correctamente el contrato."
-      redirect_to :action => :index
+      redirect_to :action => :index, worker_id: params[:worker_contract]['worker_id']
     else
       workercontract.errors.messages.each do |attribute, error|
         flash[:error] =  flash[:error].to_s + error.to_s + "  "
@@ -41,48 +55,33 @@ class Production::WorkerContractsController < ApplicationController
   end
 
   def edit
-    @costCenter = CostCenter.find(params[:id])
-    @companies = Company.all
+    @workercontract = WorkerContract.find(params[:id])
+    @charges = Company.all
+    @cost_center = session[:cost_center]
     @action = 'edit'
     render layout: false
   end
 
   def update
-    flash[:error] = nil
-    costCenter = CostCenter.find(params[:id])
-
-    if params[:timeline] == nil
-      # Save Maintenance
-      if costCenter.update_attributes(cost_center_parameters)
-        flash[:notice] = "Se ha actualizado correctamente los datos."
-        redirect_to :action => :index
-      else
-        costCenter.errors.messages.each do |attribute, error|
-          flash[:error] =  flash[:error].to_s + error.to_s + "  "
-        end
-        @costCenter = costCenter
-        render :edit, layout: false
-      end
+    workercontract = WorkerContract.find(params[:id])
+    workercontract2 = WorkerContract.new(worker_contract_parameters)
+    workercontract2.end_date_2 = params[:worker_contract]['end_date']
+    if workercontract.update_attributes({end_date_2: (params[:worker_contract]['start_date'].to_date - 1.days)}) && workercontract2.save
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index, worker_id: params[:worker_contract]['worker_id']
     else
-      # Save TimeLine by Start Date / End Date
-      if costCenter.update_attributes(cost_center_parameters_timeline)
-        CostCenterTimeline.LoadTimeLine(costCenter.id, costCenter.start_date, costCenter.end_date)
-
-        flash[:notice] = "Se actualizó la duración del proyecto."
-        redirect_to :action => :index
-      else
-        costCenter.errors.messages.each do |attribute, error|
-          flash[:error] =  flash[:error].to_s + error.to_s + "  "
-        end
-        @costCenter = costCenter
-        render :edit, layout: false
+      workercontract.errors.messages.each do |attribute, error|
+        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
       end
+      # Load new()
+      @workercontract = workercontract
+      render :edit, layout: false
     end
   end
 
   def destroy
     flash[:error] = nil
-    costCenter = CostCenter.find(params[:id])
+    workercontract = WorkerContract.find(params[:id])
     if costCenter.update_attributes({status: "D"})#, user_updates_id: params[:current_user_id]})
       flash[:notice] = "Se ha eliminado correctamente."
       render :json => {notice: flash[:notice]}

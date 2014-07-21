@@ -427,11 +427,6 @@
                         %i
                     - @reg_n += 1
         .row
-          %section.col.col-4
-            %label.label Provincia
-            %label.input{for: "numberofchilds"}
-              = f.input :numberofchilds, input_html: { class: 'form-control' }, label: false
-        .row
           %section.col.col-5
             %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?
             %br
@@ -465,6 +460,11 @@
                 %option{:value => "0", :selected => 'selected'} Seleccione
                 %option{:value => "si"} Si
                 %option{:value => "no"} No
+        .row
+          %section.col.col-4
+            %label.label Numero de Hijos
+            %label.input{for: "numberofchilds"}
+              = f.input :numberofchilds, input_html: { class: 'form-control' }, label: false
       %fieldset
         %legend Documentación Adjunta
         .row
