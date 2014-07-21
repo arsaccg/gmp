@@ -491,5 +491,10 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :afps
+    resources :payrolls do 
+      collection do
+        post 'display_worker'
+      end
+    end
   end
 end
