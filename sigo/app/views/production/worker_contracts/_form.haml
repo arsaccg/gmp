@@ -25,11 +25,19 @@
         .row
           %section.col.col-4
             %label.label Cargo del Trabajador
-            %label.input{for: "position_of_worker"}
-              %select.form-control{:name =>"worker_contract[position_of_worker]", :style => 'width:100%;padding: 0;border: none;'}
-                - @charges.each do |charges|
-                  %option{:value => "#{charges.id}"}
-                    = charges.name
+            %label.input{for: "charge_id"}
+              %select.form-control{:name =>"worker_contract[charge_id]", :style => 'width:100%;padding: 0;border: none;'}
+                - @charges.each do |charge|
+                  - if @action == 'edit'
+                    - if @workercontract.charge_id == charge.id
+                      %option{:value => "#{charge.id}", :selected => true}
+                        = charge.name
+                    - else
+                      %option{:value => "#{charge.id}"}
+                        = charge.name
+                  - else
+                    %option{:value => "#{charge.id}"}
+                      = charge.name
         .row
           %section.col.col-md-12
             .col-md-1

@@ -56,9 +56,10 @@ class Production::WorkerContractsController < ApplicationController
 
   def edit
     @workercontract = WorkerContract.find(params[:id])
-    @charges = Company.all
+    @charges = Charge.all
     @cost_center = session[:cost_center]
     @action = 'edit'
+    @worker_id = @workercontract.worker_id
     render layout: false
   end
 
@@ -80,18 +81,11 @@ class Production::WorkerContractsController < ApplicationController
   end
 
   def destroy
-    flash[:error] = nil
-    workercontract = WorkerContract.find(params[:id])
-    if costCenter.update_attributes({status: "D"})#, user_updates_id: params[:current_user_id]})
-      flash[:notice] = "Se ha eliminado correctamente."
-      render :json => {notice: flash[:notice]}
-    else
-      costCenter.errors.messages.each do |attribute, error|
-        flash[:error] =  flash[:error].to_s + error.to_s + "  "
-      end
-      @costCenter = costCenter
-      render :json => {error: flash[:error]}
-    end
+    workercontract2 = WorkerContract.find(params[:id])
+    @worker_id = workercontract2.worker_id
+    workercontract = WorkerContract.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente el Contrato."
+    render :json => workercontract
   end
 
   private
