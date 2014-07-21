@@ -18,10 +18,10 @@
       %code= "Por atender: #{data_order_detail[8]}"
     %td.current-igv
       = (data_order_detail[7]*100).round.to_s + '%'
-      = hidden_field_tag 'current_igv_'+@reg_n.to_s, data_order_detail[7], class: "igv-item"
+      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_igv]',data_order_detail[7], class: "igv-item"
     %td.unit-price
       = number_to_currency(data_order_detail[5], unit: 'S/.', precision: 2)
-      = hidden_field_tag 'current_unit_price_'+@reg_n.to_s, data_order_detail[5], class: "unit-price-item"
+      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_unit_price]', data_order_detail[5], class: "unit-price-item"
     %td.price-with-igv
       = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', data_order_detail[6] , class: "form-control unit-price-igv", :readonly => true
     %td{:style => "width: 1%;"}
