@@ -61,7 +61,7 @@
           %section.col.col-10
             %label.label Entidad Trabajador
             %label.input{for: "entity_id"}
-              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname+' '+@entity.maternal_surname+' '+@entity.name, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ' ' + @entity.name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
         .row
           %section.col.col-3
             %label Fecha de Nacimiento
