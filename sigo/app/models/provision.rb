@@ -24,8 +24,9 @@ class Provision < ActiveRecord::Base
   def self.sumProvisionDetail(provision_id)
     sum = 0
     provisiondetails = ProvisionDetail.where("provision_id = ?",provision_id)
+    puts provisiondetails.inspect
     provisiondetails.each do |pd|
-      sum = pd.amount*pd.current_unit_price
+      sum = pd.amount * pd.current_unit_price rescue 1
     end
     return sum
   end
@@ -34,7 +35,7 @@ class Provision < ActiveRecord::Base
     sum = 0
     provisiondetails = ProvisionDetail.where("provision_id = ?",provision_id)
     provisiondetails.each do |pd|
-      sum = pd.amount*pd.unit_price_igv
+      sum = pd.amount * pd.unit_price_igv rescue 1
     end
     return sum
   end
