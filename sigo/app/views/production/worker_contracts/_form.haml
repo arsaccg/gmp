@@ -183,10 +183,11 @@
   $('#worker_contract_days').change(function(){
     var start_date = $('#worker_contract_start_date').val();
     var dias = $('#worker_contract_days').val();
+    var dias2 = parseInt(dias)
     var d1 = start_date.split("-");
     var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
     var end_date = new Date(dat1);
-    end_date.setDate(dat1.getDate() + dias);
+    end_date.setDate(dat1.getDate() + dias2 - 1);
     console.log(end_date);
     $('#worker_contract_end_date').val(end_date);
   });
