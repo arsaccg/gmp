@@ -74,6 +74,23 @@
       });
     });
 
+    $('#type-order-selected').change(function(){
+      $.ajax({
+        type: 'POST',
+        url: "#{get_suppliers_by_type_order_administration_provisions_path}",
+        async: false,
+        data: { authenticity_token: "#{form_authenticity_token}", type: $(this).val() },
+        dataType : 'html',
+        success: function(data) {
+          $('#supplier-selected').html($.parseJSON(data).suppliers);
+        },
+        error : function(xhr, ajaxOptions, thrownError) {
+          console.log(xhr);
+          console.log(thrownError);
+        }
+      });
+    });
+
   });
 
   function delete_item(code){
@@ -235,17 +252,31 @@
       var data_orders = new Array(); var data_orders_detail = new Array();
 
       if(data.step == 1 && data.direction == 'next'){
-        supplier = $('#supplier-selected').val();
-        type_order = $('#type-order-selected').val();
-        data = { type_of_order_consult: type_order, supplier: supplier, authenticity_token: "#{form_authenticity_token}" }
-        $.smallBox({
-          title: "Ahora selecciona alguna Orden de la siguiente lista.",
-          content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-          color: "#5F895F",
-          iconSmall: "fa fa-check bounce animated",
-          timeout: 4000
-        });
-        load_items_delivery_order_ajax('#{display_orders_administration_provisions_path}', 'items-orders', data);
+        if( ($('#supplier-selected').val() > 0) && ($('#type-order-selected').val() != '') ) {
+          supplier = $('#supplier-selected').val();
+          type_order = $('#type-order-selected').val();
+          data = { type_of_order_consult: type_order, supplier: supplier, authenticity_token: "#{form_authenticity_token}" }
+          $.smallBox({
+            title: "Ahora selecciona alguna Orden de la siguiente lista.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#5F895F",
+            iconSmall: "fa fa-check bounce animated",
+            timeout: 4000
+          });
+          load_items_delivery_order_ajax('#{display_orders_administration_provisions_path}', 'items-orders', data);
+
+        } else {
+
+          e.preventDefault();
+          $.smallBox({
+            title: "Antes de continuar debes de haber seleccionado algun proveedor.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });
+        }
+        
       }
 
       if(data.step == 2 && data.direction == 'next') {

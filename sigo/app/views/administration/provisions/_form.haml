@@ -10,15 +10,6 @@
         .col-md-1
         .col-md-4
           .form-group
-            %label.control-label Proveedor
-            .input-group
-              %select.select2.form-control#supplier-selected{:name => 'provision[entity_id]', :style => 'width:100%;padding: 0;border: none;'}
-                - @suppliers.each do |x|
-                  %option(value = "#{x.id}")
-                    = x.name
-        .col-md-1
-        .col-md-4
-          .form-group
             %label.control-label Tipo de Orden
             .input-group
               %select.select2.form-control#type-order-selected{:name => 'type_of_order_consult', :style => 'width:100%;padding: 0;border: none;'}
@@ -26,6 +17,13 @@
                   Orden de Compra
                 %option{:value => 'service_order'}
                   Orden de Servicio
+        
+        .col-md-1
+        .col-md-4
+          .form-group
+            %label.control-label Proveedores
+            .input-group
+              %select.select2.form-control#supplier-selected{:name => 'provision[entity_id]', :style => 'width:100%;padding: 0;border: none;'}
             
   #step2.step-pane
     %h3
