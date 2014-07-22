@@ -14,21 +14,25 @@
             %th Documento
             %th Glosa
             %th Monto sin IGV
+            %th IGV
             %th Monto Total
             %th Acciones
         %tbody
           - @provision.each do |provision|
+            - suma = 0
             %tr
               %td
-                = "HOLA"
+                = provision.id
               %td
-                = "HOLA"
+                = provision.document_provision.name
               %td
-                = "HOLA"
+                = provision.description
               %td
-                = "HOLA"
+                = Provision.sumProvisionDetail(provision.id)
               %td
-                = "HOLA"
+                = ProvisionDetail.where("provision_id = ?", provision.id).first.current_igv
+              %td
+                = Provision.sumProvisionDetail2(provision.id)
               %td
                 %a.btn.btn-warning.btn-xs
                   Editar
