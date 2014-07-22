@@ -61,43 +61,43 @@
           %section.col.col-10
             %label.label Entidad Trabajador
             %label.input{for: "entity_id"}
-              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname+' '+@entity.maternal_surname+' '+@entity.name, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname+' '+@entity.maternal_surname+' '+@entity.name, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
         .row
           %section.col.col-3
             %label Fecha de Nacimiento
-            %input#familiar-dayofbirth.string.optional.form-control{'name'=>'date_of_birth', type: "date", :value => "#{@entity.date_of_birth}", disabled: "disabled"}
+            %input#familiar-dayofbirth.string.optional.form-control{'name'=>'date_of_birth', type: "date", :value => "#{@entity.date_of_birth}", disabled: "disabled", style: "background-color: gainsboro;"}
           %section.col.col-10
             %label.label DNI
             %label.input{for: "dni"}
-              = text_field_tag 'worker[dni]', @entity.dni, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+              = text_field_tag 'worker[dni]', @entity.dni, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
           %section.col.col-10
             %label.label Carnet de Extranjeria
             %label.input{for: "alienslicense"}
-              = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+              = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Carnet de Extranjeria', disabled: "disabled", style: "background-color: gainsboro;"
         %label.label Lugar de Nacimiento
         .row
           %section.col.col-4
             %label.label Ciudad
             %label.input{for: "city"}
-              = text_field_tag 'worker[city]', @entity.city, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+              = text_field_tag 'worker[city]', @entity.city, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
           %section.col.col-4
             %label.label Provincia
             %label.input{for: "province"}
-              = text_field_tag 'worker[province]', @entity.province, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+              = text_field_tag 'worker[province]', @entity.province, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
           %section.col.col-4
             %label.label Departamento
             %label.input{for: "department"}
-              = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled"
+              = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
         .row
           %section.col.col-4
             %label.label Email
             %label.input{for: "email"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :email, placeholder: "Email", input_html: { class: 'form-control' }, label: false
+              = f.input :email, placeholder: "Email", input_html: { class: 'form-control' }, label: false, style: "background-color: gainsboro;"
           %section.col.col-4
             %label.label Teléfono
             %label.input{for: "phone"}
-              = f.input :phone, input_html: { class: 'form-control' }, label: false
+              = f.input :phone, input_html: { class: 'form-control' }, label: false, style: "background-color: gainsboro;"
           %section.col.col-4
             %label.label Celular
             %label.input{for: "cellphone"}
