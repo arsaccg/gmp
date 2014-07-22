@@ -79,15 +79,15 @@
           %section.col.col-4
             %label.label Ciudad
             %label.input{for: "city"}
-              = text_field_tag 'worker[city]', @entity.city, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[city]', @entity.city, class: 'form-control', placeholder: 'Ciudad', disabled: "disabled", style: "background-color: gainsboro;"
           %section.col.col-4
             %label.label Provincia
             %label.input{for: "province"}
-              = text_field_tag 'worker[province]', @entity.province, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[province]', @entity.province, class: 'form-control', placeholder: 'Provincia', disabled: "disabled", style: "background-color: gainsboro;"
           %section.col.col-4
             %label.label Departamento
             %label.input{for: "department"}
-              = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Departamento', disabled: "disabled", style: "background-color: gainsboro;"
         .row
           %section.col.col-4
             %label.label Email
@@ -116,7 +116,7 @@
           %section.col.col-4
             %label.label Distrito
             %label.input{for: "district"}
-              = f.input :district, placeholder: "Email", input_html: { class: 'form-control' }, label: false
+              = f.input :district, placeholder: "Distrito", input_html: { class: 'form-control' }, label: false
           %section.col.col-4
             %label.label Provincia
             %label.input{for: "province"}
