@@ -196,6 +196,8 @@ class Administration::ProvisionsController < ApplicationController
       provision_details_attributes: [
         :id,
         :provision_id,
+        :current_unit_price,
+        :current_igv,
         :order_detail_id,
         :type_of_order,
         :account_accountant_id,

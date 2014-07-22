@@ -20,4 +20,22 @@ class Provision < ActiveRecord::Base
       else raise "Unknown Order"
     end
   end
+
+  def self.sumProvisionDetail(provision_id)
+    sum = 0
+    provisiondetails = ProvisionDetail.where("provision_id = ?",provision_id)
+    provisiondetails.each do |pd|
+      sum = pd.amount*pd.current_unit_price
+    end
+    return sum
+  end
+
+  def self.sumProvisionDetail2(provision_id)
+    sum = 0
+    provisiondetails = ProvisionDetail.where("provision_id = ?",provision_id)
+    provisiondetails.each do |pd|
+      sum = pd.amount*pd.unit_price_igv
+    end
+    return sum
+  end
 end
