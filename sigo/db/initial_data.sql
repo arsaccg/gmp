@@ -24,9 +24,22 @@ INSERT INTO `position_workers` (`name`, `id`, `created_at`, `updated_at`) VALUES
 INSERT INTO `companies` (`name`, `ruc`, `address`, `created_at`, `updated_at`) VALUES 
 ('ARSAC Contratistas Generales', '12345678978', 'Calle Las Garzas 494 San Isidro', NOW(), NOW());
 
+-- Data for Sector
+INSERT INTO `sectors` (`id`, `name`, `code`, `cost_center_id`) VALUES 
+(1, 'Sector 0' , '01', 1);
+
+-- Data for Phase
+INSERT INTO `phases` (`id`, `name`, `code`, `category`) VALUES 
+(1, 'Fase 0' , '01', 'phase');
+
 -- Data for Entity
 INSERT INTO `entities` (`name`, `ruc`, `address`, `created_at`, `updated_at`) VALUES 
+('Entity 0', '0', '0', NOW(), NOW()),
 ('ARSAC Contratistas Generales', '12345678978', 'Calle Las Garzas 494 San Isidro', NOW(), NOW());
+
+-- Data for worker
+INSERT INTO `workers` (`id`, `entity_id`, `cost_center_id`) VALUES 
+(1, 1, 1);
 
 -- Data for Entity Type Entity
 INSERT INTO `entities_type_entities` (`entity_id`, `type_entity_id`, `created_at`, `updated_at`) VALUES 
@@ -36,6 +49,8 @@ INSERT INTO `entities_type_entities` (`entity_id`, `type_entity_id`, `created_at
 INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('IGV', '0.18', NOW(), NOW());
 INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('IPC', '114.63', NOW(), NOW());
 
+INSERT INTO `working_groups` (`id`, `master_builder_id`, `front_chief_id`, `active`, `created_at`, `updated_at`, `executor_id`,  `name`, `cost_center_id`) 
+VALUES ('1', '1', '1', '1', NOW(), NOW(), '1', 'Defecto', '1');
 -- Data InputCategories
 INSERT INTO `inputcategories` (`category_id`, `description`, `created_at`, `updated_at`) VALUES 
 (1, 'PERSONAL', NOW(), NOW()), 
