@@ -24,10 +24,12 @@ class Production::WorkerContractsController < ApplicationController
     	@worker_id = params[:worker_id]
     end
     if @typeofcontract == 'Adenda'
+      @action = 'edit'
       @workercontract = WorkerContract.find_by_id(params[:contract])
       @worker_id = @workercontract.worker_id
     end
     if @typeofcontract == 'Renovación'
+      @action = 'edit'
       @workercontract = WorkerContract.find_by_id(params[:contract])
       @worker_id = @workercontract.worker_id
       @diff = (@workercontract.end_date - @workercontract.start_date).to_i
@@ -81,8 +83,6 @@ class Production::WorkerContractsController < ApplicationController
   end
 
   def destroy
-    workercontract2 = WorkerContract.find(params[:id])
-    @worker_id = workercontract2.worker_id
     workercontract = WorkerContract.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el Contrato."
     render :json => workercontract
@@ -90,6 +90,6 @@ class Production::WorkerContractsController < ApplicationController
 
   private
   def worker_contract_parameters
-    params.require(:worker_contract).permit(:position_of_worker, :camp, :destaque, :salary, :regime, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract)
+    params.require(:worker_contract).permit(:position_of_worker, :camp, :charge_id, :destaque, :salary, :regime, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract)
   end
 end

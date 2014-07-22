@@ -12,7 +12,7 @@
           .section.col.col-md-8
             .form-group
               .col-md-12
-                -if @action = 'edit'
+                -if @action == 'edit'
                   -if @worker.typeofworker=="empleado"
                     %label.radio-inline
                       %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", checked: ""}
