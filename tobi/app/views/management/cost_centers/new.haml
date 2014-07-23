@@ -13,11 +13,11 @@
     .control-group
       %label(class="control-label") Fecha de Inicio
       .controls
-        = f.date_min :IGV, label: false, placeholder: 'Fecha de Inicio'
+        = f.input :date_min, label: false, placeholder: 'Fecha de Inicio'
     .control-group
       %label(class="control-label") Fecha de Fin
       .controls
-        = f.date_max :IGV, label: false, placeholder: 'Fecha de Fin'
+        = f.input :date_max, label: false, placeholder: 'Fecha de Fin'
     .form-actions
       .row
         .span3
