@@ -17,7 +17,7 @@ class Phase < ActiveRecord::Base
   end
 
   def self.getSpecificPhases(cost_center_id)
-    mysql_result = Phase.find(:all, :select =>"DISTINCT p.id, p.name, p.code", :from => 'wbsitems w, phases p', :conditions => ["w.cost_center_id = ? AND w.phase_id = p.id", cost_center_id])
+    mysql_result = Phase.find(:all, :select =>"DISTINCT p.id, p.name, p.code", :from => 'wbsitems w, phases p', :conditions => ["w.cost_center_id = ? AND w.phase_id = p.id", cost_center_id], :order => "p.code ASC")
     return mysql_result
   end
 end
