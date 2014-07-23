@@ -11,7 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140619160547) do
+ActiveRecord::Schema.define(version: 20140723211509) do
+
+  create_table "account_accountants", force: true do |t|
+    t.string   "code"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "advances", force: true do |t|
     t.string   "advance_type"
@@ -21,6 +28,31 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.integer  "cost_center_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "afp_details", force: true do |t|
+    t.integer  "afp_id"
+    t.float    "mixed"
+    t.date     "date_entry"
+    t.integer  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "contribution_fp"
+    t.float    "insurance_premium"
+    t.float    "top"
+    t.float    "c_variable"
+  end
+
+  create_table "afps", force: true do |t|
+    t.string   "enterprise"
+    t.float    "mixed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "status"
+    t.float    "contribution_fp"
+    t.float    "insurance_premium"
+    t.float    "top"
+    t.float    "c_variable"
   end
 
   create_table "arbitration_documents", force: true do |t|
@@ -50,6 +82,20 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.string   "ruc"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "book_works", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_of_book_work_id"
   end
 
   create_table "budgets", force: true do |t|
@@ -95,9 +141,10 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.integer  "professional_id"
     t.integer  "work_id"
     t.integer  "charge_id"
+    t.string   "contractor"
     t.date     "start_date"
     t.date     "finish_date"
-    t.integer  "componetns_id"
+    t.integer  "other_work_id"
     t.string   "certificate"
     t.string   "certificate_file_name"
     t.string   "certificate_content_type"
@@ -142,6 +189,7 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
+    t.string   "address"
   end
 
   create_table "companies_users", force: true do |t|
@@ -156,6 +204,13 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "specialty"
+  end
+
+  create_table "components_other_works", force: true do |t|
+    t.integer  "other_work_id"
+    t.integer  "component_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "components_works", force: true do |t|
@@ -174,6 +229,41 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "updated_at"
   end
 
+  create_table "concept_details", force: true do |t|
+    t.integer  "concept_id"
+    t.integer  "subconcept_id"
+    t.string   "category"
+    t.integer  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "concepts", force: true do |t|
+    t.string   "name"
+    t.float    "percentage"
+    t.float    "amount"
+    t.string   "code"
+    t.float    "top"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "type_concept"
+    t.integer  "status"
+  end
+
+  create_table "contest_documents", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_of_contest_document_id"
+  end
+
   create_table "contract_documents", force: true do |t|
     t.string   "attachment"
     t.string   "attachment_file_name"
@@ -183,6 +273,20 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.integer  "work_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "contractual_documents", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_of_contractual_document_id"
   end
 
   create_table "cost_center_timelines", force: true do |t|
@@ -205,14 +309,24 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.date     "start_date"
     t.date     "end_date"
     t.string   "status"
-    t.integer  "deleted",             default: 0
-    t.float    "overhead_percentage"
-    t.float    "igv"
+    t.integer  "deleted",              default: 0
+    t.binary   "igv",        limit: 1
+    t.date     "date_max"
+    t.date     "date_min"
   end
 
   create_table "cost_centers_users", force: true do |t|
     t.integer  "cost_center_id"
     t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "data_summary_accountings", force: true do |t|
+    t.integer  "account_accountant_id"
+    t.integer  "sub_daily_id"
+    t.date     "accounting_date"
+    t.float    "amount"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -262,6 +376,12 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.integer  "budget_id"
   end
 
+  create_table "document_provisions", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "documents", force: true do |t|
     t.string   "name"
     t.string   "description"
@@ -271,6 +391,18 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "preffix"
+  end
+
+  create_table "download_softwares", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.string   "file"
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_update_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "entities", force: true do |t|
@@ -285,6 +417,11 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.integer  "cost_center_id"
     t.string   "second_name"
     t.date     "date_of_birth"
+    t.string   "gender"
+    t.string   "city"
+    t.string   "province"
+    t.string   "department"
+    t.string   "alienslicense"
   end
 
   create_table "entities_type_entities", force: true do |t|
@@ -322,9 +459,28 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "updated_at"
   end
 
+  create_table "extra_calculations", force: true do |t|
+    t.string   "concept"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "financial_variables", force: true do |t|
     t.string   "name"
     t.float    "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "flowcharts", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "photo"
+    t.string   "photo_file_name"
+    t.string   "photo_content_type"
+    t.integer  "photo_file_size"
+    t.datetime "photo_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -420,6 +576,14 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "updated_at"
   end
 
+  create_table "interest_links", force: true do |t|
+    t.string   "name"
+    t.string   "url"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "invoice_documents", force: true do |t|
     t.string   "attachment"
     t.string   "attachment_file_name"
@@ -444,6 +608,23 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "updated_at"
   end
 
+  create_table "issued_letters", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "code"
+    t.integer  "year"
+    t.string   "type_of_doc"
+    t.integer  "type_of_issued_letter_id"
+  end
+
   create_table "itembybudgets", force: true do |t|
     t.string   "item_code"
     t.string   "order"
@@ -465,7 +646,7 @@ ActiveRecord::Schema.define(version: 20140619160547) do
 
   add_index "itembybudgets", ["item_id"], name: "itembybudges_item_id", using: :btree
 
-  create_table "itembywbses", force: true do |t|
+  create_table "itembywbs", force: true do |t|
     t.string   "wbscode"
     t.integer  "itembywbs_id"
     t.string   "coditem"
@@ -498,6 +679,25 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.string   "unity_code"
     t.integer  "deleted"
     t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "law_and_regulations", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_update_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "law_and_regulations_type_of_law_and_regulations", force: true do |t|
+    t.integer  "law_and_regulation_id"
+    t.integer  "type_of_law_and_regulation_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -562,6 +762,20 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "updated_at"
   end
 
+  create_table "of_companies", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "company_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_of_company_id"
+  end
+
   create_table "order_of_service_details", force: true do |t|
     t.integer  "article_id"
     t.integer  "sector_id"
@@ -575,6 +789,8 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "order_of_service_id"
+    t.boolean  "received"
+    t.float    "unit_price_before_igv"
   end
 
   create_table "order_of_services", force: true do |t|
@@ -590,6 +806,17 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.integer  "money_id"
     t.float    "exchange_of_rate"
     t.date     "date_of_service"
+  end
+
+  create_table "order_service_extra_calculations", force: true do |t|
+    t.integer  "order_of_service_detail_id"
+    t.integer  "extra_calculation_id"
+    t.float    "value"
+    t.string   "apply"
+    t.string   "operation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "type"
   end
 
   create_table "other_works", force: true do |t|
@@ -633,8 +860,8 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.float    "total_hours"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "cost_center_id"
     t.integer  "block"
+    t.integer  "cost_center_id"
   end
 
   create_table "part_people", force: true do |t|
@@ -643,9 +870,9 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.date     "date_of_creation"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "cost_center_id"
     t.integer  "block"
     t.integer  "blockweekly"
+    t.integer  "cost_center_id"
   end
 
   create_table "part_person_details", force: true do |t|
@@ -677,8 +904,8 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sector_id"
-    t.integer  "cost_center_id"
     t.integer  "block"
+    t.integer  "cost_center_id"
   end
 
   create_table "phases", force: true do |t|
@@ -687,6 +914,19 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "updated_at"
     t.string   "category"
     t.string   "code"
+  end
+
+  create_table "photo_of_works", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "photo"
+    t.string   "photo_file_name"
+    t.string   "photo_content_type"
+    t.integer  "photo_file_size"
+    t.datetime "photo_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "position_workers", force: true do |t|
@@ -735,6 +975,32 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.integer  "major_id"
   end
 
+  create_table "provision_details", force: true do |t|
+    t.integer  "provision_id"
+    t.integer  "order_detail_id"
+    t.string   "type_of_order"
+    t.integer  "account_accountant_id"
+    t.integer  "amount"
+    t.float    "unit_price_igv"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "current_igv"
+    t.float    "current_unit_price"
+  end
+
+  create_table "provisions", force: true do |t|
+    t.integer  "document_provision_id"
+    t.string   "number_document_provision"
+    t.date     "accounting_date"
+    t.string   "series"
+    t.integer  "entity_id"
+    t.integer  "order_id"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "cost_center_id"
+  end
+
   create_table "purchase_order_details", force: true do |t|
     t.integer  "delivery_order_detail_id"
     t.float    "unit_price"
@@ -746,6 +1012,17 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.integer  "purchase_order_id"
     t.integer  "amount"
     t.boolean  "received"
+    t.boolean  "received_provision"
+  end
+
+  create_table "purchase_order_extra_calculations", force: true do |t|
+    t.integer  "purchase_order_detail_id"
+    t.integer  "extra_calculation_id"
+    t.float    "value"
+    t.string   "apply"
+    t.string   "operation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "purchase_orders", force: true do |t|
@@ -763,6 +1040,34 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "updated_at"
     t.float    "exchange_of_rate"
     t.integer  "entity_id"
+  end
+
+  create_table "received_letters", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_of_received_letter_id"
+  end
+
+  create_table "record_of_meetings", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_of_record_of_meeting_id"
   end
 
   create_table "rental_types", force: true do |t|
@@ -966,6 +1271,13 @@ ActiveRecord::Schema.define(version: 20140619160547) do
   add_index "stock_inputs", ["warehouse_id"], name: "index_stock_inputs_on_warehouse_id", using: :btree
   add_index "stock_inputs", ["working_group_id"], name: "index_stock_inputs_on_working_group_id", using: :btree
 
+  create_table "sub_dailies", force: true do |t|
+    t.string   "code"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "subcontract_advances", force: true do |t|
     t.date     "date_of_issue"
     t.float    "advance"
@@ -1044,6 +1356,51 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.integer  "cost_center_id"
   end
 
+  create_table "technical_files", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_of_technical_file_id"
+  end
+
+  create_table "technical_libraries", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_update_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "technical_libraries_type_of_technical_libraries", force: true do |t|
+    t.integer  "technical_library_id"
+    t.integer  "type_of_technical_library_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "technical_standards", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_update_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "testimony_of_consortium_documents", force: true do |t|
     t.string   "attachment"
     t.string   "attachment_file_name"
@@ -1088,6 +1445,92 @@ ActiveRecord::Schema.define(version: 20140619160547) do
   create_table "type_of_articles", force: true do |t|
     t.string   "code"
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_book_works", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_companies", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "company_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_contest_documents", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_contractual_documents", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_issued_letters", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_law_and_regulations", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_received_letters", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_record_of_meetings", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_technical_files", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_technical_libraries", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_work_reports", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1253,6 +1696,49 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "updated_at"
   end
 
+  create_table "work_reports", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_of_work_report_id"
+  end
+
+  create_table "worker_center_of_studies", force: true do |t|
+    t.string   "name"
+    t.string   "profession"
+    t.string   "title"
+    t.string   "numberoftuition"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "worker_id"
+  end
+
+  create_table "worker_contracts", force: true do |t|
+    t.integer  "charge_id"
+    t.float    "camp"
+    t.float    "destaque"
+    t.float    "salary"
+    t.integer  "regime"
+    t.integer  "days"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "worker_id"
+    t.integer  "numberofcontract"
+    t.string   "typeofcontract"
+    t.date     "end_date_2"
+  end
+
   create_table "worker_details", force: true do |t|
     t.integer  "bank_id"
     t.string   "account_number"
@@ -1261,16 +1747,125 @@ ActiveRecord::Schema.define(version: 20140619160547) do
     t.datetime "updated_at"
   end
 
+  create_table "worker_experiences", force: true do |t|
+    t.string   "businessname"
+    t.string   "businessaddress"
+    t.string   "title"
+    t.float    "salary"
+    t.string   "bossincharge"
+    t.string   "exitreason"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "worker_id"
+  end
+
+  create_table "worker_familiars", force: true do |t|
+    t.string   "paternal_surname"
+    t.string   "maternal_surname"
+    t.string   "names"
+    t.string   "relationship"
+    t.date     "dayofbirth"
+    t.string   "dni"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "worker_id"
+  end
+
+  create_table "worker_otherstudies", force: true do |t|
+    t.string   "study"
+    t.string   "level"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "worker_id"
+  end
+
   create_table "workers", force: true do |t|
     t.string   "phone"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "dni"
     t.integer  "position_worker_id"
     t.integer  "article_id"
-    t.integer  "cost_center_id"
     t.integer  "entity_id"
     t.string   "email"
+    t.integer  "cost_center_id"
+    t.string   "address"
+    t.string   "district"
+    t.string   "province"
+    t.string   "department"
+    t.string   "pais"
+    t.string   "cellphone"
+    t.string   "primaryschool"
+    t.string   "highschool"
+    t.string   "primarydistrict"
+    t.string   "highschooldistrict"
+    t.date     "primarystartdate"
+    t.date     "primaryenddate"
+    t.date     "highschoolstartdate"
+    t.date     "highschoolenddate"
+    t.string   "levelofinstruction"
+    t.string   "quality"
+    t.string   "security"
+    t.string   "enviroment"
+    t.string   "labor_legislation"
+    t.string   "cv"
+    t.string   "cv_file_name"
+    t.string   "cv_content_type"
+    t.integer  "cv_file_size"
+    t.datetime "cv_updated_at"
+    t.string   "antecedent_police"
+    t.string   "antecedent_police_file_name"
+    t.string   "antecedent_police_content_type"
+    t.integer  "antecedent_police_file_size"
+    t.datetime "antecedent_police_updated_at"
+    t.string   "dni"
+    t.string   "dni_file_name"
+    t.string   "dni_content_type"
+    t.integer  "dni_file_size"
+    t.datetime "dni_updated_at"
+    t.string   "cts_deposit_letter"
+    t.string   "cts_deposit_letter_file_name"
+    t.string   "cts_deposit_letter_content_type"
+    t.integer  "cts_deposit_letter_file_size"
+    t.datetime "cts_deposit_letter_updated_at"
+    t.string   "pension_funds_letter"
+    t.string   "pension_funds_letter_file_name"
+    t.string   "pension_funds_letter_content_type"
+    t.integer  "pension_funds_letter_file_size"
+    t.datetime "pension_funds_letter_updated_at"
+    t.string   "affidavit"
+    t.string   "affidavit_file_name"
+    t.string   "affidavit_content_type"
+    t.integer  "affidavit_file_size"
+    t.datetime "affidavit_updated_at"
+    t.string   "marriage_certificate"
+    t.string   "marriage_certificate_file_name"
+    t.string   "marriage_certificate_content_type"
+    t.integer  "marriage_certificate_file_size"
+    t.datetime "marriage_certificate_updated_at"
+    t.string   "birth_certificate_of_childer"
+    t.string   "birth_certificate_of_childer_file_name"
+    t.string   "birth_certificate_of_childer_content_type"
+    t.integer  "birth_certificate_of_childer_file_size"
+    t.datetime "birth_certificate_of_childer_updated_at"
+    t.string   "dni_wife_kids"
+    t.string   "dni_wife_kids_file_name"
+    t.string   "dni_wife_kids_content_type"
+    t.integer  "dni_wife_kids_file_size"
+    t.datetime "dni_wife_kids_updated_at"
+    t.string   "schoolar_certificate"
+    t.string   "schoolar_certificate_file_name"
+    t.string   "schoolar_certificate_content_type"
+    t.integer  "schoolar_certificate_file_size"
+    t.datetime "schoolar_certificate_updated_at"
+    t.string   "driverlicense"
+    t.string   "maritalstatus"
+    t.string   "typeofworker"
+    t.integer  "numberofchilds"
+    t.integer  "afp_id"
+    t.string   "afptype"
+    t.string   "afpnumber"
   end
 
   create_table "working_groups", force: true do |t|
@@ -1288,7 +1883,7 @@ ActiveRecord::Schema.define(version: 20140619160547) do
 
   create_table "works", force: true do |t|
     t.string   "specialty"
-    t.string   "name",                                 limit: 500
+    t.string   "name"
     t.float    "amount_of_contract"
     t.string   "participation_of_arsac"
     t.date     "date_signature_of_contract"

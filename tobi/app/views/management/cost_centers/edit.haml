@@ -7,7 +7,18 @@
       %label(class="control-label") Nombre del Proyecto
       .controls
         = f.input :name, label: false, placeholder: 'Nombre del Proyecto'
-    
+    .control-group
+      %label(class="control-label") Nombre del Proyecto
+      .controls
+        = f.input :IGV, label: false, placeholder: 'IGV'
+    .control-group
+      %label(class="control-label") Fecha de Inicio
+      .controls
+        = f.date_min :IGV, label: false, placeholder: 'Fecha de Inicio'
+    .control-group
+      %label(class="control-label") Fecha de Fin
+      .controls
+        = f.date_max :IGV, label: false, placeholder: 'Fecha de Fin'
     .form-actions
       = f.button :submit, value: 'Crear nuevo proyecto', class: "btn btn-success"
       %a(href="#"){class: "btn btn-danger"}

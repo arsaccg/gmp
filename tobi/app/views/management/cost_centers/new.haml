@@ -6,7 +6,18 @@
     .control-group
       %label(class="control-label") Nombre del Proyecto
       = f.input :name, label: false, placeholder: 'Nombre del Proyecto', class: 'form-control'
-   
+    .control-group
+      %label(class="control-label") IGV
+      .controls
+        = f.input :igv, as: :boolean, label: false, placeholder: 'IGV'
+    .control-group
+      %label(class="control-label") Fecha de Inicio
+      .controls
+        = f.input :date_min, label: false, placeholder: 'Fecha de Inicio'
+    .control-group
+      %label(class="control-label") Fecha de Fin
+      .controls
+        = f.input :date_max, label: false, placeholder: 'Fecha de Fin'
     .form-actions
       .row
         .span3

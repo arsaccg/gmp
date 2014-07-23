@@ -15,6 +15,27 @@ class Management::ValorizationsController < ApplicationController
     render :newvalorization, layout: false
   end
 
+  def edit
+     @valorization = Valorization.find(params[:id])
+     render :edit, layout: false
+  end
+
+  def update
+      @valorization = Valorization.find(params[:id])
+      @valorization.update_attributes(params[:valorization])
+      cost_center_id = Budget.find(@valorization.budget_id).cost_center_id
+
+      redirect_to :controller => "management/budgets", project_id: cost_center_id ,:action => :administrate_budget
+  end
+
+  def destroy
+    @valorization = Valorization.find(params[:id])
+    cost_center_id = Budget.find(@valorization.budget_id).cost_center_id
+    @valorization.destroy
+    redirect_to :controller => "management/budgets", project_id: cost_center_id ,:action => :administrate_budget
+  end
+
+
   def changevalorization
   	@itembybudgets = Itembybudget.all
     @valorization = Valorization.find(params[:id])

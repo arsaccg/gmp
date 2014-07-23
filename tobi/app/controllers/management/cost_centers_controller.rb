@@ -50,6 +50,6 @@ class Management::CostCentersController < ApplicationController
 
   private
   def cost_center_parameters
-    params.require(:cost_center).permit(:name, :total_amount, :direct_cost_amount, :general_cost_amount, :utility_amount, :advance_payment_percent, :coaching_granted_percent, :igv)
+    params.require(:cost_center).permit(:name, :total_amount, :direct_cost_amount, :general_cost_amount, :utility_amount, :advance_payment_percent, :coaching_granted_percent, :igv, :date_min, :date_max)
   end
 end

@@ -14,6 +14,12 @@
                   = db[:name]
             %select(name="budget_id" class="span12 small-font" size="10" id = "budget_id")
             %input(type="hidden" id="project_id" name = "project_id")
+        %br
+        %h4 Gastos Generales
+          = f.input :general_expenses, label: false
+        %br
+        %h4 Utilidad
+          = f.input :utility, label: false
         %h5
           Tipo de Presupuesto:
         .small-font
