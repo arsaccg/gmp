@@ -5,6 +5,7 @@ class CreateDataSummaryAccountings < ActiveRecord::Migration
       t.integer :sub_daily_id
       t.date :accounting_date
       t.float :amount
+      t.integer :status
 
       t.timestamps
     end

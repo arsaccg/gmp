@@ -23,7 +23,7 @@ class Payrolls::AfpsController < ApplicationController
     afp.status = 1
     if afp.save
       ActiveRecord::Base.connection.execute("
-        INSERT INTO afp_details (afp_id, percentage, date_entry, status) VALUES ("+afp.id.to_i.to_s+", "+afp.percentage.to_f.to_s+",'"+Time.now.strftime("%Y/%m/%d").to_s+"', 1)
+        INSERT INTO afp_details (afp_id, contribution_fp, insurance_premium, top, c_variable, mixed, date_entry, status) VALUES ("+afp.id.to_i.to_s+", "+afp.contribution_fp.to_f.to_s+", "+afp.insurance_premium.to_f.to_s+", "+afp.top.to_f.to_s+", "+afp.c_variable.to_f.to_s+", "+afp.mixed.to_f.to_s+",'"+Time.now.strftime("%Y/%m/%d").to_s+"', 1)
         
       ") 
       flash[:notice] = "Se ha creado correctamente."
@@ -55,7 +55,7 @@ class Payrolls::AfpsController < ApplicationController
         ")
       end
       ActiveRecord::Base.connection.execute("
-        INSERT INTO afp_details (afp_id, percentage, date_entry, status) VALUES ("+afp.id.to_i.to_s+", "+afp.percentage.to_f.to_s+",'"+Time.now.strftime("%Y/%m/%d").to_s+"', 1)
+        INSERT INTO afp_details (afp_id, contribution_fp, insurance_premium, top, c_variable, mixed, date_entry, status) VALUES ("+afp.id.to_i.to_s+", "+afp.contribution_fp.to_f.to_s+", "+afp.insurance_premium.to_f.to_s+", "+afp.top.to_f.to_s+", "+afp.c_variable.to_f.to_s+", "+afp.mixed.to_f.to_s+",'"+Time.now.strftime("%Y/%m/%d").to_s+"', 1)
       ") 
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
@@ -79,13 +79,13 @@ class Payrolls::AfpsController < ApplicationController
     ActiveRecord::Base.connection.execute("
           UPDATE afp_details SET
           status = 0
-          WHERE id = "+a0.id.to_s+" AND status=1
+          WHERE id = "+a0.id.to_s+" AND status = 1
         ")
     render :json => afp
   end
 
   private
   def afp_parameters
-    params.require(:afp).permit(:enterprise, :percentage)
+    params.require(:afp).permit(:enterprise, :contribution_fp, :insurance_premium, :top, :c_variable, :mixed)
   end
 end

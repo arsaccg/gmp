@@ -32,7 +32,11 @@
             %thead
               %tr
                 %th Empresa
-                %th Porcentage
+                %th Aporte F. P.
+                %th Prima de Seguro
+                %th Tope de Seguro
+                %th C. Variable
+                %th Mixta
                 %th Acciones
             %tbody
               - @afp.each do |con|
@@ -40,10 +44,31 @@
                   %td
                     = con.enterprise.to_s
                   %td
-                    - if con.percentage != nil
-                      = con.percentage.to_s + "%"
+                    - if con.contribution_fp != nil
+                      = con.contribution_fp.to_s + "%"
                     -else
                       ="--"
+                  %td
+                    - if con.insurance_premium != nil
+                      = con.insurance_premium.to_s + "%"
+                    -else
+                      ="--"
+                  %td
+                    - if con.top != nil
+                      = "S/. " + con.top.to_s
+                    -else
+                      ="--"
+                  %td
+                    - if con.c_variable != nil
+                      = con.c_variable.to_s + "%"
+                    -else
+                      ="--"
+                  %td
+                    - if con.mixed != nil
+                      = con.mixed.to_s + "%"
+                    -else
+                      ="--"
+                      
                   %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_payrolls_afp_path(con.id)}', 'content', null, null, 'GET')"}
                       Editar

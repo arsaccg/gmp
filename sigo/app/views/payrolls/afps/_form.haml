@@ -13,9 +13,25 @@
               %i.icon-append.fa.fa-credit-card
               = f.input :enterprise, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
           %section.col.col-4
-            %label.label Porcentage de descuento
+            %label.label Aporte F.P.
             %label.input
-              = f.input :percentage, placeholder: "Porcentaje", input_html: { class: 'form-control' }, label: false
+              = f.input :contribution_fp, placeholder: "%", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label Prima de Seguro
+            %label.input
+              = f.input :insurance_premium, placeholder: "%", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label Tope Por Seguro
+            %label.input
+              = f.input :top, placeholder: "S/.", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label C. Variable
+            %label.input
+              = f.input :c_variable, placeholder: "%", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label Mixta
+            %label.input
+              = f.input :mixed, placeholder: "Porcentaje", input_html: { class: 'form-control' }, label: false
 
      
       %footer
@@ -43,7 +59,19 @@
             'afp[enterprise]' : {
               required : true
             },
-            'afp[percentage]' : {
+            'afp[contribution_fp]' : {
+              required : true
+            },
+            'afp[insurance_premium]' : {
+              required : true
+            },
+            'afp[top]' : {
+              required : true
+            },
+            'afp[c_variable]' : {
+              required : true
+            },
+            'afp[mixed]' : {
               required : true
             }
           },
@@ -53,8 +81,20 @@
             'afp[enterprise]' : {
               required : 'Por favor, ingresar el nombre de la empresa.'
             },
-            'afp[percentage]' : {
-              required : 'Por favor, ingresar el descuento a obtener.'
+            'afp[contribution_fp]' : {
+              required : 'Por favor, ingresar el aporte.'
+            },
+            'afp[insurance_premium]' : {
+              required : 'Por favor, ingresar la prima de seguro.'
+            },
+            'afp[top]' : {
+              required : 'Por favor, ingresar el tope de seguro.'
+            },
+            'afp[c_variable]' : {
+              required : 'Por favor, ingresar el costo variable.'
+            },
+            'afp[mixed]' : {
+              required : 'Por favor, ingresar el monto mixto.'
             }
           },
 

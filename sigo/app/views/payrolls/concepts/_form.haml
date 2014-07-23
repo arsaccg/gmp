@@ -20,15 +20,29 @@
             %label.label Porcentaje
             %label.input
               = f.input :percentage, placeholder: "Porcentaje", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-8
+          %section.col.col-4
             %label.label Monto
             %label.input
               = f.input :amount, placeholder: "Monto", input_html: { class: 'form-control' }, label: false
+
+        .row
           %section.col.col-4
             %label.label Tope
             %label.input
-              = f.input :top, placeholder: "Tope", input_html: { class: 'form-control' }, label: false
+              = f.input :top, placeholder: "Tope", input_html: { class: 'form-control' }, label: false      
+          .section.col.col-md-6
+            %label.label Tipo de Concepto
+            .form-group.in-line
+              .col-md-1
+              .col-md-10
+                .col-md-5
+                  = f.radio_button :type_concept,  "Fijo", :selected=>@con.type_concept=="Fijo"
+                  %label Fijo
+                .col-md-5
+                  = f.radio_button :type_concept, "Variable", :selected=>@con.type_concept=="Fijo"
+                  %label Variable
+                      
+                    
 
       %fieldset
         %legend Aportaciones a las que afecta
@@ -118,7 +132,7 @@
             'concept[name]' : {
               required : true
             },
-            'concept[top]' : {
+            'concept[type_concept]' : {
               required : true
             }
           },
@@ -131,8 +145,8 @@
             'concept[name]' : {
               required : 'Por favor, ingresar el nombre.'
             },
-            'concept[top]' : {
-              required : 'Por favor, ingresar monto máximo.'
+            'concept[type_concept]' : {
+              required : 'Seleccione el tipo de concepto'
             }
           },
 
@@ -177,4 +191,3 @@
   function delete_item(code){
     $("#tr" + code).remove();
   }
-

@@ -55,7 +55,10 @@
                     -else
                       ="--"
                   %td
-                    = con.top.to_s
+                    - if con.top != nil
+                      = con.top.to_s
+                    -else
+                      ="--"
                   %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_payrolls_concept_path(con.id)}', 'content', null, null, 'GET')"}
                       Editar
