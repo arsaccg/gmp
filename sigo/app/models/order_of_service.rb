@@ -44,4 +44,12 @@ class OrderOfService < ActiveRecord::Base
     ")
     return mysql_result
   end
+
+  def self.calculate_total_neto_before_igv(object_calculations, total_before_igv)
+    
+  end
+
+  def self.calculate_total_neto_after_igv(object_calculations, total_before_igv)
+    
+  end
 end

@@ -70,6 +70,6 @@ form label { text-align: left !important; }
   }
 }
 
-@media only screen and (max-device-width: 480px) {
+@media only screen and (max-width: 840px) {
   #logo-sigo { display: none; }
 }

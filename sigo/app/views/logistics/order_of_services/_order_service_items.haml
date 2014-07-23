@@ -32,7 +32,7 @@
     %div
       = text_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][unit_price]', nil, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);", :required => true, title:'No puede dejar este campo vacio'
   %td.price-without-igv
-    = text_field_tag 'unit_price_before_igv', nil, class: "form-control unit-price-before-igv", :readonly => true
+    = text_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', nil, class: "form-control unit-price-before-igv", :readonly => true
   %td.check-igv
     %label.checkbox
       = check_box_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][igv]', nil, nil, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }

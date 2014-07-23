@@ -180,31 +180,21 @@
                       %td
                         = number_to_currency(orderServiceDetail.unit_price.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
                       %td
-                        - before_igv = (orderServiceDetail.amount.to_i * orderServiceDetail.unit_price.to_f).to_f
-                        - orderServiceDetail.order_service_extra_calculations.each do |extra|
-                          - if extra.apply == 'before'
-                            - if extra.operation == 'sum' && extra.type == 'soles'
-                              - before_igv += extra.value.to_f
-                            - elsif extra.operation == 'sum' && extra.type == 'percent'
-                              - before_igv = before_igv + (before_igv*(extra.value/100)).to_f
-                            - elsif extra.operation == 'minus' && extra.type == 'soles'
-                              - before_igv -= extra.value.to_f
-                            - elsif extra.operation == 'minus' && extra.type == 'percent'
-                              - before_igv = before_igv - (before_igv*(extra.value/100)).to_f
-                        = number_to_currency(before_igv, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                        = number_to_currency(orderServiceDetail.unit_price_before_igv.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
                       %td
                         - after_igv = orderServiceDetail.unit_price_igv.to_f
+                        - aux = after_igv
                         - orderServiceDetail.order_service_extra_calculations.each do |extra|
                           - if extra.apply == 'after'
                             - if extra.operation == 'sum' && extra.type == 'soles'
                               - after_igv += extra.value.to_f
                             - elsif extra.operation == 'sum' && extra.type == 'percent'
-                              - after_igv = after_igv + (after_igv*(extra.value/100)).to_f
+                              - after_igv = after_igv + (aux*(extra.value/100)).to_f
                             - elsif extra.operation == 'minus' && extra.type == 'soles'
                               - after_igv -= extra.value.to_f
                             - elsif extra.operation == 'minus' && extra.type == 'percent'
-                              - after_igv = after_igv - (after_igv*(extra.value/100)).to_f
-                        = number_to_currency(after_igv, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                              - after_igv = after_igv - (aux*(extra.value/100)).to_f
+                        = number_to_currency(after_igv.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
                       %td
                         = orderServiceDetail.description
 

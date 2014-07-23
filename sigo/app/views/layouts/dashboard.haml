@@ -63,8 +63,6 @@
                   %a{href: "#{show_panel_main_path(@company.id)}?cost_center=#{other_cc.id}"}
                     %i.fa.fa-power-off
                     = other_cc.name
-      #logo-sigo
-        = image_tag asset_path('logo-sigo.png'), alt: "sigo"
       / pulled right: nav area
       .pull-right
         / collapse menu button
@@ -84,6 +82,8 @@
           %span
             %a{href: "#{root_path}?flag=1", title: "Show Companies"}
               %i.fa.fa-suitcase
+        #logo-sigo.transparent.pull-right
+          = image_tag asset_path('logo-sigo.png'), alt: "sigo"
         / end search mobile button
         / input: search field
       / end pulled right: nav area

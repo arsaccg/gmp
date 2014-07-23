@@ -15624,7 +15624,8 @@ aside {
   margin-left: 9px;
 }
 #logo img {
-  width: 174px;
+  /*width: 174px;*/
+  width: 118px;
   height: auto;
   padding-left: 3px;
 }
