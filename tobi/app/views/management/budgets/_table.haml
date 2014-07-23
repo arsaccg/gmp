@@ -44,6 +44,12 @@
                 %tr
                   %td= valorization.id
                   %td= valorization.month
+                  %td=
+                    .btn-group
+                      %a{:href=>"javascript:load_delete('"+edit_management_valorization(valorization.id).to_s+"')"}(class="btn btn-mini btn-default")
+                        Editar
+                      %a{:href=>"javascript:load_delete('"+management_valorization_path(valorization.id).to_s+"')", data: { confirm: "¿Esta seguro de eliminar este presupuesto?" }}(class="btn btn-mini btn-danger")
+                        %i(class="icon-remove")
 
 :javascript 
   function load_edit(url){
