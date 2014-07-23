@@ -6,7 +6,6 @@ class Administration::ProvisionsController < ApplicationController
 
   def new
     @provision = Provision.new
-    @suppliers = TypeEntity.find_by_preffix("P").entities
     @documentProvisions = DocumentProvision.all
     @cost_center = get_company_cost_center("cost_center")
     render layout: false
@@ -181,6 +180,28 @@ class Administration::ProvisionsController < ApplicationController
     end
 
     render(:partial => 'row_detail_provision', :layout => false)
+  end
+
+  def get_suppliers_by_type_order
+    str_options = ''
+    aux = Array.new
+    if params[:type] == 'purchase_order'
+      PurchaseOrder.all.each do |purchase|
+        if !aux.include? purchase.entity.id
+          aux << purchase.entity.id
+          str_options += ('<option value=' + purchase.entity.id.to_s + '>' + purchase.entity.name.to_s + ' ' + purchase.entity.paternal_surname.to_s + ' ' + purchase.entity.maternal_surname.to_s + '</option>')
+        end
+      end
+    elsif params[:type] == 'service_order'
+      OrderOfService.all.each do |service|
+        if !aux.include? service.entity.id
+          aux << service.entity.id
+          str_options += ('<option value=' + service.entity.id.to_s + '>' + service.entity.name.to_s + ' ' + service.entity.paternal_surname.to_s + ' ' + service.entity.maternal_surname.to_s + '</option>')
+        end
+      end
+    end
+        
+    render json: {:suppliers => str_options}
   end
 
   private

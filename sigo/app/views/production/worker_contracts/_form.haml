@@ -83,7 +83,7 @@
             %label.label Dia de Fin
           %section.col.col-2
             %label.input{for: "end_date"}
-              = f.input :end_date, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
+              = f.input :end_date, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false,  :onchange =>'calculatedays();'
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -108,33 +108,51 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'part_work[number_working_group]' : {
+            'worker_contract[numberofcontract]' : {
               required : true
             },
-            'part_work[working_group_id]' : {
+            'worker_contract[camp]' : {
               required : true
             },
-            'part_work[sector_id]' : {
+            'worker_contract[destaque]' : {
               required : true
             },
-            'part_work[date_of_creation]' : {
+            'worker_contract[salary]' : {
+              required : true
+            },
+            'worker_contract[regime]' : {
+              required : true
+            },
+            'worker_contract[start_date]' : {
+              required : true
+            },
+            'worker_contract[end_date]' : {
               required : true
             }
           },
 
           // Messages for form validation
           messages : {
-            'part_work[number_working_group]' : {
-              required : 'Por favor, ingresar el grupo de trabajo.'
+            'worker_contract[numberofcontract]' : {
+              required : 'Por favor, ingresar el numero de contrato.'
             },
-            'part_work[working_group_id]' : {
-              required : 'Por favor, ingresar el grupo de trabajo.'
+            'worker_contract[camp]' : {
+              required : 'Por favor, ingresar el monto por campamento.'
             },
-            'part_work[sector_id]' : {
-              required : 'Por favor, ingresar el sector.'
+            'worker_contract[destaque]' : {
+              required : 'Por favor, ingresar el monto por destaque.'
             },
-            'part_work[date_of_creation]' : {
-              required : 'Por favor, ingresar la fecha.'
+            'worker_contract[salary]' : {
+              required : 'Por favor, ingresar el monto por salario.'
+            },
+            'worker_contract[regime]' : {
+              required : 'Por favor, ingresar el monto por regimen.'
+            },
+            'worker_contract[start_date]' : {
+              required : 'Por favor, ingresar la fecha de inicio.'
+            },
+            'worker_contract[end_date]' : {
+              required : 'Por favor, ingresar la fecha de fin.'
             }
           },
 
@@ -161,3 +179,39 @@
   function delete_item(code){
     $("#tr" + code).remove();
   }
+
+  $('#worker_contract_days').change(function(){
+    var start_date = $('#worker_contract_start_date').val();
+    var dias = $('#worker_contract_days').val();
+    var dias2 = parseInt(dias)
+    var d1 = start_date.split("-");
+    var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
+    var end_date = new Date(dat1);
+    end_date.setDate(dat1.getDate() + dias2 - 1);
+    console.log(end_date);
+    $('#worker_contract_end_date').val(end_date);
+  });
+
+  $('#worker_contract_start_date').change(function(){
+    var start_date = $('#worker_contract_start_date').val();
+    var end_date = $('#worker_contract_end_date').val();
+    var d1 = start_date.split("-");
+    var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
+    var d2 = end_date.split("-");
+    var dat2 = new Date(d2[0], parseFloat(d2[1])-1, parseFloat(d2[2]));
+    var fin = dat2.getTime() - dat1.getTime();
+    var dias = (Math.floor(fin / (1000 * 60 * 60 * 24))+1);
+    $('#worker_contract_days').val(dias);
+  });
+
+  $('#worker_contract_end_date').change(function(){
+    var start_date = $('#worker_contract_start_date').val();
+    var end_date = $('#worker_contract_end_date').val();
+    var d1 = start_date.split("-");
+    var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
+    var d2 = end_date.split("-");
+    var dat2 = new Date(d2[0], parseFloat(d2[1])-1, parseFloat(d2[2]));
+    var fin = dat2.getTime() - dat1.getTime();
+    var dias = (Math.floor(fin / (1000 * 60 * 60 * 24))+1);
+    $('#worker_contract_days').val(dias);
+  });

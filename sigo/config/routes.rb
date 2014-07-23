@@ -468,6 +468,7 @@ ArsacLogistica::Application.routes.draw do
         post 'display_orders'
         post 'display_details_orders'
         post 'puts_details_in_provision'
+        post 'get_suppliers_by_type_order'
       end
     end
 
