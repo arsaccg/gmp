@@ -32,7 +32,7 @@
               %li
                 %span
                   %i.fa.fa-lg.fa-folder-open
-                  = phase.name + " (cod. " + phase.code + ")"
+                  = "(cod. " + phase.code + ") " + phase.name
                   %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_phase_path(phase.id)}', 'content', null, null, 'GET')"}
                     Editar
                   %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{phase.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_phase_path(phase.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_phases_path}')"}}
@@ -42,7 +42,7 @@
                     %li
                       %span
                         %i.icon-leaf
-                        = subphase.name + " (cod. " + subphase.code + ")"
+                        = "(cod. " + subphase.code + ") " + subphase.name
                         %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('/logistics/phases/" + subphase.id.to_s + "/editsub', 'content', null, null, 'GET')"}
                           Editar
                         %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{subphase.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_subphase_path(subphase.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_phases_path}')"}}
