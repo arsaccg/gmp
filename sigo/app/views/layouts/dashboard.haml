@@ -116,19 +116,6 @@
               %i.fa.fa-lg.fa-fw.fa-inbox
               Inbox
               %span.badge.pull-right.inbox-badge= @total_pending
-          - if current_user.has_role? :director
-            %li
-              %a{href: "#{management_dashboard_path}", title: "Dashboard de Gestión"}
-                %i.fa.fa-lg.fa-fw.fa-home
-                Dashboard
-            %li
-              %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
-                %i.fa.fa-lg.fa-fw.fa-gears
-                Companias
-            %li
-              %a{href: "#{logistics_persons_path}", title: "Gestión de Usuarios"}
-                %i.fa.fa-lg.fa-fw.fa-group
-                Usuarios
           %li
             %a{href: "#", title: "Compañias"}
               %i.fa.fa-lg.fa-fw.fa-wrench
