@@ -56,6 +56,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @cost_center = CostCenter.all
     @moneys = Money.all
     @methodOfPayments = MethodOfPayment.all
+    @extra_calculations = ExtraCalculation.all
     @action = 'edit'
     render layout: false
   end
@@ -350,6 +351,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         :unit_price, 
         :igv, 
         :amount, 
+        :unit_price_before_igv, 
         :unit_price_igv, 
         :description, 
         :_destroy,

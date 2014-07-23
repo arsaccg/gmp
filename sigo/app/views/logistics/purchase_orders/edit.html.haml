@@ -51,3 +51,64 @@
     }
     return true;
   }
+
+  function add_extra_operation(obj){
+
+    var id_content = $(obj).attr('rel') + '-section';
+
+    var concept = '#' + $(obj).attr('rel') + '-select-calc';
+    var type = '#' + $(obj).attr('rel') + '-select-type';
+    var name_concept = '#' + $(obj).attr('rel') + '-select-calc option:selected';
+    var name_type = '#' + $(obj).attr('rel') + '-select-type option:selected';
+
+    var value = '#' + $(obj).attr('rel') + '-input-value';
+
+    var apply = '#' + $(obj).attr('rel') + '-select-apply';
+    var operation = '#' + $(obj).attr('rel') + '-select-operation';
+    var name_apply = '#' + $(obj).attr('rel') + '-select-apply option:selected';
+
+    var reg_n = '#' + $(obj).attr('rel') + '-hidden';
+
+    var str_data = { concept: $(concept).val(), type: $(type).val(), value: $(value).val(), apply: $(apply).val(), operation: $(operation).val(), name_concept: $(name_concept).text(), name_type: $(name_type).text(), name_apply: $(name_apply).text(), reg_n: $(reg_n).val() };
+
+    path_jquery_before = '#tr-' + $(reg_n).val() + ' td.price-without-igv input';
+    path_jquery_after = '#tr-' + $(reg_n).val() + ' td.price-with-igv input';
+    path_jquery_igv = '#tr-' + $(reg_n).val() + ' td.check-igv .checkbox input';
+    ancient_value_before = parseFloat($(path_jquery_before).val());
+    ancient_value_after = parseFloat($(path_jquery_after).val());
+
+    if( $(apply).val() == 'before' ){
+      if( $(operation).val() == 'sum' ){
+        if( $(type).val() == 'soles' ){
+          ancient_value_before = ancient_value_before + parseFloat($(value).val());
+        } else {
+          ancient_value_before = ancient_value_before + parseFloat((ancient_value_before*($(value).val()/100)));
+        }
+      } else {
+        if( $(type).val() == 'soles' ){
+          ancient_value_before = ancient_value_before - parseFloat($(value).val());
+        } else {
+          ancient_value_before = ancient_value_before - parseFloat((ancient_value_before*($(value).val()/100)));
+        }
+      }
+
+      if($(path_jquery_igv).is(":checked")){
+        $(path_jquery_before).val(parseFloat(ancient_value_before).toFixed(2));
+        ancient_value_before = ancient_value_before * (parseFloat("#{@igv}"))
+        $(path_jquery_after).val(parseFloat(ancient_value_before).toFixed(2));
+      } else {
+        $(path_jquery_before).val(parseFloat(ancient_value_before).toFixed(2));
+        $(path_jquery_after).val(parseFloat(ancient_value_before).toFixed(2));
+      }
+
+    }
+
+    append_url_ajax('#{add_more_row_form_extra_op_logistics_purchase_orders_path}', id_content, str_data, 0, 'POST');
+  }
+
+  function set_id_modeling(obj, id_modeling){
+    $current_tr_parent = $(obj).parent().parent().attr('id');
+    id_modal_target = $(obj).attr('data-target');
+    $id_generated = $current_tr_parent.split('-')[1];
+    $(id_modal_target + '-hidden').val($id_generated);
+  }

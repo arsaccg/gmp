@@ -283,6 +283,8 @@
                                         = check_box_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][_destroy]'
                                         %label Eliminar
                                       = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][operation]', order_operation.operation
+                            %footer
+                              %button{:type => "button", :class => "btn btn-primary", :onclick => "add_extra_operation(this)", :rel => "modal-purchase-#{pod.created_at.to_time.to_i}"} Agregar Operación
         .form-actions{:style => "margin-top: 0;"}
           .row
             .col-md-12

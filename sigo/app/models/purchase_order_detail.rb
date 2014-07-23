@@ -5,6 +5,8 @@ class PurchaseOrderDetail < ActiveRecord::Base
 	has_many :stock_input_details
 	has_many :purchase_order_extra_calculations
 
+	accepts_nested_attributes_for :purchase_order_extra_calculations, :allow_destroy => true
+
 	def self.get_total_received(id)
 	  @received = ActiveRecord::Base.connection.execute("SELECT SUM(amount) FROM `stock_input_details` WHERE `purchase_order_detail_id` = #{id}")
 	  if @received != nil
