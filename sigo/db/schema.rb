@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140723170836) do
+ActiveRecord::Schema.define(version: 20140723211509) do
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -222,6 +222,13 @@ ActiveRecord::Schema.define(version: 20140723170836) do
 
   add_index "components_works", ["work_id", "component_id"], name: "index_components_works_on_work_id_and_component_id", using: :btree
 
+  create_table "componets_other_works", force: true do |t|
+    t.integer  "component_id"
+    t.integer  "other_works_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "concept_details", force: true do |t|
     t.integer  "concept_id"
     t.integer  "subconcept_id"
@@ -302,7 +309,10 @@ ActiveRecord::Schema.define(version: 20140723170836) do
     t.date     "start_date"
     t.date     "end_date"
     t.string   "status"
-    t.integer  "deleted",    default: 0
+    t.integer  "deleted",              default: 0
+    t.binary   "igv",        limit: 1
+    t.date     "date_max"
+    t.date     "date_min"
   end
 
   create_table "cost_centers_users", force: true do |t|
@@ -921,6 +931,20 @@ ActiveRecord::Schema.define(version: 20140723170836) do
 
   create_table "position_workers", force: true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "professional_certificates", force: true do |t|
+    t.integer  "professional_id"
+    t.integer  "certificate_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "professional_trainings", force: true do |t|
+    t.integer  "professional_id"
+    t.integer  "training_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
