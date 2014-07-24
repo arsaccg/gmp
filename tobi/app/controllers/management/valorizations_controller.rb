@@ -22,7 +22,7 @@ class Management::ValorizationsController < ApplicationController
 
   def update
       @valorization = Valorization.find(params[:id])
-      @valorization.update_attributes(params[:valorization])
+      @valorization.update_attributes(valorization_parameters)
       cost_center_id = Budget.find(@valorization.budget_id).cost_center_id
 
       redirect_to :controller => "management/budgets", project_id: cost_center_id ,:action => :administrate_budget
@@ -32,7 +32,7 @@ class Management::ValorizationsController < ApplicationController
     @valorization = Valorization.find(params[:id])
     cost_center_id = Budget.find(@valorization.budget_id).cost_center_id
     @valorization.destroy
-    redirect_to :controller => "management/budgets", project_id: cost_center_id ,:action => :administrate_budget
+    redirect_to administrate_budget_management_budgets_path + "?project_id=" + cost_center_id.to_s
   end
 
 
@@ -78,7 +78,8 @@ class Management::ValorizationsController < ApplicationController
 
   def edit
     #val_item = Valorizationitem
-    redirect_to :controller => "management/budget", :action => :administrate_budget
+    @valorization = Valorization.find(params[:id])
+    render :edit, layout: false
   end
 
   def finalize

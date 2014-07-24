@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  item_id: 1
+  sector_id: 1
+  measured: 1.5
+
+two:
+  item_id: 1
+  sector_id: 1
+  measured: 1.5

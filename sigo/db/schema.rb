@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140723211509) do
+ActiveRecord::Schema.define(version: 20140724205124) do
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -750,6 +750,16 @@ ActiveRecord::Schema.define(version: 20140723211509) do
   add_index "managers", ["email"], name: "index_managers_on_email", unique: true, using: :btree
   add_index "managers", ["reset_password_token"], name: "index_managers_on_reset_password_token", unique: true, using: :btree
 
+  create_table "measured_by_sectors", force: true do |t|
+    t.integer  "item_id"
+    t.integer  "sector_id"
+    t.float    "measured"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "cost_center_id"
+    t.integer  "itembybudget_id"
+  end
+
   create_table "method_of_payments", force: true do |t|
     t.string "name"
     t.string "symbol"
@@ -1013,6 +1023,7 @@ ActiveRecord::Schema.define(version: 20140723211509) do
     t.integer  "amount"
     t.boolean  "received"
     t.boolean  "received_provision"
+    t.float    "unit_price_before_igv"
   end
 
   create_table "purchase_order_extra_calculations", force: true do |t|
@@ -1023,6 +1034,7 @@ ActiveRecord::Schema.define(version: 20140723211509) do
     t.string   "operation"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type"
   end
 
   create_table "purchase_orders", force: true do |t|

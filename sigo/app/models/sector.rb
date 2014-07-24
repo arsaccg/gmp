@@ -6,6 +6,8 @@ class Sector < ActiveRecord::Base
 	has_many :part_person_details
 	has_many :part_of_equipment_details
 	belongs_to :cost_center
+
+	has_many :measured_by_sectors
 	#Validaciones
 	include ActiveModel::Validations
 	#validates :code, :uniqueness => { :scope => :name, :message => "El código debe ser único" }

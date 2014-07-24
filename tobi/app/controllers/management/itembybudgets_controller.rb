@@ -11,6 +11,7 @@ class Management::ItembybudgetsController < ApplicationController
     @budget_id = params[:budget_id]
   	@itembybudgets = Itembybudget.where(:budget_id=>params[:budget_id])
   	render :index, :layout => false
+    
   end
 
   def new
