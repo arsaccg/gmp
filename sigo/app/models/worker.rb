@@ -7,10 +7,12 @@ class Worker < ActiveRecord::Base
   has_many :worker_experiences
 	has_many :part_of_equipments
   has_many :worker_contracts
+  has_many :worker_afps
 	belongs_to :entity
 	belongs_to :cost_center
 	belongs_to :position_worker
 	belongs_to :article
+  has_and_belongs_to_many :type_workdays
 
 	accepts_nested_attributes_for :worker_details, :allow_destroy => true
   accepts_nested_attributes_for :worker_familiars, :allow_destroy => true
