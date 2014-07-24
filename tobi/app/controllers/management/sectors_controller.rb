@@ -29,8 +29,6 @@ class Management::SectorsController < ApplicationController
   	render 'set_sector_cc', layout: false
   end
 
-  def update_sector
 
-  end
 
 end

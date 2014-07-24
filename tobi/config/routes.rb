@@ -123,6 +123,19 @@ Pmicg::Application.routes.draw do
         get 'filter_by_budget'
       end
     end
+
+    resources :sectors do
+      get 'set_sectors_by_cost_center'
+      post 'set_sectors_by_cost_center'
+
+    end
+
+    resources :mesured_by_sector do
+      get 'update_sector'
+      post 'update_sector'
+    end
+
+
     resources :inputbybudgetanditems do
       collection do
         get 'filter_by_budget_and_item'
