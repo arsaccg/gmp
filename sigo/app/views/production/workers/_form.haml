@@ -88,7 +88,7 @@
             %label.label Departamento
             %label.input{for: "department"}
               = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Departamento', disabled: "disabled", style: "background-color: gainsboro;"
-        .row
+        .row#row1{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Email
             %label.input{for: "email"}
@@ -102,8 +102,8 @@
             %label.label Celular
             %label.input{for: "cellphone"}
               = f.input :cellphone, input_html: { class: 'form-control' }, label: false
-        %label.label Residencia Actual
-        .row
+        %label.label#label1{ 'style' => 'display:none' } Residencia Actual
+        .row#row2{ 'style' => 'display:none' }
           %section.col.col-8
             %label.label Dirección
             %label.input{for: "address"}
@@ -112,7 +112,7 @@
             %label.label País
             %label.input{for: "pais"}
               = f.input :pais, input_html: { class: 'form-control' }, label: false
-        .row
+        .row#row3{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Distrito
             %label.input{for: "district"}
@@ -125,7 +125,7 @@
             %label.label Departamento
             %label.input{for: "department"}
               = f.input :department, input_html: { class: 'form-control' }, label: false
-        .row
+        .row#row4{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Licencia de Conducir
             %label.input{for: "driverlicense"}
@@ -148,7 +148,7 @@
                   %option{:value => "casado"} Casado
                   %option{:value => "divorciado"} Divorciado
                   %option{:value => "viudo"} Viudo
-        .row
+        .row#row5{ 'style' => 'display:none' }
           %section.col.col-4
             %label.control-label AFP
             %br
@@ -180,7 +180,7 @@
               %i.icon-append.fa.fa-credit-card
               = f.input :afpnumber, placeholder: "Número de Carnet", input_html: { class: 'form-control' }, label: false
 
-      %fieldset
+      %fieldset#fieldset1{ 'style' => 'display:none' }
         %legend Bancos
         .row
           %section.col.col-2
@@ -228,7 +228,7 @@
                         %i
                     - @reg_n += 1
 
-      %fieldset
+      %fieldset#fieldset2{ 'style' => 'display:none' }
         %legend Datos familiares
         .row
           %section.col.col-2
@@ -285,7 +285,7 @@
                         = check_box 'worker[worker_familiars_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
-      %fieldset
+      %fieldset#fieldset3{ 'style' => 'display:none' }
         %legend Estudios
         .row
           %section.col.col-5
@@ -419,7 +419,7 @@
                         = check_box 'worker[worker_otherstudies]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
-      %fieldset
+      %fieldset#fieldset4{ 'style' => 'display:none' }
         %legend Experiencia Laboral
         .row
           %section.col.col-2
@@ -545,7 +545,7 @@
             %label.label Numero de Hijos
             %label.input{for: "numberofchilds"}
               = f.input :numberofchilds, input_html: { class: 'form-control' }, label: false
-      %fieldset
+      %fieldset#fieldset5{ 'style' => 'display:none' }
         %legend Documentación Adjunta
         .row
           %section.col.col-md-12
@@ -670,15 +670,45 @@
 :javascript
   $(document).ready(function () {
     $('select').select2();
-
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
       submit_validate($('#new_worker'));
     }
-
   });
-  
+
+  $("input.radiobox").change(function() {
+    if(($(this).prop('value') == "empleado") || ($(this).prop('value') == "obrero")){
+      $("#row1").css("display", "");
+      $("#row2").css("display", "");
+      $("#row3").css("display", "");
+      $("#row4").css("display", "");
+      $("#row5").css("display", "");
+      $("#label1").css("display", "");
+      $("#fieldset1").css("display", "");
+      $("#fieldset2").css("display", "");
+      $("#fieldset3").css("display", "");
+      $("#fieldset4").css("display", "");
+      $("#fieldset5").css("display", "");
+    }
+    else {
+      $("#row1").css("display", "none");
+      $("#row2").css("display", "none");
+      $("#row3").css("display", "none");
+      $("#row4").css("display", "none");
+      $("#row5").css("display", "none");
+      $("#label1").css("display", "none");
+      $("#fieldset1").css("display", "none");
+      $("#fieldset2").css("display", "none");
+      $("#fieldset3").css("display", "none");
+      $("#fieldset4").css("display", "none");
+      $("#fieldset5").css("display", "none");
+    }
+  });
+  function displaynone(){
+    document.getElementById("#rowtipo").style.display = "none";
+  }
+
   function submit_validate(form){    
     loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
     $('#bank-select').select2();

@@ -188,8 +188,17 @@
     var dat1 = new Date(d1[0], parseFloat(d1[1])-1, parseFloat(d1[2]));
     var end_date = new Date(dat1);
     end_date.setDate(dat1.getDate() + dias2 - 1);
-    console.log(end_date);
-    $('#worker_contract_end_date').val(end_date);
+    day = String(end_date.getDate());
+    month = String(end_date.getMonth()+1);
+    year = String(end_date.getFullYear());
+    if(day.length<2){
+      day = "0"+day;
+    }
+    if(month.length<2){
+      month = "0"+month;
+    }
+    end_date2 = year+"-"+month+"-"+day;
+    $('#worker_contract_end_date').val(end_date2);
   });
 
   $('#worker_contract_start_date').change(function(){
