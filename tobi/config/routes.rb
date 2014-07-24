@@ -131,7 +131,7 @@ Pmicg::Application.routes.draw do
       end
     end
 
-    resources :mesured_by_sector do
+    resources :measured_by_sector do
       member do
         get 'update_sector'
         post 'update_sector'

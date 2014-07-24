@@ -1,6 +1,6 @@
 class MeasuredBySector < ActiveRecord::Base
 
 	belongs_to :sector
-	belongs_to :item
-	
+	belongs_to :itembudget
+
 end

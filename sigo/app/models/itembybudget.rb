@@ -1,6 +1,5 @@
-load 'sqlserver/dbconnector.rb'
 require 'thread'
-
+load 'sqlserver/dbconnector.rb'
 
 class Itembybudget < ActiveRecord::Base
 
@@ -10,6 +9,7 @@ class Itembybudget < ActiveRecord::Base
 	belongs_to :budget
 	has_many :subcontract_details
 	has_many :itembywbses
+	has_many :measured_by_sectors
 
 	def set_data(budget_id, database)
 		# Cargar Partidas desde base de datos remota

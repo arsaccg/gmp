@@ -1,37 +1,37 @@
-%tr
-  %tr
-    %td Partidas
-  %tr
-    - @sector.each do |sector|
-      %td
-        = sector.name
+- @budgets.each do |budget|
+  %h4
+    = budget.description
+  %table(class="white-table table-bordered table table-condensed" style="width: 100%;")
 
-- @items.each do |item|
-  %tr
-    %td
-      = item.description
-  %tr
-    - @sector.each do |sector|
-      %td
-        %input(type: "hidden"){value: sector, id: "data_s" + item.id.to_s + sector.id.to_s, name: "input_sector" + item.id.to_s + sector.id.to_s, value: sector.id.to_s }
-        %input(type: "hidden"){value: sector, id: "data_i" + item.id.to_s + sector.id.to_s, name: "input_item" + item.id.to_s + sector.id.to_s, value: item.id.to_s  }
-        %input(type: "hidden"){value: sector, id: "data_c" + item.id.to_s + sector.id.to_s, name: "input_cc" + item.id.to_s + sector.id.to_s, value: @cost_center.id.to_s}
-        %input{name: "val_" + item.id.to_s + sector.id.to_s, onchange: "update_sector('" + sector.id.to_s + "', '" + item.id.to_s + "', '" + @cost_center.id.to_s + "')"}
+    %thead
+      %tr
+        %th Partidas
+        - @sector.each do |sector|
+          %th
+            = sector.name
+    %tbody
+      - items = Itembybudget.where(:budget_id=>budget.id)
+      - items.each do |item|
+        %tr
+          %td
+            = item.subbudgetdetail
+        
+          - @sector.each do |sector|
+            %td
+              -if item.measured.to_i != 0
+                - val_item = MeasuredBySector.where("sector_id = ? AND itembybudget_id = ? AND cost_center_id = ?", sector.id, item.id, @cost_center.id).first.measured rescue " "
+                %input(class="form-control"){name: "val_" + item.id.to_s + sector.id.to_s, id: "val_" + item.id.to_s + sector.id.to_s, onchange: "update_sector('" + sector.id.to_s + "', '" + item.id.to_s + "', '" + @cost_center.id.to_s + "')", value: val_item.to_s }
 
 
 :javascript
 
-  function update_sector(id_sector, id_item, id_cost_center){
+  function update_sector(id_sector, id_item, id_cost_center){ 
 
-    var sector_str = $("#data_s" + id_item + id_sector).val();
-    var item_str = $("#data_i" + id_item + id_sector).val();
-    var cc_str = $("#data_c" + id_item + id_sector).val();
-    
-
+    var measured_input = $("#val_" + id_item + id_sector).val();
     $.ajax({
       type: "POST",
-      url: "#{update_sector_management_mesured_by_sector_path(@cost_center.id)}",
-      data: {sector_id: sector_str, item_id: item_str, cost_center_id: cc_str}
+      url: "#{update_sector_management_measured_by_sector_path(@cost_center.id)}",
+      data: {sector_id: id_sector, item_id: id_item, cost_center_id: id_cost_center, measured: measured_input}
     }).done(function( msg ) {
       console.log("Guardado");
     });
