@@ -1,6 +1,8 @@
 %tr(class="afp_item"){id: "tr" + @reg_n.to_s}
   %td.bank-id(style="display:none")
     = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afp_id]', @id_afp.to_i
+  %td.worker-id(style="display:none")
+    = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][worker_id]', @worker_id.to_i
   %td.col-2
     = @enterprise
   %td.col-md-1.afpnumber{:style => "width:5%"}

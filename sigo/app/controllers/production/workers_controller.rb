@@ -105,7 +105,6 @@ class Production::WorkersController < ApplicationController
 
   def add_afp_item_field
     @reg_n = ((Time.now.to_f)*100).to_i
-    @worker_id = params[:worker_id]
     data_afp_unit = params[:afp_id].split('-')
     @afp = Afp.find(data_afp_unit[0])
     @afpnumber = params[:afpnumber].to_s

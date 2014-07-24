@@ -6,7 +6,7 @@
   .widget-body
     = simple_form_for([:production, @worker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
-        .legend Datos laborales
+        %legend{style: "font-weight: 600;"} DATOS TRIBUTARIOS
         .row
           .section.col.col-md-2
             %label.control-label Tipo de Trabajador
@@ -253,7 +253,7 @@
                 %span No
 
       %fieldset#fieldset6{ 'style' => 'display:none' }
-        %legend Datos tributarios
+        %legend{style: "font-weight: 600;"} DATOS TRIBUTARIOS
         .row
           %section.col-md-4
             %label.label ¿Percibe rentas de 5ta exoneradas (Inc. e) Art. 19 de la LIR?
@@ -317,6 +317,7 @@
                     - @reg_n += 1
 
       %fieldset#fieldset7{ 'style' => 'display:none' }
+        %legend{style: "font-weight: 600;"} DATOS DE SEGURIDAD SOCIAL
         %legend Regimen Pensionario
         .row
           %section.col.col-2
@@ -329,11 +330,11 @@
                   = afp.enterprise
 
           %section.col.col-3
-            = text_field_tag 'afpnumber', nil, class: 'form-control', id: 'afp-afpnumber', placeholder: 'Numero de Cuenta'
+            = text_field_tag 'afpnumber', nil, class: 'form-control', id: 'afp-afpnumber', placeholder: 'CUSPP'
 
           %section.col.col-3
             %select#afptype-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
-              %option(value = "0") Seleccione un tipo
+              %option(value = "0") Tipo de comisión
               %option(value = "mixto") Mixto
               %option(value = "comision") Comisión
 
@@ -347,7 +348,7 @@
             %thead
               %tr
                 %th.col-2 Nombre
-                %th.col-5 Numero de AFP
+                %th.col-5 CUSPP
                 %th.col-5 Tipo de AFP
                 %th Eliminar
             %tbody(id="afp_items_table")
@@ -412,7 +413,7 @@
                         %i
                     - @reg_n += 1
       %fieldset#fieldset3{ 'style' => 'display:none' }
-        %legend Estudios
+        %legend{style: "font-weight: 600;"} DATOS DE LA SITUACIÓN EDUCATIVA
         .row
           %section.col.col-4
             %label.control-label Situación Educativa
