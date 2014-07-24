@@ -125,14 +125,17 @@ Pmicg::Application.routes.draw do
     end
 
     resources :sectors do
-      get 'set_sectors_by_cost_center'
-      post 'set_sectors_by_cost_center'
-
+      collection do
+        get 'set_sectors_by_cost_center'
+        post 'set_sectors_by_cost_center'
+      end
     end
 
     resources :mesured_by_sector do
-      get 'update_sector'
-      post 'update_sector'
+      member do
+        get 'update_sector'
+        post 'update_sector'
+      end 
     end
 
 
