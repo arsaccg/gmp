@@ -23,7 +23,7 @@ class Management::SectorsController < ApplicationController
   end
 
   def set_sectors_by_cost_center
-  	cost_center = CostCenter.find(params[:cost_center_id])
+  	@cost_center = CostCenter.find(params[:project_id])
   	@sectors = cost_center.sectors
   	@items = cost_center.items
   	render 'set_sector_cc', layout: false

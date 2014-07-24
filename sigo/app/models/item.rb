@@ -6,6 +6,8 @@ class Item < ActiveRecord::Base
 	include DBConnector
 
 	has_many :itemsbybudgets
+	has_many :measured_by_sectors
+	
 	belongs_to :cost_center
 
 	def load_items(cost_center_id, budget_id, database)

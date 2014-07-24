@@ -16,11 +16,23 @@
         %input(type: "hidden"){value: sector, id: "data_s" + item.id.to_s + sector.id.to_s, name: "input_sector" + item.id.to_s + sector.id.to_s, value: sector.id.to_s }
         %input(type: "hidden"){value: sector, id: "data_i" + item.id.to_s + sector.id.to_s, name: "input_item" + item.id.to_s + sector.id.to_s, value: item.id.to_s  }
         %input(type: "hidden"){value: sector, id: "data_c" + item.id.to_s + sector.id.to_s, name: "input_cc" + item.id.to_s + sector.id.to_s, value: @cost_center.id.to_s}
-        %input{name: "val_" + item.id.to_s + sector.id.to_s}
+        %input{name: "val_" + item.id.to_s + sector.id.to_s, onchange: "update_sector('" + sector.id.to_s + "', '" + item.id.to_s + "', '" + @cost_center.id.to_s + "')"}
 
 
 :javascript
 
   function update_sector(id_sector, id_item, id_cost_center){
+
+    var sector_str = $("#data_s" + id_item + id_sector).val();
+    var item_str = $("#data_i" + id_item + id_sector).val();
+    var cc_str = $("#data_c" + id_item + id_sector).val();
     
+
+    $.ajax({
+      type: "POST",
+      url: "#{update_sector_management_mesured_by_sector_path(@cost_center.id)}",
+      data: {sector_id: sector_str, item_id: item_str, cost_center_id: cc_str}
+    }).done(function( msg ) {
+      console.log("Guardado");
+    });
   }

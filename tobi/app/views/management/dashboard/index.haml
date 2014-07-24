@@ -49,6 +49,10 @@
                 =image_tag('calendar.png', :width =>"16px")
                 Distribucion
             %p(class="small-font")
+              %a{:href=>"javascript:load_front_by_item();"}
+                =image_tag('calendar.png', :width =>"16px")
+                Frentes por Partida
+            %p(class="small-font")
               %a{:href=>"javascript:load_control_amplicacion();"}
                 =image_tag('project.png', :width =>"16px")
                 Ampliaciones
@@ -159,6 +163,10 @@
   
   function load_import_distribution(){
     load_url_ondiv("#{import_distributions_management_distributions_path}?project_id=#{(@project.id.to_s).to_s}", 'right-area');
+  }
+
+  function load_front_by_item(){
+    load_url_ondiv("#{set_sectors_by_cost_center_management_sectors_path}?project_id=#{(@project.id.to_s).to_s}", 'right-area');
   }
 
 
