@@ -62,6 +62,11 @@ form label { text-align: left !important; }
   left: 0;
 }
 
+.smart-form#new_worker .inline-group .checkbox {
+float: left;
+margin-right: 100px;
+}
+
 @media (min-width: 1200px){
   #logo-sigo {
     margin-top: 10px;
