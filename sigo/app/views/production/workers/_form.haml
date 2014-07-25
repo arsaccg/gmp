@@ -6,7 +6,7 @@
   .widget-body
     = simple_form_for([:production, @worker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
-        %legend{style: "font-weight: 600;"} DATOS TRIBUTARIOS
+        %legend{style: "font-weight: 600;"} DATOS LABORALES
         .row
           .section.col.col-md-2
             %label.control-label Tipo de Trabajador
@@ -120,14 +120,14 @@
             %label.input{for: "entity_id"}
               = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ' ' + @entity.name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
         .row
-          %section.col.col-3
+          %section.col.col-4
             %label Fecha de Nacimiento
             %input#familiar-dayofbirth.string.optional.form-control{'name'=>'date_of_birth', type: "date", :value => "#{@entity.date_of_birth}", disabled: "disabled", style: "background-color: gainsboro;"}
-          %section.col.col-10
+          %section.col.col-4
             %label.label DNI
             %label.input{for: "dni"}
               = text_field_tag 'worker[dni]', @entity.dni, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
-          %section.col.col-10
+          %section.col.col-4
             %label.label Carnet de Extranjeria
             %label.input{for: "alienslicense"}
               = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Carnet de Extranjeria', disabled: "disabled", style: "background-color: gainsboro;"
@@ -192,8 +192,8 @@
             %label.control-label Estado Civil
             %br
             .input-group
-              %select.col-sm-6.form-control#type{:name =>"worker[maritalstatus]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px' }
-                -if @action = 'edit'
+              %select.col-sm-6.form-control#maritalstatus{:name =>"worker[maritalstatus]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px', class: 'maritalstatus' }
+                -if @action == 'edit'
                   %option{:value => "0"} Seleccione un estado
                   %option{:value => "soltero", :selected => "#{@worker.maritalstatus}"=="soltero"} Soltero
                   %option{:value => "casado", :selected => "#{@worker.maritalstatus}"=="casado"} Casado
@@ -205,52 +205,79 @@
                   %option{:value => "casado"} Casado
                   %option{:value => "divorciado"} Divorciado
                   %option{:value => "viudo"} Viudo
-
-          %section.col-md-4
-            %label.control-label Situación
-            %br
-            .input-group
-              %select.col-sm-6.form-control#situation{:name =>"worker[situation]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px' }
-                -if @action = 'edit'
-                  %option{:value => "0"} Seleccione un tipo
-                  %option{:value => "activo", :selected => "#{@worker.situation}"=="activo"} Activo
-                  %option{:value => "inactivo", :selected => "#{@worker.situation}"=="inactivo"} Inactivo
-                -else
-                  %option{:value => "0", :selected => 'selected'} Seleccione la situación
-                  %option{:value => "activo"} Activo
-                  %option{:value => "inactivo"} Inactivo
         .row#row7{ 'style' => 'display:none' }
-          %section.col.col-10
-            %label.label Jornada Laboral
-            .col.col-10.inline-group
+          %section.col.col-12
+            %label.label JORNADA LABORAL
+            .col.col-12.inline-group
               = f.association :type_workdays, :as => :check_boxes, :label => false
+        %br
         .row#row6{ 'style' => 'display:none' }
-          .col-md-1
-          %section.col-md-4
-            %label.label ¿Discapacitado?
           %section.col-md-12
             .col-md-1
-            %section.col-md-2
-              %label.radio-inline
-                %input{:name =>'worker[disabled]', :type => 'radio', :value => "si"}
-                %span Si
-            %section.col-md-2
-              %label.radio-inline
-                %input{:name =>'worker[disabled]', :type => 'radio', :value => "no"}
-                %span No
-          .col-md-1
-          %section.col-md-4
-            %label.label ¿Sindicalizado?
+            .col-md-4
+              %label.label ¿Discapacitado?
+            .col-md-1
+            .col-md-4
+              %label.label ¿Sindicalizado?
           %section.col-md-12
             .col-md-1
-            %section.col-md-2
-              %label.radio-inline
-                %input{:name =>'worker[unionized]', :type => 'radio', :value => "si"}
-                %span Si
-            %section.col-md-2
-              %label.radio-inline
-                %input{:name =>'worker[unionized]', :type => 'radio', :value => "no"}
-                %span No
+            -if @action == 'edit'
+              -if @worker.disabled=="si"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[disabled]', :type => 'radio', :value => "si", checked: ""}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[disabled]', :type => 'radio', :value => "no"}
+                    %span No
+              -elsif @worker.disabled=="no"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[disabled]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[disabled]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+            -else
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[disabled]', :type => 'radio', :value => "si"}
+                  %span Si
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[disabled]', :type => 'radio', :value => "no"}
+                  %span No
+            .col-md-1
+            -if @action == 'edit'
+              -if @worker.unionized=="si"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[unionized]', :type => 'radio', :value => "si", checked: ""}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[unionized]', :type => 'radio', :value => "no"}
+                    %span No
+              -elsif @worker.unionized=="no"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[unionized]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[unionized]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+            -else
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[unionized]', :type => 'radio', :value => "si"}
+                  %span Si
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[unionized]', :type => 'radio', :value => "no"}
+                  %span No
 
       %fieldset#fieldset6{ 'style' => 'display:none' }
         %legend{style: "font-weight: 600;"} DATOS TRIBUTARIOS
@@ -269,7 +296,7 @@
                 %span No
 
       %fieldset#fieldset1{ 'style' => 'display:none' }
-        %legend Bancos
+        %legend{style: "font-weight: 600;"} Bancos
         .row
           %section.col.col-2
             %label.control-label(for="bank_id") Bancos
@@ -318,6 +345,45 @@
 
       %fieldset#fieldset7{ 'style' => 'display:none' }
         %legend{style: "font-weight: 600;"} DATOS DE SEGURIDAD SOCIAL
+        %legend Centro de Salud
+        .row
+          %section.col.col-2
+            %label.control-label(for="health_id") Centro de Salud
+
+          %section.col.col-3
+            %select#afp-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
+              - @health.each do |health|
+                %option(value = "#{health.id}")
+                  = health.enterprise
+
+          %section.col.col-2
+            %div
+              %a(href="javascript:add_health_center_item();" id="btn-add-health_center" class="btn btn-success" role="button")
+                Agregar Centro de Salud
+
+        .col-lg-12
+          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th.col-2 Nombre
+                %th Eliminar
+            %tbody(id="health_center_items_table")
+              - if @action == 'edit'
+                - @worker.worker_healths.each do |oos|
+                  %tr
+                    %td.bank-id(style="display:none")
+                      = hidden_field_tag 'worker[worker_healths_attributes][' + @reg_n.to_s + '][afp_id]', oos.afp.id
+                    %td.col-2=oos.afp.enterprise
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_healths_attributes][' + @reg_n.to_s + '][id]', oos.id
+                    %td(style="display:none")
+                      = hidden_field_tag 'worker[worker_healths_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'worker[worker_healths_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1
+        %br
         %legend Regimen Pensionario
         .row
           %section.col.col-2
@@ -420,7 +486,7 @@
             %br
             .input-group
               %select.col-sm-6.form-control#type{:name =>"worker[levelofinstruction]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px' }
-                -if @action = 'edit'
+                -if @action == 'edit'
                   %option{:value => "0", :selected => 'selected'} Seleccione un nivel
                   %option{:value => "sineduación", :selected => "#{@worker.levelofinstruction}"=="sineduación"} Sin Educación Formal
                   %option{:value => "especiali", :selected => "#{@worker.levelofinstruction}"=="especiali"} Educación Especial Incompleta
@@ -537,6 +603,7 @@
                         = check_box 'worker[worker_center_of_studies]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
+        %br
         .row
           %section.col.col-2
             %div
@@ -566,8 +633,142 @@
                         = check_box 'worker[worker_otherstudies]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
+        %br
+        .row
+          %section.col-md-12
+            .col-md-1
+            .col-md-4
+              %label.label TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?
+            .col-md-1
+            .col-md-4
+              %label.label TIENE CONOCIMIENTOS DE NORMAS DE SEGURIDAD?
+          %section.col-md-12
+            .col-md-2
+            -if @action == 'edit'
+              -if @worker.quality=="si"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "si", checked: ""}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "no"}
+                    %span No
+              -elsif @worker.quality=="no"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+            -else
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[quality]', :type => 'radio', :value => "si"}
+                  %span Si
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[quality]', :type => 'radio', :value => "no"}
+                  %span No
+            .col-md-1
+            -if @action == 'edit'
+              -if @worker.security=="si"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "si", checked: ""}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "no"}
+                    %span No
+              -elsif @worker.security=="no"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+            -else
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[security]', :type => 'radio', :value => "si"}
+                  %span Si
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[security]', :type => 'radio', :value => "no"}
+                  %span No
+          %section.col-md-12
+            .col-md-1
+            .col-md-4
+              %label.label TIENE CONOCIMIENTOS DE NORMAS DE MEDIOAMBIENTE?
+            .col-md-1
+            .col-md-4
+              %label.label TIENE CONOCIMIENTOS DE LA LEGISLACION LABORAL?
+          %section.col-md-12
+            .col-md-2
+            -if @action == 'edit'
+              -if @worker.enviroment=="si"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "si", checked: ""}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "no"}
+                    %span No
+              -elsif @worker.enviroment=="no"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+            -else
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[enviroment]', :type => 'radio', :value => "si"}
+                  %span Si
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[enviroment]', :type => 'radio', :value => "no"}
+                  %span No
+            .col-md-1
+            -if @action == 'edit'
+              -if @worker.labor_legislation=="si"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "si", checked: ""}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no"}
+                    %span No
+              -elsif @worker.labor_legislation=="no"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+            -else
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "si"}
+                  %span Si
+              .col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no"}
+                  %span No
       %fieldset#fieldset4{ 'style' => 'display:none' }
-        %legend Experiencia Laboral
+        %legend{style: "font-weight: 600;"} Experiencia Laboral
         .row
           %section.col.col-2
             %div
@@ -609,67 +810,25 @@
                         = check_box 'worker[worker_experiences]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
+        %br
         .row
-          %section.col.col-5
-            %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?
-            %br
-            .input-group
-              %select.col-sm-5.form-control#type{:name =>"worker[quality]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                -if @action = 'edit'
-                  %option{:value => "0"} Seleccione
-                  %option{:value => "si", :selected => "#{@worker.quality}"=="si"} Si
-                  %option{:value => "no", :selected => "#{@worker.quality}"=="no"} No
-                -else
-                  %option{:value => "0", :selected => 'selected'} Seleccione
-                  %option{:value => "si"} Si
-                  %option{:value => "no"} No
-          %section.col.col-5
-            %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE SEGURIDAD?
-            %br
-            .input-group
-              %select.col-sm-5.form-control#type{:name =>"worker[security]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                -if @action = 'edit'
-                  %option{:value => "0"} Seleccione
-                  %option{:value => "si", :selected => "#{@worker.security}"=="si"} Si
-                  %option{:value => "no", :selected => "#{@worker.security}"=="no"} No
-                -else
-                  %option{:value => "0", :selected => 'selected'} Seleccione
-                  %option{:value => "si"} Si
-                  %option{:value => "no"} No
-        .row
-          %section.col.col-5
-            %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE MEDIOAMBIENTE?
-            %br
-            .input-group
-              %select.col-sm-5.form-control#type{:name =>"worker[enviroment]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                -if @action = 'edit'
-                  %option{:value => "0"} Seleccione
-                  %option{:value => "si", :selected => "#{@worker.enviroment}"=="si"} Si
-                  %option{:value => "no", :selected => "#{@worker.enviroment}"=="no"} No
-                -else
-                  %option{:value => "0", :selected => 'selected'} Seleccione
-                  %option{:value => "si"} Si
-                  %option{:value => "no"} No
-          %section.col.col-5
-            %label.control-label TIENE CONOCIMIENTOS DE LA LEGISLACION LABORAL?
-            %br
-            .input-group
-              %select.col-sm-5.form-control#type{:name =>"worker[labor_legislation]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                -if @action = 'edit'
-                  %option{:value => "0"} Seleccione
-                  %option{:value => "si", :selected => "#{@worker.labor_legislation}"=="si"} Si
-                  %option{:value => "no", :selected => "#{@worker.labor_legislation}"=="no"} No
-                -else
-                  %option{:value => "0", :selected => 'selected'} Seleccione
-                  %option{:value => "si"} Si
-                  %option{:value => "no"} No
-        .row
-          %section.col.col-4
-            %label.label Numero de Hijos
-            %label.input{for: "numberofchilds"}
-              = f.input :numberofchilds, input_html: { class: 'form-control' }, label: false
+          .section.col.col-md-12
+            .section.col.col-md-2
+              %label.control-label Tiene hijos?
+            .section.col.col-md-3
+              .form-group
+                .col-md-3
+                  %label.radio-inline
+                    %input{:name =>'numberofchilds2', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-1
+                  %label.radio-inline
+                    %input{:name =>'numberofchilds2', :type => 'radio', :value => "no"}
+                    %span No
+            %section.col.col-2#numberofchildren{ 'style' => 'display:none' }
+              = f.input :numberofchilds, placeholder: "Número de hijos", input_html: { class: 'form-control' }, label: false
       %fieldset#fieldset5{ 'style' => 'display:none' }
-        %legend Documentación Adjunta
+        %legend{style: "font-weight: 600;"} Documentación Adjunta
         .row
           %section.col.col-md-12
             .col-md-5
@@ -738,7 +897,7 @@
                 - else
                   Subir el archivo correspondiente
 
-        .row
+        .row#partidamatrimonio{ 'style' => 'display:none' }
           %section.col.col-md-12
             .col-md-5
               %label.label Certificado de Convivencia / Partida de Matrimonio
@@ -750,7 +909,7 @@
                 - else
                   Subir el archivo correspondiente
 
-        .row
+        .row#partidanacihijos{ 'style' => 'display:none' }
           %section.col.col-md-12
             .col-md-5
               %label.label Partida de Nacimiento de Hijos
@@ -762,7 +921,7 @@
                 - else
                   Subir el archivo correspondiente
 
-        .row
+        .row#dnihijoesposa{ 'style' => 'display:none' }
           %section.col.col-md-12
             .col-md-5
               %label.label DNI Hijos y Esposa
@@ -774,7 +933,7 @@
                 - else
                   Subir el archivo correspondiente
 
-        .row
+        .row#constanciamatricula{ 'style' => 'display:none' }
           %section.col.col-md-12
             .col-md-5
               %label.label Constancia de Matricula (Asig. Escolar)
@@ -835,9 +994,29 @@
       $("#fieldset7").css("display", "none");
     }
   });
-  function displaynone(){
-    document.getElementById("#rowtipo").style.display = "none";
-  }
+  $("input[type=radio][name=numberofchilds2]").change(function() {
+    if($(this).prop('value') == "si"){
+      $("#numberofchildren").css("display", "");
+      $("#partidanacihijos").css("display", "");
+      $("#dnihijoesposa").css("display", "");
+      $("#constanciamatricula").css("display", "");
+    }
+    else {
+      $("#numberofchildren").css("display", "none");
+      $("#partidanacihijos").css("display", "none");
+      $("#dnihijoesposa").css("display", "none");
+      $("#constanciamatricula").css("display", "none");
+    }
+  });
+
+  $(".maritalstatus").change(function() {
+    if($(this).prop('value') == "casado"){
+      $("#partidamatrimonio").css("display", "");
+    }
+    else {
+      $("#partidamatrimonio").css("display", "none");
+    }
+  });
 
   function submit_validate(form){    
     loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
@@ -922,6 +1101,12 @@
     str_item = {authenticity_token: "#{form_authenticity_token}", afp_id: $("#afp-select").val(), afpnumber: $("#afp-afpnumber").val(), afptype: $("#afptype-select").val()};
 
     append_url_ajax('#{add_afp_item_field_production_workers_path}', 'afp_items_table', str_item, 0, 'POST');
+  }
+
+  function add_health_center_item(){
+    str_item = {authenticity_token: "#{form_authenticity_token}", afp_id: $("#afp-select").val()};
+
+    append_url_ajax('#{add_health_center_item_field_production_workers_path}', 'health_center_items_table', str_item, 0, 'POST');
   }
 
   function add_familiar_item(){

@@ -51,7 +51,7 @@ class Budget < ActiveRecord::Base
     return budget_array
   end
 
-  def load_elements(budget_id, cost_center_id, type_of_budget, database)
+  def load_elements(budget_id, cost_center_id, type_of_budget, database, company)
     arr_thread = []
     thread_count = 0;
     @cod=""
@@ -147,7 +147,7 @@ class Budget < ActiveRecord::Base
 
     # Importando partidas al subcontrato
     @itembybudgets = Itembybudget.get_item_by_budget
-    @company_name = Company.find(get_company_cost_center('company')).name
+    @company_name = Company.find(company).name
     @entity_id = Entity.find_by_name(@company_name).id
     @subcontract = Subcontract.find_by_entity_id(@entity_id)
     @itembybudgets.each do |ibb|

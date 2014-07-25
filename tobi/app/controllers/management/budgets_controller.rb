@@ -95,8 +95,9 @@ class Management::BudgetsController < ApplicationController
   	type_of_budget  = params[:type_of_budget]
     database = params[:database]
 
-  	budget = Budget.new(params[:budget])
-  	budget.load_elements(budget_id, project_id, type_of_budget, database)
+  	budget = Budget.new(budget_parameters)
+    company = get_company_cost_center('company')
+  	budget.load_elements(budget_id, project_id, type_of_budget, database, company)
     
 
   	redirect_to :action => :get_budget_by_project

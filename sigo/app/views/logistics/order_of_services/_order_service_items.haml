@@ -1,8 +1,14 @@
 %tr(class="order_service_item"){id: "tr-" + @reg_n.to_s}
-  %td.article-id(style="display:none")
+  %td.article-id{ :style => "display:none"}
     = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article.to_i
-  %td.measurement-id(style="display:none")
+  %td.measurement-id{ :style => "display:none"}
     = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][unit_of_measurement_id]', @unitOfMeasurementId.to_i
+  %td.discount-before{ :style => "display:none"}
+    = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][discount_before]', nil, class: "form-control discount-before"
+  %td.discount-after{ :style => "display:none"}
+    = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][discount_after]', nil, class: "form-control discount-after"
+  %td.discount-igv{ :style => "display:none"}
+    = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][quantity_igv]', nil, class: "form-control discount-igv"
   %td
     = @code_article
   %td
