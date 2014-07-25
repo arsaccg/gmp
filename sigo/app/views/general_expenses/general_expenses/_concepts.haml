@@ -1,0 +1,127 @@
+-if @type == "01"
+  %tr(class="concept_item"){id: "tr" + @reg_n.to_s}
+    %td.bank-id(style="display:none")
+      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][article_id]', @article.id.to_i
+      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][type_article]', @type.to_s
+    %td
+      = @article.code.to_s
+    %td
+      = @article.name.to_s    
+    %td
+      = @article.unit_of_measurement.symbol.to_s
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][people]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'    
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][participation]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' 
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][salary]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+    %td{:style => "width: 1%;"}
+      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+
+-if @type == "03"
+  %tr(class="concept_item"){id: "tr" + @reg_n.to_s}
+    %td.bank-id(style="display:none")
+      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][article_id]', @article.id.to_i
+      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][type_article]', @type.to_s
+    %td
+      = @article.code.to_s
+    %td
+      = @article.name.to_s    
+    %td
+      = @article.unit_of_measurement.symbol.to_s
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'    
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' 
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+    %td{:style => "width: 1%;"}
+      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+
+-if @type == "02"
+  %tr(class="concept_item"){id: "tr" + @reg_n.to_s}
+    %td.bank-id(style="display:none")
+      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][article_id]', @article.id.to_i
+      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][type_article]', @type.to_s
+    %td
+      = @article.code.to_s
+    %td
+      = @article.name.to_s    
+    %td
+      = @article.unit_of_measurement.symbol.to_s
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'    
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' 
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+    %td{:style => "width: 1%;"}
+      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+
+-if @type == "04"
+  %tr(class="concept_item"){id: "tr" + @reg_n.to_s}
+    %td.bank-id(style="display:none")
+      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][article_id]', @article.id.to_i
+      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][type_article]', @type.to_s
+    %td
+      = @article.code.to_s
+    %td
+      = @article.name.to_s    
+    %td
+      = @article.unit_of_measurement.symbol.to_s
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'    
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' 
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+    %td{:style => "width: 1%;"}
+      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+
+-if @type == "05"
+  %tr(class="concept_item"){id: "tr" + @reg_n.to_s}
+    %td.bank-id(style="display:none")
+      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][article_id]', @article.id.to_i
+      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][type_article]', @type.to_s
+    %td
+      = @article.code.to_s
+    %td
+      = @article.name.to_s    
+    %td
+      = @article.unit_of_measurement.symbol.to_s
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' 
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+    %td.col-md-1.smart-form{:style => "width:5%"}
+      %div
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ' ' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+    %td{:style => "width: 1%;"}
+      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+      

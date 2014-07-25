@@ -13,7 +13,7 @@ class Payrolls::ConceptsController < ApplicationController
 
   def new
     @con = Concept.new
-    @conde = Concept.all
+    @conde = Concept.where("code NOT LIKE '1%'")
     render layout: false
   end
 
@@ -69,9 +69,14 @@ class Payrolls::ConceptsController < ApplicationController
   def destroy
     con = Concept.find(params[:id])
     ActiveRecord::Base.connection.execute("
-          UPDATE workers SET
+          UPDATE concepts SET
           status = 0
-          WHERE id = "+con.to_s+"
+          WHERE id = "+con.id.to_s+"
+        ")
+    ActiveRecord::Base.connection.execute("
+          UPDATE concept_details SET
+          status = 0
+          WHERE concept_id = "+con.id.to_s+" AND status = 1
         ")
     render :json => con
   end
@@ -85,7 +90,7 @@ class Payrolls::ConceptsController < ApplicationController
 
   private
   def con_parameters
-    params.require(:concept).permit(:name, :percentage, :amount, :top, :code, 
+    params.require(:concept).permit(:name, :percentage, :amount, :top, :code, :type_concept, 
       concept_details_attributes: [
         :id, 
         :concept_id, 
