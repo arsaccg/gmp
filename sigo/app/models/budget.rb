@@ -102,7 +102,7 @@ class Budget < ActiveRecord::Base
         #arr.each {|t| t.join }
 
     # Poblando Articulos a la tabla especifica.
-    if type_of_budget == 0
+    if type_of_budget.to_i == 0
       @type = Budget.where("cod_budget LIKE ? AND type_of_budget = 0", @cod)
 
       #if @type != nil
