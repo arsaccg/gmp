@@ -18,7 +18,7 @@
                     %option{:value => "0"} Seleccione una fase
                     - @phase.each do |ph|
                       %option{:value => "#{ph.id}", :selected => "#{@gexp.phase_id}"=="#{ph.id}"}
-                        = ph.name
+                        = ph.code+ " -  "+ph.name
 
       %fieldset
         %legend Conceptos sujeto al Rubro

@@ -13,7 +13,7 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
 
   def new
     @gexp = GeneralExpense.new
-    @phase = Phase.where("code LIKE '____'")
+    @phase = Phase.where("code LIKE '____'").order(:code)
     @action = 'new'
     render layout: false
   end
