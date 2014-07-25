@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140724193936) do
+ActiveRecord::Schema.define(version: 20140724205124) do
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -756,6 +756,8 @@ ActiveRecord::Schema.define(version: 20140724193936) do
     t.float    "measured"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cost_center_id"
+    t.integer  "itembybudget_id"
   end
 
   create_table "method_of_payments", force: true do |t|

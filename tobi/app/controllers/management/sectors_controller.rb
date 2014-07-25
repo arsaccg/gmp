@@ -23,14 +23,13 @@ class Management::SectorsController < ApplicationController
   end
 
   def set_sectors_by_cost_center
-  	cost_center = CostCenter.find(params[:id])
-  	@sectors = cost_center.sectors
-  	@items = cost_center.items
-  	render 'set_sector_cc', layout: false
+  	@cost_center = CostCenter.find(params[:project_id])
+  	@sector = @cost_center.sectors rescue []
+    @budgets = @cost_center.budgets.where(type_of_budget: 0)
+  	 
+  	render 'set_sectors_by_cost_center', layout: false
   end
 
-  def update_sector
 
-  end
 
 end

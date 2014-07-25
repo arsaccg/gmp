@@ -20,6 +20,12 @@ INSERT INTO `position_workers` (`name`, `id`, `created_at`, `updated_at`) VALUES
 ('Jefe de Frente', '1', NOW(), NOW()), 
 ('Capataz', '2', NOW(), NOW());
 
+-- Data for Type of Workday
+INSERT INTO `type_workdays` (`id`, `name`, `created_at`, `updated_at`) VALUES 
+('1', 'Jornada de Trabajo Máxima', NOW(), NOW()), 
+('2', 'Jornada atípica o acumulativa', NOW(), NOW()), 
+('3', 'Trabajo en horario nocturno', NOW(), NOW());
+
 -- Data for Company
 INSERT INTO `companies` (`name`, `ruc`, `address`, `created_at`, `updated_at`) VALUES 
 ('ARSAC Contratistas Generales', '12345678978', 'Calle Las Garzas 494 San Isidro', NOW(), NOW());
