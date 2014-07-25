@@ -1,0 +1,25 @@
+%span(style='padding-left: 30px;' class='small-font')
+  %i.icon-user 
+  Mano de Obra : 
+  =number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[0], :precision => 2)
+%span(style='padding-left: 20px;' class='small-font')
+  %i.icon-wrench 
+  Materiales : 
+  = number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[1], :precision => 2)
+%span(style='padding-left: 20px;' class='small-font')
+  %i.icon-certificate
+  Equipos : 
+  = number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[2], :precision => 2)
+%span(style='padding-left: 20px;' class='small-font')
+  %i.icon-file 
+  Subcontratos :  
+  =number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[3], :precision => 2)
+- if @budget.type_of_budget == 1  
+  .btn-group
+    %span(style='padding-left: 30px;' class='small-font')
+      %a(href ='#{ filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s}.pdf?budget_id=#{@budget_id}&item_id=#{@item_id}&order=#{@order}'  class='btn btn-default btn-mini btn-danger')
+        %i.con-download-alt
+        PDF 
+      %a(href='#itemsModal' data-toggle='modal' class='btn btn-success btn-mini')
+        %i.icon-plus
+        Agregar
