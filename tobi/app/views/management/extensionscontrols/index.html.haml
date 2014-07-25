@@ -18,7 +18,16 @@
         %tbody
           %tr
             %td
-              = @project.created_at
+              = @project.date_min
+            %td 
+              = (@project.date_max - @project.date_min).to_i
+            %td
+              = (@project.date_max - @project.date_min + @extensionscontrol.sum(:approved_deadline).to_i).to_i
+            %td
+              = @project.date_max
+            %td
+              = @project.date_max + (@extensionscontrol.sum(:approved_deadline).to_i).days
+
 
 %a(class="btn btn-danger"){:href => "javascript:load_url_ondiv('#{new_management_extensionscontrol_path}?project_id=#{@project.id}', 'right-area')"}
   Registrar Ampliación

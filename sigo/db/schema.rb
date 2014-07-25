@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140724205124) do
+ActiveRecord::Schema.define(version: 20140725220201) do
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -513,6 +513,12 @@ ActiveRecord::Schema.define(version: 20140724205124) do
     t.datetime "updated_at"
   end
 
+  create_table "health_centers", force: true do |t|
+    t.string   "enterprise"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "input_units", force: true do |t|
     t.integer  "unit_id"
     t.integer  "input_id"
@@ -668,6 +674,28 @@ ActiveRecord::Schema.define(version: 20140724205124) do
     t.datetime "updated_at"
   end
 
+  create_table "itembywbses", force: true do |t|
+    t.string   "wbscode"
+    t.integer  "itembywbs_id"
+    t.string   "coditem"
+    t.string   "order_budget"
+    t.string   "partial"
+    t.string   "subbudget_code"
+    t.float    "price"
+    t.string   "budget_code"
+    t.integer  "budget_id"
+    t.integer  "item_id"
+    t.string   "status_flag"
+    t.integer  "deleted"
+    t.integer  "wbsitem_id"
+    t.float    "measured"
+    t.integer  "cost_center_id"
+    t.string   "subbudgetdetail"
+    t.integer  "itembybudget_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "items", force: true do |t|
     t.string   "item_code"
     t.integer  "project_code"
@@ -794,13 +822,16 @@ ActiveRecord::Schema.define(version: 20140724205124) do
     t.integer  "amount"
     t.float    "unit_price"
     t.boolean  "igv"
-    t.integer  "unit_price_igv"
+    t.float    "unit_price_igv"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "order_of_service_id"
     t.boolean  "received"
     t.float    "unit_price_before_igv"
+    t.float    "discount_before"
+    t.float    "discount_after"
+    t.float    "quantity_igv"
   end
 
   create_table "order_of_services", force: true do |t|
@@ -1722,6 +1753,17 @@ ActiveRecord::Schema.define(version: 20140724205124) do
     t.integer  "type_of_work_report_id"
   end
 
+  create_table "worker_afps", force: true do |t|
+    t.integer  "afp_id"
+    t.string   "afptype"
+    t.string   "afpnumber"
+    t.integer  "worker_id"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "worker_center_of_studies", force: true do |t|
     t.string   "name"
     t.string   "profession"
@@ -1783,6 +1825,15 @@ ActiveRecord::Schema.define(version: 20140724205124) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "worker_id"
+  end
+
+  create_table "worker_healths", force: true do |t|
+    t.integer  "health_id"
+    t.integer  "worker_id"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "worker_otherstudies", force: true do |t|
@@ -1875,9 +1926,6 @@ ActiveRecord::Schema.define(version: 20140724205124) do
     t.string   "maritalstatus"
     t.string   "typeofworker"
     t.integer  "numberofchilds"
-    t.integer  "afp_id"
-    t.string   "afptype"
-    t.string   "afpnumber"
   end
 
   create_table "working_groups", force: true do |t|

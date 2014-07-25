@@ -152,6 +152,12 @@
                             = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][article_id]', oos.article.id
                           %td.measurement-id(style="display:none")
                             = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][unit_of_measurement_id]', oos.unit_of_measurement.id
+                          %td.discount-before{ :style => "display:none"}
+                            = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][discount_before]', oos.discount_before, class: "form-control discount-before"
+                          %td.discount-after{ :style => "display:none"}
+                            = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][discount_after]', oos.discount_after, class: "form-control discount-after"
+                          %td.discount-igv{ :style => "display:none"}
+                            = hidden_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][quantity_igv]', oos.quantity_igv, class: "form-control discount-igv"
                           %td=oos.article.code
                           %td=oos.article.name
                           %td.unit-of-measurement
@@ -470,9 +476,11 @@
     if($(element).is(":checked")){
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
       $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*parseFloat("#{@igv}")).toFixed(2));
+      $(element).parent().parent().siblings('.discount-igv').find('input').val(parseFloat(price_without_igv * (1 - parseFloat("#{@igv}"))));
     } else {
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
       $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+      $(element).parent().parent().siblings('.discount-igv').find('input').val(0);
     }
   }
 
@@ -519,39 +527,84 @@
 
     var str_data = { concept: $(concept).val(), type: $(type).val(), value: $(value).val(), apply: $(apply).val(), operation: $(operation).val(), name_concept: $(name_concept).text(), name_type: $(name_type).text(), name_apply: $(name_apply).text(), reg_n: $(reg_n).val() };
 
+    /* Data for Calculate */
+    amount_bruto = $('#tr-' + $(reg_n).val() + ' td.amount div input').val()*$('#tr-' + $(reg_n).val() + ' td.unit-price div input').val();
+
+    /* Referencial Data */
     path_jquery_before = '#tr-' + $(reg_n).val() + ' td.price-without-igv input';
     path_jquery_after = '#tr-' + $(reg_n).val() + ' td.price-with-igv input';
     path_jquery_igv = '#tr-' + $(reg_n).val() + ' td.check-igv .checkbox input';
-    ancient_value_before = parseFloat($(path_jquery_before).val());
-    ancient_value_after = parseFloat($(path_jquery_after).val());
+    /* Amounts */
+    path_jquery_discount_before = '#tr-' + $(reg_n).val() + ' td.discount-before input';
+    path_jquery_discount_after = '#tr-' + $(reg_n).val() + ' td.discount-after input';
+    path_jquery_discount_igv = '#tr-' + $(reg_n).val() + ' td.discount-igv input';
 
-    if( $(apply).val() == 'before' ){
-      if( $(operation).val() == 'sum' ){
-        if( $(type).val() == 'soles' ){
-          ancient_value_before = ancient_value_before + parseFloat($(value).val());
+    if($(path_jquery_before).val() != ''){
+
+      ancient_value_before = parseFloat($(path_jquery_before).val());
+      ancient_value_after = parseFloat($(path_jquery_after).val());
+
+      if( $(apply).val() == 'before' ){
+
+        if( $(operation).val() == 'sum' ){
+          if( $(type).val() == 'soles' ){
+            value_before = $(path_jquery_discount_before).val() + parseFloat($(value).val());
+            $(path_jquery_discount_before).val(value_before);
+          } else {
+            value_before = $(path_jquery_discount_before).val() + parseFloat((amount_bruto*($(value).val()/100)));
+            $(path_jquery_discount_before).val(value_before);
+          }
         } else {
-          ancient_value_before = ancient_value_before + parseFloat((ancient_value_before*($(value).val()/100)));
+          if( $(type).val() == 'soles' ){
+            value_before = $(path_jquery_discount_before).val() - parseFloat($(value).val());
+            $(path_jquery_discount_before).val(value_before);
+            console.log($(path_jquery_discount_before).val());
+          } else {
+            value_before = $(path_jquery_discount_before).val() - parseFloat((amount_bruto*($(value).val()/100)));
+            $(path_jquery_discount_before).val(value_before);
+            console.log($(path_jquery_discount_before).val());
+          }
         }
+
+        if($(path_jquery_igv).is(":checked")){
+          $(path_jquery_before).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
+          $(path_jquery_discount_igv).val( (parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val())) * (1 - parseFloat("#{@igv}")) );
+          $(path_jquery_after).val( (parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val())) * parseFloat("#{@igv}") );
+        } else {
+          $(path_jquery_before).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
+          $(path_jquery_after).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
+          $(path_jquery_discount_igv).val(0);
+        }
+
       } else {
-        if( $(type).val() == 'soles' ){
-          ancient_value_before = ancient_value_before - parseFloat($(value).val());
+
+        if( $(operation).val() == 'sum' ){
+          if( $(type).val() == 'soles' ){
+            value_after = $(path_jquery_discount_after).val() + parseFloat($(value).val()).toFixed(2);
+            $(path_jquery_discount_after).val(value_after);
+          } else {
+            value_after = $(path_jquery_discount_after).val() + parseFloat($(path_jquery_after).val()*($(value).val()/100)).toFixed(2);
+            $(path_jquery_discount_after).val(value_after);
+          }
         } else {
-          ancient_value_before = ancient_value_before - parseFloat((ancient_value_before*($(value).val()/100)));
+          if( $(type).val() == 'soles' ){
+            value_after = $(path_jquery_discount_after).val() - parseFloat($(value).val()).toFixed(2);
+            $(path_jquery_discount_after).val(value_after);
+          } else {
+            value_after = $(path_jquery_discount_after).val() - parseFloat($(path_jquery_after).val()*($(value).val()/100)).toFixed(2);
+            $(path_jquery_discount_after).val(value_after);
+          }
         }
+
       }
 
-      if($(path_jquery_igv).is(":checked")){
-        $(path_jquery_before).val(parseFloat(ancient_value_before).toFixed(2));
-        ancient_value_before = ancient_value_before * (parseFloat("#{@igv}"))
-        $(path_jquery_after).val(parseFloat(ancient_value_before).toFixed(2));
-      } else {
-        $(path_jquery_before).val(parseFloat(ancient_value_before).toFixed(2));
-        $(path_jquery_after).val(parseFloat(ancient_value_before).toFixed(2));
-      }
+      append_url_ajax('#{add_more_row_form_extra_op_logistics_order_of_services_path}', id_content, str_data, 0, 'POST');
+
+    } else {
+
+      alert('No se ha calculado el Precio antes de IGV.');
 
     }
-
-    append_url_ajax('#{add_more_row_form_extra_op_logistics_order_of_services_path}', id_content, str_data, 0, 'POST');
   }
 
   function set_id_modeling(obj, id_modeling){
