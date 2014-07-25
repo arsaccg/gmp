@@ -70,7 +70,7 @@
     var_quantity = $(".input_quantity_" + id).val();
     var_price = $(".input_price_" + id).val();
     load_url_ondiv("#{update_input_management_inputbybudgetanditems_path}?price=" + var_price + "&quantity="+ var_quantity + "&input_id=" + id, "rand" );
-    $(".itembudget_total_" + id).text(var_quantity*var_price);
+    $(".itembudget_total_" + id).text(Math.round(var_quantity*var_price));
     
   }
 
