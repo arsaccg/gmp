@@ -501,7 +501,6 @@ ArsacLogistica::Application.routes.draw do
         post 'display_worker'
         post 'get_info'
         post 'generate_payroll'
-
         post 'show_workers'
         post 'add_concept'
       end
@@ -513,4 +512,14 @@ ArsacLogistica::Application.routes.draw do
       end
     end
   end
+  
+  namespace :general_expenses do
+    resources :general_expenses do
+      collection do
+        post 'display_articles'
+        post 'add_concept'
+      end
+    end
+  end
 end
+
