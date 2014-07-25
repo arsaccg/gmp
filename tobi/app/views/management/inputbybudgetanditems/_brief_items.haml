@@ -14,7 +14,7 @@
   %i.icon-file 
   Subcontratos :  
   =number_with_precision(Wbsitem.get_brief(@item_id, @budget_id, @order)[3], :precision => 2)
-- if @budget.type_of_budget == 1  
+- if @budget.type_of_budget.to_i == 1  
   .btn-group
     %span(style='padding-left: 30px;' class='small-font')
       %a(href ='#{ filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s}.pdf?budget_id=#{@budget_id}&item_id=#{@item_id}&order=#{@order}'  class='btn btn-default btn-mini btn-danger')
