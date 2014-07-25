@@ -15,10 +15,25 @@ INSERT INTO `type_of_articles` (`name`, `code`, `created_at`, `updated_at`) VALU
 ('Subcontratos', '04', NOW(), NOW()),
 ('Servicios', '05', NOW(), NOW());
 
+-- Data for Health Centers
+INSERT INTO `health_centers` (`enterprise`, `id`, `created_at`, `updated_at`) VALUES 
+('PERSALUD S.A. EPS', '1', NOW(), NOW()), 
+('PACIFICO S.A. EPS', '2', NOW(), NOW()), 
+('RIMAC INTERNACIONAL S.A. EPS', '3', NOW(), NOW()), 
+('SERVICIOS PROPIOS', '4', NOW(), NOW()),
+('MAPFRE PERU S.A. EPS', '5', NOW(), NOW()),
+('LA POSITIVA SANITAS S.A. EPS', '6', NOW(), NOW());
+
 -- Data for Position Worker
 INSERT INTO `position_workers` (`name`, `id`, `created_at`, `updated_at`) VALUES 
 ('Jefe de Frente', '1', NOW(), NOW()), 
 ('Capataz', '2', NOW(), NOW());
+
+-- Data for Type of Workday
+INSERT INTO `type_workdays` (`id`, `name`, `created_at`, `updated_at`) VALUES 
+('1', 'Jornada de Trabajo Máxima', NOW(), NOW()), 
+('2', 'Jornada atípica o acumulativa', NOW(), NOW()), 
+('3', 'Trabajo en horario nocturno', NOW(), NOW());
 
 -- Data for Company
 INSERT INTO `companies` (`name`, `ruc`, `address`, `created_at`, `updated_at`) VALUES 

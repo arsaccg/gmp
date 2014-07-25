@@ -267,6 +267,8 @@ ArsacLogistica::Application.routes.draw do
     resources :workers do
       collection do
         post 'add_worker_item_field'
+        post 'add_afp_item_field'
+        post 'add_health_item_field'
         post 'add_familiar_item_field'
         post 'add_centerofstudy_item_field'
         post 'add_otherstudy_item_field'
@@ -471,6 +473,7 @@ ArsacLogistica::Application.routes.draw do
         post 'get_suppliers_by_type_order'
       end
     end
+    resources :health_centers
 
     resources :account_accountants do
       collection do
