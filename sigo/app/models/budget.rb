@@ -82,18 +82,20 @@ class Budget < ActiveRecord::Base
         #new_budget.save
       array_sub_budgets = do_query("SELECT CodPresupuesto, CodSubpresupuesto, Descripcion FROM  Subpresupuesto WHERE CodPresupuesto = '" + budget[0]  + "' AND CodPresupuesto <> '9999999' AND CodSubpresupuesto <> '999'", {db_name: database})
       array_sub_budgets.each do |subbudget|
-        new_subbudget=Budget.new
-        new_subbudget.cost_center_id = cost_center_id
-        new_subbudget.cod_budget = subbudget[0].to_s + subbudget[1].to_s
-        @cod = subbudget[0].to_s + subbudget[1].to_s
-        new_subbudget.description = subbudget[2].to_s
-        new_subbudget.subbudget_code = subbudget[1].to_s
-        new_subbudget.type_of_budget = type_of_budget
-        new_subbudget.save
-        new_item = Item.new                           # Cargar Partidas
-        new_item.load_items(cost_center_id, subbudget[0], database)
-        new_item_by_budget = Itembybudget.new         #Cargar Generico
-        new_item_by_budget.set_data(subbudget[0], database)
+        if Budget.where(:cod_budget => subbudget[0].to_s + subbudget[1].to_s).first == nil
+          new_subbudget=Budget.new
+          new_subbudget.cost_center_id = cost_center_id
+          new_subbudget.cod_budget = subbudget[0].to_s + subbudget[1].to_s
+          @cod = subbudget[0].to_s + subbudget[1].to_s
+          new_subbudget.description = subbudget[2].to_s
+          new_subbudget.subbudget_code = subbudget[1].to_s
+          new_subbudget.type_of_budget = type_of_budget
+          new_subbudget.save
+          new_item = Item.new                           # Cargar Partidas
+          new_item.load_items(cost_center_id, subbudget[0], database)
+          new_item_by_budget = Itembybudget.new         #Cargar Generico
+          new_item_by_budget.set_data(subbudget[0], database)
+        end
       end
       #}
     end
