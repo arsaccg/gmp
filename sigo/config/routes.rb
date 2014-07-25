@@ -499,6 +499,15 @@ ArsacLogistica::Application.routes.draw do
         post 'display_worker'
         post 'get_info'
         post 'generate_payroll'
+
+        post 'show_workers'
+        post 'add_concept'
+      end
+    end
+    resources :payslips do
+      collection do
+        post 'get_cc'
+        post 'get_sem'
       end
     end
   end
