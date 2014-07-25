@@ -95,7 +95,8 @@ class Management::BudgetsController < ApplicationController
   	type_of_budget  = params[:type_of_budget]
     database = params[:database]
 
-  	budget = Budget.new(params[:budget])
+  	#budget = Budget.new(params[:budget])
+    budget = Budget.new
   	budget.load_elements(budget_id, project_id, type_of_budget, database)
     
 
