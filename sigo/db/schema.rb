@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140725150126) do
+ActiveRecord::Schema.define(version: 20140725220201) do
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -822,13 +822,16 @@ ActiveRecord::Schema.define(version: 20140725150126) do
     t.integer  "amount"
     t.float    "unit_price"
     t.boolean  "igv"
-    t.integer  "unit_price_igv"
+    t.float    "unit_price_igv"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "order_of_service_id"
     t.boolean  "received"
     t.float    "unit_price_before_igv"
+    t.float    "discount_before"
+    t.float    "discount_after"
+    t.float    "quantity_igv"
   end
 
   create_table "order_of_services", force: true do |t|
