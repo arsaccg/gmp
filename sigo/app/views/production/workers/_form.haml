@@ -205,6 +205,11 @@
                   %option{:value => "casado"} Casado
                   %option{:value => "divorciado"} Divorciado
                   %option{:value => "viudo"} Viudo
+          %section.col.col-4
+            %label.label CUSPP
+            %label.input{for: "afpnumber"}
+              %i.icon-append.fa.fa-credit-card
+              = f.input :afpnumber, placeholder: "CUSPP", input_html: { class: 'form-control' }, label: false
         .row#row7{ 'style' => 'display:none' }
           %section.col.col-12
             %label.label JORNADA LABORAL
@@ -396,9 +401,6 @@
                   = afp.enterprise
 
           %section.col.col-3
-            = text_field_tag 'afpnumber', nil, class: 'form-control', id: 'afp-afpnumber', placeholder: 'CUSPP'
-
-          %section.col.col-3
             %select#afptype-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
               %option(value = "0") Tipo de comisión
               %option(value = "mixto") Mixto
@@ -425,8 +427,6 @@
                     %td.bank-id(style="display:none")
                       = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afp_id]', oos.afp.id
                     %td.col-2=oos.afp.enterprise
-                    %td.col-5.afpnumber
-                      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afpnumber]', oos.account_number, class: "form-control afpnumber-item"
                     %td.col-5.afptype
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afptype]', oos.afptype, class: "form-control afptype-item"
                     %td(style="display:none")

@@ -108,7 +108,6 @@ class Production::WorkersController < ApplicationController
   def add_afp_item_field
     @reg_n = ((Time.now.to_f)*100).to_i
     @afp = Afp.find(params[:afp_id])
-    @afpnumber = params[:afpnumber].to_s
     @enterprise, @id_afp = @afp.enterprise, @afp.id
     @afptype = params[:afptype]
     render(partial: 'afp_items', :layout => false)
