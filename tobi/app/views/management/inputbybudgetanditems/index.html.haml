@@ -36,7 +36,7 @@
           %td
             =itembudget.cod_input
           %td(style="text-align: right;") 
-            - if @budget.type_of_budget == 1 # Si es Venta
+            - if @budget.type_of_budget.to_i == 1 # Si es Venta
               %input(type="text"){class: 'input_quantity_' + itembudget.id.to_s, :value=>number_with_precision(itembudget.quantity, :precision => 4), :id => "itembudget_quantity_" + itembudget.cod_input.to_s, :onblur => "update_table_input('" + itembudget.id.to_s + "')" }
             - else # Si es Meta
               %span
@@ -44,7 +44,7 @@
           %td(style="text-align: center;")
             =itembudget.unit rescue "-"
           %td(style="text-align: right;")
-            - if @budget.type_of_budget == 1 # Si es Venta
+            - if @budget.type_of_budget.to_i == 1 # Si es Venta
               %input(type="text"){class: 'input-small small-font input_price_' + itembudget.id.to_s, :value=>number_with_precision(itembudget.price, :precision => 4).to_s, :id => "itembudget_price_" + itembudget.cod_input.to_s, :onblur => "update_table_input('" + itembudget.id.to_s + "')"} 
             - else # Si es Meta
               %span
