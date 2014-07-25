@@ -474,6 +474,7 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :health_centers
+    resources :contract_types
 
     resources :account_accountants do
       collection do

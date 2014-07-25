@@ -476,7 +476,7 @@
     if($(element).is(":checked")){
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
       $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*parseFloat("#{@igv}")).toFixed(2));
-      $(element).parent().parent().siblings('.discount-igv').find('input').val(parseFloat(price_without_igv * (1 - parseFloat("#{@igv}")));
+      $(element).parent().parent().siblings('.discount-igv').find('input').val(parseFloat(price_without_igv * (1 - parseFloat("#{@igv}"))));
     } else {
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
       $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);

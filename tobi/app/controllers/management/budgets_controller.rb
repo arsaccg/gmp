@@ -96,7 +96,7 @@ class Management::BudgetsController < ApplicationController
     database = params[:database]
 
   	budget = Budget.new(budget_parameters)
-    company = get_company_cost_center('company')
+    company = CostCenter.find(params[:project_id]).company
   	budget.load_elements(budget_id, project_id, type_of_budget, database, company)
     
 

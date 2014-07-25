@@ -121,7 +121,7 @@ class Administration::ProvisionsController < ApplicationController
               else
                 pending = service_detail.amount
               end
-              @data_orders << [ service_detail.article.code, service_detail.article.name, service_detail.amount, service_detail.unit_price_igv, service_detail.unit_price ,service_detail.description, service_detail.id, pending ]
+              @data_orders << [ service_detail.article.code, service_detail.article.name, service_detail.amount, (service_detail.unit_price_igv.to_f + service_detail.discount_after.to_f), service_detail.unit_price_before_igv.to_f, service_detail.description, service_detail.id, pending ]
             end
           end
         end
@@ -162,7 +162,7 @@ class Administration::ProvisionsController < ApplicationController
         service_order_detail = OrderOfServiceDetail.find(order_detail_id)
         igv = 0
         if service_order_detail.igv != nil
-          igv = (service_order_detail.unit_price_igv/(service_order_detail.amount*service_order_detail.unit_price))-1
+          igv = (-1*service_order_detail.quantity_igv/(service_order_detail.unit_price_before_igv))
         end
         # Lo que falta Atender
         pending = 0
