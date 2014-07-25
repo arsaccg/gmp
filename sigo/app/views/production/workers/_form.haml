@@ -6,7 +6,7 @@
   .widget-body
     = simple_form_for([:production, @worker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
-        %legend{style: "font-weight: 600;"} DATOS TRIBUTARIOS
+        %legend{style: "font-weight: 600;"} DATOS LABORALES
         .row
           .section.col.col-md-2
             %label.control-label Tipo de Trabajador
@@ -115,19 +115,19 @@
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
           %input{ 'name' => 'worker[entity_id]', 'value' => "#{@entity.id}", 'readonly' => true, 'style' => 'display:none' }
         .row
-          %section.col.col-10
+          %section.col.col-12
             %label.label Entidad Trabajador
             %label.input{for: "entity_id"}
               = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ' ' + @entity.name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
         .row
-          %section.col.col-3
+          %section.col.col-4
             %label Fecha de Nacimiento
             %input#familiar-dayofbirth.string.optional.form-control{'name'=>'date_of_birth', type: "date", :value => "#{@entity.date_of_birth}", disabled: "disabled", style: "background-color: gainsboro;"}
-          %section.col.col-10
+          %section.col.col-4
             %label.label DNI
             %label.input{for: "dni"}
               = text_field_tag 'worker[dni]', @entity.dni, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
-          %section.col.col-10
+          %section.col.col-4
             %label.label Carnet de Extranjeria
             %label.input{for: "alienslicense"}
               = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Carnet de Extranjeria', disabled: "disabled", style: "background-color: gainsboro;"
@@ -269,7 +269,7 @@
                 %span No
 
       %fieldset#fieldset1{ 'style' => 'display:none' }
-        %legend Bancos
+        %legend{style: "font-weight: 600;"} Bancos
         .row
           %section.col.col-2
             %label.control-label(for="bank_id") Bancos
@@ -567,7 +567,7 @@
                         %i
                     - @reg_n += 1
       %fieldset#fieldset4{ 'style' => 'display:none' }
-        %legend Experiencia Laboral
+        %legend{style: "font-weight: 600;"} Experiencia Laboral
         .row
           %section.col.col-2
             %div
@@ -611,65 +611,141 @@
                     - @reg_n += 1
         .row
           %section.col.col-5
-            %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?
-            %br
-            .input-group
-              %select.col-sm-5.form-control#type{:name =>"worker[quality]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                -if @action = 'edit'
-                  %option{:value => "0"} Seleccione
-                  %option{:value => "si", :selected => "#{@worker.quality}"=="si"} Si
-                  %option{:value => "no", :selected => "#{@worker.quality}"=="no"} No
-                -else
-                  %option{:value => "0", :selected => 'selected'} Seleccione
-                  %option{:value => "si"} Si
-                  %option{:value => "no"} No
+            %label.label TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?
+          %section.col-md-5
+            .col-md-1
+            -if @action == 'edit'
+              -if @worker.quality=="si"
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "si", checked: ""}
+                    %span Si
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "no"}
+                    %span No
+              -elsif @worker.quality=="no"
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "si"}
+                    %span Si
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+            -else
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[quality]', :type => 'radio', :value => "si"}
+                  %span Si
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[quality]', :type => 'radio', :value => "no"}
+                  %span No
           %section.col.col-5
-            %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE SEGURIDAD?
-            %br
-            .input-group
-              %select.col-sm-5.form-control#type{:name =>"worker[security]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                -if @action = 'edit'
-                  %option{:value => "0"} Seleccione
-                  %option{:value => "si", :selected => "#{@worker.security}"=="si"} Si
-                  %option{:value => "no", :selected => "#{@worker.security}"=="no"} No
-                -else
-                  %option{:value => "0", :selected => 'selected'} Seleccione
-                  %option{:value => "si"} Si
-                  %option{:value => "no"} No
+            %label.label TIENE CONOCIMIENTOS DE NORMAS DE SEGURIDAD?
+          %section.col-md-5
+            .col-md-1
+            -if @action == 'edit'
+              -if @worker.security=="si"
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "si", checked: ""}
+                    %span Si
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "no"}
+                    %span No
+              -elsif @worker.security=="no"
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "si"}
+                    %span Si
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+            -else
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[security]', :type => 'radio', :value => "si"}
+                  %span Si
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[security]', :type => 'radio', :value => "no"}
+                  %span No
         .row
           %section.col.col-5
-            %label.control-label TIENE CONOCIMIENTOS DE NORMAS DE MEDIOAMBIENTE?
-            %br
-            .input-group
-              %select.col-sm-5.form-control#type{:name =>"worker[enviroment]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                -if @action = 'edit'
-                  %option{:value => "0"} Seleccione
-                  %option{:value => "si", :selected => "#{@worker.enviroment}"=="si"} Si
-                  %option{:value => "no", :selected => "#{@worker.enviroment}"=="no"} No
-                -else
-                  %option{:value => "0", :selected => 'selected'} Seleccione
-                  %option{:value => "si"} Si
-                  %option{:value => "no"} No
+            %label.label TIENE CONOCIMIENTOS DE NORMAS DE MEDIOAMBIENTE?
+          %section.col-md-5
+            .col-md-1
+            -if @action == 'edit'
+              -if @worker.enviroment=="si"
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "si", checked: ""}
+                    %span Si
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "no"}
+                    %span No
+              -elsif @worker.enviroment=="no"
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "si"}
+                    %span Si
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+            -else
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[security]', :type => 'radio', :value => "si"}
+                  %span Si
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[security]', :type => 'radio', :value => "no"}
+                  %span No
           %section.col.col-5
-            %label.control-label TIENE CONOCIMIENTOS DE LA LEGISLACION LABORAL?
-            %br
-            .input-group
-              %select.col-sm-5.form-control#type{:name =>"worker[labor_legislation]", :required => true, title:'No puede dejar este campo vacio', :style => "width:200px"}
-                -if @action = 'edit'
-                  %option{:value => "0"} Seleccione
-                  %option{:value => "si", :selected => "#{@worker.labor_legislation}"=="si"} Si
-                  %option{:value => "no", :selected => "#{@worker.labor_legislation}"=="no"} No
-                -else
-                  %option{:value => "0", :selected => 'selected'} Seleccione
-                  %option{:value => "si"} Si
-                  %option{:value => "no"} No
+            %label.label TIENE CONOCIMIENTOS DE LA LEGISLACION LABORAL?
+          %section.col-md-5
+            .col-md-1
+            -if @action == 'edit'
+              -if @worker.labor_legislation=="si"
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "si", checked: ""}
+                    %span Si
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no"}
+                    %span No
+              -elsif @worker.labor_legislation=="no"
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "si"}
+                    %span Si
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+            -else
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "si"}
+                  %span Si
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no"}
+                  %span No
         .row
           %section.col.col-4
             %label.label Numero de Hijos
             %label.input{for: "numberofchilds"}
               = f.input :numberofchilds, input_html: { class: 'form-control' }, label: false
       %fieldset#fieldset5{ 'style' => 'display:none' }
-        %legend Documentación Adjunta
+        %legend{style: "font-weight: 600;"} Documentación Adjunta
         .row
           %section.col.col-md-12
             .col-md-5

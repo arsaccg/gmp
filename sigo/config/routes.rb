@@ -473,6 +473,7 @@ ArsacLogistica::Application.routes.draw do
         post 'get_suppliers_by_type_order'
       end
     end
+    resources :health_centers
 
     resources :account_accountants do
       collection do

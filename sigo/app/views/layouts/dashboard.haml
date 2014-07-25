@@ -509,10 +509,6 @@
                   Personal
                 %ul
                   %li
-                    %a{href: "#{production_workers_path}", title: 'Trabajadores'}
-                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                      Trabajadores
-                  %li
                     %a{href: "#{production_part_people_path}", title: 'Parte de Personal'}
                       %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                       Parte diario
@@ -541,6 +537,19 @@
                 %a{href: "#{administration_provisions_path}", title: "Provisiones"}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
                   Provisiones
+              %li
+                %a{href: '#'}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  Personal
+                %ul
+                  %li
+                    %a{href: "#{production_workers_path}", title: 'Trabajadores'}
+                      %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                      Trabajadores
+                  %li
+                    %a{href: "#{administration_health_centers_path}", title: "Centros de Salud"}
+                      %i.fa.fa-lg.fa-fw.fa-list-alt
+                      Centros de Salud
           %li
             %a{href: "#", title: "Planillas"}
               %i.fa.fa-lg.fa-fw.fa-file-text
