@@ -35,6 +35,27 @@ INSERT INTO `type_workdays` (`id`, `name`, `created_at`, `updated_at`) VALUES
 ('2', 'Jornada atípica o acumulativa', NOW(), NOW()), 
 ('3', 'Trabajo en horario nocturno', NOW(), NOW());
 
+-- Data for Contract Types
+INSERT INTO `contract_types` (`id`, `description`, `shortdescription`, `created_at`, `updated_at`) VALUES 
+('1', 'A PLAZO INDETERMINADO - D.LEG. 728', 'A PLAZO INDET - D.LEG. 728', NOW(), NOW()), 
+('2', 'A TIEMPO PARCIAL', 'A TIEMPO PARCIAL', NOW(), NOW()), 
+('3', 'POR INICIO O INCREMENTO DE ACTIVIDAD', 'POR INICIO O ICREM DE ACTIV', NOW(), NOW()), 
+('4', 'POR NECESIDADES DEL MERCADO', 'POR NECES DEL MERCADO', NOW(), NOW()), 
+('5', 'POR RECONVERSIÓN EMPRESARIAL', 'POR RECONV EMPRESARIAL', NOW(), NOW()), 
+('6', 'OCASIONAL', 'OCASIONAL', NOW(), NOW()), 
+('7', 'DE SUPLENCIA', 'DE SUPLENCIA', NOW(), NOW()), 
+('8', 'DE EMERGENCIA', 'DE EMERGENCIA', NOW(), NOW()), 
+('9', 'PARA OBRA DETERMINADA O SERVICIO ESPECÍFICO', 'OBRA DETERM O SERV ESPEC', NOW(), NOW()), 
+('10', 'INTERMITENTE', 'INTERMITENTE', NOW(), NOW()), 
+('11', 'DE TEMPORADA', 'DE TEMPORADA', NOW(), NOW()), 
+('12', 'DE EXPORTACIÓN NO TRADICIONAL D.LEY 22342', 'DE EXPORT. NO TRADIC.', NOW(), NOW()), 
+('13', 'DE EXTRANJERO - D.LEG. 689', 'DE EXTRANJERO - D.LEG. 689', NOW(), NOW()), 
+('18', 'A DOMICILIO', 'A DOMICILIO', NOW(), NOW()), 
+('19', 'FUTBOLISTAS PROFESIONALES', 'FUTBOLISTAS PROFESIONALES', NOW(), NOW()), 
+('20', 'AGRARIO - LEY 27360', 'AGRARIO - LEY 27360', NOW(), NOW()), 
+('21', 'MIGRANTE ANDINO DECISIÓN 545', 'MIGRANTE ANDINO', NOW(), NOW()), 
+('99', 'OTROS NO PREVISTOS', 'OTROS NO PREVISTOS', NOW(), NOW());
+
 -- Data for Company
 INSERT INTO `companies` (`name`, `ruc`, `address`, `created_at`, `updated_at`) VALUES 
 ('ARSAC Contratistas Generales', '12345678978', 'Calle Las Garzas 494 San Isidro', NOW(), NOW());
