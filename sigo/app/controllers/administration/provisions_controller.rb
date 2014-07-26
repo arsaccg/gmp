@@ -166,16 +166,32 @@ class Administration::ProvisionsController < ApplicationController
         end
         # Lo que falta Atender
         pending = 0
-        total = 0
+        total = 0 
+        total_neto = 0 
         provision = ProvisionDetail.find_by_order_detail_id(service_order_detail.id)
         if !provision.nil?
           pending = service_order_detail.amount - provision.amount
-          total = pending*service_order_detail.unit_price*(1+igv)
+          total = (((pending * service_order_detail.unit_price) + service_order_detail.discount_before.to_i) * (1 + igv))
+          total_neto = total + service_order_detail.discount_after.to_i
         else
           pending = service_order_detail.amount
           total = service_order_detail.unit_price_igv
+          total_neto = total + service_order_detail.discount_after.to_i
         end
-        @data_orders << [ service_order_detail.id, service_order_detail.article.code, service_order_detail.article.name, service_order_detail.article.unit_of_measurement.symbol, service_order_detail.amount, service_order_detail.unit_price ,total, igv, pending ]
+        @data_orders << [ 
+          service_order_detail.id, 
+          service_order_detail.article.code, 
+          service_order_detail.article.name, 
+          service_order_detail.article.unit_of_measurement.symbol, 
+          service_order_detail.amount, 
+          service_order_detail.unit_price,
+          total, 
+          igv, 
+          pending,
+          service_order_detail.discount_before.to_i*-1,
+          service_order_detail.discount_after.to_i,
+          total_neto
+        ]
       end
     end
 
