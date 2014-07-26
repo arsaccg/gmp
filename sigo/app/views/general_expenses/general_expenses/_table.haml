@@ -45,12 +45,17 @@
                   %td
                     = ged.general_expense_details.count
                   %td
-                    %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{general_expenses_general_expense_path(ged.id)}', 'content', null, null, 'GET')"}
+                    %a.btn.btn-info.btn-xs{:onclick=>"loadDetail('/general_expenses/general_expense/"+ged.id.to_s+"');"}
                       Detalle                  
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_general_expenses_general_expense_path(ged.id)}', 'content', null, null, 'GET')"}
                       Editar
                     %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{ged.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{general_expenses_general_expense_path(ged.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{general_expenses_general_expenses_path}')"}}
                       Eliminar
+
+%br
+%br
+.row
+  #detail
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -170,4 +175,16 @@
     
     /* END TABLE TOOLS */
 
+  }
+
+  function loadDetail(url){
+    $('#detail').empty();
+    $.ajax({
+        type: "GET",
+        url: url,
+        data: {show: "show"},
+        success: function(returnedData){
+          $('#detail').html(returnedData);
+        }
+    });
   }
