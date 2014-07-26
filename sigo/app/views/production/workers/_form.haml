@@ -115,10 +115,21 @@
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
           %input{ 'name' => 'worker[entity_id]', 'value' => "#{@entity.id}", 'readonly' => true, 'style' => 'display:none' }
         .row
-          %section.col.col-10
+          %section.col.col-8
             %label.label Entidad Trabajador
             %label.input{for: "entity_id"}
               = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ' ' + @entity.name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
+          %section.col.col-4
+            %label.label Cargo del Trabajador
+            %label.input{for: "category_of_worker_id"}
+              %select.form-control{:name =>"worker[position_worker_id]", :style => 'width:100%;padding: 0;border: none;'}
+                - @positionWorkers.each do |positionWorker|
+                  - if @worker.position_worker_id == positionWorker.id
+                    %option{:value => "#{positionWorker.id}", :selected => true}
+                      = positionWorker.name
+                  - else
+                    %option{:value => "#{positionWorker.id}"}
+                      = positionWorker.name
         .row
           %section.col.col-4
             %label Fecha de Nacimiento
@@ -291,14 +302,34 @@
             %label.label ¿Percibe rentas de 5ta exoneradas (Inc. e) Art. 19 de la LIR?
           %section.col-md-12
             .col-md-1
-            %section.col-md-2
-              %label.radio-inline
-                %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si"}
-                %span Si
-            %section.col-md-2
-              %label.radio-inline
-                %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no"}
-                %span No
+            -if @action == 'edit'
+              -if @worker.income_fifth_category=="si"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si", checked: ""}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no"}
+                    %span No
+              -elsif @worker.income_fifth_category=="no"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+            -else
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si"}
+                  %span Si
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no"}
+                  %span No
 
       %fieldset#fieldset1{ 'style' => 'display:none' }
         %legend{style: "font-weight: 600;"} Bancos
@@ -350,17 +381,31 @@
 
       %fieldset#fieldset7{ 'style' => 'display:none' }
         %legend{style: "font-weight: 600;"} DATOS DE SEGURIDAD SOCIAL
-        %legend Centro de Salud
+        %legend Regimen de Salud
+        %br
         .row
-          %section.col.col-2
-            %label.control-label(for="health_id") Centro de Salud
-
           %section.col.col-3
-            %select#afp-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
+            %label Regimen de Salud
+            %select#healthtype-select.select2.form-control{style: 'width:100%;padding: 0;border: none;', class: 'healthreg'}
+              %option(value = "") Tipo de régimen
+              %option(value = "ESSALUD REGULAR (Exclusivamente)") ESSALUD REGULAR (Exclusivamente)
+              %option(value = "ESSALUD REGULAR Y EPS / SERV PROPIOS") ESSALUD REGULAR Y EPS / SERV PROPIOS
+          %section.col.col-3#centrosalud{ 'style' => 'display:none' }
+            %label Centro de Salud
+            %select#health-select.select2.form-control(style='width:100%;padding: 0;border: none;')  
+              %option(value = "") Escoga el centro de salud
               - @health.each do |health|
                 %option(value = "#{health.id}")
                   = health.enterprise
-
+        .row
+          %section.col.col-3
+            %label Fecha de Inicio
+            %input#health-startdate.string.optional.form-control{'name'=>'healthstartdate', type: "date"}
+          %section.col.col-3
+            %label Fecha de Fin
+            %input#health-enddate.string.optional.form-control{'name'=>'healthenddate', type: "date"}
+          
+          %br
           %section.col.col-2
             %div
               %a(href="javascript:add_health_center_item();" id="btn-add-health_center" class="btn btn-success" role="button")
@@ -370,15 +415,28 @@
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
+                %th.col-2 Tipo de Regimen
                 %th.col-2 Nombre
+                %th.col-2 Fecha de Inicio
+                %th.col-2 Fecha de Fin
                 %th Eliminar
             %tbody(id="health_center_items_table")
               - if @action == 'edit'
                 - @worker.worker_healths.each do |oos|
                   %tr
                     %td.bank-id(style="display:none")
-                      = hidden_field_tag 'worker[worker_healths_attributes][' + @reg_n.to_s + '][afp_id]', oos.afp.id
-                    %td.col-2=oos.afp.enterprise
+                      = hidden_field_tag 'worker[worker_healths_attributes][' + @reg_n.to_s + '][health_center_id]', oos.health_center_id
+                    %td.col-2.health_regime
+                      = text_field_tag 'worker[worker_healths_attributes][' + @reg_n.to_s + '][health_regime]', oos.health_regime, class: "form-control health_regime-item"
+                    -if oos.health_center_id != 0
+                      %td.col-2
+                        = oos.health_center.enterprise.to_s
+                    -if oos.health_center_id == 0
+                      %td.col-2 -
+                    %td.col-2.start_date
+                      = text_field_tag 'worker[worker_healths_attributes][' + @reg_n.to_s + '][start_date]', oos.start_date, class: "form-control start_date-item"
+                    %td.col-2.end_date
+                      = text_field_tag 'worker[worker_healths_attributes][' + @reg_n.to_s + '][end_date]', oos.end_date, class: "form-control end_date-item"
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_healths_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
@@ -390,6 +448,7 @@
                     - @reg_n += 1
         %br
         %legend Regimen Pensionario
+        %br
         .row
           %section.col.col-2
             %label.control-label(for="afp_id") AFP
@@ -402,10 +461,18 @@
 
           %section.col.col-3
             %select#afptype-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
-              %option(value = "0") Tipo de comisión
+              %option(value = "") Tipo de comisión
               %option(value = "mixto") Mixto
               %option(value = "comision") Comisión
 
+        .row
+          %section.col.col-3
+            %label Fecha de Inicio
+            %input#afp-startdate.string.optional.form-control{'name'=>'afpstartdate', type: "date"}
+          %section.col.col-3
+            %label Fecha de Fin
+            %input#afp-enddate.string.optional.form-control{'name'=>'afpenddate', type: "date"}
+          %br
           %section.col.col-2
             %div
               %a(href="javascript:add_afp_item();" id="btn-add-afp" class="btn btn-success" role="button")
@@ -416,8 +483,9 @@
             %thead
               %tr
                 %th.col-2 Nombre
-                %th.col-5 CUSPP
-                %th.col-5 Tipo de AFP
+                %th.col-2 Tipo de AFP
+                %th.col-2 Fecha de Inicio
+                %th.col-2 Fecha de Fin
                 %th Eliminar
             %tbody(id="afp_items_table")
               - if @action == 'edit'
@@ -427,8 +495,12 @@
                     %td.bank-id(style="display:none")
                       = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afp_id]', oos.afp.id
                     %td.col-2=oos.afp.enterprise
-                    %td.col-5.afptype
+                    %td.col-2.afptype
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afptype]', oos.afptype, class: "form-control afptype-item"
+                    %td.col-2.start_date
+                      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][start_date]', oos.start_date, class: "form-control start_date-item"
+                    %td.col-2.end_date
+                      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][end_date]', oos.end_date, class: "form-control end_date-item"
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
@@ -817,6 +889,26 @@
               %label.control-label Tiene hijos?
             .section.col.col-md-3
               .form-group
+              -if @action == 'edit'
+                -if @worker.numberofchilds!=""
+                  .col-md-3
+                    %label.radio-inline
+                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "si", checked: ""}
+                      %span Si
+                  .col-md-1
+                    %label.radio-inline
+                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "no"}
+                      %span No
+                -elsif @worker.numberofchilds==""
+                  .col-md-3
+                    %label.radio-inline
+                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "si"}
+                      %span Si
+                  .col-md-1
+                    %label.radio-inline
+                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "no", checked: ""}
+                      %span No
+              -else
                 .col-md-3
                   %label.radio-inline
                     %input{:name =>'numberofchilds2', :type => 'radio', :value => "si"}
@@ -953,6 +1045,31 @@
   $(document).ready(function () {
     $('select').select2();
     $('.checkbox .check_boxes').css('left', '0').css('position', 'relative');
+    if(('#{@worker.typeofworker}'=="empleado")||('#{@worker.typeofworker}'=="obrero")){
+      $("#row1").css("display", "");
+      $("#row2").css("display", "");
+      $("#row3").css("display", "");
+      $("#row4").css("display", "");
+      $("#row6").css("display", "");
+      $("#row7").css("display", "");
+      $("#label1").css("display", "");
+      $("#fieldset1").css("display", "");
+      $("#fieldset2").css("display", "");
+      $("#fieldset3").css("display", "");
+      $("#fieldset4").css("display", "");
+      $("#fieldset5").css("display", "");
+      $("#fieldset6").css("display", "");
+      $("#fieldset7").css("display", "");
+    }
+    if('#{@worker.numberofchilds}'!=0){
+      $("#numberofchildren").css("display", "");
+      $("#partidanacihijos").css("display", "");
+      $("#dnihijoesposa").css("display", "");
+      $("#constanciamatricula").css("display", "");
+    }
+    if('#{@worker.maritalstatus}'=='maritalstatus'){
+      $("#partidamatrimonio").css("display", "");
+    }
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -1015,6 +1132,15 @@
     }
     else {
       $("#partidamatrimonio").css("display", "none");
+    }
+  });
+
+  $(".healthreg").change(function() {
+    if($(this).prop('value') == "ESSALUD REGULAR Y EPS / SERV PROPIOS"){
+      $("#centrosalud").css("display", "");
+    }
+    else {
+      $("#centrosalud").css("display", "none");
     }
   });
 
@@ -1098,13 +1224,13 @@
   }
 
   function add_afp_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", afp_id: $("#afp-select").val(), afpnumber: $("#afp-afpnumber").val(), afptype: $("#afptype-select").val()};
+    str_item = {authenticity_token: "#{form_authenticity_token}", afp_id: $("#afp-select").val(), afpnumber: $("#afp-afpnumber").val(), afptype: $("#afptype-select").val(), start_date: $("#afp-startdate").val(), end_date: $("#afp-enddate").val()};
 
     append_url_ajax('#{add_afp_item_field_production_workers_path}', 'afp_items_table', str_item, 0, 'POST');
   }
 
   function add_health_center_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", afp_id: $("#afp-select").val()};
+    str_item = {authenticity_token: "#{form_authenticity_token}", health_center_id: $("#health-select").val(), health_regime: $("#healthtype-select").val(), start_date: $("#health-startdate").val(), end_date: $("#health-enddate").val()};
 
     append_url_ajax('#{add_health_center_item_field_production_workers_path}', 'health_center_items_table', str_item, 0, 'POST');
   }

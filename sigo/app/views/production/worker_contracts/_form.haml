@@ -24,20 +24,16 @@
                 = f.input :typeofcontract, input_html: { class: 'form-control', value: @typeofcontract}, label: false
         .row
           %section.col.col-4
-            %label.label Cargo del Trabajador
-            %label.input{for: "charge_id"}
-              %select.form-control{:name =>"worker_contract[charge_id]", :style => 'width:100%;padding: 0;border: none;'}
-                - @charges.each do |charge|
-                  - if @action == 'edit'
-                    - if @workercontract.charge_id == charge.id
-                      %option{:value => "#{charge.id}", :selected => true}
-                        = charge.name
-                    - else
-                      %option{:value => "#{charge.id}"}
-                        = charge.name
+            %label.label Categoría/Cargo del Trabajador
+            %label.input{for: "article_id"}
+              %select.form-control{:name =>"worker_contract[article_id]", :style => 'width:100%;padding: 0;border: none;'}
+                - @articles.each do |article|
+                  - if @workercontract.article_id == article.id
+                    %option{:value => "#{article.id}", :selected => true}
+                      = article.name
                   - else
-                    %option{:value => "#{charge.id}"}
-                      = charge.name
+                    %option{:value => "#{article.id}"}
+                      = article.name
         .row
           %section.col.col-md-12
             .col-md-1

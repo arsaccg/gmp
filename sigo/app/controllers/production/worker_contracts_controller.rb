@@ -17,7 +17,7 @@ class Production::WorkerContractsController < ApplicationController
 
   def new
     @typeofcontract = params[:typeofcontract]
-    @charges = Charge.all
+    @articles = TypeOfArticle.find_by_code('01').articles
     @cost_center = session[:cost_center]
     if @typeofcontract == 'Contrato'
       @workercontract = WorkerContract.new
@@ -58,7 +58,7 @@ class Production::WorkerContractsController < ApplicationController
 
   def edit
     @workercontract = WorkerContract.find(params[:id])
-    @charges = Charge.all
+    @articles = TypeOfArticle.find_by_code('01').articles
     @cost_center = session[:cost_center]
     @action = 'edit'
     @worker_id = @workercontract.worker_id
@@ -90,6 +90,6 @@ class Production::WorkerContractsController < ApplicationController
 
   private
   def worker_contract_parameters
-    params.require(:worker_contract).permit(:position_of_worker, :camp, :contract_type_id, :charge_id, :destaque, :salary, :regime, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract)
+    params.require(:worker_contract).permit(:camp, :contract_type_id, :article_id, :destaque, :salary, :regime, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract)
   end
 end
