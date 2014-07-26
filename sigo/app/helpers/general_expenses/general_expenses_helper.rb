@@ -1,0 +1,2 @@
+module GeneralExpenses::GeneralExpensesHelper
+end
