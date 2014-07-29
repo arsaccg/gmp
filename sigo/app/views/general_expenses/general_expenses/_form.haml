@@ -68,16 +68,16 @@
                       = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][people]', ged.people.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'    
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][people]', ged.people.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal1e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][participation]', ged.participation.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' 
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][participation]', ged.participation.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal2e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal3e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][salary]', ged.salary.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][salary]', ged.salary.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal4e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
                         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
@@ -120,13 +120,13 @@
                       = Article.find(ged.article_id.to_s).symbol.to_s
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'    
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES1e(this);' 
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' 
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' , :onchange => 'getParcialES2e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES3e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
                         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
@@ -168,10 +168,10 @@
                       = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'    
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialMS1e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' 
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialMS2e(this);' 
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
                         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
@@ -213,10 +213,10 @@
                       = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'    
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio',:onchange => 'getParcialMS1e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' 
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio',:onchange => 'getParcialMS2e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
                         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
@@ -261,13 +261,13 @@
                       = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' 
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES1e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES2e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES3e(this);'
                     %td.col-md-1.smart-form{:style => "width:5%"}
                       %div
                         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
@@ -408,4 +408,124 @@
 
   function delete_item(code){
     $("#tr" + code).remove();
+  }
+
+  function getParcialPersonal3e(element){
+    var time = $(element).val();
+    var people = $(element).parent().parent().siblings('#people').children().children().val();
+    var participation = $(element).parent().parent().siblings('#participation').children().children().val();
+    var salary = $(element).parent().parent().siblings('#salary').children().children().val();
+
+    if(time!= "" && people!= "" && participation!= "" && salary!= ""){
+      var parcial = time*people*salary*participation/100;
+      console.log(parcial);
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialPersonal1e(element){
+    var time = $(element).parent().parent().siblings('#time').children().children().val();
+    var people = $(element).val();
+    var participation = $(element).parent().parent().siblings('#participation').children().children().val();
+    var salary = $(element).parent().parent().siblings('#salary').children().children().val();
+
+    if(time!= "" && people!= "" && participation!= "" && salary!= ""){
+      var parcial = time*people*salary*participation/100;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialPersonal2e(element){
+    var time = $(element).parent().parent().siblings('#time').children().children().val();
+    var people = $(element).parent().parent().siblings('#people').children().children().val();
+    var participation = $(element).val();
+    var salary = $(element).parent().parent().siblings('#salary').children().children().val();
+
+    if(time!= "" && people!= "" && participation!= "" && salary!= ""){
+      var parcial = time*people*salary*participation/100;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialPersonal4e(element){
+    var time = $(element).parent().parent().siblings('#time').children().children().val();
+    var people = $(element).parent().parent().siblings('#people').children().children().val();
+    var participation = $(element).parent().parent().siblings('#participation').children().children().val();
+    var salary = $(element).val();
+
+    if(time!= "" && people!= "" && participation!= "" && salary!= ""){
+      var parcial = time*people*salary*participation/100;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialES3e(element){
+    var amount = $(element).parent().parent().siblings('#amount').children().children().val();
+    var cost = $(element).val();
+    var time = $(element).parent().parent().siblings('#time').children().children().val();
+
+    if(amount!= "" && cost!= "" && time!= ""){
+      var parcial = amount*cost*time;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialES1e(element){
+    var amount = $(element).val();
+    var cost = $(element).parent().parent().siblings('#cost').children().children().val();
+    var time = $(element).parent().parent().siblings('#time').children().children().val();
+
+    if(amount!= "" && cost!= "" && time!= ""){
+      var parcial = amount*cost*time;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialES2e(element){
+    var amount = $(element).parent().parent().siblings('#amount').children().children().val();
+    var cost = $(element).parent().parent().siblings('#cost').children().children().val();
+    var time = $(element).val();
+
+    if(amount!= "" && cost!= "" && time!= ""){
+      var parcial = amount*cost*time;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialMS2e(element){
+    var amount = $(element).parent().parent().siblings('#amount').children().children().val();
+    var cost = $(element).val();
+
+    if(amount!= "" && cost!= "" ){
+      var parcial = amount*cost;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialMS1e(element){
+    var amount =  $(element).val();
+    var cost = $(element).parent().parent().siblings('#cost').children().children().val();
+
+    if(amount!= "" && cost!= "" ){
+      var parcial = amount*cost;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
   }

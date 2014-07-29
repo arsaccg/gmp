@@ -520,6 +520,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'display_articles'
         post 'add_concept'
+        post 'show_details'
       end
     end
   end

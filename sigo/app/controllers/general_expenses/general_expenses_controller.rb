@@ -7,7 +7,6 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
   end
 
   def show
-    @gexp = GeneralExpense.find(params[:id])
     render layout: false
   end
 
@@ -26,6 +25,39 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
       article_hash << {'id' => art[0].to_s+'-'+art[3].to_s+'-'+art[1].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}
     end
     render json: {:articles => article_hash}
+  end
+
+  def show_details 
+    @type_01 = Array.new
+    @type_02 = Array.new
+    @type_03 = Array.new
+    @type_04 = Array.new
+    @type_05 = Array.new
+    @ge = GeneralExpense.find(params[:id])
+    @ge.general_expense_details.each do |ged|
+      if ged.type_article == "01"
+        @type_01 << ged
+      elsif ged.type_article == "02"
+        @type_02 << ged
+      elsif ged.type_article == "03"
+        @type_03 << ged
+      elsif ged.type_article == "04"
+        @type_04 << ged
+      else
+        @type_05 << ged
+      end
+    end
+    puts @type_01.count
+    puts @type_01.inspect
+    puts @type_02.count
+    puts @type_02.inspect
+    puts @type_03.count
+    puts @type_03.inspect
+    puts @type_04.count
+    puts @type_04.inspect
+    puts @type_05.count
+    puts @type_05.inspect
+    render(partial: 'show_detail', :layout => false)
   end
 
   def create

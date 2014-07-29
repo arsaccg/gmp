@@ -1,4 +1,4 @@
-#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", }
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
   %header
     %span.widget-icon
       %i.fa.fa-table
@@ -41,21 +41,17 @@
                   %td
                     = ged.id.to_s
                   %td
-                    = Phase.find(ged.phase_id).name.to_s
+                    %a{:href=>"javascript:show_details("+ged.id.to_s+");" }(class="small-font")
+                      = Phase.find(ged.phase_id).name.to_s
                   %td
                     = ged.general_expense_details.count
                   %td
-                    %a.btn.btn-info.btn-xs{:onclick=>"loadDetail('/general_expenses/general_expense/"+ged.id.to_s+"');"}
-                      Detalle                  
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_general_expenses_general_expense_path(ged.id)}', 'content', null, null, 'GET')"}
                       Editar
                     %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{ged.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{general_expenses_general_expense_path(ged.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{general_expenses_general_expenses_path}')"}}
                       Eliminar
 
-%br
-%br
-.row
-  #detail
+
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -187,4 +183,18 @@
           $('#detail').html(returnedData);
         }
     });
+  }
+
+  function show_details(id){
+    $("#detail").empty();
+    $("#detail").css("display","block");
+    str_item = {authenticity_token: "#{form_authenticity_token}", id: id};
+    append_url_ajax('#{show_details_general_expenses_general_expenses_path}', 'detail', str_item, 0, 'POST');
+  }
+
+  function delete_item(code){
+    console.log(code);
+    console.log($("#"+code));
+    $("#" + code).empty();
+    $("#" + code).css("display","none");
   }

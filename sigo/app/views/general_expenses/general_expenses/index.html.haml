@@ -25,6 +25,8 @@
 
   %br
   .row
-    #widget-grid 
+    #widget-grid{ "style"=>"  height: 60%; overflow-y: scroll; "} 
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table'
+  .row{"style"=>"height: 40%; overflow-y: scroll;"}
+    #detail
