@@ -1,0 +1,253 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-pencil-square-o.fa-fw 
+    %h2
+      %strong Editar Orden de Compra
+  %div{:style => "padding-top: 0"}
+    .jarviswidget-editbox
+    .widget-body 
+      = simple_form_for([:administration, @provision], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
+        .col-sm-12
+          %fieldset
+            = hidden_field_tag 'provision[cost_center_id]', @cost_center, class: 'form-control', id: 'cost-center-selected'
+            .row
+              .col-md-4
+                .form-group
+                  %label.control-label Proveedores
+                  .input-group
+                    %select.select2.form-control#supplier-selected{:name => 'provision[entity_id]', :style => 'width:100%;padding: 0;border: none;'}
+                      - @suppliers.each do |supply|
+                        - if @provision.entity_id == supply.id
+                          %option{:value => "#{supply.id}", :selected => true}
+                            = supply.name
+                        - else
+                          %option{:value => "#{supply.id}"}
+                            = supply.name
+
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Tipo Documento
+                  .col-md-8
+                    .input-group
+                      %select.select2.form-control{:name => 'provision[document_provision_id]', :style => 'width:100%;padding: 0;border: none;'}
+                        - @documentProvisions.each do |x|
+                          - if @provision.document_provision_id == x.id
+                            %option{:value => "#{x.id}", :selected => true}
+                              = x.name
+                          - else
+                            %option{:value => "#{x.id}"}
+                              = x.name
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Numero de Documento
+                  .col-md-8
+                    .input-group
+                      = f.input :number_document_provision, :input_html => {:class => 'form-control'}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+
+            .row
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Fecha
+                  .col-md-8
+                    .input-group
+                      = f.input :accounting_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-calendar
+              .col-md-4
+                .form-group
+                  %label.col-md-4.control-label Serie
+                  .col-md-8
+                    .input-group
+                      = f.input :series, placeholder: "Serie", :input_html => {:class => 'form-control'}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-money
+            .row
+              .col-md-12
+                .form-group
+                  %label.col-md-2.control-label Glosa
+                  .col-md-10
+                    .input-group
+                      = f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+                      %span.input-group-addon
+                        %i.fa.fa-align-justify
+          %fieldset
+            %legend Elección del Insumo
+            .row
+              .col-lg-12.col-md-12
+                %label.col-lg-2.control-label{:for => "article_id"} Insumos
+                .col-lg-6.col-md-6
+                  %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+
+                .col-lg-1.col-md-1
+                  = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
+
+                .col-lg-2.col-md-2
+                  %div(class="col-lg-3")
+                    %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
+                      Agregar Insumo
+
+          %fieldset
+            %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary-direct-provisions{:style => "font-size: 12px;", 'aria-describedby' => "data-table_info"}
+              %thead
+                %tr
+                  %th Nombre del Artículo
+                  %th Unidad de Medida
+                  %th Sector
+                  %th Fase
+                  %th Cantidad
+                  %th Precio Unitario
+                  %th Total antes de IGV
+                  %th ¿Aplica IGV?
+                  %th Total después de IGV
+                  %th Operaciones Adicionales
+                  %th Descripción
+                  %th Acción
+              %tbody{:id => "provisions_direct_items_table"}
+
+:javascript
+  
+  $(document).ready(function(){
+    $('select').select2();
+    $('#article-select').select2({
+      placeholder: "Buscar Insumos...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_articles_logistics_delivery_orders_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name + ' - ' + node.symbol + '</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol) },
+      escapeMarkup: function (m) { return m; }
+    });
+
+    $('#new_provision').ajaxForm({
+      beforeSubmit: function() {
+        $('#new_delivery_order').validate({
+          // Rules for form validation
+          rules : {
+            'provision[entity_id]' : {
+              required : true
+            },
+            'provision[document_provision_id]' : {
+              required : true,
+            },
+            'provision[number_document_provision]' : {
+              required : true,
+            },
+            'provision[accounting_date]' : {
+              required : true
+            },
+            'provision[series]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'provision[entity_id]' : {
+              required : 'El proveedor es obligatorio.'
+            },
+            'deliveryOrder[document_provision_id]' : {
+              required : 'El tipo de Documento es obligatorio.',
+            },
+            'provision[number_document_provision]' : {
+              required : 'El numero del Documento es obligatorio.'
+            },
+            'provision[accounting_date]' : {
+              required : 'La fecha es requerida.'
+            },
+            'provision[series]' : {
+              required : 'El número de serie es requerida.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+
+        return $('#new_delivery_order').valid();
+      },
+      target: '#content'
+    });
+
+    $('form[id^="edit_"]').ajaxForm({
+      beforeSubmit: function() {
+        $('form[id^="edit_"]').validate({
+          // Rules for form validation
+          rules : {
+            'provision[entity_id]' : {
+              required : true
+            },
+            'provision[document_provision_id]' : {
+              required : true,
+            },
+            'provision[number_document_provision]' : {
+              required : true,
+            },
+            'provision[accounting_date]' : {
+              required : true
+            },
+            'provision[series]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'provision[entity_id]' : {
+              required : 'El proveedor es obligatorio.'
+            },
+            'deliveryOrder[document_provision_id]' : {
+              required : 'El tipo de Documento es obligatorio.',
+            },
+            'provision[number_document_provision]' : {
+              required : 'El numero del Documento es obligatorio.'
+            },
+            'provision[accounting_date]' : {
+              required : 'La fecha es requerida.'
+            },
+            'provision[series]' : {
+              required : 'El número de serie es requerida.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+
+        return $('form[id^="edit_"]').valid();
+      },
+      target: '#content'
+    });
+  });
+
+  function add_article_item(){
+
+    var article_id = $("#article-select").val();
+    str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), amount: $("#article-amount").val()};
+
+    append_url_ajax('#{puts_details_in_provision_administration_provision_articles_path}', 'provisions_direct_items_table', str_item, 0, 'POST');
+  }
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
