@@ -2,8 +2,10 @@ class Provision < ActiveRecord::Base
   belongs_to :cost_center
   belongs_to :document_provision
   has_many :provision_details
+  has_many :provision_direct_purchase_details
 
   accepts_nested_attributes_for :provision_details, :allow_destroy => true
+  accepts_nested_attributes_for :provision_direct_purchase_details, :allow_destroy => true
 
   def self.update_received_order(total_amount, order_id, type_of_order)
     case type_of_order

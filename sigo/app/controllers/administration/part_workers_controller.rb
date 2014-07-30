@@ -26,13 +26,18 @@ class Administration::PartWorkersController < ApplicationController
   end
 
   def new
+    @action = 'new'
     @partworkerlast = PartWorker.count
     @numbercode = @partworkerlast+1
     @numbercode = @numbercode.to_s.rjust(5,'0')
     @partworker = PartWorker.new
     @working_groups = WorkingGroup.all
-    @workers = Worker.where("typeofworker LIKE 'empleado'")
+    @workers = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'activo'")
     @company = params[:company_id]
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @sectors = Sector.where("code LIKE '__'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @costcenters = CostCenter.where("company_id = ?",@company)
     render layout: false
   end
 
