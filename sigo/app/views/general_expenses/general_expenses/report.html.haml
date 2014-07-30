@@ -32,7 +32,7 @@
             %tr
               %th{"style"=>"text-align:center;font-size: 14px;"}= Phase.find(ge.phase_id.to_s).code
               %th{'colspan' => 9,"style"=>"text-align:center;font-size: 14px;"}= Phase.find(ge.phase_id.to_s).name
-              %th{"style"=>"text-align:center;font-size: 14px;"}=number_to_currency(@get[@i], unit: 'S/. ', precision: 2)
+              %th{"style"=>"text-align:center;font-size: 14px;"}=number_to_currency(ge.total, unit: 'S/. ', precision: 2)
 
             -ge.general_expense_details.each do |ged|
               %tr

@@ -90,6 +90,17 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
     gexp = GeneralExpense.new(gexp_parameters)
     gexp.cost_center_id = get_company_cost_center('cost_center').to_s
     if gexp.save
+      @t=0
+      t=ActiveRecord::Base.connection.execute("
+        SELECT SUM(ged.parcial) 
+        FROM  general_expense_details ged
+        where ged.general_expense_id ="+gexp.id.to_s+"
+      ")
+      t.each do |t|
+        @t = t[0]
+      end
+      ActiveRecord::Base.connection.execute("UPDATE general_expenses SET total='"+@t.to_s+"' WHERE id="+gexp.id.to_s)
+
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index
     else
@@ -112,6 +123,16 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
   def update
     gexp = GeneralExpense.find(params[:id])
     if gexp.update_attributes(gexp_parameters)
+      @t=0
+      t=ActiveRecord::Base.connection.execute("
+        SELECT SUM(ged.parcial) 
+        FROM  general_expense_details ged
+        where ged.general_expense_id ="+gexp.id.to_s+"
+      ")
+      t.each do |t|
+        @t = t[0]
+      end
+      ActiveRecord::Base.connection.execute("UPDATE general_expenses SET total='"+@t.to_s+"' WHERE id="+gexp.id.to_s)      
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
     else
