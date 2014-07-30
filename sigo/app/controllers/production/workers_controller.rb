@@ -82,6 +82,7 @@ class Production::WorkersController < ApplicationController
     @entites = TypeEntity.find_by_name('Trabajadores').entities
     @company = params[:company_id]
     @action = 'edit'
+    @register = params[:register]
     render layout: false
   end
 
@@ -218,8 +219,16 @@ class Production::WorkersController < ApplicationController
 
   def cancel
     worker = Worker.find(params[:id])
+    workercontract = WorkerContract.where("worker_id = ?",params[:id]).last
+    WorkerContract.where( id: workercontract.id ).update_all( end_date_2: params[:end_date_2] , reason_for_termination: params[:reason_for_termination] )
     worker.cancel
     redirect_to :action => :index
+  end
+
+  def part_worker
+    @worker = Worker.find_by_id(params[:worker_id])
+    @workercontract = WorkerContract.where("worker_id = ?",params[:worker_id]).last
+    render layout: false
   end
 
   private
