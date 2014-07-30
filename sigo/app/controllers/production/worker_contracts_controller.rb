@@ -6,6 +6,7 @@ class Production::WorkerContractsController < ApplicationController
     flash[:error] = nil
     @worker_id = params[:worker_id]
     @company = get_company_cost_center('company')
+    @worker = Worker.find_by_id(@worker_id)
     #@own_cost_center = current_user.cost_centers
     @workercontracts = WorkerContract.where("worker_id = ?", @worker_id)
     render layout: false

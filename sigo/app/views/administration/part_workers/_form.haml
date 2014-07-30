@@ -4,7 +4,7 @@
       %i.fa.fa-pencil-square-o.fa-fw
     %h2 Nuevo Parte de Personal
   .widget-body
-    = simple_form_for([:production, @partperson], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:administration, @partworker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
@@ -13,58 +13,69 @@
             %label.input{for: "number_part"}
               = f.input :number_part, placeholder: "Numero", input_html: {:value => "#{@numbercode}", class: 'form-control' }, label: false
 
-          %section.col.col-8
-            %label.input{for: "working_group_id"}
-              %select.form-control{:name =>"part_person[working_group_id]", :style => 'width:100%;padding: 0;border: none;'}
-                %option{:value => ''}
-                  = 'Seleccione Grupo de Trabajo'
-                - @working_groups.each do |working_group|
-                  - if @action == 'edit'
-                    - if @partperson.working_group_id == working_group.id
-                      %option{:value => "#{working_group.id}", :selected => true}
-                        = working_group.name
-                    - else
-                      %option{:value => "#{working_group.id}"}
-                        = working_group.name
-                  - else
-                    %option{:value => "#{working_group.id}"}
-                      = working_group.name
-
           %section.col.col-2
             %label.input{for: "date_of_creation"}
               = f.input :date_of_creation, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
             
       %fieldset
         %legend Registro de Partidas
-        .row
-          %section.col.col-2
-            %label.control-label(for="worker_id") Trabajador
-
-          %section.col.col-6
-            %select#worker-select.select2.form-control(name='worker_id' style='width:100%;padding: 0;border: none;')
-              - @workers.each do |worker|
-                %option(value = "#{worker.id}")
-                  = worker.entity.dni.to_s + ' - ' + worker.entity.name.to_s + ' ' + worker.entity.second_name.to_s + ' ' + worker.entity.paternal_surname.to_s + ' ' + worker.entity.maternal_surname.to_s + ' - ' + worker.article.name.to_s
-
-          %section.col.col-2
-            %div
-              %a(href="javascript:add_worker_item();" id="btn-add-worker" class="btn btn-success" role="button")
-                Agregar Trabajador
-
         .col-lg-12
           %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
             %thead
               %tr
-                %th Cargo
                 %th Trabajador
+                %th Asistencia
+                %th Motivo de Falta
                 %th Sector
                 %th Fase
-                %th Horas normales
-                %th Horas Extras 60
-                %th Horas Extras 100
-                %th Total Horas
+                %th Grupo de Trabajo
+                %th Centro de Costo
                 %th Eliminar
             %tbody(id="worker_items_table")
+              - if @action == 'new'
+                - @workers.each do |worker|                
+                  %tr
+                    %td.bank-id(style="display:none")
+                      = hidden_field_tag 'part_worker[part_worker_details_attributes][' + @reg_n.to_s + '][worker_id]', worker.id
+                    %td.col-2=worker.entity.name.to_s + ' ' + worker.entity.paternal_surname.to_s
+                    %td.col-1 Asistio
+                    %td.col-1= text_field_tag 'part_worker[part_worker_details_attributes][' + @reg_n.to_s + '][reason_of_lack]', nil , class: "form-control normal-hours", :required => true, title:'No puede dejar este campo vacio'
+                    %td.sector
+                      %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{@reg_n.to_s}][sector_id]", :style => 'width:100%;padding: 0;border: none;'}
+                        - @sectors.each do |sector|
+                          %optgroup{:label => "#{sector.name}"}
+                            - Sector.getSubSectors(sector.code).each do |subsector|
+                              %option{:value => "#{subsector.id}"}
+                                = subsector.name
+                    %td.phase.col-md-2
+                      %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{@reg_n.to_s}][phase_id]", :style => 'width:100%;padding: 0;border: none;'}
+                        %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
+                        - @phases.each do |phase|
+                          %option{:value => "#{phase.id}"}
+                            = phase.code + ' - ' + phase.name
+                    %td.working-group
+                      %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{@reg_n.to_s}][sector_id]", :style => 'width:100%;padding: 0;border: none;'}
+                        %option{:value => ''}
+                          = 'Seleccione Grupo de Trabajo'
+                        - @working_groups.each do |working_group|
+                          - if @action == 'edit'
+                            - if @partperson.working_group_id == working_group.id
+                              %option{:value => "#{working_group.id}", :selected => true}
+                                = working_group.name
+                            - else
+                              %option{:value => "#{working_group.id}"}
+                                = working_group.name
+                          - else
+                            %option{:value => "#{working_group.id}"}
+                              = working_group.name
+                    %td.costcenter.col-md-2
+                      %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{@reg_n.to_s}][cost_center_id]", :style => 'width:100%;padding: 0;border: none;'}
+                        %option{:value => "0", :selected => true, :disabled => true} Seleccionar Centro de Costo
+                        - @costcenters.each do |costcenters|
+                          %option{:value => "#{costcenters.id}"}
+                            = costcenters.name
+                    %td{:style => "width: 1%; text-align: center;"}
+                      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
               - if @action == 'edit'
                 - @partperson.part_person_details.each do |oos|
                   %tr
@@ -157,120 +168,6 @@
       error: function(xhr, status, error) {
       }
     });
-  }
-
-  function add_worker_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", worker_id: $("#worker-select").val(), amount: $("#article-amount").val()};
-    append_url_ajax('#{add_more_worker_production_part_people_path}', 'worker_items_table', str_item, 0, 'POST');
-    var workertodelete = $('#worker-select').get(0).selectedIndex;
-    console.log(workertodelete)
-    $('#worker-select option:eq(' + workertodelete + ')').remove();
-    $("#worker-select").select2("val", "");
-  }
-
-  function calculateHours(element, str){
-    switch(str){
-      case 'normal':
-
-        if($(element).val()==""){
-          h_normal = 0;
-        }else{
-          h_normal = parseFloat($(element).val());
-        }
-
-        if($(element).parent().parent().siblings('.he-60').find('input').val()==""){
-          he_60 =0;
-        }else{
-          he_60 = parseFloat($(element).parent().parent().siblings('.he-60').find('input').val());
-        }
-
-        if($(element).parent().parent().siblings('.he-100').find('input').val()==""){
-          he_100 = 0;
-        }else{
-          he_100 = parseFloat($(element).parent().parent().siblings('.he-100').find('input').val());
-        }
-
-        total_hours = h_normal + he_60 + he_100;
-
-        if(isNaN(total_hours)){
-          total_hours  = 0;
-        }else{
-          total_hours
-        }
-
-        $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours);
-        break;
-
-      case '60':
-
-        if($(element).parent().parent().siblings('.normal-hours').find('input').val()==""){
-          h_normal = 0;
-        }else{
-          h_normal = parseFloat($(element).parent().parent().siblings('.normal-hours').find('input').val());
-        }
-
-        if($(element).val()==""){
-          he_60 =0;
-        }else{
-          he_60 = parseFloat($(element).val());
-        }
-
-        if($(element).parent().parent().siblings('.he-100').find('input').val()==""){
-          he_100 = 0;
-        }else{
-          he_100 = parseFloat($(element).parent().parent().siblings('.he-100').find('input').val());
-        }
-
-        total_hours = h_normal + he_60 + he_100;
-
-        if(isNaN(total_hours)){
-          total_hours = 0;
-        }else{
-          total_hours
-        }
-
-        $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours)
-        break;
-
-      case '100':
-
-        if($(element).parent().parent().siblings('.normal-hours').find('input').val()==""){
-          h_normal = 0;
-        }else{
-          h_normal = parseFloat($(element).parent().parent().siblings('.normal-hours').find('input').val());
-        }
-
-        if($(element).parent().parent().siblings('.he-60').find('input').val()==""){
-          he_60 =0;
-        }else{
-          he_60 = parseFloat($(element).parent().parent().siblings('.he-60').find('input').val());
-        }
-
-        if($(element).val()==""){
-          he_100 = 0;
-        }else{
-          he_100 = parseFloat($(element).val());
-        }
-
-        total_hours = h_normal + he_60 + he_100;
-
-        if(isNaN(total_hours)){
-          total_hours  = 0;
-        }else{
-          total_hours
-        }
-
-        $(element).parent().parent().siblings('.total-hours').find('input').val(total_hours)
-        break;
-    }
-  }
-
-  function minmax(value, min, max){
-    if(parseFloat(value) < min || isNaN(value)) 
-      return min; 
-    else if(parseFloat(value) > max) 
-      return max; 
-    else return value;
   }
 
   function delete_item(code){
