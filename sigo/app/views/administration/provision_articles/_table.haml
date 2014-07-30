@@ -27,11 +27,11 @@
               %td
                 = provision.description
               %td
-                = number_to_currency(Provision.sumProvisionDetail(provision.id), unit: 'S/. ', precision: 2)
+                = number_to_currency(Provision.sumProvisionDetailDirectPurchaseBeforeIGV(provision), unit: 'S/. ', precision: 2)
               %td
                 = (ProvisionDetail.where("provision_id = ?", provision.id).first.current_igv * 100).to_s + '%' rescue '18%'
               %td
-                = number_to_currency(Provision.sumProvisionDetail2(provision.id), unit: 'S/. ', precision: 2)
+                = number_to_currency(Provision.sumProvisionDetailDirectPurchaseAfterIGV(provision), unit: 'S/. ', precision: 2)
               %td
                 %a.btn.btn-warning.btn-xs
                   Editar

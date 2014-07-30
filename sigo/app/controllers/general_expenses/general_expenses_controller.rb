@@ -54,34 +54,34 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
 
   def show_details 
     @type_01 = Array.new
+    @t1 = 0
     @type_02 = Array.new
+    @t2 = 0
     @type_03 = Array.new
+    @t3 = 0
     @type_04 = Array.new
+    @t4 = 0
     @type_05 = Array.new
+    @t5 = 0
     @ge = GeneralExpense.find(params[:id])
     @ge.general_expense_details.each do |ged|
       if ged.type_article == "01"
         @type_01 << ged
+        @t1 = @t1.to_f + ged.parcial.to_f
       elsif ged.type_article == "02"
         @type_02 << ged
+        @t2 = @t2.to_f + ged.parcial.to_f
       elsif ged.type_article == "03"
         @type_03 << ged
+        @t3 = @t3.to_f + ged.parcial.to_f
       elsif ged.type_article == "04"
         @type_04 << ged
+        @t4 = @t4.to_f + ged.parcial.to_f
       else
         @type_05 << ged
+        @t5 = @t5.to_f + ged.parcial.to_f
       end
     end
-    puts @type_01.count
-    puts @type_01.inspect
-    puts @type_02.count
-    puts @type_02.inspect
-    puts @type_03.count
-    puts @type_03.inspect
-    puts @type_04.count
-    puts @type_04.inspect
-    puts @type_05.count
-    puts @type_05.inspect
     render(partial: 'show_detail', :layout => false)
   end
 
@@ -90,6 +90,17 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
     gexp = GeneralExpense.new(gexp_parameters)
     gexp.cost_center_id = get_company_cost_center('cost_center').to_s
     if gexp.save
+      @t=0
+      t=ActiveRecord::Base.connection.execute("
+        SELECT SUM(ged.parcial) 
+        FROM  general_expense_details ged
+        where ged.general_expense_id ="+gexp.id.to_s+"
+      ")
+      t.each do |t|
+        @t = t[0]
+      end
+      ActiveRecord::Base.connection.execute("UPDATE general_expenses SET total='"+@t.to_s+"' WHERE id="+gexp.id.to_s)
+
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index
     else
@@ -112,6 +123,16 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
   def update
     gexp = GeneralExpense.find(params[:id])
     if gexp.update_attributes(gexp_parameters)
+      @t=0
+      t=ActiveRecord::Base.connection.execute("
+        SELECT SUM(ged.parcial) 
+        FROM  general_expense_details ged
+        where ged.general_expense_id ="+gexp.id.to_s+"
+      ")
+      t.each do |t|
+        @t = t[0]
+      end
+      ActiveRecord::Base.connection.execute("UPDATE general_expenses SET total='"+@t.to_s+"' WHERE id="+gexp.id.to_s)      
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
     else
@@ -125,7 +146,9 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
   end
 
   def destroy
-    gexp = GeneralExpense.destroy(params[:id])
+    gexp = GeneralExpense.find(params[:id])
+    gexp.general_expense_details.destroy_all
+    gexp.destroy
     render :json => gexp
   end
 

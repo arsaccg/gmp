@@ -41,4 +41,24 @@ class Provision < ActiveRecord::Base
     end
     return sum
   end
+
+  def self.sumProvisionDetailDirectPurchaseBeforeIGV(provision_obj)
+    sum = 0
+
+    provision_obj.provision_direct_purchase_details.each do |direct_purchase|
+      sum += direct_purchase.unit_price_before_igv
+    end
+
+    return sum
+  end
+
+  def self.sumProvisionDetailDirectPurchaseAfterIGV(provision_obj)
+    sum = 0
+
+    provision_obj.provision_direct_purchase_details.each do |direct_purchase|
+      sum += (direct_purchase.unit_price_before_igv + direct_purchase.quantity_igv.to_ + direct_purchase.discount_after.to_f)
+    end
+    
+    return sum
+  end
 end
