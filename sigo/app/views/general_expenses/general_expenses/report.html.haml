@@ -32,7 +32,7 @@
             %tr
               %th{"style"=>"text-align:center;font-size: 14px;"}= Phase.find(ge.phase_id.to_s).code
               %th{'colspan' => 9,"style"=>"text-align:center;font-size: 14px;"}= Phase.find(ge.phase_id.to_s).name
-              %th{"style"=>"text-align:center;font-size: 14px;", precision: 2}=@get[@i].round(2)
+              %th{"style"=>"text-align:center;font-size: 14px;"}=number_to_currency(@get[@i], unit: 'S/. ', precision: 2)
 
             -ge.general_expense_details.each do |ged|
               %tr
@@ -42,16 +42,16 @@
                 %th{"style"=>"text-align:right;font-weight: normal;"}=ged.people rescue '-'
                 %th{"style"=>"text-align:right;font-weight: normal;"}=ged.participation rescue '-'
                 %th{"style"=>"text-align:right;font-weight: normal;"}=ged.time rescue '-'
-                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.salary rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}= number_to_currency(ged.salary, unit: 'S/. ', precision: 2) rescue '-'
                 %th{"style"=>"text-align:right;font-weight: normal;"}=ged.amount rescue '-'
-                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.cost  rescue '-'
-                %th{"style"=>"text-align:right;font-weight: normal;", precision: 2}=ged.parcial.to_s
+                %th{"style"=>"text-align:right;font-weight: normal;"}=number_to_currency(ged.cost, unit: 'S/. ', precision: 2) rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}=number_to_currency(ged.parcial, unit: 'S/. ', precision: 2) rescue '-'
                 %th{"style"=>"text-align:right;font-weight: normal;"}
             -@i+=1
           %tr
             %th{"style"=>"text-align:center"}
             %th{'colspan' => 9,"style"=>"text-align:left;font-size: 14px;"} Total Gastos
-            %th{"style"=>"text-align:center;font-size: 14px;", precision: 2}= @t.round(2)
+            %th{"style"=>"text-align:center;font-size: 14px;"}= number_to_currency(@t, unit: 'S/. ', precision: 2)
       %footer
         %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
           Salir
