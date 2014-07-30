@@ -275,6 +275,11 @@ ArsacLogistica::Application.routes.draw do
         post 'add_experience_item_field'
         post 'show_workers'
       end
+      member do
+        get 'register'
+        get 'approve'
+        get 'cancel'
+      end
     end
     resources :worker_contracts
     resources :analysis_of_valuations do

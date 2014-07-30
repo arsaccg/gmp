@@ -203,6 +203,24 @@ class Production::WorkersController < ApplicationController
     render :json => worker
   end
 
+  def register
+    worker = Worker.find(params[:id])
+    worker.register
+    redirect_to :action => :index
+  end
+
+  def approve
+    worker = Worker.find(params[:id])
+    worker.approve
+    redirect_to :action => :index
+  end
+
+  def cancel
+    worker = Worker.find(params[:id])
+    worker.cancel
+    redirect_to :action => :index
+  end
+
   private
   def worker_parameters
     params.require(:worker).permit(:email, {:type_workday_ids => []}, :afpnumber, :driverlicense, :income_fifth_category, :unionized, :disabled, :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_afps_attributes: [:id, :worker_id, :afp_id, :afptype, :start_date, :end_date, :_destroy], worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :start_date, :end_date, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :businessaddress, :title, :salary, :bossincharge, :exitreason, :_destroy])
