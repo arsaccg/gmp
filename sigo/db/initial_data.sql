@@ -69,8 +69,9 @@ INSERT INTO `phases` (`id`, `name`, `code`, `category`) VALUES
 (1, 'Fase 0' , '01', 'phase');
 
 -- Data for Entity
+INSERT INTO `entities` (`name`,`second_name`,`paternal_surname`, `maternal_surname`,`ruc`, `address`, `created_at`, `updated_at`) VALUES 
+('Lorem ipsum','dolor sit amet', 'consectetur', 'adipisci velit', '0', '0', NOW(), NOW());
 INSERT INTO `entities` (`name`, `ruc`, `address`, `created_at`, `updated_at`) VALUES 
-('Entity 0', '0', '0', NOW(), NOW()),
 ('ARSAC Contratistas Generales', '12345678978', 'Calle Las Garzas 494 San Isidro', NOW(), NOW());
 
 -- Data for worker

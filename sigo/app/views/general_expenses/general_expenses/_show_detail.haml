@@ -32,9 +32,9 @@
             %td.col-md-1.smart-form{:style => "width:5%"}
               =ged.time.to_s
             %td.col-md-1.smart-form{:style => "width:5%"}
-              =ged.salary.to_s
+              =number_to_currency(ged.salary.to_s, unit: 'S/. ', precision: 2)
             %td.col-md-1.smart-form{:style => "width:5%"}
-              = ged.parcial.to_s
+              = number_to_currency(ged.parcial.to_s, unit: 'S/. ', precision: 2)
     %br
 
 -if @type_03.count>0
@@ -64,9 +64,9 @@
             %td.col-md-1.smart-form{:style => "width:5%"}
               =ged.time.to_s
             %td.col-md-1.smart-form{:style => "width:5%"}
-              = ged.cost.to_s
+              = number_to_currency(ged.cost.to_s, unit: 'S/. ', precision: 2)
             %td.col-md-1.smart-form{:style => "width:5%"}
-              = ged.parcial.to_s
+              = number_to_currency(ged.parcial.to_s, unit: 'S/. ', precision: 2)
     %br
 
 -if @type_02.count>0
@@ -93,9 +93,9 @@
             %td.col-md-1.smart-form{:style => "width:5%"}
               = ged.amount.to_s    
             %td.col-md-1.smart-form{:style => "width:5%"}
-              = ged.cost.to_s
+              = number_to_currency(ged.cost.to_s, unit: 'S/. ', precision: 2)
             %td.col-md-1.smart-form{:style => "width:5%"}
-              = ged.parcial.to_s
+              = number_to_currency(ged.parcial.to_s, unit: 'S/. ', precision: 2)
     %br
 
 -if @type_04.count>0
@@ -122,9 +122,9 @@
             %td.col-md-1.smart-form{:style => "width:5%"}
               = ged.amount.to_s    
             %td.col-md-1.smart-form{:style => "width:5%"}
-              = ged.cost.to_s
+              = number_to_currency(ged.cost.to_s, unit: 'S/. ', precision: 2)
             %td.col-md-1.smart-form{:style => "width:5%"}
-              = ged.parcial.to_s
+              = number_to_currency(ged.parcial.to_s, unit: 'S/. ', precision: 2)
 
     %br
 
@@ -155,6 +155,6 @@
             %td.col-md-1.smart-form{:style => "width:5%"}
               = ged.time.to_s
             %td.col-md-1.smart-form{:style => "width:5%"}
-              = ged.cost.to_s
+              = number_to_currency(ged.cost.to_s, unit: 'S/. ', precision: 2)
             %td.col-md-1.smart-form{:style => "width:5%"}
-              = ged.parcial.to_s
+              = number_to_currency(ged.parcial.to_s, unit: 'S/. ', precision: 2)
