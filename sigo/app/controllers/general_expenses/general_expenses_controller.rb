@@ -125,7 +125,9 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
   end
 
   def destroy
-    gexp = GeneralExpense.destroy(params[:id])
+    gexp = GeneralExpense.find(params[:id])
+    gexp.general_expense_details.destroy_all
+    gexp.destroy
     render :json => gexp
   end
 
