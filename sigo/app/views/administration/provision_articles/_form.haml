@@ -4,75 +4,72 @@
       %i.fa.fa-pencil-square-o.fa-fw 
     %h2
       %strong Editar Orden de Compra
-  %div{:style => "padding-top: 0"}
+  %div
     .jarviswidget-editbox
     .widget-body 
       = simple_form_for([:administration, @provision], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
         .col-sm-12
-          %fieldset
+          %fieldset{ :style => 'margin-top: 20px;' }
             = hidden_field_tag 'provision[cost_center_id]', @cost_center, class: 'form-control', id: 'cost-center-selected'
-            .row
-              .col-md-4
-                .form-group
-                  %label.control-label Proveedores
+            .col-md-4
+              .form-group
+                %label.col-md-4.control-label Proveedores
+                .col-md-8
+                  %select.select2.form-control#supplier-selected{:name => 'provision[entity_id]', :style => 'width:100%;padding: 0;border: none;'}
+                    - @suppliers.each do |supply|
+                      - if @provision.entity_id == supply.id
+                        %option{:value => "#{supply.id}", :selected => true}
+                          = supply.name
+                      - else
+                        %option{:value => "#{supply.id}"}
+                          = supply.name
+
+            .col-md-4
+              .form-group
+                %label.col-md-4.control-label Tipo Documento
+                .col-md-8
+                  %select.select2.form-control{:name => 'provision[document_provision_id]', :style => 'width:100%;padding: 0;border: none;'}
+                    - @documentProvisions.each do |x|
+                      - if @provision.document_provision_id == x.id
+                        %option{:value => "#{x.id}", :selected => true}
+                          = x.name
+                      - else
+                        %option{:value => "#{x.id}"}
+                          = x.name
+            .col-md-4
+              .form-group
+                %label.col-md-4.control-label Numero de Documento
+                .col-md-8
                   .input-group
-                    %select.select2.form-control#supplier-selected{:name => 'provision[entity_id]', :style => 'width:100%;padding: 0;border: none;'}
-                      - @suppliers.each do |supply|
-                        - if @provision.entity_id == supply.id
-                          %option{:value => "#{supply.id}", :selected => true}
-                            = supply.name
-                        - else
-                          %option{:value => "#{supply.id}"}
-                            = supply.name
+                    = f.input :number_document_provision, :input_html => {:class => 'form-control'}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-calendar
 
-              .col-md-4
-                .form-group
-                  %label.col-md-4.control-label Tipo Documento
-                  .col-md-8
-                    .input-group
-                      %select.select2.form-control{:name => 'provision[document_provision_id]', :style => 'width:100%;padding: 0;border: none;'}
-                        - @documentProvisions.each do |x|
-                          - if @provision.document_provision_id == x.id
-                            %option{:value => "#{x.id}", :selected => true}
-                              = x.name
-                          - else
-                            %option{:value => "#{x.id}"}
-                              = x.name
-              .col-md-4
-                .form-group
-                  %label.col-md-4.control-label Numero de Documento
-                  .col-md-8
-                    .input-group
-                      = f.input :number_document_provision, :input_html => {:class => 'form-control'}, label: false
-                      %span.input-group-addon
-                        %i.fa.fa-calendar
+            .col-md-4
+              .form-group
+                %label.col-md-4.control-label Fecha
+                .col-md-8
+                  .input-group
+                    = f.input :accounting_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-calendar
+            .col-md-4
+              .form-group
+                %label.col-md-4.control-label Serie
+                .col-md-8
+                  .input-group
+                    = f.input :series, placeholder: "Serie", :input_html => {:class => 'form-control'}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-money
 
-            .row
-              .col-md-4
-                .form-group
-                  %label.col-md-4.control-label Fecha
-                  .col-md-8
-                    .input-group
-                      = f.input :accounting_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
-                      %span.input-group-addon
-                        %i.fa.fa-calendar
-              .col-md-4
-                .form-group
-                  %label.col-md-4.control-label Serie
-                  .col-md-8
-                    .input-group
-                      = f.input :series, placeholder: "Serie", :input_html => {:class => 'form-control'}, label: false
-                      %span.input-group-addon
-                        %i.fa.fa-money
-            .row
-              .col-md-12
-                .form-group
-                  %label.col-md-2.control-label Glosa
-                  .col-md-10
-                    .input-group
-                      = f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
-                      %span.input-group-addon
-                        %i.fa.fa-align-justify
+            .col-md-12
+              .form-group
+                %label.col-md-2.control-label Glosa
+                .col-md-10
+                  .input-group
+                    = f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-align-justify
           %fieldset
             %legend Elección del Insumo
             .row
@@ -89,7 +86,7 @@
                     %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
                       Agregar Insumo
 
-          %fieldset
+          %fieldset{ :style => "margin-top: 20px; margin-bottom: 20px;" }
             %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary-direct-provisions{:style => "font-size: 12px;", 'aria-describedby' => "data-table_info"}
               %thead
                 %tr
@@ -108,6 +105,11 @@
                   %th Acción
               %tbody{:id => "provisions_direct_items_table"}
 
+        .col-sm-12.col-md-12{:style => "margin-bottom: 20px;"}
+          .row
+            %button.btn.btn-primary{type: "submit"}
+              %i.fa.fa-save
+                Guardar
 :javascript
   
   $(document).ready(function(){
@@ -138,7 +140,7 @@
 
     $('#new_provision').ajaxForm({
       beforeSubmit: function() {
-        $('#new_delivery_order').validate({
+        $('#new_provision').validate({
           // Rules for form validation
           rules : {
             'provision[entity_id]' : {
@@ -176,14 +178,23 @@
               required : 'El número de serie es requerida.'
             }
           },
-
-          // Do not change code below
-          errorPlacement : function(error, element) {
-            error.insertAfter(element.parent());
+          highlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+          },
+          unhighlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+          },
+          errorElement: 'span',
+          errorClass: 'help-block',
+          errorPlacement: function (error, element) {
+            if (element.parent('.input-group').length) {
+              error.insertAfter(element.parent());
+            } else {
+              error.insertAfter(element);
+            }
           }
         });
-
-        return $('#new_delivery_order').valid();
+        return $('#new_provision').valid();
       },
       target: '#content'
     });
@@ -228,10 +239,20 @@
               required : 'El número de serie es requerida.'
             }
           },
-
-          // Do not change code below
-          errorPlacement : function(error, element) {
-            error.insertAfter(element.parent());
+          highlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+          },
+          unhighlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+          },
+          errorElement: 'span',
+          errorClass: 'help-block',
+          errorPlacement: function (error, element) {
+            if (element.parent('.input-group').length) {
+              error.insertAfter(element.parent());
+            } else {
+              error.insertAfter(element);
+            }
           }
         });
 
@@ -249,6 +270,50 @@
     append_url_ajax('#{puts_details_in_provision_administration_provision_articles_path}', 'provisions_direct_items_table', str_item, 0, 'POST');
   }
 
+  function calculatePriceWithoutIgv(element){
+    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
+
+    var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
+
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  function calculatePrice(element){
+    var amount = parseInt($(element).val());
+
+    var price_without_igv = parseFloat($(element).parent().siblings('.unit-price').find('input').val() * amount).toFixed(2);
+
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  function enableFieldsForIgv(element){
+    if($(element).is(":checked")){
+      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
+      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*#{@igv}).toFixed(2));
+    } else {
+      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
+      $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+    }
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  function set_id_modeling(obj, id_modeling){
+    $current_tr_parent = $(obj).parent().parent().attr('id');
+    id_modal_target = $(obj).attr('data-target');
+    $id_generated = $current_tr_parent.split('-')[1];
+    $(id_modal_target + '-hidden').val($id_generated);
+  }
+
   function delete_item(code){
-    $("#tr" + code).remove();
+    $("#tr-" + code).remove();
   }

@@ -1,4 +1,4 @@
-%tr{id: "tr" + @reg_n.to_s}
+%tr{id: "tr-" + @reg_n.to_s}
   %td{:style => "display:none", :class => "provision_article-id"}
     = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article
   %td= @name_article
@@ -25,10 +25,10 @@
           = phase.code + " " + phase.name
 
   %td.amount
-    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', @amount , class: "form-control unit-price-igv"
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', @amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"
 
   %td.unit-price
-    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', nil, class: "unit-price-item"
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', nil, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
 
   %td.discount-before{:style => "display:none", :class => "provision_discount-before"}
     = hidden_field_tag 'discount_before', nil, class: "discount_before-item"
@@ -50,7 +50,10 @@
   %td.discount-after{:style => "display:none", :class => "provision_discount-after"}
     = hidden_field_tag 'discount_after', nil, class: "discount_after-item"
 
-  %td
+  %td{:style => 'text-align: center'}
+    %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-provision-#{@reg_n.to_s}", 'onclick' => "set_id_modeling(this, #{@reg_n.to_s})"}
+      %strong
+        %i.fa.fa-superscript
 
   %td.description
     = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
