@@ -54,34 +54,34 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
 
   def show_details 
     @type_01 = Array.new
+    @t1 = 0
     @type_02 = Array.new
+    @t2 = 0
     @type_03 = Array.new
+    @t3 = 0
     @type_04 = Array.new
+    @t4 = 0
     @type_05 = Array.new
+    @t5 = 0
     @ge = GeneralExpense.find(params[:id])
     @ge.general_expense_details.each do |ged|
       if ged.type_article == "01"
         @type_01 << ged
+        @t1 = @t1.to_f + ged.parcial.to_f
       elsif ged.type_article == "02"
         @type_02 << ged
+        @t2 = @t2.to_f + ged.parcial.to_f
       elsif ged.type_article == "03"
         @type_03 << ged
+        @t3 = @t3.to_f + ged.parcial.to_f
       elsif ged.type_article == "04"
         @type_04 << ged
+        @t4 = @t4.to_f + ged.parcial.to_f
       else
         @type_05 << ged
+        @t5 = @t5.to_f + ged.parcial.to_f
       end
     end
-    puts @type_01.count
-    puts @type_01.inspect
-    puts @type_02.count
-    puts @type_02.inspect
-    puts @type_03.count
-    puts @type_03.inspect
-    puts @type_04.count
-    puts @type_04.inspect
-    puts @type_05.count
-    puts @type_05.inspect
     render(partial: 'show_detail', :layout => false)
   end
 

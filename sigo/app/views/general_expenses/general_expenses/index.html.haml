@@ -18,8 +18,7 @@
           %i.fa-fw.fa.fa-check
           %strong Error!
           = flash[:error]
-  .row
-    .col-sm-4
+    .col-sm-4{"style"=>"margin:15px;"}
       %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_general_expenses_general_expense_path}', 'content', null, null, 'GET')"}
         Agregar Gasto
       %button.btn.btn-primary.btn-mini
