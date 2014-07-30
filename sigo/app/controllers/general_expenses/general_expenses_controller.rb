@@ -10,6 +10,31 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
     render layout: false
   end
 
+  def report
+    @ge = GeneralExpense.where('cost_center_id = '+get_company_cost_center('cost_center').to_s)
+    @get = Array.new
+    @t = Array.new
+    get=ActiveRecord::Base.connection.execute("
+      SELECT SUM(ged.parcial) 
+      FROM  general_expense_details ged
+      GROUP BY ged.general_expense_id
+    ")
+    t=ActiveRecord::Base.connection.execute("
+      SELECT SUM(ged.parcial) 
+      FROM  general_expense_details ged
+    ")
+    get.each do |g|
+      @get << g[0]
+    end
+    t.each do |t|
+      @t = t[0]
+    end
+    puts @get.inspect
+    @i=0
+    render layout: false
+  end
+
+
   def new
     @gexp = GeneralExpense.new
     @phase = Phase.where("code LIKE '____'").order(:code)

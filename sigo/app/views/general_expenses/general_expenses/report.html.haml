@@ -1,0 +1,57 @@
+.modal-dialog{"style"=>"width: 100%"}
+  .modal-content
+    .modal-body
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th{'colspan' => 11, "style"=>"text-align:center;font-size: large"} DESAGREGADO DE GASTOS GENERALES Y UTILIDAD
+          %tr
+            %th{"style"=>"text-align:center"} Obra: 
+            %th{'colspan' => 10,"style"=>"text-align:center"} 
+          %tr
+            %th{"style"=>"text-align:center"} Fecha de actualización: 
+            %th{'colspan' => 10,"style"=>"text-align:center"}= GeneralExpense.last.updated_at.strftime('%d-%m-%Y')
+          %tr
+            %th{"style"=>"text-align:right"} Costo directo (S/.) :
+            %th{"style"=>"text-align:right", precision: 2}
+            %th{'colspan' => 9,"style"=>"text-align:right"}
+          %tr
+            %th{"style"=>"text-align:left"} Codigo
+            %th{"style"=>"text-align:left"} Descripción
+            %th{"style"=>"text-align:left"} Unidad
+            %th{"style"=>"text-align:right"} Personas
+            %th{"style"=>"text-align:right"} %Participacion
+            %th{"style"=>"text-align:right"} Tiempo
+            %th{"style"=>"text-align:right"} Sueldo/Jornal
+            %th{"style"=>"text-align:right"} Catidad
+            %th{"style"=>"text-align:right"} Costo
+            %th{"style"=>"text-align:right"} Parcial
+            %th{"style"=>"text-align:center"} Total
+        %tbody
+          -@ge.each do |ge|
+            %tr
+              %th{"style"=>"text-align:center;font-size: 14px;"}= Phase.find(ge.phase_id.to_s).code
+              %th{'colspan' => 9,"style"=>"text-align:center;font-size: 14px;"}= Phase.find(ge.phase_id.to_s).name
+              %th{"style"=>"text-align:center;font-size: 14px;", precision: 2}=@get[@i].round(2)
+
+            -ge.general_expense_details.each do |ged|
+              %tr
+                %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).code.to_s
+                %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).name.to_s
+                %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).unit_of_measurement.symbol.to_s
+                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.people rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.participation rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.time rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.salary rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.amount rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.cost  rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;", precision: 2}=ged.parcial.to_s
+                %th{"style"=>"text-align:right;font-weight: normal;"}
+            -@i+=1
+          %tr
+            %th{"style"=>"text-align:center"}
+            %th{'colspan' => 9,"style"=>"text-align:left;font-size: 14px;"} Total Gastos
+            %th{"style"=>"text-align:center;font-size: 14px;", precision: 2}= @t.round(2)
+      %footer
+        %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+          Salir

@@ -1,0 +1,2 @@
+module Administration::PartWorkersHelper
+end

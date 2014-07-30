@@ -1,38 +1,37 @@
-class Production::PartPeopleController < ApplicationController
+class Administration::PartWorkersController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
-    #@part_people = PartPerson.where("cost_center_id = ?", cost_center)
     @workinggroup = WorkingGroup.first
     render layout: false
   end
 
   def show
-    @partperson = PartPerson.find(params[:id])
-    @partpersondetails = @partperson.part_person_details
+    @partworker = PartWorker.find(params[:id])
+    @partworkerdetails = @partworker.part_worker_details
     @company = get_company_cost_center('company')
     render layout: false
   end
 
-  def show_part_people
+  def show_part_workers
     display_length = params[:iDisplayLength]
     pager_number = params[:iDisplayStart]
     keyword = params[:sSearch]
     array = Array.new
-    cost_center = get_company_cost_center('cost_center')
+    company = get_company_cost_center('company')
 
-    array = PartPerson.get_part_people(cost_center, display_length, pager_number, keyword)
+    array = PartPerson.get_part_people(company, display_length, pager_number, keyword)
     render json: { :aaData => array }
   end
 
   def new
-    @partpersonlast = PartPerson.count
-    @numbercode = @partpersonlast+1
+    @partworkerlast = PartWorker.count
+    @numbercode = @partworkerlast+1
     @numbercode = @numbercode.to_s.rjust(5,'0')
-    @partperson = PartPerson.new
+    @partworker = PartWorker.new
     @working_groups = WorkingGroup.all
-    @workers = Worker.where("typeofworker LIKE 'obrero'")
+    @workers = Worker.where("typeofworker LIKE 'empleado'")
     @company = params[:company_id]
     render layout: false
   end

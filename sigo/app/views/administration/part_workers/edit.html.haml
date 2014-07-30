@@ -1,0 +1,19 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-12.col-md-12.col-lg-12
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Editar Parte Persona
+  #widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        = render :partial => 'form'
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado de Parte Personas
+
+:javascript
+
+  $('#backlist').click(function(){
+      load_url_ajax("#{production_part_people_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+  });

@@ -275,6 +275,11 @@ ArsacLogistica::Application.routes.draw do
         post 'add_experience_item_field'
         post 'show_workers'
       end
+      member do
+        get 'register'
+        get 'approve'
+        get 'cancel'
+      end
     end
     resources :worker_contracts
     resources :analysis_of_valuations do
@@ -473,6 +478,11 @@ ArsacLogistica::Application.routes.draw do
         post 'get_suppliers_by_type_order'
       end
     end
+    resources :part_workers do
+      collection do
+        post 'show_part_workers'
+      end
+    end
     resources :health_centers
     resources :contract_types
     resources :provision_articles do
@@ -525,6 +535,7 @@ ArsacLogistica::Application.routes.draw do
         post 'display_articles'
         post 'add_concept'
         post 'show_details'
+        post 'report'
       end
     end
   end
