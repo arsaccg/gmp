@@ -475,7 +475,11 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :health_centers
     resources :contract_types
-    resources :provision_articles
+    resources :provision_articles do
+      collection do
+        post 'puts_details_in_provision'
+      end
+    end
     resources :account_accountants do
       collection do
         get 'import'

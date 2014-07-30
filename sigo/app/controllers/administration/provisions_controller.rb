@@ -39,6 +39,7 @@ class Administration::ProvisionsController < ApplicationController
 
   def edit
     @provision = Provision.find(params[:id])
+    @documentProvisions = DocumentProvision.all
     @action = 'edit'
     render layout: false
   end
