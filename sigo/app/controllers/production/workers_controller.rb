@@ -206,6 +206,7 @@ class Production::WorkersController < ApplicationController
   def register
     worker = Worker.find(params[:id])
     worker.register
+    puts "YES"
     redirect_to :action => :index
   end
 
