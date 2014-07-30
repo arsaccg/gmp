@@ -1,0 +1,80 @@
+.modal-dialog{ style: "width: 750px;" }
+  .modal-content
+    .modal-header
+      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
+        \×
+      %h4.modal-title Finalizar Contrato
+    .modal-body
+      -if @workercontract.nil?
+        %h4.modal-title No se puede dar de baja.
+      - else
+        %h3.modal-title 
+          = @worker.entity.name + ' ' + @worker.entity.paternal_surname + ' ' + @worker.entity.dni
+        %h4.modal-title Llene los siguientes datos
+        %br
+        .row
+          %section.col.col-3
+            %label Fecha de Cese
+            %input#end-date.string.optional.form-control{'name'=>'reason_for_termination', type: "date"}
+        %br
+        .row
+          %section.col.col-3
+            %select#reason-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
+              %option(value = "") MOTIVO DE LA BAJA DEL REGISTRO
+              %option(value = "RENUNCIA") RENUNCIA
+              %option(value = "RENUNCIA CON INCENTIVOS") RENUNCIA CON INCENTIVOS
+              %option(value = "DESPIDO O DESTITUCIÓN") DESPIDO O DESTITUCIÓN
+              %option(value = "CESE COLECTIVO") CESE COLECTIVO
+              %option(value = "JUBILACIÓN") JUBILACIÓN
+              %option(value = "INVALIDEZ ABSOLUTA PERMANENTE") INVALIDEZ ABSOLUTA PERMANENTE
+              %option(value = "TERMINACIÓN DE LA OBRA O SERVICIO, CUMPLIMIENTO CONDICIÓN RESOLUTORIA O VENCIMIENTO DEL PLAZO") TERMINACIÓN DE LA OBRA O SERVICIO, CUMPLIMIENTO CONDICIÓN RESOLUTORIA O VENCIMIENTO DEL PLAZO
+              %option(value = "MUTUO DISENSO") MUTUO DISENSO
+              %option(value = "FALLECIMIENTO") FALLECIMIENTO
+              %option(value = "SUSPENCIÓN DE LA PENSIÓN (1)") SUSPENCIÓN DE LA PENSIÓN (1)
+              %option(value = "BAJA POR SUCESIÓN EN POSICIÓN DEL EMPLEADOR") BAJA POR SUCESIÓN EN POSICIÓN DEL EMPLEADOR
+              %option(value = "EXTINCIÓN O LIQUIDACIÓN DEL EMPLEADOR") EXTINCIÓN O LIQUIDACIÓN DEL EMPLEADOR
+              %option(value = "OTROS MOTIVOS DE CADUCIDAD DE LA PENSIÓN (1)") OTROS MOTIVOS DE CADUCIDAD DE LA PENSIÓN (1)
+              %option(value = "NO SE INICIÓ LA RELACIÓN LABORAL O PRESTACIÓN EFECTIVA DE SERVICIOS") NO SE INICIÓ LA RELACIÓN LABORAL O PRESTACIÓN EFECTIVA DE SERVICIOS
+        %br
+      %footer
+        %button.btn.btn-primary#smart-mod-eg1{type: "button"}
+          %i.fa.fa-save 
+          Realizar Cese
+        %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+          Cancelar
+
+:javascript
+  $(document).ready(function () {
+    $('select').select2({width:'100%'});
+  });
+
+  $("#smart-mod-eg1").click(function(e) {
+    $.SmartMessageBox({
+      title : "Verificación",
+      content : "¿Está seguro?",
+      buttons : '[No][Yes]'
+    }, function(ButtonPressed) {
+      if (ButtonPressed === "Yes") {
+        load_url_ajax('#{cancel_production_worker_path(@worker.id)}', 'content', {worker_id: '#{@worker.id}', end_date_2: $('#end-date').val(), reason_for_termination: $('#reason-select').val()}, null, 'GET');
+        $('.modal-backdrop.fade.in').remove();
+        $.smallBox({
+          title : "Exito",
+          content : "<i class='fa fa-clock-o'></i> <i>Haz finalizado el contrato</i>",
+          color : "#659265",
+          iconSmall : "fa fa-check fa-2x fadeInRight animated",
+          timeout : 4000
+        });
+      }
+      if (ButtonPressed === "No") {
+        $.smallBox({
+          title : "Aviso",
+          content : "<i class='fa fa-clock-o'></i> <i>Ha cancelado la operación</i>",
+          color : "#C46A69",
+          iconSmall : "fa fa-times fa-2x fadeInRight animated",
+          timeout : 4000
+        });
+      }
+
+    });
+    e.preventDefault();
+  })

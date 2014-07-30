@@ -24,7 +24,22 @@
                 = f.input :typeofcontract, input_html: { class: 'form-control', value: @typeofcontract}, label: false
         .row
           %section.col.col-4
-            %label.label Categoría/Cargo del Trabajador
+            %label.label Tipo de Contrato
+            %label.input{for: "contract_type_id"}
+              %select.form-control{:name =>"worker_contract[contract_type_id]", :style => 'width:100%;padding: 0;border: none;'}
+                - @contractypes.each do |contractype|
+                  - if @workercontract.contract_type_id == contractype.id
+                    %option{:value => "#{contractype.id}", :selected => true}
+                      = contractype.description
+                  - else
+                    %option{:value => "#{contractype.id}"}
+                      = contractype.description
+        .row
+          %section.col.col-4
+            -if @worker.typeofworker=='obrero'
+              %label.label Categoría del Trabajador
+            -elsif @worker.typeofworker=='empleado'
+              %label.label Cargo del Trabajador
             %label.input{for: "article_id"}
               %select.form-control{:name =>"worker_contract[article_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @articles.each do |article|

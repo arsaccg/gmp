@@ -32,7 +32,7 @@ class Administration::PartWorkersController < ApplicationController
     @numbercode = @numbercode.to_s.rjust(5,'0')
     @partworker = PartWorker.new
     @working_groups = WorkingGroup.all
-    @workers = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'activo'")
+    @workers = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active'")
     @company = params[:company_id]
     @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")
