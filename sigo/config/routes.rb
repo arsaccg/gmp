@@ -478,6 +478,11 @@ ArsacLogistica::Application.routes.draw do
         post 'get_suppliers_by_type_order'
       end
     end
+    resources :part_workers do
+      collection do
+        post 'show_part_workers'
+      end
+    end
     resources :health_centers
     resources :contract_types
 
