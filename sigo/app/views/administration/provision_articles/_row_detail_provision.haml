@@ -25,7 +25,7 @@
           = phase.code + " " + phase.name
 
   %td.amount
-    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', @amount , class: "form-control unit-price-igv", :readonly => true
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', @amount , class: "form-control unit-price-igv"
 
   %td.unit-price
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', nil, class: "unit-price-item"
