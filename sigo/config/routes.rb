@@ -71,10 +71,15 @@ ArsacLogistica::Application.routes.draw do
   # Example resource route within a namespace:,
 
   namespace :logistics do
-    resources :cost_center_details, :has_many => :entity_cost_center_details
+    resources :cost_center_details do
+      collection do
+        post 'add_contractor_field'
+      end
+    end
     resources :unit_of_measurements
     resources :persons do
       collection do
+        
         post 'getCostCentersPerCompany'
         post 'update_profile'
       end

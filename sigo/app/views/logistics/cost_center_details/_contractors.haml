@@ -1,0 +1,11 @@
+%tr(class="afp_item"){id: "tr" + @reg_n.to_s}
+  %td(style="display:none")
+    = hidden_field_tag 'cost_center_detail[entity_cost_center_details_attributes][' + @reg_n.to_s + '][entity_id]', @contractor.id.to_s
+    = hidden_field_tag 'cost_center_detail[entity_cost_center_details_attributes][' + @reg_n.to_s + '][participation]', @participation.to_s
+  %td.col-2
+    = @contractor.name
+  %td.col-2
+    = @participation
+
+  %td{:style => "width: 1%;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
