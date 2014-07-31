@@ -42,6 +42,8 @@ class Provision < ActiveRecord::Base
     return sum
   end
 
+  # Functions for Direct Purchase Provisions
+
   def self.sumProvisionDetailDirectPurchaseBeforeIGV(provision_obj)
     sum = 0
 

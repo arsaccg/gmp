@@ -15,7 +15,7 @@ class Administration::ProvisionArticlesController < ApplicationController
 
   def new
     @provision = Provision.new
-    @documentProvisions = DocumentProvision.where(:order_id => nil)
+    @documentProvisions = DocumentProvision.all
     @suppliers = TypeEntity.find_by_preffix('P').entities
     @cost_center = get_company_cost_center("cost_center")
 
@@ -42,7 +42,7 @@ class Administration::ProvisionArticlesController < ApplicationController
   def destroy
     provision = Provision.find(params[:id])
     provision.provision_direct_purchase_details.destroy_all
-    
+
   end
 
   #CUSTOM METHODS

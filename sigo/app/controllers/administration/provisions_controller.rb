@@ -1,7 +1,7 @@
 class Administration::ProvisionsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
-  
+
   def index
     @provision = Provision.where('order_id IS NOT NULL')
     render layout: false
@@ -277,12 +277,13 @@ class Administration::ProvisionsController < ApplicationController
       :accounting_date, 
       :series, 
       :description,
-      provision_direct_purchase_details: [
+      provision_direct_purchase_details_attributes: [
         :id,
         :provision_id,
         :article_id,
         :sector_id,
         :phase_id,
+        :account_accountant_id,
         :amount,
         :price,
         :unit_price_before_igv,
@@ -290,6 +291,7 @@ class Administration::ProvisionsController < ApplicationController
         :quantity_igv,
         :discount_after,
         :discount_before,
+        :unit_price_igv,
         :description,
         :_destroy
       ]
