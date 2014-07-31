@@ -1,10 +1,10 @@
 %a{href: "javascript:delete_item('detail')", "style"=>"  width: 50px; float: right; color: white; background: #2070a8; "}(class="btn") X
 %row
   %header
-    %h2{"style"=>"font-size:20px"}="Detalle de: "+ Phase.find(@ge.phase_id).name.to_s
+    %h2{"style"=>"font-size:20px;margin-left: 10px;"}=Phase.find(@ge.phase_id).code.to_s+" "+Phase.find(@ge.phase_id).name.to_s + " ("+number_to_currency(@ge.total.to_s, unit: 'S/. ', precision: 2)+")"
 -if @type_01.count>0
   .col-lg-12#personal
-    %legend Conceptos: Personal
+    %legend= "Conceptos: Personal ("+number_to_currency(@t1.to_s, unit: 'S/. ', precision: 2)+")"
     %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
       %thead
         %tr
@@ -32,14 +32,14 @@
             %td.col-md-1.smart-form{:style => "width:5%"}
               =ged.time.to_s
             %td.col-md-1.smart-form{:style => "width:5%"}
-              =number_to_currency(ged.salary.to_s, unit: 'S/. ', precision: 2)
+              =number_to_currency(ged.cost.to_s, unit: 'S/. ', precision: 2)
             %td.col-md-1.smart-form{:style => "width:5%"}
               = number_to_currency(ged.parcial.to_s, unit: 'S/. ', precision: 2)
     %br
 
 -if @type_03.count>0
   .col-lg-12#equipos
-    %legend Conceptos: Equipos
+    %legend=" Conceptos: Equipos ("+number_to_currency(@t3.to_s, unit: 'S/. ', precision: 2)+")"
     %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
       %thead
         %tr
@@ -71,7 +71,7 @@
 
 -if @type_02.count>0
   .col-lg-12#material
-    %legend Conceptos: Materiales
+    %legend= "Conceptos: Materiales ("+number_to_currency(@t2.to_s, unit: 'S/. ', precision: 2)+")"
     %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
       %thead
         %tr
@@ -100,7 +100,7 @@
 
 -if @type_04.count>0
   .col-lg-12#subcontratos
-    %legend Conceptos: Subcontratos
+    %legend= "Conceptos: Subcontratos ("+number_to_currency(@t4.to_s, unit: 'S/. ', precision: 2)+")"
     %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
       %thead
         %tr
@@ -130,7 +130,7 @@
 
 -if @type_05.count>0
   .col-lg-12#servicios
-    %legend Conceptos: Servicios
+    %legend= "Conceptos: Servicios ("+number_to_currency(@t5.to_s, unit: 'S/. ', precision: 2)+")"
     %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
       %thead
         %tr

@@ -20,7 +20,7 @@
         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal3(this);'
     %td.col-md-1.smart-form#salary
       %div
-        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][salary]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal4(this);'
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal4(this);'
     %td.col-md-1.smart-form#parcial
       %div
         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true

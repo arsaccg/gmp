@@ -1,0 +1,37 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  entity: MyString
+  consortium: MyString
+  call_date: 2014-07-25
+  process_number: 
+  good_pro_date: 2014-07-25
+  referential_value: 1.5
+  earned_value: 1.5
+  direct_cost: 1.5
+  general_cost: 1.5
+  utility: 1.5
+  IGV: 1.5
+  contract_sign_date: 2014-07-25
+  contract_number: 1
+  land_delivery_date: 2014-07-25
+  direct_advanced_payment_date: 2014-07-25
+
+two:
+  name: MyString
+  entity: MyString
+  consortium: MyString
+  call_date: 2014-07-25
+  process_number: 
+  good_pro_date: 2014-07-25
+  referential_value: 1.5
+  earned_value: 1.5
+  direct_cost: 1.5
+  general_cost: 1.5
+  utility: 1.5
+  IGV: 1.5
+  contract_sign_date: 2014-07-25
+  contract_number: 1
+  land_delivery_date: 2014-07-25
+  direct_advanced_payment_date: 2014-07-25
