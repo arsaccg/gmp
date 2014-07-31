@@ -30,6 +30,7 @@ class Logistics::BanksController < ApplicationController
 
   def edit
     @bank = Bank.find(params[:id])
+    @money = Money.all
     @action = 'edit'
     render layout: false
   end
@@ -57,6 +58,7 @@ class Logistics::BanksController < ApplicationController
 
   def new
     @bank = Bank.new
+    @money = Money.all
     render :new, layout: false
   end
 
@@ -68,6 +70,6 @@ class Logistics::BanksController < ApplicationController
 
   private
   def bank_parameters
-    params.require(:bank).permit(:business_name, :ruc)
+    params.require(:bank).permit(:business_name, :ruc, :money_id, :account_type, :account_number, :account_detraction, :cci)
   end
 end
