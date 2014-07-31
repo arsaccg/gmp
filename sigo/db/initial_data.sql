@@ -1,11 +1,11 @@
 -- Data for Type Entities
 INSERT INTO `type_entities` (`name`, `preffix`, `created_at`, `updated_at`) VALUES 
 ('Proveedores', 'P', NOW(), NOW()),
-('Accionistas', 'P', NOW(), NOW()),
-('Trabajadores', 'P', NOW(), NOW()),
-('Clientes', 'P', NOW(), NOW()),
-('Jefes de Frente', 'P', NOW(), NOW()),
-('Maestro de Obras', 'P', NOW(), NOW());
+('Accionistas', 'A', NOW(), NOW()),
+('Trabajadores', 'T', NOW(), NOW()),
+('Clientes', 'C', NOW(), NOW()),
+('Jefes de Frente', 'J', NOW(), NOW()),
+('Maestro de Obras', 'M', NOW(), NOW());
 
 -- Data for Type of Article
 INSERT INTO `type_of_articles` (`name`, `code`, `created_at`, `updated_at`) VALUES 
