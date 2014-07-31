@@ -19,7 +19,7 @@ class Biddings::MajorsController < ApplicationController
     flash[:error] = nil
     major = Major.new(major_parameters)
     if major.save
-      flash[:notice] = "Se ha creado correctamente la profesión."
+      flash[:notice] = "Se ha creado correctamente la profesion."
       redirect_to :action => :index
     else
       major.errors.messages.each do |attribute, error|
@@ -54,7 +54,7 @@ class Biddings::MajorsController < ApplicationController
 
   def destroy
     major = Major.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente la profesión."
+    flash[:notice] = "Se ha eliminado correctamente la profesion."
     render :json => major
   end
 
