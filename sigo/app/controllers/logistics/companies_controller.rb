@@ -10,7 +10,7 @@ class Logistics::CompaniesController < ApplicationController
 
   def new
     @company = Company.new
-    render :new, layout: false
+    render layout: false
   end
 
   def create

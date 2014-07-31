@@ -158,7 +158,10 @@ class Logistics::CostCentersController < ApplicationController
     render(partial: 'select', :layout => false)
   end
 
+
   private
+
+
   def cost_center_parameters
     params.require(:cost_center).permit(:code, :name, :company_id)
   end
