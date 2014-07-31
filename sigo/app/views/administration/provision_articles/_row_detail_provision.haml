@@ -31,7 +31,7 @@
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', nil, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
 
   %td.discount-before{:style => "display:none", :class => "provision_discount-before"}
-    = hidden_field_tag 'discount_before', nil, class: "discount_before-item"
+    = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', nil, class: "discount_before-item"
 
   %td.price-without-igv
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', nil, class: "form-control unit-price-without-igv", :readonly => true
@@ -48,7 +48,7 @@
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil, class: "form-control unit-price-igv", :readonly => true
 
   %td.discount-after{:style => "display:none", :class => "provision_discount-after"}
-    = hidden_field_tag 'discount_after', nil, class: "discount_after-item"
+    = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_after]', nil, class: "discount_after-item"
 
   %td{:style => 'text-align: center'}
     %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-provision-#{@reg_n.to_s}", 'onclick' => "set_id_modeling(this, #{@reg_n.to_s})"}
