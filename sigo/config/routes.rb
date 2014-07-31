@@ -1,7 +1,5 @@
 ArsacLogistica::Application.routes.draw do
 
-
-
   get "entity_cost_center_details/new"
   get "entity_cost_center_details/create"
   get "entity_cost_center_details/update"
@@ -486,6 +484,7 @@ ArsacLogistica::Application.routes.draw do
   end
 
   namespace :administration do
+    resources :payment_orders
     resources :document_provisions
     resources :provisions do
       collection do
