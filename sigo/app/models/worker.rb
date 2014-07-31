@@ -74,7 +74,7 @@ class Worker < ActiveRecord::Base
     return Worker.find(master_builder_id).first_name + ' ' + Worker.find(master_builder_id).second_name + ' ' + Worker.find(master_builder_id).paternal_surname + ' ' + Worker.find(master_builder_id).maternal_surname
   end
 
-  def self.get_workers(cost_center_id, display_length, pager_number, keyword = '')
+  def self.get_workers(typeofworker, cost_center_id, display_length, pager_number, keyword = '')
     result = Array.new
     if keyword != '' && pager_number != 'NaN'
       part_people = ActiveRecord::Base.connection.execute("
@@ -82,6 +82,7 @@ class Worker < ActiveRecord::Base
         FROM workers wo, entities ent, position_workers pow 
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
+        AND wo.typeofworker LIKE '"+typeofworker.to_s+"' 
         AND wo.cost_center_id = " + cost_center_id.to_s + " 
         AND (wo.id LIKE '%" + keyword + "%' OR ent.name LIKE '%" + keyword + "%' OR ent.paternal_surname LIKE '%" + keyword + "%' OR ent.maternal_surname LIKE '%" + keyword + "%' OR pow.name LIKE '%" + keyword + "%' OR wo.dni LIKE '%" + keyword + "%' OR ent.date_of_birth LIKE '%" + keyword + "%' OR ent.address LIKE '%" + keyword + "%' OR wo.state LIKE '%" + keyword + "%') 
         ORDER BY wo.id ASC 
@@ -94,6 +95,7 @@ class Worker < ActiveRecord::Base
         FROM workers wo, entities ent, position_workers pow 
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
+        AND wo.typeofworker LIKE '"+typeofworker.to_s+"' 
         AND wo.cost_center_id = " + cost_center_id.to_s + " 
         ORDER BY wo.id ASC 
         LIMIT " + display_length + " 
@@ -105,6 +107,7 @@ class Worker < ActiveRecord::Base
         FROM workers wo, entities ent, position_workers pow 
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
+        AND wo.typeofworker LIKE '"+typeofworker.to_s+"' 
         AND wo.cost_center_id = " + cost_center_id.to_s + " 
         ORDER BY wo.id ASC 
         LIMIT " + display_length
@@ -128,7 +131,7 @@ class Worker < ActiveRecord::Base
           part_person[1], 
           part_person[2], 
           "Registrado",
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Información </a> " + "<a class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts/new','content',{worker_id:'" + part_person[0].to_s + "',typeofcontract:'Contrato'},null,'GET')>Dar Alta</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Información </a> " + "<a class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "
         ]
       elsif part_person[4]=="active"
         result << [

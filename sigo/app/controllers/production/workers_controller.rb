@@ -18,11 +18,12 @@ class Production::WorkersController < ApplicationController
 
   def show_workers
     display_length = params[:iDisplayLength]
+    typeofworker = params[:typeofworker]
     pager_number = params[:iDisplayStart]
     keyword = params[:sSearch]
     array = Array.new
     cost_center = get_company_cost_center('cost_center')
-    array = Worker.get_workers(cost_center, display_length, pager_number, keyword)
+    array = Worker.get_workers(typeofworker,cost_center, display_length, pager_number, keyword)
     render json: { :aaData => array }
   end
 
@@ -212,7 +213,23 @@ class Production::WorkersController < ApplicationController
   end
 
   def approve
-    worker = Worker.find(params[:id])
+    workercontract = WorkerContract.new
+    workercontract.article_id = params[:article_id]
+    workercontract.camp = params[:camp]
+    workercontract.destaque = params[:destaque]
+    workercontract.salary = params[:salary]
+    workercontract.regime = params[:regime]
+    workercontract.bonus = params[:bonus]
+    workercontract.days = params[:days]
+    workercontract.start_date = params[:start_date]
+    workercontract.end_date = params[:end_date]
+    workercontract.end_date_2 = params[:end_date]
+    workercontract.numberofcontract = params[:numberofcontract]
+    workercontract.typeofcontract = params[:typeofcontract]
+    workercontract.contract_type_id = params[:contract_type_id]
+    workercontract.worker_id = params[:worker_id]
+    workercontract.save
+    worker = Worker.find(params[:worker_id])
     worker.approve
     redirect_to :action => :index
   end
@@ -228,6 +245,15 @@ class Production::WorkersController < ApplicationController
   def part_worker
     @worker = Worker.find_by_id(params[:worker_id])
     @workercontract = WorkerContract.where("worker_id = ?",params[:worker_id]).last
+    render layout: false
+  end
+
+  def part_contract
+    @typeofcontract = params[:typeofcontract]
+    @articles = TypeOfArticle.find_by_code('01').articles
+    @contractypes = ContractType.all
+    @cost_center = session[:cost_center]
+    @worker = Worker.find_by_id(params[:worker_id])
     render layout: false
   end
 

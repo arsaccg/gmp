@@ -19,7 +19,7 @@
             
       %fieldset
         %legend Registro de Partidas
-        .col-lg-12
+        .col-lg-18
           %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
             %thead
               %tr
@@ -45,7 +45,16 @@
                       %label.radio-inline
                         %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][assistance]', :type => 'radio', :value => "no"}
                         %span No
-                    %td.col-1= text_field_tag 'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][reason_of_lack]', nil , class: "form-control normal-hours", :required => true, title:'No puede dejar este campo vacio'
+                    %td.col-1
+                      %select.col-sm-6.form-control{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][reason_of_lack]', :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px' }
+                        %option{:value => "0", :selected => 'selected'} Seleccione una falta
+                        %option{:value => "Licencia sin goce de haber"} Licencia sin goce de haber
+                        %option{:value => "Licencia con goce de haber"} Licencia con goce de haber
+                        %option{:value => "Vacaciones y/o adelanto de vacaciones"} Vacaciones y/o adelanto de vacaciones
+                        %option{:value => "Faltas injustificadas"} Faltas injustificadas
+                        %option{:value => "Descanso Médico"} Descanso Médico
+                        %option{:value => "Subsidios por enfermedad"} Subsidios por enfermedad
+                        %option{:value => "Subsidios por maternidad"} Subsidios por maternidad
                     %td.sector
                       %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][sector_id]", :style => 'width:100%;padding: 0;border: none;'}
                         - @sectors.each do |sector|
