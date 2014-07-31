@@ -1,0 +1,201 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Detalles Generales de Centro de Costo
+  .widget-body
+    = simple_form_for([:logistics,@cost_center, @cost_center_detail], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row
+          =f.hidden_field :cost_center_id, :value =>  @cost_center_id
+          %section.col.col-10
+            %label.label Nombre de la obra
+            %label.input
+              %i.icon-append.fa.fa-gavel
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          .section.col.col-md-6{"style"=>"margin-bottom:3%;"}
+            %label.label Condicion Tributaria Amazonica
+            .form-group.in-line
+              .col-md-1
+              .col-md-10
+                .col-md-5
+                  = f.radio_button :amazon_tax_condition,  "Si", :selected=>@cost_center_detail.amazon_tax_condition=="Si", :id => "Si_choice"
+                  %label Si
+                .col-md-5
+                  = f.radio_button :amazon_tax_condition, "No", :selected=>@cost_center_detail.amazon_tax_condition=="No", :id => "No_choice"
+                  %label No
+        .row
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Nombre del contratista:
+            %input.string.optional.form-control{"value"=>Company.find_by_id(@companyselected).name,:readonly => true}
+
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Dirección:
+            %input.string.optional.form-control{"value"=>Company.find_by_id(@companyselected).address,:readonly => true}
+
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label RUC:
+            %input.string.optional.form-control{"value"=>Company.find_by_id(@companyselected).ruc,:readonly => true}         
+        .row
+          .col-sm-3{"style"=>"margin-left:30px;margin-right:35px;"}
+            %label.label Fecha de Convocatoria
+            .form-group
+              .input-group
+                = f.input :call_date, as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar.fa-md.fa-fw
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Numero de proceso
+            %label.input
+              = f.input :process_number, placeholder: "Numero de proceso", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Código SNIP
+            %label.input
+              = f.input :snip_code, placeholder: "Codigo SNIP", input_html: { class: 'form-control' }, label: false
+
+
+        .row
+          .col-sm-3{"style"=>"margin-right:34px; margin-left:31px;"}
+            %label.label Fecha de Buena Pro
+            .form-group
+              .input-group
+                = f.input :good_pro_date, as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar.fa-md.fa-fw
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Valor referencial
+            %label.input
+              = f.input :referential_value, placeholder: "Valor referencial", input_html: { class: 'form-control' }, label: false 
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Valor ganado
+            %label.input
+              = f.input :earned_value, placeholder: "valor ganado", input_html: { class: 'form-control' }, label: false
+        .row                      
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Costo directo
+            %label.input
+              = f.input :direct_cost, placeholder: "costo directo", input_html: { class: 'form-control' }, label: false                       
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Gastos Generales
+            %label.input
+              = f.input :general_cost, placeholder: "gasto general", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Utilidad
+            %label.input
+              = f.input :utility, placeholder: "utilidad", input_html: { class: 'form-control' }, label: false
+        .row                      
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label IGV
+            %label.input
+              = f.input :IGV, placeholder: "IGV", input_html: { class: 'form-control' }, label: false
+          .col-sm-3{"style"=>"margin-right:34px; margin-left:31px;"}
+            %label.label Fecha de Firma de Contrato
+            .form-group
+              .input-group
+                = f.input :contract_sign_date, as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar.fa-md.fa-fw
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Número de Contrato
+            %label.input
+              = f.input :contract_number, placeholder: "numero de contrato", input_html: { class: 'form-control' }, label: false
+        .row{"style"=>"padding-bottom:20px;"}                      
+          .col-sm-3{"style"=>"margin-right:34px; margin-left:31px;"}
+            %label.label Fecha de Entrega de Terreno
+            .form-group
+              .input-group
+                = f.input :land_delivery_date, as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar.fa-md.fa-fw
+          .col-sm-3{"style"=>"margin-right:34px; margin-left:31px;"}
+            %label.label Fecha de Solicitud de Adelanto Directo
+            .form-group
+              .input-group
+                = f.input :direct_advanced_form_date, as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar.fa-md.fa-fw
+          .col-sm-3{"style"=>"margin-right:34px; margin-left:31px;"}
+            %label.label Fecha de Pago de Adelanto Directo
+            .form-group
+              .input-group
+                = f.input :direct_advanced_payment_date, as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar.fa-md.fa-fw
+        .row                      
+          .col-sm-3{"style"=>"margin-right:34px; margin-left:31px;"}
+            %label.label Fecha de Inicio de la Obra
+            .form-group
+              .input-group
+                = f.input :start_date_of_work, as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar.fa-md.fa-fw
+          .col-sm-3{"style"=>"margin-right:34px; margin-left:31px;"}
+            %label.label Sistema de Contratación
+            .form-group
+              .col-md-12
+                .input-group
+                  %select.form-control#syscontract-select{:name =>"cost_center_detail[procurement_system]"}
+                    -if @action=="edit"
+                      -if @cost_center_detail.procurement_system=="unit_price"
+                        %option{:value => "unit_price", :selected => true} Precios Unitarios
+                        %option{:value => "advance_sum"} Suma Alzada
+                        %option{:value => "mixto"} Mixto
+                      -elsif @cost_center_detail.procurement_system=="advance_sum"
+                        %option{:value => "unit_price"} Precio Unitario
+                        %option{:value => "advance_sum", :selected => true} Suma Alzada
+                        %option{:value => "mixto"} Mixto
+                      -elsif @cost_center_detail.procurement_system=="mixto"
+                        %option{:value => "unit_price"} Precio Unitario
+                        %option{:value => "advance_sum"} Suma Alzada
+                        %option{:value => "mixto", :selected => true} Mixto
+                    -else
+                      %option{:value => "unit_price"} Precio Unitario
+                      %option{:value => "advance_sum"} Suma Alzada
+                      %option{:value => "mixto"} Mixto
+                  %span.input-group-addon
+                    %i.fa.fa-calendar.fa-md.fa-fw
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Plazo de Ejecución
+            %label.input
+              = f.input :execution_term, placeholder: "Dias Calendario", input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-4{"style"=>"width:31%;"}
+            %label.label Supervision
+            %label.input
+              = f.input :supervision, placeholder: "supervision", input_html: { class: 'form-control' }, label: false                      
+          .col-sm-3{"style"=>"margin-right:34px; margin-left:31px;"}
+            %label.label Fecha de Pago de Adelanto de Materiales
+            .form-group
+              .input-group
+                = f.input :material_advanced_payment_date, as: :string, input_html: { :class => 'form-control', :type => "date" }, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar.fa-md.fa-fw
+        .row
+          .col-sm-4{"style"=>"margin-left:15px;margin-bottom:3%;width:28%"}
+            %label.label Entidad:
+            %select#clients.select2.form-control{:name => "cost_center_detail[entity_id]"}
+              %option{:value => "0"} Seleccione una entidad
+              - @clients.each do |ph|
+                %option{:value => "#{ph.id}", :selected => "#{@cost_center_detail.entity_id}"=="#{ph.id}"}
+                  = ph.name
+          .col-sm-4{"style"=>"margin-left:15px;margin-bottom:3%;width:28%"}
+            %label.label Consorciados:
+            .col-lg-6
+              %select#contractors.select2.form-control{:name => "cost_center_detail[entity_cost_center_details_attributes][" + @reg_n.to_s + "][entity_id]"}
+                %option{:value => "0"} Seleccione un consorcio
+                - @contractors.each do |cont|
+                  %option{:value => "#{cont.id}"}
+                    = cont.name
+            .col-lg-1
+              = text_field_tag 'participation', nil, class: 'form-control', id: 'participation', value: '100'
+            .col-lg-2 
+              %div(class="col-lg-3")
+                %a(href="javascript:add_details_entity();" id="btn-add-article" class="btn btn-success" role="button")
+                  Agregar Consorcio
+
+          
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
