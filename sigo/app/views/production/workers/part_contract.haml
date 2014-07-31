@@ -29,7 +29,7 @@
           %select.form-control#article{:name =>"article_id", :style => 'padding: 0;border: none;'}
             - @articles.each do |article|
               %option{:value => "#{article.id}"}
-                = article.name
+                = article.code + ' - ' + article.name
         .col-md-2
         .col-md-6
           %label Regimen

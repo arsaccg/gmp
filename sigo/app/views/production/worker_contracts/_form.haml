@@ -45,10 +45,10 @@
                 - @articles.each do |article|
                   - if @workercontract.article_id == article.id
                     %option{:value => "#{article.id}", :selected => true}
-                      = article.name
+                      = article.code + ' ' + article.name
                   - else
                     %option{:value => "#{article.id}"}
-                      = article.name
+                      = article.code + ' ' + article.name
         .row
           %section.col.col-md-12
             .col-md-1
