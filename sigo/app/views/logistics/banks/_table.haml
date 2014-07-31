@@ -26,7 +26,7 @@
               %td
                 = unit.ruc
               %td 
-                = Money.find(unit.money_id).name
+                = Money.find(unit.money_id).name rescue ''
               %td
                 = unit.account_type
               %td 
