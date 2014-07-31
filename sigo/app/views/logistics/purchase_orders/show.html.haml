@@ -37,9 +37,9 @@
                     %td
                       = translate_purchase_order_state(@purchaseOrder.state)
                     %td
-                      = @purchaseOrder.entity.name + ' ' + @purchaseOrder.entity.paternal_surname
+                      = @purchaseOrder.entity.name.to_s + ' ' + @purchaseOrder.entity.paternal_surname.to_s
                     %td
-                      = @purchaseOrder.method_of_payment.name
+                      = @purchaseOrder.method_of_payment.name.to_s
                     %td
                       = @purchaseOrder.date_of_issue.strftime("%d/%m/%Y")
                     %td
@@ -47,9 +47,9 @@
                     %td
                       = @purchaseOrder.delivery_date.strftime("%d/%m/%Y")
                     %td
-                      = @purchaseOrder.user.first_name + ' ' + @purchaseOrder.user.last_name
+                      = @purchaseOrder.user.first_name.to_s + ' ' + @purchaseOrder.user.last_name.to_s
                     %td
-                      = @purchaseOrder.description
+                      = @purchaseOrder.description.to_s
       - if @state_change != nil
         %h1.page-title.txt-color-blueDark
           %i.fa.fa-pencil-square-o.fa-fw 

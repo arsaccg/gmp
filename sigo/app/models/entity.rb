@@ -11,8 +11,8 @@ class Entity < ActiveRecord::Base
 	accepts_nested_attributes_for :type_entities, :allow_destroy => true
 
 	include ActiveModel::Validations
-	validates :ruc, :uniqueness => { :message => "El RUC debe ser único."}, :allow_blank => true, :case_sensitive => false
-	validates :dni, :uniqueness => { :message => "El DNI debe ser único."}, :allow_blank => true, :case_sensitive => false
+	validates :ruc, :uniqueness => { :message => "El RUC debe ser unico."}, :allow_blank => true, :case_sensitive => false
+	validates :dni, :uniqueness => { :message => "El DNI debe ser unico."}, :allow_blank => true, :case_sensitive => false
 
 	def self.find_name_executor(executor_id)
 		return Entity.find(executor_id).name

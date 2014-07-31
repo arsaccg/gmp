@@ -8,6 +8,7 @@ class Management::InputbybudgetanditemsController < ApplicationController
   def filter_by_budget_and_item
   	@item_id = params[:item_id]
   	@budget_id = params[:budget_id]
+    @budget = Budget.find(@budget_id)
     @order = params[:order].gsub("d",".")
 
     @pdf_table_array = Array.new

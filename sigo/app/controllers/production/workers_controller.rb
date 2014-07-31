@@ -28,6 +28,7 @@ class Production::WorkersController < ApplicationController
 
   def new
     @entity = Entity.find_by_dni(params[:dni])
+    @action = "new"
     if @entity.nil?
       @reg_n = Time.now.to_i
       @type_entities = TypeEntity.all
@@ -35,25 +36,28 @@ class Production::WorkersController < ApplicationController
       @company_id = params[:company_id]
       @costCenter = Company.find(params[:company_id]).cost_centers
       redirect_to url_for(:controller => "logistics/entities", :action => :new, :company_id => @company_id, :type => 'worker')
-    else      
-      @worker = Worker.new
-      @company = params[:company_id]
-      @banks = Bank.all
-      @afp = Afp.all
-      render layout: false
+    else
+      @workerexist = Worker.find_by_entity_id(@entity.id)
+      if @workerexist.nil? || (@workerexist.state=="ceased")
+        @worker = Worker.new
+        @company = params[:company_id]
+        @banks = Bank.all
+        @afp = Afp.all
+        @positionWorkers = PositionWorker.all
+        @health = HealthCenter.all
+        render layout: false
+      else
+        flash[:error] =  "El trabajador ya existe y esta activo."
+        redirect_to :action => :index
+      end
     end
   end
 
   def create
     worker = Worker.new(worker_parameters)
+    worker.state
     worker.cost_center_id = get_company_cost_center('cost_center')
     if worker.save
-      categoryOfWorker = CategoryOfWorker.new
-      if CategoryOfWorker.find_by_article_id(worker.article_id).blank?
-        categoryOfWorker.article_id = worker.article_id
-        categoryOfWorker.save
-      end
-
       flash[:notice] = "Se ha creado correctamente el trabajador."
       redirect_to :action => :index, company_id: params[:company_id]
     else
@@ -70,12 +74,15 @@ class Production::WorkersController < ApplicationController
     @worker = Worker.find(params[:id])
     @banks = Bank.all
     @afp = Afp.all
+    @health = HealthCenter.all
     @reg_n = Time.now.to_i
+    @positionWorkers = PositionWorker.all
     @entity = Entity.find(Worker.find(params[:id]).entity_id)
     @entities = TypeEntity.find_by_name('Trabajadores').entities
     @entites = TypeEntity.find_by_name('Trabajadores').entities
     @company = params[:company_id]
     @action = 'edit'
+    @register = params[:register]
     render layout: false
   end
 
@@ -105,12 +112,26 @@ class Production::WorkersController < ApplicationController
 
   def add_afp_item_field
     @reg_n = ((Time.now.to_f)*100).to_i
-    data_afp_unit = params[:afp_id].split('-')
-    @afp = Afp.find(data_afp_unit[0])
-    @afpnumber = params[:afpnumber].to_s
+    @afp = Afp.find(params[:afp_id])
+    @start_date = params[:start_date]
+    @end_date = params[:end_date]
     @enterprise, @id_afp = @afp.enterprise, @afp.id
     @afptype = params[:afptype]
     render(partial: 'afp_items', :layout => false)
+  end
+
+  def add_health_center_item_field
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @health_regime = params[:health_regime]
+    if (params[:health_regime]!="ESSALUD REGULAR (Exclusivamente)")
+      @health = HealthCenter.find(params[:health_center_id])
+      @enterprise, @id_health_center = @health.enterprise, @health.id
+    else
+      @enterprise, @id_health_center = "", ""
+    end
+    @start_date = params[:start_date]
+    @end_date = params[:end_date]
+    render(partial: 'health_items', :layout => false)
   end
 
   def add_familiar_item_field
@@ -183,8 +204,35 @@ class Production::WorkersController < ApplicationController
     render :json => worker
   end
 
+  def register
+    worker = Worker.find(params[:id])
+    worker.register
+    puts "YES"
+    redirect_to :action => :index
+  end
+
+  def approve
+    worker = Worker.find(params[:id])
+    worker.approve
+    redirect_to :action => :index
+  end
+
+  def cancel
+    worker = Worker.find(params[:id])
+    workercontract = WorkerContract.where("worker_id = ?",params[:id]).last
+    WorkerContract.where( id: workercontract.id ).update_all( end_date_2: params[:end_date_2] , reason_for_termination: params[:reason_for_termination] )
+    worker.cancel
+    redirect_to :action => :index
+  end
+
+  def part_worker
+    @worker = Worker.find_by_id(params[:worker_id])
+    @workercontract = WorkerContract.where("worker_id = ?",params[:worker_id]).last
+    render layout: false
+  end
+
   private
   def worker_parameters
-    params.require(:worker).permit(:email, :driverlicense, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_afps_attributes: [:id, :worker_id, :afp_id, :afptype, :afpnumber, :start_date, :end_date, :_destroy], worker_healths_attributes: [:id, :worker_id, :health_id, :start_date, :end_date, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :businessaddress, :title, :salary, :bossincharge, :exitreason, :_destroy])
+    params.require(:worker).permit(:email, {:type_workday_ids => []}, :afpnumber, :driverlicense, :income_fifth_category, :unionized, :disabled, :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_afps_attributes: [:id, :worker_id, :afp_id, :afptype, :start_date, :end_date, :_destroy], worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :start_date, :end_date, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :businessaddress, :title, :salary, :bossincharge, :exitreason, :_destroy])
   end
 end

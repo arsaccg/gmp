@@ -65,7 +65,7 @@
               %td
                 = purchase.expiration_date.strftime("%d/%m/%Y")
               %td
-                = purchase.user.first_name + " " + purchase.user.last_name
+                = purchase.user.first_name.to_s + " " + purchase.user.last_name.to_s
               %td
                 - case purchase.state
                   - when 'pre_issued'

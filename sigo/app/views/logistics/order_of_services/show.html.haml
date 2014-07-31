@@ -160,6 +160,8 @@
                     %th Precio Unitario
                     %th Total antes de IGV
                     %th Total después de IGV
+                    %th Total Descuento después de IGV
+                    %th Total Neto
                     %th Glosa
                 %tbody(id="service_detail_items_table")
                   - @orderOfServiceDetails.each do |orderServiceDetail|
@@ -182,19 +184,11 @@
                       %td
                         = number_to_currency(orderServiceDetail.unit_price_before_igv.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
                       %td
-                        - after_igv = orderServiceDetail.unit_price_igv.to_f
-                        - aux = after_igv
-                        - orderServiceDetail.order_service_extra_calculations.each do |extra|
-                          - if extra.apply == 'after'
-                            - if extra.operation == 'sum' && extra.type == 'soles'
-                              - after_igv += extra.value.to_f
-                            - elsif extra.operation == 'sum' && extra.type == 'percent'
-                              - after_igv = after_igv + (aux*(extra.value/100)).to_f
-                            - elsif extra.operation == 'minus' && extra.type == 'soles'
-                              - after_igv -= extra.value.to_f
-                            - elsif extra.operation == 'minus' && extra.type == 'percent'
-                              - after_igv = after_igv - (aux*(extra.value/100)).to_f
-                        = number_to_currency(after_igv.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                        = number_to_currency(orderServiceDetail.unit_price_igv.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                      %td
+                        = number_to_currency(orderServiceDetail.discount_after.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                      %td
+                        = number_to_currency((orderServiceDetail.unit_price_igv.to_f + orderServiceDetail.discount_after.to_f), unit: "#{@orderOfService.money.symbol}", precision: 2)
                       %td
                         = orderServiceDetail.description
 

@@ -20,13 +20,13 @@
           - @scvaluation.each do |unit|
             %tr
               %td
-                = unit.id
+                = unit.id.to_i
               %td 
-                = unit.name + ' ' + unit.code
+                = unit.name.to_s + ' ' + unit.code.to_s
               %td
-                = number_to_currency(unit.valuation, unit: 'S/. ', precision: 2)
+                = number_to_currency(unit.valuation, unit: 'S/. ', precision: 2).to_f
               %td
-                = number_to_currency(unit.net_payment, unit: 'S/. ', precision: 2)
+                = number_to_currency(unit.net_payment, unit: 'S/. ', precision: 2).to_f
               %td
                 = unit.start_date.to_s + " - " + unit.end_date.to_s
               - case unit.state

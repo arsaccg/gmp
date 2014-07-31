@@ -39,7 +39,7 @@
 
 .help-inline { color: #D56161; font-size: 11px; }
 
-td.unit-of-measurement, td.amount, input.unit-price, input.unit-price-before-igv, input.unit-price-igv { text-align: center; }
+input.unit-price-item, td.unit-of-measurement, td.amount, input.unit-price, input.unit-price-before-igv, input.unit-price-igv { text-align: center; }
 
 form label { text-align: left !important; }
 
@@ -60,6 +60,11 @@ form label { text-align: left !important; }
 .control-group.check_boxes.optional.entity_type_entities .controls label.checkbox input {
   position: relative;
   left: 0;
+}
+
+.smart-form#new_worker .inline-group .checkbox {
+float: left;
+margin-right: 100px;
 }
 
 @media (min-width: 1200px){

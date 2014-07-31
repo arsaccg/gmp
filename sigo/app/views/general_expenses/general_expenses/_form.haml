@@ -1,0 +1,537 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Conceptos
+  .widget-body
+    = simple_form_for([:general_expenses, @gexp], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %input#action{:value => @action, "style"=>"display:none;"}
+      %fieldset
+        .row
+          %section
+            .form-group
+              .col.col-1
+              .col.col-10
+                %label.col-lg-2.control-label Fase
+                .col-lg-6
+                  %select#phase.select2.form-control{:name => "general_expense[phase_id]"}
+                    %option{:value => "0"} Seleccione una fase
+                    - @phase.each do |ph|
+                      %option{:value => "#{ph.id}", :selected => "#{@gexp.phase_id}"=="#{ph.id}"}
+                        = ph.code+ " -  "+ph.name
+
+      %fieldset
+        %legend Conceptos sujeto al Rubro
+        .row
+          .form-group
+            .col-lg-1
+            .col-lg-10
+              %label(for="article_id" class="col-lg-2 control-label") Insumos
+              .col-lg-6
+                %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+
+              .col-lg-1
+                %input#tart{"style" => "display:none"}
+              .col-lg-2 
+                %div(class="col-lg-3")
+                  %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
+                    Agregar Insumo
+        %br  
+        %br
+        .col-lg-12#personal{"style"=>"display:none"}
+          %legend Conceptos: Personal
+          %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th Código
+                %th Descripción
+                %th Unidad
+                %th Personas
+                %th %Participación
+                %th Tiempo
+                %th Sueldo/Jornal
+                %th Parcial
+                %th Eliminar
+            %tbody#personal_table
+              - if @action == 'edit'
+                - @gexp.general_expense_details.where("type_article = 01").each do |ged|
+                  %tr
+                    %td(style="display:none")
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][id]', ged.id.to_i
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][article_id]', ged.article_id.to_i
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][type_article]', ged.type_article.to_s
+                    %td
+                      = Article.find(ged.article_id.to_s).code.to_s
+                    %td
+                      = Article.find(ged.article_id.to_s).name.to_s    
+                    %td
+                      = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
+                    %td.col-md-1.smart-form#people
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][people]', ged.people.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal1e(this);'
+                    %td.col-md-1.smart-form#participation
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][participation]', ged.participation.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal2e(this);'
+                    %td.col-md-1.smart-form#time
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal3e(this);'
+                    %td.col-md-1.smart-form#salary
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][salary]', ged.salary.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal4e(this);'
+                    %td.col-md-1.smart-form#parcial
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'concept[concept_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1
+          %br
+          %br
+          %br
+
+
+        .col-lg-12#equipos{"style"=>"display:none"}
+          %legend Conceptos: Equipos
+          %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th Código
+                %th Descripción
+                %th Unidad
+                %th Cantidad
+                %th Tiempo
+                %th Costo
+                %th Parcial
+                %th Eliminar
+            %tbody#equipos_table
+              - if @action == 'edit'
+                - @gexp.general_expense_details.where("type_article = 03").each do |ged|
+                  %tr
+                    %td.bank-id(style="display:none")
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][id]', ged.id.to_i
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][article_id]', ged.article_id.to_i
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][type_article]', ged.type_article.to_s
+                    %td
+                      = Article.find(ged.article_id.to_s).code.to_s
+                    %td
+                      = Article.find(ged.article_id.to_s).name.to_s    
+                    %td
+                      = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
+                    %td.col-md-1.smart-form#amount
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES1e(this);' 
+                    %td.col-md-1.smart-form#time
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' , :onchange => 'getParcialES2e(this);'
+                    %td.col-md-1.smart-form#cost
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES3e(this);'
+                    %td.col-md-1.smart-form#parcial
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'concept[concept_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1
+          %br
+          %br
+          %br
+
+
+        .col-lg-12#material{"style"=>"display:none"}
+          %legend Conceptos: Materiales
+          %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th Código
+                %th Descripción
+                %th Unidad
+                %th Cantidad
+                %th Precio
+                %th Parcial
+                %th Eliminar
+            %tbody#material_table
+              - if @action == 'edit'
+                - @gexp.general_expense_details.where("type_article = 02").each do |ged|
+                  %tr
+                    %td.bank-id(style="display:none")
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][id]', ged.id.to_i
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][article_id]', ged.article_id.to_i
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][type_article]', ged.type_article.to_s
+                    %td
+                      = Article.find(ged.article_id.to_s).code.to_s
+                    %td
+                      = Article.find(ged.article_id.to_s).name.to_s    
+                    %td
+                      = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
+                    %td.col-md-1.smart-form#amount
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialMS1e(this);'
+                    %td.col-md-1.smart-form#cost
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialMS2e(this);' 
+                    %td.col-md-1.smart-form#parcial
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'concept[concept_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1
+          %br
+          %br
+          %br
+
+
+        .col-lg-12#subcontratos{"style"=>"display:none"}
+          %legend Conceptos: Subcontratos
+          %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th Código
+                %th Descripción
+                %th Unidad
+                %th Cantidad
+                %th Precio
+                %th Parcial
+                %th Eliminar
+            %tbody#subcontratos_table
+              - if @action == 'edit'
+                - @gexp.general_expense_details.where("type_article = 04").each do |ged|
+                  %tr
+                    %td.bank-id(style="display:none")
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][id]', ged.id.to_i
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][article_id]', ged.article_id.to_i
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][type_article]', ged.type_article.to_s
+                    %td
+                      = Article.find(ged.article_id.to_s).code.to_s
+                    %td
+                      = Article.find(ged.article_id.to_s).name.to_s    
+                    %td
+                      = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
+                    %td.col-md-1.smart-form#amount
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio',:onchange => 'getParcialMS1e(this);'
+                    %td.col-md-1.smart-form#cost
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio',:onchange => 'getParcialMS2e(this);'
+                    %td.col-md-1.smart-form#parcial
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'concept[concept_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1
+
+          %br
+          %br
+          %br
+
+
+
+        .col-lg-12#servicios{"style"=>"display:none"}
+          %legend Conceptos: Servicios
+          %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th Código
+                %th Descripción
+                %th Unidad
+                %th Cantidad
+                %th Tiempo
+                %th Costo
+                %th Parcial
+                %th Eliminar
+            %tbody#servicios_table
+              - if @action == 'edit'
+                - @gexp.general_expense_details.where("type_article = 05").each do |ged|
+                  %tr
+                    %td.bank-id(style="display:none")
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][id]', ged.id.to_i
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][article_id]', ged.article_id.to_i
+                      = hidden_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][type_article]', ged.type_article.to_s
+                    %td
+                      = Article.find(ged.article_id.to_s).code.to_s
+                    %td
+                      = Article.find(ged.article_id.to_s).name.to_s    
+                    %td
+                      = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
+                    %td.col-md-1.smart-form#amount
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES1e(this);'
+                    %td.col-md-1.smart-form#time
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES2e(this);'
+                    %td.col-md-1.smart-form#cost
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES3e(this);'
+                    %td.col-md-1.smart-form#parcial
+                      %div
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
+                    %td.delete-item
+                      %label.checkbox
+                        = check_box 'concept[concept_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                        %i
+                    - @reg_n += 1
+
+    
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+    
+:javascript
+  $(document).ready(function(){
+    $('select').select2();
+
+    var action = $('#action').val();
+
+    if(action == "edit"){
+      $('#personal').css("display", "block");
+      $('#material').css("display", "block");
+      $('#equipos').css("display", "block");
+      $('#subcontratos').css("display", "block");
+      $('#servicios').css("display", "block");
+    }
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_general_expense'));
+    }
+
+  });
+
+
+  $('#article-select').select2({
+    placeholder: "Buscar Insumos...",
+    minimumInputLength: 3,
+    ajax: {
+      url: "#{display_articles_general_expenses_general_expenses_path}",
+      dataType: 'json',
+      type: 'POST',
+      quietMillis: 100,
+      data: function(term, page){
+        return {
+          q: term,
+          page: page,
+          authenticity_token: "#{form_authenticity_token}"
+        };
+      },
+      results: function(data, page){
+        return {results: data.articles};
+      }
+    },
+    formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name + ' - ' + node.symbol + '</div>' },
+    formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol) },
+    escapeMarkup: function (m) { return m; }
+  });
+  
+  $('#article-select').change(function(){
+    var ar = $("#article-select").val().split('-');
+    $('#tart').empty();
+    $('#tart').val(ar[2].substring(0,2));
+  });
+
+
+  function submit_validate(form){
+    loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'general_expense[phase_id]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'general_expense[phase_id]' : {
+              required : 'Por favor, seleccione la fase.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
+
+  function add_article_item(){
+    var article_id = $("#article-select").val();
+    var type = $('#tart').val().substring(0,2);
+
+    str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), type : type};
+    
+    if(type == "01"){
+      append_url_ajax('#{add_concept_general_expenses_general_expenses_path}', 'personal_table', str_item, 0, 'POST');
+      $('#personal').css("display", "block");
+    }
+    if(type == "02"){
+      append_url_ajax('#{add_concept_general_expenses_general_expenses_path}', 'material_table', str_item, 0, 'POST');
+      $('#material').css("display", "block");
+    }
+
+    if(type == "03"){
+      append_url_ajax('#{add_concept_general_expenses_general_expenses_path}', 'equipos_table', str_item, 0, 'POST');
+      $('#equipos').css("display", "block");
+    }
+
+    if(type == "04"){
+      append_url_ajax('#{add_concept_general_expenses_general_expenses_path}', 'subcontratos_table', str_item, 0, 'POST');
+      $('#subcontratos').css("display", "block");
+    }
+
+    if(type == "05"){
+      append_url_ajax('#{add_concept_general_expenses_general_expenses_path}', 'servicios_table', str_item, 0, 'POST');
+      $('#servicios').css("display", "block");
+    }
+  }
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
+
+  function getParcialPersonal3e(element){
+    var time = $(element).val();
+    var people = $(element).parent().parent().siblings('#people').children().children().val();
+    var participation = $(element).parent().parent().siblings('#participation').children().children().val();
+    var salary = $(element).parent().parent().siblings('#salary').children().children().val();
+
+    if(time!= "" && people!= "" && participation!= "" && salary!= ""){
+      var parcial = time*people*salary*participation/100;
+      console.log(parcial);
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialPersonal1e(element){
+    console.log("entro;");
+    console.log(element);
+    var time = $(element).parent().parent().siblings('#time').children().children().val();
+    console.log(time);
+    var people = $(element).val();
+    console.log(people);
+    var participation = $(element).parent().parent().siblings('#participation').children().children().val();
+    console.log(participation);
+    var salary = $(element).parent().parent().siblings('#salary').children().children().val();
+    console.log(salary);
+
+    if(time!= "" && people!= "" && participation!= "" && salary!= ""){
+      var parcial = time*people*salary*participation/100;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialPersonal2e(element){
+    var time = $(element).parent().parent().siblings('#time').children().children().val();
+    var people = $(element).parent().parent().siblings('#people').children().children().val();
+    var participation = $(element).val();
+    var salary = $(element).parent().parent().siblings('#salary').children().children().val();
+
+    if(time!= "" && people!= "" && participation!= "" && salary!= ""){
+      var parcial = time*people*salary*participation/100;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialPersonal4e(element){
+    var time = $(element).parent().parent().siblings('#time').children().children().val();
+    var people = $(element).parent().parent().siblings('#people').children().children().val();
+    var participation = $(element).parent().parent().siblings('#participation').children().children().val();
+    var salary = $(element).val();
+
+    if(time!= "" && people!= "" && participation!= "" && salary!= ""){
+      var parcial = time*people*salary*participation/100;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialES3e(element){
+    var amount = $(element).parent().parent().siblings('#amount').children().children().val();
+    var cost = $(element).val();
+    var time = $(element).parent().parent().siblings('#time').children().children().val();
+
+    if(amount!= "" && cost!= "" && time!= ""){
+      var parcial = amount*cost*time;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialES1e(element){
+    var amount = $(element).val();
+    var cost = $(element).parent().parent().siblings('#cost').children().children().val();
+    var time = $(element).parent().parent().siblings('#time').children().children().val();
+
+    if(amount!= "" && cost!= "" && time!= ""){
+      var parcial = amount*cost*time;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialES2e(element){
+    var amount = $(element).parent().parent().siblings('#amount').children().children().val();
+    var cost = $(element).parent().parent().siblings('#cost').children().children().val();
+    var time = $(element).val();
+
+    if(amount!= "" && cost!= "" && time!= ""){
+      var parcial = amount*cost*time;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialMS2e(element){
+    var amount = $(element).parent().parent().siblings('#amount').children().children().val();
+    var cost = $(element).val();
+
+    if(amount!= "" && cost!= "" ){
+      var parcial = amount*cost;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }
+
+  function getParcialMS1e(element){
+    var amount =  $(element).val();
+    var cost = $(element).parent().parent().siblings('#cost').children().children().val();
+
+    if(amount!= "" && cost!= "" ){
+      var parcial = amount*cost;
+      $(element).parent().parent().siblings('#parcial').children().children().val(parcial);
+    }else{
+      $(element).parent().parent().siblings('#parcial').children().children().val('');
+    }
+  }

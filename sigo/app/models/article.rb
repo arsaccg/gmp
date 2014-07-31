@@ -9,7 +9,7 @@ class Article < ActiveRecord::Base
   	has_many :subcontract_equipment_details
   	has_many :part_work_details
   	has_many :category_of_worker
-  	has_many :workers
+  	has_many :worker_contracts
 	  has_many :part_work_details
     has_many :theoretical_values
     
@@ -160,6 +160,23 @@ class Article < ActiveRecord::Base
     end
 
     return name_article
+  end
+
+  def self.find_idarticle_global_by_specific_idarticle(specific_article_id, cost_center_id)
+    article_data = Array.new
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.name, af.article_id, u.name
+      FROM articles_from_cost_center_" + cost_center_id.to_s + " af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.id =" + specific_article_id.to_s + " 
+      LIMIT 1
+    ")
+
+    mysql_result.each do |data|
+      article_data = [data[0], data[1], data[2]]
+    end
+
+    return article_data
   end
 
   def self.get_article_per_type(type_article, cost_center)

@@ -1,6 +1,6 @@
 class Administration::ProvisionsController < ApplicationController
   def index
-    @provision = Provision.all
+    @provision = Provision.where('order_id IS NOT NULL')
     render layout: false
   end
 
@@ -12,33 +12,50 @@ class Administration::ProvisionsController < ApplicationController
   end
 
   def create
-    provision = Provision.new(provisions_parameters)
-    if provision.save
-      provision_checked = Array.new
-      total_amount = 0
-      provision.provision_details.each do |detail|
-        if !provision_checked.include? detail
-          provision_checked << detail.order_detail_id
-          ProvisionDetail.where('order_detail_id = ?', detail.order_detail_id).each do |details|
-            total_amount += details.amount
+    # Si es una Provision de Compra
+    if params[:provision]['order_id'] != nil
+      provision = Provision.new(provisions_parameters)
+      if provision.save
+        provision_checked = Array.new
+        total_amount = 0
+        provision.provision_details.each do |detail|
+          if !provision_checked.include? detail
+            provision_checked << detail.order_detail_id
+            ProvisionDetail.where('order_detail_id = ?', detail.order_detail_id).each do |details|
+              total_amount += details.amount
+            end
+            Provision.update_received_order(total_amount, detail.order_detail_id, detail.type_of_order)
           end
-          Provision.update_received_order(total_amount, detail.order_detail_id, detail.type_of_order)
         end
+        flash[:notice] = "Se ha creado correctamente la nueva provision."
+        redirect_to :action => :index
+      else
+        provision.errors.messages.each do |attribute, error|
+          flash[:error] =  flash[:error].to_s + error.to_s + "  "
+        end
+        # Load new()
+        @provision = provision
+        render :new, layout: false
       end
-      flash[:notice] = "Se ha creado correctamente la nueva provision."
-      redirect_to :action => :index
     else
-      provision.errors.messages.each do |attribute, error|
-        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      # Si es una provision de Compra Directa
+      provision = Provision.new(provision_direct_purchase_parameters)
+      if provision.save
+        flash[:notice] = "Se ha creado correctamente la nueva provision."
+        redirect_to :controller => :provision_articles, :action => :index
+      else
+        provision.errors.messages.each do |attribute, error|
+          flash[:error] = flash[:error].to_s + error.to_s + "  "
+        end
+        # Load new()
+        redirect_to :controller => :provision_articles, :action => :new
       end
-      # Load new()
-      @provision = provision
-      render :new, layout: false
     end
   end
 
   def edit
     @provision = Provision.find(params[:id])
+    @documentProvisions = DocumentProvision.all
     @action = 'edit'
     render layout: false
   end
@@ -59,7 +76,9 @@ class Administration::ProvisionsController < ApplicationController
   end
 
   def destroy
-    provision = Provision.destroy(params[:id])
+    provision = Provision.find(params[:id])
+    provision.provision_details.destroy_all
+    provision_destroyed = Provision.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
     render :json => provision
   end
@@ -121,7 +140,7 @@ class Administration::ProvisionsController < ApplicationController
               else
                 pending = service_detail.amount
               end
-              @data_orders << [ service_detail.article.code, service_detail.article.name, service_detail.amount, service_detail.unit_price_igv, service_detail.unit_price ,service_detail.description, service_detail.id, pending ]
+              @data_orders << [ service_detail.article.code, service_detail.article.name, service_detail.amount, (service_detail.unit_price_igv.to_f + service_detail.discount_after.to_f), service_detail.unit_price_before_igv.to_f, service_detail.description, service_detail.id, pending ]
             end
           end
         end
@@ -162,20 +181,36 @@ class Administration::ProvisionsController < ApplicationController
         service_order_detail = OrderOfServiceDetail.find(order_detail_id)
         igv = 0
         if service_order_detail.igv != nil
-          igv = (service_order_detail.unit_price_igv/(service_order_detail.amount*service_order_detail.unit_price))-1
+          igv = (-1*service_order_detail.quantity_igv/(service_order_detail.unit_price_before_igv))
         end
         # Lo que falta Atender
         pending = 0
-        total = 0
+        total = 0 
+        total_neto = 0 
         provision = ProvisionDetail.find_by_order_detail_id(service_order_detail.id)
         if !provision.nil?
           pending = service_order_detail.amount - provision.amount
-          total = pending*service_order_detail.unit_price*(1+igv)
+          total = (((pending * service_order_detail.unit_price) + service_order_detail.discount_before.to_i) * (1 + igv))
+          total_neto = total + service_order_detail.discount_after.to_i
         else
           pending = service_order_detail.amount
           total = service_order_detail.unit_price_igv
+          total_neto = total + service_order_detail.discount_after.to_i
         end
-        @data_orders << [ service_order_detail.id, service_order_detail.article.code, service_order_detail.article.name, service_order_detail.article.unit_of_measurement.symbol, service_order_detail.amount, service_order_detail.unit_price ,total, igv, pending ]
+        @data_orders << [ 
+          service_order_detail.id, 
+          service_order_detail.article.code, 
+          service_order_detail.article.name, 
+          service_order_detail.article.unit_of_measurement.symbol, 
+          service_order_detail.amount, 
+          service_order_detail.unit_price,
+          total, 
+          igv, 
+          pending,
+          service_order_detail.discount_before.to_i*-1,
+          service_order_detail.discount_after.to_i,
+          total_neto
+        ]
       end
     end
 
@@ -209,6 +244,7 @@ class Administration::ProvisionsController < ApplicationController
     params.require(:provision).permit(
       :cost_center_id, 
       :entity_id, 
+      :order_id,
       :document_provision_id, 
       :number_document_provision, 
       :accounting_date, 
@@ -224,6 +260,34 @@ class Administration::ProvisionsController < ApplicationController
         :account_accountant_id,
         :amount,
         :unit_price_igv,
+        :_destroy
+      ]
+    )
+  end
+
+  def provision_direct_purchase_parameters
+    params.require(:provision).permit(
+      :cost_center_id, 
+      :entity_id, 
+      :document_provision_id, 
+      :number_document_provision, 
+      :accounting_date, 
+      :series, 
+      :description,
+      provision_direct_purchase_details: [
+        :id,
+        :provision_id,
+        :article_id,
+        :sector_id,
+        :phase_id,
+        :amount,
+        :price,
+        :unit_price_before_igv,
+        :igv,
+        :quantity_igv,
+        :discount_after,
+        :discount_before,
+        :description,
         :_destroy
       ]
     )

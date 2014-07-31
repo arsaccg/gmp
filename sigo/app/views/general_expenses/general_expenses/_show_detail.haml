@@ -1,0 +1,160 @@
+%a{href: "javascript:delete_item('detail')", "style"=>"  width: 50px; float: right; color: white; background: #2070a8; "}(class="btn") X
+%row
+  %header
+    %h2{"style"=>"font-size:20px"}="Detalle de: "+ Phase.find(@ge.phase_id).name.to_s
+-if @type_01.count>0
+  .col-lg-12#personal
+    %legend Conceptos: Personal
+    %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+      %thead
+        %tr
+          %th Código
+          %th Descripción
+          %th Unidad
+          %th Personas
+          %th %Participación
+          %th Tiempo
+          %th Sueldo/Jornal
+          %th Parcial
+      %tbody#personal_table
+        - @type_01.each do |ged|
+          %tr
+            %td{:style => "width:5%"}
+              = Article.find(ged.article_id.to_s).code.to_s
+            %td{:style => "width:20%"}
+              = Article.find(ged.article_id.to_s).name.to_s    
+            %td{:style => "width:5%"}
+              = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              =ged.people.to_s
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              =ged.participation.to_s
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              =ged.time.to_s
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              =number_to_currency(ged.salary.to_s, unit: 'S/. ', precision: 2)
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = number_to_currency(ged.parcial.to_s, unit: 'S/. ', precision: 2)
+    %br
+
+-if @type_03.count>0
+  .col-lg-12#equipos
+    %legend Conceptos: Equipos
+    %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+      %thead
+        %tr
+          %th Código
+          %th Descripción
+          %th Unidad
+          %th Cantidad
+          %th Tiempo
+          %th Costo
+          %th Parcial
+      %tbody#equipos_table
+        - @type_03.each do |ged|
+          %tr
+            %td{:style => "width:5%"}
+              = Article.find(ged.article_id.to_s).code.to_s
+            %td{:style => "width:20%"}
+              = Article.find(ged.article_id.to_s).name.to_s    
+            %td{:style => "width:5%"}
+              =Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              =ged.amount.to_s
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              =ged.time.to_s
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = number_to_currency(ged.cost.to_s, unit: 'S/. ', precision: 2)
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = number_to_currency(ged.parcial.to_s, unit: 'S/. ', precision: 2)
+    %br
+
+-if @type_02.count>0
+  .col-lg-12#material
+    %legend Conceptos: Materiales
+    %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+      %thead
+        %tr
+          %th Código
+          %th Descripción
+          %th Unidad
+          %th Cantidad
+          %th Precio
+          %th Parcial
+      %tbody#material_table
+        - @type_02.each do |ged|
+          %tr
+            %td{:style => "width:5%"}
+              = Article.find(ged.article_id.to_s).code.to_s
+            %td{:style => "width:20%"}
+              = Article.find(ged.article_id.to_s).name.to_s    
+            %td{:style => "width:5%"}
+              = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = ged.amount.to_s    
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = number_to_currency(ged.cost.to_s, unit: 'S/. ', precision: 2)
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = number_to_currency(ged.parcial.to_s, unit: 'S/. ', precision: 2)
+    %br
+
+-if @type_04.count>0
+  .col-lg-12#subcontratos
+    %legend Conceptos: Subcontratos
+    %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+      %thead
+        %tr
+          %th Código
+          %th Descripción
+          %th Unidad
+          %th Catidad
+          %th Precio
+          %th Parcial
+      %tbody#subcontratos_table
+        - @type_04.each do |ged|
+          %tr
+            %td{:style => "width:5%"}
+              = Article.find(ged.article_id.to_s).code.to_s
+            %td{:style => "width:20%"}
+              = Article.find(ged.article_id.to_s).name.to_s    
+            %td{:style => "width:5%"}
+              = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = ged.amount.to_s    
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = number_to_currency(ged.cost.to_s, unit: 'S/. ', precision: 2)
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = number_to_currency(ged.parcial.to_s, unit: 'S/. ', precision: 2)
+
+    %br
+
+-if @type_05.count>0
+  .col-lg-12#servicios
+    %legend Conceptos: Servicios
+    %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+      %thead
+        %tr
+          %th Código
+          %th Descripción
+          %th Unidad
+          %th Cantidad
+          %th Tiempo
+          %th Costo
+          %th Parcial
+      %tbody#servicios_table
+        - @type_05.each do |ged|
+          %tr
+            %td{:style => "width:5%"}
+              = Article.find(ged.article_id.to_s).code.to_s
+            %td{:style => "width:20%"}
+              = Article.find(ged.article_id.to_s).name.to_s    
+            %td{:style => "width:5%"}
+              = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = ged.amount.to_s  
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = ged.time.to_s
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = number_to_currency(ged.cost.to_s, unit: 'S/. ', precision: 2)
+            %td.col-md-1.smart-form{:style => "width:5%"}
+              = number_to_currency(ged.parcial.to_s, unit: 'S/. ', precision: 2)

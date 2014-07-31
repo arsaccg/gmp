@@ -304,6 +304,9 @@ class Logistics::OrderOfServicesController < ApplicationController
         :amount, 
         :unit_price_before_igv,
         :unit_price_igv, 
+        :discount_after,
+        :discount_before,
+        :quantity_igv,
         :description, 
         :_destroy,
         order_service_extra_calculations_attributes: [

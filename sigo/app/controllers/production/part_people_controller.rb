@@ -32,7 +32,7 @@ class Production::PartPeopleController < ApplicationController
     @numbercode = @numbercode.to_s.rjust(5,'0')
     @partperson = PartPerson.new
     @working_groups = WorkingGroup.all
-    @workers = Worker.all
+    @workers = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active'")
     @company = params[:company_id]
     render layout: false
   end

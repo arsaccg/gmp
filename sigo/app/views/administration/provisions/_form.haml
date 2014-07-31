@@ -52,7 +52,7 @@
 
     %fieldset
       .input-group{'style' => 'display:none;'}
-        = f.input :order_id, :as => :hidden, :input_html => {:class => 'form-control'}, label: false
+        = f.input :order_id, :as => :hidden, :input_html => {:class => 'form-control', :value => 1 }, label: false
       .row
         .col-md-4
           .form-group
@@ -106,9 +106,12 @@
             %th Cuenta Contable
             %th Unidad
             %th Cantidad a atender
-            %th IGV
             %th Precio Unitario
-            %th Total
+            %th Total Descuentos antes de IGV
+            %th IGV
+            %th Total Neto
+            %th Total Descuentos después de IGV
+            %th Total Neto con Descuentos
             %th Acción
         %tbody{:id => "provisions_items_table"}
 

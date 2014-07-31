@@ -423,6 +423,24 @@
     $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
   }
 
+  function calculatePrice(element){
+    var amount = parseInt($(element).val());
+
+    var price_without_igv = parseFloat($(element).parent().siblings('.unit-price').find('input').val() * amount).toFixed(2);
+
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
   function enableFieldsForIgv(element){
     if($(element).is(":checked")){
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();

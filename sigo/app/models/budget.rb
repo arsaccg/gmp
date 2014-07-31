@@ -51,7 +51,7 @@ class Budget < ActiveRecord::Base
     return budget_array
   end
 
-  def load_elements(budget_id, cost_center_id, type_of_budget, database)
+  def load_elements(budget_id, cost_center_id, type_of_budget, database, company)
     arr_thread = []
     thread_count = 0;
     @cod=""
@@ -82,18 +82,20 @@ class Budget < ActiveRecord::Base
         #new_budget.save
       array_sub_budgets = do_query("SELECT CodPresupuesto, CodSubpresupuesto, Descripcion FROM  Subpresupuesto WHERE CodPresupuesto = '" + budget[0]  + "' AND CodPresupuesto <> '9999999' AND CodSubpresupuesto <> '999'", {db_name: database})
       array_sub_budgets.each do |subbudget|
-        new_subbudget=Budget.new
-        new_subbudget.cost_center_id = cost_center_id
-        new_subbudget.cod_budget = subbudget[0].to_s + subbudget[1].to_s
-        @cod = subbudget[0].to_s + subbudget[1].to_s
-        new_subbudget.description = subbudget[2].to_s
-        new_subbudget.subbudget_code = subbudget[1].to_s
-        new_subbudget.type_of_budget = type_of_budget
-        new_subbudget.save
-        new_item = Item.new                           # Cargar Partidas
-        new_item.load_items(cost_center_id, subbudget[0], database)
-        new_item_by_budget = Itembybudget.new         #Cargar Generico
-        new_item_by_budget.set_data(subbudget[0], database)
+        if Budget.where("cod_budget = ? AND type_of_budget=?",  subbudget[0].to_s + subbudget[1].to_s, type_of_budget ).first == nil
+          new_subbudget=Budget.new
+          new_subbudget.cost_center_id = cost_center_id
+          new_subbudget.cod_budget = subbudget[0].to_s + subbudget[1].to_s
+          @cod = subbudget[0].to_s + subbudget[1].to_s
+          new_subbudget.description = subbudget[2].to_s
+          new_subbudget.subbudget_code = subbudget[1].to_s
+          new_subbudget.type_of_budget = type_of_budget
+          new_subbudget.save
+          new_item = Item.new                           # Cargar Partidas
+          new_item.load_items(cost_center_id, subbudget[0], database)
+          new_item_by_budget = Itembybudget.new         #Cargar Generico
+          new_item_by_budget.set_data(subbudget[0], database)
+        end
       end
       #}
     end
@@ -101,12 +103,13 @@ class Budget < ActiveRecord::Base
       #data_thread.join
         #arr.each {|t| t.join }
 
-    # Poblando Articulos a la tabla especifica.
-    if type_of_budget == 0
-      @type = Budget.where("cod_budget LIKE ? AND type_of_budget = 0", @cod)
+    if @cod.to_s != ""
+      # Poblando Articulos a la tabla especifica.
+      if type_of_budget.to_i == 0
+        @type = Budget.where("cod_budget LIKE ? AND type_of_budget = 0", @cod)
 
-      if @type != nil
-        cost_center = Budget.find_by_cod_budget(@cod).cost_center_id
+        #if @type != nil
+        cost_center = Budget.find_by_cod_budget(@cod).cost_center_id 
         @type_id = 0
         @match= ActiveRecord::Base.connection.execute("
                 SELECT DISTINCT a.id, a.code, toa.id, c.id, a.name, a.description, u.id, ibi.id
@@ -143,15 +146,16 @@ class Budget < ActiveRecord::Base
   	      result = ActiveRecord::Base.connection.execute(sql)
         end
       end
+      #end
     end
 
     # Importando partidas al subcontrato
     @itembybudgets = Itembybudget.get_item_by_budget
-    @company_name = Company.find(get_company_cost_center('company')).name
-    @entity_id = Entity.find_by_name(@company_name).id
-    @subcontract = Subcontract.find_by_entity_id(@entity_id)
+    @company_name = company.name rescue " "
+    @entity_id = Entity.find_by_name(@company_name).id rescue nil
+    @subcontract_id = Subcontract.find_by_entity_id(@entity_id) rescue nil
     @itembybudgets.each do |ibb|
-      SubcontractDetail.create(article_id: nil, amount: 0, unit_price: 0, partial: 0, description: nil, created_at: DateTime.now, update_at: DateTime.now, subcontract_id: @subcontract.id, itembybudget_id: ibb[1],)
+      SubcontractDetail.create(article_id: nil, amount: 0, unit_price: 0, partial: 0, description: nil, created_at: DateTime.now, updated_at: DateTime.now, subcontract_id: @subcontract, itembybudget_id: ibb[1],)
     end
   end
 end

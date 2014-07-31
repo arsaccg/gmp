@@ -278,12 +278,18 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'add_worker_item_field'
         post 'add_afp_item_field'
-        post 'add_health_item_field'
+        post 'add_health_center_item_field'
         post 'add_familiar_item_field'
         post 'add_centerofstudy_item_field'
         post 'add_otherstudy_item_field'
         post 'add_experience_item_field'
         post 'show_workers'
+        post 'part_worker'
+      end
+      member do
+        get 'register'
+        get 'approve'
+        get 'cancel'
       end
     end
     resources :worker_contracts
@@ -483,8 +489,18 @@ ArsacLogistica::Application.routes.draw do
         post 'get_suppliers_by_type_order'
       end
     end
+    resources :part_workers do
+      collection do
+        post 'show_part_workers'
+      end
+    end
     resources :health_centers
-
+    resources :contract_types
+    resources :provision_articles do
+      collection do
+        post 'puts_details_in_provision'
+      end
+    end
     resources :account_accountants do
       collection do
         get 'import'
@@ -512,7 +528,27 @@ ArsacLogistica::Application.routes.draw do
         post 'display_worker'
         post 'get_info'
         post 'generate_payroll'
+        post 'show_workers'
+        post 'add_concept'
+      end
+    end
+    resources :payslips do
+      collection do
+        post 'get_cc'
+        post 'get_sem'
+      end
+    end
+  end
+  
+  namespace :general_expenses do
+    resources :general_expenses do
+      collection do
+        post 'display_articles'
+        post 'add_concept'
+        post 'show_details'
+        post 'report'
       end
     end
   end
 end
+

@@ -6,6 +6,7 @@ class Production::WorkerContractsController < ApplicationController
     flash[:error] = nil
     @worker_id = params[:worker_id]
     @company = get_company_cost_center('company')
+    @worker = Worker.find_by_id(@worker_id)
     #@own_cost_center = current_user.cost_centers
     @workercontracts = WorkerContract.where("worker_id = ?", @worker_id)
     render layout: false
@@ -17,11 +18,13 @@ class Production::WorkerContractsController < ApplicationController
 
   def new
     @typeofcontract = params[:typeofcontract]
-    @charges = Charge.all
+    @articles = TypeOfArticle.find_by_code('01').articles
+    @contractypes = ContractType.all
     @cost_center = session[:cost_center]
     if @typeofcontract == 'Contrato'
       @workercontract = WorkerContract.new
     	@worker_id = params[:worker_id]
+      @worker = Worker.find_by_id(@worker_id)
     end
     if @typeofcontract == 'Adenda'
       @action = 'edit'
@@ -46,6 +49,8 @@ class Production::WorkerContractsController < ApplicationController
     workercontract.end_date_2 = params[:worker_contract]['end_date']
     if workercontract.save
       flash[:notice] = "Se ha creado correctamente el contrato."
+      @worker = Worker.find_by_id(params[:worker_contract]['worker_id'])
+      @worker.approve
       redirect_to :action => :index, worker_id: params[:worker_contract]['worker_id']
     else
       workercontract.errors.messages.each do |attribute, error|
@@ -58,7 +63,9 @@ class Production::WorkerContractsController < ApplicationController
 
   def edit
     @workercontract = WorkerContract.find(params[:id])
-    @charges = Charge.all
+    @worker = Worker.find_by_id(@workercontract.worker_id)
+    @articles = TypeOfArticle.find_by_code('01').articles
+    @contractypes = ContractType.all
     @cost_center = session[:cost_center]
     @action = 'edit'
     @worker_id = @workercontract.worker_id
@@ -90,6 +97,6 @@ class Production::WorkerContractsController < ApplicationController
 
   private
   def worker_contract_parameters
-    params.require(:worker_contract).permit(:position_of_worker, :camp, :charge_id, :destaque, :salary, :regime, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract)
+    params.require(:worker_contract).permit(:camp, :contract_type_id, :article_id, :destaque, :salary, :regime, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract)
   end
 end

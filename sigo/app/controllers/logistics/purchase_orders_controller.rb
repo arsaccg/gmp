@@ -353,6 +353,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
         :amount, 
         :unit_price_before_igv, 
         :unit_price_igv, 
+        :discount_before, 
+        :discount_after, 
+        :quantity_igv,
         :description, 
         :_destroy,
         purchase_order_extra_calculations_attributes: [

@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  type_article: MyString
+  article_id: 1
+  people: 1
+  participation: 1.5
+  time: 1.5
+  salary: 1.5
+  parcial: 1.5
+  amount: 1.5
+  cost: 1.5
+  depreciation: 1.5
+  useful_life: 1.5
+  price: 1.5
+
+two:
+  type_article: MyString
+  article_id: 1
+  people: 1
+  participation: 1.5
+  time: 1.5
+  salary: 1.5
+  parcial: 1.5
+  amount: 1.5
+  cost: 1.5
+  depreciation: 1.5
+  useful_life: 1.5
+  price: 1.5

@@ -7,8 +7,8 @@
         %th Nombre del Insumo
         %th Cantidad
         %th Por atender
-        %th Precio sin IGV
-        %th Precio con IGV
+        %th Precio sin IGV con Cálculos antes de IGV
+        %th Precio con IGV con Cálculos después de IGV
         %th Descripción
         %th Seleccionar
     - @data_orders.each do |order|
@@ -23,7 +23,7 @@
           %code
             = order[7]
         %td
-          = number_to_currency((order[4]*order[2]), unit: 'S/. ', precision: 2)
+          = number_to_currency((order[4]), unit: 'S/. ', precision: 2)
         %td
           = number_to_currency(order[3], unit: 'S/. ', precision: 2)
         %td
