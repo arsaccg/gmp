@@ -1,3 +1,4 @@
+# encoding utf-8
 class Worker < ActiveRecord::Base
   has_many :part_person_details
   has_many :worker_details
