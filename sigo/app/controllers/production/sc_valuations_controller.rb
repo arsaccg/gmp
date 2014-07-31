@@ -214,16 +214,18 @@ class Production::ScValuationsController < ApplicationController
         cow.he_100_price*SUM( ppd.he_100 ),
         uom.name, 
         p.date_of_creation 
-      FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow, articles art
+      FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow, articles art, worker_contracts wc 
       WHERE p.working_group_id IN(" + working_group_id.to_s + ")
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.id = ppd.part_person_id
       AND p.cost_center_id = '" + cost_center.to_s + "'
       AND w.cost_center_id = '" + cost_center.to_s + "'
-      AND w.article_id = art.id
+      AND w.id = wc.worker_id
+      AND wc.status = 1
+      AND wc.article_id = art.id
       AND ppd.worker_id = w.id
       AND p.block=0 
-      AND w.article_id = cow.article_id
+      AND wc.article_id = cow.article_id
       AND uom.id = art.unit_of_measurement_id
       GROUP BY art.name
     ")
