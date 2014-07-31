@@ -4,14 +4,14 @@
       %h1.page-title.txt-color-blueDark
         = "Trabajador" + ': ' + @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s + ' ' + @worker.entity.name.to_s
       %br
-        %table.table.table-bordered{ style: "width: 700px;margin: 0 auto" }
+        %table.table.table-bordered{ style: "width: 900px;margin: 0 auto" }
           %thead
             %tr
               %th{"style"=>"text-align:center",'colspan' => 6} Formulario del Trabajador
           %tbody
             %tr
               %th Nombre Completo
-              %th{'colspan' => 5}= @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s + ' ' + @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s
+              %th{'colspan' => 5,"style"=>"font-weight: 500"}= @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s + ' ' + @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s
             %tr
               %th Cargo del Trabajador
               %th{'colspan' => 2}= @worker.position_worker.name
