@@ -153,11 +153,13 @@ BEGIN
   DECLARE v_sum FLOAT;
   DECLARE quantity_cursor CURSOR FOR 
     SELECT (ppd.normal_hours*cow.normal_price)+(ppd.he_60*cow.he_60_price)+(ppd.he_100*cow.he_100_price) as `total`
-    FROM `part_people` pp, `part_person_details` ppd, `articles` art, `workers` wo, `category_of_workers` cow
+    FROM `part_people` pp, `part_person_details` ppd, `articles` art, `workers` wo, `category_of_workers` cow, `worker_contracts` wc
     WHERE pp.date_of_creation BETWEEN start_date AND end_date
   AND pp.id = ppd.part_person_id
   AND ppd.worker_id = wo.id
-  AND wo.article_id = art.id
+  AND wo.id = wc.worker_id
+  AND wc.status = 1
+  AND wc.article_id = art.id
   AND art.id = cow.article_id
   AND pp.cost_center_id = cost_center_id
   AND ppd.phase_id BETWEEN phase_id AND phase_id2;
@@ -190,11 +192,13 @@ BEGIN
   DECLARE v_sum FLOAT;
   DECLARE quantity_cursor CURSOR FOR 
     SELECT (ppd.normal_hours*cow.normal_price)+(ppd.he_60*cow.he_60_price)+(ppd.he_100*cow.he_100_price) as `total`
-    FROM `part_people` pp, `part_person_details` ppd, `articles` art, `workers` wo, `category_of_workers` cow
+    FROM `part_people` pp, `part_person_details` ppd, `articles` art, `workers` wo, `category_of_workers` cow, `worker_contracts` wc
     WHERE pp.date_of_creation < end_date
   AND pp.id = ppd.part_person_id
   AND ppd.worker_id = wo.id
-  AND wo.article_id = art.id
+  AND wo.id = wc.worker_id
+  AND wc.status = 1
+  AND wc.article_id = art.id
   AND art.id = cow.article_id
   AND pp.cost_center_id = cost_center_id
   AND ppd.phase_id BETWEEN phase_id AND phase_id2;

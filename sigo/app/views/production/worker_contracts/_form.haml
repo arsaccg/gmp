@@ -80,6 +80,20 @@
         .row
           %section.col.col-md-12
             .col-md-1
+              %label.label Bonificación
+            .col-md-5
+              %label.input{for: "bonus"}
+                = f.input :bonus, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-md-12
+            .col-md-1
+              %label.label Viáticos
+            .col-md-5
+              %label.input{for: "viatical"}
+                = f.input :viatical, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-md-12
+            .col-md-1
               %label.label Dias
             .col-md-5
               %label.input{for: "days"}

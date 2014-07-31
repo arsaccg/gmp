@@ -86,7 +86,7 @@
       buttons : '[No][Yes]'
     }, function(ButtonPressed) {
       if (ButtonPressed === "Yes") {
-        load_url_ajax('#{approve_production_worker_path(@worker.id)}', 'content', {worker_id: '#{@worker.id}', article_id: $('#article').val(), camp: $('#camp').val(), bonus: $('#bonus').val(), destaque: $('#destaque').val(), regime: $('#regime').val(), days: $('#worker_contract_days').val(), start_date: $('#worker_contract_start_date').val(), end_date: $('#worker_contract_end_date').val(), salary: $('#salary').val(), numberofcontract: $('#numberofcontract').val(), typeofcontract: "Contrato", contract_type_id: $('#typecontract').val()}, null, 'GET');
+        load_url_ajax('#{approve_production_worker_path(@worker.id)}', 'content', {worker_id: '#{@worker.id}', article_id: $('#article').val(), camp: $('#camp').val(), bonus: $('#bonus').val(), viatical: $('#viatical').val(), destaque: $('#destaque').val(), regime: $('#regime').val(), days: $('#worker_contract_days').val(), start_date: $('#worker_contract_start_date').val(), end_date: $('#worker_contract_end_date').val(), salary: $('#salary').val(), numberofcontract: $('#numberofcontract').val(), typeofcontract: "Contrato", contract_type_id: $('#typecontract').val()}, null, 'GET');
         $('.modal-backdrop.fade.in').remove();
         $.smallBox({
           title : "Exito",

@@ -27,6 +27,17 @@ class Production::WorkersController < ApplicationController
     render json: { :aaData => array }
   end
 
+  def show_workers_empleados
+    display_length = params[:iDisplayLength]
+    typeofworker = params[:typeofworker]
+    pager_number = params[:iDisplayStart]
+    keyword = params[:sSearch]
+    array = Array.new
+    cost_center = get_company_cost_center('cost_center')
+    array = Worker.get_workers_empleados(typeofworker,cost_center, display_length, pager_number, keyword)
+    render json: { :aaData => array }
+  end
+
   def new
     @entity = Entity.find_by_dni(params[:dni])
     @action = "new"
@@ -220,6 +231,7 @@ class Production::WorkersController < ApplicationController
     workercontract.salary = params[:salary]
     workercontract.regime = params[:regime]
     workercontract.bonus = params[:bonus]
+    workercontract.viatical = params[:viatical]
     workercontract.days = params[:days]
     workercontract.start_date = params[:start_date]
     workercontract.end_date = params[:end_date]
@@ -228,6 +240,7 @@ class Production::WorkersController < ApplicationController
     workercontract.typeofcontract = params[:typeofcontract]
     workercontract.contract_type_id = params[:contract_type_id]
     workercontract.worker_id = params[:worker_id]
+    workercontract.status = 1
     workercontract.save
     worker = Worker.find(params[:worker_id])
     worker.approve
