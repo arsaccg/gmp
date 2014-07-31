@@ -18,7 +18,7 @@ class Logistics::CompaniesController < ApplicationController
     entity = Entity.new(entity_parameters)
     if company.save && entity.save
       entitytypeentity = EntitiesTypeEntities.create(entity_id: entity.id, type_entity_id: 1)
-      flash[:notice] = "Se ha creado correctamente la nueva compañia."
+      flash[:notice] = "Se ha creado correctamente la nueva compania."
       redirect_to :action => :index
     else
       company.errors.messages.each do |attribute, error|

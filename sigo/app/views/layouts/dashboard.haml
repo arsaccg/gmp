@@ -701,24 +701,21 @@
                   .progress-bar.bg-color-darken{role: "progressbar", style: "width: 100%"}
 
     #cost_center_general_data.modal.fade{"aria-hidden" => "true", role: "dialog", tabindex: "-1"}
-      .modal-dialog
+      .modal-dialog{"style"=>"width:70%;"}
         .modal-content
           .modal-header
             %button{"class"=>"close", "data-dismiss"=>"modal"}
               %span{"aria-hidden"=>"true"} &times;
               %span{"class"=>"sr-only"} Close
-            %h4{"class"=>"modal-title", "id"=>"cost_center_general_data"} Datos Generales del Centro de Costo
+            %h4{"class"=>"modal-title", "id"=>"cost_center_general_data"} Datos Generales del Proyecto
           .modal-body
           - if !@cost_center_detail.nil?
-            %table
+            %table{"style"=>"margin-left:30px;margin-right:30px;height:auto;"}
               %tr
                 %td
                   %strong NOMBRE DE LA OBRA:
                 %td=@cost_center_detail.name
-              %tr
-                %td
-                  %strong NOMBRE DEL CONTRATISTA:
-                %td=@company.name
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong ENTIDAD:
@@ -727,82 +724,114 @@
                     =Entity.find_by_id(@cost_center_detail.entity_id).name
                   -else
                     =""
+              %tr{"style"=>"height:10px;"}
+              %tr
+                %td
+                  %strong NOMBRE DEL CONTRATISTA:
+                %td=@company.name
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong DIRECCIÓN:
                 %td=@company.address
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong RUC:
-                %td=@company.ruc
-              %tr
+                %td{"style"=>"width:35%;"}=@company.ruc
+
                 %td
                   %strong CONDICIÓN TRIBUTARIA AMAZÓNICA: 
                 %td=@cost_center_detail.amazon_tax_condition
+              %tr{"style"=>"height:10px;"}
+              %tr
+                %td
+                  %strong CONSORCIADOS Y PARTICIPACIÓN: 
+                %td
+                  %div{"style"=>"display:inline;"}
+                    -EntityCostCenterDetail.where("cost_center_detail_id ="+ @cost_center_detail.id.to_s).each do |c|
+                      %div=Entity.find(c.entity_id.to_s).name + " ( "+c.participation.to_s+"% )"
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong FECHA DE CONVOCATORIA:
                 %td=@cost_center_detail.call_date
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong NÚMERO DE PROCESO:
                 %td=@cost_center_detail.process_number
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong CÓDIGO SNIP: 
                 %td=@cost_center_detail.snip_code
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong FECHA DE BUENA PRO:
                 %td=@cost_center_detail.good_pro_date
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong VALOR REFERENCIAL: 
                 %td=@cost_center_detail.referential_value
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong VALOR GANADO:
                 %td=@cost_center_detail.earned_value
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong COSTO DIRECTO:
                 %td=@cost_center_detail.direct_cost
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong GASTOS GENERALES: 
                 %td=@cost_center_detail.general_cost
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong UTILIDAD:
                 %td=@cost_center_detail.utility
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong IGV: 
                 %td=@cost_center_detail.IGV
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong FECHA FIRMA DEL CONTRATO:
                 %td=@cost_center_detail.contract_sign_date
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong NÚMERO DE CONTRATO:
                 %td=@cost_center_detail.contract_number
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong FECHA ENTREGA DE TERRENO: 
                 %td=@cost_center_detail.land_delivery_date
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong FECHA DE SOLICITUD DEL ADELANTO DIRECTO:
                 %td=@cost_center_detail.direct_advanced_form_date
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong FECHA DE PAGO DEL ADELANTO DIRECTO: 
                 %td=@cost_center_detail.direct_advanced_payment_date
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong FECHA DE INICIO DE OBRA:
                 %td=@cost_center_detail.start_date_of_work
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong SISTEMA DE CONTRATACIÓN:
@@ -813,14 +842,17 @@
                     ="Suma Avanzada"
                   -if @cost_center_detail.procurement_system=="mixto"
                     ="Mixto"
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong PLAZO DE EJECUCIÓN (DIAS CALENDARIO): 
                 %td=@cost_center_detail.execution_term
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong SUPERVISIÓN:
                 %td=@cost_center_detail.supervision
+              %tr{"style"=>"height:10px;"}
               %tr
                 %td
                   %strong FECHA DE PAGO DEL ADELANTO DE MATERIALES: 
