@@ -26,7 +26,7 @@ class Logistics::CostCenterDetailsController < ApplicationController
     cost_center_detail = CostCenterDetail.new(cost_center_detail_params)
     if cost_center_detail.save
       flash[:notice] = "Se ha creado correctamente."
-      redirect_to :action => :index
+      redirect_to :action => :index, :controller => "cost_centers"
     else
       gexp.errors.messages.each do |attribute, error|
         puts flash[:error].to_s + error.to_s + "  "
