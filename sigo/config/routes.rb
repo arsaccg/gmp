@@ -1,5 +1,14 @@
 ArsacLogistica::Application.routes.draw do
 
+
+
+  get "entity_cost_center_details/new"
+  get "entity_cost_center_details/create"
+  get "entity_cost_center_details/update"
+  get "entity_cost_center_details/edit"
+  get "entity_cost_center_details/destroy"
+  get "entity_cost_center_details/index"
+  get "entity_cost_center_details/show"
   devise_for :users, :controllers => {:registrations => "users/registrations"}
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -62,6 +71,7 @@ ArsacLogistica::Application.routes.draw do
   # Example resource route within a namespace:,
 
   namespace :logistics do
+    resources :cost_center_details, :has_many => :entity_cost_center_details
     resources :unit_of_measurements
     resources :persons do
       collection do
