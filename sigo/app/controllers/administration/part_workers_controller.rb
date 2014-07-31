@@ -33,7 +33,7 @@ class Administration::PartWorkersController < ApplicationController
     @partworker = PartWorker.new
     @working_groups = WorkingGroup.all
     @workers = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active'")
-    @company = params[:company_id]
+    @company = session[:company]
     @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
@@ -42,40 +42,30 @@ class Administration::PartWorkersController < ApplicationController
   end
 
   def create
-    partperson = PartPerson.new(part_person_parameters)
-    partperson.cost_center_id = get_company_cost_center('cost_center')
-    partperson.block = 0
-    partperson.blockweekly = 0
-    if partperson.save
+    partworker = PartWorker.new(part_worker_parameters)
+    partworker.company_id = session[:company]
+    if partworker.save
       flash[:notice] = "Se ha creado correctamente la parte de obra."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: session[:company]
     else
-      partperson.errors.messages.each do |attribute, error|
+      partworker.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
       flash[:error] =  "Ha ocurrido un error en el sistema."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: session[:company]
     end
   end
 
-  def add_more_worker
-    @reg_n = ((Time.now.to_f)*100).to_i
-    @sectors = Sector.where("code LIKE '__'")
-    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
-    @worker = Worker.find(params[:worker_id])
-    @id_worker = @worker.id
-    @name_worker = @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s + ' ' + @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s
-    @category_worker = @worker.article.name
-    render(partial: 'part_people_items', :layout => false)
-  end
-
   def edit
-    @partperson = PartPerson.find(params[:id])
+    @partworker = PartWorker.find(params[:id])
     @reg_n = Time.now.to_i
-    @numbercode = @partperson.number_part
+    @numbercode = @partworker.number_part
+    @workers = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active'")
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @costcenters = CostCenter.where("company_id = ?",@company)
     @action = 'edit'
     @company = get_company_cost_center('company')
     @workers = Worker.all
@@ -83,28 +73,28 @@ class Administration::PartWorkersController < ApplicationController
   end
 
   def update
-    partperson = PartPerson.find(params[:id])
-    if partperson.update_attributes(part_person_parameters)
+    partworker = PartWorker.find(params[:id])
+    if partworker.update_attributes(part_worker_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: session[:company]
     else
-      partperson.errors.messages.each do |attribute, error|
+      partworker.errors.messages.each do |attribute, error|
         flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
       end
       # Load new()
-      @partperson = partperson
+      @partworker = partworker
       render :edit, layout: false
     end
   end
 
   def destroy
-    partperson = PartPerson.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente el Grupo de Trabajo."
-    render :json => partperson
+    partworker = PartWorker.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente el Parte de Trabajadores."
+    render :json => partworker
   end
 
   private
-  def part_person_parameters
-    params.require(:part_person).permit(:working_group_id, :block, :number_part, :date_of_creation, part_person_details_attributes: [:id, :part_person_id, :worker_id, :sector_id, :phase_id, :normal_hours, :he_60, :he_100, :total_hours, :_destroy])
+  def part_worker_parameters
+    params.require(:part_worker).permit(:number_part, :date_of_creation, part_worker_details_attributes: [:id, :part_worker_id, :cost_center_id, :worker_id, :working_group_id, :reason_of_lack, :sector_id, :phase_id, :assistance, :_destroy])
   end
 end

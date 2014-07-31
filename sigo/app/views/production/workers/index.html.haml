@@ -1,9 +1,10 @@
 #content-inside
   .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
-      %h1.page-title.txt-color-blueDark
-        %i.fa.fa-pencil-square-o.fa-fw 
-        Lista de Trabajadores
+    - if !@bank.present? && !@article.present? && !@entity.present?
+      .col-xs-12.col-sm-7.col-md-7.col-lg-4
+        %h1.page-title.txt-color-blueDark
+          %i.fa.fa-pencil-square-o.fa-fw 
+          Lista de Trabajadores
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"}
@@ -18,11 +19,16 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
-  .row
     - if @bank.present? && @article.present? && @entity.present?
-      .col-sm-2
-        %a#smart-mod-eg2.btn.btn-primary
-          Agregar Trabajador
+      .row 
+        .col-xs-9.col-sm-7.col-md-7.col-lg-9
+          %h1.page-title.txt-color-blueDark
+            %i.fa.fa-pencil-square-o.fa-fw 
+            Lista de Trabajadores
+        .col-xs-1.col-sm-7.col-md-7.col-lg-1
+        .col-xs-2.col-sm-7.col-md-7.col-lg-2
+          %a#smart-mod-eg2.btn.btn-primary{"style" => "margin-top:20px"}
+            Agregar Trabajador
     - elsif @entity.blank? && @bank.blank? && @article.present?
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
@@ -71,6 +77,8 @@
         = render :partial => 'table'
   %br
   #part-worker.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partWorkersLabel", role: "dialog", tabindex: "-1"}
+  %br
+  #part-contract.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partContractsLabel", role: "dialog", tabindex: "-1"}
 
 :javascript
   $("#smart-mod-eg2").click(function(e) {
@@ -92,6 +100,15 @@
     data = { authenticity_token: "#{form_authenticity_token}", worker_id: worker_id };
     load_url_ajax('#{part_worker_production_workers_path}', 'part-worker', data, null, 'POST');
     $('#part-worker').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function part_contract(worker_id) {
+    data = { authenticity_token: "#{form_authenticity_token}", worker_id: worker_id, typeofcontract: "Contrato" };
+    load_url_ajax('#{part_contract_production_workers_path}', 'part-contract', data, null, 'POST');
+    $('#part-contract').modal({
       keyboard: false,
       backdrop: 'static'
     });
