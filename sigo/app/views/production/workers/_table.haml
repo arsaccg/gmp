@@ -3,20 +3,115 @@
     %span.widget-icon
       %i.fa.fa-table
     %h2 Lista de Trabajadores
+    %ul.nav.nav-tabs.pull-right.in
+      %li.active
+        %a{"data-toggle" => "tab", href: "#hb1"}
+          %span.hidden-mobile.hidden-tablet Empleados
+      %li
+        %a{"data-toggle" => "tab", href: "#hb2"}
+          %span.hidden-mobile.hidden-tablet Obreros
+      %li
+        %a{"data-toggle" => "tab", href: "#hb3"}
+          %span.hidden-mobile.hidden-tablet Pensionistas
+      %li
+        %a{"data-toggle" => "tab", href: "#hb4"}
+          %span.hidden-mobile.hidden-tablet Personal en Formación
+      %li
+        %a{"data-toggle" => "tab", href: "#hb5"}
+          %span.hidden-mobile.hidden-tablet Externos
   %div
+    / widget edit box
     .jarviswidget-editbox
-    .widget-body.no-padding
-      .widget-body-toolbar
-      %table#dt_basic.table.table-striped.table-bordered.table-hover
-        %thead
-          %tr
-            %th N°
-            %th DNI
-            %th Nombre Completo
-            %th Categoria
-            %th Estado
-            %th Acciones
-        %tbody
+      / This area used as dropdown edit box
+    / end widget edit box
+    / widget content
+    .widget-body
+      .tab-content
+        #hb1.tab-pane.active
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th N°
+                        %th DNI
+                        %th Nombre Completo
+                        %th Categoria
+                        %th Estado
+                        %th Acciones
+                    %tbody
+        #hb2.tab-pane
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic2.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th N°
+                        %th DNI
+                        %th Nombre Completo
+                        %th Categoria
+                        %th Estado
+                        %th Acciones
+                    %tbody
+        #hb3.tab-pane
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic3.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th N°
+                        %th DNI
+                        %th Nombre Completo
+                        %th Categoria
+                        %th Estado
+                        %th Acciones
+                    %tbody
+        #hb4.tab-pane
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic4.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th N°
+                        %th DNI
+                        %th Nombre Completo
+                        %th Categoria
+                        %th Estado
+                        %th Acciones
+                    %tbody
+        #hb5.tab-pane
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic5.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th N°
+                        %th DNI
+                        %th Nombre Completo
+                        %th Categoria
+                        %th Estado
+                        %th Acciones
+                    %tbody
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -68,7 +163,55 @@
       sServerMethod: 'POST',
       sAjaxSource  : "#{show_workers_production_workers_path}",
       fnServerParams: function ( aoData ) {
-        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "empleado"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $('#dt_basic2').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      sAjaxSource  : "#{show_workers_production_workers_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "obrero"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $('#dt_basic3').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      sAjaxSource  : "#{show_workers_production_workers_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "pensionista"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $('#dt_basic4').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      sAjaxSource  : "#{show_workers_production_workers_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "formacion"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $('#dt_basic5').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      sAjaxSource  : "#{show_workers_production_workers_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "externo"} );
       },
       sPaginationType : 'bootstrap_full'
     });

@@ -7,17 +7,49 @@
     = simple_form_for([:logistics, @bank], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
-          %section.col.col-10
+          %section.col.col-6
             %label.label Nombre
             %label.input{for: "business_name"}
               %i.icon-append.fa.fa-superscript
               = f.input :business_name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
-            %label.label Ruc
+          %section.col.col-3
+            %label.label RUC
             %label.input{for: "ruc"}
               %i.icon-append.fa.fa-user
-              = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false          
+              = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false 
+          %section.col.col-3
+            %label.label Moneda
+            %select#money.select2.form-control{:name => "bank[money_id]"}
+              %option{:value => "0"} Seleccione una Moneda
+              - @money.each do |ph|
+                %option{:value => "#{ph.id}", :selected => "#{@bank.money_id}"=="#{ph.id}"}
+                  = ph.name+" ("+ph.symbol+")"
+
+        .row
+          %section.col.col-4
+            %label.label Tipo de Cuenta
+            %label.input
+              %i.icon-append.fa.fa-superscript
+              = f.input :account_type, placeholder: "Tipo de Cuenta", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label Número de Cuenta
+            %label.input{for: "ruc"}
+              %i.icon-append.fa.fa-superscript
+              = f.input :account_number, placeholder: "Número", input_html: { class: 'form-control' }, label: false
+
+        .row
+          %section.col.col-4
+            %label.label Cta. Detracción
+            %label.input
+              %i.icon-append.fa.fa-superscript
+              = f.input :account_detraction, placeholder: "Cta. Detracción", input_html: { class: 'form-control' }, label: false
+          %section.col.col-4
+            %label.label CCI
+            %label.input{for: "ruc"}
+              %i.icon-append.fa.fa-superscript
+              = f.input :cci, placeholder: "Número", input_html: { class: 'form-control' }, label: false
+
+
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save
@@ -43,6 +75,12 @@
             },
             'bank[ruc]' : {
               required : true
+            },
+            'bank[account_type]' : {
+              required : true
+            },
+            'bank[account_number]' : {
+              required : true
             }
           },
 
@@ -53,7 +91,13 @@
              },
             'bank[ruc]' : {
               required : '(*)'
-             }
+             },
+            'bank[account_type]' : {
+              required : '(*)'
+            },
+            'bank[account_number]' : {
+              required : '(*)'
+            }
           },
 
           // Do not change code below
