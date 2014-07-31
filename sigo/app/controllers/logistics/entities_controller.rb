@@ -31,7 +31,7 @@ class Logistics::EntitiesController < ApplicationController
     if entity.save
       flash[:notice] = "Se ha creado correctamente la entidad."
       if params[:button_id]=='trabajadores'
-        redirect_to url_for(:controller => "production/workers", :action => :new, :company_id => @company_id)
+        redirect_to url_for(:controller => "production/workers", :action => :new, :company_id => @company_id, :dni => entity.dni)
       else
         redirect_to :action => :index, company_id: params[:company_id]
       end
