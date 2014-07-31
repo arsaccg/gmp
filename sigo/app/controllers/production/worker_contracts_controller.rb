@@ -30,6 +30,7 @@ class Production::WorkerContractsController < ApplicationController
       @action = 'edit'
       @workercontract = WorkerContract.find_by_id(params[:contract])
       @worker_id = @workercontract.worker_id
+      @worker = Worker.find_by_id(@worker_id)
     end
     if @typeofcontract == 'Renovación'
       @action = 'edit'
@@ -38,7 +39,7 @@ class Production::WorkerContractsController < ApplicationController
       @diff = (@workercontract.end_date - @workercontract.start_date).to_i
       @workercontract.start_date = @workercontract.end_date.to_date + 1.days
       @workercontract.end_date = @workercontract.end_date.to_date + @diff.days
-      puts @diff.inspect
+      @worker = Worker.find_by_id(@worker_id)
     end
     render :new, layout: false
   end
@@ -47,6 +48,7 @@ class Production::WorkerContractsController < ApplicationController
     flash[:error] = nil
     workercontract = WorkerContract.new(worker_contract_parameters)
     workercontract.end_date_2 = params[:worker_contract]['end_date']
+    workercontract.status = 1
     if workercontract.save
       flash[:notice] = "Se ha creado correctamente el contrato."
       @worker = Worker.find_by_id(params[:worker_contract]['worker_id'])
@@ -76,7 +78,8 @@ class Production::WorkerContractsController < ApplicationController
     workercontract = WorkerContract.find(params[:id])
     workercontract2 = WorkerContract.new(worker_contract_parameters)
     workercontract2.end_date_2 = params[:worker_contract]['end_date']
-    if workercontract.update_attributes({end_date_2: (params[:worker_contract]['start_date'].to_date - 1.days)}) && workercontract2.save
+    workercontract2.status = 1
+    if workercontract.update_attributes({end_date_2: (params[:worker_contract]['start_date'].to_date - 1.days), status: 0}) && workercontract2.save
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index, worker_id: params[:worker_contract]['worker_id']
     else
@@ -97,6 +100,6 @@ class Production::WorkerContractsController < ApplicationController
 
   private
   def worker_contract_parameters
-    params.require(:worker_contract).permit(:camp, :contract_type_id, :article_id, :destaque, :salary, :regime, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract)
+    params.require(:worker_contract).permit(:camp, :contract_type_id, :article_id, :destaque, :salary, :regime, :bonus, :viatical, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract)
   end
 end
