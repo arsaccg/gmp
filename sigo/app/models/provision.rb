@@ -58,7 +58,7 @@ class Provision < ActiveRecord::Base
     sum = 0
 
     provision_obj.provision_direct_purchase_details.each do |direct_purchase|
-      sum += (direct_purchase.unit_price_before_igv + direct_purchase.quantity_igv.to_ + direct_purchase.discount_after.to_f)
+      sum += (direct_purchase.unit_price_before_igv.to_f + direct_purchase.quantity_igv.to_f + direct_purchase.discount_after.to_f)
     end
     
     return sum
