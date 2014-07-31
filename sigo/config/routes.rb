@@ -287,6 +287,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_otherstudy_item_field'
         post 'add_experience_item_field'
         post 'show_workers'
+        post 'show_workers_empleados'
         post 'part_worker'
         post 'part_contract'
       end

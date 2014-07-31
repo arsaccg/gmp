@@ -41,6 +41,7 @@
                         %th DNI
                         %th Nombre Completo
                         %th Cargo
+                        %th Fecha de Fin/Cese de Contrato
                         %th Estado
                         %th Acciones
                     %tbody
@@ -161,7 +162,7 @@
       sProcessing  : true,
       bServerSide  : true,
       sServerMethod: 'POST',
-      sAjaxSource  : "#{show_workers_production_workers_path}",
+      sAjaxSource  : "#{show_workers_empleados_production_workers_path}",
       fnServerParams: function ( aoData ) {
         aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "empleado"} );
       },

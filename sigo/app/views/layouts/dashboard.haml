@@ -705,22 +705,22 @@
         .modal-content
           .modal-header{"style"=>"background-color:#296191; color:white;"}
             %button{"class"=>"close", "data-dismiss"=>"modal"}
-              %span{"aria-hidden"=>"true"} &times;
+              %span{"aria-hidden"=>"true","style"=>"color:white;"} &times;
               %span{"class"=>"sr-only"} Close
             %h4{"class"=>"modal-title", "id"=>"cost_center_general_data","style"=>"margin-left:35%;font-weight:900;"} Datos Generales del Proyecto
-          .modal-body{"style"=>"background-color:#E6E6E6;"}
+          .modal-body{"style"=>"background-color:#E6E6E6;font-size: 115%;"}
             - if !@cost_center_detail.nil?
               %table{"style"=>"margin-left:30px;margin-right:30px;height:auto;"}
                 %tr
-                  %td{"style"=>"width:32%;"}
+                  %td{"style"=>"width:27%;font-size:90%;"}
                     %strong NOMBRE DE LA OBRA:
-                  %td=@cost_center_detail.name
+                  %td{"style"=>"font-weight:900;"}=@cost_center_detail.name
                 %tr{"style"=>"height:10px;"}
 
               %table{"style"=>"margin-left:30px;margin-right:30px;height:auto;"}
 
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong ENTIDAD:
                   %td
                     -if !Entity.find_by_id(@cost_center_detail.entity_id).nil?
@@ -729,102 +729,102 @@
                       =""
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong NOMBRE DEL CONTRATISTA:
                   %td=@company.name
 
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong DIRECCIÓN:
                   %td=@company.address
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong RUC:
                   %td{"style"=>"width:35%;"}=@company.ruc
 
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong CONDICIÓN TRIBUTARIA AMAZÓNICA: 
                   %td=@cost_center_detail.amazon_tax_condition
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong CONSORCIADOS Y PARTICIPACIÓN: 
                   %td
                     %div{"style"=>"display:inline;"}
                       -EntityCostCenterDetail.where("cost_center_detail_id ="+ @cost_center_detail.id.to_s).each do |c|
                         %div{"style"=>"margin-bottom:3px;"}=Entity.find(c.entity_id.to_s).name + " ( "+c.participation.to_s+"% )"
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong FECHA DE CONVOCATORIA:
                   %td=@cost_center_detail.call_date
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong NÚMERO DE PROCESO:
                   %td=@cost_center_detail.process_number
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong CÓDIGO SNIP: 
                   %td=@cost_center_detail.snip_code
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong FECHA DE BUENA PRO:
                   %td=@cost_center_detail.good_pro_date
 
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong VALOR REFERENCIAL: 
                   %td=@cost_center_detail.referential_value
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong VALOR GANADO:
                   %td=@cost_center_detail.earned_value
 
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong COSTO DIRECTO:
                   %td=@cost_center_detail.direct_cost
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong GASTOS GENERALES: 
                   %td=@cost_center_detail.general_cost
 
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong UTILIDAD:
                   %td=@cost_center_detail.utility
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong IGV: 
                   %td=@cost_center_detail.IGV
 
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong FECHA FIRMA DEL CONTRATO:
                   %td=@cost_center_detail.contract_sign_date
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong NÚMERO DE CONTRATO:
                   %td=@cost_center_detail.contract_number
 
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong FECHA ENTREGA DE TERRENO: 
                   %td=@cost_center_detail.land_delivery_date
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong FECHA DE SOLICITUD DEL ADELANTO DIRECTO:
                   %td=@cost_center_detail.direct_advanced_form_date
 
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong FECHA DE PAGO DEL ADELANTO DIRECTO: 
                   %td=@cost_center_detail.direct_advanced_payment_date
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong FECHA DE INICIO DE OBRA:
                   %td=@cost_center_detail.start_date_of_work
 
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong SISTEMA DE CONTRATACIÓN:
                   %td
                     -if @cost_center_detail.procurement_system=="unit_price"
@@ -835,22 +835,21 @@
                       ="Mixto"
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong PLAZO DE EJECUCIÓN (DIAS CALENDARIO): 
                   %td=@cost_center_detail.execution_term
 
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong SUPERVISIÓN:
                   %td=@cost_center_detail.supervision
                 %tr{"style"=>"height:10px;"}
                 %tr
-                  %td
+                  %td{"style"=>"font-size:90%;"}
                     %strong FECHA DE PAGO DEL ADELANTO DE MATERIALES: 
                   %td=@cost_center_detail.material_advanced_payment_date                  
             - else
               %h2 Datos no encontrados.         
-          .modal-footer{"style"=>"margin-top:0px;background-color:#E6E6E6"}
-            %button{"type"=>"button", "class"=>"btn btn-primary","data-dismiss"=>"modal" }Cerrar
+          .modal-footer{"style"=>"margin-top:0px;background-color:#296191"}
             
 
     / END SHORTCUT AREA

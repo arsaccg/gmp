@@ -45,10 +45,10 @@
                 - @articles.each do |article|
                   - if @workercontract.article_id == article.id
                     %option{:value => "#{article.id}", :selected => true}
-                      = article.name
+                      = article.code + ' ' + article.name
                   - else
                     %option{:value => "#{article.id}"}
-                      = article.name
+                      = article.code + ' ' + article.name
         .row
           %section.col.col-md-12
             .col-md-1
@@ -77,6 +77,20 @@
             .col-md-5
               %label.input{for: "regime"}
                 = f.input :regime, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-md-12
+            .col-md-1
+              %label.label Bonificación
+            .col-md-5
+              %label.input{for: "bonus"}
+                = f.input :bonus, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-md-12
+            .col-md-1
+              %label.label Viáticos
+            .col-md-5
+              %label.input{for: "viatical"}
+                = f.input :viatical, input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-md-12
             .col-md-1
