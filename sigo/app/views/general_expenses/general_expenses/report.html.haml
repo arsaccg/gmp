@@ -13,7 +13,7 @@
               %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;"} No Hay Datos Ingresados
           %tr
             %th{"style"=>"text-align:center"} Fecha:
-            %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;"}= GeneralExpense.last.updated_at.strftime('%d-%m-%Y')
+            %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;"}= GeneralExpense.last.updated_at.strftime('%d-%m-%Y') rescue Time.now.strftime('%d-%m-%Y')
           %tr
             %th{"style"=>"text-align:right"} C.D. (S/.) :
             -if @ccd!=nil
