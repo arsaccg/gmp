@@ -11,8 +11,7 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
   end
 
   def report
-    @work_name = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center').to_s).name
-    @dc = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center').to_s).direct_cost
+    @ccd = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center').to_s)
     @ge = GeneralExpense.where('cost_center_id = '+get_company_cost_center('cost_center').to_s)
     @get = Array.new
     @t = Array.new
