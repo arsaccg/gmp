@@ -1,15 +1,21 @@
 class Administration::ProvisionArticlesController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+
   def index
-    @provision = Provision.all
+    @provision = Provision.where('order_id IS NULL')
     @documentProvision = DocumentProvision.first
+    render layout: false
+  end
+
+  def show
+    @provision = Provision.find(params[:id])
     render layout: false
   end
 
   def new
     @provision = Provision.new
-    @documentProvisions = DocumentProvision.where(:order_id => nil)
+    @documentProvisions = DocumentProvision.all
     @suppliers = TypeEntity.find_by_preffix('P').entities
     @cost_center = get_company_cost_center("cost_center")
 
@@ -31,6 +37,12 @@ class Administration::ProvisionArticlesController < ApplicationController
 
     @action = 'edit'
     render layout: false
+  end
+
+  def destroy
+    provision = Provision.find(params[:id])
+    provision.provision_direct_purchase_details.destroy_all
+
   end
 
   #CUSTOM METHODS

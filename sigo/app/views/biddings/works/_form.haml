@@ -19,26 +19,12 @@
                     .input-group
                       %select.form-control#specialty-select{:name =>"work[specialty]"}
                         -if @action=="edit"
-                          -if @work.specialty=="Saneamiento"
-                            %option{:value => "Saneamiento", :selected => 'selected'} Saneamiento
-                            %option{:value => "Civil"} Civil
-                            %option{:value => "Electromecanico"} Electromecanico
-                            %option{:value => "Hidraulica"} Hidráulica
-                          -elsif @work.specialty=="Civil"
-                            %option{:value => "Saneamiento"} Saneamiento
-                            %option{:value => "Civil", :selected => 'selected'} Civil
-                            %option{:value => "Electromecanico"} Electromecanico
-                            %option{:value => "Hidraulica"} Hidráulica
-                          -elsif @work.specialty=="Electromecanico"
-                            %option{:value => "Saneamiento"} Saneamiento
-                            %option{:value => "Civil"} Civil
-                            %option{:value => "Electromecanico", :selected => 'selected'} Electromecanico
-                            %option{:value => "Hidraulica"} Hidráulica
-                          -elsif @work.specialty=="Hidraulica"
-                            %option{:value => "Saneamiento"} Saneamiento
-                            %option{:value => "Civil"} Civil
-                            %option{:value => "Electromecanico"} Electromecanico
-                            %option{:value => "Hidraulica", :selected => 'selected'} Hidráulica
+                          -if @work.specialty!=nil
+                            %option{:value => "Saneamiento", :selected => "#{@work.specialty}"=="Saneamiento"} Saneamiento
+                            %option{:value => "Civil", :selected => "#{@work.specialty}"=="Civil"} Civil
+                            %option{:value => "Electromecanico", :selected => "#{@work.specialty}"=="Electromecanico"} Electromecanico
+                            %option{:value => "Hidraulica", :selected => "#{@work.specialty}"=="Hidraulica"} Hidráulica
+         
                           -else
                             %option{:value => "Saneamiento"} Saneamiento
                             %option{:value => "Civil"} Civil

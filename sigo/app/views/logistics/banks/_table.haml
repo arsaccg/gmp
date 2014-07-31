@@ -12,6 +12,11 @@
           %tr
             %th Nombre
             %th RUC
+            %th Moneda
+            %th Tipo Cta.
+            %th Cta.      
+            %th Cta. Detracción           
+            %th CCI
             %th Acciones
         %tbody
           - @banks.each do |unit|
@@ -20,6 +25,16 @@
                 = unit.business_name
               %td
                 = unit.ruc
+              %td 
+                = Money.find(unit.money_id).name rescue ''
+              %td
+                = unit.account_type
+              %td 
+                = unit.account_number
+              %td
+                = unit.account_detraction
+              %td 
+                = unit.cci            
               %td
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_bank_path(unit.id)}', 'content', null, null, 'GET')"}
                   Editar

@@ -65,7 +65,8 @@
                     = other_cc.name
       / pulled right: nav area
       .pull-right
-        / collapse menu button
+        / collapse menu button   
+
         #hide-menu.btn-header.pull-right
           %span
             %a{href: "javascript:void(0);", title: "Collapse Menu"}
@@ -84,6 +85,13 @@
               %i.fa.fa-suitcase
         
         / end search mobile button
+        /cost center details button
+        .btn-header.pull-right
+          %span
+            %a{"href"=> "#", "data-toggle"=>"modal", "data-target"=>"#cost_center_general_data", title: "Datos generales del centro de costo"}
+              %i.fa.fa-folder-open
+        /end cost center details button
+
         / input: search field
       / end pulled right: nav area
     / END HEADER
@@ -542,6 +550,10 @@
                   %i.fa.fa-lg.fa-fw.fa-list-alt
                   Provisiones (Compra Directa)
               %li
+                %a{href: "#", title: "Ordenes de Pago"}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  Ordenes de pago
+              %li
                 %a{href: '#'}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
                   Personal
@@ -678,7 +690,7 @@
 
     %a{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modalLoading"}
 
-    #modalLoading.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
+    #modalLoadingLabelading.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
       .modal-dialog
         .modal-content
           .modal-body
@@ -687,6 +699,138 @@
                 %h3 Cargando Contenido...
                 .progress.progress-sm.progress-striped.active
                   .progress-bar.bg-color-darken{role: "progressbar", style: "width: 100%"}
+
+    #cost_center_general_data.modal.fade{"aria-hidden" => "true", role: "dialog", tabindex: "-1"}
+      .modal-dialog
+        .modal-content
+          .modal-header
+            %button{"class"=>"close", "data-dismiss"=>"modal"}
+              %span{"aria-hidden"=>"true"} &times;
+              %span{"class"=>"sr-only"} Close
+            %h4{"class"=>"modal-title", "id"=>"cost_center_general_data"} Datos Generales del Centro de Costo
+          .modal-body
+          - if !@cost_center_detail.nil?
+            %table
+              %tr
+                %td
+                  %strong NOMBRE DE LA OBRA:
+                %td=@cost_center_detail.name
+              %tr
+                %td
+                  %strong NOMBRE DEL CONTRATISTA:
+                %td=@company.name
+              %tr
+                %td
+                  %strong ENTIDAD:
+                %td
+                  -if !Entity.find_by_id(@cost_center_detail.entity_id).nil?
+                    =Entity.find_by_id(@cost_center_detail.entity_id).name
+                  -else
+                    =""
+              %tr
+                %td
+                  %strong DIRECCIÓN:
+                %td=@company.address
+              %tr
+                %td
+                  %strong RUC:
+                %td=@company.ruc
+              %tr
+                %td
+                  %strong CONDICIÓN TRIBUTARIA AMAZÓNICA: 
+                %td=@cost_center_detail.amazon_tax_condition
+              %tr
+                %td
+                  %strong FECHA DE CONVOCATORIA:
+                %td=@cost_center_detail.call_date
+              %tr
+                %td
+                  %strong NÚMERO DE PROCESO:
+                %td=@cost_center_detail.process_number
+              %tr
+                %td
+                  %strong CÓDIGO SNIP: 
+                %td=@cost_center_detail.snip_code
+              %tr
+                %td
+                  %strong FECHA DE BUENA PRO:
+                %td=@cost_center_detail.good_pro_date
+              %tr
+                %td
+                  %strong VALOR REFERENCIAL: 
+                %td=@cost_center_detail.referential_value
+              %tr
+                %td
+                  %strong VALOR GANADO:
+                %td=@cost_center_detail.earned_value
+              %tr
+                %td
+                  %strong COSTO DIRECTO:
+                %td=@cost_center_detail.direct_cost
+              %tr
+                %td
+                  %strong GASTOS GENERALES: 
+                %td=@cost_center_detail.general_cost
+              %tr
+                %td
+                  %strong UTILIDAD:
+                %td=@cost_center_detail.utility
+              %tr
+                %td
+                  %strong IGV: 
+                %td=@cost_center_detail.IGV
+              %tr
+                %td
+                  %strong FECHA FIRMA DEL CONTRATO:
+                %td=@cost_center_detail.contract_sign_date
+              %tr
+                %td
+                  %strong NÚMERO DE CONTRATO:
+                %td=@cost_center_detail.contract_number
+              %tr
+                %td
+                  %strong FECHA ENTREGA DE TERRENO: 
+                %td=@cost_center_detail.land_delivery_date
+              %tr
+                %td
+                  %strong FECHA DE SOLICITUD DEL ADELANTO DIRECTO:
+                %td=@cost_center_detail.direct_advanced_form_date
+              %tr
+                %td
+                  %strong FECHA DE PAGO DEL ADELANTO DIRECTO: 
+                %td=@cost_center_detail.direct_advanced_payment_date
+              %tr
+                %td
+                  %strong FECHA DE INICIO DE OBRA:
+                %td=@cost_center_detail.start_date_of_work
+              %tr
+                %td
+                  %strong SISTEMA DE CONTRATACIÓN:
+                %td
+                  -if @cost_center_detail.procurement_system=="unit_price"
+                    ="Precio Unitario"
+                  -if @cost_center_detail.procurement_system=="advance_sum"
+                    ="Suma Avanzada"
+                  -if @cost_center_detail.procurement_system=="mixto"
+                    ="Mixto"
+              %tr
+                %td
+                  %strong PLAZO DE EJECUCIÓN (DIAS CALENDARIO): 
+                %td=@cost_center_detail.execution_term
+              %tr
+                %td
+                  %strong SUPERVISIÓN:
+                %td=@cost_center_detail.supervision
+              %tr
+                %td
+                  %strong FECHA DE PAGO DEL ADELANTO DE MATERIALES: 
+                %td=@cost_center_detail.material_advanced_payment_date                  
+          - else
+            %h2 Datos no encontrados.         
+          .modal-footer
+            %button{"type"=>"button", "class"=>"btn btn-default","data-dismiss"=>"modal" }Cerrar
+            
+
     / END SHORTCUT AREA
     / ==================================================
     /
