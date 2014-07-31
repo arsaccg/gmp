@@ -7,13 +7,19 @@
             %th{'colspan' => 10, "style"=>"text-align:center;font-size: large"} DESAGREGADO DE GASTOS GENERALES Y UTILIDAD
           %tr
             %th{"style"=>"text-align:center"} Obra: 
-            %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;"}= @work_name.to_s
+            -if @work_name!=nil
+              %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;"}= @work_name.to_s
+            -else
+              %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;"} No Hay Datos Ingresados
           %tr
             %th{"style"=>"text-align:center"} Fecha:
             %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;"}= GeneralExpense.last.updated_at.strftime('%d-%m-%Y')
           %tr
             %th{"style"=>"text-align:right"} C.D. (S/.) :
-            %th{"style"=>"text-align:left;font-weight: normal;"}= number_to_currency(@dc, unit: 'S/. ', precision: 2)
+            -if @dc!=nil
+              %th{"style"=>"text-align:left;font-weight: normal;"}= number_to_currency(@dc, unit: 'S/. ', precision: 2)
+            -else
+              %th{"style"=>"text-align:left;font-weight: normal;"} No Hay Datos Ingresados
             %th{'colspan' => 8,"style"=>"text-align:right"}
           %tr
             %th{"style"=>"text-align:left"} Codigo
