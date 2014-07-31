@@ -2,7 +2,7 @@
   .row
     .col-xs-12.col-sm-7.col-md-7.col-lg-12
       %h1.page-title.txt-color-blueDark
-        = "Trabajador" + ': ' + @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s + ' ' + @worker.entity.name.to_s
+        = "Trabajador" + ': ' + @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s + ' ' + @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s
       %br
         %table.table.table-bordered{ style: "width: 900px;margin: 0 auto" }
           %thead
@@ -14,54 +14,69 @@
               %th{'colspan' => 5,"style"=>"font-weight: 500"}= @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s + ' ' + @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s
             %tr
               %th Cargo del Trabajador
-              %th{'colspan' => 2}= @worker.position_worker.name
+              %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.position_worker.name
               %th Fecha de Nacimiento
-              %th{'colspan' => 2}= @worker.entity.date_of_birth.to_s
+              %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.entity.date_of_birth.to_s
             %tr
               %th DNI
-              %th{'colspan' => 2}= @worker.entity.dni.to_s
+              %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.entity.dni.to_s
               %th Carnet de Extranjeria
-              %th{'colspan' => 2}= @worker.entity.alienslicense.to_s
+              %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.entity.alienslicense.to_s
             %tr
               %th Email
-              %th{'colspan' => 2}= @worker.email
+              %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.email
               %th Estado Civil
-              %th{'colspan' => 2}= @worker.maritalstatus
+              %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.maritalstatus
             %tr
               %th Teléfono
-              %th{'colspan' => 2}= @worker.phone
+              %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.phone
               %th Celular
-              %th{'colspan' => 2}= @worker.cellphone
+              %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.cellphone
             %tr
               %th Licencia de Conducir
-              %th{'colspan' => 2}= @worker.driverlicense
+              %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.driverlicense
               %th CUSPP
-              %th{'colspan' => 2}= @worker.afpnumber
+              %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.afpnumber
             %thead
               %tr
                 %th{"style"=>"text-align:center",'colspan' => 6} Lugar de Nacimiento
             %tbody
               %th Ciudad
-              %th{"style"=>"text-align:center;"}= @worker.entity.city
+              %th{"style"=>"font-weight: 500"}= @worker.entity.city
               %th Provincia
-              %th{"style"=>"text-align:center;"}= @worker.entity.province
+              %th{"style"=>"font-weight: 500"}= @worker.entity.province
               %th Departamento
-              %th{"style"=>"text-align:center;"}= @worker.entity.department
+              %th{"style"=>"font-weight: 500"}= @worker.entity.department
             %thead
               %tr
                 %th{"style"=>"text-align:center",'colspan' => 6} Residencia Actual
             %tbody
               %tr
                 %th Direccion
-                %th{'colspan' => 3,"style"=>"text-align:center;"}= @worker.address
+                %th{'colspan' => 3,"style"=>"font-weight: 500"}= @worker.address
                 %th Pais
-                %th{"style"=>"text-align:center;"}= @worker.pais
+                %th{"style"=>"font-weight: 500"}= @worker.pais
               %th Distrito
-              %th{"style"=>"text-align:center;"}= @worker.district
+              %th{"style"=>"font-weight: 500"}= @worker.district
               %th Provincia
-              %th{"style"=>"text-align:center;"}= @worker.province
+              %th{"style"=>"font-weight: 500"}= @worker.province
               %th Departamento
-              %th{"style"=>"text-align:center;"}= @worker.department
+              %th{"style"=>"font-weight: 500"}= @worker.department
+            %thead
+              %tr
+                %th{"style"=>"text-align:center",'colspan' => 6} Otros Datos
+            %tbody
+              %th Discapacitado
+              %th{"style"=>"font-weight: 500"}= @worker.disabled
+              %th Sindicalizado
+              %th{"style"=>"font-weight: 500"}= @worker.unionized
+              %th Percibe rentas de 5ta exoneradas (Inc. e) Art. 19 de la LIR
+              %th{"style"=>"font-weight: 500"}= @worker.income_fifth_category
+              %tr
+                %th Jornada Laboral
+                %th{'colspan' => 3,"style"=>"font-weight: 500"}= @worker.address
+                %th Cantidad de Hijos
+                %th{"style"=>"font-weight: 500"}= @worker.numberofchilds.to_s
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
   %i.fa.fa-arrow-left>
