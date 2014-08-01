@@ -33,9 +33,9 @@
               %td
                 = number_to_currency(Provision.sumProvisionDetailDirectPurchaseAfterIGV(provision), unit: 'S/. ', precision: 2)
               %td
-                %a.btn.btn-warning.btn-xs
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_administration_provision_path(provision.id)}', 'content', null, null, 'GET')"}
                   Editar
-                %a.btn.btn-danger.btn-xs
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar' , :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{administration_provision_article_path(provision.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{administration_provision_articles_path}')"}}
                   Eliminar
 
 :javascript
