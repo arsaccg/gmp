@@ -122,6 +122,21 @@
       });
     }
 
+    $('#payment_order_net_pay').keyup(function(){
+      net_pay = parseFloat($(this).val());
+      limit = parseFloat($('#total_quantity_provision').val());
+      if( net_pay > limit ){
+        $(this).val(limit);
+        $.smallBox({
+          title: "No puedes pagar más del total de la provisión.",
+          content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+          color: "#c46a69",
+          iconSmall: "fa fa-times bounce animated",
+          timeout: 4000
+        });
+      }
+    });
+
   });
   
   function submit_validate(form){
