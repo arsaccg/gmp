@@ -121,7 +121,7 @@ class Worker < ActiveRecord::Base
           part_person[3],
           part_person[1], 
           part_person[2], 
-          "Trabajando",
+          " - ",
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Informacion </a> " + "<a class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
         ]
       elsif part_person[4]=="registered"
@@ -130,7 +130,7 @@ class Worker < ActiveRecord::Base
           part_person[3],
           part_person[1], 
           part_person[2], 
-          "Registrado",
+          "REGISTRADO",
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Informacion </a> " + "<a class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "
         ]
       elsif part_person[4]=="active"
@@ -139,7 +139,7 @@ class Worker < ActiveRecord::Base
           part_person[3],
           part_person[1], 
           part_person[2], 
-          "Activo",
+          "<span class='label label-primary' style='font-size: x-small;'> ACTIVO </span>",
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Informacion </a> " + "<a class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "
         ]
       elsif part_person[4]=="ceased"
@@ -148,7 +148,7 @@ class Worker < ActiveRecord::Base
           part_person[3],
           part_person[1], 
           part_person[2], 
-          "Cesado",
+          "<span class='label label-default' style='font-size: x-small;'> CESADO </span>",
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Informacion </a> "
         ]
       else
@@ -213,7 +213,7 @@ class Worker < ActiveRecord::Base
           part_person[3],
           part_person[1], 
           part_person[2], 
-          "Trabajando",
+          " - ",
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Informacion </a> " + "<a class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
         ]
       elsif part_person[4]=="registered"
@@ -222,7 +222,7 @@ class Worker < ActiveRecord::Base
           part_person[3],
           part_person[1], 
           part_person[2], 
-          "Registrado",
+          "REGISTRADO",
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Informacion </a> " + "<a class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "
         ]
       elsif part_person[4]=="active"
@@ -231,8 +231,8 @@ class Worker < ActiveRecord::Base
           part_person[3],
           part_person[1], 
           part_person[2], 
-          "Activo",
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Informacion </a> " + "<a class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "
+          "<span class='label label-primary' style='font-size: x-small;'> ACTIVO </span>",
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + " <a class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "
         ]
       elsif part_person[4]=="ceased"
         result << [
@@ -240,7 +240,7 @@ class Worker < ActiveRecord::Base
           part_person[3],
           part_person[1], 
           part_person[2], 
-          "Cesado",
+          "<span class='label label-default' style='font-size: x-small;'> CESADO </span>",
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Informacion </a> "
         ]
       else

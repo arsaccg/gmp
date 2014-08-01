@@ -7,18 +7,28 @@
       %li.active
         %a{"data-toggle" => "tab", href: "#hb1"}
           %span.hidden-mobile.hidden-tablet Empleados
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = @empleados
       %li
         %a{"data-toggle" => "tab", href: "#hb2"}
           %span.hidden-mobile.hidden-tablet Obreros
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = @obreros
       %li
         %a{"data-toggle" => "tab", href: "#hb3"}
           %span.hidden-mobile.hidden-tablet Pensionistas
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = @pensionistas
       %li
         %a{"data-toggle" => "tab", href: "#hb4"}
           %span.hidden-mobile.hidden-tablet Personal en Formación
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = @formaciones
       %li
         %a{"data-toggle" => "tab", href: "#hb5"}
           %span.hidden-mobile.hidden-tablet Externos
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = @externos
   %div
     / widget edit box
     .jarviswidget-editbox
