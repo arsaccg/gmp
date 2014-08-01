@@ -35,6 +35,19 @@
               %option(value = "EXTINCIÓN O LIQUIDACIÓN DEL EMPLEADOR") EXTINCIÓN O LIQUIDACIÓN DEL EMPLEADOR
               %option(value = "OTROS MOTIVOS DE CADUCIDAD DE LA PENSIÓN (1)") OTROS MOTIVOS DE CADUCIDAD DE LA PENSIÓN (1)
               %option(value = "NO SE INICIÓ LA RELACIÓN LABORAL O PRESTACIÓN EFECTIVA DE SERVICIOS") NO SE INICIÓ LA RELACIÓN LABORAL O PRESTACIÓN EFECTIVA DE SERVICIOS
+        .row
+          %section.col.col-3
+          %label Comentarios
+          = text_area_tag 'comment', nil, class: 'form-control', id: 'comment', placeholder: 'Comentarios'
+        .row
+          %section.col.col-md-12
+            .col-md-5
+              %label.label Documento
+            .col-md-7
+              = file_field_tag "document", class: 'btn btn-default', id: 'document', label: false, as: "file"
+              %p.help-block
+                - if @action == 'edit' && @workercontract.document.exists?
+                  = 'Archivo subido: ' + File.basename(@workercontract.document.path, File.extname(@workercontract.document.path))
         %br
       %footer
         %button.btn.btn-primary#smart-mod-eg1{type: "button"}
@@ -55,7 +68,7 @@
       buttons : '[No][Yes]'
     }, function(ButtonPressed) {
       if (ButtonPressed === "Yes") {
-        load_url_ajax('#{cancel_production_worker_path(@worker.id)}', 'content', {worker_id: '#{@worker.id}', end_date_2: $('#end-date').val(), reason_for_termination: $('#reason-select').val()}, null, 'GET');
+        load_url_ajax('#{cancel_production_worker_path(@worker.id)}', 'content', {worker_id: '#{@worker.id}', end_date_2: $('#end-date').val(), comment: $('#comment').val(), document: $('#document').val(), reason_for_termination: $('#reason-select').val()}, null, 'GET');
         $('.modal-backdrop.fade.in').remove();
         $.smallBox({
           title : "Exito",
