@@ -59,6 +59,8 @@ class Administration::ProvisionsController < ApplicationController
   def edit
     @provision = Provision.find(params[:id])
     @documentProvisions = DocumentProvision.all
+    @account_accountants = AccountAccountant.all
+    @reg_n = ((Time.now.to_f)*100).to_i
     @action = 'edit'
     render layout: false
   end
