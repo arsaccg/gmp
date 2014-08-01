@@ -44,7 +44,7 @@
             .col-md-5
               %label.label Documento
             .col-md-7
-              = file_field_tag "document", class: 'btn btn-default', id: 'document', label: false, as: "file"
+              = file_field_tag "document", class: 'btn btn-default', id: 'document_cancel_worker', label: false, as: "file"
               %p.help-block
                 - if @action == 'edit' && @workercontract.document.exists?
                   = 'Archivo subido: ' + File.basename(@workercontract.document.path, File.extname(@workercontract.document.path))
@@ -68,7 +68,7 @@
       buttons : '[No][Yes]'
     }, function(ButtonPressed) {
       if (ButtonPressed === "Yes") {
-        load_url_ajax('#{cancel_production_worker_path(@worker.id)}', 'content', {worker_id: '#{@worker.id}', end_date_2: $('#end-date').val(), comment: $('#comment').val(), document: $('#document').val(), reason_for_termination: $('#reason-select').val()}, null, 'GET');
+        load_file_ajax('#document_cancel_worker', '#{cancel_production_worker_path(@worker.id)}', 'GET', {worker_id: '#{@worker.id}', end_date_2: $('#end-date').val(), comment: $('#comment').val(), document: $('#document').val(), reason_for_termination: $('#reason-select').val()}, 'content');
         $('.modal-backdrop.fade.in').remove();
         $.smallBox({
           title : "Exito",
