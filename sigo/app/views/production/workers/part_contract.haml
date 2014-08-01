@@ -26,7 +26,7 @@
             %label Categoría del Trabajador
           -elsif @worker.typeofworker=='empleado'
             %label Cargo del Trabajador
-          %select.form-control#article{:name =>"article_id", :style => 'padding: 0;border: none;'}
+          %select.form-control#article{:name =>"article_id", :style => 'padding: 0;border: none;z-index:2147483647'}
             - @articles.each do |article|
               %option{:value => "#{article.id}"}
                 = article.code + ' - ' + article.name

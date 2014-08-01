@@ -26,6 +26,13 @@ class Production::WorkersController < ApplicationController
     typeofworker = params[:typeofworker]
     pager_number = params[:iDisplayStart]
     keyword = params[:sSearch]
+    if keyword == 'activo'
+      keyword = 'active'
+    elsif keyword == 'registrado'
+      keyword = 'registered'
+    elsif keyword == 'cesado'
+      keyword = 'ceased'      
+    end
     array = Array.new
     cost_center = get_company_cost_center('cost_center')
     array = Worker.get_workers(typeofworker,cost_center, display_length, pager_number, keyword)
@@ -37,6 +44,13 @@ class Production::WorkersController < ApplicationController
     typeofworker = params[:typeofworker]
     pager_number = params[:iDisplayStart]
     keyword = params[:sSearch]
+    if keyword == 'activo'
+      keyword = 'active'
+    elsif keyword == 'registrado'
+      keyword = 'registered'
+    elsif keyword == 'cesado'
+      keyword = 'ceased'      
+    end
     array = Array.new
     cost_center = get_company_cost_center('cost_center')
     array = Worker.get_workers_empleados(typeofworker,cost_center, display_length, pager_number, keyword)
