@@ -79,178 +79,235 @@
                   %th{'colspan' => 3,"style"=>"font-weight: 500"}= @worker.address
                   %th Cantidad de Hijos
                   %th{"style"=>"font-weight: 500"}= @worker.numberofchilds.to_s
+        -if @worker_afps.count>0
+          %br
 
-        %br
-        .col-md-1
-        %article.col-sm-12.col-md-12.col-lg-12
-          #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
-            %header
-              %span.widget-icon
-                %i.fa.fa-table
-              %h2 AFP
-            %div
-              .jarviswidget-editbox
-                / This area used as dropdown edit box
-              .widget-body.no-padding
-                %table.table.table-hover
-                  %thead
-                    %tr
-                      %th AFP
-                      %th Tipo AFP
-                      %th Dia de Inicio
-                      %th Dia de Fin
-                  %tbody
+          %article.col-sm-12.col-md-12.col-lg-12
+            #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+              %header
+                %span.widget-icon
+                  %i.fa.fa-table
+                %h2 AFP
+              %div
+                .jarviswidget-editbox
+                  / This area used as dropdown edit box
+                .widget-body.no-padding
+                  %table.table.table-hover
+                    %thead
+                      %tr
+                        %th AFP
+                        %th Tipo AFP
+                        %th Dia de Inicio
+                        %th Dia de Fin
+                    %tbody
+                      - @worker_afps.each do |worker_afps|
+                        %tr
+                          %td
+                            = worker_afps.afp.enterprise.to_s
+                          %td
+                            = worker_afps.afptype.to_s
+                          %td
+                            = worker_afps.start_date.to_s
+                          %td
+                            = worker_afps.end_date.to_s
+        -if @worker_details.count>0
+          %br
 
-        %br
-        .col-md-1
-        %article.col-sm-12.col-md-12.col-lg-12
-          #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
-            %header
-              %span.widget-icon
-                %i.fa.fa-table
-              %h2 Bancos
-            %div
-              .jarviswidget-editbox
-                / This area used as dropdown edit box
-              .widget-body.no-padding
-                %table.table.table-hover
-                  %thead
-                    %tr
-                      %th Banco
-                      %th Numero de Cuenta
-                  %tbody
+          %article.col-sm-12.col-md-12.col-lg-12
+            #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+              %header
+                %span.widget-icon
+                  %i.fa.fa-table
+                %h2 Bancos
+              %div
+                .jarviswidget-editbox
+                  / This area used as dropdown edit box
+                .widget-body.no-padding
+                  %table.table.table-hover
+                    %thead
+                      %tr
+                        %th Banco
+                        %th Numero de Cuenta
+                    %tbody
+                      - @worker_details.each do |worker_details|
+                        %tr
+                          %td
+                            = worker_details.bank.business_name.to_s
+                          %td
+                            = worker_details.account_number.to_s
+        -if @worker_familiars.count>0
+          %br
 
-        %br
-        .col-md-1
-        %article.col-sm-12.col-md-12.col-lg-12
-          #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
-            %header
-              %span.widget-icon
-                %i.fa.fa-table
-              %h2 Familiares
-            %div
-              .jarviswidget-editbox
-                / This area used as dropdown edit box
-              .widget-body.no-padding
-                %table.table.table-hover
-                  %thead
-                    %tr
-                      %th Apellido Paterno
-                      %th Apellido Materno
-                      %th Nombres
-                      %th Parentezco
-                      %th Fecha de Nacimiento
-                      %th DNI
-                  %tbody
+          %article.col-sm-12.col-md-12.col-lg-12
+            #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+              %header
+                %span.widget-icon
+                  %i.fa.fa-table
+                %h2 Familiares
+              %div
+                .jarviswidget-editbox
+                  / This area used as dropdown edit box
+                .widget-body.no-padding
+                  %table.table.table-hover
+                    %thead
+                      %tr
+                        %th Apellido Paterno
+                        %th Apellido Materno
+                        %th Nombres
+                        %th Parentezco
+                        %th Fecha de Nacimiento
+                        %th DNI
+                    %tbody
+                      - @worker_familiars.each do |worker_familiars|
+                        %tr
+                          %td
+                            = worker_familiars.paternal_surname.to_s
+                          %td
+                            = worker_familiars.maternal_surname.to_s
+                          %td
+                            = worker_familiars.names.to_s
+                          %td
+                            = worker_familiars.relationship.to_s
+                          %td
+                            = worker_familiars.dayofbirth.to_s
+                          %td
+                            = worker_familiars.dni.to_s
+        -if @worker_healths.count>0
+          %br
 
-        %br
-        .col-md-1
-        %article.col-sm-12.col-md-12.col-lg-12
-          #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
-            %header
-              %span.widget-icon
-                %i.fa.fa-table
-              %h2 AFP
-            %div
-              .jarviswidget-editbox
-                / This area used as dropdown edit box
-              .widget-body.no-padding
-                %table.table.table-hover
-                  %thead
-                    %tr
-                      %th AFP
-                      %th Tipo AFP
-                      %th Dia de Inicio
-                      %th Dia de Fin
-                  %tbody
+          %article.col-sm-12.col-md-12.col-lg-12
+            #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+              %header
+                %span.widget-icon
+                  %i.fa.fa-table
+                %h2 Centros de Salud
+              %div
+                .jarviswidget-editbox
+                  / This area used as dropdown edit box
+                .widget-body.no-padding
+                  %table.table.table-hover
+                    %thead
+                      %tr
+                        %th Regimen
+                        %th Centro de Salud
+                        %th Dia de Inicio
+                        %th Dia de Fin
+                    %tbody
+                      - @worker_healths.each do |worker_healths|
+                        %tr
+                          %td
+                            = worker_healths.health_regime.to_s
+                          %td
+                            = worker_healths.health_center.enterprise.to_s rescue ''
+                          %td
+                            = worker_healths.start_date.to_s
+                          %td
+                            = worker_healths.end_date.to_s
+        -if @worker_center_of_studies.count>0
+          %br
 
-        %br
+          %article.col-sm-12.col-md-12.col-lg-12
+            #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+              %header
+                %span.widget-icon
+                  %i.fa.fa-table
+                %h2 Centros de Estudio
+              %div
+                .jarviswidget-editbox
+                  / This area used as dropdown edit box
+                .widget-body.no-padding
+                  %table.table.table-hover
+                    %thead
+                      %tr
+                        %th Universidad / Instituto
+                        %th Profesion
+                        %th Titulo
+                        %th Numero de Coleg.
+                        %th Dia de Inicio
+                        %th Dia de Fin
+                    %tbody
+                      - @worker_center_of_studies.each do |worker_center_of_studies|
+                        %tr
+                          %td
+                            = worker_center_of_studies.name.to_s
+                          %td
+                            = worker_center_of_studies.profession.to_s
+                          %td
+                            = worker_center_of_studies.title.to_s
+                          %td
+                            = worker_center_of_studies.numberoftuition.to_s
+                          %td
+                            = worker_center_of_studies.start_date.to_s
+                          %td
+                            = worker_center_of_studies.end_date.to_s
+        -if @worker_otherstudies.count>0
+          %br
 
-        %article.col-sm-12.col-md-12.col-lg-12
-          #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
-            %header
-              %span.widget-icon
-                %i.fa.fa-table
-              %h2 Centros de Salud
-            %div
-              .jarviswidget-editbox
-                / This area used as dropdown edit box
-              .widget-body.no-padding
-                %table.table.table-hover
-                  %thead
-                    %tr
-                      %th Regimen
-                      %th Centro de Salud
-                      %th Dia de Inicio
-                      %th Dia de Fin
-                  %tbody
+          %article.col-sm-12.col-md-12.col-lg-12
+            #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+              %header
+                %span.widget-icon
+                  %i.fa.fa-table
+                %h2 Otros Estudios
+              %div
+                .jarviswidget-editbox
+                  / This area used as dropdown edit box
+                .widget-body.no-padding
+                  %table.table.table-hover
+                    %thead
+                      %tr
+                        %th Estudio
+                        %th Nivel
+                    %tbody
+                      - @worker_otherstudies.each do |worker_otherstudies|
+                        %tr
+                          %td
+                            = worker_otherstudies.study.to_s
+                          %td
+                            = worker_otherstudies.level.to_s
+        -if @worker_experiences.count>0
+          %br
 
-        %br
-
-        %article.col-sm-12.col-md-12.col-lg-12
-          #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
-            %header
-              %span.widget-icon
-                %i.fa.fa-table
-              %h2 Centros de Estudio
-            %div
-              .jarviswidget-editbox
-                / This area used as dropdown edit box
-              .widget-body.no-padding
-                %table.table.table-hover
-                  %thead
-                    %tr
-                      %th Universidad / Instituto
-                      %th Profesion
-                      %th Titulo
-                      %th Numero de Coleg.
-                      %th Dia de Inicio
-                      %th Dia de Fin
-                  %tbody
-
-        %br
-
-        %article.col-sm-12.col-md-12.col-lg-12
-          #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
-            %header
-              %span.widget-icon
-                %i.fa.fa-table
-              %h2 Otros Estudios
-            %div
-              .jarviswidget-editbox
-                / This area used as dropdown edit box
-              .widget-body.no-padding
-                %table.table.table-hover
-                  %thead
-                    %tr
-                      %th Estudio
-                      %th Nivel
-                  %tbody
-
-        %br
-
-        %article.col-sm-12.col-md-12.col-lg-12
-          #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
-            %header
-              %span.widget-icon
-                %i.fa.fa-table
-              %h2 Experiencia Laboral
-            %div
-              .jarviswidget-editbox
-                / This area used as dropdown edit box
-              .widget-body.no-padding
-                %table.table.table-hover
-                  %thead
-                    %tr
-                      %th Empresa
-                      %th Dirección
-                      %th Cargo
-                      %th Salario
-                      %th Jefe Inmediato
-                      %th Motivo de Salida
-                      %th Fecha de Inicio
-                      %th Fecha de Fin
-                  %tbody
+          %article.col-sm-12.col-md-12.col-lg-12
+            #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+              %header
+                %span.widget-icon
+                  %i.fa.fa-table
+                %h2 Experiencia Laboral
+              %div
+                .jarviswidget-editbox
+                  / This area used as dropdown edit box
+                .widget-body.no-padding
+                  %table.table.table-hover
+                    %thead
+                      %tr
+                        %th Empresa
+                        %th Dirección
+                        %th Cargo
+                        %th Salario
+                        %th Jefe Inmediato
+                        %th Motivo de Salida
+                        %th Fecha de Inicio
+                        %th Fecha de Fin
+                    %tbody
+                      - @worker_experiences.each do |worker_experiences|
+                        %tr
+                          %td
+                            = worker_experiences.businessname.to_s
+                          %td
+                            = worker_experiences.businessaddress.to_s
+                          %td
+                            = worker_experiences.title.to_s
+                          %td
+                            = worker_experiences.salary.to_s
+                          %td
+                            = worker_experiences.bossincharge.to_s
+                          %td
+                            = worker_experiences.exitreason.to_s
+                          %td
+                            = worker_experiences.start_date.to_s
+                          %td
+                            = worker_experiences.end_date.to_s
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
   %i.fa.fa-arrow-left>

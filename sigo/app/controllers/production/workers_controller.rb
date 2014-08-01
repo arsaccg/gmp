@@ -18,6 +18,14 @@ class Production::WorkersController < ApplicationController
 
   def show
     @worker = Worker.find(params[:id])
+    @worker_afps = @worker.worker_afps
+    puts @worker_afps.inspect
+    @worker_center_of_studies = @worker.worker_center_of_studies
+    @worker_details = @worker.worker_details
+    @worker_experiences = @worker.worker_experiences
+    @worker_familiars = @worker.worker_familiars
+    @worker_healths = @worker.worker_healths
+    @worker_otherstudies = @worker.worker_otherstudies
     render layout: false
   end
 

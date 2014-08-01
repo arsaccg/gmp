@@ -42,6 +42,9 @@ class Administration::ProvisionArticlesController < ApplicationController
   def destroy
     provision = Provision.find(params[:id])
     provision.provision_direct_purchase_details.destroy_all
+    provision_destroyed = Provision.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente."
+    render :json => provision
 
   end
 
