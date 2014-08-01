@@ -8,10 +8,8 @@ class CreateLinkTimes < ActiveRecord::Migration
       t.integer :day
 
       t.timestamps
+      
     end
-
-    
-
   end
 
   def self.down

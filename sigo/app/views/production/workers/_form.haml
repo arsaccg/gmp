@@ -118,9 +118,9 @@
           %section.col.col-8
             %label.label Entidad Trabajador
             %label.input{for: "entity_id"}
-              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ' ' + @entity.name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
-          %section.col.col-4
-            %label.label Cargo del Trabajador
+              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ', ' + @entity.name.to_s + ' ' + @entity.second_name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
+          %section.col.col-4#categoria{ 'style' => 'display:none' }
+            %label.label Categoría del Obrero
             %label.input{for: "category_of_worker_id"}
               %select.form-control{:name =>"worker[position_worker_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @positionWorkers.each do |positionWorker|
@@ -1066,6 +1066,9 @@
       $("#fieldset6").css("display", "");
       $("#fieldset7").css("display", "");
     }
+    if('#{@worker.typeofworker}'=="obrero"){
+      $("#categoria").css("display", "");
+    }
     if('#{@worker.numberofchilds}'!=0){
       $("#numberofchildren").css("display", "");
       $("#partidanacihijos").css("display", "");
@@ -1114,6 +1117,14 @@
       $("#fieldset5").css("display", "none");
       $("#fieldset6").css("display", "none");
       $("#fieldset7").css("display", "none");
+    }
+  });
+  $("input.radiobox").change(function() {
+    if($(this).prop('value') == "obrero"){
+      $("#categoria").css("display", "");
+    }
+    else {
+      $("#categoria").css("display", "none");
     }
   });
   $("input[type=radio][name=numberofchilds2]").change(function() {

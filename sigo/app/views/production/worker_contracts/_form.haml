@@ -45,10 +45,10 @@
                 - @articles.each do |article|
                   - if @workercontract.article_id == article.id
                     %option{:value => "#{article.id}", :selected => true}
-                      = article.name
+                      = article.code + ' ' + article.name
                   - else
                     %option{:value => "#{article.id}"}
-                      = article.name
+                      = article.code + ' ' + article.name
         .row
           %section.col.col-md-12
             .col-md-1
@@ -71,12 +71,39 @@
               %label.input{for: "salary"}
                 = f.input :salary, input_html: { class: 'form-control' }, label: false
         .row
+          %section.col.col-4
+            %label.label Regimen
+            %label.input{for: "regime"}
+              %select.form-control{:name =>"worker_contract[regime]", :style => 'width:100%;padding: 0;border: none;'}
+                -if @action == 'edit'
+                  %option{:value => "0"} Seleccione un estado
+                  %option{:value => 'NORMAL', :selected => "#{@workercontract.regime}"=="NORMAL"} NORMAL
+                  %option{:value => '2 x 30', :selected => "#{@workercontract.regime}"=="2 x 30"} 2 x 30
+                  %option{:value => '4 x 60', :selected => "#{@workercontract.regime}"=="4 x 60"} 4 x 60
+                  %option{:value => '5 x 60', :selected => "#{@workercontract.regime}"=="5 x 60"} 5 x 60
+                  %option{:value => '4 x 120', :selected => "#{@workercontract.regime}"=="4 x 120"} 4 x 120
+                  %option{:value => 'ESPECIAL', :selected => "#{@workercontract.regime}"=="ESPECIAL"} ESPECIAL
+                -else
+                  %option{:value => 'NORMAL'} NORMAL
+                  %option{:value => '2 x 30'} 2 x 30
+                  %option{:value => '4 x 60'} 4 x 60
+                  %option{:value => '5 x 60'} 5 x 60
+                  %option{:value => '4 x 120'} 4 x 120
+                  %option{:value => 'ESPECIAL'} ESPECIAL
+        .row
           %section.col.col-md-12
             .col-md-1
-              %label.label Regimen
+              %label.label Bonificación
             .col-md-5
-              %label.input{for: "regime"}
-                = f.input :regime, input_html: { class: 'form-control' }, label: false
+              %label.input{for: "bonus"}
+                = f.input :bonus, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-md-12
+            .col-md-1
+              %label.label Viáticos
+            .col-md-5
+              %label.input{for: "viatical"}
+                = f.input :viatical, input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-md-12
             .col-md-1
