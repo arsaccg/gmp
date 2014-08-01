@@ -5,7 +5,7 @@
   %td.col-2
     = @contractor.name
   %td.col-2
-    = @participation
+    = @participation.to_s + " %"
 
   %td{:style => "width: 1%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

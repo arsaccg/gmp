@@ -173,8 +173,8 @@
         .row
           .col-sm-4{"style"=>"margin-left:15px;margin-bottom:3%;width:28%"}
             %label.label Entidad:
-            %select#clients.select2.form-control{:name => "cost_center_detail[entity_id]"}
-              %option{:value => "0"} Seleccione una entidad
+            %select#clients.select2.form-control{:name => "cost_center_detail[entity_id]",:required => true}
+              %option{:value => nil, :selected => true, :disabled => true} Seleccione una entidad
               - @clients.each do |ph|
                 %option{:value => "#{ph.id}", :selected => "#{@cost_center_detail.entity_id}"=="#{ph.id}"}
                   = ph.name
@@ -183,7 +183,7 @@
             %label.label Consorciados:
             .col-md-6
               %select#contractors.select2.form-control{:name => "cost_center_detail[entity_cost_center_details_attributes][" + @reg_n.to_s + "][entity_id]"}
-                %option{:value => "0"} Seleccione un consorcio
+                %option{:value => nil, :selected => true, :disabled => true} Seleccione un consorcio
                 - @contractors.each do |cont|
                   %option{:value => "#{cont.id}"}
                     = cont.name
@@ -228,6 +228,7 @@
 :javascript
 
   $(document).ready(function () {
+    $("#clients").focus()
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
