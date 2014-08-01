@@ -148,6 +148,21 @@
             },
             'entity[gender]' : {
               required : true,
+            },
+            'entity[dni]' : {
+              required : true,
+              digits : true,
+              minlength : 8,
+              maxlength : 8
+            },
+            'entity[city]' : {
+              required : true,
+            },
+            'entity[province]' : {
+              required : true,
+            },
+            'entity[department]' : {
+              required : true,
             }
           },
           // Messages for form validation
@@ -161,8 +176,23 @@
             'entity[maternal_surname]' : {
               required : 'Por favor, ingresar el apellido materno.'
             },
-            'entity[gener]' : {
+            'entity[gender]' : {
               required : 'Por favor, ingresar el genero.'
+            },
+            'entity[dni]' : {
+              required : 'Por favor, ingresar el DNI.',
+              digits : 'Por favor, ingresar solo dígitos.',
+              maxlength: 'Solo son 8 dígitos',
+              minlength: 'Solo son 8 dígitos'
+            },
+            'entity[city]' : {
+              required : 'Por favor, ingresar la ciudad.'
+            },
+            'entity[province]' : {
+              required : 'Por favor, ingresar la provincia.'
+            },
+            'entity[department]' : {
+              required : 'Por favor, ingresar el departamento.'
             }
           },
           // Do not change code below

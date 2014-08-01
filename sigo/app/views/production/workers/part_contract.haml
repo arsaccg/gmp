@@ -26,14 +26,20 @@
             %label Categoría del Trabajador
           -elsif @worker.typeofworker=='empleado'
             %label Cargo del Trabajador
-          %select.form-control#article{:name =>"article_id", :style => 'padding: 0;border: none;'}
+          %select.form-control#article{:name =>"article_id", :style => 'padding: 0;border: none'}
             - @articles.each do |article|
               %option{:value => "#{article.id}"}
                 = article.code + ' - ' + article.name
         .col-md-2
-        .col-md-6
+        .col-md-4
           %label Regimen
-          = text_field_tag 'worker_contract[regime]', nil, class: 'form-control', id: 'regime', placeholder: 'Regimen'
+          %select.form-control#regime{:name =>"regime", :style => 'padding: 0;border: none;'}
+            %option{:value => 'NORMAL'} NORMAL
+            %option{:value => '2 x 30'} 2 x 30
+            %option{:value => '4 x 60'} 4 x 60
+            %option{:value => '5 x 60'} 5 x 60
+            %option{:value => '4 x 120'} 4 x 120
+            %option{:value => 'ESPECIAL'} ESPECIAL
       %br
       .row
         .col-md-6

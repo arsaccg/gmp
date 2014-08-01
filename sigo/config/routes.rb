@@ -478,7 +478,11 @@ ArsacLogistica::Application.routes.draw do
   end
 
   namespace :administration do
-    resources :payment_orders
+    resources :payment_orders do
+      collection do
+        post 'get_info_from_provision'
+      end
+    end
     resources :document_provisions
     resources :provisions do
       collection do
