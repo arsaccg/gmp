@@ -180,18 +180,18 @@
                   = ph.name
         .row
           .col-md-8{"style"=>"margin-left:15px;margin-bottom:3%"}
-            %label.label Consorciados:
+            %label.label Consorciados y Participación:
             .col-md-6
               %select#contractors.select2.form-control{:name => "cost_center_detail[entity_cost_center_details_attributes][" + @reg_n.to_s + "][entity_id]"}
-                %option{:value => nil, :selected => true, :disabled => true} Seleccione un consorcio
+                %option{:value => "0"} Seleccione un consorcio
                 - @contractors.each do |cont|
                   %option{:value => "#{cont.id}"}
                     = cont.name
             .col-lg-1{"style"=>"margin-left:15px;"}
-              = text_field_tag 'participation', nil, class: 'form-control', id: 'participation', value: '100'
+              = text_field_tag 'participation', nil, class: 'form-control', id: 'participation', placeholder: ' % '
             .col-lg-2{"style"=>"margin-left:15px;"}
               %div(class="col-lg-3")
-                %a(href="javascript:add_details_entity();" id="btn-add-article" class="btn btn-success" role="button")
+                %a(href="javascript:add_details_entity();" id="btn-add-article" class="btn btn-success" role="button" style="padding:6px;")
                   Agregar Consorcio
         .row
           .col-lg-12
@@ -210,9 +210,12 @@
                         = hidden_field_tag 'cost_center_detail[entity_cost_center_details_attributes][' + @reg_n.to_s + '][id]', oos.id.to_s
                         = hidden_field_tag 'cost_center_detail[entity_cost_center_details_attributes][' + @reg_n.to_s + '][participation]', oos.participation.to_s
                       %td.col-5.account_number
-                        = Entity.find(oos.entity_id.to_s).name
+                        -if oos.entity_id!=0
+                          =Entity.find(oos.entity_id).name
+                        -else
+                          =""
                       %td
-                        = oos.participation.to_s
+                        = oos.participation.to_s+" %"
                       %td.delete-item
                         %label.checkbox
                           = check_box 'cost_center_detail[entity_cost_center_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
