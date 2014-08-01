@@ -52,7 +52,7 @@ class Administration::ProvisionArticlesController < ApplicationController
     params_article = params[:article_id].split('-')
     @amount = params[:amount]
     @reg_n = ((Time.now.to_f)*100).to_i
-    @account_accountants = AccountAccountant.all
+    @account_accountants = AccountAccountant.where("code LIKE  '_______'")
     @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
     data_article = Article.find_idarticle_global_by_specific_idarticle(params_article[0], get_company_cost_center("cost_center"))

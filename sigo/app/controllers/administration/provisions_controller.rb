@@ -159,7 +159,7 @@ class Administration::ProvisionsController < ApplicationController
     order_detail_ids = params[:ids_orders_details]
     @type_of_order_name = params[:type_of_order]
     @reg_n = ((Time.now.to_f)*100).to_i
-    @account_accountants = AccountAccountant.all
+    @account_accountants = AccountAccountant.where("code LIKE  '_______'")
 
     if @type_of_order_name == 'purchase_order' 
       order_detail_ids.each do |order_detail_id|
