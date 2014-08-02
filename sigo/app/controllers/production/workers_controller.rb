@@ -18,6 +18,14 @@ class Production::WorkersController < ApplicationController
 
   def show
     @worker = Worker.find(params[:id])
+    @worker_afps = @worker.worker_afps
+    puts @worker_afps.inspect
+    @worker_center_of_studies = @worker.worker_center_of_studies
+    @worker_details = @worker.worker_details
+    @worker_experiences = @worker.worker_experiences
+    @worker_familiars = @worker.worker_familiars
+    @worker_healths = @worker.worker_healths
+    @worker_otherstudies = @worker.worker_otherstudies
     render layout: false
   end
 
@@ -268,15 +276,19 @@ class Production::WorkersController < ApplicationController
 
   def cancel
     worker = Worker.find(params[:id])
-    workercontract = WorkerContract.where("worker_id = ?",params[:id]).last
-    WorkerContract.where( id: workercontract.id ).update_all( end_date_2: params[:end_date_2] , reason_for_termination: params[:reason_for_termination] )
+    workercontract = WorkerContract.find_by_status(1)
+    WorkerContract.where( id: workercontract.id ).update_all( end_date_2: params[:end_date_2] , reason_for_termination: params[:reason_for_termination], status: 0, comment: params[:comment] )
+    file = File.open(params[:document])
+    workercontract.attachment = file
+    file.close
+    workercontract.save!
     worker.cancel
     redirect_to :action => :index
   end
 
   def part_worker
     @worker = Worker.find_by_id(params[:worker_id])
-    @workercontract = WorkerContract.where("worker_id = ?",params[:worker_id]).last
+    @workercontract = WorkerContract.find_by_status(1)
     render layout: false
   end
 

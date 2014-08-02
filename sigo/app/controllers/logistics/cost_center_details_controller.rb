@@ -14,7 +14,6 @@ class Logistics::CostCenterDetailsController < ApplicationController
   def new
     @reg_n=((Time.now.to_f)*100).to_i
     @cost_center_detail = CostCenterDetail.new
-
     @cost_center_id = params[:cost_center_id]
     @companyselected = get_company_cost_center('company')
     @clients = TypeEntity.find_by_preffix("C").entities

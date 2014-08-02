@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery-fileupload/basic
 //= require jquery_nested_form
 //= require turbolinks
 
@@ -271,7 +272,25 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
   });
 }
 
-
+function load_file_ajax(dom_element, url, type_call, parameters, div_name){
+  $(dom_element).fileupload({
+    url: url,
+    method: type_call,
+    formData: parameters,
+    onSuccess:function(files,data,xhr) {
+      $("#" + div_name).css({
+        opacity : '0.0'
+      }).html(data).delay(50).animate({
+        opacity : '1.0'
+      }, 300);
+    },
+    onError: function(files,status,errMsg)
+    {
+      console.log(files);
+      console.log(errMsg);
+    }
+  });
+}
 
 function delete_to_url(url, div_name, url_index){ /* Method DELETE */
   var url_str = url;

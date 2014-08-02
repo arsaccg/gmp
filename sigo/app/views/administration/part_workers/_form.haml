@@ -38,15 +38,15 @@
                     %td.bank-id(style="display:none")
                       = hidden_field_tag 'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][worker_id]', worker.id
                     %td.col-2=worker.entity.name.to_s + ' ' + worker.entity.paternal_surname.to_s
-                    %td.col-1
+                    %td.col-1.assistance
                       %label.radio-inline
-                        %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][assistance]', :type => 'radio', :value => "si"}
+                        %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][assistance]', :type => 'radio', :value => "si", onchange: 'activatereasonlack(this);'}
                         %span Si
                       %label.radio-inline
-                        %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][assistance]', :type => 'radio', :value => "no"}
+                        %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][assistance]', :type => 'radio', :value => "no", onchange: 'activatereasonlack(this);'}
                         %span No
-                    %td.col-1
-                      %select.col-sm-6.form-control{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][reason_of_lack]', :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px' }
+                    %td.col-1.reason
+                      %select.col-sm-6.form-control.reasonlack{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][reason_of_lack]', :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px;display:none' }
                         %option{:value => "0", :selected => 'selected'} Seleccione una falta
                         %option{:value => "Licencia sin goce de haber"} Licencia sin goce de haber
                         %option{:value => "Licencia con goce de haber"} Licencia con goce de haber
@@ -187,4 +187,14 @@
 
   function delete_item(code){
     $("#tr" + code).remove();
+  }
+
+  function activatereasonlack(value){
+    console.log($(value).val());
+    if ($(value).val() == 'si'){
+      $(value).parent().parent().siblings('.reason').children('.reasonlack').css("display", "");
+    }
+    else{
+      $(value).parent().parent().siblings('.reason').children('.reasonlack').css("display", "none");
+    }
   }
