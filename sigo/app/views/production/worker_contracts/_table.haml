@@ -33,9 +33,11 @@
               %td 
                 = workercontract.days.to_s
               %td
-                = workercontract.start_date.strftime('%d-%m-%Y')
+                - if !workercontract.start_date.nil?
+                  = workercontract.start_date.strftime('%d-%m-%Y')
               %td 
-                = workercontract.end_date.strftime('%d-%m-%Y')
+                - if !workercontract.end_date.nil?
+                  = workercontract.end_date.strftime('%d-%m-%Y')
               %td
                 %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{workercontract.worker_id}',typeofcontract: 'Adenda',contract: '#{workercontract.id}'}, null, 'GET')"}
                   Adenda
