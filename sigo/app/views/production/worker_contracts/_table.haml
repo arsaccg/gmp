@@ -25,8 +25,9 @@
                 = workercontract.numberofcontract.to_s
               %td 
                 = workercontract.typeofcontract.to_s
-              %td 
-                = workercontract.article.name.to_s
+              %td
+                - if !workercontract.article.nil?
+                  = workercontract.article.name.to_s
               %td
                 = number_to_currency(workercontract.salary.to_f, :unit => 'S/.', :precision => 2)
               %td 
