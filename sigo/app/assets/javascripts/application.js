@@ -272,6 +272,54 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
   });
 }
 
+function load_modal_ajax(url, div_id_new, div_id_previous, parameters, loader_flag, render_type){
+  var url_str = url;
+  var div_name_new = div_id_new; 
+  var type_call = render_type;
+  var div_name_old = div_id_previous; 
+  console.log(url_str);
+  console.log(div_name_new);
+  console.log(type_call);
+  console.log(div_name_old);
+  console.log(parameters);
+  console.log(loader_flag);
+  if( loader_flag == 'refresh-body'){
+    parameters = {authenticity_token: parameters}
+  }
+  //title = current_element.attr('title');
+  //document.title = (title || document.title);
+  $.ajax({
+    type: type_call,
+    url: url_str,
+    async: false,
+    data: parameters,
+    dataType : 'html',
+    beforeSend : function() {
+      $("#" + div_name_new).html('<h1><i class="fa fa-cog fa-spin"></i> Cargando...</h1>');
+    },
+    success: function(data) {
+      $("#" + div_name_old).modal('hide');
+      if( loader_flag == 'avoid-opacity'){
+        $("#" + div_name_old).modal('hide');
+      }else{
+        if( loader_flag == 'refresh-body'){
+          $('body').html(data);
+        } else {
+          console.log($("#" + div_name_new));
+          console.log($("#" + div_name_old));
+          $("#" + div_name_new).modal({
+            keyboard: false,
+            backdrop: 'static'
+          });
+        }
+      }
+    },
+    error : function(xhr, ajaxOptions, thrownError) {
+      container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+    }
+  });
+}
+
 function load_file_ajax(dom_element, url, type_call, parameters, div_name){
   $(dom_element).fileupload({
     url: url,
