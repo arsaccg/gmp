@@ -19,7 +19,6 @@ class Production::WorkersController < ApplicationController
   def show
     @worker = Worker.find(params[:id])
     @worker_afps = @worker.worker_afps
-    puts @worker_afps.inspect
     @worker_center_of_studies = @worker.worker_center_of_studies
     @worker_details = @worker.worker_details
     @worker_experiences = @worker.worker_experiences
@@ -299,6 +298,20 @@ class Production::WorkersController < ApplicationController
     @cost_center = session[:cost_center]
     @worker = Worker.find_by_id(params[:worker_id])
     render layout: false
+  end
+
+  def worker_pdf
+    @company = Company.find(session[:company])
+    @worker = Worker.find(params[:id])
+    @worker_afps = @worker.worker_afps
+    @worker_center_of_studies = @worker.worker_center_of_studies
+    @worker_details = @worker.worker_details
+    @worker_experiences = @worker.worker_experiences
+    @worker_familiars = @worker.worker_familiars
+    @worker_healths = @worker.worker_healths
+    @worker_otherstudies = @worker.worker_otherstudies
+    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :portrait }
+
   end
 
   private
