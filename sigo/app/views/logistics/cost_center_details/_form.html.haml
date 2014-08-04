@@ -181,13 +181,15 @@
         .row
           .col-md-8{"style"=>"margin-left:15px;margin-bottom:3%"}
             %label.label Consorciados y Participación:
+            #selectError{"style"=>"color:#E16A61;font-size:85%;margin-bottom:6px;"}
             .col-md-6
               %select#contractors.select2.form-control{}
-                %option{:value => "0"} Seleccione un consorcio
+                %option{:value => "0"} Seleccionar un consorcio
                 - @contractors.each do |cont|
                   %option{:value => "#{cont.id}"}
                     = cont.name
             .col-lg-1{"style"=>"margin-left:15px;"}
+
               = text_field_tag 'participation', nil, class: 'form-control', id: 'participation', placeholder: ' % '
             .col-lg-2{"style"=>"margin-left:15px;"}
               %div(class="col-lg-3")
@@ -427,12 +429,12 @@
   }
 
   function add_details_entity(){
-
-    if($("#contractors").val() != 0){
+    if($("#contractors").val() != 0 && $("#participation").val()>=0 && $("#participation").val()<=100){
       str_item = {authenticity_token: "#{form_authenticity_token}", entity_id: $("#contractors").val(), participation: $("#participation").val()};
       append_url_ajax('#{add_contractor_field_logistics_cost_center_details_path}', 'details_entities_table', str_item, 0, 'POST');
     }else{
-      alert("Escoja un consorcio a usar y su participación");
+      $('#selectError').text('Escoja un consorcio y participación válidos');
+      
     }
 
   }
