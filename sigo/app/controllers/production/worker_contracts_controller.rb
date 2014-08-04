@@ -32,7 +32,7 @@ class Production::WorkerContractsController < ApplicationController
       @worker_id = @workercontract.worker_id
       @worker = Worker.find_by_id(@worker_id)
     end
-    if @typeofcontract == 'Renovación'
+    if @typeofcontract == 'Renovacion'
       @action = 'edit'
       @workercontract = WorkerContract.find_by_id(params[:contract])
       @worker_id = @workercontract.worker_id

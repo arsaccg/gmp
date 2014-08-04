@@ -288,6 +288,8 @@ ArsacLogistica::Application.routes.draw do
         get 'register'
         get 'approve'
         patch 'cancel'
+        get 'worker_pdf'
+        post 'worker_pdf'
       end
     end
     resources :worker_contracts
