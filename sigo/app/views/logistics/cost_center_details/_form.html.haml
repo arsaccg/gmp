@@ -183,7 +183,7 @@
             %label.label Consorciados y Participación:
             .col-md-6
               %select#contractors.select2.form-control{:name => "cost_center_detail[entity_cost_center_details_attributes][" + @reg_n.to_s + "][entity_id]"}
-                %option{:value => "0"} Seleccione un consorcio
+                %option{:value => "0", :selected => true, :disabled => true} Seleccione un consorcio
                 - @contractors.each do |cont|
                   %option{:value => "#{cont.id}"}
                     = cont.name
@@ -247,39 +247,48 @@
          rules : {
             'cost_center_detail[name]' : {
               required : true,
+              
             },
             'cost_center_detail[call_date]' : {
               required : true,
             },
             'cost_center_detail[snip_code]' : {
               required : true,
+              number : true,
             },
             'cost_center_detail[process_number]' : {
               required : true,
+              number : true,
             },
             'cost_center_detail[good_pro_date]' : {
               required : true,
             },
             'cost_center_detail[referential_value]' : {
               required : true,
+              number : true,
             },
             'cost_center_detail[earned_value]' : {
               required : true,
+              number : true,
             },
             'cost_center_detail[direct_cost]' : {
               required : true,
+              number : true,
             },
             'cost_center_detail[general_cost]' : {
               required : true,
+              number : true,
             },
             'cost_center_detail[utility]' : {
               required : true,
+              number : true,
             },
             'cost_center_detail[contract_sign_date]' : {
               required : true,
             },
             'cost_center_detail[contract_number]' : {
               required : true,
+              number : true,
             },
             'cost_center_detail[land_delivery_date]' : {
               required : true,
@@ -298,6 +307,7 @@
             },
             'cost_center_detail[execution_term]' : {
               required : true,
+              number : true,
             },
             'cost_center_detail[supervision]' : {
               required : true,
@@ -319,34 +329,42 @@
               required : "Por favor ingresar  una fecha correcta",
             },
             'cost_center_detail[snip_code]' : {
-              required : "Por favor ingresar el código SNIP",
+              required : "Por favor ingresar el código SNIP correcto",
+              number : "Por favor ingresar un número válido",
             },
             'cost_center_detail[process_number]' : {
               required : "Por favor ingresar un número de proceso correcto",
+              number : "Por favor ingresar un número válido",
             },
             'cost_center_detail[good_pro_date]' : {
               required : "Por favor ingresar una fecha correcta",
             },
             'cost_center_detail[referential_value]' : {
               required : "Por favor ingresar el valor referencial correctamente",
+              number : "Por favor ingresar un número válido",
             },
             'cost_center_detail[earned_value]' : {
               required : "Por favor ingresar el valor correctamente",
+              number : "Por favor ingresar un número válido",
             },
             'cost_center_detail[direct_cost]' : {
               required : "Por favor ingresar el costo directo correctamente",
+              number : "Por favor ingresar un número válido",
             },
             'cost_center_detail[general_cost]' : {
               required : "Por favor ingresar los gastos generales correctamente",
+              number : "Por favor ingresar un número válido",
             },
             'cost_center_detail[utility]' : {
               required : "Por favor ingresar la utilidad correctamente",
+              number : "Por favor ingresar un número válido",
             },
             'cost_center_detail[contract_sign_date]' : {
               required : "Por favor ingresar una fecha correcta",
             },
             'cost_center_detail[contract_number]' : {
               required : "Por favor ingresar el número de contrato correctamente",
+              number : "Por favor ingresar un número válido",
             },
             'cost_center_detail[land_delivery_date]' : {
               required : "Por favor ingresar  una fecha correcta",
@@ -365,6 +383,7 @@
             },
             'cost_center_detail[execution_term]' : {
               required : "Por favor ingresar el plazo correctamente",
+              number : "Por favor ingresar un número válido",
             },
             'cost_center_detail[supervision]' : {
               required : "Por favor ingresar el campo correctamente",

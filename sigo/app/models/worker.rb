@@ -84,7 +84,7 @@ class Worker < ActiveRecord::Base
         AND wo.position_worker_id = pow.id
         AND wo.typeofworker LIKE '"+typeofworker.to_s+"' 
         AND wo.cost_center_id = " + cost_center_id.to_s + " 
-        AND (wo.id LIKE '%" + keyword + "%' OR ent.name LIKE '%" + keyword + "%' OR ent.paternal_surname LIKE '%" + keyword + "%' OR ent.maternal_surname LIKE '%" + keyword + "%' OR pow.name LIKE '%" + keyword + "%' OR wo.dni LIKE '%" + keyword + "%' OR ent.date_of_birth LIKE '%" + keyword + "%' OR ent.address LIKE '%" + keyword + "%' OR wo.state LIKE '%" + keyword + "%') 
+        AND (wo.id LIKE '%" + keyword + "%' OR ent.name LIKE '%" + keyword + "%' OR ent.paternal_surname LIKE '%" + keyword + "%' OR ent.maternal_surname LIKE '%" + keyword + "%' OR pow.name LIKE '%" + keyword + "%' OR ent.dni LIKE '%" + keyword + "%' OR ent.date_of_birth LIKE '%" + keyword + "%' OR ent.address LIKE '%" + keyword + "%' OR wo.state LIKE '%" + keyword + "%') 
         ORDER BY wo.id ASC 
         LIMIT " + display_length + " 
         OFFSET " + pager_number
@@ -176,7 +176,7 @@ class Worker < ActiveRecord::Base
         AND wo.position_worker_id = pow.id
         AND wo.typeofworker LIKE '"+typeofworker.to_s+"' 
         AND wo.cost_center_id = " + cost_center_id.to_s + " 
-        AND (wo.id LIKE '%" + keyword + "%' OR ent.name LIKE '%" + keyword + "%' OR ent.paternal_surname LIKE '%" + keyword + "%' OR ent.maternal_surname LIKE '%" + keyword + "%' OR pow.name LIKE '%" + keyword + "%' OR wo.dni LIKE '%" + keyword + "%' OR ent.date_of_birth LIKE '%" + keyword + "%' OR ent.address LIKE '%" + keyword + "%' OR wo.state LIKE '%" + keyword + "%') 
+        AND (wo.id LIKE '%" + keyword + "%' OR ent.name LIKE '%" + keyword + "%' OR ent.paternal_surname LIKE '%" + keyword + "%' OR ent.maternal_surname LIKE '%" + keyword + "%' OR pow.name LIKE '%" + keyword + "%' OR ent.dni LIKE '%" + keyword + "%' OR ent.date_of_birth LIKE '%" + keyword + "%' OR ent.address LIKE '%" + keyword + "%' OR wo.state LIKE '%" + keyword + "%') 
         ORDER BY wo.id ASC 
         LIMIT " + display_length + " 
         OFFSET " + pager_number
