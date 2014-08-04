@@ -21,7 +21,7 @@ class Administration::PartWorkersController < ApplicationController
     array = Array.new
     company = get_company_cost_center('company')
 
-    array = PartPerson.get_part_people(company, display_length, pager_number, keyword)
+    array = PartWorker.get_part_workers(company, display_length, pager_number, keyword)
     render json: { :aaData => array }
   end
 
@@ -88,7 +88,9 @@ class Administration::PartWorkersController < ApplicationController
   end
 
   def destroy
-    partworker = PartWorker.destroy(params[:id])
+    partworker = PartWorker.find(params[:id])
+    partworker.part_worker_details.destroy_all
+    partworker_destroyed = PartWorker.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el Parte de Trabajadores."
     render :json => partworker
   end
