@@ -287,7 +287,7 @@ ArsacLogistica::Application.routes.draw do
       member do
         get 'register'
         get 'approve'
-        get 'cancel'
+        patch 'cancel'
       end
     end
     resources :worker_contracts

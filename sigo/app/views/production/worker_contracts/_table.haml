@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Subcontratos
+    %h2 Lista de Contratos
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
@@ -22,24 +22,25 @@
           - @workercontracts.each do |workercontract|
             %tr
               %td
-                = workercontract.numberofcontract
+                = workercontract.numberofcontract.to_s
               %td 
-                = workercontract.typeofcontract
-              %td 
-                = workercontract.article.name
+                = workercontract.typeofcontract.to_s
               %td
-                = workercontract.salary
-              %td 
-                = workercontract.days
+                - if !workercontract.article.nil?
+                  = workercontract.article.name.to_s
               %td
-                = workercontract.start_date
+                = number_to_currency(workercontract.salary.to_f, :unit => 'S/.', :precision => 2)
               %td 
-                = workercontract.end_date
+                = workercontract.days.to_s
+              %td
+                = workercontract.start_date.strftime('%d-%m-%Y')
+              %td 
+                = workercontract.end_date.strftime('%d-%m-%Y')
               %td
                 %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{workercontract.worker_id}',typeofcontract: 'Adenda',contract: '#{workercontract.id}'}, null, 'GET')"}
                   Adenda
-                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{workercontract.worker_id}',typeofcontract: 'Renovación',contract: '#{workercontract.id}'}, null, 'GET')"}
-                  Renovación
+                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{workercontract.worker_id}',typeofcontract: 'Renovacion',contract: '#{workercontract.id}'}, null, 'GET')"}
+                  Renovacion
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_worker_contract_path(workercontract.id)}', 'content', {company_id: '#{@company}', type: '#{workercontract.typeofcontract}', typeofcontract: 'Contrato'}, null, 'GET')"}
                   Editar
                 %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{workercontract.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_worker_contract_path(workercontract.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_worker_contracts_path}?company_id=#{@company}&worker_id=#{workercontract.worker_id}')"}}

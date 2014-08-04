@@ -31,7 +31,7 @@ class CostCenter < ActiveRecord::Base
 
 	# Validaciones
 	include ActiveModel::Validations
-	validates :code, :uniqueness => { :scope => [:company_id, :status], :message => "El código debe ser único."}
+	validates :code, :uniqueness => { :scope => [:company_id, :status], :message => "El codigo debe ser unico."}
 
 	after_validation :do_activecreate, on: [:create]
   
