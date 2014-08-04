@@ -5,50 +5,51 @@
         \×
       %h4.modal-title Finalizar Contrato
     .modal-body
-      -if @workercontract.nil?
-        %h4.modal-title No se puede dar de baja.
-      - else
-        %h3.modal-title 
-          = @worker.entity.name + ' ' + @worker.entity.paternal_surname + ' ' + @worker.entity.dni
-        %h4.modal-title Llene los siguientes datos
-        %br
-        .row
-          %section.col.col-3
-            %label Fecha de Cese
-            %input#end-date.string.optional.form-control{'name'=>'reason_for_termination', type: "date"}
-        %br
-        .row
-          %section.col.col-3
-            %select#reason-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
-              %option(value = "") MOTIVO DE LA BAJA DEL REGISTRO
-              %option(value = "RENUNCIA") RENUNCIA
-              %option(value = "RENUNCIA CON INCENTIVOS") RENUNCIA CON INCENTIVOS
-              %option(value = "DESPIDO O DESTITUCIÓN") DESPIDO O DESTITUCIÓN
-              %option(value = "CESE COLECTIVO") CESE COLECTIVO
-              %option(value = "JUBILACIÓN") JUBILACIÓN
-              %option(value = "INVALIDEZ ABSOLUTA PERMANENTE") INVALIDEZ ABSOLUTA PERMANENTE
-              %option(value = "TERMINACIÓN DE LA OBRA O SERVICIO, CUMPLIMIENTO CONDICIÓN RESOLUTORIA O VENCIMIENTO DEL PLAZO") TERMINACIÓN DE LA OBRA O SERVICIO, CUMPLIMIENTO CONDICIÓN RESOLUTORIA O VENCIMIENTO DEL PLAZO
-              %option(value = "MUTUO DISENSO") MUTUO DISENSO
-              %option(value = "FALLECIMIENTO") FALLECIMIENTO
-              %option(value = "SUSPENCIÓN DE LA PENSIÓN (1)") SUSPENCIÓN DE LA PENSIÓN (1)
-              %option(value = "BAJA POR SUCESIÓN EN POSICIÓN DEL EMPLEADOR") BAJA POR SUCESIÓN EN POSICIÓN DEL EMPLEADOR
-              %option(value = "EXTINCIÓN O LIQUIDACIÓN DEL EMPLEADOR") EXTINCIÓN O LIQUIDACIÓN DEL EMPLEADOR
-              %option(value = "OTROS MOTIVOS DE CADUCIDAD DE LA PENSIÓN (1)") OTROS MOTIVOS DE CADUCIDAD DE LA PENSIÓN (1)
-              %option(value = "NO SE INICIÓ LA RELACIÓN LABORAL O PRESTACIÓN EFECTIVA DE SERVICIOS") NO SE INICIÓ LA RELACIÓN LABORAL O PRESTACIÓN EFECTIVA DE SERVICIOS
-        .row
-          %section.col.col-3
-          %label Comentarios
-          = text_area_tag 'comment', nil, class: 'form-control', id: 'comment', placeholder: 'Comentarios'
-        .row
-          %section.col.col-md-12
-            .col-md-5
-              %label.label Documento
-            .col-md-7
-              = file_field_tag "document", class: 'btn btn-default', id: 'document_cancel_worker', label: false, as: "file"
+      = form_for @worker, url: cancel_production_worker_path(@worker.id), html: { class: "smart-form", id: "upload_deregister" } do |f|
+        -if @workercontract.nil?
+          %h4.modal-title No se puede dar de baja.
+        - else
+          %h3.modal-title 
+            = @worker.entity.name + ' ' + @worker.entity.paternal_surname + ' ' + @worker.entity.dni
+          %h4.modal-title Llene los siguientes datos
+          %br
+          .row
+            %section.col.col-md-12
+              %label Fecha de Cese
+              %input#end-date.string.optional.form-control{'name'=>'end_date_2', type: "date"}
+          %br
+          .row
+            %section.col.col-md-12
+              %label Mótivo de la baja del registro
+              %select#reason-select.select2.form-control{ :style => 'width:100%;padding: 0;border: none;', :name => 'reason_for_termination' }
+                %option(value = "RENUNCIA") RENUNCIA
+                %option(value = "RENUNCIA CON INCENTIVOS") RENUNCIA CON INCENTIVOS
+                %option(value = "DESPIDO O DESTITUCIÓN") DESPIDO O DESTITUCIÓN
+                %option(value = "CESE COLECTIVO") CESE COLECTIVO
+                %option(value = "JUBILACIÓN") JUBILACIÓN
+                %option(value = "INVALIDEZ ABSOLUTA PERMANENTE") INVALIDEZ ABSOLUTA PERMANENTE
+                %option(value = "TERMINACIÓN DE LA OBRA O SERVICIO, CUMPLIMIENTO CONDICIÓN RESOLUTORIA O VENCIMIENTO DEL PLAZO") TERMINACIÓN DE LA OBRA O SERVICIO, CUMPLIMIENTO CONDICIÓN RESOLUTORIA O VENCIMIENTO DEL PLAZO
+                %option(value = "MUTUO DISENSO") MUTUO DISENSO
+                %option(value = "FALLECIMIENTO") FALLECIMIENTO
+                %option(value = "SUSPENCIÓN DE LA PENSIÓN (1)") SUSPENCIÓN DE LA PENSIÓN (1)
+                %option(value = "BAJA POR SUCESIÓN EN POSICIÓN DEL EMPLEADOR") BAJA POR SUCESIÓN EN POSICIÓN DEL EMPLEADOR
+                %option(value = "EXTINCIÓN O LIQUIDACIÓN DEL EMPLEADOR") EXTINCIÓN O LIQUIDACIÓN DEL EMPLEADOR
+                %option(value = "OTROS MOTIVOS DE CADUCIDAD DE LA PENSIÓN (1)") OTROS MOTIVOS DE CADUCIDAD DE LA PENSIÓN (1)
+                %option(value = "NO SE INICIÓ LA RELACIÓN LABORAL O PRESTACIÓN EFECTIVA DE SERVICIOS") NO SE INICIÓ LA RELACIÓN LABORAL O PRESTACIÓN EFECTIVA DE SERVICIOS
+          %br
+          .row
+            %section.col.col-md-12
+              %label Comentarios
+              = text_area_tag 'comment', nil, class: 'form-control', id: 'comment', placeholder: 'Comentarios'
+          %br
+          .row
+            %section.col.col-md-12
+              %label Cargar Documento
+              = file_field_tag "worker_contract[document]", class: 'btn btn-default', id: 'document_cancel_worker', label: false, as: "file", style: 'padding: 10px;'
               %p.help-block
                 - if @action == 'edit' && @workercontract.document.exists?
                   = 'Archivo subido: ' + File.basename(@workercontract.document.path, File.extname(@workercontract.document.path))
-        %br
+          %br
       %footer
         %button.btn.btn-primary#smart-mod-eg1{type: "button"}
           %i.fa.fa-save 
@@ -57,8 +58,10 @@
           Cancelar
 
 :javascript
+
   $(document).ready(function () {
     $('select').select2({width:'100%'});
+    submit_form($('form#upload_deregister'))
   });
 
   $("#smart-mod-eg1").click(function(e) {
@@ -68,8 +71,10 @@
       buttons : '[No][Yes]'
     }, function(ButtonPressed) {
       if (ButtonPressed === "Yes") {
-        load_file_ajax('#document_cancel_worker', '#{cancel_production_worker_path(@worker.id)}', 'GET', {worker_id: '#{@worker.id}', end_date_2: $('#end-date').val(), comment: $('#comment').val(), document: $('#document').val(), reason_for_termination: $('#reason-select').val()}, 'content');
+        $('form#upload_deregister').submit();
         $('.modal-backdrop.fade.in').remove();
+        $('#part-worker').modal('hide');
+        $('#part-contract').modal('hide');
         $.smallBox({
           title : "Exito",
           content : "<i class='fa fa-clock-o'></i> <i>Haz finalizado el contrato</i>",
@@ -90,4 +95,60 @@
 
     });
     e.preventDefault();
-  })
+  });
+
+  function submit_form(form_element){
+    form_element.ajaxForm({
+      beforeSubmit: function() {
+        form_element.validate({
+          // Rules for form validation
+          rules : {
+            'reason_for_termination' : {
+              required : true,
+            },
+            'comment' : {
+              required : true,
+            },
+            'document' : {
+              required : true,
+            },
+            'end_date_2' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'reason_for_termination' : {
+              required : 'Por favor, ingresar la razon de la baja del registrado.'
+            },
+            'comment' : {
+              required : 'Por favor, ingresar algun comentario.'
+            },
+            'document' : {
+              required : 'Por favor, ingresar algun documento.'
+            },
+            'end_date_2' : {
+              required : 'Por favor, ingresar la fecha de cese.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return form_element.valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+        console.log(error);
+      }
+    })
+  }
