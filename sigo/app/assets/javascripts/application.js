@@ -12,7 +12,6 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery-fileupload/basic
 //= require jquery_nested_form
 //= require turbolinks
 
@@ -276,6 +275,7 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
 }
 
 function load_file_ajax(dom_element, url, type_call, parameters, div_name){
+  
   $(dom_element).fileupload({
     url: url,
     method: type_call,
