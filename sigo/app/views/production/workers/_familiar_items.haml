@@ -12,12 +12,12 @@
     %div
       %select.col-sm-6.form-control#relationship{:name =>'worker[worker_familiars_attributes][' + @reg_n.to_s + '][relationship]', :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px', class: 'relationship' }
         %option{:value => "0", :selected => 'selected'} Seleccione un parentesco
-        %option{:value => "padre"} Padre
-        %option{:value => "madre"} Madre
-        %option{:value => "hijo"} Hijo(a)
-        %option{:value => "abuelo"} Abuelo(a)
-        %option{:value => "hermano"} Hermano(a)
-        %option{:value => "esposo"} Esposo(a)
+        %option{:value => "Padre"} Padre
+        %option{:value => "Madre"} Madre
+        %option{:value => "Hijo(a)"} Hijo(a)
+        %option{:value => "Abuelo(a)"} Abuelo(a)
+        %option{:value => "Hermano(a)"} Hermano(a)
+        %option{:value => "Esposo(a)"} Esposo(a)
   %td.dayofbirth{:style => "width:15%"}
     %div
       %input#familiar-dayofbirth.string.optional.form-control{'name'=>'worker[worker_familiars_attributes][' + @reg_n.to_s + '][dayofbirth]', type: "date", value: @dayofbirth.to_s}
