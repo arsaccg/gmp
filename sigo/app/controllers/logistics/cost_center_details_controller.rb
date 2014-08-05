@@ -59,7 +59,7 @@ class Logistics::CostCenterDetailsController < ApplicationController
     @details=CostCenterDetail.all
     @action = 'edit'
     @totalPercentage=EntityCostCenterDetail.sum(:participation, :conditions => {:cost_center_detail_id => [@cost_center_detail.id]})
-    @cont=1
+
     render layout: false
   end
 
