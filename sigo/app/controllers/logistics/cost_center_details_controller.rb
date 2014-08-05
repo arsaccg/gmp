@@ -16,7 +16,8 @@ class Logistics::CostCenterDetailsController < ApplicationController
     @cost_center_id = params[:cost_center_id]
     @companyselected = get_company_cost_center('company')
     @clients = TypeEntity.find_by_preffix("C").entities
-    @contractors = TypeEntity.find_by_preffix("P").entities    
+    @contractors = TypeEntity.find_by_preffix("P").entities
+    @totalPercentage=EntityCostCenterDetail.sum(:participation, :conditions => {:cost_center_detail_id => [@cost_center_detail.id]})    
     render layout: false
   end
 
@@ -59,7 +60,6 @@ class Logistics::CostCenterDetailsController < ApplicationController
     @details=CostCenterDetail.all
     @action = 'edit'
     @totalPercentage=EntityCostCenterDetail.sum(:participation, :conditions => {:cost_center_detail_id => [@cost_center_detail.id]})
-
     render layout: false
   end
 
