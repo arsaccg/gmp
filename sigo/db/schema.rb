@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140725220201) do
+ActiveRecord::Schema.define(version: 20140726172031) do
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -1027,6 +1027,7 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.datetime "updated_at"
     t.float    "current_igv"
     t.float    "current_unit_price"
+    t.float    "net_price_after_igv"
   end
 
   create_table "provisions", force: true do |t|
@@ -1055,6 +1056,9 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.boolean  "received"
     t.boolean  "received_provision"
     t.float    "unit_price_before_igv"
+    t.float    "quantity_igv"
+    t.float    "discount_after"
+    t.float    "discount_before"
   end
 
   create_table "purchase_order_extra_calculations", force: true do |t|
@@ -1756,7 +1760,6 @@ ActiveRecord::Schema.define(version: 20140725220201) do
   create_table "worker_afps", force: true do |t|
     t.integer  "afp_id"
     t.string   "afptype"
-    t.string   "afpnumber"
     t.integer  "worker_id"
     t.date     "start_date"
     t.date     "end_date"
@@ -1777,7 +1780,7 @@ ActiveRecord::Schema.define(version: 20140725220201) do
   end
 
   create_table "worker_contracts", force: true do |t|
-    t.integer  "charge_id"
+    t.integer  "article_id"
     t.float    "camp"
     t.float    "destaque"
     t.float    "salary"
@@ -1791,6 +1794,7 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.integer  "numberofcontract"
     t.string   "typeofcontract"
     t.date     "end_date_2"
+    t.integer  "contract_type_id"
   end
 
   create_table "worker_details", force: true do |t|
@@ -1828,12 +1832,13 @@ ActiveRecord::Schema.define(version: 20140725220201) do
   end
 
   create_table "worker_healths", force: true do |t|
-    t.integer  "health_id"
+    t.integer  "health_center_id"
     t.integer  "worker_id"
     t.date     "start_date"
     t.date     "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "health_regime"
   end
 
   create_table "worker_otherstudies", force: true do |t|
@@ -1849,7 +1854,6 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "position_worker_id"
-    t.integer  "article_id"
     t.integer  "entity_id"
     t.string   "email"
     t.integer  "cost_center_id"
@@ -1926,6 +1930,7 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.string   "maritalstatus"
     t.string   "typeofworker"
     t.integer  "numberofchilds"
+    t.string   "afpnumber"
   end
 
   create_table "working_groups", force: true do |t|

@@ -18,7 +18,7 @@ development:
   #username: postgres
   username: root
   #password: r3dc0d3
-  password: root
+  #password: root
   flags: CLIENTS_MULTI_RESULTS 
 
 wharehouses_development:
