@@ -294,7 +294,11 @@ ArsacLogistica::Application.routes.draw do
         post 'worker_pdf'
       end
     end
-    resources :worker_contracts
+    resources :worker_contracts do
+      collection do
+        post 'display_articles_personal'
+      end
+    end
     resources :analysis_of_valuations do
       collection do
         post 'get_report'
