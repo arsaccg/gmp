@@ -193,8 +193,8 @@ class Article < ActiveRecord::Base
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT af.id, af.name, af.code, af.unit_of_measurement_id, u.name
       FROM articles af, unit_of_measurements u
-      WHERE af.name LIKE '%#{code}%'
-      AND af.code LIKE '#{type_article}%'
+      WHERE ( af.code LIKE '#{code}%' OR af.name LIKE '%#{code}%' )
+      AND af.code <= '#{type_article}99999999'
       AND af.unit_of_measurement_id = u.id
     ")
     return mysql_result
