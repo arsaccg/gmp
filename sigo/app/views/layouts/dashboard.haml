@@ -811,21 +811,40 @@
 
                   %td{"style"=>"font-size:100%;"}
                     %strong Fecha Entrega del Terreno: 
-                  %td=@cost_center_detail.land_delivery_date.strftime("%d - %m - %Y").to_s
+                  %td
+                    -if !@cost_center_detail.land_delivery_date.nil?
+                      =@cost_center_detail.land_delivery_date.strftime("%d - %m - %Y").to_s
+                    -else
+                      =""
                 %tr{"style"=>"height:14px;"}
                 %tr
                   %td{"style"=>"font-size:100%;"}
                     %strong Fecha de Solicitud del Adelanto Directo:
-                  %td=@cost_center_detail.direct_advanced_form_date.strftime("%d - %m - %Y").to_s
+                  %td
+                    -if !@cost_center_detail.direct_advanced_form_date.nil?
+                      =@cost_center_detail.direct_advanced_form_date.strftime("%d - %m - %Y").to_s
+                    -else
+                      =""
+                  
 
                   %td{"style"=>"font-size:100%;"}
                     %strong Fecha de Pago del Adelanto Directo: 
-                  %td=@cost_center_detail.direct_advanced_payment_date.strftime("%d - %m - %Y").to_s
+                  %td
+                    -if !@cost_center_detail.direct_advanced_payment_date.nil?
+                      =@cost_center_detail.direct_advanced_payment_date.strftime("%d - %m - %Y").to_s
+                    -else
+                      =""
+                  
                 %tr{"style"=>"height:14px;"}
                 %tr
                   %td{"style"=>"font-size:100%;"}
                     %strong Fecha de Inicio de Obra:
-                  %td=@cost_center_detail.start_date_of_work
+                  %td
+                    -if !@cost_center_detail.start_date_of_work.nil?
+                      =@cost_center_detail.start_date_of_work.strftime("%d - %m - %Y").to_s
+                    -else
+                      =""
+                  
 
                   %td{"style"=>"font-size:100%;"}
                     %strong Sistema de Contratación:
@@ -849,7 +868,12 @@
                 %tr
                   %td{"style"=>"font-size:100%;"}
                     %strong Fecha de Pago de Adelanto de Materiales: 
-                  %td=@cost_center_detail.material_advanced_payment_date.strftime("%d - %m - %Y").to_s                  
+                  %td
+                    -if !@cost_center_detail.material_advanced_payment_date.nil?
+                      =@cost_center_detail.material_advanced_payment_date.strftime("%d - %m - %Y").to_s  
+                    -else
+                      =""
+                
             - else
               %h2 Datos no encontrados.         
           .modal-footer{"style"=>"margin-top:0px;background-color:#296191"}

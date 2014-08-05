@@ -293,18 +293,6 @@
               required : true,
               number : true,
             },
-            'cost_center_detail[land_delivery_date]' : {
-              required : true,
-            },
-            'cost_center_detail[direct_advanced_payment_date]' : {
-              required : true,
-            },
-            'cost_center_detail[direct_advanced_form_date]' : {
-              required : true,
-            },
-            'cost_center_detail[start_date_of_work]' : {
-              required : true,
-            },
             'cost_center_detail[procurement_system]' : {
               required : true,
             },
@@ -317,9 +305,6 @@
               number : true,
             },
             'cost_center_detail[supervision]' : {
-              required : true,
-            },
-            'cost_center_detail[material_advanced_payment_date]' : {
               required : true,
             },
             'cost_center_detail[entity_id]' : {
@@ -375,18 +360,6 @@
               required : "Por favor ingresar el número de contrato correctamente",
               number : "Por favor ingresar un número válido",
             },
-            'cost_center_detail[land_delivery_date]' : {
-              required : "Por favor ingresar  una fecha correcta",
-            },
-            'cost_center_detail[direct_advanced_payment_date]' : {
-              required : "Por favor ingresar una fecha correcta",
-            },
-            'cost_center_detail[direct_advanced_form_date]' : {
-              required : "Por favor ingresar  una fecha correcta",
-            },
-            'cost_center_detail[start_date_of_work]' : {
-              required : "Por favor ingresar una fecha correcta",
-            },
             'cost_center_detail[procurement_system]' : {
               required : "Por favor ingresar el sistema de contratación",
             },
@@ -400,9 +373,6 @@
             },
             'cost_center_detail[supervision]' : {
               required : "Por favor ingresar el campo correctamente",
-            },
-            'cost_center_detail[material_advanced_payment_date]' : {
-              required : "Por favor ingresar una fecha correcta",
             },
             'cost_center_detail[entity_id]' : {
               required : "Por favor ingresar una entidad",
@@ -429,6 +399,7 @@
   }
 
   function add_details_entity(){
+
     if($("#contractors").val() != 0 && $("#participation").val()>=0 && $("#participation").val()<=100){
       str_item = {authenticity_token: "#{form_authenticity_token}", entity_id: $("#contractors").val(), participation: $("#participation").val()};
       append_url_ajax('#{add_contractor_field_logistics_cost_center_details_path}', 'details_entities_table', str_item, 0, 'POST');
