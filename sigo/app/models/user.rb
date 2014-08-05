@@ -19,8 +19,7 @@ class User < ActiveRecord::Base
   validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
   
   include RoleModel
-  roles :director, :approver, :reviser, :issuer, :canceller
-
+  roles :director, :approver, :reviser, :issuer, :canceller, :maintainer, :control_documentary, :technical_library, :orders_and_buy, :stores, :execution, :administration, :overheads, :payroll, :bidding, :report
   # Director = Can create CIA and Users
   # Anuler = Can cancel orders
   # Approver = Can approve orders (Aprobado)

@@ -291,7 +291,11 @@ class Production::WorkersController < ApplicationController
 
   def part_contract
     cost_center_obj = CostCenter.find(session[:cost_center])
-    @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + (WorkerContract.all.first.id + 1).to_s.rjust(4, '0')
+    if WorkerContract.all.order('id ASC').first.nil?
+      @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + 1.to_s.rjust(4, '0')
+    else
+      @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + (WorkerContract.all.order('id ASC').first.id + 1).to_s.rjust(4, '0')
+    end
     @typeofcontract = params[:typeofcontract]
     @articles = TypeOfArticle.find_by_code('01').articles
     @contractypes = ContractType.all
