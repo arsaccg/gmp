@@ -11,7 +11,7 @@
       .row
         .col-md-3
           %label Número de Contrato
-          = text_field_tag 'worker_contract[numberofcontract]', nil, class: 'form-control', id: 'numberofcontract', placeholder: 'Número de Contrato'
+          = text_field_tag 'worker_contract[numberofcontract]', @worker_contract_correlative, class: 'form-control', id: 'numberofcontract', placeholder: 'Número de Contrato', readonly: true, style: 'font-weight: bold;'
         .col-md-3
         .col-md-6
           %label Tipo de Contrato

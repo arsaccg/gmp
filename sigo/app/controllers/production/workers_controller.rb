@@ -290,10 +290,12 @@ class Production::WorkersController < ApplicationController
   end
 
   def part_contract
+    cost_center_obj = CostCenter.find(session[:cost_center])
+    @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + (WorkerContract.all.first.id + 1).to_s.rjust(4, '0')
     @typeofcontract = params[:typeofcontract]
     @articles = TypeOfArticle.find_by_code('01').articles
     @contractypes = ContractType.all
-    @cost_center = session[:cost_center]
+    @cost_center = cost_center_obj.id
     @worker = Worker.find_by_id(params[:worker_id])
     render layout: false
   end
