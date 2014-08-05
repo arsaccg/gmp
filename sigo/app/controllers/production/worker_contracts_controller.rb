@@ -80,7 +80,7 @@ class Production::WorkerContractsController < ApplicationController
     @name = get_company_cost_center('cost_center')
     articles = Article.get_article_todo_per_type(word, get_company_cost_center('cost_center'))
     articles.each do |art|
-      article_hash << {'id' => art[0].to_s, 'code' => art[2], 'name' => art[1], 'symbol' => art[5]}
+      article_hash << {'id' => art[0].to_s, 'code' => art[2], 'name' => art[1], 'symbol' => art[4]}
     end
     render json: {:articles => article_hash}
   end
