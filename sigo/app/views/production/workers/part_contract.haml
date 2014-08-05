@@ -26,10 +26,8 @@
             %label Categoría del Trabajador
           -elsif @worker.typeofworker=='empleado'
             %label Cargo del Trabajador
-          %select.form-control#article{:name =>"article_id", :style => 'padding: 0;border: none'}
-            - @articles.each do |article|
-              %option{:value => "#{article.id}"}
-                = article.code + ' - ' + article.name + ' - ' + article.unit_of_measurement.name
+          %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+
         .col-md-2
         .col-md-4
           %label Regimen
@@ -83,6 +81,31 @@
 :javascript
   $(document).ready(function () {
     $('select').select2({width:'320px'});
+
+    $('#article-select').select2({
+      placeholder: "Buscar Insumos...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_articles_personal_production_worker_contracts_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name + ' - ' + node.symbol + '</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol) },
+      escapeMarkup: function (m) { return m; }
+    });
+
   });
 
   $("#smart-mod-eg1").click(function(e) {
