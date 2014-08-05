@@ -862,8 +862,12 @@
                   %td=@cost_center_detail.execution_term
 
                   %td{"style"=>"font-size:100%;"}
-                    %strong Supervisión:
-                  %td=@cost_center_detail.supervision
+                    %strong Supervisión / Inspector:
+                  %td
+                    -if !@cost_center_detail.supervision.nil?
+                      =@cost_center_detail.supervision
+                    -else
+                      =""
                 %tr{"style"=>"height:12px;"}
                 %tr
                   %td{"style"=>"font-size:100%;"}
