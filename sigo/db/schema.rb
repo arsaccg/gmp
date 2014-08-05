@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140725220201) do
+ActiveRecord::Schema.define(version: 20140805162431) do
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -77,11 +77,42 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.string   "category_id"
   end
 
+  create_table "articles_from_cost_center_1", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_2", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
   create_table "banks", force: true do |t|
     t.string   "business_name"
     t.string   "ruc"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "money_id"
+    t.string   "account_type"
+    t.string   "account_number"
+    t.string   "account_detraction"
+    t.string   "cci"
   end
 
   create_table "book_works", force: true do |t|
@@ -222,13 +253,6 @@ ActiveRecord::Schema.define(version: 20140725220201) do
 
   add_index "components_works", ["work_id", "component_id"], name: "index_components_works_on_work_id_and_component_id", using: :btree
 
-  create_table "componets_other_works", force: true do |t|
-    t.integer  "component_id"
-    t.integer  "other_works_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "concept_details", force: true do |t|
     t.integer  "concept_id"
     t.integer  "subconcept_id"
@@ -275,6 +299,13 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.datetime "updated_at"
   end
 
+  create_table "contract_types", force: true do |t|
+    t.string   "description"
+    t.string   "shortdescription"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "contractual_documents", force: true do |t|
     t.string   "name"
     t.string   "description"
@@ -287,6 +318,35 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "type_of_contractual_document_id"
+  end
+
+  create_table "cost_center_details", force: true do |t|
+    t.string   "name"
+    t.date     "call_date"
+    t.integer  "snip_code"
+    t.string   "process_number"
+    t.date     "good_pro_date"
+    t.string   "referential_value"
+    t.string   "earned_value"
+    t.string   "direct_cost"
+    t.string   "general_cost"
+    t.string   "utility"
+    t.string   "IGV"
+    t.date     "contract_sign_date"
+    t.string   "contract_number"
+    t.date     "land_delivery_date"
+    t.date     "direct_advanced_payment_date"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "amazon_tax_condition",           default: "No aplica"
+    t.date     "direct_advanced_form_date"
+    t.date     "start_date_of_work"
+    t.string   "procurement_system"
+    t.integer  "execution_term"
+    t.string   "supervision"
+    t.date     "material_advanced_payment_date"
+    t.integer  "entity_id"
   end
 
   create_table "cost_center_timelines", force: true do |t|
@@ -327,6 +387,7 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.integer  "sub_daily_id"
     t.date     "accounting_date"
     t.float    "amount"
+    t.integer  "status"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -422,6 +483,7 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.string   "province"
     t.string   "department"
     t.string   "alienslicense"
+    t.integer  "cost_center_detail_id"
   end
 
   create_table "entities_type_entities", force: true do |t|
@@ -432,6 +494,28 @@ ActiveRecord::Schema.define(version: 20140725220201) do
   end
 
   add_index "entities_type_entities", ["entity_id", "type_entity_id"], name: "index_entities_type_entities_on_entity_id_and_type_entity_id", using: :btree
+
+  create_table "entity_cost_center_details", force: true do |t|
+    t.integer  "cost_center_detail_id"
+    t.integer  "entity_id"
+    t.integer  "participation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "errors", force: true do |t|
+    t.string   "usable_type"
+    t.integer  "usable_id"
+    t.text     "class_name"
+    t.text     "message"
+    t.text     "trace"
+    t.text     "target_url"
+    t.text     "referer_url"
+    t.text     "params"
+    t.text     "user_agent"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "exchange_of_rates", force: true do |t|
     t.datetime "day"
@@ -506,6 +590,28 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.integer  "user_updates_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "general_expense_details", force: true do |t|
+    t.integer  "general_expense_id"
+    t.string   "type_article"
+    t.integer  "article_id"
+    t.integer  "people"
+    t.float    "participation"
+    t.float    "time"
+    t.string   "parcial"
+    t.float    "amount"
+    t.float    "cost"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "general_expenses", force: true do |t|
+    t.integer  "phase_id"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "total"
   end
 
   create_table "graphers", force: true do |t|
@@ -653,28 +759,6 @@ ActiveRecord::Schema.define(version: 20140725220201) do
   add_index "itembybudgets", ["item_id"], name: "itembybudges_item_id", using: :btree
 
   create_table "itembywbs", force: true do |t|
-    t.string   "wbscode"
-    t.integer  "itembywbs_id"
-    t.string   "coditem"
-    t.string   "order_budget"
-    t.string   "partial"
-    t.string   "subbudget_code"
-    t.float    "price"
-    t.string   "budget_code"
-    t.integer  "budget_id"
-    t.integer  "item_id"
-    t.string   "status_flag"
-    t.integer  "deleted"
-    t.integer  "wbsitem_id"
-    t.float    "measured"
-    t.integer  "cost_center_id"
-    t.string   "subbudgetdetail"
-    t.integer  "itembybudget_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "itembywbses", force: true do |t|
     t.string   "wbscode"
     t.integer  "itembywbs_id"
     t.string   "coditem"
@@ -938,6 +1022,27 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.datetime "updated_at"
   end
 
+  create_table "part_worker_details", force: true do |t|
+    t.integer  "worker_id"
+    t.integer  "phase_id"
+    t.integer  "sector_id"
+    t.string   "assistance"
+    t.string   "reason_of_lack"
+    t.integer  "working_group_id"
+    t.integer  "cost_center_id"
+    t.integer  "part_worker_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "part_workers", force: true do |t|
+    t.string   "number_part"
+    t.date     "date_of_creation"
+    t.integer  "company_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "part_works", force: true do |t|
     t.integer  "working_group_id"
     t.string   "number_working_group"
@@ -947,6 +1052,14 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.integer  "sector_id"
     t.integer  "block"
     t.integer  "cost_center_id"
+  end
+
+  create_table "payment_orders", force: true do |t|
+    t.integer  "provision_id"
+    t.float    "net_pay"
+    t.float    "igv"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "phases", force: true do |t|
@@ -972,20 +1085,6 @@ ActiveRecord::Schema.define(version: 20140725220201) do
 
   create_table "position_workers", force: true do |t|
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "professional_certificates", force: true do |t|
-    t.integer  "professional_id"
-    t.integer  "certificate_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "professional_trainings", force: true do |t|
-    t.integer  "professional_id"
-    t.integer  "training_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1027,6 +1126,26 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.datetime "updated_at"
     t.float    "current_igv"
     t.float    "current_unit_price"
+    t.float    "net_price_after_igv"
+  end
+
+  create_table "provision_direct_purchase_details", force: true do |t|
+    t.integer  "article_id"
+    t.integer  "sector_id"
+    t.integer  "phase_id"
+    t.integer  "amount"
+    t.float    "price"
+    t.float    "unit_price_before_igv"
+    t.boolean  "igv"
+    t.float    "quantity_igv"
+    t.float    "discount_after"
+    t.float    "discount_before"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "provision_id"
+    t.integer  "account_accountant_id"
+    t.float    "unit_price_igv"
   end
 
   create_table "provisions", force: true do |t|
@@ -1055,6 +1174,9 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.boolean  "received"
     t.boolean  "received_provision"
     t.float    "unit_price_before_igv"
+    t.float    "quantity_igv"
+    t.float    "discount_after"
+    t.float    "discount_before"
   end
 
   create_table "purchase_order_extra_calculations", force: true do |t|
@@ -1578,6 +1700,17 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.datetime "updated_at"
   end
 
+  create_table "type_workdays", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_workdays_workers", force: true do |t|
+    t.integer "worker_id"
+    t.integer "type_workday_id"
+  end
+
   create_table "unit_of_measurements", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -1724,6 +1857,18 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.string   "state"
   end
 
+  create_table "weeks_for_cost_center_1", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_2", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
   create_table "work_partners", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -1756,7 +1901,6 @@ ActiveRecord::Schema.define(version: 20140725220201) do
   create_table "worker_afps", force: true do |t|
     t.integer  "afp_id"
     t.string   "afptype"
-    t.string   "afpnumber"
     t.integer  "worker_id"
     t.date     "start_date"
     t.date     "end_date"
@@ -1777,11 +1921,11 @@ ActiveRecord::Schema.define(version: 20140725220201) do
   end
 
   create_table "worker_contracts", force: true do |t|
-    t.integer  "charge_id"
+    t.integer  "article_id"
     t.float    "camp"
     t.float    "destaque"
     t.float    "salary"
-    t.integer  "regime"
+    t.string   "regime"
     t.integer  "days"
     t.date     "start_date"
     t.date     "end_date"
@@ -1791,6 +1935,17 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.integer  "numberofcontract"
     t.string   "typeofcontract"
     t.date     "end_date_2"
+    t.integer  "contract_type_id"
+    t.string   "reason_for_termination"
+    t.float    "viatical"
+    t.float    "bonus"
+    t.integer  "status"
+    t.string   "comment"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
   end
 
   create_table "worker_details", force: true do |t|
@@ -1803,7 +1958,6 @@ ActiveRecord::Schema.define(version: 20140725220201) do
 
   create_table "worker_experiences", force: true do |t|
     t.string   "businessname"
-    t.string   "businessaddress"
     t.string   "title"
     t.float    "salary"
     t.string   "bossincharge"
@@ -1828,12 +1982,13 @@ ActiveRecord::Schema.define(version: 20140725220201) do
   end
 
   create_table "worker_healths", force: true do |t|
-    t.integer  "health_id"
+    t.integer  "health_center_id"
     t.integer  "worker_id"
     t.date     "start_date"
     t.date     "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "health_regime"
   end
 
   create_table "worker_otherstudies", force: true do |t|
@@ -1849,7 +2004,6 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "position_worker_id"
-    t.integer  "article_id"
     t.integer  "entity_id"
     t.string   "email"
     t.integer  "cost_center_id"
@@ -1926,6 +2080,11 @@ ActiveRecord::Schema.define(version: 20140725220201) do
     t.string   "maritalstatus"
     t.string   "typeofworker"
     t.integer  "numberofchilds"
+    t.string   "disabled"
+    t.string   "unionized"
+    t.string   "state"
+    t.string   "income_fifth_category"
+    t.string   "afpnumber"
   end
 
   create_table "working_groups", force: true do |t|
