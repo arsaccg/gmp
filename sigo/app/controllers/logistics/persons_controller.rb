@@ -40,7 +40,7 @@ class Logistics::PersonsController < ApplicationController
       'issuer' => 'Emite las ordenes de suministro', 
       'approver' => 'Aprueba ordenes de Suministro', 
       'reviser' => 'Dar visto bueno a las ordenes de suministro', 
-      'canceller' => 'Anular ordenes suministro'
+      'canceller' => 'Anular ordenes suministro',
       'maintainer' => 'Acceso a los Mantenimientos Globales, Especificos y de Sistema', 
       'control_documentary' => 'Acceso al Control de Documentarios',
       'technical_library' => 'Acceso a la Biblioteca Técnica', 
