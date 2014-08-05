@@ -308,6 +308,90 @@
                     %td
                       = worker_experiences.end_date.to_s
 
+  %article.col-sm-12.col-md-12.col-lg-12
+    #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+      %header
+        %span.widget-icon
+          %i.fa.fa-table
+        %h2 Documentos
+      %div
+        .jarviswidget-editbox
+          / This area used as dropdown edit box
+        .widget-body.no-padding
+          .alert.alert-info.no-margin.fade.in
+            %button.close{"data-dismiss" => "alert"}
+              ×
+            %i.fa-fw.fa.fa-info
+            Documentos subidos de la Obra
+          .col-sm-12
+            .row
+              %table.table.table-bordered
+                %thead
+                  %tr
+                    %th Nombre del Documento
+                    %th Documento
+                %tbody
+                  - if @worker.cv != nil
+                    %tr
+                      %td Curriculum Vitae
+                      %td
+                        %a.btn.btn-info.btn-xs{:href =>"#{@worker.cv.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                  - if @worker.antecedent_police != nil
+                    %tr
+                      %td Certificado de Antecedentes Policiales
+                      %td
+                        %a.btn.btn-info.btn-xs{:href =>"#{@worker.antecedent_police.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                  - if @worker.dni != nil
+                    %tr
+                      %td Documento Nacional de Identidad
+                      %td
+                        %a.btn.btn-info.btn-xs{:href =>"#{@worker.dni.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                  - if @worker.cts_deposit_letter != nil
+                    %tr
+                      %td Carta de Deposito de C.T.S.
+                      %td
+                        %a.btn.btn-info.btn-xs{:href =>"#{@worker.cts_deposit_letter.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                  - if @worker.pension_funds_letter != nil
+                    %tr
+                      %td Carta de Fondos Previsionales
+                      %td
+                        %a.btn.btn-info.btn-xs{:href =>"#{@worker.pension_funds_letter.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                  - if @worker.affidavit != nil
+                    %tr
+                      %td Declaración Jurada
+                      %td
+                        %a.btn.btn-info.btn-xs{:href =>"#{@worker.affidavit.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                  - if @worker.marriage_certificate != nil
+                    %tr
+                      %td Certificado de Convivencia / Partida de Matrimonio
+                      %td
+                        %a.btn.btn-info.btn-xs{:href =>"#{@worker.marriage_certificate.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                  - if @worker.birth_certificate_of_childer != nil
+                    %tr
+                      %td Partida de Nacimiento de Hijos
+                      %td
+                        %a.btn.btn-info.btn-xs{:href =>"#{@worker.birth_certificate_of_childer.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                  - if @worker.dni_wife_kids != nil
+                    %tr
+                      %td DNI Hijos y Esposa
+                      %td
+                        %a.btn.btn-info.btn-xs{:href =>"#{@worker.dni_wife_kids.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+                  - if @worker.schoolar_certificate != nil
+                    %tr
+                      %td Constancia de Matricula (Asig. Escolar)
+                      %td
+                        %a.btn.btn-info.btn-xs{:href =>"#{@worker.schoolar_certificate.url}", :target => "_blank"}
+                          %i.fa.fa-clipboard
+
 %button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
   %i.fa.fa-arrow-left>
   Retornar al listado de Trabajadores
