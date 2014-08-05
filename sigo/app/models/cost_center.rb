@@ -19,11 +19,11 @@ class CostCenter < ActiveRecord::Base
   has_many :provisions
   has_many :items
   has_many :budgets
-  
+  has_one  :cost_center_detail
   has_many :wbsitems
 
 	belongs_to :company
-
+  accepts_nested_attributes_for :cost_center_detail
 	# Access
 	has_and_belongs_to_many :users
 
@@ -31,7 +31,7 @@ class CostCenter < ActiveRecord::Base
 
 	# Validaciones
 	include ActiveModel::Validations
-	validates :code, :uniqueness => { :scope => [:company_id, :status], :message => "El código debe ser único."}
+	validates :code, :uniqueness => { :scope => [:company_id, :status], :message => "El codigo debe ser unico."}
 
 	after_validation :do_activecreate, on: [:create]
   

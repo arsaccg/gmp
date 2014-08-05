@@ -1,0 +1,121 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-pencil-square-o.fa-fw 
+    %h2
+      %strong Editar Provision
+  %div
+    .jarviswidget-editbox
+    .widget-body 
+      = simple_form_for([:administration, @provision], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
+        %fieldset
+          .input-group{'style' => 'display:none;'}
+            = f.input :order_id, :as => :hidden, :input_html => {:class => 'form-control', :value => 1 }, label: false
+          .row
+            .col-md-4
+              .form-group
+                %label.col-md-4.control-label Tipo Documento
+                .col-md-8
+                  .input-group
+                    %select.select2.form-control{:name => 'provision[document_provision_id]', :style => 'width:100%;padding: 0;border: none;'}
+                      - @documentProvisions.each do |x|
+                        %option{:value => "#{x.id}", :selected => "#{@provision.document_provision_id}"=="#{x.id}"}
+                          = x.name
+            .col-md-4
+              .form-group
+                %label.col-md-4.control-label Numero de Documento
+                .col-md-8
+                  .input-group
+                    = f.input :number_document_provision, :input_html => {:class => 'form-control'}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-calendar
+            .col-md-4
+              .form-group
+                %label.col-md-4.control-label Fecha
+                .col-md-8
+                  .input-group
+                    = f.input :accounting_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-calendar
+          .row
+            .col-md-4
+              .form-group
+                %label.col-md-4.control-label Serie
+                .col-md-8
+                  .input-group
+                    = f.input :series, placeholder: "Serie", :input_html => {:class => 'form-control'}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-money
+          .row
+            .col-md-12
+              .form-group
+                %label.col-md-2.control-label Glosa
+                .col-md-10
+                  .input-group
+                    = f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-align-justify
+        %fieldset
+          %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary-provisions{:style => "font-size: 12px;", 'aria-describedby' => "data-table_info"}
+            %thead
+              %tr
+                %th Codigo
+                %th Nombre del Artículo
+                %th Cuenta Contable
+                %th Unidad
+                %th Cantidad a atender
+                %th Precio Unitario
+                %th Total Descuentos antes de IGV
+                %th IGV
+                %th Total Neto
+                %th Total Descuentos después de IGV
+                %th Total Neto con Descuentos
+                %th Eliminar
+            %tbody{:id => "provisions_items_table"}
+              -@provision.provision_details.each do |pd|
+                %tr
+                  %td(style="display:none" class="provision-di")
+                    = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][id]', pd.id.to_s
+                    = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][order_detail_id]', pd.order_detail_id.to_s
+                    = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][type_of_order]', pd.type_of_order.to_s
+                  %td Codigo articulo
+                  %td Nombre articulo
+                  %td
+                    %select.form-control{:name =>"provision[provision_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :required => true, title:'No puede dejar este campo vacio'}
+                      %option{:value => nil, :selected => true, :disabled => true} Seleccionar cuenta contable
+                      - @account_accountants.each do |account_accountant|
+                        %option{:value => "#{account_accountant.id}", :selected => "#{pd.account_accountant_id}"=="#{account_accountant.id}"}
+                          = account_accountant.name
+                  %td.unit-of-measurement
+                    Unidad
+                  %td.amount
+                    = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount]', pd.amount, class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pd.amount})"
+                    %code= "Por atender: #{pd.amount}"
+                  %td.unit-price
+                    = number_to_currency(pd.current_unit_price.to_s, unit: 'S/.', precision: 2)
+                  %td.discount-before
+                    = number_to_currency(0, unit: 'S/.', precision: 2)
+                  %td.current-igv
+                    = (pd.current_igv*100).round.to_s + '%'
+                  %td.price-with-igv
+                    = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pd.unit_price_igv.to_s , class: "form-control unit-price-igv", :readonly => true
+                  %td.discount-after
+                    = number_to_currency(0, unit: 'S/.', precision: 2)
+                  %td.neto-price-with-igv
+                    = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][net_price_after_igv]', pd.net_price_after_igv.to_s , class: "form-control net-price-after-igv", :readonly => true
+                  %td.delete-item
+                    %label.checkbox
+                      = check_box 'provision[provision_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                      %i
+                  - @reg_n += 1
+        .form-actions{:style => "margin-top: 0;"}
+          .row
+            .col-md-12
+              %button.btn.btn-primary{type: "submit"}
+                %i.fa.fa-save
+                  Guardar
+
+#modalDeliveryItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
+  .modal-dialog
+    .modal-content
+      .modal-body#modalDeliveryItemsContent

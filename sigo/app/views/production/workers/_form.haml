@@ -118,9 +118,9 @@
           %section.col.col-8
             %label.label Entidad Trabajador
             %label.input{for: "entity_id"}
-              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ' ' + @entity.name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
-          %section.col.col-4
-            %label.label Cargo del Trabajador
+              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ', ' + @entity.name.to_s + ' ' + @entity.second_name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
+          %section.col.col-4#categoria{ 'style' => 'display:none' }
+            %label.label Categoría del Obrero
             %label.input{for: "category_of_worker_id"}
               %select.form-control{:name =>"worker[position_worker_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @positionWorkers.each do |positionWorker|
@@ -221,6 +221,8 @@
             %label.input{for: "afpnumber"}
               %i.icon-append.fa.fa-credit-card
               = f.input :afpnumber, placeholder: "CUSPP", input_html: { class: 'form-control' }, label: false
+            %label Obtener CUSPP accediendo a
+            %a{:target =>'_blank', :href => 'http://www.sbs.gob.pe/app/spp/Reporte_sit_prev/afil_existe.asp'}>web de la SBS
         .row#row7{ 'style' => 'display:none' }
           %section.col.col-12
             %label.label JORNADA LABORAL
@@ -462,8 +464,8 @@
           %section.col.col-3
             %select#afptype-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
               %option(value = "") Tipo de comisión
-              %option(value = "mixto") Mixto
-              %option(value = "comision") Comisión
+              %option(value = "Comision por Flujo(sueldo)") Comision por Flujo(sueldo)
+              %option(value = "Comision mixta (saldo y sueldo)") Comision mixta (saldo y sueldo)
 
         .row
           %section.col.col-3
@@ -523,29 +525,29 @@
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
-                %th.col-2 Apellido Paterno
-                %th.col-2 Apellido Materno
-                %th.col-2 Nombres
-                %th.col-2 Parentesco
-                %th.col-2 Fecha de Nacimiento
-                %th.col-2 DNI
-                %th Eliminar
+                %th{style: "width: 15%;"} Apellido Paterno
+                %th{style: "width: 15%;"} Apellido Materno
+                %th{style: "width: 25%;"} Nombres
+                %th{style: "width: 15%;"} Parentesco
+                %th{style: "width: 15%;"} Fecha de Nacimiento
+                %th{style: "width: 10%;"} DNI
+                %th{style: "width: 5%;"} Eliminar
             %tbody(id="familiar_items_table")
               - if @action == 'edit'
                 - puts @worker.worker_familiars
                 - @worker.worker_familiars.each do |oos|
                   %tr
-                    %td.col-2=oos.paternal_surname
-                    %td.col-2=oos.maternal_surname
-                    %td.col-2=oos.names
-                    %td.col-2=oos.relationship
-                    %td.col-2=oos.dayofbirth
-                    %td.col-2=oos.dni
+                    %td{style: "width: 15%;"}=oos.paternal_surname
+                    %td{style: "width: 15%;"}=oos.maternal_surname
+                    %td{style: "width: 25%;"}=oos.names
+                    %td{style: "width: 15%;"}=oos.relationship
+                    %td{style: "width: 15%;"}=oos.dayofbirth
+                    %td{style: "width: 10%;"}=oos.dni
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_familiars_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_familiars_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
-                    %td.delete-item
+                    %td.delete-item{style: "width: 5%;"}
                       %label.checkbox
                         = check_box 'worker[worker_familiars_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
@@ -642,7 +644,7 @@
           %section.col.col-2
             %div
               %a(href="javascript:add_centerofstudy_item();" id="btn-add-centerofstudy" class="btn btn-success" role="button")
-                Agregar Centro de Estudios
+                Agregar Estudios Superiores
 
         .col-lg-13
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
@@ -686,21 +688,21 @@
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
-                %th.col-4 Otros Estudios
-                %th.col-4 Nivel
-                %th Eliminar
+                %th{style: "width: 50%;"} Otros Estudios
+                %th{style: "width: 40%;"} Nivel
+                %th{style: "width: 10%;"} Eliminar
             %tbody(id="otherstudy_items_table")
               - if @action == 'edit'
                 - puts @worker.worker_otherstudies
                 - @worker.worker_otherstudies.each do |oos|
                   %tr
-                    %td.col-2=oos.study
-                    %td.col-2=oos.level
+                    %td{style: "width: 50%;"}=oos.study
+                    %td{style: "width: 40%;"}=oos.level
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_otherstudies][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_otherstudies][' + @reg_n.to_s + '][worker_id]', @worker.id
-                    %td.delete-item
+                    %td.delete-item{style: "width: 10%;"}
                       %label.checkbox
                         = check_box 'worker[worker_otherstudies]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
@@ -851,33 +853,31 @@
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
-                %th.col-2 Empresa
-                %th.col-2 Dirección
-                %th.col-2 Cargo
-                %th.col-2 Salario
-                %th.col-2 Jefe inmediato
-                %th.col-2 Motivo de Salida
-                %th.col-2 Fecha de Inicio
-                %th.col-2 Fecha de Fin
-                %th Eliminar
+                %th{style: "width: 25%;"} Empresa
+                %th{style: "width: 15%;"} Cargo
+                %th{style: "width: 10%;"} Salario
+                %th{style: "width: 20%;"} Jefe inmediato
+                %th{style: "width: 20%;"} Motivo de Salida
+                %th{style: "width: 5%;"} Inicio
+                %th{style: "width: 5%;"} Fin
+                %th{style: "width: 10%;"} Eliminar
             %tbody(id="experience_items_table")
               - if @action == 'edit'
                 - puts @worker.worker_experiences
                 - @worker.worker_experiences.each do |oos|
                   %tr
-                    %td.col-2=oos.businessname
-                    %td.col-2=oos.businessaddress
-                    %td.col-2=oos.title
-                    %td.col-2=oos.salary
-                    %td.col-2=oos.bossincharge
-                    %td.col-2=oos.exitreason
-                    %td.col-2=oos.start_date
-                    %td.col-2=oos.end_date
+                    %td{style: "width: 25%;"}=oos.businessname
+                    %td{style: "width: 15%;"}=oos.title
+                    %td{style: "width: 10%;"}=oos.salary
+                    %td{style: "width: 20%;"}=oos.bossincharge
+                    %td{style: "width: 5%;"}=oos.exitreason
+                    %td{style: "width: 5%;"}=oos.start_date
+                    %td{style: "width: 10%;"}=oos.end_date
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_experiences][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_experiences][' + @reg_n.to_s + '][worker_id]', @worker.id
-                    %td.delete-item
+                    %td.delete-item{style: "width: 10%;"}
                       %label.checkbox
                         = check_box 'worker[worker_experiences]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
@@ -1037,9 +1037,14 @@
                 - else
                   Subir el archivo correspondiente
       %footer
-        %button.btn.btn-primary{type: "submit"}
-          %i.fa.fa-save 
-          Guardar
+        -if @register=='yes'
+          %button.btn.btn-primary{type: "submit"}
+            %i.fa.fa-save 
+            Registrar
+        -else
+          %button.btn.btn-primary{type: "submit"}
+            %i.fa.fa-save 
+            Guardar
 
 :javascript
   $(document).ready(function () {
@@ -1060,6 +1065,9 @@
       $("#fieldset5").css("display", "");
       $("#fieldset6").css("display", "");
       $("#fieldset7").css("display", "");
+    }
+    if('#{@worker.typeofworker}'=="obrero"){
+      $("#categoria").css("display", "");
     }
     if('#{@worker.numberofchilds}'!=0){
       $("#numberofchildren").css("display", "");
@@ -1109,6 +1117,14 @@
       $("#fieldset5").css("display", "none");
       $("#fieldset6").css("display", "none");
       $("#fieldset7").css("display", "none");
+    }
+  });
+  $("input.radiobox").change(function() {
+    if($(this).prop('value') == "obrero"){
+      $("#categoria").css("display", "");
+    }
+    else {
+      $("#categoria").css("display", "none");
     }
   });
   $("input[type=radio][name=numberofchilds2]").change(function() {

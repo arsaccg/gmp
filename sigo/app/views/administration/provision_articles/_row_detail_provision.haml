@@ -1,0 +1,62 @@
+%tr{id: "tr-" + @reg_n.to_s}
+  %td{:style => "display:none", :class => "provision_article-id"}
+    = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article
+  %td= @name_article
+  %td= @unit_of_measurement
+  %td.account-accountant
+    %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :required => true, title:'No puede dejar este campo vacio'}
+      %option{:value => nil, :selected => true, :disabled => true} Seleccionar cuenta contable
+      - @account_accountants.each do |account_accountant|
+        %option{:value => "#{account_accountant.id}"}
+          = '(' + account_accountant.code + ') ' + account_accountant.name
+  %td.sector
+    %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
+      %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
+      - @sectors.each do |sector|
+        %optgroup{:label => "#{sector.name}"}
+          -Sector.getSubSectors(sector.code).each do |subsector|
+            %option{:value => "#{subsector.id}"}
+              = subsector.name
+  %td.phase
+    %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
+      %option{:value => nil, :selected => true, :disabled => true} Seleccionar Fase
+      - @phases.each do |phase|
+        %option{:value => "#{phase.id}"}
+          = phase.code + " " + phase.name
+
+  %td.amount
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', @amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"
+
+  %td.unit-price
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', nil, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
+
+  %td.discount-before{:style => "display:none", :class => "provision_discount-before"}
+    = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', nil, class: "discount_before-item"
+
+  %td.price-without-igv
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', nil, class: "form-control unit-price-without-igv", :readonly => true
+
+  %td.check-igv
+    %label.checkbox
+      = check_box_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][igv]', nil, nil, { class: 'provision_direct_igv', onchange: "enableFieldsForIgv(this);" }
+      %i
+
+  %td.quantity-igv{:style => "display:none", :class => "provision_quantity-igv"}
+    = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',nil, class: "igv-item"
+
+  %td.price-with-igv
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil, class: "form-control unit-price-igv", :readonly => true
+
+  %td.discount-after{:style => "display:none", :class => "provision_discount-after"}
+    = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_after]', nil, class: "discount_after-item"
+
+  %td{:style => 'text-align: center'}
+    %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-provision-#{@reg_n.to_s}", 'onclick' => "set_id_modeling(this, #{@reg_n.to_s})"}
+      %strong
+        %i.fa.fa-superscript
+
+  %td.description
+    = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
+
+  %td{:style => "width: 1%;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')", :class => 'btn'} X

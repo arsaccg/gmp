@@ -8,21 +8,59 @@ class Production::WorkersController < ApplicationController
     @bank = Bank.first
     @workers = Worker.where("cost_center_id = ?", cost_center)
     @entity = TypeEntity.find_by_name('Trabajadores').entities.first
+    @empleados = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active'").count
+    @obreros = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active'").count
+    @pensionistas = Worker.where("typeofworker LIKE 'pensionista' AND state LIKE 'active'").count
+    @formaciones = Worker.where("typeofworker LIKE 'formacion' AND state LIKE 'active'").count
+    @externos = Worker.where("typeofworker LIKE 'externo' AND state LIKE 'active'").count
     render layout: false
   end
 
   def show
     @worker = Worker.find(params[:id])
+    @worker_afps = @worker.worker_afps
+    @worker_center_of_studies = @worker.worker_center_of_studies
+    @worker_details = @worker.worker_details
+    @worker_experiences = @worker.worker_experiences
+    @worker_familiars = @worker.worker_familiars
+    @worker_healths = @worker.worker_healths
+    @worker_otherstudies = @worker.worker_otherstudies
     render layout: false
   end
 
   def show_workers
     display_length = params[:iDisplayLength]
+    typeofworker = params[:typeofworker]
     pager_number = params[:iDisplayStart]
     keyword = params[:sSearch]
+    if keyword == 'activo'
+      keyword = 'active'
+    elsif keyword == 'registrado'
+      keyword = 'registered'
+    elsif keyword == 'cesado'
+      keyword = 'ceased'      
+    end
     array = Array.new
     cost_center = get_company_cost_center('cost_center')
-    array = Worker.get_workers(cost_center, display_length, pager_number, keyword)
+    array = Worker.get_workers(typeofworker,cost_center, display_length, pager_number, keyword)
+    render json: { :aaData => array }
+  end
+
+  def show_workers_empleados
+    display_length = params[:iDisplayLength]
+    typeofworker = params[:typeofworker]
+    pager_number = params[:iDisplayStart]
+    keyword = params[:sSearch]
+    if keyword == 'activo'
+      keyword = 'active'
+    elsif keyword == 'registrado'
+      keyword = 'registered'
+    elsif keyword == 'cesado'
+      keyword = 'ceased'      
+    end
+    array = Array.new
+    cost_center = get_company_cost_center('cost_center')
+    array = Worker.get_workers_empleados(typeofworker,cost_center, display_length, pager_number, keyword)
     render json: { :aaData => array }
   end
 
@@ -82,6 +120,7 @@ class Production::WorkersController < ApplicationController
     @entites = TypeEntity.find_by_name('Trabajadores').entities
     @company = params[:company_id]
     @action = 'edit'
+    @register = params[:register]
     render layout: false
   end
 
@@ -165,7 +204,6 @@ class Production::WorkersController < ApplicationController
   def add_experience_item_field
     @reg_n = ((Time.now.to_f)*100).to_i
     @businessname = params[:businessname]
-    @businessaddress = params[:businessaddress]
     @title = params[:title2]
     @salary = params[:salary]
     @bossincharge = params[:bossincharge]
@@ -203,8 +241,85 @@ class Production::WorkersController < ApplicationController
     render :json => worker
   end
 
+  def register
+    worker = Worker.find(params[:id])
+    worker.register
+    puts "YES"
+    redirect_to :action => :index
+  end
+
+  def approve
+    workercontract = WorkerContract.new
+    workercontract.article_id = params[:article_id]
+    workercontract.camp = params[:camp]
+    workercontract.destaque = params[:destaque]
+    workercontract.salary = params[:salary]
+    workercontract.regime = params[:regime]
+    workercontract.bonus = params[:bonus]
+    workercontract.viatical = params[:viatical]
+    workercontract.days = params[:days]
+    workercontract.start_date = params[:start_date]
+    workercontract.end_date = params[:end_date]
+    workercontract.end_date_2 = params[:end_date]
+    workercontract.numberofcontract = params[:numberofcontract]
+    workercontract.typeofcontract = params[:typeofcontract]
+    workercontract.contract_type_id = params[:contract_type_id]
+    workercontract.worker_id = params[:worker_id]
+    workercontract.status = 1
+    workercontract.save
+    worker = Worker.find(params[:worker_id])
+    worker.approve
+    redirect_to :action => :index
+  end
+
+  def cancel
+    worker = Worker.find(params[:id])
+    workercontract = WorkerContract.find_by_status(1)
+    WorkerContract.where( id: workercontract.id ).update_all( end_date_2: params[:end_date_2] , reason_for_termination: params[:reason_for_termination], status: 0, comment: params[:comment] )
+    # Save file
+    WorkerContract.find(workercontract.id).update_attributes(worker_contract_file_param)
+    workercontract.save!
+    worker.cancel
+    redirect_to :action => :index
+  end
+
+  def part_worker
+    @worker = Worker.find_by_id(params[:worker_id])
+    @workercontract = WorkerContract.find_by_status(1)
+    render layout: false
+  end
+
+  def part_contract
+    cost_center_obj = CostCenter.find(session[:cost_center])
+    @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + (WorkerContract.all.first.id + 1).to_s.rjust(4, '0')
+    @typeofcontract = params[:typeofcontract]
+    @articles = TypeOfArticle.find_by_code('01').articles
+    @contractypes = ContractType.all
+    @cost_center = cost_center_obj.id
+    @worker = Worker.find_by_id(params[:worker_id])
+    render layout: false
+  end
+
+  def worker_pdf
+    @company = Company.find(session[:company])
+    @worker = Worker.find(params[:id])
+    @worker_afps = @worker.worker_afps
+    @worker_center_of_studies = @worker.worker_center_of_studies
+    @worker_details = @worker.worker_details
+    @worker_experiences = @worker.worker_experiences
+    @worker_familiars = @worker.worker_familiars
+    @worker_healths = @worker.worker_healths
+    @worker_otherstudies = @worker.worker_otherstudies
+    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :portrait }
+
+  end
+
   private
   def worker_parameters
-    params.require(:worker).permit(:email, {:type_workday_ids => []}, :afpnumber, :driverlicense, :income_fifth_category, :unionized, :disabled, :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_afps_attributes: [:id, :worker_id, :afp_id, :afptype, :start_date, :end_date, :_destroy], worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :start_date, :end_date, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :businessaddress, :title, :salary, :bossincharge, :exitreason, :_destroy])
+    params.require(:worker).permit(:email, {:type_workday_ids => []}, :afpnumber, :driverlicense, :income_fifth_category, :unionized, :disabled, :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_afps_attributes: [:id, :worker_id, :afp_id, :afptype, :start_date, :end_date, :_destroy], worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :start_date, :end_date, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :title, :salary, :bossincharge, :exitreason, :_destroy])
+  end
+
+  def worker_contract_file_param
+    params.require(:worker_contract).permit(:document)
   end
 end

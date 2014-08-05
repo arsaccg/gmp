@@ -11,7 +11,7 @@
       = @article.unit_of_measurement.symbol.to_s
     %td.col-md-1.smart-form#people
       %div
-        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][people]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' , :onchange => 'getParcialPersonal1(this);'   
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][people]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' , :onchange => 'getParcialPersonal1(this);'
     %td.col-md-1.smart-form#participation
       %div
         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][participation]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal2(this);' 
@@ -20,10 +20,11 @@
         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal3(this);'
     %td.col-md-1.smart-form#salary
       %div
-        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][salary]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal4(this);'
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal4(this);'
     %td.col-md-1.smart-form#parcial
       %div
-        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
+      %div
     %td{:style => "width: 1%;"}
       %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
 
@@ -40,7 +41,7 @@
       = @article.unit_of_measurement.symbol.to_s
     %td.col-md-1.smart-form#amount
       %div
-        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES1(this);'    
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES1(this);'
     %td.col-md-1.smart-form#time
       %div
         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES2(this);' 
@@ -49,7 +50,7 @@
         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES3(this);'
     %td.col-md-1.smart-form#parcial
       %div
-        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
     %td{:style => "width: 1%;"}
       %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
 
@@ -72,7 +73,7 @@
         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' , :onchange => 'getParcialMS2(this);'
     %td.col-md-1.smart-form#parcial
       %div
-        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
     %td{:style => "width: 1%;"}
       %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
 
@@ -95,7 +96,7 @@
         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' , :onchange => 'getParcialMS2(this);'
     %td.col-md-1.smart-form#parcial
       %div
-        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
     %td{:style => "width: 1%;"}
       %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
 
@@ -121,7 +122,7 @@
         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES3(this);'
     %td.col-md-1.smart-form#parcial
       %div
-        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
     %td{:style => "width: 1%;"}
       %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
       

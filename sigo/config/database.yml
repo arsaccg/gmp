@@ -15,13 +15,7 @@ development:
   database: arsac_logistica
   username: root
   password: root
-  host: localhost
-
-remote:
-  adapter: mysql2
-  database: arsac_produccion
-  username: root
-  password: root
+  encoding: utf8
   host: localhost
 
 # Warning: The database defined as "test" will be erased and
@@ -32,6 +26,7 @@ test:
   database: arsac_logistica_testing
   username: root
   password: root
+  encoding: utf8
   host: localhost
 
 production:
@@ -39,4 +34,5 @@ production:
   database: arsac_logistica_production
   username: root
   password: root
+  encoding: utf8
   host: localhost

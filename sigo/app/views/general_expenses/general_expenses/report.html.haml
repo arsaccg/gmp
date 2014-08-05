@@ -1,0 +1,61 @@
+.modal-dialog{"style"=>"width: 100%"}
+  .modal-content
+    .modal-body
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th{'colspan' => 10, "style"=>"text-align:center;font-size: large"} DESAGREGADO DE GASTOS GENERALES Y UTILIDAD
+          %tr
+            %th{"style"=>"text-align:center"} Obra: 
+            -if @ccd!=nil
+              %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;"}= @ccd.name.to_s
+            -else
+              %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;"} No Hay Datos Ingresados
+          %tr
+            %th{"style"=>"text-align:center"} Fecha:
+            %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;"}= GeneralExpense.last.updated_at.strftime('%d-%m-%Y') rescue Time.now.strftime('%d-%m-%Y')
+          %tr
+            %th{"style"=>"text-align:right"} C.D. (S/.) :
+            -if @ccd!=nil
+              %th{"style"=>"text-align:left;font-weight: normal;"}= number_to_currency(@ccd.direct_cost.to_f.to_s, unit: 'S/. ', precision: 2)
+            -else
+              %th{"style"=>"text-align:left;font-weight: normal;"} No Hay Datos Ingresados
+            %th{'colspan' => 8,"style"=>"text-align:right"}
+          %tr
+            %th{"style"=>"text-align:left"} Codigo
+            %th{"style"=>"text-align:left"} Descripción
+            %th{"style"=>"text-align:left"} Unidad
+            %th{"style"=>"text-align:right"} Personas
+            %th{"style"=>"text-align:right"} %Participacion
+            %th{"style"=>"text-align:right"} Tiempo
+            %th{"style"=>"text-align:right"} Cantidad
+            %th{"style"=>"text-align:right"} Sueldo/Costo
+            %th{"style"=>"text-align:right"} Parcial
+            %th{"style"=>"text-align:center"} Total
+        %tbody
+          -@ge.each do |ge|
+            %tr
+              %th{"style"=>"text-align:center;font-size: 14px;"}= Phase.find(ge.phase_id.to_s).code
+              %th{'colspan' => 8,"style"=>"text-align:center;font-size: 14px;"}= Phase.find(ge.phase_id.to_s).name
+              %th{"style"=>"text-align:center;font-size: 14px;"}=number_to_currency(ge.total, unit: 'S/. ', precision: 2)
+
+            -ge.general_expense_details.each do |ged|
+              %tr
+                %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).code.to_s
+                %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).name.to_s
+                %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).unit_of_measurement.symbol.to_s
+                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.people rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.participation rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.time rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}=ged.amount rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}=number_to_currency(ged.cost, unit: 'S/. ', precision: 2) rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}=number_to_currency(ged.parcial, unit: 'S/. ', precision: 2) rescue '-'
+                %th{"style"=>"text-align:right;font-weight: normal;"}
+            -@i+=1
+          %tr
+            %th{"style"=>"text-align:center"}
+            %th{'colspan' => 8,"style"=>"text-align:left;font-size: 14px;"} Total Gastos
+            %th{"style"=>"text-align:center;font-size: 14px;"}= number_to_currency(@t, unit: 'S/. ', precision: 2)
+      %footer
+        %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+          Salir

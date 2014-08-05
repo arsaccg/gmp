@@ -1,21 +1,28 @@
 %tr(class="familiar_item"){id: "tr" + @reg_n.to_s}
-  %td.col-md-1.paternal_surname{:style => "width:5%"}
+  %td.paternal_surname{:style => "width:15%"}
     %div
       = text_field_tag 'worker[worker_familiars_attributes][' + @reg_n.to_s + '][paternal_surname]', @paternal_surname.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.col-md-1.maternal_surname{:style => "width:5%"}
+  %td.maternal_surname{:style => "width:15%"}
     %div
       = text_field_tag 'worker[worker_familiars_attributes][' + @reg_n.to_s + '][maternal_surname]', @maternal_surname.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.col-md-1.names{:style => "width:5%"}
+  %td.names{:style => "width:25%"}
     %div
       = text_field_tag 'worker[worker_familiars_attributes][' + @reg_n.to_s + '][names]', @names.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.col-md-1.relationship{:style => "width:5%"}
+  %td.relationship{:style => "width:15%"}
     %div
-      = text_field_tag 'worker[worker_familiars_attributes][' + @reg_n.to_s + '][relationship]', @relationship.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.col-md-1.dayofbirth{:style => "width:5%"}
+      %select.col-sm-6.form-control#relationship{:name =>'worker[worker_familiars_attributes][' + @reg_n.to_s + '][relationship]', :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px', class: 'relationship' }
+        %option{:value => "0", :selected => 'selected'} Seleccione un parentesco
+        %option{:value => "Padre"} Padre
+        %option{:value => "Madre"} Madre
+        %option{:value => "Hijo(a)"} Hijo(a)
+        %option{:value => "Abuelo(a)"} Abuelo(a)
+        %option{:value => "Hermano(a)"} Hermano(a)
+        %option{:value => "Esposo(a)"} Esposo(a)
+  %td.dayofbirth{:style => "width:15%"}
     %div
       %input#familiar-dayofbirth.string.optional.form-control{'name'=>'worker[worker_familiars_attributes][' + @reg_n.to_s + '][dayofbirth]', type: "date", value: @dayofbirth.to_s}
-  %td.col-md-1.dni{:style => "width:5%"}
+  %td.dni{:style => "width:10%"}
     %div
       = text_field_tag 'worker[worker_familiars_attributes][' + @reg_n.to_s + '][dni]', @dni.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td{:style => "width: 1%;"}
+  %td{:style => "width: 5%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

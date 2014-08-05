@@ -88,7 +88,7 @@ class Logistics::CostCentersController < ApplicationController
       if costCenter.update_attributes(cost_center_parameters_timeline)
         CostCenterTimeline.LoadTimeLine(costCenter.id, costCenter.start_date, costCenter.end_date)
 
-        flash[:notice] = "Se actualizó la duración del proyecto."
+        flash[:notice] = "Se actualizo la duracion del proyecto."
         redirect_to :action => :index
       else
         costCenter.errors.messages.each do |attribute, error|
@@ -158,7 +158,10 @@ class Logistics::CostCentersController < ApplicationController
     render(partial: 'select', :layout => false)
   end
 
+
   private
+
+
   def cost_center_parameters
     params.require(:cost_center).permit(:code, :name, :company_id)
   end

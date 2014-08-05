@@ -41,6 +41,9 @@ $(document).ready(function(){
   }
 });
 
+
+
+
 function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, semana6, semana7, semana8, semana9, semana10, theoretical_value, valor1, valor2, valor3, valor4, valor5, valor6, valor7, valor8, valor9, valor10){
   theoretical_value = parseFloat(theoretical_value)
   valor1 = parseFloat(valor1)
@@ -271,7 +274,26 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
   });
 }
 
-
+function load_file_ajax(dom_element, url, type_call, parameters, div_name){
+  
+  $(dom_element).fileupload({
+    url: url,
+    method: type_call,
+    formData: parameters,
+    onSuccess:function(files,data,xhr) {
+      $("#" + div_name).css({
+        opacity : '0.0'
+      }).html(data).delay(50).animate({
+        opacity : '1.0'
+      }, 300);
+    },
+    onError: function(files,status,errMsg)
+    {
+      console.log(files);
+      console.log(errMsg);
+    }
+  });
+}
 
 function delete_to_url(url, div_name, url_index){ /* Method DELETE */
   var url_str = url;

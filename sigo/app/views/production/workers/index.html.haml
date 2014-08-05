@@ -1,74 +1,22 @@
 #content-inside
   .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+    .col-xs-9.col-sm-7.col-md-7.col-lg-9
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Lista de Trabajadores
-    - if flash[:notice] != nil
-      .alert.alert-success.fade.in{"style" => "clear:both"}
-        %button.close{"data-dismiss" => "alert"}
-          ×
-        %i.fa-fw.fa.fa-check
-        %strong Éxito
-        = flash[:notice]
-    - if flash[:error] != nil
-      .alert.alert-danger.fade.in{"style" => "clear:both"}
-        %button.close{"data-dismiss" => "alert"}
-          ×
-        %i.fa-fw.fa.fa-times
-        %strong Error!
-        = flash[:error]
-  .row
-    - if @bank.present? && @article.present? && @entity.present?
-      .col-sm-2
-        %a#smart-mod-eg2.btn.btn-primary
-          Agregar Trabajador
-    - elsif @entity.blank? && @bank.blank? && @article.present?
-      .col-xs-12.col-sm-7.col-md-7.col-lg-12
-        .alert.alert-block.alert-danger
-          %a.close(data-dismiss="alert" href="#")
-            ×
-          %h4.alert-heading
-            %i.fa.fa-lock
-              No puedes crear una Trabajador!
-          %p
-            Verifica si tienes, por lo menos, 1 Insumo de tipo Personal (Cod. 01) y 1 Banco
-    - elsif @entity.blank?
-      .col-xs-12.col-sm-7.col-md-7.col-lg-12
-        .alert.alert-block.alert-danger
-          %a.close(data-dismiss="alert" href="#")
-            ×
-          %h4.alert-heading
-            %i.fa.fa-lock
-              No puedes crear una Trabajador!
-          %p
-            Verifica si tienes, por lo menos, 1 Entidad de tipo Trabajador.
-    - elsif @bank.blank?
-      .col-xs-12.col-sm-7.col-md-7.col-lg-12
-        .alert.alert-block.alert-danger
-          %a.close(data-dismiss="alert" href="#")
-            ×
-          %h4.alert-heading
-            %i.fa.fa-lock
-              No puedes crear una Trabajador!
-          %p
-            Verifica si tienes, por lo menos, 1 Banco.
-    - elsif @article.blank?
-      .col-xs-12.col-sm-7.col-md-7.col-lg-12
-        .alert.alert-block.alert-danger
-          %a.close(data-dismiss="alert" href="#")
-            ×
-          %h4.alert-heading
-            %i.fa.fa-lock
-              No puedes crear una Trabajador!
-          %p
-            Verifica si tienes, por lo menos, 1 Insumo de tipo Personal (Cod. 01).
+    .col-xs-2.col-sm-7.col-md-7.col-lg-2
+      %a#smart-mod-eg2.btn.btn-primary{"style" => "margin-top:20px"}
+        Agregar Trabajador
   %br
   .row
   #widget-grid
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table'
+  %br
+  #part-worker.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partWorkersLabel", role: "dialog"}
+  %br
+  #part-contract.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partContractsLabel", role: "dialog"}
 
 :javascript
   $("#smart-mod-eg2").click(function(e) {
@@ -85,3 +33,21 @@
     });
     e.preventDefault();
   })
+
+  function part_worker(worker_id) {
+    data = { authenticity_token: "#{form_authenticity_token}", worker_id: worker_id };
+    load_url_ajax('#{part_worker_production_workers_path}', 'part-worker', data, null, 'POST');
+    $('#part-worker').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function part_contract(worker_id) {
+    data = { authenticity_token: "#{form_authenticity_token}", worker_id: worker_id, typeofcontract: "Contrato" };
+    load_url_ajax('#{part_contract_production_workers_path}', 'part-contract', data, null, 'POST');
+    $('#part-contract').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }

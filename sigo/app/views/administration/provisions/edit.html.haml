@@ -6,8 +6,8 @@
         Editar Provisión
   #widget-grid
     .row
-      %article.col-sm-12.col-md-12.col-lg-6
-        = render :partial => 'form'
+      %article.col-sm-12.col-md-12.col-lg-12
+        = render :partial => 'form_edit'
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-provisions{type: "button"}
     %i.fa.fa-arrow-left>
     Retornar al listado de cargos
@@ -16,12 +16,9 @@
 
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
-
-  $(document).ready(function(){
-    $('#backlist-provisions').click(function(){
-      load_url_ajax("#{biddings_charges_path}", 'content', null, null, 'GET');
-  	});
-  }
+  $('#backlist-provisions').click(function(){
+    load_url_ajax("#{administration_provisions_path}", 'content', null, null, 'GET');
+  });
 
   function delete_item(code){
     $("#tr" + code).remove();

@@ -1,6 +1,8 @@
 ArsacLogistica::Application.routes.draw do
 
-  devise_for :users, :controllers => {:registrations => "users/registrations"}
+  devise_for :users, :controllers => {:registrations => "users/registrations"}, :path_names => { 
+    :sign_up => 'arsac_register'
+  }
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -62,9 +64,15 @@ ArsacLogistica::Application.routes.draw do
   # Example resource route within a namespace:,
 
   namespace :logistics do
+    resources :cost_center_details do
+      collection do
+        post 'add_contractor_field'
+      end
+    end
     resources :unit_of_measurements
     resources :persons do
       collection do
+        
         post 'getCostCentersPerCompany'
         post 'update_profile'
       end
@@ -274,6 +282,16 @@ ArsacLogistica::Application.routes.draw do
         post 'add_otherstudy_item_field'
         post 'add_experience_item_field'
         post 'show_workers'
+        post 'show_workers_empleados'
+        post 'part_worker'
+        post 'part_contract'
+      end
+      member do
+        get 'register'
+        get 'approve'
+        patch 'cancel'
+        get 'worker_pdf'
+        post 'worker_pdf'
       end
     end
     resources :worker_contracts
@@ -464,6 +482,11 @@ ArsacLogistica::Application.routes.draw do
   end
 
   namespace :administration do
+    resources :payment_orders do
+      collection do
+        post 'get_info_from_provision'
+      end
+    end
     resources :document_provisions
     resources :provisions do
       collection do
@@ -473,9 +496,18 @@ ArsacLogistica::Application.routes.draw do
         post 'get_suppliers_by_type_order'
       end
     end
+    resources :part_workers do
+      collection do
+        post 'show_part_workers'
+      end
+    end
     resources :health_centers
     resources :contract_types
-
+    resources :provision_articles do
+      collection do
+        post 'puts_details_in_provision'
+      end
+    end
     resources :account_accountants do
       collection do
         get 'import'
@@ -520,8 +552,10 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'display_articles'
         post 'add_concept'
+        post 'show_details'
+        post 'report'
       end
     end
+    resources :diverse_expenses_of_managements
   end
 end
-

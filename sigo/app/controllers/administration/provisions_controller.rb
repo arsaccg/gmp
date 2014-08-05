@@ -1,6 +1,9 @@
 class Administration::ProvisionsController < ApplicationController
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+
   def index
-    @provision = Provision.all
+    @provision = Provision.where('order_id IS NOT NULL')
     render layout: false
   end
 
@@ -12,33 +15,52 @@ class Administration::ProvisionsController < ApplicationController
   end
 
   def create
-    provision = Provision.new(provisions_parameters)
-    if provision.save
-      provision_checked = Array.new
-      total_amount = 0
-      provision.provision_details.each do |detail|
-        if !provision_checked.include? detail
-          provision_checked << detail.order_detail_id
-          ProvisionDetail.where('order_detail_id = ?', detail.order_detail_id).each do |details|
-            total_amount += details.amount
+    # Si es una Provision de Compra
+    if params[:provision]['order_id'] != nil
+      provision = Provision.new(provisions_parameters)
+      if provision.save
+        provision_checked = Array.new
+        total_amount = 0
+        provision.provision_details.each do |detail|
+          if !provision_checked.include? detail
+            provision_checked << detail.order_detail_id
+            ProvisionDetail.where('order_detail_id = ?', detail.order_detail_id).each do |details|
+              total_amount += details.amount
+            end
+            Provision.update_received_order(total_amount, detail.order_detail_id, detail.type_of_order)
           end
-          Provision.update_received_order(total_amount, detail.order_detail_id, detail.type_of_order)
         end
+        flash[:notice] = "Se ha creado correctamente la nueva provision."
+        redirect_to :action => :index
+      else
+        provision.errors.messages.each do |attribute, error|
+          flash[:error] =  flash[:error].to_s + error.to_s + "  "
+        end
+        # Load new()
+        @provision = provision
+        render :new, layout: false
       end
-      flash[:notice] = "Se ha creado correctamente la nueva provision."
-      redirect_to :action => :index
     else
-      provision.errors.messages.each do |attribute, error|
-        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      # Si es una provision de Compra Directa
+      provision = Provision.new(provision_direct_purchase_parameters)
+      if provision.save
+        flash[:notice] = "Se ha creado correctamente la nueva provision."
+        redirect_to :controller => :provision_articles, :action => :index
+      else
+        provision.errors.messages.each do |attribute, error|
+          flash[:error] = flash[:error].to_s + error.to_s + "  "
+        end
+        # Load new()
+        redirect_to :controller => :provision_articles, :action => :new
       end
-      # Load new()
-      @provision = provision
-      render :new, layout: false
     end
   end
 
   def edit
     @provision = Provision.find(params[:id])
+    @documentProvisions = DocumentProvision.all
+    @account_accountants = AccountAccountant.where("code LIKE  '_______'")
+    @reg_n = ((Time.now.to_f)*100).to_i
     @action = 'edit'
     render layout: false
   end
@@ -59,7 +81,9 @@ class Administration::ProvisionsController < ApplicationController
   end
 
   def destroy
-    provision = Provision.destroy(params[:id])
+    provision = Provision.find(params[:id])
+    provision.provision_details.destroy_all
+    provision_destroyed = Provision.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
     render :json => provision
   end
@@ -135,7 +159,7 @@ class Administration::ProvisionsController < ApplicationController
     order_detail_ids = params[:ids_orders_details]
     @type_of_order_name = params[:type_of_order]
     @reg_n = ((Time.now.to_f)*100).to_i
-    @account_accountants = AccountAccountant.all
+    @account_accountants = AccountAccountant.where("code LIKE  '_______'")
 
     if @type_of_order_name == 'purchase_order' 
       order_detail_ids.each do |order_detail_id|
@@ -225,6 +249,7 @@ class Administration::ProvisionsController < ApplicationController
     params.require(:provision).permit(
       :cost_center_id, 
       :entity_id, 
+      :order_id,
       :document_provision_id, 
       :number_document_provision, 
       :accounting_date, 
@@ -240,6 +265,36 @@ class Administration::ProvisionsController < ApplicationController
         :account_accountant_id,
         :amount,
         :unit_price_igv,
+        :_destroy
+      ]
+    )
+  end
+
+  def provision_direct_purchase_parameters
+    params.require(:provision).permit(
+      :cost_center_id, 
+      :entity_id, 
+      :document_provision_id, 
+      :number_document_provision, 
+      :accounting_date, 
+      :series, 
+      :description,
+      provision_direct_purchase_details_attributes: [
+        :id,
+        :provision_id,
+        :article_id,
+        :sector_id,
+        :phase_id,
+        :account_accountant_id,
+        :amount,
+        :price,
+        :unit_price_before_igv,
+        :igv,
+        :quantity_igv,
+        :discount_after,
+        :discount_before,
+        :unit_price_igv,
+        :description,
         :_destroy
       ]
     )

@@ -26,6 +26,7 @@ class MainController < ApplicationController
   def home
     if get_company_cost_center('company').present? && get_company_cost_center('cost_center').present?
       @company = Company.find(get_company_cost_center('company')) rescue nil
+      @cost_center_detail = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center')) rescue nil
       @cost_center_name = CostCenter.find(get_company_cost_center('cost_center')).name rescue nil
       if !@company.nil? && !@cost_center_name.nil?
         @others_cost_centers = @company.cost_centers.where('id != ?', get_company_cost_center('cost_center'))

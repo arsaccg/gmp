@@ -4,10 +4,10 @@ class Entity < ActiveRecord::Base
 	has_many :order_of_services
 	has_many :subcontracts
 	has_many :subcontract_equipments
+	has_many :provisions
 	has_and_belongs_to_many :type_entities
 	has_many :workers
 	belongs_to :cost_center
-
 	accepts_nested_attributes_for :type_entities, :allow_destroy => true
 
 	include ActiveModel::Validations

@@ -1,4 +1,4 @@
-#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", }
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
   %header
     %span.widget-icon
       %i.fa.fa-table
@@ -10,52 +10,32 @@
     / end widget edit box
     / widget content
     .widget-body.no-padding
-      .widget-body-toolbar
       #dt_basic_wrapper.dataTables_wrapper.form-inline{:role => 'grid'}
-        .dt-top-row
-          #dt_basic_length.dataTables_length
-            %span.smart-form
-              %label.select{style: "width:60px"}
-                %select{"aria-controls" => "dt_basic", name: "dt_basic_length", size: "1"}
-                  %option{selected: "selected", value: "10"} 10
-                  %option{value: "25"} 25
-                  %option{value: "50"} 50
-                  %option{value: "100"} 100
-                %i
-          #dt_basic_filter.dataTables_filter
-            .input-group
-              %span.input-group-addon
-                %i.fa.fa-search
-              %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
         .dt-wrapper
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
-                %th Numero
+                %th Código
                 %th Fase
-                %th Cantidad de Conceptos
+                %th Total
                 %th Acciones
             %tbody
               - @gexp.each do |ged|
                 %tr
                   %td
-                    = ged.id.to_s
+                    = Phase.find(ged.phase_id).code.to_s
                   %td
-                    = Phase.find(ged.phase_id).name.to_s
+                    %a{:href=>"javascript:show_details("+ged.id.to_s+");" }(class="small-font")
+                      = Phase.find(ged.phase_id).name.to_s
                   %td
-                    = ged.general_expense_details.count
+                    = number_to_currency(ged.total.to_s, unit: 'S/. ', precision: 2)
                   %td
-                    %a.btn.btn-info.btn-xs{:onclick=>"loadDetail('/general_expenses/general_expense/"+ged.id.to_s+"');"}
-                      Detalle                  
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_general_expenses_general_expense_path(ged.id)}', 'content', null, null, 'GET')"}
                       Editar
                     %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{ged.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{general_expenses_general_expense_path(ged.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{general_expenses_general_expenses_path}')"}}
                       Eliminar
 
-%br
-%br
-.row
-  #detail
+
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -187,4 +167,18 @@
           $('#detail').html(returnedData);
         }
     });
+  }
+
+  function show_details(id){
+    $("#detail").empty();
+    $("#detail").css("display","block");
+    str_item = {authenticity_token: "#{form_authenticity_token}", id: id};
+    append_url_ajax('#{show_details_general_expenses_general_expenses_path}', 'detail', str_item, 0, 'POST');
+  }
+
+  function delete_item(code){
+    console.log(code);
+    console.log($("#"+code));
+    $("#" + code).empty();
+    $("#" + code).css("display","none");
   }

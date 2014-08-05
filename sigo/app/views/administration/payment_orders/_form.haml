@@ -1,0 +1,189 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Orden de Pago
+  .widget-body
+    = simple_form_for([:administration, @paymentOrder], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        %legend Información de Provisiones
+        .row
+          %section.col.col-4
+            %label.label Provisiones
+            %label.input
+              %select.form-control#provision-select{:name =>"payment_order[provision_id]"}
+                - if @action == 'edit'
+                  %option{:value => nil}
+                    Seleccionar alguna de las Provisiones
+                - else
+                  %option{:value => nil,  :selected => true}
+                    Seleccionar alguna de las Provisiones
+                - @provisions.each do |provision|
+                  - if @paymentOrder.provision_id == provision.id
+                    %option{:value => "#{provision.id}", :selected => true}
+                      = 'Provision N° ' + provision.number_document_provision
+                  - else
+                    %option{:value => "#{provision.id}"}
+                      = 'Provision N° ' + provision.number_document_provision
+
+          %section.col.col-4
+            %label.label Tipo de Documento
+            %label.input
+              %i.icon-append.fa.fa-user
+              = text_field_tag 'type_document_provision', nil, class: 'form-control', id: 'type_document_provision', readonly: true
+              
+          %section.col.col-4
+            %label.label Número de Documento
+            %label.input
+              %i.icon-append.fa.fa-user
+              = text_field_tag 'number_document_provision', nil, class: 'form-control', id: 'number_document_provision', readonly: true
+              
+        .row
+          %section.col.col-4
+            %label.label Proveedor
+            %label.input
+              %i.icon-append.fa.fa-user
+              = text_field_tag 'supplier_provision', nil, class: 'form-control', id: 'supplier_provision', readonly: true
+
+          %section.col.col-4
+            %label.label Fecha del Documento
+            %label.input
+              %i.icon-append.fa.fa-user
+              = text_field_tag 'date_doc_provision', nil, class: 'form-control', id: 'date_doc_provision', readonly: true
+
+          %section.col.col-4
+            %label.label Monto total de la Provision
+            %label.input
+              .input-group
+                %span.input-group-addon
+                  %span S/.
+                = text_field_tag 'total_quantity_provision', nil, class: 'form-control', id: 'total_quantity_provision', readonly: true
+        
+      %fieldset
+        %legend Información de Provisiones
+        .row
+          %section.col.col-4
+            %label.label Neto a Pagar
+            %label.input{for: "net_pay"}
+              %i.icon-append.fa.fa-user
+              = f.input :net_pay, placeholder: "A pagar", input_html: { class: 'form-control' }, label: false
+
+          %section.col.col-4
+            %label.label IGV
+            %label.input{for: "igv"}
+              %i.icon-append.fa.fa-user
+              = f.input :igv, placeholder: "IGV", input_html: { class: 'form-control' }, label: false
+
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_payment_order'));
+    }
+
+    $('#provision-select').change(function(){
+      $.ajax({
+        url: "#{get_info_from_provision_administration_payment_orders_path}",
+        type: 'POST',
+        data: { provision_id: $(this).val() },
+        async: false,
+        context: document.body,
+        success: function(data){
+          $('#date_doc_provision').val(data.provision[0].date_doc_provision);
+          $('#number_document_provision').val(data.provision[0].number_document_provision);
+          $('#supplier_provision').val(data.provision[0].supplier_provision)
+          $('#total_quantity_provision').val(data.provision[0].total_quantity_provision);
+          $('#type_document_provision').val(data.provision[0].type_document_provision);
+        }
+      });
+    });
+
+    if($('#provision-select').val()){
+      $.ajax({
+        url: "#{get_info_from_provision_administration_payment_orders_path}",
+        type: 'POST',
+        data: { provision_id: $('#provision-select').val() },
+        async: false,
+        context: document.body,
+        success: function(data){
+          $('#date_doc_provision').val(data.provision[0].date_doc_provision);
+          $('#number_document_provision').val(data.provision[0].number_document_provision);
+          $('#supplier_provision').val(data.provision[0].supplier_provision)
+          $('#total_quantity_provision').val(data.provision[0].total_quantity_provision);
+          $('#type_document_provision').val(data.provision[0].type_document_provision);
+        }
+      });
+    }
+
+    $('#payment_order_net_pay').keyup(function(){
+      net_pay = parseFloat($(this).val());
+      limit = parseFloat($('#total_quantity_provision').val());
+      if( net_pay > limit ){
+        $(this).val(limit);
+        $.smallBox({
+          title: "No puedes pagar más del total de la provisión.",
+          content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+          color: "#c46a69",
+          iconSmall: "fa fa-times bounce animated",
+          timeout: 4000
+        });
+      }
+    });
+
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'payment_order[provision_id]' : {
+              required : true
+            },
+            'payment_order[net_pay]' : {
+              required : true
+            },
+            'payment_order[igv]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'payment_order[provision_id]' : {
+              required : "Por favor, seleccione alguna Provision."
+            },
+            'payment_order[net_pay]' : {
+              required : "Por favor, ingrese el total a pagar."
+            },
+            'payment_order[igv]' : {
+              required : "Por favor, ingrese el IGV el cual aplica."
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
