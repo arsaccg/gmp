@@ -555,11 +555,11 @@
       %fieldset#fieldset3{ 'style' => 'display:none' }
         %legend{style: "font-weight: 600;"} DATOS DE LA SITUACIÓN EDUCATIVA
         .row
-          %section.col.col-4
+          %section.col.col-3
             %label.control-label Situación Educativa
             %br
             .input-group
-              %select.col-sm-6.form-control#type{:name =>"worker[levelofinstruction]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px' }
+              %select.col-sm-6.form-control#educationtype{:name =>"worker[levelofinstruction]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px', class: 'educationtype' }
                 -if @action == 'edit'
                   %option{:value => "0", :selected => 'selected'} Seleccione un nivel
                   %option{:value => "sineduación", :selected => "#{@worker.levelofinstruction}"=="sineduación"} Sin Educación Formal
@@ -606,6 +606,9 @@
                   %option{:value => "doctoradoi"} Estudios de Doctorado Incompleto
                   %option{:value => "doctoradoc"} Estudios de Doctorado Completo
                   %option{:value => "doctorado"} Grado de Doctor
+          %section.col.col-2#lastgrade{ 'style' => 'display:none' }
+            %label Último Ciclo/Grado/Año Cursado
+            = f.input :lastgrade, input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-5
             %label.label Colegio Primaria
@@ -886,7 +889,7 @@
         .row
           .section.col.col-md-12
             .section.col.col-md-2
-              %label.control-label Tiene hijos?
+              %label.control-label Tiene hijos en etapa escolar?
             .section.col.col-md-3
               .form-group
               -if @action == 'edit'
@@ -918,6 +921,7 @@
                     %input{:name =>'numberofchilds2', :type => 'radio', :value => "no"}
                     %span No
             %section.col.col-2#numberofchildren{ 'style' => 'display:none' }
+              %label Cuántos?
               = f.input :numberofchilds, placeholder: "Número de hijos", input_html: { class: 'form-control' }, label: false
       %fieldset#fieldset5{ 'style' => 'display:none' }
         %legend{style: "font-weight: 600;"} Documentación Adjunta
@@ -1075,7 +1079,10 @@
       $("#dnihijoesposa").css("display", "");
       $("#constanciamatricula").css("display", "");
     }
-    if('#{@worker.maritalstatus}'=='maritalstatus'){
+    if('#{@worker.maritalstatus}'=='casado'){
+      $("#partidamatrimonio").css("display", "");
+    }
+    if(('#{@worker.levelofinstruction}'=='especiali')||('#{@worker.levelofinstruction}'=='primariai')||('#{@worker.levelofinstruction}'=='secundariai')||('#{@worker.levelofinstruction}'=='tecnicai')||('#{@worker.levelofinstruction}'=='superiori')||('#{@worker.levelofinstruction}'=='universitariai')||('#{@worker.levelofinstruction}'=='maestriai')||('#{@worker.levelofinstruction}'=='doctoradoi')){
       $("#partidamatrimonio").css("display", "");
     }
     if($('form[id^="edit_"]').length > 0) {
@@ -1148,6 +1155,15 @@
     }
     else {
       $("#partidamatrimonio").css("display", "none");
+    }
+  });
+
+  $(".educationtype").change(function() {
+    if(($(this).prop('value') == "especiali")||($(this).prop('value') == "primariai")||($(this).prop('value') == "secundariai")||($(this).prop('value') == "tecnicai")||($(this).prop('value') == "superiori")||($(this).prop('value') == "universitariai")||($(this).prop('value') == "maestriai")||($(this).prop('value') == "doctoradoi")){
+      $("#lastgrade").css("display", "");
+    }
+    else {
+      $("#lastgrade").css("display", "none");
     }
   });
 
