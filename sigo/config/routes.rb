@@ -555,8 +555,6 @@ ArsacLogistica::Application.routes.draw do
     resources :diverse_expenses_of_managements do
       collection do
         post 'add_deliveries'
-      end
-      member do
         post 'create_expense'
         patch 'update_expense'
       end
