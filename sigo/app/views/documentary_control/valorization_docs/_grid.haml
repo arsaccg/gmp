@@ -1,28 +1,28 @@
 #wid-id-5.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-custombutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-sortable" => "false", "data-widget-deletebutton" => "false"}
   %header
-    %h2 Lista de la licitación
+    %h2 Lista de Valorizaciones
   %div
     .jarviswidget-editbox
     .widget-body
       .tabs-left
         %ul.nav.nav-tabs.tabs-left
-          - @type_tech.each do |type_tech|
-            - if type_tech.id == 1
+          - @type_val.each do |type_val|
+            - if type_val.id == 1
               %li.active
-                %a{"data-toggle" => "tab", href: "#tab-#{type_tech.id}"}
+                %a{"data-toggle" => "tab", href: "#tab-#{type_val.id}"}
                   %span.badge.bg-color-blue.txt-color-white
-                    = type_tech.technical_files.count
-                  = type_tech.name
+                    = type_val.valorization_docs.count
+                  = type_val.name
             - else
               %li
-                %a{"data-toggle" => "tab", href: "#tab-#{type_tech.id}"}
+                %a{"data-toggle" => "tab", href: "#tab-#{type_val.id}"}
                   %span.badge.bg-color-blue.txt-color-white
-                    = type_tech.technical_files.count
-                  = type_tech.name
+                    = type_val.valorization_docs.count
+                  = type_val.name
         .tab-content
-          - @type_tech.each do |type_tech|
-            - if type_tech.id == 1
-              .tab-pane.active{:id => "tab-#{type_tech.id}"}
+          - @type_val.each do |type_val|
+            - if type_val.id == 1
+              .tab-pane.active{:id => "tab-#{type_val.id}"}
                 .col-md-8
                   %table.table.table-condensed.table-bordered
                     %thead
@@ -32,7 +32,7 @@
                         %th Documentos
                         %th Acciones
                     %tbody
-                      - type_tech.technical_files.each do |lawre|
+                      - type_val.valorization_docs.each do |lawre|
                         %tr
                           %td
                             = lawre.name.to_s
@@ -45,12 +45,12 @@
                             -else
                               No hay ningun Archivo adjunto
                           %td
-                            %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_technical_file_path(lawre.id)}', 'content', null, null, 'GET')"}
+                            %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_valorization_doc_path(lawre.id)}', 'content', null, null, 'GET')"}
                               Editar
-                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_technical_file_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_technical_files_path}')"}}
+                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_valorization_doc_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_valorization_docs_path}')"}}
                               Eliminar
             - else
-              .tab-pane{:id => "tab-#{type_tech.id}"}
+              .tab-pane{:id => "tab-#{type_val.id}"}
                 .col-md-8
                   %table.table.table-condensed.table-bordered
                     %thead
@@ -60,7 +60,7 @@
                         %th Documentos
                         %th Acciones
                     %tbody
-                      - type_tech.technical_files.each do |lawre|
+                      - type_val.valorization_docs.each do |lawre|
                         %tr
                           %td
                             = lawre.name.to_s
@@ -73,9 +73,9 @@
                             -else
                               No hay ningun Archivo adjunto
                           %td
-                            %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_technical_file_path(lawre.id)}', 'content', null, null, 'GET')"}
+                            %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_valorization_doc_path(lawre.id)}', 'content', null, null, 'GET')"}
                               Editar
-                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_technical_file_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_technical_files_path}')"}}
+                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_valorization_doc_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_valorization_docs_path}')"}}
                               Eliminar
 
 :javascript

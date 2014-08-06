@@ -3,7 +3,7 @@
     .col-xs-12.col-sm-7.col-md-7.col-lg-4
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw
-        De la Licitación
+        Valorizaciones
     - if flash[:notice] !=nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"} ×
@@ -18,16 +18,14 @@
         = flash[:error]
   .row
     .col-sm-4
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_technical_file_path}', 'content', null, null, 'GET')"}
-        Agregar
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_valorization_doc_path}', 'content', null, null, 'GET')"}
+        Agregar Valorizacion
     .col-md-3
       = text_field_tag 'wordtosearch', nil, class: 'form-control', id: 'wordtosearch', placeholder: 'Escriba aqui su búsqueda'
     .col-md-3
-      %button.btn.btn-primary.btn-default#show-table{href: 'javascript:void(0);', :onclick => 'search();'}
-        %i.fa.fa-search
-        Buscar
+
     %br
-    #tech.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+    #reports.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
   %br
   .row
   #widget-grid
@@ -39,8 +37,8 @@
   function search() {
     var word = $("#wordtosearch").val();
     data = { authenticity_token: "#{form_authenticity_token}", wordtosearch: word};
-    load_url_ajax('#{technical_files_documentary_control_technical_files_path}', 'tech', data, '', 'POST');
-    $('#tech').modal({
+    load_url_ajax('#{valorization_documentary_control_valorization_docs_path}', 'reports', data, '', 'POST');
+    $('#reports').modal({
       keyboard: false,
       backdrop: 'static'
     });

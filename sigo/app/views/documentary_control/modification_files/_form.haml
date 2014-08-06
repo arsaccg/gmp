@@ -2,9 +2,9 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 De la licitación
+    %h2 Modificatorias
   .widget-body
-    = simple_form_for([:documentary_control, @tech], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:documentary_control, @mo], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-md-8
@@ -22,8 +22,8 @@
           %section.col.col-md-12
             %label.label Tipo
             %section.col.col-10
-              -@type_tech.each do |tb|
-                = f.radio_button :type_of_technical_file_id, "#{tb.id}"
+              -@type_mo.each do |tb|
+                = f.radio_button :type_of_modification_file_id, "#{tb.id}"
                 %label= tb.name
                 %br
         .row
@@ -31,8 +31,8 @@
             %label.label Documento
             = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
             %p.help-block
-              - if @action == 'edit' && @tech.document.exists?
-                = 'Archivo subido: ' + File.basename(@tech.document.path, File.extname(@tech.document.path))
+              - if @action == 'edit' && @mo.document.exists?
+                = 'Archivo subido: ' + File.basename(@mo.document.path, File.extname(@mo.document.path))
               - else
                 Subir el archivo correspondiente
 
@@ -47,7 +47,7 @@
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
-      submit_validate($('#new_technical_file'));
+      submit_validate($('#new_modification_file'));
     }
 
   });
@@ -58,26 +58,26 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'technical_file[name]' : {
+            'modification_file[name]' : {
               required : true
             },
-            'technical_file[description]' : {
+            'modification_file[description]' : {
               required : true,
             },
-            'technical_file[type_of_technical_file_ids]':{
+            'modification_file[type_of_modification_file_ids]':{
               required: true
             }
           },
 
           // Messages for form validation
           messages : {
-            'technical_file[name]' : {
+            'modification_file[name]' : {
               required : "Por favor, ingrese el nombre del documento"
             },
-            'technical_file[description]' : {
+            'modification_file[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
             },
-            'technical_file[type_of_technical_file_ids]':{
+            'modification_file[type_of_technical_file_ids]':{
               required: "Seleccione un tipo"
             }
           },

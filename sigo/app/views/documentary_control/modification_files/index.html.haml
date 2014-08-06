@@ -3,7 +3,7 @@
     .col-xs-12.col-sm-7.col-md-7.col-lg-4
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw
-        De la Licitación
+        Modificatorias
     - if flash[:notice] !=nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"} ×
@@ -18,7 +18,7 @@
         = flash[:error]
   .row
     .col-sm-4
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_technical_file_path}', 'content', null, null, 'GET')"}
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_modification_file_path}', 'content', null, null, 'GET')"}
         Agregar
     .col-md-3
       = text_field_tag 'wordtosearch', nil, class: 'form-control', id: 'wordtosearch', placeholder: 'Escriba aqui su búsqueda'
@@ -39,7 +39,7 @@
   function search() {
     var word = $("#wordtosearch").val();
     data = { authenticity_token: "#{form_authenticity_token}", wordtosearch: word};
-    load_url_ajax('#{technical_files_documentary_control_technical_files_path}', 'tech', data, '', 'POST');
+    load_url_ajax('#{technical_files_documentary_control_modification_files_path}', 'tech', data, '', 'POST');
     $('#tech').modal({
       keyboard: false,
       backdrop: 'static'
