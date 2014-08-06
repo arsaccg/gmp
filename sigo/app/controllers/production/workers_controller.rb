@@ -306,6 +306,8 @@ class Production::WorkersController < ApplicationController
 
   def worker_pdf
     @company = Company.find(session[:company])
+    @date = Time.now
+    puts @date.inspect
     @worker = Worker.find(params[:id])
     @worker_afps = @worker.worker_afps
     @worker_center_of_studies = @worker.worker_center_of_studies
