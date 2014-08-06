@@ -4,7 +4,7 @@
       %i.fa.fa-eye
     %h2 Detalles Generales de Centro de Costo
   .widget-body
-    = simple_form_for([:logistics,@cost_center, @cost_center_detail], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:logistics, @cost_center_detail], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           =f.hidden_field :cost_center_id, :value =>  @cost_center_id
@@ -160,7 +160,7 @@
               = f.input :execution_term, placeholder: "Dias Calendario", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-4{"style"=>"width:31%;"}
-            %label.label Supervision
+            %label.label Supervisión / Inspector
             %label.input
               = f.input :supervision, placeholder: "supervision", input_html: { class: 'form-control' }, label: false                      
           .col-sm-3{"style"=>"margin-right:34px; margin-left:31px;"}
@@ -181,18 +181,21 @@
         .row
           .col-md-8{"style"=>"margin-left:15px;margin-bottom:3%"}
             %label.label Consorciados y Participación:
+            #selectError{"style"=>"color:#E16A61;font-size:85%;margin-bottom:6px;"}
             .col-md-6
-              %select#contractors.select2.form-control{:name => "cost_center_detail[entity_cost_center_details_attributes][" + @reg_n.to_s + "][entity_id]"}
-                %option{:value => "0", :selected => true, :disabled => true} Seleccione un consorcio
+              %select#contractors.select2.form-control{}
+                %option{:value => "0"} Seleccionar un consorcio
                 - @contractors.each do |cont|
                   %option{:value => "#{cont.id}"}
                     = cont.name
             .col-lg-1{"style"=>"margin-left:15px;"}
+
               = text_field_tag 'participation', nil, class: 'form-control', id: 'participation', placeholder: ' % '
             .col-lg-2{"style"=>"margin-left:15px;"}
               %div(class="col-lg-3")
                 %a(href="javascript:add_details_entity();" id="btn-add-article" class="btn btn-success" role="button" style="padding:6px;")
                   Agregar Consorcio
+
         .row
           .col-lg-12
             %table#summary-contractors.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
@@ -258,7 +261,6 @@
             },
             'cost_center_detail[process_number]' : {
               required : true,
-              number : true,
             },
             'cost_center_detail[good_pro_date]' : {
               required : true,
@@ -288,19 +290,6 @@
             },
             'cost_center_detail[contract_number]' : {
               required : true,
-              number : true,
-            },
-            'cost_center_detail[land_delivery_date]' : {
-              required : true,
-            },
-            'cost_center_detail[direct_advanced_payment_date]' : {
-              required : true,
-            },
-            'cost_center_detail[direct_advanced_form_date]' : {
-              required : true,
-            },
-            'cost_center_detail[start_day_of_work]' : {
-              required : true,
             },
             'cost_center_detail[procurement_system]' : {
               required : true,
@@ -309,15 +298,15 @@
               required : true,
               number : true,
             },
-            'cost_center_detail[supervision]' : {
+            'cost_center_detail[IGV]' : {
               required : true,
-            },
-            'cost_center_detail[material_advanced_payment_date]' : {
-              required : true,
+              number : true,
             },
             'cost_center_detail[entity_id]' : {
               required : true,
-            }             
+            }
+
+
           },
 
           // Messages for form validation
@@ -334,7 +323,6 @@
             },
             'cost_center_detail[process_number]' : {
               required : "Por favor ingresar un número de proceso correcto",
-              number : "Por favor ingresar un número válido",
             },
             'cost_center_detail[good_pro_date]' : {
               required : "Por favor ingresar una fecha correcta",
@@ -364,19 +352,6 @@
             },
             'cost_center_detail[contract_number]' : {
               required : "Por favor ingresar el número de contrato correctamente",
-              number : "Por favor ingresar un número válido",
-            },
-            'cost_center_detail[land_delivery_date]' : {
-              required : "Por favor ingresar  una fecha correcta",
-            },
-            'cost_center_detail[direct_advanced_payment_date]' : {
-              required : "Por favor ingresar una fecha correcta",
-            },
-            'cost_center_detail[direct_advanced_form_date]' : {
-              required : "Por favor ingresar  una fecha correcta",
-            },
-            'cost_center_detail[start_day_of_work]' : {
-              required : "Por favor ingresar una fecha correcta",
             },
             'cost_center_detail[procurement_system]' : {
               required : "Por favor ingresar el sistema de contratación",
@@ -385,11 +360,9 @@
               required : "Por favor ingresar el plazo correctamente",
               number : "Por favor ingresar un número válido",
             },
-            'cost_center_detail[supervision]' : {
-              required : "Por favor ingresar el campo correctamente",
-            },
-            'cost_center_detail[material_advanced_payment_date]' : {
-              required : "Por favor ingresar una fecha correcta",
+            'cost_center_detail[IGV]' : {
+              required : "Por favor ingresar el plazo correctamente",
+              number : "Por favor ingresar un número válido",
             },
             'cost_center_detail[entity_id]' : {
               required : "Por favor ingresar una entidad",
@@ -415,22 +388,27 @@
     });
   }
 
-  function disablefield(){ 
-  if (document.getElementById('Si_choice').checked == 1){ 
-  document.getElementById('cost_center_detail_IGV').readOnly = true; document.getElementById('cost_center_detail_IGV').value='0';}
-  else{ 
-  document.getElementById('cost_center_detail_IGV').readOnly = false; document.getElementById('cost_center_detail_IGV').value='1';}
-  }
-
-
   function add_details_entity(){
 
-    var entity_id = $("#contractors").val();
-    str_item = {authenticity_token: "#{form_authenticity_token}", entity_id: $("#contractors").val(), participation: $("#participation").val()};
+    if($("#contractors").val() != 0 && $("#participation").val()>=0 && $("#participation").val()<=100){
+      str_item = {authenticity_token: "#{form_authenticity_token}", entity_id: $("#contractors").val(), participation: $("#participation").val()};
+      append_url_ajax('#{add_contractor_field_logistics_cost_center_details_path}', 'details_entities_table', str_item, 0, 'POST');
+    }else{
+      $('#selectError').text('Escoja un consorcio y participación válidos');
+      
+    }
 
-    append_url_ajax('#{add_contractor_field_logistics_cost_center_details_path}', 'details_entities_table', str_item, 0, 'POST');
   }
 
   function delete_item(code){
     $("#tr" + code).remove();
   }
+
+  function disablefield(){ 
+  if (document.getElementById('Si_choice').checked == 1){ 
+  document.getElementById('cost_center_detail_IGV').readOnly = true; document.getElementById('cost_center_detail_IGV').value='0';}
+  else{ 
+  document.getElementById('cost_center_detail_IGV').readOnly = false; document.getElementById('cost_center_detail_IGV').value='';}
+  }
+
+

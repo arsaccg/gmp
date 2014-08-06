@@ -19,7 +19,6 @@ class Production::WorkersController < ApplicationController
   def show
     @worker = Worker.find(params[:id])
     @worker_afps = @worker.worker_afps
-    puts @worker_afps.inspect
     @worker_center_of_studies = @worker.worker_center_of_studies
     @worker_details = @worker.worker_details
     @worker_experiences = @worker.worker_experiences
@@ -205,7 +204,6 @@ class Production::WorkersController < ApplicationController
   def add_experience_item_field
     @reg_n = ((Time.now.to_f)*100).to_i
     @businessname = params[:businessname]
-    @businessaddress = params[:businessaddress]
     @title = params[:title2]
     @salary = params[:salary]
     @bossincharge = params[:bossincharge]
@@ -292,17 +290,37 @@ class Production::WorkersController < ApplicationController
   end
 
   def part_contract
+    cost_center_obj = CostCenter.find(session[:cost_center])
+    if WorkerContract.all.order('id ASC').first.nil?
+      @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + 1.to_s.rjust(4, '0')
+    else
+      @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + (WorkerContract.all.order('id ASC').first.id + 1).to_s.rjust(4, '0')
+    end
     @typeofcontract = params[:typeofcontract]
     @articles = TypeOfArticle.find_by_code('01').articles
     @contractypes = ContractType.all
-    @cost_center = session[:cost_center]
+    @cost_center = cost_center_obj.id
     @worker = Worker.find_by_id(params[:worker_id])
     render layout: false
   end
 
+  def worker_pdf
+    @company = Company.find(session[:company])
+    @worker = Worker.find(params[:id])
+    @worker_afps = @worker.worker_afps
+    @worker_center_of_studies = @worker.worker_center_of_studies
+    @worker_details = @worker.worker_details
+    @worker_experiences = @worker.worker_experiences
+    @worker_familiars = @worker.worker_familiars
+    @worker_healths = @worker.worker_healths
+    @worker_otherstudies = @worker.worker_otherstudies
+    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :portrait }
+
+  end
+
   private
   def worker_parameters
-    params.require(:worker).permit(:email, {:type_workday_ids => []}, :afpnumber, :driverlicense, :income_fifth_category, :unionized, :disabled, :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_afps_attributes: [:id, :worker_id, :afp_id, :afptype, :start_date, :end_date, :_destroy], worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :start_date, :end_date, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :businessaddress, :title, :salary, :bossincharge, :exitreason, :_destroy])
+    params.require(:worker).permit(:email, {:type_workday_ids => []}, :afpnumber, :driverlicense, :income_fifth_category, :unionized, :disabled, :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_afps_attributes: [:id, :worker_id, :afp_id, :afptype, :start_date, :end_date, :_destroy], worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :start_date, :end_date, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :title, :salary, :bossincharge, :exitreason, :_destroy])
   end
 
   def worker_contract_file_param

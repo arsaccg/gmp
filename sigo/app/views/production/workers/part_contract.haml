@@ -6,12 +6,12 @@
       %h4.modal-title Llene los siguientes datos del contrato
     .modal-body
       %h3.modal-title 
-        = @worker.entity.paternal_surname + ' ' + @worker.entity.maternal_surname + ', ' + @worker.entity.name + ' ' + @worker.entity.dni
+        = @worker.entity.paternal_surname + ' ' + @worker.entity.maternal_surname + ', ' + @worker.entity.name + ' ' + @worker.entity.second_name + ' ' + @worker.entity.dni
       %br
       .row
         .col-md-3
           %label Número de Contrato
-          = text_field_tag 'worker_contract[numberofcontract]', nil, class: 'form-control', id: 'numberofcontract', placeholder: 'Número de Contrato'
+          = text_field_tag 'worker_contract[numberofcontract]', @worker_contract_correlative, class: 'form-control', id: 'numberofcontract', placeholder: 'Número de Contrato', readonly: true, style: 'font-weight: bold;'
         .col-md-3
         .col-md-6
           %label Tipo de Contrato
@@ -21,16 +21,13 @@
                 = contractype.description
       %br
       .row
-        .col-md-4
+        .col-md-6
           -if @worker.typeofworker=='obrero'
             %label Categoría del Trabajador
           -elsif @worker.typeofworker=='empleado'
             %label Cargo del Trabajador
-          %select.form-control#article{:name =>"article_id", :style => 'padding: 0;border: none'}
-            - @articles.each do |article|
-              %option{:value => "#{article.id}"}
-                = article.code + ' - ' + article.name
-        .col-md-2
+          %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+
         .col-md-4
           %label Regimen
           %select.form-control#regime{:name =>"regime", :style => 'padding: 0;border: none;'}
@@ -83,6 +80,31 @@
 :javascript
   $(document).ready(function () {
     $('select').select2({width:'320px'});
+
+    $('#article-select').select2({
+      placeholder: "Buscar Cargos...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_articles_personal_production_worker_contracts_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name + ' - ' + node.symbol + '</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol) },
+      escapeMarkup: function (m) { return m; }
+    });
+
   });
 
   $("#smart-mod-eg1").click(function(e) {
@@ -92,7 +114,7 @@
       buttons : '[No][Yes]'
     }, function(ButtonPressed) {
       if (ButtonPressed === "Yes") {
-        load_url_ajax('#{approve_production_worker_path(@worker.id)}', 'content', {worker_id: '#{@worker.id}', article_id: $('#article').val(), camp: $('#camp').val(), bonus: $('#bonus').val(), viatical: $('#viatical').val(), destaque: $('#destaque').val(), regime: $('#regime').val(), days: $('#worker_contract_days').val(), start_date: $('#worker_contract_start_date').val(), end_date: $('#worker_contract_end_date').val(), salary: $('#salary').val(), numberofcontract: $('#numberofcontract').val(), typeofcontract: "Contrato", contract_type_id: $('#typecontract').val()}, null, 'GET');
+        load_url_ajax('#{approve_production_worker_path(@worker.id)}', 'content', {worker_id: '#{@worker.id}', article_id: $('#article-select').val(), camp: $('#camp').val(), bonus: $('#bonus').val(), viatical: $('#viatical').val(), destaque: $('#destaque').val(), regime: $('#regime').val(), days: $('#worker_contract_days').val(), start_date: $('#worker_contract_start_date').val(), end_date: $('#worker_contract_end_date').val(), salary: $('#salary').val(), numberofcontract: $('#numberofcontract').val(), typeofcontract: "Contrato", contract_type_id: $('#typecontract').val()}, null, 'GET');
         $('.modal-backdrop.fade.in').remove();
         $.smallBox({
           title : "Exito",
