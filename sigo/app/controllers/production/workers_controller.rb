@@ -235,8 +235,17 @@ class Production::WorkersController < ApplicationController
       flash[:error] = "No se puede eliminar al trabajador."
       worker = 'true'
     else
-      flash[:notice] = "Se ha eliminado correctamente el trabajador."
+      worker = Worker.find(params[:id])
+      worker.worker_afps.destroy_all
+      worker.worker_center_of_studies.destroy_all
+      worker.worker_details.destroy_all
+      worker.worker_experiences.destroy_all
+      worker.worker_familiars.destroy_all
+      worker.worker_healths.destroy_all
+      worker.worker_otherstudies.destroy_all
+      worker.type_workdays_workers.destroy_all
       worker = Worker.destroy(params[:id])
+      flash[:notice] = "Se ha eliminado correctamente el trabajador."
     end
     render :json => worker
   end
