@@ -51,7 +51,6 @@
                         %th{style: "width: 10%;"} Estado
                         %th{style: "width: 10%;"} DNI
                         %th{style: "width: 30%;"} Nombre Completo
-                        %th{style: "width: 20%;"} Cargo
                         %th{style: "width: 25%;"} Acciones
                     %tbody
         #hb2.tab-pane
@@ -68,7 +67,6 @@
                         %th{style: "width: 91.77777767181396px;"} Estado
                         %th{style: "width: 91.77777767181396px;"} DNI
                         %th{style: "width: 336.77777767181396px;"} Nombre Completo
-                        %th{style: "width: 212.77777767181396px;"} Cargo
                         %th{style: "width: 274.888888835907px;"} Acciones
                     %tbody
         #hb3.tab-pane
@@ -85,7 +83,6 @@
                         %th{style: "width: 91.77777767181396px;"} Estado
                         %th{style: "width: 91.77777767181396px;"} DNI
                         %th{style: "width: 336.77777767181396px;"} Nombre Completo
-                        %th{style: "width: 212.77777767181396px;"} Cargo
                         %th{style: "width: 274.888888835907px;"} Acciones
                     %tbody
         #hb4.tab-pane
@@ -102,7 +99,6 @@
                         %th{style: "width: 91.77777767181396px;"} Estado
                         %th{style: "width: 91.77777767181396px;"} DNI
                         %th{style: "width: 336.77777767181396px;"} Nombre Completo
-                        %th{style: "width: 212.77777767181396px;"} Cargo
                         %th{style: "width: 274.888888835907px;"} Acciones
                     %tbody
         #hb5.tab-pane
@@ -119,7 +115,6 @@
                         %th{style: "width: 91.77777767181396px;"} Estado
                         %th{style: "width: 91.77777767181396px;"} DNI
                         %th{style: "width: 336.77777767181396px;"} Nombre Completo
-                        %th{style: "width: 212.77777767181396px;"} Cargo
                         %th{style: "width: 274.888888835907px;"} Acciones
                     %tbody
 
@@ -171,6 +166,9 @@
       sProcessing  : true,
       bServerSide  : true,
       sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
       sAjaxSource  : "#{show_workers_empleados_production_workers_path}",
       fnServerParams: function ( aoData ) {
         aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "empleado"} );
@@ -183,6 +181,9 @@
       sProcessing  : true,
       bServerSide  : true,
       sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
       sAjaxSource  : "#{show_workers_production_workers_path}",
       fnServerParams: function ( aoData ) {
         aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "obrero"} );
@@ -195,6 +196,9 @@
       sProcessing  : true,
       bServerSide  : true,
       sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
       sAjaxSource  : "#{show_workers_production_workers_path}",
       fnServerParams: function ( aoData ) {
         aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "pensionista"} );
@@ -207,6 +211,9 @@
       sProcessing  : true,
       bServerSide  : true,
       sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
       sAjaxSource  : "#{show_workers_production_workers_path}",
       fnServerParams: function ( aoData ) {
         aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "formacion"} );
@@ -219,6 +226,9 @@
       sProcessing  : true,
       bServerSide  : true,
       sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
       sAjaxSource  : "#{show_workers_production_workers_path}",
       fnServerParams: function ( aoData ) {
         aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "externo"} );

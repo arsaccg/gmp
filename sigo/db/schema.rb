@@ -77,6 +77,32 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "category_id"
   end
 
+  create_table "articles_from_cost_center_1", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_2", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
   create_table "banks", force: true do |t|
     t.string   "business_name"
     t.string   "ruc"
@@ -227,13 +253,6 @@ ActiveRecord::Schema.define(version: 20140805162431) do
 
   add_index "components_works", ["work_id", "component_id"], name: "index_components_works_on_work_id_and_component_id", using: :btree
 
-  create_table "componets_other_works", force: true do |t|
-    t.integer  "component_id"
-    t.integer  "other_works_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "concept_details", force: true do |t|
     t.integer  "concept_id"
     t.integer  "subconcept_id"
@@ -276,6 +295,13 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "attachment_file_size"
     t.datetime "attachment_update_at"
     t.integer  "work_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "contract_types", force: true do |t|
+    t.string   "description"
+    t.string   "shortdescription"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -361,6 +387,7 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.integer  "sub_daily_id"
     t.date     "accounting_date"
     t.float    "amount"
+    t.integer  "status"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -456,6 +483,7 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "province"
     t.string   "department"
     t.string   "alienslicense"
+    t.integer  "cost_center_detail_id"
   end
 
   create_table "entities_type_entities", force: true do |t|
@@ -475,6 +503,23 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "updated_at"
   end
 
+<<<<<<< HEAD
+=======
+  create_table "errors", force: true do |t|
+    t.string   "usable_type"
+    t.integer  "usable_id"
+    t.text     "class_name"
+    t.text     "message"
+    t.text     "trace"
+    t.text     "target_url"
+    t.text     "referer_url"
+    t.text     "params"
+    t.text     "user_agent"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+>>>>>>> 704c6c3dd964d1f47b6f70528a3a358fdf8ae42c
   create_table "exchange_of_rates", force: true do |t|
     t.datetime "day"
     t.integer  "money_id"
@@ -548,6 +593,28 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.integer  "user_updates_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "general_expense_details", force: true do |t|
+    t.integer  "general_expense_id"
+    t.string   "type_article"
+    t.integer  "article_id"
+    t.integer  "people"
+    t.float    "participation"
+    t.float    "time"
+    t.string   "parcial"
+    t.float    "amount"
+    t.float    "cost"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "general_expenses", force: true do |t|
+    t.integer  "phase_id"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "total"
   end
 
   create_table "graphers", force: true do |t|
@@ -695,28 +762,6 @@ ActiveRecord::Schema.define(version: 20140805162431) do
   add_index "itembybudgets", ["item_id"], name: "itembybudges_item_id", using: :btree
 
   create_table "itembywbs", force: true do |t|
-    t.string   "wbscode"
-    t.integer  "itembywbs_id"
-    t.string   "coditem"
-    t.string   "order_budget"
-    t.string   "partial"
-    t.string   "subbudget_code"
-    t.float    "price"
-    t.string   "budget_code"
-    t.integer  "budget_id"
-    t.integer  "item_id"
-    t.string   "status_flag"
-    t.integer  "deleted"
-    t.integer  "wbsitem_id"
-    t.float    "measured"
-    t.integer  "cost_center_id"
-    t.string   "subbudgetdetail"
-    t.integer  "itembybudget_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "itembywbses", force: true do |t|
     t.string   "wbscode"
     t.integer  "itembywbs_id"
     t.string   "coditem"
@@ -1043,20 +1088,6 @@ ActiveRecord::Schema.define(version: 20140805162431) do
 
   create_table "position_workers", force: true do |t|
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "professional_certificates", force: true do |t|
-    t.integer  "professional_id"
-    t.integer  "certificate_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "professional_trainings", force: true do |t|
-    t.integer  "professional_id"
-    t.integer  "training_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1672,6 +1703,17 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "updated_at"
   end
 
+  create_table "type_workdays", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_workdays_workers", force: true do |t|
+    t.integer "worker_id"
+    t.integer "type_workday_id"
+  end
+
   create_table "unit_of_measurements", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -1818,6 +1860,18 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "state"
   end
 
+  create_table "weeks_for_cost_center_1", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_2", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
   create_table "work_partners", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -1885,6 +1939,10 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "typeofcontract"
     t.date     "end_date_2"
     t.integer  "contract_type_id"
+<<<<<<< HEAD
+=======
+    t.string   "reason_for_termination"
+>>>>>>> 704c6c3dd964d1f47b6f70528a3a358fdf8ae42c
     t.float    "viatical"
     t.float    "bonus"
     t.integer  "status"
@@ -2028,6 +2086,13 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "maritalstatus"
     t.string   "typeofworker"
     t.integer  "numberofchilds"
+<<<<<<< HEAD
+=======
+    t.string   "disabled"
+    t.string   "unionized"
+    t.string   "state"
+    t.string   "income_fifth_category"
+>>>>>>> 704c6c3dd964d1f47b6f70528a3a358fdf8ae42c
     t.string   "afpnumber"
   end
 

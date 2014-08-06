@@ -12,8 +12,10 @@
           %tr
             %th N° de contrato
             %th Tipo
+            %th Tipo de Contrato
             %th Cargo
             %th Sueldo
+            %th Destaque
             %th Dias
             %th Dia de Inicio
             %th Dia de Fin
@@ -25,11 +27,15 @@
                 = workercontract.numberofcontract.to_s
               %td 
                 = workercontract.typeofcontract.to_s
+              %td 
+                = workercontract.contract_type.description.to_s
               %td
                 - if !workercontract.article.nil?
                   = workercontract.article.name.to_s
               %td
                 = number_to_currency(workercontract.salary.to_f, :unit => 'S/.', :precision => 2)
+              %td
+                = number_to_currency(workercontract.destaque.to_f, :unit => 'S/.', :precision => 2)
               %td 
                 = workercontract.days.to_s
               %td
@@ -39,10 +45,6 @@
                 - if !workercontract.end_date.nil?
                   = workercontract.end_date.strftime('%d-%m-%Y')
               %td
-                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{workercontract.worker_id}',typeofcontract: 'Adenda',contract: '#{workercontract.id}'}, null, 'GET')"}
-                  Adenda
-                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{workercontract.worker_id}',typeofcontract: 'Renovacion',contract: '#{workercontract.id}'}, null, 'GET')"}
-                  Renovacion
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_worker_contract_path(workercontract.id)}', 'content', {company_id: '#{@company}', type: '#{workercontract.typeofcontract}', typeofcontract: 'Contrato'}, null, 'GET')"}
                   Editar
                 %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{workercontract.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_worker_contract_path(workercontract.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_worker_contracts_path}?company_id=#{@company}&worker_id=#{workercontract.worker_id}')"}}
