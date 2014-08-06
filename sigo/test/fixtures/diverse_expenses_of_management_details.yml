@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  diverse_expense_of_management_id: 1
+  code: MyString
+  amount: 1.5
+  delivered_date: 2014-08-01
+  entity_id: 1
+  bill_concept: MyString
+  bill: MyString
+  bill_date: 2014-08-01
+  bill_amount: MyString
+  bill_detraction: 
+  bill_to_account: MyString
+  igv_commission: MyString
+  net_return: MyString
+  balance: MyString
+
+two:
+  diverse_expense_of_management_id: 1
+  code: MyString
+  amount: 1.5
+  delivered_date: 2014-08-01
+  entity_id: 1
+  bill_concept: MyString
+  bill: MyString
+  bill_date: 2014-08-01
+  bill_amount: MyString
+  bill_detraction: 
+  bill_to_account: MyString
+  igv_commission: MyString
+  net_return: MyString
+  balance: MyString

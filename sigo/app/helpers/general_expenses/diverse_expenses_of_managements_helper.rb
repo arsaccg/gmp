@@ -1,0 +1,2 @@
+module GeneralExpenses::DiverseExpensesOfManagementsHelper
+end

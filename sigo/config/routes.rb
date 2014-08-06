@@ -560,6 +560,12 @@ ArsacLogistica::Application.routes.draw do
         post 'report'
       end
     end
-    resources :diverse_expenses_of_managements
+    resources :diverse_expenses_of_managements do
+      collection do
+        post 'add_deliveries'
+        post 'create_expense'
+        patch 'update_expense'
+      end
+    end
   end
 end
