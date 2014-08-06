@@ -1,0 +1,53 @@
+%tr(class="concept_item"){id: "tr" + @reg_n.to_s}
+  %td(style="display:none")
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][code]', @code.to_s
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][amount]', @montoe.to_f.round(2).to_s
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][delivered_date]', @fechae.to_s
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][entity_id]', @proveedore.id.to_i.to_s
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][bill]', @factura.to_s
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][bill_concept]', @conceptoe.to_f.round(2).to_s
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][bill_date]', @fechafae.to_s
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][bill_amount]', @montofae.to_f.round(2).to_s
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][bill_detraction]', @detraccionfae.to_f.round(2).to_s
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][bill_to_account]', @acuentafae.to_f.round(2).to_s
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][igv_commission]', @igvfae.to_f.round(2).to_s
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][net_return]', @net_return.to_f.round(2).to_s    
+    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][balance]', @balance.to_f.round(2).to_s
+  %td.smart-form#code
+    =@code.to_s
+  %td.smart-form#montoe
+    =number_to_currency(@montoe.to_f, unit: 'S/. ', precision: 2)
+  %td.smart-form#fechae
+    = @fechae.to_date.strftime("%d-%m-%Y")
+  %td.smart-form#proveedore
+    =@proveedore.name.to_s
+  %td.smart-form#conceptoe
+    = @conceptoe.to_s
+  %td.smart-form#factura
+    = @factura.to_s    
+  %td.smart-form#fechafae
+    =@fechafae.to_date.strftime("%d-%m-%Y")
+  %td.smart-form#montofae
+    = number_to_currency(@montofae.to_f, unit: 'S/. ', precision: 2)
+  %td.smart-form#detraccionfae
+    = number_to_currency(@detraccionfae.to_f, unit: 'S/. ', precision: 2)
+  %td.smart-form#acuentafae
+    = number_to_currency(@acuentafae.to_f, unit: 'S/. ', precision: 2)
+  %td.smart-form#igvfae
+    = number_to_currency(@igvfae.to_f, unit: 'S/. ', precision: 2)
+  %td.smart-form#net_return
+    =number_to_currency(@net_return.to_f, unit: 'S/. ', precision: 2)
+  %td.smart-form#balance
+    =number_to_currency(@balance.to_f, unit: 'S/. ', precision: 2)
+  %td{:style => "width: 1%;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+
+:javascript
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }

@@ -294,7 +294,11 @@ ArsacLogistica::Application.routes.draw do
         post 'worker_pdf'
       end
     end
-    resources :worker_contracts
+    resources :worker_contracts do
+      collection do
+        post 'display_articles_personal'
+      end
+    end
     resources :analysis_of_valuations do
       collection do
         post 'get_report'
@@ -479,6 +483,18 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :flowcharts
+    resources :valorization_docs do
+      collection do
+        post 'valorization'
+      end
+    end
+    resources :type_of_valorization_docs
+    resources :modification_files do
+      collection do
+        post 'technical_files'
+      end
+    end
+    resources :type_of_modification_files
   end
 
   namespace :administration do
@@ -556,6 +572,12 @@ ArsacLogistica::Application.routes.draw do
         post 'report'
       end
     end
-    resources :diverse_expenses_of_managements
+    resources :diverse_expenses_of_managements do
+      collection do
+        post 'add_deliveries'
+        post 'create_expense'
+        patch 'update_expense'
+      end
+    end
   end
 end

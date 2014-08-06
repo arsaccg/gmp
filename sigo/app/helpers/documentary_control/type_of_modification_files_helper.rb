@@ -1,0 +1,2 @@
+module DocumentaryControl::TypeOfModificationFilesHelper
+end

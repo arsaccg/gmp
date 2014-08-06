@@ -97,14 +97,14 @@ class Production::WorkersController < ApplicationController
     worker.cost_center_id = get_company_cost_center('cost_center')
     if worker.save
       flash[:notice] = "Se ha creado correctamente el trabajador."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: session[:company]
     else
       worker.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
       flash[:error] =  "Ha ocurrido un error en el sistema."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: session[:company]
     end
   end
 
@@ -291,7 +291,11 @@ class Production::WorkersController < ApplicationController
 
   def part_contract
     cost_center_obj = CostCenter.find(session[:cost_center])
-    @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + (WorkerContract.all.first.id + 1).to_s.rjust(4, '0')
+    if WorkerContract.all.order('id ASC').first.nil?
+      @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + 1.to_s.rjust(4, '0')
+    else
+      @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + (WorkerContract.all.order('id ASC').first.id + 1).to_s.rjust(4, '0')
+    end
     @typeofcontract = params[:typeofcontract]
     @articles = TypeOfArticle.find_by_code('01').articles
     @contractypes = ContractType.all
@@ -302,6 +306,8 @@ class Production::WorkersController < ApplicationController
 
   def worker_pdf
     @company = Company.find(session[:company])
+    @date = Time.now
+    puts @date.inspect
     @worker = Worker.find(params[:id])
     @worker_afps = @worker.worker_afps
     @worker_center_of_studies = @worker.worker_center_of_studies

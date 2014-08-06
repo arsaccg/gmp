@@ -36,7 +36,23 @@ class Logistics::PersonsController < ApplicationController
     @costCenter = Array.new
     @allCostCenter = Array.new
     @user = User.find(params[:id])
-    @all_roles = { 'issuer' => 'Emite las ordenes de suministro', 'approver' => 'Aprueba ordenes de Suministro', 'reviser' => 'Dar visto bueno a las ordenes de suministro', 'canceller' => 'Anular ordenes suministro' }
+    @all_roles = { 
+      'issuer' => 'Emite las ordenes de suministro', 
+      'approver' => 'Aprueba ordenes de Suministro', 
+      'reviser' => 'Dar visto bueno a las ordenes de suministro', 
+      'canceller' => 'Anular ordenes suministro',
+      'maintainer' => 'Acceso a los Mantenimientos Globales, Especificos y de Sistema', 
+      'control_documentary' => 'Acceso al Control de Documentarios',
+      'technical_library' => 'Acceso a la Biblioteca Técnica', 
+      'orders_and_buy' => 'Acceso de los Pedidos y Compras', 
+      'stores' => 'Acceso a los Almacenes', 
+      'execution' => 'Acceso a los Gastos Generales', 
+      'administration' => 'Acceso a Administracion', 
+      'overheads' => 'Acceso a los Gastos Generales', 
+      'payroll' => 'Acceso a Planillas', 
+      'bidding' => 'Acceso a Licitaciones', 
+      'report' => 'Acceso a los Reportes'
+    }
     @roles = @user.role_symbols
 
     @user.companies.each do |company|
