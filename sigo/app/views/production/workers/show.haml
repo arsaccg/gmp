@@ -81,6 +81,46 @@
                     %th{'colspan' => 3,"style"=>"font-weight: 500"}= @worker.address
                     %th Cantidad de Hijos
                     %th{"style"=>"font-weight: 500"}= @worker.numberofchilds.to_s
+  %br
+  %article.col-sm-12.col-md-12.col-lg-12
+    #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+      %header
+        %span.widget-icon
+          %i.fa.fa-table
+        %h2 Estudios
+      %div
+        .jarviswidget-editbox
+          / This area used as dropdown edit box
+        .widget-body.no-padding
+          %table.table.table-hover
+            %thead
+              %tr
+                %th Nivel
+                %th Escuela/Colegio
+                %th Lugar
+                %th Inicio
+                %th Fin
+            %tbody
+              %tr
+                %td Primaria
+                %td
+                  = @worker.primaryschool.to_s
+                %td
+                  = @worker.primarydistrict.to_s
+                %td
+                  = @worker.primarystartdate.to_s
+                %td
+                  = @worker.primaryenddate.to_s
+              %tr
+                %td Secundaria
+                %td
+                  = @worker.highschool.to_s
+                %td
+                  = @worker.highschooldistrict.to_s
+                %td
+                  = @worker.highschoolstartdate.to_s
+                %td
+                  = @worker.highschoolenddate.to_s
   -if @worker_afps.count>0
     %br
 
