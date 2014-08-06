@@ -60,7 +60,7 @@ class Logistics::CostCenterDetailsController < ApplicationController
     @details=CostCenterDetail.all
     @action = 'edit'
     @totalPercentage=EntityCostCenterDetail.sum(:participation, :conditions => {:cost_center_detail_id => [@cost_center_detail.id]})
-    render layout: false
+  render layout: false
   end
 
   def add_contractor_field
@@ -69,7 +69,7 @@ class Logistics::CostCenterDetailsController < ApplicationController
     @participation = params[:participation].to_f
     render(partial: 'contractors', :layout => false)
   end
-
+  
   def destroy
   end
 
