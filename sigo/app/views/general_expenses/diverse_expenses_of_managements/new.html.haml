@@ -1,0 +1,98 @@
+.modal-dialog{ style: "width: 750px;" }
+  .modal-content
+    .modal-header
+      %header
+        %h2
+          %span.widget-icon
+            %i.fa.fa-pencil-square-o.fa-fw 
+          %strong Nuevo Gasto de Gestión
+    .modal-body
+      %fieldset
+        %input#cc{ :value => "#{@cc.id.to_i.to_s}", "style"=>"display:none"}
+        .row
+          %section.col-md-8
+            %label Descripcion
+            .input-group
+              %input#name.form-control{placeholder: "Nombre"}
+              %span.input-group-addon
+                %i.icon-append.fa.fa-user
+          %section.col-md-3
+            %label Porcentaje
+            .input-group
+              %input#percentage.form-control{placeholder: "Porcentaje", onchange: "this.value = minmax(this.value, 1, 100);", onkeypress: "return isNumber(event);"}
+              %span.input-group-addon
+                %i.icon-append.fa.fa-superscript
+        %br
+        .row
+          %section.col-md-4
+            %label Monto de G.D.G.
+            .input-group
+              %input#amount.form-control{placeholder: "Monto", onkeypress: "return isNumber(event);"}
+              %span.input-group-addon
+                %i.icon-append.fa.fa-superscript
+          %section.col-md-4
+            %label Gastos de G.D.G
+            .input-group
+              %input#expenses.form-control{placeholder: "Gastos", onkeypress: "return isNumber(event);"}
+              %span.input-group-addon
+                %i.icon-append.fa.fa-superscript
+        %br
+        %br
+
+      %footer
+        %button.btn.btn-primary#smart-mod-eg1{type: "button", "style"=>"float:right;"}
+          %i.fa.fa-save
+            Guardar
+        %button.btn.btn-info#new{"data-dismiss" => "modal", type: "button"}
+          Salir      
+
+:javascript
+  $("#smart-mod-eg1").click(function(e) {
+    if($('#name').val()!='' && $('#percentage').val()!= '' && $('#amount').val()!= '' && $('#expenses').val()!=''){
+      data = { authenticity_token: "#{form_authenticity_token}", name: $('#name').val(), percentage: $('#percentage').val(), amount: $('#amount').val(), expenses: $('#expenses').val(), cc_id: $('#cc').val()};
+      data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
+      load_url_ajax('#{create_expense_general_expenses_diverse_expenses_of_managements_path}', 'gdgn', data, null, 'POST');
+      load_modal_ajax('#{general_expenses_diverse_expenses_of_managements_path}', 'gdg', 'gdgn', data2, null, 'GET');
+      $.smallBox({
+        title : "Exito",
+        content : "<i class='fa fa-clock-o'></i> <i>Se creo el gasto de gestion</i>",
+        color : "#659265",
+        iconSmall : "fa fa-check fa-2x fadeInRight animated",
+        timeout : 4000
+      });
+    }else{
+      $.smallBox({
+        title : "Aviso",
+        content : "<i class='fa fa-clock-o'></i> <i>Llene todos los campos para poder crear el gasto</i>",
+        color : "#C46A69",
+        iconSmall : "fa fa-times fa-2x fadeInRight animated",
+        timeout : 4000
+      });
+    }
+  });
+
+  function minmax(value, min, max){
+    if(parseInt(value) < min || isNaN(value)){ 
+      return min; 
+    }else{
+      if(parseInt(value) > max){
+        return max; 
+      }else{
+        return value;
+      }
+    }
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  $("#new").click(function() {
+    data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
+    load_modal_ajax('#{general_expenses_diverse_expenses_of_managements_path}', 'gdg', 'gdge', data2, null, 'GET');
+  });
