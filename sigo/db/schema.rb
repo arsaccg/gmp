@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140726172031) do
+ActiveRecord::Schema.define(version: 20140805162431) do
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -82,6 +82,11 @@ ActiveRecord::Schema.define(version: 20140726172031) do
     t.string   "ruc"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "money_id"
+    t.string   "account_type"
+    t.string   "account_number"
+    t.string   "account_detraction"
+    t.string   "cci"
   end
 
   create_table "book_works", force: true do |t|
@@ -289,6 +294,35 @@ ActiveRecord::Schema.define(version: 20140726172031) do
     t.integer  "type_of_contractual_document_id"
   end
 
+  create_table "cost_center_details", force: true do |t|
+    t.string   "name"
+    t.date     "call_date"
+    t.integer  "snip_code"
+    t.string   "process_number"
+    t.date     "good_pro_date"
+    t.string   "referential_value"
+    t.string   "earned_value"
+    t.string   "direct_cost"
+    t.string   "general_cost"
+    t.string   "utility"
+    t.string   "IGV"
+    t.date     "contract_sign_date"
+    t.string   "contract_number"
+    t.date     "land_delivery_date"
+    t.date     "direct_advanced_payment_date"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "amazon_tax_condition",           default: "No aplica"
+    t.date     "direct_advanced_form_date"
+    t.date     "start_date_of_work"
+    t.string   "procurement_system"
+    t.integer  "execution_term"
+    t.string   "supervision"
+    t.date     "material_advanced_payment_date"
+    t.integer  "entity_id"
+  end
+
   create_table "cost_center_timelines", force: true do |t|
     t.integer "cost_center_id"
     t.date    "date"
@@ -432,6 +466,14 @@ ActiveRecord::Schema.define(version: 20140726172031) do
   end
 
   add_index "entities_type_entities", ["entity_id", "type_entity_id"], name: "index_entities_type_entities_on_entity_id_and_type_entity_id", using: :btree
+
+  create_table "entity_cost_center_details", force: true do |t|
+    t.integer  "cost_center_detail_id"
+    t.integer  "entity_id"
+    t.integer  "participation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "exchange_of_rates", force: true do |t|
     t.datetime "day"
@@ -938,6 +980,27 @@ ActiveRecord::Schema.define(version: 20140726172031) do
     t.datetime "updated_at"
   end
 
+  create_table "part_worker_details", force: true do |t|
+    t.integer  "worker_id"
+    t.integer  "phase_id"
+    t.integer  "sector_id"
+    t.string   "assistance"
+    t.string   "reason_of_lack"
+    t.integer  "working_group_id"
+    t.integer  "cost_center_id"
+    t.integer  "part_worker_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "part_workers", force: true do |t|
+    t.string   "number_part"
+    t.date     "date_of_creation"
+    t.integer  "company_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "part_works", force: true do |t|
     t.integer  "working_group_id"
     t.string   "number_working_group"
@@ -947,6 +1010,14 @@ ActiveRecord::Schema.define(version: 20140726172031) do
     t.integer  "sector_id"
     t.integer  "block"
     t.integer  "cost_center_id"
+  end
+
+  create_table "payment_orders", force: true do |t|
+    t.integer  "provision_id"
+    t.float    "net_pay"
+    t.float    "igv"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "phases", force: true do |t|
@@ -1028,6 +1099,25 @@ ActiveRecord::Schema.define(version: 20140726172031) do
     t.float    "current_igv"
     t.float    "current_unit_price"
     t.float    "net_price_after_igv"
+  end
+
+  create_table "provision_direct_purchase_details", force: true do |t|
+    t.integer  "article_id"
+    t.integer  "sector_id"
+    t.integer  "phase_id"
+    t.integer  "amount"
+    t.float    "price"
+    t.float    "unit_price_before_igv"
+    t.boolean  "igv"
+    t.float    "quantity_igv"
+    t.float    "discount_after"
+    t.float    "discount_before"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "provision_id"
+    t.integer  "account_accountant_id"
+    t.float    "unit_price_igv"
   end
 
   create_table "provisions", force: true do |t|
@@ -1784,7 +1874,7 @@ ActiveRecord::Schema.define(version: 20140726172031) do
     t.float    "camp"
     t.float    "destaque"
     t.float    "salary"
-    t.integer  "regime"
+    t.string   "regime"
     t.integer  "days"
     t.date     "start_date"
     t.date     "end_date"
@@ -1795,6 +1885,15 @@ ActiveRecord::Schema.define(version: 20140726172031) do
     t.string   "typeofcontract"
     t.date     "end_date_2"
     t.integer  "contract_type_id"
+    t.float    "viatical"
+    t.float    "bonus"
+    t.integer  "status"
+    t.string   "comment"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
   end
 
   create_table "worker_details", force: true do |t|
@@ -1807,7 +1906,6 @@ ActiveRecord::Schema.define(version: 20140726172031) do
 
   create_table "worker_experiences", force: true do |t|
     t.string   "businessname"
-    t.string   "businessaddress"
     t.string   "title"
     t.float    "salary"
     t.string   "bossincharge"

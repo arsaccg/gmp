@@ -14,14 +14,13 @@
       
 .row-fuild
   .span11
-    .table-month-ganttDAS
+    .table-month-gantt
       .contentAS
         =form_tag save_gantt_management_wbsitems_path, class: "form-horizontal", id: "gantt_form" do
           %table(class="white-table table table-bordered table-condensed table-stripped")
             %thead
               %th
                 Partida
-
               - in_order = @wbsitems.where("start_date IS NOT NULL").order("`start_date` ASC").first
               - first_d = @wbsitems.where("start_date IS NOT NULL").minimum(:start_date)
               - last_d = @wbsitems.where("end_date IS NOT NULL").maximum(:end_date) 
