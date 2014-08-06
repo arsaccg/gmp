@@ -97,14 +97,14 @@ class Production::WorkersController < ApplicationController
     worker.cost_center_id = get_company_cost_center('cost_center')
     if worker.save
       flash[:notice] = "Se ha creado correctamente el trabajador."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: session[:company]
     else
       worker.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
       flash[:error] =  "Ha ocurrido un error en el sistema."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: session[:company]
     end
   end
 
