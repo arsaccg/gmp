@@ -1,2 +1,0 @@
-module Logistics::EntityCostCenterDetailsHelper
-end

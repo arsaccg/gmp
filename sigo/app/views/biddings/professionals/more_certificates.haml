@@ -107,10 +107,6 @@
     data = { authenticity_token: "#{form_authenticity_token}"};
     append_url_ajax(element,'#{more_dates_biddings_professionals_path}', 'new-date', data, '', 'POST');
   }
-  
-  function delete_item(code){
-    $("#" + code).remove();
-  }
 
   function calculateDays(element){
     var di = $(element).parent().parent().parent().siblings().children('.col-sm-8').children('.input-group').find('input').val();

@@ -488,6 +488,18 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :flowcharts
+    resources :valorization_docs do
+      collection do
+        post 'valorization'
+      end
+    end
+    resources :type_of_valorization_docs
+    resources :modification_files do
+      collection do
+        post 'technical_files'
+      end
+    end
+    resources :type_of_modification_files
   end
 
   namespace :administration do

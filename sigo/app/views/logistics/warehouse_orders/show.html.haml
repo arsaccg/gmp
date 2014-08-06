@@ -1,0 +1,181 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        Orden de Suministro #
+        = @deliveryOrder.id.to_s.rjust(5, '0')
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-6
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = 'Orden de Suministro N° ' + @deliveryOrder.id.to_s.rjust(5, '0')
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Codigo
+                    %th Estado
+                    %th Fecha de Requerimiento
+                    %th Fecha Programada
+                    %th Responsable
+                    %th Glosa
+                %tbody(id="article_items_table")
+                  %tr
+                    %td
+                      = @deliveryOrder.id.to_s.rjust(5, '0')
+                    %td
+                      = translate_delivery_order_state(@deliveryOrder.state)
+                      %i{:class => "ui-#{@deliveryOrder.state} ui-icon ui-icon-flag"}
+                    %td
+                      = @deliveryOrder.date_of_issue.strftime("%d/%m/%Y")
+                    %td
+                      = @deliveryOrder.scheduled.strftime("%d/%m/%Y")
+                    %td
+                      = @deliveryOrder.user.first_name + ' ' + @deliveryOrder.user.last_name
+                    %td
+                      = @deliveryOrder.description
+      - if @state_change != nil
+        %h1.page-title.txt-color-blueDark
+          %i.fa.fa-pencil-square-o.fa-fw 
+          Cambiar estado de la Orden
+        %article.col-sm-12.col-md-12.col-lg-6
+          - case @state_change
+            - when 'issued'
+              - if current_user.has_role? :issuer
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goissue_logistics_delivery_order_path(@deliveryOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}', flag: '#{@type_of_order}'})"}
+                  Emitir
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Emitir.
+            - when 'observed'
+              - if current_user.has_role? :issuer
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{goobserve_logistics_delivery_order_path(@deliveryOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}', flag: '#{@type_of_order}'})"}
+                  Observar
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para hacer una Observación.
+            - when 'revised'
+              - if current_user.has_role? :reviser
+                %a.btn.btn-info.btn-lg{:onclick => "javascript:load_url_ajax('#{gorevise_logistics_delivery_order_path(@deliveryOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}', flag: '#{@type_of_order}'})"}
+                  Dar visto bueno
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Dar el Visto Bueno.
+            - when 'canceled'
+              - if current_user.has_role? :canceller
+                %a.btn.btn-danger.btn-lg{:onclick => "javascript:delete_to_url('#{logistics_delivery_order_path(@deliveryOrder.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_delivery_orders_path}?company_id=#{@company}')"}
+                  Anular
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Anular.
+            - when 'approved'
+              - if current_user.has_role? :approver
+                %a.btn.btn-primary.btn-lg{:onclick => "javascript:load_url_ajax('#{goapprove_logistics_delivery_order_path(@deliveryOrder.id)}', 'content', {company_id: '#{@company}', authenticity_token: '#{form_authenticity_token}', flag: '#{@type_of_order}'})"}
+                  Aprobar
+              - else
+                %p.alert.alert-danger
+                  %i.fa.fa-times.fa-fw.fa-lg
+                  %strong Opps!
+                  No tienes los privilegios para Aprobar.
+            - when ''
+              %p.alert.alert-danger
+                %i.fa.fa-times.fa-fw.fa-lg
+                %strong Opps!
+                Ya no puedes cambiar de estado.
+      - else
+        %article.col-sm-12.col-md-12.col-lg-6
+          #wid-id-3.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+            %header
+              %span.widget-icon
+                %i.fa.fa-table
+              %h2 
+              = 'Historial de Estado de la Orden de Suministro N° ' + @deliveryOrder.id.to_s.rjust(5, '0')
+            %div
+              .jarviswidget-editbox
+                / This area used as dropdown edit box
+              .widget-body.no-padding
+                %table.table.table-hover
+                  %thead
+                    %tr
+                      %th Estado
+                      %th Fecha
+                      %th Quien fue
+                  %tbody
+                    - @deliverPerState.each do |deliverState|
+                      %tr
+                        %td
+                          = translate_delivery_order_state(deliverState.state)
+                        %td
+                          = deliverState.created_at.strftime("%d/%m/%Y")
+                        %td
+                          = deliverState.user.first_name + " " + deliverState.user.last_name
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 Detalle de la Orden de Suministro
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Codigo
+                    %th Insumo
+                    %th Cantidad
+                    %th Sector
+                    %th Unidad de Medida
+                    %th Fases
+                    %th Centro de Atención
+                    %th Glosa
+                %tbody(id="article_items_table")
+                  - @deliveryOrderDetails.each do |deliverydetail|
+                    %tr
+                      %td
+                        = deliverydetail.article.code
+                      %td
+                        = deliverydetail.article.name
+                      %td
+                        = deliverydetail.amount
+                      %td
+                        = deliverydetail.sector.name
+                      %td
+                        - if deliverydetail.unit_of_measurement != nil
+                          = deliverydetail.unit_of_measurement.name
+                        - else
+                          = "No tiene Unidad de Medida"
+                      %td
+                        = deliverydetail.phase.name
+                      %td
+                        = deliverydetail.center_of_attention.name
+                      %td
+                        = deliverydetail.description
+
+- if @type_of_order.nil?
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-delivery-order{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado de Ordenes de Suministro
+
+:javascript
+  
+  $('#backlist-delivery-order').click(function(){
+    load_url_ajax("#{logistics_delivery_orders_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
+  });

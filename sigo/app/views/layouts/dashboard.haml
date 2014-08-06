@@ -123,7 +123,7 @@
             %a{href: "#{inbox_task_main_path}", title: "Tareas"}
               %i.fa.fa-lg.fa-fw.fa-inbox
               Inbox
-              %span.badge.pull-right.inbox-badge= @total_pending
+              %span.badge.pull-right.inbox-badge#input_inbox= @total_pending
           - if current_user.has_role? :director
             %li
               %a{href: "#{management_dashboard_path}", title: "Dashboard de Gestión"}
@@ -310,9 +310,17 @@
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Informes de Obras
                     %li
+                      %a{href: "#{documentary_control_type_of_valorization_docs_path}", title: "Compañias"}
+                        %i.fa.fa-lg.fa-fw.fa-briefcase
+                        Tipos Valorizaciones
+                    %li
                       %a{href: "#{documentary_control_type_of_technical_files_path}", title: "Compañias"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Expediente Técnico
+                    %li
+                      %a{href: "#{documentary_control_type_of_modification_files_path}", title: "Compañias"}
+                        %i.fa.fa-lg.fa-fw.fa-briefcase
+                        Tipos Modificatorias
                 %li
                   %a{href: "#{documentary_control_of_companies_path}", title: "Compañias"}
                     %i.fa.fa-lg.fa-fw.fa-briefcase
@@ -356,7 +364,7 @@
                         %i.fa.fa-lg.fa-fw.fa-book
                         Informes de Obra
                 %li
-                  %a{href: "#", title: "Valorizaciones"}
+                  %a{href: "#{documentary_control_valorization_docs_path}", title: "Valorizaciones"}
                     %i.fa.fa-lg.fa-fw.fa-book
                     Valorizaciones
                 %li
@@ -369,7 +377,7 @@
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         De la licitacion
                     %li
-                      %a{href: "#{documentary_control_technical_files_path}", title: "Modificatorias"}
+                      %a{href: "#{documentary_control_modification_files_path}", title: "Modificatorias"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Modificatorias
                 %li
@@ -461,6 +469,11 @@
                     %i.fa.fa-lg.fa-fw.fa-clipboard
                     %span.menu-item-parent
                       Salida de Almacén
+                %li
+                  %a{href: "#{logistics_warehouse_orders_path}", title: "Pedidos de Almacén" }
+                    %i.fa.fa-lg.fa-fw.fa-clipboard
+                    %span.menu-item-parent
+                      Pedidos a Almacén
                 %li
                   %a{href: "#{reports_inventories_path}", title: "Consulta de Inventarios" }
                     %i.fa.fa-lg.fa-fw.fa-clipboard
