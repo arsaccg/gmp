@@ -17,9 +17,8 @@ development:
   pool: 5
   #username: postgres
   username: root
-  #password: r3dc0d3
   password: root
-  encoding: utf8
+  #password: r3dc0d3
   flags: CLIENTS_MULTI_RESULTS 
 
 wharehouses_development:
