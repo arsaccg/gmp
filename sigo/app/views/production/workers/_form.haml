@@ -1228,6 +1228,7 @@
         // Remove all Help-inLine
         $(".help-inline").remove();
         // Client Valid
+        $("#modalLoading").modal('show');
         return $(form['selector']).valid();
       },
       target: '#content',
