@@ -69,6 +69,11 @@ ArsacLogistica::Application.routes.draw do
         post 'add_contractor_field'
       end
     end
+    resources :report_stocks do
+      collection do
+        post 'show_articles'
+      end
+    end
     resources :unit_of_measurements
     resources :persons do
       collection do

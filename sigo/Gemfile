@@ -12,6 +12,9 @@ gem 'sqlite3'
 # Use mysql2
 gem 'mysql2'
 
+#Use Spreadsheet
+gem 'spreadsheet', '~> 0.9.7'
+
 # Gem PrawnTo
 gem "prawnto_2", :require => "prawnto"
 
