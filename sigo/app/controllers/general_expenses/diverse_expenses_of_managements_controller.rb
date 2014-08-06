@@ -5,7 +5,7 @@ class GeneralExpenses::DiverseExpensesOfManagementsController < ApplicationContr
   def index
     flash[:error] = nil
     @cc = CostCenter.find(params[:cc_id].to_s)
-    @gdg = DiverseExpensesOfManagement.all
+    @gdg = DiverseExpensesOfManagement.where("cost_center_id ="+@cc.id.to_s)
     render layout: false
   end
 
