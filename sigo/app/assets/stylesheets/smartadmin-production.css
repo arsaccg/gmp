@@ -12129,7 +12129,7 @@ input.ui-button {
             font-weight: 400;
             line-height: 22px;
             margin-top: 15px;
-            width: 270px
+            text-align: justify;
         }
 
         #login h5.about-heading {

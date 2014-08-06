@@ -47,7 +47,7 @@
                         %span No
                     %td.reason.smart-form
                       %div.reason2
-                        %select.form-control.reasonlack{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][reason_of_lack]', :required => true, title:'No puede dejar este campo vacio', 'style' => 'display:none' }
+                        %select.form-control.reasonlack{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][reason_of_lack]', 'style' => 'display:none' }
                           %option{:value => "", :selected => 'selected'} Seleccione una falta
                           %option{:value => "Licencia sin goce de haber"} Licencia sin goce de haber
                           %option{:value => "Licencia con goce de haber"} Licencia con goce de haber
@@ -58,7 +58,7 @@
                           %option{:value => "Subsidios por maternidad"} Subsidios por maternidad
                     %td.sector.smart-form
                       %div
-                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio', :style => 'width:100%;padding: 0;border: none;'}
+                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][sector_id]", :style => 'width:100%;padding: 0;border: none;'}
                           %option{:value => "", :selected => true, :disabled => true} Seleccionar Sector
                           - @sectors.each do |sector|
                             %optgroup{:label => "#{sector.name}"}
@@ -67,14 +67,14 @@
                                   = subsector.name
                     %td.phase.smart-form
                       %div
-                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio', :style => 'width:100%;padding: 0;border: none;'}
+                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][phase_id]", :style => 'width:100%;padding: 0;border: none;'}
                           %option{:value => "", :selected => true, :disabled => true} Seleccionar Fase
                           - @phases.each do |phase|
                             %option{:value => "#{phase.id}"}
                               = phase.code + ' - ' + phase.name
                     %td.working-group.smart-form
                       %div
-                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][working_group_id]", :required => true, title:'No puede dejar este campo vacio', :style => 'width:100%;padding: 0;border: none;'}
+                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][working_group_id]", :style => 'width:100%;padding: 0;border: none;'}
                           %option{:value => ''} Seleccione Grupo de Trabajo
                           - @working_groups.each do |working_group|
                             - if @action == 'edit'
@@ -89,7 +89,7 @@
                                 = working_group.name
                     %td.costcenter
                       %div
-                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][cost_center_id]", :required => true, title:'No puede dejar este campo vacio', :style => 'width:100%;padding: 0;border: none;'}
+                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][cost_center_id]", :style => 'width:100%;padding: 0;border: none;'}
                           %option{:value => "0", :selected => true, :disabled => true} Seleccionar Centro de Costo
                           - @costcenters.each do |costcenters|
                             %option{:value => "#{costcenters.id}"}
@@ -111,7 +111,7 @@
                         %span No
                     %td.reason.smart-form
                       %div.reason2
-                        %select.form-control.reasonlack{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][reason_of_lack]', :required => true, title:'No puede dejar este campo vacio', 'style' => 'display:none' }
+                        %select.form-control.reasonlack{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][reason_of_lack]', 'style' => 'display:none' }
                           %option{:value => "", :selected => 'selected'} Seleccione una falta
                           %option{:value => "Licencia sin goce de haber"} Licencia sin goce de haber
                           %option{:value => "Licencia con goce de haber"} Licencia con goce de haber
@@ -122,7 +122,7 @@
                           %option{:value => "Subsidios por maternidad"} Subsidios por maternidad
                     %td.sector.smart-form
                       %div
-                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio', :style => 'width:100%;padding: 0;border: none;'}
+                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][sector_id]", :style => 'width:100%;padding: 0;border: none;'}
                           %option{:value => "", :selected => true, :disabled => true} Seleccionar Sector
                           - @sectors.each do |sector|
                             %optgroup{:label => "#{sector.name}"}
@@ -131,14 +131,14 @@
                                   = subsector.name
                     %td.phase.smart-form
                       %div
-                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio', :style => 'width:100%;padding: 0;border: none;'}
+                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][phase_id]", :style => 'width:100%;padding: 0;border: none;'}
                           %option{:value => "", :selected => true, :disabled => true} Seleccionar Fase
                           - @phases.each do |phase|
                             %option{:value => "#{phase.id}"}
                               = phase.code + ' - ' + phase.name
                     %td.working-group.smart-form
                       %div
-                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][working_group_id]", :required => true, title:'No puede dejar este campo vacio', :style => 'width:100%;padding: 0;border: none;'}
+                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][working_group_id]", :style => 'width:100%;padding: 0;border: none;'}
                           %option{:value => ''} Seleccione Grupo de Trabajo
                           - @working_groups.each do |working_group|
                             - if @action == 'edit'
@@ -236,7 +236,7 @@
   }
 
   function activatereasonlack(value){
-    if ($(value).val() == 'si'){
+    if ($(value).val() == 'no'){
       $(value).parent().parent().siblings('.reason').children('.reason2').children('.reasonlack').css("display", "");
     }
     else{

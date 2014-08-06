@@ -351,14 +351,27 @@
                       %a{href: "#{documentary_control_issued_letters_path}", title: "Compañias"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Emitidas
+                    %li
+                      %a{href: "#{documentary_control_work_reports_path}", title: "Compañias"}
+                        %i.fa.fa-lg.fa-fw.fa-book
+                        Informes de Obra
                 %li
-                  %a{href: "#{documentary_control_work_reports_path}", title: "Compañias"}
+                  %a{href: "#", title: "Valorizaciones"}
                     %i.fa.fa-lg.fa-fw.fa-book
-                    Informes de Obra
+                    Valorizaciones
                 %li
-                  %a{href: "#{documentary_control_technical_files_path}", title: "Compañias"}
+                  %a{href: "#", title: "Expediente Técnico"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                     Expediente Técnico
+                  %ul
+                    %li
+                      %a{href: "#{documentary_control_technical_files_path}", title: "De la licitacion"}
+                        %i.fa.fa-lg.fa-fw.fa-briefcase
+                        De la licitacion
+                    %li
+                      %a{href: "#{documentary_control_technical_files_path}", title: "Modificatorias"}
+                        %i.fa.fa-lg.fa-fw.fa-briefcase
+                        Modificatorias
                 %li
                   %a{href: "#{documentary_control_flowcharts_path}", title: "Compañias"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
