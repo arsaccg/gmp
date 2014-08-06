@@ -43,7 +43,6 @@ $(document).ready(function(){
 
 
 
-
 function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, semana6, semana7, semana8, semana9, semana10, theoretical_value, valor1, valor2, valor3, valor4, valor5, valor6, valor7, valor8, valor9, valor10){
   theoretical_value = parseFloat(theoretical_value)
   valor1 = parseFloat(valor1)

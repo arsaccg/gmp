@@ -123,7 +123,7 @@
             %a{href: "#{inbox_task_main_path}", title: "Tareas"}
               %i.fa.fa-lg.fa-fw.fa-inbox
               Inbox
-              %span.badge.pull-right.inbox-badge= @total_pending
+              %span.badge.pull-right.inbox-badge#input_inbox= @total_pending
           - if current_user.has_role? :director
             %li
               %a{href: "#{management_dashboard_path}", title: "Dashboard de Gestión"}
