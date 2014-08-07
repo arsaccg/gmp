@@ -144,6 +144,9 @@ function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,wee
   });
 }
 
+function part_block() {
+  $('#modalLoadingLabelading').modal();
+}
 function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1, serie2, serie3, data_serie1, data_serie2, data_serie3){
   $('#'+div_id).highcharts({
     chart: {
