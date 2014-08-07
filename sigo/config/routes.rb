@@ -1,5 +1,4 @@
 ArsacLogistica::Application.routes.draw do
-
   devise_for :users, :controllers => {:registrations => "users/registrations"}, :path_names => { 
     :sign_up => 'arsac_register'
   }
@@ -64,6 +63,11 @@ ArsacLogistica::Application.routes.draw do
   # Example resource route within a namespace:,
 
   namespace :logistics do
+    resources :warehouse_orders do
+      collection do
+        post 'add_order_item'
+      end
+    end
     resources :cost_center_details do
       collection do
         post 'add_contractor_field'
