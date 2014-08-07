@@ -172,7 +172,7 @@
                   %i.fa.fa-calendar.fa-md.fa-fw
         .row
           .col-sm-4{"style"=>"margin-left:15px;margin-bottom:3%;width:28%"}
-            %label.label Entidad:
+            %label.label Entidad Contratante:
             %select#clients.select2.form-control{:name => "cost_center_detail[entity_id]",:required => true}
               %option{:value => nil, :selected => true, :disabled => true} Seleccione una entidad
               - @clients.each do |ph|
