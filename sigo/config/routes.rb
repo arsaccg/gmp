@@ -1,5 +1,12 @@
 ArsacLogistica::Application.routes.draw do
 
+  get "folders/index"
+  get "folders/show"
+  get "folders/new"
+  get "folders/create"
+  get "folders/edit"
+  get "folders/update"
+  get "folders/destroy"
   devise_for :users, :controllers => {:registrations => "users/registrations"}, :path_names => { 
     :sign_up => 'arsac_register'
   }
