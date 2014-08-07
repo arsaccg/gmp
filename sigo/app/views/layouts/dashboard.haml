@@ -395,7 +395,11 @@
                 %li
                   %a{href: "#{documentary_control_photo_of_work_path("show")}", title: "Fotos de Obra"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                    Fotos de Obra    
+                    Fotos de Obra  
+                %li
+                  %a{href: "#{documentary_control_folders_path}", title: "Carpetas"}
+                    %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                    Carpetas
           - if (current_user.has_role? :director) || (current_user.has_role? :technical_library)
             %li
               %a{href: "#", title: "Biblioteca Técnica"}
