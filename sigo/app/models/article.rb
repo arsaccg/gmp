@@ -3,8 +3,8 @@ class Article < ActiveRecord::Base
   
     include ActiveModel::Validations 
 	
-    has_many :deliver_orders
-    
+    has_many :delivery_orders
+    has_many :warehouse_orders
   	has_many :subcontract_details
   	has_many :subcontract_equipment_details
   	has_many :part_work_details
@@ -14,7 +14,6 @@ class Article < ActiveRecord::Base
     has_many :theoretical_values
     
     has_many :inputbybudgetanditems
-    belongs_to :warehouse_order
   	belongs_to :category
   	belongs_to :type_of_article
   	belongs_to :unit_of_measurement

@@ -2,12 +2,11 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Fotos de Obra
+    %h2 Carpeta
   .widget-body
-    = simple_form_for([:documentary_control, @photo], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:documentary_control, @folder], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      = hidden_field_tag 'folder[folderfa_id]', @fa_id.to_s
       %fieldset
-        = hidden_field_tag 'photo_of_work[folder_id]', @fa_id.to_s
-        %br
         .row
           %section.col.col-md-8
             %label.label Nombre
@@ -21,19 +20,6 @@
             %label.input
               = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false, rows: 4
 
-        .row
-          %section.col.col-md-12
-            %label.label Foto:
-            - if @action == 'edit'
-              = f.input :photo, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
-            -else
-              = f.input :photo, :input_html => { :class => 'btn btn-default' }, label: false, as: "file", required: true
-            %p.help-block
-              - if @action == 'edit' && @photo.photo.exists?
-                = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
-              - else
-                Subir el archivo correspondiente
-
       %footer
         %button.btn.btn-primary#save{type: "submit"}
           %i.fa.fa-save 
@@ -45,7 +31,7 @@
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
-      submit_validate($('#new_photo_of_work'));
+      submit_validate($('#new_folder'));
     }
 
   });
@@ -56,20 +42,20 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'photo_of_work[name]' : {
+            'folder[name]' : {
               required : true
             },
-            'photo_of_work[description]' : {
+            'folder[description]' : {
               required : true,
             }
           },
 
           // Messages for form validation
           messages : {
-            'photo_of_work[name]' : {
+            'folder[name]' : {
               required : "Por favor, ingrese el nombre del documento"
             },
-            'photo_of_work[description]' : {
+            'folder[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
             }
           },

@@ -14,23 +14,24 @@
             %th Código
             %th Fecha
             %th Grupo de Trabajo
-
+            %th Acciones
         %tbody{ :id => "body-summary-delivery-orders" }
-          - @warehouse_orders.each do |orders|
-            %tr
-              %td
-                = orders.code
-              %td
-                = orders.date.strftime("%d/%m/%Y")
-              %td
-                =WorkingGroup.find(orders.working_group_id.to_s).name   
+          -if @warehouse_orders!=nil
+            - @warehouse_orders.each do |orders|
+              %tr
+                %td
+                  = orders.code
+                %td
+                  = orders.date.strftime("%d/%m/%Y")
+                %td
+                  =WorkingGroup.find(orders.working_group_id.to_s).name   
 
-              %td
-                %a.btn.btn-view.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_warehouse_order_detail_path(orders.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
-                  %i.fa.fa-eye
+                %td
+                  %a.btn.btn-view.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_warehouse_order_path(orders.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
+                    %i.fa.fa-eye
 
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_delivery_order_path(delivery.id)}', 'content', {company_id: #{@company}}, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
-                  %i.fa.fa-edit
+                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_warehouse_order_path(orders.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
+                    %i.fa.fa-edit
 
-                %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{logistics_warehouse_order_path(orders.id)}', 'content', '#{logistics_warehouse_orders_path}')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Eliminar Pedido"}
-                  %i.fa.fa-trash-o
+                  %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{logistics_warehouse_order_path(orders.id)}', 'content', '#{logistics_warehouse_orders_path}')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Eliminar Pedido"}
+                    %i.fa.fa-trash-o

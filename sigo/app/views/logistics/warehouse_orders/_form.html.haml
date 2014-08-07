@@ -3,7 +3,7 @@
     %span.widget-icon
       %i.fa.fa-pencil-square-o.fa-fw 
     %h2
-      %strong Orden de Suministro
+      %strong Pedidos a Almacén
   %div{:style => "padding-top: 0"}
     .jarviswidget-editbox
     .widget-body 
@@ -11,16 +11,19 @@
         .col-sm-12
           %fieldset
             %legend{:style => "border:none"}
+            %td.article-id(style="display:none")
+              = hidden_field_tag 'warehouse_order[cost_center_id]', @cost_center.id
             .form-group.col-md-4
-              %label.col-md-3{for: "state"} Código
+              %label.col-md-5{for: "code"} Código
               .col-md-9.smart-form
-                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true
+                = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
+          
             .form-group.col-md-4
-              %label.col-md-3{for: "date_of_issue"} Fecha de emisión
+              %label.col-md-5{for: "date"} Fecha de emisión
               .col-md-9.smart-form
                 = f.input :date, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date"}, label: false
             .form-group.col-md-4
-              %label.col-md-3{for: "scheduled"} Grupo de Trabajo 
+              %label.col-md-5{for: "working_group_id"} Grupo de Trabajo 
               .col-md-9.smart-form
               %select.form-control#workingGroup-select{:name =>"warehouse_order[working_group_id]"}
                 %option{:value => nil, :selected => true, :disabled => true} Seleccione un grupo de trabajo
@@ -30,10 +33,10 @@
 
         .col-sm-12
           %fieldset
-            %legend Detalle de Orden de Suministro
+            %legend Detalle de Pedidos a Almacén
             .form-group
               .col-lg-12
-                %label(for="article_id" class="col-lg-2 control-label") Insumos
+                %label(for="article_id" class="col-lg-2 control-label") Insumos en Stock
                 .col-lg-6
                   %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
 
@@ -50,52 +53,56 @@
                   %thead
                     %tr
                       %th Codigo
-                      %th Descripción
-                      %th Unidad
+                      %th Descripcióm
+                      %th Unidad de Medida
+                      %th Stock
                       %th Cantidad
                       %th Sector
-                      %th Fases/Subfases
+                      %th Fase
                       %th Eliminar
                   %tbody(id="article_items_table")
                     - if @action != nil && @action == 'edit'
-                      - @deliveryOrder.delivery_order_details.each do |dod|
-                        %tr(class="order_delivery_item"){id: "tr" + dod.id.to_s}
+                      - @warehouse_order.warehouse_order_details.each do |dod|
+                        %tr(class="warehouse_order_item"){id: "tr" + dod.id.to_s}
                           %td.article-id(style="display:none")
-                            = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][article_id]', dod.article_id.to_i
-                          %td.measurement-id(style="display:none")
-                            = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][unit_of_measurement_id]', dod.unit_of_measurement_id.to_i
+                            = hidden_field_tag 'warehouse_order[warehouse_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][article_id]', dod.article_id.to_i
                           %td
                             = dod.article.code
                           %td
                             = dod.article.name
                           %td
-                            = dod.unit_of_measurement.symbol
-                          %td.col-md-1
-                            .col-md-9
-                              = text_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][amount]', dod.amount.to_i , class: "form-control quantity", id: 'article-amount'
-                          %td.precio
-                            %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][sector_id]"}
-                              - @sectors.each do |sect|
-                                - if sect.id == dod.sector.id
-                                  %option{:value => "#{sect.id}", :selected => true}
-                                    = sect.name
-                                - else
-                                  %option{:value => "#{sect.id}"}
-                                    = sect.name
+                            = dod.article.unit_of_measurement.symbol
                           %td
-                            %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
+                            = "stock"
+                          %td.col-md-1
+                            = text_field_tag 'warehouse_order[warehouse_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][quantity]', dod.quantity.to_i , class: "form-control", id: 'article-amount'
+                          %td.precio
+                            %select.form-control{:name =>"warehouse_order[warehouse_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][sector_id]"}
+                              - @sectors.each do |sect|
+                                - if sect!=nil
+                                
+                                  - if sect.id == dod.sector.id
+                                    %option{:value => "#{sect.id}", :selected => true}
+                                      = sect.name
+                                  - else
+                                    %option{:value => "#{sect.id}"}
+                                      = sect.name
+                                - else
+                                  =""
+                          %td
+                            %select.form-control{:name =>"warehouse_order[warehouse_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
                               - @phases.each do |phas|
                                 - if phas.id == dod.phase_id
                                   %option{:value => "#{phas.id}", :selected => true}
-                                    = phas.name
+                                    = phas.code + " " + phas.name
                                 - else
                                   %option{:value => "#{phas.id}"}
-                                    = phas.name
-                          %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][id]', dod.id
-                          %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][delivery_order_id]', @deliveryOrder.id
+                                    = phas.code + " " + phas.name
+                          %td(style="display:none")= hidden_field_tag 'warehouse_order[warehouse_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][id]', dod.id
+                          %td(style="display:none")= hidden_field_tag 'warehouse_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][warehouse_order_id]', @warehouse_order.id
                           %td.delete-item
                             %label.checkbox
-                              = check_box 'purchase_order', '[purchase_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][_destroy]'
+                              = check_box 'warehouse_order[warehouse_order_details_attributes]','[' + dod.created_at.to_time.to_i.to_s + '][_destroy]'
                               %i
         .form-actions{:style => "margin-top: 0;"}
           .row

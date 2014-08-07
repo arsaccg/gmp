@@ -1,0 +1,48 @@
+.row.hidden-mobile
+  .col-xs-12.col-sm-6.col-md-6.col-lg-6
+    %h1.page-title.txt-color-blueDark
+      %i.fa-fw.fa.fa-picture-o
+      Galeria
+      %span
+        \>
+        Fotos de Obra
+  .col-xs-12.col-sm-6.col-md-6.col-lg-6.text-align-right
+    .page-title
+.row
+  .col-sm-4
+    %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_photo_of_work_path}', 'content', null, null, 'GET')"} Subir Foto
+                                                                              
+    %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{documentary_control_photo_of_works_path}', 'content', null, null, 'GET')"} Ver en Lista
+%br
+%br
+.row
+  .superbox.col-sm-12
+    .photos
+      = render :partial => 'photo'
+      %br
+      .div#paginate{"style"=>"float:right; font-size: 14px;"}
+        - if @flag == 1
+          = will_paginate @photo
+      .superbox-float
+      //%p#loading Cargando más Fotos.......
+  .superbox-show{style: "height:300px; display: none"}
+
+:javascript
+  $(document).ready(function(){
+    var as=$('#paginate').children().find('a');
+    as.each(function(){
+      var home = "/home#";
+      var hrefi = $(this).attr('href');
+      var cad = home + hrefi;
+      $(this).attr('href',cad);
+    });
+  });
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+  // PAGE RELATED SCRIPTS
+  // load bootstrap-progress bar script
+  loadScript("#{ asset_path 'plugin/superbox/superbox.min.js', type: :javascript }", runSuperBox);
+  function runSuperBox() {
+    $('.superbox').SuperBox();
+  }
+
