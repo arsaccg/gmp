@@ -1,6 +1,7 @@
 class Production::WorkersController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+  skip_before_filter  :verify_authenticity_token
   def index
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
