@@ -77,6 +77,7 @@ ArsacLogistica::Application.routes.draw do
     resources :report_stocks do
       collection do
         post 'show_articles'
+        post 'excel_stock'
       end
     end
     resources :unit_of_measurements

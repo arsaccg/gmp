@@ -317,15 +317,35 @@ class Production::WorkersController < ApplicationController
   def worker_pdf
     @company = Company.find(session[:company])
     @date = Time.now
-    puts @date.inspect
     @worker = Worker.find(params[:id])
+    @edad = @date.year - @worker.entity.date_of_birth.year
     @worker_afps = @worker.worker_afps
+    @afp = WorkerAfp.where("worker_id = ?",params[:id]).last
+    @bank = WorkerDetail.where("worker_id = ?",params[:id]).last
     @worker_center_of_studies = @worker.worker_center_of_studies
     @worker_details = @worker.worker_details
     @worker_experiences = @worker.worker_experiences
     @worker_familiars = @worker.worker_familiars
     @worker_healths = @worker.worker_healths
     @worker_otherstudies = @worker.worker_otherstudies
+    @familiars = 1
+    @center_of_studies = 1
+    @otherstudies = 1
+    @experiencies = 1
+    if @worker_familiars.count==0
+      @familiars = 0
+    end
+    if @worker_center_of_studies.count==0
+      @center_of_studies = 0
+    end
+    if @worker_otherstudies.count==0
+      @otherstudies = 0
+    end
+    if @worker_experiences.count==0
+      puts "YES"
+      @experiencies = 0
+    end
+    puts @experiencies.inspect
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :portrait }
 
   end

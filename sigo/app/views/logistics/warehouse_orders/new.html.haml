@@ -5,3 +5,13 @@
     .row
       %article.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'form'
+
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-delivery-order{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado de Pedidos de Almacén
+
+:javascript
+  
+  $('#backlist-delivery-order').click(function(){
+    load_url_ajax("#{logistics_warehouse_orders_path}", 'content', null, 'GET');
+  });

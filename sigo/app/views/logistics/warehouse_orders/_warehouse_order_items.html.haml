@@ -1,8 +1,7 @@
 %tr(class="order_delivery_item"){id: "tr" + @reg_n.to_s}
   %td.article-id(style="display:none")
-    = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article.to_i
-  %td.measurement-id(style="display:none")
-    = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][unit_of_measurement_id]', @unitOfMeasurementId.to_i
+    = hidden_field_tag 'warehouse_order[warehouse_order_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article.to_i
+
   %td
     = @code_article
   %td
@@ -11,10 +10,13 @@
     = @unitOfMeasurement
   %td.col-md-1.smart-form{:style => "width:5%"}
     %div
-      = text_field_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_i , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.sector.col-md-1.smart-form
+      Stock
+  %td.col-md-1.smart-form{:style => "width:5%"}
     %div
-      %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
+      = text_field_tag 'warehouse_order[warehouse_order_details_attributes][' + @reg_n.to_s + '][quantity]', @quantity.to_i , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+  %td.sector.col-md-2.smart-form
+    %div
+      %select.form-control{:name =>"warehouse_order[warehouse_order_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
         %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
         - @sectors.each do |sector|
           %optgroup{:label => "#{sector.name}"}
@@ -23,26 +25,11 @@
                 = subsector.name  
   %td.smart-form
     %div
-      %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
+      %select.form-control{:name =>"warehouse_order[warehouse_order_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
         %option{:value => nil, :selected => true, :disabled => true} Seleccionar Fase
         - @phases.each do |phase|
           %option{:value => "#{phase.id}"}
             = phase.code + " " + phase.name
-  %td.order_delivery_centro_atencion.smart-form
-    %div
-      %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][center_of_attention_id]", :required => true, title:'No puede dejar este campo vacio'}
-        %option{:value => nil, :selected => true, :disabled => true} Seleccionar Centro de atención
-        - @centerOfAttention.each do |centerAttention|
-          %option{:value => "#{centerAttention.id}"}
-            = centerAttention.name
-  %td.order_delivery_fecha_programada.col-md-2
-    %div
-      %fieldset
-        %section.col.col-6
-          %label.input.state-success
-            %i.icon-append.fa.fa-calendar
-            %input.scheduled-date{:type => "date", :name => "delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][scheduled_date]", :required => true, title:'No puede dejar este campo vacio'}
-  %td
-    = text_area_tag 'delivery_order[delivery_order_details_attributes][' + @reg_n.to_s + '][description]', nil,class: "form-control description"
+
   %td{:style => "width: 1%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

@@ -1,6 +1,7 @@
 # encoding: utf-8
 class Sector < ActiveRecord::Base
-	has_many :deliver_orders
+	has_many :delivery_orders
+    has_many :warehouse_orders
 	has_many :working_groups
 	has_many :part_works
 	has_many :part_person_details
