@@ -1046,7 +1046,7 @@
             %i.fa.fa-save 
             Registrar
         -else
-          %button.btn.btn-primary{type: "submit"}
+          %button.btn.btn-primary{type: "submit", :onclick => 'part_block();'}
             %i.fa.fa-save 
             Guardar
 
@@ -1090,10 +1090,6 @@
     }else{
       submit_validate($('#new_worker'));
     }
-  });
-
-  $('input:submit').click(function(){
-    $('input:submit').attr("disabled", true); 
   });
 
   $("input.radiobox").change(function() {
@@ -1180,7 +1176,7 @@
     }
   });
 
-  function submit_validate(form){    
+  function submit_validate(form){
     loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
     $('#bank-select').select2();
     $(form['selector']).ajaxForm({
@@ -1237,8 +1233,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').hide();
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').hide();
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }
@@ -1297,4 +1297,11 @@
 
   function delete_item(code){
     $("#tr" + code).remove();
+  }
+
+  function part_block() {
+    $('#modalLoadingLabelading').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
   }
