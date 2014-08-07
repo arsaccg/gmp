@@ -139,7 +139,7 @@
                 Usuarios
           - if (current_user.has_role? :director) || (current_user.has_role? :maintainer)
             %li
-              %a{href: "#", title: "Compañias"}
+              %a{href: "#", title: "Mantenimiento"}
                 %i.fa.fa-lg.fa-fw.fa-wrench
                 Mantenimientos
               %ul
@@ -278,89 +278,93 @@
                     Mantenimientos
                   %ul
                     %li
-                      %a{href: "#{documentary_control_type_of_companies_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_type_of_companies_path}", title: "Tipos Doc. Notariales"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Doc. Notariales
                     %li
-                      %a{href: "#{documentary_control_type_of_contest_documents_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_type_of_contest_documents_path}", title: "Tipos Doc. Concurso"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Doc. Concurso
                     %li
-                      %a{href: "#{ documentary_control_type_of_contractual_documents_path}", title: "Compañias"}
+                      %a{href: "#{ documentary_control_type_of_contractual_documents_path}", title: "Tipos Doc. Contractual"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Doc. Contractual
                     %li
-                      %a{href: "#{documentary_control_type_of_book_works_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_type_of_book_works_path}", title: "Tipos Cuaderno Obra"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Cuaderno Obra
                     %li
-                      %a{href: "#{documentary_control_type_of_record_of_meetings_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_type_of_record_of_meetings_path}", title: "Tipos Acta de Reunión"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Acta de Reunión
                     %li
-                      %a{href: "#{documentary_control_type_of_received_letters_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_type_of_received_letters_path}", title: "Tipos Doc. Recibidos"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Doc. Recibidos
                     %li
-                      %a{href: "#{documentary_control_type_of_issued_letters_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_type_of_issued_letters_path}", title: "Tipos Doc. Emitidos"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Doc. Emitidos
                     %li
-                      %a{href: "#{documentary_control_type_of_work_reports_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_type_of_work_reports_path}", title: "Tipos Informes de Obras"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Informes de Obras
                     %li
-                      %a{href: "#{documentary_control_type_of_valorization_docs_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_type_of_valorization_docs_path}", title: "Tipos Valorizaciones"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Valorizaciones
                     %li
-                      %a{href: "#{documentary_control_type_of_technical_files_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_type_of_technical_files_path}", title: "Tipos Expediente Técnico"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Expediente Técnico
                     %li
-                      %a{href: "#{documentary_control_type_of_modification_files_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_type_of_land_deliveries_path}", title: "Tipos entrega de Terreno"}
+                        %i.fa.fa-lg.fa-fw.fa-briefcase
+                        Tipos entrega de Terreno
+                    %li
+                      %a{href: "#{documentary_control_type_of_modification_files_path}", title: "Tipos Modificatorias"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Modificatorias
                 %li
-                  %a{href: "#{documentary_control_of_companies_path}", title: "Compañias"}
+                  %a{href: "#{documentary_control_of_companies_path}", title: "Notariales"}
                     %i.fa.fa-lg.fa-fw.fa-briefcase
                     Notariales
                 %li
-                  %a{href: "#", title: "Compañias"}
+                  %a{href: "#", title: "Área Legal"}
                     %i.fa.fa-lg.fa-fw.fa-gavel
                     Área Legal
                   %ul
                     %li
-                      %a{href: "#{documentary_control_contest_documents_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_contest_documents_path}", title: "Doc. del Concurso"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Doc. del Concurso
                     %li
-                      %a{href: "#{documentary_control_contractual_documents_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_contractual_documents_path}", title: "Doc. Contractuales"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Doc. Contractuales
                     %li
-                      %a{href: "#{documentary_control_book_works_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_book_works_path}", title: "Cuaderno de Obra"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Cuaderno de Obra
                 %li
-                  %a{href: "#", title: "Compañias"}
+                  %a{href: "#", title: "Documentación"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                     Documentación
                   %ul
                     %li
-                      %a{href: "#{documentary_control_record_of_meetings_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_record_of_meetings_path}", title: "Acta de Reunión"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Acta de Reunión
                     %li
-                      %a{href: "#{documentary_control_received_letters_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_received_letters_path}", title: "Recibidas"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Recibidas
                     %li
-                      %a{href: "#{documentary_control_issued_letters_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_issued_letters_path}", title: "Emitidas"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Emitidas
                     %li
-                      %a{href: "#{documentary_control_work_reports_path}", title: "Compañias"}
+                      %a{href: "#{documentary_control_work_reports_path}", title: "Informes de Obra"}
                         %i.fa.fa-lg.fa-fw.fa-book
                         Informes de Obra
                 %li
@@ -377,20 +381,24 @@
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         De la licitacion
                     %li
+                      %a{href: "#{documentary_control_land_deliveries_path}", title: "A la entrega de Terrenos"}
+                        %i.fa.fa-lg.fa-fw.fa-briefcase
+                        A la entrega de Terrenos
+                    %li
                       %a{href: "#{documentary_control_modification_files_path}", title: "Modificatorias"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Modificatorias
                 %li
-                  %a{href: "#{documentary_control_flowcharts_path}", title: "Compañias"}
+                  %a{href: "#{documentary_control_flowcharts_path}", title: "Organigrama"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                     Organigrama
                 %li
-                  %a{href: "#{documentary_control_photo_of_work_path("show")}", title: "Compañias"}
+                  %a{href: "#{documentary_control_photo_of_work_path("show")}", title: "Fotos de Obra"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                     Fotos de Obra    
           - if (current_user.has_role? :director) || (current_user.has_role? :technical_library)
             %li
-              %a{href: "#", title: "Compañias"}
+              %a{href: "#", title: "Biblioteca Técnica"}
                 %i.fa.fa-lg.fa-fw.fa-book
                 Biblioteca Técnica
               %ul
@@ -400,36 +408,36 @@
                     Mantenimientos
                   %ul
                     %li
-                      %a{href: "#{libraries_type_of_law_and_regulations_path}", title: "Compañias"}
+                      %a{href: "#{libraries_type_of_law_and_regulations_path}", title: "Tipos Leyes y Reglamentos"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Leyes y Reglamentos
                     %li
-                      %a{href: "#{libraries_type_of_technical_libraries_path}", title: "Compañias"}
+                      %a{href: "#{libraries_type_of_technical_libraries_path}", title: "Tipos Librería Técnica"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Librería Técnica
                 %li
-                  %a{href: "#{libraries_law_and_regulations_path}", title: "Compañias"}
+                  %a{href: "#{libraries_law_and_regulations_path}", title: "Leyes y Reglamentos"}
                     %i.fa.fa-lg.fa-fw.fa-briefcase
                     Leyes y Reglamentos
                 %li
-                  %a{href: "#{libraries_technical_standards_path}", title: "Compañias"}
+                  %a{href: "#{libraries_technical_standards_path}", title: "Normas Técnicas"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                     Normas Técnicas
                 %li
-                  %a{href: "#{libraries_technical_libraries_path}", title: "Compañias"}
+                  %a{href: "#{libraries_technical_libraries_path}", title: "Librería Técnica"}
                     %i.fa.fa-lg.fa-fw.fa-book
                     Librería Técnica
                 %li
-                  %a{href: "#{libraries_download_softwares_path}", title: "Compañias"}
+                  %a{href: "#{libraries_download_softwares_path}", title: "Download Software"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                     Download Software
                 %li
-                  %a{href: "#{libraries_interest_links_path}", title: "Compañias"}
+                  %a{href: "#{libraries_interest_links_path}", title: "Links de Interés"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                     Links de Interés
           - if (current_user.has_role? :director) || (current_user.has_role? :orders_and_buy)
             %li
-              %a{href: "#", title: "Compañias"}
+              %a{href: "#", title: "Pedidos y Compras"}
                 %i.fa.fa-lg.fa-fw.fa-shopping-cart
                 Pedidos y Compras
               %ul
@@ -455,7 +463,7 @@
                       Ordenes de Servicio
           - if (current_user.has_role? :director) || (current_user.has_role? :stores)
             %li
-              %a{href: "#", title: "Compañias"}
+              %a{href: "#", title: "Almacenes"}
                 %i.fa.fa-lg.fa-fw.fa-truck
                 Almacenes
               %ul

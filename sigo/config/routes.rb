@@ -1,12 +1,5 @@
 ArsacLogistica::Application.routes.draw do
 
-  get "folders/index"
-  get "folders/show"
-  get "folders/new"
-  get "folders/create"
-  get "folders/edit"
-  get "folders/update"
-  get "folders/destroy"
   devise_for :users, :controllers => {:registrations => "users/registrations"}, :path_names => { 
     :sign_up => 'arsac_register'
   }
@@ -71,6 +64,11 @@ ArsacLogistica::Application.routes.draw do
   # Example resource route within a namespace:,
 
   namespace :logistics do
+    resources :warehouse_orders do
+      collection do
+        post 'add_order_item'
+      end
+    end
     resources :cost_center_details do
       collection do
         post 'add_contractor_field'
@@ -507,6 +505,9 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :type_of_modification_files
+    resources :folders
+    resources :land_deliveries
+    resources :type_of_land_deliveries
   end
 
   namespace :administration do
