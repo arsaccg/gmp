@@ -119,6 +119,25 @@ table([ ["#{@worker.pais}", "#{@worker.phone}", "#{@worker.cellphone}", "#{@work
 move_down 10
 
 text "III. DATOS FAMILIARES (PADRES-CONYUGE-HIJOS)", :size => 9
+if @familiars == 0
+  table([ ["AP. PATERNO", "AP. MATERNO", "NOMBRES", "PARENTESCO", "F. DE NACIM.", "DNI"],["", "", "", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [100,100,120,70,70,60]) do
+          style(columns(0..5), :align => :center)
+          style(columns(0..5), :size => 8)
+          columns(0..5).font_style = :bold
+        end
+else
+  table([ ["AP. PATERNO", "AP. MATERNO", "NOMBRES", "PARENTESCO", "F. DE NACIM.", "DNI"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [100,100,120,70,70,60]) do
+          style(columns(0..5), :align => :center)
+          style(columns(0..5), :size => 8)
+          columns(0..5).font_style = :bold
+        end
+  @worker_familiars.each do |data|
+    table([ ["#{data.paternal_surname}", "#{data.maternal_surname}", "#{data.names}", "#{data.relationship}", "#{data.dayofbirth}", "#{data.dni}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,100,70,70,60,60]) do
+          style(columns(0..5), :align => :center)
+            style(columns(0..5), :size => 8)
+          end
+  end
+end
 
 move_down 10
 
@@ -142,28 +161,46 @@ table([ ["SECUNDARIA", "#{@worker.highschool}", "#{@worker.highschooldistrict}",
         style(columns(0..4), :size => 8)
         columns(0).font_style = :bold
       end
-table([ ["UNIVERSIDAD/INSTITUTO", "PROFESION", "TITULO/GRADO", "N° COLEG.", "DESDE", "HASTA"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,100,70,70,60,60]) do
-        style(columns(0..5), :align => :center)
-        style(columns(0..5), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-        columns(2).font_style = :bold
-        columns(3).font_style = :bold
-        columns(4).font_style = :bold
-        columns(5).font_style = :bold
-      end
-
 move_down 10
-
-table([ ["OTROS ESTUDIOS (POST GRADO)/CONOCIMIENTOS", "UNIVERSIDAD/INSTITUTO", "DESDE","HASTA"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [220,180,60,60]) do
-        style(columns(0..3), :align => :center)
-        style(columns(0..3), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-        columns(2).font_style = :bold
-        columns(3).font_style = :bold
-      end
-
+if @center_of_studies == 0
+  table([ ["UNIVERSIDAD/INSTITUTO", "PROFESION", "TITULO/GRADO", "N° COLEG.", "DESDE", "HASTA"],["", "", "", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,100,70,70,60,60]) do
+          style(columns(0..5), :align => :center)
+          style(columns(0..5), :size => 8)
+          columns(0..5).font_style = :bold
+        end
+else
+  table([ ["UNIVERSIDAD/INSTITUTO", "PROFESION", "TITULO/GRADO", "N° COLEG.", "DESDE", "HASTA"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,100,70,70,60,60]) do
+          style(columns(0..5), :align => :center)
+          style(columns(0..5), :size => 8)
+          columns(0..5).font_style = :bold
+        end
+  @worker_center_of_studies.each do |data|
+    table([ ["#{data.name}", "#{data.profession}", "#{data.title}", "#{data.numberoftuition}", "#{data.start_date}", "#{data.end_date}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,100,70,70,60,60]) do
+          style(columns(0..5), :align => :center)
+            style(columns(0..5), :size => 8)
+          end
+  end
+end
+move_down 10
+if @otherstudies==0
+  table([ ["OTROS ESTUDIOS (POST GRADO)/CONOCIMIENTOS", "NIVEL"],["",""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [400,120]) do
+          style(columns(0..1), :align => :center)
+          style(columns(0..1), :size => 8)
+          columns(0..1).font_style = :bold
+        end
+else
+  table([ ["OTROS ESTUDIOS (POST GRADO)/CONOCIMIENTOS", "NIVEL"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [400,120]) do
+          style(columns(0..1), :align => :center)
+          style(columns(0..1), :size => 8)
+          columns(0..1).font_style = :bold
+        end
+  @worker_otherstudies.each do |data|
+    table([ ["#{data.study}", "#{data.level}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [400,120]) do
+            style(columns(0..1), :align => :center)
+            style(columns(0..1), :size => 8)
+          end
+  end
+end
 
 start_new_page
 
@@ -193,149 +230,119 @@ end
 move_down 15
 
 text "IV. EXPERIENCIA (DETALLE DE LOS ULTIMOS TRABAJOS EN ORDEN DESCENDENTE)", :size => 9
-table([ ["NOMBRE DE LA EMPRESA"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [520]) do
-        style(columns(0..2), :align => :center)
-        style(columns(0..2), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-      end
-table([ [""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [520]) do
-        style(columns(0..2), :align => :center)
-        style(columns(0..2), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-      end
-table([ ["CARGO", "SUELDO (S/.)", "JEFE INMEDIATO", "MOTIVO DE SALIDA", "DESDE", "HASTA"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,80,140,100,60,60]) do
-        style(columns(0..5), :align => :center)
-        style(columns(0..5), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-        columns(2).font_style = :bold
-        columns(3).font_style = :bold
-        columns(4).font_style = :bold
-        columns(5).font_style = :bold
-      end
-table([ ["", "", "", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,80,140,100,60,60]) do
-        style(columns(0..5), :align => :center)
-        style(columns(0..5), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-        columns(2).font_style = :bold
-        columns(3).font_style = :bold
-        columns(4).font_style = :bold
-        columns(5).font_style = :bold
-      end
-
+if @experiencies == 0
+  table([ ["NOMBRE DE LA EMPRESA"],[""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [520]) do
+          style(columns(0), :align => :center)
+          style(columns(0), :size => 8)
+          columns(0).font_style = :bold
+        end
+  table([ ["CARGO", "SUELDO (S/.)", "JEFE INMEDIATO", "MOTIVO DE SALIDA", "DESDE", "HASTA"],["", "", "", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,80,140,100,60,60]) do
+          style(columns(0..5), :align => :center)
+          style(columns(0..5), :size => 8)
+          columns(0..5).font_style = :bold
+        end
+else
+  @worker_experiences.each do |data|
+    table([ ["NOMBRE DE LA EMPRESA"],[""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [520]) do
+            style(columns(0), :align => :center)
+            style(columns(0), :size => 8)
+            columns(0).font_style = :bold
+          end
+    table([ ["CARGO", "SUELDO (S/.)", "JEFE INMEDIATO", "MOTIVO DE SALIDA", "DESDE", "HASTA"],["", "", "", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,80,140,100,60,60]) do
+            style(columns(0..5), :align => :center)
+            style(columns(0..5), :size => 8)
+            columns(0..5).font_style = :bold
+          end
+  end
+end
 move_down 10
 
-table([ ["TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?"],["TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?"] ], :width => 160, :cell_style => {:height => 18}, :column_widths => [160]) do
-        style(columns(0), :align => :center)
-        style(columns(0), :size => 8)
-      end
-table([ ["Si","","No",""] ], :width => 100, :cell_style => {:height => 18}, :column_widths => [25,25,25,25]) do
-        style(columns(0..3), :align => :center)
-        style(columns(0..3), :size => 8)
-      end
-table([ ["Si","","No",""] ], :width => 100, :cell_style => {:height => 18}, :column_widths => [25,25,25,25]) do
-        style(columns(0..3), :align => :center)
-        style(columns(0..3), :size => 8)
-      end
-table([ ["TIENE CONOCIMIENTOS DE NORMAS DE SEGURIDAD?"],["TIENE CONOCIMIENTOS DE LA LEGISLACION LABORAL?"] ], :width => 160, :cell_style => {:height => 18}, :column_widths => [160]) do
-        style(columns(0), :align => :center)
-        style(columns(0), :size => 8)
-      end
-table([ ["Si","","No",""] ], :width => 100, :cell_style => {:height => 18}, :column_widths => [25,25,25,25]) do
-        style(columns(0..3), :align => :center)
-        style(columns(0..3), :size => 8)
-      end
-table([ ["Si","","No",""] ], :width => 100, :cell_style => {:height => 18}, :column_widths => [25,25,25,25]) do
-        style(columns(0..3), :align => :center)
-        style(columns(0..3), :size => 8)
-      end
-
-table([ ["TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?", "SI", "", "NO", "", "TIENE CONOCIMIENTOS DE NORMAS DE MEDIOAMBIENTE?", "SI", "", "NO", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,25,25,25,25,160,25,25,25,25]) do
-        style(columns(0..9), :align => :center)
-        style(columns(0..9), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-        columns(2).font_style = :bold
-        columns(3).font_style = :bold
-        columns(4).font_style = :bold
-        columns(5).font_style = :bold
-        columns(6).font_style = :bold
-        columns(7).font_style = :bold
-        columns(8).font_style = :bold
-        columns(9).font_style = :bold
-      end
-table([ ["TIENE CONOCIMIENTOS DE NORMAS DE SEGURIDAD?", "SI", "", "NO", "", "TIENE CONOCIMIENTOS DE LA LEGISLACION LABORAL?", "SI", "", "NO", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,25,25,25,25,160,25,25,25,25]) do
-        style(columns(0..9), :align => :center)
-        style(columns(0..9), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-        columns(2).font_style = :bold
-        columns(3).font_style = :bold
-        columns(4).font_style = :bold
-        columns(5).font_style = :bold
-        columns(6).font_style = :bold
-        columns(7).font_style = :bold
-        columns(8).font_style = :bold
-        columns(9).font_style = :bold
-      end
+if (@worker.quality == "si")
+  table([ ["TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?","SI","X","NO",""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [360,40,40,40,40]) do
+          style(columns(0..4), :align => :center)
+          style(columns(0..4), :size => 8)
+          columns(0..4).font_style = :bold
+        end
+else
+  table([ ["TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?","SI","","NO","X"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [360,40,40,40,40]) do
+          style(columns(0..4), :align => :center)
+          style(columns(0..4), :size => 8)
+          columns(0..4).font_style = :bold
+        end
+end
+if (@worker.security == "si")
+  table([ ["TIENE CONOCIMIENTOS DE NORMAS DE SEGURIDAD?","SI","X","NO",""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [360,40,40,40,40]) do
+          style(columns(0..4), :align => :center)
+          style(columns(0..4), :size => 8)
+          columns(0..4).font_style = :bold
+        end
+else
+  table([ ["TIENE CONOCIMIENTOS DE NORMAS DE SEGURIDAD?","SI","","NO","X"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [360,40,40,40,40]) do
+          style(columns(0..4), :align => :center)
+          style(columns(0..4), :size => 8)
+          columns(0..4).font_style = :bold
+        end
+end
+if (@worker.enviroment == "si")
+  table([ ["TIENE CONOCIMIENTOS DE NORMAS DE MEDIOAMBIENTE?","SI","X","NO",""]], :width => 520, :cell_style => {:height => 18}, :column_widths => [360,40,40,40,40]) do
+          style(columns(0..4), :align => :center)
+          style(columns(0..4), :size => 8)
+          columns(0..4).font_style = :bold
+        end
+else
+  table([ ["TIENE CONOCIMIENTOS DE NORMAS DE MEDIOAMBIENTE?","SI","","NO","X"]], :width => 520, :cell_style => {:height => 18}, :column_widths => [360,40,40,40,40]) do
+          style(columns(0..4), :align => :center)
+          style(columns(0..4), :size => 8)
+          columns(0..4).font_style = :bold
+        end
+end
+if (@worker.labor_legislation == "si")
+  table([ ["TIENE CONOCIMIENTOS DE LA LEGISLACION LABORAL?","SI","X","NO",""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [360,40,40,40,40]) do
+          style(columns(0..4), :align => :center)
+          style(columns(0..4), :size => 8)
+          columns(0..4).font_style = :bold
+        end
+else
+  table([ ["TIENE CONOCIMIENTOS DE LA LEGISLACION LABORAL?","SI","","NO","X"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [360,40,40,40,40]) do
+          style(columns(0..4), :align => :center)
+          style(columns(0..4), :size => 8)
+          columns(0..4).font_style = :bold
+        end
+end
 
 move_down 10
 
 text "V. DOCUMENTACION ADJUNTA", :size => 9
-table([ ["CURRICULUM VITAE DOCUMENTADO", "", "CERTIFICADO DE ESTUDIOS SUPERIORES", "", "CARTA DE DEPOSITO C.T.S.", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,20,150,20,150,20]) do
+table([ ["CURRICULUM VITAE DOCUMENTADO", if "#{@worker.cv_file_size}"!="" then 'X' end, "DECLARACION JURADA", if "#{@worker.affidavit_file_size}"!="" then 'X' end] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [240,20,240,20]) do
         style(columns(0..5), :align => :center)
         style(columns(0..5), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-        columns(2).font_style = :bold
-        columns(3).font_style = :bold
-        columns(4).font_style = :bold
-        columns(5).font_style = :bold
+        columns(0..5).font_style = :bold
       end
-table([ ["CERTIFICADO DE ANTECEDENTES POLICIALES", "", "CARTA DE FONDOS PREVISIONALES", "", "OTROS", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,20,150,20,150,20]) do
+table([ ["CERTIFICADO DE ANTECEDENTES POLICIALES", if "#{@worker.antecedent_police_file_size}"!="" then 'X' end, "CARTA DE FONDOS PREVISIONALES", if "#{@worker.pension_funds_letter_file_size}"!="" then 'X' end] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [240,20,240,20]) do
         style(columns(0..5), :align => :center)
         style(columns(0..5), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-        columns(2).font_style = :bold
-        columns(3).font_style = :bold
-        columns(4).font_style = :bold
-        columns(5).font_style = :bold
+        columns(0..5).font_style = :bold
       end
-table([ ["CERTIFICADO DE ANTECEDENTES PENALES", "", "PARTIDA DE NACIMIENTO", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,20,150,20,150,20]) do
+table([ ["CERTIFICADO DE ANTECEDENTES PENALES", "", "PARTIDA DE NACIMIENTO DE HIJOS", if "#{@worker.birth_certificate_of_childer_file_size}"!="" then 'X' end] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [240,20,240,20]) do
         style(columns(0..5), :align => :center)
         style(columns(0..5), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-        columns(2).font_style = :bold
-        columns(3).font_style = :bold
-        columns(4).font_style = :bold
-        columns(5).font_style = :bold
+        columns(0..5).font_style = :bold
       end
-table([ ["CERTIFICADO DOMICILIARIO", "", "PARTIDA DE MATRIMONIO", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,20,150,20,150,20]) do
+table([ ["CONSTANCIA MATRICULA ESCOLAR", if "#{@worker.schoolar_certificate_file_size}"!="" then 'X' end, "DNI HIJOS Y ESPOSA", if "#{@worker.dni_wife_kids_file_size}"!="" then 'X' end] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [240,20,240,20]) do
         style(columns(0..5), :align => :center)
         style(columns(0..5), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-        columns(2).font_style = :bold
-        columns(3).font_style = :bold
-        columns(4).font_style = :bold
-        columns(5).font_style = :bold
+        columns(0..5).font_style = :bold
       end
-table([ ["CERTIFICADO DE CONVIVENCIA", "", "DOCUMENTO NACIONAL DE IDENTIDAD", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,20,150,20,150,20]) do
+table([ ["CERTIFICADO DE CONVIVENCIA", if "#{@worker.marriage_certificate_file_size}"!="" then 'X' end, "DOCUMENTO NACIONAL DE IDENTIDAD", if "#{@worker.dni_file_size}"!="" then 'X' end] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [240,20,240,20]) do
         style(columns(0..5), :align => :center)
         style(columns(0..5), :size => 8)
-        columns(0).font_style = :bold
-        columns(1).font_style = :bold
-        columns(2).font_style = :bold
-        columns(3).font_style = :bold
-        columns(4).font_style = :bold
-        columns(5).font_style = :bold
+        columns(0..5).font_style = :bold
       end
-
+table([ ["CARTA DE DEPOSITO C.T.S.", if "#{@worker.cts_deposit_letter_file_size}"!="" then 'X' end , "OTROS", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [240,20,240,20]) do
+        style(columns(0..5), :align => :center)
+        style(columns(0..5), :size => 8)
+        columns(0..5).font_style = :bold
+      end
 move_down 10
 
 text "NOTA: Declaro que los datos consignados se ajustan a la verdad y que de ser necesario me comprometo a sustentarlos fisicamente con la documentacion que corresponda.", :size => 9

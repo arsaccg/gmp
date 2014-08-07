@@ -328,6 +328,24 @@ class Production::WorkersController < ApplicationController
     @worker_familiars = @worker.worker_familiars
     @worker_healths = @worker.worker_healths
     @worker_otherstudies = @worker.worker_otherstudies
+    @familiars = 1
+    @center_of_studies = 1
+    @otherstudies = 1
+    @experiencies = 1
+    if @worker_familiars.count==0
+      @familiars = 0
+    end
+    if @worker_center_of_studies.count==0
+      @center_of_studies = 0
+    end
+    if @worker_otherstudies.count==0
+      @otherstudies = 0
+    end
+    if @worker_experiences.count==0
+      puts "YES"
+      @experiencies = 0
+    end
+    puts @experiencies.inspect
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :portrait }
 
   end
