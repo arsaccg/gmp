@@ -479,6 +479,11 @@
                     %i.fa.fa-lg.fa-fw.fa-clipboard
                     %span.menu-item-parent
                       Consulta de Inventarios
+                %li
+                  %a{href: "#{logistics_report_stocks_path}", title: "Consulta de Stocks" }
+                    %i.fa.fa-lg.fa-fw.fa-clipboard
+                    %span.menu-item-parent
+                      Consulta de Stocks
           - if (current_user.has_role? :director) || (current_user.has_role? :execution)
             %li
               %a{href: '#', title: "Ejecución"}

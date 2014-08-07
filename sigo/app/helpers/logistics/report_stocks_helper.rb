@@ -1,0 +1,2 @@
+module Logistics::ReportStocksHelper
+end
