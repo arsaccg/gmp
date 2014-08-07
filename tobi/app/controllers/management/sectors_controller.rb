@@ -24,7 +24,7 @@ class Management::SectorsController < ApplicationController
 
   def set_sectors_by_cost_center
   	@cost_center = CostCenter.find(params[:project_id])
-  	@sector = @cost_center.sectors rescue []
+  	@sector = @cost_center.sectors.where("LENGTH(code) > 2") rescue []
     @budgets = @cost_center.budgets.where(type_of_budget: 0)
   	 
   	render 'set_sectors_by_cost_center', layout: false

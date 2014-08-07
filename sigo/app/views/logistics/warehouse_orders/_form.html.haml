@@ -1,0 +1,225 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-pencil-square-o.fa-fw 
+    %h2
+      %strong Orden de Suministro
+  %div{:style => "padding-top: 0"}
+    .jarviswidget-editbox
+    .widget-body 
+      = simple_form_for([:logistics, @warehouse_order], html: {class: 'form-horizontal', autocomplete: 'off' }) do |f|
+        .col-sm-12
+          %fieldset
+            %legend{:style => "border:none"}
+            .form-group.col-md-4
+              %label.col-md-3{for: "state"} Código
+              .col-md-9.smart-form
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true
+            .form-group.col-md-4
+              %label.col-md-3{for: "date_of_issue"} Fecha de emisión
+              .col-md-9.smart-form
+                = f.input :date, placeholder: "Fecha de emisión", as: :string ,:input_html => {:class => 'form-control', type: "date"}, label: false
+            .form-group.col-md-4
+              %label.col-md-3{for: "scheduled"} Grupo de Trabajo 
+              .col-md-9.smart-form
+              %select.form-control#workingGroup-select{:name =>"warehouse_order[working_group_id]"}
+                %option{:value => nil, :selected => true, :disabled => true} Seleccione un grupo de trabajo
+                - @working_groups.each do |ph|
+                  %option{:value => "#{ph.id}", :selected => "#{@warehouse_order.working_group_id}"=="#{ph.id}"}
+                    = ph.name
+
+        .col-sm-12
+          %fieldset
+            %legend Detalle de Orden de Suministro
+            .form-group
+              .col-lg-12
+                %label(for="article_id" class="col-lg-2 control-label") Insumos
+                .col-lg-6
+                  %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+
+                .col-lg-1
+                  =# text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
+                .col-lg-2 
+                  %div(class="col-lg-3")
+                    %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
+                      Agregar Insumo
+            .form-group
+              .col-lg-3
+              .col-lg-12
+                %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-articles" aria-describedby="data-table_info")
+                  %thead
+                    %tr
+                      %th Codigo
+                      %th Descripción
+                      %th Unidad
+                      %th Cantidad
+                      %th Sector
+                      %th Fases/Subfases
+                      %th Eliminar
+                  %tbody(id="article_items_table")
+                    - if @action != nil && @action == 'edit'
+                      - @deliveryOrder.delivery_order_details.each do |dod|
+                        %tr(class="order_delivery_item"){id: "tr" + dod.id.to_s}
+                          %td.article-id(style="display:none")
+                            = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][article_id]', dod.article_id.to_i
+                          %td.measurement-id(style="display:none")
+                            = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][unit_of_measurement_id]', dod.unit_of_measurement_id.to_i
+                          %td
+                            = dod.article.code
+                          %td
+                            = dod.article.name
+                          %td
+                            = dod.unit_of_measurement.symbol
+                          %td.col-md-1
+                            .col-md-9
+                              = text_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][amount]', dod.amount.to_i , class: "form-control quantity", id: 'article-amount'
+                          %td.precio
+                            %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][sector_id]"}
+                              - @sectors.each do |sect|
+                                - if sect.id == dod.sector.id
+                                  %option{:value => "#{sect.id}", :selected => true}
+                                    = sect.name
+                                - else
+                                  %option{:value => "#{sect.id}"}
+                                    = sect.name
+                          %td
+                            %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
+                              - @phases.each do |phas|
+                                - if phas.id == dod.phase_id
+                                  %option{:value => "#{phas.id}", :selected => true}
+                                    = phas.name
+                                - else
+                                  %option{:value => "#{phas.id}"}
+                                    = phas.name
+                          %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][id]', dod.id
+                          %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][delivery_order_id]', @deliveryOrder.id
+                          %td.delete-item
+                            %label.checkbox
+                              = check_box 'purchase_order', '[purchase_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][_destroy]'
+                              %i
+        .form-actions{:style => "margin-top: 0;"}
+          .row
+            .col-md-12
+              %button.btn.btn-primary{type: "submit"}
+                %i.fa.fa-save
+                  Guardar
+
+:javascript
+  
+  $(document).ready(function(){
+    $('#article-select').select2({
+      placeholder: "Buscar Insumos...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_articles_logistics_delivery_orders_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name + ' - ' + node.symbol + '</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol) },
+      escapeMarkup: function (m) { return m; }
+    });
+
+    $('#new_warehouse_order').ajaxForm({
+      beforeSubmit: function() {
+        $('#new_delivery_order').validate({
+          // Rules for form validation
+          rules : {
+            'warehouse_order[code]' : {
+              required : true
+            },
+            'warehouse_order[working_group_id]' : {
+              required : true,
+            },
+            'warehouse_order[date]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'warehouse_order[code]' : {
+              required : "Por favor ingresar un código correcto"
+            },
+            'warehouse_order[working_group_id]' : {
+              required : "Por favor ingresar un grupo de trabajadores"
+            },
+            'warehouse_order[date]' : {
+              required : "Por favor ingresar una fecha correcta"
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+
+        return $('#new_warehouse_order').valid();
+      },
+      target: '#content'
+    });
+
+    $('form[id^="edit_"]').ajaxForm({
+      beforeSubmit: function() {
+        $('form[id^="edit_"]').validate({
+          // Rules for form validation
+          rules : {
+            'warehouse_order[code]' : {
+              required : true
+            },
+            'warehouse_order[working_group_id]' : {
+              required : true,
+            },
+            'warehouse_order[date]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'warehouse_order[code]' : {
+              required : "Por favor ingresar un código correcto"
+            },
+            'warehouse_order[working_group_id]' : {
+              required : "Por favor ingresar un grupo de trabajadores"
+            },
+            'warehouse_order[date]' : {
+              required : "Por favor ingresar una fecha correcta"
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+
+        return $('form[id^="edit_"]').valid();
+      },
+      target: '#content'
+    });
+  });
+
+  function add_article_item(){
+
+    var article_id = $("#article-select").val();
+    str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val()};
+
+    append_url_ajax('#{add_order_item_logistics_warehouse_orders_path}', 'article_items_table', str_item, 0, 'POST');
+  }
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }

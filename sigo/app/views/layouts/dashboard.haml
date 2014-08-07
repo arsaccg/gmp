@@ -123,7 +123,7 @@
             %a{href: "#{inbox_task_main_path}", title: "Tareas"}
               %i.fa.fa-lg.fa-fw.fa-inbox
               Inbox
-              %span.badge.pull-right.inbox-badge= @total_pending
+              %span.badge.pull-right.inbox-badge#input_inbox= @total_pending
           - if current_user.has_role? :director
             %li
               %a{href: "#{management_dashboard_path}", title: "Dashboard de Gestión"}
@@ -470,10 +470,20 @@
                     %span.menu-item-parent
                       Salida de Almacén
                 %li
+                  %a{href: "#{logistics_warehouse_orders_path}", title: "Pedidos de Almacén" }
+                    %i.fa.fa-lg.fa-fw.fa-clipboard
+                    %span.menu-item-parent
+                      Pedidos a Almacén
+                %li
                   %a{href: "#{reports_inventories_path}", title: "Consulta de Inventarios" }
                     %i.fa.fa-lg.fa-fw.fa-clipboard
                     %span.menu-item-parent
                       Consulta de Inventarios
+                %li
+                  %a{href: "#{logistics_report_stocks_path}", title: "Consulta de Stocks" }
+                    %i.fa.fa-lg.fa-fw.fa-clipboard
+                    %span.menu-item-parent
+                      Consulta de Stocks
           - if (current_user.has_role? :director) || (current_user.has_role? :execution)
             %li
               %a{href: '#', title: "Ejecución"}

@@ -389,13 +389,26 @@
   }
 
   function add_details_entity(){
+    total=0
+    if(total==0){
+      total=+"#{@totalPercentage}";    
+    }
 
-    if($("#contractors").val() != 0 && $("#participation").val()>=0 && $("#participation").val()<=100){
+    $total_sumatoria = 0
+
+    $('#details_entities_table tr td.participations').each(function(){
+      $total_sumatoria = $total_sumatoria + parseFloat($(this).html());
+    });
+
+    total = total + $total_sumatoria
+
+    neto = 100 - total;
+    
+    if($("#contractors").val() != 0 && $("#participation").val()>=0 && $("#participation").val()<= neto){
       str_item = {authenticity_token: "#{form_authenticity_token}", entity_id: $("#contractors").val(), participation: $("#participation").val()};
       append_url_ajax('#{add_contractor_field_logistics_cost_center_details_path}', 'details_entities_table', str_item, 0, 'POST');
     }else{
-      $('#selectError').text('Escoja un consorcio y participación válidos');
-      
+      $('#selectError').text('Escoja un consorcio válido y participación en el rango');
     }
 
   }

@@ -1,14 +1,14 @@
 bounding_box [bounds.left, bounds.bottom + 780], :width  => bounds.width do
   table([ ["A&R S.A.C. Contratistas Generales"] ], :width => 100, :cell_style => {:height => 72}, :column_widths => [100]) do
+          style(row(0), :valign => :center)
           style(row(0), :align => :center)
-          style(column(0), :align => :center)
           style(columns(0), :size => 12)
           columns(0).font_style = :bold
         end
 end
 bounding_box [bounds.left + 100, bounds.bottom + 780], :width  => bounds.width do
   table([ ["FICHA DE PERSONAL"] ], :width => 320, :cell_style => {:height => 72}, :column_widths => [320]) do
-          style(row(0), :align => :center)
+          style(row(0), :valign => :center)
           style(column(0), :align => :center)
           style(columns(0), :size => 12)
           columns(0).font_style = :bold
@@ -169,15 +169,17 @@ start_new_page
 
 bounding_box [bounds.left, bounds.bottom + 780], :width  => bounds.width do
   table([ ["A&R S.A.C. Contratistas Generales"] ], :width => 100, :cell_style => {:height => 72}, :column_widths => [100]) do
-          style(columns(0), :align => :center)
-          style(columns(0), :size => 8)
+          style(row(0), :valign => :center)
+          style(row(0), :align => :center)
+          style(columns(0), :size => 12)
           columns(0).font_style = :bold
         end
 end
 bounding_box [bounds.left + 100, bounds.bottom + 780], :width  => bounds.width do
   table([ ["FICHA DE PERSONAL"] ], :width => 320, :cell_style => {:height => 72}, :column_widths => [320]) do
-          style(columns(0), :align => :center)
-          style(columns(0), :size => 8)
+          style(row(0), :valign => :center)
+          style(column(0), :align => :center)
+          style(columns(0), :size => 12)
           columns(0).font_style = :bold
         end
 end

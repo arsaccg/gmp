@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  article_id: 1
+  quantity: 1
+  sector_id: 1
+  phase_id: 1
+  warehouse_order_id: 1
+
+two:
+  article_id: 1
+  quantity: 1
+  sector_id: 1
+  phase_id: 1
+  warehouse_order_id: 1

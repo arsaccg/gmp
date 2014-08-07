@@ -14,6 +14,7 @@ class Article < ActiveRecord::Base
     has_many :theoretical_values
     
     has_many :inputbybudgetanditems
+    belongs_to :warehouse_order
   	belongs_to :category
   	belongs_to :type_of_article
   	belongs_to :unit_of_measurement

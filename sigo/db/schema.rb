@@ -503,6 +503,8 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "updated_at"
   end
 
+<<<<<<< HEAD
+=======
   create_table "errors", force: true do |t|
     t.string   "usable_type"
     t.integer  "usable_id"
@@ -517,6 +519,7 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "updated_at"
   end
 
+>>>>>>> 704c6c3dd964d1f47b6f70528a3a358fdf8ae42c
   create_table "exchange_of_rates", force: true do |t|
     t.datetime "day"
     t.integer  "money_id"
@@ -1936,7 +1939,10 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "typeofcontract"
     t.date     "end_date_2"
     t.integer  "contract_type_id"
+<<<<<<< HEAD
+=======
     t.string   "reason_for_termination"
+>>>>>>> 704c6c3dd964d1f47b6f70528a3a358fdf8ae42c
     t.float    "viatical"
     t.float    "bonus"
     t.integer  "status"
@@ -2080,10 +2086,13 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "maritalstatus"
     t.string   "typeofworker"
     t.integer  "numberofchilds"
+<<<<<<< HEAD
+=======
     t.string   "disabled"
     t.string   "unionized"
     t.string   "state"
     t.string   "income_fifth_category"
+>>>>>>> 704c6c3dd964d1f47b6f70528a3a358fdf8ae42c
     t.string   "afpnumber"
   end
 
