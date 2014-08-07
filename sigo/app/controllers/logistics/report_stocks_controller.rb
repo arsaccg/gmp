@@ -13,6 +13,7 @@ class Logistics::ReportStocksController < ApplicationController
     article = article.uniq
     article.each do |art|
       name = Article.find(art).name
+      code = Article.find(art).code
       sisum = StockInput.where("input = 1")
       sisum.each do |sis|
         sis.stock_input_details.each do |sisd|
@@ -32,7 +33,7 @@ class Logistics::ReportStocksController < ApplicationController
       result = sum - rest
       sum = 0
       rest = 0
-      @articleresult << [art,name,result]
+      @articleresult << [code,name,result]
     end
     #@articleresult = [article,name,result]
     render layout: false

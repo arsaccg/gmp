@@ -44,7 +44,7 @@ table([ ["LUGAR DE NACIMIENTO(CIUDAD-PROVINCIA-DEPARTAMENTO)", "EDAD","FECH.NAC.
         columns(1).font_style = :bold
         columns(2).font_style = :bold
       end
-table([ ["#{@worker.entity.city} #{@worker.entity.province} #{@worker.entity.department}", "","#{@worker.entity.date_of_birth}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [320,100,100]) do
+table([ ["#{@worker.entity.city} #{@worker.entity.province} #{@worker.entity.department}", "#{@edad}","#{@worker.entity.date_of_birth}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [320,100,100]) do
         style(columns(0..2), :align => :center)
         style(columns(0..2), :size => 8)
       end
@@ -67,7 +67,7 @@ table([ ["NOMBRE DE AFP", "CODIGO UNICO S.P.P", "TIPO DE CUENTA", "N° DE CUENTA
         columns(3).font_style = :bold
         columns(4).font_style = :bold
       end
-table([ ["", "#{@worker.afpnumber}", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [110,110,80,100,120]) do
+table([ ["#{@afp.afp.enterprise}", "#{@worker.afpnumber}", "", "#{@bank.account_number}", "#{@bank.bank.business_name}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [110,110,80,100,120]) do
         style(columns(0..4), :align => :center)
         style(columns(0..4), :size => 8)
       end
@@ -227,6 +227,31 @@ table([ ["", "", "", "", "", ""] ], :width => 520, :cell_style => {:height => 18
       end
 
 move_down 10
+
+table([ ["TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?"],["TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?"] ], :width => 160, :cell_style => {:height => 18}, :column_widths => [160]) do
+        style(columns(0), :align => :center)
+        style(columns(0), :size => 8)
+      end
+table([ ["Si","","No",""] ], :width => 100, :cell_style => {:height => 18}, :column_widths => [25,25,25,25]) do
+        style(columns(0..3), :align => :center)
+        style(columns(0..3), :size => 8)
+      end
+table([ ["Si","","No",""] ], :width => 100, :cell_style => {:height => 18}, :column_widths => [25,25,25,25]) do
+        style(columns(0..3), :align => :center)
+        style(columns(0..3), :size => 8)
+      end
+table([ ["TIENE CONOCIMIENTOS DE NORMAS DE SEGURIDAD?"],["TIENE CONOCIMIENTOS DE LA LEGISLACION LABORAL?"] ], :width => 160, :cell_style => {:height => 18}, :column_widths => [160]) do
+        style(columns(0), :align => :center)
+        style(columns(0), :size => 8)
+      end
+table([ ["Si","","No",""] ], :width => 100, :cell_style => {:height => 18}, :column_widths => [25,25,25,25]) do
+        style(columns(0..3), :align => :center)
+        style(columns(0..3), :size => 8)
+      end
+table([ ["Si","","No",""] ], :width => 100, :cell_style => {:height => 18}, :column_widths => [25,25,25,25]) do
+        style(columns(0..3), :align => :center)
+        style(columns(0..3), :size => 8)
+      end
 
 table([ ["TIENE CONOCIMIENTOS DE NORMAS DE CALIDAD?", "SI", "", "NO", "", "TIENE CONOCIMIENTOS DE NORMAS DE MEDIOAMBIENTE?", "SI", "", "NO", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [160,25,25,25,25,160,25,25,25,25]) do
         style(columns(0..9), :align => :center)

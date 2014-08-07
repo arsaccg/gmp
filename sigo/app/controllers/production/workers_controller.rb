@@ -317,9 +317,11 @@ class Production::WorkersController < ApplicationController
   def worker_pdf
     @company = Company.find(session[:company])
     @date = Time.now
-    puts @date.inspect
     @worker = Worker.find(params[:id])
+    @edad = @date.year - @worker.entity.date_of_birth.year
     @worker_afps = @worker.worker_afps
+    @afp = WorkerAfp.where("worker_id = ?",params[:id]).last
+    @bank = WorkerDetail.where("worker_id = ?",params[:id]).last
     @worker_center_of_studies = @worker.worker_center_of_studies
     @worker_details = @worker.worker_details
     @worker_experiences = @worker.worker_experiences

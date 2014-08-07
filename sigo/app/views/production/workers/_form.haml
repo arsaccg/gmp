@@ -1092,6 +1092,10 @@
     }
   });
 
+  $('input:submit').click(function(){
+    $('input:submit').attr("disabled", true); 
+  });
+
   $("input.radiobox").change(function() {
     if(($(this).prop('value') == "empleado") || ($(this).prop('value') == "obrero")){
       $("#row1").css("display", "");
@@ -1228,7 +1232,6 @@
         // Remove all Help-inLine
         $(".help-inline").remove();
         // Client Valid
-        $("#modalLoading").modal('show');
         return $(form['selector']).valid();
       },
       target: '#content',
