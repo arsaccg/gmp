@@ -69,10 +69,9 @@ class DocumentaryControl::FoldersController < ApplicationController
   end
 
   def destroy
-    fa_id = Folder.find(params[:id]).folderfa_id
     folder = Folder.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
-    render :json => {fa_id: fa_id}
+    render :json => folder
   end
 
   private

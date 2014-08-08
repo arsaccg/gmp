@@ -1,11 +1,13 @@
 class CreateMeasuredBySectors < ActiveRecord::Migration
   def change
-    create_table :measured_by_sectors do |t|
-      t.integer :item_id
-      t.integer :sector_id
-      t.float :measured
+    if !table_exists? :measured_by_sectors
+      create_table :measured_by_sectors do |t|
+        t.integer :item_id
+        t.integer :sector_id
+        t.float :measured
 
-      t.timestamps
+        t.timestamps
+      end
     end
   end
 end

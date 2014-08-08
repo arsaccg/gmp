@@ -29,7 +29,10 @@
         .row
           %section.col.col-md-12
             %label.label Documento
-            = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+            -if @action == nil
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file", required: true
+            -else
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
             %p.help-block
               - if @action == 'edit' && @book.document.exists?
                 = 'Archivo subido: ' + File.basename(@book.document.path, File.extname(@book.document.path))
@@ -37,7 +40,7 @@
                 Subir el archivo correspondiente
 
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -66,19 +69,25 @@
             },
             'book_work[document]' : {
               required : true
+            },
+            'book_work[type_of_book_work_id]' : {
+              required : true
             }
           },
 
           // Messages for form validation
           messages : {
-            'law_and_regulation[name]' : {
+            'book_work[name]' : {
               required : "Por favor, ingrese el nombre del documento"
             },
-            'law_and_regulation[description]' : {
+            'book_work[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
             },
-            'law_and_regulation[document]' : {
+            'book_work[document]' : {
               required : "Por favor, ingrese el documento"
+            },
+            'book_work[type_of_book_work_id]' : {
+              required : "Escoja un tipo"
             }
           },
 
@@ -95,8 +104,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();      
       }
     });
   }

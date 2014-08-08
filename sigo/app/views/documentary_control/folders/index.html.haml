@@ -22,12 +22,12 @@
     .col-sm-4
       -if @fa_id==0
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_folder_path}', 'content', {fa_id:null}, null, 'GET')"}
-          Agregar
+          Agregar Carpeta
       -else
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_photo_of_work_path}', 'content', {fa_id:#{@fa_id}}, null, 'GET')"}
           Agrega Foto          
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_folder_path}', 'content', {fa_id:#{@fa_id}}, null, 'GET')"}
-          Agregar
+          Agregar Carpeta
   %br
   .row
     #widget-grid 

@@ -53,8 +53,6 @@
                           %td
                             %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_issued_letter_path(lawre.id)}', 'content', null, null, 'GET')"}
                               Editar
-                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_issued_letter_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_issued_letters_path}')"}}
-                              Eliminar
             - else
               .tab-pane{:id => "tab-#{type_issu.id}"}
                 .col-md-8
@@ -87,8 +85,6 @@
                           %td
                             %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_issued_letter_path(lawre.id)}', 'content', null, null, 'GET')"}
                               Editar
-                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_issued_letter_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_issued_letters_path}')"}}
-                              Eliminar
 
 :javascript
   $(document).ready(function () {
