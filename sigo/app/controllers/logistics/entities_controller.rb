@@ -95,6 +95,10 @@ class Logistics::EntitiesController < ApplicationController
     subcontractequip.each do |del|
       delete +=1
     end
+    worker = Worker.where('entity_id = ?',params[:id])
+    worker.each do |del|
+      delete +=1
+    end
     stockinput = StockInput.where('supplier_id = ?',params[:id])
     stockinput.each do |del|
       delete +=1
