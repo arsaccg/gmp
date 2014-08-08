@@ -395,7 +395,11 @@
                 %li
                   %a{href: "#{documentary_control_photo_of_work_path("show")}", title: "Fotos de Obra"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                    Fotos de Obra    
+                    Fotos de Obra  
+                %li
+                  %a{href: "#{documentary_control_folders_path}", title: "Carpetas"}
+                    %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                    Carpetas
           - if (current_user.has_role? :director) || (current_user.has_role? :technical_library)
             %li
               %a{href: "#", title: "Biblioteca Técnica"}
@@ -735,7 +739,7 @@
               %i.fa.fa-user.fa-4x
               %span Mi Perfil
 
-    %a{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modalLoading"}
+    %a#dialog{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modalLoading"}
 
     #modalLoadingLabelading.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
       .modal-dialog

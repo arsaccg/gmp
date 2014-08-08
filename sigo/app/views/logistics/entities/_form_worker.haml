@@ -90,10 +90,10 @@
       %input{:name => 'button_id', :id => 'id_form_button', 'style' => 'display:none'}
 
       %footer
-        %button.btn.btn-primary#trabajadores{type: "submit"}
+        %button.btn.btn-primary#trabajadores{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar e Ir a Trabajadores
-        %button.btn.btn-primary#entidad{type: "submit"}
+        %button.btn.btn-primary#entidad{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -208,8 +208,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }

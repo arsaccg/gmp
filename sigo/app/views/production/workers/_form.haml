@@ -1042,11 +1042,11 @@
                   Subir el archivo correspondiente
       %footer
         -if @register=='yes'
-          %button.btn.btn-primary{type: "submit"}
+          %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
             %i.fa.fa-save 
             Registrar
         -else
-          %button.btn.btn-primary{type: "submit", :onclick => 'part_block();'}
+          %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
             %i.fa.fa-save 
             Guardar
 
@@ -1233,11 +1233,11 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
-        $('#modalLoadingLabelading').hide();
+        $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
-        $('#modalLoadingLabelading').hide();
+        $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
       }
     });
@@ -1297,11 +1297,4 @@
 
   function delete_item(code){
     $("#tr" + code).remove();
-  }
-
-  function part_block() {
-    $('#modalLoadingLabelading').modal({
-      keyboard: false,
-      backdrop: 'static'
-    });
   }

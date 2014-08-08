@@ -1,0 +1,2 @@
+module DocumentaryControl::FoldersHelper
+end

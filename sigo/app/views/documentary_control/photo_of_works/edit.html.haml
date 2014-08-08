@@ -16,5 +16,5 @@
 :javascript
 
   $('#backlist').click(function(){
-    load_url_ajax("#{documentary_control_photo_of_works_path}", 'content', null, null, 'GET');
+    load_url_ajax("#{documentary_control_folders_path}", 'content', {fa_id:"#{@fa_id}"}, null, 'GET');
   });
