@@ -30,7 +30,10 @@
         .row
           %section.col.col-md-12
             %label.label Documento
-            = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+            -if @action==nil
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file", required: true
+            -else
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
             %p.help-block
               - if @action == 'edit' && @recei.document.exists?
                 = 'Archivo subido: ' + File.basename(@recei.document.path, File.extname(@recei.document.path))
@@ -38,7 +41,7 @@
                 Subir el archivo correspondiente
 
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -65,7 +68,7 @@
             'received_letter[description]' : {
               required : true,
             },
-            'received_letter[type_of_received_letter_ids]':{
+            'received_letter[type_of_received_letter_id]':{
               required: true
             }
           },
@@ -78,7 +81,7 @@
             'received_letter[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
             },
-            'received_letter[type_of_received_letter_ids]':{
+            'received_letter[type_of_received_letter_id]':{
               required: "Seleccione un tipo"
             }
           },
@@ -96,8 +99,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();        
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();      
       }
     });
   }
