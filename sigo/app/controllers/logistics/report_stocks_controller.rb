@@ -3,42 +3,7 @@ class Logistics::ReportStocksController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   skip_before_filter  :verify_authenticity_token
   def index
-    article = Array.new
-    result = 0.0
-    name = ""
-    @articleresult = Array.new
-    sum = 0
-    rest = 0
-    stockinputdetail = StockInputDetail.all
-    stockinputdetail.each do |si|
-      article << si.article_id
-    end
-    article = article.uniq
-    article.each do |art|
-      name = Article.find(art).name
-      code = Article.find(art).code
-      sisum = StockInput.where("input = 1")
-      sisum.each do |sis|
-        sis.stock_input_details.each do |sisd|
-          if sisd.article_id == art
-            sum += sisd.amount
-          end
-        end
-      end
-      sires = StockInput.where("input = 0")
-      sires.each do |sir|
-        sir.stock_input_details.each do |sird|
-          if sird.article_id == art
-            rest += sird.amount
-          end
-        end
-      end
-      result = sum - rest
-      sum = 0
-      rest = 0
-      @articleresult << [code,name,result]
-    end
-    #@articleresult = [article,name,result]
+    @articleresult = get_report()
     render layout: false
   end
 
@@ -55,10 +20,35 @@ class Logistics::ReportStocksController < ApplicationController
   def excel_stock
     book = Spreadsheet::Workbook.new
     sheet1 = book.create_worksheet :name => 'Reporte de Stock'
+    @articleresult = get_report()
+    format = Spreadsheet::Format.new :weight => :bold, :size => 8, :align => :center
+    sheet1.row(0).default_format = format
+    sheet1.column(0).width = 13
+    sheet1.column(1).width = 35
+    sheet1.column(2).width = 11
+    sheet1.row(0).replace [ 'Código', 'Nombre', 'Cantidad' ]
+    @row = 1
+    @articleresult.each do |artr|
+      sheet1.row(@row).replace [ artr[0], artr[1], artr[2] ]
+      @row += 1
+    end
+    book.write '/home/giancarlo/Desktop/excelfile.xls'
+    redirect_to :action => :index, company_id: session[:company]
+  end
+
+  def report_stock_pdf
+    @date = Time.now
+    @costcenter = CostCenter.find(session[:cost_center]).name
+    @articleresult = get_report()
+    prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :portrait }
+
+  end
+
+  def get_report
     article = Array.new
     result = 0.0
     name = ""
-    @articleresult = Array.new
+    articleresult = Array.new
     sum = 0
     rest = 0
     stockinputdetail = StockInputDetail.all
@@ -88,20 +78,8 @@ class Logistics::ReportStocksController < ApplicationController
       result = sum - rest
       sum = 0
       rest = 0
-      @articleresult << [code,name,result]
+      articleresult << [code,name,result]
     end
-    format = Spreadsheet::Format.new :weight => :bold, :size => 8, :align => :center
-    sheet1.row(0).default_format = format
-    sheet1.column(0).width = 13
-    sheet1.column(1).width = 35
-    sheet1.column(2).width = 11
-    sheet1.row(0).replace [ 'Código', 'Nombre', 'Cantidad' ]
-    @row = 1
-    @articleresult.each do |artr|
-      sheet1.row(@row).replace [ artr[0], artr[1], artr[2] ]
-      @row += 1
-    end
-    book.write '/home/giancarlo/Desktop/excelfile.xls'
-    redirect_to :action => :index, company_id: session[:company]
+    return articleresult
   end
 end
