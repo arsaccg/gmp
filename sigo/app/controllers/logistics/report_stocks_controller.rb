@@ -51,15 +51,17 @@ class Logistics::ReportStocksController < ApplicationController
     articleresult = Array.new
     sum = 0
     rest = 0
-    stockinputdetail = StockInputDetail.all
-    stockinputdetail.each do |si|
-      article << si.article_id
+    stockinput = StockInput.where("cost_center_id = ?", session[:cost_center])
+    stockinput.each do |sis2|
+      sis2.stock_input_details.each do |sisd2|
+        article << sisd2.article_id
+      end
     end
     article = article.uniq
     article.each do |art|
       name = Article.find(art).name
       code = Article.find(art).code
-      sisum = StockInput.where("input = 1")
+      sisum = StockInput.where("input = 1 and cost_center_id = ?", session[:cost_center])
       sisum.each do |sis|
         sis.stock_input_details.each do |sisd|
           if sisd.article_id == art
