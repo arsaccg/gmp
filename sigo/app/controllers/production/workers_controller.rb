@@ -318,7 +318,11 @@ class Production::WorkersController < ApplicationController
     @company = Company.find(session[:company])
     @date = Time.now
     @worker = Worker.find(params[:id])
-    @edad = @date.year - @worker.entity.date_of_birth.year
+    if @worker.entity.date_of_birth!=nil
+      @edad = @date.year - @worker.entity.date_of_birth.year
+    else
+      @edad = 0
+    end
     @worker_afps = @worker.worker_afps
     @afp = WorkerAfp.where("worker_id = ?",params[:id]).last
     @bank = WorkerDetail.where("worker_id = ?",params[:id]).last
