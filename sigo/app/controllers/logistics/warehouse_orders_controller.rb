@@ -58,27 +58,84 @@ class Logistics::WarehouseOrdersController < ApplicationController
 
 
   def display_articles
+    word = params[:q]
+    @cost_center = get_company_cost_center('cost_center')
     article_hash = Array.new
-    articles = Article.all
-    articles.each do |art|
-      article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}
+    @ids=Array.new
+    @warehouses = Warehouse.where(cost_center_id: "#{@cost_center}")
+    @warehouses.each do |ware|
+      @inputs=StockInput.where(warehouse_id: "#{ware.id}")
+        @inputs.each do |stock|
+          @inputdetails=StockInputDetail.where(id: "#{stock.id}")
+           @inputdetails.each do |details|
+             @article=Article.find_by_id("#{details.article_id}")
+             @ids << @article.id
+            end
+        end
     end
+    @ids = @ids.uniq.join(',')
+    articles = Article.where('id IN ('+@ids+') AND name LIKE ("%'+word+'%") OR code LIKE ("%'+word+'%")')
+    articles.each do |art|
+      article_hash << {'id' => art.id.to_s, 'code' => art.code, 'name' => art.name, 'symbol' => art.unit_of_measurement.symbol}
+    end
+    puts "-------------------------------------------------------------"
+    article_hash.each do |art|
+      puts art
+    end
+    puts "-------------------------------------------------------------"
+    
     render json: {:articles => article_hash}
   end
 
   def add_order_item
+    article = Array.new
+    result = 0.0
+    name = ""
+    @articleresult = Array.new
+    sum = 0
+    rest = 0
+    stockinputdetail = StockInputDetail.all
+    stockinputdetail.each do |si|
+      article << si.article_id
+    end
+    article = article.uniq
+    article.each do |art|
+      name = Article.find(art).name
+      id = Article.find(art).id
+      sisum = StockInput.where("input = 1")
+      sisum.each do |sis|
+        sis.stock_input_details.each do |sisd|
+          if sisd.article_id == art
+            sum += sisd.amount
+          end
+        end
+      end
+      sires = StockInput.where("input = 0")
+      sires.each do |sir|
+        sir.stock_input_details.each do |sird|
+          if sird.article_id == art
+            rest += sird.amount
+          end
+        end
+      end
+      result = sum - rest
+      sum = 0
+      rest = 0
+      @articleresult << [id,result]
+    end
+    #@articleresult = [article,name,result]
+
     @reg_n = ((Time.now.to_f)*100).to_i
-    data_article_unit = params[:article_id].split('-')
-    @article = Article.find_article_in_specific(data_article_unit[0], get_company_cost_center('cost_center'))
+    data_article_unit = params[:article_id]
+    @article = Article.find(data_article_unit)
     @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
     @amount = params[:amount].to_f
     @quantity = params[:quantity].to_i
-    @article.each do |art|
-      @code_article, @name_article, @id_article = art[3], art[1], art[2]
-    end
-    @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
-    @unitOfMeasurementId = data_article_unit[1]
+    @stockamount = StockInputDetail.sum(:amount, :conditions => 'article_id ='+@article.id.to_s)
+    @code_article, @name_article, @id_article = @article.code, @article.name, @article.id
+    @unitOfMeasurement = UnitOfMeasurement.find(@article.unit_of_measurement_id).symbol
+    @unitOfMeasurementId = @article.unit_of_measurement_id
     render(partial: 'warehouse_order_items', :layout => false)
   end
 
