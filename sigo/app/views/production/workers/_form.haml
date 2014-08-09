@@ -258,6 +258,15 @@
                   %label.radio-inline
                     %input{:name =>'worker[disabled]', :type => 'radio', :value => "no", checked: ""}
                     %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[disabled]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[disabled]', :type => 'radio', :value => "no"}
+                    %span No
             -else
               .col-md-2
                 %label.radio-inline
@@ -286,6 +295,15 @@
                 .col-md-2
                   %label.radio-inline
                     %input{:name =>'worker[unionized]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[unionized]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[unionized]', :type => 'radio', :value => "no"}
                     %span No
             -else
               .col-md-2
@@ -322,6 +340,15 @@
                 .col-md-2
                   %label.radio-inline
                     %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+              -else
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si"}
+                    %span Si
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no"}
                     %span No
             -else
               %section.col-md-2
@@ -452,6 +479,48 @@
         %legend Regimen Pensionario
         %br
         .row
+          %section.col-md-4
+            %label.label Elija un Régimen Pensionario
+          %section.col-md-12
+            .col-md-1
+            -if @action == 'edit'
+              -if @worker.onpafp=="ONP"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "ONP", checked: ""}
+                    %span ONP
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "AFP"}
+                    %span AFP
+              -elsif @worker.onpafp=="AFP"
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "ONP"}
+                    %span ONP
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "AFP", checked: ""}
+                    %span AFP
+              -else
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "ONP"}
+                    %span ONP
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "AFP"}
+                    %span AFP
+            -else
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "ONP"}
+                  %span ONP
+              %section.col-md-2
+                %label.radio-inline
+                  %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "AFP"}
+                  %span AFP
+        .row#afp4{ 'style' => 'display:none' }
           %section.col.col-2
             %label.control-label(for="afp_id") AFP
 
@@ -467,7 +536,7 @@
               %option(value = "Comision por Flujo(sueldo)") Comision por Flujo(sueldo)
               %option(value = "Comision mixta (saldo y sueldo)") Comision mixta (saldo y sueldo)
 
-        .row
+        .row#afp2{ 'style' => 'display:none' }
           %section.col.col-3
             %label Fecha de Inicio
             %input#afp-startdate.string.optional.form-control{'name'=>'afpstartdate', type: "date"}
@@ -480,7 +549,7 @@
               %a(href="javascript:add_afp_item();" id="btn-add-afp" class="btn btn-success" role="button")
                 Agregar AFP
 
-        .col-lg-12
+        .col-lg-12#afp3{ 'style' => 'display:none' }
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
@@ -740,6 +809,15 @@
                   %label.radio-inline
                     %input{:name =>'worker[quality]', :type => 'radio', :value => "no", checked: ""}
                     %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "no"}
+                    %span No
             -else
               .col-md-2
                 %label.radio-inline
@@ -768,6 +846,15 @@
                 .col-md-2
                   %label.radio-inline
                     %input{:name =>'worker[security]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "no"}
                     %span No
             -else
               .col-md-2
@@ -806,6 +893,15 @@
                   %label.radio-inline
                     %input{:name =>'worker[enviroment]', :type => 'radio', :value => "no", checked: ""}
                     %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "no"}
+                    %span No
             -else
               .col-md-2
                 %label.radio-inline
@@ -834,6 +930,15 @@
                 .col-md-2
                   %label.radio-inline
                     %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no"}
                     %span No
             -else
               .col-md-2
@@ -1082,6 +1187,11 @@
     if('#{@worker.maritalstatus}'=='casado'){
       $("#partidamatrimonio").css("display", "");
     }
+    if('#{@worker.onpafp}'=='AFP'){
+      $("#afp4").css("display", "");
+      $("#afp2").css("display", "");
+      $("#afp3").css("display", "");
+    }
     if(('#{@worker.levelofinstruction}'=='especiali')||('#{@worker.levelofinstruction}'=='primariai')||('#{@worker.levelofinstruction}'=='secundariai')||('#{@worker.levelofinstruction}'=='tecnicai')||('#{@worker.levelofinstruction}'=='superiori')||('#{@worker.levelofinstruction}'=='universitariai')||('#{@worker.levelofinstruction}'=='maestriai')||('#{@worker.levelofinstruction}'=='doctoradoi')){
       $("#partidamatrimonio").css("display", "");
     }
@@ -1134,6 +1244,19 @@
       $("#categoria").css("display", "none");
     }
   });
+  $(".onpafp").change(function() {
+    if($(this).prop('value') == "AFP"){
+      $("#afp4").css("display", "");
+      $("#afp2").css("display", "");
+      $("#afp3").css("display", "");
+    }
+    else {
+      $("#afp4").css("display", "none");
+      $("#afp2").css("display", "none");
+      $("#afp3").css("display", "none");
+    }
+  });
+
   $("input[type=radio][name=numberofchilds2]").change(function() {
     if($(this).prop('value') == "si"){
       $("#numberofchildren").css("display", "");

@@ -1,0 +1,2 @@
+module DocumentaryControl::EnvironmentsHelper
+end
