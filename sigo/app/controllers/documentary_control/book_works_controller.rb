@@ -71,6 +71,6 @@ class DocumentaryControl::BookWorksController < ApplicationController
 
   private
   def book_parameters
-    params.require(:book_work).permit(:name, :description, :document, :type_of_book_work_id)
+    params.require(:book_work).permit(:name, :description, :document, :date, :type_of_book_work_id)
   end
 end
