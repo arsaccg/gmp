@@ -65,7 +65,7 @@ class DocumentaryControl::BookWorksController < ApplicationController
 
   def book_works
     word = params[:wordtosearch]
-    @book = BookWork.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%" AND cost_center_id = ?', get_company_cost_center('cost_center').to_s)
+    @book = BookWork.where('name LIKE "%'+word.to_s+'%" OR description LIKE "%'+word.to_s+'%" OR date LIKE "'+word.to_s+'" AND cost_center_id = ?', get_company_cost_center('cost_center').to_s)
     render layout: false
   end
 
