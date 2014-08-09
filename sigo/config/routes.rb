@@ -513,9 +513,8 @@ ArsacLogistica::Application.routes.draw do
     resources :folders
     resources :land_deliveries
     resources :type_of_land_deliveries
-
     resources :qa_qcs
-
+    resources :archeologies
     resources :environments
 
   end
