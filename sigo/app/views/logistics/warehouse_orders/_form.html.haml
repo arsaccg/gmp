@@ -73,7 +73,7 @@
                           %td
                             = dod.article.unit_of_measurement.symbol
                           %td
-                            = "stock"
+                            =StockInputDetail.sum(:amount, :conditions => 'article_id ='+dod.article.id.to_s).to_i
                           %td.col-md-1
                             = text_field_tag 'warehouse_order[warehouse_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][quantity]', dod.quantity.to_i , class: "form-control", id: 'article-amount'
                           %td.precio
@@ -118,7 +118,7 @@
       placeholder: "Buscar Insumos...",
       minimumInputLength: 3,
       ajax: {
-        url: "#{display_articles_logistics_delivery_orders_path}",
+        url: "#{display_articles_logistics_warehouse_orders_path}",
         dataType: 'json',
         type: 'POST',
         quietMillis: 100,
