@@ -66,7 +66,7 @@
                         - else
                           = "No tiene Unidad de Medida"
                       %td
-                        = "-stock-"
+                        =StockInputDetail.sum(:amount, :conditions => 'article_id ='+detail.article.id.to_s).to_i
                       %td
                         = detail.quantity
                       %td

@@ -66,6 +66,7 @@ ArsacLogistica::Application.routes.draw do
   namespace :logistics do
     resources :warehouse_orders do
       collection do
+        post 'display_articles'
         post 'add_order_item'
       end
     end
