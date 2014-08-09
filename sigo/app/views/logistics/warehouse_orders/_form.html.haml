@@ -133,8 +133,8 @@
           return {results: data.articles};
         }
       },
-      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name + ' - ' + node.symbol + '</div>' },
-      formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol) },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name + ' - ' + node.symbol + ' ( Stock: ' + node.stock + ' )' + '</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol + ' ( Stock: ' + node.stock + ' )') },
       escapeMarkup: function (m) { return m; }
     });
 

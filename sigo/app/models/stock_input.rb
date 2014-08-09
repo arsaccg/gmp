@@ -23,4 +23,25 @@ class StockInput < ActiveRecord::Base
     self.status = "A"
   end
 
+  def self.get_articles_in_stock
+    stock_net_array = Array.new
+    squal_inputs = "SELECT a.id, a.code, a.name, uom.name, SUM( sid.amount ) FROM stock_inputs si, stock_input_details sid, articles a, unit_of_measurements uom WHERE si.input = 1 AND sid.stock_input_id = si.id AND sid.article_id = a.id AND a.unit_of_measurement_id = uom.id GROUP BY sid.article_id"
+    squal_outputs = "SELECT a.id, a.code, SUM( sid.amount ) FROM stock_inputs si, stock_input_details sid, articles a WHERE si.input = 0 AND sid.stock_input_id = si.id AND sid.article_id = a.id GROUP BY sid.article_id"
+    ActiveRecord::Base.connection.execute(squal_inputs).each do |input|
+      ActiveRecord::Base.connection.execute(squal_outputs).each do |output|
+        if input[1] == output[1]
+          if input[4] > output[2]
+            net = input[4] - output[2]
+            stock_net_array << { 'id' => input[0].to_s + '-' + net.to_i.to_s, 'code' => input[1], 'name' => input[2], 'symbol' => input[3], 'stock' => net }
+          end
+        else
+          stock_net_array << { 'id' => input[0].to_s + '-' + input[4].to_i.to_s, 'code' => input[1], 'name' => input[2], 'symbol' => input[3], 'stock' => input[4] }
+        end
+      end
+    end
+
+    return stock_net_array 
+
+  end
+
 end
