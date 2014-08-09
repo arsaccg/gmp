@@ -80,6 +80,10 @@ ArsacLogistica::Application.routes.draw do
         post 'show_articles'
         post 'excel_stock'
       end
+      member do
+        post 'report_stock_pdf'
+        get 'report_stock_pdf'
+      end
     end
     resources :unit_of_measurements
     resources :persons do

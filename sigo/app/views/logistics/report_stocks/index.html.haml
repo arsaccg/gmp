@@ -4,9 +4,13 @@
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Reporte de Stock de Almacen
-    .col-xs-2.col-sm-7.col-md-7.col-lg-2
+  .row
+    .col-xs-4.col-sm-7.col-md-7.col-lg-2
       %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{excel_stock_logistics_report_stocks_path}', 'content', null, null, 'POST')"}
-        General Excel
+        Generar Excel
+    .col-xs-4.col-sm-7.col-md-7.col-lg-2
+      %a.btn.btn-primary.btn-mini{href: "logistics/report_stocks/1/report_stock_pdf.pdf", target: "_blank"}
+        Generar PDF
     .row
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:buttonoth"}
