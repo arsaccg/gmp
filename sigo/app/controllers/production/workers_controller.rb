@@ -324,7 +324,13 @@ class Production::WorkersController < ApplicationController
       @edad = 0
     end
     @worker_afps = @worker.worker_afps
+    @nombre = ""
     @afp = WorkerAfp.where("worker_id = ?",params[:id]).last
+    if @worker.onpafp == 'ONP' || @worker.onpafp.nil?
+      @nombre = "ONP"
+    else
+      @nombre = "Nombre de AFP"
+    end
     @bank = WorkerDetail.where("worker_id = ?",params[:id]).last
     @worker_center_of_studies = @worker.worker_center_of_studies
     @worker_details = @worker.worker_details

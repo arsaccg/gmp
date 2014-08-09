@@ -58,7 +58,7 @@ table([ ["#{@worker.entity.dni.to_s}", "#{@worker.entity.alienslicense.to_s}"] ]
         style(columns(0..2), :align => :center)
         style(columns(0..2), :size => 8)
       end
-table([ ["NOMBRE DE AFP", "CODIGO UNICO S.P.P", "TIPO DE CUENTA", "N° DE CUENTA", "BANCO"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [110,110,80,100,120]) do
+table([ ["#{@nombre.to_s}", "CODIGO UNICO S.P.P", "TIPO DE CUENTA", "N° DE CUENTA", "BANCO"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [110,110,80,100,120]) do
         style(columns(0..4), :align => :center)
         style(columns(0..4), :size => 8)
         columns(0).font_style = :bold
@@ -248,7 +248,7 @@ else
             style(columns(0), :size => 8)
             columns(0).font_style = :bold
           end
-    table([ ["CARGO", "SUELDO (S/.)", "JEFE INMEDIATO", "MOTIVO DE SALIDA", "DESDE", "HASTA"],["#{data.title.to_s}", "#{data.salary.to_s}", "#{data.bossincharge.to_s}", "#{data.exitreason.to_s", "#{data.start_date.to_s}", "#{data.end_date.to_s}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,80,140,100,60,60]) do
+    table([ ["CARGO", "SUELDO (S/.)", "JEFE INMEDIATO", "MOTIVO DE SALIDA", "DESDE", "HASTA"],["#{data.title.to_s}", "#{data.salary.to_s}", "#{data.bossincharge.to_s}", "#{data.exitreason.to_s}", "#{data.start_date.to_s}", "#{data.end_date.to_s}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,80,140,100,60,60]) do
             style(columns(0..5), :align => :center)
             style(columns(0..5), :size => 8)
             columns(0..5).font_style = :bold
