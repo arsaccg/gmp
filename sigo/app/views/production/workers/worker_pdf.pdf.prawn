@@ -243,12 +243,12 @@ if @experiencies == 0
         end
 else
   @worker_experiences.each do |data|
-    table([ ["NOMBRE DE LA EMPRESA"],[""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [520]) do
+    table([ ["NOMBRE DE LA EMPRESA"],["#{data.businessname.to_s}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [520]) do
             style(columns(0), :align => :center)
             style(columns(0), :size => 8)
             columns(0).font_style = :bold
           end
-    table([ ["CARGO", "SUELDO (S/.)", "JEFE INMEDIATO", "MOTIVO DE SALIDA", "DESDE", "HASTA"],["", "", "", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,80,140,100,60,60]) do
+    table([ ["CARGO", "SUELDO (S/.)", "JEFE INMEDIATO", "MOTIVO DE SALIDA", "DESDE", "HASTA"],["#{data.title.to_s}", "#{data.salary.to_s}", "#{data.bossincharge.to_s}", "#{data.exitreason.to_s", "#{data.start_date.to_s}", "#{data.end_date.to_s}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,80,140,100,60,60]) do
             style(columns(0..5), :align => :center)
             style(columns(0..5), :size => 8)
             columns(0..5).font_style = :bold
