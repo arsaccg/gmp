@@ -1,6 +1,59 @@
 %section#widget-grid
   / row
   .row
+    %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+      / new widget
+      #wid-id-3.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
+        %header
+          %span.widget-icon
+            %i.fa.fa-map-marker
+          %h2 Centro de Costo
+          .widget-toolbar.hidden-mobile
+            %span.onoffswitch-title
+              %i.fa.fa-location-arrow
+              Realtime
+            %span.onoffswitch
+              %input#myonoffswitch.onoffswitch-checkbox{checked: "checked", name: "onoffswitch", type: "checkbox"}/
+              %label.onoffswitch-label{for: "myonoffswitch"}
+                %span.onoffswitch-inner{"data-swchoff-text" => "NO", "data-swchon-text" => "YES"}
+                %span.onoffswitch-switch
+        / widget div
+        %div
+          / widget edit box
+          .jarviswidget-editbox
+            %div
+              %label Title:
+              %input{type: "text"}/
+          / end widget edit box
+          .widget-body.no-padding
+            / content goes here
+            / #vector-map.vector-map
+            #heat-fill
+              %span.fill-a 0
+              %span.fill-b 5,000
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th Compañia
+                  %th N° de Centro de Costo
+                  %th Centro de Costo
+                  %th Gastos Diversos de Gestion
+              %tbody
+                -if @cost_centers!=nil
+                  -@cost_centers.each do |cc|
+                    %tr
+                      %td= cc.company.name.to_s
+                      %td= cc.code.to_s
+                      %td= cc.name.to_s
+                      %td
+                        %span
+                          %a{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
+                            %i.fa.fa-folder-open
+                -else
+                  =""
+  /end cost center row
+  / row
+  .row
     %article.col-sm-12
       / new widget
       #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
@@ -223,55 +276,6 @@
           .widget-body.no-padding
             #map_canvas2.google_maps{:style => 'height: 500px;'}
 
-  / row
-  .row
-    %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
-      / new widget
-      #wid-id-3.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
-        %header
-          %span.widget-icon
-            %i.fa.fa-map-marker
-          %h2 Centro de Costo
-          .widget-toolbar.hidden-mobile
-            %span.onoffswitch-title
-              %i.fa.fa-location-arrow
-              Realtime
-            %span.onoffswitch
-              %input#myonoffswitch.onoffswitch-checkbox{checked: "checked", name: "onoffswitch", type: "checkbox"}/
-              %label.onoffswitch-label{for: "myonoffswitch"}
-                %span.onoffswitch-inner{"data-swchoff-text" => "NO", "data-swchon-text" => "YES"}
-                %span.onoffswitch-switch
-        / widget div
-        %div
-          / widget edit box
-          .jarviswidget-editbox
-            %div
-              %label Title:
-              %input{type: "text"}/
-          / end widget edit box
-          .widget-body.no-padding
-            / content goes here
-            / #vector-map.vector-map
-            #heat-fill
-              %span.fill-a 0
-              %span.fill-b 5,000
-            %table.table.table-striped.table-hover.table-condensed
-              %thead
-                %tr
-                  %th Compañia
-                  %th N° de Centro de Costo
-                  %th Centro de Costo
-                  %th Gastos Diversos de Gestion
-              %tbody
-                -@cost_center.each do |cc|
-                  %tr
-                    %td= cc.company.name.to_s
-                    %td= cc.code.to_s
-                    %td= cc.name.to_s
-                    %td
-                      %span
-                        %a{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
-                          %i.fa.fa-folder-open
 
             / end content
         / end widget div
