@@ -58,7 +58,7 @@ table([ ["#{@worker.entity.dni.to_s}", "#{@worker.entity.alienslicense.to_s}"] ]
         style(columns(0..2), :align => :center)
         style(columns(0..2), :size => 8)
       end
-table([ ["NOMBRE DE AFP", "CODIGO UNICO S.P.P", "TIPO DE CUENTA", "N° DE CUENTA", "BANCO"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [110,110,80,100,120]) do
+table([ ["#{@nombre.to_s}", "CODIGO UNICO S.P.P", "TIPO DE CUENTA", "N° DE CUENTA", "BANCO"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [110,110,80,100,120]) do
         style(columns(0..4), :align => :center)
         style(columns(0..4), :size => 8)
         columns(0).font_style = :bold
@@ -67,7 +67,7 @@ table([ ["NOMBRE DE AFP", "CODIGO UNICO S.P.P", "TIPO DE CUENTA", "N° DE CUENTA
         columns(3).font_style = :bold
         columns(4).font_style = :bold
       end
-table([ [if "#{@afp}"!="" then "#{@afp.afp.enterprise}" end, "#{@worker.afpnumber.to_s}", "", if "#{@bank}"!="" then "#{@bank.account_number}" end, if "#{@bank}"!="" then "#{@bank.bank.business_name}" end] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [110,110,80,100,120]) do
+table([ [if "#{@afp}"!="" then "#{@afp.afp.enterprise}" else "-" end, "#{@worker.afpnumber.to_s}", "", if "#{@bank}"!="" then "#{@bank.account_number}" end, if "#{@bank}"!="" then "#{@bank.bank.business_name}" end] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [110,110,80,100,120]) do
         style(columns(0..4), :align => :center)
         style(columns(0..4), :size => 8)
       end
@@ -243,12 +243,12 @@ if @experiencies == 0
         end
 else
   @worker_experiences.each do |data|
-    table([ ["NOMBRE DE LA EMPRESA"],[""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [520]) do
+    table([ ["NOMBRE DE LA EMPRESA"],["#{data.businessname.to_s}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [520]) do
             style(columns(0), :align => :center)
             style(columns(0), :size => 8)
             columns(0).font_style = :bold
           end
-    table([ ["CARGO", "SUELDO (S/.)", "JEFE INMEDIATO", "MOTIVO DE SALIDA", "DESDE", "HASTA"],["", "", "", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,80,140,100,60,60]) do
+    table([ ["CARGO", "SUELDO (S/.)", "JEFE INMEDIATO", "MOTIVO DE SALIDA", "DESDE", "HASTA"],["#{data.title.to_s}", "#{data.salary.to_s}", "#{data.bossincharge.to_s}", "#{data.exitreason.to_s}", "#{data.start_date.to_s}", "#{data.end_date.to_s}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,80,140,100,60,60]) do
             style(columns(0..5), :align => :center)
             style(columns(0..5), :size => 8)
             columns(0..5).font_style = :bold
