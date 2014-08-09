@@ -1,4 +1,5 @@
 ArsacLogistica::Application.routes.draw do
+
   devise_for :users, :controllers => {:registrations => "users/registrations"}, :path_names => { 
     :sign_up => 'arsac_register'
   }
@@ -515,8 +516,8 @@ ArsacLogistica::Application.routes.draw do
     resources :type_of_land_deliveries
     resources :qa_qcs
     resources :archeologies
+    resources :securities
     resources :environments
-
   end
 
   namespace :administration do
