@@ -8,6 +8,9 @@
       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afptype]', @afptype.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
   %td.col-2
     %div
+      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afpnumber]', @afpnumber.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+  %td.col-2
+    %div
       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][start_date]', @start_date , class: "form-control quantity", :required => true
   %td.col-2
     %div

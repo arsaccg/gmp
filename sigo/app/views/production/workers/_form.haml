@@ -216,13 +216,6 @@
                   %option{:value => "casado"} Casado
                   %option{:value => "divorciado"} Divorciado
                   %option{:value => "viudo"} Viudo
-          %section.col.col-4
-            %label.label CUSPP
-            %label.input{for: "afpnumber"}
-              %i.icon-append.fa.fa-credit-card
-              = f.input :afpnumber, placeholder: "CUSPP", input_html: { class: 'form-control' }, label: false
-            %label Obtener CUSPP accediendo a
-            %a{:target =>'_blank', :href => 'http://www.sbs.gob.pe/app/spp/Reporte_sit_prev/afil_existe.asp'}>web de la SBS
         .row#row7{ 'style' => 'display:none' }
           %section.col.col-12
             %label.label JORNADA LABORAL
@@ -482,79 +475,65 @@
           %section.col-md-4
             %label.label Elija un Régimen Pensionario
           %section.col-md-12
-            .col-md-1
-            -if @action == 'edit'
-              -if @worker.onpafp=="ONP"
-                .col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "ONP", checked: ""}
-                    %span ONP
-                .col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "AFP"}
-                    %span AFP
-              -elsif @worker.onpafp=="AFP"
-                .col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "ONP"}
-                    %span ONP
-                .col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "AFP", checked: ""}
-                    %span AFP
-              -else
-                %section.col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "ONP"}
-                    %span ONP
-                %section.col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "AFP"}
-                    %span AFP
-            -else
-              %section.col-md-2
+            .row
+              .col-md-1
+              %section.col-md-7
                 %label.radio-inline
-                  %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "ONP"}
-                  %span ONP
-              %section.col-md-2
+                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "Estoy"}
+                  %span Estoy afiliado al Sistema Privado de Pensiones
+            .row
+              .col-md-1
+              %section.col-md-7
                 %label.radio-inline
-                  %input{:name =>'worker[onpafp]', :class =>'onpafp', :type => 'radio', :value => "AFP"}
-                  %span AFP
+                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "Deseo"}
+                  %span Deseo afiliarme al Sistema Privado de Pensiones
+            .row
+              .col-md-1
+              %section.col-md-7
+                %label.radio-inline
+                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "No"}
+                  %span No estoy afiliado a ninguna AFP y deseo inscribirme o permanecer en el Sistema Nacional de Pensiones
         .row#afp4{ 'style' => 'display:none' }
-          %section.col.col-2
-            %label.control-label(for="afp_id") AFP
+          %section.col.col-1
+            %br
+            %label.control-label(for="afp_id") Regimen Pensionario
 
-          %section.col.col-3
-            %select#afp-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
-              - @afp.each do |afp|
-                %option(value = "#{afp.id}")
-                  = afp.enterprise
+          %section.col.col-3#afplista{ 'style' => 'display:none' }
+            %label.label Lista de AFPs
+            %select#afp-select.select2.form-control(style='width:100%;padding: 0;border: none;')
 
-          %section.col.col-3
-            %select#afptype-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
-              %option(value = "") Tipo de comisión
-              %option(value = "Comision por Flujo(sueldo)") Comision por Flujo(sueldo)
-              %option(value = "Comision mixta (saldo y sueldo)") Comision mixta (saldo y sueldo)
+          %section.col.col-3#afpcuspp{ 'style' => 'display:none' }
+            %label.label CUSPP
+            = text_field_tag 'afpnumber', nil, class: 'form-control', id: 'afp-afpnumber', placeholder: 'Numero de Cuenta'
+            %label Obtener CUSPP accediendo a
+            %a{:target =>'_blank', :href => 'http://www.sbs.gob.pe/app/spp/Reporte_sit_prev/afil_existe.asp'}>web de la SBS
 
-        .row#afp2{ 'style' => 'display:none' }
-          %section.col.col-3
-            %label Fecha de Inicio
+          %section.col.col-3#afpfechaafi{ 'style' => 'display:none' }
+            %label Fecha de Afiliación
             %input#afp-startdate.string.optional.form-control{'name'=>'afpstartdate', type: "date"}
-          %section.col.col-3
-            %label Fecha de Fin
-            %input#afp-enddate.string.optional.form-control{'name'=>'afpenddate', type: "date"}
           %br
           %section.col.col-2
             %div
               %a(href="javascript:add_afp_item();" id="btn-add-afp" class="btn btn-success" role="button")
                 Agregar AFP
 
-        .col-lg-12#afp3{ 'style' => 'display:none' }
+        .row#afp2{ 'style' => 'display:none' }
+          %section.col.col-3
+            %select#afptype-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
+              %option(value = "") Tipo de comisión
+              %option(value = "Comision por Flujo(sueldo)") Comision por Flujo(sueldo)
+              %option(value = "Comision mixta (saldo y sueldo)") Comision mixta (saldo y sueldo)
+          %section.col.col-3
+            %label Fecha de Fin
+            %input#afp-enddate.string.optional.form-control{'name'=>'afpenddate', type: "date"}
+
+        .col-lg-12
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
                 %th.col-2 Nombre
                 %th.col-2 Tipo de AFP
+                %th.col-2 CUSPP
                 %th.col-2 Fecha de Inicio
                 %th.col-2 Fecha de Fin
                 %th Eliminar
@@ -568,6 +547,8 @@
                     %td.col-2=oos.afp.enterprise
                     %td.col-2.afptype
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afptype]', oos.afptype, class: "form-control afptype-item"
+                    %td.col-2.cuspp
+                      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afpnumber]', oos.afpnumber, class: "form-control afpnumber-item"
                     %td.col-2.start_date
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][start_date]', oos.start_date, class: "form-control start_date-item"
                     %td.col-2.end_date
@@ -1187,11 +1168,6 @@
     if('#{@worker.maritalstatus}'=='casado'){
       $("#partidamatrimonio").css("display", "");
     }
-    if('#{@worker.onpafp}'=='AFP'){
-      $("#afp4").css("display", "");
-      $("#afp2").css("display", "");
-      $("#afp3").css("display", "");
-    }
     if(('#{@worker.levelofinstruction}'=='especiali')||('#{@worker.levelofinstruction}'=='primariai')||('#{@worker.levelofinstruction}'=='secundariai')||('#{@worker.levelofinstruction}'=='tecnicai')||('#{@worker.levelofinstruction}'=='superiori')||('#{@worker.levelofinstruction}'=='universitariai')||('#{@worker.levelofinstruction}'=='maestriai')||('#{@worker.levelofinstruction}'=='doctoradoi')){
       $("#partidamatrimonio").css("display", "");
     }
@@ -1244,16 +1220,63 @@
       $("#categoria").css("display", "none");
     }
   });
-  $(".onpafp").change(function() {
-    if($(this).prop('value') == "AFP"){
+  $("input[type=radio][name=regimenpensionario]").change(function() {
+    if($(this).prop('value') == "Estoy"){
+
+      $.ajax({
+        type: "POST",
+        url: "#{display_afps_production_workers_path}",
+        async: false,
+        data: { type_of_afp: "SPP", authenticity_token: "#{form_authenticity_token}"}
+      }).done(function( data ) {
+        $('#afp-select').empty();
+        $('#afp-select').append( data.hash )
+      });
+
       $("#afp4").css("display", "");
-      $("#afp2").css("display", "");
-      $("#afp3").css("display", "");
+      $("#afpcuspp").css("display", "");
+      $("#afpfechaafi").css("display", "");
+      $("#afplista").css("display", "");
     }
-    else {
+    else if($(this).prop('value') == "Deseo"){
+
+      $.ajax({
+        type: "POST",
+        url: "#{display_afps_production_workers_path}",
+        async: false,
+        data: { type_of_afp: "SPP", authenticity_token: "#{form_authenticity_token}"}
+      }).done(function( data ) {
+        $('#afp-select').empty();
+        $('#afp-select').append( data.hash )
+      });
+
+      $("#afp4").css("display", "");
+      $("#afpcuspp").css("display", "none");
+      $("#afpfechaafi").css("display", "none");
+      $("#afplista").css("display", "");
+    }
+    else if($(this).prop('value') == "No"){
+
+      $.ajax({
+        type: "POST",
+        url: "#{display_afps_production_workers_path}",
+        async: false,
+        data: { type_of_afp: "SNP", authenticity_token: "#{form_authenticity_token}"}
+      }).done(function( data ) {
+        $('#afp-select').empty();
+        $('#afp-select').append( data.hash )
+      });
+
+      $("#afp4").css("display", "");
+      $("#afpcuspp").css("display", "none");
+      $("#afpfechaafi").css("display", "none");
+      $("#afplista").css("display", "");
+    }
+    else{
       $("#afp4").css("display", "none");
-      $("#afp2").css("display", "none");
-      $("#afp3").css("display", "none");
+      $("#afpcuspp").css("display", "none");
+      $("#afpfechaafi").css("display", "none");
+      $("#afplista").css("display", "none");
     }
   });
 
@@ -1385,7 +1408,7 @@
   }
 
   function add_afp_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", afp_id: $("#afp-select").val(), afpnumber: $("#afp-afpnumber").val(), afptype: $("#afptype-select").val(), start_date: $("#afp-startdate").val(), end_date: $("#afp-enddate").val()};
+    str_item = {authenticity_token: "#{form_authenticity_token}", afp_id: $("#afp-select").val(), afpnumber: $("#afp-afpnumber").val(), afptype: $("#afptype-select").val(), start_date: $("#afp-startdate").val(), end_date: $("#afp-enddate").val(), afpnumber: $("#afp-afpnumber").val()};
 
     append_url_ajax('#{add_afp_item_field_production_workers_path}', 'afp_items_table', str_item, 0, 'POST');
   }
