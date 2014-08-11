@@ -69,6 +69,9 @@ ArsacLogistica::Application.routes.draw do
         post 'display_articles'
         post 'add_order_item'
       end
+      member do
+        get 'change_state'
+      end
     end
     resources :cost_center_details do
       collection do
@@ -516,6 +519,7 @@ ArsacLogistica::Application.routes.draw do
     resources :land_deliveries
     resources :type_of_land_deliveries
     resources :qa_qcs
+    resources :type_of_qa_qcs
     resources :archeologies
     resources :securities
     resources :environments

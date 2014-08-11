@@ -18,6 +18,8 @@ class Logistics::WarehouseOrdersController < ApplicationController
 
   def create
     warehouse_order = WarehouseOrder.new(warehouse_order_params)
+    warehouse_order.state
+    warehouse_order.user_id = current_user.id    
     if warehouse_order.save
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index, :controller => "warehouse_orders"
@@ -92,8 +94,26 @@ class Logistics::WarehouseOrdersController < ApplicationController
     render layout: false
   end
 
-  private
+  def change_state
+    @warehouse_order = WarehouseOrder.find(params[:id])
+    if @warehouse_order.state == "issued"
+      @next = 'approved'
+      puts "----------------------------------------------------------------------------------"
+      puts @next
+      puts "----------------------------------------------------------------------------------"
+      puts "----------------------------------------------------------------------------------"
+      @warehouse_order.update_attributes(:state => 'approved')
+      puts "----------------------------------------------------------------------------------"
+    end
+    stateOrderDetail = StatePerWarehouseOrder.new
+    stateOrderDetail.state = @next
+    stateOrderDetail.warehouse_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save    
+    redirect_to :action => :index
+  end
 
+  private
   def warehouse_order_params
     params.require(:warehouse_order).permit(:code,:working_group_id,:date,:cost_center_id, warehouse_order_details_attributes:[:id, :article_id,:quantity,:sector_id,:phase_id,:warehouse_order_id, :_destroy])
   end
