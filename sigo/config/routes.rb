@@ -69,6 +69,9 @@ ArsacLogistica::Application.routes.draw do
         post 'display_articles'
         post 'add_order_item'
       end
+      member do
+        get 'change_state'
+      end
     end
     resources :cost_center_details do
       collection do
