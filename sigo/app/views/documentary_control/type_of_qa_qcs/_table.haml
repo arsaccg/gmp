@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Tipo de Modificatorias
+    %h2 Lista de Tipo de QA-QC
   / widget div
   %div
     / widget edit box
@@ -37,15 +37,15 @@
                 %th Prefijo
                 %th Acciones
             %tbody
-              - @typeOfMo.each do |type|
+              - @typeOfQq.each do |type|
                 %tr
                   %td= type.id
                   %td= type.name
                   %td= type.preffix
                   %td
-                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_type_of_modification_file_path(type.id)}', 'content', null, null, 'GET')"}
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_type_of_qa_qc_path(type.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{type.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_type_of_modification_file_path(type.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_type_of_modification_files_path}')"}}
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{type.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_type_of_qa_qc_path(type.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_type_of_qa_qcs_path}')"}}
                       Eliminar
 
 :javascript

@@ -519,6 +519,7 @@ ArsacLogistica::Application.routes.draw do
     resources :land_deliveries
     resources :type_of_land_deliveries
     resources :qa_qcs
+    resources :type_of_qa_qcs
     resources :archeologies
     resources :securities
     resources :environments
