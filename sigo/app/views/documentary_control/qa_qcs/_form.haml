@@ -2,9 +2,9 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Arqueología
+    %h2 Qa/qc
   .widget-body
-    = simple_form_for([:documentary_control, @arq], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:documentary_control, @qac], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-md-8
@@ -27,8 +27,8 @@
             -else
               = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
             %p.help-block
-              - if @action == 'edit' && @arq.document.exists?
-                = 'Archivo subido: ' + File.basename(@arq.document.path, File.extname(@arq.document.path))
+              - if @action == 'edit' && @qac.document.exists?
+                = 'Archivo subido: ' + File.basename(@qac.document.path, File.extname(@qac.document.path))
               - else
                 Subir el archivo correspondiente
 
@@ -42,7 +42,7 @@
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
-      submit_validate($('#new_archeology'));
+      submit_validate($('#new_qa_qc'));
     }
 
   });
@@ -53,20 +53,20 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'archeology[name]' : {
+            'qa_qc[name]' : {
               required : true
             },
-            'archeology[description]' : {
+            'qa_qc[description]' : {
               required : true,
             }
           },
 
           // Messages for form validation
           messages : {
-            'archeology[name]' : {
+            'qa_qc[name]' : {
               required : "Por favor, ingrese el nombre del documento"
             },
-            'archeology[description]' : {
+            'qa_qc[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
             }
           },
