@@ -532,10 +532,10 @@
             %thead
               %tr
                 %th.col-2 Nombre
-                %th.col-2 Tipo de AFP
+                %th.col-2{ 'style' => 'display:none' } Tipo de AFP
                 %th.col-2 CUSPP
                 %th.col-2 Fecha de Inicio
-                %th.col-2 Fecha de Fin
+                %th.col-2{ 'style' => 'display:none' } Fecha de Fin
                 %th Eliminar
             %tbody(id="afp_items_table")
               - if @action == 'edit'
@@ -545,13 +545,13 @@
                     %td.bank-id(style="display:none")
                       = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afp_id]', oos.afp.id
                     %td.col-2=oos.afp.enterprise
-                    %td.col-2.afptype
+                    %td.col-2.afptype{ 'style' => 'display:none' }
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afptype]', oos.afptype, class: "form-control afptype-item"
                     %td.col-2.cuspp
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afpnumber]', oos.afpnumber, class: "form-control afpnumber-item"
                     %td.col-2.start_date
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][start_date]', oos.start_date, class: "form-control start_date-item"
-                    %td.col-2.end_date
+                    %td.col-2.end_date{ 'style' => 'display:none' }
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][end_date]', oos.end_date, class: "form-control end_date-item"
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][id]', oos.id
