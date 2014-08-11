@@ -41,6 +41,8 @@
                             = lawre.description.to_s
                           %td= lawre.date
                           %td
+                            =lawre.date
+                          %td
                             - if lawre.document.exists?
                               %a.btn.btn-info.btn-xs{:href =>"#{lawre.document.url}", :target => "_blank"}
                                 %i.fa.fa-clipboard
@@ -70,6 +72,8 @@
                           %td
                             = lawre.description.to_s
                           %td= lawre.date
+                          %td
+                            =lawre.date
                           %td
                             - if lawre.document.exists?
                               %a.btn.btn-info.btn-xs{:href =>"#{lawre.document.url}", :target => "_blank"}
