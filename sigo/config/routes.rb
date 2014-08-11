@@ -304,6 +304,7 @@ ArsacLogistica::Application.routes.draw do
         post 'show_workers_empleados'
         post 'part_worker'
         post 'part_contract'
+        post 'display_afps'        
       end
       member do
         get 'register'

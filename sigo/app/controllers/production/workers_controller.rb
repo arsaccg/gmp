@@ -92,6 +92,16 @@ class Production::WorkersController < ApplicationController
     end
   end
 
+  def display_afps
+    @hash = Array.new
+    @hash = "<option value=''>Seleccione</option>"
+    afp = Afp.where("type_of_afp = ?", params[:type_of_afp])
+    afp.each do |afp|
+      @hash = @hash + "<option value="+afp.id.to_s+">"+afp.enterprise.to_s+"</option>"
+    end
+    render :json => { 'hash' => @hash }
+  end
+
   def create
     worker = Worker.new(worker_parameters)
     worker.state
@@ -152,6 +162,7 @@ class Production::WorkersController < ApplicationController
   def add_afp_item_field
     @reg_n = ((Time.now.to_f)*100).to_i
     @afp = Afp.find(params[:afp_id])
+    @afpnumber = params[:afpnumber]
     @start_date = params[:start_date]
     @end_date = params[:end_date]
     @enterprise, @id_afp = @afp.enterprise, @afp.id
@@ -362,7 +373,7 @@ class Production::WorkersController < ApplicationController
 
   private
   def worker_parameters
-    params.require(:worker).permit(:email, {:type_workday_ids => []}, :afpnumber, :onpafp, :driverlicense, :income_fifth_category, :unionized, :disabled, :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_afps_attributes: [:id, :worker_id, :afp_id, :afptype, :start_date, :end_date, :_destroy], worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :start_date, :end_date, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :title, :salary, :bossincharge, :exitreason, :_destroy])
+    params.require(:worker).permit(:email, {:type_workday_ids => []}, :onpafp, :driverlicense, :income_fifth_category, :unionized, :disabled, :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_afps_attributes: [:id, :worker_id, :afp_id, :afpnumber, :afptype, :start_date, :end_date, :_destroy], worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :start_date, :end_date, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :title, :salary, :bossincharge, :exitreason, :_destroy])
   end
 
   def worker_contract_file_param
