@@ -1128,11 +1128,11 @@
                   Subir el archivo correspondiente
       %footer
         -if @register=='yes'
-          %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
+          %button.btn.btn-primary{type: "submit"}
             %i.fa.fa-save 
             Registrar
         -else
-          %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
+          %button.btn.btn-primary{type: "submit"}
             %i.fa.fa-save 
             Guardar
 
@@ -1376,6 +1376,10 @@
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
         // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        
         return $(form['selector']).valid();
       },
       target: '#content',
