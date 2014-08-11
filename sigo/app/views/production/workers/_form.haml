@@ -139,7 +139,7 @@
             %label.input{for: "dni"}
               = text_field_tag 'worker[dni]', @entity.dni, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
           %section.col.col-4
-            %label.label Carnet de Extranjeria
+            %label.label Nacionalidad
             %label.input{for: "alienslicense"}
               = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Carnet de Extranjeria', disabled: "disabled", style: "background-color: gainsboro;"
         %label.label Lugar de Nacimiento
@@ -1070,7 +1070,7 @@
         .row
           %section.col.col-md-12
             .col-md-5
-              %label.label Declaración Jurada
+              %label.label Declaración Jurada de Renta de 5ta
             .col-md-7
               = f.input :affidavit, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block
