@@ -67,7 +67,7 @@ table([ ["#{@nombre.to_s}", "CODIGO UNICO S.P.P", "TIPO DE CUENTA", "N° DE CUEN
         columns(3).font_style = :bold
         columns(4).font_style = :bold
       end
-table([ [if "#{@afp}"!="" then "#{@afp.afp.enterprise}" else "-" end, "#{@worker.afpnumber.to_s}", "", if "#{@bank}"!="" then "#{@bank.account_number}" end, if "#{@bank}"!="" then "#{@bank.bank.business_name}" end] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [110,110,80,100,120]) do
+table([ [if "#{@afp}"!="" then "#{@afp.afp.enterprise}" else "-" end, "#{@afp.afpnumber.to_s}", "", if "#{@bank}"!="" then "#{@bank.account_number}" end, if "#{@bank}"!="" then "#{@bank.bank.business_name}" end] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [110,110,80,100,120]) do
         style(columns(0..4), :align => :center)
         style(columns(0..4), :size => 8)
       end
