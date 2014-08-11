@@ -30,7 +30,7 @@ class StockInput < ActiveRecord::Base
     ActiveRecord::Base.connection.execute(squal_inputs).each do |input|
       ActiveRecord::Base.connection.execute(squal_outputs).each do |output|
         if input[1] == output[1]
-          if input[3] > output[1]
+          if input[4] > output[2]
             net = input[4] - output[2]
             stock_net_array << { 'id' => input[0].to_s + '-' + net.to_i.to_s, 'code' => input[1], 'name' => input[2], 'symbol' => input[3], 'stock' => net }
           end

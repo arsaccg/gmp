@@ -72,6 +72,6 @@ class DocumentaryControl::ValorizationDocsController < ApplicationController
 
   private
   def val_parameters
-    params.require(:valorizarion_doc).permit(:name, :description, :document, :type_of_valorization_doc_id)
+    params.require(:valorization_doc).permit(:name, :description, :document, :type_of_valorization_doc_id)
   end
 end

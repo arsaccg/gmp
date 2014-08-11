@@ -998,16 +998,7 @@
             .section.col.col-md-3
               .form-group
               -if @action == 'edit'
-                -if @worker.numberofchilds!=""
-                  .col-md-3
-                    %label.radio-inline
-                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "si", checked: ""}
-                      %span Si
-                  .col-md-1
-                    %label.radio-inline
-                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "no"}
-                      %span No
-                -elsif @worker.numberofchilds==""
+                -if @worker.numberofchilds.nil?
                   .col-md-3
                     %label.radio-inline
                       %input{:name =>'numberofchilds2', :type => 'radio', :value => "si"}
@@ -1015,6 +1006,15 @@
                   .col-md-1
                     %label.radio-inline
                       %input{:name =>'numberofchilds2', :type => 'radio', :value => "no", checked: ""}
+                      %span No
+                -else
+                  .col-md-3
+                    %label.radio-inline
+                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "si", checked: ""}
+                      %span Si
+                  .col-md-1
+                    %label.radio-inline
+                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "no"}
                       %span No
               -else
                 .col-md-3
