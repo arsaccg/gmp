@@ -29,6 +29,7 @@
                       %tr
                         %th Nombres
                         %th Descripción
+                        %th Fecha
                         %th Documentos
                         %th Acciones
                     %tbody
@@ -38,6 +39,8 @@
                             = lawre.name.to_s
                           %td
                             = lawre.description.to_s
+                          %td
+                            =lawre.date
                           %td
                             - if lawre.document.exists?
                               %a.btn.btn-info.btn-xs{:href =>"#{lawre.document.url}", :target => "_blank"}
@@ -57,6 +60,7 @@
                       %tr
                         %th Nombres
                         %th Descripción
+                        %th Fecha
                         %th Documentos
                         %th Acciones
                     %tbody
@@ -66,6 +70,8 @@
                             = lawre.name.to_s
                           %td
                             = lawre.description.to_s
+                          %td
+                            =lawre.date
                           %td
                             - if lawre.document.exists?
                               %a.btn.btn-info.btn-xs{:href =>"#{lawre.document.url}", :target => "_blank"}

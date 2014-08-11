@@ -207,9 +207,11 @@
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
         // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        
         return $(form['selector']).valid();
-        $('#modalLoadingLabelading').modal('hide');
-        $('.modal-backdrop.fade.in').remove();
       },
       target: '#content',
       success: function (data){
