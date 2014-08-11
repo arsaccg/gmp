@@ -23,6 +23,9 @@
           Agregar Informe de Obra
       .col-md-3
         = text_field_tag 'wordtosearch', nil, class: 'form-control', id: 'wordtosearch', placeholder: 'Escriba aqui su búsqueda'
+        %br
+        %label El formato de para buscar por fecha es:
+        %label 'YYYY-MM-DD'
       .col-md-3
         %button.btn.btn-primary.btn-default#show-table{href: 'javascript:void(0);', :onclick => 'search();'}
           %i.fa.fa-search
