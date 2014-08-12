@@ -34,11 +34,11 @@
 :javascript
   $("#smart-mod-eg2").click(function(e) {
     $.SmartMessageBox({
-      title : "Validación de DNI",
-      content : "Por favor ingrese el DNI",
+      title : "Validación de DNI / Carnel de Extranjería",
+      content : "Por favor ingrese el DNI / Carnel de Extranjería",
       buttons : "[Cancelar][Validar]",
       input : "text",
-      placeholder : "Ingrese aqui el DNI"
+      placeholder : "Ingrese aqui el DNI / Carnel de Extranjería"
     }, function(ButtonPress, Value) {
       if(ButtonPress=='Validar'){
         load_url_ajax('#{new_production_worker_path}', 'content', {company_id: '#{@company}',dni: Value}, null, 'GET');

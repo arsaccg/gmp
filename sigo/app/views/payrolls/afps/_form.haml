@@ -7,6 +7,41 @@
     = simple_form_for([:payrolls, @afp], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
+          .section.col.col-md-2
+            %label.control-label Tipo de AFP
+          .section.col.col-md-8
+            .form-group
+              .col-md-12
+                -if @action == 'edit'
+                  -if @afp.type_of_afp=="SPP"
+                    %label.radio-inline
+                      %input.radiobox{:name =>'afp[type_of_afp]', :type => 'radio', :value => "SPP", checked: ""}
+                      %span SPP
+                    %label.radio-inline
+                      %input.radiobox{:name =>'afp[type_of_afp]', :type => 'radio', :value => "SNP"}
+                      %span SNP
+                  -elsif @afp.type_of_afp=="SNP"
+                    %label.radio-inline
+                      %input.radiobox{:name =>'afp[type_of_afp]', :type => 'radio', :value => "SPP"}
+                      %span SPP
+                    %label.radio-inline
+                      %input.radiobox{:name =>'afp[type_of_afp]', :type => 'radio', :value => "SNP", checked: ""}
+                      %span SNP
+                  -else
+                    %label.radio-inline
+                      %input.radiobox{:name =>'afp[type_of_afp]', :type => 'radio', :value => "SPP"}
+                      %span SPP
+                    %label.radio-inline
+                      %input.radiobox{:name =>'afp[type_of_afp]', :type => 'radio', :value => "SNP"}
+                      %span SNP
+                -else
+                  %label.radio-inline
+                    %input.radiobox{:name =>'afp[type_of_afp]', :type => 'radio', :value => "SPP"}
+                    %span SPP
+                  %label.radio-inline
+                    %input.radiobox{:name =>'afp[type_of_afp]', :type => 'radio', :value => "SNP"}
+                    %span SNP
+        .row
           %section.col.col-8
             %label.label Nombre de la Compañia
             %label.input

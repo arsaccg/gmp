@@ -2,7 +2,7 @@ class DocumentaryControl::QaQcsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @qac = QaQc.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
+    @type_qq = TypeOfQaQc.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     render layout: false
   end
 
@@ -12,6 +12,7 @@ class DocumentaryControl::QaQcsController < ApplicationController
   end
 
   def new
+    @type_qq = TypeOfQaQc.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @cost_center = get_company_cost_center('cost_center')
     @qac = QaQc.new
     render layout: false
@@ -34,6 +35,7 @@ class DocumentaryControl::QaQcsController < ApplicationController
   end
 
   def edit
+    @type_qq = TypeOfQaQc.where("cost_center_id = ?", get_company_cost_center('cost_center').to_s)
     @qac = QaQc.find(params[:id])
     @cost_center = get_company_cost_center('cost_center')
     @action = 'edit'
@@ -70,6 +72,6 @@ class DocumentaryControl::QaQcsController < ApplicationController
 
   private
   def qac_parameters
-    params.require(:qa_qc).permit(:name, :description, :document)
+    params.require(:qa_qc).permit(:name, :description, :document, :type_of_qa_qc_id)
   end
 end

@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   has_many :state_per_order_purchases
   has_many :order_of_services
   has_many :state_per_order_of_services
+  has_many :warehouse_orders
+  has_many :state_per_warehouse_order
 
   # Access
   has_and_belongs_to_many :cost_centers
