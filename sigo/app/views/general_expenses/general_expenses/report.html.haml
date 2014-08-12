@@ -36,7 +36,7 @@
           -@phases.each do |ph|
             -ge = GeneralExpense.where("cost_center_id = #{@cc} AND code_phase = "+ph[0].to_s)
             %tr
-              %th{"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}= ph[0].to_s
+              %th{"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}= ph[0].to_s+ "00"
               %th{'colspan' => 8,"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}= Phase.find_by_code(ph[0].to_s).name
               %th{"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}=number_to_currency(ph[1], unit: 'S/. ', precision: 2)
             -ge.each do |ge|
