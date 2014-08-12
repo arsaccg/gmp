@@ -48,9 +48,15 @@ class Logistics::WarehouseOrdersController < ApplicationController
   end
 
   def edit
-    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    @ids=Array.new
     @reg_n=((Time.now.to_f)*100).to_i
     @warehouse_order = WarehouseOrder.find(params[:id])
+    @warehouse_order.warehouse_order_details.each do |dod|
+      @ids << dod.article_id
+    end
+    @ids=@ids.join(",")
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+
     @sectors = Sector.all
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @action = 'edit'
@@ -61,8 +67,12 @@ class Logistics::WarehouseOrdersController < ApplicationController
 
   def display_articles
     word = params[:q]
+    ids= params[:par]
     @cost_center = get_company_cost_center('cost_center')
+    puts "---------"
     article_hash = StockInput.get_articles_in_stock()
+    puts article_hash.inspect
+    puts "---------"
     render json: {:articles => article_hash}
   end
 
@@ -72,6 +82,7 @@ class Logistics::WarehouseOrdersController < ApplicationController
     data_article_unit = data_params[0]
     @stockamount = data_params[1]
     @article = Article.find(data_article_unit)
+    @order_quantity = WarehouseOrderDetail.sum(:quantity, :conditions => {:article_id => @article.id})
     @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
     @amount = params[:amount].to_f
