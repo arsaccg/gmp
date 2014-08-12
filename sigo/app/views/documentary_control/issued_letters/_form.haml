@@ -13,7 +13,7 @@
             %br
             .input-group
               %select.col-sm-6.form-control#type{:name =>"issued_letter[type_of_doc]"}
-                %option{:value => "0"} Seleccione un tipo
+                %option{:value => nil} Seleccione un tipo
                 %option{:value => "Carta", :selected => @issu.type_of_doc == "Carta"} Carta
                 %option{:value => "Solicitud", :selected => @issu.type_of_doc == "Solicitud"} Solicitud
                 %option{:value => "Memorando", :selected => @issu.type_of_doc == "Memorando"} Memorando

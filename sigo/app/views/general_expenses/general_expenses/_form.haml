@@ -15,7 +15,7 @@
                 %label.col-lg-2.control-label Fase
                 .col-lg-6
                   %select#phase.select2.form-control{:name => "general_expense[phase_id]"}
-                    %option{:value => "0"} Seleccione una fase
+                    %option{:value => nil} Seleccione una fase
                     - @phase.each do |ph|
                       %option{:value => "#{ph.id}", :selected => "#{@gexp.phase_id}"=="#{ph.id}"}
                         = ph.code+ " -  "+ph.name
