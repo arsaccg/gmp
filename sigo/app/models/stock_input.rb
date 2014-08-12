@@ -44,28 +44,30 @@ class StockInput < ActiveRecord::Base
 
   end
 
-  def self.get_dynamic_articles(ids)
-    stock_net_array = Array.new
-    squal_inputs = "SELECT a.id, a.code, a.name, uom.name, SUM( sid.amount ) FROM stock_inputs si, stock_input_details sid, articles a, unit_of_measurements uom WHERE si.input = 1 AND sid.stock_input_id = si.id AND sid.article_id = a.id AND a.unit_of_measurement_id = uom.id AND a.id NOT IN (#{ids}) GROUP BY sid.article_id"
-    puts "----input-----"
-    squal_outputs = "SELECT a.id, a.code, SUM( sid.amount ) FROM stock_inputs si, stock_input_details sid, articles a WHERE si.input = 0 AND sid.stock_input_id = si.id AND sid.article_id = a.id AND a.id NOT IN (#{ids}) GROUP BY sid.article_id"
-    puts "-----output----"
-    ActiveRecord::Base.connection.execute(squal_inputs).each do |input|
-          puts "-----input each----"
-      ActiveRecord::Base.connection.execute(squal_outputs).each do |output|
-            puts "---output each------"
-        if input[1] == output[1]
-          if input[4] > output[2]
-            net = input[4] - output[2]
-            stock_net_array << { 'id' => input[0].to_s + '-' + net.to_i.to_s, 'code' => input[1], 'name' => input[2], 'symbol' => input[3], 'stock' => net }
-          end
-        else
-          stock_net_array << { 'id' => input[0].to_s + '-' + input[4].to_i.to_s, 'code' => input[1], 'name' => input[2], 'symbol' => input[3], 'stock' => input[4] }
+  def self.get_stock(article)
+    net=""
+    squal_inputs = "SELECT a.id, a.code, a.name, uom.name, SUM( sid.amount ) FROM stock_inputs si, stock_input_details sid, articles a, unit_of_measurements uom WHERE si.input = 1 AND sid.stock_input_id = si.id AND sid.article_id = a.id AND a.unit_of_measurement_id = uom.id AND a.id =#{article} GROUP BY sid.article_id"
+    squal_outputs = "SELECT a.id, a.code, SUM( sid.amount ) FROM stock_inputs si, stock_input_details sid, articles a WHERE si.input = 0 AND sid.stock_input_id = si.id AND sid.article_id = a.id AND a.id =#{article} GROUP BY sid.article_id"
+              puts "--------entra a---------"
+      ActiveRecord::Base.connection.execute(squal_inputs).each do |input|
+              puts "--------entra b---------"  
+              net = input[4]     
+        ActiveRecord::Base.connection.execute(squal_outputs).each do |output|
+              puts "--------entra---------"
+            if input[4] > output[2]
+              puts "-------if----------"
+              puts input[4]
+              puts output[2]
+              puts "-----valores------------"
+              net = net - output[2]
+            end
+
+
         end
       end
-    end
 
-    return stock_net_array 
+
+    return net
 
   end
 

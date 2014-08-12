@@ -66,11 +66,11 @@
                         - else
                           = "No tiene Unidad de Medida"
                       %td
-                        =StockInputDetail.sum(:amount, :conditions => 'article_id ='+detail.article.id.to_s).to_i
+                        =StockInput.get_stock(detail.article.id).to_i
                       %td
                         = detail.quantity.to_s+" unidades"
                         %br
-                        %code= "En stock: #{StockInputDetail.sum(:amount, :conditions => 'article_id ='+detail.article.id.to_s).to_i}"
+                        %code= "En stock: #{StockInput.get_stock(detail.article.id).to_i}"
                         %code= "Pedidos: #{WarehouseOrderDetail.sum(:quantity, :conditions => {:article_id => detail.article.id})}"
                       %td
                         - if detail.sector !=nil
