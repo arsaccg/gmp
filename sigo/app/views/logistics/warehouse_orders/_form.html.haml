@@ -76,6 +76,8 @@
                             =StockInputDetail.sum(:amount, :conditions => 'article_id ='+dod.article.id.to_s).to_i
                           %td.col-md-1
                             = text_field_tag 'warehouse_order[warehouse_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][quantity]', dod.quantity.to_i , class: "form-control", id: 'article-amount'
+                            %code= "En stock: #{StockInputDetail.sum(:amount, :conditions => 'article_id ='+dod.article.id.to_s).to_i}"
+                            %code= "Pedidos: #{+ WarehouseOrderDetail.sum(:quantity, :conditions => {:article_id => dod.article.id}) - dod.quantity.to_i}"
                           %td.precio
                             %select.form-control{:name =>"warehouse_order[warehouse_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][sector_id]"}
                               - @sectors.each do |sect|
@@ -112,9 +114,11 @@
                   Guardar
 
 :javascript
-  
+
   $(document).ready(function(){
+
     $('#article-select').select2({
+
       placeholder: "Buscar Insumos...",
       minimumInputLength: 3,
       ajax: {
@@ -137,6 +141,8 @@
       formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol + ' ( Stock: ' + node.stock + ' )') },
       escapeMarkup: function (m) { return m; }
     });
+
+
 
     $('#new_warehouse_order').ajaxForm({
       beforeSubmit: function() {
@@ -240,8 +246,25 @@
 
     var article_id = $("#article-select").val();
     str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val()};
-
-    append_url_ajax('#{add_order_item_logistics_warehouse_orders_path}', 'article_items_table', str_item, 0, 'POST');
+    var art_id=article_id.split('-');
+    var cont=0;
+    $('#article_items_table tr td.article-id').each(function(){
+      if(art_id[0]==$(this).children().val()){
+        cont=1;
+      }
+    });
+    if(cont!=1){
+      append_url_ajax('#{add_order_item_logistics_warehouse_orders_path}', 'article_items_table', str_item, 0, 'POST');
+    }
+    else{
+      $.smallBox({
+        title : "Aviso",
+        content : "<i class='fa fa-clock-o'></i> <i>No puede ingresar el mismo artículo más de una vez.</i>",
+        color : "#C46A69",
+        iconSmall : "fa fa-times fa-2x fadeInRight animated",
+        timeout : 4000
+      });
+    }
   }
 
   function delete_item(code){
