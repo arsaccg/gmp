@@ -68,16 +68,16 @@
                       = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
                     %td.col-md-1.smart-form#people
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][people]', ged.people.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal1e(this);'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][people]', ged.people.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal1e(this);', onkeypress: "return isNumber(event);"
                     %td.col-md-1.smart-form#participation
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][participation]', ged.participation.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal2e(this);'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][participation]', ged.participation.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal2e(this);', onkeypress: "return isNumber(event);"
                     %td.col-md-1.smart-form#time
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal3e(this);'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal3e(this);', onkeypress: "return isNumber(event);"
                     %td.col-md-1.smart-form#salary
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal4e(this);'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialPersonal4e(this);', onkeypress: "return isNumber(event);"
                     %td.col-md-1.smart-form#parcial
                       %div
                         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
@@ -120,13 +120,13 @@
                       = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
                     %td.col-md-1.smart-form#amount
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES1e(this);' 
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES1e(this);' , onkeypress: "return isNumber(event);"
                     %td.col-md-1.smart-form#time
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' , :onchange => 'getParcialES2e(this);'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][time]', ged.time.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio' , :onchange => 'getParcialES2e(this);', onkeypress: "return isNumber(event);"
                     %td.col-md-1.smart-form#cost
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES3e(this);'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialES3e(this);', onkeypress: "return isNumber(event);"
                     %td.col-md-1.smart-form#parcial
                       %div
                         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
@@ -168,10 +168,10 @@
                       = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
                     %td.col-md-1.smart-form#amount
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialMS1e(this);'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialMS1e(this);', onkeypress: "return isNumber(event);"
                     %td.col-md-1.smart-form#cost
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialMS2e(this);' 
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :onchange => 'getParcialMS2e(this);' , onkeypress: "return isNumber(event);"
                     %td.col-md-1.smart-form#parcial
                       %div
                         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
@@ -213,10 +213,10 @@
                       = Article.find(ged.article_id.to_s).unit_of_measurement.symbol.to_s
                     %td.col-md-1.smart-form#amount
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio',:onchange => 'getParcialMS1e(this);'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][amount]', ged.amount.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio',:onchange => 'getParcialMS1e(this);', onkeypress: "return isNumber(event);"
                     %td.col-md-1.smart-form#cost
                       %div
-                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio',:onchange => 'getParcialMS2e(this);'
+                        = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][cost]', ged.cost.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio',:onchange => 'getParcialMS2e(this);', onkeypress: "return isNumber(event);"
                     %td.col-md-1.smart-form#parcial
                       %div
                         = text_field_tag 'general_expense[general_expense_details_attributes][' + @reg_n.to_s + '][parcial]', ged.parcial.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', :readonly => true
@@ -534,4 +534,13 @@
     }else{
       $(element).parent().parent().siblings('#parcial').children().children().val('');
     }
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
   }
