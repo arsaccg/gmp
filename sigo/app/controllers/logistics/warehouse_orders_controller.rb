@@ -18,6 +18,8 @@ class Logistics::WarehouseOrdersController < ApplicationController
 
   def create
     warehouse_order = WarehouseOrder.new(warehouse_order_params)
+    warehouse_order.state
+    warehouse_order.user_id = current_user.id    
     if warehouse_order.save
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index, :controller => "warehouse_orders"
@@ -46,9 +48,15 @@ class Logistics::WarehouseOrdersController < ApplicationController
   end
 
   def edit
-    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    @ids=Array.new
     @reg_n=((Time.now.to_f)*100).to_i
     @warehouse_order = WarehouseOrder.find(params[:id])
+    @warehouse_order.warehouse_order_details.each do |dod|
+      @ids << dod.article_id
+    end
+    @ids=@ids.join(",")
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+
     @sectors = Sector.all
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @action = 'edit'
@@ -59,8 +67,12 @@ class Logistics::WarehouseOrdersController < ApplicationController
 
   def display_articles
     word = params[:q]
+    ids= params[:par]
     @cost_center = get_company_cost_center('cost_center')
+    puts "---------"
     article_hash = StockInput.get_articles_in_stock()
+    puts article_hash.inspect
+    puts "---------"
     render json: {:articles => article_hash}
   end
 
@@ -70,6 +82,7 @@ class Logistics::WarehouseOrdersController < ApplicationController
     data_article_unit = data_params[0]
     @stockamount = data_params[1]
     @article = Article.find(data_article_unit)
+    @order_quantity = WarehouseOrderDetail.sum(:quantity, :conditions => {:article_id => @article.id})
     @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
     @amount = params[:amount].to_f
@@ -92,8 +105,26 @@ class Logistics::WarehouseOrdersController < ApplicationController
     render layout: false
   end
 
-  private
+  def change_state
+    @warehouse_order = WarehouseOrder.find(params[:id])
+    if @warehouse_order.state == "issued"
+      @next = 'approved'
+      puts "----------------------------------------------------------------------------------"
+      puts @next
+      puts "----------------------------------------------------------------------------------"
+      puts "----------------------------------------------------------------------------------"
+      @warehouse_order.update_attributes(:state => 'approved')
+      puts "----------------------------------------------------------------------------------"
+    end
+    stateOrderDetail = StatePerWarehouseOrder.new
+    stateOrderDetail.state = @next
+    stateOrderDetail.warehouse_order_id = params[:id]
+    stateOrderDetail.user_id = current_user.id
+    stateOrderDetail.save    
+    redirect_to :action => :index
+  end
 
+  private
   def warehouse_order_params
     params.require(:warehouse_order).permit(:code,:working_group_id,:date,:cost_center_id, warehouse_order_details_attributes:[:id, :article_id,:quantity,:sector_id,:phase_id,:warehouse_order_id, :_destroy])
   end

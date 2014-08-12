@@ -68,7 +68,10 @@
                       %td
                         =StockInputDetail.sum(:amount, :conditions => 'article_id ='+detail.article.id.to_s).to_i
                       %td
-                        = detail.quantity
+                        = detail.quantity.to_s+" unidades"
+                        %br
+                        %code= "En stock: #{StockInputDetail.sum(:amount, :conditions => 'article_id ='+detail.article.id.to_s).to_i}"
+                        %code= "Pedidos: #{WarehouseOrderDetail.sum(:quantity, :conditions => {:article_id => detail.article.id})}"
                       %td
                         - if detail.sector !=nil
                           = detail.sector.name
