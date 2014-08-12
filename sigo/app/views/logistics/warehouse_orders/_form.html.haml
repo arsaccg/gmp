@@ -73,10 +73,10 @@
                           %td
                             = dod.article.unit_of_measurement.symbol
                           %td
-                            =StockInputDetail.sum(:amount, :conditions => 'article_id ='+dod.article.id.to_s).to_i
+                            =StockInput.get_stock(dod.article.id).to_i
                           %td.col-md-1
                             = text_field_tag 'warehouse_order[warehouse_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][quantity]', dod.quantity.to_i , class: "form-control", id: 'article-amount'
-                            %code= "En stock: #{StockInputDetail.sum(:amount, :conditions => 'article_id ='+dod.article.id.to_s).to_i}"
+                            %code= "En stock: #{StockInput.get_stock(dod.article.id).to_i}"
                             %code= "Pedidos: #{+ WarehouseOrderDetail.sum(:quantity, :conditions => {:article_id => dod.article.id}) - dod.quantity.to_i}"
                           %td.precio
                             %select.form-control{:name =>"warehouse_order[warehouse_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][sector_id]"}
