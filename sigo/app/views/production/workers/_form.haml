@@ -210,12 +210,14 @@
                   %option{:value => "casado", :selected => "#{@worker.maritalstatus}"=="casado"} Casado
                   %option{:value => "divorciado", :selected => "#{@worker.maritalstatus}"=="divorciado"} Divorciado
                   %option{:value => "viudo", :selected => "#{@worker.maritalstatus}"=="viudo"} Viudo
+                  %option{:value => "conviviente", :selected => "#{@worker.maritalstatus}"=="conviviente"} Conviviente
                 -else
                   %option{:value => "0", :selected => 'selected'} Seleccione un estado
                   %option{:value => "soltero"} Soltero
                   %option{:value => "casado"} Casado
                   %option{:value => "divorciado"} Divorciado
                   %option{:value => "viudo"} Viudo
+                  %option{:value => "conviviente"} Conviviente
         .row#row7{ 'style' => 'display:none' }
           %section.col.col-12
             %label.label JORNADA LABORAL
@@ -1082,7 +1084,7 @@
         .row#partidamatrimonio{ 'style' => 'display:none' }
           %section.col.col-md-12
             .col-md-5
-              %label.label Certificado de Convivencia / Partida de Matrimonio
+              %label.label Certificado de Convivencia de Matrimonio/ Partida de Matrimonio
             .col-md-7
               = f.input :marriage_certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block.col-md-

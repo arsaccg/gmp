@@ -347,10 +347,10 @@ class Production::WorkersController < ApplicationController
     @bank = WorkerDetail.where("worker_id = ?",params[:id]).last
     @worker_center_of_studies = @worker.worker_center_of_studies
     @worker_details = @worker.worker_details
-    @worker_experiences = @worker.worker_experiences
-    @worker_familiars = @worker.worker_familiars
+    @worker_experiences = @worker.worker_experiences.limit(3).order('end_date DESC')
+    @worker_familiars = @worker.worker_familiars.limit(5)
     @worker_healths = @worker.worker_healths
-    @worker_otherstudies = @worker.worker_otherstudies
+    @worker_otherstudies = @worker.worker_otherstudies.limit(3)
     @familiars = 1
     @center_of_studies = 1
     @otherstudies = 1
@@ -365,10 +365,9 @@ class Production::WorkersController < ApplicationController
       @otherstudies = 0
     end
     if @worker_experiences.count==0
-      puts "YES"
       @experiencies = 0
     end
-    puts @experiencies.inspect
+    @workercontract = WorkerContract.where("worker_id = ?",params[:id]).last
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :portrait }
 
   end

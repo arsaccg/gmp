@@ -798,6 +798,33 @@
                 %tr{"style"=>"height:10px;"}
 
               %table{"style"=>"margin-left:30px;margin-right:30px;height:auto;"}
+                %tr
+                  %td{"style"=>"font-size:100%;"}
+                    %strong Distrito:
+                  %td
+                    -if !@cost_center.district.nil?
+                      =@cost_center.district
+                    -else
+                      ="No Ingresado"
+
+                  %td{"style"=>"font-size:100%;"}
+                    %strong Provincia:
+                  %td
+                    -if !@cost_center.province.nil?
+                      =@cost_center.province
+                    -else
+                      ="No Ingresado"
+
+                %tr{"style"=>"height:10px;"}
+                %tr
+                  %td{"style"=>"font-size:100%;"}
+                    %strong Departamento:
+                  %td
+                    -if !@cost_center.department.nil?
+                      =@cost_center.department
+                    -else
+                      ="No Ingresado"
+                %tr{"style"=>"height:15px;"}
 
                 %tr
                   %td{"style"=>"font-size:100%;"}
@@ -807,7 +834,7 @@
                       =Entity.find_by_id(@cost_center_detail.entity_id).name
                     -else
                       =""
-                %tr{"style"=>"height:10px;"}
+                %tr{"style"=>"height:15px;"}
                 %tr
                   %td{"style"=>"font-size:100%;"}
                     %strong Nombre del Contratista:
