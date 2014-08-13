@@ -163,7 +163,7 @@ class Logistics::CostCentersController < ApplicationController
 
 
   def cost_center_parameters
-    params.require(:cost_center).permit(:code, :name, :company_id)
+    params.require(:cost_center).permit(:code, :name, :company_id,:district,:province,:department)
   end
 
   def cost_center_parameters_timeline
