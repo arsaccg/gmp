@@ -118,7 +118,7 @@
           %section.col.col-8
             %label.label Entidad Trabajador
             %label.input{for: "entity_id"}
-              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ', ' + @entity.name.to_s + ' ' + @entity.second_name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;"
+              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ', ' + @entity.name.to_s + ' ' + @entity.second_name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
           %section.col.col-4#categoria{ 'style' => 'display:none' }
             %label.label Categoría del Obrero
             %label.input{for: "category_of_worker_id"}
@@ -141,27 +141,27 @@
           %section.col.col-4
             %label.label Nacionalidad
             %label.input{for: "alienslicense"}
-              = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Nacionalidad', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;"
+              = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Nacionalidad', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
         %label.label Lugar de Nacimiento
         .row
           %section.col.col-4
             %label.label Ciudad
             %label.input{for: "city"}
-              = text_field_tag 'worker[city]', @entity.city, class: 'form-control', placeholder: 'Ciudad', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;"
+              = text_field_tag 'worker[city]', @entity.city, class: 'form-control', placeholder: 'Ciudad', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
           %section.col.col-4
             %label.label Provincia
             %label.input{for: "province"}
-              = text_field_tag 'worker[province]', @entity.province, class: 'form-control', placeholder: 'Provincia', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;"
+              = text_field_tag 'worker[province]', @entity.province, class: 'form-control', placeholder: 'Provincia', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
           %section.col.col-4
             %label.label Departamento
             %label.input{for: "department"}
-              = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Departamento', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;"
+              = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Departamento', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
         .row#row1{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Email
             %label.input{for: "email"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :email, placeholder: "Email", input_html: { class: 'form-control' }, label: false, style: "background-color: gainsboro; text-transform: uppercase;"
+              = f.input :email, placeholder: "Email", input_html: { class: 'form-control', :onchange => "makeUppercase(this);" }, label: false, style: "background-color: gainsboro; text-transform: uppercase;"
           %section.col.col-4
             %label.label Teléfono
             %label.input{for: "phone"}
@@ -175,30 +175,30 @@
           %section.col.col-8
             %label.label Dirección
             %label.input{for: "address"}
-              = f.input :address, placeholder: "Dirección", input_html: { class: 'form-control', style: 'text-transform: uppercase;' }, label: false
+              = f.input :address, placeholder: "Dirección", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-4
             %label.label País
             %label.input{for: "pais"}
-              = f.input :pais, input_html: { class: 'form-control', style: 'text-transform: uppercase;' }, label: false
+              = f.input :pais, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
         .row#row3{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Distrito
             %label.input{for: "district"}
-              = f.input :district, placeholder: "Distrito", input_html: { class: 'form-control', style: 'text-transform: uppercase;' }, label: false
+              = f.input :district, placeholder: "Distrito", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-4
             %label.label Provincia
             %label.input{for: "province"}
-              = f.input :province, input_html: { class: 'form-control', style: 'text-transform: uppercase;' }, label: false
+              = f.input :province, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-4
             %label.label Departamento
             %label.input{for: "department"}
-              = f.input :department, input_html: { class: 'form-control', style: 'text-transform: uppercase;' }, label: false
+              = f.input :department, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
         .row#row4{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Licencia de Conducir
             %label.input{for: "driverlicense"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :driverlicense, placeholder: "Licencia de Conducir", input_html: { class: 'form-control', style: 'text-transform: uppercase;' }, label: false
+              = f.input :driverlicense, placeholder: "Licencia de Conducir", input_html: { class: 'form-control', style: 'text-transform: uppercase;' , :onchange => "makeUppercase(this);"}, label: false
           %section.col.col-4
             %label.control-label Estado Civil
             %br
@@ -665,11 +665,11 @@
           %section.col.col-5
             %label.label Colegio Primaria
             %label.input{for: "primaryschool"}
-              = f.input :primaryschool, placeholder: "Colegio", input_html: { class: 'form-control', style: 'text-transform: uppercase;' }, label: false
+              = f.input :primaryschool, placeholder: "Colegio", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-3
             %label.label Lugar
             %label.input{for: "primarydistrict"}
-              = f.input :primarydistrict, input_html: { class: 'form-control', style: 'text-transform: uppercase;' }, label: false
+              = f.input :primarydistrict, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-2
             %label.label Desde
             %label.input{for: "primarystartdate"}
@@ -682,11 +682,11 @@
           %section.col.col-5
             %label.label Colegio Secundaria
             %label.input{for: "highschool"}
-              = f.input :highschool, placeholder: "Colegio", input_html: { class: 'form-control', style: 'text-transform: uppercase;' }, label: false
+              = f.input :highschool, placeholder: "Colegio", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-3
             %label.label Lugar
             %label.input{for: "highschooldistrict"}
-              = f.input :highschooldistrict, input_html: { class: 'form-control', style: 'text-transform: uppercase;' }, label: false
+              = f.input :highschooldistrict, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-2
             %label.label Desde
             %label.input{for: "highschoolstartdate"}
@@ -1452,3 +1452,7 @@
   function delete_item(code){
     $("#tr" + code).remove();
   }
+  
+  function makeUppercase(element) {
+    $(element).val($(element).val().toUpperCase());
+  }  
