@@ -347,10 +347,10 @@ class Production::WorkersController < ApplicationController
     @bank = WorkerDetail.where("worker_id = ?",params[:id]).last
     @worker_center_of_studies = @worker.worker_center_of_studies
     @worker_details = @worker.worker_details
-    @worker_experiences = @worker.worker_experiences
-    @worker_familiars = @worker.worker_familiars
+    @worker_experiences = @worker.worker_experiences.limit(3).order('end_date DESC')
+    @worker_familiars = @worker.worker_familiars.limit(5)
     @worker_healths = @worker.worker_healths
-    @worker_otherstudies = @worker.worker_otherstudies
+    @worker_otherstudies = @worker.worker_otherstudies.limit(3)
     @familiars = 1
     @center_of_studies = 1
     @otherstudies = 1
