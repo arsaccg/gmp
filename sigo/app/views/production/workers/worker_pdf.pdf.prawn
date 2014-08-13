@@ -119,7 +119,7 @@ move_down 10
 
 text "III. DATOS FAMILIARES (PADRES-CONYUGE-HIJOS)", :size => 9
 if @familiars == 0
-  table([ ["AP. PATERNO", "AP. MATERNO", "NOMBRES", "PARENTESCO", "F. DE NACIM.", "DNI"],["", "", "", "", "", ""],["", "", "", "", "", ""],["", "", "", "", "", ""],["", "", "", "", "", ""],["", "", "", "", "", ""],["", "", "", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [100,100,120,70,70,60]) do
+  table([ ["AP. PATERNO", "AP. MATERNO", "NOMBRES", "PARENTESCO", "F. DE NACIM.", "DNI"],["", "", "", "", "", ""],["", "", "", "", "", ""],["", "", "", "", "", ""],["", "", "", "", "", ""],["", "", "", "", "", ""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [100,100,120,70,70,60]) do
           style(columns(0..5), :align => :center)
           style(columns(0..5), :size => 8)
           columns(0..5).font_style = :bold
@@ -211,7 +211,7 @@ else
 end
 move_down 10
 if @otherstudies==0
-  table([ ["OTROS ESTUDIOS (POST GRADO)/CONOCIMIENTOS", "NIVEL"],["",""],["",""],["",""],["",""],["",""],["",""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [400,120]) do
+  table([ ["OTROS ESTUDIOS (POST GRADO)/CONOCIMIENTOS", "NIVEL"],["",""],["",""],["",""] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [400,120]) do
           style(columns(0..1), :align => :center)
           style(columns(0..1), :size => 8)
           columns(0..1).font_style = :bold
