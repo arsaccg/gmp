@@ -365,10 +365,9 @@ class Production::WorkersController < ApplicationController
       @otherstudies = 0
     end
     if @worker_experiences.count==0
-      puts "YES"
       @experiencies = 0
     end
-    puts @experiencies.inspect
+    @workercontract = WorkerContract.where("worker_id = ?",params[:id]).last
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :portrait }
 
   end
