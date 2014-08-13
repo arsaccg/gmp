@@ -1,0 +1,46 @@
+#content-inside
+  .row
+    .col-md-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Tareo de Empleados
+
+  .row
+    .col-sm-1
+    .col-md-10.well
+      .input-group
+        .col-md-14
+          .col-md-6
+            %label Fecha de Inicio
+            %input#startdate.string.optional.form-control{'name'=>'start_date', type: "date"}
+          .col-md-6
+            %label Fecha de Fin
+            %input#enddate.string.optional.form-control{'name'=>'end_date', type: "date"}
+          .col-md-2
+            %button#show-table.btn.btn-primary.btn-default{:type => 'button'}
+              %i.fa.fa-search
+              Buscar
+
+    %br
+  .row
+    #widget-grid
+      .row
+        %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+          #table-information-result
+
+:javascript
+  $(document).ready(function (){
+    $('select').select2({width:'280px'});
+  });
+
+  $('#show-table').click(function(){
+    var start_date = $('#startdate').val();
+    var end_date = $('#enddate').val();
+
+    if(start_date != 0) {
+      var parameters = { start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+      load_items_delivery_order_ajax("#{search_schedule_work_production_daily_works_schedule_of_workers_path}", 'table-information-result', parameters);
+    } else {
+      alert('Por favor, especificar todos los datos necesarios.')
+    }
+  });

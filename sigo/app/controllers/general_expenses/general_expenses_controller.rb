@@ -11,27 +11,24 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
   end
 
   def report
+    @phases = ActiveRecord::Base.connection.execute(" SELECT code_phase, SUM(total) FROM  general_expenses WHERE cost_center_id = "+get_company_cost_center('cost_center').to_s+" GROUP BY code_phase")
     @ccd = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center').to_s)
+    @cc = get_company_cost_center('cost_center').to_s
     @ge = GeneralExpense.where('cost_center_id = '+get_company_cost_center('cost_center').to_s)
-    @get = Array.new
+    @ids = Array.new
     @t = Array.new
-    get=ActiveRecord::Base.connection.execute("
-      SELECT SUM(ged.parcial) 
-      FROM  general_expense_details ged
-      GROUP BY ged.general_expense_id
-    ")
+    @ge.each do |g|
+      @ids << g.id
+    end
+    @ids=@ids.join(',')
     t=ActiveRecord::Base.connection.execute("
       SELECT SUM(ged.parcial) 
       FROM  general_expense_details ged
+      WHERE ged.general_expense_id IN ("+@ids.to_s+")
     ")
-    get.each do |g|
-      @get << g[0]
-    end
     t.each do |t|
       @t = t[0]
     end
-    puts @get.inspect
-    @i=0
     render layout: false
   end
 
@@ -89,6 +86,7 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
   def create
     flash[:error] = nil
     gexp = GeneralExpense.new(gexp_parameters)
+    gexp.code_phase = Phase.find(gexp.phase_id).code[0,2]
     gexp.cost_center_id = get_company_cost_center('cost_center').to_s
     if gexp.save
       @t=0
@@ -123,6 +121,7 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
 
   def update
     gexp = GeneralExpense.find(params[:id])
+    gexp.code_phase = Phase.find(gexp.phase_id).code[0,2]
     if gexp.update_attributes(gexp_parameters)
       @t=0
       t=ActiveRecord::Base.connection.execute("
