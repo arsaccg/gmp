@@ -42,6 +42,7 @@
             %tbody
               -@arraywo.each do |arr|
                 %tr
+                  -index = 8
                   %td=arr[0]
                   %td=arr[1]
                   %td=arr[2]
@@ -50,3 +51,7 @@
                   %td=arr[5]
                   %td=arr[6]
                   %td=arr[7]
+                  - @dias_habiles.each do |date|
+                    %td=arr[index]
+                    -index +=1
+                  %td=arr[index]
