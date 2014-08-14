@@ -27,7 +27,10 @@
         .row
           %section.col.col-md-12
             %label.label Documento
-            = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+            -if @action == nil
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file", required: true
+            -else
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
             %p.help-block
               - if @action == 'edit' && @laws.document.exists?
                 = 'Archivo subido: ' + File.basename(@laws.document.path, File.extname(@laws.document.path))
@@ -35,7 +38,7 @@
                 Subir el archivo correspondiente
 
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -62,9 +65,6 @@
             'law_and_regulation[description]' : {
               required : true,
             },
-            'law_and_regulation[document]' : {
-              required : true
-            },
             'law_and_regulation[type_of_law_and_regulation_ids]':{
               required: true
             }
@@ -78,9 +78,6 @@
             'law_and_regulation[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
             },
-            'law_and_regulation[document]' : {
-              required : "Por favor, ingrese el documento"
-            },
             'law_and_regulation[type_of_law_and_regulation_ids]':{
               required: "Seleccione un tipo"
             }
@@ -89,6 +86,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -99,8 +98,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove(); 
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove(); 
       }
     });
   }
