@@ -800,30 +800,8 @@
               %table{"style"=>"margin-left:30px;margin-right:30px;height:auto;"}
                 %tr
                   %td{"style"=>"font-size:100%;"}
-                    %strong Distrito:
-                  %td
-                    -if !@cost_center.district.nil?
-                      =@cost_center.district
-                    -else
-                      ="No Ingresado"
-
-                  %td{"style"=>"font-size:100%;"}
-                    %strong Provincia:
-                  %td
-                    -if !@cost_center.province.nil?
-                      =@cost_center.province
-                    -else
-                      ="No Ingresado"
-
-                %tr{"style"=>"height:10px;"}
-                %tr
-                  %td{"style"=>"font-size:100%;"}
-                    %strong Departamento:
-                  %td
-                    -if !@cost_center.department.nil?
-                      =@cost_center.department
-                    -else
-                      ="No Ingresado"
+                    %strong Ubicación:
+                  %td=@cost_center_detail.district.to_s+" - "+@cost_center_detail.province.to_s+" - "+@cost_center_detail.department.to_s
                 %tr{"style"=>"height:15px;"}
 
                 %tr

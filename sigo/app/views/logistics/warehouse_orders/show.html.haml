@@ -71,6 +71,7 @@
                         = detail.quantity.to_s+" unidades"
                         %br
                         %code= "En stock: #{StockInput.get_stock(detail.article.id).to_i}"
+                        %br
                         %code= "Pedidos: #{WarehouseOrderDetail.sum(:quantity, :conditions => {:article_id => detail.article.id})}"
                       %td
                         - if detail.sector !=nil

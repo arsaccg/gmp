@@ -81,7 +81,7 @@ class Logistics::CostCenterDetailsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def cost_center_detail_params
-      params.require(:cost_center_detail).permit(:name,:call_date,:snip_code,:process_number,:good_pro_date,:referential_value,:earned_value,:direct_cost,:general_cost,:utility,:IGV,:contract_sign_date,:contract_number,:land_delivery_date,:direct_advanced_payment_date,:cost_center_id,:amazon_tax_condition,:direct_advanced_form_date,:start_date_of_work,:procurement_system,:execution_term,:supervision,:entity_id,:material_advanced_payment_date, entity_cost_center_details_attributes: [:id, 
+      params.require(:cost_center_detail).permit(:name,:call_date,:snip_code,:process_number,:good_pro_date,:referential_value,:earned_value,:direct_cost,:general_cost,:utility,:IGV,:contract_sign_date,:contract_number,:land_delivery_date,:direct_advanced_payment_date,:cost_center_id,:amazon_tax_condition,:direct_advanced_form_date,:start_date_of_work,:procurement_system,:execution_term,:supervision,:entity_id,:material_advanced_payment_date,:district,:province,:department, entity_cost_center_details_attributes: [:id, 
         :cost_center_detail_id,
         :entity_id, 
         :participation,:_destroy])

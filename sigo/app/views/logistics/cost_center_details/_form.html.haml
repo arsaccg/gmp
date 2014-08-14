@@ -25,17 +25,25 @@
                   = f.radio_button :amazon_tax_condition, "No", :selected=>@cost_center_detail.amazon_tax_condition=="No", :id => "No_choice", :onChange=>"disablefield();"
                   %label No
         .row
+          %section.col.col-10
+            %label.label Ubicación de la Obra:        
           %section.col.col-4{"style"=>"width:31%;"}
             %label.label Distrito:
-            %input.string.optional.form-control{"value"=>CostCenter.find_by_id(@cost_center_id).district,:readonly => true,placeholder: "No ingresado"}
+            %label.input
+              %i.icon-append.fa.fa-map-marker
+              = f.input :district, placeholder: "Distrito", input_html: { class: 'form-control' }, label: false
 
           %section.col.col-4{"style"=>"width:31%;"}
             %label.label Provincia:
-            %input.string.optional.form-control{"value"=>CostCenter.find_by_id(@cost_center_id).province,:readonly => true,placeholder: "No ingresado"}
+            %label.input
+              %i.icon-append.fa.fa-map-marker
+              = f.input :province, placeholder: "Provincia", input_html: { class: 'form-control' }, label: false
 
           %section.col.col-4{"style"=>"width:31%;"}
             %label.label Departamento:
-            %input.string.optional.form-control{"value"=>CostCenter.find_by_id(@cost_center_id).department,:readonly => true,placeholder: "No ingresado"}
+            %label.input
+              %i.icon-append.fa.fa-map-marker
+              = f.input :department, placeholder: "Departamento", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-4{"style"=>"width:31%;"}
             %label.label Nombre del contratista:
@@ -316,6 +324,15 @@
             },
             'cost_center_detail[entity_id]' : {
               required : true,
+            },
+            'cost_center_detail[district]' : {
+              required : true,
+            },
+            'cost_center_detail[province]' : {
+              required : true,
+            },
+            'cost_center_detail[department]' : {
+              required : true,
             }
 
 
@@ -378,7 +395,17 @@
             },
             'cost_center_detail[entity_id]' : {
               required : "Por favor ingresar una entidad",
+            },
+            'cost_center_detail[district]' : {
+              required : "Por favor ingresar un distrito",
+            },
+            'cost_center_detail[province]' : {
+              required : "Por favor ingresar una provincia",
+            },
+            'cost_center_detail[department]' : {
+              required : "Por favor ingresar un departamento",
             }
+
           },
 
           // Do not change code below

@@ -30,24 +30,6 @@
                   - else
                     %option{:value => "#{company.id}", :rel => ""}
                       = company.name
-        .row
-          %section.col.col-10
-            %label.label Distrito
-            %label.input{for: "text-field"}
-              %i.icon-append.fa.fa-user
-              = f.input :district, placeholder: "Distrito", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
-            %label.label Provincia
-            %label.input{for: "text-field"}
-              %i.icon-append.fa.fa-user
-              = f.input :province, placeholder: "Provincia", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
-            %label.label Departamento
-            %label.input{for: "text-field"}
-              %i.icon-append.fa.fa-user
-              = f.input :department, placeholder: "Departamento", input_html: { class: 'form-control' }, label: false
         -if @action !="edit"
           .row
             %section.col.col-10
@@ -87,16 +69,8 @@
             },
             'cost_center[name]' : {
               required : true
-            },
-            'cost_center[district]' : {
-              required : true
-            },
-            'cost_center[province]' : {
-              required : true
-            },
-            'cost_center[department]' : {
-              required : true
             }
+
           },
 
           // Messages for form validation
@@ -109,16 +83,8 @@
             },
             'cost_center[name]' : {
               required : '(*)'
-             },
-            'cost_center[district]' : {
-              required : '(*)'
-            },
-            'cost_center[province]' : {
-              required : '(*)'
-            },
-            'cost_center[department]' : {
-              required : '(*)'
-            }
+             }
+
           },
 
           // Do not change code below
