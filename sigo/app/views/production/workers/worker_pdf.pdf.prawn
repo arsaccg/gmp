@@ -484,7 +484,7 @@ if @workercontract.nil?
           columns(0).font_style = :bold
           style(column(0), :background_color => 'A0D8A0')
         end
-  table([ ["DISTRITO)", "PROVINCIA","DEPARTAMENTO"],["#{@worker.cost_center.district.to_s}", "#{@worker.cost_center.province.to_s}","#{@worker.cost_center.department.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
+  table([ ["DISTRITO)", "PROVINCIA","DEPARTAMENTO"],["#{@worker.cost_center.cost_center_detail.district.to_s}", "#{@worker.cost_center.cost_center_detail.province.to_s}","#{@worker.cost_center.cost_center_detail.department.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
           style(columns(0..2), :align => :center)
           style(columns(0..2), :size => 7)
           row(0).font_style = :bold
@@ -533,7 +533,7 @@ else
     end
     move_down 10
   end
-  table([ ["DISTRITO)", "PROVINCIA","DEPARTAMENTO"],["#{@worker.cost_center.district.to_s}", "#{@worker.cost_center.province.to_s}","#{@worker.cost_center.department.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
+  table([ ["DISTRITO)", "PROVINCIA","DEPARTAMENTO"],["#{@worker.cost_center.cost_center_detail.district.to_s}", "#{@worker.cost_center.cost_center_detail.province.to_s}","#{@worker.cost_center.cost_center_detail.department.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [170,170,180]) do
           style(columns(0..2), :align => :center)
           style(columns(0..2), :size => 7)
           row(0).font_style = :bold
