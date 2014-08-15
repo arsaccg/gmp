@@ -50,10 +50,10 @@
             .form-group
               .col-md-12
                 %label.radio-inline
-                  %input.radiobox{:name =>'entity[gender]', :type => 'radio', :value => "masculino"}
+                  %input.radiobox{:name =>'entity[gender]', :type => 'radio', :value => "masculino", :checked => @entity.gender=="masculino"}
                   %span Masculino
                 %label.radio-inline
-                  %input.radiobox{:name =>'entity[gender]', :type => 'radio', :value => "femenino"}
+                  %input.radiobox{:name =>'entity[gender]', :type => 'radio', :value => "femenino", :checked => @entity.gender=="femenino"}
                   %span Femenino
         %br
         .row
