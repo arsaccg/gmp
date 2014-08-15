@@ -46,7 +46,7 @@ table([ ["LUGAR DE NACIMIENTO(CIUDAD-PROVINCIA-DEPARTAMENTO)", "EDAD","FECH.NAC.
         columns(0..2).font_style = :bold
         style(row(0), :background_color => 'A0D8A0')
       end
-table([ ["#{@worker.entity.city.to_s} #{@worker.entity.province.to_s} #{@worker.entity.department.to_s}", "#{@edad}","#{@worker.entity.date_of_birth.to_s}"] ], :width => 445, :cell_style => {:height => 16}, :column_widths => [285,80,80]) do
+table([ ["#{@worker.entity.city.to_s} #{@worker.entity.province.to_s} #{@worker.entity.department.to_s}", "#{@edad}","#{@worker.entity.date_of_birth.strftime("%d/%m/%Y").to_s}"] ], :width => 445, :cell_style => {:height => 16}, :column_widths => [285,80,80]) do
         style(columns(0..2), :align => :center)
         style(columns(0..2), :size => 7)
       end
@@ -57,7 +57,7 @@ table([ ["DNI", "C. EXTRANJERIA"] ], :width => 520, :cell_style => {:height => 1
         columns(1).font_style = :bold
         style(row(0), :background_color => 'A0D8A0')
       end
-table([ ["#{@worker.entity.dni.to_s}", "#{@worker.entity.alienslicense.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [260,260]) do
+table([ ["#{@worker.entity.dni.to_s}", "#{@worker.entity.alienslicense.to_s.upcase}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [260,260]) do
         style(columns(0..2), :align => :center)
         style(columns(0..2), :size => 7)
       end
@@ -67,11 +67,11 @@ table([ ["#{@nombre.to_s}", "CODIGO UNICO S.P.P", "TIPO DE CUENTA", "N° DE CUEN
         columns(0..4).font_style = :bold
         style(row(0), :background_color => 'A0D8A0')
       end
-table([ [if "#{@afp}"!="" then "#{@afp.afp.enterprise}" else "-" end, "#{@afp.afpnumber.to_s}", "", if "#{@bank}"!="" then "#{@bank.account_number}" end, if "#{@bank}"!="" then "#{@bank.bank.business_name}" end] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [110,110,80,100,120]) do
+table([ [if "#{@afp}"!="" then "#{@afp.afp.enterprise}" else "-" end, "#{@afp.afpnumber.to_s}", "", if "#{@bank}"!="" then "#{@bank.account_number}" end, if "#{@bank}"!="" then "#{@bank.bank.business_name.upcase}" end] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [110,110,80,100,120]) do
         style(columns(0..4), :align => :center)
         style(columns(0..4), :size => 7)
       end
-table([ ["SEXO", "#{@worker.entity.gender}", "ESTADO CIVIL", "#{@worker.maritalstatus.to_s}", "LICENCIA DE CONDUCIR", "#{@worker.driverlicense.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [60,80,80,90,120,90]) do
+table([ ["SEXO", "#{@worker.entity.gender.upcase}", "ESTADO CIVIL", "#{@worker.maritalstatus.to_s.upcase}", "LICENCIA DE CONDUCIR", "#{@worker.driverlicense.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [60,80,80,90,120,90]) do
         style(columns(0..5), :align => :center)
         style(columns(0..5), :size => 7)
         columns(0).font_style = :bold
@@ -105,13 +105,13 @@ table([ ["#{@worker.district.to_s}", "#{@worker.province.to_s}","#{@worker.depar
         style(columns(0..2), :align => :center)
         style(columns(0..2), :size => 7)
       end
-table([ ["PAIS", "TELEFONO FIJO", "CELULAR", "NEXTEL", "E-MAIL"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [104,104,104,104,104]) do
-        style(columns(0..4), :align => :center)
-        style(columns(0..4), :size => 7)
-        columns(0..4).font_style = :bold
+table([ ["PAIS", "TELEFONO FIJO", "CELULAR", "E-MAIL"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [130,130,130,130]) do
+        style(columns(0..3), :align => :center)
+        style(columns(0..3), :size => 7)
+        columns(0..3).font_style = :bold
         style(row(0), :background_color => 'A0D8A0')
       end
-table([ ["#{@worker.pais.to_s}", "#{@worker.phone.to_s}", "#{@worker.cellphone.to_s}", "#{@worker.cellphone.to_s}", "#{@worker.email.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [104,104,104,104,104]) do
+table([ ["#{@worker.pais.to_s}", "#{@worker.phone.to_s}", "#{@worker.cellphone.to_s}", "#{@worker.email.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [130,130,130,130]) do
         style(columns(0..4), :align => :center)
         style(columns(0..4), :size => 7)
       end
@@ -134,7 +134,7 @@ else
           style(row(0), :background_color => 'A0D8A0')
         end
   @worker_familiars.each do |data|
-    table([ ["#{data.paternal_surname}", "#{data.maternal_surname}", "#{data.names}", "#{data.relationship}", "#{data.dayofbirth}", "#{data.dni}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [100,100,120,70,70,60]) do
+    table([ ["#{data.paternal_surname}", "#{data.maternal_surname}", "#{data.names}", "#{data.relationship}", "#{data.dayofbirth.strftime("%d/%m/%Y")}", "#{data.dni}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [100,100,120,70,70,60]) do
           style(columns(0..5), :align => :center)
             style(columns(0..5), :size => 7)
           end
@@ -152,16 +152,16 @@ move_down 10
 
 text "IV. EDUCACION", :size => 9
 if @worker.lastgrade.nil?
-  table([ ["Situación Educativa", "#{@worker.levelofinstruction.to_s}"] ], :width => 160, :cell_style => {:height => 16}, :column_widths => [80,80]) do
+  table([ ["SITUACION EDUCATIVA", "#{@worker.levelofinstruction.to_s.upcase}"] ], :width => 200, :cell_style => {:height => 16}, :column_widths => [100,100]) do
           style(columns(0..1), :align => :center)
           style(columns(0..1), :size => 7)
           columns(0..1).font_style = :bold
           style(column(0), :background_color => 'A0D8A0')
         end
 else
-  table([ ["Situación Educativa", "#{@worker.levelofinstruction.to_s}","","Último ciclo/año/grado cursado","#{@worker.lastgrade}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [95,95,80,170,80]) do
+  table([ ["SITUACION EDUCATIVA", "#{@worker.levelofinstruction.to_s}","","Último ciclo/año/grado cursado","#{@worker.lastgrade}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [95,95,80,170,80]) do
           style(columns(0..4), :align => :center)
-          style(columns(0..4), :size => 7)
+          style(columns(0..4), :size => 8)
           columns(0..4).font_style = :bold
           columns(2).border_top_color = "ffffff"
           columns(2).border_bottom_color = "ffffff"
@@ -176,13 +176,13 @@ table([ ["ESTUDIOS", "COLEGIO", "LUGAR", "DESDE", "HASTA"] ], :width => 520, :ce
         columns(0..4).font_style = :bold
         style(row(0), :background_color => 'A0D8A0')
       end
-table([ ["PRIMARIA", "#{@worker.primaryschool}", "#{@worker.primarydistrict}", "#{@worker.primarystartdate}", "#{@worker.primaryenddate}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [70,200,130,60,60]) do
+table([ ["PRIMARIA", "#{@worker.primaryschool}", "#{@worker.primarydistrict}", "#{@worker.primarystartdate.strftime("%Y")}", "#{@worker.primaryenddate.strftime("%Y")}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [70,200,130,60,60]) do
         style(columns(0..4), :align => :center)
         style(columns(0..4), :size => 7)
         columns(0).font_style = :bold
         style(column(0), :background_color => 'A0D8A0')
       end
-table([ ["SECUNDARIA", "#{@worker.highschool}", "#{@worker.highschooldistrict}", "#{@worker.highschoolstartdate}", "#{@worker.highschoolenddate}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [70,200,130,60,60]) do
+table([ ["SECUNDARIA", "#{@worker.highschool}", "#{@worker.highschooldistrict}", "#{@worker.highschoolstartdate.strftime("%Y")}", "#{@worker.highschoolenddate.strftime("%Y")}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [70,200,130,60,60]) do
         style(columns(0..4), :align => :center)
         style(columns(0..4), :size => 7)
         columns(0).font_style = :bold
@@ -232,7 +232,7 @@ else
           style(row(0), :background_color => 'A0D8A0')
         end
   @worker_center_of_studies.each do |data|
-    table([ ["#{data.name}", "#{data.profession}", "#{data.title}", "#{data.numberoftuition}", "#{data.start_date}", "#{data.end_date}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [160,100,70,70,60,60]) do
+    table([ ["#{data.name}", "#{data.profession}", "#{data.title}", "#{data.numberoftuition}", "#{data.start_date.strftime("%Y")}", "#{data.end_date.strftime("%Y")}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [160,100,70,70,60,60]) do
           style(columns(0..5), :align => :center)
             style(columns(0..5), :size => 7)
           end
@@ -426,7 +426,7 @@ table([ ["CONSTANCIA MATRICULA ESCOLAR", if "#{@worker.schoolar_certificate_file
         style(columns(0..5), :size => 7)
         columns(0..5).font_style = :bold
       end
-table([ ["CERTIFICADO DE CONVIVENCIA DE MATRIMONIO", if "#{@worker.marriage_certificate_file_size}"!="" then 'X' end, "DOCUMENTO NACIONAL DE IDENTIDAD", if "#{@worker.dni_file_size}"!="" then 'X' end] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [240,20,240,20]) do
+table([ ["CERTIFICADO DE CONVIVENCIA / PARTIDA DE MATRIMONIO", if "#{@worker.marriage_certificate_file_size}"!="" then 'X' end, "DOCUMENTO NACIONAL DE IDENTIDAD", if "#{@worker.dni_file_size}"!="" then 'X' end] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [240,20,240,20]) do
         style(columns(0..5), :align => :center)
         style(columns(0..5), :size => 7)
         columns(0..5).font_style = :bold
@@ -492,7 +492,7 @@ if @workercontract.nil?
         end
 else
   text "VI. DATOS CONTRACTUALES (LLENADO POR LA EMPRESA)", :size => 9
-  table([ ["C.C.","FECHA DE INGRESO", "CARGO", "CODIGO TOBI", "SUELDO (S/.)"],["#{@worker.cost_center.code.to_s}","#{@workercontract.start_date.to_s}", "#{@workercontract.article.name.to_s}", "#{@workercontract.article.name.to_s}", "#{@workercontract.salary.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,100,140,85,115]) do
+  table([ ["C.C.","FECHA DE INGRESO", "CARGO", "CODIGO TOBI", "SUELDO (S/.)"],["#{@worker.cost_center.code.to_s}","#{@workercontract.start_date.strftime("%d/%m/%Y").to_s}", "#{@workercontract.article.name.to_s}", "#{@workercontract.article.code.to_s}", "#{@workercontract.salary.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,100,140,85,115]) do
           style(columns(0..4), :align => :center)
           style(columns(0..4), :size => 7)
           row(0).font_style = :bold
