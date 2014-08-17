@@ -673,11 +673,25 @@
           %section.col.col-2
             %label.label Desde
             %label.input{for: "primarystartdate"}
-              = f.input :primarystartdate, as: :string, input_html: { class: 'form-control', :type => "date", style: 'text-transform: uppercase;' }, label: false
+              %select.form-control{:name =>"worker[primarystartdate]", :style => 'width:100%;padding: 0;border: none;'}
+                - @years.each do |years|
+                  - if @worker.primarystartdate == years
+                    %option{:value => "#{years}", :selected => true}
+                      = years
+                  - else
+                    %option{:value => "#{years}"}
+                      = years
           %section.col.col-2
             %label.label Hasta
             %label.input{for: "primaryenddate"}
-              = f.input :primaryenddate, as: :string, input_html: { class: 'form-control', :type => "date", style: 'text-transform: uppercase;' }, label: false
+              %select.form-control{:name =>"worker[primaryenddate]", :style => 'width:100%;padding: 0;border: none;'}
+                - @years.each do |years|
+                  - if @worker.primarystartdate == years
+                    %option{:value => "#{years}", :selected => true}
+                      = years
+                  - else
+                    %option{:value => "#{years}"}
+                      = years
         .row
           %section.col.col-5
             %label.label Colegio Secundaria
@@ -690,11 +704,25 @@
           %section.col.col-2
             %label.label Desde
             %label.input{for: "highschoolstartdate"}
-              = f.input :highschoolstartdate, as: :string, input_html: { class: 'form-control', :type => "date", style: 'text-transform: uppercase;' }, label: false
+              %select.form-control{:name =>"worker[highschoolstartdate]", :style => 'width:100%;padding: 0;border: none;'}
+                - @years.each do |years|
+                  - if @worker.primarystartdate == years
+                    %option{:value => "#{years}", :selected => true}
+                      = years
+                  - else
+                    %option{:value => "#{years}"}
+                      = years
           %section.col.col-2
             %label.label Hasta
             %label.input{for: "highschoolenddate"}
-              = f.input :highschoolenddate, as: :string, input_html: { class: 'form-control', :type => "date", style: 'text-transform: uppercase;' }, label: false
+              %select.form-control{:name =>"worker[highschoolenddate]", :style => 'width:100%;padding: 0;border: none;'}
+                - @years.each do |years|
+                  - if @worker.primarystartdate == years
+                    %option{:value => "#{years}", :selected => true}
+                      = years
+                  - else
+                    %option{:value => "#{years}"}
+                      = years
         .row
           %section.col.col-2
             %div
@@ -1156,7 +1184,6 @@
       $("#fieldset4").css("display", "");
       $("#fieldset5").css("display", "");
       $("#fieldset6").css("display", "");
-      $("#fieldset7").css("display", "");
     }
     if('#{@worker.typeofworker}'=="obrero"){
       $("#categoria").css("display", "");
@@ -1195,7 +1222,6 @@
       $("#fieldset4").css("display", "");
       $("#fieldset5").css("display", "");
       $("#fieldset6").css("display", "");
-      $("#fieldset7").css("display", "");
     }
     else {
       $("#row1").css("display", "none");
@@ -1211,7 +1237,6 @@
       $("#fieldset4").css("display", "none");
       $("#fieldset5").css("display", "none");
       $("#fieldset6").css("display", "none");
-      $("#fieldset7").css("display", "none");
     }
   });
   $("input.radiobox").change(function() {

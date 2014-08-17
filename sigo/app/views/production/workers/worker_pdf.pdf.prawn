@@ -144,7 +144,7 @@ else
           style(row(0), :background_color => 'A0D8A0')
         end
   @worker_familiars.each do |data|
-    table([ ["#{data.paternal_surname}", "#{data.maternal_surname}", "#{data.names}", "#{data.relationship}", "#{data.dayofbirth.strftime("%d/%m/%Y")}", "#{data.dni}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [100,100,120,70,70,60]) do
+    table([ ["#{data.paternal_surname}", "#{data.maternal_surname}", "#{data.names}", "#{data.relationship}", if "#{data.dayofbirth}"!="" then "#{data.dayofbirth.strftime("%d/%m/%Y")}" end, "#{data.dni}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [100,100,120,70,70,60]) do
           style(columns(0..5), :align => :center)
             style(columns(0..5), :size => 7)
           end
@@ -242,7 +242,7 @@ else
           style(row(0), :background_color => 'A0D8A0')
         end
   @worker_center_of_studies.each do |data|
-    table([ ["#{data.name}", "#{data.profession}", "#{data.title}", "#{data.numberoftuition}", "#{data.start_date.strftime("%Y")}", "#{data.end_date.strftime("%Y")}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [160,100,70,70,60,60]) do
+    table([ ["#{data.name}", "#{data.profession}", "#{data.title}", "#{data.numberoftuition}", if "#{data.start_date}"!="" then "#{data.start_date.strftime("%Y")}" end, if "#{data.end_date}"!="" then "#{data.end_date.strftime("%Y")}" end] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [160,100,70,70,60,60]) do
           style(columns(0..5), :align => :center)
             style(columns(0..5), :size => 7)
           end

@@ -28,7 +28,8 @@
               %td 
                 = workercontract.typeofcontract.to_s
               %td 
-                = workercontract.contract_type.description.to_s
+                -if workercontract.contract_type != nil
+                  = workercontract.contract_type.description.to_s
               %td
                 - if !workercontract.article.nil?
                   = workercontract.article.name.to_s
