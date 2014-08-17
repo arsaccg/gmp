@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Logistics::EntityCostCenterDetailsControllerTest < ActionController::TestCase
+class DocumentaryControl::QaQcsControllerTest < ActionController::TestCase
   test "should get new" do
     get :new
     assert_response :success

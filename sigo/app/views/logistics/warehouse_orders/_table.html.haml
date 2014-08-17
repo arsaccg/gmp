@@ -1,0 +1,51 @@
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2
+      = "Lista de Pedidos de Almacén"
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      .widget-body-toolbar
+      %table.summary-delivery-orders.table.table-striped.table-bordered.table-hover{ :id => "summary-delivery-orders" }
+        %thead
+          %tr
+            %th Código
+            %th Estado
+            %th Fecha
+            %th Grupo de Trabajo
+            %th Acciones
+        %tbody{ :id => "body-summary-delivery-orders" }
+          -if @warehouse_orders!=nil
+            - @warehouse_orders.each do |orders|
+              %tr
+                %td
+                  = orders.code
+                - case orders.state
+                  - when 'issued'
+                    %td.label-status
+                      %i.fa.fa-flag{:style => "color: #FF7A00;"}
+                      %span.label.label-warning{:style => "background-color: #FF7A00;"}
+                        = translate_delivery_order_state(orders.state)
+                  - when 'approved'
+                    %td.label-status
+                      %i.fa.fa-flag{:style => "color: #25CA25;"}
+                      %span.label.label-success{:style => "background-color: #25CA25;"}
+                        = translate_delivery_order_state(orders.state)
+                %td
+                  = orders.date.strftime("%d/%m/%Y")
+                %td
+                  =WorkingGroup.find(orders.working_group_id.to_s).name
+                %td
+                  %a.btn.btn-view.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_warehouse_order_path(orders.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Ver Detalle"}
+                    %i.fa.fa-eye
+
+                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_warehouse_order_path(orders.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Editar"}
+                    %i.fa.fa-edit
+
+                  %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{change_state_logistics_warehouse_order_path(orders.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Avanzar Estado"}
+                    %i.fa.fa-forward
+                  - if orders.state == 'issued'
+                    %a.btn.btn-danger.btn-xs{:onclick => "javascript:delete_to_url('#{logistics_warehouse_order_path(orders.id)}', 'content', '#{logistics_warehouse_orders_path}')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Eliminar Pedido"}
+                      %i.fa.fa-trash-o

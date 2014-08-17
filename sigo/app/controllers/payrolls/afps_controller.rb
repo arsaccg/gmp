@@ -86,6 +86,6 @@ class Payrolls::AfpsController < ApplicationController
 
   private
   def afp_parameters
-    params.require(:afp).permit(:enterprise, :contribution_fp, :insurance_premium, :top, :c_variable, :mixed)
+    params.require(:afp).permit(:type_of_afp, :enterprise, :contribution_fp, :insurance_premium, :top, :c_variable, :mixed)
   end
 end

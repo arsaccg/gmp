@@ -40,7 +40,7 @@
                   %th Licencia de Conducir
                   %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.driverlicense
                   %th CUSPP
-                  %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.afpnumber
+                  %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.worker_afps.last.afpnumber rescue ''
                 %thead
                   %tr
                     %th{"style"=>"text-align:center;font-size: large",'colspan' => 6} Lugar de Nacimiento
@@ -371,61 +371,61 @@
                     %th Nombre del Documento
                     %th Documento
                 %tbody
-                  - if @worker.cv != nil
+                  - if @worker.cv_file_name != nil
                     %tr
                       %td Curriculum Vitae
                       %td
                         %a.btn.btn-info.btn-xs{:href =>"#{@worker.cv.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
-                  - if @worker.antecedent_police != nil
+                  - if @worker.antecedent_police_file_name != nil
                     %tr
                       %td Certificado de Antecedentes Policiales
                       %td
                         %a.btn.btn-info.btn-xs{:href =>"#{@worker.antecedent_police.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
-                  - if @worker.dni != nil
+                  - if @worker.dni_file_name != nil
                     %tr
                       %td Documento Nacional de Identidad
                       %td
                         %a.btn.btn-info.btn-xs{:href =>"#{@worker.dni.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
-                  - if @worker.cts_deposit_letter != nil
+                  - if @worker.cts_deposit_letter_file_name != nil
                     %tr
                       %td Carta de Deposito de C.T.S.
                       %td
                         %a.btn.btn-info.btn-xs{:href =>"#{@worker.cts_deposit_letter.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
-                  - if @worker.pension_funds_letter != nil
+                  - if @worker.pension_funds_letter_file_name != nil
                     %tr
                       %td Carta de Fondos Previsionales
                       %td
                         %a.btn.btn-info.btn-xs{:href =>"#{@worker.pension_funds_letter.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
-                  - if @worker.affidavit != nil
+                  - if @worker.affidavit_file_name != nil
                     %tr
                       %td Declaración Jurada
                       %td
                         %a.btn.btn-info.btn-xs{:href =>"#{@worker.affidavit.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
-                  - if @worker.marriage_certificate != nil
+                  - if @worker.marriage_certificate_file_name != nil
                     %tr
                       %td Certificado de Convivencia / Partida de Matrimonio
                       %td
                         %a.btn.btn-info.btn-xs{:href =>"#{@worker.marriage_certificate.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
-                  - if @worker.birth_certificate_of_childer != nil
+                  - if @worker.birth_certificate_of_childer_file_name != nil
                     %tr
                       %td Partida de Nacimiento de Hijos
                       %td
                         %a.btn.btn-info.btn-xs{:href =>"#{@worker.birth_certificate_of_childer.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
-                  - if @worker.dni_wife_kids != nil
+                  - if @worker.dni_wife_kids_file_name != nil
                     %tr
                       %td DNI Hijos y Esposa
                       %td
                         %a.btn.btn-info.btn-xs{:href =>"#{@worker.dni_wife_kids.url}", :target => "_blank"}
                           %i.fa.fa-clipboard
-                  - if @worker.schoolar_certificate != nil
+                  - if @worker.schoolar_certificate_file_name != nil
                     %tr
                       %td Constancia de Matricula (Asig. Escolar)
                       %td

@@ -1,0 +1,57 @@
+#content-inside
+  .row
+    .col-md-12
+      %h1{"style"=>"margin: 0"}
+        = @company.name
+  .row
+    .col-md-12
+      %h2{"style"=>"margin: 0;text-align:center"}
+        = 'TAREO DE EMPLEADOS del ' + @inicio + ' al ' + @fin
+    .col-md-12
+      %p{"style"=>"margin: 0"}
+        = 'Obra : ' + @cost_center.cost_center_detail.name.to_s rescue ''
+      %p{"style"=>"margin: 0"}
+        = 'Cliente : ' + @cost_center.cost_center_detail.entity.name.to_s rescue ''
+      %p{"style"=>"margin: 0"}
+        = 'Ubicación : ' + @cost_center.company.address.to_s rescue ''
+      %p{"style"=>"margin: 0"}
+        = 'C.C. : ' + @cost_center.name.to_s rescue ''
+  .row
+    #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+      %header
+        %span.widget-icon
+          %i.fa.fa-table
+        %h2 Resultado
+      %div{"style"=>"overflow-x: scroll;"}
+        .jarviswidget-editbox
+        .widget-body
+          %table.table.table-bordered
+            %thead
+              %tr
+                %th Item
+                %th Codigo TOBI
+                %th Cargo
+                %th DNI
+                %th Apellido Paterno
+                %th Apellido Materno
+                %th Primer Nombre
+                %th Segundo Nombre
+                - @dias_habiles.each do |date|
+                  %th= date.to_time.strftime("%d/%m/%y")
+                %th Total Dias
+            %tbody
+              -@arraywo.each do |arr|
+                %tr
+                  -index = 8
+                  %td=arr[0]
+                  %td=arr[1]
+                  %td=arr[2]
+                  %td=arr[3]
+                  %td=arr[4]
+                  %td=arr[5]
+                  %td=arr[6]
+                  %td=arr[7]
+                  - @dias_habiles.each do |date|
+                    %td=arr[index]
+                    -index +=1
+                  %td=arr[index]

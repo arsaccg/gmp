@@ -13,51 +13,22 @@
             %br
             .input-group
               %select.col-sm-6.form-control#type{:name =>"issued_letter[type_of_doc]"}
-                -if @action=="edit"
-                  %option{:value => "0"} Seleccione un tipo
-                  -if @issu.type_of_doc == "Carta"
-                    %option{:value => "Carta", :selected => 'selected'} Carta
-                    %option{:value => "Solicitud"} Solicitud
-                    %option{:value => "Memorando"} Memorando
-                    %option{:value => "Informe"} Informe
-                    %option{:value => "Otros"} Otros
-
-                  -elsif @issu.type_of_doc =="Solicitud"
-                    %option{:value => "Carta"} Carta
-                    %option{:value => "Solicitud", :selected => 'selected'} Solicitud
-                    %option{:value => "Memorando"} Memorando
-                    %option{:value => "Informe"} Informe
-                    %option{:value => "Otros"} Otros
-
-                  -elsif @issu.type_of_doc =="Memorando"
-                    %option{:value => "Carta"} Carta
-                    %option{:value => "Solicitud"} Solicitud
-                    %option{:value => "Memorando", :selected => 'selected'} Memorando
-                    %option{:value => "Informe"} Informe
-                    %option{:value => "Otros"} Otros
-
-                  -elsif @issu.type_of_doc =="Informe"
-                    %option{:value => "Carta"} Carta
-                    %option{:value => "Solicitud"} Solicitud
-                    %option{:value => "Memorando"} Memorando
-                    %option{:value => "Informe", :selected => 'selected'} Informe
-                    %option{:value => "Otros"} Otros
-
-                  -elsif @issu.type_of_doc =="Otros"
-                    %option{:value => "Carta"} Carta
-                    %option{:value => "Solicitud"} Solicitud
-                    %option{:value => "Memorando"} Memorando
-                    %option{:value => "Informe"} Informe
-                    %option{:value => "Otros", :selected => 'selected'} Otros
-                -else
-                  %option{:value => "0"} Seleccione un tipo
-                  %option{:value => "Carta"} Carta
-                  %option{:value => "Solicitud"} Solicitud
-                  %option{:value => "Memorando"} Memorando
-                  %option{:value => "Informe"} Informe
-                  %option{:value => "Otros"} Otros
+                %option{:value => nil} Seleccione un tipo
+                %option{:value => "Carta", :selected => @issu.type_of_doc == "Carta"} Carta
+                %option{:value => "Solicitud", :selected => @issu.type_of_doc == "Solicitud"} Solicitud
+                %option{:value => "Memorando", :selected => @issu.type_of_doc == "Memorando"} Memorando
+                %option{:value => "Informe", :selected => @issu.type_of_doc == "Informe"} Informe
+                %option{:value => "Otros", :selected => @issu.type_of_doc == "Otros"} Otros
               %span.input-group-addon
                 %i.fa.fa-book
+        .row
+          %section.col.col-md-12
+            %label.label Tipo
+            %section.col.col-10
+              -@type_issu.each do |tb|
+                = f.radio_button :type_of_issued_letter_id, "#{tb.id}",  class: 'types'
+                %label= tb.name
+                %br
         .row
           -if @action == "edit"
             %section.col.col-md-6#year
@@ -96,19 +67,14 @@
             %label.label Descripción 
             %label.input
               = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false, rows: 4
-        .row
-          %section.col.col-md-12
-            %label.label Tipo
-            %section.col.col-10
-              -@type_issu.each do |tb|
-                = f.radio_button :type_of_issued_letter_id, "#{tb.id}"
-                %label= tb.name
-                %br
 
         .row
           %section.col.col-md-12
             %label.label Documento
-            = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+            -if @action == nil
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file", required: true
+            -else
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
             %p.help-block
               - if @action == 'edit' && @issu.document.exists?
                 = 'Archivo subido: ' + File.basename(@issu.document.path, File.extname(@issu.document.path))
@@ -117,11 +83,11 @@
 
       %footer
         -if @action == "edit"
-          %button.btn.btn-primary#submit{type: "submit"}
+          %button.btn.btn-primary#submit{type: "submit", :onclick => "part_block();"}
             %i.fa.fa-save 
             Guardar
         -else
-          %button.btn.btn-primary#submit{type: "submit", "style"=>"display:none;"}
+          %button.btn.btn-primary#submit{type: "submit", "style"=>"display:none;", :onclick => "part_block();"}
             %i.fa.fa-save 
             Guardar
 
@@ -148,7 +114,7 @@
             'issued_letter[description]' : {
               required : true,
             },
-            'issued_letter[type_of_issued_letter_ids]':{
+            'issued_letter[type_of_issued_letter_id]':{
               required: true
             },
             'issued_letter[year]' : {
@@ -172,7 +138,7 @@
             'issued_letter[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
             },
-            'issued_letter[type_of_issued_letter_ids]':{
+            'issued_letter[type_of_issued_letter_id]':{
               required: "Seleccione un tipo"
             },
             'issued_letter[year]' : {
@@ -191,6 +157,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -201,23 +169,33 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();  
       }
     });
   }
 
   $('#issued_letter_year').change(function(){
     var year = $(this).val();
-    if(!isNaN(year) && year.length == 4){
-      var type = $('#type').val();
-      lastcode("#{last_code_documentary_control_issued_letters_path}", year, type ,"#{form_authenticity_token}", "0302");
+    var type = 0;
+    $('input.types').each(function(){
+      if(document.getElementById($(this).attr('id')).checked){
+        type = $(this).val();
+      }
+    });
+    if(!isNaN(year) && year.length == 4 && type!=0){
+      var typedoc = $('#type').val();
+      lastcode("#{last_code_documentary_control_issued_letters_path}", year, type, typedoc,"#{form_authenticity_token}", "0302");
       $('#code').attr("style","display:block");
       $('#message').val(" ");
     }else{
       $.smallBox({
         title : "Aviso",
-        content : "<i class='fa fa-clock-o'></i> <i>El año solo son números y de 4 dígitos</i>",
+        content : "<i class='fa fa-clock-o'></i> <i>El año solo son números y de 4 dígitos, asegurese de haber selecciona un tipo de carta</i>",
         color : "#C46A69",
         iconSmall : "fa fa-times fa-2x fadeInRight animated",
         timeout : 4000
@@ -227,12 +205,12 @@
     }
   });
 
-  function lastcode(url, year, type, form_token, default_value){
+  function lastcode(url, year,  type, typedoc,form_token, default_value){
     $.ajax({
         type: "POST",
         url: url,
         async: false,
-        data: { year: year, type:type, authenticity_token: form_token}
+        data: { year: year, type:type, typedoc:typedoc, authenticity_token: form_token}
       }).done(function( data ) {
         $('#last').val(data.code);
       });
@@ -268,11 +246,24 @@
     }
   });
 
+  $('.types').change(function(){
+    $('#issued_letter_year').val('');
+    $('#code').attr("style","display:none");
+    $("#last").val('');
+  });
+
   $('#type').change(function(){
-    console.log("entro al type");
     if($(this).val()!=0){
+      $('#issued_letter_year').val('');
       $('#year').attr("style","display:block");
+      $('#code').attr("style","display:none");
+      $('#issued_letter_code').val('');
+      $("#last").val('');
     }else{
+      $('#issued_letter_year').val('');
       $('#year').attr("style","display:none");
+      $('#code').attr("style","display:none");
+      $('#issued_letter_code').val('');
+      $("#last").val('');
     }
   });

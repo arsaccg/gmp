@@ -15,8 +15,9 @@ class Logistics::CostCenterDetailsController < ApplicationController
     @cost_center_detail = CostCenterDetail.new
     @cost_center_id = params[:cost_center_id]
     @companyselected = get_company_cost_center('company')
-    @clients = TypeEntity.find_by_preffix("C").entities
-    @contractors = TypeEntity.find_by_preffix("P").entities    
+    @clients = TypeEntity.find_by_preffix("CL").entities
+    @contractors = TypeEntity.find_by_preffix("P").entities
+    @totalPercentage=EntityCostCenterDetail.sum(:participation, :conditions => {:cost_center_detail_id => [@cost_center_detail.id]})    
     render layout: false
   end
 
@@ -51,7 +52,7 @@ class Logistics::CostCenterDetailsController < ApplicationController
 
   def edit
     @reg_n=((Time.now.to_f)*100).to_i
-    @clients = TypeEntity.find_by_preffix("C").entities
+    @clients = TypeEntity.find_by_preffix("CL").entities
     @contractors = TypeEntity.find_by_preffix("P").entities
     @cost_center_detail = CostCenterDetail.find(params[:id])
     @cost_center_id = params[:cost_center_id]
@@ -59,8 +60,7 @@ class Logistics::CostCenterDetailsController < ApplicationController
     @details=CostCenterDetail.all
     @action = 'edit'
     @totalPercentage=EntityCostCenterDetail.sum(:participation, :conditions => {:cost_center_detail_id => [@cost_center_detail.id]})
-
-    render layout: false
+  render layout: false
   end
 
   def add_contractor_field
@@ -69,7 +69,7 @@ class Logistics::CostCenterDetailsController < ApplicationController
     @participation = params[:participation].to_f
     render(partial: 'contractors', :layout => false)
   end
-
+  
   def destroy
   end
 
@@ -81,7 +81,7 @@ class Logistics::CostCenterDetailsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def cost_center_detail_params
-      params.require(:cost_center_detail).permit(:name,:call_date,:snip_code,:process_number,:good_pro_date,:referential_value,:earned_value,:direct_cost,:general_cost,:utility,:IGV,:contract_sign_date,:contract_number,:land_delivery_date,:direct_advanced_payment_date,:cost_center_id,:amazon_tax_condition,:direct_advanced_form_date,:start_date_of_work,:procurement_system,:execution_term,:supervision,:entity_id,:material_advanced_payment_date, entity_cost_center_details_attributes: [:id, 
+      params.require(:cost_center_detail).permit(:name,:call_date,:snip_code,:process_number,:good_pro_date,:referential_value,:earned_value,:direct_cost,:general_cost,:utility,:IGV,:contract_sign_date,:contract_number,:land_delivery_date,:direct_advanced_payment_date,:cost_center_id,:amazon_tax_condition,:direct_advanced_form_date,:start_date_of_work,:procurement_system,:execution_term,:supervision,:entity_id,:material_advanced_payment_date,:district,:province,:department, entity_cost_center_details_attributes: [:id, 
         :cost_center_detail_id,
         :entity_id, 
         :participation,:_destroy])

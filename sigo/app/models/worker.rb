@@ -9,6 +9,7 @@ class Worker < ActiveRecord::Base
   has_many :worker_contracts
   has_many :worker_afps
   has_many :worker_healths
+  has_many :type_workdays_workers
   belongs_to :entity
   belongs_to :cost_center
   belongs_to :position_worker
@@ -122,7 +123,7 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
         ]
       elsif part_person[4]=="registered"
         result << [
@@ -131,7 +132,7 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
         ]
       elsif part_person[4]=="active"
         result << [
@@ -140,7 +141,7 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
         ]
       elsif part_person[4]=="ceased"
         result << [
@@ -149,7 +150,7 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> "
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
         ]
       else
         result << [
@@ -158,7 +159,7 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
         ]
       end
     end
@@ -214,7 +215,7 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/production/workers/"+part_person[0].to_s+"/register','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Registrar</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>" + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
         ]
       elsif part_person[4]=="registered"
         result << [
@@ -223,7 +224,7 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> "
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
         ]
       elsif part_person[4]=="active"
         result << [
@@ -241,7 +242,7 @@ class Worker < ActiveRecord::Base
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> "
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
         ]
       else
         result << [

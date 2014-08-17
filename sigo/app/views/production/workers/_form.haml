@@ -118,7 +118,7 @@
           %section.col.col-8
             %label.label Entidad Trabajador
             %label.input{for: "entity_id"}
-              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ', ' + @entity.name.to_s + ' ' + @entity.second_name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ', ' + @entity.name.to_s + ' ' + @entity.second_name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
           %section.col.col-4#categoria{ 'style' => 'display:none' }
             %label.label Categoría del Obrero
             %label.input{for: "category_of_worker_id"}
@@ -133,39 +133,39 @@
         .row
           %section.col.col-4
             %label Fecha de Nacimiento
-            %input#familiar-dayofbirth.string.optional.form-control{'name'=>'date_of_birth', type: "date", :value => "#{@entity.date_of_birth}", disabled: "disabled", style: "background-color: gainsboro;"}
+            %input#familiar-dayofbirth.string.optional.form-control{'name'=>'date_of_birth', type: "date", :value => "#{@entity.date_of_birth}", disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;"}
           %section.col.col-4
             %label.label DNI
             %label.input{for: "dni"}
-              = text_field_tag 'worker[dni]', @entity.dni, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[dni]', @entity.dni, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;"
           %section.col.col-4
-            %label.label Carnet de Extranjeria
+            %label.label Nacionalidad
             %label.input{for: "alienslicense"}
-              = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Carnet de Extranjeria', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Nacionalidad', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
         %label.label Lugar de Nacimiento
         .row
           %section.col.col-4
             %label.label Ciudad
             %label.input{for: "city"}
-              = text_field_tag 'worker[city]', @entity.city, class: 'form-control', placeholder: 'Ciudad', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[city]', @entity.city, class: 'form-control', placeholder: 'Ciudad', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
           %section.col.col-4
             %label.label Provincia
             %label.input{for: "province"}
-              = text_field_tag 'worker[province]', @entity.province, class: 'form-control', placeholder: 'Provincia', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[province]', @entity.province, class: 'form-control', placeholder: 'Provincia', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
           %section.col.col-4
             %label.label Departamento
             %label.input{for: "department"}
-              = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Departamento', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Departamento', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
         .row#row1{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Email
             %label.input{for: "email"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :email, placeholder: "Email", input_html: { class: 'form-control' }, label: false, style: "background-color: gainsboro;"
+              = f.input :email, placeholder: "Email", input_html: { class: 'form-control', :onchange => "makeUppercase(this);" }, label: false, style: "background-color: gainsboro; text-transform: uppercase;"
           %section.col.col-4
             %label.label Teléfono
             %label.input{for: "phone"}
-              = f.input :phone, input_html: { class: 'form-control' }, label: false, style: "background-color: gainsboro;"
+              = f.input :phone, input_html: { class: 'form-control' }, label: false, style: "background-color: gainsboro; text-transform: uppercase;"
           %section.col.col-4
             %label.label Celular
             %label.input{for: "cellphone"}
@@ -175,30 +175,30 @@
           %section.col.col-8
             %label.label Dirección
             %label.input{for: "address"}
-              = f.input :address, placeholder: "Dirección", input_html: { class: 'form-control' }, label: false
+              = f.input :address, placeholder: "Dirección", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-4
             %label.label País
             %label.input{for: "pais"}
-              = f.input :pais, input_html: { class: 'form-control' }, label: false
+              = f.input :pais, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
         .row#row3{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Distrito
             %label.input{for: "district"}
-              = f.input :district, placeholder: "Distrito", input_html: { class: 'form-control' }, label: false
+              = f.input :district, placeholder: "Distrito", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-4
             %label.label Provincia
             %label.input{for: "province"}
-              = f.input :province, input_html: { class: 'form-control' }, label: false
+              = f.input :province, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-4
             %label.label Departamento
             %label.input{for: "department"}
-              = f.input :department, input_html: { class: 'form-control' }, label: false
+              = f.input :department, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
         .row#row4{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Licencia de Conducir
             %label.input{for: "driverlicense"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :driverlicense, placeholder: "Licencia de Conducir", input_html: { class: 'form-control' }, label: false
+              = f.input :driverlicense, placeholder: "Licencia de Conducir", input_html: { class: 'form-control', style: 'text-transform: uppercase;' , :onchange => "makeUppercase(this);"}, label: false
           %section.col.col-4
             %label.control-label Estado Civil
             %br
@@ -210,19 +210,14 @@
                   %option{:value => "casado", :selected => "#{@worker.maritalstatus}"=="casado"} Casado
                   %option{:value => "divorciado", :selected => "#{@worker.maritalstatus}"=="divorciado"} Divorciado
                   %option{:value => "viudo", :selected => "#{@worker.maritalstatus}"=="viudo"} Viudo
+                  %option{:value => "conviviente", :selected => "#{@worker.maritalstatus}"=="conviviente"} Conviviente
                 -else
                   %option{:value => "0", :selected => 'selected'} Seleccione un estado
                   %option{:value => "soltero"} Soltero
                   %option{:value => "casado"} Casado
                   %option{:value => "divorciado"} Divorciado
                   %option{:value => "viudo"} Viudo
-          %section.col.col-4
-            %label.label CUSPP
-            %label.input{for: "afpnumber"}
-              %i.icon-append.fa.fa-credit-card
-              = f.input :afpnumber, placeholder: "CUSPP", input_html: { class: 'form-control' }, label: false
-            %label Obtener CUSPP accediendo a
-            %a{:target =>'_blank', :href => 'http://www.sbs.gob.pe/app/spp/Reporte_sit_prev/afil_existe.asp'}>web de la SBS
+                  %option{:value => "conviviente"} Conviviente
         .row#row7{ 'style' => 'display:none' }
           %section.col.col-12
             %label.label JORNADA LABORAL
@@ -258,6 +253,15 @@
                   %label.radio-inline
                     %input{:name =>'worker[disabled]', :type => 'radio', :value => "no", checked: ""}
                     %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[disabled]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[disabled]', :type => 'radio', :value => "no"}
+                    %span No
             -else
               .col-md-2
                 %label.radio-inline
@@ -286,6 +290,15 @@
                 .col-md-2
                   %label.radio-inline
                     %input{:name =>'worker[unionized]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[unionized]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[unionized]', :type => 'radio', :value => "no"}
                     %span No
             -else
               .col-md-2
@@ -322,6 +335,15 @@
                 .col-md-2
                   %label.radio-inline
                     %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+              -else
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si"}
+                    %span Si
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no"}
                     %span No
             -else
               %section.col-md-2
@@ -402,10 +424,10 @@
         .row
           %section.col.col-3
             %label Fecha de Inicio
-            %input#health-startdate.string.optional.form-control{'name'=>'healthstartdate', type: "date"}
+            %input#health-startdate.string.optional.form-control{'name'=>'healthstartdate', type: "date", style: 'text-transform: uppercase;'}
           %section.col.col-3
             %label Fecha de Fin
-            %input#health-enddate.string.optional.form-control{'name'=>'healthenddate', type: "date"}
+            %input#health-enddate.string.optional.form-control{'name'=>'healthenddate', type: "date", style: 'text-transform: uppercase;'}
           
           %br
           %section.col.col-2
@@ -452,42 +474,70 @@
         %legend Regimen Pensionario
         %br
         .row
-          %section.col.col-2
-            %label.control-label(for="afp_id") AFP
+          %section.col-md-4
+            %label.label Elija un Régimen Pensionario
+          %section.col-md-12
+            .row
+              .col-md-1
+              %section.col-md-7
+                %label.radio-inline
+                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "Estoy"}
+                  %span Estoy afiliado al Sistema Privado de Pensiones
+            .row
+              .col-md-1
+              %section.col-md-7
+                %label.radio-inline
+                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "Deseo"}
+                  %span Deseo afiliarme al Sistema Privado de Pensiones
+            .row
+              .col-md-1
+              %section.col-md-7
+                %label.radio-inline
+                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "No"}
+                  %span No estoy afiliado a ninguna AFP y deseo inscribirme o permanecer en el Sistema Nacional de Pensiones
+        .row#afp4{ 'style' => 'display:none' }
+          %section.col.col-1
+            %br
+            %label.control-label(for="afp_id") Regimen Pensionario
 
-          %section.col.col-3
-            %select#afp-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
-              - @afp.each do |afp|
-                %option(value = "#{afp.id}")
-                  = afp.enterprise
+          %section.col.col-3#afplista{ 'style' => 'display:none' }
+            %label.label Lista de AFPs
+            %select#afp-select.select2.form-control(style='width:100%;padding: 0;border: none;')
 
-          %section.col.col-3
-            %select#afptype-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
-              %option(value = "") Tipo de comisión
-              %option(value = "Comision por Flujo(sueldo)") Comision por Flujo(sueldo)
-              %option(value = "Comision mixta (saldo y sueldo)") Comision mixta (saldo y sueldo)
+          %section.col.col-3#afpcuspp{ 'style' => 'display:none' }
+            %label.label CUSPP
+            = text_field_tag 'afpnumber', nil, class: 'form-control', id: 'afp-afpnumber', placeholder: 'Numero de Cuenta'
+            %label Obtener CUSPP accediendo a
+            %a{:target =>'_blank', :href => 'http://www.sbs.gob.pe/app/spp/Reporte_sit_prev/afil_existe.asp'}>web de la SBS
 
-        .row
-          %section.col.col-3
-            %label Fecha de Inicio
+          %section.col.col-3#afpfechaafi{ 'style' => 'display:none' }
+            %label Fecha de Afiliación
             %input#afp-startdate.string.optional.form-control{'name'=>'afpstartdate', type: "date"}
-          %section.col.col-3
-            %label Fecha de Fin
-            %input#afp-enddate.string.optional.form-control{'name'=>'afpenddate', type: "date"}
           %br
           %section.col.col-2
             %div
               %a(href="javascript:add_afp_item();" id="btn-add-afp" class="btn btn-success" role="button")
                 Agregar AFP
 
+        .row#afp2{ 'style' => 'display:none' }
+          %section.col.col-3
+            %select#afptype-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
+              %option(value = "") Tipo de comisión
+              %option(value = "Comision por Flujo(sueldo)") Comision por Flujo(sueldo)
+              %option(value = "Comision mixta (saldo y sueldo)") Comision mixta (saldo y sueldo)
+          %section.col.col-3
+            %label Fecha de Fin
+            %input#afp-enddate.string.optional.form-control{'name'=>'afpenddate', type: "date"}
+
         .col-lg-12
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
                 %th.col-2 Nombre
-                %th.col-2 Tipo de AFP
+                %th.col-2{ 'style' => 'display:none' } Tipo de AFP
+                %th.col-2 CUSPP
                 %th.col-2 Fecha de Inicio
-                %th.col-2 Fecha de Fin
+                %th.col-2{ 'style' => 'display:none' } Fecha de Fin
                 %th Eliminar
             %tbody(id="afp_items_table")
               - if @action == 'edit'
@@ -497,11 +547,13 @@
                     %td.bank-id(style="display:none")
                       = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afp_id]', oos.afp.id
                     %td.col-2=oos.afp.enterprise
-                    %td.col-2.afptype
+                    %td.col-2.afptype{ 'style' => 'display:none' }
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afptype]', oos.afptype, class: "form-control afptype-item"
+                    %td.col-2.cuspp
+                      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afpnumber]', oos.afpnumber, class: "form-control afpnumber-item"
                     %td.col-2.start_date
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][start_date]', oos.start_date, class: "form-control start_date-item"
-                    %td.col-2.end_date
+                    %td.col-2.end_date{ 'style' => 'display:none' }
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][end_date]', oos.end_date, class: "form-control end_date-item"
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][id]', oos.id
@@ -613,36 +665,64 @@
           %section.col.col-5
             %label.label Colegio Primaria
             %label.input{for: "primaryschool"}
-              = f.input :primaryschool, placeholder: "Colegio", input_html: { class: 'form-control' }, label: false
+              = f.input :primaryschool, placeholder: "Colegio", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-3
             %label.label Lugar
             %label.input{for: "primarydistrict"}
-              = f.input :primarydistrict, input_html: { class: 'form-control' }, label: false
+              = f.input :primarydistrict, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-2
             %label.label Desde
             %label.input{for: "primarystartdate"}
-              = f.input :primarystartdate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+              %select.form-control{:name =>"worker[primarystartdate]", :style => 'width:100%;padding: 0;border: none;'}
+                - @years.each do |years|
+                  - if @worker.primarystartdate == years
+                    %option{:value => "#{years}", :selected => true}
+                      = years
+                  - else
+                    %option{:value => "#{years}"}
+                      = years
           %section.col.col-2
             %label.label Hasta
             %label.input{for: "primaryenddate"}
-              = f.input :primaryenddate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+              %select.form-control{:name =>"worker[primaryenddate]", :style => 'width:100%;padding: 0;border: none;'}
+                - @years.each do |years|
+                  - if @worker.primarystartdate == years
+                    %option{:value => "#{years}", :selected => true}
+                      = years
+                  - else
+                    %option{:value => "#{years}"}
+                      = years
         .row
           %section.col.col-5
             %label.label Colegio Secundaria
             %label.input{for: "highschool"}
-              = f.input :highschool, placeholder: "Colegio", input_html: { class: 'form-control' }, label: false
+              = f.input :highschool, placeholder: "Colegio", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-3
             %label.label Lugar
             %label.input{for: "highschooldistrict"}
-              = f.input :highschooldistrict, input_html: { class: 'form-control' }, label: false
+              = f.input :highschooldistrict, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-2
             %label.label Desde
             %label.input{for: "highschoolstartdate"}
-              = f.input :highschoolstartdate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+              %select.form-control{:name =>"worker[highschoolstartdate]", :style => 'width:100%;padding: 0;border: none;'}
+                - @years.each do |years|
+                  - if @worker.primarystartdate == years
+                    %option{:value => "#{years}", :selected => true}
+                      = years
+                  - else
+                    %option{:value => "#{years}"}
+                      = years
           %section.col.col-2
             %label.label Hasta
             %label.input{for: "highschoolenddate"}
-              = f.input :highschoolenddate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+              %select.form-control{:name =>"worker[highschoolenddate]", :style => 'width:100%;padding: 0;border: none;'}
+                - @years.each do |years|
+                  - if @worker.primarystartdate == years
+                    %option{:value => "#{years}", :selected => true}
+                      = years
+                  - else
+                    %option{:value => "#{years}"}
+                      = years
         .row
           %section.col.col-2
             %div
@@ -740,6 +820,15 @@
                   %label.radio-inline
                     %input{:name =>'worker[quality]', :type => 'radio', :value => "no", checked: ""}
                     %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "no"}
+                    %span No
             -else
               .col-md-2
                 %label.radio-inline
@@ -768,6 +857,15 @@
                 .col-md-2
                   %label.radio-inline
                     %input{:name =>'worker[security]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "no"}
                     %span No
             -else
               .col-md-2
@@ -806,6 +904,15 @@
                   %label.radio-inline
                     %input{:name =>'worker[enviroment]', :type => 'radio', :value => "no", checked: ""}
                     %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "no"}
+                    %span No
             -else
               .col-md-2
                 %label.radio-inline
@@ -834,6 +941,15 @@
                 .col-md-2
                   %label.radio-inline
                     %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no"}
                     %span No
             -else
               .col-md-2
@@ -893,16 +1009,7 @@
             .section.col.col-md-3
               .form-group
               -if @action == 'edit'
-                -if @worker.numberofchilds!=""
-                  .col-md-3
-                    %label.radio-inline
-                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "si", checked: ""}
-                      %span Si
-                  .col-md-1
-                    %label.radio-inline
-                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "no"}
-                      %span No
-                -elsif @worker.numberofchilds==""
+                -if @worker.numberofchilds.nil?
                   .col-md-3
                     %label.radio-inline
                       %input{:name =>'numberofchilds2', :type => 'radio', :value => "si"}
@@ -910,6 +1017,15 @@
                   .col-md-1
                     %label.radio-inline
                       %input{:name =>'numberofchilds2', :type => 'radio', :value => "no", checked: ""}
+                      %span No
+                -else
+                  .col-md-3
+                    %label.radio-inline
+                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "si", checked: ""}
+                      %span Si
+                  .col-md-1
+                    %label.radio-inline
+                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "no"}
                       %span No
               -else
                 .col-md-3
@@ -984,7 +1100,7 @@
         .row
           %section.col.col-md-12
             .col-md-5
-              %label.label Declaración Jurada
+              %label.label Declaración Jurada de Renta de 5ta
             .col-md-7
               = f.input :affidavit, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block
@@ -996,7 +1112,7 @@
         .row#partidamatrimonio{ 'style' => 'display:none' }
           %section.col.col-md-12
             .col-md-5
-              %label.label Certificado de Convivencia / Partida de Matrimonio
+              %label.label Certificado de Convivencia de Matrimonio/ Partida de Matrimonio
             .col-md-7
               = f.input :marriage_certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block.col-md-
@@ -1068,7 +1184,6 @@
       $("#fieldset4").css("display", "");
       $("#fieldset5").css("display", "");
       $("#fieldset6").css("display", "");
-      $("#fieldset7").css("display", "");
     }
     if('#{@worker.typeofworker}'=="obrero"){
       $("#categoria").css("display", "");
@@ -1107,7 +1222,6 @@
       $("#fieldset4").css("display", "");
       $("#fieldset5").css("display", "");
       $("#fieldset6").css("display", "");
-      $("#fieldset7").css("display", "");
     }
     else {
       $("#row1").css("display", "none");
@@ -1123,7 +1237,6 @@
       $("#fieldset4").css("display", "none");
       $("#fieldset5").css("display", "none");
       $("#fieldset6").css("display", "none");
-      $("#fieldset7").css("display", "none");
     }
   });
   $("input.radiobox").change(function() {
@@ -1134,6 +1247,66 @@
       $("#categoria").css("display", "none");
     }
   });
+  $("input[type=radio][name=regimenpensionario]").change(function() {
+    if($(this).prop('value') == "Estoy"){
+
+      $.ajax({
+        type: "POST",
+        url: "#{display_afps_production_workers_path}",
+        async: false,
+        data: { type_of_afp: "SPP", authenticity_token: "#{form_authenticity_token}"}
+      }).done(function( data ) {
+        $('#afp-select').empty();
+        $('#afp-select').append( data.hash )
+      });
+
+      $("#afp4").css("display", "");
+      $("#afpcuspp").css("display", "");
+      $("#afpfechaafi").css("display", "");
+      $("#afplista").css("display", "");
+    }
+    else if($(this).prop('value') == "Deseo"){
+
+      $.ajax({
+        type: "POST",
+        url: "#{display_afps_production_workers_path}",
+        async: false,
+        data: { type_of_afp: "SPP", authenticity_token: "#{form_authenticity_token}"}
+      }).done(function( data ) {
+        $('#afp-select').empty();
+        $('#afp-select').append( data.hash )
+      });
+
+      $("#afp4").css("display", "");
+      $("#afpcuspp").css("display", "none");
+      $("#afpfechaafi").css("display", "none");
+      $("#afplista").css("display", "");
+    }
+    else if($(this).prop('value') == "No"){
+
+      $.ajax({
+        type: "POST",
+        url: "#{display_afps_production_workers_path}",
+        async: false,
+        data: { type_of_afp: "SNP", authenticity_token: "#{form_authenticity_token}"}
+      }).done(function( data ) {
+        $('#afp-select').empty();
+        $('#afp-select').append( data.hash )
+      });
+
+      $("#afp4").css("display", "");
+      $("#afpcuspp").css("display", "none");
+      $("#afpfechaafi").css("display", "none");
+      $("#afplista").css("display", "");
+    }
+    else{
+      $("#afp4").css("display", "none");
+      $("#afpcuspp").css("display", "none");
+      $("#afpfechaafi").css("display", "none");
+      $("#afplista").css("display", "none");
+    }
+  });
+
   $("input[type=radio][name=numberofchilds2]").change(function() {
     if($(this).prop('value') == "si"){
       $("#numberofchildren").css("display", "");
@@ -1176,7 +1349,7 @@
     }
   });
 
-  function submit_validate(form){    
+  function submit_validate(form){
     loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
     $('#bank-select').select2();
     $(form['selector']).ajaxForm({
@@ -1227,15 +1400,24 @@
         });
         // Remove all Help-inLine
         $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
         // Client Valid
-        $("#modalLoading").modal('show');
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        
         return $(form['selector']).valid();
       },
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }
@@ -1257,7 +1439,7 @@
   }
 
   function add_afp_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", afp_id: $("#afp-select").val(), afpnumber: $("#afp-afpnumber").val(), afptype: $("#afptype-select").val(), start_date: $("#afp-startdate").val(), end_date: $("#afp-enddate").val()};
+    str_item = {authenticity_token: "#{form_authenticity_token}", afp_id: $("#afp-select").val(), afpnumber: $("#afp-afpnumber").val(), afptype: $("#afptype-select").val(), start_date: $("#afp-startdate").val(), end_date: $("#afp-enddate").val(), afpnumber: $("#afp-afpnumber").val()};
 
     append_url_ajax('#{add_afp_item_field_production_workers_path}', 'afp_items_table', str_item, 0, 'POST');
   }
@@ -1295,3 +1477,7 @@
   function delete_item(code){
     $("#tr" + code).remove();
   }
+  
+  function makeUppercase(element) {
+    $(element).val($(element).val().toUpperCase());
+  }  

@@ -1,6 +1,7 @@
 class Production::WorkersController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+  skip_before_filter  :verify_authenticity_token
   def index
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
@@ -83,12 +84,23 @@ class Production::WorkersController < ApplicationController
         @afp = Afp.all
         @positionWorkers = PositionWorker.all
         @health = HealthCenter.all
+        @years = getyears()
         render layout: false
       else
         flash[:error] =  "El trabajador ya existe y esta activo."
         redirect_to :action => :index
       end
     end
+  end
+
+  def display_afps
+    @hash = Array.new
+    @hash = "<option value=''>Seleccione</option>"
+    afp = Afp.where("type_of_afp = ?", params[:type_of_afp])
+    afp.each do |afp|
+      @hash = @hash + "<option value="+afp.id.to_s+">"+afp.enterprise.to_s+"</option>"
+    end
+    render :json => { 'hash' => @hash }
   end
 
   def create
@@ -151,6 +163,7 @@ class Production::WorkersController < ApplicationController
   def add_afp_item_field
     @reg_n = ((Time.now.to_f)*100).to_i
     @afp = Afp.find(params[:afp_id])
+    @afpnumber = params[:afpnumber]
     @start_date = params[:start_date]
     @end_date = params[:end_date]
     @enterprise, @id_afp = @afp.enterprise, @afp.id
@@ -210,6 +223,7 @@ class Production::WorkersController < ApplicationController
     @exitreason = params[:exitreason]
     @start_date = params[:start_date2]
     @end_date = params[:end_date2]
+    @years2 = getyears()
     render(partial: 'experience_items', :layout => false)
   end
 
@@ -235,8 +249,17 @@ class Production::WorkersController < ApplicationController
       flash[:error] = "No se puede eliminar al trabajador."
       worker = 'true'
     else
-      flash[:notice] = "Se ha eliminado correctamente el trabajador."
+      worker = Worker.find(params[:id])
+      worker.worker_afps.destroy_all
+      worker.worker_center_of_studies.destroy_all
+      worker.worker_details.destroy_all
+      worker.worker_experiences.destroy_all
+      worker.worker_familiars.destroy_all
+      worker.worker_healths.destroy_all
+      worker.worker_otherstudies.destroy_all
+      worker.type_workdays_workers.destroy_all
       worker = Worker.destroy(params[:id])
+      flash[:notice] = "Se ha eliminado correctamente el trabajador."
     end
     render :json => worker
   end
@@ -244,7 +267,6 @@ class Production::WorkersController < ApplicationController
   def register
     worker = Worker.find(params[:id])
     worker.register
-    puts "YES"
     redirect_to :action => :index
   end
 
@@ -307,22 +329,63 @@ class Production::WorkersController < ApplicationController
   def worker_pdf
     @company = Company.find(session[:company])
     @date = Time.now
-    puts @date.inspect
     @worker = Worker.find(params[:id])
+    if @worker.entity.date_of_birth!=nil
+      @edad = @date.year - @worker.entity.date_of_birth.year
+    else
+      @edad = 0
+    end
     @worker_afps = @worker.worker_afps
+    @nombre = ""
+    @afp = WorkerAfp.where("worker_id = ?",params[:id]).last
+    if @afp.afp.type_of_afp == 'SNP'
+      @nombre = "SNP"
+    elsif @afp.afp.type_of_afp == 'SPP'
+      @nombre = "Nombre de AFP"
+    else
+      @nombre = ""
+    end
+    @bank = WorkerDetail.where("worker_id = ?",params[:id]).last
     @worker_center_of_studies = @worker.worker_center_of_studies
     @worker_details = @worker.worker_details
     @worker_experiences = @worker.worker_experiences
     @worker_familiars = @worker.worker_familiars
     @worker_healths = @worker.worker_healths
     @worker_otherstudies = @worker.worker_otherstudies
+    @familiars = 1
+    @center_of_studies = 1
+    @otherstudies = 1
+    @experiencies = 1
+    if @worker_familiars.count==0
+      @familiars = 0
+    end
+    if @worker_center_of_studies.count==0
+      @center_of_studies = 0
+    end
+    if @worker_otherstudies.count==0
+      @otherstudies = 0
+    end
+    if @worker_experiences.count==0
+      @experiencies = 0
+    end
+    @workercontract = WorkerContract.where("worker_id = ?",params[:id]).last
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :portrait }
 
   end
 
+  def getyears
+    years = Array.new
+    startyear = 1930
+    (0..169).each do |something|
+      years << startyear
+      startyear += 1
+    end
+    return years
+  end
+
   private
   def worker_parameters
-    params.require(:worker).permit(:email, {:type_workday_ids => []}, :afpnumber, :driverlicense, :income_fifth_category, :unionized, :disabled, :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_afps_attributes: [:id, :worker_id, :afp_id, :afptype, :start_date, :end_date, :_destroy], worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :start_date, :end_date, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :title, :salary, :bossincharge, :exitreason, :_destroy])
+    params.require(:worker).permit(:email, {:type_workday_ids => []}, :onpafp, :driverlicense, :income_fifth_category, :unionized, :disabled, :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,:highschoolenddate,:levelofinstruction, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,:primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province, :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate, :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate, worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy], worker_afps_attributes: [:id, :worker_id, :afp_id, :afpnumber, :afptype, :start_date, :end_date, :_destroy], worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :start_date, :end_date, :_destroy], worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy], worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy], worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy], worker_experiences_attributes: [:id, :worker_id, :businessname, :title, :salary, :bossincharge, :exitreason, :_destroy])
   end
 
   def worker_contract_file_param

@@ -1,0 +1,97 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        Pedidos a Almacén #
+        = @warehouse_order.code.to_s.rjust(5, '0')
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-6
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = 'Pedido a Almacén N° ' + @warehouse_order.code.to_s.rjust(5, '0')
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Codigo
+                    %th Grupo de Trabajo
+                    %th Fecha
+                %tbody(id="article_items_table")
+                  %tr
+                    %td
+                      = @warehouse_order.code.to_s
+                    %td
+                      =WorkingGroup.find(@warehouse_order.working_group_id.to_s).name  
+                    %td
+                      = @warehouse_order.date.strftime("%d/%m/%Y")
+
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 Detalle del Pedido de Almacén
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Codigo
+                    %th Descripcióm
+                    %th Unidad de Medida
+                    %th Stock
+                    %th Cantidad
+                    %th Sector
+                    %th Fase
+                %tbody(id="article_items_table")
+                  - @warehouse_order_details.each do |detail|
+                    %tr
+                      %td
+                        = detail.article.code
+                      %td
+                        = detail.article.name
+                      %td
+                        - if detail.article.unit_of_measurement_id != nil
+                          = detail.article.unit_of_measurement.name
+                        - else
+                          = "No tiene Unidad de Medida"
+                      %td
+                        =StockInput.get_stock(detail.article.id).to_i
+                      %td
+                        = detail.quantity.to_s+" unidades"
+                        %br
+                        %code= "En stock: #{StockInput.get_stock(detail.article.id).to_i}"
+                        %br
+                        %code= "Pedidos: #{WarehouseOrderDetail.sum(:quantity, :conditions => {:article_id => detail.article.id})}"
+                      %td
+                        - if detail.sector !=nil
+                          = detail.sector.name
+                        - else
+                          = "No tiene sector"
+                      %td
+                        - if detail.phase !=nil
+                          = detail.phase.name
+                        - else
+                          ="No tiene fase"
+
+
+
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-delivery-order{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado de Pedidos de Almacén
+
+:javascript
+  
+  $('#backlist-delivery-order').click(function(){
+    load_url_ajax("#{logistics_warehouse_orders_path}", 'content', null, 'GET');
+  });

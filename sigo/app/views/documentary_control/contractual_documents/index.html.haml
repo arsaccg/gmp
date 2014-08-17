@@ -17,17 +17,22 @@
         %strong Error!
         = flash[:error]
   .row
-    .col-sm-4
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_contractual_document_path}', 'content', null, null, 'GET')"}
-        Agregar Documento Contractual
-    .col-md-3
-      = text_field_tag 'wordtosearch', nil, class: 'form-control', id: 'wordtosearch', placeholder: 'Escriba aqui su búsqueda'
-    .col-md-3
-      %button.btn.btn-primary.btn-default#show-table{href: 'javascript:void(0);', :onclick => 'search();'}
-        %i.fa.fa-search
-        Buscar
-    %br
-    #contractual.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+    -if @type_cont.count != 0
+      .col-sm-4
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_contractual_document_path}', 'content', null, null, 'GET')"}
+          Agregar Documento Contractual
+      .col-md-3
+        = text_field_tag 'wordtosearch', nil, class: 'form-control', id: 'wordtosearch', placeholder: 'Escriba aqui su búsqueda'
+      .col-md-3
+        %button.btn.btn-primary.btn-default#show-table{href: 'javascript:void(0);', :onclick => 'search();'}
+          %i.fa.fa-search
+          Buscar
+      %br
+      #contractual.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+    -else
+      .alert.alert-danger.fade.in
+        %i.fa-fw.fa.fa-check
+        %strong{"style"=> "font-size: 12px"} Error! Asegurese de tener creado por lo menos un tipo
 
   %br
   .row

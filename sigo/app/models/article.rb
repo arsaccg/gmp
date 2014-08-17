@@ -3,8 +3,8 @@ class Article < ActiveRecord::Base
   
     include ActiveModel::Validations 
 	
-    has_many :deliver_orders
-    
+    has_many :delivery_orders
+    has_many :warehouse_orders
   	has_many :subcontract_details
   	has_many :subcontract_equipment_details
   	has_many :part_work_details

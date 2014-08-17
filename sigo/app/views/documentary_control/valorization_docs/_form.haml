@@ -30,7 +30,10 @@
         .row
           %section.col.col-md-12
             %label.label Documento
-            = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+            -if @action == nil
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file", required: true
+            -else
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
             %p.help-block
               - if @action == 'edit' && @val.document.exists?
                 = 'Archivo subido: ' + File.basename(@val.document.path, File.extname(@val.document.path))
@@ -38,7 +41,7 @@
                 Subir el archivo correspondiente
 
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -48,7 +51,7 @@
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
-      submit_validate($('#new_valorizarion_doc'));
+      submit_validate($('#new_valorization_doc'));
     }
 
   });
@@ -59,29 +62,29 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'valorizarion_doc[name]' : {
+            'valorization_doc[name]' : {
               required : true
             },
-            'valorizarion_doc[description]' : {
+            'valorization_doc[description]' : {
               required : true,
             },
-            'valorizarion_doc[type_of_valorizarion_doc_ids]':{
+            'valorization_doc[type_of_valorization_doc_id]':{
               required: true
             }
           },
 
           // Messages for form validation
           messages : {
-            'valorizarion_doc[name]' : {
+            'valorization_doc[name]' : {
               required : "Por favor, ingrese el nombre del documento"
             },
-            'valorizarion_doc[description]' : {
+            'valorization_doc[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
             },
-            'valorizarion_doc[document]' : {
+            'valorization_doc[document]' : {
               required : "Por favor, ingrese el documento"
             },
-            'valorizarion_doc[type_of_valorizarion_doc_ids]':{
+            'valorization_doc[type_of_valorization_doc_id]':{
               required: "Seleccione un tipo"
             }
           },
@@ -89,6 +92,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -99,6 +104,8 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();       
       },
       error: function(xhr, status, error) {
       }

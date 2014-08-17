@@ -13,25 +13,25 @@
             %label.label Nombre
             %label.input{for: "name"}
               %i.icon-append.fa.fa-user
-              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
         .row
           %section.col.col-10
             %label.label Segundo Nombre
             %label.input{for: "second_name"}
               %i.icon-append.fa.fa-user
-              = f.input :second_name, placeholder: "Segundo Nombre", input_html: { class: 'form-control' }, label: false
+              = f.input :second_name, placeholder: "Segundo Nombre", input_html: { class: 'form-control', style: 'text-transform: uppercase;' , :onchange => "makeUppercase(this);"}, label: false
         .row
           %section.col.col-10
             %label.label Apellido Paterno
             %label.input{for: "paternal_surname"}
               %i.icon-append.fa.fa-user
-              = f.input :paternal_surname, placeholder: "Apellido Paterno", input_html: { class: 'form-control' }, label: false
+              = f.input :paternal_surname, placeholder: "Apellido Paterno", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
         .row
           %section.col.col-10
             %label.label Apellido Materno
             %label.input{for: "maternal_surname"}
               %i.icon-append.fa.fa-user
-              = f.input :maternal_surname, placeholder: "Apellido Materno", input_html: { class: 'form-control' }, label: false
+              = f.input :maternal_surname, placeholder: "Apellido Materno", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
         .row
           %section.col.col-10
             %label.label Fecha de Nacimiento
@@ -50,37 +50,37 @@
             .form-group
               .col-md-12
                 %label.radio-inline
-                  %input.radiobox{:name =>'entity[gender]', :type => 'radio', :value => "masculino"}
+                  %input.radiobox{:name =>'entity[gender]', :type => 'radio', :value => "masculino", :checked => @entity.gender=="masculino"}
                   %span Masculino
                 %label.radio-inline
-                  %input.radiobox{:name =>'entity[gender]', :type => 'radio', :value => "femenino"}
+                  %input.radiobox{:name =>'entity[gender]', :type => 'radio', :value => "femenino", :checked => @entity.gender=="femenino"}
                   %span Femenino
         %br
         .row
           %section.col.col-10
-            %label.label Carnet de Extranjería
+            %label.label Nacionalidad
             %label.input{for: "alienslicense"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :alienslicense, placeholder: "Carnet de Extranjería", input_html: { class: 'form-control' }, label: false
+              = f.input :alienslicense, placeholder: "Nacionalidad", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
         %label.label Lugar de Nacimiento
         .row
           %section.col.col-10
             %label.label Ciudad
             %label.input{for: "city"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :city, placeholder: "Ciudad", input_html: { class: 'form-control' }, label: false
+              = f.input :city, placeholder: "Ciudad", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
         .row
           %section.col.col-10
             %label.label Provincia
             %label.input{for: "province"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :province, placeholder: "Provincia", input_html: { class: 'form-control' }, label: false
+              = f.input :province, placeholder: "Provincia", input_html: { class: 'form-control', style: 'text-transform: uppercase;' , :onchange => "makeUppercase(this);"}, label: false
         .row
           %section.col.col-10
             %label.label Departamento
             %label.input{for: "department"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :department, placeholder: "Departamento", input_html: { class: 'form-control' }, label: false
+              = f.input :department, placeholder: "Departamento", input_html: { class: 'form-control', style: 'text-transform: uppercase;' , :onchange => "makeUppercase(this);"}, label: false
         .row{"style"=>"display: none;"}
           %section.col.col-10
             %label.label Tipo
@@ -90,10 +90,10 @@
       %input{:name => 'button_id', :id => 'id_form_button', 'style' => 'display:none'}
 
       %footer
-        %button.btn.btn-primary#trabajadores{type: "submit"}
+        %button.btn.btn-primary#trabajadores{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar e Ir a Trabajadores
-        %button.btn.btn-primary#entidad{type: "submit"}
+        %button.btn.btn-primary#entidad{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -198,18 +198,34 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
         $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
         // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        
         return $(form['selector']).valid();
       },
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
+  }
+
+  function makeUppercase(element) {
+    $(element).val($(element).val().toUpperCase());
   }

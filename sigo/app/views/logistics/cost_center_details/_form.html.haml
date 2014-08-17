@@ -25,6 +25,26 @@
                   = f.radio_button :amazon_tax_condition, "No", :selected=>@cost_center_detail.amazon_tax_condition=="No", :id => "No_choice", :onChange=>"disablefield();"
                   %label No
         .row
+          %section.col.col-10
+            %label.label Ubicación de la Obra:        
+          %section.col.col-4{"style"=>"width:31%;"}
+
+            %label.input
+              %i.icon-append.fa.fa-map-marker
+              = f.input :district, placeholder: "Distrito", input_html: { class: 'form-control' }, label: false
+
+          %section.col.col-4{"style"=>"width:31%;"}
+
+            %label.input
+              %i.icon-append.fa.fa-map-marker
+              = f.input :province, placeholder: "Provincia", input_html: { class: 'form-control' }, label: false
+
+          %section.col.col-4{"style"=>"width:31%;"}
+
+            %label.input
+              %i.icon-append.fa.fa-map-marker
+              = f.input :department, placeholder: "Departamento", input_html: { class: 'form-control' }, label: false
+        .row
           %section.col.col-4{"style"=>"width:31%;"}
             %label.label Nombre del contratista:
             %input.string.optional.form-control{"value"=>Company.find_by_id(@companyselected).name,:readonly => true}
@@ -35,7 +55,7 @@
 
           %section.col.col-4{"style"=>"width:31%;"}
             %label.label RUC:
-            %input.string.optional.form-control{"value"=>Company.find_by_id(@companyselected).ruc,:readonly => true}         
+            %input.string.optional.form-control{"value"=>Company.find_by_id(@companyselected).ruc,:readonly => true}              
         .row
           .col-sm-3{"style"=>"margin-left:30px;margin-right:35px;"}
             %label.label Fecha de Convocatoria
@@ -172,7 +192,7 @@
                   %i.fa.fa-calendar.fa-md.fa-fw
         .row
           .col-sm-4{"style"=>"margin-left:15px;margin-bottom:3%;width:28%"}
-            %label.label Entidad:
+            %label.label Entidad Contratante:
             %select#clients.select2.form-control{:name => "cost_center_detail[entity_id]",:required => true}
               %option{:value => nil, :selected => true, :disabled => true} Seleccione una entidad
               - @clients.each do |ph|
@@ -304,6 +324,15 @@
             },
             'cost_center_detail[entity_id]' : {
               required : true,
+            },
+            'cost_center_detail[district]' : {
+              required : true,
+            },
+            'cost_center_detail[province]' : {
+              required : true,
+            },
+            'cost_center_detail[department]' : {
+              required : true,
             }
 
 
@@ -366,7 +395,17 @@
             },
             'cost_center_detail[entity_id]' : {
               required : "Por favor ingresar una entidad",
+            },
+            'cost_center_detail[district]' : {
+              required : "Por favor ingresar un distrito",
+            },
+            'cost_center_detail[province]' : {
+              required : "Por favor ingresar una provincia",
+            },
+            'cost_center_detail[department]' : {
+              required : "Por favor ingresar un departamento",
             }
+
           },
 
           // Do not change code below
@@ -389,13 +428,27 @@
   }
 
   function add_details_entity(){
+    total=0
+    if(total==0){
+      total=+"#{@totalPercentage}";    
+    }
 
-    if($("#contractors").val() != 0 && $("#participation").val()>=0 && $("#participation").val()<=100){
+    $total_sumatoria = 0
+
+    $('#details_entities_table tr td.participations').each(function(){
+      $total_sumatoria = $total_sumatoria + parseFloat($(this).html());
+
+    });
+
+    total = total + $total_sumatoria
+
+    neto = 100 - total;
+    
+    if($("#contractors").val() != 0 && $("#participation").val()>=0 && $("#participation").val()<= neto){
       str_item = {authenticity_token: "#{form_authenticity_token}", entity_id: $("#contractors").val(), participation: $("#participation").val()};
       append_url_ajax('#{add_contractor_field_logistics_cost_center_details_path}', 'details_entities_table', str_item, 0, 'POST');
     }else{
-      $('#selectError').text('Escoja un consorcio y participación válidos');
-      
+      $('#selectError').text('Escoja un consorcio válido y participación en el rango');
     }
 
   }

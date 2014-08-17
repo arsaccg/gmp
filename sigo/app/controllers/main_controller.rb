@@ -27,6 +27,7 @@ class MainController < ApplicationController
     if get_company_cost_center('company').present? && get_company_cost_center('cost_center').present?
       @company = Company.find(get_company_cost_center('company')) rescue nil
       @cost_center_detail = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center')) rescue nil
+      @cost_center = CostCenter.find(get_company_cost_center('cost_center')) rescue nil
       @cost_center_name = CostCenter.find(get_company_cost_center('cost_center')).name rescue nil
       if !@company.nil? && !@cost_center_name.nil?
         @others_cost_centers = @company.cost_centers.where('id != ?', get_company_cost_center('cost_center'))
@@ -51,7 +52,8 @@ class MainController < ApplicationController
   end
 
   def management_dashboard
-    @cost_center = CostCenter.all
+    @cost_centers = CostCenter.all
+    puts @cost_centers
     render layout: false
   end
 

@@ -1,10 +1,12 @@
 class CreateExtraCalculations < ActiveRecord::Migration
   def change
-    create_table :extra_calculations do |t|
-      t.string :concept
-      t.string :type
+  	if !table_exists? :extra_calculations
+	    create_table :extra_calculations do |t|
+	      t.string :concept
+	      t.string :type
 
-      t.timestamps
-    end
+	      t.timestamps
+	    end
+	  end
   end
 end

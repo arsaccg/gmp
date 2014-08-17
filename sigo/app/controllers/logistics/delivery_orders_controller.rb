@@ -82,9 +82,8 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @article = Article.find_article_in_specific(data_article_unit[0], get_company_cost_center('cost_center'))
     @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
-    @amount = params[:amount].to_f
-    @centerOfAttention = CenterOfAttention.all
-
+    @quantity = params[:quantity].to_i
+    @centerOfAttention= CenterOfAttention.all
     @article.each do |art|
       @code_article, @name_article, @id_article = art[3], art[1], art[2]
     end

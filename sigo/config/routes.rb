@@ -64,9 +64,28 @@ ArsacLogistica::Application.routes.draw do
   # Example resource route within a namespace:,
 
   namespace :logistics do
+    resources :warehouse_orders do
+      collection do
+        post 'display_articles'
+        post 'add_order_item'
+      end
+      member do
+        get 'change_state'
+      end
+    end
     resources :cost_center_details do
       collection do
         post 'add_contractor_field'
+      end
+    end
+    resources :report_stocks do
+      collection do
+        post 'show_articles'
+        post 'excel_stock'
+      end
+      member do
+        post 'report_stock_pdf'
+        get 'report_stock_pdf'
       end
     end
     resources :unit_of_measurements
@@ -285,6 +304,7 @@ ArsacLogistica::Application.routes.draw do
         post 'show_workers_empleados'
         post 'part_worker'
         post 'part_contract'
+        post 'display_afps'        
       end
       member do
         get 'register'
@@ -392,6 +412,12 @@ ArsacLogistica::Application.routes.draw do
           post 'search_weekly_work'
         end
       end
+      
+      resources :schedule_of_workers do
+        collection do
+          post 'search_schedule_work'
+        end
+      end
 
       resources :weekly_workers do
         collection do
@@ -495,6 +521,14 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :type_of_modification_files
+    resources :folders
+    resources :land_deliveries
+    resources :type_of_land_deliveries
+    resources :qa_qcs
+    resources :type_of_qa_qcs
+    resources :archeologies
+    resources :securities
+    resources :environments
   end
 
   namespace :administration do
