@@ -165,6 +165,16 @@ class Logistics::ArticlesController < ApplicationController
     render json: { :aaData => array }
   end
 
+  def get_group
+    type = TypeOfArticle.find(params[:category_code])
+    if type.code == "01"
+      @group = Category.where("code LIKE '71' ")
+    else
+      @group = Category.where("code LIKE '__'")
+    end
+    render json: {:group => @group}  
+  end
+
   def display_articles
     display_length = params[:iDisplayLength]
     pager_number = params[:iDisplayStart]

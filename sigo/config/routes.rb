@@ -122,6 +122,7 @@ ArsacLogistica::Application.routes.draw do
         post 'import'
         get 'import'
         post 'display_articles_specific'
+        post 'get_group'
       end
     end
     resources :sectors
