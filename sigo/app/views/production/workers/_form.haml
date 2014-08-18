@@ -614,50 +614,50 @@
               %select.col-sm-6.form-control#educationtype{:name =>"worker[levelofinstruction]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px', class: 'educationtype' }
                 -if @action == 'edit'
                   %option{:value => "0", :selected => 'selected'} Seleccione un nivel
-                  %option{:value => "sineduación", :selected => "#{@worker.levelofinstruction}"=="sineduación"} Sin Educación Formal
-                  %option{:value => "especiali", :selected => "#{@worker.levelofinstruction}"=="especiali"} Educación Especial Incompleta
-                  %option{:value => "especialc", :selected => "#{@worker.levelofinstruction}"=="especialc"} Educación Especial Completa
-                  %option{:value => "primariai", :selected => "#{@worker.levelofinstruction}"=="primariai"} Educación Primaria Incompleta
-                  %option{:value => "primariac", :selected => "#{@worker.levelofinstruction}"=="primariac"} Educación Primaria Completa
-                  %option{:value => "secundariai", :selected => "#{@worker.levelofinstruction}"=="secundariai"} Educación Secundaria Incompleta
-                  %option{:value => "secundariac", :selected => "#{@worker.levelofinstruction}"=="secundariac"} Educación Secundaria Completa
-                  %option{:value => "tecnicai", :selected => "#{@worker.levelofinstruction}"=="tecnicai"} Educación Técnica Incompleta
-                  %option{:value => "tecnicac", :selected => "#{@worker.levelofinstruction}"=="tecnicac"} Educación Técnica Completa
-                  %option{:value => "superiori", :selected => "#{@worker.levelofinstruction}"=="superiori"} Educación Superior (Instituto Superior, ETC) Incompleta
-                  %option{:value => "superiorc", :selected => "#{@worker.levelofinstruction}"=="superiorc"} Educación Superior (Instituto Superior, ETC) Completa
-                  %option{:value => "universitariai", :selected => "#{@worker.levelofinstruction}"=="universitariai"} Educación Universitaria Incompleta
-                  %option{:value => "universitariac", :selected => "#{@worker.levelofinstruction}"=="universitariac"} Educación Universitaria Completa
-                  %option{:value => "bachiller", :selected => "#{@worker.levelofinstruction}"=="bachiller"} Grado de Bachiller
-                  %option{:value => "titulado", :selected => "#{@worker.levelofinstruction}"=="titulado"} Titulado
-                  %option{:value => "maestriai", :selected => "#{@worker.levelofinstruction}"=="maestriai"} Estudios de Maestría Incompleta
-                  %option{:value => "maestriac", :selected => "#{@worker.levelofinstruction}"=="maestriac"} Estudios de Maestría Completa
-                  %option{:value => "maestria", :selected => "#{@worker.levelofinstruction}"=="maestria"} Grado de Maestría
-                  %option{:value => "doctoradoi", :selected => "#{@worker.levelofinstruction}"=="doctoradoi"} Estudios de Doctorado Incompleto
-                  %option{:value => "doctoradoc", :selected => "#{@worker.levelofinstruction}"=="doctoradoc"} Estudios de Doctorado Completo
-                  %option{:value => "doctorado", :selected => "#{@worker.levelofinstruction}"=="doctorado"} Grado de Doctor
+                  %option{:value => "Sin Educación Formal", :selected => "#{@worker.levelofinstruction}"=="Sin Educación Formal"} Sin Educación Formal
+                  %option{:value => "Educación Especial Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Especial Incompleta"} Educación Especial Incompleta
+                  %option{:value => "Educación Especial Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Especial Completa"} Educación Especial Completa
+                  %option{:value => "Educación Primaria Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Primaria Incompleta"} Educación Primaria Incompleta
+                  %option{:value => "Educación Primaria Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Primaria Completa"} Educación Primaria Completa
+                  %option{:value => "Educación Secundaria Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Secundaria Incompleta"} Educación Secundaria Incompleta
+                  %option{:value => "Educación Secundaria Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Secundaria Completa"} Educación Secundaria Completa
+                  %option{:value => "Educación Técnica Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Técnica Incompleta"} Educación Técnica Incompleta
+                  %option{:value => "Educación Técnica Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Técnica Completa"} Educación Técnica Completa
+                  %option{:value => "Educación Superior (Instituto Superior, ETC) Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Superior (Instituto Superior, ETC) Incompleta"} Educación Superior (Instituto Superior, ETC) Incompleta
+                  %option{:value => "Educación Superior (Instituto Superior, ETC) Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Superior (Instituto Superior, ETC) Completa"} Educación Superior (Instituto Superior, ETC) Completa
+                  %option{:value => "Educación Universitaria Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Universitaria Incompleta"} Educación Universitaria Incompleta
+                  %option{:value => "Educación Universitaria Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Universitaria Completa"} Educación Universitaria Completa
+                  %option{:value => "Grado de Bachiller", :selected => "#{@worker.levelofinstruction}"=="Grado de Bachiller"} Grado de Bachiller
+                  %option{:value => "Titulado", :selected => "#{@worker.levelofinstruction}"=="Titulados"} Titulado
+                  %option{:value => "Estudios de Maestría Incompleta", :selected => "#{@worker.levelofinstruction}"=="Estudios de Maestría Incompleta"} Estudios de Maestría Incompleta
+                  %option{:value => "Estudios de Maestría Completa", :selected => "#{@worker.levelofinstruction}"=="Estudios de Maestría Completa"} Estudios de Maestría Completa
+                  %option{:value => "Grado de Maestría", :selected => "#{@worker.levelofinstruction}"=="Grado de Maestría"} Grado de Maestría
+                  %option{:value => "Estudios de Doctorado Incompleto", :selected => "#{@worker.levelofinstruction}"=="Estudios de Doctorado Incompleto"} Estudios de Doctorado Incompleto
+                  %option{:value => "Estudios de Doctorado Completo", :selected => "#{@worker.levelofinstruction}"=="Estudios de Doctorado Completo"} Estudios de Doctorado Completo
+                  %option{:value => "Grado de Doctor", :selected => "#{@worker.levelofinstruction}"=="Grado de Doctor"} Grado de Doctor
                 -else
                   %option{:value => "0", :selected => 'selected'} Seleccione un nivel
-                  %option{:value => "sineduación"} Sin Educación Formal
-                  %option{:value => "especiali"} Educación Especial Incompleta
-                  %option{:value => "especialc"} Educación Especial Completa
-                  %option{:value => "primariai"} Educación Primaria Incompleta
-                  %option{:value => "primariac"} Educación Primaria Completa
-                  %option{:value => "secundariai"} Educación Secundaria Incompleta
-                  %option{:value => "secundariac"} Educación Secundaria Completa
-                  %option{:value => "tecnicai"} Educación Técnica Incompleta
-                  %option{:value => "tecnicac"} Educación Técnica Completa
-                  %option{:value => "superiori"} Educación Superior (Instituto Superior, ETC) Incompleta
-                  %option{:value => "superiorc"} Educación Superior (Instituto Superior, ETC) Completa
-                  %option{:value => "universitariai"} Educación Universitaria Incompleta
-                  %option{:value => "universitariac"} Educación Universitaria Completa
-                  %option{:value => "bachiller"} Grado de Bachiller
-                  %option{:value => "titulado"} Titulado
-                  %option{:value => "maestriai"} Estudios de Maestría Incompleta
-                  %option{:value => "maestriac"} Estudios de Maestría Completa
-                  %option{:value => "maestria"} Grado de Maestría
-                  %option{:value => "doctoradoi"} Estudios de Doctorado Incompleto
-                  %option{:value => "doctoradoc"} Estudios de Doctorado Completo
-                  %option{:value => "doctorado"} Grado de Doctor
+                  %option{:value => "Sin Educación Formal"} Sin Educación Formal
+                  %option{:value => "Educación Especial Incompleta"} Educación Especial Incompleta
+                  %option{:value => "Educación Especial Completa"} Educación Especial Completa
+                  %option{:value => "Educación Primaria Incompleta"} Educación Primaria Incompleta
+                  %option{:value => "Educación Primaria Completa"} Educación Primaria Completa
+                  %option{:value => "Educación Secundaria Incompleta"} Educación Secundaria Incompleta
+                  %option{:value => "Educación Secundaria Completa"} Educación Secundaria Completa
+                  %option{:value => "Educación Técnica Incompleta"} Educación Técnica Incompleta
+                  %option{:value => "Educación Técnica Completa"} Educación Técnica Completa
+                  %option{:value => "Educación Superior (Instituto Superior, ETC) Incompleta"} Educación Superior (Instituto Superior, ETC) Incompleta
+                  %option{:value => "Educación Superior (Instituto Superior, ETC) Completa"} Educación Superior (Instituto Superior, ETC) Completa
+                  %option{:value => "Educación Universitaria Incompleta"} Educación Universitaria Incompleta
+                  %option{:value => "Educación Universitaria Completa"} Educación Universitaria Completa
+                  %option{:value => "Grado de Bachiller"} Grado de Bachiller
+                  %option{:value => "Titulado"} Titulado
+                  %option{:value => "Estudios de Maestría Incompleta"} Estudios de Maestría Incompleta
+                  %option{:value => "Estudios de Maestría Completa"} Estudios de Maestría Completa
+                  %option{:value => "Grado de Maestría"} Grado de Maestría
+                  %option{:value => "Estudios de Doctorado Incompleto"} Estudios de Doctorado Incompleto
+                  %option{:value => "Estudios de Doctorado Completo"} Estudios de Doctorado Completo
+                  %option{:value => "Grado de Doctor"} Grado de Doctor
           %section.col.col-2#lastgrade{ 'style' => 'display:none' }
             %label Último Ciclo/Grado/Año Cursado
             = f.input :lastgrade, input_html: { class: 'form-control' }, label: false
