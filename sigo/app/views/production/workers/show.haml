@@ -40,7 +40,7 @@
                   %th Licencia de Conducir
                   %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.driverlicense
                   %th CUSPP
-                  %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.worker_afps.last.afpnumber
+                  %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.worker_afps.last.afpnumber rescue ''
                 %thead
                   %tr
                     %th{"style"=>"text-align:center;font-size: large",'colspan' => 6} Lugar de Nacimiento

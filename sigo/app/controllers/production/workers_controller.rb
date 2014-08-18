@@ -84,6 +84,7 @@ class Production::WorkersController < ApplicationController
         @afp = Afp.all
         @positionWorkers = PositionWorker.all
         @health = HealthCenter.all
+        @years = getyears()
         render layout: false
       else
         flash[:error] =  "El trabajador ya existe y esta activo."
@@ -222,6 +223,7 @@ class Production::WorkersController < ApplicationController
     @exitreason = params[:exitreason]
     @start_date = params[:start_date2]
     @end_date = params[:end_date2]
+    @years2 = getyears()
     render(partial: 'experience_items', :layout => false)
   end
 
@@ -265,7 +267,6 @@ class Production::WorkersController < ApplicationController
   def register
     worker = Worker.find(params[:id])
     worker.register
-    puts "YES"
     redirect_to :action => :index
   end
 
@@ -370,6 +371,16 @@ class Production::WorkersController < ApplicationController
     @workercontract = WorkerContract.where("worker_id = ?",params[:id]).last
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :portrait }
 
+  end
+
+  def getyears
+    years = Array.new
+    startyear = 1930
+    (0..169).each do |something|
+      years << startyear
+      startyear += 1
+    end
+    return years
   end
 
   private

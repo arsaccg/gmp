@@ -8,7 +8,7 @@ class Production::WorkerContractsController < ApplicationController
     @company = get_company_cost_center('company')
     @worker = Worker.find_by_id(@worker_id)
     #@own_cost_center = current_user.cost_centers
-    @workercontracts = WorkerContract.where("worker_id = ?", @worker_id)
+    @workercontracts = WorkerContract.where("worker_id = ? AND status = 1", @worker_id)
     render layout: false
   end
 
@@ -69,6 +69,7 @@ class Production::WorkerContractsController < ApplicationController
     @articles = TypeOfArticle.find_by_code('01').articles
     @contractypes = ContractType.all
     @cost_center = session[:cost_center]
+    @typeofcontract = params[:typeofcontract]
     @action = 'edit'
     @worker_id = @workercontract.worker_id
     render layout: false

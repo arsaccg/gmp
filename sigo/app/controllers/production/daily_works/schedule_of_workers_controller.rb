@@ -54,6 +54,15 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
       @arraywo << cadenita.split(',')
       index += 1
     end
+    @totalperday = Array.new
+    totaltotal = 0
+    @dias_habiles.each do |dh|
+      perday = PartWorker.find_by_date_of_creation(dh)
+      day = PartWorkerDetail.where("part_worker_id = ? AND assistance LIKE 'si'", perday.id)
+      @totalperday << day.count.to_s
+      totaltotal = totaltotal + day.count
+    end
+    @totalperday << totaltotal
     render(partial: 'schedule_table', :layout => false)
   end
 
