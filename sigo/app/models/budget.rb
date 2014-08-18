@@ -157,7 +157,15 @@ class Budget < ActiveRecord::Base
     @itembybudgets.each do |ibb|
       SubcontractDetail.create(article_id: nil, amount: 0, unit_price: 0, partial: 0, description: nil, created_at: DateTime.now, updated_at: DateTime.now, subcontract_id: @subcontract, itembybudget_id: ibb[1],)
     end
+    #Ultimo paso
+  
+  
+    Itembybudget.connection.execute('UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO" AND subbudgetdetail = "" AND itembybudgets.budget_id = ' + budget_id.to_s + ';')
+  
+  
   end
+  
+
 end
 
 

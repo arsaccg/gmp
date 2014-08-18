@@ -20,7 +20,7 @@ class Inputcategory < ActiveRecord::Base
     end
 
     def self.build_query_sum(budgetid)
-        str = "SELECT CONCAT('0', inputcategories.category_id) as category_id, inputcategories.description , SUM(items.price * items.quantity * items.measured)
+        str = "SELECT CONCAT('0', inputcategories.category_id) as category_id, inputcategories.description, SUM(ROUND(ROUND(items.price * items.quantity, 2) * items.measured, 4))
                   FROM inputcategories,
                   (
                     SELECT  inputs.cod_input, inputs.quantity, inputs.price, itembybudgets.measured, inputs.item_id, inputs.`order`
@@ -32,7 +32,7 @@ class Inputcategory < ActiveRecord::Base
                       WHERE inputs.item_id = itembybudgets.item_id AND
                           inputs.`order` = itembybudgets.`order` AND
                           inputs.budget_id = itembybudgets.budget_id AND
-                          itembybudgets.budget_id = '" + budgetid + "'
+                          itembybudgets.budget_id = '" + budgetid.to_s + "'
                   ) AS items
                   WHERE items.cod_input LIKE CONCAT('0', CONCAT(category_id, '%'))
                   GROUP BY category_id

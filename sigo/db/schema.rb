@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140805162431) do
+ActiveRecord::Schema.define(version: 20140817191104) do
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.float    "insurance_premium"
     t.float    "top"
     t.float    "c_variable"
+    t.string   "type_of_afp"
   end
 
   create_table "arbitration_documents", force: true do |t|
@@ -62,6 +63,19 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "attachment_file_size"
     t.datetime "attachment_update_at"
     t.integer  "work_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "archeologies", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -78,19 +92,6 @@ ActiveRecord::Schema.define(version: 20140805162431) do
   end
 
   create_table "articles_from_cost_center_1", force: true do |t|
-    t.integer "article_id"
-    t.string  "code"
-    t.integer "type_of_article_id"
-    t.integer "category_id"
-    t.string  "name"
-    t.string  "description"
-    t.integer "unit_of_measurement_id"
-    t.integer "cost_center_id"
-    t.integer "input_by_budget_and_items_id"
-    t.integer "budget_id"
-  end
-
-  create_table "articles_from_cost_center_2", force: true do |t|
     t.integer "article_id"
     t.string  "code"
     t.integer "type_of_article_id"
@@ -127,6 +128,7 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "type_of_book_work_id"
+    t.date     "date"
   end
 
   create_table "budgets", force: true do |t|
@@ -347,6 +349,9 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "supervision"
     t.date     "material_advanced_payment_date"
     t.integer  "entity_id"
+    t.string   "district"
+    t.string   "province"
+    t.string   "department"
   end
 
   create_table "cost_center_timelines", force: true do |t|
@@ -437,6 +442,36 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.integer  "budget_id"
   end
 
+  create_table "diverse_expenses_of_management_details", force: true do |t|
+    t.integer  "diverse_expenses_of_management_id"
+    t.string   "code"
+    t.float    "amount"
+    t.date     "delivered_date"
+    t.integer  "entity_id"
+    t.string   "bill_concept"
+    t.string   "bill"
+    t.date     "bill_date"
+    t.string   "bill_amount"
+    t.string   "bill_detraction"
+    t.string   "bill_to_account"
+    t.string   "igv_commission"
+    t.string   "net_return"
+    t.string   "balance"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "diverse_expenses_of_managements", force: true do |t|
+    t.string   "name"
+    t.string   "amount"
+    t.string   "expenses"
+    t.string   "total_delivered"
+    t.integer  "cost_center_id"
+    t.float    "percentage"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "document_provisions", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -503,23 +538,19 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "updated_at"
   end
 
-<<<<<<< HEAD
-=======
-  create_table "errors", force: true do |t|
-    t.string   "usable_type"
-    t.integer  "usable_id"
-    t.text     "class_name"
-    t.text     "message"
-    t.text     "trace"
-    t.text     "target_url"
-    t.text     "referer_url"
-    t.text     "params"
-    t.text     "user_agent"
+  create_table "environments", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.datetime "document_updated_at"
+    t.integer  "document_file_size"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
->>>>>>> 704c6c3dd964d1f47b6f70528a3a358fdf8ae42c
   create_table "exchange_of_rates", force: true do |t|
     t.datetime "day"
     t.integer  "money_id"
@@ -572,6 +603,15 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "updated_at"
   end
 
+  create_table "folders", force: true do |t|
+    t.integer  "folderfa_id"
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "format_per_documents", force: true do |t|
     t.integer  "document_id"
     t.integer  "format_id"
@@ -604,7 +644,7 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.float    "time"
     t.string   "parcial"
     t.float    "amount"
-    t.float    "cost"
+    t.string   "cost"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -615,6 +655,7 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "total"
+    t.string   "code_phase"
   end
 
   create_table "graphers", force: true do |t|
@@ -761,7 +802,7 @@ ActiveRecord::Schema.define(version: 20140805162431) do
 
   add_index "itembybudgets", ["item_id"], name: "itembybudges_item_id", using: :btree
 
-  create_table "itembywbs", force: true do |t|
+  create_table "itembywbses", force: true do |t|
     t.string   "wbscode"
     t.integer  "itembywbs_id"
     t.string   "coditem"
@@ -794,6 +835,20 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "unity_code"
     t.integer  "deleted"
     t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "land_deliveries", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.integer  "type_of_land_delivery_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -878,6 +933,20 @@ ActiveRecord::Schema.define(version: 20140805162431) do
   create_table "method_of_payments", force: true do |t|
     t.string "name"
     t.string "symbol"
+  end
+
+  create_table "modification_files", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.integer  "type_of_modification_file_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "money", force: true do |t|
@@ -1084,6 +1153,7 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "photo_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "folder_id"
   end
 
   create_table "position_workers", force: true do |t|
@@ -1210,6 +1280,20 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.integer  "entity_id"
   end
 
+  create_table "qa_qcs", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_of_qa_qc_id"
+  end
+
   create_table "received_letters", force: true do |t|
     t.string   "name"
     t.string   "description"
@@ -1315,6 +1399,11 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "updated_at"
   end
 
+  create_table "report_stocks", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "sc_valuations", force: true do |t|
     t.string   "name"
     t.date     "start_date"
@@ -1365,6 +1454,19 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.integer  "cost_center_id"
   end
 
+  create_table "securities", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.datetime "document_updated_at"
+    t.integer  "document_file_size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "state_per_order_details", force: true do |t|
     t.integer  "delivery_order_id"
     t.string   "state"
@@ -1384,6 +1486,14 @@ ActiveRecord::Schema.define(version: 20140805162431) do
   create_table "state_per_order_purchases", force: true do |t|
     t.string   "state"
     t.integer  "purchase_order_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "state_per_warehouse_orders", force: true do |t|
+    t.string   "state"
+    t.integer  "warehouse_order_id"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1657,9 +1767,33 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "updated_at"
   end
 
+  create_table "type_of_land_deliveries", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "type_of_law_and_regulations", force: true do |t|
     t.string   "name"
     t.string   "preffix"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_modification_files", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_qa_qcs", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1691,6 +1825,14 @@ ActiveRecord::Schema.define(version: 20140805162431) do
   create_table "type_of_technical_libraries", force: true do |t|
     t.string   "name"
     t.string   "preffix"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_valorization_docs", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1749,6 +1891,20 @@ ActiveRecord::Schema.define(version: 20140805162431) do
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+
+  create_table "valorization_docs", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.integer  "type_of_valorization_doc_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "valorizationitems", force: true do |t|
     t.integer  "valorization_id"
@@ -1811,6 +1967,27 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "code"
   end
 
+  create_table "warehouse_order_details", force: true do |t|
+    t.integer  "article_id"
+    t.integer  "quantity"
+    t.integer  "sector_id"
+    t.integer  "phase_id"
+    t.integer  "warehouse_order_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "warehouse_orders", force: true do |t|
+    t.string   "code"
+    t.integer  "working_group_id"
+    t.date     "date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "cost_center_id"
+    t.string   "state"
+    t.integer  "user_id"
+  end
+
   create_table "warehouses", force: true do |t|
     t.string   "name"
     t.string   "location"
@@ -1866,12 +2043,6 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.date   "end_date"
   end
 
-  create_table "weeks_for_cost_center_2", force: true do |t|
-    t.string "name"
-    t.date   "start_date"
-    t.date   "end_date"
-  end
-
   create_table "work_partners", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -1909,6 +2080,7 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.date     "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "afpnumber"
   end
 
   create_table "worker_center_of_studies", force: true do |t|
@@ -1935,14 +2107,11 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "worker_id"
-    t.integer  "numberofcontract"
+    t.string   "numberofcontract"
     t.string   "typeofcontract"
     t.date     "end_date_2"
     t.integer  "contract_type_id"
-<<<<<<< HEAD
-=======
     t.string   "reason_for_termination"
->>>>>>> 704c6c3dd964d1f47b6f70528a3a358fdf8ae42c
     t.float    "viatical"
     t.float    "bonus"
     t.integer  "status"
@@ -1968,8 +2137,8 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.float    "salary"
     t.string   "bossincharge"
     t.string   "exitreason"
-    t.date     "start_date"
-    t.date     "end_date"
+    t.integer  "start_date"
+    t.integer  "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "worker_id"
@@ -2023,10 +2192,10 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "highschool"
     t.string   "primarydistrict"
     t.string   "highschooldistrict"
-    t.date     "primarystartdate"
-    t.date     "primaryenddate"
-    t.date     "highschoolstartdate"
-    t.date     "highschoolenddate"
+    t.integer  "primarystartdate"
+    t.integer  "primaryenddate"
+    t.integer  "highschoolstartdate"
+    t.integer  "highschoolenddate"
     t.string   "levelofinstruction"
     t.string   "quality"
     t.string   "security"
@@ -2086,14 +2255,11 @@ ActiveRecord::Schema.define(version: 20140805162431) do
     t.string   "maritalstatus"
     t.string   "typeofworker"
     t.integer  "numberofchilds"
-<<<<<<< HEAD
-=======
     t.string   "disabled"
     t.string   "unionized"
     t.string   "state"
     t.string   "income_fifth_category"
->>>>>>> 704c6c3dd964d1f47b6f70528a3a358fdf8ae42c
-    t.string   "afpnumber"
+    t.string   "lastgrade"
   end
 
   create_table "working_groups", force: true do |t|

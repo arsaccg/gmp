@@ -105,13 +105,13 @@ module ApplicationHelper
 	end
 
 	def get_title_or_description(itembudget)
-		str_item = ""
+		str_item = "" 
 		if itembudget.subbudgetdetail== nil || itembudget.subbudgetdetail==""
-        	str_item = itembudget.title rescue itembudget.item.description
-        else 
-        	str_item = itembudget.subbudgetdetail 
-        end
-        return str_item 
+    	str_item = itembudget.title rescue itembudget.item.description
+    else 
+    	str_item = itembudget.subbudgetdetail 
+    end
+    return str_item 
  	end
 	def difference_days(date_s, date_f)
 		#dias entre fecha 1 y 2
