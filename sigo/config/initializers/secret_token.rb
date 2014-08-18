@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-ArsacLogistica::Application.config.secret_key_base = 'fd979ce8c96cb35b171204813741e4288f384b259266873a337a736c6287c8836073c8950a0c576f691b3ecc47087d7398bb79406146ce0603b43d0e9f105191'
+ArsacLogistica::Application.config.secret_key_base = 'c76d7d46f6c3ec507d95084eee0eae610b2ec08fa9a0edcfa40db1f5a37e5847ce288334f86fdb38bf77a2fd27fb4eeccf4e927bf4580e1bdf5a779317f0ebee'
