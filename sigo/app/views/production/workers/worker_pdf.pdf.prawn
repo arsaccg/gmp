@@ -164,7 +164,7 @@ text "IV. EDUCACION", :size => 9
 if @worker.lastgrade.nil?
   table([ ["SITUACION EDUCATIVA", "#{@worker.levelofinstruction.to_s.upcase}"] ], :width => 300, :cell_style => {:height => 16}, :column_widths => [100,200]) do
           style(columns(0..1), :align => :center)
-          style(columns(0..1), :size => 7)
+          style(columns(0..1), :size => 9)
           columns(0..1).font_style = :bold
           style(column(0), :background_color => 'A0D8A0')
         end
