@@ -537,7 +537,7 @@ if @workercontract.nil?
         end
 else
   text "VI. DATOS CONTRACTUALES (LLENADO POR LA EMPRESA)", :size => 9
-  table([ ["C.C.","FECHA DE INGRESO", "CARGO", "CODIGO TOBI", "SUELDO (S/.)"],["#{@worker.cost_center.code.to_s}","#{@workercontract.start_date.to_s}", "#{@workercontract.article.name.to_s}", "#{@workercontract.article.code.to_s}", "#{@workercontract.salary.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,100,140,85,115]) do
+  table([ ["C.C.","FECHA DE INGRESO", "CARGO", "CODIGO TOBI", "SUELDO (S/.)"],["#{@worker.cost_center.code.to_s}","#{@workercontract.start_date.to_s}", "#{@workercontract.article.name.to_s rescue ''}", "#{@workercontract.article.code.to_s rescue ''}", "#{@workercontract.salary.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,100,140,85,115]) do
           style(columns(0..4), :align => :center)
           style(columns(0..4), :size => 7)
           row(0).font_style = :bold
