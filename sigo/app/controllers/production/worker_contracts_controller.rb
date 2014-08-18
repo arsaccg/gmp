@@ -27,15 +27,13 @@ class Production::WorkerContractsController < ApplicationController
       @worker = Worker.find_by_id(@worker_id)
     end
     if @typeofcontract == 'Adenda'
-      @action = 'edit'
-      @workercontract = WorkerContract.last
-      @worker_id = @workercontract.worker_id
+      @workercontract = WorkerContract.new
+      @worker_id = params[:worker_id]
       @worker = Worker.find_by_id(@worker_id)
     end
     if @typeofcontract == 'Renovacion'
-      @action = 'edit'
-      @workercontract = WorkerContract.last
-      @worker_id = @workercontract.worker_id
+      @workercontract = WorkerContract.new
+      @worker_id = params[:worker_id]
       @diff = (@workercontract.end_date - @workercontract.start_date).to_i
       @workercontract.start_date = @workercontract.end_date.to_date + 1.days
       @workercontract.end_date = @workercontract.end_date.to_date + @diff.days
