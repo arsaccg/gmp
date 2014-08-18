@@ -674,24 +674,26 @@
             %label.label Desde
             %label.input{for: "primarystartdate"}
               %select.form-control{:name =>"worker[primarystartdate]", :style => 'width:100%;padding: 0;border: none;'}
-                - @years.each do |years|
-                  - if @worker.primarystartdate == years
-                    %option{:value => "#{years}", :selected => true}
-                      = years
-                  - else
-                    %option{:value => "#{years}"}
-                      = years
+                -if !@years.nil?
+                  - @years.each do |years|
+                    - if @worker.primarystartdate == years
+                      %option{:value => "#{years}", :selected => true}
+                        = years
+                    - else
+                      %option{:value => "#{years}"}
+                        = years
           %section.col.col-2
             %label.label Hasta
             %label.input{for: "primaryenddate"}
               %select.form-control{:name =>"worker[primaryenddate]", :style => 'width:100%;padding: 0;border: none;'}
-                - @years.each do |years|
-                  - if @worker.primarystartdate == years
-                    %option{:value => "#{years}", :selected => true}
-                      = years
-                  - else
-                    %option{:value => "#{years}"}
-                      = years
+                -if !@years.nil?
+                  - @years.each do |years|
+                    - if @worker.primarystartdate == years
+                      %option{:value => "#{years}", :selected => true}
+                        = years
+                    - else
+                      %option{:value => "#{years}"}
+                        = years
         .row
           %section.col.col-5
             %label.label Colegio Secundaria
@@ -705,24 +707,26 @@
             %label.label Desde
             %label.input{for: "highschoolstartdate"}
               %select.form-control{:name =>"worker[highschoolstartdate]", :style => 'width:100%;padding: 0;border: none;'}
-                - @years.each do |years|
-                  - if @worker.primarystartdate == years
-                    %option{:value => "#{years}", :selected => true}
-                      = years
-                  - else
-                    %option{:value => "#{years}"}
-                      = years
+                -if !@years.nil?
+                  - @years.each do |years|
+                    - if @worker.primarystartdate == years
+                      %option{:value => "#{years}", :selected => true}
+                        = years
+                    - else
+                      %option{:value => "#{years}"}
+                        = years
           %section.col.col-2
             %label.label Hasta
             %label.input{for: "highschoolenddate"}
               %select.form-control{:name =>"worker[highschoolenddate]", :style => 'width:100%;padding: 0;border: none;'}
-                - @years.each do |years|
-                  - if @worker.primarystartdate == years
-                    %option{:value => "#{years}", :selected => true}
-                      = years
-                  - else
-                    %option{:value => "#{years}"}
-                      = years
+                -if !@years.nil?
+                  - @years.each do |years|
+                    - if @worker.primarystartdate == years
+                      %option{:value => "#{years}", :selected => true}
+                        = years
+                    - else
+                      %option{:value => "#{years}"}
+                        = years
         .row
           %section.col.col-2
             %div

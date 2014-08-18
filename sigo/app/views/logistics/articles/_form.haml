@@ -75,7 +75,8 @@
           %section.col.col-10
             %label.label Unidad de medida
             %label.input{for: "unit_of_measurement_id"}
-            %select#unit-select-measure.form-control.select2{:name =>"article[unit_of_measurement_id]", :style => "width:100%;;padding: 0;border: none;"}
+            %select#unit-select-measure.form-control.select2{:name =>"article[unit_of_measurement_id]", :style => "width:100%;;padding: 0;border: none;",:required => true}
+              %option{:value => nil, :selected => true, :disabled => true} Seleccione una unidad
               - if @action == 'edit'
                 - @unitOfMeasurement.each do |unito|
                   - if @unitid == unito.id
