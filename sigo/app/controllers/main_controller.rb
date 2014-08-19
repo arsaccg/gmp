@@ -67,6 +67,8 @@ class MainController < ApplicationController
     @order_services_revised = OrderOfService.where(" state LIKE 'revised' ")
     @purchase_orders_revised = PurchaseOrder.where(" state LIKE 'revised' ")
     @delivery_orders_revised = DeliveryOrder.where(" state LIKE 'revised' ")
+    
+    @workers = Worker.where("state LIKE 'registered'")
 
     render(partial: 'table_messages', :layout => false)
   end
@@ -90,6 +92,12 @@ class MainController < ApplicationController
     @order_services_issued = OrderOfService.where(" state LIKE 'issued' ")
     @order_services_revised = OrderOfService.where(" state LIKE 'revised' ")
     render(partial: 'table_messages_ose', :layout => false)
+  end
+
+  def display_worker_pending
+    @user = current_user
+    @workers = Worker.where("state LIKE 'registered'")
+    render(partial: 'table_worker_pending', :layout => false)
   end
 
 end
