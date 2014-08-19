@@ -162,7 +162,7 @@ move_down 10
 
 text "IV. EDUCACION", :size => 9
 if @worker.lastgrade.nil?
-  table([ ["SITUACION EDUCATIVA", "#{@worker.levelofinstruction.to_s.upcase}"] ], :width => 200, :cell_style => {:height => 16}, :column_widths => [100,100]) do
+  table([ ["SITUACION EDUCATIVA", "#{@worker.levelofinstruction.to_s.upcase}"] ], :width => 300, :cell_style => {:height => 16}, :column_widths => [100,200]) do
           style(columns(0..1), :align => :center)
           style(columns(0..1), :size => 7)
           columns(0..1).font_style = :bold
@@ -537,7 +537,7 @@ if @workercontract.nil?
         end
 else
   text "VI. DATOS CONTRACTUALES (LLENADO POR LA EMPRESA)", :size => 9
-  table([ ["C.C.","FECHA DE INGRESO", "CARGO", "CODIGO TOBI", "SUELDO (S/.)"],["#{@worker.cost_center.code.to_s}","#{@workercontract.start_date.strftime("%d/%m/%Y").to_s}", "#{@workercontract.article.name.to_s}", "#{@workercontract.article.code.to_s}", "#{@workercontract.salary.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,100,140,85,115]) do
+  table([ ["C.C.","FECHA DE INGRESO", "CARGO", "CODIGO TOBI", "SUELDO (S/.)"],["#{@worker.cost_center.code.to_s}","#{@workercontract.start_date.to_s}", "#{@workercontract.article.name.to_s rescue ''}", "#{@workercontract.article.code.to_s rescue ''}", "#{@workercontract.salary.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,100,140,85,115]) do
           style(columns(0..4), :align => :center)
           style(columns(0..4), :size => 7)
           row(0).font_style = :bold

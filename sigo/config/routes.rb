@@ -15,6 +15,7 @@ ArsacLogistica::Application.routes.draw do
   get 'display_table_messages_os' => 'main#display_table_messages_os', as: :display_table_messages_os
   get 'display_table_messages_oc' => 'main#display_table_messages_oc', as: :display_table_messages_oc
   get 'display_table_messages_ose' => 'main#display_table_messages_ose', as: :display_table_messages_ose
+  get 'display_worker_pending' => 'main#display_worker_pending', as: :display_worker_pending
   get 'management_dashboard' => 'main#management_dashboard', as: :management_dashboard
   get 'home' => 'main#home'
   post 'home' => 'main#home'
