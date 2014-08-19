@@ -61,7 +61,7 @@ class Logistics::ArticlesController < ApplicationController
         @article = Article.find(data_article_unit[0])
         ActiveRecord::Base.connection.execute("
           INSERT INTO articles_from_cost_center_" + @name.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id)
-          VALUES ("""+@article.id.to_i.to_s+",'"+@article.code.to_s+"',"+@article.type_of_article_id.to_i.to_s+","+@article.category_id.to_i.to_s+",'"+@article.name.to_s+"','"+@article.description.to_s+"',"+@article.unit_of_measurement_id.to_i.to_s+","+@cost_center.id.to_i.to_s+""")
+          VALUES ("+ @article.id.to_i.to_s + ",'"+@article.code.to_s+"',"+@article.type_of_article_id.to_i.to_s+","+@article.category_id.to_i.to_s+",'"+@article.name.to_s+"','"+@article.description.to_s+"',"+@article.unit_of_measurement_id.to_i.to_s+","+@name.to_s+""")
         ")
         flash[:notice] = "Se ha creado correctamente el articulo."
         redirect_to :action => :specifics_articles  
