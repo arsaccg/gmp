@@ -1,0 +1,53 @@
+%table#inbox-table.table.table-striped.table-hover
+  %tbody
+    - @workers.each do |worker|
+      %tr#msg1.unread
+        %td.inbox-table-icon
+          .checkbox
+            %label
+              %input.checkbox.style-2{type: "checkbox"}/
+              %span
+        %td.inbox-data-from.hidden-xs.hidden-sm
+          %div
+            = worker.typeofworker.capitalize + ' - ' + worker.entity.name.to_s + ' ' + worker.entity.paternal_surname.to_s + ' ' + worker.entity.maternal_surname.to_s
+        %td.inbox-data-message{:data => "#{worker.id}-#{worker.state}-worker"}
+          %div
+            %span
+              %span.label.bg-color-orange APROBAR
+              = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
+            = "Se necesita aprobar al trabajador en " + CostCenter.find(worker.cost_center_id).name.capitalize
+
+        %td.inbox-data-date.hidden-xs
+          %div
+            - if !worker.created_at.nil?
+              = worker.created_at.strftime('%H:%M %p')
+
+:javascript
+  //Gets tooltips activated
+  $("#inbox-table [rel=tooltip]").tooltip();
+
+  $("#inbox-table input[type='checkbox']").change(function() {
+  	$(this).closest('tr').toggleClass("highlight", this.checked);
+  });
+
+  $('.inbox-table-icon input:checkbox').click(function() {
+  	enableDeleteButton();
+  })
+
+  $(".deletebutton").click(function() {
+  	$('#inbox-table td input:checkbox:checked').parents("tr").rowslide();
+  	//$(".inbox-checkbox-triggered").removeClass('visible');
+  	//$("#compose-mail").show();
+  });
+
+  function enableDeleteButton() {
+  	var isChecked = $('.inbox-table-icon input:checkbox').is(':checked');
+
+  	if (isChecked) {
+  		$(".inbox-checkbox-triggered").addClass('visible');
+  		//$("#compose-mail").hide();
+  	} else {
+  		$(".inbox-checkbox-triggered").removeClass('visible');
+  		//$("#compose-mail").show();
+  	}
+  }
