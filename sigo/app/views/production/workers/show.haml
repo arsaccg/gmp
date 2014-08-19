@@ -17,7 +17,7 @@
                   %th Nombre Completo
                   %th{'colspan' => 5}= @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s + ' ' + @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s
                 %tr
-                  %th Cargo del Trabajador
+                  %th Categoría del Trabajador
                   %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.position_worker.name
                   %th Fecha de Nacimiento
                   %th{'colspan' => 2,"style"=>"font-weight: 500"}= @worker.entity.date_of_birth.to_s
