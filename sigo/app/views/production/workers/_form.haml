@@ -124,12 +124,18 @@
             %label.input{for: "category_of_worker_id"}
               %select.form-control{:name =>"worker[position_worker_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @positionWorkers.each do |positionWorker|
-                  - if @worker.position_worker_id == positionWorker.id
-                    %option{:value => "#{positionWorker.id}", :selected => true}
+                  -if @action=="edit"
+                    - if @worker.position_worker_id == positionWorker.id
+                      %option{:value => "#{positionWorker.id}", :selected => true}
+                        = positionWorker.name
+                    - else
+                      %option{:value => "#{positionWorker.id}"}
+                        = positionWorker.name
+
+                  -else
+                    %option{:value => "#{positionWorker.id}", :selected => positionWorker.name=="Empleado"}
                       = positionWorker.name
-                  - else
-                    %option{:value => "#{positionWorker.id}"}
-                      = positionWorker.name
+
         .row
           %section.col.col-4
             %label Fecha de Nacimiento
@@ -403,11 +409,11 @@
                         %i
                     - @reg_n += 1
 
-      %fieldset#fieldset7{ 'style' => 'display:none' }
+      %fieldset#fieldset7
         %legend{style: "font-weight: 600;"} DATOS DE SEGURIDAD SOCIAL
-        %legend Regimen de Salud
-        %br
-        .row
+        %legend{ 'style' => 'display:none' } Regimen de Salud
+        %br{ 'style' => 'display:none' }
+        .row{ 'style' => 'display:none' }
           %section.col.col-3
             %label Regimen de Salud
             %select#healthtype-select.select2.form-control{style: 'width:100%;padding: 0;border: none;', class: 'healthreg'}
@@ -421,7 +427,7 @@
               - @health.each do |health|
                 %option(value = "#{health.id}")
                   = health.enterprise
-        .row
+        .row{ 'style' => 'display:none' }
           %section.col.col-3
             %label Fecha de Inicio
             %input#health-startdate.string.optional.form-control{'name'=>'healthstartdate', type: "date", style: 'text-transform: uppercase;'}
@@ -435,7 +441,7 @@
               %a(href="javascript:add_health_center_item();" id="btn-add-health_center" class="btn btn-success" role="button")
                 Agregar Centro de Salud
 
-        .col-lg-12
+        .col-lg-12{ 'style' => 'display:none' }
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
@@ -470,7 +476,7 @@
                         = check_box 'worker[worker_healths_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
-        %br
+        %br{ 'style' => 'display:none' }
         %legend Regimen Pensionario
         %br
         .row
@@ -976,31 +982,31 @@
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
-                %th{style: "width: 25%;"} Empresa
-                %th{style: "width: 15%;"} Cargo
-                %th{style: "width: 10%;"} Salario
-                %th{style: "width: 20%;"} Jefe inmediato
-                %th{style: "width: 20%;"} Motivo de Salida
-                %th{style: "width: 5%;"} Inicio
-                %th{style: "width: 5%;"} Fin
-                %th{style: "width: 10%;"} Eliminar
+                %th{style: "width: 20%;"} Empresa
+                %th{style: "width: 20%;"} Cargo
+                %th{style: "width: 5%;"} Salario
+                %th{style: "width: 15%;"} Jefe inmediato
+                %th{style: "width: 15%;"} Motivo de Salida
+                %th{style: "width: 10%;"} Inicio
+                %th{style: "width: 10%;"} Fin
+                %th{style: "width: 5%;"} Eliminar
             %tbody(id="experience_items_table")
               - if @action == 'edit'
                 - puts @worker.worker_experiences
                 - @worker.worker_experiences.each do |oos|
                   %tr
-                    %td{style: "width: 25%;"}=oos.businessname
-                    %td{style: "width: 15%;"}=oos.title
-                    %td{style: "width: 10%;"}=oos.salary
-                    %td{style: "width: 20%;"}=oos.bossincharge
-                    %td{style: "width: 5%;"}=oos.exitreason
-                    %td{style: "width: 5%;"}=oos.start_date
+                    %td{style: "width: 20%;"}=oos.businessname
+                    %td{style: "width: 20%;"}=oos.title
+                    %td{style: "width: 5%;"}=oos.salary
+                    %td{style: "width: 15%;"}=oos.bossincharge
+                    %td{style: "width: 15%;"}=oos.exitreason
+                    %td{style: "width: 10%;"}=oos.start_date
                     %td{style: "width: 10%;"}=oos.end_date
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_experiences][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_experiences][' + @reg_n.to_s + '][worker_id]', @worker.id
-                    %td.delete-item{style: "width: 10%;"}
+                    %td.delete-item{style: "width: 5%;"}
                       %label.checkbox
                         = check_box 'worker[worker_experiences]', '[' + @reg_n.to_s + '][_destroy]'
                         %i

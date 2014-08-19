@@ -1,30 +1,30 @@
 %tr(class="experience_item"){id: "tr" + @reg_n.to_s}
-  %td.businessname{:style => "width:25%"}
+  %td.businessname{:style => "width:20%"}
     %div
       = text_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][businessname]', @businessname.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.title{:style => "width:15%"}
+  %td.title{:style => "width:20%"}
     %div
       = text_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][title]', @title.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.salary{:style => "width:10%"}
+  %td.salary{:style => "width:5%"}
     %div
       = text_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][salary]', @salary.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.bossincharge{:style => "width:20%"}
+  %td.bossincharge{:style => "width:15%"}
     %div
       = text_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][bossincharge]', @bossincharge.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.exitreason{:style => "width:20%"}
+  %td.exitreason{:style => "width:15%"}
     %div
       = text_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][exitreason]', @exitreason.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.start_date{:style => "width:5%"}
+  %td.start_date{:style => "width:10%"}
     %div
       %select.form-control{:name =>'worker[worker_experiences_attributes][' + @reg_n.to_s + '][start_date]', 'style' => 'width:100%'}
         - @years2.each do |years|
           %option{:value => "#{years}"}
             = years
-  %td.end_date{:style => "width:5%"}
+  %td.end_date{:style => "width:10%"}
     %div
       %select.form-control{:name =>'worker[worker_experiences_attributes][' + @reg_n.to_s + '][end_date]', 'style' => 'width:100%'}
         - @years2.each do |years|
           %option{:value => "#{years}"}
             = years
-  %td{:style => "width: 10%;"}
+  %td{:style => "width: 5%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
