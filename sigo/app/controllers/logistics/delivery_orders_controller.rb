@@ -239,6 +239,24 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   private
   def delivery_order_parameters
-    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, :cost_center_id, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount, :scheduled_date, :center_of_attention_id, :_destroy])
+    params.require(:delivery_order).permit(
+      :date_of_issue, 
+      :scheduled, 
+      :description, 
+      :cost_center_id, 
+      delivery_order_details_attributes: [
+        :id, 
+        :delivery_order_id, 
+        :article_id, 
+        :unit_of_measurement_id, 
+        :sector_id, 
+        :phase_id, 
+        :description, 
+        :amount, 
+        :scheduled_date, 
+        :center_of_attention_id, 
+        :_destroy
+      ]
+    )
   end
 end

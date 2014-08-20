@@ -149,11 +149,13 @@
                           //%td(class="order_delivery_equipos")
                           %td
                             = text_area_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][description]', dod.description, class: "form-control description"
-                          %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][id]', dod.id
-                          %td(style="display:none")= hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][delivery_order_id]', @deliveryOrder.id
+                          %td(style="display:none")
+                            = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][id]', dod.id
+                          %td(style="display:none")
+                            = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][delivery_order_id]', @deliveryOrder.id
                           %td.delete-item
                             %label.checkbox
-                              = check_box 'purchase_order', '[purchase_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][_destroy]'
+                              = check_box 'delivery_order', '[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][_destroy]'
                               %i
         .form-actions{:style => "margin-top: 0;"}
           .row
