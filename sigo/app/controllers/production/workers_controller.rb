@@ -26,6 +26,12 @@ class Production::WorkersController < ApplicationController
     @worker_familiars = @worker.worker_familiars
     @worker_healths = @worker.worker_healths
     @worker_otherstudies = @worker.worker_otherstudies
+    @worker_workdays= TypeWorkdaysWorker.find_by_worker_id(@worker.id)
+    if !@worker_workdays.nil?
+      @workday= TypeWorkday.find(@worker_workdays.type_workday_id).name.to_s
+    else
+      @workday = " "
+    end
     render layout: false
   end
 
