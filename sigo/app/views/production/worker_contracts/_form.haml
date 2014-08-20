@@ -20,14 +20,14 @@
             -else
               .col-md-2
                 %label.input{for: "numberofcontract"}
-                  = f.input :numberofcontract, input_html: { class: 'form-control' }, label: false          
+                  = f.input :numberofcontract, input_html: { class: 'form-control', value: @numberofcontract.to_s }, label: false          
 
             .col-md-1
             .col-md-2{ 'style' => 'display:none' }
               %label.label Tipo de Contrato
             .col-md-1{ 'style' => 'display:none' }
               %label.input{for: "typeofcontract"}
-                = f.input :typeofcontract, input_html: { class: 'form-control', value: @typeofcontract}, label: false
+                = f.input :typeofcontract, input_html: { class: 'form-control', value: @typeofcontract.to_s}, label: false
         .row
           %section.col.col-6
             %label.label Tipo de Contrato
