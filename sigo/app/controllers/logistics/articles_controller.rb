@@ -41,7 +41,8 @@ class Logistics::ArticlesController < ApplicationController
   def display_articles_specific
     word = params[:q]
     article_hash = Array.new
-    articles = Article.getArticles(word)
+    cc= get_company_cost_center('cost_center').to_i
+    articles = Article.getArticlesToSpecific(word, cc)
     articles.each do |art|
       article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}
     end
@@ -61,7 +62,7 @@ class Logistics::ArticlesController < ApplicationController
         @article = Article.find(data_article_unit[0])
         ActiveRecord::Base.connection.execute("
           INSERT INTO articles_from_cost_center_" + @name.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id)
-          VALUES ("""+@article.id.to_i.to_s+",'"+@article.code.to_s+"',"+@article.type_of_article_id.to_i.to_s+","+@article.category_id.to_i.to_s+",'"+@article.name.to_s+"','"+@article.description.to_s+"',"+@article.unit_of_measurement_id.to_i.to_s+","+@cost_center.id.to_i.to_s+""")
+          VALUES ("+ @article.id.to_i.to_s + ",'"+@article.code.to_s+"',"+@article.type_of_article_id.to_i.to_s+","+@article.category_id.to_i.to_s+",'"+@article.name.to_s+"','"+@article.description.to_s+"',"+@article.unit_of_measurement_id.to_i.to_s+","+@name.to_s+""")
         ")
         flash[:notice] = "Se ha creado correctamente el articulo."
         redirect_to :action => :specifics_articles  
@@ -160,7 +161,7 @@ class Logistics::ArticlesController < ApplicationController
     array = Array.new
     articles = Article.find_articles_in_specific_table(get_company_cost_center('cost_center'), display_length, pager_number, keyword)
     articles.each do |article|
-      array << [article[1],article[2],article[3],article[4],article[5],"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit_specific', 'content', null, null, 'GET')>Editar</a>"]
+      array << [article[1],article[2],article[3],article[4],article[5],"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit_specific','content',null,null,'GET')>Editar</a>"]
     end
     render json: { :aaData => array }
   end
