@@ -7,6 +7,9 @@
     %strong Seleccione un artículo y luego pulse guardar
     %br
     %br
+    .alert.alert-info.fade.in
+      %i.fa-fw.fa.fa-times
+      %strong Si no encuentra un articulo es debido a que ya ha sido agregado
     =form_for :articles, :url => url_for(:controller => 'articles', :action => 'create_specific'), :html => { :id => "art" } do |f|
       %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article', 'style' => 'width:100%; padding: 0; border: none;'}
       %br
