@@ -25,7 +25,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   def new
     @company = params[:company_id]
-    @cost_center = CostCenter.find(params[:cost_center_id])
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @deliveryOrder = DeliveryOrder.new
     render layout: false
   end
@@ -64,7 +64,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @sectors = Sector.all
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @centerOfAttentions = CenterOfAttention.all
-    @costcenters = Company.find(@company).cost_centers
+    @costcenter_id = @deliveryOrder.cost_center_id
     @action = 'edit'
     render layout: false
   end
