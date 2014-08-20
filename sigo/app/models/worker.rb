@@ -86,7 +86,7 @@ class Worker < ActiveRecord::Base
         AND wo.typeofworker LIKE '"+typeofworker.to_s+"' 
         AND wo.cost_center_id = " + cost_center_id.to_s + " 
         AND (wo.id LIKE '%" + keyword + "%' OR ent.name LIKE '%" + keyword + "%' OR ent.paternal_surname LIKE '%" + keyword + "%' OR ent.maternal_surname LIKE '%" + keyword + "%' OR pow.name LIKE '%" + keyword + "%' OR ent.dni LIKE '%" + keyword + "%' OR ent.date_of_birth LIKE '%" + keyword + "%' OR ent.address LIKE '%" + keyword + "%' OR wo.state LIKE '%" + keyword + "%') 
-        ORDER BY wo.id ASC 
+        ORDER BY wo.id DESC 
         LIMIT " + display_length + " 
         OFFSET " + pager_number
       )
@@ -98,7 +98,7 @@ class Worker < ActiveRecord::Base
         AND wo.position_worker_id = pow.id
         AND wo.typeofworker LIKE '"+typeofworker.to_s+"' 
         AND wo.cost_center_id = " + cost_center_id.to_s + " 
-        ORDER BY wo.id ASC 
+        ORDER BY wo.id DESC 
         LIMIT " + display_length + " 
         OFFSET " + pager_number
       )
@@ -110,15 +110,15 @@ class Worker < ActiveRecord::Base
         AND wo.position_worker_id = pow.id
         AND wo.typeofworker LIKE '"+typeofworker.to_s+"' 
         AND wo.cost_center_id = " + cost_center_id.to_s + " 
-        ORDER BY wo.id ASC 
+        ORDER BY wo.id DESC 
         LIMIT " + display_length
       )
     end
-
+    @i = 1
     part_people.each do |part_person|
       if part_person[4]=="working"
         result << [
-          part_person[0], 
+          " - ", 
           " - ",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
@@ -127,34 +127,37 @@ class Worker < ActiveRecord::Base
         ]
       elsif part_person[4]=="registered"
         result << [
-          part_person[0], 
+          @i, 
           "REGISTRADO",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          @i+=1
         ]
       elsif part_person[4]=="active"
         result << [
-          part_person[0], 
+          @i, 
           "<span class='label label-primary' style='font-size: x-small;'> ACTIVO </span>",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          @i+=1
         ]
       elsif part_person[4]=="ceased"
         result << [
-          part_person[0], 
+          @i, 
           "<span class='label label-default' style='font-size: x-small;'> CESADO </span>",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          @i+=1
         ]
       else
         result << [
-          part_person[0], 
+          " - ", 
           part_person[4],
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
@@ -178,7 +181,7 @@ class Worker < ActiveRecord::Base
         AND wo.typeofworker LIKE '"+typeofworker.to_s+"' 
         AND wo.cost_center_id = " + cost_center_id.to_s + " 
         AND (wo.id LIKE '%" + keyword + "%' OR ent.name LIKE '%" + keyword + "%' OR ent.paternal_surname LIKE '%" + keyword + "%' OR ent.maternal_surname LIKE '%" + keyword + "%' OR pow.name LIKE '%" + keyword + "%' OR ent.dni LIKE '%" + keyword + "%' OR ent.date_of_birth LIKE '%" + keyword + "%' OR ent.address LIKE '%" + keyword + "%' OR wo.state LIKE '%" + keyword + "%') 
-        ORDER BY wo.id ASC 
+        ORDER BY wo.id DESC 
         LIMIT " + display_length + " 
         OFFSET " + pager_number
       )
@@ -190,7 +193,7 @@ class Worker < ActiveRecord::Base
         AND wo.position_worker_id = pow.id
         AND wo.typeofworker LIKE '"+typeofworker.to_s+"' 
         AND wo.cost_center_id = " + cost_center_id.to_s + " 
-        ORDER BY wo.id ASC 
+        ORDER BY wo.id DESC 
         LIMIT " + display_length + " 
         OFFSET " + pager_number
       )
@@ -202,15 +205,15 @@ class Worker < ActiveRecord::Base
         AND wo.position_worker_id = pow.id
         AND wo.typeofworker LIKE '"+typeofworker.to_s+"' 
         AND wo.cost_center_id = " + cost_center_id.to_s + " 
-        ORDER BY wo.id ASC 
+        ORDER BY wo.id DESC 
         LIMIT " + display_length
       )
     end
-
+    @i = 1
     part_people.each do |part_person|
       if part_person[4]=="working"
         result << [
-          part_person[0], 
+          " - ", 
           " - ",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
@@ -219,34 +222,37 @@ class Worker < ActiveRecord::Base
         ]
       elsif part_person[4]=="registered"
         result << [
-          part_person[0], 
+          @i,
           "REGISTRADO",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          @i+=1
         ]
       elsif part_person[4]=="active"
         result << [
-          part_person[0], 
+          @i, 
           "<span class='label label-primary' style='font-size: x-small;'> ACTIVO </span>",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + " <a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + " <a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          @i+=1
         ]
       elsif part_person[4]=="ceased"
         result << [
-          part_person[0], 
+          @i, 
           "<span class='label label-default' style='font-size: x-small;'> CESADO </span>",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>"
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
+          @i+=1
         ]
       else
         result << [
-          part_person[0], 
+          " - ", 
           part_person[4],
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
@@ -254,6 +260,7 @@ class Worker < ActiveRecord::Base
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/workers/" + part_person[0].to_s + "','content','/production/workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el trabajador #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
         ]
       end
+
     end
 
     return result
