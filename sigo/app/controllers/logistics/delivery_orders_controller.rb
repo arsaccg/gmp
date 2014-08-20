@@ -189,6 +189,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def delivery_order_pdf
     @company = Company.find(params[:company_id])
     @deliveryOrder = DeliveryOrder.find(params[:id])
+    @cost_center_code = CostCenter.find(get_company_cost_center('cost_center')).code rescue 0000
     @deliveryOrderDetails = @deliveryOrder.delivery_order_details
 
     if @deliveryOrder.state == 'pre_issued'

@@ -5,17 +5,22 @@ bounding_box [bounds.right - 100, bounds.bottom + 720], :width  => 200 do
 end
 repeat :all do
   bounding_box [bounds.left, bounds.bottom + 720], :width  => 200 do
-    image @company.avatar.path, :fit => [200, 50]
+    image @company.avatar.path, :fit => [100, 38]
     text @company.name, :size => 9
     text @company.address, :size => 9
     text @company.ruc, :size => 9
   end
   bounding_box [bounds.right - 530, bounds.bottom + 680], :width  => 500 do
-    text "ORDEN DE SUMINISTRO - #{@deliveryOrder.id.to_s.rjust(5, '0')}", :align => :center, :style => :bold
+    text "ORDEN DE SUMINISTRO - #{@cost_center_code + ' ' + @deliveryOrder.id.to_s.rjust(5, '0')}", :align => :center, :style => :bold
   end
   move_down 30
 
-  table([ ["CENTRO DE COSTO", "#{@deliveryOrder.cost_center.name}"], ["EMITIDO POR", "#{@deliveryOrder.user.first_name + ' ' + @deliveryOrder.user.last_name}", "FECHA EMISIÓN", "#{@deliveryOrder.date_of_issue.strftime("%d/%m/%Y")}"], ["ESTADO", "#{translate_delivery_order_state(@deliveryOrder.state)}", "FECHA A ATENDER", "#{@deliveryOrder.scheduled.strftime("%d/%m/%Y")}"] ], :width => 540, :cell_style => {:height => 18}, :column_widths => [150]) do
+  table([ ["CENTRO DE COSTO", "#{@deliveryOrder.cost_center.name}"] ], :width => 540, :cell_style => {:height => 18}, :column_widths => [150]) do
+    style(columns(0..1), :size => 9)
+    columns(0).font_style = :bold
+    columns(2).font_style = :bold
+  end
+  table([ ["EMITIDO POR", "#{@deliveryOrder.user.first_name + ' ' + @deliveryOrder.user.last_name}", "FECHA EMISIÓN", "#{@deliveryOrder.date_of_issue.strftime("%d/%m/%Y")}"], ["ESTADO", "#{translate_delivery_order_state(@deliveryOrder.state)}", "FECHA A ATENDER", "#{@deliveryOrder.scheduled.strftime("%d/%m/%Y")}"] ], :width => 540, :cell_style => {:height => 18}, :column_widths => [150]) do
         style(columns(0..3), :size => 9)
         columns(0).font_style = :bold
         columns(2).font_style = :bold
@@ -59,7 +64,7 @@ end
 move_down 40
 
 text "Glosa", :style => :bold
-text "#{@deliveryOrder.description}"
+text "#{@deliveryOrder.description}", :size => 10
 repeat :all do
   bounding_box [bounds.right - 63, bounds.bottom + 720], :width  => 200 do
     text "of #{total}", :size => 9

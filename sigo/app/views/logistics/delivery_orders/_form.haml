@@ -16,7 +16,7 @@
                 = f.input :id, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.id.to_s.rjust(5, '0')}, label: false, readonly: true
           - if @action == 'edit'
             = hidden_field_tag "delivery_order[cost_center_id]", @costcenter_id
-            %section.col.col-3
+            %section.col.col-2
               %label.label{for: "state"} Estado
               %label.input
                 = f.input :state, placeholder: "Nombre de la Orden", :input_html => {:class => 'form-control', :value => translate_delivery_order_state(@deliveryOrder.state)}, label: false, readonly: true
