@@ -148,7 +148,7 @@
                             = check_box 'delivery_order', '[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][_destroy]'
                             %i
         %footer
-          %button.btn.btn-primary{type: "submit"}
+          %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
             %i.fa.fa-save
               Guardar
 
@@ -227,12 +227,19 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
 
         return $('#new_delivery_order').valid();
       },
-      target: '#content'
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      }
     });
 
     $('form[id^="edit_"]').ajaxForm({
@@ -279,12 +286,19 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
 
         return $('form[id^="edit_"]').valid();
       },
-      target: '#content'
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
     });
   });
 
