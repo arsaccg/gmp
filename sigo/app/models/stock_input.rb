@@ -25,24 +25,37 @@ class StockInput < ActiveRecord::Base
 
   def self.get_articles_in_stock(word)
     stock_net_array = Array.new
-    squal_inputs = "SELECT a.id, a.code, a.name, uom.name, SUM( sid.amount ) FROM stock_inputs si, stock_input_details sid, articles a, unit_of_measurements uom WHERE si.input = 1 AND sid.stock_input_id = si.id AND sid.article_id = a.id AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) AND a.unit_of_measurement_id = uom.id GROUP BY sid.article_id"
-    squal_outputs = "SELECT a.id, a.code, SUM( sid.amount ) FROM stock_inputs si, stock_input_details sid, articles a WHERE si.input = 0 AND sid.stock_input_id = si.id AND sid.article_id = a.id GROUP BY sid.article_id"
-      ActiveRecord::Base.connection.execute(squal_inputs).each do |input|
-        ActiveRecord::Base.connection.execute(squal_outputs).each do |output|
+    squal_inputs = ActiveRecord::Base.connection.execute("SELECT a.id, a.code, a.name, uom.name, SUM( sid.amount ) FROM stock_inputs si, stock_input_details sid, articles a, unit_of_measurements uom WHERE si.input = 1 AND sid.stock_input_id = si.id AND sid.article_id = a.id AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) AND a.unit_of_measurement_id = uom.id GROUP BY sid.article_id")
+    squal_outputs = ActiveRecord::Base.connection.execute("SELECT a.id, a.code, SUM( sid.amount ) FROM stock_inputs si, stock_input_details sid, articles a WHERE si.input = 0 AND sid.stock_input_id = si.id AND sid.article_id = a.id GROUP BY sid.article_id")
+    puts "----"
+    puts squal_outputs.count
+    puts"------"
+    puts squal_outputs.inspect
+      squal_inputs.each do |input|
+            puts "----input-----"
+        squal_outputs.each do |output|
+                puts "-----output----"
           if input[1] == output[1]
+                puts "-----if ==---"
             if input[4] > output[2]
+                   puts "----if >-----"
               net = input[4] - output[2]
+                  puts "----net-----"
               stock_net_array << { 'id' => input[0].to_s + '-' + net.to_i.to_s, 'code' => input[1], 'name' => input[2], 'symbol' => input[3], 'stock' => net }
+                   puts "-----added----"
             end
-          else
-            stock_net_array << { 'id' => input[0].to_s + '-' + input[4].to_i.to_s, 'code' => input[1], 'name' => input[2], 'symbol' => input[3], 'stock' => input[4] }
           end
+        end
+        if squal_outputs.count==0
+          stock_net_array << { 'id' => input[0].to_s + '-' + input[4].to_i.to_s, 'code' => input[1], 'name' => input[2], 'symbol' => input[3], 'stock' => input[4] }
         end
       end
 
     return stock_net_array 
 
   end
+
+
 
   def self.get_stock(article)
     net=""
