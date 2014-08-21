@@ -23,6 +23,18 @@
 :javascript
 
   $(document).ready(function(){
+    var flag = #{@error}
+    console.log(flag)
+    if(flag == true){
+      $.smallBox({
+        title : "Aviso",
+        content : "<i class='fa fa-clock-o'></i> <i>El artículo ya ha sido agregado</i>",
+        color : "#C46A69",
+        iconSmall : "fa fa-times fa-2x fadeInRight animated",
+        timeout : 4000
+      });
+    }
+
     $('#article-select').select2({
       placeholder: "Buscar Insumos...",
       minimumInputLength: 3,
