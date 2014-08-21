@@ -170,9 +170,15 @@ class Logistics::ArticlesController < ApplicationController
     type = TypeOfArticle.find(params[:category_code])
     if type.code == "01"
       @group = Category.where("code LIKE '71' ")
-    else
-      @group = Category.where("code LIKE '__'")
-    end
+    elsif type.code == "02"
+      @group = Category.where("code LIKE '__' AND code < 59")
+    elsif type.code == "03"
+      @group = Category.where("code LIKE '__' AND code > 58 AND code < 69")
+    elsif type.code == "04"
+      @group = Category.where("code LIKE '73'")
+    elsif type.code == "05"
+      @group = Category.where("code LIKE '__' AND code > 73 OR code = 72")
+    end 
     render json: {:group => @group}  
   end
 
