@@ -238,27 +238,6 @@ class Article < ActiveRecord::Base
     return mysql_result
   end
 
-  def self.getArticlesToSpecific(word,cc)
-    art = ActiveRecord::Base.connection.execute("
-      SELECT DISTINCT article_id
-      FROM  articles_from_cost_center_" + cc.to_s + " 
-    ")
-    @art2 = Array.new
-    art.each do |a|
-      @art2 << a
-    end
-    @art2 = @art2.join(",")
-    mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT DISTINCT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol
-      FROM articles a, unit_of_measurements u 
-      WHERE (a.code LIKE '04%' || a.code LIKE '03%' || a.code LIKE '02%')
-      AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) 
-      AND a.unit_of_measurement_id = u.id
-      AND a.id NOT IN (" + @art2.to_s + ")
-    ")
-    return mysql_result
-  end  
-
   def self.getSpecificArticlesPerWarehouse(warehouse_id)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT a.id, a.code, a.name, u.name, SUM( sid.amount ) 
