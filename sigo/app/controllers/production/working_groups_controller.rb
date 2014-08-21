@@ -8,12 +8,12 @@ class Production::WorkingGroupsController < ApplicationController
     @sector = Sector.where("code LIKE '__'").first
     @subsectors = Sector.where("code LIKE '____'").first
     @entity = TypeEntity.find_by_preffix("P").entities.first
-    PositionWorker.where("name LIKE 'JEFE DE FRENTE'").each do |front_chief|
-      @front_chief = front_chief.workers.first
-    end
-    PositionWorker.where("name LIKE 'MAESTRO DE OBRA'").each do |master_builder|
-      @master_builder = master_builder.workers.first
-    end
+    #PositionWorker.where("name LIKE 'JEFE DE FRENTE'").each do |front_chief|
+    #  @front_chief = front_chief.workers.first
+    #end
+    #PositionWorker.where("name LIKE 'MAESTRO DE OBRA'").each do |master_builder|
+    #  @master_builder = master_builder.workers.first
+    #end
     render layout: false
   end
 
