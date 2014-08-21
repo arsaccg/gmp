@@ -41,8 +41,7 @@ class Logistics::ArticlesController < ApplicationController
   def display_articles_specific
     word = params[:q]
     article_hash = Array.new
-    cc= get_company_cost_center('cost_center').to_i
-    articles = Article.getArticlesToSpecific(word, cc)
+    articles = Article.getArticles(word)
     articles.each do |art|
       article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}
     end
@@ -50,15 +49,17 @@ class Logistics::ArticlesController < ApplicationController
   end
 
   def create_specific
+    @error == "false"
     if params[:article]!= nil
       @name = get_company_cost_center('cost_center')
       data_article_unit = params[:article].to_s.split('-')
       flag=ActiveRecord::Base.connection.execute("
           SELECT DISTINCT a.*
           FROM articles_from_cost_center_" + @name.to_s + " a
-          WHERE a.id = "+data_article_unit[0]+"
+          WHERE a.article_id = "+data_article_unit[0]+"
         ")
-      if flag != nil
+      puts flag.count
+      if flag.count == 0
         @article = Article.find(data_article_unit[0])
         ActiveRecord::Base.connection.execute("
           INSERT INTO articles_from_cost_center_" + @name.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id)
@@ -67,9 +68,15 @@ class Logistics::ArticlesController < ApplicationController
         flash[:notice] = "Se ha creado correctamente el articulo."
         redirect_to :action => :specifics_articles  
       else
+        @error = "true"
+        puts "-------------------------------"
+        puts @error
         render :new_specific, layout: false
       end
     else
+      @error = "true"
+      puts "-------------------------------"
+      puts @error
       render :new_specific, layout: false
     end
   end
