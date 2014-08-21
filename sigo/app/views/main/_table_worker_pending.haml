@@ -21,7 +21,6 @@
           %div
             - if !worker.created_at.nil?
               = worker.created_at.strftime('%H:%M %p')
-  #part-contract.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partContractsLabel", role: "dialog"}
 
 :javascript
   //Gets tooltips activated
@@ -55,8 +54,8 @@
 
   function part_contract(worker_id) {
     data = { authenticity_token: "#{form_authenticity_token}", worker_id: worker_id, typeofcontract: "Contrato" };
-    load_url_ajax('#{part_contract_production_workers_path}', 'part-contract', data, null, 'POST');
-    $('#part-contract').modal({
+    load_url_ajax('#{part_contract_production_workers_path}', 'part-contract-inbox', data, null, 'POST');
+    $('#part-contract-inbox').modal({
       keyboard: false,
       backdrop: 'static',
     });
