@@ -68,10 +68,8 @@ class Logistics::WarehouseOrdersController < ApplicationController
   def display_articles
     word = params[:q]
     @cost_center = get_company_cost_center('cost_center')
-
     article_hash = StockInput.get_articles_in_stock(word)
     puts article_hash.inspect
-
     render json: {:articles => article_hash}
   end
 
