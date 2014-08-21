@@ -77,5 +77,6 @@ bounding_box [bounds.left, bounds.bottom + 50], :width  => bounds.width do
     row(0).style :align => :center
     row(1).style :align => :center
     columns(0..1).font_style = :bold
+    columns(0..1).size = 9
   end
 end
