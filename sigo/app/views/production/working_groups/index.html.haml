@@ -4,7 +4,7 @@
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Lista de Grupos de Trabajo
-    - if @sector != nil && @subsectors.first != nil && @entity != nil && @front_chief != nil && @master_builder != nil
+    - if @sector != nil && @subsectors != nil && @entity != nil && @front_chief != nil && @master_builder != nil
       .col-sm-12
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_working_group_path}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
           Agregar Grupo de Trabajo
@@ -17,7 +17,7 @@
             %i.fa.fa-lock
               No puedes crear Grupos de Trabajo!
           %p
-            Verifica si tienes, por lo menos, 1 sector, 1 subsector, 1 ejecutor, 1 jefe de frente, 1 capataz
+            Verifica si tienes, por lo menos, 1 sector, 1 subsector, 1 ejecutor, 1 jefe de frente, 1 maestro de obra
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"}

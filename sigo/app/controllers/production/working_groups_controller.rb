@@ -5,15 +5,13 @@ class Production::WorkingGroupsController < ApplicationController
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
     @workingGroups = WorkingGroup.where("cost_center_id = ?", cost_center)
-    @sector = Sector.where("code LIKE '__'")
-    @subsectors = Sector.where("code LIKE '____'")
-    TypeEntity.where("name LIKE '%Proveedores%'").each do |entity|
-      @entity = entity.entities.first
-    end
-    PositionWorker.where("name LIKE 'Jefe de Frente'").each do |front_chief|
+    @sector = Sector.where("code LIKE '__'").first
+    @subsectors = Sector.where("code LIKE '____'").first
+    @entity = TypeEntity.find_by_preffix("P").entities.first
+    PositionWorker.where("name LIKE 'JEFE DE FRENTE'").each do |front_chief|
       @front_chief = front_chief.workers.first
     end
-    PositionWorker.where("name LIKE 'Maestro de Obra'").each do |master_builder|
+    PositionWorker.where("name LIKE 'MAESTRO DE OBRA'").each do |master_builder|
       @master_builder = master_builder.workers.first
     end
     render layout: false
