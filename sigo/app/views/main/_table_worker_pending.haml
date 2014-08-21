@@ -13,7 +13,7 @@
         %td.inbox-data-message{:data => "#{worker.id}-#{worker.state}-worker"}
           %div
             %span
-              %span.label.bg-color-orange APROBAR
+              %a.btn.btn-primary.btn-xs{:onclick => "javascript:part_contract('#{worker.id.to_s}')", :style => 'margin-left: 3%;'} Dar Alta
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
             = "Se necesita aprobar al trabajador en " + CostCenter.find(worker.cost_center_id).name.capitalize
 
@@ -21,6 +21,7 @@
           %div
             - if !worker.created_at.nil?
               = worker.created_at.strftime('%H:%M %p')
+  #part-contract.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partContractsLabel", role: "dialog"}
 
 :javascript
   //Gets tooltips activated
@@ -50,4 +51,13 @@
   		$(".inbox-checkbox-triggered").removeClass('visible');
   		//$("#compose-mail").show();
   	}
+  }
+
+  function part_contract(worker_id) {
+    data = { authenticity_token: "#{form_authenticity_token}", worker_id: worker_id, typeofcontract: "Contrato" };
+    load_url_ajax('#{part_contract_production_workers_path}', 'part-contract', data, null, 'POST');
+    $('#part-contract').modal({
+      keyboard: false,
+      backdrop: 'static',
+    });
   }
