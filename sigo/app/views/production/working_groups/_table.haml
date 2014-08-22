@@ -24,11 +24,17 @@
               %td
                 = working_group.name
               %td
-                = Worker.find(working_group.front_chief_id).entity.name.to_s rescue '-' + ' ' + Worker.find(working_group.front_chief_id).entity.second_name.to_s rescue '-' + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname.to_s rescue '-' + ' ' + Worker.find(working_group.front_chief_id).entity.maternal_surname.to_s rescue '-'
+                -if working_group.front_chief_id==1
+                  = Worker.find(working_group.front_chief_id).entity.name.to_s rescue '-' + ' ' + Worker.find(working_group.front_chief_id).entity.second_name.to_s rescue '-' + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname.to_s + ' ' + Worker.find(working_group.front_chief_id).entity.maternal_surname.to_s rescue '-'
+                -else
+                  = Worker.find(working_group.front_chief_id).entity.name.to_s  + ' ' + Worker.find(working_group.front_chief_id).entity.second_name.to_s  + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname.to_s + ' ' + Worker.find(working_group.front_chief_id).entity.maternal_surname.to_s 
               %td 
                 = Entity.find(working_group.executor_id).name rescue ''
               %td
-                = Worker.find(working_group.master_builder_id).entity.name.to_s rescue '-' + ' ' + Worker.find(working_group.master_builder_id).entity.second_name.to_s rescue '-' + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname.to_s rescue '-' + ' ' + Worker.find(working_group.master_builder_id).entity.maternal_surname.to_s rescue '-'
+                -if working_group.master_builder_id==1
+                  = Worker.find(working_group.master_builder_id).entity.name.to_s rescue '-' + ' ' + Worker.find(working_group.master_builder_id).entity.second_name.to_s rescue '-' + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname.to_s rescue '-' + ' ' + Worker.find(working_group.master_builder_id).entity.maternal_surname.to_s rescue '-'
+                -else
+                  = Worker.find(working_group.master_builder_id).entity.name.to_s  + ' ' + Worker.find(working_group.master_builder_id).entity.second_name.to_s  + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname.to_s  + ' ' + Worker.find(working_group.master_builder_id).entity.maternal_surname.to_s 
               %td
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_working_group_path(working_group.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
