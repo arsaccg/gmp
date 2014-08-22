@@ -607,6 +607,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_concept'
         post 'show_details'
         post 'report'
+        get 'report_pdf'
       end
     end
     resources :diverse_expenses_of_managements do
