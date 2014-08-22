@@ -24,17 +24,22 @@ class Production::WorkingGroupsController < ApplicationController
 
   def new
     @workingGroup = WorkingGroup.new
-    @workers = Worker.where("cost_center_id = ? AND position_worker_id IS NULL", get_company_cost_center('cost_center').to_s)
-    TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
-      @executors = executor.entities
+    @workers = Array.new
+    @executors = Array.new
+    @front_chiefs = Array.new
+    @master_builders = Array.new
+    Worker.where("cost_center_id = ? AND position_worker_id IS NULL", get_company_cost_center('cost_center').to_s).each do |wo|
+      @workers << wo
     end
-    PositionWorker.where("name LIKE 'Jefe de Frente'").each do |front_chief|
-      @front_chiefs = front_chief.workers
+    TypeEntity.find_by_preffix("P").entities.each do |executor|
+      @executors << executor
+    end
+    PositionWorker.find_by_name("Jefe de Frente").workers.each do |front_chief|
+      @front_chiefs << front_chief
     end
     @front_chiefs = @front_chiefs + @workers
-
-    PositionWorker.where("name LIKE 'Maestro de Obra'").each do |master_builder|
-      @master_builders = master_builder.workers
+    PositionWorker.find_by_name("Capataz").workers.each do |master_builder|
+      @master_builders << master_builder
     end
     @master_builders = @master_builders + @workers
     @sectors = Sector.where("code LIKE '__'")
