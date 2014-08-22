@@ -51,20 +51,7 @@
               %section.col.col-6
                 %label.label Operador
                 %label.input
-                  %select.form-control#worker{:name =>"part_of_equipment[worker_id]", :style => 'width:400px;padding: 0;border: none;'}
-                    %option{:value => ''}
-                      = 'Seleccione Operador'
-                    -@worker.each do |wo|
-                      -if @action =="edit"
-                        -if @partofequipment.worker_id == wo.id
-                          %option{:value => "#{wo.id}", :selected=>"selected"}
-                            = wo.entity.name + ' ' + wo.entity.paternal_surname + ' ' + wo.entity.maternal_surname
-                        -else
-                          %option{:value => "#{wo.id}"}
-                            = wo.entity.name + ' ' + wo.entity.paternal_surname + ' ' + wo.entity.maternal_surname
-                      -else
-                        %option{:value => "#{wo.id}"}
-                          = wo.entity.name + ' ' + wo.entity.paternal_surname + ' ' + wo.entity.maternal_surname
+                  %input#worker.select2.bigdrop.select2-offscreen.form-control{'name' => 'part_of_equipment[worker_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
 
           %section.col.col-6
             .row
@@ -198,6 +185,30 @@
     $('#ent').change(function(){
       var subcontract_id = $(this).val();
       complete_equipment("#{get_equipment_form_subcontract_production_part_of_equipments_path}", subcontract_id, "#{form_authenticity_token}", "0302");
+    });
+
+    $('#worker').select2({
+      placeholder: "Buscar trabajador...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_operator_production_part_of_equipments_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.name  + '</div>' },
+      formatSelection: function(node){ return (node.name) },
+      escapeMarkup: function (m) { return m; }
     });
 
     $('select').select2();

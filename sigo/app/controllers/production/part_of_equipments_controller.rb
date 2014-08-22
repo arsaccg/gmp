@@ -11,6 +11,16 @@ class Production::PartOfEquipmentsController < ApplicationController
     render layout: false
   end
 
+  def display_operator
+    word = params[:q]
+    article_hash = Array.new
+    articles = PartOfEquipment.getSelectWorker(word)
+    articles.each do |art|
+      article_hash << {'id' => art[0].to_s,'name' => art[1].to_s + " " + art[2].to_s + " " + art[3].to_s + " " + art[4].to_s}
+    end
+    render json: {:articles => article_hash}
+  end
+
   def show_part_of_equipments
     display_length = params[:iDisplayLength]
     pager_number = params[:iDisplayStart]

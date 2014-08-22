@@ -5,6 +5,17 @@ class PartOfEquipment < ActiveRecord::Base
 	belongs_to :worker
 	accepts_nested_attributes_for :part_of_equipment_details, :allow_destroy => true
 
+  def self.getSelectWorker(word)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT w.id, e.name, e.second_name, e.paternal_surname, e.maternal_surname
+      FROM workers w, entities e
+      WHERE ( e.name LIKE '%#{word}%' OR e.second_name LIKE '%#{word}%' OR e.paternal_surname LIKE '%#{word}%' OR e.maternal_surname LIKE '%#{word}%')
+      AND e.id = w.entity_id
+      GROUP BY e.id
+    ")
+    return mysql_result
+  end
+
 	def self.get_workers(subcontract_equip_id, start_date, end_date)
 	  return ActiveRecord::Base.connection.execute("SELECT DISTINCT wo.id, CONCAT( ent.name,  ' ', ent.paternal_surname,  ' ', ent.maternal_surname ) as 'worker'
       FROM part_of_equipments poe, entities ent, workers wo, part_of_equipment_details poed,subcontract_equipment_details sced 
