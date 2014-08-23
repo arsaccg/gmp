@@ -51,7 +51,7 @@
               %section.col.col-6
                 %label.label Operador
                 %label.input
-                  %input#worker.select2.bigdrop.select2-offscreen.form-control{'name' => 'part_of_equipment[worker_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
+                  %input#worker.select2.bigdrop.select2-offscreen.form-control{'name' => 'part_of_equipment[worker_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.worker_id}"}
 
           %section.col.col-6
             .row
@@ -204,6 +204,21 @@
         },
         results: function(data, page){
           return {results: data.articles};
+        }
+      },
+      initSelection: function(element, callback) {
+        var id=$(element).val();
+        if (id != "") {
+          $.ajax("#{display_operator_production_part_of_equipments_path}", {
+            type: 'POST',
+            data: {
+              element: id,
+              authenticity_token: "#{form_authenticity_token}"
+            },
+            dataType: "json"
+          }).done(function(data) { 
+            callback(data.articles[0]);
+          });
         }
       },
       formatResult: function(node){ return '<div>' + node.name  + '</div>' },

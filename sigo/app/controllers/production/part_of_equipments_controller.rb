@@ -4,21 +4,29 @@ class Production::PartOfEquipmentsController < ApplicationController
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
     # Necessary!
-    @worker = Worker.where("cost_center_id = ?", @cost_center)
+    @worker = Worker.where("cost_center_id = ?", @cost_center).first
     @fuel_articles = Article.where("code LIKE ?", '__32%').first # Esto va a cambiar
     @working_group = WorkingGroup.where("cost_center_id = ?", @cost_center).first
-    @worker = Worker.first
     render layout: false
   end
 
   def display_operator
-    word = params[:q]
-    article_hash = Array.new
-    articles = PartOfEquipment.getSelectWorker(word)
-    articles.each do |art|
-      article_hash << {'id' => art[0].to_s,'name' => art[1].to_s + " " + art[2].to_s + " " + art[3].to_s + " " + art[4].to_s}
+    if params[:element].blank?
+      word = params[:q]
+      article_hash = Array.new
+      articles = PartOfEquipment.getSelectWorker(word)
+      articles.each do |art|
+        article_hash << {'id' => art[0].to_s,'name' => art[1].to_s + " " + art[2].to_s + " " + art[3].to_s + " " + art[4].to_s}
+      end
+      render json: {:articles => article_hash}
+    else
+      article_hash = Array.new
+      articles = ActiveRecord::Base.connection.execute("SELECT w.id, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as name FROM workers w, entities e WHERE w.id = #{params[:element]} AND w.entity_id = e.id")
+      articles.each do |art|
+        article_hash << { 'id' => art[0], 'name' => art[1] }
+      end
+      render json: {:articles => article_hash}
     end
-    render json: {:articles => article_hash}
   end
 
   def show_part_of_equipments
