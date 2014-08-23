@@ -87,7 +87,7 @@
               %section.col.col-5
                 %label.label Tipo de Combustible
                 %label.input
-                  %input#fuel.select2.bigdrop.select2-offscreen.form-control{'name' => 'part_of_equipment[subcategory_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
+                  %input#fuel.select2.form-control{'name' => 'part_of_equipment[subcategory_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
 
               %section.col.col-3
                 %label.label Cantidad de Combustible Total
@@ -275,9 +275,6 @@
             'part_of_equipment[final_km]':{
               required : true
             },
-            'part_of_equipment[fuel_amount]':{
-              required : true
-            },
             'part_of_equipment[h_stand_by]':{
               required : true
             },
@@ -308,9 +305,6 @@
             },
             'part_of_equipment[final_km]':{
               required : 'Por favor, ingrese el valor final'
-            },
-            'part_of_equipment[fuel_amount]':{
-              required : 'Por favor, ingrese la cantidad de combustible'
             },
             'part_of_equipment[h_stand_by]':{
               required : 'Por favor, ingrese el h. stand by'

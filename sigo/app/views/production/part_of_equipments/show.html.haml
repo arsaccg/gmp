@@ -41,11 +41,9 @@
                         -if sb.id==@partofequipment.subcontract_equipment_id
                           = sb.entity.name
                     %td
-                      -@worker.each do |wk|
-                        -if wk.id==@partofequipment.worker_id
-                          = wk.entity.name + ' '+ wk.entity.paternal_surname+' '+wk.entity.maternal_surname
+                      = @partofequipment.worker.entity.name.to_s + ' '+ @partofequipment.worker.entity.paternal_surname.to_s + ' ' + @partofequipment.worker.entity.maternal_surname.to_s
                     %td
-                      = SubcontractEquipmentDetail.find_by_id(@partofequipment.equipment_id).code + ' ' + SubcontractEquipmentDetail.find_by_id(@partofequipment.equipment_id).article.name
+                      = SubcontractEquipmentDetail.find_by_id(@partofequipment.equipment_id).code + ' ' + @name_article_specific
                     %td
                       = @partofequipment.dif
                     %td

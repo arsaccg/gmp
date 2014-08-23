@@ -65,11 +65,11 @@ class Production::PartOfEquipmentsController < ApplicationController
     @working_groups= WorkingGroup.all
     @subcontracts = SubcontractEquipment.all
     @type = Article.where("code LIKE ?", '__32%')
-    @worker = Array.new
-    @worker = Worker.where("cost_center_id = ?", cost_center)
     subcontract_id = @partofequipment.subcontract_equipment_id
     unit=''
     equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", subcontract_id)
+    # Article Specific - Obtengo el id del articulo del catalogo especifico
+    @name_article_specific = Article.find_idarticle_global_by_specific_idarticle(SubcontractEquipmentDetail.find_by_id(@partofequipment.equipment_id).article_id, cost_center)[0]
 
     @articles = Article.get_article_per_type('03', cost_center)
 
