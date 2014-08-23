@@ -46,7 +46,7 @@ class Logistics::PersonsController < ApplicationController
       'technical_library' => 'Acceso a la Biblioteca Técnica', 
       'orders_and_buy' => 'Acceso de los Pedidos y Compras', 
       'stores' => 'Acceso a los Almacenes', 
-      'execution' => 'Acceso a los Gastos Generales', 
+      'execution' => 'Acceso a Ejecución', 
       'administration' => 'Acceso a Administracion', 
       'overheads' => 'Acceso a los Gastos Generales', 
       'payroll' => 'Acceso a Planillas', 
