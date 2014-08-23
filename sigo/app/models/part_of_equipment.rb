@@ -123,16 +123,15 @@ class PartOfEquipment < ActiveRecord::Base
 
   def self.getOwnFuelArticles(word, cost_center_id)
     mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT DISTINCT a.id, a.name
-      FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u 
-      WHERE b.id = ibi.budget_id
-      AND b.type_of_budget =0
-      AND b.cost_center_id = #{cost_center_id}
-      AND ibi.article_id IS NOT NULL 
-      AND ibi.article_id = a.id
-      AND a.code LIKE '__32%'
-      AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
-    ")
+      SELECT id, name 
+      FROM articles_from_cost_center_" + cost_center_id.to_s + "
+      WHERE (
+      name LIKE  '%#{word}%'
+      OR code LIKE  '%#{word}%'
+      )
+      AND type_of_article_id = 2
+      GROUP BY code"
+    )
 
     return mysql_result
   end
