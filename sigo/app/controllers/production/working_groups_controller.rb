@@ -28,7 +28,7 @@ class Production::WorkingGroupsController < ApplicationController
     @executors = Array.new
     @front_chiefs = Array.new
     @master_builders = Array.new
-    Worker.where("cost_center_id = ? AND position_wg_id IS NULL", get_company_cost_center('cost_center').to_s).each do |wo|
+    Worker.where("cost_center_id = ? AND position_wg_id IS NULL AND state LIKE 'active'", get_company_cost_center('cost_center').to_s).each do |wo|
       @workers << wo
     end
     TypeEntity.find_by_preffix("P").entities.each do |executor|
