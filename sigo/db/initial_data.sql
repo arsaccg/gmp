@@ -96,6 +96,12 @@ INSERT INTO `inputcategories` (`category_id`, `description`, `created_at`, `upda
 (3, 'EQUIPOS', NOW(), NOW()),
 (3, 'SUBCONTRATOS Y SERVICIOS', NOW(), NOW());
 
+-- Data Methods of Payments
+INSERT INTO `method_of_payments` (`name`, `symbol`, `created_at`, `updated_at`) VALUES 
+('AL CONTADO', 'acont', NOW(), NOW()), 
+('CREDITO', 'cred', NOW(), NOW()), 
+('LETRA', 'let', NOW(), NOW());
+
 -- Data for Zip code
 INSERT INTO `zip_codes` (`name`, `zip_code`, `created_at`, `updated_at`) VALUES 
 ('Cercado', 'Lima 01', NOW(), NOW()), 

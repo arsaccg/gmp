@@ -1,7 +1,7 @@
 .modal-dialog{ style: "width: 720px;" }
   .modal-content
     .modal-header
-      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
+      %button.close#close-part-contract{"aria-hidden" => "true", :onclick => "empty_modal(this, 'close')", type: "button"}
         \×
       %h4.modal-title Llene los siguientes datos del contrato
     .modal-body
@@ -77,7 +77,7 @@
         %button.btn.btn-primary#smart-mod-eg1{type: "button"}
           %i.fa.fa-save 
           Realizar Contrato
-        %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+        %button.btn.btn-info#btn-part-contract{type: "button", :onclick => "empty_modal(this, 'btn')"}
           Cancelar
 
 :javascript

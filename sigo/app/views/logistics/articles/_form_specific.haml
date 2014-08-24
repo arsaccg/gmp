@@ -7,6 +7,9 @@
     %strong Seleccione un artículo y luego pulse guardar
     %br
     %br
+    .alert.alert-info.fade.in
+      %i.fa-fw.fa.fa-times
+      %strong Si no encuentra un articulo es debido a que ya ha sido agregado
     =form_for :articles, :url => url_for(:controller => 'articles', :action => 'create_specific'), :html => { :id => "art" } do |f|
       %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article', 'style' => 'width:100%; padding: 0; border: none;'}
       %br
@@ -20,6 +23,18 @@
 :javascript
 
   $(document).ready(function(){
+    var flag = #{@error}
+    console.log(flag)
+    if(flag == true){
+      $.smallBox({
+        title : "Aviso",
+        content : "<i class='fa fa-clock-o'></i> <i>El artículo ya ha sido agregado</i>",
+        color : "#C46A69",
+        iconSmall : "fa fa-times fa-2x fadeInRight animated",
+        timeout : 4000
+      });
+    }
+
     $('#article-select').select2({
       placeholder: "Buscar Insumos...",
       minimumInputLength: 3,

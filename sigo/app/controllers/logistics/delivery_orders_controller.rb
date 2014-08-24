@@ -25,7 +25,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   def new
     @company = params[:company_id]
-    @cost_center = CostCenter.find(params[:cost_center_id])
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @deliveryOrder = DeliveryOrder.new
     render layout: false
   end
@@ -64,7 +64,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @sectors = Sector.all
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @centerOfAttentions = CenterOfAttention.all
-    @costcenters = Company.find(@company).cost_centers
+    @costcenter_id = @deliveryOrder.cost_center_id
     @action = 'edit'
     render layout: false
   end
@@ -83,6 +83,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
     @quantity = params[:quantity].to_i
+    @amount = params[:amount]
     @centerOfAttention= CenterOfAttention.all
     @article.each do |art|
       @code_article, @name_article, @id_article = art[3], art[1], art[2]
@@ -189,6 +190,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def delivery_order_pdf
     @company = Company.find(params[:company_id])
     @deliveryOrder = DeliveryOrder.find(params[:id])
+    @cost_center_code = CostCenter.find(get_company_cost_center('cost_center')).code rescue 0000
     @deliveryOrderDetails = @deliveryOrder.delivery_order_details
 
     if @deliveryOrder.state == 'pre_issued'
@@ -239,6 +241,24 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   private
   def delivery_order_parameters
-    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, :cost_center_id, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount, :scheduled_date, :center_of_attention_id, :_destroy])
+    params.require(:delivery_order).permit(
+      :date_of_issue, 
+      :scheduled, 
+      :description, 
+      :cost_center_id, 
+      delivery_order_details_attributes: [
+        :id, 
+        :delivery_order_id, 
+        :article_id, 
+        :unit_of_measurement_id, 
+        :sector_id, 
+        :phase_id, 
+        :description, 
+        :amount, 
+        :scheduled_date, 
+        :center_of_attention_id, 
+        :_destroy
+      ]
+    )
   end
 end
