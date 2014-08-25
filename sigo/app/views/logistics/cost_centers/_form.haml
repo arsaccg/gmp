@@ -5,6 +5,7 @@
     %h2 Centro de Costo
   .widget-body
     = simple_form_for([:logistics, @costCenter], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %input{"style"=>"display:none;", value: "#{@comp}", :name =>"companyID"}
       %fieldset
         .row
           %section.col.col-6

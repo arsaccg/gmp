@@ -45,6 +45,7 @@ class Production::PartOfEquipmentsController < ApplicationController
           partofequipment[4],
           partofequipment[3],
           partofequipment[5],
+          partofequipment[8],
           partofequipment[6],
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "','content',null,null,'GET')> Ver Información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/part_of_equipments/" + partofequipment[0].to_s + "','content','/production/part_of_equipments') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar la parte N°" + partofequipment[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
         ]
@@ -55,6 +56,7 @@ class Production::PartOfEquipmentsController < ApplicationController
           partofequipment[4],
           partofequipment[3],
           partofequipment[5],
+          partofequipment[8],
           partofequipment[6],
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "','content',null,null,'GET')> Ver Información </a>"
         ]
@@ -223,8 +225,8 @@ class Production::PartOfEquipmentsController < ApplicationController
   end
 
   def get_unit
-    unit = Article.find(params[:article]).unit_of_measurement_id
-    @symbol = UnitOfMeasurement.find(unit).symbol
+    sql = "SELECT uom.symbol FROM subcontract_equipment_details sed, articles_from_cost_center_" + get_company_cost_center('cost_center').to_s + " a, unit_of_measurements uom WHERE sed.id = " + params[:article].to_s + " AND a.id = sed.article_id AND a.unit_of_measurement_id = uom.id"
+    @symbol = ActiveRecord::Base.connection.execute(sql).first[0]
     render json: {:symbol =>@symbol}  
   end
 

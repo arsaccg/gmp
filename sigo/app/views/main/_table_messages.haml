@@ -153,7 +153,7 @@
         %td.inbox-data-message{:data => "#{worker.id}-#{worker.state}-worker"}
           %div
             %span
-              %span.label.bg-color-orange DAR ALTA
+              %a.btn.btn-primary.btn-xs{:onclick => "javascript:part_contract('#{worker.id.to_s}')", :style => 'margin-left: 3%;'} Dar Alta
               = @user.first_name.capitalize + ' ' + @user.last_name.capitalize + ' ' + @user.surname.capitalize
             = "Se necesita aprobar al trabajador en " + CostCenter.find(worker.cost_center_id).name.capitalize
 

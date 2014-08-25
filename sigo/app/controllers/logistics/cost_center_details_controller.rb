@@ -12,6 +12,7 @@ class Logistics::CostCenterDetailsController < ApplicationController
   end
 
   def new
+    @comp = params[:company_id]
     @cost_center_detail = CostCenterDetail.new
     @cost_center_id = params[:cost_center_id]
     @companyselected = get_company_cost_center('company')
@@ -22,35 +23,38 @@ class Logistics::CostCenterDetailsController < ApplicationController
   end
 
   def create
+    @comp = params[:companyID]
     cost_center_detail = CostCenterDetail.new(cost_center_detail_params)
     if cost_center_detail.save
       flash[:notice] = "Se ha creado correctamente."
-      redirect_to :action => :index, :controller => "cost_centers"
+      redirect_to :action => :index, :controller => "cost_centers", :company_id => @comp
     else
       gexp.errors.messages.each do |attribute, error|
         puts flash[:error].to_s + error.to_s + "  "
       end
       @cost_center_detail = cost_center_detail
-      render :new, layout: false 
+      render :new, layout: false , :company_id => @comp
     end
   end
 
   def update
+    @comp = params[:companyID]
     cost_center_detail = CostCenterDetail.find(params[:id])
     if cost_center_detail.update_attributes(cost_center_detail_params)
       flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, :controller => "cost_centers"
+      redirect_to :action => :index, :controller => "cost_centers", :company_id => @comp
     else
       con.errors.messages.each do |attribute, error|
         flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
       end
       # Load new()
       @cost_center_detail = cost_center_detail
-      render :edit, layout: false
+      render :edit, layout: false, :company_id => @comp
     end
   end
 
   def edit
+    @comp = params[:company_id]
     @reg_n=((Time.now.to_f)*100).to_i
     @clients = TypeEntity.find_by_preffix("CL").entities
     @contractors = TypeEntity.find_by_preffix("P").entities

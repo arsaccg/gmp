@@ -5,6 +5,7 @@ class Logistics::CostCentersController < ApplicationController
   def index
     flash[:error] = nil
     @company = get_company_cost_center('company')
+    @comp = params[:company_id]
     #@own_cost_center = current_user.cost_centers
     @costCenters = CostCenter.where("company_id = ?", params[:company_id])
     render layout: false
@@ -15,6 +16,7 @@ class Logistics::CostCentersController < ApplicationController
   end
 
   def new
+    @comp = params[:company_id]
     @costCenter = CostCenter.new
     @companies = Company.all
     @companyselected = get_company_cost_center('company')
@@ -23,6 +25,7 @@ class Logistics::CostCentersController < ApplicationController
 
   def create
     flash[:error] = nil
+    @comp = params[:companyID]
     costCenter = CostCenter.new(cost_center_parameters)
     if costCenter.save
       subcontract = Subcontract.create(entity_id: session[:company] , valorization: 'semanal' , terms_of_payment: 'contado' , initial_amortization_number: 0 , initial_amortization_percent: 0 , guarantee_fund: 0 , detraction: 0 , contract_amount: 0 , cost_center_id: session[:cost_center])
@@ -39,14 +42,17 @@ class Logistics::CostCentersController < ApplicationController
           ActiveRecord::Base.connection.execute("INSERT INTO cost_centers_users (cost_center_id , user_id) VALUES ("+costCenter.id.to_s+", "+current_user.id.to_s+")")
         end
         flash[:notice] = "Se ha creado correctamente el centro de costo."
-        redirect_to :action => :index
+        puts "------------------------------"
+        puts @comp
+        puts "------------------------------"
+        redirect_to :action => :index, company_id: @comp
       else
         #"Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
         wbsitem.errors.messages.each do |attribute, error|
           flash[:error] =  flash[:error].to_s + error.to_s + "  "
         end
         @costCenter = costCenter
-        render :new, layout: false
+        render :new, layout: false, company_id: @comp
       end
 
     else
@@ -55,13 +61,14 @@ class Logistics::CostCentersController < ApplicationController
         flash[:error] =  flash[:error].to_s + error.to_s + "  "
       end
       @costCenter = costCenter
-      render :new, layout: false
+      render :new, layout: false, company_id: @comp
     end
         
   end
 
   def edit
     @costCenter = CostCenter.find(params[:id])
+    @comp = params[:company_id]
     @companies = Company.all
     @action = 'edit'
     render layout: false
@@ -70,18 +77,18 @@ class Logistics::CostCentersController < ApplicationController
   def update
     flash[:error] = nil
     costCenter = CostCenter.find(params[:id])
-
+    @comp = params[:companyID]
     if params[:timeline] == nil
       # Save Maintenance
       if costCenter.update_attributes(cost_center_parameters)
         flash[:notice] = "Se ha actualizado correctamente los datos."
-        redirect_to :action => :index
+        redirect_to :action => :index, company_id: @comp
       else
         costCenter.errors.messages.each do |attribute, error|
           flash[:error] =  flash[:error].to_s + error.to_s + "  "
         end
         @costCenter = costCenter
-        render :edit, layout: false
+        render :edit, layout: false, company_id: @comp
       end
     else
       # Save TimeLine by Start Date / End Date
@@ -89,13 +96,13 @@ class Logistics::CostCentersController < ApplicationController
         CostCenterTimeline.LoadTimeLine(costCenter.id, costCenter.start_date, costCenter.end_date)
 
         flash[:notice] = "Se actualizo la duracion del proyecto."
-        redirect_to :action => :index
+        redirect_to :action => :index, company_id: @comp
       else
         costCenter.errors.messages.each do |attribute, error|
           flash[:error] =  flash[:error].to_s + error.to_s + "  "
         end
         @costCenter = costCenter
-        render :edit, layout: false
+        render :edit, layout: false, company_id: @comp
       end
     end
   end
@@ -148,7 +155,7 @@ class Logistics::CostCentersController < ApplicationController
   def update_timeline
     @costCenter = CostCenter.find(params[:id])
     @costCenterTimeLine = CostCenterTimeline.where("cost_center_id =" + @costCenter.id.to_s)
-    
+    @comp = params[:company_id]
     render(partial: 'form_timeline', :layout => false)
   end
 

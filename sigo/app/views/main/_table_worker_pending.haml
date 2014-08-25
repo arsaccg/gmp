@@ -53,7 +53,7 @@
   }
 
   function part_contract(worker_id) {
-    data = { authenticity_token: "#{form_authenticity_token}", worker_id: worker_id, typeofcontract: "Contrato" };
+    data = { authenticity_token: "#{form_authenticity_token}", worker_id: worker_id, typeofcontract: "Contrato", redireccionamiento: "inbox" };
     load_url_ajax('#{part_contract_production_workers_path}', 'part-contract-inbox', data, null, 'POST');
     $('#part-contract-inbox').modal({
       keyboard: false,
