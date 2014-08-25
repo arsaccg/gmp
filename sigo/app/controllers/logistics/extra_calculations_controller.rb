@@ -1,4 +1,4 @@
-cclass Logistics::ExtraCalculationsController < ApplicationController
+class Logistics::ExtraCalculationsController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @extra_calculations = ExtraCalculation.all
