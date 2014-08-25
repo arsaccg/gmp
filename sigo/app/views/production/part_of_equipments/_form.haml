@@ -186,7 +186,7 @@
                     - @reg_n+=1
               
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -282,9 +282,7 @@
             'part_of_equipment[equipment_id]':{
               required : true
             },
-            'part_of_equipment[worker_id]':{
-              required : true
-            }
+
           },
 
           // Messages for form validation
@@ -316,15 +314,15 @@
             'part_of_equipment[equipment_id]':{
               required : 'Por favor, seleccione equipo.'
             },
-            'part_of_equipment[worker_id]':{
-              required : 'Por favor, seleccione operador.'
-            }
+
             
           },
 
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -335,6 +333,8 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
       }
