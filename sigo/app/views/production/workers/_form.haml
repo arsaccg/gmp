@@ -133,7 +133,7 @@
                         = positionWorker.name
 
                   -else
-                    %option{:value => "#{positionWorker.id}", :selected => positionWorker.name=="Empleado"}
+                    %option{:value => "#{positionWorker.id}", :selected => positionWorker.name=="EMPLEADO"}
                       = positionWorker.name
 
         .row
@@ -409,7 +409,7 @@
                         %i
                     - @reg_n += 1
 
-      %fieldset#fieldset7
+      %fieldset#fieldset7{ 'style' => 'display:none' }
         %legend{style: "font-weight: 600;"} DATOS DE SEGURIDAD SOCIAL
         %legend{ 'style' => 'display:none' } Regimen de Salud
         %br{ 'style' => 'display:none' }

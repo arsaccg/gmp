@@ -37,7 +37,7 @@ class Production::EquipmentReportsController < ApplicationController
     elsif params[:chosen] == "operador"
       pw_id = Array.new
       if params[:chosen] == "operador"
-        PositionWorker.where("name LIKE '%operador%'").each do |pw|
+        PositionWorker.where("name LIKE '%OPERARIOS%'").each do |pw|
           pw_id = pw.id
         end
       end

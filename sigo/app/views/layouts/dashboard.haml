@@ -119,20 +119,23 @@
           Please note that these links work a bit different than
           traditional href="" links. See documentation for details.
         %ul
-          %li
-            %a{href: "#{inbox_task_main_path}", title: "Tareas"}
-              %i.fa.fa-lg.fa-fw.fa-inbox
-              Inbox
-              %span.badge.pull-right.inbox-badge#input_inbox= @total_pending
-          - if current_user.has_role? :director
+          - if (current_user.has_role? :director) || (current_user.has_role? :inbox)
+            %li
+              %a{href: "#{inbox_task_main_path}", title: "Tareas"}
+                %i.fa.fa-lg.fa-fw.fa-inbox
+                Inbox
+                %span.badge.pull-right.inbox-badge#input_inbox= @total_pending
+          - if (current_user.has_role? :director) || (current_user.has_role? :dashboard)
             %li
               %a{href: "#{management_dashboard_path}", title: "Dashboard de Gestión"}
                 %i.fa.fa-lg.fa-fw.fa-home
                 Dashboard
+          - if (current_user.has_role? :director) || (current_user.has_role? :companies)
             %li
               %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
                 %i.fa.fa-lg.fa-fw.fa-gears
                 Companias
+          - if (current_user.has_role? :director) || (current_user.has_role? :users)
             %li
               %a{href: "#{logistics_persons_path}", title: "Gestión de Usuarios"}
                 %i.fa.fa-lg.fa-fw.fa-group
@@ -733,14 +736,16 @@
                     %i.fa.fa-lg.fa-fw.fa-clipboard
                     %span.menu-item-parent
                       Reporte Mensual
-          %li
-            %a{href: "#{logistics_type_entities_path}", title: "Tipo de Entidades"}
-              %i.fa.fa-lg.fa-fw.fa-sitemap
-              Tipo de Entidades
-          %li
-            %a{href: "#{logistics_entities_path}", title: "Entidades"}
-              %i.fa.fa-lg.fa-fw.fa-group
-              Entidades
+          - if (current_user.has_role? :director) || (current_user.has_role? :entities)
+            %li
+              %a{href: "#{logistics_type_entities_path}", title: "Tipo de Entidades"}
+                %i.fa.fa-lg.fa-fw.fa-sitemap
+                Tipo de Entidades
+          - if (current_user.has_role? :director) || (current_user.has_role? :entities)
+            %li
+              %a{href: "#{logistics_entities_path}", title: "Entidades"}
+                %i.fa.fa-lg.fa-fw.fa-group
+                Entidades
           %li
             %a{href: "##{logistics_person_path(current_user.id)}", title: "Usuario"}
               %i.fa.fa-lg.fa-fw.fa-user
@@ -967,6 +972,7 @@
               %h2 Datos no encontrados.         
           .modal-footer{"style"=>"margin-top:0px;background-color:#296191"}
             
+    #part-contract-inbox.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partContractsLabel", role: "dialog"}
 
     / END SHORTCUT AREA
     / ==================================================

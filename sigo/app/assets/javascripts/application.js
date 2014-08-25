@@ -41,7 +41,16 @@ $(document).ready(function(){
   }
 });
 
-
+function empty_modal(modal_id, type){
+  modal = ''
+  if(type == 'btn'){
+    modal = '#' + $(modal_id).parent().parent().parent().parent().parent().attr('id')
+  } else {
+    modal = '#' + $(modal_id).parent().parent().parent().parent().attr('id')
+  }
+  $(modal).modal('hide');
+  $(modal).empty();
+}
 
 function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, semana6, semana7, semana8, semana9, semana10, theoretical_value, valor1, valor2, valor3, valor4, valor5, valor6, valor7, valor8, valor9, valor10){
   theoretical_value = parseFloat(theoretical_value)
