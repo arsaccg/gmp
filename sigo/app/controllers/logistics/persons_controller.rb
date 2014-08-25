@@ -24,6 +24,7 @@ class Logistics::PersonsController < ApplicationController
     end
   end
 
+
   # Función show solo para que vea su perfil.
   def show
   	@person = current_user
@@ -87,6 +88,7 @@ class Logistics::PersonsController < ApplicationController
   def update_profile
     @person = User.find(current_user.id)
     @person.update_attributes(user_params)
+    sign_in(@person, :bypass=>true)
     flash[:notice] = "Se ha actualizado correctamente al usuario #{@person.first_name + ' ' + @person.last_name}."
     redirect_to :layout => false
   end
@@ -112,6 +114,6 @@ class Logistics::PersonsController < ApplicationController
 
   private
     def user_params
-    	params.require(:user).permit(:first_name, :last_name, :surname, :email, :date_of_birth, :avatar, :password, {:company_ids => []}, {:cost_center_ids => []})
+    	params.require(:user).permit(:first_name, :last_name, :surname, :email, :date_of_birth, :avatar, :password,:password_confirmation,:reset_password_token, {:company_ids => []}, {:cost_center_ids => []})
     end
 end
