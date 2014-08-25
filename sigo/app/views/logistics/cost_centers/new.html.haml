@@ -16,5 +16,5 @@
 :javascript
 
   $('#backlist-cost').click(function(){
-      load_url_ajax("#{logistics_cost_centers_path}", 'content', {company_id: $.company_global_id}, null, 'GET');
+      load_url_ajax("#{logistics_cost_centers_path}", 'content', {company_id: #{@comp}}, null, 'GET');
   });
