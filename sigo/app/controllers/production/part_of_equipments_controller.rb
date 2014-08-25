@@ -223,8 +223,8 @@ class Production::PartOfEquipmentsController < ApplicationController
   end
 
   def get_unit
-    unit = Article.find(params[:article]).unit_of_measurement_id
-    @symbol = UnitOfMeasurement.find(unit).symbol
+    sql = "SELECT uom.symbol FROM subcontract_equipment_details sed, articles_from_cost_center_" + get_company_cost_center('cost_center').to_s + " a, unit_of_measurements uom WHERE sed.id = " + params[:article].to_s + " AND a.id = sed.article_id AND a.unit_of_measurement_id = uom.id"
+    @symbol = ActiveRecord::Base.connection.execute(sql).first[0]
     render json: {:symbol =>@symbol}  
   end
 

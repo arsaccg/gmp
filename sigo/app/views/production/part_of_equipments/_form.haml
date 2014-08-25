@@ -481,10 +481,10 @@
       });
   }
 
-  function unit(url, article, form_token, default_value){
+  function unit(url_path, article, form_token, default_value){
     $.ajax({
         type: "POST",
-        url: url,
+        url: url_path,
         async: false,
         data: { article: article, authenticity_token: form_token}
       }).done(function( data ) {
