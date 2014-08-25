@@ -51,7 +51,20 @@
               %section.col.col-6
                 %label.label Operador
                 %label.input
-                  %input#worker.select2.bigdrop.select2-offscreen.form-control{'name' => 'part_of_equipment[worker_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.worker_id}"}
+                  %select.form-control#worker{:name =>"part_of_equipment[worker_id]", :style => 'width:400px;padding: 0;border: none;'}
+                    %option{:value => ''}
+                      = 'Seleccione Operador'
+                    -@worker.each do |wo|
+                      -if @action =="edit"
+                        -if @partofequipment.worker_id == wo.id
+                          %option{:value => "#{wo.id}", :selected=>"selected"}
+                            = wo.entity.name + ' ' + wo.entity.paternal_surname + ' ' + wo.entity.maternal_surname
+                        -else
+                          %option{:value => "#{wo.id}"}
+                            = wo.entity.name + ' ' + wo.entity.paternal_surname + ' ' + wo.entity.maternal_surname
+                      -else
+                        %option{:value => "#{wo.id}"}
+                          = wo.entity.name + ' ' + wo.entity.paternal_surname + ' ' + wo.entity.maternal_surname
 
           %section.col.col-6
             .row
@@ -87,7 +100,7 @@
               %section.col.col-5
                 %label.label Tipo de Combustible
                 %label.input
-                  %input#fuel.select2.form-control{'name' => 'part_of_equipment[subcategory_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
+                  %input#fuel.select2.bigdrop.select2-offscreen.form-control{'name' => 'part_of_equipment[subcategory_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
 
               %section.col.col-3
                 %label.label Cantidad de Combustible Total
@@ -187,45 +200,6 @@
       complete_equipment("#{get_equipment_form_subcontract_production_part_of_equipments_path}", subcontract_id, "#{form_authenticity_token}", "0302");
     });
 
-    $('#worker').select2({
-      placeholder: "Buscar trabajador...",
-      minimumInputLength: 3,
-      ajax: {
-        url: "#{display_operator_production_part_of_equipments_path}",
-        dataType: 'json',
-        type: 'POST',
-        quietMillis: 100,
-        data: function(term, page){
-          return {
-            q: term,
-            page: page,
-            authenticity_token: "#{form_authenticity_token}"
-          };
-        },
-        results: function(data, page){
-          return {results: data.articles};
-        }
-      },
-      initSelection: function(element, callback) {
-        var id=$(element).val();
-        if (id != "") {
-          $.ajax("#{display_operator_production_part_of_equipments_path}", {
-            type: 'POST',
-            data: {
-              element: id,
-              authenticity_token: "#{form_authenticity_token}"
-            },
-            dataType: "json"
-          }).done(function(data) { 
-            callback(data.articles[0]);
-          });
-        }
-      },
-      formatResult: function(node){ return '<div>' + node.name  + '</div>' },
-      formatSelection: function(node){ return (node.name) },
-      escapeMarkup: function (m) { return m; }
-    });
-
     $('select').select2();
     $('#fuel').select2({
       placeholder: "Buscar Combustible...",
@@ -290,6 +264,9 @@
             'part_of_equipment[final_km]':{
               required : true
             },
+            'part_of_equipment[fuel_amount]':{
+              required : true
+            },
             'part_of_equipment[h_stand_by]':{
               required : true
             },
@@ -305,7 +282,9 @@
             'part_of_equipment[equipment_id]':{
               required : true
             },
-
+            'part_of_equipment[worker_id]':{
+              required : true
+            }
           },
 
           // Messages for form validation
@@ -318,6 +297,9 @@
             },
             'part_of_equipment[final_km]':{
               required : 'Por favor, ingrese el valor final'
+            },
+            'part_of_equipment[fuel_amount]':{
+              required : 'Por favor, ingrese la cantidad de combustible'
             },
             'part_of_equipment[h_stand_by]':{
               required : 'Por favor, ingrese el h. stand by'
@@ -334,7 +316,9 @@
             'part_of_equipment[equipment_id]':{
               required : 'Por favor, seleccione equipo.'
             },
-
+            'part_of_equipment[worker_id]':{
+              required : 'Por favor, seleccione operador.'
+            }
             
           },
 
@@ -360,7 +344,6 @@
       }
     });
   }
-
   function add_more_register(){
     data = { authenticity_token: "#{form_authenticity_token}"};
     append_url_ajax('#{add_more_register_production_part_of_equipments_path}', 'part_register_table', data, 0, 'POST');
