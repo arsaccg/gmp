@@ -75,10 +75,11 @@
                     %h1= cc.name
                     %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
                       Ingresar
-        :javascript
-          $("a#btn-#{company.id}").click(function(){
-            $('#modal-#{company.id}').modal('show');
-          });
+    #part-contract.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partContractsLabel", role: "dialog"}
+  :javascript
+    $("a#btn-#{company.id}").click(function(){
+      $('#modal-#{company.id}').modal('show');
+    });
 
     = javascript_include_tag '//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js'
     :javascript
@@ -101,3 +102,12 @@
     / MAIN APP JS FILE
     = javascript_include_tag 'app'
     / Your GOOGLE ANALYTICS CODE Below
+
+  function part_contract(worker_id) {
+    data = { authenticity_token: "#{form_authenticity_token}", worker_id: worker_id, typeofcontract: "Contrato", redireccionamiento: "worker" };
+    load_url_ajax('#{part_contract_main_path}', 'part-contract', data, null, 'POST');
+    $('#part-contract').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
