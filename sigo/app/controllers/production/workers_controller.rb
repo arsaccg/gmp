@@ -298,7 +298,11 @@ class Production::WorkersController < ApplicationController
     workercontract.save
     worker = Worker.find(params[:worker_id])
     worker.approve
-    redirect_to :action => :index
+    if params[:redireccionamiento].to_s == 'inbox'
+      redirect_to "/home#"+inbox_task_main_path, :action => :index
+    else
+      redirect_to :action => :index
+    end
   end
 
   def cancel
@@ -330,6 +334,7 @@ class Production::WorkersController < ApplicationController
     @contractypes = ContractType.all
     @cost_center = cost_center_obj.id
     @worker = Worker.find_by_id(params[:worker_id])
+    @redireccionamiento = params[:redireccionamiento]
     render layout: false
   end
 
