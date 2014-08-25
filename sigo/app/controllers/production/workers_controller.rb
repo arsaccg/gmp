@@ -299,7 +299,7 @@ class Production::WorkersController < ApplicationController
     worker = Worker.find(params[:worker_id])
     worker.approve
     if params[:redireccionamiento].to_s == 'inbox'
-      redirect_to "/home#"+inbox_task_main_path, :action => :index
+      redirect_to :root
     else
       redirect_to :action => :index
     end
