@@ -22,14 +22,14 @@
                 = unit.name
               %td
                 -if !CostCenterDetail.find_by_cost_center_id(unit.id).nil?
-                  %a.btn.btn-success.btn-xs{"style"=>"width:107px;",:onclick => "javascript:load_url_ajax('#{edit_logistics_cost_center_detail_path(unit.cost_center_detail.id,cost_center_id: unit.id)}', 'content', null, null, 'GET')"}
+                  %a.btn.btn-success.btn-xs{"style"=>"width:107px;",:onclick => "javascript:load_url_ajax('#{edit_logistics_cost_center_detail_path(unit.cost_center_detail.id,cost_center_id: unit.id)}', 'content', {company_id: #{@comp}}, null, 'GET')"}
                     Editar Detalles
                 -else
-                  %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{new_logistics_cost_center_detail_path(cost_center_id: unit.id)}', 'content', null, null, 'GET')"}
+                  %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{new_logistics_cost_center_detail_path(cost_center_id: unit.id)}', 'content', {company_id: #{@comp}}, null, 'GET')"}
                     Agregar Detalles  
-                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{update_timeline_logistics_cost_center_path(unit.id)}', 'content', null, null, 'GET')"}
+                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{update_timeline_logistics_cost_center_path(unit.id)}', 'content', {company_id: #{@comp}}, null, 'GET')"}
                   Duración
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_cost_center_path(unit.id)}', 'content', null, null, 'GET')"}
+                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_cost_center_path(unit.id)}', 'content', {company_id: #{@comp}}, null, 'GET')"}
                   Editar
                 %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_cost_center_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_cost_centers_path}?company_id=#{@company}')"}}
                   Eliminar              

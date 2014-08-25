@@ -5,6 +5,7 @@
     %h2 Detalles Generales de Centro de Costo
   .widget-body
     = simple_form_for([:logistics, @cost_center_detail], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %input{"style"=>"display:none;", value: "#{@comp}", :name =>"companyID"}
       %fieldset
         .row
           =f.hidden_field :cost_center_id, :value =>  @cost_center_id

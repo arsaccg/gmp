@@ -14,6 +14,7 @@
             %h2 Duración del Proyecto
           .widget-body
             = simple_form_for([:logistics, @costCenter], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+              %input{"style"=>"display:none;", value: "#{@comp}", :name =>"companyID"}
               %fieldset
                 .row
                   %section.col.col-2
@@ -89,7 +90,7 @@
   pageSetUp();
 
   $('#backlist-cost').click(function(){
-      load_url_ajax("#{logistics_cost_centers_path}", 'content', {company_id: $.company_global_id}, null, 'GET');
+      load_url_ajax("#{logistics_cost_centers_path}", 'content', {company_id: #{@comp}}, null, 'GET');
   });
 
   $(document).ready(function () {
