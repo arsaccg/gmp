@@ -186,7 +186,7 @@
                     - @reg_n+=1
               
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -325,6 +325,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -335,12 +337,13 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
       }
     });
   }
-
   function add_more_register(){
     data = { authenticity_token: "#{form_authenticity_token}"};
     append_url_ajax('#{add_more_register_production_part_of_equipments_path}', 'part_register_table', data, 0, 'POST');

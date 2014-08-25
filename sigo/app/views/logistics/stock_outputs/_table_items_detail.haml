@@ -10,7 +10,7 @@
     %td
       = x[1]
     %td
-      = x[3]
+      = Article.find_by_code(x[1].to_s).name
     %td
       = x[5]
     %td
