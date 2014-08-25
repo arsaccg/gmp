@@ -139,7 +139,7 @@ class PartOfEquipment < ActiveRecord::Base
   def self.get_part_of_equipments(cost_center_id, display_length, pager_number, keyword = '')
     if keyword != '' && pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block 
+        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block, poe.total_hours 
         FROM part_of_equipments poe, workers w, subcontract_equipments se, entities e, entities ep, subcontract_equipment_details sed, articles_from_cost_center_" + cost_center_id.to_s + " af 
         WHERE poe.cost_center_id = " + cost_center_id.to_s + "
         AND w.id = poe.worker_id 
@@ -156,7 +156,7 @@ class PartOfEquipment < ActiveRecord::Base
       )
     elsif pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block 
+        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block, poe.total_hours 
         FROM part_of_equipments poe, workers w, subcontract_equipments se, entities e, entities ep, subcontract_equipment_details sed, articles_from_cost_center_" + cost_center_id.to_s + " af 
         WHERE poe.cost_center_id = " + cost_center_id.to_s + "
         AND w.id = poe.worker_id 
@@ -172,7 +172,7 @@ class PartOfEquipment < ActiveRecord::Base
       )
     else
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block
+        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block, poe.total_hours 
         FROM part_of_equipments poe, workers w, subcontract_equipments se, entities e, entities ep, subcontract_equipment_details sed, articles_from_cost_center_" + cost_center_id.to_s + " af 
         WHERE poe.cost_center_id = " + cost_center_id.to_s + "
         AND w.id = poe.worker_id 
