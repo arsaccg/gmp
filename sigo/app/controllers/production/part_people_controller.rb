@@ -62,7 +62,7 @@ class Production::PartPeopleController < ApplicationController
     @worker = Worker.find(params[:worker_id])
     @id_worker = @worker.id
     @name_worker = @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s + ' ' + @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s
-    @category_worker = @worker.article.name
+    @category_worker = WorkerContract.where("worker_id = ?",@worker.id).last.article.name
     render(partial: 'part_people_items', :layout => false)
   end
 

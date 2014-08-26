@@ -38,9 +38,10 @@ class Production::MachineryReportsController < ApplicationController
   end
   
 	def poe_array(start_date, end_date, sub_equipment_id)
+    @name = get_company_cost_center('cost_center')
     poe_array = ActiveRecord::Base.connection.execute("
       SELECT poe.code, poe.date, poe.initial_km, poe.final_km, poe.dif, poe.total_hours, art.name, poe.fuel_amount
-      FROM part_of_equipments poe, articles art, subcontract_equipments sce
+      FROM part_of_equipments poe, articles_from_cost_center_" + @name.to_s + " art, subcontract_equipments sce
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND sce.id=poe.subcontract_equipment_id
       AND poe.subcategory_id=art.id
