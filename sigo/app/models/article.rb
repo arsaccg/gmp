@@ -113,6 +113,22 @@ class Article < ActiveRecord::Base
     return name_article
   end
 
+  def self.find_article_by_global_article2(article_id, cost_center_id)
+    name_article = ""
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.article_id, af.code, u.name
+      FROM articles_from_cost_center_"+cost_center_id.to_s+" af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.id =" + article_id.to_s + " 
+    ")
+
+    mysql_result.each do |data|
+      name_article = data[2]
+    end
+
+    return name_article
+  end
+
   def self.find_article_global_by_specific_article(article_id, cost_center_id)
     name_article = ""
     mysql_result = ActiveRecord::Base.connection.execute("

@@ -304,8 +304,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @poe_array = poe_array(start_date, end_date, @subcontractequipmentarticle, @entityname)
     @poe_array.each do |workerDetail|
       @totaldif += workerDetail[4].to_i
-      @totaltotalhours += workerDetail[5]
-      @totalfuel_amount += workerDetail[7]
+      @totaltotalhours += workerDetail[5].to_i
+      @totalfuel_amount += workerDetail[7].to_i
     end
     @dias_habiles =  range_business_days(start_date,end_date)
     render layout: false
@@ -323,15 +323,14 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
   
   def poe_array(start_date, end_date, working_group_id,entity_name)
+    @name = get_company_cost_center('cost_center')
     poe_array = ActiveRecord::Base.connection.execute("
       SELECT poe.code, poe.date, poe.initial_km, poe.final_km, poe.dif, poe.total_hours, art.name, poe.fuel_amount
-      FROM part_of_equipments poe, articles art, subcontract_equipments sce, entities ent
+      FROM part_of_equipments poe, articles_from_cost_center_" + @name.to_s + " art, subcontract_equipments sce
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND sce.id=poe.subcontract_equipment_id
       AND poe.subcategory_id=art.id
       AND poe.equipment_id IN(" + working_group_id + ")
-      AND ent.name LIKE '" + entity_name + "' 
-      AND sce.entity_id = ent.id
       ORDER BY poe.date
     ")
     return poe_array
