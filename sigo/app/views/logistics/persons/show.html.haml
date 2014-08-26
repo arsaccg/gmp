@@ -44,6 +44,7 @@
                       %label.input{for: "last_name"}
                         %i.icon-append.fa.fa-user
                         = f.input :last_name, placeholder: "Segundo Nombre", html: { class: 'form-control' }, label: false
+
                   .row
                     %section.col.col-6
                       %label.input{for: "surname"}
@@ -53,6 +54,21 @@
                       %label.input{for: "email"}
                         %i.icon-append.fa.fa-envelope-o
                         = f.input :email, placeholder: "E-mail", html: { class: 'form-control' }, label: false
+                  //-----------------------password--------------------------------------------
+
+                  .row
+                    = f.hidden_field :reset_password_token
+                    %section.col.col-6
+                      %label.input{for: "password"}
+                        %i.icon-append.fa.fa-lock
+                        = f.input :password, placeholder: "Nueva Contraseña", html: { class: 'form-control', id: 'password_change' }, label: false                        
+                    %section.col.col-6
+                      %label.input{for: "password_confirmation"}
+                        %i.icon-append.fa.fa-lock
+                        = f.input :password_confirmation, placeholder: "Confirmar Contraseña", html: { class: 'form-control' }, label: false
+
+                  //-------------------------password-----------------------------------------
+
                 %fieldset
                   .row
                     %section.col.col-6
@@ -113,6 +129,12 @@
           'user[email]' : {
             required : true,
             email : true
+          },
+          'user[password]' : {
+            minlength : 8
+          },
+          'user[password_confirmation]' : {
+            equalTo: "#user_password"
           }
         },
 
@@ -125,8 +147,15 @@
             required : 'Please enter your email address',
             email : 'Please enter a VALID email address'
           },
+          'user[password]' : {
+            minlength : 'La contraseña debe tener como mínimo 8 caracteres'
+          },
+          'user[password_confirmation]' : {
+            equalTo: 'Las contraseñas deben ser iguales'
+          },
           password : {
-            required : 'Please enter your password'
+            required : 'Please enter your password',
+            minlength: 'Password muy pequeño'
           },
           passwordConfirm : {
             required : 'Please enter your password one more time',
