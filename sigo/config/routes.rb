@@ -95,6 +95,8 @@ ArsacLogistica::Application.routes.draw do
         
         post 'getCostCentersPerCompany'
         post 'update_profile'
+
+
       end
     end
     resources :theoretical_values do
