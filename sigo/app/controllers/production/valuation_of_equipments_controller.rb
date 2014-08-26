@@ -124,7 +124,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
-      AND poe.cost_center_id = '"+ cost_center +"'
+      AND poe.cost_center_id = '" + cost_center.to_s + "'
       AND poe.equipment_id=sed.id
       AND poe.subcontract_equipment_id = " + working_group_id.to_s + "
       GROUP BY poe.equipment_id
@@ -138,7 +138,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
       WHERE poe.date <  '" + end_date.to_s + "'
       AND poe.id=poed.part_of_equipment_id
-      AND poe.cost_center_id = '"+ cost_center +"'
+      AND poe.cost_center_id = '" + cost_center.to_s + "'
       AND poe.equipment_id=sed.id
       AND poe.subcontract_equipment_id = " + working_group_id.to_s + "
       GROUP BY poe.equipment_id
@@ -159,7 +159,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       accumulated_net_payment, 
       code 
       FROM valuation_of_equipments
-      WHERE name LIKE '" + entityname + "'
+      WHERE name LIKE '" + entityname.to_s + "'
       ORDER BY id DESC LIMIT 1
     ")
     return valuationgroup
@@ -178,8 +178,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       accumulated_net_payment, 
       code 
       FROM valuation_of_equipments 
-      WHERE name LIKE '" + entityname + "' 
-      AND code LIKE '" + code + "'
+      WHERE name LIKE '" + entityname.to_s + "' 
+      AND code LIKE '" + code.to_s + "'
     ")
     return valuationgroup
   end
