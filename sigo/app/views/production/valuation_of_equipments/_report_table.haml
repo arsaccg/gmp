@@ -22,7 +22,7 @@
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Adelanto
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Amortización Acumulada
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Saldo
-            %tbody
+            %tbody{:style => 'background-color: #fff;'}
               %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.contract_amount, unit: 'S/. ', precision: 2)
               %th#adelanto{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subadvances, unit: 'S/. ', precision: 2)
               %th#amortAcum2{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f), unit: 'S/. ', precision: 2)
@@ -39,7 +39,7 @@
                 %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"} Actual
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Acumulado Anterior
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Acumulado Actual
-            %tbody
+            %tbody{:style => 'background-color: #fff;'}
               %tr
                 %th{"style"=>"color:#5f5f5f; text-align:center;"} 01
                 %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
