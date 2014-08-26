@@ -63,7 +63,11 @@ class Production::PartPeopleController < ApplicationController
     @id_worker = @worker.id
     @name_worker = @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s + ' ' + @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s
     if WorkerContract.where("worker_id = ?",@worker.id).count>0
-      @category_worker = WorkerContract.where("worker_id = ?",@worker.id).last.article.name
+      if WorkerContract.where("worker_id = ?",@worker.id).last.article.nil?
+        @category_worker = "No tiene"
+      else
+        @category_worker = WorkerContract.where("worker_id = ?",@worker.id).last.article.name
+      end
     else
       @category_worker = "No tiene"
     end
