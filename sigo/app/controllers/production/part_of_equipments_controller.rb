@@ -105,8 +105,9 @@ class Production::PartOfEquipmentsController < ApplicationController
       end
       render json: {:articles => article_hash}
     else
+      cost_center_id = get_company_cost_center('cost_center')
       article_hash = Array.new
-      articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE id = #{params[:element]}")
+      articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles_from_cost_center_" + cost_center_id.to_s + " WHERE id = #{params[:element]}")
       articles.each do |art|
         article_hash << { 'id' => art[0], 'name' => art[1] }
       end
