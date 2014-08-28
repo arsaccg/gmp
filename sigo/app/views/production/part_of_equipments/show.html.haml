@@ -51,9 +51,7 @@
                     %td
                       = @partofequipment.h_stand_by
                     %td
-                      -@type.each do |type|
-                        - if type.id==@partofequipment.subcategory_id
-                          = type.name
+                      = @type
                     %td
                       = @partofequipment.fuel_amount
 

@@ -71,10 +71,10 @@ class Production::PartOfEquipmentsController < ApplicationController
     @partofequipment = PartOfEquipment.find(params[:id])
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
     @sectors = Sector.where("code LIKE '__'")
-    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @phases = Phase.getSpecificPhases(cost_center)
     @working_groups= WorkingGroup.all
     @subcontracts = SubcontractEquipment.all
-    @type = Article.where("code LIKE ?", '__32%')
+    @type = Article.find_idarticle_global_by_specific_idarticle(@partofequipment.subcategory_id, cost_center)[0] rescue 'No se definio combustible.'
     subcontract_id = @partofequipment.subcontract_equipment_id
     unit=''
     equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", subcontract_id)
