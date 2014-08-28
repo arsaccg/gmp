@@ -46,7 +46,7 @@ class Production::MachineryReportsController < ApplicationController
       AND sce.id=poe.subcontract_equipment_id
       AND poe.subcategory_id=art.id
       AND poe.equipment_id IN(" + sub_equipment_id + ")
-      GROUP BY poe.code
+      GROUP BY poe.date
       ORDER BY poe.date
     ")
     return poe_array
