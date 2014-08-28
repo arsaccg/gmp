@@ -4,13 +4,9 @@ class Production::AnalysisOfValuationsController < ApplicationController
   	@workingGroups = WorkingGroup.all
     @sector = Sector.where("code LIKE '__'")
     @subsectors = Sector.where("code LIKE '____'")
-    PositionWorker.where("name LIKE '%Jefe de Frente%'").each do |front_chief|
-      @front_chiefs = front_chief.workers
-    end
-    PositionWorker.where("name LIKE '%Maestro de Obra%'").each do |master_builder|
-      @master_builders = master_builder.workers
-    end
-    @executors = Subcontract.all
+    @front_chiefs = PositionWorker.find(1).workers # Jefes de Frentes
+    @master_builders = PositionWorker.find(2).workers # Capatazes o Maestros de Obra
+    @executors = Subcontract.where('entity_id <> 0') # Exclude the Subcontract Default
     render layout: false
   end
 
