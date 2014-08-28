@@ -41,23 +41,23 @@ class Production::PartOfEquipmentsController < ApplicationController
       if partofequipment[7] == 0
         array << [
           partofequipment[1],
-          partofequipment[2],
-          partofequipment[4],
+          partofequipment[6],
           partofequipment[3],
           partofequipment[5],
           partofequipment[8],
-          partofequipment[6],
+          partofequipment[2],
+          partofequipment[4],
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "','content',null,null,'GET')> Ver Información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/part_of_equipments/" + partofequipment[0].to_s + "','content','/production/part_of_equipments') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar la parte N°" + partofequipment[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
         ]
       else
         array << [
           partofequipment[1],
-          partofequipment[2],
-          partofequipment[4],
+          partofequipment[6],
           partofequipment[3],
           partofequipment[5],
           partofequipment[8],
-          partofequipment[6],
+          partofequipment[2],
+          partofequipment[4],
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "','content',null,null,'GET')> Ver Información </a>"
         ]
       end
@@ -71,10 +71,10 @@ class Production::PartOfEquipmentsController < ApplicationController
     @partofequipment = PartOfEquipment.find(params[:id])
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
     @sectors = Sector.where("code LIKE '__'")
-    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @phases = Phase.getSpecificPhases(cost_center)
     @working_groups= WorkingGroup.all
     @subcontracts = SubcontractEquipment.all
-    @type = Article.where("code LIKE ?", '__32%')
+    @type = Article.find_idarticle_global_by_specific_idarticle(@partofequipment.subcategory_id, cost_center)[0] rescue 'No se definio combustible.'
     subcontract_id = @partofequipment.subcontract_equipment_id
     unit=''
     equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", subcontract_id)
