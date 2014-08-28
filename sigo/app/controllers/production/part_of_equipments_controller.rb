@@ -41,23 +41,23 @@ class Production::PartOfEquipmentsController < ApplicationController
       if partofequipment[7] == 0
         array << [
           partofequipment[1],
-          partofequipment[2],
-          partofequipment[4],
+          partofequipment[6],
           partofequipment[3],
           partofequipment[5],
           partofequipment[8],
-          partofequipment[6],
+          partofequipment[2],
+          partofequipment[4],
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "','content',null,null,'GET')> Ver Información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/part_of_equipments/" + partofequipment[0].to_s + "','content','/production/part_of_equipments') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar la parte N°" + partofequipment[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
         ]
       else
         array << [
           partofequipment[1],
-          partofequipment[2],
-          partofequipment[4],
+          partofequipment[6],
           partofequipment[3],
           partofequipment[5],
           partofequipment[8],
-          partofequipment[6],
+          partofequipment[2],
+          partofequipment[4],
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "','content',null,null,'GET')> Ver Información </a>"
         ]
       end
