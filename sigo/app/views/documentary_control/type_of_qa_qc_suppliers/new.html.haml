@@ -11,10 +11,10 @@
 
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-tyarticles{type: "button"}
     %i.fa.fa-arrow-left>
-    Retornar al listado
+    Retornar al listado de tipos
 
 :javascript
 
   $('#backlist-tyarticles').click(function(){
-    load_url_ajax("#{documentary_control_qa_qcs_path}", 'content', {type: #{@type}}, null, 'GET');
+    load_url_ajax("#{documentary_control_type_of_qa_qc_suppliers_path}", 'content', null, null, 'GET');
   });

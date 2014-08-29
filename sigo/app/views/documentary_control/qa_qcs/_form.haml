@@ -5,6 +5,7 @@
     %h2 Qa/qc
   .widget-body
     = simple_form_for([:documentary_control, @qac], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %input{"style"=>"display:none", value: "#{@type}", :name =>"type"}
       %fieldset
         .row
           %section.col.col-md-8
@@ -23,10 +24,16 @@
           %section.col.col-md-12
             %label.label Tipo
             %section.col.col-10
-              -@type_qq.each do |tb|
-                = f.radio_button :type_of_qa_qc_id, "#{tb.id}"
-                %label= tb.name
-                %br
+              -if @type == "0"
+                -@type_qq.each do |tb|
+                  = f.radio_button :type_of_qa_qc_id, "#{tb.id}", required: true
+                  %label= tb.name
+                  %br
+              -if @type == "1"
+                -@type_qqs.each do |tb|
+                  = f.radio_button :type_of_qa_qc_supplier_id, "#{tb.id}", required: true
+                  %label= tb.name
+                  %br
         .row
           %section.col.col-md-12
             %label.label Archivo:
@@ -66,9 +73,6 @@
             },
             'qa_qc[description]' : {
               required : true,
-            },
-            'qa_qc[type_of_qa_qc_id]' : {
-              required : true,
             }
           },
 
@@ -79,9 +83,6 @@
             },
             'qa_qc[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
-            },
-            'qa_qc[type_of_qa_qc_id]' : {
-              required : 'Escoja un tipo',
             }
           },
           // Do not change code below
