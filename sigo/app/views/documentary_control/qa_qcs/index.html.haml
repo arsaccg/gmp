@@ -17,9 +17,17 @@
         %strong Error!
         = flash[:error]
   .row
-    .col-sm-4
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_qa_qc_path}', 'content', {type: #{@type}}, null, 'GET')"}
-        Agregar
+
+    -if @type_qq.count != 0
+      .col-sm-4
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_qa_qc_path}', 'content', {type: #{@type}}, null, 'GET')"}
+          Agregar
+      %br
+    -else
+      .alert.alert-danger.fade.in
+        %i.fa-fw.fa.fa-check
+        %strong{"style"=> "font-size: 12px"} Error! Asegurese de tener creado por lo menos un tipo      
+    
   %br
   .row
   #widget-grid
