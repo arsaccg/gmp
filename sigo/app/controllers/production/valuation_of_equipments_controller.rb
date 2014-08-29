@@ -222,11 +222,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @totalprice3 = 0
     @cc = get_company_cost_center('cost_center')
     @workers_array3 = business_days_array3(@start_date, @end_date, @cad,@cc)
-    @workers_array3.each do |workerDetail|
-      @totalprice3 += workerDetail[4]
-    end
     @art = Array.new
     @workers_array3.each do |workerDetail|
+      @totalprice3 += workerDetail[4]
       @art << workerDetail[6]
     end
     @art = @art.join(',')
