@@ -61,13 +61,17 @@
                 = total.round(2)
           %td(style="text-align: right;") 
             %strong
+              %a{:href => "javascript:delete_to_url('#{management_inputbybudgetanditem_path(itembudget.id) + '?item_id=' + @item_id + '&budget_id=' + @budget_id + '&order=' + @order.gsub(".","d")}', 'botom-load')", data: { confirm: "¿Está seguro que desea eliminar este item?"} }
+                X
+
+              /=link_to("x", management_inputbybudgetanditem_path(itembudget), method: :delete, data: { confirm: "Are you sure?" })
+              /  %i(class="icon-user"){update_input_management_inputbybudgetanditems_path}?price=" + var_price + "&quantity="+ var_quantity + "&input_id=" + id, "rand
+
+              /%a.btn.btn-danger.btn-xs(data-onclick=javascript:delete_to_url('/documentary_control/photo_of_works/"+photo[0].to_s+"','content','/documentary_control/photo_of_works') data-placement='left' data-popout='true' data-singleton='true' data-toggle='confirmation' data-title='Esta seguro de eliminar el item " + photo[1].to_s + "'  data-original-title='' title='')
+              /  X
               
             
 :javascript
-   
-  
-   
-  
   var budget_id_sel = "#{@budget_id}";
   var item_id_sel = "#{@item_id}";
   var order_sel = "#{@order}";
