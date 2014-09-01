@@ -1,0 +1,1694 @@
+Started GET "/users/sign_in" for 127.0.0.1 at 2014-07-07 12:42:27 -0500
+Processing by Devise::SessionsController#new as HTML
+  Rendered devise/sessions/new.html.haml (4949.1ms)
+Completed 500 Internal Server Error in 5021ms
+
+ActionView::Template::Error (Invalid CSS after "    filter: progid": expected ";", was ": DXImageTransf..."
+  (in /home/giancarlo/sitios_web/gmp/sigo/app/assets/stylesheets/smartadmin-production.css)):
+    18:     = stylesheet_link_tag "font-awesome.min", media: "screen", rel: "stylesheet", type: "text/css"
+    19:     
+    20:     / SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables
+    21:     = stylesheet_link_tag "smartadmin-production", media: "screen", rel: "stylesheet", type: "text/css"
+    22:     = stylesheet_link_tag "smartadmin-skins", media: "screen", rel: "stylesheet", type: "text/css"
+    23:     /
+    24:       SmartAdmin RTL Support is under construction
+  app/views/devise/sessions/new.html.haml:21:in `_app_views_devise_sessions_new_html_haml__3680198147436078977_26796420'
+
+
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.4ms)[0m  SELECT `schema_migrations`.* FROM `schema_migrations`
+  [1m[36m (208.7ms)[0m  [1mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (211.2ms)[0m  CREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`) 
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+Migrating to DeviseCreateUsers (20140226220350)
+  [1m[35m (81.2ms)[0m  CREATE TABLE `users` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `email` varchar(255) DEFAULT '' NOT NULL, `encrypted_password` varchar(255) DEFAULT '' NOT NULL, `reset_password_token` varchar(255), `reset_password_sent_at` datetime, `remember_created_at` datetime, `sign_in_count` int(11) DEFAULT 0 NOT NULL, `current_sign_in_at` datetime, `last_sign_in_at` datetime, `current_sign_in_ip` varchar(255), `last_sign_in_ip` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (191.1ms)[0m  [1mCREATE UNIQUE INDEX `index_users_on_email` ON `users` (`email`) [0m
+  [1m[35m (201.4ms)[0m  CREATE UNIQUE INDEX `index_users_on_reset_password_token` ON `users` (`reset_password_token`) 
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140226220350')
+  [1m[36m (55.1ms)[0m  [1mCOMMIT[0m
+Migrating to CreateArticles (20140227192002)
+  [1m[35m (98.2ms)[0m  CREATE TABLE `articles` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140227192002')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreateDeliveryOrders (20140227192216)
+  [1m[35m (87.2ms)[0m  CREATE TABLE `delivery_orders` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `state` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140227192216')
+  [1m[36m (51.8ms)[0m  [1mCOMMIT[0m
+Migrating to CreateSectors (20140227192245)
+  [1m[35m (87.2ms)[0m  CREATE TABLE `sectors` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140227192245')
+  [1m[36m (51.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreatePhases (20140227192300)
+  [1m[35m (87.3ms)[0m  CREATE TABLE `phases` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140227192300')
+  [1m[36m (51.1ms)[0m  [1mCOMMIT[0m
+Migrating to CreateCostCenters (20140227192423)
+  [1m[35m (76.1ms)[0m  CREATE TABLE `cost_centers` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140227192423')
+  [1m[36m (51.1ms)[0m  [1mCOMMIT[0m
+Migrating to CreateDeliveryOrderDetails (20140227192809)
+  [1m[35m (76.0ms)[0m  CREATE TABLE `delivery_order_details` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `deliver_order_id` int(11), `phase_id` int(11), `sector_id` int(11), `person_id` int(11), `article_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140227192809')
+  [1m[36m (51.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreateStatePerOrderDetails (20140227193027)
+  [1m[35m (201.8ms)[0m  CREATE TABLE `state_per_order_details` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `delivery_order_id` int(11), `state` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140227193027')
+  [1m[36m (50.6ms)[0m  [1mCOMMIT[0m
+Migrating to AddUnitOfMeasureIdToArticle (20140228150441)
+  [1m[35m (257.4ms)[0m  ALTER TABLE `articles` ADD `unit_of_measure_id` int(11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140228150441')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to AddDescriptionToArticle (20140228150509)
+  [1m[35m (267.3ms)[0m  ALTER TABLE `articles` ADD `description` int(11)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140228150509')
+  [1m[36m (51.2ms)[0m  [1mCOMMIT[0m
+Migrating to CreateUnitOfMeasurements (20140228164254)
+  [1m[35m (99.1ms)[0m  CREATE TABLE `unit_of_measurements` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140228164254')
+  [1m[36m (51.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddExtraColumnsToUsers (20140228215314)
+  [1m[35m (222.0ms)[0m  ALTER TABLE `users` ADD `first_name` varchar(255)
+  [1m[36m (234.0ms)[0m  [1mALTER TABLE `users` ADD `last_name` varchar(255)[0m
+  [1m[35m (256.4ms)[0m  ALTER TABLE `users` ADD `surname` varchar(255)
+  [1m[36m (256.2ms)[0m  [1mALTER TABLE `users` ADD `date_of_birth` date[0m
+  [1m[35m (258.1ms)[0m  ALTER TABLE `users` ADD `avatar` varchar(255)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140228215314')
+  [1m[36m (51.2ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveColumnUnitOfMeasureIdOfArticles (20140228222023)
+  [1m[35m (233.4ms)[0m  ALTER TABLE `articles` DROP `unit_of_measure_id`
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140228222023')
+  [1m[36m (51.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnUnitOfMeasurementIdToArticles (20140228222207)
+  [1m[35m (222.2ms)[0m  ALTER TABLE `articles` ADD `unit_of_measurement_id` int(11)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140228222207')
+  [1m[36m (50.8ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveColumnDescriptionFromArticles (20140301033021)
+  [1m[35m (255.8ms)[0m  ALTER TABLE `articles` DROP `description`
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140301033021')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnDescriptionToArticles (20140301033209)
+  [1m[35m (255.7ms)[0m  ALTER TABLE `articles` ADD `description` text
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140301033209')
+  [1m[36m (51.2ms)[0m  [1mCOMMIT[0m
+Migrating to AddAttachmentAvatarToUsers (20140301055049)
+  [1m[35m (266.7ms)[0m  ALTER TABLE `users` ADD `avatar_file_name` varchar(255)
+  [1m[36m (236.2ms)[0m  [1mALTER TABLE `users` ADD `avatar_content_type` varchar(255)[0m
+  [1m[35m (223.3ms)[0m  ALTER TABLE `users` ADD `avatar_file_size` int(11)
+  [1m[36m (211.9ms)[0m  [1mALTER TABLE `users` ADD `avatar_updated_at` datetime[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140301055049')[0m
+  [1m[35m (52.0ms)[0m  COMMIT
+Migrating to AddColumnCodeToCostCenters (20140301175259)
+  [1m[36m (256.6ms)[0m  [1mALTER TABLE `cost_centers` ADD `code` varchar(255)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140301175259')[0m
+  [1m[35m (53.0ms)[0m  COMMIT
+Migrating to AddSymbolToUnitOfMeasured (20140301232723)
+  [1m[36m (256.0ms)[0m  [1mALTER TABLE `unit_of_measurements` ADD `symbol` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140301232723')[0m
+  [1m[35m (52.1ms)[0m  COMMIT
+Migrating to AddColumnTypeToPhases (20140303165930)
+  [1m[36m (255.5ms)[0m  [1mALTER TABLE `phases` ADD `type` varchar(255)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140303165930')[0m
+  [1m[35m (60.9ms)[0m  COMMIT
+Migrating to RemoveFieldTypeFromPhases (20140303171731)
+  [1m[36m (258.0ms)[0m  [1mALTER TABLE `phases` DROP `type`[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.9ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140303171731')[0m
+  [1m[35m (49.8ms)[0m  COMMIT
+Migrating to AddFieldCategoryToPhases (20140303171810)
+  [1m[36m (403.0ms)[0m  [1mALTER TABLE `phases` ADD `category` varchar(255)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140303171810')[0m
+  [1m[35m (83.4ms)[0m  COMMIT
+Migrating to AddExtraFieldsToDeliveryOrders (20140304143242)
+  [1m[36m (255.8ms)[0m  [1mALTER TABLE `delivery_orders` ADD `code` varchar(255)[0m
+  [1m[35m (255.9ms)[0m  ALTER TABLE `delivery_orders` ADD `name` varchar(255)
+  [1m[36m (256.1ms)[0m  [1mALTER TABLE `delivery_orders` ADD `user_id` int(11)[0m
+  [1m[35m (290.5ms)[0m  ALTER TABLE `delivery_orders` ADD `date_of_issue` date
+  [1m[36m (225.1ms)[0m  [1mALTER TABLE `delivery_orders` ADD `scheduled` date[0m
+  [1m[35m (279.3ms)[0m  ALTER TABLE `delivery_orders` ADD `description` text
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140304143242')
+  [1m[36m (51.2ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveCodeAndNameFromDeliveryOrders (20140304161951)
+  [1m[35m (256.6ms)[0m  ALTER TABLE `delivery_orders` DROP `code`
+  [1m[36m (523.1ms)[0m  [1mALTER TABLE `delivery_orders` DROP `name`[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (67.1ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140304161951')[0m
+  [1m[35m (198.4ms)[0m  COMMIT
+Migrating to CreateCategories (20140304200611)
+  [1m[36m (221.9ms)[0m  [1mCREATE TABLE `categories` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `code` varchar(255), `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140304200611')[0m
+  [1m[35m (101.0ms)[0m  COMMIT
+Migrating to AddColumnCategoryIdToSubcategories (20140304200700)
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140304200700')
+  [1m[36m (49.0ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnUnitOfMeasurementIdToDeliveryOrderDetails (20140304210444)
+  [1m[35m (222.1ms)[0m  ALTER TABLE `delivery_order_details` ADD `unit_of_measurement_id` int(11)
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140304210444')
+  [1m[36m (51.0ms)[0m  [1mCOMMIT[0m
+Migrating to AddExtraColumnToDeliveryOrderDetails (20140304210737)
+  [1m[35m (269.7ms)[0m  ALTER TABLE `delivery_order_details` ADD `amount` int(11)
+  [1m[36m (256.2ms)[0m  [1mALTER TABLE `delivery_order_details` ADD `description` text[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140304210737')[0m
+  [1m[35m (54.3ms)[0m  COMMIT
+Migrating to AddColumncodeToArticles (20140305152904)
+  [1m[36m (256.8ms)[0m  [1mALTER TABLE `articles` ADD `code` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140305152904')[0m
+  [1m[35m (52.6ms)[0m  COMMIT
+Migrating to RemovePersonIdFromDeliveryOrderDetails (20140305173110)
+  [1m[36m (278.9ms)[0m  [1mALTER TABLE `delivery_order_details` DROP `person_id`[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140305173110')[0m
+  [1m[35m (42.7ms)[0m  COMMIT
+Migrating to RemoveDeliverIdFromDeliveryOrderDetails (20140305194830)
+  [1m[36m (222.5ms)[0m  [1mALTER TABLE `delivery_order_details` DROP `deliver_order_id`[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140305194830')[0m
+  [1m[35m (51.3ms)[0m  COMMIT
+Migrating to AddColumnDeliveryOrderIdToDeliveryOrderDetails (20140305194917)
+  [1m[36m (235.3ms)[0m  [1mALTER TABLE `delivery_order_details` ADD `delivery_order_id` int(11)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140305194917')[0m
+  [1m[35m (54.0ms)[0m  COMMIT
+Migrating to CreateArticleUnitOfMeasurements (20140306220353)
+  [1m[36m (88.5ms)[0m  [1mCREATE TABLE `article_unit_of_measurements` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `article_id` int(11), `unit_of_measurement_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140306220353')[0m
+  [1m[35m (52.4ms)[0m  COMMIT
+Migrating to AddColumnCodeToUnitOfMeasurements (20140307142632)
+  [1m[36m (267.1ms)[0m  [1mALTER TABLE `unit_of_measurements` ADD `code` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140307142632')[0m
+  [1m[35m (52.2ms)[0m  COMMIT
+Migrating to AddColumnCodeArticleUnitToArticleUnitOfMeasurements (20140307143002)
+  [1m[36m (267.9ms)[0m  [1mALTER TABLE `article_unit_of_measurements` ADD `code_article_unit` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140307143002')[0m
+  [1m[35m (41.2ms)[0m  COMMIT
+Migrating to AddArticleidToCategories (20140307212842)
+  [1m[36m (467.9ms)[0m  [1mALTER TABLE `categories` ADD `article_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140307212842')[0m
+  [1m[35m (51.4ms)[0m  COMMIT
+Migrating to RemoveUnitOfMeasurementIdFromArticles (20140307213422)
+  [1m[36m (222.1ms)[0m  [1mALTER TABLE `articles` DROP `unit_of_measurement_id`[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140307213422')[0m
+  [1m[35m (51.2ms)[0m  COMMIT
+Migrating to RemoveArticleIdFromCategories (20140308050222)
+  [1m[36m (258.7ms)[0m  [1mALTER TABLE `categories` DROP `article_id`[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140308050222')[0m
+  [1m[35m (53.4ms)[0m  COMMIT
+Migrating to AddColumnCategoryIdToArticles (20140308050257)
+  [1m[36m (268.1ms)[0m  [1mALTER TABLE `articles` ADD `category_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140308050257')[0m
+  [1m[35m (52.1ms)[0m  COMMIT
+Migrating to AddColumnScheduledDateToDeliveryOrderDetails (20140310180211)
+  [1m[36m (245.2ms)[0m  [1mALTER TABLE `delivery_order_details` ADD `scheduled_date` date[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140310180211')[0m
+  [1m[35m (52.6ms)[0m  COMMIT
+Migrating to CreateCenterOfAttentions (20140310180324)
+  [1m[36m (87.0ms)[0m  [1mCREATE TABLE `center_of_attentions` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140310180324')[0m
+  [1m[35m (51.7ms)[0m  COMMIT
+Migrating to AddColumnCenterOfAttentionIdToDeliveryOrderDetails (20140310180507)
+  [1m[36m (312.5ms)[0m  [1mALTER TABLE `delivery_order_details` ADD `center_of_attention_id` int(11)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140310180507')[0m
+  [1m[35m (77.2ms)[0m  COMMIT
+Migrating to CreateTypeOfArticles (20140310212357)
+  [1m[36m (135.5ms)[0m  [1mCREATE TABLE `type_of_articles` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `code` varchar(255), `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140310212357')[0m
+  [1m[35m (53.6ms)[0m  COMMIT
+Migrating to AddColumnUserIdToStatePerOrderDetails (20140311155351)
+  [1m[36m (266.7ms)[0m  [1mALTER TABLE `state_per_order_details` ADD `user_id` int(11)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140311155351')[0m
+  [1m[35m (51.7ms)[0m  COMMIT
+Migrating to AddColumnTypeOfArticleIdToArticles (20140311194742)
+  [1m[36m (234.2ms)[0m  [1mALTER TABLE `articles` ADD `type_of_article_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140311194742')[0m
+  [1m[35m (52.3ms)[0m  COMMIT
+Migrating to AddColumnAbbreviationToCenterOfAttentions (20140312143546)
+  [1m[36m (210.5ms)[0m  [1mALTER TABLE `center_of_attentions` ADD `abbreviation` varchar(255)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140312143546')[0m
+  [1m[35m (53.6ms)[0m  COMMIT
+Migrating to CreateCompanies (20140313202032)
+  [1m[36m (86.8ms)[0m  [1mCREATE TABLE `companies` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `ruc` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140313202032')[0m
+  [1m[35m (52.3ms)[0m  COMMIT
+Migrating to AddColumnCompanyIdToCostCenters (20140313202414)
+  [1m[36m (257.0ms)[0m  [1mALTER TABLE `cost_centers` ADD `company_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140313202414')[0m
+  [1m[35m (53.8ms)[0m  COMMIT
+Migrating to AddColumnCostCenterIdToDeliveryOrders (20140313202549)
+  [1m[36m (290.4ms)[0m  [1mALTER TABLE `delivery_orders` ADD `cost_center_id` int(11)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140313202549')[0m
+  [1m[35m (53.9ms)[0m  COMMIT
+Migrating to AddColumnRoleMaskToUsers (20140313203418)
+  [1m[36m (223.2ms)[0m  [1mALTER TABLE `users` ADD `roles_mask` int(11) DEFAULT 1[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140313203418')[0m
+  [1m[35m (51.3ms)[0m  COMMIT
+Migrating to CreatePurchaseOrders (20140318200436)
+  [1m[36m (86.3ms)[0m  [1mCREATE TABLE `purchase_orders` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `state` varchar(255), `date_of_issue` date, `expiration_date` date, `delivery_date` date, `retention` tinyint(1), `money_id` int(11), `method_of_payment_id` int(11), `supplier_id` int(11), `user_id` int(11), `cost_center_id` int(11), `description` text, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140318200436')[0m
+  [1m[35m (51.2ms)[0m  COMMIT
+Migrating to CreatePurchaseOrderDetails (20140318200845)
+  [1m[36m (89.0ms)[0m  [1mCREATE TABLE `purchase_order_details` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `delivery_order_detail_id` int(11), `unit_price` float, `igv` tinyint(1), `unit_price_igv` float, `description` text, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140318200845')[0m
+  [1m[35m (52.3ms)[0m  COMMIT
+Migrating to CreateSuppliers (20140319012006)
+  [1m[36m (88.9ms)[0m  [1mCREATE TABLE `suppliers` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `ruc` varchar(255), `name` varchar(255), `address` varchar(255), `phone` varchar(255)) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140319012006')[0m
+  [1m[35m (51.2ms)[0m  COMMIT
+Migrating to CreateMethodOfPayments (20140319012417)
+  [1m[36m (99.7ms)[0m  [1mCREATE TABLE `method_of_payments` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `symbol` varchar(255)) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140319012417')[0m
+  [1m[35m (54.0ms)[0m  COMMIT
+Migrating to CreateMoney (20140319055335)
+  [1m[36m (87.1ms)[0m  [1mCREATE TABLE `money` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `symbol` varchar(255), `exchange_rate` decimal) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140319055335')[0m
+  [1m[35m (49.6ms)[0m  COMMIT
+Migrating to CreateStatePerOrderPurchases (20140319144154)
+  [1m[36m (110.8ms)[0m  [1mCREATE TABLE `state_per_order_purchases` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `state` varchar(255), `purchase_order_id` int(11), `user_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140319144154')[0m
+  [1m[35m (52.9ms)[0m  COMMIT
+Migrating to AddColumnPurchaseOrderIdToPurchaseOrderDetails (20140319162612)
+  [1m[36m (255.8ms)[0m  [1mALTER TABLE `purchase_order_details` ADD `purchase_order_id` int(11)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140319162612')[0m
+  [1m[35m (53.4ms)[0m  COMMIT
+Migrating to ChangeExchangeRateColumnAddScale (20140320005553)
+  [1m[36m (247.3ms)[0m  [1mALTER TABLE `money` CHANGE `exchange_rate` `exchange_rate` decimal(15,5) NOT NULL[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140320005553')[0m
+  [1m[35m (52.5ms)[0m  COMMIT
+Migrating to AddColumnExchangeOfRateToPurchaseOrders (20140320194726)
+  [1m[36m (245.2ms)[0m  [1mALTER TABLE `purchase_orders` ADD `exchange_of_rate` float[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140320194726')[0m
+  [1m[35m (73.5ms)[0m  COMMIT
+Migrating to CreateExchangeOfRates (20140322020153)
+  [1m[36m (133.3ms)[0m  [1mCREATE TABLE `exchange_of_rates` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `day` datetime, `money_id` int(11), `value` decimal(15,5), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (208.4ms)[0m  CREATE INDEX `index_exchange_of_rates_on_money_id` ON `exchange_of_rates` (`money_id`) 
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140322020153')
+  [1m[36m (54.4ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveExchangeRateFromMoney (20140322020531)
+  [1m[35m (288.1ms)[0m  ALTER TABLE `money` DROP `exchange_rate`
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140322020531')
+  [1m[36m (41.8ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnsTimeStampsToMoney (20140322020846)
+  [1m[35m (43.5ms)[0m  DROP TABLE `money`
+  [1m[36m (322.5ms)[0m  [1mCREATE TABLE `money` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `symbol` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (1.0ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140322020846')[0m
+  [1m[35m (117.4ms)[0m  COMMIT
+Migrating to AddColumnRequestedToDeliveryOrderDetails (20140324221610)
+  [1m[36m (613.6ms)[0m  [1mALTER TABLE `delivery_order_details` ADD `requested` tinyint(1)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140324221610')[0m
+  [1m[35m (62.7ms)[0m  COMMIT
+Migrating to CreateEntities (20140326144641)
+  [1m[36m (133.3ms)[0m  [1mCREATE TABLE `entities` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `surname` varchar(255), `dni` varchar(255), `ruc` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140326144641')[0m
+  [1m[35m (53.8ms)[0m  COMMIT
+Migrating to CreateTypeEntities (20140326144735)
+  [1m[36m (99.9ms)[0m  [1mCREATE TABLE `type_entities` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `preffix` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140326144735')[0m
+  [1m[35m (53.7ms)[0m  COMMIT
+Migrating to AddColumnEntityIdToPurchaseOrders (20140327210936)
+  [1m[36m (368.6ms)[0m  [1mALTER TABLE `purchase_orders` ADD `entity_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140327210936')[0m
+  [1m[35m (52.7ms)[0m  COMMIT
+Migrating to RemoveSupplierIdFromPurchaseOrders (20140327211048)
+  [1m[36m (225.8ms)[0m  [1mALTER TABLE `purchase_orders` DROP `supplier_id`[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140327211048')[0m
+  [1m[35m (52.6ms)[0m  COMMIT
+Migrating to AddColumnsAvatarFieldsToCompanies (20140328171558)
+  [1m[36m (256.8ms)[0m  [1mALTER TABLE `companies` ADD `avatar` varchar(255)[0m
+  [1m[35m (279.6ms)[0m  ALTER TABLE `companies` ADD `avatar_file_name` varchar(255)
+  [1m[36m (279.8ms)[0m  [1mALTER TABLE `companies` ADD `avatar_content_type` varchar(255)[0m
+  [1m[35m (223.6ms)[0m  ALTER TABLE `companies` ADD `avatar_file_size` int(11)
+  [1m[36m (226.0ms)[0m  [1mALTER TABLE `companies` ADD `avatar_updated_at` datetime[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140328171558')[0m
+  [1m[35m (52.8ms)[0m  COMMIT
+Migrating to AddColumnAmountToPurchaseOrderDetails (20140331144209)
+  [1m[36m (256.4ms)[0m  [1mALTER TABLE `purchase_order_details` ADD `amount` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140331144209')[0m
+  [1m[35m (51.6ms)[0m  COMMIT
+Migrating to AddUnitOfMeasurementIdToArticles (20140331154540)
+  [1m[36m (254.8ms)[0m  [1mALTER TABLE `articles` ADD `unit_of_measurement_id` int(11)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140331154540')[0m
+  [1m[35m (54.1ms)[0m  COMMIT
+Migrating to RemoveArticleUnitOfMeasurements (20140331160757)
+  [1m[36m (54.7ms)[0m  [1mDROP TABLE `article_unit_of_measurements`[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140331160757')[0m
+  [1m[35m (62.0ms)[0m  COMMIT
+Migrating to CreateWarehouses (20140402045048)
+  [1m[36m (87.3ms)[0m  [1mCREATE TABLE `warehouses` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `location` varchar(255), `status` varchar(255), `cost_center_id` int(11), `user_inserts_id` int(11), `user_updates_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (177.8ms)[0m  CREATE INDEX `index_warehouses_on_cost_center_id` ON `warehouses` (`cost_center_id`) 
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140402045048')
+  [1m[36m (52.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreateDocuments (20140402045113)
+  [1m[35m (88.6ms)[0m  CREATE TABLE `documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `description` varchar(255), `status` varchar(255), `user_inserts_id` int(11), `user_updates_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140402045113')
+  [1m[36m (53.8ms)[0m  [1mCOMMIT[0m
+Migrating to CreateFormats (20140402045125)
+  [1m[35m (86.7ms)[0m  CREATE TABLE `formats` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `description` varchar(255), `status` varchar(255), `user_inserts_id` int(11), `user_updates_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140402045125')
+  [1m[36m (51.8ms)[0m  [1mCOMMIT[0m
+Migrating to CreateFormatPerDocuments (20140402045135)
+  [1m[35m (119.9ms)[0m  CREATE TABLE `format_per_documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `document_id` int(11), `format_id` int(11), `status` varchar(255), `user_inserts_id` int(11), `user_updates_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (313.1ms)[0m  [1mCREATE INDEX `index_format_per_documents_on_document_id` ON `format_per_documents` (`document_id`) [0m
+  [1m[35m (188.9ms)[0m  CREATE INDEX `index_format_per_documents_on_format_id` ON `format_per_documents` (`format_id`) 
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140402045135')
+  [1m[36m (51.9ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveCodeColumnFromSpecifics (20140403152449)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140403152449')[0m
+  [1m[35m (49.3ms)[0m  COMMIT
+Migrating to AddColumnCodeToSpecifics (20140403152704)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140403152704')
+  [1m[36m (48.6ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveCategoryIdColumnFromArticles (20140403163801)
+  [1m[35m (223.6ms)[0m  ALTER TABLE `articles` DROP `category_id`
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140403163801')
+  [1m[36m (52.7ms)[0m  [1mCOMMIT[0m
+Migrating to AddSpecificIdColumnFromArticles (20140403163956)
+  [1m[35m (233.5ms)[0m  ALTER TABLE `articles` ADD `specific_id` int(11)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140403163956')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreateLinkPeriods (20140404032126)
+  [1m[35m (120.4ms)[0m  CREATE TABLE `link_periods` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `cost_center_id` int(11), `date` date, `year` int(11), `month` int(11), `day` int(11), `week` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (213.4ms)[0m  [1mCREATE INDEX `index_link_periods_on_cost_center_id` ON `link_periods` (`cost_center_id`) [0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140404032126')[0m
+  [1m[35m (52.8ms)[0m  COMMIT
+Migrating to CreateLinkTimes (20140404050300)
+  [1m[36m (98.1ms)[0m  [1mCREATE TABLE `link_times` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `date` date, `year` int(11), `month` int(11), `week` int(11), `day` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140404050300')[0m
+  [1m[35m (40.9ms)[0m  COMMIT
+Migrating to CreateFinancialVariables (20140404165157)
+  [1m[36m (76.3ms)[0m  [1mCREATE TABLE `financial_variables` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `value` float, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140404165157')[0m
+  [1m[35m (43.5ms)[0m  COMMIT
+Migrating to CreateOrderOfServices (20140407165442)
+  [1m[36m (99.3ms)[0m  [1mCREATE TABLE `order_of_services` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `state` varchar(255), `date_of_issue` datetime, `description` text, `method_of_payment_id` int(11), `entity_id` int(11), `user_id` int(11), `cost_center_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140407165442')[0m
+  [1m[35m (52.5ms)[0m  COMMIT
+Migrating to CreateOrderOfServiceDetails (20140407165850)
+  [1m[36m (119.9ms)[0m  [1mCREATE TABLE `order_of_service_details` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `article_id` int(11), `sector_id` int(11), `phase_id` int(11), `unit_of_measurement_id` int(11), `amount` int(11), `unit_price` float, `igv` tinyint(1), `unit_price_igv` int(11), `description` text, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140407165850')[0m
+  [1m[35m (51.9ms)[0m  COMMIT
+Migrating to AddColumnOrderOfServiceIdToOrderOfServiceDetails (20140407171709)
+  [1m[36m (656.9ms)[0m  [1mALTER TABLE `order_of_service_details` ADD `order_of_service_id` int(11)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140407171709')[0m
+  [1m[35m (98.5ms)[0m  COMMIT
+Migrating to CreateStatePerOrderOfServices (20140407222557)
+  [1m[36m (445.3ms)[0m  [1mCREATE TABLE `state_per_order_of_services` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `state` varchar(255), `order_of_service_id` int(11), `user_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140407222557')[0m
+  [1m[35m (231.8ms)[0m  COMMIT
+Migrating to AddColumnMoneyIdToOrderOfServices (20140408151315)
+  [1m[36m (347.2ms)[0m  [1mALTER TABLE `order_of_services` ADD `money_id` int(11)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140408151315')[0m
+  [1m[35m (42.8ms)[0m  COMMIT
+Migrating to AddColumnExchangeOfRateToOrderOfServices (20140408152421)
+  [1m[36m (212.3ms)[0m  [1mALTER TABLE `order_of_services` ADD `exchange_of_rate` float[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140408152421')[0m
+  [1m[35m (53.8ms)[0m  COMMIT
+Migrating to AddColumnDateOfServiceToOrderOfServices (20140408210404)
+  [1m[36m (278.8ms)[0m  [1mALTER TABLE `order_of_services` ADD `date_of_service` datetime[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140408210404')[0m
+  [1m[35m (54.0ms)[0m  COMMIT
+Migrating to CreateStockInputs (20140409023235)
+  [1m[36m (88.5ms)[0m  [1mCREATE TABLE `stock_inputs` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `warehouse_id` int(11), `supplier_id` int(11), `period` int(11), `series` varchar(255), `document` varchar(255), `format_id` int(11), `issue_date` date, `description` varchar(255), `status` varchar(255), `user_inserts_id` int(11), `user_updates_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (378.4ms)[0m  CREATE INDEX `index_stock_inputs_on_warehouse_id` ON `stock_inputs` (`warehouse_id`) 
+  [1m[36m (501.4ms)[0m  [1mCREATE INDEX `index_stock_inputs_on_format_id` ON `stock_inputs` (`format_id`) [0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140409023235')[0m
+  [1m[35m (144.1ms)[0m  COMMIT
+Migrating to CreateStockInputDetails (20140409023422)
+  [1m[36m (807.4ms)[0m  [1mCREATE TABLE `stock_input_details` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `stock_input_id` int(11), `purchase_order_detail_id` int(11), `amount` decimal, `status` varchar(255), `user_inserts_id` int(11), `user_updates_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (924.5ms)[0m  CREATE INDEX `index_stock_input_details_on_stock_input_id` ON `stock_input_details` (`stock_input_id`) 
+  [1m[36m (290.9ms)[0m  [1mCREATE INDEX `index_stock_input_details_on_purchase_order_detail_id` ON `stock_input_details` (`purchase_order_detail_id`) [0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140409023422')[0m
+  [1m[35m (81.9ms)[0m  COMMIT
+Migrating to AddColumnReceivedToPurchaseOrderDetails (20140409054139)
+  [1m[36m (670.9ms)[0m  [1mALTER TABLE `purchase_order_details` ADD `received` tinyint(1)[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140409054139')[0m
+  [1m[35m (97.5ms)[0m  COMMIT
+Migrating to CreateWorks (20140410161055)
+  [1m[36m (95.5ms)[0m  [1mCREATE TABLE `works` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `specialty` varchar(255), `contracting_entity` varchar(255), `name` varchar(255), `amount_of_contract` float, `contractor` varchar(255), `participation_of_arsac` varchar(255), `date_signature_of_contract` date, `start_date_of_work` date, `real_end_date_of_work` date, `date_of_receipt_of_work` date, `settlement_date` date, `amount_of_settlement` float, `ipc_settlement` float, `component_id` int(11), `testimony_of_consortium` varchar(255), `testimony_of_consortium_file_name` varchar(255), `testimony_of_consortium_content_type` varchar(255), `testimony_of_consortium_file_size` int(11), `testimony_of_consortium_updated_at` datetime, `contract` varchar(255), `contract_file_name` varchar(255), `contract_content_type` varchar(255), `contract_file_size` int(11), `contract_updated_at` datetime, `reception_certificate` varchar(255), `reception_certificate_file_name` varchar(255), `reception_certificate_content_type` varchar(255), `reception_certificate_file_size` int(11), `reception_certificate_updated_at` datetime, `settlement_of_work` varchar(255), `settlement_of_work_file_name` varchar(255), `settlement_of_work_content_type` varchar(255), `settlement_of_work_file_size` int(11), `settlement_of_work_updated_at` datetime, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140410161055')[0m
+  [1m[35m (52.3ms)[0m  COMMIT
+Migrating to CreateProfessionals (20140410161951)
+  [1m[36m (99.5ms)[0m  [1mCREATE TABLE `professionals` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `dni` int(11), `profession` varchar(255), `professional_title_date` date, `date_of_tuition` date, `professional_title` varchar(255), `professional_title_file_name` varchar(255), `professional_title_content_type` varchar(255), `professional_title_file_size` int(11), `professional_title_updated_at` datetime, `tuition` varchar(255), `tuition_file_name` varchar(255), `tuition_content_type` varchar(255), `tuition_file_size` int(11), `tuition_updated_at` datetime, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140410161951')[0m
+  [1m[35m (51.8ms)[0m  COMMIT
+Migrating to CreateCertificates (20140410162415)
+  [1m[36m (88.3ms)[0m  [1mCREATE TABLE `certificates` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `professional_id` int(11), `work_id` int(11), `charge` varchar(255), `contractor` varchar(255), `star_date` date, `finish_date` date, `componetns_id` int(11), `certificate` varchar(255), `certificate_file_name` varchar(255), `certificate_content_type` varchar(255), `certificate_file_size` int(11), `certificate_updated_at` datetime, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140410162415')[0m
+  [1m[35m (52.6ms)[0m  COMMIT
+Migrating to CreateTrainings (20140410163230)
+  [1m[36m (99.5ms)[0m  [1mCREATE TABLE `trainings` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `professional_id` int(11), `type_training` varchar(255), `training` varchar(255), `training_file_name` varchar(255), `training_content_type` varchar(255), `training_file_size` int(11), `training_updated_at` datetime, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140410163230')[0m
+  [1m[35m (53.0ms)[0m  COMMIT
+Migrating to FixColumnStarDate (20140411143834)
+  [1m[36m (276.2ms)[0m  [1mALTER TABLE `certificates` CHANGE `star_date` `start_date` date DEFAULT NULL[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140411143834')[0m
+  [1m[35m (60.5ms)[0m  COMMIT
+Migrating to CreateComponents (20140411152325)
+  [1m[36m (77.9ms)[0m  [1mCREATE TABLE `components` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140411152325')[0m
+  [1m[35m (41.6ms)[0m  COMMIT
+Migrating to AddColumnEntityIdToWorks (20140411164703)
+  [1m[36m (235.2ms)[0m  [1mALTER TABLE `works` ADD `entity_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140411164703')[0m
+  [1m[35m (51.2ms)[0m  COMMIT
+Migrating to RemoveContractingEntityFromWorks (20140411164832)
+  [1m[36m (268.3ms)[0m  [1mALTER TABLE `works` DROP `contracting_entity`[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140411164832')[0m
+  [1m[35m (51.8ms)[0m  COMMIT
+Migrating to AddColumnToTraining (20140412161606)
+  [1m[36m (257.2ms)[0m  [1mALTER TABLE `trainings` ADD `name_training` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140412161606')[0m
+  [1m[35m (52.9ms)[0m  COMMIT
+Migrating to AddColumnToProfessional (20140412162324)
+  [1m[36m (290.5ms)[0m  [1mALTER TABLE `professionals` ADD `code_tuition` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140412162324')[0m
+  [1m[35m (52.2ms)[0m  COMMIT
+Migrating to CreateEntitiesTypeEntities (20140414044337)
+  [1m[36m (75.8ms)[0m  [1mCREATE TABLE `entities_type_entities` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `entity_id` int(11), `type_entity_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (177.3ms)[0m  CREATE INDEX `index_entities_type_entities_on_entity_id_and_type_entity_id` ON `entities_type_entities` (`entity_id`, `type_entity_id`) 
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140414044337')
+  [1m[36m (53.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateComponentsWorks (20140414051038)
+  [1m[35m (99.8ms)[0m  CREATE TABLE `components_works` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `work_id` int(11), `component_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (200.0ms)[0m  [1mCREATE INDEX `index_components_works_on_work_id_and_component_id` ON `components_works` (`work_id`, `component_id`) [0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414051038')[0m
+  [1m[35m (54.0ms)[0m  COMMIT
+Migrating to CreateCharges (20140414150645)
+  [1m[36m (323.2ms)[0m  [1mCREATE TABLE `charges` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414150645')[0m
+  [1m[35m (85.6ms)[0m  COMMIT
+Migrating to AddColumn2ToTraining (20140414174730)
+  [1m[36m (244.4ms)[0m  [1mALTER TABLE `trainings` ADD `num_hours` int(11)[0m
+  [1m[35m (235.1ms)[0m  ALTER TABLE `trainings` ADD `start_training` date
+  [1m[36m (236.6ms)[0m  [1mALTER TABLE `trainings` ADD `finish_training` date[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414174730')[0m
+  [1m[35m (52.7ms)[0m  COMMIT
+Migrating to CreateCertificatesProfessionals (20140414193148)
+  [1m[36m (99.0ms)[0m  [1mCREATE TABLE `certificates_professionals` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `certificate_id` int(11), `professional_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414193148')[0m
+  [1m[35m (52.4ms)[0m  COMMIT
+Migrating to CreateMajors (20140414194027)
+  [1m[36m (99.3ms)[0m  [1mCREATE TABLE `majors` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414194027')[0m
+  [1m[35m (54.0ms)[0m  COMMIT
+Migrating to CreateMajorsProfessionals (20140414194418)
+  [1m[36m (98.0ms)[0m  [1mCREATE TABLE `majors_professionals` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `major_id` int(11), `professional_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414194418')[0m
+  [1m[35m (51.5ms)[0m  COMMIT
+Migrating to AddColumnfToProfessionals (20140414202844)
+  [1m[36m (255.5ms)[0m  [1mALTER TABLE `professionals` ADD `cv` varchar(255)[0m
+  [1m[35m (223.5ms)[0m  ALTER TABLE `professionals` ADD `cv_file_name` varchar(255)
+  [1m[36m (234.9ms)[0m  [1mALTER TABLE `professionals` ADD `cv_content_type` varchar(255)[0m
+  [1m[35m (269.7ms)[0m  ALTER TABLE `professionals` ADD `cv_file_size` int(11)
+  [1m[36m (335.6ms)[0m  [1mALTER TABLE `professionals` ADD `cv_updated_at` datetime[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414202844')[0m
+  [1m[35m (51.5ms)[0m  COMMIT
+Migrating to RemoveColumnProfessionFromProfessional (20140414205103)
+  [1m[36m (212.6ms)[0m  [1mALTER TABLE `professionals` DROP `profession`[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414205103')[0m
+  [1m[35m (53.2ms)[0m  COMMIT
+Migrating to AddColumn2ToProfessional (20140414210321)
+  [1m[36m (212.5ms)[0m  [1mALTER TABLE `professionals` ADD `major_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414210321')[0m
+  [1m[35m (51.9ms)[0m  COMMIT
+Migrating to AddColumn2ToMajor (20140414210405)
+  [1m[36m (289.3ms)[0m  [1mALTER TABLE `majors` ADD `professional_id` int(11)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414210405')[0m
+  [1m[35m (51.4ms)[0m  COMMIT
+Migrating to AddColumnsEndStartDateOfInquiryToWorks (20140414210647)
+  [1m[36m (313.9ms)[0m  [1mALTER TABLE `works` ADD `start_date_of_inquiry` date[0m
+  [1m[35m (212.1ms)[0m  ALTER TABLE `works` ADD `end_date_of_inquiry` date
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140414210647')
+  [1m[36m (51.2ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnsFiletToWorks (20140414215841)
+  [1m[35m (223.5ms)[0m  ALTER TABLE `works` ADD `budget` varchar(255)
+  [1m[36m (545.4ms)[0m  [1mALTER TABLE `works` ADD `budget_file_name` varchar(255)[0m
+  [1m[35m (357.9ms)[0m  ALTER TABLE `works` ADD `budget_content_type` varchar(255)
+  [1m[36m (258.6ms)[0m  [1mALTER TABLE `works` ADD `budget_file_size` int(11)[0m
+  [1m[35m (969.0ms)[0m  ALTER TABLE `works` ADD `budget_updated_at` datetime
+  [1m[36m (468.2ms)[0m  [1mALTER TABLE `works` ADD `integrated_bases` varchar(255)[0m
+  [1m[35m (412.9ms)[0m  ALTER TABLE `works` ADD `integrated_bases_file_name` varchar(255)
+  [1m[36m (267.6ms)[0m  [1mALTER TABLE `works` ADD `integrated_bases_content_type` varchar(255)[0m
+  [1m[35m (269.4ms)[0m  ALTER TABLE `works` ADD `integrated_bases_file_size` int(11)
+  [1m[36m (256.2ms)[0m  [1mALTER TABLE `works` ADD `integrated_bases_updated_at` datetime[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414215841')[0m
+  [1m[35m (40.9ms)[0m  COMMIT
+Migrating to AddColumnToCertificate (20140414232226)
+  [1m[36m (335.2ms)[0m  [1mALTER TABLE `certificates` ADD `other` varchar(255)[0m
+  [1m[35m (235.0ms)[0m  ALTER TABLE `certificates` ADD `other_file_name` varchar(255)
+  [1m[36m (267.7ms)[0m  [1mALTER TABLE `certificates` ADD `other_content_type` varchar(255)[0m
+  [1m[35m (267.9ms)[0m  ALTER TABLE `certificates` ADD `other_file_size` int(11)
+  [1m[36m (236.1ms)[0m  [1mALTER TABLE `certificates` ADD `other_updated_at` datetime[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414232226')[0m
+  [1m[35m (51.8ms)[0m  COMMIT
+Migrating to AddColumnArbitrationToWorks (20140414233420)
+  [1m[36m (210.8ms)[0m  [1mALTER TABLE `works` ADD `arbitration` varchar(255)[0m
+  [1m[35m (234.1ms)[0m  ALTER TABLE `works` ADD `arbitration_file_name` varchar(255)
+  [1m[36m (289.8ms)[0m  [1mALTER TABLE `works` ADD `arbitration_content_type` varchar(255)[0m
+  [1m[35m (346.5ms)[0m  ALTER TABLE `works` ADD `arbitration_file_size` int(11)
+  [1m[36m (536.1ms)[0m  [1mALTER TABLE `works` ADD `arbitration_updated_at` datetime[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140414233420')[0m
+  [1m[35m (75.1ms)[0m  COMMIT
+Migrating to AddColumnProcurementSystemToWorks (20140415171926)
+  [1m[36m (311.5ms)[0m  [1mALTER TABLE `works` ADD `procurement_system` varchar(255)[0m
+  [1m[35m (245.3ms)[0m  ALTER TABLE `works` ADD `procurement_system_file_name` varchar(255)
+  [1m[36m (256.6ms)[0m  [1mALTER TABLE `works` ADD `procurement_system_content_type` varchar(255)[0m
+  [1m[35m (356.8ms)[0m  ALTER TABLE `works` ADD `procurement_system_file_size` int(11)
+  [1m[36m (267.6ms)[0m  [1mALTER TABLE `works` ADD `procurement_system_update_at` datetime[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140415171926')[0m
+  [1m[35m (51.2ms)[0m  COMMIT
+Migrating to AddColumnPurposeOfContractToWorks (20140415172355)
+  [1m[36m (257.6ms)[0m  [1mALTER TABLE `works` ADD `purpose_of_contract` varchar(255)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140415172355')[0m
+  [1m[35m (51.1ms)[0m  COMMIT
+Migrating to AddColumnAddressToEntities (20140415203728)
+  [1m[36m (322.1ms)[0m  [1mALTER TABLE `entities` ADD `address` text[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140415203728')[0m
+  [1m[35m (51.5ms)[0m  COMMIT
+Migrating to CreateOtherWorks (20140416150241)
+  [1m[36m (109.0ms)[0m  [1mCREATE TABLE `other_works` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `start` date, `end` date, `components` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140416150241')[0m
+  [1m[35m (51.5ms)[0m  COMMIT
+Migrating to AddColumnContractorIdToWorks (20140416163250)
+  [1m[36m (277.9ms)[0m  [1mALTER TABLE `works` ADD `contractor_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140416163250')[0m
+  [1m[35m (51.4ms)[0m  COMMIT
+Migrating to RemoveColumnContractorFromWorks (20140416163315)
+  [1m[36m (278.0ms)[0m  [1mALTER TABLE `works` DROP `contractor`[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140416163315')[0m
+  [1m[35m (152.5ms)[0m  COMMIT
+Migrating to FixColumnChargeFromCertificates (20140416172840)
+  [1m[36m (283.6ms)[0m  [1mALTER TABLE `certificates` CHANGE `charge` `charge_id` varchar(255) DEFAULT NULL[0m
+  [1m[35m (322.8ms)[0m  ALTER TABLE `certificates` CHANGE `charge_id` `charge_id` int(11) DEFAULT NULL
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140416172840')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnNumDayToCertificate (20140416175236)
+  [1m[35m (445.0ms)[0m  ALTER TABLE `certificates` ADD `num_days` int(11)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140416175236')
+  [1m[36m (86.8ms)[0m  [1mCOMMIT[0m
+Migrating to CreateWorkPartners (20140416181207)
+  [1m[35m (226.2ms)[0m  CREATE TABLE `work_partners` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140416181207')
+  [1m[36m (46.6ms)[0m  [1mCOMMIT[0m
+Migrating to CreateWorkPartnersWorks (20140416181949)
+  [1m[35m (308.6ms)[0m  CREATE TABLE `work_partners_works` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `work_id` int(11), `work_partner_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140416181949')
+  [1m[36m (73.7ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnRucAndAddressToWorkPartners (20140416203419)
+  [1m[35m (289.1ms)[0m  ALTER TABLE `work_partners` ADD `ruc` varchar(255)
+  [1m[36m (269.6ms)[0m  [1mALTER TABLE `work_partners` ADD `address` text[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140416203419')[0m
+  [1m[35m (51.3ms)[0m  COMMIT
+Migrating to AddColumnMoneyIdAndExchangeOfRateToWorks (20140416214234)
+  [1m[36m (266.8ms)[0m  [1mALTER TABLE `works` ADD `money_id` int(11)[0m
+  [1m[35m (680.4ms)[0m  ALTER TABLE `works` ADD `exchange_of_rate` varchar(255)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140416214234')
+  [1m[36m (106.8ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnNumberOfSettlementToWorks (20140416231002)
+  [1m[35m (389.5ms)[0m  ALTER TABLE `works` ADD `number_of_settlement` varchar(255)
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140416231002')
+  [1m[36m (43.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnStatusAndTimelineToCostCenters (20140421070057)
+  [1m[35m (469.8ms)[0m  ALTER TABLE `cost_centers` ADD `start_date` date
+  [1m[36m (413.0ms)[0m  [1mALTER TABLE `cost_centers` ADD `end_date` date[0m
+  [1m[35m (268.2ms)[0m  ALTER TABLE `cost_centers` ADD `status` varchar(255)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140421070057')
+  [1m[36m (53.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreateCostCenterTimeline (20140421070441)
+  [1m[35m (87.8ms)[0m  CREATE TABLE `cost_center_timelines` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `cost_center_id` int(11), `date` date, `year` int(11), `period` int(11), `week` int(11), `day` int(11)) ENGINE=InnoDB
+  [1m[36m (176.6ms)[0m  [1mCREATE INDEX `index_cost_center_timelines_on_cost_center_id` ON `cost_center_timelines` (`cost_center_id`) [0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140421070441')[0m
+  [1m[35m (52.4ms)[0m  COMMIT
+Migrating to AddColumnInputToStockInput (20140421070737)
+  [1m[36m (226.1ms)[0m  [1mALTER TABLE `stock_inputs` ADD `input` int(11)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140421070737')[0m
+  [1m[35m (52.9ms)[0m  COMMIT
+Migrating to AddColumnEquipmentToStockInputDetails (20140421071014)
+  [1m[36m (278.7ms)[0m  [1mALTER TABLE `stock_input_details` ADD `article_id` int(11)[0m
+  [1m[35m (211.2ms)[0m  CREATE INDEX `index_stock_input_details_on_article_id` ON `stock_input_details` (`article_id`) 
+  [1m[36m (268.2ms)[0m  [1mALTER TABLE `stock_input_details` ADD `equipment_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140421071014')[0m
+  [1m[35m (51.5ms)[0m  COMMIT
+Migrating to AddColumnYearToStockInputs (20140421071937)
+  [1m[36m (210.9ms)[0m  [1mALTER TABLE `stock_inputs` ADD `year` int(11)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140421071937')[0m
+  [1m[35m (51.5ms)[0m  COMMIT
+Migrating to AddColumnComplianceWorkToWorks (20140421180602)
+  [1m[36m (266.4ms)[0m  [1mALTER TABLE `works` ADD `compliance_work` varchar(255)[0m
+  [1m[35m (358.9ms)[0m  ALTER TABLE `works` ADD `compliance_work_file_name` varchar(255)
+  [1m[36m (268.3ms)[0m  [1mALTER TABLE `works` ADD `compliance_work_content_type` varchar(255)[0m
+  [1m[35m (223.7ms)[0m  ALTER TABLE `works` ADD `compliance_work_file_size` int(11)
+  [1m[36m (223.1ms)[0m  [1mALTER TABLE `works` ADD `compliance_work_update_at` datetime[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140421180602')[0m
+  [1m[35m (85.9ms)[0m  COMMIT
+Migrating to AddMoreColumntoWorks (20140422175759)
+  [1m[36m (355.9ms)[0m  [1mALTER TABLE `works` ADD `amount_contract_of_inquiry` varchar(255)[0m
+  [1m[35m (278.9ms)[0m  ALTER TABLE `works` ADD `amount_settlement_of_inquiry` varchar(255)
+  [1m[36m (240.4ms)[0m  [1mALTER TABLE `works` ADD `amount_contract_of_is` varchar(255)[0m
+  [1m[35m (378.6ms)[0m  ALTER TABLE `works` ADD `amount_settlement_of_is` varchar(255)
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140422175759')
+  [1m[36m (54.0ms)[0m  [1mCOMMIT[0m
+Migrating to AddAndRenameColumnToEntities (20140423175513)
+  [1m[35m (276.7ms)[0m  ALTER TABLE `entities` CHANGE `surname` `paternal_surname` varchar(255) DEFAULT NULL
+  [1m[36m (277.7ms)[0m  [1mALTER TABLE `entities` ADD `maternal_surname` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140423175513')[0m
+  [1m[35m (52.1ms)[0m  COMMIT
+Migrating to CreateArbitrationDocuments (20140424211749)
+  [1m[36m (199.0ms)[0m  [1mCREATE TABLE `arbitration_documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `attachment` varchar(255), `attachment_file_name` varchar(255), `attachment_content_type` varchar(255), `attachment_file_size` varchar(255), `attachment_update_at` datetime, `work_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140424211749')[0m
+  [1m[35m (42.6ms)[0m  COMMIT
+Migrating to CreateContractDocuments (20140424211802)
+  [1m[36m (88.3ms)[0m  [1mCREATE TABLE `contract_documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `attachment` varchar(255), `attachment_file_name` varchar(255), `attachment_content_type` varchar(255), `attachment_file_size` varchar(255), `attachment_update_at` datetime, `work_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140424211802')[0m
+  [1m[35m (42.1ms)[0m  COMMIT
+Migrating to CreateIntegratedBasesDocuments (20140424211814)
+  [1m[36m (89.8ms)[0m  [1mCREATE TABLE `integrated_bases_documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `attachment` varchar(255), `attachment_file_name` varchar(255), `attachment_content_type` varchar(255), `attachment_file_size` varchar(255), `attachment_update_at` datetime, `work_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140424211814')[0m
+  [1m[35m (53.5ms)[0m  COMMIT
+Migrating to CreateTestimonyOfConsortiumDocuments (20140424213627)
+  [1m[36m (110.4ms)[0m  [1mCREATE TABLE `testimony_of_consortium_documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `attachment` varchar(255), `attachment_file_name` varchar(255), `attachment_content_type` varchar(255), `attachment_file_size` varchar(255), `attachment_update_at` datetime, `work_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140424213627')[0m
+  [1m[35m (52.8ms)[0m  COMMIT
+Migrating to CreateInvoiceDocuments (20140424220237)
+  [1m[36m (110.7ms)[0m  [1mCREATE TABLE `invoice_documents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `attachment` varchar(255), `attachment_file_name` varchar(255), `attachment_content_type` varchar(255), `attachment_file_size` varchar(255), `attachment_update_at` datetime, `work_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140424220237')[0m
+  [1m[35m (52.6ms)[0m  COMMIT
+Migrating to AddColumnSpecialtyToComponents (20140425202057)
+  [1m[36m (357.4ms)[0m  [1mALTER TABLE `components` ADD `specialty` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140425202057')[0m
+  [1m[35m (52.2ms)[0m  COMMIT
+Migrating to DropTableLinkPeriods (20140426192030)
+  [1m[36m (55.5ms)[0m  [1mDROP TABLE `link_periods`[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140426192030')[0m
+  [1m[35m (52.2ms)[0m  COMMIT
+Migrating to AddColumnPreffixToDocuments (20140426192622)
+  [1m[36m (266.4ms)[0m  [1mALTER TABLE `documents` ADD `preffix` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140426192622')[0m
+  [1m[35m (51.6ms)[0m  COMMIT
+Migrating to CreateWatchdog (20140428160601)
+  [1m[36m (88.7ms)[0m  [1mCREATE TABLE `watchdogs` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `user_id` varchar(255), `browser` varchar(255), `ip_address` varchar(255), `note` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140428160601')[0m
+  [1m[35m (50.5ms)[0m  COMMIT
+Migrating to CreateCompaniesUser (20140428165027)
+  [1m[36m (87.3ms)[0m  [1mCREATE TABLE `companies_users` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `company_id` int(11), `user_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140428165027')[0m
+  [1m[35m (42.2ms)[0m  COMMIT
+Migrating to CreateCostCentersUser (20140428165217)
+  [1m[36m (177.9ms)[0m  [1mCREATE TABLE `cost_centers_users` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `cost_center_id` int(11), `user_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140428165217')[0m
+  [1m[35m (74.0ms)[0m  COMMIT
+Migrating to CreateRepInvCostCenters (20140503113320)
+  [1m[36m (146.1ms)[0m  [1mCREATE TABLE `rep_inv_cost_centers` (`user` int(11), `id` int(11), `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140503113320')[0m
+  [1m[35m (51.0ms)[0m  COMMIT
+Migrating to CreateRepInvWarehouses (20140503113346)
+  [1m[36m (111.2ms)[0m  [1mCREATE TABLE `rep_inv_warehouses` (`user` int(11), `id` int(11), `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140503113346')[0m
+  [1m[35m (51.3ms)[0m  COMMIT
+Migrating to CreateRepInvSuppliers (20140503113402)
+  [1m[36m (111.2ms)[0m  [1mCREATE TABLE `rep_inv_suppliers` (`user` int(11), `id` int(11), `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140503113402')[0m
+  [1m[35m (51.2ms)[0m  COMMIT
+Migrating to CreateRepInvYears (20140503113418)
+  [1m[36m (109.4ms)[0m  [1mCREATE TABLE `rep_inv_years` (`user` int(11), `id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140503113418')[0m
+  [1m[35m (50.8ms)[0m  COMMIT
+Migrating to CreateRepInvPeriods (20140503113442)
+  [1m[36m (131.6ms)[0m  [1mCREATE TABLE `rep_inv_periods` (`user` int(11), `id` int(11), `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140503113442')[0m
+  [1m[35m (118.2ms)[0m  COMMIT
+Migrating to CreateRepInvFormats (20140503113459)
+  [1m[36m (109.3ms)[0m  [1mCREATE TABLE `rep_inv_formats` (`user` int(11), `id` int(11), `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140503113459')[0m
+  [1m[35m (51.5ms)[0m  COMMIT
+Migrating to CreateRepInvArticles (20140503113516)
+  [1m[36m (87.2ms)[0m  [1mCREATE TABLE `rep_inv_articles` (`user` int(11), `id` int(11), `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140503113516')[0m
+  [1m[35m (51.2ms)[0m  COMMIT
+Migrating to CreateRepInvMoneys (20140503113529)
+  [1m[36m (87.2ms)[0m  [1mCREATE TABLE `rep_inv_moneys` (`user` int(11), `id` int(11), `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140503113529')[0m
+  [1m[35m (51.1ms)[0m  COMMIT
+Migrating to AddColumnToOtherWork (20140503155848)
+  [1m[36m (245.9ms)[0m  [1mALTER TABLE `other_works` ADD `specialty` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140503155848')[0m
+  [1m[35m (51.8ms)[0m  COMMIT
+Migrating to AddColumnCertificateToOtherWork (20140503162133)
+  [1m[36m (681.1ms)[0m  [1mALTER TABLE `other_works` ADD `certificate_id` int(11)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140503162133')[0m
+  [1m[35m (109.1ms)[0m  COMMIT
+Migrating to RemoveColumnEntityIdFromCertificates (20140503173259)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140503173259')
+  [1m[36m (151.9ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnsToOtherWorks (20140503175253)
+  [1m[35m (356.3ms)[0m  ALTER TABLE `other_works` ADD `entity` varchar(255)
+  [1m[36m (234.3ms)[0m  [1mALTER TABLE `other_works` ADD `contractor` varchar(255)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140503175253')[0m
+  [1m[35m (52.2ms)[0m  COMMIT
+Migrating to AddColumnCostCenterIdToEntity (20140507160146)
+  [1m[36m (434.7ms)[0m  [1mALTER TABLE `entities` ADD `cost_center_id` int(11)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140507160146')[0m
+  [1m[35m (154.4ms)[0m  COMMIT
+Migrating to CreateWorkers (20140507200708)
+  [1m[36m (109.8ms)[0m  [1mCREATE TABLE `workers` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `first_name` varchar(255), `paternal_surname` varchar(255), `maternal_surname` varchar(255), `email` varchar(255), `phone` varchar(255), `bank` varchar(255), `account_number` varchar(255), `date_of_birth` date, `address` text, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140507200708')[0m
+  [1m[35m (53.6ms)[0m  COMMIT
+Migrating to AddColumnDniToWorkers (20140507221613)
+  [1m[36m (278.8ms)[0m  [1mALTER TABLE `workers` ADD `dni` varchar(255)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140507221613')[0m
+  [1m[35m (52.9ms)[0m  COMMIT
+Migrating to CreateWorkingGroups (20140507225719)
+  [1m[36m (100.1ms)[0m  [1mCREATE TABLE `working_groups` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `sector_id` int(11), `master_builder_id` int(11), `front_chief_id` int(11), `active` tinyint(1), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140507225719')[0m
+  [1m[35m (42.7ms)[0m  COMMIT
+Migrating to AddColumnExecutorIdToWorkingGroups (20140508155016)
+  [1m[36m (222.1ms)[0m  [1mALTER TABLE `working_groups` ADD `executor_id` int(11)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140508155016')[0m
+  [1m[35m (52.4ms)[0m  COMMIT
+Migrating to CreateSubcontracts (20140508222039)
+  [1m[36m (86.6ms)[0m  [1mCREATE TABLE `subcontracts` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `entity_id` int(11), `valorization` varchar(255), `terms_of_payment` varchar(255), `initial_amortization_number` float, `initial_amortization_percent` varchar(255), `guarantee_fund` varchar(255), `detraction` varchar(255), `contract_amount` float, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140508222039')[0m
+  [1m[35m (51.1ms)[0m  COMMIT
+Migrating to AddColumnTypeToSubcontracts (20140509155652)
+  [1m[36m (244.2ms)[0m  [1mALTER TABLE `subcontracts` ADD `type` varchar(255)[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140509155652')[0m
+  [1m[35m (51.0ms)[0m  COMMIT
+Migrating to CreateCategoryOfWorkers (20140509171103)
+  [1m[36m (98.1ms)[0m  [1mCREATE TABLE `category_of_workers` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `normal_price` float, `he_60_price` float, `he_100_price` float, `unit_of_measurement_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140509171103')[0m
+  [1m[35m (52.5ms)[0m  COMMIT
+Migrating to CreateSubcontractDetails (20140509180257)
+  [1m[36m (144.2ms)[0m  [1mCREATE TABLE `subcontract_details` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `article_id` int(11), `amount` int(11), `unit_price` float, `partial` float, `description` text, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140509180257')[0m
+  [1m[35m (51.5ms)[0m  COMMIT
+Migrating to AddColumnCategoryOfWorkerIdToWorkers (20140509223444)
+  [1m[36m (272.3ms)[0m  [1mALTER TABLE `workers` ADD `category_of_worker_id` int(11)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140509223444')[0m
+  [1m[35m (51.7ms)[0m  COMMIT
+Migrating to AddColumnSubcontractIdToSubcontractDetails (20140512200816)
+  [1m[36m (221.9ms)[0m  [1mALTER TABLE `subcontract_details` ADD `subcontract_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140512200816')[0m
+  [1m[35m (51.9ms)[0m  COMMIT
+Migrating to CreatePartWorks (20140512222947)
+  [1m[36m (99.4ms)[0m  [1mCREATE TABLE `part_works` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `working_group_id` int(11), `number_working_group` varchar(255), `sector_id` int(11), `date_of_creation` date, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140512222947')[0m
+  [1m[35m (52.9ms)[0m  COMMIT
+Migrating to CreatePartWorkDetails (20140512223344)
+  [1m[36m (99.9ms)[0m  [1mCREATE TABLE `part_work_details` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `part_work_id` int(11), `article_id` int(11), `bill_of_quantitties` float, `description` text, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140512223344')[0m
+  [1m[35m (52.2ms)[0m  COMMIT
+Migrating to AddSecondNameToWorkers (20140513175208)
+  [1m[36m (256.4ms)[0m  [1mALTER TABLE `workers` ADD `second_name` varchar(255)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140513175208')[0m
+  [1m[35m (53.4ms)[0m  COMMIT
+Migrating to CreateBanks (20140513202024)
+  [1m[36m (110.8ms)[0m  [1mCREATE TABLE `banks` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `business_name` varchar(255), `ruc` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140513202024')[0m
+  [1m[35m (54.0ms)[0m  COMMIT
+Migrating to CreateZipCodes (20140513202412)
+  [1m[36m (110.8ms)[0m  [1mCREATE TABLE `zip_codes` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `zip_code` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140513202412')[0m
+  [1m[35m (51.4ms)[0m  COMMIT
+Migrating to CreatePartPeople (20140513221654)
+  [1m[36m (109.1ms)[0m  [1mCREATE TABLE `part_people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `working_group_id` int(11), `number_part` varchar(255), `date_of_creation` date, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140513221654')[0m
+  [1m[35m (51.3ms)[0m  COMMIT
+Migrating to CreatePartPersonDetails (20140513223226)
+  [1m[36m (97.4ms)[0m  [1mCREATE TABLE `part_person_details` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `part_people_id` int(11), `worker_id` int(11), `sector_id` int(11), `phase_id` int(11), `normal_hours` int(11), `he_60` int(11), `he_100` int(11), `total_hours` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140513223226')[0m
+  [1m[35m (50.7ms)[0m  COMMIT
+Migrating to RemoveBankandaccountnumberMigrationFromWorkers (20140514172905)
+  [1m[36m (236.9ms)[0m  [1mALTER TABLE `workers` DROP `bank`[0m
+  [1m[35m (267.2ms)[0m  ALTER TABLE `workers` DROP `account_number`
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140514172905')
+  [1m[36m (52.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreateWorkerDetails (20140514175054)
+  [1m[35m (99.7ms)[0m  CREATE TABLE `worker_details` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `bank_id` int(11), `account_number` varchar(255), `worker_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.9ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140514175054')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreateSubcontractEquipments (20140514192724)
+  [1m[35m (98.3ms)[0m  CREATE TABLE `subcontract_equipments` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `entity_id` int(11), `valorization` varchar(255), `terms_of_payment` varchar(255), `initial_amortization_number` float, `initial_amortization_percent` varchar(255), `guarantee_fund` varchar(255), `detraction` varchar(255), `contract_amount` float, `type` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140514192724')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreateRentalTypes (20140514193928)
+  [1m[35m (108.9ms)[0m  CREATE TABLE `rental_types` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140514193928')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreateSubcontractEquipmentDetails (20140514195144)
+  [1m[35m (109.3ms)[0m  CREATE TABLE `subcontract_equipment_details` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `article_id` int(11), `description` varchar(255), `brand` varchar(255), `series` varchar(255), `model` varchar(255), `date_in` date, `year` int(11), `price_no_igv` float, `rental_type_id` int(11), `minimum_hours` varchar(255), `amount_hours` int(11), `contracted_amount` float, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140514195144')
+  [1m[36m (53.6ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnPartPersonIdToPartPersonDetails (20140514223409)
+  [1m[35m (278.6ms)[0m  ALTER TABLE `part_person_details` ADD `part_person_id` int(11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140514223409')
+  [1m[36m (41.3ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveColumnPartPeopleIdFromPartPersonDetails (20140514223416)
+  [1m[35m (234.8ms)[0m  ALTER TABLE `part_person_details` DROP `part_people_id`
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140514223416')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnToSubcontractEquipmentDetails (20140515020859)
+  [1m[35m (245.9ms)[0m  ALTER TABLE `subcontract_equipment_details` ADD `subcontract_equipment_id` int(11)
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140515020859')
+  [1m[36m (52.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreatePartOfEquipments (20140516155914)
+  [1m[35m (99.5ms)[0m  CREATE TABLE `part_of_equipments` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `code` int(11), `entity_id` int(11), `equipment` int(11), `worker_id` int(11), `hour_meter` varchar(255), `mileage` varchar(255), `dif` varchar(255), `h_stand_by` int(11), `h_maintenance` int(11), `fuel_amount` float, `sub_group_id` int(11), `date` date, `total_hours` float, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140516155914')
+  [1m[36m (54.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreatePartOfEquipmentDetails (20140516202804)
+  [1m[35m (100.0ms)[0m  CREATE TABLE `part_of_equipment_details` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `work_group_id` int(11), `sub_sector_id` int(11), `subphase_id` int(11), `effective_hours` float, `unit` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140516202804')
+  [1m[36m (73.7ms)[0m  [1mCOMMIT[0m
+Migrating to FixColumnFromPartOfEquipment (20140516223144)
+  [1m[35m (118.6ms)[0m  ALTER TABLE `part_of_equipments` CHANGE `code` `code` int(11) DEFAULT NULL
+  [1m[36m (275.2ms)[0m  [1mALTER TABLE `part_of_equipments` CHANGE `code` `code` varchar(255) DEFAULT NULL[0m
+  [1m[35m (241.0ms)[0m  ALTER TABLE `part_of_equipments` CHANGE `hour_meter` `initial_km` varchar(255) DEFAULT NULL
+  [1m[36m (62.5ms)[0m  [1mALTER TABLE `part_of_equipments` CHANGE `initial_km` `initial_km` varchar(255) DEFAULT NULL[0m
+  [1m[35m (366.0ms)[0m  ALTER TABLE `part_of_equipments` CHANGE `mileage` `final_km` varchar(255) DEFAULT NULL
+  [1m[36m (64.8ms)[0m  [1mALTER TABLE `part_of_equipments` CHANGE `final_km` `final_km` varchar(255) DEFAULT NULL[0m
+  [1m[35m (262.4ms)[0m  ALTER TABLE `part_of_equipments` CHANGE `sub_group_id` `subcategory_id` int(11) DEFAULT NULL
+  [1m[36m (74.1ms)[0m  [1mALTER TABLE `part_of_equipments` CHANGE `subcategory_id` `subcategory_id` int(11) DEFAULT NULL[0m
+  [1m[35m (252.2ms)[0m  ALTER TABLE `part_of_equipments` CHANGE `equipment` `equipment_id` int(11) DEFAULT NULL
+  [1m[36m (53.6ms)[0m  [1mALTER TABLE `part_of_equipments` CHANGE `equipment_id` `equipment_id` int(11) DEFAULT NULL[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140516223144')[0m
+  [1m[35m (51.1ms)[0m  COMMIT
+Migrating to AddColumnToPartOfEquipmentDetail (20140517141821)
+  [1m[36m (324.5ms)[0m  [1mALTER TABLE `part_of_equipment_details` ADD `part_of_equipment_id` int(11)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140517141821')[0m
+  [1m[35m (51.6ms)[0m  COMMIT
+Migrating to FixColumnEntityFromPartOfEquipment (20140517172233)
+  [1m[36m (241.0ms)[0m  [1mALTER TABLE `part_of_equipments` CHANGE `entity_id` `subcontract_of_equipment_id` int(11) DEFAULT NULL[0m
+  [1m[35m (75.5ms)[0m  ALTER TABLE `part_of_equipments` CHANGE `subcontract_of_equipment_id` `subcontract_of_equipment_id` int(11) DEFAULT NULL
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140517172233')
+  [1m[36m (53.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnCompanyIdToWarehouses (20140518031305)
+  [1m[35m (245.5ms)[0m  ALTER TABLE `warehouses` ADD `company_id` int(11)
+  [1m[36m (545.7ms)[0m  [1mCREATE INDEX `index_warehouses_on_company_id` ON `warehouses` (`company_id`) [0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140518031305')[0m
+  [1m[35m (97.4ms)[0m  COMMIT
+Migrating to AddColumnUserAuditIdToWorkingGroups (20140518071422)
+  [1m[36m (647.0ms)[0m  [1mALTER TABLE `working_groups` ADD `user_inserts_id` int(11)[0m
+  [1m[35m (501.6ms)[0m  ALTER TABLE `working_groups` ADD `user_updates_id` int(11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140518071422')
+  [1m[36m (77.8ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnPhaseIdToStockInputs (20140518085543)
+  [1m[35m (342.8ms)[0m  ALTER TABLE `stock_inputs` ADD `phase_id` int(11)
+  [1m[36m (177.2ms)[0m  [1mCREATE INDEX `index_stock_inputs_on_phase_id` ON `stock_inputs` (`phase_id`) [0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140518085543')[0m
+  [1m[35m (53.9ms)[0m  COMMIT
+Migrating to AddColumnWorkingGroupToStockInputs (20140518091748)
+  [1m[36m (235.8ms)[0m  [1mALTER TABLE `stock_inputs` ADD `working_group_id` int(11)[0m
+  [1m[35m (177.0ms)[0m  CREATE INDEX `index_stock_inputs_on_working_group_id` ON `stock_inputs` (`working_group_id`) 
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140518091748')
+  [1m[36m (51.8ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnUnitCostToStockInputDetails (20140519093057)
+  [1m[35m (266.3ms)[0m  ALTER TABLE `stock_input_details` ADD `unit_cost` decimal(15,5)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140519093057')
+  [1m[36m (51.2ms)[0m  [1mCOMMIT[0m
+Migrating to ChangeColumnAmountInStockInputDetails (20140519094100)
+  [1m[35m (296.7ms)[0m  ALTER TABLE `stock_input_details` CHANGE `amount` `amount` decimal(15,5) DEFAULT NULL
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140519094100')
+  [1m[36m (53.8ms)[0m  [1mCOMMIT[0m
+Migrating to AddNameToWorkingGroup (20140519194320)
+  [1m[35m (222.1ms)[0m  ALTER TABLE `working_groups` ADD `name` varchar(255)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140519194320')
+  [1m[36m (51.1ms)[0m  [1mCOMMIT[0m
+Migrating to FixColumnDateFromOrderOfService (20140519204134)
+  [1m[35m (267.7ms)[0m  ALTER TABLE `order_of_services` CHANGE `date_of_service` `date_of_service` date DEFAULT NULL
+  [1m[36m (298.3ms)[0m  [1mALTER TABLE `order_of_services` CHANGE `date_of_issue` `date_of_issue` date DEFAULT NULL[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140519204134')[0m
+  [1m[35m (51.2ms)[0m  COMMIT
+Migrating to RemoveSectorIdFromWorkingGroup (20140520162647)
+  [1m[36m (266.7ms)[0m  [1mALTER TABLE `working_groups` DROP `sector_id`[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140520162647')[0m
+  [1m[35m (52.7ms)[0m  COMMIT
+Migrating to RemoveSubSectorIdFromPartOfEquipmentDetail (20140520162822)
+  [1m[36m (233.7ms)[0m  [1mALTER TABLE `part_of_equipment_details` DROP `sub_sector_id`[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140520162822')[0m
+  [1m[35m (43.1ms)[0m  COMMIT
+Migrating to AddColumnCompanyIdToStockInputs (20140520162936)
+  [1m[36m (233.8ms)[0m  [1mALTER TABLE `stock_inputs` ADD `company_id` int(11)[0m
+  [1m[35m (177.7ms)[0m  CREATE INDEX `index_stock_inputs_on_company_id` ON `stock_inputs` (`company_id`) 
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140520162936')
+  [1m[36m (53.4ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveSectorIdFromPartPersonDetail (20140520162946)
+  [1m[35m (267.8ms)[0m  ALTER TABLE `part_person_details` DROP `sector_id`
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140520162946')
+  [1m[36m (52.7ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveSectorIdFromPartWork (20140520163048)
+  [1m[35m (500.4ms)[0m  ALTER TABLE `part_works` DROP `sector_id`
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140520163048')
+  [1m[36m (40.2ms)[0m  [1mCOMMIT[0m
+Migrating to CreateAdvances (20140520173354)
+  [1m[35m (98.3ms)[0m  CREATE TABLE `advances` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `advance_type` varchar(255), `advance_number` int(11), `advance_direct_cost_percent` float, `amount` float, `cost_center_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140520173354')
+  [1m[36m (50.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreateBudgets (20140520173535)
+  [1m[35m (97.5ms)[0m  CREATE TABLE `budgets` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `cod_budget` varchar(255), `description` varchar(255), `term` int(11), `cost_center_id` int(11), `level` int(11), `subbudget_code` varchar(255), `deleted` int(11), `type_of_budget` varchar(255), `utility` float, `general_expenses` float, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140520173535')
+  [1m[36m (51.2ms)[0m  [1mCOMMIT[0m
+Migrating to CreateExtensionscontrols (20140520173804)
+  [1m[35m (97.6ms)[0m  CREATE TABLE `extensionscontrols` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `description` varchar(255), `motive` varchar(255), `status` varchar(255), `requested_deadline` float, `approved_deadline` float, `requested_mgg` float, `resolution` varchar(255), `observation` varchar(255), `cost_center_id` int(11), `files` varchar(255), `approved_mgg` float, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140520173804')
+  [1m[36m (51.2ms)[0m  [1mCOMMIT[0m
+Migrating to CreateInputUnits (20140520173827)
+  [1m[35m (88.8ms)[0m  CREATE TABLE `input_units` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `unit_id` int(11), `input_id` int(11), `code` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140520173827')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreateInputbybudgetanditems (20140520175319)
+  [1m[35m (107.9ms)[0m  CREATE TABLE `inputbybudgetanditems` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `coditem` varchar(255), `ownitem` varchar(255), `cod_input` varchar(255), `quantity` float, `price` float, `aprox` float, `order` varchar(255), `measured` float, `input` varchar(255), `budget_id` int(11), `subbudget_code` varchar(255), `item_id` int(11), `deleted` int(11), `budget_code` varchar(255), `owneritem` varchar(255), `unit` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (199.2ms)[0m  [1mCREATE INDEX `cod_input_index` USING btree ON `inputbybudgetanditems` (`cod_input`) [0m
+  [1m[35m (184.0ms)[0m  CREATE INDEX `inputbybudgetanditems_codinput` USING btree ON `inputbybudgetanditems` (`cod_input`) 
+  [1m[36m (177.8ms)[0m  [1mCREATE INDEX `inputbybudgets_id` USING btree ON `inputbybudgetanditems` (`id`) [0m
+  [1m[35m (188.6ms)[0m  CREATE INDEX `inputbybudgets_item_id` USING btree ON `inputbybudgetanditems` (`item_id`) 
+  [1m[36m (210.7ms)[0m  [1mCREATE INDEX `inputbybudgets_order` USING btree ON `inputbybudgetanditems` (`order`) [0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140520175319')[0m
+  [1m[35m (53.7ms)[0m  COMMIT
+Migrating to CreateInputs (20140520175446)
+  [1m[36m (97.9ms)[0m  [1mCREATE TABLE `inputs` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `code` varchar(255), `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140520175446')[0m
+  [1m[35m (53.1ms)[0m  COMMIT
+Migrating to CreateInvoices (20140520175633)
+  [1m[36m (97.7ms)[0m  [1mCREATE TABLE `invoices` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `valorization_id` int(11), `amount` float, `issue_date` date, `filing_date` date, `status` varchar(255), `credit_note` varchar(255), `observations` varchar(255), `document_number` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140520175633')[0m
+  [1m[35m (51.9ms)[0m  COMMIT
+Migrating to AddColumnCostCenterIdToStockInputs (20140520180322)
+  [1m[36m (267.1ms)[0m  [1mALTER TABLE `stock_inputs` ADD `cost_center_id` int(11)[0m
+  [1m[35m (179.3ms)[0m  CREATE INDEX `index_stock_inputs_on_cost_center_id` ON `stock_inputs` (`cost_center_id`) 
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140520180322')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnResponsibleIdToStockInputs (20140520181549)
+  [1m[35m (266.7ms)[0m  ALTER TABLE `stock_inputs` ADD `responsible_id` int(11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140520181549')
+  [1m[36m (51.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateItembybudgets (20140520181714)
+  [1m[35m (86.8ms)[0m  CREATE TABLE `itembybudgets` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `item_code` varchar(255), `order` varchar(255), `measured` float, `price` float, `partial` float, `subbudget_code` varchar(255), `budget_code` varchar(255), `budget_id` int(11), `item_id` int(11), `deleted` int(11), `title` varchar(255), `subbudgetdetail` varchar(255), `owneritem` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (199.4ms)[0m  [1mCREATE INDEX `itembybudges_item_id` USING btree ON `itembybudgets` (`item_id`) [0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140520181714')[0m
+  [1m[35m (51.9ms)[0m  COMMIT
+Migrating to CreateItembywbs (20140520181913)
+  [1m[36m (97.2ms)[0m  [1mCREATE TABLE `itembywbs` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `wbscode` varchar(255), `itembywbs_id` int(11), `coditem` varchar(255), `order_budget` varchar(255), `partial` varchar(255), `subbudget_code` varchar(255), `price` float, `budget_code` varchar(255), `budget_id` int(11), `item_id` int(11), `status_flag` varchar(255), `deleted` int(11), `wbsitem_id` int(11), `measured` float, `cost_center_id` int(11), `subbudgetdetail` varchar(255), `itembybudget_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140520181913')[0m
+  [1m[35m (52.1ms)[0m  COMMIT
+Migrating to CreateItems (20140520182434)
+  [1m[36m (97.7ms)[0m  [1mCREATE TABLE `items` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `item_code` varchar(255), `project_code` int(11), `wbs_parent_code` varchar(255), `budget_code` varchar(255), `description` varchar(255), `own_code` varchar(255), `level` int(11), `unity_code` varchar(255), `deleted` int(11), `cost_center_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140520182434')[0m
+  [1m[35m (51.4ms)[0m  COMMIT
+Migrating to CreateValorizationitems (20140520182513)
+  [1m[36m (97.9ms)[0m  [1mCREATE TABLE `valorizationitems` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `valorization_id` int(11), `itembybudget_id` int(11), `actual_measured` float, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140520182513')[0m
+  [1m[35m (51.9ms)[0m  COMMIT
+Migrating to CreateValorizations (20140520182629)
+  [1m[36m (119.7ms)[0m  [1mCREATE TABLE `valorizations` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `month` varchar(255), `name` varchar(255), `status` varchar(255), `budget_id` int(11), `general_expenses` float, `utility` float, `readjustment` float, `no_direct_r` float, `no_materials_r` float, `direct_advance` float, `advance_of_materials` float, `valorization_date` date, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140520182629')[0m
+  [1m[35m (51.3ms)[0m  COMMIT
+Migrating to CreateWbsitems (20140520182742)
+  [1m[36m (97.7ms)[0m  [1mCREATE TABLE `wbsitems` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `codewbs` varchar(255), `name` varchar(255), `description` varchar(255), `notes` varchar(255), `cost_center_id` int(11), `start_date` datetime, `end_date` datetime, `predecessors` varchar(255), `fase_id` varchar(255), `fase` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140520182742')[0m
+  [1m[35m (53.3ms)[0m  COMMIT
+Migrating to RenameColumnSubcontractOfEquipmentsIdFromPartOfEquipments (20140521171030)
+  [1m[36m (562.7ms)[0m  [1mALTER TABLE `part_of_equipments` CHANGE `subcontract_of_equipment_id` `subcontract_equipment_id` int(11) DEFAULT NULL[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140521171030')[0m
+  [1m[35m (50.3ms)[0m  COMMIT
+Migrating to AddManagersModel (20140521172028)
+  [1m[36m (108.2ms)[0m  [1mCREATE TABLE `managers` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `email` varchar(255) DEFAULT '' NOT NULL, `encrypted_password` varchar(255) DEFAULT '' NOT NULL, `reset_password_token` varchar(255), `reset_password_sent_at` datetime, `remember_created_at` datetime, `sign_in_count` int(11) DEFAULT 0, `current_sign_in_at` datetime, `last_sign_in_at` datetime, `current_sign_in_ip` varchar(255), `last_sign_in_ip` varchar(255), `failed_attempts` int(11) DEFAULT 3, `unlock_token` varchar(255), `locked_at` datetime, `authentication_token` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (199.6ms)[0m  CREATE UNIQUE INDEX `index_managers_on_email` ON `managers` (`email`) 
+  [1m[36m (189.1ms)[0m  [1mCREATE UNIQUE INDEX `index_managers_on_reset_password_token` ON `managers` (`reset_password_token`) [0m
+  [1m[35m (432.9ms)[0m  CREATE UNIQUE INDEX `index_managers_on_authentication_token` ON `managers` (`authentication_token`) 
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (76.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521172028')
+  [1m[36m (243.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddDniToManagers (20140521172235)
+  [1m[35m (458.9ms)[0m  ALTER TABLE `managers` ADD `dni` int(11)
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521172235')
+  [1m[36m (50.9ms)[0m  [1mCOMMIT[0m
+Migrating to AddDeletedToCostCenter (20140521174746)
+  [1m[35m (277.7ms)[0m  ALTER TABLE `cost_centers` ADD `deleted` int(11) DEFAULT 0
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521174746')
+  [1m[36m (51.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnSectorIdToPartWorks (20140521180659)
+  [1m[35m (267.0ms)[0m  ALTER TABLE `part_works` ADD `sector_id` int(11)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521180659')
+  [1m[36m (51.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnSectorIdToPartPersonDetails (20140521193148)
+  [1m[35m (255.4ms)[0m  ALTER TABLE `part_person_details` ADD `sector_id` int(11)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521193148')
+  [1m[36m (51.4ms)[0m  [1mCOMMIT[0m
+Migrating to RenameColumnSubphaseIdFromPartOfEquipmentDetails (20140521194814)
+  [1m[35m (240.7ms)[0m  ALTER TABLE `part_of_equipment_details` CHANGE `subphase_id` `phase_id` int(11) DEFAULT NULL
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521194814')
+  [1m[36m (50.2ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnSectorIdToPartOfEquipmentDetails (20140521195458)
+  [1m[35m (280.9ms)[0m  ALTER TABLE `part_of_equipment_details` ADD `sector_id` int(11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521195458')
+  [1m[36m (52.8ms)[0m  [1mCOMMIT[0m
+Migrating to RenameColumnWorkGroupIdFromPartOfEquipmentDetails (20140521195528)
+  [1m[35m (288.0ms)[0m  ALTER TABLE `part_of_equipment_details` CHANGE `work_group_id` `working_group_id` int(11) DEFAULT NULL
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140521195528')
+  [1m[36m (53.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnCodeToSubcontractEquipmentDetail (20140522155142)
+  [1m[35m (256.5ms)[0m  ALTER TABLE `subcontract_equipment_details` ADD `code` varchar(255)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140522155142')
+  [1m[36m (53.0ms)[0m  [1mCOMMIT[0m
+Migrating to CreatePositionWorkers (20140522201120)
+  [1m[35m (88.4ms)[0m  CREATE TABLE `position_workers` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140522201120')
+  [1m[36m (43.0ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnPositionWorkerIdToWorkers (20140522201814)
+  [1m[35m (223.5ms)[0m  ALTER TABLE `workers` ADD `position_worker_id` int(11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140522201814')
+  [1m[36m (52.2ms)[0m  [1mCOMMIT[0m
+Migrating to AddArticleIdAndRemoveCategoryWorkerIdToWorkers (20140522214339)
+  [1m[35m (277.9ms)[0m  ALTER TABLE `workers` ADD `article_id` int(11)
+  [1m[36m (281.2ms)[0m  [1mALTER TABLE `workers` DROP `category_of_worker_id`[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140522214339')[0m
+  [1m[35m (51.1ms)[0m  COMMIT
+Migrating to AddArticleIdAndRemoveNameAndUnitOfMeasurementIdToCategoryOfWorkers (20140522220755)
+  [1m[36m (291.3ms)[0m  [1mALTER TABLE `category_of_workers` ADD `article_id` int(11)[0m
+  [1m[35m (223.3ms)[0m  ALTER TABLE `category_of_workers` DROP `name`
+  [1m[36m (401.5ms)[0m  [1mALTER TABLE `category_of_workers` DROP `unit_of_measurement_id`[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140522220755')[0m
+  [1m[35m (51.7ms)[0m  COMMIT
+Migrating to AddColumnSectorIdAndPhaseIdToStockInputDetails (20140523030241)
+  [1m[36m (278.8ms)[0m  [1mALTER TABLE `stock_input_details` ADD `sector_id` int(11)[0m
+  [1m[35m (201.7ms)[0m  CREATE INDEX `index_stock_input_details_on_sector_id` ON `stock_input_details` (`sector_id`) 
+  [1m[36m (234.3ms)[0m  [1mALTER TABLE `stock_input_details` ADD `phase_id` int(11)[0m
+  [1m[35m (166.1ms)[0m  CREATE INDEX `index_stock_input_details_on_phase_id` ON `stock_input_details` (`phase_id`) 
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140523030241')
+  [1m[36m (52.6ms)[0m  [1mCOMMIT[0m
+Migrating to CreateRepInvResponsibles (20140523044406)
+  [1m[35m (99.8ms)[0m  CREATE TABLE `rep_inv_responsibles` (`user` int(11), `id` int(11), `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140523044406')
+  [1m[36m (52.9ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveAncientTablesFromDatabase (20140523131948)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140523131948')[0m
+  [1m[35m (51.9ms)[0m  COMMIT
+Migrating to CreateSubcontractAdvances (20140523213514)
+  [1m[36m (109.5ms)[0m  [1mCREATE TABLE `subcontract_advances` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `date_of_issue` date, `advance` float, `subcontract_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140523213514')[0m
+  [1m[35m (51.8ms)[0m  COMMIT
+Migrating to AddigvadvanceToSubcontracts (20140523214304)
+  [1m[36m (377.9ms)[0m  [1mALTER TABLE `subcontracts` ADD `igv` float[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140523214304')[0m
+  [1m[35m (54.2ms)[0m  COMMIT
+Migrating to FixColumnSpecificIdFromArticles (20140523224813)
+  [1m[36m (300.8ms)[0m  [1mALTER TABLE `articles` CHANGE `specific_id` `category_id` int(11) DEFAULT NULL[0m
+  [1m[35m (243.2ms)[0m  ALTER TABLE `articles` CHANGE `category_id` `category_id` varchar(255) DEFAULT NULL
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140523224813')
+  [1m[36m (53.4ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveSpecificFromDatabase (20140524141923)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140524141923')[0m
+  [1m[35m (48.2ms)[0m  COMMIT
+Migrating to DropSuppliersTableIfExists (20140525055718)
+  [1m[36m (54.3ms)[0m  [1mDROP TABLE `suppliers`[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140525055718')[0m
+  [1m[35m (51.8ms)[0m  COMMIT
+Migrating to AddCostCenterIdToItembybudgets (20140526224205)
+  [1m[36m (256.6ms)[0m  [1mALTER TABLE `itembybudgets` ADD `cost_center_id` int(11)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140526224205')[0m
+  [1m[35m (50.9ms)[0m  COMMIT
+Migrating to AddCostCenterIdToInputbybudgetanditems (20140526224234)
+  [1m[36m (278.8ms)[0m  [1mALTER TABLE `inputbybudgetanditems` ADD `cost_center_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140526224234')[0m
+  [1m[35m (51.0ms)[0m  COMMIT
+Migrating to CreateScValuations (20140528163740)
+  [1m[36m (105.8ms)[0m  [1mCREATE TABLE `sc_valuations` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `start_date` date, `end_date` date, `working_group` varchar(255), `valuation` float, `initial_amortization_number` float, `initial_amortization_percentage` float, `bill` float, `billigv` float, `totalbill` float, `retention` float, `detraction` float, `guarantee_fund1` float, `guarantee_fund2` float, `equipment_discount` float, `material_discount` float, `hired_amount` float, `advances` float, `accumulated_amortization` float, `balance` float, `net_payment` float, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140528163740')[0m
+  [1m[35m (50.8ms)[0m  COMMIT
+Migrating to AddCamposmigrationToscValuation (20140528171532)
+  [1m[36m (268.1ms)[0m  [1mALTER TABLE `sc_valuations` ADD `accumulated_valuation` int(11)[0m
+  [1m[35m (234.9ms)[0m  ALTER TABLE `sc_valuations` ADD `accumulated_initial_amortization_number` int(11)
+  [1m[36m (267.9ms)[0m  [1mALTER TABLE `sc_valuations` ADD `accumulated_bill` int(11)[0m
+  [1m[35m (279.3ms)[0m  ALTER TABLE `sc_valuations` ADD `accumulated_billigv` int(11)
+  [1m[36m (422.9ms)[0m  [1mALTER TABLE `sc_valuations` ADD `accumulated_totalbill` int(11)[0m
+  [1m[35m (435.6ms)[0m  ALTER TABLE `sc_valuations` ADD `accumulated_retention` int(11)
+  [1m[36m (247.1ms)[0m  [1mALTER TABLE `sc_valuations` ADD `accumulated_detraction` int(11)[0m
+  [1m[35m (690.8ms)[0m  ALTER TABLE `sc_valuations` ADD `accumulated_guarantee_fund1` int(11)
+  [1m[36m (446.0ms)[0m  [1mALTER TABLE `sc_valuations` ADD `accumulated_guarantee_fund2` int(11)[0m
+  [1m[35m (568.9ms)[0m  ALTER TABLE `sc_valuations` ADD `accumulated_equipment_discount` int(11)
+  [1m[36m (257.1ms)[0m  [1mALTER TABLE `sc_valuations` ADD `accumulated_net_payment` int(11)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140528171532')[0m
+  [1m[35m (51.4ms)[0m  COMMIT
+Migrating to AddStateToScValuations (20140529135737)
+  [1m[36m (223.8ms)[0m  [1mALTER TABLE `sc_valuations` ADD `state` varchar(255)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140529135737')[0m
+  [1m[35m (54.0ms)[0m  COMMIT
+Migrating to AddCodeToScValuations (20140529150101)
+  [1m[36m (278.9ms)[0m  [1mALTER TABLE `sc_valuations` ADD `code` varchar(255)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140529150101')[0m
+  [1m[35m (87.0ms)[0m  COMMIT
+Migrating to AdddiscountsToScValuations (20140529162512)
+  [1m[36m (333.8ms)[0m  [1mALTER TABLE `sc_valuations` ADD `otherdiscount` float[0m
+  [1m[35m (267.5ms)[0m  ALTER TABLE `sc_valuations` ADD `accumulated_otherdiscount` float
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140529162512')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreateSubcontractEquipmentAdvances (20140529170548)
+  [1m[35m (87.3ms)[0m  CREATE TABLE `subcontract_equipment_advances` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `date_of_issue` date, `advance` float, `subcontract_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140529170548')
+  [1m[36m (41.7ms)[0m  [1mCOMMIT[0m
+Migrating to FixColumnSubcontract (20140529171656)
+  [1m[35m (352.2ms)[0m  ALTER TABLE `subcontract_equipment_advances` CHANGE `subcontract_id` `subcontract_equipment_id` int(11) DEFAULT NULL
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140529171656')
+  [1m[36m (52.9ms)[0m  [1mCOMMIT[0m
+Migrating to FixColumnSubcontractEquipment (20140529180403)
+  [1m[35m (368.7ms)[0m  ALTER TABLE `subcontract_equipments` CHANGE `type` `igv` varchar(255) DEFAULT NULL
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140529180403')
+  [1m[36m (49.6ms)[0m  [1mCOMMIT[0m
+Migrating to CreateValuationOfEquipments (20140530152910)
+  [1m[35m (98.5ms)[0m  CREATE TABLE `valuation_of_equipments` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `start_date` date, `end_date` date, `working_group` varchar(255), `valuation` float, `initial_amortization_number` float, `initial_amortization_percentage` float, `bill` float, `billigv` float, `totalbill` float, `retention` float, `detraction` float, `fuel_discount` float, `other_discount` float, `hired_amount` float, `advances` float, `accumulated_amortization` float, `balance` float, `net_payment` float, `accumulated_valuation` float, `accumulated_initial_amortization_number` float, `accumulated_bill` float, `accumulated_billigv` float, `accumulated_totalbill` float, `accumulated_retention` float, `accumulated_detraction` float, `accumulated_fuel_discount` float, `accumulated_other_discount` float, `accumulated_net_payment` float, `state` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140530152910')
+  [1m[36m (50.5ms)[0m  [1mCOMMIT[0m
+Migrating to AddCodeToValuationOfEquipment (20140530163510)
+  [1m[35m (378.2ms)[0m  ALTER TABLE `valuation_of_equipments` ADD `code` varchar(255)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140530163510')
+  [1m[36m (40.0ms)[0m  [1mCOMMIT[0m
+Migrating to AddArticleIdToInputbybudgetanditems (20140531154309)
+  [1m[35m (223.1ms)[0m  ALTER TABLE `inputbybudgetanditems` ADD `article_id` int(11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140531154309')
+  [1m[36m (51.5ms)[0m  [1mCOMMIT[0m
+Migrating to AddPhaseIdToWbsitems (20140531164133)
+  [1m[35m (267.4ms)[0m  ALTER TABLE `wbsitems` ADD `phase_id` int(11)
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.9ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140531164133')
+  [1m[36m (51.6ms)[0m  [1mCOMMIT[0m
+Migrating to AddBlockToParts (20140602011948)
+  [1m[35m (401.4ms)[0m  ALTER TABLE `part_of_equipments` ADD `block` int(11)
+  [1m[36m (278.2ms)[0m  [1mALTER TABLE `part_people` ADD `block` int(11)[0m
+  [1m[35m (268.8ms)[0m  ALTER TABLE `part_works` ADD `block` int(11)
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140602011948')
+  [1m[36m (51.1ms)[0m  [1mCOMMIT[0m
+Migrating to FixColumnsFromScValuation (20140602211203)
+  [1m[35m (383.8ms)[0m  ALTER TABLE `sc_valuations` CHANGE `accumulated_valuation` `accumulated_valuation` float DEFAULT NULL
+  [1m[36m (297.3ms)[0m  [1mALTER TABLE `sc_valuations` CHANGE `accumulated_initial_amortization_number` `accumulated_initial_amortization_number` float DEFAULT NULL[0m
+  [1m[35m (262.0ms)[0m  ALTER TABLE `sc_valuations` CHANGE `accumulated_bill` `accumulated_bill` float DEFAULT NULL
+  [1m[36m (362.5ms)[0m  [1mALTER TABLE `sc_valuations` CHANGE `accumulated_billigv` `accumulated_billigv` float DEFAULT NULL[0m
+  [1m[35m (284.3ms)[0m  ALTER TABLE `sc_valuations` CHANGE `accumulated_totalbill` `accumulated_totalbill` float DEFAULT NULL
+  [1m[36m (630.7ms)[0m  [1mALTER TABLE `sc_valuations` CHANGE `accumulated_retention` `accumulated_retention` float DEFAULT NULL[0m
+  [1m[35m (239.6ms)[0m  ALTER TABLE `sc_valuations` CHANGE `accumulated_detraction` `accumulated_detraction` float DEFAULT NULL
+  [1m[36m (253.1ms)[0m  [1mALTER TABLE `sc_valuations` CHANGE `accumulated_guarantee_fund1` `accumulated_guarantee_fund1` float DEFAULT NULL[0m
+  [1m[35m (297.8ms)[0m  ALTER TABLE `sc_valuations` CHANGE `accumulated_guarantee_fund2` `accumulated_guarantee_fund2` float DEFAULT NULL
+  [1m[36m (418.6ms)[0m  [1mALTER TABLE `sc_valuations` CHANGE `accumulated_equipment_discount` `accumulated_equipment_discount` float DEFAULT NULL[0m
+  [1m[35m (253.1ms)[0m  ALTER TABLE `sc_valuations` CHANGE `accumulated_net_payment` `accumulated_net_payment` float DEFAULT NULL
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140602211203')
+  [1m[36m (51.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddFuelToPartsDetails (20140603163312)
+  [1m[35m (244.5ms)[0m  ALTER TABLE `part_of_equipment_details` ADD `fuel` float
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140603163312')
+  [1m[36m (84.4ms)[0m  [1mCOMMIT[0m
+Migrating to Inputcategories (20140604193000)
+  [1m[35m (165.4ms)[0m  CREATE TABLE `inputcategories` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `category_id` int(11), `level_n` int(11), `description` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140604193000')
+  [1m[36m (51.0ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnSecondNameToEntities (20140605144320)
+  [1m[35m (277.7ms)[0m  ALTER TABLE `entities` ADD `second_name` varchar(255)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140605144320')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnEntityIdAndDestroyExtraColumnsToWorkers (20140605144346)
+  [1m[35m (277.6ms)[0m  ALTER TABLE `workers` ADD `entity_id` int(11)
+  [1m[36m (581.1ms)[0m  [1mALTER TABLE `workers` DROP `first_name`[0m
+  [1m[35m (401.5ms)[0m  ALTER TABLE `workers` DROP `second_name`
+  [1m[36m (368.5ms)[0m  [1mALTER TABLE `workers` DROP `paternal_surname`[0m
+  [1m[35m (323.6ms)[0m  ALTER TABLE `workers` DROP `maternal_surname`
+  [1m[36m (268.0ms)[0m  [1mALTER TABLE `workers` DROP `email`[0m
+  [1m[35m (223.3ms)[0m  ALTER TABLE `workers` DROP `address`
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140605144346')
+  [1m[36m (44.0ms)[0m  [1mCOMMIT[0m
+Migrating to CreateWeeklyWorkers (20140605144500)
+  [1m[35m (88.9ms)[0m  CREATE TABLE `weekly_workers` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `start_date` date, `end_date` date, `working_group` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140605144500')
+  [1m[36m (51.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnEmailToWorkers (20140605151932)
+  [1m[35m (277.4ms)[0m  ALTER TABLE `workers` ADD `email` varchar(255)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140605151932')
+  [1m[36m (51.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreateGraphers (20140605165149)
+  [1m[35m (97.5ms)[0m  CREATE TABLE `graphers` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140605165149')
+  [1m[36m (51.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnOverheadPercentageAndStartDateToCostCenters (20140605204308)
+  [1m[35m (266.1ms)[0m  ALTER TABLE `cost_centers` ADD `overhead_percentage` float
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140605204308')
+  [1m[36m (51.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnIgvToCostCenters (20140605205820)
+  [1m[35m (266.4ms)[0m  ALTER TABLE `cost_centers` ADD `igv` float
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140605205820')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+Migrating to AddAmountToCharges (20140606173331)
+  [1m[35m (222.5ms)[0m  ALTER TABLE `charges` ADD `amount` float
+  [1m[36m (247.1ms)[0m  [1mALTER TABLE `charges` ADD `charge_date` date[0m
+  [1m[35m (278.9ms)[0m  ALTER TABLE `charges` ADD `payment_amount` float
+  [1m[36m (267.6ms)[0m  [1mALTER TABLE `charges` ADD `financial_agent_client` varchar(255)[0m
+  [1m[35m (279.0ms)[0m  ALTER TABLE `charges` ADD `financial_agent_destiny` varchar(255)
+  [1m[36m (223.5ms)[0m  [1mALTER TABLE `charges` ADD `invoice_id` int(11)[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140606173331')[0m
+  [1m[35m (52.4ms)[0m  COMMIT
+Migrating to AddColumnDateOfBirthToEntity (20140607174414)
+  [1m[36m (223.5ms)[0m  [1mALTER TABLE `entities` ADD `date_of_birth` date[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140607174414')[0m
+  [1m[35m (52.9ms)[0m  COMMIT
+Migrating to RemoveColumnDateOfBirthFromWorkers (20140607174603)
+  [1m[36m (258.8ms)[0m  [1mALTER TABLE `workers` DROP `date_of_birth`[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140607174603')[0m
+  [1m[35m (53.3ms)[0m  COMMIT
+Migrating to AddcostCenterIdToscValuations (20140607175903)
+  [1m[36m (279.2ms)[0m  [1mALTER TABLE `sc_valuations` ADD `cost_center_id` int(11)[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140607175903')[0m
+  [1m[35m (52.2ms)[0m  COMMIT
+Migrating to DropphaseIdFromStockOutputs (20140609222455)
+  [1m[36m (267.5ms)[0m  [1mALTER TABLE `stock_inputs` DROP `phase_id`[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140609222455')[0m
+  [1m[35m (41.5ms)[0m  COMMIT
+Migrating to DropFieldsIdFromStockOutputs (20140609222723)
+  [1m[36m (223.6ms)[0m  [1mALTER TABLE `stock_inputs` DROP `supplier_id`[0m
+  [1m[35m (212.3ms)[0m  ALTER TABLE `stock_inputs` DROP `series`
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140609222723')
+  [1m[36m (96.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddphaseIdToSubcontractDetails (20140610160112)
+  [1m[35m (267.4ms)[0m  ALTER TABLE `subcontract_details` ADD `phase_id` varchar(255)
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140610160112')
+  [1m[36m (51.8ms)[0m  [1mCOMMIT[0m
+Migrating to ChangeInttoFloatPartOfEquipments (20140610200441)
+  [1m[35m (286.4ms)[0m  ALTER TABLE `part_person_details` CHANGE `normal_hours` `normal_hours` float DEFAULT NULL
+  [1m[36m (243.8ms)[0m  [1mALTER TABLE `part_person_details` CHANGE `he_60` `he_60` float DEFAULT NULL[0m
+  [1m[35m (254.2ms)[0m  ALTER TABLE `part_person_details` CHANGE `he_100` `he_100` float DEFAULT NULL
+  [1m[36m (288.5ms)[0m  [1mALTER TABLE `part_person_details` CHANGE `total_hours` `total_hours` float DEFAULT NULL[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140610200441')[0m
+  [1m[35m (53.5ms)[0m  COMMIT
+Migrating to FixphaseidTosubcontracts (20140611170308)
+  [1m[36m (380.7ms)[0m  [1mALTER TABLE `subcontract_details` DROP `phase_id`[0m
+  [1m[35m (223.9ms)[0m  ALTER TABLE `subcontract_details` ADD `itembybudgets_id` int(11)
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140611170308')
+  [1m[36m (50.9ms)[0m  [1mCOMMIT[0m
+Migrating to Fixitembybugets (20140611171626)
+  [1m[35m (254.4ms)[0m  ALTER TABLE `subcontract_details` CHANGE `itembybudgets_id` `itembybudget_id` int(11) DEFAULT NULL
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140611171626')
+  [1m[36m (50.0ms)[0m  [1mCOMMIT[0m
+Migrating to AddstateToweeklyTable (20140611211003)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140611211003')[0m
+  [1m[35m (47.9ms)[0m  COMMIT
+Migrating to DropweeklyTable (20140611211641)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140611211641')
+  [1m[36m (47.3ms)[0m  [1mCOMMIT[0m
+Migrating to AddstateToweeklyWorker (20140611211800)
+  [1m[35m (322.4ms)[0m  ALTER TABLE `weekly_workers` ADD `state` varchar(255)
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140611211800')
+  [1m[36m (51.1ms)[0m  [1mCOMMIT[0m
+Migrating to Addblock2Topartpeople (20140611213954)
+  [1m[35m (269.9ms)[0m  ALTER TABLE `part_people` ADD `block2` int(11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140611213954')
+  [1m[36m (41.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreateDistributions (20140612042902)
+  [1m[35m (87.7ms)[0m  CREATE TABLE `distributions` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `code` varchar(255), `description` varchar(255), `und` varchar(255), `measured` float, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140612042902')
+  [1m[36m (42.0ms)[0m  [1mCOMMIT[0m
+Migrating to CreateDistributionItems (20140612042955)
+  [1m[35m (76.7ms)[0m  CREATE TABLE `distribution_items` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `distribution_id` int(11), `month` varchar(255), `value` float, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140612042955')
+  [1m[36m (52.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddCostCenterIdToDistributions (20140612045650)
+  [1m[35m (223.1ms)[0m  ALTER TABLE `distributions` ADD `cost_center_id` int(11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140612045650')
+  [1m[36m (52.2ms)[0m  [1mCOMMIT[0m
+Migrating to RenameBlock2FromTables (20140612161458)
+  [1m[35m (286.7ms)[0m  ALTER TABLE `part_people` CHANGE `block2` `blockweekly` int(11) DEFAULT NULL
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140612161458')
+  [1m[36m (53.2ms)[0m  [1mCOMMIT[0m
+Migrating to Addsuplieridtostockinputs (20140613145006)
+  [1m[35m (267.8ms)[0m  ALTER TABLE `stock_inputs` ADD `supplier_id` int(11)
+  [1m[36m (392.6ms)[0m  [1mALTER TABLE `stock_inputs` ADD `series` varchar(255)[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140613145006')[0m
+  [1m[35m (63.2ms)[0m  COMMIT
+Migrating to ChangeTypeAmount (20140617171644)
+  [1m[36m (743.8ms)[0m  [1mALTER TABLE `stock_input_details` CHANGE `amount` `amount` float DEFAULT NULL[0m
+  [1m[35m (452.1ms)[0m  ALTER TABLE `stock_input_details` CHANGE `unit_cost` `unit_cost` float DEFAULT NULL
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140617171644')
+  [1m[36m (53.7ms)[0m  [1mCOMMIT[0m
+Migrating to AddColumnBudgetIdToDistributions (20140617173929)
+  [1m[35m (255.4ms)[0m  ALTER TABLE `distributions` ADD `budget_id` int(11)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140617173929')
+  [1m[36m (48.7ms)[0m  [1mCOMMIT[0m
+Migrating to CreateTheoreticalValues (20140619160547)
+  [1m[35m (88.8ms)[0m  CREATE TABLE `theoretical_values` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `article_id` int(11), `theoretical_value` float, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140619160547')
+  [1m[36m (51.0ms)[0m  [1mCOMMIT[0m
+Migrating to RenameColumnComponentsIdFromCertificates (20140624164657)
+  [1m[35m (252.0ms)[0m  ALTER TABLE `certificates` CHANGE `componetns_id` `other_work_id` int(11) DEFAULT NULL
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140624164657')
+  [1m[36m (50.2ms)[0m  [1mCOMMIT[0m
+Migrating to CreateComponentsOtherWorks (20140624205308)
+  [1m[35m (88.4ms)[0m  CREATE TABLE `components_other_works` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `other_work_id` int(11), `component_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140624205308')
+  [1m[36m (52.1ms)[0m  [1mCOMMIT[0m
+Migrating to CreateInterestLinks (20140626170355)
+  [1m[35m (88.5ms)[0m  CREATE TABLE `interest_links` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `url` varchar(255), `description` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140626170355')
+  [1m[36m (51.9ms)[0m  [1mCOMMIT[0m
+Migrating to CreateTypeOfLawAndRegulations (20140626172005)
+  [1m[35m (109.0ms)[0m  CREATE TABLE `type_of_law_and_regulations` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `preffix` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140626172005')
+  [1m[36m (51.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreateLawAndRegulations (20140626180321)
+  [1m[35m (108.6ms)[0m  CREATE TABLE `law_and_regulations` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `description` varchar(255), `document` varchar(255), `document_file_name` varchar(255), `document_content_type` varchar(255), `document_file_size` int(11), `document_update_at` datetime, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140626180321')
+  [1m[36m (50.9ms)[0m  [1mCOMMIT[0m
+Migrating to CreateLawAndRegulationsTypeOfLawAndRegulations (20140627055214)
+  [1m[35m (98.2ms)[0m  CREATE TABLE `law_and_regulations_type_of_law_and_regulations` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `law_and_regulation_id` int(11), `type_of_law_and_regulation_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.6ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140627055214')
+  [1m[36m (50.3ms)[0m  [1mCOMMIT[0m
+Migrating to CreateTechnicalStandards (20140627133230)
+  [1m[35m (110.0ms)[0m  CREATE TABLE `technical_standards` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `description` varchar(255), `document` varchar(255), `document_file_name` varchar(255), `document_content_type` varchar(255), `document_file_size` int(11), `document_update_at` datetime, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140627133230')
+  [1m[36m (52.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreateTypeOfTechnicalLibraries (20140627141307)
+  [1m[35m (111.1ms)[0m  CREATE TABLE `type_of_technical_libraries` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `preffix` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140627141307')
+  [1m[36m (52.7ms)[0m  [1mCOMMIT[0m
+Migrating to CreateTechnicalLibraries (20140627144059)
+  [1m[35m (88.3ms)[0m  CREATE TABLE `technical_libraries` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `description` varchar(255), `document` varchar(255), `document_file_name` varchar(255), `document_content_type` varchar(255), `document_file_size` int(11), `document_update_at` datetime, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140627144059')
+  [1m[36m (52.9ms)[0m  [1mCOMMIT[0m
+Migrating to CreateTechnicalLibrariesTypeOfTechnicalLibraries (20140627150800)
+  [1m[35m (109.4ms)[0m  CREATE TABLE `technical_libraries_type_of_technical_libraries` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `technical_library_id` int(11), `type_of_technical_library_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140627150800')
+  [1m[36m (52.1ms)[0m  [1mCOMMIT[0m
+Migrating to CreateDownloadSoftwares (20140627152352)
+  [1m[35m (88.9ms)[0m  CREATE TABLE `download_softwares` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `description` varchar(255), `file` varchar(255), `file_file_name` varchar(255), `file_content_type` varchar(255), `file_file_size` int(11), `file_update_at` datetime, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140627152352')
+  [1m[36m (43.6ms)[0m  [1mCOMMIT[0m
+Migrating to CreateWeeksPerCostCenters (20140630153940)
+  [1m[35m (87.4ms)[0m  CREATE TABLE `weeks_per_cost_centers` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `start_date` date, `end_date` date, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140630153940')
+  [1m[36m (53.8ms)[0m  [1mCOMMIT[0m
+Migrating to CreateArticlesFromCostCenters (20140630153943)
+  [1m[35m (87.8ms)[0m  CREATE TABLE `articles_from_cost_centers` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `article_id` int(11), `code` varchar(255), `type_of_article_id` int(11), `category_id` int(11), `name` varchar(255), `description` text, `unit_of_measurement_id` int(11), `cost_center_id` int(11), `input_by_budget_and_items_id` int(11), `budget_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140630153943')
+  [1m[36m (51.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.9ms)[0m  SELECT `schema_migrations`.* FROM `schema_migrations`
+Started GET "/users/sign_in" for 127.0.0.1 at 2014-07-07 12:47:03 -0500
+Processing by Devise::SessionsController#new as HTML
+  Rendered devise/sessions/new.html.haml (3639.5ms)
+Completed 500 Internal Server Error in 3696ms
+
+ActionView::Template::Error (Invalid CSS after "    filter: progid": expected ";", was ": DXImageTransf..."
+  (in /home/giancarlo/sitios_web/gmp/sigo/app/assets/stylesheets/smartadmin-production.css)):
+    18:     = stylesheet_link_tag "font-awesome.min", media: "screen", rel: "stylesheet", type: "text/css"
+    19:     
+    20:     / SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables
+    21:     = stylesheet_link_tag "smartadmin-production", media: "screen", rel: "stylesheet", type: "text/css"
+    22:     = stylesheet_link_tag "smartadmin-skins", media: "screen", rel: "stylesheet", type: "text/css"
+    23:     /
+    24:       SmartAdmin RTL Support is under construction
+  app/views/devise/sessions/new.html.haml:21:in `_app_views_devise_sessions_new_html_haml__689165062887315684_33714120'
+
+
