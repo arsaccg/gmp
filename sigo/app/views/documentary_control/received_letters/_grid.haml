@@ -28,6 +28,7 @@
                     %thead
                       %tr
                         %th Nombres
+                        %th Fecha
                         %th Descripción
                         %th Documentos
                         %th Acciones
@@ -36,6 +37,8 @@
                         %tr
                           %td
                             = lawre.name.to_s
+                          %td
+                            =lawre.date.to_s
                           %td
                             = lawre.description.to_s
                           %td
@@ -56,6 +59,7 @@
                     %thead
                       %tr
                         %th Nombres
+                        %th Fecha
                         %th Descripción
                         %th Documentos
                         %th Acciones
@@ -64,6 +68,7 @@
                         %tr
                           %td
                             = lawre.name.to_s
+                          %td= lawre.date.to_s
                           %td
                             = lawre.description.to_s
                           %td
