@@ -61,7 +61,7 @@
                 = total.round(2)
           %td(style="text-align: right;") 
             %strong
-              %a{:href => "javascript:delete_to_url('#{management_inputbybudgetanditem_path(itembudget.id) + '?item_id=' + @item_id + '&budget_id=' + @budget_id + '&order=' + @order.gsub(".","d")}', 'botom-load')", data: { confirm: "Are you sure?"} }
+              %a{:href => "javascript:delete_to_url('#{management_inputbybudgetanditem_path(itembudget.id) + '?item_id=' + @item_id + '&budget_id=' + @budget_id + '&order=' + @order.gsub(".","d")}', 'botom-load')", data: { confirm: "¿Está seguro que desea eliminar este item?"} }
                 X
 
               /=link_to("x", management_inputbybudgetanditem_path(itembudget), method: :delete, data: { confirm: "Are you sure?" })
