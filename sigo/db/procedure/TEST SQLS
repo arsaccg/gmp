@@ -1,0 +1,67 @@
+PART WORKS
+
+SELECT pw.id, art.name, pwd.bill_of_quantitties, si.price, (pwd.bill_of_quantitties*si.price) AS TOTAL 
+FROM part_works pw, part_work_details pwd, articles art,subcontract_inputs si 
+WHERE pw.date_of_creation < '2014-02-1'
+AND pw.id = pwd.part_work_id
+AND pwd.article_id = art.id
+AND si.article_id = pwd.article_id
+ORDER BY pw.id
+
+SELECT SUM(pwd.bill_of_quantitties*si.price) AS PartWork 
+FROM part_works pw, part_work_details pwd, articles art,subcontract_inputs si 
+WHERE pw.date_of_creation BETWEEN '2014-01-1' AND '2014-01-31'
+AND pw.id = pwd.part_work_id
+AND pwd.article_id = art.id
+AND si.article_id = pwd.article_id
+
+PART EQUIPMENT
+
+SELECT poe.id, art.name, poed.effective_hours, si.price, (poed.effective_hours*si.price) AS TOTAL 
+FROM part_of_equipments poe, part_of_equipment_details poed, articles art,subcontract_inputs si 
+WHERE poe.date < '2014-02-1'
+AND poe.id = poed.part_of_equipment_id
+AND poe.equipment_id = art.id
+AND si.article_id = poe.equipment_id
+ORDER BY poe.id
+
+SELECT SUM(poed.effective_hours*si.price) AS PartEquip
+FROM part_of_equipments poe, part_of_equipment_details poed, articles art,subcontract_inputs si 
+WHERE poe.date BETWEEN '2014-01-1' AND '2014-01-31'
+AND poe.id = poed.part_of_equipment_id
+AND poe.equipment_id = art.id
+AND si.article_id = poe.equipment_id
+
+PART PEOPLE
+
+SELECT pp.id, wo.id, ent.name, ppd.normal_hours, cow.normal_price, (ppd.normal_hours*cow.normal_price) AS TOTALNORMAL, ppd.he_60, cow.he_60_price, (ppd.he_60*cow.he_60_price) AS TOTAL60, ppd.he_100, cow.he_100_price, (ppd.he_100*cow.he_100_price) AS TOTAL100, ((ppd.normal_hours*cow.normal_price)+(ppd.he_60*cow.he_60_price)+(ppd.he_100*cow.he_100_price)) AS TOTALTOTAL
+FROM part_people pp, part_person_details ppd, articles art, workers wo, entities ent, category_of_workers cow
+WHERE pp.date_of_creation < '2014-02-1'
+AND pp.id = ppd.part_person_id
+AND ppd.worker_id = wo.id
+AND wo.article_id = art.id
+AND wo.entity_id = ent.id
+AND art.id = cow.article_id
+ORDER BY pp.id
+
+SELECT SUM((ppd.normal_hours*cow.normal_price)+(ppd.he_60*cow.he_60_price)+(ppd.he_100*cow.he_100_price)) AS PartPerson
+FROM part_people pp, part_person_details ppd, articles art, workers wo, category_of_workers cow
+WHERE pp.date_of_creation BETWEEN '2014-01-1' AND '2014-01-31'
+AND pp.id = ppd.part_person_id
+AND ppd.worker_id = wo.id
+AND wo.article_id = art.id
+AND art.id = cow.article_id
+
+ORDER OF SERVICES
+
+SELECT SUM(oosd.unit_price_igv)
+FROM order_of_services oos, order_of_service_details oosd
+WHERE oosd.order_of_service_id = oos.id
+AND oos.date_of_service BETWEEN '2014-01-1' AND '2014-01-31'
+
+SC VALUATIONS
+
+SELECT SUM(net_payment)
+FROM  sc_valuations
+WHERE start_date BETWEEN '2014-01-1' AND '2014-01-31'
+AND end_date BETWEEN '2014-01-1' AND '2014-01-31'
