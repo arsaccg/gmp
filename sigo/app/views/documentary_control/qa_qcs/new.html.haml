@@ -16,5 +16,5 @@
 :javascript
 
   $('#backlist-tyarticles').click(function(){
-    load_url_ajax("#{documentary_control_qa_qcs_path}", 'content', null, null, 'GET');
+    load_url_ajax("#{documentary_control_qa_qcs_path}", 'content', {type: #{@type}}, null, 'GET');
   });

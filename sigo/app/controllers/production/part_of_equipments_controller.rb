@@ -4,11 +4,29 @@ class Production::PartOfEquipmentsController < ApplicationController
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
     # Necessary!
-    @worker = Worker.where("cost_center_id = ?", @cost_center)
+    @worker = Worker.where("cost_center_id = ?", @cost_center).first
     @fuel_articles = Article.where("code LIKE ?", '__32%').first # Esto va a cambiar
     @working_group = WorkingGroup.where("cost_center_id = ?", @cost_center).first
-    @worker = Worker.first
     render layout: false
+  end
+
+  def display_operator
+    if params[:element].blank?
+      word = params[:q]
+      article_hash = Array.new
+      articles = PartOfEquipment.getSelectWorker(word)
+      articles.each do |art|
+        article_hash << {'id' => art[0].to_s,'name' => art[1].to_s + " " + art[2].to_s + " " + art[3].to_s + " " + art[4].to_s}
+      end
+      render json: {:articles => article_hash}
+    else
+      article_hash = Array.new
+      articles = ActiveRecord::Base.connection.execute("SELECT w.id, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as name FROM workers w, entities e WHERE w.id = #{params[:element]} AND w.entity_id = e.id")
+      articles.each do |art|
+        article_hash << { 'id' => art[0], 'name' => art[1] }
+      end
+      render json: {:articles => article_hash}
+    end
   end
 
   def show_part_of_equipments
@@ -23,21 +41,23 @@ class Production::PartOfEquipmentsController < ApplicationController
       if partofequipment[7] == 0
         array << [
           partofequipment[1],
-          partofequipment[2],
-          partofequipment[4],
+          partofequipment[6],
           partofequipment[3],
           partofequipment[5],
-          partofequipment[6],
+          partofequipment[8],
+          partofequipment[2],
+          partofequipment[4],
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "','content',null,null,'GET')> Ver Información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/part_of_equipments/" + partofequipment[0].to_s + "','content','/production/part_of_equipments') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar la parte N°" + partofequipment[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
         ]
       else
         array << [
           partofequipment[1],
-          partofequipment[2],
-          partofequipment[4],
+          partofequipment[6],
           partofequipment[3],
           partofequipment[5],
-          partofequipment[6],
+          partofequipment[8],
+          partofequipment[2],
+          partofequipment[4],
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/part_of_equipments/" + partofequipment[0].to_s + "','content',null,null,'GET')> Ver Información </a>"
         ]
       end
@@ -51,15 +71,15 @@ class Production::PartOfEquipmentsController < ApplicationController
     @partofequipment = PartOfEquipment.find(params[:id])
     @partdetail = PartOfEquipmentDetail.where("part_of_equipment_id LIKE ? ", params[:id])
     @sectors = Sector.where("code LIKE '__'")
-    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @phases = Phase.getSpecificPhases(cost_center)
     @working_groups= WorkingGroup.all
     @subcontracts = SubcontractEquipment.all
-    @type = Article.where("code LIKE ?", '__32%')
-    @worker = Array.new
-    @worker = Worker.where("cost_center_id = ?", cost_center)
+    @type = Article.find_idarticle_global_by_specific_idarticle(@partofequipment.subcategory_id, cost_center)[0] rescue 'No se definio combustible.'
     subcontract_id = @partofequipment.subcontract_equipment_id
     unit=''
     equip = SubcontractEquipmentDetail.where("subcontract_equipment_id LIKE ?", subcontract_id)
+    # Article Specific - Obtengo el id del articulo del catalogo especifico
+    @name_article_specific = Article.find_idarticle_global_by_specific_idarticle(SubcontractEquipmentDetail.find_by_id(@partofequipment.equipment_id).article_id, cost_center)[0]
 
     @articles = Article.get_article_per_type('03', cost_center)
 
@@ -85,8 +105,9 @@ class Production::PartOfEquipmentsController < ApplicationController
       end
       render json: {:articles => article_hash}
     else
+      cost_center_id = get_company_cost_center('cost_center')
       article_hash = Array.new
-      articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles WHERE id = #{params[:element]}")
+      articles = ActiveRecord::Base.connection.execute("SELECT id, name FROM articles_from_cost_center_" + cost_center_id.to_s + " WHERE id = #{params[:element]}")
       articles.each do |art|
         article_hash << { 'id' => art[0], 'name' => art[1] }
       end
@@ -205,8 +226,8 @@ class Production::PartOfEquipmentsController < ApplicationController
   end
 
   def get_unit
-    unit = Article.find(params[:article]).unit_of_measurement_id
-    @symbol = UnitOfMeasurement.find(unit).symbol
+    sql = "SELECT uom.symbol FROM subcontract_equipment_details sed, articles_from_cost_center_" + get_company_cost_center('cost_center').to_s + " a, unit_of_measurements uom WHERE sed.id = " + params[:article].to_s + " AND a.id = sed.article_id AND a.unit_of_measurement_id = uom.id"
+    @symbol = ActiveRecord::Base.connection.execute(sql).first[0]
     render json: {:symbol =>@symbol}  
   end
 

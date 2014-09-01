@@ -31,10 +31,10 @@ class Article < ActiveRecord::Base
   def self.find_article_in_specific(id, cost_center_id)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT af.id, af.name, af.article_id, af.code, u.name
-      FROM articles_from_cost_center_"+cost_center_id.to_s+" af, unit_of_measurements u
+      FROM articles_from_cost_center_" + cost_center_id.to_s + " af, unit_of_measurements u
       WHERE af.unit_of_measurement_id = u.id
-      AND af.id =" + id.to_s + " 
-    ")
+      AND af.id = " + id.to_s
+    )
 
     return mysql_result
   end
@@ -46,7 +46,7 @@ class Article < ActiveRecord::Base
         FROM articles_from_cost_center_" + cost_center_id.to_s + " especific, type_of_articles toa, unit_of_measurements uom 
         WHERE especific.unit_of_measurement_id = uom.id 
         AND especific.type_of_article_id = toa.id
-        AND especific.name LIKE '%" + keyword + "%'
+        AND especific.name LIKE '%" + keyword + "%' OR especific.code LIKE '%" + keyword + "%'
         GROUP BY 2
         LIMIT " + display_length + "
         OFFSET " + pager_number + "
@@ -67,7 +67,7 @@ class Article < ActiveRecord::Base
         FROM articles_from_cost_center_" + cost_center_id.to_s + " especific, type_of_articles toa, unit_of_measurements uom 
         WHERE especific.unit_of_measurement_id = uom.id 
         AND especific.type_of_article_id = toa.id
-        AND especific.name LIKE '%" + keyword + "%'
+        AND especific.name LIKE '%" + keyword + "%' OR especific.code LIKE '%" + keyword + "%'
         GROUP BY 2
         LIMIT " + display_length + "
         OFFSET " + pager_number + "
@@ -108,6 +108,22 @@ class Article < ActiveRecord::Base
 
     mysql_result.each do |data|
       name_article = data[1]
+    end
+
+    return name_article
+  end
+
+  def self.find_article_by_global_article2(article_id, cost_center_id)
+    name_article = ""
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.article_id, af.code, u.name
+      FROM articles_from_cost_center_"+cost_center_id.to_s+" af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.id =" + article_id.to_s + " 
+    ")
+
+    mysql_result.each do |data|
+      name_article = data[2]
     end
 
     return name_article

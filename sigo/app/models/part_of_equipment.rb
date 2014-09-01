@@ -5,6 +5,17 @@ class PartOfEquipment < ActiveRecord::Base
 	belongs_to :worker
 	accepts_nested_attributes_for :part_of_equipment_details, :allow_destroy => true
 
+  def self.getSelectWorker(word)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT w.id, e.name, e.second_name, e.paternal_surname, e.maternal_surname
+      FROM workers w, entities e
+      WHERE ( e.name LIKE '%#{word}%' OR e.second_name LIKE '%#{word}%' OR e.paternal_surname LIKE '%#{word}%' OR e.maternal_surname LIKE '%#{word}%')
+      AND e.id = w.entity_id
+      GROUP BY e.id
+    ")
+    return mysql_result
+  end
+
 	def self.get_workers(subcontract_equip_id, start_date, end_date)
 	  return ActiveRecord::Base.connection.execute("SELECT DISTINCT wo.id, CONCAT( ent.name,  ' ', ent.paternal_surname,  ' ', ent.maternal_surname ) as 'worker'
       FROM part_of_equipments poe, entities ent, workers wo, part_of_equipment_details poed,subcontract_equipment_details sced 
@@ -112,16 +123,15 @@ class PartOfEquipment < ActiveRecord::Base
 
   def self.getOwnFuelArticles(word, cost_center_id)
     mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT DISTINCT a.id, a.name
-      FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u 
-      WHERE b.id = ibi.budget_id
-      AND b.type_of_budget =0
-      AND b.cost_center_id = #{cost_center_id}
-      AND ibi.article_id IS NOT NULL 
-      AND ibi.article_id = a.id
-      AND a.code LIKE '__32%'
-      AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' )
-    ")
+      SELECT id, name 
+      FROM articles_from_cost_center_" + cost_center_id.to_s + "
+      WHERE (
+      name LIKE  '%#{word}%'
+      OR code LIKE  '%#{word}%'
+      )
+      AND type_of_article_id = 2
+      GROUP BY code"
+    )
 
     return mysql_result
   end
@@ -129,7 +139,7 @@ class PartOfEquipment < ActiveRecord::Base
   def self.get_part_of_equipments(cost_center_id, display_length, pager_number, keyword = '')
     if keyword != '' && pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block 
+        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block, poe.total_hours 
         FROM part_of_equipments poe, workers w, subcontract_equipments se, entities e, entities ep, subcontract_equipment_details sed, articles_from_cost_center_" + cost_center_id.to_s + " af 
         WHERE poe.cost_center_id = " + cost_center_id.to_s + "
         AND w.id = poe.worker_id 
@@ -146,7 +156,7 @@ class PartOfEquipment < ActiveRecord::Base
       )
     elsif pager_number != 'NaN'
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block 
+        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block, poe.total_hours 
         FROM part_of_equipments poe, workers w, subcontract_equipments se, entities e, entities ep, subcontract_equipment_details sed, articles_from_cost_center_" + cost_center_id.to_s + " af 
         WHERE poe.cost_center_id = " + cost_center_id.to_s + "
         AND w.id = poe.worker_id 
@@ -162,7 +172,7 @@ class PartOfEquipment < ActiveRecord::Base
       )
     else
       mysql_result = ActiveRecord::Base.connection.execute("
-        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block
+        SELECT poe.id, poe.code, ep.name as proveedor, CONCAT(sed.code, ' ' ,af.name) as nombre_equipo, CONCAT(e.name, ' ', e.paternal_surname, ' ', e.maternal_surname) as trabajador, poe.dif, poe.date, poe.block, poe.total_hours 
         FROM part_of_equipments poe, workers w, subcontract_equipments se, entities e, entities ep, subcontract_equipment_details sed, articles_from_cost_center_" + cost_center_id.to_s + " af 
         WHERE poe.cost_center_id = " + cost_center_id.to_s + "
         AND w.id = poe.worker_id 

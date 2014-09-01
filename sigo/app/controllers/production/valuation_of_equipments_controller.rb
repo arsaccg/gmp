@@ -124,7 +124,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
-      AND poe.cost_center_id = '"+ cost_center +"'
+      AND poe.cost_center_id = '" + cost_center.to_s + "'
       AND poe.equipment_id=sed.id
       AND poe.subcontract_equipment_id = " + working_group_id.to_s + "
       GROUP BY poe.equipment_id
@@ -138,7 +138,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
       WHERE poe.date <  '" + end_date.to_s + "'
       AND poe.id=poed.part_of_equipment_id
-      AND poe.cost_center_id = '"+ cost_center +"'
+      AND poe.cost_center_id = '" + cost_center.to_s + "'
       AND poe.equipment_id=sed.id
       AND poe.subcontract_equipment_id = " + working_group_id.to_s + "
       GROUP BY poe.equipment_id
@@ -159,7 +159,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       accumulated_net_payment, 
       code 
       FROM valuation_of_equipments
-      WHERE name LIKE '" + entityname + "'
+      WHERE name LIKE '" + entityname.to_s + "'
       ORDER BY id DESC LIMIT 1
     ")
     return valuationgroup
@@ -178,8 +178,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       accumulated_net_payment, 
       code 
       FROM valuation_of_equipments 
-      WHERE name LIKE '" + entityname + "' 
-      AND code LIKE '" + code + "'
+      WHERE name LIKE '" + entityname.to_s + "' 
+      AND code LIKE '" + code.to_s + "'
     ")
     return valuationgroup
   end
@@ -222,11 +222,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @totalprice3 = 0
     @cc = get_company_cost_center('cost_center')
     @workers_array3 = business_days_array3(@start_date, @end_date, @cad,@cc)
-    @workers_array3.each do |workerDetail|
-      @totalprice3 += workerDetail[4]
-    end
     @art = Array.new
     @workers_array3.each do |workerDetail|
+      @totalprice3 += workerDetail[4]
       @art << workerDetail[6]
     end
     @art = @art.join(',')
@@ -304,8 +302,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @poe_array = poe_array(start_date, end_date, @subcontractequipmentarticle, @entityname)
     @poe_array.each do |workerDetail|
       @totaldif += workerDetail[4].to_i
-      @totaltotalhours += workerDetail[5]
-      @totalfuel_amount += workerDetail[7]
+      @totaltotalhours += workerDetail[5].to_i
+      @totalfuel_amount += workerDetail[7].to_i
     end
     @dias_habiles =  range_business_days(start_date,end_date)
     render layout: false
@@ -323,15 +321,14 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
   
   def poe_array(start_date, end_date, working_group_id,entity_name)
+    @name = get_company_cost_center('cost_center')
     poe_array = ActiveRecord::Base.connection.execute("
       SELECT poe.code, poe.date, poe.initial_km, poe.final_km, poe.dif, poe.total_hours, art.name, poe.fuel_amount
-      FROM part_of_equipments poe, articles art, subcontract_equipments sce, entities ent
+      FROM part_of_equipments poe, articles_from_cost_center_" + @name.to_s + " art, subcontract_equipments sce
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND sce.id=poe.subcontract_equipment_id
       AND poe.subcategory_id=art.id
       AND poe.equipment_id IN(" + working_group_id + ")
-      AND ent.name LIKE '" + entity_name + "' 
-      AND sce.entity_id = ent.id
       ORDER BY poe.date
     ")
     return poe_array

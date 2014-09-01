@@ -162,7 +162,7 @@ move_down 10
 
 text "IV. EDUCACION", :size => 9
 if @worker.lastgrade.nil?
-  table([ ["SITUACION EDUCATIVA", "#{@worker.levelofinstruction.to_s.upcase}"] ], :width => 200, :cell_style => {:height => 16}, :column_widths => [100,100]) do
+  table([ ["SITUACION EDUCATIVA", "#{@worker.levelofinstruction.to_s.upcase}"] ], :width => 300, :cell_style => {:height => 16}, :column_widths => [100,200]) do
           style(columns(0..1), :align => :center)
           style(columns(0..1), :size => 7)
           columns(0..1).font_style = :bold
@@ -242,7 +242,7 @@ else
           style(row(0), :background_color => 'A0D8A0')
         end
   @worker_center_of_studies.each do |data|
-    table([ ["#{data.name}", "#{data.profession}", "#{data.title}", "#{data.numberoftuition}", if "#{data.start_date}"!="" then "#{data.start_date.strftime("%Y")}" end, if "#{data.end_date}"!="" then "#{data.end_date.strftime("%Y")}" end] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [160,100,70,70,60,60]) do
+    table([ ["#{data.name}", "#{data.profession}", "#{data.title}", "#{data.numberoftuition}", if "#{data.start_date}"!="" then "#{data.start_date.to_s}" end, if "#{data.end_date}"!="" then "#{data.end_date.to_s}" end] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [160,100,70,70,60,60]) do
           style(columns(0..5), :align => :center)
             style(columns(0..5), :size => 7)
           end
@@ -537,7 +537,7 @@ if @workercontract.nil?
         end
 else
   text "VI. DATOS CONTRACTUALES (LLENADO POR LA EMPRESA)", :size => 9
-  table([ ["C.C.","FECHA DE INGRESO", "CARGO", "CODIGO TOBI", "SUELDO (S/.)"],["#{@worker.cost_center.code.to_s}","#{@workercontract.start_date.strftime("%d/%m/%Y").to_s}", "#{@workercontract.article.name.to_s}", "#{@workercontract.article.code.to_s}", "#{@workercontract.salary.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,100,140,85,115]) do
+  table([ ["C.C.","FECHA DE INGRESO", "CARGO", "CODIGO TOBI", "SUELDO (S/.)"],["#{@worker.cost_center.code.to_s}","#{@workercontract.start_date.to_s}", "#{@workercontract.article.name.to_s rescue ''}", "#{@workercontract.article.code.to_s rescue ''}", "#{@workercontract.salary.to_s}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [80,100,140,85,115]) do
           style(columns(0..4), :align => :center)
           style(columns(0..4), :size => 7)
           row(0).font_style = :bold

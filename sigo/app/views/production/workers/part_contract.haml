@@ -1,80 +1,83 @@
 .modal-dialog{ style: "width: 720px;" }
   .modal-content
     .modal-header
-      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
+      %button.close#close-part-contract{"aria-hidden" => "true", :onclick => "empty_modal(this, 'close')", type: "button"}
         \×
       %h4.modal-title Llene los siguientes datos del contrato
     .modal-body
       %h3.modal-title 
         = @worker.entity.paternal_surname + ' ' + @worker.entity.maternal_surname + ', ' + @worker.entity.name + ' ' + @worker.entity.second_name + ' ' + @worker.entity.dni
       %br
-      .row
-        .col-md-3
-          %label Número de Contrato
-          = text_field_tag 'worker_contract[numberofcontract]', @worker_contract_correlative, class: 'form-control', id: 'numberofcontract', placeholder: 'Número de Contrato', readonly: true, style: 'font-weight: bold;'
-        .col-md-3
-        .col-md-6
-          %label Tipo de Contrato
-          %select.form-control#typecontract{:name =>"contract_type_id", :style => 'padding: 0;border: none;'}
-            - @contractypes.each do |contractype|
-              %option{:value => "#{contractype.id}"}
-                = contractype.description
+      - if @worker.typeofworker!="externo"
+        .row
+          .col-md-3
+            %label Número de Contrato
+            = text_field_tag 'worker_contract[numberofcontract]', @worker_contract_correlative, class: 'form-control', id: 'numberofcontract', placeholder: 'Número de Contrato', readonly: true, style: 'font-weight: bold;'
+          .col-md-3
+          .col-md-6
+            %label Tipo de Contrato
+            %select.form-control#typecontract{:name =>"contract_type_id", :style => 'padding: 0;border: none;'}
+              - @contractypes.each do |contractype|
+                %option{:value => "#{contractype.id}"}
+                  = contractype.description
       %br
       .row
         .col-md-6
           -if @worker.typeofworker=='obrero'
             %label Categoría del Trabajador
-          -elsif @worker.typeofworker=='empleado'
+          -elsif @worker.typeofworker=='empleado'||'externo'
             %label Cargo del Trabajador
           %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
-
-        .col-md-4
-          %label Regimen
-          %select.form-control#regime{:name =>"regime", :style => 'padding: 0;border: none;'}
-            %option{:value => 'NORMAL'} NORMAL
-            %option{:value => '2 x 30'} 2 x 30
-            %option{:value => '4 x 60'} 4 x 60
-            %option{:value => '5 x 60'} 5 x 60
-            %option{:value => '4 x 120'} 4 x 120
-            %option{:value => 'ESPECIAL'} ESPECIAL
-      %br
-      .row
-        .col-md-6
-          %label Remuneración Bruta
-          = text_field_tag 'worker_contract[salary]', nil, class: 'form-control', id: 'salary', placeholder: 'Salario'
-        .col-md-6
-          %label Destaque
-          = text_field_tag 'worker_contract[destaque]', nil, class: 'form-control', id: 'destaque', placeholder: 'Destaque'
-      %br
-      .row
-        .col-md-4
-          %label Campamento
-          = text_field_tag 'worker_contract[camp]', nil, class: 'form-control', id: 'camp', placeholder: 'Campamento'
-        .col-md-4
-          %label Viáticos
-          = text_field_tag 'worker_contract[viatical]', nil, class: 'form-control', id: 'viatical', placeholder: 'Viáticos'
-        .col-md-4
-          %label Bonificación
-          = text_field_tag 'worker_contract[bonus]', nil, class: 'form-control', id: 'bonus', placeholder: 'Bonificación'
+          - if @worker.typeofworker!="externo"
+            .col-md-4
+              %label Regimen
+              %select.form-control#regime{:name =>"regime", :style => 'padding: 0;border: none;'}
+                %option{:value => 'NORMAL'} NORMAL
+                %option{:value => '2 x 30'} 2 x 30
+                %option{:value => '4 x 60'} 4 x 60
+                %option{:value => '5 x 60'} 5 x 60
+                %option{:value => '4 x 120'} 4 x 120
+                %option{:value => 'ESPECIAL'} ESPECIAL
+      - if @worker.typeofworker!="externo"
+        %br
+        .row
+          .col-md-6
+            %label Remuneración Bruta
+            = text_field_tag 'worker_contract[salary]', nil, class: 'form-control', id: 'salary', placeholder: 'Salario'
+          .col-md-6
+            %label Destaque
+            = text_field_tag 'worker_contract[destaque]', nil, class: 'form-control', id: 'destaque', placeholder: 'Destaque'
+        %br
+        .row
+          .col-md-4
+            %label Campamento
+            = text_field_tag 'worker_contract[camp]', nil, class: 'form-control', id: 'camp', placeholder: 'Campamento'
+          .col-md-4
+            %label Viáticos
+            = text_field_tag 'worker_contract[viatical]', nil, class: 'form-control', id: 'viatical', placeholder: 'Viáticos'
+          .col-md-4
+            %label Bonificación
+            = text_field_tag 'worker_contract[bonus]', nil, class: 'form-control', id: 'bonus', placeholder: 'Bonificación'
       %br
       .row
         .col-md-4
           %label Fecha de Inicio
           %input#worker_contract_start_date.string.optional.form-control{'name'=>'worker_contract[start_date]', type: "date"}
-        -if @worker.typeofworker=='empleado'
-          .col-md-4
-            %label Fecha de Fin
-            %input#worker_contract_end_date.string.optional.form-control{'name'=>'worker_contract[end_date]', type: "date"}
-          .col-md-4
-            %label Duración del Contrato
-            = text_field_tag 'worker_contract[days]', nil, class: 'form-control', id: 'worker_contract_days', placeholder: 'Días'
+        - if @worker.typeofworker!="externo"
+          -if @worker.typeofworker=='empleado'
+            .col-md-4
+              %label Fecha de Fin
+              %input#worker_contract_end_date.string.optional.form-control{'name'=>'worker_contract[end_date]', type: "date"}
+            .col-md-4
+              %label Duración del Contrato
+              = text_field_tag 'worker_contract[days]', nil, class: 'form-control', id: 'worker_contract_days', placeholder: 'Días'
 
 
       %footer{ style: "margin-top: 20px;" }
         %button.btn.btn-primary#smart-mod-eg1{type: "button"}
           %i.fa.fa-save 
           Realizar Contrato
-        %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+        %button.btn.btn-info#btn-part-contract{type: "button", :onclick => "empty_modal(this, 'btn')"}
           Cancelar
 
 :javascript
@@ -114,7 +117,7 @@
       buttons : '[No][Yes]'
     }, function(ButtonPressed) {
       if (ButtonPressed === "Yes") {
-        load_url_ajax('#{approve_production_worker_path(@worker.id)}', 'content', {worker_id: '#{@worker.id}', article_id: $('#article-select').val(), camp: $('#camp').val(), bonus: $('#bonus').val(), viatical: $('#viatical').val(), destaque: $('#destaque').val(), regime: $('#regime').val(), days: $('#worker_contract_days').val(), start_date: $('#worker_contract_start_date').val(), end_date: $('#worker_contract_end_date').val(), salary: $('#salary').val(), numberofcontract: $('#numberofcontract').val(), typeofcontract: "Contrato", contract_type_id: $('#typecontract').val()}, null, 'GET');
+        load_url_ajax('#{approve_production_worker_path(@worker.id)}', 'content', {worker_id: '#{@worker.id}', article_id: $('#article-select').val(), camp: $('#camp').val(), redireccionamiento: '#{@redireccionamiento}', bonus: $('#bonus').val(), viatical: $('#viatical').val(), destaque: $('#destaque').val(), regime: $('#regime').val(), days: $('#worker_contract_days').val(), start_date: $('#worker_contract_start_date').val(), end_date: $('#worker_contract_end_date').val(), salary: $('#salary').val(), numberofcontract: $('#numberofcontract').val(), typeofcontract: "Contrato", contract_type_id: $('#typecontract').val()}, null, 'GET');
         $('.modal-backdrop.fade.in').remove();
         $.smallBox({
           title : "Exito",

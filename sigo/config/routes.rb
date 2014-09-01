@@ -15,6 +15,7 @@ ArsacLogistica::Application.routes.draw do
   get 'display_table_messages_os' => 'main#display_table_messages_os', as: :display_table_messages_os
   get 'display_table_messages_oc' => 'main#display_table_messages_oc', as: :display_table_messages_oc
   get 'display_table_messages_ose' => 'main#display_table_messages_ose', as: :display_table_messages_ose
+  get 'display_worker_pending' => 'main#display_worker_pending', as: :display_worker_pending
   get 'management_dashboard' => 'main#management_dashboard', as: :management_dashboard
   get 'home' => 'main#home'
   post 'home' => 'main#home'
@@ -94,6 +95,8 @@ ArsacLogistica::Application.routes.draw do
         
         post 'getCostCentersPerCompany'
         post 'update_profile'
+
+
       end
     end
     resources :theoretical_values do
@@ -122,6 +125,7 @@ ArsacLogistica::Application.routes.draw do
         post 'import'
         get 'import'
         post 'display_articles_specific'
+        post 'get_group'
       end
     end
     resources :sectors
@@ -383,6 +387,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_more_register'
         post 'display_fuel_articles'
         post 'show_part_of_equipments'
+        post 'display_operator'
       end
     end
     resources :working_groups
@@ -526,6 +531,7 @@ ArsacLogistica::Application.routes.draw do
     resources :type_of_land_deliveries
     resources :qa_qcs
     resources :type_of_qa_qcs
+    resources :type_of_qa_qc_suppliers
     resources :archeologies
     resources :securities
     resources :environments
@@ -604,6 +610,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_concept'
         post 'show_details'
         post 'report'
+        get 'report_pdf'
       end
     end
     resources :diverse_expenses_of_managements do

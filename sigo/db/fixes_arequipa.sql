@@ -193,4 +193,10 @@ INSERT INTO `inputcategories` (`id`, `category_id`, `level_n`, `description`, `c
 
 
 
-UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO" AND subbudgetdetail = "" AND itembybudgets.budget_id = 8;
+UPDATE itembybudgets SET subbudgetdetail = (
+	SELECT description 
+	FROM items 
+	WHERE item_code = itembybudgets.item_code LIMIT 1)  
+WHERE title="REGISTRO RESTRINGIDO" 
+AND subbudgetdetail = "" 
+AND itembybudgets.budget_id = 8;

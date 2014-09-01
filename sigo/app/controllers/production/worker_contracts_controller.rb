@@ -8,7 +8,7 @@ class Production::WorkerContractsController < ApplicationController
     @company = get_company_cost_center('company')
     @worker = Worker.find_by_id(@worker_id)
     #@own_cost_center = current_user.cost_centers
-    @workercontracts = WorkerContract.where("worker_id = ? AND status = 1", @worker_id)
+    @workercontracts = WorkerContract.where("worker_id = ?", @worker_id)
     render layout: false
   end
 
@@ -27,19 +27,51 @@ class Production::WorkerContractsController < ApplicationController
       @worker = Worker.find_by_id(@worker_id)
     end
     if @typeofcontract == 'Adenda'
-      @action = 'edit'
-      @workercontract = WorkerContract.last
-      @worker_id = @workercontract.worker_id
+      @workercontract = WorkerContract.new
+      @workercontract2 = WorkerContract.find_by_worker_id(params[:worker_id])
+      @worker_id = params[:worker_id]
       @worker = Worker.find_by_id(@worker_id)
+      @workercontract.camp = @workercontract2.camp.to_f
+      @workercontract.destaque = @workercontract2.destaque.to_f
+      @workercontract.salary = @workercontract2.salary.to_f
+      @workercontract.regime = @workercontract2.regime.to_s
+      @workercontract.days = @workercontract2.days.to_i
+      @workercontract.bonus = @workercontract2.bonus.to_f
+      @workercontract.article_id = @workercontract2.article_id.to_i
+      @workercontract.contract_type_id = @workercontract2.contract_type_id.to_i
+      @workercontract.viatical = @workercontract2.viatical.to_i
+      @workercontract.start_date = @workercontract2.start_date
+      @workercontract.end_date = @workercontract2.end_date
+      if WorkerContract.where("worker_id = ? AND typeofcontract LIKE 'Adenda'",params[:worker_id]).count > 0
+        @numberofcontract = @workercontract2.numberofcontract
+        @numberofcontract = @numberofcontract + ' - AD ' + (WorkerContract.where("worker_id = ? AND typeofcontract LIKE 'Adenda'",params[:worker_id]).count + 1).to_s.rjust(2, '0')
+      else
+        @numberofcontract = @workercontract2.numberofcontract + ' - AD 01'
+      end
     end
     if @typeofcontract == 'Renovacion'
-      @action = 'edit'
-      @workercontract = WorkerContract.last
-      @worker_id = @workercontract.worker_id
-      @diff = (@workercontract.end_date - @workercontract.start_date).to_i
-      @workercontract.start_date = @workercontract.end_date.to_date + 1.days
-      @workercontract.end_date = @workercontract.end_date.to_date + @diff.days
+      @workercontract = WorkerContract.new
+      @workercontract2 = WorkerContract.find_by_worker_id(params[:worker_id])
+      @worker_id = params[:worker_id]
       @worker = Worker.find_by_id(@worker_id)
+      @workercontract.camp = @workercontract2.camp.to_f
+      @workercontract.destaque = @workercontract2.destaque.to_f
+      @workercontract.salary = @workercontract2.salary.to_f
+      @workercontract.regime = @workercontract2.regime.to_s
+      @workercontract.days = @workercontract2.days.to_i
+      @workercontract.bonus = @workercontract2.bonus.to_f
+      @workercontract.article_id = @workercontract2.article_id.to_i
+      @workercontract.contract_type_id = @workercontract2.contract_type_id.to_i
+      @workercontract.viatical = @workercontract2.viatical.to_i
+      @diff = (@workercontract2.end_date - @workercontract2.start_date).to_i
+      @workercontract.start_date = @workercontract2.end_date.to_date + 1.days
+      @workercontract.end_date = @workercontract2.end_date.to_date + @diff.days
+      if WorkerContract.where("worker_id = ? AND typeofcontract LIKE 'Renovacion'",params[:worker_id]).count > 0
+        @numberofcontract = @workercontract2.numberofcontract
+        @numberofcontract = @numberofcontract + ' - RVN ' + (WorkerContract.where("worker_id = ? AND typeofcontract LIKE 'Renovacion'",params[:worker_id]).count + 1).to_s.rjust(2, '0')
+      else
+        @numberofcontract = @workercontract2.numberofcontract + ' - RVN 01'
+      end
     end
     render :new, layout: false
   end
@@ -88,10 +120,7 @@ class Production::WorkerContractsController < ApplicationController
 
   def update
     workercontract = WorkerContract.find(params[:id])
-    workercontract2 = WorkerContract.new(worker_contract_parameters)
-    workercontract2.end_date_2 = params[:worker_contract]['end_date']
-    workercontract2.status = 1
-    if workercontract.update_attributes({end_date_2: (params[:worker_contract]['start_date'].to_date - 1.days), status: 0}) && workercontract2.save
+    if workercontract.update_attributes(worker_contract_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index, worker_id: params[:worker_contract]['worker_id']
     else

@@ -5,17 +5,15 @@ class Production::WorkingGroupsController < ApplicationController
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
     @workingGroups = WorkingGroup.where("cost_center_id = ?", cost_center)
-    @sector = Sector.where("code LIKE '__'")
-    @subsectors = Sector.where("code LIKE '____'")
-    TypeEntity.where("name LIKE '%Proveedores%'").each do |entity|
-      @entity = entity.entities.first
-    end
-    PositionWorker.where("name LIKE 'Jefe de Frente'").each do |front_chief|
-      @front_chief = front_chief.workers.first
-    end
-    PositionWorker.where("name LIKE 'Maestro de Obra'").each do |master_builder|
-      @master_builder = master_builder.workers.first
-    end
+    @sector = Sector.where("code LIKE '__'").first
+    @subsectors = Sector.where("code LIKE '____'").first
+    @entity = TypeEntity.find_by_preffix("P").entities.first
+    #PositionWorker.where("name LIKE 'JEFE DE FRENTE'").each do |front_chief|
+    #  @front_chief = front_chief.workers.first
+    #end
+    #PositionWorker.where("name LIKE 'MAESTRO DE OBRA'").each do |master_builder|
+    #  @master_builder = master_builder.workers.first
+    #end
     render layout: false
   end
 
@@ -26,19 +24,26 @@ class Production::WorkingGroupsController < ApplicationController
 
   def new
     @workingGroup = WorkingGroup.new
-    @workers = Worker.where("cost_center_id = ? AND position_worker_id IS NULL", get_company_cost_center('cost_center').to_s)
-    TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
-      @executors = executor.entities
+    @workers = Array.new
+    @executors = Array.new
+    @front_chiefs = Array.new
+    @master_builders = Array.new
+    Worker.where("cost_center_id = ? AND position_wg_id IS NULL AND state LIKE 'active'", get_company_cost_center('cost_center').to_s).each do |wo|
+      @workers << wo
     end
-    PositionWorker.where("name LIKE 'Jefe de Frente'").each do |front_chief|
-      @front_chiefs = front_chief.workers
+    TypeEntity.find_by_preffix("P").entities.each do |executor|
+      @executors << executor
+    end
+    PositionWorker.find_by_name("Jefe de Frente").workers.each do |front_chief|
+      @front_chiefs << front_chief
     end
     @front_chiefs = @front_chiefs + @workers
-
-    PositionWorker.where("name LIKE 'Maestro de Obra'").each do |master_builder|
-      @master_builders = master_builder.workers
+    @front_chiefs = @front_chiefs.uniq
+    PositionWorker.find_by_name("Capataz").workers.each do |master_builder|
+      @master_builders << master_builder
     end
     @master_builders = @master_builders + @workers
+    @master_builders = @master_builders.uniq
     @sectors = Sector.where("code LIKE '__'")
     @company = params[:company_id]
     render layout: false
@@ -50,13 +55,13 @@ class Production::WorkingGroupsController < ApplicationController
     if workingGroup.save
       ActiveRecord::Base.connection.execute("
           UPDATE workers SET
-          position_worker_id = 1
-          WHERE id = "+workingGroup.front_chief_id+"
+          position_wg_id = 1
+          WHERE id = "+workingGroup.front_chief_id.to_s+"
         ")
       ActiveRecord::Base.connection.execute("
           UPDATE workers SET
-          position_worker_id = 2
-          WHERE id = "+workingGroup.master_builder_id+"
+          position_wg_id = 2
+          WHERE id = "+workingGroup.master_builder_id.to_s+"
         ")      
       flash[:notice] = "Se ha creado correctamente el trabajador."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -73,17 +78,32 @@ class Production::WorkingGroupsController < ApplicationController
   def edit
     @action = "edit"
     @workingGroup = WorkingGroup.find(params[:id])
-    PositionWorker.where("name LIKE 'Jefe de Frente'").each do |front_chief|
-      @front_chiefs = front_chief.workers
+    @workers = Array.new
+    @executors = Array.new
+    @front_chiefs = Array.new
+    @master_builders = Array.new
+    Worker.where("cost_center_id = ? AND position_wg_id IS NULL", get_company_cost_center('cost_center').to_s).each do |wo|
+      @workers << wo
     end
-
-    PositionWorker.where("name LIKE 'Maestro de Obra'").each do |master_builder|
-      @master_builders = master_builder.workers
+    TypeEntity.find_by_preffix("P").entities.each do |executor|
+      @executors << executor
     end
-    TypeEntity.where("name LIKE '%Proveedores%'").each do |executor|
-      @executors = executor.entities
+    PositionWorker.find_by_name("Jefe de Frente").workers.each do |front_chief|
+      @front_chiefs << front_chief
     end
-    @sectors = Sector.where("code LIKE '__'")
+    Worker.where("position_wg_id = "+PositionWorker.find_by_name("Jefe de Frente").id.to_s).each do |wo|
+      @front_chiefs << wo
+    end
+    @front_chiefs = @front_chiefs + @workers
+    @front_chiefs = @front_chiefs.uniq
+    PositionWorker.find_by_name("Capataz").workers.each do |master_builder|
+      @master_builders << master_builder
+    end
+    Worker.where("position_wg_id = "+PositionWorker.find_by_name("Capataz").id.to_s).each do |wo|
+      @master_builders << wo
+    end
+    @master_builders = @master_builders + @workers
+    @master_builders = @master_builders.uniq
     @company = params[:company_id]
     render layout: false
   end

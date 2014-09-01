@@ -28,13 +28,13 @@
             %tr
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= index
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= workerDetail3[1] + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])
-              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= index
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= Article.find_by_id(Article.find_article_by_global_article2(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])).unit_of_measurement.name
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[3], unit: 'S/. ', precision: 2)
-              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[5], unit: 'S/. ', precision: 2)
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[5])
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[6], unit: 'S/. ', precision: 2)
-              %th{ 'style' => 'text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[2], unit: 'S/. ', precision: 2)
+              %th{ 'style' => 'text-align:center;vertical-align: middle' }= sprintf('%.2f', workerDetail3[2])
               %th{ 'style' => 'text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[4], unit: 'S/. ', precision: 2)
-              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[5]+workerDetail3[2], unit: 'S/. ', precision: 2)
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[5]+workerDetail3[2])
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[6]+workerDetail3[4], unit: 'S/. ', precision: 2)
               %th
                 %span{"style"=>"width=20px"}

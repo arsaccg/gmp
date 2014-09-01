@@ -11,19 +11,25 @@
           %input{ 'name' => 'worker_contract[worker_id]', 'value' => "#{@worker_id}", 'readonly' => true, 'style' => 'display:none' }
         .row
           %section.col.col-md-12
-            .col-md-2
+            .col-md-3
               %label.label Numero de Contrato
-            .col-md-1
-              %label.input{for: "numberofcontract"}
-                = f.input :numberofcontract, input_html: { class: 'form-control' }, label: false
+            -if @action=='edit'
+              .col-md-2
+                %label.input{for: "numberofcontract"}
+                  = f.input :numberofcontract, input_html: { class: 'form-control' }, label: false,:readonly => true
+            -else
+              .col-md-2
+                %label.input{for: "numberofcontract"}
+                  = f.input :numberofcontract, input_html: { class: 'form-control', value: @numberofcontract.to_s }, label: false          
+
             .col-md-1
             .col-md-2{ 'style' => 'display:none' }
               %label.label Tipo de Contrato
             .col-md-1{ 'style' => 'display:none' }
               %label.input{for: "typeofcontract"}
-                = f.input :typeofcontract, input_html: { class: 'form-control', value: @typeofcontract}, label: false
+                = f.input :typeofcontract, input_html: { class: 'form-control', value: @typeofcontract.to_s}, label: false
         .row
-          %section.col.col-4
+          %section.col.col-6
             %label.label Tipo de Contrato
             %label.input{for: "contract_type_id"}
               %select.form-control{:name =>"worker_contract[contract_type_id]", :style => 'width:100%;padding: 0;border: none;'}
@@ -35,7 +41,7 @@
                     %option{:value => "#{contractype.id}"}
                       = contractype.description
         .row
-          %section.col.col-4
+          %section.col.col-6
             -if @worker.typeofworker=='obrero'
               %label.label Categoría del Trabajador
             -elsif @worker.typeofworker=='empleado'
@@ -50,28 +56,7 @@
                     %option{:value => "#{article.id}"}
                       = article.code + ' ' + article.name
         .row
-          %section.col.col-md-12
-            .col-md-1
-              %label.label Campamento
-            .col-md-5
-              %label.input{for: "camp"}
-                = f.input :camp, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-md-12
-            .col-md-1
-              %label.label Destaque
-            .col-md-5
-              %label.input{for: "destaque"}
-                = f.input :destaque, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-md-12
-            .col-md-1
-              %label.label Salario
-            .col-md-5
-              %label.input{for: "salary"}
-                = f.input :salary, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-4
+          %section.col.col-6
             %label.label Regimen
             %label.input{for: "regime"}
               %select.form-control{:name =>"worker_contract[regime]", :style => 'width:100%;padding: 0;border: none;'}
@@ -92,36 +77,59 @@
                   %option{:value => 'ESPECIAL'} ESPECIAL
         .row
           %section.col.col-md-12
-            .col-md-1
+            .col-md-2
+              %label.label Salario
+            .col-md-8
+              %label.input{for: "salary"}
+                = f.input :salary, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-md-12
+            .col-md-2
+              %label.label Destaque
+            .col-md-8
+              %label.input{for: "destaque"}
+                = f.input :destaque, input_html: { class: 'form-control' }, label: false
+
+
+        .row
+          %section.col.col-md-12
+            .col-md-2
               %label.label Bonificación
-            .col-md-5
+            .col-md-8
               %label.input{for: "bonus"}
                 = f.input :bonus, input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-md-12
-            .col-md-1
+            .col-md-2
+              %label.label Campamento
+            .col-md-8
+              %label.input{for: "camp"}
+                = f.input :camp, input_html: { class: 'form-control' }, label: false
+        .row
+          %section.col.col-md-12
+            .col-md-2
               %label.label Viáticos
-            .col-md-5
+            .col-md-8
               %label.input{for: "viatical"}
                 = f.input :viatical, input_html: { class: 'form-control' }, label: false
         .row
-          %section.col.col-md-12
-            .col-md-1
-              %label.label Dias
-            .col-md-5
-              %label.input{for: "days"}
-                = f.input :days, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-1
-            %label.label Dia de Inicio
           %section.col.col-2
+            %label.label Dia de Inicio
+          %section.col.col-3
             %label.input{for: "start_date"}
               = f.input :start_date, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
-          %section.col.col-1
-            %label.label Dia de Fin
           %section.col.col-2
+            %label.label Dia de Fin
+          %section.col.col-3
             %label.input{for: "end_date"}
               = f.input :end_date, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false,  :onchange =>'calculatedays();'
+        .row
+          %section.col.col-md-12
+            .col-md-2
+              %label.label Duración
+            .col-md-8
+              %label.input{for: "days"}
+                = f.input :days, input_html: { class: 'form-control' }, label: false
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 

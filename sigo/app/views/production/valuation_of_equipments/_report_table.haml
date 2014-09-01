@@ -22,7 +22,7 @@
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Adelanto
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Amortización Acumulada
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Saldo
-            %tbody
+            %tbody{:style => 'background-color: #fff;'}
               %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.contract_amount, unit: 'S/. ', precision: 2)
               %th#adelanto{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subadvances, unit: 'S/. ', precision: 2)
               %th#amortAcum2{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f), unit: 'S/. ', precision: 2)
@@ -39,9 +39,9 @@
                 %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"} Actual
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Acumulado Anterior
                 %th{"style"=>"color:#5f5f5f;text-align:center"} Acumulado Actual
-            %tbody
+            %tbody{:style => 'background-color: #fff;'}
               %tr
-                %th{"style"=>"color:#5f5f5f"}= number_to_currency(1, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f; text-align:center;"} 01
                 %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
                 %th{"style"=>"color:#5f5f5f;text-align:center"}
                   %span{"style"=>"width=20px"}
@@ -51,7 +51,7 @@
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@valorizacionsinigv.to_f, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@totalprice.to_f+@valorizacionsinigv.to_f, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f;vertical-align: middle"}= number_to_currency(2, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;vertical-align: middle; text-align:center;"} 02
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle"} 
                   Amortización de Adelanto (SIN. I.G.V.)
                   %br
@@ -63,14 +63,14 @@
                 %th#amortLast{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@amortizaciondeadelanto.to_f, unit: 'S/. ', precision: 2)
                 %th#amortAcum{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f"}= number_to_currency(3, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f; text-align:center;"} 03
                 %th{"style"=>"color:#5f5f5f"} Total a Facturar
                 %th{"style"=>"color:#5f5f5f"}
                 %th#totalfac{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@bill, unit: 'S/. ', precision: 2)
                 %th#lastTotalFac{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalfacturar.to_f, unit: 'S/. ', precision: 2)
                 %th#acumTotalFac{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@bill+@totalfacturar.to_f, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f"}= number_to_currency(4, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f; text-align:center;"} 04
                 %th{"style"=>"color:#5f5f5f"} I.G.V. del Total a Facturar
                 %th{"style"=>"color:#5f5f5f"}
                 %th#igv{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@billigv.to_f, unit: 'S/. ', precision: 2)
@@ -84,24 +84,24 @@
                 %th#lastTotal{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalincluidoigv.to_f, unit: 'S/. ', precision: 2)
                 %th#acumTotal{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@bill.to_f+@billigv.to_f+@totalincluidoigv.to_f, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f"}= number_to_currency(5.00, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f; text-align:center;"} 05.00
                 %th{ 'colspan' => 5, "style"=>"color:#5f5f5f"} Retenciones
               %tr
-                %th{"style"=>"color:#5f5f5f"}= number_to_currency(5.01, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f; text-align:center;"} 05.01
                 %th{"style"=>"color:#5f5f5f"} Detracción del Total (Incl. I.G.V.)
                 %th{"style"=>"color:#5f5f5f"}
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.detraction.to_f, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@detraccion.to_f, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.detraction.to_f+@detracciontotal.to_f, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f"}= number_to_currency(5.02, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f; text-align:center;"} 05.02
                 %th{"style"=>"color:#5f5f5f"} Descuento de Combustible
                 %th{"style"=>"color:#5f5f5f"}
                 %th{ "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@fuel_discount.to_f, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@descuentocombustible.to_f, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@fuel_discount.to_f+@descuentocombustible.to_f, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f;vertical-align: middle"}= number_to_currency(5.03, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;vertical-align: middle; text-align:center;"} 05.03
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle"} Descuento de Otros (Incl. I.G.V.)
                 %th{"style"=>"color:#5f5f5f"}
                 %th{"style"=>"color:#5f5f5f"}                            
@@ -116,7 +116,7 @@
                 %th#lasttr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@retenciones.to_f, unit: 'S/. ', precision: 2)
                 %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontractequipment.detraction.to_f+@fuel_discount.to_f + @totalretenciones.to_f, unit: 'S/. ', precision: 2)
               %tr
-                %th{"style"=>"color:#5f5f5f"} 06
+                %th{"style"=>"color:#5f5f5f; text-align:center;"} 06
                 %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
                 %th{"style"=>"color:#5f5f5f"}
                 %th#net-pay{ "style"=>"color:#5f5f5f;text-align:center", 'original' => "#{(@bill-@billigv)-(@subcontractequipment.detraction.to_f+@fuel_discount.to_f)}"}= number_to_currency((@bill+@billigv)-(@subcontractequipment.detraction.to_f+@fuel_discount.to_f), unit: 'S/. ', precision: 2)
