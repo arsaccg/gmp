@@ -30,6 +30,7 @@
                         %th Tipo
                         %th Nombre
                         %th Código-Año
+                        %th Fecha
                         %th Descripción
                         %th Documentos
                         %th Acciones
@@ -42,6 +43,7 @@
                             = lawre.name.to_s
                           %td
                             =lawre.code.to_s + " - "+ lawre.year.to_s
+                          %td= lawre.date.to_s
                           %td
                             = lawre.description.to_s
                           %td
@@ -62,6 +64,7 @@
                         %th Tipo
                         %th Nombre
                         %th Código-Año
+                        %th Fecha
                         %th Descripción
                         %th Documentos
                         %th Acciones
@@ -74,6 +77,7 @@
                             = lawre.name.to_s
                           %td
                             =lawre.code.to_s + " - "+ lawre.year.to_s
+                          %td= lawre.date.to_s
                           %td
                             = lawre.description.to_s
                           %td

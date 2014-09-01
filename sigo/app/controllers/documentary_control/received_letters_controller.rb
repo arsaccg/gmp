@@ -72,6 +72,6 @@ class DocumentaryControl::ReceivedLettersController < ApplicationController
 
   private
   def recei_parameters
-    params.require(:received_letter).permit(:name, :description, :document, :type_of_received_letter_id)
+    params.require(:received_letter).permit(:name, :description, :document, :type_of_received_letter_id, :date)
   end
 end
