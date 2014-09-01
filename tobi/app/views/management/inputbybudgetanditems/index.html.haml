@@ -15,6 +15,8 @@
         %strong Precio
       %th 
         %strong Total
+      %th 
+        %strong Acciones
     %tbody
       - @itembybudgetanditems.each do |itembudget|
         - puts "ITEM"
@@ -57,6 +59,10 @@
                 - price = itembudget.price.to_f.round(4).to_s.to_f
                 - total=(quantity.round(4) * price.round(4)).round(2)
                 = total.round(2)
+          %td(style="text-align: right;") 
+            %strong
+              
+            
 :javascript
    
   

@@ -149,7 +149,6 @@ class PartOfEquipment < ActiveRecord::Base
         AND poe.equipment_id = sed.id
         AND sed.article_id = af.id
         AND (poe.code LIKE '%" + keyword + "%' OR ep.name LIKE '%" + keyword + "%' OR sed.code LIKE '%" + keyword + "%' OR af.name LIKE '%" + keyword + "%' OR e.paternal_surname LIKE '%" + keyword + "%' OR e.name LIKE '%" + keyword + "%' OR e.maternal_surname LIKE '%" + keyword + "%')
-        GROUP BY poe.code 
         ORDER BY poe.id DESC
         LIMIT " + display_length +
         " OFFSET " + pager_number
@@ -165,7 +164,6 @@ class PartOfEquipment < ActiveRecord::Base
         AND se.entity_id = ep.id 
         AND poe.equipment_id = sed.id
         AND sed.article_id = af.id
-        GROUP BY poe.code 
         ORDER BY poe.id DESC
         LIMIT " + display_length +
         " OFFSET " + pager_number
@@ -181,7 +179,6 @@ class PartOfEquipment < ActiveRecord::Base
         AND se.entity_id = ep.id 
         AND poe.equipment_id = sed.id
         AND sed.article_id = af.id
-        GROUP BY poe.code 
         ORDER BY poe.id DESC
         LIMIT " + display_length
       )
