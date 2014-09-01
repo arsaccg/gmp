@@ -21,7 +21,7 @@ class Management::BudgetsController < ApplicationController
     @article_hash = Array.new
 
     
-    articles = ActiveRecord::Base.connection.execute("SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol FROM articles a, unit_of_measurements u WHERE a.code LIKE '04%' AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) AND a.unit_of_measurement_id = u.id")
+    articles = ActiveRecord::Base.connection.execute("SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol FROM articles a, unit_of_measurements u WHERE (a.code LIKE '01%' || a.code LIKE '02%' || a.code LIKE '03%' || a.code LIKE '04%') AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) AND a.unit_of_measurement_id = u.id")
     
     @budget_id = params[:budget_id]
     @item_id = Item.find(params[:item_id].to_i).item_code
