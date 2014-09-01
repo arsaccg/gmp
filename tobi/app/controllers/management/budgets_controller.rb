@@ -17,20 +17,20 @@ class Management::BudgetsController < ApplicationController
   end
   
   def display_articles
-     word = params[:q]
-     @article_hash = Array.new
+    word = params[:q]
+    @article_hash = Array.new
 
-  
-     articles = ActiveRecord::Base.connection.execute("SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol FROM articles a, unit_of_measurements u WHERE a.code LIKE '04%' AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) AND a.unit_of_measurement_id = u.id")
-  
-     @budget_id = params[:budget_id]
-     @item_id = Item.find(params[:item_id].to_i).item_code
-     @order = params[:order]
-  
-     articles.each do |art|
-       @article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4], 'budget_id'=> @budget_id, 'item_id'=> @item_id, 'order' => @order}
-     end
-     render :display_articles, layout: false 
+    
+    articles = ActiveRecord::Base.connection.execute("SELECT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol FROM articles a, unit_of_measurements u WHERE (a.code LIKE '01%' || a.code LIKE '02%' || a.code LIKE '03%' || a.code LIKE '04%') AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) AND a.unit_of_measurement_id = u.id")
+    
+    @budget_id = params[:budget_id]
+    @item_id = Item.find(params[:item_id].to_i).item_code
+    @order = params[:order]
+    
+    articles.each do |art|
+      @article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4], 'budget_id'=> @budget_id, 'item_id'=> @item_id, 'order' => @order}
+    end
+    render :display_articles, layout: false 
   end
 
   def new
