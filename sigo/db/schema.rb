@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140817191104) do
+ActiveRecord::Schema.define(version: 20140829203935) do
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -1292,6 +1292,7 @@ ActiveRecord::Schema.define(version: 20140817191104) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "type_of_qa_qc_id"
+    t.integer  "type_of_qa_qc_supplier_id"
   end
 
   create_table "received_letters", force: true do |t|
@@ -1790,7 +1791,15 @@ ActiveRecord::Schema.define(version: 20140817191104) do
     t.datetime "updated_at"
   end
 
-  create_table "type_of_qa_qcs", force: true do |t|
+  create_table "type_of_qa_qc_qualities", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_qa_qc_suppliers", force: true do |t|
     t.string   "name"
     t.string   "preffix"
     t.integer  "cost_center_id"
@@ -2088,8 +2097,8 @@ ActiveRecord::Schema.define(version: 20140817191104) do
     t.string   "profession"
     t.string   "title"
     t.string   "numberoftuition"
-    t.date     "start_date"
-    t.date     "end_date"
+    t.integer  "start_date"
+    t.integer  "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "worker_id"
@@ -2260,6 +2269,7 @@ ActiveRecord::Schema.define(version: 20140817191104) do
     t.string   "state"
     t.string   "income_fifth_category"
     t.string   "lastgrade"
+    t.integer  "position_wg_id"
   end
 
   create_table "working_groups", force: true do |t|
