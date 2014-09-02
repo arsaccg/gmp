@@ -38,23 +38,23 @@
             -p353=ib.title
       %td(style="text-align: right;")
         %strong
-          = "S/. #{amount_contractual(ib.order, @budget.id).round(2).to_s}"  #Monto
+          = "S/. #{sprintf('%.2f', amount_contractual(ib.order, @budget.id))}"  #Monto
       %td
       %td(style="text-align: right;")
         %strong
-          = "S/. #{amount_prev(ib.order, @budget.id, @valorization.created_at).round(2).to_s}" #Monto
+          = "S/. #{sprintf('%.2f', amount_prev(ib.order, @budget.id, @valorization.created_at))}" #Monto
       %td
       %td(style="text-align: right;")
         %strong
-          = "S/. #{amount_actual(ib.order, @budget.id, @valorization.id).round(2).to_s}" #Monto
+          = "S/. #{sprintf('%.2f', amount_actual(ib.order, @budget.id, @valorization.id))}" #Monto
       %td
       %td(style="text-align: right;")
         %strong
-          = "S/. #{amount_acumulated(ib.order, @budget.id, @valorization.created_at, @valorization.id).round(2).to_s}" #Monto
+          = "S/. #{sprintf('%.2f', amount_acumulated(ib.order, @budget.id, @valorization.created_at, @valorization.id))}" #Monto
       %td
       %td(style="text-align: right;")
         %strong
-          = "S/. #{amount_remainder(ib.order, @budget.id, @valorization.created_at, @valorization.id).round(2).to_s}" #Monto
+          = "S/. #{sprintf('%.2f', amount_remainder(ib.order, @budget.id, @valorization.created_at, @valorization.id))}" #Monto
       %td(style="text-align: right;")
         %strong
           = "#{advance_percent(ib.order, @budget.id, @valorization.created_at, @valorization.id).round(2)} %"

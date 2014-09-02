@@ -1,5 +1,5 @@
 -budget = Budget.where(:id => @valorization.budget_id).first
--igv = CostCenter.where(:id => budget.cost_center_id).last.igv.to_f
+-igv = CostCenter.where(:id => budget.cost_center_id).last.igv.to_f rescue 0
 
 -puts "IGV : " + igv.to_s
 
@@ -121,37 +121,39 @@
 
          
 :javascript 
-  $(document).ready(function(){
-    $("[id*='item_']").blur();
-    update_data('#{igv}');
-  });
+  $("[id*='item_']").blur();
+  update_data('#{igv}');
+  twoDecimals();
 
   function update_data(val_igv) {
 	
     igv = parseFloat(val_igv);
 
     val_month = parseFloat($("#direct_cost").text()) + parseFloat($("#item_generale").val()) + parseFloat($("#item_utility").val());
-    $("#valorization_month").text(val_month);
+    $("#valorization_month").text(val_month.toFixed(2));
 
     val_construction = parseFloat($("#valorization_month").text()) + parseFloat($("#item_readjustment").val()) + parseFloat($("#item_no_direct_r").val()) + parseFloat($("#item_no_materials_r").val());
     
-    $("#valorization_construction").text(val_construction);
+    $("#valorization_construction").text(val_construction.toFixed(2));
 
     amortization = parseFloat($("#item_direct_advance").val()) + parseFloat($("#item_advance_of_materials").val());
-    $("#amortization").text(amortization);
+    $("#amortization").text(amortization.toFixed(2));
 
     total = parseFloat($("#amortization").text()) + parseFloat($("#valorization_construction").text());
-    $("#total_val").text(total);
+    $("#total_val").text(total.toFixed(2));
 
     
     igv_a = parseFloat($("#total_val").text()) * igv;
-    $("#igv").text(igv_a);
+    $("#igv").text(igv_a.toFixed(2));
 
     amount = parseFloat($("#total_val").text()) * (igv + 1);
-    $("#amount").text(amount);
+    $("#amount").text(amount.toFixed(2));
+
+    twoDecimals();
   }
  
   function change_data_ge(input_id){
+    $("#" + input_id).val( $("#" + input_id).val().toFixed(2) );
     new_value=$("#" + input_id).val();
     load_url_ondiv("#{change_data_ge_management_valorization_path.to_s}?id=#{@valorization.id}&new_value=" + new_value, "item");
   }
@@ -184,4 +186,13 @@
   function change_data_aom(input_id){
     new_value=document.getElementById(input_id).value;
     load_url_ondiv("#{change_data_aom_management_valorization_path.to_s}?id=#{@valorization.id}&new_value=" + new_value, "item");
+  }
+
+
+
+
+  function twoDecimals(){
+    $('input[type=text]').val (function () {
+      return parseFloat(this.value).toFixed(2);
+    })
   }
