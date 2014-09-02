@@ -350,9 +350,9 @@ class Production::WorkersController < ApplicationController
     @worker_afps = @worker.worker_afps
     @nombre = ""
     @afp = WorkerAfp.where("worker_id = ?",params[:id]).last
-    if @afp.afp.type_of_afp == 'SNP'
+    if ( !@afp.nil? ) && ( @afp.afp.type_of_afp ) == 'SNP'
       @nombre = "SNP"
-    elsif @afp.afp.type_of_afp == 'SPP'
+    elsif ( !@afp.nil? ) && ( @afp.afp.type_of_afp ) == 'SPP'
       @nombre = "Nombre de AFP"
     else
       @nombre = ""
