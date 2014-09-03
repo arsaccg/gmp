@@ -108,11 +108,7 @@
             %label.control-label(for="itembybudget_id") Partidas
 
           %section.col.col-6
-            %select#itembybudget-id.form-control{:name =>"itembybudget_id", :style => 'width:100%;padding: 0;border: none;'}
-              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Partida
-              - @prebudgets.each do |phase|
-                %option{:value => "#{phase[1]}"}
-                  = phase[2]
+            %input.select2.bigdrop.select2-offscreen.form-control{'name' => 'itembybudget_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'id' => "id_itembybudget_id"}
 
           %section.col.col-2
             %div
@@ -207,6 +203,30 @@
   $(document).ready(function () {
 
     $('select').select2();
+
+    $("#id_itembybudget_id").select2({
+      placeholder: "Buscar Partidas...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{getsc_prebudgets_production_subcontracts_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.part};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.order + ' - ' + node.name + '</div>' },
+      formatSelection: function(node){ return (node.order + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -308,7 +328,7 @@
   }
 
   function add_itembybudget_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", itembybudget_id: $("#itembybudget-id").val(), itembybudget_name: $("#itembybudget-id").find(":selected").text()};
+    str_item = {authenticity_token: "#{form_authenticity_token}", itembybudget_id: $("#id_itembybudget_id").val()};
     append_url_ajax('#{add_more_article_production_subcontracts_path}', 'article_items_table', str_item, 0, 'POST');
   }
 
