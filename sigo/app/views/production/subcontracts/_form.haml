@@ -135,10 +135,13 @@
                     %td.article-id(style="display:none")
                       = sub.article_id
                     %td.col-md-2
-                      = sub.itembybudget.subbudgetdetail rescue " "
+                      = sub.itembybudget.subbudgetdetail rescue "No se ha definido una Partida."
                     %td.col-md-2
-                      - Article.find_article_in_specific(sub.article_id, @cc).each do |ar|
-                        = ar[1].to_s
+                      - if !sub.article_id.nil?
+                        - Article.find_article_in_specific(sub.article_id, @cc).each do |ar|
+                          = ar[1].to_s
+                      - else
+                        = "No se ha definido un Insumo."
                     %td.amount.col-md-1{:style => "width:5%"}
                       = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][amount]', sub.amount , class: "form-control quantity", id: 'subcontract-amount', onfocusout: "calculatePartialAmount(this);"
                     %td.unit-price.col-md-1
