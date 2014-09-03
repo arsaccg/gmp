@@ -408,6 +408,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_more_article'
         post 'add_more_advance'
         post 'display_articles'
+        post 'getsc_prebudgets'
       end
     end
     namespace :daily_works do
