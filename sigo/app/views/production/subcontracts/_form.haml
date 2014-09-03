@@ -16,7 +16,7 @@
               %select.form-control{:name =>"subcontract[entity_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @suppliers.each do |supply|
                   %option{:value => "#{supply.id}"}
-                    = supply.name
+                    = supply.ruc + " - "+supply.name
 
           %section.col.col-4
             %label.label Valorizaciones
