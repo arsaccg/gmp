@@ -30,6 +30,7 @@ class Production::SubcontractsController < ApplicationController
     @subcontract = Subcontract.new
     @suppliers = TypeEntity.find_by_name('Proveedores').entities
     @company = params[:company_id]
+    @cc = get_company_cost_center('cost_center')
     @igv = FinancialVariable.find_by_name("IGV").value
     render layout: false
   end
@@ -73,6 +74,7 @@ class Production::SubcontractsController < ApplicationController
     @suppliers = TypeEntity.find_by_name('Proveedores').entities
     @company = params[:company_id]
     @reg_n = (Time.now.to_f*1000).to_i
+    @cc = get_company_cost_center('cost_center')
     @igv = FinancialVariable.find_by_name("IGV").value
     @action="edit"
     render layout: false
