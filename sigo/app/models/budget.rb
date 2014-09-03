@@ -150,13 +150,13 @@ class Budget < ActiveRecord::Base
     end
 
     # Importando partidas al subcontrato
-    @itembybudgets = Itembybudget.get_item_by_budget
-    @company_name = company.name rescue " "
-    @entity_id = Entity.find_by_name(@company_name).id rescue nil
-    @subcontract_id = Subcontract.find_by_entity_id(@entity_id) rescue nil
-    @itembybudgets.each do |ibb|
-      SubcontractDetail.create(article_id: nil, amount: 0, unit_price: 0, partial: 0, description: nil, created_at: DateTime.now, updated_at: DateTime.now, subcontract_id: @subcontract, itembybudget_id: ibb[1],)
-    end
+    #@itembybudgets = Itembybudget.get_item_by_budget
+    #@company_name = company.name rescue " "
+    #@entity_id = Entity.find_by_name(@company_name).id rescue nil
+    #@subcontract_id = Subcontract.find_by_entity_id(@entity_id) rescue nil
+    #@itembybudgets.each do |ibb|
+    #  SubcontractDetail.create(article_id: nil, amount: 0, unit_price: 0, partial: 0, description: nil, created_at: DateTime.now, updated_at: DateTime.now, subcontract_id: @subcontract, itembybudget_id: ibb[1],)
+    #end
     #Ultimo paso
   
   
