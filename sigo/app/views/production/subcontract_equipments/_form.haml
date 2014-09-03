@@ -339,6 +339,10 @@
               - else
                 = check_box_tag 'subcontract_equipment[igv]', @igv, true
                 %i
+          %section.col.col-4
+            %label.label Descripción del Contrato
+            %label.input{for: "contract_description"}
+              = f.input :contract_description, placeholder: "Descripción",:as => :text, input_html: { class: 'form-control',:style=> 'height: 70px' }, label: false
 
       %fieldset
         %legend Adelantos
