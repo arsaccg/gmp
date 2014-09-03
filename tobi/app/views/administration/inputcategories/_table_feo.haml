@@ -20,7 +20,7 @@
     -@inputcategories.each do |input|
       -partial_sale, partial_goal = @data_w[0][input.category_id], @data_w[1][input.category_id]
       %tr{class: get_tr_class_feo(input, (@data_w[0]["0#{input.category_id}"][0]).length)}
-        - l = (@data_w[0]["0#{input.category_id}"][0]).length
+        - l = (@data_w[0]["0#{input.category_id}"][0]).length rescue 1
         %td= ("-" * l) + (@data_w[0]["0#{input.category_id}"][0]).to_s
         - case l
           - when 2
