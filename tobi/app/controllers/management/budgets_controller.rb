@@ -13,7 +13,6 @@ class Management::BudgetsController < ApplicationController
     @project_id = params[:project_id]
     @budgets_goal = Budget.where("type_of_budget = ? AND cost_center_id = ? ", '0', @project_id)
     @budgets_sale = Budget.where("type_of_budget = ? AND cost_center_id = ? ", '1', @project_id) 
-    ActiveRecord::Base.connection.execute('UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO" AND subbudgetdetail = "" AND itembybudgets.budget_id = ' + @budgets_goal.id.to_s + ';')
 
     render :get_budget_by_project, layout: false
   end
@@ -100,7 +99,8 @@ class Management::BudgetsController < ApplicationController
   	budget = Budget.new(budget_parameters)
     company = CostCenter.find(params[:project_id]).company
   	budget.load_elements(budget_id, project_id, type_of_budget, database, company)
-    
+
+    ActiveRecord::Base.connection.execute('UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO" AND subbudgetdetail = "" AND itembybudgets.budget_id = ' + budget_id.to_s + ';')
 
   	redirect_to :action => :get_budget_by_project
   end
