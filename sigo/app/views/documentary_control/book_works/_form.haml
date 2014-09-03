@@ -34,7 +34,7 @@
           %section.col.col-md-12
             %label.label Documento
             -if @action == nil
-              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file", required: true
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
             -else
               = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
             %p.help-block
@@ -71,9 +71,6 @@
             'book_work[description]' : {
               required : true,
             },
-            'book_work[document]' : {
-              required : true
-            },
             'book_work[type_of_book_work_id]' : {
               required : true
             }
@@ -86,9 +83,6 @@
             },
             'book_work[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
-            },
-            'book_work[document]' : {
-              required : "Por favor, ingrese el documento"
             },
             'book_work[type_of_book_work_id]' : {
               required : "Escoja un tipo"
