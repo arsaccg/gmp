@@ -27,13 +27,18 @@ class Production::PartWorksController < ApplicationController
   def new
     @partwork = PartWork.new
     articles = Array.new
+    @articles = Array.new
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
     article = SubcontractDetail.all
     article.each do |art|
-      articles << art.article_id
+      if !art.article_id.nil?
+        articles << art.article_id
+      end
     end
-    @articles = Article.where('id IN ('+articles.join(',')+')')
+    if articles.count > 0
+      @articles = Article.where('id IN ('+articles.join(',')+')')
+    end
     @company = params[:company_id]
     render layout: false
   end
