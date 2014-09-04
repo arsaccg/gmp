@@ -169,7 +169,7 @@ if @worker.lastgrade.nil?
           style(column(0), :background_color => 'A0D8A0')
         end
 else
-  table([ ["SITUACION EDUCATIVA", "#{@worker.levelofinstruction.to_s}","","Último ciclo/año/grado cursado","#{@worker.lastgrade}"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [95,95,80,170,80]) do
+  table([ ["SITUACION EDUCATIVA", "#{@worker.levelofinstruction.to_s}","","Último ciclo/año/grado cursado","#{@worker.lastgrade}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [95,95,80,170,80]) do
           style(columns(0..4), :align => :center)
           style(columns(0..4), :size => 8)
           columns(0..4).font_style = :bold
