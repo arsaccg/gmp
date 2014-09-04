@@ -52,7 +52,7 @@ class Budget < ActiveRecord::Base
   end
 
   def load_elements(budget_id, cost_center_id, type_of_budget, database, company)
-    # ~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ (aprox 7 secs)#
+    # ~~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ (aprox 7 secs)#
     sql = "SELECT DISTINCT PresupuestoPartidaDetalle.codInsumo From PresupuestoPartidaDetalle WHERE PresupuestoPartidaDetalle.codpresupuesto = " + budget_id.to_s #@type.cod_budget[0..6] #+ "0403021"
     qry_arr = do_query(sql,{db_name: database})
 
@@ -184,6 +184,7 @@ class Budget < ActiveRecord::Base
         #end
       end
 
+<<<<<<< HEAD
       # Importando partidas al subcontrato
       @itembybudgets = Itembybudget.get_item_by_budget
       @company_name = company.name rescue " "
@@ -199,6 +200,23 @@ class Budget < ActiveRecord::Base
     
     
     end
+=======
+    # Importando partidas al subcontrato
+    #@itembybudgets = Itembybudget.get_item_by_budget
+    #@company_name = company.name rescue " "
+    #@entity_id = Entity.find_by_name(@company_name).id rescue nil
+    #@subcontract_id = Subcontract.find_by_entity_id(@entity_id) rescue nil
+    #@itembybudgets.each do |ibb|
+    #  SubcontractDetail.create(article_id: nil, amount: 0, unit_price: 0, partial: 0, description: nil, created_at: DateTime.now, updated_at: DateTime.now, subcontract_id: @subcontract, itembybudget_id: ibb[1],)
+    #end
+    #Ultimo paso
+  
+  
+    Itembybudget.connection.execute('UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO" AND subbudgetdetail = "" AND itembybudgets.budget_id = ' + budget_id.to_s + ';')
+  
+  
+  end
+>>>>>>> d952e31d2f5e5ea8f697fa55eb80f718bdf76d29
   
   end  
 

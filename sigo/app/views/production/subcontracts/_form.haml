@@ -16,7 +16,7 @@
               %select.form-control{:name =>"subcontract[entity_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @suppliers.each do |supply|
                   %option{:value => "#{supply.id}"}
-                    = supply.name
+                    = supply.ruc + " - "+supply.name
 
           %section.col.col-4
             %label.label Valorizaciones
@@ -108,11 +108,7 @@
             %label.control-label(for="itembybudget_id") Partidas
 
           %section.col.col-6
-            %select#itembybudget-id.form-control{:name =>"itembybudget_id", :style => 'width:100%;padding: 0;border: none;'}
-              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Partida
-              - @prebudgets.each do |phase|
-                %option{:value => "#{phase[1]}"}
-                  = phase[2]
+            %input.select2.bigdrop.select2-offscreen.form-control{'name' => 'itembybudget_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'id' => "id_itembybudget_id"}
 
           %section.col.col-2
             %div
@@ -139,9 +135,13 @@
                     %td.article-id(style="display:none")
                       = sub.article_id
                     %td.col-md-2
-                      = sub.itembybudget.subbudgetdetail rescue " "
+                      = sub.itembybudget.subbudgetdetail rescue "No se ha definido una Partida."
                     %td.col-md-2
-                      = sub.article.name rescue " "
+                      - if !sub.article_id.nil?
+                        - Article.find_article_in_specific(sub.article_id, @cc).each do |ar|
+                          = ar[1].to_s
+                      - else
+                        = "No se ha definido un Insumo."
                     %td.amount.col-md-1{:style => "width:5%"}
                       = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][amount]', sub.amount , class: "form-control quantity", id: 'subcontract-amount', onfocusout: "calculatePartialAmount(this);"
                     %td.unit-price.col-md-1
@@ -208,6 +208,30 @@
 
     $('select').select2();
 
+    $("#id_itembybudget_id").select2({
+      placeholder: "Buscar Partidas...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{getsc_prebudgets_production_subcontracts_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.part};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.order + ' - ' + node.name + '</div>' },
+      formatSelection: function(node){ return (node.order + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
+
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -260,9 +284,6 @@
             },
             'subcontract[detraction]' : {
               required : true
-            },
-            'subcontract[contract_amount]' : {
-              required : true
             }
           },
 
@@ -282,9 +303,6 @@
             },
             'subcontract[detraction]' : {
               required : 'Por favor, ingresar la detracción.'
-            },
-            'subcontract[contract_amount]' : {
-              required : 'Por favor, ingresar el monto contratado.'
             }
           },
 
@@ -308,7 +326,7 @@
   }
 
   function add_itembybudget_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", itembybudget_id: $("#itembybudget-id").val(), itembybudget_name: $("#itembybudget-id").find(":selected").text()};
+    str_item = {authenticity_token: "#{form_authenticity_token}", itembybudget_id: $("#id_itembybudget_id").val()};
     append_url_ajax('#{add_more_article_production_subcontracts_path}', 'article_items_table', str_item, 0, 'POST');
   }
 
