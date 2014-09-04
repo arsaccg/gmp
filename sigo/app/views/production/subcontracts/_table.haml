@@ -27,7 +27,26 @@
               %td
                 = subcontract.valorization
               %td 
-                = subcontract.terms_of_payment
+                -if subcontract.terms_of_payment=="contado"
+                  Al Contado
+                -elsif subcontract.terms_of_payment=="3D"
+                  Crédito a 3 dias
+                -elsif subcontract.terms_of_payment=="5D"
+                  Crédito a 5 dias
+                -elsif subcontract.terms_of_payment=="7D"
+                  Crédito a 7 dias
+                -elsif subcontract.terms_of_payment=="10D"
+                  Crédito a 10 dias
+                -elsif subcontract.terms_of_payment=="15D"
+                  Crédito a 15 dias      
+                -elsif subcontract.terms_of_payment=="30D"
+                  Crédito a 30 dias
+                -elsif subcontract.terms_of_payment=="40D"
+                  Crédito a 40 dias
+                -elsif subcontract.terms_of_payment=="50D"
+                  Crédito a 50 dias
+                -elsif subcontract.terms_of_payment=="60D"
+                  Crédito a 60 dias
               %td
                 = number_to_currency(subcontract.guarantee_fund.to_f, unit: "S/.", precision: 2)
               %td 

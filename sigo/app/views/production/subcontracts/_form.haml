@@ -15,43 +15,43 @@
             %label.input{for: "entity_id"}
               %select.form-control{:name =>"subcontract[entity_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @suppliers.each do |supply|
-                  %option{:value => "#{supply.id}"}
+                  %option{:value => "#{supply.id}", :selected => @subcontract.entity_id==supply.id}
                     = supply.ruc + " - "+supply.name
 
           %section.col.col-4
             %label.label Valorizaciones
             %label.input{for: "valorization"}
               %select.form-control{:name =>"subcontract[valorization]", :style => 'width:100%;padding: 0;border: none;'}
-                %option{:value => "semanal"}
+                %option{:value => "semanal", :selected => @subcontract.valorization=="semanal"}
                   Semanales
-                %option{:value => "quincenal"}
+                %option{:value => "quincenal", :selected => @subcontract.valorization=="quincenal"}
                   Quincenales
-                %option{:value => "mensual"}
+                %option{:value => "mensual", :selected => @subcontract.valorization=="mensual"}
                   Mensuales
 
           %section.col.col-4
             %label.label Condiciones de Pago
             %label.input{for: "terms_of_payment"}
               %select.form-control{:name =>"subcontract[terms_of_payment]", :style => 'width:100%;padding: 0;border: none;'}
-                %option{:value => "contado"}
+                %option{:value => "contado", :selected => @subcontract.terms_of_payment=="contado"}
                   Al Contado
-                %option{:value => "quincenal"}
+                %option{:value => "3D", :selected => @subcontract.terms_of_payment=="3D"}
                   Crédito a 3 dias
-                %option{:value => "mensual"}
+                %option{:value => "5D", :selected => @subcontract.terms_of_payment=="5D"}
                   Crédito a 5 dias
-                %option{:value => "mensual"}
+                %option{:value => "7D", :selected => @subcontract.terms_of_payment=="7D"}
                   Crédito a 7 dias
-                %option{:value => "quincenal"}
+                %option{:value => "10D", :selected => @subcontract.terms_of_payment=="10D"}
                   Crédito a 10 dias
-                %option{:value => "mensual"}
+                %option{:value => "15D", :selected => @subcontract.terms_of_payment=="15D"}
                   Crédito a 15 dias
-                %option{:value => "mensual"}
+                %option{:value => "30D", :selected => @subcontract.terms_of_payment=="30D"}
                   Crédito a 30 dias
-                %option{:value => "quincenal"}
+                %option{:value => "40D", :selected => @subcontract.terms_of_payment=="40D"}
                   Crédito a 40 dias
-                %option{:value => "mensual"}
+                %option{:value => "50D", :selected => @subcontract.terms_of_payment=="50D"}
                   Crédito a 50 dias
-                %option{:value => "mensual"}
+                %option{:value => "60D", :selected => @subcontract.terms_of_payment=="60D"}
                   Crédito a 60 dias
         .row
           %section.col.col-4
