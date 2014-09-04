@@ -38,9 +38,9 @@
           %section.col.col-md-12
             %label.label Archivo:
             - if @action == nil
-              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file", required: true
+              = f.input :document, :input_html => { :class => 'btn btn-default', :style => 'padding: 9px;' }, label: false, as: "file", required: true
             -else
-              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+              = f.input :document, :input_html => { :class => 'btn btn-default', :style => 'padding: 9px;' }, label: false, as: "file"
             %p.help-block
               - if @action == 'edit' && @qac.document.exists?
                 = 'Archivo subido: ' + File.basename(@qac.document.path, File.extname(@qac.document.path))

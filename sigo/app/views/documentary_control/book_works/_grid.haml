@@ -23,7 +23,7 @@
           - @type_book.each do |type_book|
             - if type_book.id == 1
               .tab-pane.active{:id => "tab-#{type_book.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
@@ -55,7 +55,7 @@
                               Eliminar
             - else
               .tab-pane{:id => "tab-#{type_book.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr

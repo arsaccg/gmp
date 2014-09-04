@@ -23,7 +23,7 @@
           - @type_issu.each do |type_issu|
             - if type_issu.id == 1
               .tab-pane.active{:id => "tab-#{type_issu.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
@@ -57,7 +57,7 @@
                               Editar
             - else
               .tab-pane{:id => "tab-#{type_issu.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr

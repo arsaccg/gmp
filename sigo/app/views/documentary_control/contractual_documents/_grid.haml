@@ -23,7 +23,7 @@
           - @type_cont.each do |type_cont|
             - if type_cont.id == 1
               .tab-pane.active{:id => "tab-#{type_cont.id}"}
-                .col-md-8
+                .col-md-11
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
@@ -51,7 +51,7 @@
                               Eliminar
             - else
               .tab-pane{:id => "tab-#{type_cont.id}"}
-                .col-md-8
+                .col-md-11
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
