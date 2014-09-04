@@ -30,9 +30,9 @@
                         %th Tipo
                         %th Nombre
                         %th Código-Año
-                        %th Fecha
+                        %th.col-md-1 Fecha
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_issu.issued_letters.order(:type_of_doc).each do |lawre|
@@ -64,9 +64,9 @@
                         %th Tipo
                         %th Nombre
                         %th Código-Año
-                        %th Fecha
+                        %th.col-md-1 Fecha
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_issu.issued_letters.order(:type_of_doc).each do |lawre|
