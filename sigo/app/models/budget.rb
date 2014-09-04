@@ -65,7 +65,7 @@ class Budget < ActiveRecord::Base
 
     interseccion = qry_arr & res_arr
     # ~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ #
-    if @intersection.empty?
+    if intersection.empty?
       return false
     else
     
