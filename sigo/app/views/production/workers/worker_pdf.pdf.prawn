@@ -227,13 +227,19 @@ if cursor()<170
   end
   move_down 10
 end
-if @center_of_studies == 0
+if @worker_center_of_studies.count < 1
   table([ ["UNIVERSIDAD/INSTITUTO", "PROFESION", "TITULO/GRADO", "N° COLEG.", "DESDE", "HASTA"],["", "", "", "", "", ""] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [160,100,70,70,60,60]) do
           style(columns(0..5), :align => :center)
           style(columns(0..5), :size => 7)
           columns(0..5).font_style = :bold
           style(row(0), :background_color => 'A0D8A0')
         end
+  (0..1).each do |something|
+    table([ [" ", " ", " ", " ", " ", " "] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [160,100,70,70,60,60]) do
+          style(columns(0..5), :align => :center)
+            style(columns(0..5), :size => 7)
+          end
+  end
 else
   table([ ["UNIVERSIDAD/INSTITUTO", "PROFESION", "TITULO/GRADO", "N° COLEG.", "DESDE", "HASTA"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [160,100,70,70,60,60]) do
           style(columns(0..5), :align => :center)
@@ -284,14 +290,14 @@ if cursor()<130
   end
   move_down 10
 end
-if @otherstudies==0
+if @worker_otherstudies.count < 1
+  table([ ["OTROS ESTUDIOS/CONOCIMIENTOS", "NIVEL"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [190,330]) do
+    style(columns(0..1), :align => :center)
+    style(columns(0..1), :size => 7)
+    columns(0..1).font_style = :bold
+    style(row(0), :background_color => 'A0D8A0')
+  end
   (0..2).each do |something|
-    table([ ["OTROS ESTUDIOS/CONOCIMIENTOS", "NIVEL"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [190,330]) do
-          style(columns(0..1), :align => :center)
-          style(columns(0..1), :size => 7)
-          columns(0..1).font_style = :bold
-          style(row(0), :background_color => 'A0D8A0')
-          end
     table([ ["","Básico","","Intermedio","","Avanzado",""] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [190,90,20,90,20,90,20]) do
           style(columns(0..6), :align => :center)
           style(columns(0..6), :size => 7)
@@ -349,6 +355,30 @@ move_down 10
 
 text "IV. EXPERIENCIA (DETALLE DE LOS ULTIMOS TRABAJOS EN ORDEN DESCENDENTE)", :size => 9
 if @experiencies == 0
+  table([ ["NOMBRE DE LA EMPRESA","Cargo"],["",""] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [260,260]) do
+          style(columns(0..1), :align => :center)
+          style(columns(0..1), :size => 7)
+          row(0).font_style = :bold
+          style(row(0), :background_color => 'A0D8A0')
+        end
+  table([ ["SUELDO (S/.)", "JEFE INMEDIATO", "MOTIVO DE SALIDA", "DESDE", "HASTA"],["", "", "", "", ""] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [100,160,100,80,80]) do
+          style(columns(0..4), :align => :center)
+          style(columns(0..4), :size => 7)
+          row(0).font_style = :bold
+          style(row(0), :background_color => 'A0D8A0')
+        end
+  table([ ["NOMBRE DE LA EMPRESA","Cargo"],["",""] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [260,260]) do
+          style(columns(0..1), :align => :center)
+          style(columns(0..1), :size => 7)
+          row(0).font_style = :bold
+          style(row(0), :background_color => 'A0D8A0')
+        end
+  table([ ["SUELDO (S/.)", "JEFE INMEDIATO", "MOTIVO DE SALIDA", "DESDE", "HASTA"],["", "", "", "", ""] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [100,160,100,80,80]) do
+          style(columns(0..4), :align => :center)
+          style(columns(0..4), :size => 7)
+          row(0).font_style = :bold
+          style(row(0), :background_color => 'A0D8A0')
+        end
   table([ ["NOMBRE DE LA EMPRESA","Cargo"],["",""] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [260,260]) do
           style(columns(0..1), :align => :center)
           style(columns(0..1), :size => 7)
