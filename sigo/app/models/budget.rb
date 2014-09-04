@@ -65,7 +65,7 @@ class Budget < ActiveRecord::Base
 
     intersection = qry_arr & res_arr
     # ~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ #
-    if intersection.empty?
+    if !intersection.empty?
       return false
     else
     
@@ -141,23 +141,6 @@ class Budget < ActiveRecord::Base
                   AND toa.id = a.type_of_article_id
                 ")
           
-          # ~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ (aprox 7 secs)#
-          sql = "SELECT DISTINCT PresupuestoPartidaDetalle.codInsumo From PresupuestoPartidaDetalle WHERE PresupuestoPartidaDetalle.codpresupuesto = " + @type.cod_budget[0..6] #+ "0403021"
-          qry_arr = do_query(sql,{db_name: database})
-
-          res_arr = Array.new
-          sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["SELECT a.code FROM articles a"]) #"1 a"])
-          result = ActiveRecord::Base.connection.execute(sql)
-          result.each(:as => :hash) do |row| 
-            res_arr << [row["code"]] #"..."
-          end
-
-          interseccion = qry_arr & res_arr
-          if !@intersection.empty?
-            return false
-          end
-          # ~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ #
-
           @match.each do |art|
             if art[5]==nil
               desc="No hay descripción para este artículo"
