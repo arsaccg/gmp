@@ -30,8 +30,7 @@ class Production::PartWorksController < ApplicationController
     @articles = Array.new
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
-    article = SubcontractDetail.all
-    article.each do |art|
+    SubcontractDetail.all.each do |art|
       if !art.article_id.nil?
         articles << art.article_id
       end
