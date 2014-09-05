@@ -121,52 +121,52 @@ class Budget < ActiveRecord::Base
         #data_thread.join
           #arr.each {|t| t.join }
 
-      # if @cod.to_s != ""
-      #   # Poblando Articulos a la tabla especifica.
-      #   if type_of_budget.to_i == 0
-      #     @type = Budget.where("cod_budget LIKE ? AND type_of_budget = 0", @cod)
+      if @cod.to_s != ""
+        # Poblando Articulos a la tabla especifica.
+        if type_of_budget.to_i == 0
+          @type = Budget.where("cod_budget LIKE ? AND type_of_budget = 0", @cod)
 
-      #     #if @type != nil
-      #     cost_center = Budget.find_by_cod_budget(@cod).cost_center_id 
-      #     @type_id = 0
-      #     @match= ActiveRecord::Base.connection.execute("
-      #             SELECT DISTINCT a.id, a.code, toa.id, c.id, a.name, a.description, u.id, ibi.id
-      #             FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u, type_of_articles toa, categories c
-      #             WHERE b.id = ibi.budget_id
-      #             AND b.type_of_budget = 0
-      #             AND b.cost_center_id = #{cost_center_id}
-      #             AND ibi.article_id = a.id
-      #             AND a.unit_of_measurement_id = u.id
-      #             AND a.category_id = c.id 
-      #             AND u.id = a.unit_of_measurement_id
-      #             AND toa.id = a.type_of_article_id
-      #           ")
+          #if @type != nil
+          cost_center = Budget.find_by_cod_budget(@cod).cost_center_id 
+          @type_id = 0
+          @match= ActiveRecord::Base.connection.execute("
+                  SELECT DISTINCT a.id, a.code, toa.id, c.id, a.name, a.description, u.id, ibi.id
+                  FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u, type_of_articles toa, categories c
+                  WHERE b.id = ibi.budget_id
+                  AND b.type_of_budget = 0
+                  AND b.cost_center_id = #{cost_center_id}
+                  AND ibi.article_id = a.id
+                  AND a.unit_of_measurement_id = u.id
+                  AND a.category_id = c.id 
+                  AND u.id = a.unit_of_measurement_id
+                  AND toa.id = a.type_of_article_id
+                ")
           
-      #     @match.each do |art|
-      #       if art[5]==nil
-      #         desc="No hay descripción para este artículo"
-      #       else
-      #         desc=art[5]
-      #       end
+          @match.each do |art|
+            if art[5]==nil
+              desc="No hay descripción para este artículo"
+            else
+              desc=art[5]
+            end
 
-      #     	@type.each do |type|
-      #     	  @type_id = type.id
-      #     	end
+          	@type.each do |type|
+          	  @type_id = type.id
+          	end
 
-      #       sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO articles_from_cost_center_" + cost_center.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id, input_by_budget_and_items_id, budget_id) VALUES (?,?,?,?,?,?,?,?,?,?)", art[0].to_i, art[1].to_s, art[2].to_i, art[3].to_i, art[4].to_s, desc.to_s, art[6].to_i, cost_center.to_i, art[7].to_i, @type_id.to_i])
-      #     	result = ActiveRecord::Base.connection.execute(sql)
-      #     end
+            sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO articles_from_cost_center_" + cost_center.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id, input_by_budget_and_items_id, budget_id) VALUES (?,?,?,?,?,?,?,?,?,?)", art[0].to_i, art[1].to_s, art[2].to_i, art[3].to_i, art[4].to_s, desc.to_s, art[6].to_i, cost_center.to_i, art[7].to_i, @type_id.to_i])
+          	result = ActiveRecord::Base.connection.execute(sql)
+          end
 
-      #     com_art= Article.where("code LIKE  '__58______' OR code LIKE '__76______'")
-      #     @cont=0
-      #     com_art.each do |art|
-      #       @cont+=1
-      #       sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO articles_from_cost_center_" + cost_center.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id) VALUES (?,?,?,?,?,?,?,?)", art.id.to_i, art.code.to_s, art.type_of_article_id.to_i, art.category_id.to_i, art.name.to_s, art.description.to_s, art.unit_of_measurement_id.to_i, cost_center.to_i])
-    	 #      result = ActiveRecord::Base.connection.execute(sql)
-      #     end
-      #   end
-      #   #end
-      # end
+          com_art= Article.where("code LIKE  '__58______' OR code LIKE '__76______'")
+          @cont=0
+          com_art.each do |art|
+            @cont+=1
+            sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO articles_from_cost_center_" + cost_center.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id) VALUES (?,?,?,?,?,?,?,?)", art.id.to_i, art.code.to_s, art.type_of_article_id.to_i, art.category_id.to_i, art.name.to_s, art.description.to_s, art.unit_of_measurement_id.to_i, cost_center.to_i])
+    	      result = ActiveRecord::Base.connection.execute(sql)
+          end
+        end
+        #end
+      end
 
       # Importando partidas al subcontrato
       #@itembybudgets = Itembybudget.get_item_by_budget
