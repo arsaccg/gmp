@@ -80,7 +80,7 @@
     }
 
     function runDataTables() {
-      $('#dt_basic').dataTable({
+      oTable = $('#dt_basic').dataTable({
         bProcessing  : true,
         sProcessing  : true,
         bServerSide  : true,
@@ -93,8 +93,8 @@
       });
 
       $("#dt_basic_filter div input").keyup(function() {
-        if(this.value.length >= 3 || e.keyCode == 13) {
-          oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+        if(this.value.length >= 3) {
+          oTable.search(this.value).draw();
         }
       });
     }
