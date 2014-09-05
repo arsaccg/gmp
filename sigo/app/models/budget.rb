@@ -63,10 +63,11 @@ class Budget < ActiveRecord::Base
       res_arr << [row["code"]] #"..."
     end
 
-    intersection = qry_arr & res_arr
+    #intersection = qry_arr & res_arr
+    rest = qry_arr - res_arr
     # ~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ #
-    if !intersection.empty?
-      return false
+    if !rest.empty?
+      return rest
     else
     
       arr_thread = []
@@ -177,10 +178,10 @@ class Budget < ActiveRecord::Base
       #end
       #Ultimo paso
     
+      Itembybudget.connection.execute('UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO" AND subbudgetdetail = "";')
+      #puts " ==== En esta linea feliz se ha ejecutado un comando triste ==== "
     
-      Itembybudget.connection.execute('UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO" AND subbudgetdetail = "" AND itembybudgets.budget_id = ' + budget_id.to_s + ';')
-    
-    
+      return true
     end
   
   end

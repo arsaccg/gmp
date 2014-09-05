@@ -27,6 +27,7 @@ class Administration::InputcategoriesController < ApplicationController
     p @data_w
 
     @data_excel = Array.new
+    csv = Array.new
 
     csv_string = CSV.generate do |csv|
       @data_w[0].each do |key, value|
