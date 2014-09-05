@@ -158,7 +158,6 @@
   }
 
   function executor(url, front_chief_id, executor_id, form_token, default_value){
-    console.log("entro a la funcion chief ");
     $.ajax({
         type: "POST",
         url: url,
@@ -170,11 +169,9 @@
         $.each(data.master, function(key, value){
           item = {};
           item['id'] = value.id;
-          item['first_name'] = value.first_name;
-          item['paternal_surname'] = value.paternal_name;
+          item['first_name'] = value.name;
+          item['paternal_surname'] = value.paternal_surname;
           item['maternal_surname'] = value.maternal_surname;
-          console.log(value.first_name+ ' '+value.maternal_surname+ ' '+value.maternal_surname);
-          console.log("id: "+value.id);
           newOptions.push(item);
         });
           

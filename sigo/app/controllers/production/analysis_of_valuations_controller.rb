@@ -174,46 +174,36 @@ class Production::AnalysisOfValuationsController < ApplicationController
   end
 
   def frontChief
+    @executor = Array.new
     if params[:front_chief_id]=="0"
-      TypeEntity.where("name LIKE '%Proveedores%'").each do |ex|
-        @executor = ex.entities
-      end
+      @executor = TypeEntity.find_by_preffix("P").entities
     else
-      executor = WorkingGroup.where("front_chief_id LIKE ?", params[:front_chief_id])
-      @executor = Array.new
-      Entity.all.each do |ent|
-        executor.each do |exe|
-          if ent.id==exe.executor_id
-            @executor << ent
-          end
-        end
-      end
+      executor_ids = WorkingGroup.select(:executor_id).distinct.where("front_chief_id LIKE ?", params[:front_chief_id]).map(&:executor_id).join(',')
+      @executor = Entity.select(:name).where("id IN (?)", executor_ids)
     end
     render json: {:executor => @executor}
   end
 
   def executor
+    @master = Array.new
+
     if params[:front_chief_id]=="0" && params[:executor_id]=="0"
-      master = WorkingGroup.all
+      master = WorkingGroup.select(:master_builder_id).map(&:master_builder_id).join(',')
     else
       if params[:front_chief_id]=="0" && params[:executor_id]!="0"
-        master = WorkingGroup.where("executor_id LIKE ?", params[:executor_id])
+        master = WorkingGroup.select(:master_builder_id).where("executor_id LIKE ?", params[:executor_id]).map(&:master_builder_id).join(',')
       else
         if params[:front_chief_id]!="0" && params[:executor_id]=="0"
-          master = WorkingGroup.where("front_chief_id LIKE ?", params[:front_chief_id])
+          master = WorkingGroup.select(:master_builder_id).where("front_chief_id LIKE ?", params[:front_chief_id]).map(&:master_builder_id).join(',')
         else
-          master = WorkingGroup.where("front_chief_id LIKE ? AND executor_id LIKE ?", params[:front_chief_id], params[:executor_id])
+          master = WorkingGroup.select(:master_builder_id).where("front_chief_id LIKE ? AND executor_id LIKE ?", params[:front_chief_id], params[:executor_id]).map(&:master_builder_id).join(',')
         end  
       end
     end
-    @master = Array.new
-    Worker.all.each do |w|
-      master.each do |mas|
-        if w.id==mas.master_builder_id
-          @master << w
-        end
-      end
-    end
-    render json: {:master => @master}
+
+    worker_entity_ids = Worker.select(:entity_id).where("id IN (?)", master).map(&:entity_id).join(',')
+    @master = Entity.select(:name).select(:paternal_surname).select(:maternal_surname).where('id IN (?)', worker_entity_ids)
+
+    render json: { :master => @master }
   end
 end
