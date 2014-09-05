@@ -23,14 +23,14 @@
           - @type_recei.each do |type_recei|
             - if type_recei.id == 1
               .tab-pane.active{:id => "tab-#{type_recei.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Nombres
-                        %th Fecha
+                        %th.col-md-1 Fecha
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_recei.received_letters.each do |lawre|
@@ -59,9 +59,9 @@
                     %thead
                       %tr
                         %th Nombres
-                        %th Fecha
+                        %th.col-md-1 Fecha
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_recei.received_letters.each do |lawre|

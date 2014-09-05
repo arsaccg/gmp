@@ -274,6 +274,8 @@ class Production::WorkersController < ApplicationController
   def register
     worker = Worker.find(params[:id])
     worker.register
+    num = Worker.where("position_worker_id = "+worker.position_worker_id.to_s+" AND number_position IS NOT NULL").last
+    worker.update_attributes(:number_position => num.number_position.to_i+1)
     redirect_to :action => :index
   end
 

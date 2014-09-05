@@ -184,7 +184,11 @@ class Budget < ActiveRecord::Base
       return true
     end
   
-  end  
+  end
+
+  def self.budget_meta_info_per_article(cod_article)
+    # For Table Meta in Analysis Production
+  end
 
 end
 
