@@ -49,9 +49,9 @@
           %section.col.col-6
             %select.form-control#article
               %option Seleccione un articulo
-              -@articles.each do |art|
-                %option{:value=>art.id}
-                  = art.name
+              - @articles.each do |art|
+                %option{ :value => art[0] }
+                  = art[2].to_s + " - " + art[1].to_s
 
           %section.col.col-2
             %div

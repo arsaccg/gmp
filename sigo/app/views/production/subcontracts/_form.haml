@@ -111,9 +111,8 @@
             %input.select2.bigdrop.select2-offscreen.form-control{'name' => 'itembybudget_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'id' => "id_itembybudget_id"}
 
           %section.col.col-2
-            %div
-              %a{:href => "javascript:add_itembybudget_item();", :id => "btn-add-article", :class => "btn btn-success", :role => "button"}
-                Agregar Partida
+            %a.expand-button{:href => "javascript:add_itembybudget_item();", :id => "btn-add-article", :class => "btn btn-success", :role => "button"}
+              Agregar Partida
 
         .col-lg-12
           %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-articles" aria-describedby="data-table_info")
@@ -169,9 +168,8 @@
             %input#start-date-input.string.optional.form-control{'name'=>'date_of_issue', type: "date"}
 
           %section.col.col-2
-            %div
-              %a{:href => "javascript:add_advance_item();", :id => "btn-add-advance", :class => "btn btn-success", :role => "button"}
-                Agregar Adelanto
+            %a.expand-button{:href => "javascript:add_advance_item();", :id => "btn-add-advance", :class => "btn btn-success", :role => "button"}
+              Agregar Adelanto
 
         .col-lg-12
           %table#summary-advance.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form

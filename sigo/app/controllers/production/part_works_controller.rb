@@ -13,31 +13,23 @@ class Production::PartWorksController < ApplicationController
     render layout: false
   end
 
-  def display_articles
-    word = params[:q]
-    article_hash = Array.new
-    name = get_company_cost_center('cost_center')
-    articles = PartWork.getOwnArticles(word, name)
-    articles.each do |art|
-      article_hash << {'id' => art[0], 'name' => art[1]}
-    end
-    render json: {:articles => article_hash}
-  end
+  #def display_articles
+  #  word = params[:q]
+  #  article_hash = Array.new
+  #  name = get_company_cost_center('cost_center')
+  #  articles = PartWork.getOwnArticles(word, name)
+  #  articles.each do |art|
+  #    article_hash << {'id' => art[0], 'name' => art[1]}
+  #  end
+  #  render json: {:articles => article_hash}
+  #end
 
   def new
+    cost_center_id = get_company_cost_center('cost_center')
     @partwork = PartWork.new
-    articles = Array.new
-    @articles = Array.new
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
-    SubcontractDetail.all.each do |art|
-      if !art.article_id.nil?
-        articles << art.article_id
-      end
-    end
-    if articles.count > 0
-      @articles = Article.where('id IN ('+articles.join(',')+')')
-    end
+    @articles = PartWork.getOwnArticles(cost_center_id)
     @company = params[:company_id]
     render layout: false
   end
@@ -61,23 +53,21 @@ class Production::PartWorksController < ApplicationController
 
   def add_more_article
     @reg_n = ((Time.now.to_f)*100).to_i
-    article = Article.find(params[:article_id])
-    cost_center = get_company_cost_center('cost_center')
-    @article = Article.find_specific_in_article(article.id, cost_center)
-    @article.each do |art|
-      @id_article = art[0]
-      @name_article = art[1]
-      @unit = art[2]
-    end
+    article = Article.select(:id).select(:name).select(:unit_of_measurement_id).find(params[:article_id])
     
-    @unitOfMeasurement = Article.find(@unit).unit_of_measurement.name
+    @id_article = article.id
+    @name_article = article.name
+    @unitOfMeasurement = article.unit_of_measurement.name
+
     render(partial: 'partwork_items', :layout => false)
   end
 
   def edit
+    cost_center_id = get_company_cost_center('cost_center')
     @partwork = PartWork.find(params[:id])
     @working_groups = WorkingGroup.all
     @partworkde = @partwork.part_work_details
+    @articles = PartWork.getOwnArticles(cost_center_id)
     @unit = UnitOfMeasurement.all
     @sectors = Sector.where("code LIKE '__'")
     @action = 'edit'
