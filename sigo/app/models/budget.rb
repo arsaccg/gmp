@@ -194,8 +194,19 @@ class Budget < ActiveRecord::Base
   
   end
 
-  def self.budget_meta_info_per_article(cod_article)
+  def self.budget_meta_info_per_article(cod_article, cost_center_id)
     # For Table Meta in Analysis Production
+    data_mysql = ActiveRecord::Base.connection.execute("
+      SELECT ibbi.cod_input, SUM( ibbi.quantity ) AS quantity, ibbi.price AS price, (ibbi.price * SUM( ibbi.quantity )) AS partial 
+      FROM budgets b, inputbybudgetanditems ibbi
+      WHERE b.type_of_budget = 0
+      AND b.cost_center_id = " + cost_center_id.to_s + " 
+      AND ibbi.budget_id = b.id
+      AND ibbi.cod_input LIKE '" + cod_article.to_s + "'
+      GROUP BY ibbi.cod_input
+    ")
+
+    return data_mysql.first
   end
 
 end
