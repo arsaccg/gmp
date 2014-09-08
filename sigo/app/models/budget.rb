@@ -53,21 +53,28 @@ class Budget < ActiveRecord::Base
 
   def load_elements(budget_id, cost_center_id, type_of_budget, database, company)
     # ~~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ (aprox 7 secs)#
-    sql = "SELECT DISTINCT PresupuestoPartidaDetalle.codInsumo From PresupuestoPartidaDetalle WHERE PresupuestoPartidaDetalle.codpresupuesto = " + budget_id.to_s #@type.cod_budget[0..6] #+ "0403021"
-    qry_arr = do_query(sql,{db_name: database})
+    sql = "SELECT DISTINCT SUBSTRING(PresupuestoPartidaDetalle.codInsumo, 3, 9) From PresupuestoPartidaDetalle WHERE PresupuestoPartidaDetalle.codpresupuesto = " + budget_id.to_s #@type.cod_budget[0..6] #+ "0403021"
+    qry_arr = do_query(sql,{db_name: database}) #{db_name: "AREQUIPA_BD2014"})
 
     res_arr = Array.new
-    sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["SELECT a.code FROM articles a"]) #"1 a"])
+    sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["SELECT DISTINCT SUBSTRING(a.code, -8) cod FROM articles a"]) #"1 a"])
     result = ActiveRecord::Base.connection.execute(sql)
     result.each(:as => :hash) do |row| 
-      res_arr << [row["code"]] #"..."
+      res_arr << [row["cod"]] #"..."
     end
 
     #intersection = qry_arr & res_arr
     rest = qry_arr - res_arr
+
     # ~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ #
     if !rest.empty?
-      return rest
+      description_arr = Array.new
+      rest.each do |r|
+        sql1 = "SELECT DISTINCT Insumo.codInsumo, Insumo.descripcion From Insumo WHERE Insumo.codInsumo LIKE '__" + r.first.to_s + "'"
+        description_arr << do_query(sql1,{db_name: database}) #{db_name: "AREQUIPA_BD2014"})
+      end
+
+      return description_arr
     else
     
       arr_thread = []
@@ -162,7 +169,7 @@ class Budget < ActiveRecord::Base
           com_art.each do |art|
             @cont+=1
             sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO articles_from_cost_center_" + cost_center.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id) VALUES (?,?,?,?,?,?,?,?)", art.id.to_i, art.code.to_s, art.type_of_article_id.to_i, art.category_id.to_i, art.name.to_s, art.description.to_s, art.unit_of_measurement_id.to_i, cost_center.to_i])
-    	      result = ActiveRecord::Base.connection.execute(sql)
+    	      result = ActiveRecord::Base.connection.execute(sql) 
           end
         end
         #end
@@ -177,9 +184,10 @@ class Budget < ActiveRecord::Base
       #  SubcontractDetail.create(article_id: nil, amount: 0, unit_price: 0, partial: 0, description: nil, created_at: DateTime.now, updated_at: DateTime.now, subcontract_id: @subcontract, itembybudget_id: ibb[1],)
       #end
       #Ultimo paso
+
+      #no importar si ya existe articles from cost_center_1
     
       Itembybudget.connection.execute('UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO" AND subbudgetdetail = "";')
-      #puts " ==== En esta linea feliz se ha ejecutado un comando triste ==== "
     
       return true
     end
