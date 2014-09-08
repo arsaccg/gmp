@@ -294,9 +294,7 @@
         data: { article_id: article_id, authenticity_token: form_token}
     }).done(function( data ) {
       var code = data.code;
-      console.log(code);
       var unit = data.unit;
-      console.log(unit);
       $('#cod-art').val(code);
       $('#unit-art').val(unit);
     });
