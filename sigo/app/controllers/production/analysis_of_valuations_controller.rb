@@ -126,7 +126,6 @@ class Production::AnalysisOfValuationsController < ApplicationController
       AND p.working_group_id IN(" + working_group_id + ")
       AND p.id = pwd.part_work_id
       AND pwd.article_id = art.id
-      AND pwd.article_id = si.article_id
       AND uom.id = art.unit_of_measurement_id
       GROUP BY art.name
     ")
