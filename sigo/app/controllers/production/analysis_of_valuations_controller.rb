@@ -20,6 +20,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     @cad = Array.new
     @cad2 = Array.new
     @company = params[:company_id]
+    @cost_center = get_company_cost_center('cost_center')
 
     if params[:front_chief]=="0" && params[:executor]=="0" && params[:master_builder] == "0"
       @working_group = WorkingGroup.all
@@ -80,8 +81,11 @@ class Production::AnalysisOfValuationsController < ApplicationController
       @totalprice3 += workerDetail[4]
     end
     @totalprice4 = @totalprice2-@totalprice-@totalprice3
+
     render(partial: 'report_table', :layout => false)
   end
+
+  # BEGIN Methods for Report Table.
 
   def business_days_array(start_date, end_date, working_group_id,sector_id)
     workers_array = ActiveRecord::Base.connection.execute("
@@ -96,7 +100,8 @@ class Production::AnalysisOfValuationsController < ApplicationController
         cow.he_60_price*SUM( ppd.he_60 ), 
         cow.he_100_price*SUM( ppd.he_100 ),
         uom.name, 
-        p.date_of_creation 
+        p.date_of_creation, 
+        art.id
       FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow, articles art, worker_contracts wc
       WHERE p.working_group_id IN(" + working_group_id + ")
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
@@ -140,7 +145,8 @@ class Production::AnalysisOfValuationsController < ApplicationController
       uom.name, 
       SUM( poed.effective_hours ), 
       si.price_no_igv, 
-      si.price_no_igv*SUM( poed.effective_hours) 
+      si.price_no_igv*SUM( poed.effective_hours), 
+      art.id
       FROM part_of_equipments poe, part_of_equipment_details poed, articles_from_cost_center_"+get_company_cost_center('cost_center').to_s+" art, unit_of_measurements uom, subcontract_equipment_details si
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poed.sector_id IN(" + sector_id + ")
@@ -173,6 +179,8 @@ class Production::AnalysisOfValuationsController < ApplicationController
     ")
     return workers_array3
   end
+
+  # END Methods for report Table.
 
   def frontChief
     @executor = Array.new
