@@ -6,62 +6,61 @@
       Análisis de Producción
   -if @workers_array.count>0 && @workers_array2.count>0 && @workers_array3.count>0
     %div
-      Totales
-      .jarviswidget-editbox
+      %h1.page-title.txt-color-blueDark Totales
       .widget-body
         %table.table.table-bordered{"style"=>"width:40%"}
           %tbody
             %tr
-              %th{"style"=>"width:45%"} Total Partidas
-              %th= @totalprice2
+              %td{"style"=>"width:45%"} Total Partidas
+              %td= number_to_currency @totalprice2, unit: 'S/.', precision: 2
             %tr
-              %th{"style"=>"width:45%"} Total Mano de Obra
-              %th= @totalprice
+              %td{"style"=>"width:45%"} Total Mano de Obra
+              %td= number_to_currency @totalprice, unit: 'S/.', precision: 2
             %tr
-              %th{"style"=>"width:45%"} Total Equipos
-              %th= @totalprice3
+              %td{"style"=>"width:45%"} Total Equipos
+              %td= number_to_currency @totalprice3, unit: 'S/.', precision: 2
             %tr
-              %th{"style"=>"width:45%"} Total
-              %th
+              %td{"style"=>"width:45%"} Total
+              %td
                 %span.label.label-danger{"style"=>"color:#fff"}
-                  = @totalprice4
+                  = number_to_currency @totalprice4, unit: 'S/.', precision: 2
 
   -if @workers_array.count>0
+
     %div
-      Mano de Obra
-      .jarviswidget-editbox
+      %h1.page-title.txt-color-blueDark Mano de Obra
       .widget-body
         %table.table.table-bordered
           %tbody
             - @workers_array.each do |workerDetail|
               %tr
-                %th= workerDetail[0]
-                %th= workerDetail[4]
-                %th= workerDetail[10]
-                %th= workerDetail[1]
-                %th= workerDetail[7]
+                %td= workerDetail[0]
+                %td= workerDetail[4]
+                %td= workerDetail[10]
+                %td= workerDetail[1]
+                %td= workerDetail[7]
               %tr
-                %th= workerDetail[0]+' HE 60%'
-                %th= workerDetail[5]
-                %th= workerDetail[10]
-                %th= workerDetail[2]
-                %th= workerDetail[8]
+                %td= workerDetail[0]+' HE 60%'
+                %td= workerDetail[5]
+                %td= workerDetail[10]
+                %td= workerDetail[2]
+                %td= workerDetail[8]
               %tr
-                %th= workerDetail[0]+' HE 100%'
-                %th= workerDetail[6]
-                %th= workerDetail[10]
-                %th= workerDetail[3]
-                %th= workerDetail[9]
+                %td= workerDetail[0]+' HE 100%'
+                %td= workerDetail[6]
+                %td= workerDetail[10]
+                %td= workerDetail[3]
+                %td= workerDetail[9]
             %tr
               %th{'colspan' => 4} Total
               %th
                 %span.label.label-danger{"style"=>"color:#fff"}
-                  = @totalprice
+                  = number_to_currency @totalprice, unit: 'S/.', precision: 2
 
   -if @workers_array2.count>0
+
     %div
-      Parte de Obras
-      .jarviswidget-editbox
+      %h1.page-title.txt-color-blueDark Parte de Obras
       .widget-body
         %table.table.table-bordered
           %thead
@@ -75,17 +74,17 @@
           %tbody
           - @workers_array2.each do |workerDetail2|
             %tr
-              %th= workerDetail2[0]
-              %th= workerDetail2[1]
-              %th= workerDetail2[2]
-              %th= workerDetail2[3]
-              %th= workerDetail2[4]
-              %th= workerDetail2[5]
+              %td= workerDetail2[0]
+              %td= workerDetail2[1]
+              %td= workerDetail2[2]
+              %td= workerDetail2[3]
+              %td= number_to_currency workerDetail2[4], unit: 'S/.', precision: 2
+              %td= number_to_currency workerDetail2[5], unit: 'S/.', precision: 2
 
   -if @workers_array3.count>0
+
     %div
-      Parte de Equipos
-      .jarviswidget-editbox
+      %h1.page-title.txt-color-blueDark Parte de Equipos
       .widget-body
         %table.table.table-bordered
           %thead
@@ -98,15 +97,16 @@
           %tbody
           - @workers_array3.each do |workerDetail3|
             %tr
-              %th= workerDetail3[0]
-              %th= workerDetail3[2]
-              %th= workerDetail3[1]
-              %th= workerDetail3[3]
-              %th= workerDetail3[4]
+              %td= workerDetail3[0]
+              %td= workerDetail3[2]
+              %td= workerDetail3[1]
+              %td= number_to_currency workerDetail3[3], unit: 'S/.', precision: 2
+              %td= number_to_currency workerDetail3[4], unit: 'S/.', precision: 2
+
   -if @workers_array4.count>0
+
     %div
-      Consumo de Materiales
-      .jarviswidget-editbox
+      %h1.page-title.txt-color-blueDark Consumo de Materiales
       .widget-body
         %table.table.table-bordered
           %thead
@@ -119,8 +119,8 @@
           %tbody
           - @workers_array4.each do |workerDetail4|
             %tr
-              %th= workerDetail4[1]
-              %th= workerDetail4[2]
-              %th= workerDetail4[3]
-              %th= Article.getSpecificArticlesforStockOutputs5(workerDetail4[0].to_i)
-              %th= workerDetail4[3]*Article.getSpecificArticlesforStockOutputs5(workerDetail4[0].to_i)
+              %td= workerDetail4[1]
+              %td= workerDetail4[2]
+              %td= workerDetail4[3]
+              %td= number_to_currency Article.getSpecificArticlesforStockOutputs5(workerDetail4[0].to_i), unit: 'S/.', precision: 2
+              %td= number_to_currency workerDetail4[3]*Article.getSpecificArticlesforStockOutputs5(workerDetail4[0].to_i), unit: 'S/.', precision: 2
