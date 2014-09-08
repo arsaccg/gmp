@@ -139,12 +139,12 @@ class Production::AnalysisOfValuationsController < ApplicationController
       SUM( poed.effective_hours ), 
       si.price_no_igv, 
       si.price_no_igv*SUM( poed.effective_hours) 
-      FROM part_of_equipments poe, part_of_equipment_details poed, articles art, unit_of_measurements uom, subcontract_equipment_details si
+      FROM part_of_equipments poe, part_of_equipment_details poed, articles_from_cost_center_"+get_company_cost_center('cost_center').to_s+" art, unit_of_measurements uom, subcontract_equipment_details si
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poed.sector_id IN(" + sector_id + ")
       AND poe.id=poed.part_of_equipment_id
-      AND poe.equipment_id=art.id
-      AND poe.equipment_id=si.article_id
+      AND si.article_id=art.id
+      AND poe.equipment_id=si.id
       AND uom.id = art.unit_of_measurement_id
       AND poed.working_group_id IN(" + working_group_id + ")
       GROUP BY art.name
