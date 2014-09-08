@@ -69,7 +69,9 @@ class Production::AnalysisOfValuationsController < ApplicationController
     @workers_array3 = business_days_array3(start_date, end_date, @cad, @cad2)
     @workers_array4 = business_days_array4(start_date, end_date, @cad, @cad2)
     @workers_array.each do |workerDetail|
-      @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
+      if !workerDetail[7].nil?
+        @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
+      end
     end
     @workers_array2.each do |workerDetail|
       @totalprice2 += workerDetail[5]
