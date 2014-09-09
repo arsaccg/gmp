@@ -350,7 +350,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
       :description, 
       purchase_order_details_attributes: [
         :id, 
-        :puchase_order_id, 
+        :purchase_order_id, 
         :delivery_order_detail_id, 
         :unit_price, 
         :igv, 
@@ -364,7 +364,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         :_destroy,
         purchase_order_extra_calculations_attributes: [
           :id,
-          :puchase_order_detail_id,
+          :purchase_order_detail_id,
           :extra_calculation_id,
           :value,
           :apply,

@@ -266,6 +266,7 @@
                                       .col.col-md-3
                                         = order_operation.extra_calculation.concept rescue 'Concepto errado'
                                         = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][extra_calculation_id]', order_operation.extra_calculation_id rescue nil
+                                        = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][id]', order_operation.id
                                       = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][type]', order_operation.type rescue nil
                                       .col.col-md-2
                                         - if order_operation.type == 'soles'
