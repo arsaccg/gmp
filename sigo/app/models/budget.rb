@@ -67,15 +67,15 @@ class Budget < ActiveRecord::Base
     rest = qry_arr - res_arr
 
     # ~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ #
-    # if !rest.empty?
-    #   description_arr = Array.new
-    #   rest.each do |r|
-    #     sql1 = "SELECT DISTINCT Insumo.codInsumo, Insumo.descripcion From Insumo WHERE Insumo.codInsumo LIKE '__" + r.first.to_s + "'"
-    #     description_arr << do_query(sql1,{db_name: database}) #{db_name: "AREQUIPA_BD2014"})
-    #   end
+    if !rest.empty?
+      description_arr = Array.new
+      rest.each do |r|
+        sql1 = "SELECT DISTINCT Insumo.codInsumo, Insumo.descripcion From Insumo WHERE Insumo.codInsumo LIKE '__" + r.first.to_s + "'"
+        description_arr << do_query(sql1,{db_name: database}) #{db_name: "AREQUIPA_BD2014"})
+      end
 
-    #   return description_arr
-    # else
+      return description_arr
+    else
     
       arr_thread = []
       thread_count = 0;
@@ -190,7 +190,7 @@ class Budget < ActiveRecord::Base
       Itembybudget.connection.execute('UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO" AND subbudgetdetail = "";')
     
       return true
-    #end
+    end
   
   end
 
