@@ -44,7 +44,7 @@ function load_url_ondiv(url, div_name){	/*  usar este owo  */
 	var url_str = url;
 	var div_name = div_name;
 
-	$("." + div_name).html("<br/><br/><br/><center><img src='/assets/ajax-loader.gif' /></center>")
+	$("." + div_name).html("<br/><br/><br/><center>Cargando <img src='/assets/ajax-loader.gif' /></center>")
 
   $.ajax({
   	url: url_str,

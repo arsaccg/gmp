@@ -531,3 +531,8 @@
 .right-text {
 	text-align: right;
 }
+
+#itemsModal {
+	width: 1000px;
+	margin-left: -500px;
+}

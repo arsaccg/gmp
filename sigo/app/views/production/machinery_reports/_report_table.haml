@@ -3,7 +3,7 @@
     %span.widget-icon
       %i.fa.fa-table
     %h2
-      Análisis de Producción
+      Resumen de Equipo
 
   %div
     .jarviswidget-editbox
@@ -14,10 +14,10 @@
             %th #
             %th #Parte
             %th Fecha
-            %th H.inicio
-            %th H.fin
-            %th H.horas
-            %th H.Efectivas
+            %th HM/KM  Inicio
+            %th HM/KM  Fin
+            %th HM/KM
+            %th T. Efectivo
             %th Suministro
             %th Combustible
         %tbody
@@ -43,7 +43,10 @@
                 - row5 = sprintf('%.2f',workerDetail[4])
                 - row6 = sprintf('%.2f', workerDetail[5])
                 - row7 = workerDetail[6]
-                - row8 = workerDetail[7]
+                - if !workerDetail[7].nil?
+                  - row8 = workerDetail[7]
+                - else
+                  - row8 = "0.0"
                 - break
             -else
               - status = false

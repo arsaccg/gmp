@@ -18,48 +18,48 @@
   %tbody
     -direct_cost_sale, direct_cost_goal = 0, 0
     -@inputcategories.each_with_index do |input, i|
-      -p 'key '
-      -p i
-      -partial_sale = @data_w[0]["0#{input.category_id}"]
-      -partial_goal = @data_w[1]["0#{input.category_id}"]
-      %tr{class: get_tr_class_feo(input, (partial_sale[0]).length)}
-        - l = (@data_w[0]["0#{input.category_id}"][0]).length rescue 1
-        %td= ("-" * l) + (@data_w[0]["0#{input.category_id}"][0]).to_s
-        - case l
-          - when 2
-            - direct_cost_sale += @data_w[0]["0#{input.category_id}"][2].to_f rescue 0
-            - direct_cost_goal += @data_w[1]["0#{input.category_id}"][2].to_f rescue 0
-            %td
-              %a{href: "javascript:toogle_three('second', '" + input.category_id.to_s + "')"}
-                %strong= @data_w[0]["0#{input.category_id}"][1]
-            %td
-              %a(href="javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{input.category_id}');"){class: "btn btn-default  btn-mini "}
-                %i(class="icon-search")
-            %td(style="text-align: right; font-size: 12px;")
-              %strong= number_to_currency(@data_w[0]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
-            %td(style="text-align: right; font-size: 12px;")
-              %strong= number_to_currency(@data_w[1]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
-          - when 4
-            %td
-              %a{href: "javascript:toogle_three('third', '" + input.category_id.to_s + "')"}
-                = @data_w[0]["0#{input.category_id}"][1]  rescue ""
-            %td
-              %a(href="javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{input.category_id}');"){class: "btn btn-default  btn-mini "}
-                %i(class="icon-search")
-            %td(style="text-align: right; font-size: 11px;")= number_to_currency(@data_w[0]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
-            %td(style="text-align: right; font-size: 11px;")= number_to_currency(@data_w[1]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
-          - when 6
-            %td
-              %a{href: "javascript:toogle_three('fourth', '" + input.category_id.to_s + "')"} 
-                - if @data_w[0]["0#{input.category_id}"] != nil
-                  = @data_w[0]["0#{input.category_id}"][1]  rescue ""    
-                -else
-                  = " "
-            %td
-              %a(href="javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{input.category_id}');"){class: "btn btn-default  btn-mini "}
-                %i(class="icon-search")
-            %td(style="text-align: right; font-size: 9px;")= number_to_currency(@data_w[0]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
-            %td(style="text-align: right; font-size: 9px;")= number_to_currency(@data_w[1]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+      -partial_sale = @data_w[0]["0#{input.category_id}"] rescue nil
+      -partial_goal = @data_w[1]["0#{input.category_id}"] rescue nil
+
+      -if partial_sale!=nil && partial_goal!=nil
+        %tr{class: get_tr_class_feo(input, (partial_sale[0]).length)}
+          - l = (@data_w[0]["0#{input.category_id}"][0]).length rescue 1
+          %td= ("-" * l) + (@data_w[0]["0#{input.category_id}"][0]).to_s
+          - case l
+            - when 2
+              - direct_cost_sale += @data_w[0]["0#{input.category_id}"][2].to_f rescue 0
+              - direct_cost_goal += @data_w[1]["0#{input.category_id}"][2].to_f rescue 0
+              %td
+                %a{href: "javascript:toogle_three('second', '" + input.category_id.to_s + "')"}
+                  %strong= @data_w[0]["0#{input.category_id}"][1]
+              %td
+                %a(href="javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{input.category_id}');"){class: "btn btn-default  btn-mini "}
+                  %i(class="icon-search")
+              %td(style="text-align: right; font-size: 12px;")
+                %strong= number_to_currency(@data_w[0]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+              %td(style="text-align: right; font-size: 12px;")
+                %strong= number_to_currency(@data_w[1]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+            - when 4
+              %td
+                %a{href: "javascript:toogle_three('third', '" + input.category_id.to_s + "')"}
+                  = @data_w[0]["0#{input.category_id}"][1]  rescue ""
+              %td
+                %a(href="javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{input.category_id}');"){class: "btn btn-default  btn-mini "}
+                  %i(class="icon-search")
+              %td(style="text-align: right; font-size: 11px;")= number_to_currency(@data_w[0]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+              %td(style="text-align: right; font-size: 11px;")= number_to_currency(@data_w[1]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+            - when 6
+              %td
+                %a{href: "javascript:toogle_three('fourth', '" + input.category_id.to_s + "')"} 
+                  - if @data_w[0]["0#{input.category_id}"] != nil
+                    = @data_w[0]["0#{input.category_id}"][1]  rescue ""    
+                  -else
+                    = " "
+              %td
+                %a(href="javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{input.category_id}');"){class: "btn btn-default  btn-mini "}
+                  %i(class="icon-search")
+              %td(style="text-align: right; font-size: 9px;")= number_to_currency(@data_w[0]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+              %td(style="text-align: right; font-size: 9px;")= number_to_currency(@data_w[1]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
 
     %tr
       %td
