@@ -14,9 +14,16 @@ class Production::AnalysisOfValuationsController < ApplicationController
   end
 
   def get_report
+    # Total Prices
     @totalprice = 0
     @totalprice2 = 0
     @totalprice3 = 0
+
+    # Total Prices Meta
+    @m_price_part_person = 0
+    @m_price_part_work = 0
+    @m_price_part_equipment = 0
+
     @cad = Array.new
     @cad2 = Array.new
     @company = params[:company_id]
@@ -65,22 +72,82 @@ class Production::AnalysisOfValuationsController < ApplicationController
       end
       @cad2 = @cad2.join(',')
     end
+
+    # Mano de Obra
+    @meta_personal = Array.new
     @workers_array = business_days_array(start_date, end_date, @cad, @cad2)
-    @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2)
-    @workers_array3 = business_days_array3(start_date, end_date, @cad, @cad2)
-    @workers_array4 = business_days_array4(start_date, end_date, @cad, @cad2)
+
     @workers_array.each do |workerDetail|
-      if !workerDetail[7].nil?
+      if !workerDetail[7].nil? || workerDetail[7] != 0
         @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
       end
+
+      article = Article.find(workerDetail[12])
+      meta_info = Budget.budget_meta_info_per_article(article.code, @cost_center)
+      if !meta_info.nil? && workerDetail[0] != ''
+        @meta_personal << [ workerDetail[0].to_s, meta_info[1].round(2), meta_info[2], meta_info[3] ]
+        @m_price_part_person += meta_info[3]
+      elsif meta_info.nil? && workerDetail[0] != ''
+        @meta_personal << [ workerDetail[0].to_s, 0, 0, 0 ]
+        @m_price_part_person += 0
+      else
+        @meta_personal << [ '-', 0, 0, 0 ]
+        @m_price_part_person += 0
+      end
     end
+
+    # Parte de Obra
+    @meta_part_work = Array.new
+    @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2)
+
     @workers_array2.each do |workerDetail|
       @totalprice2 += workerDetail[5]
+
+      article = Article.find(workerDetail[0])
+      meta_info = Budget.budget_meta_info_per_article(article.code, @cost_center)
+      if !meta_info.nil?
+        @meta_part_work << [ meta_info[1], meta_info[2], meta_info[3] ]
+        @m_price_part_work += meta_info[3]
+      else
+        @meta_part_work << [ 0, 0, 0 ]
+        @m_price_part_work += 0
+      end
     end
+
+    # Parte de Equipo
+    @meta_part_equipment = Array.new
+    @workers_array3 = business_days_array3(start_date, end_date, @cad, @cad2)
+
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
+
+      specific = Article.find_idarticle_global_by_specific_idarticle(workerDetail[5], @cost_center)
+      article = Article.find(specific[1])
+      meta_info = Budget.budget_meta_info_per_article(article.code, @cost_center)
+      if !meta_info.nil?
+        @meta_part_equipment << [ meta_info[1], meta_info[2], meta_info[3] ]
+        @m_price_part_equipment += meta_info[3]
+      else
+        @meta_part_equipment << [ 0, 0, 0 ]
+        @m_price_part_equipment += 0
+      end
     end
+
+    # Consumo de Materiales
+    @meta_stock_inputs = Array.new
+    @stock_inputs = business_days_array4(start_date, end_date, @cad, @cad2)
+
+    @stock_inputs.each do |m_input|
+      meta_info = Budget.budget_meta_info_per_article(m_input[4], @cost_center)
+      if !meta_info.nil?
+        @meta_stock_inputs << [ meta_info[1], meta_info[2], meta_info[3] ]
+      else
+        @meta_stock_inputs << [ 0, 0, 0 ]
+      end
+    end
+
     @totalprice4 = @totalprice2-@totalprice-@totalprice3
+    @m_total_price = @m_price_part_work - @m_price_part_person - @m_price_part_equipment
 
     render(partial: 'report_table', :layout => false)
   end
@@ -162,9 +229,10 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def business_days_array4(start_date, end_date, working_group_id,sector_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT  a.id, a.name, 
+      SELECT a.id, a.name, 
       u.symbol, 
-      SUM(sid.amount) 
+      SUM(sid.amount),
+      a.code 
       FROM articles a, unit_of_measurements u, type_of_articles toa, categories c, stock_inputs si, stock_input_details sid 
       WHERE si.issue_date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND sid.sector_id IN(" + sector_id + ")
