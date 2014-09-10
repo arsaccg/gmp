@@ -4,6 +4,8 @@
 %table(class="table table-bordered table-hover table-condensed white-table" width="100%")
   %thead
     %th
+      Codigo
+    %th
       Nombre
     %th
       Presupuesto Meta
@@ -12,6 +14,8 @@
   %tbody
     - @input_budget_item_sale.each do |key, item|
       %tr
+        %td
+          = item[1]
         %td
           = item[0]
         %td(style="text-align: right;")
