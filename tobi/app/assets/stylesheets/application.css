@@ -533,6 +533,17 @@
 }
 
 #itemsModal {
-	width: 1000px;
-	margin-left: -500px;
+	width: 800px;
+	margin-left: -400px;;
+}
+#itemsModal table{
+	font-size: 11px;
+}
+
+#itemsModal table td:nth-child(1), #itemsModal table th:nth-child(1){
+	width: 70px;
+}
+
+#itemsModal table td:nth-child(3), #itemsModal table th:nth-child(3), #itemsModal table th:nth-child(4), #itemsModal table th:nth-child(4){
+	width: 100px;
 }
