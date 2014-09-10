@@ -132,7 +132,7 @@
             %legend Detalle de Orden de Compra
             .form-group
               .col-lg-3
-              .col-lg-12
+              .col-lg-12#tablemodalsadd
                 %table#summary-delivery-orders.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
                   %thead
                     %tr
@@ -179,7 +179,7 @@
                         %td.price-with-igv
                           = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv.to_f , class: "form-control unit-price-igv", :readonly => true
                         %td.aditional-operations{:style => 'text-align: center'}
-                          %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-purchase-#{pod.created_at.to_time.to_i + j}"}
+                          %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-purchase-#{@reg_n.to_s}"}
                             %strong
                               %i.fa.fa-superscript
                         %td
@@ -197,7 +197,7 @@
 
                 - i = 0
                 - @purchaseOrder.purchase_order_details.each do |pod|
-                  .modal.fade{"id" => "modal-purchase-#{pod.created_at.to_time.to_i + i}", "aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
+                  .modal.fade{"id" => "modal-purchase-#{array_values[i]}", "aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
                     .modal-dialog
                       .modal-content
                         .modal-header
@@ -206,12 +206,12 @@
                         .modal-body
                           .smart-form
                             %fieldset
-                              = hidden_field_tag 'id_modal', '', id: "modal-purchase-#{pod.created_at.to_time.to_i + i}-hidden"
+                              = hidden_field_tag 'id_modal', "#{array_values[i]}", :id => "modal-purchase-#{array_values[i]}-hidden"
                               .row
                                 %label.label.col.col-2{for: "extra_calculation_id"} Concepto
                                 .col.col-10
                                   %label.input
-                                    %select.form-control{:name =>"extra_calculation_id", :id => "modal-purchase-#{pod.created_at.to_time.to_i + i}-select-calc"}
+                                    %select.form-control{:name =>"extra_calculation_id", :id => "modal-purchase-#{array_values[i]}-select-calc"}
                                       - @extra_calculations.each do |calculation|
                                         %option{:value => "#{calculation.id}"}
                                           = calculation.concept
@@ -220,7 +220,7 @@
                                 %label.label.col.col-2{for: "type"} Tipo
                                 .col.col-10
                                   %label.input
-                                    %select.form-control{:name =>"type", :id => "modal-purchase-#{pod.created_at.to_time.to_i + i}-select-type"}
+                                    %select.form-control{:name =>"type", :id => "modal-purchase-#{array_values[i]}-select-type"}
                                       %option{:value => "percent"}
                                         (%)
                                       %option{:value => "soles"}
@@ -231,13 +231,13 @@
                                 .col.col-10
                                   %label.input
                                     %i.icon-append.fa.fa-money
-                                    = text_field_tag 'value', nil, id: "modal-purchase-#{pod.created_at.to_time.to_i + i}-input-value"
+                                    = text_field_tag 'value', nil, id: "modal-purchase-#{array_values[i]}-input-value"
 
                               .row
                                 %label.label.col.col-2{for: "apply"} Aplicar
                                 .col.col-10
                                   %label.input
-                                    %select.form-control{:name =>"apply", :id => "modal-purchase-#{pod.created_at.to_time.to_i + i}-select-apply"}
+                                    %select.form-control{:name =>"apply", :id => "modal-purchase-#{array_values[i]}-select-apply"}
                                       %option{:value => "before"}
                                         Antes de IGV
                                       %option{:value => "after"}
@@ -247,7 +247,7 @@
                                 %label.label.col.col-2{for: "operation"} +/-
                                 .col.col-10
                                   %label.input
-                                    %select.form-control{:name =>"operation", :id => "modal-purchase-#{pod.created_at.to_time.to_i + i}-select-operation"}
+                                    %select.form-control{:name =>"operation", :id => "modal-purchase-#{array_values[i]}-select-operation"}
                                       %option{:value => "sum"}
                                         = '+'
                                       %option{:value => "minius"}
@@ -257,7 +257,7 @@
                               %h3 Listado de Operaciones
                               %br
                               .row
-                                %section.col.col-md-12{'id' => "modal-purchase-#{pod.created_at.to_time.to_i + i}-section"}
+                                %section.col.col-md-12{'id' => "modal-purchase-#{array_values[i]}-section"}
                                   - pod.purchase_order_extra_calculations.each do |order_operation|
                                     - @reg_n_2 = ((Time.now.to_f)*100).to_i
                                     .col.col-md-12
@@ -285,7 +285,7 @@
                                         %label Eliminar
                                       = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][operation]', order_operation.operation rescue nil
                             %footer
-                              %button{:type => "button", :class => "btn btn-primary", :onclick => "add_extra_operation(this)", :rel => "modal-purchase-#{pod.created_at.to_time.to_i}"} Agregar Operación
+                              %button{:type => "button", :class => "btn btn-primary", :onclick => "add_extra_operation(this)", :rel => "modal-purchase-#{array_values[i]}"} Agregar Operación
                   - i += 1
 
         .form-actions{:style => "margin-top: 0;"}
@@ -467,6 +467,7 @@
     if(status){
       data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
       append_url_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'summary-delivery-orders', data, '', 'POST');
+      append_url_ajax('#{add_modal_extra_operations_logistics_purchase_orders_path}', 'tablemodalsadd', data, 0, 'POST');
     }
 
     $('#modalDeliveryItems').modal('hide');

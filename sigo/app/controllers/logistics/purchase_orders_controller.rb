@@ -116,7 +116,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @operation = params[:operation]
 
     @reg_main = params[:reg_n]
-
     @name_concept = params[:name_concept]
     @name_type = params[:name_type]
     @name_apply = params[:name_apply]

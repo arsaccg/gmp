@@ -27,7 +27,7 @@
     %td.price-with-igv
       = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil , class: "form-control unit-price-igv", :readonly => true
     %td.aditional-operations{:style => 'text-align: center'}
-      %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-purchase-#{@for_id_modal[i]}", 'onclick' => "set_id_modeling(this, #{@reg_n.to_s})"}
+      %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-purchase-#{@for_id_modal[i]}", 'onclick' => "set_id_modeling(this, #{@for_id_modal[i]})"}
         %strong
           %i.fa.fa-superscript
     %td
