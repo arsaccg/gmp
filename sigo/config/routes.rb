@@ -622,4 +622,132 @@ ArsacLogistica::Application.routes.draw do
       end
     end
   end
+
+  #TOBI...
+  namespace :management do
+    get 'dashboard' => 'dashboard#index'
+    post 'dashboard' => 'dashboard#index'
+    resources :cost_centers
+    resources :extensionscontrols do
+      collection do
+        post 'approve'
+        post 'disprove'
+      end
+    end
+    
+    resources :distributions do
+      collection do
+        get 'import_distributions'
+        post 'import_distributions'
+        get 'do_import'
+        post 'do_import'
+      end
+      member do
+        get 'show_form'
+      end
+    end
+    
+    resources :wbsitems do
+      collection do
+        get 'get_json_data'
+        get 'add_items_to_wbs'
+        get 'get_items_by_wbs_code'
+        get 'get_items_by_budget'
+        get 'get_credit'
+        get 'get_items_from_project'
+        get 'get_child'
+        get 'get_items_json'
+        get 'set_gantt'
+        get 'graph_gantt'
+        post 'save_gantt'
+        get 'showbymonth_gantt'
+        get 'showperitem_gantt'
+        get 'show_measured'
+        post 'add_phases_to_item'
+        get 'add_phases_to_item'
+      end
+    end
+    resources :budgets do 
+      collection do 
+        get 'load_elements'
+        post 'load_elements'
+        get 'get_cookies'
+        get 'get_budget_by_project'
+        get 'administrate_budget'
+        get 'get_budgets'
+        post 'get_budgets'
+        get 'display_articles'
+        post 'display_articles'
+      end
+      member do
+        delete 'destroy_admin'
+        get 'resume'
+      end
+    end
+    resources :items
+    resources :itembybudgets do 
+      collection do
+        get 'filter_by_budget'
+      end
+    end
+
+    resources :sectors do
+      collection do
+        get 'set_sectors_by_cost_center'
+        post 'set_sectors_by_cost_center'
+      end
+    end
+
+    resources :measured_by_sector do
+      member do
+        get 'update_sector'
+        post 'update_sector'
+      end 
+    end
+
+
+    resources :inputbybudgetanditems do
+      collection do
+        get 'filter_by_budget_and_item'
+        get 'add'
+        get 'update_input'
+        post 'update_input'
+      end
+    end
+
+    resources :itembywbses do
+      collection do 
+        get 'save_data'
+        post 'save_data'
+        get 'get_wbsitem_assigned'
+        get 'add_data_item'
+      end
+    end
+
+    resources :valorizations do
+      member do 
+        get 'newvalorization'
+        get 'changevalorization'
+        get 'finalize'
+        get 'show_data'
+        get 'change_data_ge'
+        get 'change_data_u'
+        get 'change_data_r'
+        get 'change_data_rnd'
+        get 'change_data_rnm'
+        get 'change_data_da'
+        get 'change_data_aom'
+        get 'report'
+      end
+    end
+
+    resources :valorizationitems do 
+      collection do 
+        get 'update_valorization_item'
+      end
+    end
+
+    resources :managers
+  end
+  #...TOBI
 end
