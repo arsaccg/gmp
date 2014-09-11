@@ -1,0 +1,36 @@
+%h4 
+  Editar Presupuesto - 
+  =@budget.description
+%br
+=simple_form_for [:management, @budget], :html => {:class => 'form-horizontal', :id=>'form-data'} do |f|
+  .fieldset
+
+    .control-group
+      %label(class="control-label") Codigo S10
+      .controls
+        = @budget.cod_budget
+    .control-group
+      %label(class="control-label") Nombre
+      .controls
+        = f.input :description, label: false
+ 
+    .control-group
+      %label(class="control-label") Codigo
+      .controls
+        = f.input :cost_center_id, label: false
+ 
+ 
+    .control-group
+      %label(class="control-label") %Utilidad
+      .controls
+        = f.input :utility, label: false
+    .control-group
+      %label(class="control-label") %Gastos Generales
+      .controls
+        = f.input :general_expenses, label: false
+    .form-actions
+      %a{:href=>"javascript:post_to_url('" + management_budget_path(@budget.id).to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
+        Guardar
+
+      %a{:href=>"javascript:load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id="+@budget.cost_center_id.to_s+"', 'right-area');", class: "btn btn-danger"}
+        Cancelar

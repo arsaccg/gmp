@@ -1,0 +1,82 @@
+%h4
+  =@valorization.description rescue " "
+  = " " 
+  =@budget.name rescue " "
+=form_tag save_gantt_management_wbsitems_path, class: "form-horizontal", id: "gantt_form" do
+  %table(class="table-hover white-table small-font table-light"  width="100%")
+    %thead
+      %th
+        %strong
+          ITEM
+      %th
+        %strong
+          DESCRIPCION
+      %th
+        %strong
+          UND.
+      %th
+        %strong
+          METRADO
+          %br
+          CONTRATADO
+      %th
+        %strong
+          METRADO 
+          %br
+          ACUMULADO
+          %br
+          ANTERIOR 
+      %th
+        %strong
+          METRADO
+          %br
+          ACTUAL
+      %th
+        %strong
+          METRADO
+          %br
+          ACUMULADO
+      %th
+        %strong
+          SALDO
+    %tbody
+      - @results.each do |row|
+        %tr
+          %td
+            = row[0]
+          %td
+            = row[2]
+            = row[1]
+          %td
+            = "UND"
+          %td
+            %span
+              = row[4].to_f.round(2)
+          %td
+            %span{id: "prev_" + row[0].to_s}
+              = row[3].to_f.round(2)
+          %td
+            -if row[4].to_f.round(2) > 0
+              %input{:type=>"text", :class=>"input-mini", :id => "itembudget_#{row[0].to_s}", :name => "measured[#{row[0].to_s}]", :onblur => "update_data('#{row[0].to_s}', '#{row[4].to_f.round(2)}')", :onchange=>"update_valorization_item('#{row[0].to_s}')", :value => row[5].to_f.round(2), :style=>"text-align: right;"}
+          %td
+            %span{id: "total_" + row[0].to_s}
+              = (row[3] + row[5]).to_f.round(2)
+          %td
+            %span{id: "credit_" + row[0].to_s}
+              = sprintf('%.2f', (row[4].to_f.round(2) - row[5]).to_f.round(2))
+
+:javascript
+
+  function update_data(itembudget_id, measured_total){
+    partial_measured=parseFloat($("#itembudget_" + itembudget_id).val());
+    prev_measured=parseFloat($("#prev_" + itembudget_id).text());
+    $("#total_" + itembudget_id).text(partial_measured + prev_measured);
+    $("#credit_" + itembudget_id).text((measured_total - (partial_measured + prev_measured)).toFixed(2));
+  }
+ 
+  function update_valorization_item(item_id){
+    partial_measured=$("#itembudget_" + item_id).val();
+    load_url_ondiv("#{update_valorization_item_management_valorizationitems_path.to_s}?id=#{@valorization.id}&item=" + item_id + "&measured=" + partial_measured, "item");
+  }
+
+ 

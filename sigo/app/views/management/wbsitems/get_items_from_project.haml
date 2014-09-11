@@ -1,0 +1,83 @@
+%table(class="table-bordered table-hover white-table table-condensed table " width="100%" style=" width: 92%;")
+  %thead
+ 
+    %th
+      Nombre
+    %th
+      Fases
+    %th
+      Acciones
+  %tbody
+    - @wbsitems.each do |wbsitem|
+      %tr{:id=>"wbsitem_" + wbsitem.codewbs.to_s}
+        %td
+          = "----" * wbsitem.codewbs.length
+          = wbsitem.codewbs          
+          %strong
+            = wbsitem.name
+        %td
+          %center
+            %strong
+              = wbsitem.fase
+            %div{id: wbsitem.id}
+            %a(class="btn btn-mini"){href: "javascript:load_phases('" + wbsitem.id.to_s + "')"}
+              Asignar Fase
+        %td
+          .btn-group
+            %a(data-method ="delete" class="btn btn-mini"){:href=>"javascript:load_url_ondiv('" + edit_management_wbsitem_path(wbsitem.id).to_s + "', 'graph-org');"}
+              %i(class="icon-pencil")
+              Editar
+            %a(data-method ="delete" class="btn btn-mini btn-danger"){:href=>"javascript:delete_to_url('" + management_wbsitem_path(wbsitem.id).to_s + "', 'graph-org');"}
+              %i(class="icon-remove")
+
+%div(id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
+  .modal-header
+    %button(type="button" class="close"){'data-dismiss'=>"modal", 'aria-hidden'=>"true"}
+      ×
+    %h3(id="myModalLabel")
+      Asignar Fases
+  .modal-body
+    %table(class="table-bordered table-hover white-table table-condensed table ")
+      %thead
+        %th
+          Codigo
+        %th
+          Descripcion
+      %tbody
+        - @data.each do |item|
+          %tr
+            %td
+              = item.code
+            %td
+              = item.name
+            %td
+              %a{href: "javascript:selected_phase('" + item.code + " " + item.name + "', '" + item.code + "')"}
+                Seleccionar
+      
+  .modal-footer
+    %button(class="btn"){'data-dismiss'=>"modal", 'aria-hidden'=>"true"}
+      Close
+
+:javascript
+
+  var item_selected_phase = "";
+
+  function load_phases(id){
+    item_selected_phase = id;
+    $("#myModal").modal('show');
+
+  }
+
+  function selected_phase(data, id){
+
+    $("#" + item_selected_phase).html("<center><strong>" + data + "</strong></center>");
+
+    $.ajax({
+      url: "#{add_phases_to_item_management_wbsitems_path}?wbsitem_id=" + item_selected_phase + "&phase_id=" + data
+    });
+
+    $("#myModal").modal('hide');
+
+  }
+    
+

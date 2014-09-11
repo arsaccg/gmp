@@ -1,0 +1,280 @@
+:javascript
+
+  function update_data(itembudget_id, measured_total){
+
+    partial_measured=parseFloat($("#itembudget_" + itembudget_id).text());
+
+    prev_measured=parseFloat($("#prev_" + itembudget_id).text());
+    $("#total_" + itembudget_id).text(partial_measured + prev_measured);
+    $("#credit_" + itembudget_id).text(Number((measured_total - (partial_measured + prev_measured)).toFixed(2)));
+
+    price=parseFloat($("#pu_" + itembudget_id).text());
+    $("#pc_" + itembudget_id).text(Number((price * measured_total).toFixed(2)));
+    meter=parseFloat($("#prev_" + itembudget_id).text());
+    $("#aprev_" + itembudget_id).text(Number((price * meter).toFixed(2)));
+    meter=parseFloat($("#itembudget_" + itembudget_id).text());
+    $("#a_val_act_" + itembudget_id).text(Number((price * meter).toFixed(2)));
+
+    amount1=parseFloat($("#a_val_act_" + itembudget_id).text());
+    amount2=parseFloat($("#aprev_" + itembudget_id).text());
+    $("#a_total" + itembudget_id).text(Number((amount1 + amount2).toFixed(2)));
+
+    amount1=parseFloat($("#pc_" + itembudget_id).text());
+    amount2=parseFloat($("#a_total" + itembudget_id).text());
+    $("#remainder" + itembudget_id).text(Number((amount1 - amount2).toFixed(2)));
+  
+    $("#percent" + itembudget_id).text(Number(((amount2/amount1)*100).toFixed(2)));   
+  }
+
+
+%tbody
+  - hash_items = Hash.new
+  -@itembybudgets_main.each do |ib|
+    %tr
+      %td(colspan="4")
+        %strong
+          =ib.order
+          %a{href: "javascript:toogle_detail('" + ib.id.to_s + "')"}
+            -p353=ib.title
+      %td(style="text-align: right;")
+        %strong
+          = "S/. #{sprintf('%.2f', amount_contractual(ib.order, @budget.id))}"  #Monto
+      %td
+      %td(style="text-align: right;")
+        %strong
+          = "S/. #{sprintf('%.2f', amount_prev(ib.order, @budget.id, @valorization.created_at))}" #Monto
+      %td
+      %td(style="text-align: right;")
+        %strong
+          = "S/. #{sprintf('%.2f', amount_actual(ib.order, @budget.id, @valorization.id))}" #Monto
+      %td
+      %td(style="text-align: right;")
+        %strong
+          = "S/. #{sprintf('%.2f', amount_acumulated(ib.order, @budget.id, @valorization.created_at, @valorization.id))}" #Monto
+      %td
+      %td(style="text-align: right;")
+        %strong
+          = "S/. #{sprintf('%.2f', amount_remainder(ib.order, @budget.id, @valorization.created_at, @valorization.id))}" #Monto
+      %td(style="text-align: right;")
+        %strong
+          = "#{advance_percent(ib.order, @budget.id, @valorization.created_at, @valorization.id).round(2)} %"
+
+    
+    - sub_item = Valorization.get_sub_itembybudgets(ib.order.to_s, @valorization.id.to_s)
+    - sub_item.each do |si|
+      - key_str = si[0].to_s
+      - if key_str != nil
+        -if si != nil
+          - hash_items[key_str] = si  
+          
+    - @itembybudgets.where("`order` LIKE ?", ib.order.to_s + "%").each do |ibb|
+     
+      - si = hash_items[ibb.id.to_s]
+      %tr{class: "detail_" + ib.id.to_s}
+        %td
+          = ibb.id
+          = ibb.subbudgetdetail
+        %td(style="text-align: center;")
+          = si[4] rescue " "
+        %td(style="text-align: right;")
+          = "S/. #{((si[5].to_f) / (si[6].to_f)).round(2) rescue 0}"
+        %td(style="text-align: right;")
+          = si[6].to_f.round(2) rescue 0
+        %td(style="text-align: right;")
+          = "S/. #{si[5].to_f.round(2) rescue 0}"
+        %td(style="text-align: right;")
+          = si[8].to_f.round(2) rescue 0
+        %td(style="text-align: right;")
+          = "S/. #{si[9].to_f.round(2) rescue 0}"
+        %td(style="text-align: right;")
+          = si[10].to_f.round(2) rescue 0
+        %td(style="text-align: right;")
+          = "S/. #{si[11].to_f.round(2) rescue 0}"
+        %td(style="text-align: right;")
+          = si[12].to_f.round(2) rescue 0
+        %td(style="text-align: right;")
+          = "S/. #{si[13].to_f.round(2) rescue 0}"
+        %td(style="text-align: right;")
+          = si[14].to_f.round(2) rescue 0
+        %td(style="text-align: right;")
+          = "S/. #{si[15].to_f.round(2) rescue 0}"
+        %td(style="text-align: right;")
+          = si[16].round(2) rescue 0
+          = '%' 
+      -# sub_sub_item = Valorization.get_sub_itembybudgets(si.order.to_s, @valorization.id.to_s)
+        
+  %tr
+    %td(colspan="15")
+
+ 
+      - @direct_cost_cont = 0
+      - @direct_cost_prev = 0
+      - @direct_cost_act = 0
+      - @direct_cost_acc = 0
+      - @direct_cost_rem = 0
+      -@itembybudgets_main.each do |ib|
+     
+        - c_amount_contractual = amount_contractual(ib.order, @budget.id)
+     
+        - @direct_cost_cont = @direct_cost_cont + c_amount_contractual
+
+        - c_amount_prev = amount_prev(ib.order, @budget.id, @valorization.created_at)
+   
+        - @direct_cost_prev = @direct_cost_prev + c_amount_prev
+ 
+        - c_amount_act = amount_actual(ib.order, @budget.id, @valorization.id)
+    
+        - @direct_cost_act = @direct_cost_act + c_amount_act 
+ 
+        - c_amount_acc = amount_acumulated(ib.order, @budget.id, @valorization.created_at, @valorization.id)
+        - @direct_cost_acc = @direct_cost_acc + c_amount_acc 
+        - c_amount_rem = amount_remainder(ib.order, @budget.id, @valorization.created_at, @valorization.id)
+     
+        - @direct_cost_rem = @direct_cost_rem + c_amount_rem 
+ 
+
+  %tr 
+    %td
+      %strong
+        COSTO DIRECTO
+    %td
+    %td(colspan="2")
+    %td
+      %strong
+        -#MONTO contract
+        = "S/. #{@direct_cost_cont.round(2) rescue 0}"
+    %td
+    %td
+      %strong
+        -#MONTO anterior
+        = "S/. #{@direct_cost_prev.round(2) rescue 0}"
+    %td
+    %td
+      %strong
+        -#MONTO actual  
+        = "S/. #{@direct_cost_act.round(2) rescue 0}"  
+    %td
+    %td
+      %strong
+        -#MONTO acumulado
+        = "S/. #{@direct_cost_acc.round(2) rescue 0}"
+    %td
+    %td
+      %strong
+        -#SALDO
+        = "S/. #{@direct_cost_rem.round(2) rescue 0}"
+    %td
+      = (@direct_cost_acc / @direct_cost_cont * 100).round(2) rescue 0
+      ='%'
+  %tr 
+    %td
+      Gastos Generales
+    %td
+      = (@budget.general_expenses.to_f * 100).round(2).to_s + '%'
+    %td(colspan="2")
+    %td
+      -#MONTO contract
+      - num = (@direct_cost_cont * @budget.general_expenses.to_f).round(2)
+      = "S/. #{num.round(2) rescue 0}"
+    %td
+    %td
+      -#MONTO anterior
+      - num = (@direct_cost_prev * @budget.general_expenses.to_f).round(2)
+      = "S/. #{num.round(2) rescue 0}"
+    %td
+    %td
+      -#MONTO actual  
+      - num = (@direct_cost_act * @budget.general_expenses.to_f).round(2) 
+      = "S/. #{num.round(2) rescue 0}"
+    %td
+    %td
+      -#MONTO acumulado
+      - num = (@direct_cost_acc * @budget.general_expenses.to_f).round(2) 
+      = "S/. #{num.round(2) rescue 0}"
+    %td
+    %td
+      -#SALDO
+      - num = (@direct_cost_rem * @budget.general_expenses.to_f).round(2)
+      = "S/. #{num.round(2) rescue 0}"
+    %td
+      = ((@direct_cost_acc * @budget.general_expenses.to_f)/(@direct_cost_cont * @budget.general_expenses.to_f) * 100).round(2)
+      ='%'
+  %tr 
+    %td
+      %strong
+        Utilidad
+    %td
+      =(@budget.utility.to_f * 100).round(2).to_s + '%'
+    %td(colspan="2")
+    %td
+      -#MONTO contract
+      - num = (@direct_cost_cont * @budget.utility.to_f).round(2)
+      = "S/. #{num.round(2) rescue 0}"
+    %td
+    %td
+      -#MONTO anterior
+      - num = (@direct_cost_prev * @budget.utility.to_f).round(2)
+      = "S/. #{num.round(2) rescue 0}"
+    %td
+    %td
+      -#MONTO actual  
+      - num = (@direct_cost_act * @budget.utility.to_f).round(2) 
+      = "S/. #{num.round(2) rescue 0}"
+    %td
+    %td
+      -#MONTO acumulado
+      - num = (@direct_cost_acc * @budget.utility.to_f).round(2) 
+      = "S/. #{num.round(2) rescue 0}"
+    %td
+    %td
+      -#SALDO
+      - num = (@direct_cost_rem * @budget.utility.to_f).round(2)
+      = "S/. #{num.round(2) rescue 0}"
+    %td
+      = ((@direct_cost_acc * @budget.utility.to_f)/(@direct_cost_cont * @budget.utility.to_f) * 100).round(2)
+      ='%'
+  %tr 
+    %td(colspan="4")
+      %strong
+        COSTO DE OBRA
+    %td
+      %strong
+        =#MONTO contract
+        -contractual =@direct_cost_cont + (@direct_cost_cont * @budget.general_expenses.to_f) + (@direct_cost_cont * @budget.utility.to_f)
+        = "S/. #{contractual.round(2) rescue 0}"
+    %td
+    %td
+      %strong
+        =#MONTO anterior
+        = "S/. #{(@direct_cost_prev + (@direct_cost_prev * @budget.general_expenses) + (@direct_cost_prev * @budget.utility)).round(2) rescue 0}"
+    %td
+    %td
+      %strong
+        =#MONTO actual  
+        = "S/. #{(@direct_cost_act + (@direct_cost_act * @budget.general_expenses) + (@direct_cost_act * @budget.utility)).round(2) rescue 0}"  
+    %td
+    %td
+      %strong
+        =#MONTO acumulado
+        -accumulated = @direct_cost_acc + (@direct_cost_acc * @budget.general_expenses.to_f) + (@direct_cost_acc * @budget.utility.to_f)
+        = "S/. #{accumulated.round(2) rescue 0}"
+    %td
+    %td
+      %strong
+        =#SALDO
+        = "S/. #{(@direct_cost_rem + (@direct_cost_rem * @budget.general_expenses) + (@direct_cost_rem * @budget.utility)).round(2) rescue 0}"
+    %td
+      %strong
+        =((accumulated/contractual)*100).round(2)
+        ='%'
+
+:javascript
+
+  function toogle_detail(id_str){
+    
+    if($(".detail_" + id_str).css("display") == 'table-row')
+      $(".detail_" + id_str).css("display","none");
+    else
+      $(".detail_" + id_str).css("display","table-row");
+    
+  }

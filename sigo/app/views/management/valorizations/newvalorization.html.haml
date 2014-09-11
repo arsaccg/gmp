@@ -1,0 +1,31 @@
+%h4
+  ="Nueva Valorizacion: "
+  
+
+=simple_form_for [:management, @valorization], class: "form-horizontal", :id => "v_form" do |f|
+  = f.input :valorization_date, :label => "Mes"
+ 
+  - all_budgets = Budget.where(:cost_center_id => @budget.cost_center_id)
+  - num_val = 0
+  - all_budgets.each do |ab|
+    - num_val = num_val + Valorization.where(:budget_id => ab.id).count
+  - num_val = num_val + 1
+
+  -# new_number = Valorization.count+1
+  = f.input :name, :label => "Titulo", input_html: {value: "Val"+num_val.to_s}, disabled: true
+
+  =# f.input :status, :as => :hidden
+  = f.input :budget_id, :as => :hidden
+
+
+%a{:href=>"javascript:post_to_url('" + management_valorizations_path.to_s + "', 'new_valorization', 'right-area');", :class=>"btn btn-success"}
+  Guardar Valorizacion
+%a{href: "javascript: load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id=' + project_selected_data['id'] , 'right-area');", class: "btn btn-danger"}
+  Cancelar
+
+:javascript 
+  $("#valorization_valorization_date_3i").val("1");
+  $("valorization_valorization_date_3i").fadeOut();
+  function load_back(url){
+    load_url_ondiv(url, 'right-area');
+  }
