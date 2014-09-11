@@ -23,7 +23,7 @@
   });
 
   function delete_item(code){
-    $("#tr" + code).remove();
+    $("#tr-" + code).remove();
   }
 
   function minmax(value, min, max){
@@ -55,7 +55,6 @@
   function add_extra_operation(obj){
 
     var id_content = $(obj).attr('rel') + '-section';
-    console.log($(obj).attr('rel'));
 
     var concept = '#' + $(obj).attr('rel') + '-select-calc';
     var type = '#' + $(obj).attr('rel') + '-select-type';
