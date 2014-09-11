@@ -161,11 +161,11 @@
   
 
   function load_budgets(){
-    load_url_ondiv("#{management_wbsitems_path.to_s}?project_id=" + $('#cost_center_selected').data("id"), 'right-area');
+    load_url_ajax("#{management_wbsitems_path.to_s}?project_id=" + $('#cost_center_selected').data("id"), 'content', '', '', 'get');
   }
   
   function execute_items_wbs(type_budget){
-    load_url_ondiv("#{add_items_to_wbs_management_wbsitems_path}?project_id=" +  $('#cost_center_selected').data("id") + "&type_budget=" +  type_budget , 'right-area');
+    load_url_ajax("#{add_items_to_wbs_management_wbsitems_path}?project_id=" +  $('#cost_center_selected').data("id") + "&type_budget=" +  type_budget, 'content', '', '', 'get');
   }
 
   function new_item(){
