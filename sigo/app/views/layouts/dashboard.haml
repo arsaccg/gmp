@@ -763,26 +763,15 @@
                 Entidades
           /TOBI...
           %li
-            %a{href: "#{management_wbsitems_path}", title: "Planeamiento"}
+            %a{href: "#", title: "Planeamiento"}
               %i.fa.fa-lg.fa-fw.fa-book
               Planeamiento
             %ul
               %li
-                %a{href: "#", title: "a"}
+                %a{href: "#{management_wbsitems_path}", title: "wbs"}
                   %i.fa.fa-lg.fa-fw.fa-list-alt
-                  a
-              %li
-                %a{href: "#", title: "b"}
-                  %i.fa.fa-lg.fa-fw.fa-list-alt
-                  b
-              %li
-                %a{href: "#", title: "c"}
-                  %i.fa.fa-lg.fa-fw.fa-list-alt
-                  c
-              %li
-                %a{href: "#", title: "d"}
-                  %i.fa.fa-lg.fa-fw.fa-list-alt
-                  d
+                  Wbs
+
           /...TOBI
           %li
             %a{href: "##{logistics_person_path(current_user.id)}", title: "Usuario"}
