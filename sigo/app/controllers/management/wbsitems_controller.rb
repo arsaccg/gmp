@@ -6,6 +6,7 @@ class Management::WbsitemsController < ApplicationController
   include SOCKET_CONNECTOR
   
   def index
+    @cost_center_selected = CostCenter.find(get_company_cost_center('cost_center'))
   	@wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs)  
     @result = get_child("1")
     

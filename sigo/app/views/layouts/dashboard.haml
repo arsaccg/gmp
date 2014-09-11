@@ -29,6 +29,8 @@
     = stylesheet_link_tag "custom", media: "screen", rel: "stylesheet", type: "text/css"
     /JS
     = javascript_include_tag 'application'
+    = javascript_include_tag 'raphael'
+    = javascript_include_tag 'raphael.pan-zoom'
     / TOKEN
     = csrf_meta_tag
     / FAVICONS
@@ -764,6 +766,23 @@
             %a{href: "#{management_wbsitems_path}", title: "Planeamiento"}
               %i.fa.fa-lg.fa-fw.fa-book
               Planeamiento
+            %ul
+              %li
+                %a{href: "#", title: "a"}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  a
+              %li
+                %a{href: "#", title: "b"}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  b
+              %li
+                %a{href: "#", title: "c"}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  c
+              %li
+                %a{href: "#", title: "d"}
+                  %i.fa.fa-lg.fa-fw.fa-list-alt
+                  d
           /...TOBI
           %li
             %a{href: "##{logistics_person_path(current_user.id)}", title: "Usuario"}

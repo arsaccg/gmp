@@ -1,7 +1,8 @@
-=#Planeamiento - Ver WBS  --  Para el organigrama
+
 .row-fluid
   .span12
     .group-bar
+      = hidden_field_tag "cost_center_selected", @cost_center_selected, { :id => "cost_center_selected", "data-name" => @cost_center_selected.name, "data-id" => @cost_center_selected.id }
       %strong(style="padding-left: 10px;")
         WBS  (Work Breakdown Structure)
       %div(class="btn-group" style="padding-left: 100px;")
@@ -57,7 +58,7 @@
 
   
 
-  t = mesa.text(width_graph/2 , 34, project_selected_data['name']);
+  t = mesa.text(width_graph/2 , 34, $('#cost_center_selected').data("name"));
   t.attr({fill: "#fff", "font-weight": "bold",  "font-size": "12px"})
 
   var json_data="";
@@ -156,23 +157,23 @@
   }
   
   get_data('#{management_wbsitems_path}.json');
-  draw_to_div('#{get_items_json_management_wbsitems_path}.json' + '?project_id=' + project_selected_data['id']);
+  draw_to_div('#{get_items_json_management_wbsitems_path}.json' + '?project_id=' + $('#cost_center_selected').data("id"));
   
 
   function load_budgets(){
-    load_url_ondiv("#{management_wbsitems_path.to_s}?project_id=" + project_selected_data['id'], 'right-area');
+    load_url_ondiv("#{management_wbsitems_path.to_s}?project_id=" + $('#cost_center_selected').data("id"), 'right-area');
   }
   
   function execute_items_wbs(type_budget){
-    load_url_ondiv("#{add_items_to_wbs_management_wbsitems_path}?project_id=" +  project_selected_data['id'] + "&type_budget=" +  type_budget , 'right-area');
+    load_url_ondiv("#{add_items_to_wbs_management_wbsitems_path}?project_id=" +  $('#cost_center_selected').data("id") + "&type_budget=" +  type_budget , 'right-area');
   }
 
   function new_item(){
-    load_url_ondiv("#{new_management_wbsitem_path.to_s}?project_id=" + project_selected_data['id'], 'graph-org');
+    load_url_ondiv("#{new_management_wbsitem_path.to_s}?project_id=" + $('#cost_center_selected').data("id"), 'graph-org');
   }
 
   function get_items_for_project(){
-    load_url_ondiv("#{get_items_from_project_management_wbsitems_path.to_s}?project_id=" +  project_selected_data['id'], 'graph-org');
+    load_url_ondiv("#{get_items_from_project_management_wbsitems_path.to_s}?project_id=" +  $('#cost_center_selected').data("id"), 'graph-org');
   }
   
   
