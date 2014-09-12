@@ -54,6 +54,7 @@ class Logistics::PersonsController < ApplicationController
       'stores' => 'Acceso a los Almacenes', 
       'execution' => 'Acceso a Ejecución', 
       'administration' => 'Acceso a Administracion', 
+      'planning' => 'Acceso a Planeamiento'
       'overheads' => 'Acceso a los Gastos Generales', 
       'payroll' => 'Acceso a Planillas', 
       'bidding' => 'Acceso a Licitaciones', 
