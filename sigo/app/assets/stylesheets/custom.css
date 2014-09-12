@@ -78,3 +78,21 @@ margin-right: 100px;
 @media only screen and (max-width: 840px) {
   #logo-sigo { display: none; }
 }
+
+
+
+/*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~ TOBI ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*/
+.color-class-yellow td.credit {
+  background-color: #E2EB7F;
+  text-align: right;
+}
+
+.color-class-red td.credit {
+  background-color: #E8A2A2;
+  text-align: right;
+}
+
+.color-class-green td.credit {
+  background-color: #C0F09C;
+  text-align: right;
+}
