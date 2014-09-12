@@ -1,0 +1,21 @@
+%h4 Adelantos
+%br
+%a{:href=>"javascript:reg_advance()"}(class="btn btn-success btn-small")
+  Registrar Adelanto
+%br
+%table(class="white-table table-bordered table table-condensed" style="width: 100%;")
+  %thead 
+    %th
+      Numero de Documento
+    %th
+      ="% de Costo Directo"
+    %th
+      Monto
+    %th
+      Acciones
+  = render :partial => "table"
+
+:javascript
+  function reg_advance(){
+  	load_url_ondiv('#{new_administration_advance_path}?project_id=' + project_selected_data['id'], 'right-area')
+  }

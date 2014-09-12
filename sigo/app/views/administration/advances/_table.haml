@@ -1,0 +1,14 @@
+- @advances.each do |advance|
+  %tbody
+    %tr 
+      %td
+        = advance.advance_number
+      %td
+        = advance.advance_direct_cost_percent	
+      %td
+        = advance.amount
+      %td
+        %a{:href=>"javascript:reg_advance()"}(class="btn btn-warning btn-small")
+          Editar
+        %a{:href=>"javascript:delete_to_url('#{administration_advance_path(advance.id)}', 'right-area')"}(class="btn btn-danger btn-small")
+          Eliminar

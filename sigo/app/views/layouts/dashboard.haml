@@ -271,6 +271,18 @@
                       %a{href: "#{production_position_workers_path}", title: 'Trabajadores'}
                         %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                         Cargo de Trabajadores
+          - if (current_user.has_role? :director) || (current_user.has_role? :planning)
+            /TOBI...
+            %li
+              %a{href: "#", title: "Planeamiento"}
+                %i.fa.fa-lg.fa-fw.fa-book
+                Planeamiento
+              %ul
+                %li
+                  %a{href: "#{management_wbsitems_path}", title: "wbs"}
+                    %i.fa.fa-lg.fa-fw.fa-list-alt
+                    Wbs
+          /...TOBI
           - if (current_user.has_role? :director) || (current_user.has_role? :control_documentary)
             %li
               %a{href: "#", title: "Control de Documentarios"}
@@ -761,18 +773,6 @@
               %a{href: "#{logistics_entities_path}", title: "Entidades"}
                 %i.fa.fa-lg.fa-fw.fa-group
                 Entidades
-          /TOBI...
-          %li
-            %a{href: "#", title: "Planeamiento"}
-              %i.fa.fa-lg.fa-fw.fa-book
-              Planeamiento
-            %ul
-              %li
-                %a{href: "#{management_wbsitems_path}", title: "wbs"}
-                  %i.fa.fa-lg.fa-fw.fa-list-alt
-                  Wbs
-
-          /...TOBI
           %li
             %a{href: "##{logistics_person_path(current_user.id)}", title: "Usuario"}
               %i.fa.fa-lg.fa-fw.fa-user

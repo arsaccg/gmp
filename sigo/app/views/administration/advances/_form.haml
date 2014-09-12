@@ -1,0 +1,23 @@
+= simple_form_for [:administration, @advance], :role=>"form", :html => {:class => 'form-horizontal', :multipart => true} do |f| 
+  .fieldset
+     
+    .form-group
+      = f.label "Numero de Documento : ", :class=>"col-lg-2 control-label"
+      .col-lg-10
+        = f.input :advance_number, :label => false, input_html: {class: "form-control"}
+    .form-group
+      = f.label "% de Costo Directo : ", :class=>"col-lg-2 control-label"
+      .col-lg-10
+        = f.input :advance_direct_cost_percent, :label => false, input_html: {class: "form-control"}
+    .form-group
+      = f.label "Monto : ", :class=>"col-lg-2 control-label"
+      .col-lg-10
+        = f.input :amount, :label => false, input_html: {class: "form-control"}
+  .form-actions
+    %br
+    %div(class="col-lg-offset-2 col-lg-10")
+      %a(href="javascript:post_to_url('#{administration_advances_path}?project_id=#{@advance.cost_center_id}', 'new_advance', 'right-area')" class="btn btn-success")
+        Enviar
+        
+      %a{href: "javascript:load_url_ondiv('"+administration_advances_path().to_s+"?project_id="+@advance.cost_center_id.to_s+"', 'right-area');", class: "btn btn-danger"}
+        Cancelar

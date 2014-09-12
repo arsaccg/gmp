@@ -1,0 +1,127 @@
+%table(id="scroll-table" class="table table-bordered table-condensed table-hover white-table small-font table-light"  width="100%")
+  %thead
+    %tr
+      %th(rowspan = "2")
+        %strong CODIGO
+      %th(rowspan = "2")
+        %strong FEO DE OBRA
+      %th(rowspan = "2")
+      %th
+        %strong PRESUPUESTO VENTA
+      %th
+        %strong PRESUPUESTO META
+    %tr
+      %th
+        %strong Parcial
+      %th
+        %strong Parcial
+  %tbody
+    -direct_cost_sale, direct_cost_goal = 0, 0
+    -@inputcategories.each_with_index do |input, i|
+      -partial_sale = @data_w[0]["0#{input.category_id}"] rescue nil
+      -partial_goal = @data_w[1]["0#{input.category_id}"] rescue nil
+
+      -if partial_sale!=nil && partial_goal!=nil
+        %tr{class: get_tr_class_feo(input, (partial_sale[0]).length)}
+          - l = (@data_w[0]["0#{input.category_id}"][0]).length rescue 1
+          %td= ("-" * l) + (@data_w[0]["0#{input.category_id}"][0]).to_s
+          - case l
+            - when 2
+              - direct_cost_sale += @data_w[0]["0#{input.category_id}"][2].to_f rescue 0
+              - direct_cost_goal += @data_w[1]["0#{input.category_id}"][2].to_f rescue 0
+              %td
+                %a{href: "javascript:toogle_three('second', '" + input.category_id.to_s + "')"}
+                  %strong= @data_w[0]["0#{input.category_id}"][1]
+              %td
+                %a(href="javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{input.category_id}');"){class: "btn btn-default  btn-mini "}
+                  %i(class="icon-search")
+              %td(style="text-align: right; font-size: 12px;")
+                %strong= number_to_currency(@data_w[0]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+              %td(style="text-align: right; font-size: 12px;")
+                %strong= number_to_currency(@data_w[1]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+            - when 4
+              %td
+                %a{href: "javascript:toogle_three('third', '" + input.category_id.to_s + "')"}
+                  = @data_w[0]["0#{input.category_id}"][1]  rescue ""
+              %td
+                %a(href="javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{input.category_id}');"){class: "btn btn-default  btn-mini "}
+                  %i(class="icon-search")
+              %td(style="text-align: right; font-size: 11px;")= number_to_currency(@data_w[0]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+              %td(style="text-align: right; font-size: 11px;")= number_to_currency(@data_w[1]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+            - when 6
+              %td
+                %a{href: "javascript:toogle_three('fourth', '" + input.category_id.to_s + "')"} 
+                  - if @data_w[0]["0#{input.category_id}"] != nil
+                    = @data_w[0]["0#{input.category_id}"][1]  rescue ""    
+                  -else
+                    = " "
+              %td
+                %a(href="javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{input.category_id}');"){class: "btn btn-default  btn-mini "}
+                  %i(class="icon-search")
+              %td(style="text-align: right; font-size: 9px;")= number_to_currency(@data_w[0]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+              %td(style="text-align: right; font-size: 9px;")= number_to_currency(@data_w[1]["0#{input.category_id}"][2], :unit=>'S/. ') rescue 0
+
+    %tr
+      %td
+      %td(style="font-size:115%;")
+        %strong COSTO DIRECTO
+      %td
+      %td(style="text-align: right; font-size:115%;")
+        %strong= number_to_currency(direct_cost_sale.to_s, :unit=>'S/. ')
+      %td(style="text-align: right; font-size:115%;")
+        %strong= number_to_currency(direct_cost_goal.to_s, :unit=>'S/. ')
+
+#itemsModal.modal.hide.fade(tabindex="-1" role="dialog" aria-hidden="true")
+  .modal-header
+    %button(type="button" class="close" data-dismiss="modal" aria-hidden="true")X
+    %h3
+      Detalle
+  .modal-body
+    .detail-inputs
+
+
+:javascript
+
+  function toogle_three(level, id)
+  {
+    tr_level = $("[class^='" + level + "_" +  id + "']");
+    tr_level.css("display") == 'table-row' ? tr_level.css("display","none") : tr_level.css("display","table-row");
+    
+    switch(level){
+      case "second":
+        $("[class^='third_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('third', id); }
+        });
+        break;
+    }
+  }
+
+  $(document).ready(function(){
+    $("[id*='itme_']").css("display","none");
+  });
+
+  function show_table(table_id){ $("#itme_"+String(table_id)).css("display","table-row"); }
+  function hide_table(table_id){ $("#itme_"+String(table_id)).css("display","none"); }
+
+  function toggle_table_one(table_id, d_sale, b_goal, b_cat){
+    if($("#itme_"+String(table_id)).css("display") == 'table-row'){
+      $("#itme_"+String(table_id)).css("display","none");
+    }
+    else{
+      $("#itme_"+String(table_id)).css("display","table-row");
+      load_url_ondiv("#{get_input_detail_administration_inputcategories_path}?category_id=" + b_cat + "&budget_sale_id=" + d_sale + "&budget_goal_id=" + b_goal,  "#divtme_" + table_id);
+    }
+    
+  }
+
+  function get_input_detail(d_sale, b_goal, b_cat){
+    $("#itemsModal").modal();
+
+    // params[:category_id]
+    // params[:budget_sale_id]
+    // params[:budget_goal_id]
+
+    load_url_ondiv("#{get_input_detail_administration_inputcategories_path}?category_id=0" + b_cat + "&budget_sale_id=" + d_sale + "&budget_goal_id=" + b_goal,  "detail-inputs");
+  }
+
+
