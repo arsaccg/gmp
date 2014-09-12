@@ -134,7 +134,7 @@
                     %td.article-id(style="display:none")
                       = sub.article_id
                     %td.col-md-2
-                      = sub.itembybudget.subbudgetdetail rescue "No se ha definido una Partida."
+                      = (sub.itembybudget.order.to_s + ' - ' + sub.itembybudget.subbudgetdetail.to_s) rescue "No se ha definido una Partida."
                     %td.col-md-2
                       - if !sub.article_id.nil?
                         - Article.find_article_in_specific(sub.article_id, @cc).each do |ar|

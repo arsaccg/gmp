@@ -4,68 +4,67 @@
       %i.fa.fa-table
     %h2
       Análisis de Producción
-  -if @workers_array.count>0 && @workers_array2.count>0 && @workers_array3.count>0
 
-    .container-summary-total
-      %div{ :style => 'width:33%; display:inline-block;' }
-        %h1.page-title.txt-color-blueDark Totales META
-        .widget-body
-          %table.table.table-bordered
-            %tbody
-              %tr
-                %td Total Partidas
-                %td= number_to_currency @totalprice2, unit: 'S/.', precision: 2
-              %tr
-                %td Total Mano de Obra
-                %td= number_to_currency @totalprice, unit: 'S/.', precision: 2
-              %tr
-                %td Total Equipos
-                %td= number_to_currency @totalprice3, unit: 'S/.', precision: 2
-              %tr
-                %td Total
-                %td
-                  %span.label.label-danger{"style"=>"color:#fff"}
-                    = number_to_currency @totalprice4, unit: 'S/.', precision: 2
+  .container-summary-total
+    %div{ :style => 'width:33%; display:inline-block;' }
+      %h1.page-title.txt-color-blueDark Totales META
+      .widget-body
+        %table.table.table-bordered
+          %tbody
+            %tr
+              %td Total Partidas
+              %td= number_to_currency @totalprice2, unit: 'S/.', precision: 2
+            %tr
+              %td Total Mano de Obra
+              %td= number_to_currency @totalprice, unit: 'S/.', precision: 2
+            %tr
+              %td Total Equipos
+              %td= number_to_currency @totalprice3, unit: 'S/.', precision: 2
+            %tr
+              %td Total
+              %td
+                %span.label.label-danger{"style"=>"color:#fff"}
+                  = number_to_currency @totalprice4, unit: 'S/.', precision: 2
 
-      %div{ :style => 'width:33%; display:inline-block;' }
-        %h1.page-title.txt-color-blueDark Totales REAL
-        .widget-body
-          %table.table.table-bordered
-            %tbody
-              %tr
-                %td Total Partidas
-                %td= number_to_currency @m_price_part_work, unit: 'S/.', precision: 2
-              %tr
-                %td Total Mano de Obra
-                %td= number_to_currency @m_price_part_person, unit: 'S/.', precision: 2
-              %tr
-                %td Total Equipos
-                %td= number_to_currency @m_price_part_equipment, unit: 'S/.', precision: 2
-              %tr
-                %td Total
-                %td
+    %div{ :style => 'width:33%; display:inline-block;' }
+      %h1.page-title.txt-color-blueDark Totales REAL
+      .widget-body
+        %table.table.table-bordered
+          %tbody
+            %tr
+              %td Total Partidas
+              %td= number_to_currency @m_price_part_work, unit: 'S/.', precision: 2
+            %tr
+              %td Total Mano de Obra
+              %td= number_to_currency @m_price_part_person, unit: 'S/.', precision: 2
+            %tr
+              %td Total Equipos
+              %td= number_to_currency @m_price_part_equipment, unit: 'S/.', precision: 2
+            %tr
+              %td Total
+              %td
+                %span.label.label-danger{"style"=>"color:#fff"}
+                  = number_to_currency @m_total_price, unit: 'S/.', precision: 2
+    %div{ :style => 'width:33%; display:inline-block;' }
+      %h1.page-title.txt-color-blueDark Resultado
+      .widget-body
+        %table.table.table-bordered
+          %tbody
+            %tr
+              %td VENTA
+              %td= number_to_currency @totalprice4, unit: 'S/.', precision: 2
+            %tr
+              %td COSTO
+              %td= number_to_currency @m_total_price, unit: 'S/.', precision: 2
+            %tr
+              %td RESULTADO
+              %td
+                - if (@totalprice4 - @m_total_price) < 0
                   %span.label.label-danger{"style"=>"color:#fff"}
-                    = number_to_currency @m_total_price, unit: 'S/.', precision: 2
-      %div{ :style => 'width:33%; display:inline-block;' }
-        %h1.page-title.txt-color-blueDark Resultado
-        .widget-body
-          %table.table.table-bordered
-            %tbody
-              %tr
-                %td VENTA
-                %td= number_to_currency @totalprice4, unit: 'S/.', precision: 2
-              %tr
-                %td COSTO
-                %td= number_to_currency @m_total_price, unit: 'S/.', precision: 2
-              %tr
-                %td RESULTADO
-                %td
-                  - if (@totalprice4 - @m_total_price) < 0
-                    %span.label.label-danger{"style"=>"color:#fff"}
-                      = number_to_currency (@totalprice4 - @m_total_price), unit: 'S/.', precision: 2
-                  - else
-                    %span.label.label-success{"style"=>"color:#fff"}
-                      = number_to_currency (@totalprice4 - @m_total_price), unit: 'S/.', precision: 2
+                    = number_to_currency (@totalprice4 - @m_total_price), unit: 'S/.', precision: 2
+                - else
+                  %span.label.label-success{"style"=>"color:#fff"}
+                    = number_to_currency (@totalprice4 - @m_total_price), unit: 'S/.', precision: 2
 
   -if @workers_array.count>0
     .container-part-people
