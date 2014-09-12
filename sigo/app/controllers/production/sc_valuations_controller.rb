@@ -44,7 +44,7 @@ class Production::ScValuationsController < ApplicationController
   end
 
 	def new
-    @executors = Subcontract.all
+    @executors = Subcontract.where("entity_id NOT LIKE 0")
     last=ScValuation.last
     if !last.nil?
       @start = last.start_date
@@ -55,7 +55,6 @@ class Production::ScValuationsController < ApplicationController
 
 	def get_report
     name = Entity.find_by_id(params[:executor]).name
-
     if Subcontract.find_by_entity_id(params[:executor])!=nil
       if ScValuation.count > 0
         last = ScValuation.where("name LIKE ? ", name).last
@@ -197,6 +196,10 @@ class Production::ScValuationsController < ApplicationController
     else
       @flag="no"
     end
+    @cc = get_company_cost_center('cost_center')
+    @inicio = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" WHERE start_date <= '"+@start_date+"' AND end_date >= '"+@start_date.to_s+"'").first
+    @fin = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" WHERE start_date <= '"+@end_date+"' AND end_date >= '"+@end_date.to_s+"'").first
+
     render(partial: 'report_table', :layout => false)
   end
 

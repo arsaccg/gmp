@@ -578,6 +578,21 @@ ArsacLogistica::Application.routes.draw do
         post 'do_import'
       end
     end
+
+    
+    # Todo lo de abajo pertenece a TOBI
+    resources :invoices
+    resources :charges
+    resources :advances
+    resources :managers
+    resources :inputcategories do
+      collection do
+        get 'feo_of_work'
+        get 'feo_pdf'
+        get 'get_input_detail'
+      end
+    end    
+    # HASTA AQUI!
   end
 
   namespace :payrolls do
