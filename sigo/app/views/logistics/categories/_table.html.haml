@@ -49,10 +49,10 @@
     var children = $(this).parent('li.parent_li').find(' > ul > li');
     if (children.is(':visible')) {
       children.hide('fast');
-      $(this).attr('title', 'Expand this branch').find(' > i').removeClass().addClass('fa fa-lg fa-plus-circle');
+      $(this).attr('title', 'Expandir').find(' > i').removeClass().addClass('fa fa-lg fa-plus-circle');
     } else {
       children.show('fast');
-      $(this).attr('title', 'Collapse this branch').find(' > i').removeClass().addClass('fa fa-lg fa-minus-circle');
+      $(this).attr('title', 'Resumir').find(' > i').removeClass().addClass('fa fa-lg fa-minus-circle');
     }
     e.stopPropagation();
   });
