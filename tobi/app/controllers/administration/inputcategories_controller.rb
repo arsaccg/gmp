@@ -18,6 +18,8 @@ class Administration::InputcategoriesController < ApplicationController
 
 		p '~~~~~~~~~~~~~~~~~~~~~~~~@budget_sale~~~~~~~~~~~~~~~~~~~~~~~'
 		p @budget_sale.id
+		p '~~~~~~~~~~~~~~~~~~~~~~~~@budget_goal~~~~~~~~~~~~~~~~~~~~~~~'
+		p @budget_goal
 
 		@wbsitems = Wbsitem.where(cost_center_id: project_id).order(:codewbs)
 		@inputcategories = Inputcategory.all
@@ -33,7 +35,7 @@ class Administration::InputcategoriesController < ApplicationController
 
     csv_string = CSV.generate do |csv|
       @data_w[0].each do |key, value|
-        csv << [value[0], value[1], value[2], @data_w[1][key][2]]
+        csv << [value[0], value[1], value[2], @data_w[1][key][2]] rescue [value[0], value[1], value[2], 0]
       end
     end
 

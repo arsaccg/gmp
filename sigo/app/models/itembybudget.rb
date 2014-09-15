@@ -60,7 +60,7 @@ class Itembybudget < ActiveRecord::Base
 				ON SubpresupuestoDetalle.CodTitulo = Titulo.CodTitulo
 
 	        WHERE SubpresupuestoDetalle.codpresupuesto = '" + budget_id + "' 
-	        ORDER BY SubpresupuestoDetalle.orden ASC"
+	        ORDER BY SubpresupuestoDetalle.orden ASC" #+ "0403021" + "' ORDER BY SubpresupuestoDetalle.orden ASC"
 
 	    #queue_thread = SizedQueue.new(4)
 		#queue_counter = 0
