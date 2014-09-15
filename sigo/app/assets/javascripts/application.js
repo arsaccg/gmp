@@ -574,6 +574,7 @@ function post_to_url_class(url, form_id, response_div){
   });
 }
 
+/*
 function delete_to_url(url, div_name)
 {
   var url_str = url;
@@ -589,6 +590,7 @@ function delete_to_url(url, div_name)
   });
   return false
 }
+*/
 
 // Funcion que dibuja el WBS desde una entrada de datos preformateado en JSON
 
