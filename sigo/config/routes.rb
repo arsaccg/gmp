@@ -216,6 +216,9 @@ ArsacLogistica::Application.routes.draw do
         post 'get_subcategory_form_category'
         post 'get_specific_from_subcategory'
       end
+      member do
+        post 'display_category'
+      end
     end    
     resources :suppliers
     resources :method_of_payments
