@@ -1,70 +1,43 @@
-/ NEW WIDGET START
-%article.col-sm-12.col-md-12.col-lg-12
-  / Widget ID (each widget will need unique ID)
-  #wid-id-1.jarviswidget.jarviswidget-color-blue{"data-widget-editbutton" => "false", "data-widget-sortable" => "false", "data-widget-deletebutton" => "false"}
-    /
-      widget options:
-      usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-      
-      data-widget-colorbutton="false"
-      data-widget-editbutton="false"
-      data-widget-togglebutton="false"
-      
-      data-widget-fullscreenbutton="false"
-      data-widget-custombutton="false"
-      data-widget-collapsed="true"
-      
-    %header
-      %span.widget-icon
-        %i.fa.fa-sitemap
-      %h2 Categorias/SubCategorias
-    / widget div
-    %div
-      / widget edit box
-      .jarviswidget-editbox
-        / This area used as dropdown edit box
-      / end widget edit box
-      / widget content
-      .widget-body
-        .tree.smart-form
-          - @categories.each do |category|
+#wid-id-1.jarviswidget.jarviswidget-color-blue{"data-widget-editbutton" => "false", "data-widget-sortable" => "false", "data-widget-deletebutton" => "false"}
+  
+  %header
+    %span.widget-icon
+      %i.fa.fa-sitemap
+    %h2 Categorias/SubCategorias
+  %div
+    .widget-body
+      .tree.smart-form
+        %ul
+          %li
+            %span
+              %i.fa.fa-lg.fa-folder-open
+              = @category.name + " (cod. " + @category.code + ")"
+              %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_category_path(@category.id)}', 'content', {cat: 'cat'}, null, 'GET')"}
+                Editar
+              %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{@category.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_category_path(@category.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_categories_path}')"}}
+                Eliminar
             %ul
-              %li
-                %span
-                  %i.fa.fa-lg.fa-folder-open
-                  = category.name + " (cod. " + category.code + ")"
-                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_category_path(category.id)}', 'content', {cat: 'cat'}, null, 'GET')"}
-                    Editar
-                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{category.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_category_path(category.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_categories_path}')"}}
-                    Eliminar
-                %ul
-                  -  Category.get_subcategories(category.code).each do |subcategory|
-                    %li
-                      %span
-                        %i.fa.fa-lg.fa-book
-                        = subcategory.name + " (cod. " + subcategory.code + ")"
-                        %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_category_path(subcategory.id)}', 'content', {cat: 'sub'}, null, 'GET')"}
-                          Editar
-                        %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{subcategory.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_category_path(subcategory.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_categories_path}')"}}
-                          Eliminar
-                      %ul
-                        - Category.get_specifics(subcategory.code).each do |specific|
-                          %li
-                            %span
-                              %i.fa.fa-lg.fa-share
-                              = specific.name + "(cod. " + specific.code + ")"
-                              %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_category_path(specific.id)}', 'content', {cat: 'spe'}, null, 'GET')"}
-                                Editar
-                              %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{specific.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_category_path(specific.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_categories_path}')"}}
-                                Eliminar
-      / end widget content
-    / end widget div
-  / end widget
-/ WIDGET END
+              -  Category.get_subcategories(@category.code).each do |subcategory|
+                %li
+                  %span
+                    %i.fa.fa-lg.fa-book
+                    = subcategory.name + " (cod. " + subcategory.code + ")"
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_category_path(subcategory.id)}', 'content', {cat: 'sub'}, null, 'GET')"}
+                      Editar
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{subcategory.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_category_path(subcategory.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_categories_path}')"}}
+                      Eliminar
+                  %ul
+                    - Category.get_specifics(subcategory.code).each do |specific|
+                      %li
+                        %span
+                          %i.fa.fa-lg.fa-share
+                          = specific.name + "(cod. " + specific.code + ")"
+                          %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_category_path(specific.id)}', 'content', {cat: 'spe'}, null, 'GET')"}
+                            Editar
+                          %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{specific.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_category_path(specific.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_categories_path}')"}}
+                            Eliminar
 
 :javascript
-  // DO NOT REMOVE : GLOBAL FUNCTIONS!
-  pageSetUp();
 
   $(document).ready(function () {
     $('[data-toggle="confirmation"]').confirmation();

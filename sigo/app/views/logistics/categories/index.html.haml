@@ -19,17 +19,42 @@
         %strong Error!
         = flash[:error]
   .row
-    .col-sm-4{:style => "width: 50%;"}
+    .col-sm-4
       %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', {cat: 'cat'}, null, 'GET')"}
         Agregar Grupo
       -if @categories.count != 0
         %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', {cat: 'sub'}, null, 'GET')"}
           Agregar Subgrupo
-        -if @sub.count != 0
+        -if !@sub.nil?
           %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_category_path}', 'content', {cat: 'spe'}, null, 'GET')"}
             Agregar Específico
+    .col-sm-4
+      %label{ :for => 'group_selected' } Buscar información del Grupo:
+      %select.form-control#group-selected{ :name => "group_selected" }
+        - @categories.each do |cat|
+          %option{:value => "#{cat.id}"}
+            = cat.name + " (COD. " + cat.code + ")"
+    .col-sm-1
+      %br
+      %button.btn.btn-info.btn-mini{:onclick => "javascript:show_info_category();"}
+        Buscar
   %br
   .row
     #widget-grid 
-      %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
-        = render :partial => 'table'
+      %article.col-xs-12.col-sm-12.col-md-12.col-lg-12#list-info-category
+        =# render :partial => 'table'
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  function show_info_category(){
+
+    var category_id = $("#group-selected").val();
+    if(category_id != ""){
+      str_item = { authenticity_token: "#{form_authenticity_token}" };
+      load_url_ajax('/logistics/categories/' + category_id + '/display_category', 'list-info-category', str_item, 0, 'POST');
+    } else {
+      alert('Debes elegir un Grupo para la búsqueda de la información.')
+    }
+  }
