@@ -103,8 +103,8 @@ class Production::AnalysisOfValuationsController < ApplicationController
     @workers_array2.each do |workerDetail|
       @totalprice2 += workerDetail[5]
 
-      article = Article.find(workerDetail[0])
-      meta_info = Budget.budget_meta_info_per_article(article.code, @cost_center)
+      itembybudget = Itembybudget.select(:id).select(:order).find(workerDetail[0])
+      meta_info = Budget.budget_meta_info_per_itembybudget(itembybudget.order, @cost_center)
       if !meta_info.nil?
         @meta_part_work << [ meta_info[1], meta_info[2], meta_info[3] ]
         @m_price_part_work += meta_info[3]
@@ -187,22 +187,21 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def business_days_array2(start_date, end_date, working_group_id,sector_id)
     workers_array2 = ActiveRecord::Base.connection.execute("
-      SELECT  pwd.article_id, 
-        art.name, 
-        uom.name, 
+      SELECT pwd.itembybudget_id, 
+        ibb.subbudgetdetail, 
+        ibb.order, 
         SUM( pwd.bill_of_quantitties ), 
         si.unit_price, 
         si.unit_price*SUM( pwd.bill_of_quantitties ), 
         p.date_of_creation 
-      FROM part_works p, part_work_details pwd, articles art, unit_of_measurements uom, subcontract_details si
+      FROM part_works p, part_work_details pwd, itembybudgets ibb, subcontract_details si 
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.sector_id IN(" + sector_id + ")
       AND p.working_group_id IN(" + working_group_id + ")
       AND p.id = pwd.part_work_id
-      AND pwd.article_id = art.id
-      AND pwd.article_id = si.article_id
-      AND uom.id = art.unit_of_measurement_id
-      GROUP BY art.name
+      AND pwd.itembybudget_id = si.itembybudget_id
+      AND si.itembybudget_id = ibb.id
+      GROUP BY ibb.subbudgetdetail
     ")
     return workers_array2
   end
