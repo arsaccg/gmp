@@ -8,8 +8,12 @@ class Inputbybudgetanditem < ActiveRecord::Base
 	belongs_to :item
 	belongs_to :budget
   belongs_to :article
+  
+  	def get_quantity_to_get(budget_id, item_id, order, owneritem, database)
+  		# TODO: Codigo para obtener el numero de registros a procesar
+  	end
 
-	def get_inputs(budget_id, item_id, order, owneritem, database)
+	def get_inputs(budget_id, item_id, order, owneritem, database, start, end)
 
 		#0 PresupuestoPartidaDetalle.CodPartida,   
 		#1 PresupuestoPartidaDetalle.CodPresupuesto,
