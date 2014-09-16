@@ -1,12 +1,12 @@
-.row-fluid
-  .span12
-    %select(class="span12 small-font" id="budget-select")
+.row
+  .col-md-12
+    %select(class="col-md-12 small-font" id="budget-select")
       - @budgets.each do |budget|
         %option{:value => budget.id}
           = "--" * budget.cod_budget.length
           = budget.description
-.row-fluid
-  .span12
+.row
+  .col-md-12
     .content-load
       .items-panel
         %table(class="table-bordered table-hover white-table small-font")
@@ -17,8 +17,8 @@
             %th Metrado
           %tbody
 %br
-.row-fluid
-  .span4
+.row
+  .col-md-4
     .botom-load 
       %table(class="table-bordered table-hover white-table small-font" width="100%")
         %thead
@@ -36,7 +36,7 @@
                     = wbsitem.name
                 - else 
                   = wbsitem.name
-  .span8
+  .col-md-8
     .botom-load 
       %form(id="form-wbs" action="#" name="itemform" method="POST" class="form-horizontal form-wbs")
         .control-group
