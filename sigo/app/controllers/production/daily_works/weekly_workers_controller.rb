@@ -136,7 +136,8 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
         trabajadore = trabajador_detalle.worker
         id = trabajadore.id
         nombre = "#{trabajadore.entity.paternal_surname + ' ' + trabajadore.entity.maternal_surname}, #{trabajadore.entity.name}  #{trabajadore.entity.second_name}"
-        categoria = "#{trabajadore.article.name}"              
+        contrato = WorkerContract.find_by_worker_id(trabajadore.id)
+        categoria = "#{contrato.article.name}"              
         total_horas     = trabajador_detalle.total_hours.to_f
         total_normales  = trabajador_detalle.normal_hours.to_f
         total_60        = trabajador_detalle.he_60.to_f
