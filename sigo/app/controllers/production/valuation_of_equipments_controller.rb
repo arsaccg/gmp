@@ -9,6 +9,16 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     
   def show
     @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+    @start_date = @valuationofequipment.start_date
+    puts "_-----------------------------"
+    puts @start_date.to_date.to_s
+    puts "_-----------------------------"
+    @end_date = @valuationofequipment.end_date
+    puts "_-----------------------------"
+    puts @end_date.to_date.to_s
+
+    puts "_-----------------------------"
+
     @valorizacionsinigv = 0
     @amortizaciondeadelanto = 0
     @totalfacturar = 0
@@ -37,8 +47,12 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         @netoapagar = workerDetail[9]
       end
     end
+    @cc = get_company_cost_center('cost_center')
+    @inicio = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" WHERE start_date <= '"+@start_date.to_s+"' AND end_date >= '"+@start_date.to_s+"'").first
+    @fin = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" WHERE start_date <= '"+@end_date.to_s+"' AND end_date >= '"+@end_date.to_s+"'").first
     render layout: false
   end
+
   def new
     @costCenter = CostCenter.new
     @executors = SubcontractEquipment.all
@@ -322,9 +336,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     puts @name2.inspect
     @poe_array = poe_array(start_date, end_date, @subcontractequipmentarticle, @entityname)
     @poe_array.each do |workerDetail|
-      @totaldif += workerDetail[4].to_i
-      @totaltotalhours += workerDetail[5].to_i
-      @totalfuel_amount += workerDetail[7].to_i
+      @totaldif += workerDetail[4].to_f
+      @totaltotalhours += workerDetail[5].to_f
+      @totalfuel_amount += workerDetail[7].to_f
     end
     @dias_habiles =  range_business_days(start_date,end_date)
     render layout: false
