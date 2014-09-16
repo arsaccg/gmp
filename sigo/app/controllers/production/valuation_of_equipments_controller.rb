@@ -225,7 +225,17 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @art = Array.new
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
-      @art << workerDetail[6]
+      puts "---- workerDetail ----"
+      puts workerDetail[0]
+      puts workerDetail[1]
+      puts workerDetail[2]
+      puts workerDetail[3]
+      puts workerDetail[4]
+      puts workerDetail[5]
+      puts workerDetail[6]
+      puts workerDetail[7]
+      puts "---- workerDetail ----"
+      @art << workerDetail[5]
     end
     @art = @art.join(',')
     if @art==''
@@ -266,14 +276,25 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @last.each do |wa3|
       @second << wa3
     end
-    
+    puts "-------@first----" 
+    puts @first
+    puts "-------@second----"  
+    puts @second 
     @first.each do |arr|
       i=0
       @second.each do |sec|
         if @second.count == 1 && i==0
           if arr[0]==sec[0]
             @array << (arr + sec).to_a
+            puts "-------@array----"
+
             puts (arr + sec).to_a
+            puts "--------------"
+
+            puts "----arr---"
+            puts arr
+            puts "----sec---"
+            puts sec
           else
             cero = [0,0,0]
             @array << (arr+ cero).to_a
