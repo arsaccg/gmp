@@ -1,4 +1,6 @@
 class Production::SubcontractEquipmentsController < ApplicationController
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]  
   def index
     @supplier = TypeEntity.find_by_name('Proveedores').entities.first
     @company = get_company_cost_center('company')
