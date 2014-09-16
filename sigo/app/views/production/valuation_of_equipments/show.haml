@@ -10,26 +10,40 @@
   %div
     .jarviswidget-editbox
     .widget-body
-      %table.table.table-bordered{ style: "width: 700px;margin: 0 auto" }
+      %table.table.table-bordered{ style: "width: 850px;margin: 0 auto" }
         %thead
           %tr
-            %th{'colspan' => 4, "style"=>"color:#5f5f5f;text-align:center;font-size: large"}= @valuationofequipment.name + ' ' + @valuationofequipment.code
+            %th{'colspan' => 4, "style"=>"color:#5f5f5f;text-align:center;font-size: large"}= "VALORIZACIÓN N°"+ ' ' + @valuationofequipment.code
           %tr
-            %th{"style"=>"color:#5f5f5f;text-align:center"} Monto contratado
+            %th{"style"=>"color:#5f5f5f;text-align:center;"} OBRA:
+            %th{'colspan' => 3, "style"=>"color:#5f5f5f;"}= CostCenterDetail.find_by_cost_center_id(@cc).name.to_s
+          %tr
+            %th{"style"=>"color:#5f5f5f;text-align:center;"} Contratista:
+            %th{'colspan' => 3, "style"=>"color:#5f5f5f;"}= @valuationofequipment.name.to_s
+          %tr
+            %th{"style"=>"color:#5f5f5f;text-align:center;"} Razón Social:
+            %th{'colspan' => 3, "style"=>"color:#5f5f5f;"}= @valuationofequipment.name.to_s
+          %tr
+            %th{"style"=>"color:#5f5f5f;text-align:center;"} RUC:
+            %th{'colspan' => 3, "style"=>"color:#5f5f5f;"}= Entity.find_by_name(@valuationofequipment.name).ruc.to_s
+          %tr
+            %th{"style"=>"color:#5f5f5f;text-align:center;width: 15%"} Monto contratado
             %th{"style"=>"color:#5f5f5f;text-align:center"} Adelanto
             %th{"style"=>"color:#5f5f5f;text-align:center"} Amortización Acumulada
             %th{"style"=>"color:#5f5f5f;text-align:center"} Saldo
         %tbody
-          %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@valuationofequipment.hired_amount)
-          %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@valuationofequipment.advances)
-          %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@valuationofequipment.accumulated_amortization)
-          %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@valuationofequipment.balance)
+          %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.hired_amount, unit: 'S/. ', precision: 2)
+          %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.advances, unit: 'S/. ', precision: 2)     
+          %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_amortization, unit: 'S/. ', precision: 2)
+          %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.balance, unit: 'S/. ', precision: 2)
   %br
   %div
     .jarviswidget-editbox
     .widget-body
-      %table.table.table-bordered{ style: "width: 800px;margin: 0 auto" }
+      %table.table.table-bordered{ style: "width: 850px;margin: 0 auto" }
         %thead
+          %tr
+            %th{ 'colspan' => 6, "style"=>"color:#5f5f5f;text-align:center"}= "#{@inicio[0].to_s} A LA #{@fin[0].to_s} DEL #{@start_date.to_date.strftime('%d-%m-%y')} AL #{@end_date.to_date.strftime('%d-%m-%y')}" 
           %tr
             %th{"style"=>"color:#5f5f5f;text-align:center"} Item
             %th{"style"=>"color:#5f5f5f;text-align:center"} Descripcion
@@ -44,67 +58,67 @@
               %span{"style"=>"width=20px"}
                 %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "part_equipment(#{@valuationofequipment.id});"}
                   %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
-            %th{"style"=>"color:#5f5f5f;text-align:center;vertical-align: middle"}=sprintf('%.2f',@valuationofequipment.valuation)
-            %th{"style"=>"color:#5f5f5f;text-align:center;vertical-align: middle"}=sprintf('%.2f',@valorizacionsinigv)
-            %th{"style"=>"color:#5f5f5f;text-align:center;vertical-align: middle"}=sprintf('%.2f',@valuationofequipment.accumulated_valuation)
+            %th{"style"=>"color:#5f5f5f;text-align:center;vertical-align: middle"}= number_to_currency(@valuationofequipment.valuation, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center;vertical-align: middle"}= number_to_currency(@valorizacionsinigv, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center;vertical-align: middle"}= number_to_currency(@valuationofequipment.accumulated_valuation, unit: 'S/. ', precision: 2)
           %tr
             %th{"style"=>"color:#5f5f5f"} 2.00
             %th{"style"=>"color:#5f5f5f"} Amortización de Adelanto (SIN. I.G.V.)
             %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.initial_amortization_percentage.to_f)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.initial_amortization_number)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@amortizaciondeadelanto)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.accumulated_initial_amortization_number)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.initial_amortization_number, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@amortizaciondeadelanto, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_initial_amortization_number, unit: 'S/. ', precision: 2)
           %tr
             %th{"style"=>"color:#5f5f5f"} 3.00
             %th{"style"=>"color:#5f5f5f"} Total a Facturar
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.bill)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@totalfacturar)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.accumulated_bill)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.bill, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalfacturar, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_bill, unit: 'S/. ', precision: 2)
           %tr
             %th{"style"=>"color:#5f5f5f"} 4.00
             %th{"style"=>"color:#5f5f5f"} I.G.V. del Total a Facturar
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.billigv)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@totalfacigv)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.accumulated_billigv)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.billigv, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalfacigv, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_billigv, unit: 'S/. ', precision: 2)
           %tr
             %th{"style"=>"color:#5f5f5f"}
             %th{"style"=>"color:#5f5f5f"} Total Incluido IGV
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.totalbill)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@totalincluidoigv)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.accumulated_totalbill)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.totalbill, unit: 'S/. ', precision: 2) 
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalincluidoigv, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_totalbill, unit: 'S/. ', precision: 2)
           %tr
             %th{"style"=>"color:#5f5f5f"} 5.00
             %th{ 'colspan' => 5, "style"=>"color:#5f5f5f"} Retenciones
           %tr
             %th{"style"=>"color:#5f5f5f"} 5.01
             %th{"style"=>"color:#5f5f5f"} Detracción del Total (Incl. I.G.V.)
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.detraction)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@detraccion)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.accumulated_detraction)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.detraction, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@detraccion, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_detraction, unit: 'S/. ', precision: 2)
           %tr
             %th{"style"=>"color:#5f5f5f"} 5.02
             %th{"style"=>"color:#5f5f5f"} Descuento de Combustible (Incl. I.G.V.)
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.fuel_discount)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@descuentocombustible)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.accumulated_fuel_discount)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.fuel_discount, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@descuentocombustible, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_fuel_discount, unit: 'S/. ', precision: 2)
           %tr
             %th{"style"=>"color:#5f5f5f"} 5.03
             %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.other_discount.to_f)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@otrosdescuentos)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.accumulated_other_discount)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.other_discount, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@otrosdescuentos, unit: 'S/. ', precision: 2)          
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_other_discount, unit: 'S/. ', precision: 2)
           %tr
             %th{"style"=>"color:#5f5f5f"}
             %th{"style"=>"color:#5f5f5f"} TOTAL RETENCIONES
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.retention)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@retenciones)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.accumulated_retention)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.retention, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@retenciones, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_retention, unit: 'S/. ', precision: 2)
           %tr
             %th{"style"=>"color:#5f5f5f"} 6.00
             %th{"style"=>"color:#5f5f5f"} NETO A PAGAR: TOTAL (INCL. I.G.V.) - TOTAL RETEN.
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.net_payment)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@netoapagar)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@valuationofequipment.accumulated_net_payment)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.net_payment, unit: 'S/. ', precision: 2)          
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@netoapagar, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_net_payment, unit: 'S/. ', precision: 2)
     %br
     %br
     #part-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}    
