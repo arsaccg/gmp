@@ -6,7 +6,7 @@ require 'csv'
 
 class Administration::InputcategoriesController < ApplicationController
 	before_filter :authorize_manager
-
+	# ESTO PERTENECE A TOBI!!!!
 
 	include SOCKET_CONNECTOR
 
