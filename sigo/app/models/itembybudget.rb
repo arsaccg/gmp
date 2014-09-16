@@ -102,7 +102,9 @@ class Itembybudget < ActiveRecord::Base
 			
 			# TO-DO: Obtener el numero de registros a procesar y hacer bucle
 			
-			#new_input.get_inputs(item.budget_code, item.item_code, item.order, item.owneritem, database)
+			# get_quantity_to_get(item.budget_code, item.item_code, item.order, item.owneritem, database)
+			
+			 
 			inicio = 0
 			fin = 0
 			new_input.get_inputs(item.budget_code, item.item_code, item.order, item.owneritem, database, inicio, fin)
