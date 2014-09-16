@@ -51,7 +51,7 @@ class Inputbybudgetanditem < ActiveRecord::Base
 		#	Unidad.Simbolo"
   	end
 
-	def get_inputs(budget_id, item_id, order, owneritem, database, start, end)
+	def get_inputs(budget_id, item_id, order, owneritem, database, start_v, end_v)
 
 		#0 PresupuestoPartidaDetalle.CodPartida,   
 		#1 PresupuestoPartidaDetalle.CodPresupuesto,
