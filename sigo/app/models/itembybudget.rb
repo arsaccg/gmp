@@ -8,6 +8,7 @@ class Itembybudget < ActiveRecord::Base
 	belongs_to :item
 	belongs_to :budget
 	has_many :subcontract_details
+	has_many :part_work_details
 	has_many :itembywbses
 	has_many :measured_by_sectors
 
