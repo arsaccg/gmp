@@ -4,11 +4,14 @@ class Logistics::CategoriesController < ApplicationController
   def index
     flash[:error] = nil
     @categories =  Category.where("code LIKE '__' ")
-    @sub =  Category.where("code LIKE '____' ")
+    @sub =  Category.where("code LIKE '____' ").first
     render layout: false
   end
 
-  def show
+  def display_category
+    category_id = params[:id]
+    @category =  Category.find(category_id)
+    render(partial: 'table', :layout => false)
   end
 
   def new
