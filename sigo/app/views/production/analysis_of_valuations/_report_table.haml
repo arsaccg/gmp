@@ -7,7 +7,7 @@
 
   .container-summary-total
     %div{ :style => 'width:33%; display:inline-block;' }
-      %h1.page-title.txt-color-blueDark Totales META
+      %h1.page-title.txt-color-blueDark Totales REAL
       .widget-body
         %table.table.table-bordered
           %tbody
@@ -27,7 +27,7 @@
                   = number_to_currency @totalprice4, unit: 'S/.', precision: 2
 
     %div{ :style => 'width:33%; display:inline-block;' }
-      %h1.page-title.txt-color-blueDark Totales REAL
+      %h1.page-title.txt-color-blueDark Totales META
       .widget-body
         %table.table.table-bordered
           %tbody
@@ -69,7 +69,7 @@
   -if @workers_array.count>0
     .container-part-people
       %div{ :style => 'width:49%; display:inline-block;' }
-        %h1.page-title.txt-color-blueDark Mano de Obra META
+        %h1.page-title.txt-color-blueDark Mano de Obra REAL
         .widget-body
           %table.table.table-bordered
             %tbody
@@ -99,7 +99,7 @@
                     = number_to_currency @totalprice, unit: 'S/.', precision: 2
 
       %div{ :style => 'width:50%; display:inline-block;' }
-        %h1.page-title.txt-color-blueDark Mano de Obra REAL
+        %h1.page-title.txt-color-blueDark Mano de Obra META
         %table.table.table-bordered
           %thead
             %tr
@@ -118,7 +118,7 @@
   -if @workers_array2.count>0
     .container-part-work
       %div{ :style => 'width:49%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Parte de Obras META
+        %h1.page-title.txt-color-blueDark Parte de Obras REAL
         .widget-body
           %table.table.table-bordered
             %thead
@@ -140,7 +140,7 @@
                 %td= number_to_currency workerDetail2[5], unit: 'S/.', precision: 2
 
       %div{ :style => 'width:50%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Parte de Obras REAL
+        %h1.page-title.txt-color-blueDark Parte de Obras META
         .widget-body
           %table.table.table-bordered
             %thead
@@ -158,7 +158,7 @@
   -if @workers_array3.count>0
     .container-part-equipment
       %div{ :style => 'width:49%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Parte de Equipos META
+        %h1.page-title.txt-color-blueDark Parte de Equipos REAL
         .widget-body
           %table.table.table-bordered
             %thead
@@ -178,7 +178,7 @@
                 %td= number_to_currency workerDetail3[4], unit: 'S/.', precision: 2
 
       %div{ :style => 'width:50%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Parte de Equipos REAL
+        %h1.page-title.txt-color-blueDark Parte de Equipos META
         .widget-body
           %table.table.table-bordered
             %thead
@@ -196,7 +196,7 @@
   -if @stock_inputs.count>0
     .container-stock-input
       %div{ :style => 'width:49%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Consumo de Materiales META
+        %h1.page-title.txt-color-blueDark Consumo de Materiales REAL
         .widget-body
           %table.table.table-bordered
             %thead
@@ -216,7 +216,7 @@
                 %td= number_to_currency stock_input[3]*Article.getSpecificArticlesforStockOutputs5(stock_input[0].to_i), unit: 'S/.', precision: 2
 
       %div{ :style => 'width:50%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Consumo de Materiales REAL
+        %h1.page-title.txt-color-blueDark Consumo de Materiales META
         .widget-body
           %table.table.table-bordered
             %thead

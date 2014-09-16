@@ -70,6 +70,8 @@ class Budget < ActiveRecord::Base
     if !rest.empty?
       description_arr = Array.new
       rest.each do |r|
+        #sql with limit
+        #sql1 = "SELECT * FROM ( SELECT *, ROW_NUMBER() OVER (ORDER BY Insumo.codinsumo) as row FROM Insumo ) a WHERE row > 0 and row <= 1"
         sql1 = "SELECT DISTINCT Insumo.codInsumo, Insumo.descripcion From Insumo WHERE Insumo.codInsumo LIKE '__" + r.first.to_s + "'"
         description_arr << do_query(sql1,{db_name: database}) #{db_name: "AREQUIPA_BD2014"})
       end
