@@ -29,7 +29,9 @@ class Production::PartWorksController < ApplicationController
     @partwork = PartWork.new
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
-    @articles = PartWork.getOwnArticles(cost_center_id)
+    #@articles = PartWork.getOwnArticles(cost_center_id)
+    itembybudget_ids = SubcontractDetail.distinct.select(:itembybudget_id).map(&:itembybudget_id)
+    @itembybudgets = Itembybudget.select(:id).select(:order).select(:item_code).select(:subbudgetdetail).where(:id => itembybudget_ids)
     @company = params[:company_id]
     render layout: false
   end
@@ -53,21 +55,22 @@ class Production::PartWorksController < ApplicationController
 
   def add_more_article
     @reg_n = ((Time.now.to_f)*100).to_i
-    article = Article.select(:id).select(:name).select(:unit_of_measurement_id).find(params[:article_id])
+    itembybudget = Itembybudget.select(:id).select(:order).select(:item_code).select(:subbudgetdetail).find(params[:itembybudget_id])
     
-    @id_article = article.id
-    @name_article = article.name
-    @unitOfMeasurement = article.unit_of_measurement.name
+    @id_itembybudget = itembybudget.id
+    @name_itembybudget = itembybudget.subbudgetdetail
+    @itembybudget_code = itembybudget.order
 
     render(partial: 'partwork_items', :layout => false)
   end
 
   def edit
     cost_center_id = get_company_cost_center('cost_center')
+    itembybudget_ids = SubcontractDetail.distinct.select(:itembybudget_id).map(&:itembybudget_id)
     @partwork = PartWork.find(params[:id])
     @working_groups = WorkingGroup.all
     @partworkde = @partwork.part_work_details
-    @articles = PartWork.getOwnArticles(cost_center_id)
+    @itembybudgets = Itembybudget.select(:id).select(:order).select(:item_code).select(:subbudgetdetail).where(:id => itembybudget_ids)
     @unit = UnitOfMeasurement.all
     @sectors = Sector.where("code LIKE '__'")
     @action = 'edit'
@@ -92,6 +95,8 @@ class Production::PartWorksController < ApplicationController
   end
 
   def destroy
+    partwork = PartWork.find(params[:id]) # Find main Obj
+    PartWorkDetail.destroy_all "part_work_id = #{partwork.id}"
     partwork = PartWork.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el Grupo de Trabajo."
     render :json => partwork
@@ -99,6 +104,6 @@ class Production::PartWorksController < ApplicationController
 
   private
   def part_work_parameters
-    params.require(:part_work).permit(:working_group_id, :block, :sector_id, :number_working_group, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :article_id, :bill_of_quantitties, :description])
+    params.require(:part_work).permit(:working_group_id, :block, :sector_id, :number_working_group, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :itembybudget_id, :bill_of_quantitties, :description])
   end
 end
