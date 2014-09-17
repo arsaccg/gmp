@@ -2,7 +2,7 @@
   %td.itembybudget-id(style="display:none")
     = hidden_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][itembybudget_id]', @id_itembybudget.to_i
   %td.itembybudget
-    = @name_itembybudget
+    = @code_itembybudget.to_s + ' - ' + @name_itembybudget.to_s 
   %td{:class => "article-selected"}
     %input.select2.bigdrop.select2-offscreen.form-control{'name' => 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][article_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'id' => "article-selected-#{@reg_n.to_s}"}
   %td.amount.col-md-1{:style => "width:5%"}
