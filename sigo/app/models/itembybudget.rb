@@ -122,7 +122,7 @@ class Itembybudget < ActiveRecord::Base
 	    WHERE bg.id = ibb.budget_id 
 	    AND bg.type_of_budget LIKE '0' 
 	    AND ibb.measured IS NOT NULL
-	    AND (ibb.subbudgetdetail LIKE  '%"+word.to_s+"%' OR ibb.id LIKE '%"+word.to_s+"%' )
+	    AND (ibb.subbudgetdetail LIKE  '%"+word.to_s+"%' OR ibb.order LIKE '%"+word.to_s+"%' )
 	    GROUP BY ibb.order
 	  ")
 	  return mysql_result
