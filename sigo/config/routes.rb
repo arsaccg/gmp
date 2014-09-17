@@ -368,6 +368,7 @@ ArsacLogistica::Application.routes.draw do
       end
       member do
         get 'approve'
+        get 'report_pdf'
       end
     end
     resources :part_works do
