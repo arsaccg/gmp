@@ -189,7 +189,7 @@
             %tbody
             - @meta_part_equipment.each do |m_equip|
               %tr
-                %td= m_equip[0]
+                %td= m_equip[0].round(2)
                 %td= number_to_currency m_equip[1], unit: 'S/.', precision: 2
                 %td= number_to_currency m_equip[2], unit: 'S/.', precision: 2
 

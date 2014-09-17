@@ -8,6 +8,7 @@ class Itembybudget < ActiveRecord::Base
 	belongs_to :item
 	belongs_to :budget
 	has_many :subcontract_details
+	has_many :part_work_details
 	has_many :itembywbses
 	has_many :measured_by_sectors
 
@@ -98,7 +99,15 @@ class Itembybudget < ActiveRecord::Base
 
 		itembybudget_buffer.each do |item|
 			new_input = Inputbybudgetanditem.new
-			new_input.get_inputs(item.budget_code, item.item_code, item.order, item.owneritem, database)
+			
+			# TO-DO: Obtener el numero de registros a procesar y hacer bucle
+			
+			# new_input.get_quantity_to_get(item.budget_code, item.item_code, item.order, item.owneritem, database)
+			
+			 
+			inicio = 0
+			fin = 0
+			new_input.get_inputs(item.budget_code, item.item_code, item.order, item.owneritem, database, inicio, fin)
 		end
 
 

@@ -8,7 +8,6 @@
           %i.fa.fa-check>
             Aprobar
   %div
-    .jarviswidget-editbox
     .widget-body
       %table.panel.panel-primary{ style: "height: 230px; width: 850px;margin: 0 auto" }
         %thead.panel-heading
@@ -39,20 +38,21 @@
           %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.balance, unit: 'S/. ', precision: 2)
   %br
   %br
-  %br
   %div
-    .jarviswidget-editbox
     .widget-body
+      %h1{"style"=>"font-size: large;color:#5f5f5f; font-weight:bold;text-align:center;"}
+        = "SEMANA N° #{@inicio[0].split[1].to_s} - #{@fin[0].split[1].to_s} / DEL #{@start_date.to_date.strftime('%d-%m-%y')} AL #{@end_date.to_date.strftime('%d-%m-%y')}"
+      %br
       %table.panel.panel-primary.table-bordered{ style: "height: 530px;width: 850px;margin: 0 auto" }
         %thead.panel-heading
-          %tr
-            %th{ 'colspan' => 6, "style"=>"font-size: medium;color:white;text-align:center"}= "'#{@inicio[0].to_s}' a la '#{@fin[0].to_s}' -  Del '#{@start_date.to_date.strftime('%d-%m-%y')}' al '#{@end_date.to_date.strftime('%d-%m-%y')}'" 
-          %tr{"bgcolor"=>"#474544"}
+
+          %tr{"bgcolor"=>"#3276B1",style: "height: 45px;"}
             %th{"style"=>"color:white;text-align:center"} Item
             %th{"style"=>"color:white;text-align:center"} Descripcion
             %th{ 'colspan' => 2, "style"=>"color:white;text-align:center"} Actual
             %th{"style"=>"color:white;text-align:center"} Acumulado Anterior
             %th{"style"=>"color:white;text-align:center"} Acumulado Actual
+
         %tbody
           %tr{"bgcolor"=>"#ECF3F8"}
             %th{"style"=>"color:#5f5f5f"} 1.00
@@ -108,7 +108,7 @@
             %th{"style"=>"color:#5f5f5f"} 5.03
             %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
             %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.other_discount, unit: 'S/. ', precision: 2)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@otrosdescuentos, unit: 'S/. ', precision: 2)          
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@otrosdescuentos, unit: 'S/. ', precision: 2)
             %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_other_discount, unit: 'S/. ', precision: 2)
           %tr{"bgcolor"=>"#ECF3F8"}
             %th{"style"=>"color:#5f5f5f"}

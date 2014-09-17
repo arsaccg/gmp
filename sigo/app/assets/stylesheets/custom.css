@@ -96,3 +96,15 @@ margin-right: 100px;
   background-color: #C0F09C;
   text-align: right;
 }
+
+.individual-panel {
+  overflow: auto;
+}
+
+.content-load{
+  overflow: auto;
+}
+
+.botom-load {
+  overflow: auto; 
+}
