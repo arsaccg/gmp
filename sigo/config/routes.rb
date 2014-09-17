@@ -157,6 +157,7 @@ ArsacLogistica::Application.routes.draw do
         post 'display_articles'
         post 'show_rows_delivery_orders'
         get 'show_tracking_orders'
+        post 'display_orders'
       end
       member do
         get 'gorevise'
