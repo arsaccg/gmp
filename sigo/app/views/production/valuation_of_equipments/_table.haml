@@ -34,7 +34,7 @@
               %td
                 %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_valuation_of_equipment_path(unit.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Ver información
-                %a.btn.btn-default.btn-xs{ :href => "#{report_pdf_production_valuation_of_equipment_path(unit.id)}.pdf", :target => '_blank' }
+                %a.btn.btn-primary.btn-xs{ :href => "#{report_pdf_production_valuation_of_equipment_path(unit.id)}.pdf", :target => '_blank' }
                   Ver PDF
                 - case unit.state
                   - when 'disapproved'
