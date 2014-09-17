@@ -512,7 +512,7 @@ function load_url_ondiv(url, div_name){ /*  usar este owo  */
   var url_str = url;
   var div_name = div_name;
 
-  $("." + div_name).html("<br/><br/><br/><center><img src='/assets/ajax-loader.gif' /></center>")
+  $("." + div_name).html("<br/><br/><br/><center><img src='/assets/ajax-loader.gif'/></center>");
 
   $.ajax({
     url: url_str,
@@ -574,8 +574,8 @@ function post_to_url_class(url, form_id, response_div){
   });
 }
 
-/*
-function delete_to_url(url, div_name)
+
+function delete_to_url_into_div(url, div_name)
 {
   var url_str = url;
   var div_name = div_name;
@@ -590,7 +590,7 @@ function delete_to_url(url, div_name)
   });
   return false
 }
-*/
+
 
 // Funcion que dibuja el WBS desde una entrada de datos preformateado en JSON
 

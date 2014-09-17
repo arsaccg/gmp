@@ -279,9 +279,13 @@
                 Planeamiento
               %ul
                 %li
-                  %a{href: "#{management_wbsitems_path}", title: "wbs"}
+                  %a{href: "#{management_wbsitems_path}", title: "Wbs"}
                     %i.fa.fa-lg.fa-fw.fa-list-alt
                     Wbs
+                %li
+                  %a{href: "#{get_budget_by_project_management_budgets_path}", title: "Presupuestos"}
+                    %i.fa.fa-lg.fa-fw.fa-list-alt
+                    Presupuestos
           /...TOBI
           - if (current_user.has_role? :director) || (current_user.has_role? :control_documentary)
             %li

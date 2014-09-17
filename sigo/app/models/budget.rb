@@ -72,10 +72,6 @@ class Budget < ActiveRecord::Base
       rest.each do |r|
         #sql with limit
         #sql1 = "SELECT * FROM ( SELECT *, ROW_NUMBER() OVER (ORDER BY Insumo.codinsumo) as row FROM Insumo ) a WHERE row > 0 and row <= 1"
-        #count_sql1 = "SELECT DISTINCT COUNT(*)Insumo.codInsumo, Insumo.descripcion From Insumo WHERE Insumo.codInsumo LIKE '__" + r.first.to_s + "'"
-
-        p "~~~~~~~~~~~~~~~~~~~~~~~~"
-        p r.first.to_s
         sql1 = "SELECT DISTINCT Insumo.codInsumo, Insumo.descripcion From Insumo WHERE Insumo.codInsumo LIKE '__" + r.first.to_s + "'"
         description_arr << do_query(sql1,{db_name: database}) #{db_name: "AREQUIPA_BD2014"})
       end
@@ -200,9 +196,8 @@ class Budget < ActiveRecord::Base
   
   end
 
-  # For Table Meta in Analysis Production
-
   def self.budget_meta_info_per_article(cod_article, cost_center_id)
+    # For Table Meta in Analysis Production
     data_mysql = ActiveRecord::Base.connection.execute("
       SELECT ibbi.cod_input, SUM( ibbi.quantity ) AS quantity, ibbi.price AS price, (ibbi.price * SUM( ibbi.quantity )) AS partial 
       FROM budgets b, inputbybudgetanditems ibbi
@@ -211,20 +206,6 @@ class Budget < ActiveRecord::Base
       AND ibbi.budget_id = b.id
       AND ibbi.cod_input LIKE '" + cod_article.to_s + "'
       GROUP BY ibbi.cod_input
-    ")
-
-    return data_mysql.first
-  end
-
-  def self.budget_meta_info_per_itembybudget(itembybudget_order, cost_center_id)
-    data_mysql = ActiveRecord::Base.connection.execute("
-      SELECT ibb.order, SUM(ibb.measured), ibb.price, (SUM(ibb.measured) * ibb.price) as partial 
-      FROM budgets b, itembybudgets ibb 
-      WHERE b.type_of_budget = 0 
-      AND b.cost_center_id = " + cost_center_id.to_s + "  
-      AND ibb.budget_id = b.id 
-      AND ibb.order LIKE '" + itembybudget_order.to_s + "' 
-      GROUP BY ibb.order
     ")
 
     return data_mysql.first

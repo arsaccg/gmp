@@ -1,6 +1,5 @@
-%table(class="table-bordered table-hover white-table table-condensed table " width="100%" style=" width: 92%;")
+%table(class="table table-bordered table-hover white-table table-condensed" width="100%" style=" width: 92%;")
   %thead
- 
     %th
       Nombre
     %th
@@ -27,7 +26,7 @@
             %a(class="btn btn-primary btn-mini"){:href=>"javascript:load_url_ondiv('" + edit_management_wbsitem_path(wbsitem.id).to_s + "', 'graph-org');"}
               %i(class="icon-pencil")
               Editar
-            %a(data-method ="delete" class="btn btn-mini btn-danger"){:href=>"javascript:delete_to_url('" + management_wbsitem_path(wbsitem.id).to_s + "?authenticity_token=#{form_authenticity_token}', 'graph-org', '#{management_wbsitems_path.to_s}?project_id='+$('#cost_center_selected').data("id"));"}
+            %a(data-method ="delete" class="btn btn-mini btn-danger" href = "javascript:delete_to_url_into_div('#{management_wbsitem_path(wbsitem.id).to_s}?authenticity_token=#{form_authenticity_token}', 'graph-org')" )
               %i(class="fa fa-md fa-fw fa-times")
 
 %div(id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
