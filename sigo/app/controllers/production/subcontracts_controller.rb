@@ -55,10 +55,10 @@ class Production::SubcontractsController < ApplicationController
     @reg_n = (Time.now.to_f*1000).to_i
     ibb_id = params[:itembybudget_id].split("-")
     @id_itembybudget = ibb_id[0]
-    name = Itembybudget.get_item_by_budget(ibb_id[0])
-    name.each do |na|
-      @name_itembybudget = na[2]
-    end
+    name = Itembybudget.find(ibb_id[0])
+    @name_itembybudget = name.subbudgetdetail
+    @code_itembybudget = name.order
+    
     render(partial: 'subcontract_items', :layout => false)
   end
 
