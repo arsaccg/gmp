@@ -8,7 +8,6 @@
           %i.fa.fa-check>
             Aprobar
   %div
-    .jarviswidget-editbox
     .widget-body
       %table.table.table-bordered{ style: "width: 850px;margin: 0 auto" }
         %thead
@@ -38,12 +37,11 @@
           %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.balance, unit: 'S/. ', precision: 2)
   %br
   %div
-    .jarviswidget-editbox
     .widget-body
       %table.table.table-bordered{ style: "width: 850px;margin: 0 auto" }
         %thead
           %tr
-            %th{ 'colspan' => 6, "style"=>"color:#5f5f5f;text-align:center"}= "#{@inicio[0].to_s} A LA #{@fin[0].to_s} DEL #{@start_date.to_date.strftime('%d-%m-%y')} AL #{@end_date.to_date.strftime('%d-%m-%y')}" 
+            %th{ 'colspan' => 6, "style"=>"color:#5f5f5f;text-align:center"}= "SEMANA N° #{@inicio[0].split[1].to_s} - #{@fin[0].split[1].to_s} / DEL #{@start_date.to_date.strftime('%d-%m-%y')} AL #{@end_date.to_date.strftime('%d-%m-%y')}" 
           %tr
             %th{"style"=>"color:#5f5f5f;text-align:center"} Item
             %th{"style"=>"color:#5f5f5f;text-align:center"} Descripcion
@@ -105,7 +103,7 @@
             %th{"style"=>"color:#5f5f5f"} 5.03
             %th{"style"=>"color:#5f5f5f"} Descuento de Otros (Incl. I.G.V.)
             %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.other_discount, unit: 'S/. ', precision: 2)
-            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@otrosdescuentos, unit: 'S/. ', precision: 2)          
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@otrosdescuentos, unit: 'S/. ', precision: 2)
             %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_other_discount, unit: 'S/. ', precision: 2)
           %tr
             %th{"style"=>"color:#5f5f5f"}
