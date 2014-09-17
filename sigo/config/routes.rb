@@ -177,6 +177,7 @@ ArsacLogistica::Application.routes.draw do
         post 'get_exchange_rate_per_date'
         post 'add_modal_extra_operations'
         post 'add_more_row_form_extra_op'
+        post 'display_orders'
       end
       member do
         put 'show_delivery_order_item_field'
