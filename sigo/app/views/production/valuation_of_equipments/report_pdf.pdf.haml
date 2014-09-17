@@ -1,0 +1,143 @@
+%html
+  %head
+    %meta{charset: "utf-8"}
+    = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
+  %body
+    = image_tag @company.avatar.url, alt: "#{@company.name}"
+    #main
+      #content
+        %br
+        %table.table
+          %thead
+            %th{'colspan' => 4, "style"=>"text-align:center; font-size: 23px; text-decoration:underline; border-bottom:none;"}= "VALORIZACIÓN N°"+ ' ' + @valuationofequipment.code
+          %tbody
+            %tr
+              %td{"style"=>"text-align:center; border-top:none;"} OBRA:
+              %td{'colspan' => 2, "style"=>"border-top:none; font-weight:bold;"}= CostCenterDetail.find_by_cost_center_id(@cc).name.to_s
+            %tr
+              %td{"style"=>"text-align:center; border-top:none;"} CONTRATISTA:
+              %td{'colspan' => 2, "style"=>"border-top:none; font-weight:bold;"}= @valuationofequipment.name.to_s
+            %tr
+              %td{"style"=>"text-align:center; border-top:none;"} RAZÓN SOCIAL:
+              %td{'colspan' => 2, "style"=>"border-top:none; font-weight:bold;"}= @valuationofequipment.name.to_s
+            %tr
+              %td{"style"=>"text-align:center; border-top:none;"} RUC:
+              %td{'colspan' => 2, "style"=>"border-top:none; font-weight:bold;"}= Entity.find_by_name(@valuationofequipment.name).ruc.to_s
+
+        %br
+        %h3{:style => 'text-align:center;'}
+          = "SEMANA N° #{@inicio[0].split[1].to_s} - #{@fin[0].split[1].to_s} / DEL #{@start_date.to_date.strftime('%d-%m-%y')} AL #{@end_date.to_date.strftime('%d-%m-%y')}"
+        %br
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th{"style"=>"text-align:center"} Item
+              %th{"style"=>"text-align:center"} Descripcion
+              %th{ 'colspan' => 2, "style"=>"text-align:center"} Cantidad
+              %th{"style"=>"text-align:center"} Acumulado Anterior
+              %th{"style"=>"text-align:center"} Acumulado Actual
+          %tbody
+            %tr
+              %td 1.00
+              %td Valorización sin IGV
+              %td{'colspan' => 2, "style"=>"text-align:center;vertical-align: middle"}= number_to_currency(@valuationofequipment.valuation, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;vertical-align: middle"}= number_to_currency(@valorizacionsinigv, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;vertical-align: middle"}= number_to_currency(@valuationofequipment.accumulated_valuation, unit: 'S/. ', precision: 2)
+            %tr
+              %td 2.00
+              %td Amortización de Adelanto (SIN. I.G.V.)
+              %td{'colspan' => 2, "style"=>"text-align:center"}= number_to_currency(@valuationofequipment.initial_amortization_number, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@amortizaciondeadelanto, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@valuationofequipment.accumulated_initial_amortization_number, unit: 'S/. ', precision: 2)
+            %tr
+              %td 3.00
+              %td Total a Facturar
+              %td{ 'colspan' => 2, "style"=>"text-align:center"}= number_to_currency(@valuationofequipment.bill, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@totalfacturar, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@valuationofequipment.accumulated_bill, unit: 'S/. ', precision: 2)
+            %tr
+              %td 4.00
+              %td I.G.V. del Total a Facturar
+              %td{ 'colspan' => 2, "style"=>"text-align:center"}= number_to_currency(@valuationofequipment.billigv, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@totalfacigv, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@valuationofequipment.accumulated_billigv, unit: 'S/. ', precision: 2)
+            %tr
+              %td
+              %td{ :style => 'font-weight:bold;' } Total Incluido IGV
+              %td{ 'colspan' => 2, "style"=>"text-align:center; font-weight:bold;"}= number_to_currency(@valuationofequipment.totalbill, unit: 'S/. ', precision: 2) 
+              %td{"style"=>"text-align:center; font-weight:bold;"}= number_to_currency(@totalincluidoigv, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center; font-weight:bold;"}= number_to_currency(@valuationofequipment.accumulated_totalbill, unit: 'S/. ', precision: 2)
+            %tr
+              %td 5.00
+              %td{ 'colspan' => 5 } Retenciones
+            %tr
+              %td 5.01
+              %td Detracción del Total (Incl. I.G.V.)
+              %td{ 'colspan' => 2, "style"=>"text-align:center"}= number_to_currency(@valuationofequipment.detraction, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@detraccion, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@valuationofequipment.accumulated_detraction, unit: 'S/. ', precision: 2)
+            %tr
+              %td 5.02
+              %td Descuento de Combustible (Incl. I.G.V.)
+              %td{ 'colspan' => 2, "style"=>"text-align:center"}= number_to_currency(@valuationofequipment.fuel_discount, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@descuentocombustible, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@valuationofequipment.accumulated_fuel_discount, unit: 'S/. ', precision: 2)
+            %tr
+              %td 5.03
+              %td Descuento de Otros (Incl. I.G.V.)
+              %td{ 'colspan' => 2, "style"=>"text-align:center"}= number_to_currency(@valuationofequipment.other_discount, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@otrosdescuentos, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center"}= number_to_currency(@valuationofequipment.accumulated_other_discount, unit: 'S/. ', precision: 2)
+            %tr
+              %td
+              %td{ :style => 'font-weight:bold;' } TOTAL RETENCIONES
+              %td{ 'colspan' => 2, "style"=>"text-align:center;font-weight:bold;"}= number_to_currency(@valuationofequipment.retention, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;font-weight:bold;"}= number_to_currency(@retenciones, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;font-weight:bold;"}= number_to_currency(@valuationofequipment.accumulated_retention, unit: 'S/. ', precision: 2)
+            %tr
+              %td 6.00
+              %td{ :style => 'font-weight:bold;' } NETO A PAGAR: TOTAL (INCL. I.G.V.) - TOTAL RETEN.
+              %td{ 'colspan' => 2, "style"=>"text-align:center;font-weight:bold;"}= number_to_currency(@valuationofequipment.net_payment, unit: 'S/. ', precision: 2)          
+              %td{"style"=>"text-align:center;font-weight:bold;"}= number_to_currency(@netoapagar, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;font-weight:bold;"}= number_to_currency(@valuationofequipment.accumulated_net_payment, unit: 'S/. ', precision: 2)
+
+    %br
+    %br
+    %br
+    %br
+    %br
+    %br
+    %br
+
+    %table.table
+      %tbody
+        %tr
+          %td{ :style => 'text-align:center; border-top:none;' }
+            %span __________________________________
+            %br
+            %span{ :style => 'font-weight:bold;' } ELABORADO POR
+          %td{ :style => 'text-align:center; border-top:none;' }
+            %span __________________________________
+            %br
+            %span{ :style => 'font-weight:bold;' } V° B°
+            %br
+            %span{ :style => 'font-weight:bold;' } Oficina Técnica
+        %tr
+          %td{ :style => 'border-top:none;' }
+          %td{ :style => 'border-top:none;' }
+        %tr
+          %td{ :style => 'border-top:none;' }
+          %td{ :style => 'border-top:none;' }
+        %tr
+          %td{ :style => 'border-top:none;' }
+          %td{ :style => 'border-top:none;' }
+        %tr
+          %td{ :style => 'border-top:none;' }
+          %td{ :style => 'border-top:none;' }
+        %tr
+          %td{ :colspan => 4, :style => 'text-align:center; border-top:none;' }
+            %span __________________________________
+            %br
+            %span{ :style => 'font-weight:bold;' } V° B°
+            %br
+            %span{ :style => 'font-weight:bold;' } Ing. Residente

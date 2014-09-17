@@ -10,14 +10,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   def show
     @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
     @start_date = @valuationofequipment.start_date
-    puts "_-----------------------------"
-    puts @start_date.to_date.to_s
-    puts "_-----------------------------"
     @end_date = @valuationofequipment.end_date
-    puts "_-----------------------------"
-    puts @end_date.to_date.to_s
-
-    puts "_-----------------------------"
 
     @valorizacionsinigv = 0
     @amortizaciondeadelanto = 0
@@ -200,7 +193,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
   def updateParts(start_date, end_date, id)
     ActiveRecord::Base.connection.execute("
-      Update part_of_equipments set block = 1 where date BETWEEN '" + start_date + "' AND '" + end_date + "' AND subcontract_equipment_id=" + id.to_s + "
+      UPDATE part_of_equipments set block = 1 WHERE date BETWEEN '" + start_date + "' AND '" + end_date + "' AND subcontract_equipment_id=" + id.to_s + "
     ")
   end
 
@@ -239,16 +232,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @art = Array.new
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
-      puts "---- workerDetail ----"
-      puts workerDetail[0]
-      puts workerDetail[1]
-      puts workerDetail[2]
-      puts workerDetail[3]
-      puts workerDetail[4]
-      puts workerDetail[5]
-      puts workerDetail[6]
-      puts workerDetail[7]
-      puts "---- workerDetail ----"
       @art << workerDetail[5]
     end
     @art = @art.join(',')
@@ -290,25 +273,13 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @last.each do |wa3|
       @second << wa3
     end
-    puts "-------@first----" 
-    puts @first
-    puts "-------@second----"  
-    puts @second 
+
     @first.each do |arr|
       i=0
       @second.each do |sec|
         if @second.count == 1 && i==0
           if arr[0]==sec[0]
             @array << (arr + sec).to_a
-            puts "-------@array----"
-
-            puts (arr + sec).to_a
-            puts "--------------"
-
-            puts "----arr---"
-            puts arr
-            puts "----sec---"
-            puts sec
           else
             cero = [0,0,0]
             @array << (arr+ cero).to_a
@@ -373,6 +344,56 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     valuationOfEquipment = ValuationOfEquipment.find(params[:id])
     valuationOfEquipment.approve
     redirect_to :action => :index
+  end
+
+  def report_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @company = Company.find(get_company_cost_center('company'))
+        @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+        @start_date = @valuationofequipment.start_date
+        @end_date = @valuationofequipment.end_date
+
+        @valorizacionsinigv = 0
+        @amortizaciondeadelanto = 0
+        @totalfacturar = 0
+        @totalfacigv = 0
+        @totalincluidoigv = 0
+        @retenciones = 0
+        @detraccion = 0
+        @descuentocombustible = 0
+        @otrosdescuentos = 0
+        @netoapagar = 0
+        @code = 0
+        @code = @valuationofequipment.code.to_i - 1
+        @code = @code.to_s.rjust(3,'0')
+        @valuationofequipment2 = getsc_valuation2(@valuationofequipment.start_date, @valuationofequipment.end_date, @valuationofequipment.name, @code)
+        
+        if @valuationofequipment2.count > 0
+          @valuationofequipment2.each do |workerDetail|
+            @valorizacionsinigv = workerDetail[0]
+            @amortizaciondeadelanto = workerDetail[1]
+            @totalfacturar = workerDetail[2]
+            @totalfacigv = workerDetail[3]
+            @totalincluidoigv = workerDetail[4]
+            @retenciones = workerDetail[5]
+            @detraccion = workerDetail[6]
+            @descuentocombustible = workerDetail[7]
+            @otrosdescuentos = workerDetail[8]
+            @netoapagar = workerDetail[9]
+          end
+        end
+
+        @cc = get_company_cost_center('cost_center')
+        @inicio = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" WHERE start_date <= '"+@start_date.to_s+"' AND end_date >= '"+@start_date.to_s+"'").first
+        @fin = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" WHERE start_date <= '"+@end_date.to_s+"' AND end_date >= '"+@end_date.to_s+"'").first
+        
+        render :pdf => "valorizacion_equipos_#{@valuationofequipment.code}-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'production/valuation_of_equipments/report_pdf.pdf.haml',
+               :page_size => 'Letter'
+      end
+    end
   end
 
   private
