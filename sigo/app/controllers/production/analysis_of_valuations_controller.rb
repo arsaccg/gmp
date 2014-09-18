@@ -186,23 +186,41 @@ class Production::AnalysisOfValuationsController < ApplicationController
   end
 
   def business_days_array2(start_date, end_date, working_group_id,sector_id)
-    workers_array2 = ActiveRecord::Base.connection.execute("
-      SELECT pwd.itembybudget_id, 
+    #workers_array2 = ActiveRecord::Base.connection.execute("
+    #  SELECT pwd.itembybudget_id, 
+    #    ibb.subbudgetdetail, 
+    #    ibb.order, 
+    #    SUM( pwd.bill_of_quantitties ), 
+    #    si.unit_price, 
+    #    si.unit_price*SUM( pwd.bill_of_quantitties ), 
+    #    p.date_of_creation 
+    #  FROM part_works p, part_work_details pwd, itembybudgets ibb, subcontract_details si 
+    #  WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
+    #  AND p.sector_id IN(" + sector_id + ")
+    #  AND p.working_group_id IN(" + working_group_id + ")
+    #  AND p.id = pwd.part_work_id
+    #  AND pwd.itembybudget_id = si.itembybudget_id
+    #  AND si.itembybudget_id = ibb.id
+    #  GROUP BY ibb.subbudgetdetail
+    #")
+    workers_array2 = ActiveRecord::Base.connection.execute(
+      "SELECT
+        pwd.itembybudget_id, 
         ibb.subbudgetdetail, 
         ibb.order, 
-        SUM( pwd.bill_of_quantitties ), 
-        si.unit_price, 
-        si.unit_price*SUM( pwd.bill_of_quantitties ), 
+        SUM(pwd.bill_of_quantitties)*ibb.measured as quantity,
+        ibb.price as price,
+        ibb.price*(SUM(pwd.bill_of_quantitties)*ibb.measured) as partial,
         p.date_of_creation 
-      FROM part_works p, part_work_details pwd, itembybudgets ibb, subcontract_details si 
+      FROM part_works p, part_work_details pwd, itembybudgets ibb
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
-      AND p.sector_id IN(" + sector_id + ")
-      AND p.working_group_id IN(" + working_group_id + ")
+      AND p.sector_id IN (8)
+      AND p.working_group_id IN (" + working_group_id + ")
       AND p.id = pwd.part_work_id
-      AND pwd.itembybudget_id = si.itembybudget_id
-      AND si.itembybudget_id = ibb.id
-      GROUP BY ibb.subbudgetdetail
-    ")
+      AND pwd.itembybudget_id =  ibb.id
+      GROUP BY pwd.itembybudget_id"
+    )
+
     return workers_array2
   end
 
