@@ -151,7 +151,7 @@
             %tbody
             - @meta_part_work.each do |m_work|
               %tr
-                %td= m_work[0]
+                %td= m_work[0].round(2)
                 %td= number_to_currency m_work[1], unit: 'S/.', precision: 2
                 %td= number_to_currency m_work[2], unit: 'S/.', precision: 2
 

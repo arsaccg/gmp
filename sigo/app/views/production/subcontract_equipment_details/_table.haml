@@ -32,7 +32,7 @@
               %td
                 =part.year
               %td 
-                =part.price_no_igv
+                = number_to_currency part.price_no_igv.to_f, unit: "S/.", precision: 2
               %td
                 =part.contracted_amount
               %td

@@ -222,6 +222,20 @@ class Budget < ActiveRecord::Base
     return data_mysql.first
   end
 
+  def self.budget_meta_info_per_itembybudget(itembybudget_order, cost_center_id)
+    data_mysql = ActiveRecord::Base.connection.execute("
+      SELECT ibb.order, SUM(ibb.measured), ibb.price, (SUM(ibb.measured) * ibb.price) as partial 
+      FROM budgets b, itembybudgets ibb 
+      WHERE b.type_of_budget = 0 
+      AND b.cost_center_id = " + cost_center_id.to_s + "  
+      AND ibb.budget_id = b.id 
+      AND ibb.order LIKE '" + itembybudget_order.to_s + "' 
+      GROUP BY ibb.order
+    ")
+
+    return data_mysql.first
+  end
+
 end
 
 
