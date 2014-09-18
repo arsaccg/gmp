@@ -1,52 +1,71 @@
-.row-fluid
-  .span12
-    =simple_form_for [:management, @budget], :html => {:id=>'form-data'} do |f|
-      .fieldset
-        %legend
-          Cargar Presupuesto
-        .control-group
-          %label(class="control-label") Base de Datos
-          .controls
-            %select(name="database_id" id="database_id" class="span12 small-font" onchange="load_budgets_from_db($(this).val())")
-              =#options_for_select(@budgets.collect{ |u| [ (("--") * u[:budget_code].length.to_i) + " " + u[:budget_code] + " " +  " " + u[:budget_name], u[:budget_code].to_s]})
-              - @dbs.each do |db|
-                %option{value: db[:name]}
-                  = db[:name]
-            %select(name="budget_id" class="span12 small-font" size="10" id = "budget_id")
-            %input(type="hidden" id="project_id" name = "project_id")
-        %br
-        %h4 Gastos Generales
-        = f.input :general_expenses, label: false
-        %br
-        %h4 Utilidad
-        = f.input :utility, label: false
-        %h5
-          Tipo de Presupuesto:
-        .small-font
-          %input(type="radio" name="type_of_budget" value="0")
-          
-            Presupuesto Meta
-        %br
-        .small-font
-          %input(type="radio" name="type_of_budget" value="1")
-           
-            Presupuesto Venta
-        .form-actions     
-          %a{:href=>"javascript:load_budget();"}(class="btn btn-success btn-small")
-            %i(class="icon-arrow-up")
-            Cargar Presupuesto
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h2.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Cargar Presupuesto
 
-          =#%a(href="#"){class: "btn btn-danger"}
-          =#  Cancelar
- 
+  %br
+  #widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-eye
+            %h2 Presupuesto
+          .widget-body
+            /.col-md-12
+            =simple_form_for [:management, @budget], :html => {:id=>'form-data', class: 'smart-form'} do |f|
+              %fieldset
+                .row
+                  %section.col.col-10
+                    %label.label Base de Datos
+                    .controls
+                      %select(name="database_id" id="database_id" class="col-md-12 small-font form-control" onchange="load_budgets_from_db($(this).val())")
+                        =#options_for_select(@budgets.collect{ |u| [ (("--") * u[:budget_code].length.to_i) + " " + u[:budget_code] + " " +  " " + u[:budget_name], u[:budget_code].to_s]})
+                        - @dbs.each do |db|
+                          %option{value: db[:name]}
+                            = db[:name]
+                      %select(name="budget_id" class="col-md-12 small-font form-control" size="10" id = "budget_id")
+                      %input(type="hidden" id="project_id" name = "project_id")
+                .row
+                  %section.col.col-10
+                    %label.label Gastos Generales
+                    %label.input{for: "general_expenses"}
+                      
+                      = f.input :general_expenses, placeholder: "Gastos Generales", input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Utilidad
+                    %label.input{for: "utility"}
+                      
+                      = f.input :utility, placeholder: "Utilidad", input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Tipo de Presupuesto:
+                    .rad
+                      %label
+                        %input(type="radio" name="type_of_budget" id="radio1" value="0" checked)
+                        Presupuesto Meta
+                    .rad
+                      %label
+                        %input(type="radio" name="type_of_budget" id="radio2" value="1")
+                        Presupuesto Venta
+
+                .form-actions     
+                  %a{:href=>"javascript:load_budget();"}(class="btn btn-success btn-small")
+                    %i.fa.fa-lg.fa-fw.fa-download
+                    Cargar Presupuesto
+
+                  =#%a(href="#"){class: "btn btn-danger"}
+                  =#  Cancelar
+
+-#$("#project_id").val("#{get_company_cost_center('cost_center')}");
 :javascript 
-  $("#project_id").val(project_selected_data['id']);
-
-  
   function load_budget(){
     post_to_url('#{load_elements_management_budgets_path.to_s}?database=' + $("#database_id").val(), 'form-data', 'right-area');
   }
-
 
   function load_budgets_from_db(str_budget){
     var select = $('#budget_id');

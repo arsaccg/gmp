@@ -280,11 +280,15 @@
               %ul
                 %li
                   %a{href: "#{management_wbsitems_path}", title: "Wbs"}
-                    %i.fa.fa-lg.fa-fw.fa-list-alt
+                    %i.fa.fa-lg.fa-fw.fa-sitemap
                     Wbs
                 %li
+                  %a{href: "#{new_management_budget_path}", title: "Importar de S10"}
+                    %i.fa.fa-lg.fa-fw.fa-download
+                    Importar de S10
+                %li
                   %a{href: "#{get_budget_by_project_management_budgets_path}", title: "Presupuestos"}
-                    %i.fa.fa-lg.fa-fw.fa-list-alt
+                    %i.fa.fa-lg.fa-fw.fa-money
                     Presupuestos
           /...TOBI
           - if (current_user.has_role? :director) || (current_user.has_role? :control_documentary)
