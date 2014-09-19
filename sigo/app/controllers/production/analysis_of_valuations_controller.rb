@@ -101,17 +101,15 @@ class Production::AnalysisOfValuationsController < ApplicationController
     @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2)
 
     @workers_array2.each do |workerDetail|
-      @totalprice2 += workerDetail[5]
+      # Get quantity of itembybudgetanditems
+      quantity_ibb = sum_quantity_per_itembybudget_detail(workerDetail[2], workerDetail[5])*workerDetail[3]
+      # Calculate total of current itembybudget
+      total_current_ibb = quantity_ibb*workerDetail[4]
+      # Calculate Total of all itembybudgets
+      @totalprice2 += total_current_ibb
+      # Make a custom Array
+      @meta_part_work << [ workerDetail[2], workerDetail[1], quantity_ibb, workerDetail[4], total_current_ibb ]
 
-      itembybudget = Itembybudget.select(:id).select(:order).find(workerDetail[0])
-      meta_info = Budget.budget_meta_info_per_itembybudget(itembybudget.order, @cost_center)
-      if !meta_info.nil?
-        @meta_part_work << [ meta_info[1], meta_info[2], meta_info[3] ]
-        @m_price_part_work += meta_info[3]
-      else
-        @meta_part_work << [ 0, 0, 0 ]
-        @m_price_part_work += 0
-      end
     end
 
     # Parte de Equipo
@@ -208,9 +206,9 @@ class Production::AnalysisOfValuationsController < ApplicationController
         pwd.itembybudget_id, 
         ibb.subbudgetdetail, 
         ibb.order, 
-        SUM(pwd.bill_of_quantitties)*ibb.measured as quantity,
+        SUM(pwd.bill_of_quantitties) as bill_of_quantitties,
         ibb.price as price,
-        ibb.price*(SUM(pwd.bill_of_quantitties)*ibb.measured) as partial,
+        ibb.budget_id as budget_id,
         p.date_of_creation 
       FROM part_works p, part_work_details pwd, itembybudgets ibb
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
@@ -222,6 +220,17 @@ class Production::AnalysisOfValuationsController < ApplicationController
     )
 
     return workers_array2
+  end
+
+  def sum_quantity_per_itembybudget_detail(order_ibb, budget_id)
+    sum_quantity = ActiveRecord::Base.connection.execute(
+      "SELECT SUM( quantity ) 
+       FROM  `inputbybudgetanditems` 
+       WHERE inputbybudgetanditems.order LIKE '" + order_ibb.to_s + "'
+       AND budget_id = " + budget_id.to_s
+    ).first[0]
+
+    return sum_quantity
   end
 
   def business_days_array3(start_date, end_date, working_group_id,sector_id)

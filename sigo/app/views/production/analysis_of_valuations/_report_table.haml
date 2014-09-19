@@ -84,14 +84,14 @@
               %tr 
                 %th Codigo
                 %th{ :colspan => 4 } Partidas
-            - @workers_array2.each do |workerDetail2|
+            - @meta_part_work.each do |itembybudget|
               %tr
-                %td= workerDetail2[2]
-                %td= workerDetail2[1]
+                %td= itembybudget[0]
+                %td= itembybudget[1]
                 /%td= workerDetail2[0]
-                %td= workerDetail2[3].round(2)
-                %td= number_to_currency workerDetail2[4], unit: 'S/.', precision: 2
-                %td= number_to_currency workerDetail2[5], unit: 'S/.', precision: 2
+                %td= itembybudget[2].round(2)
+                %td= number_to_currency itembybudget[3], unit: 'S/.', precision: 2
+                %td= number_to_currency itembybudget[4], unit: 'S/.', precision: 2
             %tr
               %th{ :colspan => 4 } SUB-TOTAL
               %td
