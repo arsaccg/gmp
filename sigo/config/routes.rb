@@ -407,6 +407,7 @@ ArsacLogistica::Application.routes.draw do
     resources :subcontract_equipments do
       collection do
         post 'add_more_advance'
+        get 'get_report'
       end
     end
     resources :subcontracts do
