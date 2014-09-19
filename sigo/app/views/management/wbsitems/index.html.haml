@@ -1,6 +1,6 @@
 
-.row-fluid
-  .span12
+.row
+  .col-md-12
     .group-bar
       = hidden_field_tag "cost_center_selected", @cost_center_selected, { :id => "cost_center_selected", "data-name" => @cost_center_selected.name, "data-id" => @cost_center_selected.id }
       %strong(style="padding-left: 10px;")
@@ -27,8 +27,8 @@
           %i(class="fa fa-md fa-fw fa-search-plus")
         %a(href="javascript:zoom_out();" class="btn btn btn-primary btn-mini")
           %i(class="fa fa-md fa-fw fa-search-minus")
-.row-fluid
-  .span12(class="graph-org")
+.row
+  .ol-md-12(class="graph-org")
     %div(id="graph-org")
 
 :javascript 

@@ -23,6 +23,7 @@ class Wbsitem < ActiveRecord::Base
 	end 
 
 	def self.to_csv(options = {})
+		csv = Array.new
 		csv << (column_names - ['description', 'notes', 'created_at', 'updated_at', 'project_id', 'start_date', 'end_date', 'predecessors'])
 		all.each do |wbsitem|
 			csv << wbsitem.attributes.values_at(*column_names)

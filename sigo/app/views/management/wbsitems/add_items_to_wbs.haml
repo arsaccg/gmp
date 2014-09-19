@@ -75,7 +75,7 @@
                       = number_to_currency(number_with_precision((itembywbs.measured.to_f * itembywbs.price.to_f).to_s, :precision => 2).to_s , :unit=>'S/. ') rescue ""
                 %td
                   %a(class="btn btn-mini btn-danger"){:href=>"javascript:delete_ajax('#{management_itembywbs_path(itembywbs.id)}')"}
-                    %i(class="icon-trash") 
+                    %i(class="fa fa-trash") 
 :javascript 
 
   var selected_wbs;
