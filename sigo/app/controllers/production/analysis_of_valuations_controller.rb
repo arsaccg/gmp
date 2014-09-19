@@ -123,7 +123,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       article = Article.find(specific[1])
       meta_info = Budget.budget_meta_info_per_article(article.code, @cost_center)
       if !meta_info.nil?
-        @meta_part_equipment << [ meta_info[1], meta_info[2], meta_info[3] ]
+        @meta_part_equipment << [ meta_info[1], meta_info[2], meta_info[3], workerDetail[0] ]
         @m_price_part_equipment += meta_info[3]
       else
         @meta_part_equipment << [ 0, 0, 0 ]
@@ -135,12 +135,14 @@ class Production::AnalysisOfValuationsController < ApplicationController
     @meta_stock_inputs = Array.new
     @stock_inputs = business_days_array4(start_date, end_date, @cad, @cad2)
 
-    @stock_inputs.each do |m_input|
-      meta_info = Budget.budget_meta_info_per_article(m_input[4], @cost_center)
-      if !meta_info.nil?
-        @meta_stock_inputs << [ meta_info[1], meta_info[2], meta_info[3] ]
-      else
-        @meta_stock_inputs << [ 0, 0, 0 ]
+    if @stock_inputs.count > 0
+      @stock_inputs.each do |m_input|
+        meta_info = Budget.budget_meta_info_per_article(m_input[4], @cost_center)
+        if !meta_info.nil?
+          @meta_stock_inputs << [ meta_info[1], meta_info[2], meta_info[3] ]
+        else
+          @meta_stock_inputs << [ 0, 0, 0 ]
+        end
       end
     end
 
