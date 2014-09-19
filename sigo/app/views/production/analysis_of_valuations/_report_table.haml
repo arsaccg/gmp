@@ -92,11 +92,11 @@
                 %td= workerDetail2[3].round(2)
                 %td= number_to_currency workerDetail2[4], unit: 'S/.', precision: 2
                 %td= number_to_currency workerDetail2[5], unit: 'S/.', precision: 2
-              %tr
-                %th{ :colspan => 4 } SUB-TOTAL
-                %td
-                  %span.label.label-danger{"style"=>"color:#fff"}
-                    = number_to_currency @totalprice2, unit: 'S/.', precision: 2
+            %tr
+              %th{ :colspan => 4 } SUB-TOTAL
+              %td
+                %span.label.label-danger{"style"=>"color:#fff"}
+                  = number_to_currency @totalprice2, unit: 'S/.', precision: 2
 
   -if @workers_array.count>0
     .container-part-people

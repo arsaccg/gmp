@@ -3,7 +3,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
   	@company = get_company_cost_center('company')
   	@workingGroups = WorkingGroup.all
     @sector = Sector.where("code LIKE '__'")
-    @subsectors = Sector.where("code LIKE '____'")
+    @subsectors = Sector.where("code LIKE '____'").first
     @front_chiefs = PositionWorker.find(1).workers # Jefes de Frentes
     @master_builders = PositionWorker.find(2).workers # Capatazes o Maestros de Obra
     @executors = Subcontract.where('entity_id <> 0') # Exclude the Subcontract Default
@@ -214,7 +214,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
         p.date_of_creation 
       FROM part_works p, part_work_details pwd, itembybudgets ibb
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
-      AND p.sector_id IN (8)
+      AND p.sector_id IN (" + sector_id.to_s + ")
       AND p.working_group_id IN (" + working_group_id + ")
       AND p.id = pwd.part_work_id
       AND pwd.itembybudget_id =  ibb.id
