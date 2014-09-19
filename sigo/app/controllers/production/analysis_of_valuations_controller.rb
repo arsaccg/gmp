@@ -103,16 +103,16 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
     @workers_array2.each do |workerDetail|
       # Get quantity of itembybudgetanditems
-      quantity_ibb = sum_quantity_per_itembybudget_detail(workerDetail[2], workerDetail[5])*workerDetail[3]
+      # quantity_ibb = sum_quantity_per_itembybudget_detail(workerDetail[2], workerDetail[5])*workerDetail[3]
       
       # Calculate total of current itembybudget
-      total_current_ibb = quantity_ibb*workerDetail[4]
+      total_current_ibb = workerDetail[3]*workerDetail[4]
       
       # Calculate Total of all itembybudgets
       @totalprice2 += total_current_ibb
       
       # Make a custom Array
-      @meta_part_work << [ workerDetail[2], workerDetail[1], quantity_ibb, workerDetail[4], total_current_ibb ]
+      @meta_part_work << [ workerDetail[2], workerDetail[1], workerDetail[3], workerDetail[4], total_current_ibb ]
       
       # List BudgetAndItems
       budgetanditems_list << [ workerDetail[2], workerDetail[5] ]
@@ -155,7 +155,11 @@ class Production::AnalysisOfValuationsController < ApplicationController
         # [0] => itembybudget_order, [1] => budget_id
         list_materials = get_tobi_articles_materials_from_itembybudgets(ibb[0], ibb[1])
         list_materials.each do |material|
-          @meta_stock_inputs << [ material[0], material[1], material[2], material[3], material[2]*material[3] ]
+          if !@meta_stock_inputs.map(&:first).include? material[0]
+            @meta_stock_inputs << [ material[0], material[1], material[2], material[3], material[2]*material[3] ]
+          else
+            @meta_stock_inputs << [ material[0], material[1], material[2], material[3], material[2]*material[3] ]
+          end
         end
       end
     end
@@ -215,7 +219,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       AND p.working_group_id IN (" + working_group_id + ")
       AND p.id = pwd.part_work_id
       AND pwd.itembybudget_id =  ibb.id
-      GROUP BY pwd.itembybudget_id"
+      GROUP BY ibb.subbudgetdetail"
     )
 
     return workers_array2
