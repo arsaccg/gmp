@@ -83,6 +83,45 @@ class Production::SubcontractEquipmentsController < ApplicationController
     render(partial: 'subcontract_equipment_advance_items', :layout => false)
   end
 
+  def get_report
+    @cc = CostCenter.find(get_company_cost_center('cost_center'))
+    @poe =ActiveRecord::Base.connection.execute("
+      SELECT a.code, CONCAT( a.name,  ' ',  'MARCA ', sed.brand,  ' ',  'MODELO ', sed.model,  ' ', sed.series ) , u.name, sed.code, e.name, sed.date_in, sed.price_no_igv, rt.name
+      FROM articles_from_cost_center_"+@cc.id.to_s+" a, unit_of_measurements u, entities e, subcontract_equipment_details sed, subcontract_equipments se, rental_types rt
+      WHERE se.cost_center_id = "+@cc.id.to_s+"
+      AND sed.article_id = a.id
+      AND a.unit_of_measurement_id = u.id
+      AND se.entity_id = e.id
+      AND sed.subcontract_equipment_id = se.id
+      AND sed.rental_type_id = rt.id
+      ORDER BY a.code
+    ")
+    @todo = Array.new
+    @abuelo = Array.new
+    @padre = Array.new
+    @hijo = Array.new
+    @poe.each do |poe|
+      @code = poe[0].to_s
+      if !@abuelo.include?(@code[2,2])
+        @abuelo << @code[2,2]
+        @todo << [@code[2,2],nil,nil,nil,nil,nil,nil,nil]
+      end
+      if !@padre.include?(@code[2,4])
+        @padre << @code[2,4]
+        @todo << [@code[2,4],nil,nil,nil,nil,nil,nil,nil]
+      end
+      if !@hijo.include?(@code[2,6])
+        @hijo << @code[2,6]
+        @todo << [@code[2,6],nil,nil,nil,nil,nil,nil,nil]
+      end
+      @todo << poe
+    end
+    render :pdf => "reporte_listado_de_equipos-#{Time.now.strftime('%d-%m-%Y')}", 
+           :template => 'production/subcontract_equipments/report_pdf.pdf.haml',
+           :orientation => 'Landscape',
+           :page_size => 'A4'
+  end
+
   private
   def subcontracts_parameters
     params.require(:subcontract_equipment).permit(:entity_id, :valorization, :terms_of_payment, :initial_amortization_number, :initial_amortization_percent, :igv, :guarantee_fund,:contract_description, :detraction,

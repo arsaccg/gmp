@@ -6,25 +6,6 @@
       Análisis de Producción
 
   .container-summary-total
-    %div{ :style => 'width:33%; display:inline-block;' }
-      %h1.page-title.txt-color-blueDark Totales REAL
-      .widget-body
-        %table.table.table-bordered
-          %tbody
-            %tr
-              %td Total Partidas
-              %td= number_to_currency @totalprice2, unit: 'S/.', precision: 2
-            %tr
-              %td Total Mano de Obra
-              %td= number_to_currency @totalprice, unit: 'S/.', precision: 2
-            %tr
-              %td Total Equipos
-              %td= number_to_currency @totalprice3, unit: 'S/.', precision: 2
-            %tr
-              %td Total
-              %td
-                %span.label.label-danger{"style"=>"color:#fff"}
-                  = number_to_currency @totalprice4, unit: 'S/.', precision: 2
 
     %div{ :style => 'width:33%; display:inline-block;' }
       %h1.page-title.txt-color-blueDark Totales META
@@ -35,7 +16,7 @@
               %td Total Partidas
               %td= number_to_currency @m_price_part_work, unit: 'S/.', precision: 2
             %tr
-              %td Total Mano de Obra
+              %td Total Personal
               %td= number_to_currency @m_price_part_person, unit: 'S/.', precision: 2
             %tr
               %td Total Equipos
@@ -45,6 +26,27 @@
               %td
                 %span.label.label-danger{"style"=>"color:#fff"}
                   = number_to_currency @m_total_price, unit: 'S/.', precision: 2
+
+    %div{ :style => 'width:33%; display:inline-block;' }
+      %h1.page-title.txt-color-blueDark Totales REAL
+      .widget-body
+        %table.table.table-bordered
+          %tbody
+            %tr
+              %td Total Partidas
+              %td= number_to_currency @totalprice2, unit: 'S/.', precision: 2
+            %tr
+              %td Total Personal
+              %td= number_to_currency @totalprice, unit: 'S/.', precision: 2
+            %tr
+              %td Total Equipos
+              %td= number_to_currency @totalprice3, unit: 'S/.', precision: 2
+            %tr
+              %td Total
+              %td
+                %span.label.label-danger{"style"=>"color:#fff"}
+                  = number_to_currency @totalprice4, unit: 'S/.', precision: 2
+
     %div{ :style => 'width:33%; display:inline-block;' }
       %h1.page-title.txt-color-blueDark Resultado
       .widget-body
@@ -65,9 +67,57 @@
                 - else
                   %span.label.label-success{"style"=>"color:#fff"}
                     = number_to_currency (@totalprice4 - @m_total_price), unit: 'S/.', precision: 2
+  
+  -if @workers_array2.count>0
+    .container-part-work
+      %div{ :style => 'display: inline-block;' }
+        .widget-body
+          %table.table.table-bordered
+            %thead
+              %tr
+                %th{ :colspan => 2 } VENTA
+                /%th Unidad
+                %th Cantidad
+                %th P.U. Meta
+                %th Parcial
+            %tbody
+              %tr 
+                %th Codigo
+                %th{ :colspan => 4 } Partidas
+            - @meta_part_work.each do |itembybudget|
+              %tr
+                %td= itembybudget[0]
+                %td= itembybudget[1]
+                /%td= workerDetail2[0]
+                %td= itembybudget[2].round(2)
+                %td= number_to_currency itembybudget[3], unit: 'S/.', precision: 2
+                %td= number_to_currency itembybudget[4], unit: 'S/.', precision: 2
+            %tr
+              %th{ :colspan => 4 } SUB-TOTAL
+              %td
+                %span.label.label-danger{"style"=>"color:#fff"}
+                  = number_to_currency @totalprice2, unit: 'S/.', precision: 2
 
   -if @workers_array.count>0
     .container-part-people
+
+      %div{ :style => 'width:50%; display:inline-block;' }
+        %h1.page-title.txt-color-blueDark Mano de Obra META
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th Cargo
+              %th Cantidad
+              %th P.U.
+              %th Parcial
+          %tbody
+          - @meta_personal.each do |m_person|
+            %tr
+              %td= m_person[0]
+              %td= m_person[1]
+              %td= number_to_currency m_person[2], unit: 'S/.', precision: 2
+              %td= number_to_currency m_person[3], unit: 'S/.', precision: 2
+
       %div{ :style => 'width:49%; display:inline-block;' }
         %h1.page-title.txt-color-blueDark Mano de Obra REAL
         .widget-body
@@ -98,110 +148,35 @@
                   %span.label.label-danger{"style"=>"color:#fff"}
                     = number_to_currency @totalprice, unit: 'S/.', precision: 2
 
-      %div{ :style => 'width:50%; display:inline-block;' }
-        %h1.page-title.txt-color-blueDark Mano de Obra META
-        %table.table.table-bordered
-          %thead
-            %tr
-              %th Cargo
-              %th Cantidad
-              %th P.U.
-              %th Parcial
-          %tbody
-          - @meta_personal.each do |m_person|
-            %tr
-              %td= m_person[0]
-              %td= m_person[1]
-              %td= number_to_currency m_person[2], unit: 'S/.', precision: 2
-              %td= number_to_currency m_person[3], unit: 'S/.', precision: 2
-
-  -if @workers_array2.count>0
-    .container-part-work
-      %div{ :style => 'width:49%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Parte de Obras REAL
-        .widget-body
-          %table.table.table-bordered
-            %thead
-              %tr
-                %th Codigo
-                %th Partida
-                %th Unidad
-                %th Cantidad
-                %th P.U.
-                %th Parcial
-            %tbody
-            - @workers_array2.each do |workerDetail2|
-              %tr
-                %td= workerDetail2[0]
-                %td= workerDetail2[1]
-                %td= workerDetail2[2]
-                %td= workerDetail2[3]
-                %td= number_to_currency workerDetail2[4], unit: 'S/.', precision: 2
-                %td= number_to_currency workerDetail2[5], unit: 'S/.', precision: 2
-
-      %div{ :style => 'width:50%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Parte de Obras META
-        .widget-body
-          %table.table.table-bordered
-            %thead
-              %tr
-                %th Cantidad
-                %th P.U.
-                %th Parcial
-            %tbody
-            - @meta_part_work.each do |m_work|
-              %tr
-                %td= m_work[0].round(2)
-                %td= number_to_currency m_work[1], unit: 'S/.', precision: 2
-                %td= number_to_currency m_work[2], unit: 'S/.', precision: 2
-
-  -if @workers_array3.count>0
-    .container-part-equipment
-      %div{ :style => 'width:49%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Parte de Equipos REAL
-        .widget-body
-          %table.table.table-bordered
-            %thead
-              %tr
-                %th Descripcion
-                %th Cantidad
-                %th Unidad
-                %th P.U.
-                %th Parcial
-            %tbody
-            - @workers_array3.each do |workerDetail3|
-              %tr
-                %td= workerDetail3[0]
-                %td= workerDetail3[2].round(2)
-                %td= workerDetail3[1]
-                %td= number_to_currency workerDetail3[3], unit: 'S/.', precision: 2
-                %td= number_to_currency workerDetail3[4], unit: 'S/.', precision: 2
-
-      %div{ :style => 'width:50%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Parte de Equipos META
-        .widget-body
-          %table.table.table-bordered
-            %thead
-              %tr
-                %th Cantidad
-                %th P.U.
-                %th Parcial
-            %tbody
-            - @meta_part_equipment.each do |m_equip|
-              %tr
-                %td= m_equip[0].round(2)
-                %td= number_to_currency m_equip[1], unit: 'S/.', precision: 2
-                %td= number_to_currency m_equip[2], unit: 'S/.', precision: 2
-
   -if @stock_inputs.count>0
     .container-stock-input
+
+      %div{ :style => 'width:50%; display: inline-block;' }
+        %h1.page-title.txt-color-blueDark Consumo de Materiales META
+        .widget-body
+          %table.table.table-bordered
+            %thead
+              %tr
+                %th Código
+                %th Nombre
+                %th Cantidad
+                %th P.U.
+                %th Parcial
+            %tbody
+            - @meta_stock_inputs.each do |m_stock_input|
+              %tr
+                %td= m_stock_input[0]
+                %td= m_stock_input[1]
+                %td= m_stock_input[2]
+                %td= number_to_currency m_stock_input[3], unit: 'S/.', precision: 2
+                %td= number_to_currency m_stock_input[4], unit: 'S/.', precision: 2
+
       %div{ :style => 'width:49%; display: inline-block;' }
         %h1.page-title.txt-color-blueDark Consumo de Materiales REAL
         .widget-body
           %table.table.table-bordered
             %thead
               %tr
-                %th Nombre
                 %th Unidad
                 %th Cantidad
                 %th P.U.
@@ -214,6 +189,8 @@
                 %td= stock_input[3]
                 %td= number_to_currency Article.getSpecificArticlesforStockOutputs5(stock_input[0].to_i), unit: 'S/.', precision: 2
                 %td= number_to_currency stock_input[3]*Article.getSpecificArticlesforStockOutputs5(stock_input[0].to_i), unit: 'S/.', precision: 2
+  - else
+    .container-stock-input
 
       %div{ :style => 'width:50%; display: inline-block;' }
         %h1.page-title.txt-color-blueDark Consumo de Materiales META
@@ -221,6 +198,8 @@
           %table.table.table-bordered
             %thead
               %tr
+                %th Código
+                %th Nombre
                 %th Cantidad
                 %th P.U.
                 %th Parcial
@@ -228,5 +207,48 @@
             - @meta_stock_inputs.each do |m_stock_input|
               %tr
                 %td= m_stock_input[0]
-                %td= number_to_currency m_stock_input[1], unit: 'S/.', precision: 2
-                %td= number_to_currency m_stock_input[2], unit: 'S/.', precision: 2
+                %td= m_stock_input[1]
+                %td= m_stock_input[2].round(2)
+                %td= number_to_currency m_stock_input[3], unit: 'S/.', precision: 2
+                %td= number_to_currency m_stock_input[4], unit: 'S/.', precision: 2
+
+  -if @workers_array3.count>0
+    .container-part-equipment
+
+      %div{ :style => 'width:50%; display: inline-block;' }
+        %h1.page-title.txt-color-blueDark Parte de Equipos META
+        .widget-body
+          %table.table.table-bordered
+            %thead
+              %tr
+                %th Descripcion
+                %th Cantidad
+                %th P.U.
+                %th Parcial
+            %tbody
+            - @meta_part_equipment.each do |m_equip|
+              %tr
+                %td= m_equip[3]
+                %td= m_equip[0].round(2)
+                %td= number_to_currency m_equip[1], unit: 'S/.', precision: 2
+                %td= number_to_currency m_equip[2], unit: 'S/.', precision: 2
+
+      %div{ :style => 'width:49%; display: inline-block;' }
+        %h1.page-title.txt-color-blueDark Parte de Equipos REAL
+        .widget-body
+          %table.table.table-bordered
+            %thead
+              %tr
+                /%th Descripcion
+                %th Cantidad
+                %th Unidad
+                %th P.U.
+                %th Parcial
+            %tbody
+            - @workers_array3.each do |workerDetail3|
+              %tr
+                /%td= workerDetail3[0]
+                %td= workerDetail3[2].round(2)
+                %td= workerDetail3[1]
+                %td= number_to_currency workerDetail3[3], unit: 'S/.', precision: 2
+                %td= number_to_currency workerDetail3[4], unit: 'S/.', precision: 2
