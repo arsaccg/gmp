@@ -148,6 +148,70 @@
                   %span.label.label-danger{"style"=>"color:#fff"}
                     = number_to_currency @totalprice, unit: 'S/.', precision: 2
 
+  -if @stock_inputs.count>0
+    .container-stock-input
+
+      %div{ :style => 'width:50%; display: inline-block;' }
+        %h1.page-title.txt-color-blueDark Consumo de Materiales META
+        .widget-body
+          %table.table.table-bordered
+            %thead
+              %tr
+                %th Código
+                %th Nombre
+                %th Cantidad
+                %th P.U.
+                %th Parcial
+            %tbody
+            - @meta_stock_inputs.each do |m_stock_input|
+              %tr
+                %td= m_stock_input[0]
+                %td= m_stock_input[1]
+                %td= m_stock_input[2]
+                %td= number_to_currency m_stock_input[3], unit: 'S/.', precision: 2
+                %td= number_to_currency m_stock_input[4], unit: 'S/.', precision: 2
+
+      %div{ :style => 'width:49%; display: inline-block;' }
+        %h1.page-title.txt-color-blueDark Consumo de Materiales REAL
+        .widget-body
+          %table.table.table-bordered
+            %thead
+              %tr
+                %th Unidad
+                %th Cantidad
+                %th P.U.
+                %th Parcial
+            %tbody
+            - @stock_inputs.each do |stock_input|
+              %tr
+                %td= stock_input[1]
+                %td= stock_input[2]
+                %td= stock_input[3]
+                %td= number_to_currency Article.getSpecificArticlesforStockOutputs5(stock_input[0].to_i), unit: 'S/.', precision: 2
+                %td= number_to_currency stock_input[3]*Article.getSpecificArticlesforStockOutputs5(stock_input[0].to_i), unit: 'S/.', precision: 2
+  - else
+    .container-stock-input
+
+      %div{ :style => 'width:50%; display: inline-block;' }
+        %h1.page-title.txt-color-blueDark Consumo de Materiales META
+        .widget-body
+          %table.table.table-bordered
+            %thead
+              %tr
+                %th Código
+                %th Nombre
+                %th Cantidad
+                %th P.U.
+                %th Parcial
+            %tbody
+            - @meta_stock_inputs.each do |m_stock_input|
+              %tr
+                %td= m_stock_input[0]
+                %td= m_stock_input[1]
+                %td= m_stock_input[2].round(2)
+                %td= number_to_currency m_stock_input[3], unit: 'S/.', precision: 2
+                %td= number_to_currency m_stock_input[4], unit: 'S/.', precision: 2
+
   -if @workers_array3.count>0
     .container-part-equipment
 
@@ -188,42 +252,3 @@
                 %td= workerDetail3[1]
                 %td= number_to_currency workerDetail3[3], unit: 'S/.', precision: 2
                 %td= number_to_currency workerDetail3[4], unit: 'S/.', precision: 2
-
-  -if @stock_inputs.count>0
-    .container-stock-input
-
-      %div{ :style => 'width:50%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Consumo de Materiales META
-        .widget-body
-          %table.table.table-bordered
-            %thead
-              %tr
-                %th Cantidad
-                %th P.U.
-                %th Parcial
-            %tbody
-            - @meta_stock_inputs.each do |m_stock_input|
-              %tr
-                %td= m_stock_input[0]
-                %td= number_to_currency m_stock_input[1], unit: 'S/.', precision: 2
-                %td= number_to_currency m_stock_input[2], unit: 'S/.', precision: 2
-
-      %div{ :style => 'width:49%; display: inline-block;' }
-        %h1.page-title.txt-color-blueDark Consumo de Materiales REAL
-        .widget-body
-          %table.table.table-bordered
-            %thead
-              %tr
-                %th Nombre
-                %th Unidad
-                %th Cantidad
-                %th P.U.
-                %th Parcial
-            %tbody
-            - @stock_inputs.each do |stock_input|
-              %tr
-                %td= stock_input[1]
-                %td= stock_input[2]
-                %td= stock_input[3]
-                %td= number_to_currency Article.getSpecificArticlesforStockOutputs5(stock_input[0].to_i), unit: 'S/.', precision: 2
-                %td= number_to_currency stock_input[3]*Article.getSpecificArticlesforStockOutputs5(stock_input[0].to_i), unit: 'S/.', precision: 2

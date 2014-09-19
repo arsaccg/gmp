@@ -96,20 +96,26 @@ class Production::AnalysisOfValuationsController < ApplicationController
       end
     end
 
-    # Parte de Obra
+    # PARTIDAS
     @meta_part_work = Array.new
+    budgetanditems_list = Array.new
     @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2)
 
     @workers_array2.each do |workerDetail|
       # Get quantity of itembybudgetanditems
       quantity_ibb = sum_quantity_per_itembybudget_detail(workerDetail[2], workerDetail[5])*workerDetail[3]
+      
       # Calculate total of current itembybudget
       total_current_ibb = quantity_ibb*workerDetail[4]
+      
       # Calculate Total of all itembybudgets
       @totalprice2 += total_current_ibb
+      
       # Make a custom Array
       @meta_part_work << [ workerDetail[2], workerDetail[1], quantity_ibb, workerDetail[4], total_current_ibb ]
-
+      
+      # List BudgetAndItems
+      budgetanditems_list << [ workerDetail[2], workerDetail[5] ]
     end
 
     # Parte de Equipo
@@ -139,9 +145,17 @@ class Production::AnalysisOfValuationsController < ApplicationController
       @stock_inputs.each do |m_input|
         meta_info = Budget.budget_meta_info_per_article(m_input[4], @cost_center)
         if !meta_info.nil?
-          @meta_stock_inputs << [ meta_info[1], meta_info[2], meta_info[3] ]
+          @meta_stock_inputs << [ m_input[1], meta_info[1], meta_info[2], meta_info[3] ]
         else
           @meta_stock_inputs << [ 0, 0, 0 ]
+        end
+      end
+    else
+      budgetanditems_list.each do |ibb|
+        # [0] => itembybudget_order, [1] => budget_id
+        list_materials = get_tobi_articles_materials_from_itembybudgets(ibb[0], ibb[1])
+        list_materials.each do |material|
+          @meta_stock_inputs << [ material[0], material[1], material[2], material[3], material[2]*material[3] ]
         end
       end
     end
@@ -186,23 +200,6 @@ class Production::AnalysisOfValuationsController < ApplicationController
   end
 
   def business_days_array2(start_date, end_date, working_group_id,sector_id)
-    #workers_array2 = ActiveRecord::Base.connection.execute("
-    #  SELECT pwd.itembybudget_id, 
-    #    ibb.subbudgetdetail, 
-    #    ibb.order, 
-    #    SUM( pwd.bill_of_quantitties ), 
-    #    si.unit_price, 
-    #    si.unit_price*SUM( pwd.bill_of_quantitties ), 
-    #    p.date_of_creation 
-    #  FROM part_works p, part_work_details pwd, itembybudgets ibb, subcontract_details si 
-    #  WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
-    #  AND p.sector_id IN(" + sector_id + ")
-    #  AND p.working_group_id IN(" + working_group_id + ")
-    #  AND p.id = pwd.part_work_id
-    #  AND pwd.itembybudget_id = si.itembybudget_id
-    #  AND si.itembybudget_id = ibb.id
-    #  GROUP BY ibb.subbudgetdetail
-    #")
     workers_array2 = ActiveRecord::Base.connection.execute(
       "SELECT
         pwd.itembybudget_id, 
@@ -233,6 +230,24 @@ class Production::AnalysisOfValuationsController < ApplicationController
     ).first[0]
 
     return sum_quantity
+  end
+
+  def get_tobi_articles_materials_from_itembybudgets(ibb_order, budget_id)
+    materials_from_itembybudget = ActiveRecord::Base.connection.execute("
+      SELECT 
+        ibbi.cod_input, 
+        ibbi.input, 
+        ROUND(SUM(ibbi.quantity),2)*ibb.measured, 
+        ibbi.price 
+      FROM `itembybudgets` ibb, `inputbybudgetanditems` ibbi 
+      WHERE ibb.order LIKE '" + ibb_order.to_s + "' 
+      AND ibb.budget_id = " + budget_id.to_s + " 
+      AND ibbi.order = ibb.order 
+      AND ibbi.cod_input LIKE '02%' 
+      GROUP BY ibbi.cod_input"
+    )
+
+    return materials_from_itembybudget
   end
 
   def business_days_array3(start_date, end_date, working_group_id,sector_id)
