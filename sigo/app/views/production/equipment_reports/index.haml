@@ -71,55 +71,60 @@
         %strong Error!
         = flash[:error]
 
+- if @specificArticles != ''
 
-:javascript
-  $(document).ready(function () {
-    $('select').select2({width:'200'});
-    $('#article').select2({width:'350'});
-    var chosen = $('#select-1').val();
-    complete("#{complete_production_equipment_reports_path}", chosen, "#{form_authenticity_token}", 0);
-  });
+  :javascript
+    $(document).ready(function(){})
 
-  $('#show-table').click(function(){
-    var start_date = $('#start-date-input').val();
-    var article = $('#article').val();
-    var select1 = $('#select-1').val();
-    
-    var parameters = { company_id: "#{@company}", article: article, start_date: start_date, select1: select1, authenticity_token: "#{form_authenticity_token}" };
-
-    load_items_delivery_order_ajax("#{get_report_production_equipment_reports_path}", 'table-information-result', parameters);
-  });
-
-  $('#select-1').change(function(){
-    var chosen = $('#select-1').val();
-    complete("#{complete_production_equipment_reports_path}", chosen, "#{form_authenticity_token}", 0);
-  });
-
-  function complete(url, chosen, form_token, default_value){
-    var str_html = "";
-    $.ajax({
-        type: "POST",
-        url: url,
-        async: false,
-        data: { chosen: chosen, authenticity_token: form_token}
-    }).done(function( data ) {
-      newOptions = [];
-      $.each(data.combo, function(key, value){
-        item = {};
-        item['name'] = value.name;
-        item['id'] = value.id;
-        newOptions.push(item);
-      });
-      var cad = document.getElementById("s2id_article").getElementsByClassName("select2-chosen")[0];
-      cad.innerHTML = "Seleccione";
-      $('#article').empty();
-      $('#article').append(
-          $("<option></option>").attr("value", "0").text("Seleccione").attr("selected","selected")
-        )
-      $.each(newOptions, function(key,value){
-        $('#article').append(
-          $("<option></option>").attr("value", value.id).text(value.name)
-        )
-      });
+- else
+  :javascript
+    $(document).ready(function () {
+      $('select').select2({width:'200'});
+      $('#article').select2({width:'350'});
+      var chosen = $('#select-1').val();
+      complete("#{complete_production_equipment_reports_path}", chosen, "#{form_authenticity_token}", 0);
     });
-  }
+
+    $('#show-table').click(function(){
+      var start_date = $('#start-date-input').val();
+      var article = $('#article').val();
+      var select1 = $('#select-1').val();
+      
+      var parameters = { company_id: "#{@company}", article: article, start_date: start_date, select1: select1, authenticity_token: "#{form_authenticity_token}" };
+
+      load_items_delivery_order_ajax("#{get_report_production_equipment_reports_path}", 'table-information-result', parameters);
+    });
+
+    $('#select-1').change(function(){
+      var chosen = $('#select-1').val();
+      complete("#{complete_production_equipment_reports_path}", chosen, "#{form_authenticity_token}", 0);
+    });
+
+    function complete(url, chosen, form_token, default_value){
+      var str_html = "";
+      $.ajax({
+          type: "POST",
+          url: url,
+          async: false,
+          data: { chosen: chosen, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.combo, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        var cad = document.getElementById("s2id_article").getElementsByClassName("select2-chosen")[0];
+        cad.innerHTML = "Seleccione";
+        $('#article').empty();
+        $('#article').append(
+            $("<option></option>").attr("value", "0").text("Seleccione").attr("selected","selected")
+          )
+        $.each(newOptions, function(key,value){
+          $('#article').append(
+            $("<option></option>").attr("value", value.id).text(value.name)
+          )
+        });
+      });
+    }
