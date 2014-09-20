@@ -158,7 +158,12 @@ class Production::AnalysisOfValuationsController < ApplicationController
           if !@meta_stock_inputs.map(&:first).include? material[0]
             @meta_stock_inputs << [ material[0], material[1], material[2], material[3], material[2]*material[3] ]
           else
-            @meta_stock_inputs << [ material[0], material[1], material[2], material[3], material[2]*material[3] ]
+            pos_arr = @meta_stock_inputs.transpose.first.index(material[0])
+            ((1..@meta_stock_inputs[pos_arr].size-1).each { |i|
+              @meta_stock_inputs[pos_arr][i+1] += material[2]
+              @meta_stock_inputs[pos_arr][i+3] += (material[2]*material[3])
+              break
+            }; @meta_stock_inputs)
           end
         end
       end
