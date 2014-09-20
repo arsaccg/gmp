@@ -141,7 +141,7 @@ class Production::ScValuationsController < ApplicationController
         @totalprice += workerDetail[7].to_f + workerDetail[8].to_f + workerDetail[9].to_f
       end
       @workers_array2.each do |workerDetail|
-        @totalprice2 += workerDetail[5]
+        @totalprice2 += workerDetail[3]*workerDetail[4]
       end
       @workers_array3.each do |workerDetail|
         @totalprice3 += workerDetail[4]
@@ -237,23 +237,22 @@ class Production::ScValuationsController < ApplicationController
 
   def business_days_array2(start_date, end_date, working_group_id, cost_center)
     workers_array2 = ActiveRecord::Base.connection.execute("
-      SELECT  pwd.article_id, 
-        art.name, 
-        uom.name, 
-        SUM( pwd.bill_of_quantitties ), 
-        si.unit_price, 
-        si.unit_price*SUM( pwd.bill_of_quantitties ), 
+      SELECT 
+        pwd.itembybudget_id, 
+        ibb.subbudgetdetail, 
+        ibb.order, 
+        SUM(pwd.bill_of_quantitties) as bill_of_quantitties,
+        ibb.price as price,
+        ibb.budget_id as budget_id,
         p.date_of_creation 
-      FROM part_works p, part_work_details pwd, articles art, unit_of_measurements uom, subcontract_details si
+      FROM part_works p, part_work_details pwd, itembybudgets ibb
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.working_group_id IN(" + working_group_id.to_s + ")
-      AND p.id = pwd.part_work_id
       AND p.cost_center_id = '" + cost_center.to_s + "'
-      AND pwd.article_id = art.id
-      AND pwd.article_id = si.article_id
+      AND p.id = pwd.part_work_id
       AND p.block=0 
-      AND uom.id = art.unit_of_measurement_id
-      GROUP BY art.name
+      AND pwd.itembybudget_id =  ibb.id
+      GROUP BY ibb.subbudgetdetail
     ")
     return workers_array2
   end
