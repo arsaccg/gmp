@@ -25,17 +25,17 @@
         %td
         %td
           .btn-group
-            %a{:href=>"javascript:load_edit('"+edit_management_budget_path(item.id).to_s+"')"}(class="btn btn-mini")
-              %i(class="icon-edit")
+            %a{:href=>"javascript:load_edit('"+edit_management_budget_path(item.id).to_s+"')"}(class="btn btn-info btn-mini")
+              %i(class="fa fa-lg fa-fw fa-edit")
               Editar
-            %a{:href=>"javascript:load_resume('"+resume_management_budget_path(item.id).to_s+"')"}(class="btn btn-mini")
-              %i(class="icon-book")
+            %a{:href=>"javascript:load_resume('"+resume_management_budget_path(item.id).to_s+"')"}(class="btn btn-info btn-mini")
+              %i(class="fa fa-lg fa-fw fa-book")
               Resumen
-            %a{:href=>"javascript:load_update_valorization('"+newvalorization_management_valorization_path(item.id).to_s+"')"}(class="btn btn-mini")
-              %i(class="icon-list-alt")
+            %a{:href=>"javascript:load_update_valorization('"+newvalorization_management_valorization_path(item.id).to_s+"')"}(class="btn btn-info btn-mini")
+              %i(class="fa fa-lg fa-fw fa-list-alt")
               Crear Valorizacion
             %a{:href=>"javascript:load_delete('"+destroy_admin_management_budget_path(item.id).to_s+"')", data: { confirm: "¿Esta seguro de eliminar este presupuesto?" }}(class="btn btn-mini btn-danger")
-              %i(class="icon-remove")
+              %i(class="fa fa-lg fa-fw fa-trash-o")
       %tr
         %td(colspan="9")
           %table(class="white-table table-bordered table table-condensed" style="width: 60%;")

@@ -1,36 +1,74 @@
-%h4 
-  Editar Presupuesto - 
-  =@budget.description
-%br
-=simple_form_for [:management, @budget], :html => {:class => 'form-horizontal', :id=>'form-data'} do |f|
-  .fieldset
+#content-inside
+  .row
+    .col-xs-12.col-sm-12.col-md-12.col-lg-7
+      %h2.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw  
+        Editar Presupuesto - 
+        =@budget.description
+  #widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-6
+        #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-eye
+            %h2 Compañia
+          .widget-body
+            = simple_form_for([:logistics, @company], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+              %fieldset
+                .row
+                  %section.col.col-6
+                    %label.label RUC
+                    %label.input{for: "ruc"}
+                      %i.icon-append.fa.fa-superscript
+                      = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Nombre
+                    %label.input{for: "name"}
+                      %i.icon-append.fa.fa-user
+                      = f.input :name, placeholder: "Nombre del Grupo", input_html: { class: 'form-control' }, label: false
+              %footer
+                %a{:href=>"javascript:post_to_url('" + management_budget_path(@budget.id).to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
+                  %i.fa.fa-save
+                  Guardar
 
-    .control-group
-      %label(class="control-label") Codigo S10
-      .controls
-        = @budget.cod_budget
-    .control-group
-      %label(class="control-label") Nombre
-      .controls
-        = f.input :description, label: false
- 
-    .control-group
-      %label(class="control-label") Codigo
-      .controls
-        = f.input :cost_center_id, label: false
- 
- 
-    .control-group
-      %label(class="control-label") %Utilidad
-      .controls
-        = f.input :utility, label: false
-    .control-group
-      %label(class="control-label") %Gastos Generales
-      .controls
-        = f.input :general_expenses, label: false
-    .form-actions
-      %a{:href=>"javascript:post_to_url('" + management_budget_path(@budget.id).to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
-        Guardar
 
-      %a{:href=>"javascript:load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id="+@budget.cost_center_id.to_s+"', 'right-area');", class: "btn btn-danger"}
-        Cancelar
+                / %a{:href=>"javascript:load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id="+@budget.cost_center_id.to_s+"', 'right-area');", class: "btn btn-danger"}
+                /  %i.fa.fa-times
+                /  Cancelar
+                / %button.btn.btn-primary{type: "submit"}
+                /  %i.fa.fa-save
+                /    Guardar
+
+
+        / =simple_form_for [:management, @budget], :role=>"form", :html => {:class => 'form-horizontal', :id=>'form-data'} do |f|
+        /   .fieldset
+        /     .control-group
+        /       %label(class="control-label") Codigo S10
+        /       .controls
+        /         = @budget.cod_budget
+        /     .control-group
+        /       %label(class="control-label") Nombre
+        /       .controls
+        /         = f.input :description, label: false
+        /     .control-group
+        /       %label(class="control-label") Codigo
+        /       .controls
+        /         = f.input :cost_center_id, label: false
+        /     .control-group
+        /       %label(class="control-label") %Utilidad
+        /       .controls
+        /         = f.input :utility, label: false
+        /     .control-group
+        /       %label(class="control-label") %Gastos Generales
+        /       .controls
+        /         = f.input :general_expenses, label: false
+        /     .form-actions
+        /       %a{:href=>"javascript:post_to_url('" + management_budget_path(@budget.id).to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
+        /         Guardar
+        /       %a{:href=>"javascript:load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id="+@budget.cost_center_id.to_s+"', 'right-area');", class: "btn btn-danger"}
+        /         Cancelar
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-companies{type: "button"}
+    %i.fa.fa-arrow-left
+    Retornar al listado de ompañias

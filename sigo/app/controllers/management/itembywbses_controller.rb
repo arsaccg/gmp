@@ -1,5 +1,6 @@
 class Management::ItembywbsesController < ApplicationController
-  before_filter :authorize_manager
+  #before_filter :authorize_manager
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
 
   def index
   	
@@ -56,8 +57,8 @@ class Management::ItembywbsesController < ApplicationController
       new_item.save
     end 
 
-    @wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs)
-    @budgets = Budget.where(:cost_center_id => params[:project_id])
+    @wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs)
+    @budgets = Budget.where(:cost_center_id => get_company_cost_center('cost_center'))
     @wbsitems_arr = Array.new
     @budgets.each do |budget|
       temp_wbsitems = budget.itembywbses
@@ -92,8 +93,8 @@ class Management::ItembywbsesController < ApplicationController
 
     @wbs = params[:wbscode]
     
-    @wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs)
-    @budgets = Budget.where(:project_id => params[:project_id])
+    @wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs)
+    @budgets = Budget.where(:cost_center_id => get_company_cost_center('cost_center'))
     @wbsitems_arr = Array.new
     @budgets.each do |budget|
       temp_wbsitems = budget.itembywbses

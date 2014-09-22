@@ -5,7 +5,8 @@ load 'socket_connector/socket_connector.rb'
 require 'csv'
 
 class Administration::InputcategoriesController < ApplicationController
-	before_filter :authorize_manager
+	#before_filter :authorize_manager
+  	before_filter :authenticate_user!
 	# ESTO PERTENECE A TOBI!!!!
 
 	include SOCKET_CONNECTOR

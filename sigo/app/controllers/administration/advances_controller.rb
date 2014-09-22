@@ -1,5 +1,6 @@
 class Administration::AdvancesController < ApplicationController
-	before_filter :authorize_manager
+	#before_filter :authorize_manager
+  	before_filter :authenticate_user!
 	# ESTO PERTENECE A TOBI!!!!
 	def index
 		@advances = Advance.where(:cost_center_id => params[:project_id])

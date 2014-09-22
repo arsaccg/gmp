@@ -40,7 +40,7 @@
     .botom-load 
       %form(id="form-wbs" action="#" name="itemform" method="POST" class="form-horizontal form-wbs")
         .control-group
-          %table(class="table-bordered table  table-condensed table-hover white-table small-font" width="100%")
+          %table(class="table-bordered table table-condensed table-hover white-table small-font" width="100%")
             %thead
               %th Presupuesto
               %th Orden
@@ -50,38 +50,38 @@
               %th Total
               %th Acciones
             %tbody(id="table_wbs")
-            - n = 0
-            - @wbsitems_arr.each do |itembywbs|
-              - n = n + 1
-              %tr{:class=>"wbs_" + itembywbs.wbscode.to_s}
-                %td
-                  = itembywbs.budget.description
-                %td 
-                  = itembywbs.order_budget rescue ""
-                %td 
-                  = itembywbs.subbudgetdetail rescue ""
-                %td 
-                  - rand_code = Time.now.to_f.to_s + n.to_s
-                  %input(type="text" class="input-small small-font"){:name=>"itemform[" + rand_code + "][measured]", :value=>itembywbs.measured.to_s, :id => "itemwbs_" + itembywbs.id.to_s, :onblur => "update_table('" + itembywbs.id.to_s + "', '" + itembywbs.price.to_s + "')" }
-                  %input(type="hidden"){:name=>"itemform[" + rand_code + "][price]", :value=>itembywbs.price}
-                  %input(type="hidden"){:name=>"itemform[" + rand_code + "][budget]", :value=>itembywbs.budget_id}
-                  %input(type="hidden"){:name=>"itemform[" + rand_code + "][coditem]", :value=>itembywbs.coditem}
-                  %input(type="hidden"){:name=>"itemform[" + rand_code + "][wbscode]", :value=>itembywbs.wbscode}
-                %td 
-                  = number_to_currency(number_with_precision(itembywbs.price , :precision => 2).to_s , :unit=>'S/. ') rescue ""
-                %td
-                  %strong
-                    %span{:id => "total_" + itembywbs.id.to_s}
-                      = number_to_currency(number_with_precision((itembywbs.measured.to_f * itembywbs.price.to_f).to_s, :precision => 2).to_s , :unit=>'S/. ') rescue ""
-                %td
-                  %a(class="btn btn-mini btn-danger"){:href=>"javascript:delete_ajax('#{management_itembywbs_path(itembywbs.id)}')"}
-                    %i(class="fa fa-trash") 
+              - n = 0
+              - @wbsitems_arr.each do |itembywbs|
+                - n = n + 1
+                %tr{:class=>"wbs_" + itembywbs.wbscode.to_s}
+                  %td
+                    = itembywbs.budget.description
+                  %td 
+                    = itembywbs.order_budget rescue ""
+                  %td 
+                    = itembywbs.subbudgetdetail rescue ""
+                  %td 
+                    - rand_code = Time.now.to_f.to_s + n.to_s
+                    %input(type="text" class="input-small small-font"){:name=>"itemform[" + rand_code + "][measured]", :value=>itembywbs.measured.to_s, :id => "itemwbs_" + itembywbs.id.to_s, :onblur => "update_table('" + itembywbs.id.to_s + "', '" + itembywbs.price.to_s + "')" }
+                    %input(type="hidden"){:name=>"itemform[" + rand_code + "][price]", :value=>itembywbs.price}
+                    %input(type="hidden"){:name=>"itemform[" + rand_code + "][budget]", :value=>itembywbs.budget_id}
+                    %input(type="hidden"){:name=>"itemform[" + rand_code + "][coditem]", :value=>itembywbs.coditem}
+                    %input(type="hidden"){:name=>"itemform[" + rand_code + "][wbscode]", :value=>itembywbs.wbscode}
+                  %td 
+                    = number_to_currency(number_with_precision(itembywbs.price , :precision => 2).to_s , :unit=>'S/. ') rescue ""
+                  %td
+                    %strong
+                      %span{:id => "total_" + itembywbs.id.to_s}
+                        = number_to_currency(number_with_precision((itembywbs.measured.to_f * itembywbs.price.to_f).to_s, :precision => 2).to_s , :unit=>'S/. ') rescue ""
+                  %td
+                    %a(class="btn btn-mini btn-danger"){:href=>"javascript:delete_ajax('#{management_itembywbs_path(itembywbs.id)}')"}
+                      %i(class="fa fa-lg fa-fw fa-trash-o") 
 :javascript 
 
   var selected_wbs;
   var dropdown_budget;
 
-  $(".content-load").height($(document).height()-400);
+  $(".content-load").height($(document).height()-600);
   $(".botom-load").height(200);
 
   $("#budget-select").on("change", function(event){
@@ -98,7 +98,7 @@
   }
 
   function delete_ajax(url){
-    delete_to_url(url + "?project_id=" + project_selected_data['id'] + "&wbscode=" + selected_wbs, 'form-wbs' );
+    delete_to_url_into_div(url + "?wbscode=" + selected_wbs + "&authenticity_token=#{form_authenticity_token}", 'form-wbs' );
   }
  
   function update_table(id, price){

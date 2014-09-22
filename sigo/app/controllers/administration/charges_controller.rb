@@ -1,6 +1,7 @@
 class Administration::ChargesController < ApplicationController
 	# ESTO PERTENECE A TOBI!!!!
-	before_filter :authorize_manager
+	#before_filter :authorize_manager
+  	before_filter :authenticate_user!
 	
 	def index
 		@charges = Charge.where(:invoice_id => params[:invoice_id])

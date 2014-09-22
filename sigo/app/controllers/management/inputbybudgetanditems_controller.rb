@@ -72,8 +72,8 @@ class Management::InputbybudgetanditemsController < ApplicationController
     p "****************Inputbybudgetanditem*****************"
     @item.save
 
-    render :nothing => true, :status => 200, :content_type => 'text/html', layout: false
-    #render :filter_by_budget_and_item, budget_id: @item.budget_id, item_id: @item.item_id, order: @item.order, :layout => false
+    #render :nothing => true, :status => 200, :content_type => 'text/html', layout: false
+    redirect_to filter_by_budget_and_item_management_inputbybudgetanditems_path + "?budget_id=" + @item.budget_id.to_s + "&item_id=" + @item.item_id.to_s + "&order=" + @item.order.gsub(".","d")
   end
 
   private
