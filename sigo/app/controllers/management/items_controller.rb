@@ -1,5 +1,6 @@
 class Management::ItemsController < ApplicationController
-  before_filter :authorize_manager
+  #before_filter :authorize_manager
+  before_filter :authenticate_user!
   def index
   end
 

@@ -20,7 +20,7 @@
               %a(href="javascript:toogle_detail('#{itembudget.order}');")
                 =itembudget.order
           %td(colspan="2")
-            %a{:href=>"javascript:load_url_ondiv('" + filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s + "?budget_id=" + @budget_id + "&item_id=" + itembudget.item_id.to_s + "&order=" + order_str + "', 'botom-load');"}
+            %a{:href=>"javascript:filter_by_budget_and_item('" + filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s + "?budget_id=" + @budget_id + "&item_id=" + itembudget.item_id.to_s + "&order=" + order_str + "');"}
               %strong
                 = get_title_or_description(itembudget)
           %td(colspan="3" style="text-align: right;")
@@ -35,7 +35,7 @@
             -for i in 3..n
               %span(style="padding-left: 20px;")
             =itembudget.order
-            %a{:href=>"javascript:load_url_ondiv('" + filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s + "?budget_id=" + @budget_id + "&item_id=" + itembudget.item_id.to_s + "&order=" + order_str + "', 'botom-load');"}
+            %a{:href=>"javascript:filter_by_budget_and_item('" + filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s + "?budget_id=" + @budget_id + "&item_id=" + itembudget.item_id.to_s + "&order=" + order_str + "');"}
               = get_title_or_description(itembudget)
           - if itembudget.measured.to_f == 0
             - @var_cost = number_with_precision(get_total_cost(itembudget.order, itembudget.budget_id).to_f, :precision => 2).to_s
@@ -55,13 +55,15 @@
                 = number_to_currency(price.to_f * itembudget.measured.to_f, :unit=>'S/.')
           
 :javascript
-
-  $("#scroll-table").fixedHeaderTable('show', 1000);
-
   function toogle_detail(code)
   { 
     $("[id^='detail_" +  code +"']" ).slideToggle("slow");
   } 
+
+  function filter_by_budget_and_item(str){
+    $('#articles-t').html(''); 
+    load_url_ondiv(str, 'botom-load');
+  }
 
 
 

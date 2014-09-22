@@ -1,5 +1,6 @@
 class Administration::InvoicesController < ApplicationController
-	before_filter :authorize_manager
+	#before_filter :authorize_manager
+  	before_filter :authenticate_user!
 	# ESTO PERTENECE A TOBI!!!!
 	def index
 		@budget_id = params[:budget_id]

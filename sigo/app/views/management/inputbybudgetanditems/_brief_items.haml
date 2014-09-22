@@ -17,8 +17,8 @@
 - if @budget.type_of_budget.to_i == 0
   .btn-group
     %span(style='padding-left: 30px;' class='small-font')
-      %a(href ='#{ filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s}.pdf?budget_id=#{@budget_id}&item_id=#{@item_id}&order=#{@order}'  class='btn btn-default btn-mini btn-danger')
-        %i.con-download-alt
+      %a(href ='#{filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s}.pdf?budget_id=#{@budget_id}&item_id=#{@item_id}&order=#{@order}' class='btn btn-default btn-mini btn-danger')
+        %i.fa.fa-download
         PDF 
       %a(href='#' data-toggle='modal' data-target="#itemsModal" class='btn btn-success btn-mini')
         %i.fa.fa-plus

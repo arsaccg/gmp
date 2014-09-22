@@ -8,11 +8,15 @@
     .jarviswidget-editbox
     .widget-body 
       = simple_form_for([:logistics, @deliveryOrder], html: {class: 'smart-form', autocomplete: 'off' }) do |f|
+        
         %fieldset{ :style => 'padding-bottom: 25px;' }
           - if @deliveryOrder.id != nil
             %section.col.col-2
               %label.label{for: "id"} Código
               %label.input
+                - f.fields_for :delivery_order_details do |del|
+                  = del.hidden_field :lock_version
+                = f.hidden_field :lock_version
                 = f.input :id, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.id.to_s.rjust(5, '0')}, label: false, readonly: true
           - if @action == 'edit'
             = hidden_field_tag "delivery_order[cost_center_id]", @costcenter_id

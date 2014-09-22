@@ -34,7 +34,7 @@
             = itembudget.order        
             -if itembudget.measured.to_f > 0
               -title_parsed = URI.escape(title.gsub('\'', '_'))
-              %a{:href=>"javascript:selectitem('#{itembudget.id.to_s}');", :ondblclick=>"javascript:load_item(#{ itembudget.to_json}, '#{title_parsed}');"}
+              %a{:href=>"javascript:selectitem('#{itembudget.id.to_s}');", :ondblclick=>"javascript:load_item(#{itembudget.to_json}, '#{title_parsed}');"}
                 = title
             -else
               %strong
@@ -58,14 +58,16 @@
                 = "-"
           -else
             %td(colspan="3")
-%div(class="modal hide fade" id="myModal")
-  %div(class="modal-header")
-    %button(type="button" class="close" data-dismiss="modal" aria-hidden="true")
-      &times;
-    %h4
-      Asignaciones
-  %div(class="modal-body")
-  %div(class="modal-footer")
+%div(class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
+  .modal-dialog
+    .modal-content
+      %div(class="modal-header")
+        %button(type="button" class="close" data-dismiss="modal" aria-hidden="true")
+          &times;
+        %h4
+          Asignaciones
+      %div(class="modal-body")
+      %div(class="modal-footer")
   
 
 :javascript
@@ -92,7 +94,7 @@
 
       console.log(str_name);
       
-      load_url_ondiv("#{add_data_item_management_itembywbses_path}?item_code=" + data['item_code'] + "&wbscode=" + selected_wbs + "&budget_id=" + data['budget_id'] + "&price=" + replaceAll('.', 'a', data['price']) + "&measured=" + replaceAll('.', 'a', data['measured'])  + "&subbudgetdetail=" + str_name + "&project_id=" + project_selected_data['id'] + "&id=" + data['id'] + "&order=" + replaceAll('.', 'a', data['order']), "form-wbs");
+      load_url_ondiv("#{add_data_item_management_itembywbses_path}?item_code=" + data['item_code'] + "&wbscode=" + selected_wbs + "&budget_id=" + data['budget_id'] + "&price=" + replaceAll('.', 'a', data['price']) + "&measured=" + replaceAll('.', 'a', data['measured'])  + "&subbudgetdetail=" + str_name + "&id=" + data['id'] + "&order=" + replaceAll('.', 'a', data['order']), "form-wbs");
     }
   }
 

@@ -1,5 +1,6 @@
 class Management::ValorizationsController < ApplicationController
-  before_filter :authorize_manager
+  #before_filter :authorize_manager
+  before_filter :authenticate_user!
   
   def index
     @budgets=Budget.where(:cost_center_id => params[:project_id])

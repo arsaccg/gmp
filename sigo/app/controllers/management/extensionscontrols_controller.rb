@@ -1,5 +1,6 @@
 class Management::ExtensionscontrolsController < ApplicationController
-  before_filter :authorize_manager
+  #before_filter :authorize_manager
+  before_filter :authenticate_user!
 
   def index
     p "******cost_center_id******"

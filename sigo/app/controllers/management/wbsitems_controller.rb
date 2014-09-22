@@ -7,7 +7,7 @@ class Management::WbsitemsController < ApplicationController
   
   def index
     @cost_center_selected = CostCenter.find(get_company_cost_center('cost_center'))
-  	@wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs)  
+  	@wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs)  
     @result = get_child("1")
     
     @fourth=0 
@@ -36,7 +36,7 @@ class Management::WbsitemsController < ApplicationController
   end
 
   def get_items_json 
-     @result = get_child(params[:project_id].to_s)
+     @result = get_child(get_company_cost_center('cost_center').to_s)
      respond_to do |format|
       format.json  { 
         render :json => @result.to_json

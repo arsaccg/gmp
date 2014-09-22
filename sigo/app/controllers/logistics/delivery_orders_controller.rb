@@ -169,6 +169,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
     deliveryOrder.update_attributes(delivery_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index, company_id: params[:company_id]
+  rescue ActiveRecord::StaleObjectError
+      deliveryOrder.reload
+      flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+      redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def add_delivery_order_item_field
@@ -340,7 +344,8 @@ class Logistics::DeliveryOrdersController < ApplicationController
       :date_of_issue, 
       :scheduled, 
       :description, 
-      :cost_center_id, 
+      :cost_center_id,
+      :lock_version,
       delivery_order_details_attributes: [
         :id, 
         :delivery_order_id, 
@@ -350,7 +355,8 @@ class Logistics::DeliveryOrdersController < ApplicationController
         :phase_id, 
         :description, 
         :amount, 
-        :scheduled_date, 
+        :scheduled_date,
+        :lock_version, 
         :center_of_attention_id, 
         :_destroy
       ]
