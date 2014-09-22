@@ -139,6 +139,8 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
     # Consumo de Materiales
     @meta_stock_inputs = Array.new
+    @total_stock_input_meta = 0
+    @total_stock_input_real = 0
     @stock_inputs = business_days_array4(start_date, end_date, @cad, @cad2)
 
     if @stock_inputs.count > 0
@@ -146,8 +148,9 @@ class Production::AnalysisOfValuationsController < ApplicationController
         meta_info = Budget.budget_meta_info_per_article(m_input[4], @cost_center)
         if !meta_info.nil?
           @meta_stock_inputs << [ m_input[1], meta_info[1], meta_info[2], meta_info[3] ]
+          @total_stock_input_real += meta_info[3]
         else
-          @meta_stock_inputs << [ 0, 0, 0 ]
+          @meta_stock_inputs << [ '-', '-', 0, 0, 0 ]
         end
       end
     else
@@ -158,10 +161,19 @@ class Production::AnalysisOfValuationsController < ApplicationController
           if !@meta_stock_inputs.map(&:first).include? material[0]
             @meta_stock_inputs << [ material[0], material[1], material[2], material[3], material[2]*material[3] ]
           else
-            @meta_stock_inputs << [ material[0], material[1], material[2], material[3], material[2]*material[3] ]
+            pos_arr = @meta_stock_inputs.transpose.first.index(material[0])
+            ((1..@meta_stock_inputs[pos_arr].size-1).each { |i|
+              @meta_stock_inputs[pos_arr][i+1] += material[2]
+              @meta_stock_inputs[pos_arr][i+3] += (material[2]*material[3])
+              break
+            }; @meta_stock_inputs)
           end
         end
       end
+    end
+
+    @meta_stock_inputs.each do |sti|
+      @total_stock_input_meta += sti[4]
     end
 
     @totalprice4 = @totalprice2-@totalprice-@totalprice3
