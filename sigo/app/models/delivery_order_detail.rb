@@ -1,5 +1,5 @@
 class DeliveryOrderDetail < ActiveRecord::Base
-	belongs_to :delivery_order
+	belongs_to :delivery_order, :touch => true
 	belongs_to :sector
 	belongs_to :phase
 	belongs_to :article
