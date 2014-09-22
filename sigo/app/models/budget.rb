@@ -67,21 +67,17 @@ class Budget < ActiveRecord::Base
     rest = qry_arr - res_arr
 
     # ~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ #
-    if !rest.empty?
-      description_arr = Array.new
-      rest.each do |r|
-        #sql with limit
-        #sql1 = "SELECT * FROM ( SELECT *, ROW_NUMBER() OVER (ORDER BY Insumo.codinsumo) as row FROM Insumo ) a WHERE row > 0 and row <= 1"
-        #count_sql1 = "SELECT DISTINCT COUNT(*)Insumo.codInsumo, Insumo.descripcion From Insumo WHERE Insumo.codInsumo LIKE '__" + r.first.to_s + "'"
+    # if !rest.empty?
+    #   description_arr = Array.new
+    #   rest.each do |r|
+    #     #sql with limit
+    #     #sql1 = "SELECT * FROM ( SELECT *, ROW_NUMBER() OVER (ORDER BY Insumo.codinsumo) as row FROM Insumo ) a WHERE row > 0 and row <= 1"
+    #     sql1 = "SELECT DISTINCT Insumo.codInsumo, Insumo.descripcion From Insumo WHERE Insumo.codInsumo LIKE '__" + r.first.to_s + "'"
+    #     description_arr << do_query(sql1,{db_name: database}) #{db_name: "AREQUIPA_BD2014"})
+    #   end
 
-        p "~~~~~~~~~~~~~~~~~~~~~~~~"
-        p r.first.to_s
-        sql1 = "SELECT DISTINCT Insumo.codInsumo, Insumo.descripcion From Insumo WHERE Insumo.codInsumo LIKE '__" + r.first.to_s + "'"
-        description_arr << do_query(sql1,{db_name: database}) #{db_name: "AREQUIPA_BD2014"})
-      end
-
-      return description_arr
-    else
+    #   return description_arr
+    # else
     
       arr_thread = []
       thread_count = 0;
@@ -196,22 +192,32 @@ class Budget < ActiveRecord::Base
       Itembybudget.connection.execute('UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO" AND subbudgetdetail = "";')
     
       return true
-    end
+    # end
   
   end
 
-  # For Table Meta in Analysis Production
-
   def self.budget_meta_info_per_article(cod_article, cost_center_id)
+    # For Table Meta in Analysis Production
     data_mysql = ActiveRecord::Base.connection.execute("
-      SELECT ibbi.cod_input, SUM( ibbi.quantity ) AS quantity, ibbi.price AS price, (ibbi.price * SUM( ibbi.quantity )) AS partial 
-      FROM budgets b, inputbybudgetanditems ibbi
-      WHERE b.type_of_budget = 0
-      AND b.cost_center_id = " + cost_center_id.to_s + " 
-      AND ibbi.budget_id = b.id
-      AND ibbi.cod_input LIKE '" + cod_article.to_s + "'
-      GROUP BY ibbi.cod_input
-    ")
+      SELECT 
+        inputs.cod_input, 
+        SUM(inputs.quantity * itembybudgets.measured) as quantity, 
+        inputs.price as price, 
+        SUM(inputs.quantity * inputs.price * itembybudgets.measured)
+      FROM itembybudgets, budgets,
+       (
+       SELECT quantity, price, `order`, item_id, cod_input, budget_id, input
+       FROM inputbybudgetanditems
+       ) AS inputs
+  
+      WHERE inputs.item_id = itembybudgets.item_id AND
+      inputs.`order` = itembybudgets.`order` AND
+        inputs.budget_id = itembybudgets.budget_id AND
+        itembybudgets.budget_id = budgets.id AND
+        budgets.cost_center_id = " + cost_center_id.to_s  + " AND
+        inputs.cod_input LIKE '" + cod_article.to_s + "%'
+      GROUP BY inputs.cod_input ORDER BY inputs.input"
+    )
 
     return data_mysql.first
   end

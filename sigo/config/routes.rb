@@ -157,6 +157,7 @@ ArsacLogistica::Application.routes.draw do
         post 'display_articles'
         post 'show_rows_delivery_orders'
         get 'show_tracking_orders'
+        post 'display_orders'
       end
       member do
         get 'gorevise'
@@ -176,6 +177,7 @@ ArsacLogistica::Application.routes.draw do
         post 'get_exchange_rate_per_date'
         post 'add_modal_extra_operations'
         post 'add_more_row_form_extra_op'
+        post 'display_orders'
       end
       member do
         put 'show_delivery_order_item_field'
@@ -405,6 +407,7 @@ ArsacLogistica::Application.routes.draw do
     resources :subcontract_equipments do
       collection do
         post 'add_more_advance'
+        get 'get_report'
       end
     end
     resources :subcontracts do

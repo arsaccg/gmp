@@ -10,7 +10,7 @@ class Management::BudgetsController < ApplicationController
   end
 
   def get_budget_by_project
-    @project_id = params[:project_id]
+    @project_id = get_company_cost_center('cost_center')
     @budgets_goal = Budget.where("type_of_budget = ? AND cost_center_id = ? ", '0', @project_id)
     @budgets_sale = Budget.where("type_of_budget = ? AND cost_center_id = ? ", '1', @project_id) 
 
@@ -92,12 +92,12 @@ class Management::BudgetsController < ApplicationController
 
   def load_elements
   	budget_id = params[:budget_id]
-  	project_id = params[:project_id]
+  	project_id = get_company_cost_center('cost_center')
   	type_of_budget  = params[:type_of_budget]
     database = params[:database]
 
   	budget = Budget.new(budget_parameters)
-    company = CostCenter.find(params[:project_id]).company
+    company = CostCenter.find(project_id).company
     @res = budget.load_elements(budget_id, project_id, type_of_budget, database, company)
   	if @res == true
       p '~~~~~~~~~~~~~~budget_id~~~~~~~~~~~~~~~'
@@ -115,7 +115,7 @@ class Management::BudgetsController < ApplicationController
   end
 
   def administrate_budget
-    project = CostCenter.find(params[:project_id])
+    project = CostCenter.find(get_company_cost_center('cost_center'))
     @valorization = project.valorizations
     @budget = project.budgets
     render :administrate_budget, layout: false

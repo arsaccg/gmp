@@ -22,7 +22,7 @@
               %td
                 = partwork.working_group.name
               %td 
-                = partwork.date_of_creation
+                = partwork.date_of_creation.strftime('%d/%m/%Y')
               %td
                 %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{production_part_work_path(partwork.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Ver Información

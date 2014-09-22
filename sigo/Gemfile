@@ -20,6 +20,7 @@ gem "prawnto_2", :require => "prawnto"
 
 # Gem Wicked PDF
 gem 'wicked_pdf'
+gem "wkhtmltopdf-binary"
 
 # use Bootstrap
 gem 'therubyracer', platforms: :ruby
@@ -69,6 +70,11 @@ gem 'coffee-rails', '~> 4.0.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+
+#*~TOBI~*#
+gem 'savon'
+gem 'json' 
+gem 'activerecord-import'
 
 # Gem Haml
 gem 'haml-rails'

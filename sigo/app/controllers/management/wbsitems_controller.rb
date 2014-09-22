@@ -129,9 +129,9 @@ class Management::WbsitemsController < ApplicationController
 
   def add_items_to_wbs
 
-  	@wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs)
+  	@wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs)
 
-  	@budgets = Budget.where("cost_center_id = ? AND type_of_budget = ?", params[:project_id], params[:type_budget])
+  	@budgets = Budget.where("cost_center_id = ? AND type_of_budget = ?", get_company_cost_center('cost_center'), params[:type_budget])
   	@wbsitems_arr = Array.new
   	@budgets.each do |budget|
   		temp_wbsitems = budget.itembywbses

@@ -155,10 +155,10 @@
                               - Phase.get_subphases(phas.code).each do |subphase|
                                 -if part.phase_id == subphase.id
                                   %option{:value => "#{subphase.id}", :selected=>"selected"}
-                                    = subphase.name
+                                    = subphase.code.to_s + ' - ' + subphase.name
                                 -else
                                   %option{:value => "#{subphase.id}"}
-                                    = subphase.name
+                                    = subphase.code.to_s + ' - ' + subphase.name
 
                       %td.effective-hours.col-lg-2
                         = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][effective_hours]', part.effective_hours , class: "form-control effective-hours", onchange: "sumHours(this);"

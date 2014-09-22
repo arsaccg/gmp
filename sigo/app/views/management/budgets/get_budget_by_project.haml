@@ -1,9 +1,9 @@
-.row-fluid
-  .span3
+.row
+  .col-md-3
     .group-bar
       %strong(style="padding-left: 10px; font-size: 12px;") Presupuesto Meta
     .individual-panel
-      %table(class="table-bordered table-hover white-table small-font" width="100%")
+      %table(class="table table-bordered table-hover white-table small-font" width="100%")
         %tbody
           - @budgets_goal.each do |budget|
             %tr 
@@ -24,13 +24,13 @@
                 %td
                   %strong=number_to_currency(number_with_precision(get_total_cost("", budget.id), :precision => 2).to_s , :unit=>'S/. ') rescue ""
               %td
-                %a(data-method ="delete"){:href=>"javascript:delete_to_url('" + management_budget_path(budget.id).to_s + "', 'right-area');"}
-                  %i(class='icon-remove')
+                %a(data-method ="delete"){:href=>"javascript:delete_to_url_into_div('" + management_budget_path(budget.id).to_s + "?authenticity_token=" + form_authenticity_token + "', 'right-area');"}
+                  %i(class='fa fa-times')
     %br
     .group-bar
       %strong(style="padding-left: 10px; font-size: 12px;") Presupuesto Venta
     .individual-panel
-      %table(class="table-bordered table-hover white-table small-font" width="100%")
+      %table(class="table table-bordered table-hover white-table small-font" width="100%")
         %tbody
           - @budgets_sale.each do |budget|
             %tr 
@@ -47,21 +47,21 @@
                 %td(colspan="2")     
                   %strong=budget.description
               %td
-                %a(data-method ="delete"){:href=>"javascript:delete_to_url('" + management_budget_path(budget.id).to_s + "', 'right-area');"}
-                  %i(class='icon-remove')
-  .span9
+                %a(data-method ="delete"){:href=>"javascript:delete_to_url_into_div('" + management_budget_path(budget.id).to_s + "?authenticity_token=" + form_authenticity_token + "', 'right-area');"}
+                  %i(class='fa fa-times')
+  .col-md-9
     .group-bar
       %strong(style="padding-left: 10px; font-size: 12px;") Partidas
-    .row-fluid
-      .span12
+    .row
+      .col-md-12
         .content-load
     %br
     .group-bar
       %strong(style="padding-left: 10px; font-size: 12px;")
         Insumos
         %span(id="brief-items")
-    .row-fluid
-      .span12
+    .row
+      .col-md-12
         .botom-load
         
 = render partial: 'add_articles'
