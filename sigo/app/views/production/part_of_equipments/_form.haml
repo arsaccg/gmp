@@ -7,6 +7,9 @@
   .widget-body
     = simple_form_for([:production, @partofequipment], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
+        - f.fields_for :part_of_equipment_details do |del|
+          = del.hidden_field :lock_version
+        = f.hidden_field :lock_version
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
         .row
