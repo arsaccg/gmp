@@ -12,63 +12,44 @@
           %header
             %span.widget-icon
               %i.fa.fa-eye
-            %h2 Compañia
+            %h2 Presupuesto
           .widget-body
-            = simple_form_for([:logistics, @company], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+            = simple_form_for([:management, @budget], html: {class: 'form-horizontal smart-form', autocomplete: 'off', :id=>'form-data' }) do |f|
               %fieldset
                 .row
-                  %section.col.col-6
-                    %label.label RUC
-                    %label.input{for: "ruc"}
-                      %i.icon-append.fa.fa-superscript
-                      = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
+                  %section.col.col-10
+                    %label.label Codigo S10
+                    %label.input
+                      = @budget.cod_budget
                 .row
                   %section.col.col-10
                     %label.label Nombre
-                    %label.input{for: "name"}
+                    %label.input{for: "description"}
                       %i.icon-append.fa.fa-user
-                      = f.input :name, placeholder: "Nombre del Grupo", input_html: { class: 'form-control' }, label: false
+                      = f.input :description, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Codigo del Proyecto
+                    %label.input{for: "cost_center_id"}
+                      %i.icon-append.fa.fa-superscript
+                      = f.input :cost_center_id, placeholder: "Codigo del Proyecto", input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label %Utilidad
+                    %label.input{for: "utility"}
+                      %i.icon-append.fa.fa-superscript
+                      = f.input :utility, placeholder: "%Utilidad", input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label %Gastos Generales
+                    %label.input{for: "general_expenses"}
+                      %i.icon-append.fa.fa-superscript
+                      = f.input :general_expenses, placeholder: "%Gastos Generales", input_html: { class: 'form-control' }, label: false
               %footer
                 %a{:href=>"javascript:post_to_url('" + management_budget_path(@budget.id).to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
                   %i.fa.fa-save
                   Guardar
 
-
-                / %a{:href=>"javascript:load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id="+@budget.cost_center_id.to_s+"', 'right-area');", class: "btn btn-danger"}
-                /  %i.fa.fa-times
-                /  Cancelar
-                / %button.btn.btn-primary{type: "submit"}
-                /  %i.fa.fa-save
-                /    Guardar
-
-
-        / =simple_form_for [:management, @budget], :role=>"form", :html => {:class => 'form-horizontal', :id=>'form-data'} do |f|
-        /   .fieldset
-        /     .control-group
-        /       %label(class="control-label") Codigo S10
-        /       .controls
-        /         = @budget.cod_budget
-        /     .control-group
-        /       %label(class="control-label") Nombre
-        /       .controls
-        /         = f.input :description, label: false
-        /     .control-group
-        /       %label(class="control-label") Codigo
-        /       .controls
-        /         = f.input :cost_center_id, label: false
-        /     .control-group
-        /       %label(class="control-label") %Utilidad
-        /       .controls
-        /         = f.input :utility, label: false
-        /     .control-group
-        /       %label(class="control-label") %Gastos Generales
-        /       .controls
-        /         = f.input :general_expenses, label: false
-        /     .form-actions
-        /       %a{:href=>"javascript:post_to_url('" + management_budget_path(@budget.id).to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
-        /         Guardar
-        /       %a{:href=>"javascript:load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id="+@budget.cost_center_id.to_s+"', 'right-area');", class: "btn btn-danger"}
-        /         Cancelar
-  %button.btn.btn-sm.btn-primary.btn-prev#backlist-companies{type: "button"}
+  %a.btn.btn-sm.btn-primary.btn-prev#backlist-companies{:href=>"javascript:load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id="+@budget.cost_center_id.to_s+"', 'right-area');"}
     %i.fa.fa-arrow-left
-    Retornar al listado de ompañias
+    Retornar al listado de compañias
