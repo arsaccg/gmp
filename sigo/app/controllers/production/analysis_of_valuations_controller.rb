@@ -203,21 +203,6 @@ class Production::AnalysisOfValuationsController < ApplicationController
         @total_stock_input_meta += sti[4]
       end
 
-      # TODO meta subcontratos
-      @meta_part_subcontract = Array.new
-      all_meta_subcontracts = Budget.budget_meta_info_per_subcontract(budgetanditems_list.map(&:first).collect {|x| "'#{x}'"}.join(", "), @cost_center)
-      all_meta_subcontracts.each do |meta_subcon|
-        value_quantity_from_partes = 0
-        pos_arr = budgetanditems_list.transpose.first.index(meta_subcon[0])
-        (1..budgetanditems_list[pos_arr].size-1).each { |i|
-          value_quantity_from_partes = budgetanditems_list[pos_arr][i+1]
-          break
-        };
-
-        @meta_part_subcontract << [ meta_subcon[1], meta_subcon[2]*value_quantity_from_partes, meta_subcon[3], (meta_subcon[2]*value_quantity_from_partes)*meta_subcon[3], meta_subcon[0] ]
-        @m_price_part_subcontract += (meta_subcon[2]*value_quantity_from_partes)*meta_subcon[3]
-      end
-
       @totalprice4 = @totalprice2-@totalprice-@totalprice3
       @m_total_price = @m_price_part_work - @m_price_part_person - @m_price_part_equipment
     else
