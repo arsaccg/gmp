@@ -83,17 +83,13 @@ class Production::PartWorksController < ApplicationController
 
   def update
     partwork = PartWork.find(params[:id])
-    if partwork.update_attributes(part_work_parameters)
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id]
-    else
-      partwork.errors.messages.each do |attribute, error|
-        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
-      end
-      # Load new()
-      @partwork = partwork
-      render :edit, layout: false
-    end
+    partwork.update_attributes(part_work_parameters)
+    flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index, company_id: params[:company_id]
+  rescue ActiveRecord::StaleObjectError
+      partwork.reload
+      flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+      redirect_to :action => :index
   end
 
   def destroy
@@ -106,6 +102,6 @@ class Production::PartWorksController < ApplicationController
 
   private
   def part_work_parameters
-    params.require(:part_work).permit(:working_group_id, :block, :sector_id, :number_working_group, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :itembybudget_id, :bill_of_quantitties, :description, :_destroy])
+    params.require(:part_work).permit(:working_group_id, :block, :sector_id, :lock_version, :number_working_group, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :itembybudget_id, :bill_of_quantitties, :description, :lock_version, :_destroy])
   end
 end

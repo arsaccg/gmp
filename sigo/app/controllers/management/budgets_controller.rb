@@ -31,6 +31,14 @@ class Management::BudgetsController < ApplicationController
     articles.each do |art|
       @article_hash << {'id' => art[0].to_s+'-'+art[3].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4], 'budget_id'=> @budget_id, 'item_id'=> @item_id, 'order' => @order}
     end
+
+    #para desabilitar botones
+    @cod_input_arr = Array.new
+    itembybudgetanditems = Inputbybudgetanditem.select("id, cod_input").where("budget_id = ? AND inputbybudgetanditems.order LIKE ?", @budget_id,  @order + "%").group('cod_input, price, input, unit')
+    itembybudgetanditems.each do |i|
+      @cod_input_arr << i.cod_input
+    end
+
     render :display_articles, layout: false 
   end
 
