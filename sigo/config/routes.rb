@@ -632,7 +632,7 @@ ArsacLogistica::Application.routes.draw do
         post 'display_articles'
         post 'add_concept'
         post 'show_details'
-        post 'report'
+        get 'report'
         get 'report_pdf'
       end
     end
