@@ -197,13 +197,14 @@ class Budget < ActiveRecord::Base
   end
 
   def self.budget_meta_info_per_article(cod_article, cost_center_id)
-    # For Table Meta in Analysis Production
+    # For Table Meta in Analysis Production - Materiales
     data_mysql = ActiveRecord::Base.connection.execute("
       SELECT 
         inputs.cod_input, 
         SUM(inputs.quantity * itembybudgets.measured) as quantity, 
         inputs.price as price, 
-        SUM(inputs.quantity * inputs.price * itembybudgets.measured)
+        SUM(inputs.quantity * inputs.price * itembybudgets.measured),
+        inputs.input
       FROM itembybudgets, budgets,
        (
        SELECT quantity, price, `order`, item_id, cod_input, budget_id, input
@@ -222,7 +223,54 @@ class Budget < ActiveRecord::Base
     return data_mysql.first
   end
 
+  def self.budget_meta_info_per_equipment(list_itembybudget_orders, cost_center_id)
+    # For Table Meta in Analysis Production - Equipos
+    data_mysql = ActiveRecord::Base.connection.execute("
+      SELECT itembybudgets.order, inputs.input as name, SUM(inputs.quantity) as quantity, inputs.price as price
+      FROM itembybudgets, budgets,
+        (
+         SELECT quantity, price, `order`, item_id, cod_input, budget_id, input
+         FROM inputbybudgetanditems
+        ) AS inputs
+      WHERE inputs.item_id = itembybudgets.item_id AND
+      inputs.`order` = itembybudgets.`order` AND
+      inputs.budget_id = itembybudgets.budget_id AND
+      budgets.type_of_budget = 0 AND
+      budgets.cost_center_id = " + cost_center_id.to_s  + " AND
+      budgets.id = itembybudgets.budget_id AND
+      itembybudgets.order IN (" + list_itembybudget_orders.to_s + ") AND
+      inputs.cod_input LIKE '03%'
+      GROUP BY inputs.cod_input ORDER BY inputs.input"
+    )
+
+    return data_mysql
+  end
+
+  def self.budget_meta_info_per_person(list_itembybudget_orders, code_article, cost_center_id)
+    # For Table Meta in Analysis Production - Personal
+    data_mysql = ActiveRecord::Base.connection.execute("
+      SELECT itembybudgets.order, inputs.input as name, SUM(inputs.quantity) as quantity, inputs.price as price
+      FROM itembybudgets, budgets,
+        (
+         SELECT quantity, price, `order`, item_id, cod_input, budget_id, input
+         FROM inputbybudgetanditems
+        ) AS inputs
+      WHERE inputs.item_id = itembybudgets.item_id AND
+      inputs.`order` = itembybudgets.`order` AND
+      inputs.budget_id = itembybudgets.budget_id AND
+      budgets.type_of_budget = 0 AND
+      budgets.cost_center_id = " + cost_center_id.to_s  + " AND
+      budgets.id = itembybudgets.budget_id AND
+      itembybudgets.order IN (" + list_itembybudget_orders.to_s + ") AND
+      inputs.cod_input LIKE '" + code_article.to_s + "%'
+      GROUP BY inputs.cod_input ORDER BY inputs.input"
+    )
+
+    return data_mysql
+  end
+
   def self.budget_meta_info_per_itembybudget(itembybudget_order, cost_center_id)
+    # For Table Meta in Analysis Production - Partidas
     data_mysql = ActiveRecord::Base.connection.execute("
       SELECT ibb.order, SUM(ibb.measured), ibb.price, (SUM(ibb.measured) * ibb.price) as partial 
       FROM budgets b, itembybudgets ibb 

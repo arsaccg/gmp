@@ -73,29 +73,6 @@ class Production::AnalysisOfValuationsController < ApplicationController
       @cad2 = @cad2.join(',')
     end
 
-    # Mano de Obra
-    @meta_personal = Array.new
-    @workers_array = business_days_array(start_date, end_date, @cad, @cad2)
-
-    @workers_array.each do |workerDetail|
-      if !workerDetail[7].nil? || workerDetail[7] != 0
-        @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
-      end
-
-      article = Article.find(workerDetail[12])
-      meta_info = Budget.budget_meta_info_per_article(article.code, @cost_center)
-      if !meta_info.nil? && workerDetail[0] != ''
-        @meta_personal << [ workerDetail[0].to_s, meta_info[1].round(2), meta_info[2], meta_info[3] ]
-        @m_price_part_person += meta_info[3]
-      elsif meta_info.nil? && workerDetail[0] != ''
-        @meta_personal << [ workerDetail[0].to_s, 0, 0, 0 ]
-        @m_price_part_person += 0
-      else
-        @meta_personal << [ '-', 0, 0, 0 ]
-        @m_price_part_person += 0
-      end
-    end
-
     # PARTIDAS
     @meta_part_work = Array.new
     budgetanditems_list = Array.new
@@ -106,7 +83,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       # quantity_ibb = sum_quantity_per_itembybudget_detail(workerDetail[2], workerDetail[5])*workerDetail[3]
       
       # Calculate total of current itembybudget
-      total_current_ibb = workerDetail[3]*workerDetail[4]
+      total_current_ibb = workerDetail[3]*workerDetail[4] # Cantidad * Precio
       
       # Calculate Total of all itembybudgets
       @totalprice2 += total_current_ibb
@@ -115,69 +92,104 @@ class Production::AnalysisOfValuationsController < ApplicationController
       @meta_part_work << [ workerDetail[2], workerDetail[1], workerDetail[3], workerDetail[4], total_current_ibb ]
       
       # List BudgetAndItems
-      budgetanditems_list << [ workerDetail[2], workerDetail[5] ]
+      # [0] => itembybudget_order, [1] => budget_id, [2] => metrado_from_partes
+      budgetanditems_list << [ workerDetail[2], workerDetail[5], workerDetail[3] ]
     end
 
-    # Parte de Equipo
-    @meta_part_equipment = Array.new
-    @workers_array3 = business_days_array3(start_date, end_date, @cad, @cad2)
+    
+    if budgetanditems_list.count > 0
+      # Mano de Obra
+      @meta_personal = Array.new
+      @workers_array = business_days_array(start_date, end_date, @cad, @cad2)
 
-    @workers_array3.each do |workerDetail|
-      @totalprice3 += workerDetail[4]
+      @workers_array.each do |workerDetail|
+        if !workerDetail[7].nil? || workerDetail[7] != 0
+          @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
+        end
 
-      specific = Article.find_idarticle_global_by_specific_idarticle(workerDetail[5], @cost_center)
-      article = Article.find(specific[1])
-      meta_info = Budget.budget_meta_info_per_article(article.code, @cost_center)
-      if !meta_info.nil?
-        @meta_part_equipment << [ meta_info[1], meta_info[2], meta_info[3], workerDetail[0] ]
-        @m_price_part_equipment += meta_info[3]
-      else
-        @meta_part_equipment << [ 0, 0, 0 ]
-        @m_price_part_equipment += 0
-      end
-    end
+        article = Article.find(workerDetail[12])
 
-    # Consumo de Materiales
-    @meta_stock_inputs = Array.new
-    @total_stock_input_meta = 0
-    @total_stock_input_real = 0
-    @stock_inputs = business_days_array4(start_date, end_date, @cad, @cad2)
+        # Solo cogo los 6 primeros digitos para poder consultar tooodos el personal
+        meta_info = Budget.budget_meta_info_per_person(budgetanditems_list.map(&:first).collect {|x| "'#{x}'"}.join(", "), article.code[0..5], @cost_center)
+        meta_info.each do |minfo|
+          value_quantity_from_partes = 0
+          pos_arr = budgetanditems_list.transpose.first.index(minfo[0])
+          (1..budgetanditems_list[pos_arr].size-1).each { |i|
+            value_quantity_from_partes = budgetanditems_list[pos_arr][i+1]
+            break
+          };
 
-    if @stock_inputs.count > 0
-      @stock_inputs.each do |m_input|
-        meta_info = Budget.budget_meta_info_per_article(m_input[4], @cost_center)
-        if !meta_info.nil?
-          @meta_stock_inputs << [ m_input[1], meta_info[1], meta_info[2], meta_info[3] ]
-          @total_stock_input_real += meta_info[3]
-        else
-          @meta_stock_inputs << [ '-', '-', 0, 0, 0 ]
+          @meta_personal << [ minfo[1].to_s, (minfo[2].to_f*value_quantity_from_partes.to_f).round(2), minfo[3].to_f, (minfo[2].to_f*value_quantity_from_partes.to_f)*minfo[3].to_f ]
+          @m_price_part_person += (minfo[2].to_f*value_quantity_from_partes.to_f)*minfo[3].to_f
         end
       end
-    else
-      budgetanditems_list.each do |ibb|
-        # [0] => itembybudget_order, [1] => budget_id
-        list_materials = get_tobi_articles_materials_from_itembybudgets(ibb[0], ibb[1])
-        list_materials.each do |material|
-          if !@meta_stock_inputs.map(&:first).include? material[0]
-            @meta_stock_inputs << [ material[0], material[1], material[2], material[3], material[2]*material[3] ]
+
+      # Parte de Equipo
+      @meta_part_equipment = Array.new
+      @workers_array3 = business_days_array3(start_date, end_date, @cad, @cad2)
+
+      @workers_array3.each do |workerDetail|
+        @totalprice3 += workerDetail[4]
+      end
+
+      # TODO meta equipos
+      all_meta_equipments = Budget.budget_meta_info_per_equipment(budgetanditems_list.map(&:first).collect {|x| "'#{x}'"}.join(", "), @cost_center)
+      all_meta_equipments.each do |meta_equip|
+        value_quantity_from_partes = 0
+        pos_arr = budgetanditems_list.transpose.first.index(meta_equip[0])
+        (1..budgetanditems_list[pos_arr].size-1).each { |i|
+          value_quantity_from_partes = budgetanditems_list[pos_arr][i+1]
+          break
+        };
+
+        @meta_part_equipment << [ meta_equip[1], meta_equip[2]*value_quantity_from_partes, meta_equip[3], (meta_equip[2]*value_quantity_from_partes)*meta_equip[3], meta_equip[0] ]
+        @m_price_part_equipment += (meta_equip[2]*value_quantity_from_partes)*meta_equip[3]
+      end
+
+      # Consumo de Materiales
+      @meta_stock_inputs = Array.new
+      @total_stock_input_meta = 0
+      @total_stock_input_real = 0
+      @stock_inputs = business_days_array4(start_date, end_date, @cad, @cad2)
+
+      if @stock_inputs.count > 0
+        @stock_inputs.each do |m_input|
+          meta_info = Budget.budget_meta_info_per_article(m_input[4], @cost_center)
+          if !meta_info.nil?
+            @meta_stock_inputs << [ m_input[1], meta_info[1], meta_info[2], meta_info[3] ]
+            @total_stock_input_real += meta_info[3]
           else
-            pos_arr = @meta_stock_inputs.transpose.first.index(material[0])
-            ((1..@meta_stock_inputs[pos_arr].size-1).each { |i|
-              @meta_stock_inputs[pos_arr][i+1] += material[2]
-              @meta_stock_inputs[pos_arr][i+3] += (material[2]*material[3])
-              break
-            }; @meta_stock_inputs)
+            @meta_stock_inputs << [ '-', '-', 0, 0, 0 ]
+          end
+        end
+      else
+        budgetanditems_list.each do |ibb|
+          # [0] => itembybudget_order, [1] => budget_id, [2] => metrado_from_partes
+          list_materials = get_tobi_articles_materials_from_itembybudgets(ibb[0], ibb[1], ibb[2])
+          list_materials.each do |material|
+            if !@meta_stock_inputs.map(&:first).include? material[0]
+              @meta_stock_inputs << [ material[0], material[1], material[2], material[3], material[2]*material[3] ]
+            else
+              pos_arr = @meta_stock_inputs.transpose.first.index(material[0])
+              ((1..@meta_stock_inputs[pos_arr].size-1).each { |i|
+                @meta_stock_inputs[pos_arr][i+1] += material[2]
+                @meta_stock_inputs[pos_arr][i+3] += (material[2]*material[3])
+                break
+              }; @meta_stock_inputs)
+            end
           end
         end
       end
-    end
 
-    @meta_stock_inputs.each do |sti|
-      @total_stock_input_meta += sti[4]
-    end
+      @meta_stock_inputs.each do |sti|
+        @total_stock_input_meta += sti[4]
+      end
 
-    @totalprice4 = @totalprice2-@totalprice-@totalprice3
-    @m_total_price = @m_price_part_work - @m_price_part_person - @m_price_part_equipment
+      @totalprice4 = @totalprice2-@totalprice-@totalprice3
+      @m_total_price = @m_price_part_work - @m_price_part_person - @m_price_part_equipment
+    else
+      @message_warning = "No hay partidas registradas en ese Rango de Fecha o en ese Sector."
+    end
 
     render(partial: 'report_table', :layout => false)
   end
@@ -248,12 +260,12 @@ class Production::AnalysisOfValuationsController < ApplicationController
     return sum_quantity
   end
 
-  def get_tobi_articles_materials_from_itembybudgets(ibb_order, budget_id)
+  def get_tobi_articles_materials_from_itembybudgets(ibb_order, budget_id, measured_from_parts)
     materials_from_itembybudget = ActiveRecord::Base.connection.execute("
       SELECT 
         ibbi.cod_input, 
         ibbi.input, 
-        ROUND(SUM(ibbi.quantity),2)*ibb.measured, 
+        ROUND(SUM(ibbi.quantity),2)*" + measured_from_parts.to_s + ", 
         ibbi.price 
       FROM `itembybudgets` ibb, `inputbybudgetanditems` ibbi 
       WHERE ibb.order LIKE '" + ibb_order.to_s + "' 

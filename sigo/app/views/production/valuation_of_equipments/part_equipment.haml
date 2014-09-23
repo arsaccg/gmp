@@ -36,7 +36,7 @@
               %th{ 'style' => 'text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[4].to_s, unit: 'S/. ', precision: 2)
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',(workerDetail3[7]+workerDetail3[2]).to_s)
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
-                = number_to_currency(workerDetail3[9]+workerDetail3[4], unit: 'S/. ', precision: 2)
+                = number_to_currency((workerDetail3[9].to_f + workerDetail3[4].to_f), unit: 'S/. ', precision: 2)
               %th
                 %span{"style"=>"width=20px"}
                   %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "report_of_equipment(#{workerDetail3[0]})"}

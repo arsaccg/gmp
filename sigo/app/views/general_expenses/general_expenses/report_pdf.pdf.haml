@@ -1,11 +1,7 @@
 %html
   %head
     %meta{charset: "utf-8"}
-    = stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
-    = stylesheet_link_tag "font-awesome.min", media: "screen", rel: "stylesheet", type: "text/css"
-    = stylesheet_link_tag "smartadmin-production", media: "screen", rel: "stylesheet", type: "text/css"
-    = stylesheet_link_tag "smartadmin-production_unminified", media: "screen", rel: "stylesheet", type: "text/css"
-    = stylesheet_link_tag "smartadmin-skins", media: "screen", rel: "stylesheet", type: "text/css"
+    = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
   %body
     #main
       #content
@@ -41,31 +37,31 @@
               %th{"style"=>"text-align:right"} Parcial
               %th{"style"=>"text-align:center"} Total
           %tbody
-            -@phases.each do |ph|
-              -ge = GeneralExpense.where("cost_center_id = #{@cc} AND code_phase = "+ph[0].to_s)
-              %tr
-                %th{"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}= ph[0].to_s+ "00"
-                %th{'colspan' => 8,"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}= Phase.find_by_code(ph[0].to_s).name
-                %th{"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}=number_to_currency(ph[1], unit: 'S/. ', precision: 2)
-              -ge.each do |ge|
+            -@todo.each do |rpt|
+              -if rpt[0].to_s.length==2 && rpt[1] ==nil
                 %tr
-                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}= Phase.find(ge.phase_id.to_s).code
-                  %th{'colspan' => 8,"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}= Phase.find(ge.phase_id.to_s).name
-                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}=number_to_currency(ge.total, unit: 'S/. ', precision: 2)
+                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}= rpt[0].to_s+ "00"
+                  %th{'colspan' => 8,"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}= rpt[2].to_s
+                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}=number_to_currency(rpt[3].to_f, unit: 'S/. ', precision: 2)
+              -elsif rpt[1].to_s.length==4 && rpt[0] ==nil
+                %tr
+                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}= rpt[1]
+                  %th{'colspan' => 8,"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}= rpt[2].to_s
+                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}=number_to_currency(rpt[3], unit: 'S/. ', precision: 2)
+              -else
+                %tr
+                  %th{"style"=>"text-align:left;font-weight: normal;font-size: 12px;"}= rpt[4]
+                  %th{"style"=>"text-align:left;font-weight: normal;font-size: 12px;"}= rpt[5]
+                  %th{"style"=>"text-align:left;font-weight: normal;font-size: 12px;"}= rpt[6]
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}= rpt[7] rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}= rpt[8] rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}= rpt[9] rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}= rpt[11] rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}=number_to_currency(rpt[12], unit: 'S/. ', precision: 2) rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}=number_to_currency(rpt[10], unit: 'S/. ', precision: 2) rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}
 
-                -ge.general_expense_details.each do |ged|
-                  %tr
-                    %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).code.to_s
-                    %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).name.to_s
-                    %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).unit_of_measurement.symbol.to_s
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=ged.people rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=ged.participation rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=ged.time rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=ged.amount rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=number_to_currency(ged.cost, unit: 'S/. ', precision: 2) rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=number_to_currency(ged.parcial, unit: 'S/. ', precision: 2) rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}
             %tr
               %th{"style"=>"text-align:center;background-color:#632523;border-color:#632523;color:white;"}
               %th{'colspan' => 8,"style"=>"text-align:left;font-size: 14px;background-color:#632523;border-color:#632523;color:white;"} Total Gastos
-              %th{"style"=>"text-align:center;font-size: 14px;background-color:#632523;border-color:#632523;color:white;"}= number_to_currency(@t, unit: 'S/. ', precision: 2)
+              %th{"style"=>"text-align:center;font-size: 14px;background-color:#632523;border-color:#632523;color:white;"}= number_to_currency(@total, unit: 'S/. ', precision: 2)
