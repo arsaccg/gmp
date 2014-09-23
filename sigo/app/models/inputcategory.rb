@@ -49,8 +49,7 @@ class Inputcategory < ActiveRecord::Base
                      FROM inputbybudgetanditems
                      ) AS inputs
 
-                WHERE inputs.item_id = itembybudgets.item_id AND
-                inputs.`order` = itembybudgets.`order` AND
+                WHERE inputs.`order` = itembybudgets.`order` AND
                   inputs.budget_id = itembybudgets.budget_id AND
                   itembybudgets.budget_id = '" + budget_id.to_s  + "' AND
                   inputs.cod_input LIKE '" + category_prefix.to_s + "%'
