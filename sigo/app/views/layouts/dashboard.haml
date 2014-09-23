@@ -308,6 +308,23 @@
                       %a{href: "#{administrate_budget_management_budgets_path}", title: "Presupuestos"}
                         %i.fa.fa-lg.fa-fw.fa-money
                         Presupuestos
+                    %li
+                      %a{href: "#{management_extensionscontrols_path}", title: "Ampliaciones"}
+                        %i.fa.fa-lg.fa-fw.fa-money
+                        Ampliaciones
+                    %li
+                      %a{href: "#{administration_advances_path}", title: "Adelantos"}
+                        %i.fa.fa-lg.fa-fw.fa-money
+                        Adelantos
+                %li
+                  %a{href: '#'}
+                    %i.fa.fa-lg.fa-fw.fa-list-alt
+                    Reportes
+                  %ul
+                    %li
+                      %a{href: "#{feo_of_work_administration_inputcategories_path}?budget_sale=#{}&budget_goal=#{}", title: "FEO"}
+                        %i.fa.fa-lg.fa-fw.fa-money
+                        FEO
           /...TOBI
           - if (current_user.has_role? :director) || (current_user.has_role? :control_documentary)
             %li

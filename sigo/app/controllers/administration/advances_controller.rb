@@ -3,13 +3,13 @@ class Administration::AdvancesController < ApplicationController
   	before_filter :authenticate_user!
 	# ESTO PERTENECE A TOBI!!!!
 	def index
-		@advances = Advance.where(:cost_center_id => params[:project_id])
+		@advances = Advance.where(:cost_center_id => get_company_cost_center('cost_center'))
 		render :index, :layout => false
 	end
 
 	def new
 		@advance = Advance.new
-		@advance.cost_center_id = params[:project_id]
+		@advance.cost_center_id = get_company_cost_center('cost_center')
 		render :new, :layout => false
 	end
 
@@ -27,7 +27,7 @@ class Administration::AdvancesController < ApplicationController
 
 	def create
 		@advance = Advance.new(advances_parameters)
-		@advance.cost_center_id = params[:project_id]
+		@advance.cost_center_id = get_company_cost_center('cost_center')
 		@advance.save
 
 		redirect_to :action => :index

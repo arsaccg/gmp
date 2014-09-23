@@ -3,16 +3,8 @@ class Management::ExtensionscontrolsController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    p "******cost_center_id******"
-    p params[:cost_center_id]
-    @extensionscontrol = Extensionscontrol.where(:cost_center_id => params[:project_id]) 
-    if @extensionscontrol == nil
-      @extensionscontrol = Extensionscontrol.where(:cost_center_id => params[:cost_center_id])
-    end
-    @project = CostCenter.find(params[:project_id]) 
-    if @project == nil
-       @project = CostCenter.find(params[:cost_center_id])
-    end
+    @extensionscontrol = Extensionscontrol.where(:cost_center_id => get_company_cost_center('cost_center')) 
+    @project = CostCenter.find(get_company_cost_center('cost_center'))
     render :index, :layout => false
   end
 
