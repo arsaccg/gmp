@@ -108,10 +108,10 @@ class Production::AnalysisOfValuationsController < ApplicationController
           @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
         end
 
-        article = Article.find(workerDetail[12])
+        # article = Article.find(workerDetail[12])
 
-        # Solo cogo los 6 primeros digitos para poder consultar tooodos el personal
-        meta_info = Budget.budget_meta_info_per_person(budgetanditems_list.map(&:first).collect {|x| "'#{x}'"}.join(", "), article.code[0..5], @cost_center)
+        # TODO personal meta
+        meta_info = Budget.budget_meta_info_per_person(budgetanditems_list.map(&:first).collect {|x| "'#{x}'"}.join(", "), @cost_center)
         meta_info.each do |minfo|
           value_quantity_from_partes = 0
           pos_arr = budgetanditems_list.transpose.first.index(minfo[0])
@@ -120,7 +120,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
             break
           };
 
-          @meta_personal << [ minfo[1].to_s, (minfo[2].to_f*value_quantity_from_partes.to_f).round(2), minfo[3].to_f, (minfo[2].to_f*value_quantity_from_partes.to_f)*minfo[3].to_f ]
+          @meta_personal << [ minfo[1].to_s, (minfo[2].to_f*value_quantity_from_partes.to_f), minfo[3].to_f, (minfo[2].to_f*value_quantity_from_partes.to_f)*minfo[3].to_f, minfo[0] ]
           @m_price_part_person += (minfo[2].to_f*value_quantity_from_partes.to_f)*minfo[3].to_f
         end
       end
