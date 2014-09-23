@@ -169,17 +169,13 @@ class Production::PartOfEquipmentsController < ApplicationController
 
   def update
     part = PartOfEquipment.find(params[:id])
-    if part.update_attributes(part_of_equipment_parameters)
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id]
-    else
-      part.errors.messages.each do |attribute, error|
-        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
-      end
-      # Load new()
-      @part = part
-      render :edit, layout: false
-    end
+    part.update_attributes(part_of_equipment_parameters)
+    flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index, company_id: params[:company_id]
+    rescue ActiveRecord::StaleObjectError
+      part.reload
+      flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+      redirect_to :action => :index
   end
 
   def destroy
@@ -257,7 +253,8 @@ class Production::PartOfEquipmentsController < ApplicationController
       :h_stand_by, 
       :h_maintenance, 
       :date, 
-      :total_hours, 
+      :total_hours,
+      :lock_version,
       part_of_equipment_details_attributes: [
         :id, 
         :part_of_equipment_id, 
@@ -267,6 +264,7 @@ class Production::PartOfEquipmentsController < ApplicationController
         :effective_hours, 
         :fuel, 
         :unit, 
+        :lock_version,
         :_destroy
       ]
     )

@@ -88,17 +88,13 @@ class Production::PartPeopleController < ApplicationController
 
   def update
     partperson = PartPerson.find(params[:id])
-    if partperson.update_attributes(part_person_parameters)
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id]
-    else
-      partperson.errors.messages.each do |attribute, error|
-        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
-      end
-      # Load new()
-      @partperson = partperson
-      render :edit, layout: false
-    end
+    partperson.update_attributes(part_person_parameters)
+    flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index, company_id: params[:company_id]
+  rescue ActiveRecord::StaleObjectError
+      partperson.reload
+      flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+      redirect_to :action => :index
   end
 
   def destroy
@@ -109,6 +105,25 @@ class Production::PartPeopleController < ApplicationController
 
   private
   def part_person_parameters
-    params.require(:part_person).permit(:working_group_id, :block, :number_part, :date_of_creation, part_person_details_attributes: [:id, :part_person_id, :worker_id, :sector_id, :phase_id, :normal_hours, :he_60, :he_100, :total_hours, :_destroy])
+    params.require(:part_person).permit(
+      :working_group_id, 
+      :lock_version, 
+      :block, 
+      :number_part, 
+      :date_of_creation, 
+      part_person_details_attributes: [
+        :id, 
+        :part_person_id, 
+        :worker_id, 
+        :sector_id, 
+        :phase_id, 
+        :normal_hours, 
+        :he_60, 
+        :he_100, 
+        :total_hours, 
+        :lock_version, 
+        :_destroy
+      ]
+    )
   end
 end
