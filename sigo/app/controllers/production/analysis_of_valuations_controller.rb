@@ -98,8 +98,6 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
     
     if budgetanditems_list.count > 0
-      p 'WTF--- Entra controlador'
-      p budgetanditems_list.count
       # Mano de Obra
       @meta_personal = Array.new
       @workers_array = business_days_array(start_date, end_date, @cad, @cad2)
@@ -121,7 +119,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
             break
           };
 
-          @meta_personal << [ minfo[1].to_s, (minfo[2].to_f*value_quantity_from_partes.to_f).round(2), minfo[3].to_i, (minfo[2].to_f*value_quantity_from_partes.to_f)*minfo[3].to_f ]
+          @meta_personal << [ minfo[1].to_s, (minfo[2].to_f*value_quantity_from_partes.to_f).round(2), minfo[3].to_f, (minfo[2].to_f*value_quantity_from_partes.to_f)*minfo[3].to_f ]
           @m_price_part_person += (minfo[2].to_f*value_quantity_from_partes.to_f)*minfo[3].to_f
         end
       end
