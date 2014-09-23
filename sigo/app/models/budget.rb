@@ -197,7 +197,7 @@ class Budget < ActiveRecord::Base
   end
 
   def self.budget_meta_info_per_article(cod_article, cost_center_id)
-    # For Table Meta in Analysis Production
+    # For Table Meta in Analysis Production - Materiales
     data_mysql = ActiveRecord::Base.connection.execute("
       SELECT 
         inputs.cod_input, 
@@ -224,6 +224,7 @@ class Budget < ActiveRecord::Base
   end
 
   def self.budget_meta_info_per_equipment(list_itembybudget_orders, cost_center_id)
+    # For Table Meta in Analysis Production - Equipos
     data_mysql = ActiveRecord::Base.connection.execute("
       SELECT itembybudgets.order, inputs.input as name, SUM(inputs.quantity) as quantity, inputs.price as price
       FROM itembybudgets, budgets,
@@ -246,7 +247,7 @@ class Budget < ActiveRecord::Base
   end
 
   def self.budget_meta_info_per_person(list_itembybudget_orders, code_article, cost_center_id)
-    # For Table Meta in Analysis Production
+    # For Table Meta in Analysis Production - Personal
     data_mysql = ActiveRecord::Base.connection.execute("
       SELECT itembybudgets.order, inputs.input as name, SUM(inputs.quantity) as quantity, inputs.price as price
       FROM itembybudgets, budgets,
@@ -269,6 +270,7 @@ class Budget < ActiveRecord::Base
   end
 
   def self.budget_meta_info_per_itembybudget(itembybudget_order, cost_center_id)
+    # For Table Meta in Analysis Production - Partidas
     data_mysql = ActiveRecord::Base.connection.execute("
       SELECT ibb.order, SUM(ibb.measured), ibb.price, (SUM(ibb.measured) * ibb.price) as partial 
       FROM budgets b, itembybudgets ibb 
