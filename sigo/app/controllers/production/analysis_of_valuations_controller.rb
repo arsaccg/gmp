@@ -15,15 +15,18 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def get_report
     # Total Prices
-    @totalprice = 0
-    @totalprice2 = 0
-    @totalprice3 = 0
-
+    @totalprice = 0 # Personal
+    @totalprice2 = 0 # Partidas
+    @totalprice3 = 0 # Equipos
+    @totalprice_subcontract_real = 0 # Subcontratos
+    @total_stock_input_real = 0 # Materiales
+    
     # Total Prices Meta
     @m_price_part_person = 0
     @m_price_part_work = 0
     @m_price_part_equipment = 0
     @m_price_part_subcontract = 0
+    @total_stock_input_meta = 0
 
     @cad = Array.new
     @cad2 = Array.new
@@ -108,27 +111,26 @@ class Production::AnalysisOfValuationsController < ApplicationController
         if !workerDetail[7].nil? || workerDetail[7] != 0
           @totalprice += workerDetail[7] + workerDetail[8] + workerDetail[9]
         end
+      end
 
-        # article = Article.find(workerDetail[12])
-
-        # TODO META Personal
-        meta_info = Budget.budget_meta_info_per_person(budgetanditems_list.map(&:first).collect {|x| "'#{x}'"}.join(", "), @cost_center)
-        meta_info.each do |minfo|
-          value_quantity_from_partes = 0
-          pos_arr = budgetanditems_list.transpose.first.index(minfo[0])
-          (1..budgetanditems_list[pos_arr].size-1).each { |i|
-            value_quantity_from_partes = budgetanditems_list[pos_arr][i+1]
-            break
-          };
-          # MAKE ARRAY META
-          arr_person << [ minfo[1].to_s, (minfo[2].to_f*value_quantity_from_partes.to_f), minfo[3].to_f ]
-          # TOTAL META
-          @m_price_part_person += (minfo[2].to_f*value_quantity_from_partes.to_f)*minfo[3].to_f
-        end
+      # TODO META Personal
+      meta_info = Budget.budget_meta_info_per_person(budgetanditems_list.map(&:first).collect {|x| "'#{x}'"}.join(", "), @cost_center)
+      meta_info.each do |minfo|
+        value_quantity_from_partes = 0
+        pos_arr = budgetanditems_list.transpose.first.index(minfo[0])
+        (1..budgetanditems_list[pos_arr].size-1).each { |i|
+          value_quantity_from_partes = budgetanditems_list[pos_arr][i+1]
+          break
+        };
+        # MAKE ARRAY META
+        arr_person << [ minfo[1].to_s, (minfo[2].to_f*value_quantity_from_partes.to_f), minfo[3].to_f ]
+        # TOTAL META
+        @m_price_part_person += (minfo[2].to_f*value_quantity_from_partes.to_f)*minfo[3].to_f
       end
 
       # ORDER ARRAY META
       @meta_personal = arr_person.group_by { |a,_,c| [a,c] }.map { |(a,b),arr_person| [a,arr_person.reduce(0) { |t,(_,e,_)| t + e },b] }
+
 
       # Parte de Equipo
       @meta_part_equipment = Array.new
@@ -158,6 +160,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       # ORDER ARRAY META
       @meta_part_equipment = arr_equipment.group_by { |a,_,c| [a,c] }.map { |(a,b),arr_equipment| [a,arr_equipment.reduce(0) { |t,(_,e,_)| t + e },b] }
 
+
       # TODO META subcontratos
       @meta_part_subcontract = Array.new
       arr_part_subcontract = Array.new
@@ -178,11 +181,10 @@ class Production::AnalysisOfValuationsController < ApplicationController
       # ORDER ARRAY META
       @meta_part_subcontract = arr_part_subcontract.group_by { |a,_,c| [a,c] }.map { |(a,b),arr_part_subcontract| [a,arr_part_subcontract.reduce(0) { |t,(_,e,_)| t + e },b] }
 
+
       # Consumo de Materiales
       @meta_stock_inputs = Array.new
       arr_stock_input = Array.new
-      @total_stock_input_meta = 0
-      @total_stock_input_real = 0
       @stock_inputs = business_days_array4(start_date, end_date, @cad, @cad2)
 
       # TODO META Materiales
@@ -204,8 +206,10 @@ class Production::AnalysisOfValuationsController < ApplicationController
       # ORDER ARRAY META
       @meta_stock_inputs = arr_stock_input.group_by { |a,b,_,d| [a,b,d] }.map { |(a,b,c),arr_stock_input| [a,b,arr_stock_input.reduce(0) { |t,(_,_,e,_)| t + e },c] }
 
-      @totalprice4 = @totalprice2-@totalprice-@totalprice3
-      @m_total_price = @m_price_part_work - @m_price_part_person - @m_price_part_equipment
+      # Totalizing Real Prices
+      @total_price_real = @totalprice + @totalprice3 + @totalprice_subcontract_real + @total_stock_input_real
+      # Totalizing Meta Prices
+      @total_price_meta = @m_price_part_person + @m_price_part_equipment + @m_price_part_subcontract + @total_stock_input_meta
     else
       @message_warning = "No hay partidas registradas en ese Rango de Fecha o en ese Sector."
     end
