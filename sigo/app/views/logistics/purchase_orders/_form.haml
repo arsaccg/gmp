@@ -9,6 +9,9 @@
     .widget-body 
       = simple_form_for([:logistics, @purchaseOrder], html: {class: 'form-horizontal', autocomplete: 'off' }) do |f|
         = hidden_field_tag "company_id", @company
+        - f.fields_for :purchase_order_details do |del|
+          = del.hidden_field :lock_version
+        = f.hidden_field :lock_version
         .col-sm-12
           %fieldset
             %legend{'style' => 'border:none'}

@@ -67,17 +67,13 @@ class Administration::ProvisionsController < ApplicationController
 
   def update
     provision = Provision.find(params[:id])
-    if provision.update_attributes(provisions_parameters)
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index
-    else
-      provision.errors.messages.each do |attribute, error|
-        flash[:error] =  flash[:error].to_s + error.to_s + "  "
-      end
-      # Load new()
-      @provision = provision
-      render :edit, layout: false
-    end
+    provision.update_attributes(provisions_parameters)
+    flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index
+  rescue ActiveRecord::StaleObjectError
+    provision.reload
+    flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def destroy
@@ -249,7 +245,8 @@ class Administration::ProvisionsController < ApplicationController
     params.require(:provision).permit(
       :cost_center_id, 
       :entity_id, 
-      :order_id,
+      :order_id, 
+      :lock_version,
       :document_provision_id, 
       :number_document_provision, 
       :accounting_date, 
@@ -259,7 +256,8 @@ class Administration::ProvisionsController < ApplicationController
         :id,
         :provision_id,
         :current_unit_price,
-        :current_igv,
+        :current_igv, 
+        :lock_version,
         :order_detail_id,
         :type_of_order,
         :account_accountant_id,
@@ -275,6 +273,7 @@ class Administration::ProvisionsController < ApplicationController
       :cost_center_id, 
       :entity_id, 
       :document_provision_id, 
+      :lock_version, 
       :number_document_provision, 
       :accounting_date, 
       :series, 
@@ -287,7 +286,8 @@ class Administration::ProvisionsController < ApplicationController
         :phase_id,
         :account_accountant_id,
         :amount,
-        :price,
+        :price, 
+        :lock_version,
         :unit_price_before_igv,
         :igv,
         :quantity_igv,

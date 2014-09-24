@@ -1,5 +1,5 @@
 class StockInputDetail < ActiveRecord::Base
-  belongs_to :stock_input
+  belongs_to :stock_input, :touch => true
   belongs_to :purchase_order_detail
   belongs_to :article
   belongs_to :phase

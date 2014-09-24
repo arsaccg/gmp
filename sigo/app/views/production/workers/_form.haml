@@ -5,6 +5,21 @@
     %h2 Trabajadores
   .widget-body
     = simple_form_for([:production, @worker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      = f.hidden_field :lock_version
+      - f.fields_for :worker_center_of_studies do |del|
+        = del.hidden_field :lock_version
+      - f.fields_for :worker_contracts do |del|
+        = del.hidden_field :lock_version        
+      - f.fields_for :worker_details do |del|
+        = del.hidden_field :lock_version
+      - f.fields_for :worker_experiences do |del|
+        = del.hidden_field :lock_version        
+      - f.fields_for :worker_familiars do |del|
+        = del.hidden_field :lock_version     
+      - f.fields_for :worker_healths do |del|
+        = del.hidden_field :lock_version  
+      - f.fields_for :worker_otherstudies do |del|
+        = del.hidden_field :lock_version        
       %fieldset
         %legend{style: "font-weight: 600;"} DATOS LABORALES
         .row
