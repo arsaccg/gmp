@@ -118,7 +118,7 @@
             - @meta_personal.each do |m_person|
               %tr
                 %td= m_person[0]
-                %td= m_person[1]
+                %td= m_person[1].round(4)
                 %td= number_to_currency m_person[2], unit: 'S/.', precision: 2
                 %td= number_to_currency (m_person[1]*m_person[2]), unit: 'S/.', precision: 2
             %tr
@@ -176,7 +176,7 @@
                 %tr
                   %td= m_stock_input[0]
                   %td= m_stock_input[1]
-                  %td= m_stock_input[2]
+                  %td= m_stock_input[2].round(4)
                   %td= number_to_currency m_stock_input[3], unit: 'S/ ', precision: 2
                   %td= number_to_currency (m_stock_input[2]*m_stock_input[3]), unit: '', precision: 2
               %tr
@@ -221,7 +221,7 @@
               - @meta_part_equipment.each do |m_equip|
                 %tr
                   %td= m_equip[0]
-                  %td= m_equip[1].round(2)
+                  %td= m_equip[1].round(4)
                   %td= number_to_currency m_equip[2], unit: 'S/.', precision: 2
                   %td= number_to_currency (m_equip[1]*m_equip[2]), unit: '', precision: 2
               %tr
@@ -247,7 +247,7 @@
                 - @workers_array3.each do |workerDetail3|
                   %tr
                     /%td= workerDetail3[0]
-                    %td= workerDetail3[2].round(2)
+                    %td= workerDetail3[2].round(4)
                     %td= workerDetail3[1]
                     %td= number_to_currency workerDetail3[3], unit: 'S/.', precision: 2
                     %td= number_to_currency workerDetail3[4], unit: 'S/.', precision: 2
@@ -272,7 +272,7 @@
               - @meta_part_subcontract.each do |m_sub|
                 %tr
                   %td= m_sub[0]
-                  %td= m_sub[1].round(2)
+                  %td= m_sub[1].round(4)
                   %td= number_to_currency m_sub[2], unit: 'S/.', precision: 2
                   %td= number_to_currency (m_sub[1]*m_sub[2]), unit: 'S/.', precision: 2
               %tr
