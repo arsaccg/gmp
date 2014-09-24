@@ -171,13 +171,13 @@
                   %td= m_stock_input[0]
                   %td= m_stock_input[1]
                   %td= m_stock_input[2]
-                  %td= number_to_currency m_stock_input[3], unit: 'S/.', precision: 2
-                  %td= number_to_currency m_stock_input[4], unit: 'S/.', precision: 2
+                  %td= number_to_currency m_stock_input[3], unit: 'S/ ', precision: 2
+                  %td= number_to_currency m_stock_input[4], unit: '', precision: 2
               %tr
                 %th{'colspan' => 4} Total
                 %th
                   %span.label.label-danger{"style"=>"color:#fff"}
-                    = number_to_currency @totalprice, unit: 'S/.', precision: 2
+                    = number_to_currency @total_stock_input_meta, unit: 'S/ ', precision: 2
 
         -if @stock_inputs.count>0
           %div{ :style => 'width:49%; display: inline-block;' }
@@ -217,7 +217,7 @@
                   %td= m_equip[0]
                   %td= m_equip[1].round(2)
                   %td= number_to_currency m_equip[2], unit: 'S/.', precision: 2
-                  %td= number_to_currency m_equip[3], unit: 'S/.', precision: 2
+                  %td= number_to_currency m_equip[3], unit: '', precision: 2
               %tr
                 %th{'colspan' => 3} Total
                 %th

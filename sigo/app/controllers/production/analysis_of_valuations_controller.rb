@@ -170,37 +170,18 @@ class Production::AnalysisOfValuationsController < ApplicationController
       @total_stock_input_real = 0
       @stock_inputs = business_days_array4(start_date, end_date, @cad, @cad2)
 
-      if @stock_inputs.count > 0
-        @stock_inputs.each do |m_input|
-          meta_info = Budget.budget_meta_info_per_article(m_input[4], @cost_center)
-          if !meta_info.nil?
-            @meta_stock_inputs << [ m_input[1], meta_info[1], meta_info[2], meta_info[3] ]
-            @total_stock_input_real += meta_info[3]
-          else
-            @meta_stock_inputs << [ '-', '-', 0, 0, 0 ]
-          end
-        end
-      else
-        budgetanditems_list.each do |ibb|
-          # [0] => itembybudget_order, [1] => budget_id, [2] => metrado_from_partes
-          list_materials = get_tobi_articles_materials_from_itembybudgets(ibb[0], ibb[1], ibb[2])
-          list_materials.each do |material|
-            if !@meta_stock_inputs.map(&:first).include? material[0]
-              @meta_stock_inputs << [ material[0], material[1], material[2], material[3], material[2]*material[3] ]
-            else
-              pos_arr = @meta_stock_inputs.transpose.first.index(material[0])
-              ((1..@meta_stock_inputs[pos_arr].size-1).each { |i|
-                @meta_stock_inputs[pos_arr][i+1] += material[2]
-                @meta_stock_inputs[pos_arr][i+3] += (material[2]*material[3])
-                break
-              }; @meta_stock_inputs)
-            end
-          end
-        end
-      end
+      # TODO meta Materiales
+      all_meta_materials = Budget.budget_meta_info_per_material(budgetanditems_list.map(&:first).collect {|x| "'#{x}'"}.join(", "), @cost_center)
+      all_meta_materials.each do |meta_material|
+        value_quantity_from_partes = 0
+        pos_arr = budgetanditems_list.transpose.first.index(meta_material[0])
+        (1..budgetanditems_list[pos_arr].size-1).each { |i|
+          value_quantity_from_partes = budgetanditems_list[pos_arr][i+1]
+          break
+        };
 
-      @meta_stock_inputs.each do |sti|
-        @total_stock_input_meta += sti[4]
+        @meta_stock_inputs << [meta_material[4], meta_material[1], meta_material[2]*value_quantity_from_partes, meta_material[3], (meta_material[2]*value_quantity_from_partes)*meta_material[3] ]
+        @total_stock_input_meta += (meta_material[2]*value_quantity_from_partes)*meta_material[3]
       end
 
       @totalprice4 = @totalprice2-@totalprice-@totalprice3
