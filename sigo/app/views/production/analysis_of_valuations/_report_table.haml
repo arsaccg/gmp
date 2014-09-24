@@ -13,19 +13,22 @@
           %table.table.table-bordered
             %tbody
               %tr
-                %td Total Partidas
-                %td= number_to_currency @m_price_part_work, unit: 'S/.', precision: 2
-              %tr
                 %td Total Personal
                 %td= number_to_currency @m_price_part_person, unit: 'S/.', precision: 2
+              %tr
+                %td Total Materiales
+                %td= number_to_currency @total_stock_input_meta, unit: 'S/.', precision: 2
               %tr
                 %td Total Equipos
                 %td= number_to_currency @m_price_part_equipment, unit: 'S/.', precision: 2
               %tr
+                %td Total Subcontratos
+                %td= number_to_currency @m_price_part_subcontract, unit: 'S/.', precision: 2
+              %tr
                 %td Total
                 %td
                   %span.label.label-danger{"style"=>"color:#fff"}
-                    = number_to_currency @m_total_price, unit: 'S/.', precision: 2
+                    = number_to_currency @total_price_meta, unit: 'S/.', precision: 2
 
       %div{ :style => 'width:33%; display:inline-block;' }
         %h1.page-title.txt-color-blueDark Totales REAL
@@ -33,19 +36,22 @@
           %table.table.table-bordered
             %tbody
               %tr
-                %td Total Partidas
-                %td= number_to_currency @totalprice2, unit: 'S/.', precision: 2
-              %tr
                 %td Total Personal
                 %td= number_to_currency @totalprice, unit: 'S/.', precision: 2
+              %tr
+                %td Total Materiales
+                %td= number_to_currency @total_stock_input_real, unit: 'S/.', precision: 2
               %tr
                 %td Total Equipos
                 %td= number_to_currency @totalprice3, unit: 'S/.', precision: 2
               %tr
+                %td Total Subcontratos
+                %td= number_to_currency @totalprice_subcontract_real, unit: 'S/.', precision: 2
+              %tr
                 %td Total
                 %td
                   %span.label.label-danger{"style"=>"color:#fff"}
-                    = number_to_currency @totalprice4, unit: 'S/.', precision: 2
+                    = number_to_currency @total_price_real, unit: 'S/.', precision: 2
 
       %div{ :style => 'width:33%; display:inline-block;' }
         %h1.page-title.txt-color-blueDark Resultado
@@ -54,19 +60,19 @@
             %tbody
               %tr
                 %td VENTA
-                %td= number_to_currency @totalprice4, unit: 'S/.', precision: 2
+                %td= number_to_currency @total_price_meta, unit: 'S/.', precision: 2
               %tr
                 %td COSTO
-                %td= number_to_currency @m_total_price, unit: 'S/.', precision: 2
+                %td= number_to_currency @total_price_real, unit: 'S/.', precision: 2
               %tr
                 %td RESULTADO
                 %td
-                  - if (@totalprice4 - @m_total_price) < 0
+                  - if (@total_price_meta - @total_price_real) < 0
                     %span.label.label-danger{"style"=>"color:#fff"}
-                      = number_to_currency (@totalprice4 - @m_total_price), unit: 'S/.', precision: 2
+                      = number_to_currency (@total_price_meta - @total_price_real), unit: 'S/.', precision: 2
                   - else
                     %span.label.label-success{"style"=>"color:#fff"}
-                      = number_to_currency (@totalprice4 - @m_total_price), unit: 'S/.', precision: 2
+                      = number_to_currency (@total_price_meta - @total_price_real), unit: 'S/.', precision: 2
     
       -if @workers_array2.count>0
         .container-part-work
