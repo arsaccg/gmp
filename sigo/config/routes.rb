@@ -693,6 +693,7 @@ ArsacLogistica::Application.routes.draw do
       collection do 
         get 'load_elements'
         post 'load_elements'
+        post 'load_elements_without'
         get 'get_cookies'
         get 'get_budget_by_project'
         get 'administrate_budget'

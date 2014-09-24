@@ -578,3 +578,7 @@ margin-right: 100px;
 .white-table input{
   width: 100%;
 }
+
+.white-table>tbody>tr>td{
+  vertical-align: middle;
+}
