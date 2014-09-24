@@ -58,6 +58,10 @@
                     %i.fa.fa-lg.fa-fw.fa-download
                     Cargar Presupuesto
 
+                  %a{:href=>"javascript:load_budget_without();"}(class="btn btn-info btn-small")
+                    %i.fa.fa-lg.fa-fw.fa-download
+                    Cargar Presupuesto sin verificación
+
                   =#%a(href="#"){class: "btn btn-danger"}
                   =#  Cancelar
 
@@ -65,6 +69,10 @@
 :javascript 
   function load_budget(){
     post_to_url('#{load_elements_management_budgets_path.to_s}?database=' + $("#database_id").val(), 'form-data', 'right-area');
+  }
+
+  function load_budget_without(){
+    post_to_url('#{load_elements_without_management_budgets_path.to_s}?database=' + $("#database_id").val(), 'form-data', 'right-area');
   }
 
   function load_budgets_from_db(str_budget){
