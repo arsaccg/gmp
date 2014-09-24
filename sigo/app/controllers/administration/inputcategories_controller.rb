@@ -12,13 +12,11 @@ class Administration::InputcategoriesController < ApplicationController
 	include SOCKET_CONNECTOR
 
 	def feo_of_work
-		project_id =  params[:project_id]
+		project_id =  get_company_cost_center('cost_center')
 
-		@budget_sale = Budget.find(params[:budget_sale]) rescue Budget.where(:cost_center_id => project_id).last
-		@budget_goal = Budget.find(params[:budget_goal]) rescue @budget_sale #Budget.where(:cost_center_id).last
-
-		p '~~~~~~~~~~~~~~~~~~~~~~~~@budget_sale~~~~~~~~~~~~~~~~~~~~~~~'
-		p @budget_sale.id
+		#@budget_goal = Budget.find(params[:budget_goal]) rescue @budget_sale #Budget.where(:cost_center_id).last
+		@budget_sale = Budget.where("`type_of_budget` = 0 AND `subbudget_code` IS NOT NULL AND `cost_center_id` = (?)", project_id).first rescue nil
+  		@budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", project_id).first rescue @budget_sale
 
 		@wbsitems = Wbsitem.where(cost_center_id: project_id).order(:codewbs)
 		@inputcategories = Inputcategory.all
@@ -26,23 +24,23 @@ class Administration::InputcategoriesController < ApplicationController
 		@data_w = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s)
     	@data = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, 1)
 
-    p @data
-    p @data_w
+	    p @data
+	    p @data_w
 
-    @data_excel = Array.new
-    csv = Array.new
+	    @data_excel = Array.new
+	    csv = Array.new
 
-    csv_string = CSV.generate do |csv|
-      @data_w[0].each do |key, value|
-        csv << [value[0], value[1], value[2], @data_w[1][key][2]]
-      end
-    end
+	    csv_string = CSV.generate do |csv|
+	      @data_w[0].each do |key, value|
+	        csv << [value[0], value[1], value[2], @data_w[1][key][2]] rescue [value[0], value[1], value[2], 0]
+	      end
+	    end
 
-    respond_to do |format|
-      format.html {render :feo_of_work, :layout => false}
-      format.csv { send_data csv_string }
-      format.xls { send_data csv_string.to_csv(col_sep: "\t") }
-    end
+	    respond_to do |format|
+	      format.html {render :feo_of_work, :layout => false}
+	      format.csv { send_data csv_string }
+	      format.xls { send_data csv_string.to_csv(col_sep: "\t") }
+	    end
 	end
 
 	def get_input_detail

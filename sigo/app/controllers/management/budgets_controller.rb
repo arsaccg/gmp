@@ -122,6 +122,20 @@ class Management::BudgetsController < ApplicationController
     #    WHERE PresupuestoPartidaDetalle.codpresupuesto = '" + 14  + "'
   end
 
+  def load_elements_without
+    budget_id = params[:budget_id]
+    project_id = get_company_cost_center('cost_center')
+    type_of_budget  = params[:type_of_budget]
+    database = params[:database]
+
+    budget = Budget.new(budget_parameters)
+    company = CostCenter.find(project_id).company
+    @res = budget.load_elements(budget_id, project_id, type_of_budget, database, company)
+    p '~~~~~~~~~~~~~~budget_id~~~~~~~~~~~~~~~'
+    p budget_id
+    redirect_to :action => :get_budget_by_project
+  end
+
   def administrate_budget
     project = CostCenter.find(get_company_cost_center('cost_center'))
     @valorization = project.valorizations
