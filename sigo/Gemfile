@@ -76,6 +76,8 @@ gem 'savon'
 gem 'json' 
 gem 'activerecord-import'
 
+gem 'capistrano'
+
 # Gem Haml
 gem 'haml-rails'
 
