@@ -9,9 +9,8 @@ class Management::ItembybudgetsController < ApplicationController
   def filter_by_budget 
     #@total_budget = Itembybudget.where(:budget_id => params[:budget_id]).sum()
     @budget_id = params[:budget_id]
-  	@itembybudgets = Itembybudget.where(:budget_id=>params[:budget_id])
+  	@itembybudgets = Itembybudget.where(:budget_id=>params[:budget_id]).order(:order)
   	render :index, :layout => false
-    
   end
 
   def new
