@@ -190,13 +190,3 @@ INSERT INTO `inputcategories` (`id`, `category_id`, `level_n`, `description`, `c
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
-
-UPDATE itembybudgets SET subbudgetdetail = (
-	SELECT description 
-	FROM items 
-	WHERE item_code = itembybudgets.item_code LIMIT 1)  
-WHERE title="REGISTRO RESTRINGIDO" 
-AND subbudgetdetail = "" 
-AND itembybudgets.budget_id = 8;
