@@ -8,8 +8,6 @@
       - f.fields_for :subcontract_equipment_advances do |del|
         = del.hidden_field :lock_version
       = f.hidden_field :lock_version
-      - f.fields_for :subcontract_equipment_details do |del|
-        = del.hidden_field :lock_version
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
