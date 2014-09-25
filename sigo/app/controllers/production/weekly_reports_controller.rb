@@ -14,7 +14,7 @@ class Production::WeeklyReportsController < ApplicationController
     @article= params[:article]
     puts @article.inspect
     if params[:article]=='0'
-      working = WorkingGroup.all
+      working = WorkingGroup.where("cost_center_id ="+get_company_cost_center('cost_center').to_s)
       working.each do |wg|
         @cad4 << wg.id
       end
@@ -43,7 +43,7 @@ class Production::WeeklyReportsController < ApplicationController
     end
     @costcenter = get_company_cost_center('cost_center')
     weeks = ActiveRecord::Base.connection.execute("
-      SELECT wcc.id
+      SELECT wcc.id, wcc.end_date
       FROM  weeks_for_cost_center_" + @costcenter.to_s + " wcc
       WHERE  wcc.start_date <  '" + end_date.to_s + "' AND wcc.end_date >  '" + start_date.to_s + "'"
     )
@@ -52,7 +52,7 @@ class Production::WeeklyReportsController < ApplicationController
         @weeks = ActiveRecord::Base.connection.execute("
           SELECT wcc.name, wcc.start_date, wcc.end_date
           FROM  weeks_for_cost_center_" + @costcenter.to_s + " wcc
-          WHERE  wcc.end_date <  '" + id[2].to_date.to_s + "'
+          WHERE  wcc.end_date <  '" + id[1].to_date.to_s + "'
         ")
       else
         first_id = id[0].to_i-9
@@ -69,12 +69,13 @@ class Production::WeeklyReportsController < ApplicationController
     @weeks.each do|inter|
       @weekhh << ActiveRecord::Base.connection.execute("
         SELECT c.name, ppd.total_hours AS total_h, pp.date_of_creation
-        FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
+        FROM part_people pp, part_person_details ppd, articles a, workers w, categories c, worker_contracts wc
         WHERE pp.date_of_creation BETWEEN '" + inter[1].to_date.to_s + "' AND '" + inter[2].to_date.to_s + "'
         AND pp.blockweekly=0
         AND ppd.part_person_id=pp.id
         AND ppd.worker_id=w.id
-        AND w.article_id=a.id
+        AND wc.article_id=a.id
+        AND w.id = wc.worker_id
         AND a.category_id = c.id
         AND pp.working_group_id IN(" + @article.to_s + ")
         GROUP BY c.name
@@ -82,12 +83,13 @@ class Production::WeeklyReportsController < ApplicationController
 
       @weekcp << ActiveRecord::Base.connection.execute("
         SELECT c.name AS C_name, Sum(1) AS Cantidad_personas, pp.date_of_creation
-        FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
+        FROM part_people pp, part_person_details ppd, articles a, workers w, categories c, worker_contracts wc
         WHERE pp.date_of_creation BETWEEN '"+inter[1].to_date.to_s+"' AND '"+ inter[2].to_date.to_s+"'
         AND pp.blockweekly=0
         AND ppd.part_person_id=pp.id
         AND ppd.worker_id=w.id
-        AND w.article_id=a.id
+        AND wc.article_id=a.id
+        AND w.id = wc.worker_id
         AND a.category_id = c.id
         AND pp.working_group_id IN("+@article.to_s+")
         GROUP BY c.name
@@ -116,12 +118,13 @@ class Production::WeeklyReportsController < ApplicationController
       @weeks.each do |w|
         catwh = ActiveRecord::Base.connection.execute("
           SELECT SUM(ppd.total_hours)
-          FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
+          FROM part_people pp, part_person_details ppd, articles a, workers w, categories c, worker_contracts wc
           WHERE pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
           AND pp.blockweekly=0
+          AND wc.article_id=a.id
+          AND w.id = wc.worker_id
           AND ppd.part_person_id = pp.id
           AND ppd.worker_id = w.id
-          AND w.article_id = a.id
           AND a.category_id = c.id
           AND c.name LIKE '"+cat.to_s+"'
           AND pp.working_group_id IN("+@article.to_s+")
@@ -141,12 +144,13 @@ class Production::WeeklyReportsController < ApplicationController
       @weeks.each do |w|
         catwp = ActiveRecord::Base.connection.execute("
           SELECT SUM(1)
-          FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
+          FROM part_people pp, part_person_details ppd, articles a, workers w, categories c, worker_contracts wc
           WHERE pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
           AND pp.blockweekly=0
           AND ppd.part_person_id = pp.id
           AND ppd.worker_id = w.id
-          AND w.article_id = a.id
+          AND wc.article_id=a.id
+          AND w.id = wc.worker_id
           AND a.category_id = c.id
           AND c.name LIKE '"+cat.to_s+"'
           AND pp.working_group_id IN("+@article.to_s+")

@@ -9,6 +9,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     
   def show
     @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+    @start_date = @valuationofequipment.start_date
+    @end_date = @valuationofequipment.end_date
+
     @valorizacionsinigv = 0
     @amortizaciondeadelanto = 0
     @totalfacturar = 0
@@ -37,8 +40,12 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         @netoapagar = workerDetail[9]
       end
     end
+    @cc = get_company_cost_center('cost_center')
+    @inicio = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" WHERE start_date <= '"+@start_date.to_s+"' AND end_date >= '"+@start_date.to_s+"'").first
+    @fin = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" WHERE start_date <= '"+@end_date.to_s+"' AND end_date >= '"+@end_date.to_s+"'").first
     render layout: false
   end
+
   def new
     @costCenter = CostCenter.new
     @executors = SubcontractEquipment.all
@@ -186,7 +193,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
   def updateParts(start_date, end_date, id)
     ActiveRecord::Base.connection.execute("
-      Update part_of_equipments set block = 1 where date BETWEEN '" + start_date + "' AND '" + end_date + "' AND subcontract_equipment_id=" + id.to_s + "
+      UPDATE part_of_equipments set block = 1 WHERE date BETWEEN '" + start_date + "' AND '" + end_date + "' AND subcontract_equipment_id=" + id.to_s + "
     ")
   end
 
@@ -214,6 +221,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
 
   def part_equipment
+    @id = params[:id]
     @name = params[:name]
     @code = params[:code]
     @start_date = params[:start_date]
@@ -225,7 +233,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @art = Array.new
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
-      @art << workerDetail[6]
+      @art << workerDetail[5]
     end
     @art = @art.join(',')
     if @art==''
@@ -266,21 +274,20 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @last.each do |wa3|
       @second << wa3
     end
-    
+
     @first.each do |arr|
       i=0
       @second.each do |sec|
         if @second.count == 1 && i==0
           if arr[0]==sec[0]
             @array << (arr + sec).to_a
-            puts (arr + sec).to_a
           else
             cero = [0,0,0]
             @array << (arr+ cero).to_a
           end 
         else
           sec[i]
-          @array << (arr + sec[i]).to_a
+          @array << (arr + [sec[i]]).to_a
         end
         break
       end
@@ -294,18 +301,20 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @totaltotalhours = 0
     @totalfuel_amount = 0
     @subcontractequipmentarticle= params[:subcontractequipment]
-    start_date = params[:start_date]
-    end_date = params[:end_date]
+    @id= params[:id]
+    @cad= params[:cad]
+    @start_date = params[:start_date]
+    @end_date = params[:end_date]
     @entityname = params[:name]
     @name2 = SubcontractEquipmentDetail.find_by_id(@subcontractequipmentarticle).code + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_id(@subcontractequipmentarticle).article_id ,session[:cost_center])
     puts @name2.inspect
-    @poe_array = poe_array(start_date, end_date, @subcontractequipmentarticle, @entityname)
+    @poe_array = poe_array(@start_date, @end_date, @subcontractequipmentarticle, @entityname)
     @poe_array.each do |workerDetail|
-      @totaldif += workerDetail[4].to_i
-      @totaltotalhours += workerDetail[5].to_i
-      @totalfuel_amount += workerDetail[7].to_i
+      @totaldif += workerDetail[4].to_f
+      @totaltotalhours += workerDetail[5].to_f
+      @totalfuel_amount += workerDetail[7].to_f
     end
-    @dias_habiles =  range_business_days(start_date,end_date)
+    @dias_habiles =  range_business_days(@start_date,@end_date)
     render layout: false
   end
 
@@ -338,6 +347,176 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     valuationOfEquipment = ValuationOfEquipment.find(params[:id])
     valuationOfEquipment.approve
     redirect_to :action => :index
+  end
+
+  def report_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @company = Company.find(get_company_cost_center('company'))
+        @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+        @start_date = @valuationofequipment.start_date
+        @end_date = @valuationofequipment.end_date
+
+        @valorizacionsinigv = 0
+        @amortizaciondeadelanto = 0
+        @totalfacturar = 0
+        @totalfacigv = 0
+        @totalincluidoigv = 0
+        @retenciones = 0
+        @detraccion = 0
+        @descuentocombustible = 0
+        @otrosdescuentos = 0
+        @netoapagar = 0
+        @code = 0
+        @code = @valuationofequipment.code.to_i - 1
+        @code = @code.to_s.rjust(3,'0')
+        @valuationofequipment2 = getsc_valuation2(@valuationofequipment.start_date, @valuationofequipment.end_date, @valuationofequipment.name, @code)
+        
+        if @valuationofequipment2.count > 0
+          @valuationofequipment2.each do |workerDetail|
+            @valorizacionsinigv = workerDetail[0]
+            @amortizaciondeadelanto = workerDetail[1]
+            @totalfacturar = workerDetail[2]
+            @totalfacigv = workerDetail[3]
+            @totalincluidoigv = workerDetail[4]
+            @retenciones = workerDetail[5]
+            @detraccion = workerDetail[6]
+            @descuentocombustible = workerDetail[7]
+            @otrosdescuentos = workerDetail[8]
+            @netoapagar = workerDetail[9]
+          end
+        end
+
+        @cc = get_company_cost_center('cost_center')
+        @inicio = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" WHERE start_date <= '"+@start_date.to_s+"' AND end_date >= '"+@start_date.to_s+"'").first
+        @fin = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" WHERE start_date <= '"+@end_date.to_s+"' AND end_date >= '"+@end_date.to_s+"'").first
+        
+        render :pdf => "valorizacion_equipos_#{@valuationofequipment.code}-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'production/valuation_of_equipments/report_pdf.pdf.haml',
+               :page_size => 'Letter'
+      end
+    end
+  end
+
+  def part_equipment_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        puts "------------params id ----------------"
+        @company = Company.find(get_company_cost_center('company'))
+        @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+        @id = params[:id]
+        @name = params[:name]
+        @code = params[:code]
+        @start_date = params[:start_date]
+        @end_date = params[:end_date]
+        @cad = params[:cad]
+        @totalprice3 = 0
+        @cc = get_company_cost_center('cost_center')
+        @workers_array3 = business_days_array3(@start_date, @end_date, @cad,@cc)
+        @art = Array.new
+        @workers_array3.each do |workerDetail|
+          @totalprice3 += workerDetail[4]
+          @art << workerDetail[5]
+        end
+        @art = @art.join(',')
+        if @art==''
+          @art=0
+        end
+        if params[:id]==nil
+          if ValuationOfEquipment.where("name LIKE ? ", @name).last.present?
+            thelast = ValuationOfEquipment.where("name LIKE ? ", @name).last
+            @last_end = thelast.end_date
+            @cc = get_company_cost_center('cost_center')
+            @last = last(@last_end, @cad, @art, @cc)
+            @try = "last"
+          else
+            @last = Array.new
+            @workers_array3.each do |wa3|
+              @last << [[0,0,0]]
+            end
+          end
+        else
+          @cc = get_company_cost_center('cost_center')
+          @last_end =ValuationOfEquipment.find(params[:id]).start_date
+          @last = last(@last_end, @cad, @art, @cc)
+          puts @last.count
+          if @last.count==0
+            @last=nil
+            @last = Array.new
+            @workers_array3.each do |wa3|
+              @last << [[0,0,0]]
+            end
+          end
+        end
+        @array = Array.new
+        @first = Array.new
+        @second = Array.new
+        @workers_array3.each do |wa3|
+          @first << wa3
+        end
+        @last.each do |wa3|
+          @second << wa3
+        end
+
+        @first.each do |arr|
+          i=0
+          @second.each do |sec|
+            if @second.count == 1 && i==0
+              if arr[0]==sec[0]
+                @array << (arr + sec).to_a
+              else
+                cero = [0,0,0]
+                @array << (arr+ cero).to_a
+              end 
+            else
+              sec[i]
+              puts sec[i]
+              puts sec
+              puts "-----------"
+              puts arr
+              @array << (arr + [sec[i]]).to_a
+            end
+            break
+          end
+          i+=1
+        end
+        render :pdf => "parte_equipos_#{@code}-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'production/valuation_of_equipments/part_equipment_pdf.pdf.haml',
+               :page_size => 'A4'
+      end
+    end
+  end
+
+  def report_of_equipment_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @cc = get_company_cost_center('cost_center')
+        @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+        @company = Company.find(get_company_cost_center('company'))
+        @totaldif = 0
+        @totaltotalhours = 0
+        @totalfuel_amount = 0
+        @subcontractequipmentarticle= params[:subcontractequipment]
+        start_date = params[:start_date]
+        end_date = params[:end_date]
+        @entityname = params[:name]
+        @name2 = SubcontractEquipmentDetail.find_by_id(@subcontractequipmentarticle).code + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_id(@subcontractequipmentarticle).article_id ,session[:cost_center])
+        puts @name2.inspect
+        @poe_array = poe_array(start_date, end_date, @subcontractequipmentarticle, @entityname)
+        @poe_array.each do |workerDetail|
+          @totaldif += workerDetail[4].to_f
+          @totaltotalhours += workerDetail[5].to_f
+          @totalfuel_amount += workerDetail[7].to_f
+        end
+        @dias_habiles =  range_business_days(start_date,end_date)
+        render :pdf => "resumen_equipo_#{@name2}-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'production/valuation_of_equipments/report_of_equipment_pdf.pdf.haml',
+               :page_size => 'A4'
+      end
+    end
   end
 
   private

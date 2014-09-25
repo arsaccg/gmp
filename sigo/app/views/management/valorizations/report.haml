@@ -1,0 +1,84 @@
+%div(style="font-size: 10px;")
+  OBRA: 
+  =@project.name
+  %br
+  PROPIETARIO:
+  %br
+  CONTRATISTA:
+  %br
+  SUPERVISION:
+
+%h4 
+  REPORTE
+%h5
+  VALORIZACION "
+  =@valorization.name rescue " "
+  " DEL MES DE "
+  =@valorization.month rescue " "
+  "
+
+%br
+.row-fuild
+  .span12
+    %table(id="scroll-table" class="table-hover white-table small-font table-light"  width="100%")
+      %thead
+        %tr
+          %th(rowspan="2")
+            %strong
+              DESCRIPCION
+          %th(rowspan="2")
+            %strong
+              UND.
+          %th(rowspan="2")
+            %strong
+              PRECIO UNITARIO
+          %th(colspan="2")
+            %strong
+              PRESUPUESTO CONTRACTUAL
+          %th(colspan="2")
+            %strong
+              ACUMULADO ANTERIOR
+          %th(colspan="2")
+            %strong
+              VALORIZACION ACTUAL
+          %th(colspan="2")
+            %strong
+              ACUMULADO ACTUAL
+          %th(colspan="2")
+            %strong
+              SALDO POR VALORIZAR
+          %th(rowspan="2")
+            %strong
+              PORCENTAJE DE AVANCE
+        %tr 
+          %th  
+            %strong
+              METRADO
+          %th  
+            %strong
+              MONTO S/.
+          %th  
+            %strong
+              METRADO
+          %th  
+            %strong
+              MONTO S/.
+          %th  
+            %strong
+              METRADO
+          %th  
+            %strong
+              MONTO S/.
+          %th  
+            %strong
+              METRADO
+          %th  
+            %strong
+              MONTO S/.
+          %th  
+            %strong
+              METRADO
+          %th  
+            %strong
+              MONTO S/.
+      = render :partial => "tablereport"

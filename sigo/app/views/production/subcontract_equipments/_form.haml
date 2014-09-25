@@ -5,6 +5,9 @@
     %h2 Subcontrato
   .widget-body
     = simple_form_for([:production, @subcontractEquipment], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      - f.fields_for :subcontract_equipment_advances do |del|
+        = del.hidden_field :lock_version
+      = f.hidden_field :lock_version
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
@@ -30,272 +33,37 @@
             %label.label Valorizaciones
             %label.input{for: "valorization"}
               %select.form-control{:name =>"subcontract_equipment[valorization]", :style => 'width:100%;padding: 0;border: none;'}
-                -if @action == "edit"
-                  - if @subcontractEquipment.valorization == "semanal"
-                    %option{:value => "semanal", :selected=>"selected"}
-                      Semanales
-                    %option{:value => "quincenal"}
-                      Quincenales
-                    %option{:value => "mensual"}
-                      Mensuales
-                  - if @subcontractEquipment.valorization == "quincenal"
-                    %option{:value => "semanal"}
-                      Semanales
-                    %option{:value => "quincenal", :selected=>"selected"}
-                      Quincenales
-                    %option{:value => "mensual"}
-                      Mensuales
-                  -else
-                    %option{:value => "semanal"}
-                      Semanales
-                    %option{:value => "quincenal"}
-                      Quincenales
-                    %option{:value => "mensual", :selected=>"selected"}
-                      Mensuales
-                -else
-                  %option{:value => "semanal"}
-                    Semanales
-                  %option{:value => "quincenal"}
-                    Quincenales
-                  %option{:value => "mensual"}
-                    Mensuales
+                %option{:value => "semanal", :selected=>@subcontractEquipment.valorization == "semanal"}
+                  Semanales
+                %option{:value => "quincenal", :selected=>@subcontractEquipment.valorization == "quincenal"}
+                  Quincenales
+                %option{:value => "mensual", :selected=>@subcontractEquipment.valorization == "mensual"}
+                  Mensuales
 
           %section.col.col-4
             %label.label Condiciones de Pago
             %label.input{for: "terms_of_payment"}
               %select.form-control{:name =>"subcontract_equipment[terms_of_payment]", :style => 'width:100%;padding: 0;border: none;'}
-                -if @action =="edit"
-                  -if @subcontractEquipment.terms_of_payment=="contado"
-                    %option{:value => "contado", :selected=>"selected"}
-                      Al Contado
-                    %option{:value => "3D"}
-                      Crédito a 3 dias
-                    %option{:value => "5D"}
-                      Crédito a 5 dias
-                    %option{:value => "7D"}
-                      Crédito a 7 dias
-                    %option{:value => "10D"}
-                      Crédito a 10 dias
-                    %option{:value => "15D"}
-                      Crédito a 15 dias
-                    %option{:value => "30D"}
-                      Crédito a 30 dias
-                    %option{:value => "40D"}
-                      Crédito a 40 dias
-                    %option{:value => "50D"}
-                      Crédito a 50 dias
-                    %option{:value => "60D"}
-                      Crédito a 60 dias
-                  -elsif @subcontractEquipment.terms_of_payment=="3D"
-                    %option{:value => "contado"}
-                      Al Contado
-                    %option{:value => "3D", :selected=>"selected"}
-                      Crédito a 3 dias
-                    %option{:value => "5D"}
-                      Crédito a 5 dias
-                    %option{:value => "7D"}
-                      Crédito a 7 dias
-                    %option{:value => "10D"}
-                      Crédito a 10 dias
-                    %option{:value => "15D"}
-                      Crédito a 15 dias
-                    %option{:value => "30D"}
-                      Crédito a 30 dias
-                    %option{:value => "40D"}
-                      Crédito a 40 dias
-                    %option{:value => "50D"}
-                      Crédito a 50 dias
-                    %option{:value => "60D"}
-                      Crédito a 60 dias
-                  -elsif @subcontractEquipment.terms_of_payment=="5D"
-                    %option{:value => "contado"}
-                      Al Contado
-                    %option{:value => "3D"}
-                      Crédito a 3 dias
-                    %option{:value => "5D", :selected=>"selected"}
-                      Crédito a 5 dias
-                    %option{:value => "7D"}
-                      Crédito a 7 dias
-                    %option{:value => "10D"}
-                      Crédito a 10 dias
-                    %option{:value => "15D"}
-                      Crédito a 15 dias
-                    %option{:value => "30D"}
-                      Crédito a 30 dias
-                    %option{:value => "40D"}
-                      Crédito a 40 dias
-                    %option{:value => "50D"}
-                      Crédito a 50 dias
-                    %option{:value => "60D"}
-                      Crédito a 60 dias
-                  -elsif @subcontractEquipment.terms_of_payment=="7D"
-                    %option{:value => "contado"}
-                      Al Contado
-                    %option{:value => "3D"}
-                      Crédito a 3 dias
-                    %option{:value => "5D"}
-                      Crédito a 5 dias
-                    %option{:value => "7D", :selected=>"selected"}
-                      Crédito a 7 dias
-                    %option{:value => "10D"}
-                      Crédito a 10 dias
-                    %option{:value => "15D"}
-                      Crédito a 15 dias
-                    %option{:value => "30D"}
-                      Crédito a 30 dias
-                    %option{:value => "40D"}
-                      Crédito a 40 dias
-                    %option{:value => "50D"}
-                      Crédito a 50 dias
-                    %option{:value => "60D"}
-                      Crédito a 60 dias
-                  -elsif @subcontractEquipment.terms_of_payment=="10D"
-                    %option{:value => "contado"}
-                      Al Contado
-                    %option{:value => "3D"}
-                      Crédito a 3 dias
-                    %option{:value => "5D"}
-                      Crédito a 5 dias
-                    %option{:value => "7D"}
-                      Crédito a 7 dias
-                    %option{:value => "10D", :selected=>"selected"}
-                      Crédito a 10 dias
-                    %option{:value => "15D"}
-                      Crédito a 15 dias
-                    %option{:value => "30D"}
-                      Crédito a 30 dias
-                    %option{:value => "40D"}
-                      Crédito a 40 dias
-                    %option{:value => "50D"}
-                      Crédito a 50 dias
-                    %option{:value => "60D"}
-                      Crédito a 60 dias
-                  -elsif @subcontractEquipment.terms_of_payment=="15D"
-                    %option{:value => "contado"}
-                      Al Contado
-                    %option{:value => "3D"}
-                      Crédito a 3 dias
-                    %option{:value => "5D"}
-                      Crédito a 5 dias
-                    %option{:value => "7D"}
-                      Crédito a 7 dias
-                    %option{:value => "10D"}
-                      Crédito a 10 dias
-                    %option{:value => "15D", :selected=>"selected"}
-                      Crédito a 15 dias
-                    %option{:value => "30D"}
-                      Crédito a 30 dias
-                    %option{:value => "40D"}
-                      Crédito a 40 dias
-                    %option{:value => "50D"}
-                      Crédito a 50 dias
-                    %option{:value => "60D"}
-                      Crédito a 60 dias
-                  -elsif @subcontractEquipment.terms_of_payment=="30D"
-                    %option{:value => "contado"}
-                      Al Contado
-                    %option{:value => "3D"}
-                      Crédito a 3 dias
-                    %option{:value => "5D"}
-                      Crédito a 5 dias
-                    %option{:value => "7D"}
-                      Crédito a 7 dias
-                    %option{:value => "10D"}
-                      Crédito a 10 dias
-                    %option{:value => "15D"}
-                      Crédito a 15 dias
-                    %option{:value => "30D", :selected=>"selected"}
-                      Crédito a 30 dias
-                    %option{:value => "40D"}
-                      Crédito a 40 dias
-                    %option{:value => "50D"}
-                      Crédito a 50 dias
-                    %option{:value => "60D"}
-                      Crédito a 60 dias
-                  -elsif @subcontractEquipment.terms_of_payment=="40D"
-                    %option{:value => "contado"}
-                      Al Contado
-                    %option{:value => "3D"}
-                      Crédito a 3 dias
-                    %option{:value => "5D"}
-                      Crédito a 5 dias
-                    %option{:value => "7D"}
-                      Crédito a 7 dias
-                    %option{:value => "10D"}
-                      Crédito a 10 dias
-                    %option{:value => "15D"}
-                      Crédito a 15 dias
-                    %option{:value => "30D"}
-                      Crédito a 30 dias
-                    %option{:value => "40D", :selected=>"selected"}
-                      Crédito a 40 dias
-                    %option{:value => "50D"}
-                      Crédito a 50 dias
-                    %option{:value => "60D"}
-                      Crédito a 60 dias
-                  -elsif @subcontractEquipment.terms_of_payment=="50D"
-                    %option{:value => "contado"}
-                      Al Contado
-                    %option{:value => "3D"}
-                      Crédito a 3 dias
-                    %option{:value => "5D"}
-                      Crédito a 5 dias
-                    %option{:value => "7D"}
-                      Crédito a 7 dias
-                    %option{:value => "10D"}
-                      Crédito a 10 dias
-                    %option{:value => "15D"}
-                      Crédito a 15 dias
-                    %option{:value => "30D"}
-                      Crédito a 30 dias
-                    %option{:value => "40D"}
-                      Crédito a 40 dias
-                    %option{:value => "50D", :selected=>"selected"}
-                      Crédito a 50 dias
-                    %option{:value => "60D"}
-                      Crédito a 60 dias
-                  -else
-                    %option{:value => "contado"}
-                      Al Contado
-                    %option{:value => "3D"}
-                      Crédito a 3 dias
-                    %option{:value => "5D"}
-                      Crédito a 5 dias
-                    %option{:value => "7D"}
-                      Crédito a 7 dias
-                    %option{:value => "10D"}
-                      Crédito a 10 dias
-                    %option{:value => "15D"}
-                      Crédito a 15 dias
-                    %option{:value => "30D"}
-                      Crédito a 30 dias
-                    %option{:value => "40D"}
-                      Crédito a 40 dias
-                    %option{:value => "50D"}
-                      Crédito a 50 dias
-                    %option{:value => "60D", :selected=>"selected"}
-                      Crédito a 60 dias
-                -else
-                  %option{:value => "contado"}
-                    Al Contado
-                  %option{:value => "3D"}
-                    Crédito a 3 dias
-                  %option{:value => "5D"}
-                    Crédito a 5 dias
-                  %option{:value => "7D"}
-                    Crédito a 7 dias
-                  %option{:value => "10D"}
-                    Crédito a 10 dias
-                  %option{:value => "15D"}
-                    Crédito a 15 dias
-                  %option{:value => "30D"}
-                    Crédito a 30 dias
-                  %option{:value => "40D"}
-                    Crédito a 40 dias
-                  %option{:value => "50D"}
-                    Crédito a 50 dias
-                  %option{:value => "60D"}
-                    Crédito a 60 dias
+                %option{:value => "contado", :selected=>@subcontractEquipment.terms_of_payment=="contado"}
+                  Al Contado
+                %option{:value => "3D", :selected=>@subcontractEquipment.terms_of_payment=="3D"}
+                  Crédito a 3 dias
+                %option{:value => "5D", :selected=>@subcontractEquipment.terms_of_payment=="5D"}
+                  Crédito a 5 dias
+                %option{:value => "7D", :selected=>@subcontractEquipment.terms_of_payment=="7D"}
+                  Crédito a 7 dias
+                %option{:value => "10D", :selected=>@subcontractEquipment.terms_of_payment=="10D"}
+                  Crédito a 10 dias
+                %option{:value => "15D", :selected=>@subcontractEquipment.terms_of_payment=="15D"}
+                  Crédito a 15 dias
+                %option{:value => "30D", :selected=>@subcontractEquipment.terms_of_payment=="30D"}
+                  Crédito a 30 dias
+                %option{:value => "40D", :selected=>@subcontractEquipment.terms_of_payment=="40D"}
+                  Crédito a 40 dias
+                %option{:value => "50D", :selected=>@subcontractEquipment.terms_of_payment=="50D"}
+                  Crédito a 50 dias
+                %option{:value => "60D", :selected=>@subcontractEquipment.terms_of_payment=="60D"}
+                  Crédito a 60 dias
         .row
           %section.col.col-4
             %label.label Amortización inicial (Numérico)
@@ -339,6 +107,10 @@
               - else
                 = check_box_tag 'subcontract_equipment[igv]', @igv, true
                 %i
+          %section.col.col-4
+            %label.label Descripción del Contrato
+            %label.input{for: "contract_description"}
+              = f.input :contract_description, placeholder: "Descripción",:as => :text, input_html: { class: 'form-control',:style=> 'height: 70px' }, label: false
 
       %fieldset
         %legend Adelantos
@@ -385,7 +157,7 @@
                     - @reg_n += 1         
 
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -459,6 +231,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -469,8 +243,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }

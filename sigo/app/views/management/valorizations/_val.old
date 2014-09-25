@@ -1,0 +1,59 @@
+- @itembybudgets.each do |itembudget|
+        %tr
+          - @var_cost = number_with_precision(get_cost_partial(itembudget.order).to_f, :precision => 2).to_s rescue 0
+          - order_str = itembudget.order.gsub(".","d")
+
+          - if itembudget.order.length < 3
+            %td
+              %strong
+                =itembudget.order
+            =#title
+            %td
+              %strong
+                = get_title_or_description(itembudget)
+              %td(colspan="6")
+          - else  
+            %td
+              - n = (itembudget.order.length / 3).to_i
+              - if itembudget.measured.to_f == 0
+                %strong
+                  = itembudget.order
+                %td
+                  %strong
+                    = get_title_or_description(itembudget)
+              - else
+                = itembudget.order
+                %td
+                  = get_title_or_description(itembudget)
+            - if itembudget.measured.to_f == 0
+              %td(colspan="7" style="text-align: right;")
+            - else
+              %td
+                UND
+              %td(style="text-align: right;") 
+                = itembudget.measured.to_f
+              %td(style="text-align: right;")
+                =#falta total valorizado con partial_measured + prev_valorizations
+                %span{:id=>"prev_#{itembudget.id.to_s}"}
+                  = prev_valorizations(@valorization.created_at, itembudget.id)
+              =#metrado
+              %td(style="text-align: right;")
+                %input{:type=>"text", :class=>"input-mini", :id => "itembudget_#{itembudget.id.to_s}", :name => "measured[#{itembudget.id.to_s}]", :onblur => "update_data('#{itembudget.id.to_s}', '#{itembudget.measured}', '#{@var_cost}')", :onchange=>"update_valorization_item('#{itembudget.id.to_s}')", :value => get_measured_item(@valorization.id, itembudget.id), :style=>"text-align: right;"}
+              =#metrado ACUMULADO
+              %td(style="text-align: right;")
+                %strong(style="text-align: right;")
+                  %span{:id=>"total_#{itembudget.id.to_s}"}
+              =#saldo
+              %td(style="text-align: right;")
+                %span{:id=>"credit_#{itembudget.id.to_s}"}
+
+              =#costo
+              -#%td(style="text-align: right;")  
+              -#  = number_to_currency(@var_cost, :unit=>'S/. ')
+              =#total valorizado
+              -#%td(style="text-align: right;")
+              -#  %strong(style="text-align: right;")
+              -#    %span{:id=>"total_#{itembudget.id.to_s}"}
+              =#total
+              -#%td(style="text-align: right;")
+              -#  = number_to_currency(number_with_precision(@var_cost.to_f * itembudget.measured.to_f, :precision => 2).to_s , :unit=>'S/. ') 

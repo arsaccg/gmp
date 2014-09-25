@@ -1,0 +1,124 @@
+.temp-div
+  %table(class=" table-bordered table-hover white-table small-font table-condensed " width="100%")
+    %thead
+      %tr
+        %th(colspan="4")
+        %th
+          .btn-group
+            %a(class="btn btn-warning btn-xs" href="javascript:filter_color('color-class-yellow');")
+            %a(class="btn btn-danger btn-xs" href="javascript:filter_color('color-class-red');")
+            %a(class="btn btn-success btn-xs" href="javascript:filter_color('color-class-green');")
+            %a(class="btn btn-default btn-xs" href="javascript:filter_reset();")
+      %tr
+        %th Elemento 
+        %th Acciones
+        %th Metrado
+        %th Precio
+        %th Saldo
+    %tbody
+      - result_credit = get_credit(@items[0].budget_id)
+      - itemwbs = itemswbs_from_budget(@items[0].budget_id)
+      - @items.each do |itembudget|
+        - title = get_title_or_description(itembudget)
+        - amount_str = ""
+        - if  itembudget.item_id != nil
+          - meas_i = number_with_precision(itembudget.measured.to_f, :precision => 2)
+          - cred_i = number_with_precision(result_credit[itembudget.item_code + itembudget.order], :precision => 2)
+          - amount = meas_i.to_f - cred_i.to_f
+          - amount_str = get_color_class(amount.to_s, itemwbs[itembudget.id])
+        - else 
+          - amount_str = "color-title"
+        %tr{:id=>"item_" + itembudget.id.to_s, :class=> amount_str}
+          %td 
+            = "---" * (itembudget.order.length/3).to_i
+            = itembudget.order        
+            -if itembudget.measured.to_f > 0
+              -title_parsed = URI.escape(title.gsub('\'', '_'))
+              %a{:href=>"javascript:selectitem('#{itembudget.id.to_s}');", :ondblclick=>"javascript:load_item(#{itembudget.to_json}, '#{title_parsed}');"}
+                = title
+            -else
+              %strong
+                = title
+          %td
+            -if itembudget.measured.to_f > 0
+              %center
+                %a{:href=>"javascript:viewassigment('#{itembudget.id.to_s}')"}
+                  Ver Asignaciones
+          -if itembudget.measured.to_f > 0
+            %td(style="text-align: right;")
+              = number_with_delimiter(number_with_precision itembudget.measured.to_f, :precision => 2)
+            %td(style="text-align: right;") 
+              = number_to_currency(number_with_precision(itembudget.price, :precision => 2).to_s , :unit=>'S/. ') rescue ""
+            - if  itembudget.item_id != nil
+              %td(class="credit")
+                %strong
+                  = number_with_delimiter(number_with_precision(amount.to_f, :precision => 2))  rescue ""
+            - else
+              %td(style="text-align: center;"  class="credit")
+                = "-"
+          -else
+            %td(colspan="3")
+%div(class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
+  .modal-dialog
+    .modal-content
+      %div(class="modal-header")
+        %button(type="button" class="close" data-dismiss="modal" aria-hidden="true")
+          &times;
+        %h4
+          Asignaciones
+      %div(class="modal-body")
+      %div(class="modal-footer")
+  
+
+:javascript
+
+  var selected_item;
+  var n_count = 0;
+
+  function viewassigment(id){
+    $('#myModal').modal('show');
+    load_url_ondiv('#{get_wbsitem_assigned_management_itembywbses_path}?itembybudget=' + id, 'modal-body')
+  }
+
+  function selectitem(item){
+    $("#item_" + selected_item).removeClass("info");
+    selected_item = item;
+    $("#item_" + item).addClass("info"); 
+  }
+
+  function load_item(data, name){   
+    if (selected_wbs == null) {
+      alert("Seleccione un elemento del WBS");
+    } else {
+      str_name = name;
+
+      console.log(str_name);
+      
+      load_url_ondiv("#{add_data_item_management_itembywbses_path}?item_code=" + data['item_code'] + "&wbscode=" + selected_wbs + "&budget_id=" + data['budget_id'] + "&price=" + replaceAll('.', 'a', data['price']) + "&measured=" + replaceAll('.', 'a', data['measured'])  + "&subbudgetdetail=" + str_name + "&id=" + data['id'] + "&order=" + replaceAll('.', 'a', data['order']), "form-wbs");
+    }
+  }
+
+  function remove_item(tr_id) { $('#' + tr_id).remove(); }
+
+  function filter_color(str_color)
+  {
+    $(".color-class-yellow").fadeOut();
+    $(".color-class-red").fadeOut();
+    $(".color-class-green").fadeOut();
+    $(".color-title").fadeOut();
+    $("." + str_color).fadeIn();
+  }
+
+  function filter_reset()
+  {
+    $(".color-class-yellow").fadeIn();
+    $(".color-class-red").fadeIn();
+    $(".color-class-green").fadeIn();
+    $(".color-title").fadeIn();
+  }
+
+  function update_table(id, price){
+    $("#total_" + id).text("S/. " + (price * $("#itemwbs_" + id).val()).toFixed(2));
+    post_to_url("#{save_data_management_itembywbses_path}", 'form-wbs', 'items-panel');
+  }
+

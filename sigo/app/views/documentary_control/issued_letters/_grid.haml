@@ -23,15 +23,16 @@
           - @type_issu.each do |type_issu|
             - if type_issu.id == 1
               .tab-pane.active{:id => "tab-#{type_issu.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Tipo
                         %th Nombre
                         %th Código-Año
+                        %th.col-md-1 Fecha
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_issu.issued_letters.order(:type_of_doc).each do |lawre|
@@ -42,6 +43,7 @@
                             = lawre.name.to_s
                           %td
                             =lawre.code.to_s + " - "+ lawre.year.to_s
+                          %td= lawre.date.to_s
                           %td
                             = lawre.description.to_s
                           %td
@@ -55,15 +57,16 @@
                               Editar
             - else
               .tab-pane{:id => "tab-#{type_issu.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Tipo
                         %th Nombre
                         %th Código-Año
+                        %th.col-md-1 Fecha
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_issu.issued_letters.order(:type_of_doc).each do |lawre|
@@ -74,6 +77,7 @@
                             = lawre.name.to_s
                           %td
                             =lawre.code.to_s + " - "+ lawre.year.to_s
+                          %td= lawre.date.to_s
                           %td
                             = lawre.description.to_s
                           %td

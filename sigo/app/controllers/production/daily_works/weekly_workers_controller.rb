@@ -136,7 +136,8 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
         trabajadore = trabajador_detalle.worker
         id = trabajadore.id
         nombre = "#{trabajadore.entity.paternal_surname + ' ' + trabajadore.entity.maternal_surname}, #{trabajadore.entity.name}  #{trabajadore.entity.second_name}"
-        categoria = "#{trabajadore.article.name}"              
+        contrato = WorkerContract.find_by_worker_id(trabajadore.id)
+        categoria = "#{contrato.article.name}"              
         total_horas     = trabajador_detalle.total_hours.to_f
         total_normales  = trabajador_detalle.normal_hours.to_f
         total_60        = trabajador_detalle.he_60.to_f
@@ -207,24 +208,26 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     @weeks.each do|inter|
       @weekhh << ActiveRecord::Base.connection.execute("
         SELECT c.name, ppd.total_hours AS total_h, pp.date_of_creation
-        FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
-        WHERE pp.date_of_creation BETWEEN '"+inter[1].to_date.to_s+"' AND '"+inter[2].to_date.to_s+"'
-        AND pp.blockweekly=0
-        AND ppd.part_person_id=pp.id
-        AND ppd.worker_id=w.id
-        AND w.article_id=a.id
+        FROM part_people pp, part_person_details ppd, articles a, workers w, worker_contracts wc, categories c
+        WHERE pp.date_of_creation BETWEEN '" + inter[1].to_date.to_s + "' AND '" + inter[2].to_date.to_s + "'
+        AND pp.blockweekly = 0
+        AND ppd.part_person_id = pp.id
+        AND ppd.worker_id = w.id
+        AND w.id = wc.worker_id
+        AND wc.article_id = a.id
         AND a.category_id = c.id
         GROUP BY c.name
       ")
 
       @weekcp << ActiveRecord::Base.connection.execute("
         SELECT c.name AS C_name, Sum(1) AS Cantidad_personas, pp.date_of_creation
-        FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
-        WHERE pp.date_of_creation BETWEEN '"+inter[1].to_date.to_s+"' AND '"+ inter[2].to_date.to_s+"'
-        AND pp.blockweekly=0
-        AND ppd.part_person_id=pp.id
-        AND ppd.worker_id=w.id
-        AND w.article_id=a.id
+        FROM part_people pp, part_person_details ppd, articles a, workers w, worker_contracts wc, categories c
+        WHERE pp.date_of_creation BETWEEN '" + inter[1].to_date.to_s + "' AND '" + inter[2].to_date.to_s + "'
+        AND pp.blockweekly = 0
+        AND ppd.part_person_id = pp.id
+        AND ppd.worker_id = w.id
+        AND w.id = wc.worker_id
+        AND wc.article_id = a.id
         AND a.category_id = c.id
         GROUP BY c.name
       ")
@@ -256,14 +259,15 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
       @weeks.each do |w|
         catwh = ActiveRecord::Base.connection.execute("
           SELECT SUM(ppd.total_hours)
-          FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
-          WHERE pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
+          FROM part_people pp, part_person_details ppd, articles a, workers w, worker_contracts wc, categories c
+          WHERE pp.date_of_creation BETWEEN '" + w[1].to_date.to_s + "' AND '" + w[2].to_date.to_s + "'
           AND pp.blockweekly=0
           AND ppd.part_person_id = pp.id
           AND ppd.worker_id = w.id
-          AND w.article_id = a.id
+          AND w.id = wc.worker_id
+          AND wc.article_id = a.id
           AND a.category_id = c.id
-          AND c.name LIKE '"+cat.to_s+"'
+          AND c.name LIKE '" + cat.to_s + "'
           GROUP BY c.name
         ")
         if catwh.count==1
@@ -280,14 +284,15 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
       @weeks.each do |w|
         catwp = ActiveRecord::Base.connection.execute("
           SELECT SUM(1)
-          FROM part_people pp, part_person_details ppd, articles a, workers w, categories c
+          FROM part_people pp, part_person_details ppd, articles a, workers w, worker_contracts wc, categories c
           WHERE pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
           AND pp.blockweekly=0
           AND ppd.part_person_id = pp.id
           AND ppd.worker_id = w.id
-          AND w.article_id = a.id
+          AND w.id = wc.worker_id
+          AND wc.article_id = a.id
           AND a.category_id = c.id
-          AND c.name LIKE '"+cat.to_s+"'
+          AND c.name LIKE '" + cat.to_s + "'
           GROUP BY c.name
         ")
         if catwp.count==1

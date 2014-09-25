@@ -5,6 +5,9 @@
     %h2 Nuevo Parte de Personal
   .widget-body
     = simple_form_for([:production, @partperson], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      - f.fields_for :part_person_details do |del|
+        = del.hidden_field :lock_version
+      = f.hidden_field :lock_version    
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
@@ -94,7 +97,7 @@
                         %i
                     - @reg_n += 1
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -143,6 +146,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -153,8 +158,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }

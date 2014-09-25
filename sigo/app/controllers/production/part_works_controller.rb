@@ -1,4 +1,6 @@
 class Production::PartWorksController < ApplicationController
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]  
   def index
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
@@ -13,27 +15,25 @@ class Production::PartWorksController < ApplicationController
     render layout: false
   end
 
-  def display_articles
-    word = params[:q]
-    article_hash = Array.new
-    name = get_company_cost_center('cost_center')
-    articles = PartWork.getOwnArticles(word, name)
-    articles.each do |art|
-      article_hash << {'id' => art[0], 'name' => art[1]}
-    end
-    render json: {:articles => article_hash}
-  end
+  #def display_articles
+  #  word = params[:q]
+  #  article_hash = Array.new
+  #  name = get_company_cost_center('cost_center')
+  #  articles = PartWork.getOwnArticles(word, name)
+  #  articles.each do |art|
+  #    article_hash << {'id' => art[0], 'name' => art[1]}
+  #  end
+  #  render json: {:articles => article_hash}
+  #end
 
   def new
+    cost_center_id = get_company_cost_center('cost_center')
     @partwork = PartWork.new
-    articles = Array.new
     @working_groups = WorkingGroup.all
     @sectors = Sector.where("code LIKE '__'")
-    article = SubcontractDetail.all
-    article.each do |art|
-      articles << art.article_id
-    end
-    @articles = Article.where('id IN ('+articles.join(',')+')')
+    #@articles = PartWork.getOwnArticles(cost_center_id)
+    itembybudget_ids = SubcontractDetail.distinct.select(:itembybudget_id).map(&:itembybudget_id)
+    @itembybudgets = Itembybudget.select(:id).select(:order).select(:item_code).select(:subbudgetdetail).where(:id => itembybudget_ids)
     @company = params[:company_id]
     render layout: false
   end
@@ -57,23 +57,22 @@ class Production::PartWorksController < ApplicationController
 
   def add_more_article
     @reg_n = ((Time.now.to_f)*100).to_i
-    article = Article.find(params[:article_id])
-    cost_center = get_company_cost_center('cost_center')
-    @article = Article.find_specific_in_article(article.id, cost_center)
-    @article.each do |art|
-      @id_article = art[0]
-      @name_article = art[1]
-      @unit = art[2]
-    end
+    itembybudget = Itembybudget.select(:id).select(:order).select(:item_code).select(:subbudgetdetail).find(params[:itembybudget_id])
     
-    @unitOfMeasurement = Article.find(@unit).unit_of_measurement.name
+    @id_itembybudget = itembybudget.id
+    @name_itembybudget = itembybudget.subbudgetdetail
+    @itembybudget_code = itembybudget.order
+
     render(partial: 'partwork_items', :layout => false)
   end
 
   def edit
+    cost_center_id = get_company_cost_center('cost_center')
+    itembybudget_ids = SubcontractDetail.distinct.select(:itembybudget_id).map(&:itembybudget_id)
     @partwork = PartWork.find(params[:id])
     @working_groups = WorkingGroup.all
     @partworkde = @partwork.part_work_details
+    @itembybudgets = Itembybudget.select(:id).select(:order).select(:item_code).select(:subbudgetdetail).where(:id => itembybudget_ids)
     @unit = UnitOfMeasurement.all
     @sectors = Sector.where("code LIKE '__'")
     @action = 'edit'
@@ -84,20 +83,18 @@ class Production::PartWorksController < ApplicationController
 
   def update
     partwork = PartWork.find(params[:id])
-    if partwork.update_attributes(part_work_parameters)
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id]
-    else
-      partwork.errors.messages.each do |attribute, error|
-        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
-      end
-      # Load new()
-      @partwork = partwork
-      render :edit, layout: false
-    end
+    partwork.update_attributes(part_work_parameters)
+    flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index, company_id: params[:company_id]
+  rescue ActiveRecord::StaleObjectError
+      partwork.reload
+      flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+      redirect_to :action => :index
   end
 
   def destroy
+    partwork = PartWork.find(params[:id]) # Find main Obj
+    PartWorkDetail.destroy_all "part_work_id = #{partwork.id}"
     partwork = PartWork.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el Grupo de Trabajo."
     render :json => partwork
@@ -105,6 +102,6 @@ class Production::PartWorksController < ApplicationController
 
   private
   def part_work_parameters
-    params.require(:part_work).permit(:working_group_id, :block, :sector_id, :number_working_group, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :article_id, :bill_of_quantitties, :description])
+    params.require(:part_work).permit(:working_group_id, :block, :sector_id, :lock_version, :number_working_group, :date_of_creation, part_work_details_attributes: [:id, :part_work_id, :itembybudget_id, :bill_of_quantitties, :description, :lock_version, :_destroy])
   end
 end

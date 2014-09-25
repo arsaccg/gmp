@@ -79,7 +79,7 @@ class Worker < ActiveRecord::Base
     result = Array.new
     if keyword != '' && pager_number != 'NaN'
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
         FROM workers wo, entities ent, position_workers pow 
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -92,7 +92,7 @@ class Worker < ActiveRecord::Base
       )
     elsif pager_number != 'NaN'
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
         FROM workers wo, entities ent, position_workers pow 
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -104,7 +104,7 @@ class Worker < ActiveRecord::Base
       )
     else
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
         FROM workers wo, entities ent, position_workers pow 
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -114,7 +114,6 @@ class Worker < ActiveRecord::Base
         LIMIT " + display_length
       )
     end
-    @i = 1
     part_people.each do |part_person|
       if part_person[4]=="working"
         result << [
@@ -127,33 +126,30 @@ class Worker < ActiveRecord::Base
         ]
       elsif part_person[4]=="registered"
         result << [
-          @i, 
+          part_person[5], 
           "REGISTRADO",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
-          @i+=1
         ]
       elsif part_person[4]=="active"
         result << [
-          @i, 
+          part_person[5], 
           "<span class='label label-primary' style='font-size: x-small;'> ACTIVO </span>",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
-          @i+=1
         ]
       elsif part_person[4]=="ceased"
         result << [
-          @i, 
+          part_person[5], 
           "<span class='label label-default' style='font-size: x-small;'> CESADO </span>",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
-          @i+=1
         ]
       else
         result << [
@@ -174,7 +170,7 @@ class Worker < ActiveRecord::Base
     result = Array.new
     if keyword != '' && pager_number != 'NaN'
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
         FROM workers wo, entities ent, position_workers pow
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -187,7 +183,7 @@ class Worker < ActiveRecord::Base
       )
     elsif pager_number != 'NaN'
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
         FROM workers wo, entities ent, position_workers pow
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -199,7 +195,7 @@ class Worker < ActiveRecord::Base
       )
     else
       part_people = ActiveRecord::Base.connection.execute("
-        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state
+        SELECT wo.id, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname, ', ' ,ent.name, ' ', ent.second_name), pow.name, ent.dni, wo.state, wo.number_position
         FROM workers wo, entities ent, position_workers pow
         WHERE wo.entity_id = ent.id
         AND wo.position_worker_id = pow.id
@@ -222,33 +218,30 @@ class Worker < ActiveRecord::Base
         ]
       elsif part_person[4]=="registered"
         result << [
-          @i,
+          part_person[5],
           "REGISTRADO",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_contract("+part_person[0].to_s+")>Dar Alta</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
-          @i+=1
         ]
       elsif part_person[4]=="active"
         result << [
-          @i, 
+          part_person[5],
           "<span class='label label-primary' style='font-size: x-small;'> ACTIVO </span>",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + " <a style='margin-left: 3%;' class='btn btn-primary btn-xs' onclick=javascript:part_worker("+part_person[0].to_s+")>Dar Baja</a>" + "<a style='margin-left: 3%;' class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/production/worker_contracts','content',{worker_id:'" + part_person[0].to_s + "'},null,'GET')>Contratos</a>" + "<a style='margin-left: 3%;' class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
-          @i+=1
         ]
       elsif part_person[4]=="ceased"
         result << [
-          @i, 
+          part_person[5], 
           "<span class='label label-default' style='font-size: x-small;'> CESADO </span>",
           "<p style='text-align: center;'>" +part_person[3]+"</p>",
           part_person[1], 
           #part_person[2], 
           "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/workers/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Info </a> " + "<a style='margin-left: 3%;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='production/workers/" + part_person[0].to_s + "/worker_pdf.pdf' rel='tooltip' target='_blank'> <i class='fa fa-file'></i> </a>",
-          @i+=1
         ]
       else
         result << [

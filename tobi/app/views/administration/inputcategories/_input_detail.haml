@@ -4,6 +4,8 @@
 %table(class="table table-bordered table-hover table-condensed white-table" width="100%")
   %thead
     %th
+      Codigo
+    %th
       Nombre
     %th
       Presupuesto Meta
@@ -13,9 +15,11 @@
     - @input_budget_item_sale.each do |key, item|
       %tr
         %td
+          = item[1]
+        %td
           = item[0]
         %td(style="text-align: right;")
-          = number_to_currency(item[2], :unit=>'S/. ')
+          = number_to_currency(item[2], :unit=>'S/. ') rescue "--"
         %td(style="text-align: right;")
-          = number_to_currency(@input_budget_item_goal[key][2], :unit=>'S/. ')
+          = number_to_currency(@input_budget_item_goal[key][2], :unit=>'S/. ') rescue "--"
 

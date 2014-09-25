@@ -1,0 +1,28 @@
+%br
+%br
+
+%br
+
+.form-tabbed
+  =simple_form_for [:management, @wbsitem], :html => {:class => 'form-horizontal', :id=>'form-data'} do |f|
+    .fieldset
+
+      .control-group
+        %label(class="control-label") Nombre del Item
+        .controls
+          = f.input :name, label: false
+      .control-group
+        %label(class="control-label") Descripcion
+        .controls
+          = f.input :description, label: false, :as => :text
+      .control-group
+        %label(class="control-label") Notas
+        .controls
+          = f.input :notes, :as => :text, label: false
+          = f.input :cost_center_id, :as => :hidden, input_html: {id: 'input_project'}
+      .form-actions
+        %a{:href=>"javascript:post_to_url('" + management_wbsitem_path(@wbsitem.id).to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
+          Guardar
+
+        %a(href="#" class= "btn btn-danger")
+          Cancelar

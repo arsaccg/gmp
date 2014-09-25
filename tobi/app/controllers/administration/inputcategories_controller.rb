@@ -6,31 +6,36 @@ require 'csv'
 
 class Administration::InputcategoriesController < ApplicationController
 	before_filter :authorize_manager
-
+	# ESTO PERTENECE A TOBI!!!!
 
 	include SOCKET_CONNECTOR
 
 	def feo_of_work
-
 		project_id =  params[:project_id]
 
 		@budget_sale = Budget.find(params[:budget_sale]) rescue Budget.where(:cost_center_id => project_id).last
 		@budget_goal = Budget.find(params[:budget_goal]) rescue @budget_sale #Budget.where(:cost_center_id).last
 
+		p '~~~~~~~~~~~~~~~~~~~~~~~~@budget_sale~~~~~~~~~~~~~~~~~~~~~~~'
+		p @budget_sale.id
+		p '~~~~~~~~~~~~~~~~~~~~~~~~@budget_goal~~~~~~~~~~~~~~~~~~~~~~~'
+		p @budget_goal
+
 		@wbsitems = Wbsitem.where(cost_center_id: project_id).order(:codewbs)
 		@inputcategories = Inputcategory.all
 
 		@data_w = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s)
-    @data = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, 1)
+    	@data = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, 1)
 
     p @data
     p @data_w
 
     @data_excel = Array.new
+    csv = Array.new
 
     csv_string = CSV.generate do |csv|
       @data_w[0].each do |key, value|
-        csv << [value[0], value[1], value[2], @data_w[1][key][2]]
+        csv << [value[0], value[1], value[2], @data_w[1][key][2]] rescue [value[0], value[1], value[2], 0]
       end
     end
 

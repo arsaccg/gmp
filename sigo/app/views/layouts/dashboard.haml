@@ -29,6 +29,8 @@
     = stylesheet_link_tag "custom", media: "screen", rel: "stylesheet", type: "text/css"
     /JS
     = javascript_include_tag 'application'
+    = javascript_include_tag 'raphael'
+    = javascript_include_tag 'raphael.pan-zoom'
     / TOKEN
     = csrf_meta_tag
     / FAVICONS
@@ -269,6 +271,65 @@
                       %a{href: "#{production_position_workers_path}", title: 'Trabajadores'}
                         %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                         Cargo de Trabajadores
+          - if (current_user.has_role? :director) || (current_user.has_role? :planning)
+            /TOBI...
+            %li
+              %a{href: "#", title: "Planeamiento"}
+                %i.fa.fa-lg.fa-fw.fa-book
+                Planeamiento
+              %ul
+                %li
+                  %a{href: '#'}
+                    %i.fa.fa-lg.fa-fw.fa-list-alt
+                    General
+                  %ul
+                    %li
+                      %a{href: "#{management_wbsitems_path}", title: "Wbs"}
+                        %i.fa.fa-lg.fa-fw.fa-sitemap
+                        Wbs
+                    %li
+                      %a{href: "#{new_management_budget_path}", title: "Importar de S10"}
+                        %i.fa.fa-lg.fa-fw.fa-download
+                        Importar de S10
+                    %li
+                      %a{href: "#{get_budget_by_project_management_budgets_path}", title: "Presupuestos"}
+                        %i.fa.fa-lg.fa-fw.fa-money
+                        Presupuestos
+                    %li
+                      %a{href: "#{import_distributions_management_distributions_path}", title: "Xls de Distribución"}
+                        %i.fa.fa-lg.fa-fw.fa-file-o
+                        Importar xls de Distribución
+                %li
+                  %a{href: '#'}
+                    %i.fa.fa-lg.fa-fw.fa-book
+                    Control
+                  %ul
+                    %li
+                      %a{href: "#{administrate_budget_management_budgets_path}", title: "Presupuestos"}
+                        %i.fa.fa-lg.fa-fw.fa-money
+                        Presupuestos
+                    %li
+                      %a{href: "#{management_extensionscontrols_path}", title: "Ampliaciones"}
+                        %i.fa.fa-lg.fa-fw.fa-book
+                        Ampliaciones
+                    %li
+                      %a{href: "#{administration_advances_path}", title: "Adelantos"}
+                        %i.fa.fa-lg.fa-fw.fa-money
+                        Adelantos
+                %li
+                  %a{href: '#'}
+                    %i.fa.fa-lg.fa-fw.fa-clipboard
+                    Reportes
+                  %ul
+                    %li
+                      %a{href: "#{feo_of_work_administration_inputcategories_path}", title: "FEO"}
+                        %i.fa.fa-lg.fa-fw.fa-table
+                        FEO
+                    %li
+                      %a(href="#{feo_of_work_administration_inputcategories_path}.csv" target="_blank" title="Exportar FEO")
+                        %i.fa.fa-lg.fa-fw.fa-upload
+                        Exportar FEO
+            /...TOBI
           - if (current_user.has_role? :director) || (current_user.has_role? :control_documentary)
             %li
               %a{href: "#", title: "Control de Documentarios"}
@@ -329,13 +390,13 @@
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos Modificatorias
                     %li
-                      %a{href: "#{documentary_control_type_of_qa_qcs_path}", title: "Tipos QA-QC: Dessiere de Calidad"}
-                        %i.fa.fa-lg.fa-fw.fa-briefcase
-                        Tipos QA-QC: Calidad
-                    %li
                       %a{href: "#{documentary_control_type_of_qa_qc_suppliers_path}", title: "Tipos QA-QC: Proveedores"}
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Tipos QA-QC: Proveedores
+                    %li
+                      %a{href: "#{documentary_control_type_of_qa_qcs_path}", title: "Tipos QA-QC: Dossier de Calidad"}
+                        %i.fa.fa-lg.fa-fw.fa-briefcase
+                        Tipos QA-QC: Calidad
                 %li
                   %a{href: "#{documentary_control_of_companies_path}", title: "Notariales"}
                     %i.fa.fa-lg.fa-fw.fa-briefcase
@@ -400,9 +461,9 @@
                         %i.fa.fa-lg.fa-fw.fa-briefcase
                         Modificatorias
                 %li
-                  %a{href: "#", title: "SSMASS - Arqueologia"}
+                  %a{href: "#", title: "CMASS - Arqueologia"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                    SSMASS - Arqueologia
+                    CMASS - Arqueologia
                   %ul
                     %li
                       %a{href: "#{documentary_control_securities_path}", title: "Seguridad"}
@@ -422,13 +483,13 @@
                     QA-QC
                   %ul
                     %li
-                      %a{href: "#{documentary_control_qa_qcs_path}"+"?type=0", title: "Dessiere de Calidad"}
-                        %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                        Dessiere Calidad
-                    %li
                       %a{href: "#{documentary_control_qa_qcs_path}"+"?type=1", title: "Proveedores"}
                         %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                        Proveedor
+                        Proveedores
+                    %li
+                      %a{href: "#{documentary_control_qa_qcs_path}"+"?type=0", title: "Dossier de Calidad"}
+                        %i.fa.fa-lg.fa-fw.fa-bar-chart-o
+                        Dossier Calidad
                 %li
                   %a{href: "#{documentary_control_flowcharts_path}", title: "Organigrama"}
                     %i.fa.fa-lg.fa-fw.fa-bar-chart-o
@@ -771,7 +832,7 @@
       #ribbon
         %ol.breadcrumb
       / MAIN CONTENT
-      #content
+      #content.right-area
       / END MAIN CONTENT
     / END MAIN PANEL
     /

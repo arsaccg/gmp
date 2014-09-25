@@ -144,17 +144,13 @@ class Production::WorkersController < ApplicationController
 
   def update
     worker = Worker.find(params[:id])
-    if worker.update_attributes(worker_parameters)
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id]
-    else
-      worker.errors.messages.each do |attribute, error|
-        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
-      end
-      # Load new()
-      @worker = worker
-      render :edit, layout: false
-    end
+    worker.update_attributes(worker_parameters)
+    flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index, company_id: params[:company_id]
+  rescue ActiveRecord::StaleObjectError
+    worker.reload
+    flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+    redirect_to :action => :index, company_id: params[:company_id]     
   end
 
   def add_worker_item_field
@@ -274,6 +270,8 @@ class Production::WorkersController < ApplicationController
   def register
     worker = Worker.find(params[:id])
     worker.register
+    num = Worker.where("position_worker_id = "+worker.position_worker_id.to_s+" AND number_position IS NOT NULL").last
+    worker.update_attributes(:number_position => num.number_position.to_i+1)
     redirect_to :action => :index
   end
 
@@ -350,9 +348,9 @@ class Production::WorkersController < ApplicationController
     @worker_afps = @worker.worker_afps
     @nombre = ""
     @afp = WorkerAfp.where("worker_id = ?",params[:id]).last
-    if @afp.afp.type_of_afp == 'SNP'
+    if ( !@afp.nil? ) && ( @afp.afp.type_of_afp ) == 'SNP'
       @nombre = "SNP"
-    elsif @afp.afp.type_of_afp == 'SPP'
+    elsif ( !@afp.nil? ) && ( @afp.afp.type_of_afp ) == 'SPP'
       @nombre = "Nombre de AFP"
     else
       @nombre = ""
@@ -398,19 +396,19 @@ class Production::WorkersController < ApplicationController
   private
   def worker_parameters
     params.require(:worker).permit(
-      :email, {:type_workday_ids => []}, :onpafp, :driverlicense, :income_fifth_category, :unionized, :disabled, 
+      :email, {:type_workday_ids => []}, :onpafp, :lock_version, :driverlicense, :income_fifth_category, :unionized, :disabled, 
       :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,
       :highschoolenddate,:levelofinstruction, :lastgrade, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,
       :primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province,
       :department, :entity_id, :cv, :antecedent_police, :dni, :cts_deposit_letter, :pension_funds_letter, :affidavit, :marriage_certificate,
       :birth_certificate_of_childer, :dni_wife_kids, :schoolar_certificate,
-      worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :_destroy],
-      worker_afps_attributes: [:id, :worker_id, :afp_id, :afpnumber, :afptype, :start_date, :end_date, :_destroy],
-      worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :start_date, :end_date, :_destroy],
-      worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :names, :relationship, :dayofbirth, :dni, :_destroy],
-      worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :numberoftuition, :start_date, :end_date, :_destroy],
-      worker_otherstudies_attributes: [:id, :worker_id, :study, :level, :_destroy],
-      worker_experiences_attributes: [:id, :worker_id, :businessname, :title, :salary, :bossincharge, :exitreason, :start_date, :end_date, :_destroy])
+      worker_details_attributes: [:id, :worker_id, :bank_id, :account_number, :lock_version, :_destroy],
+      worker_afps_attributes: [:id, :worker_id, :afp_id, :afpnumber, :afptype, :start_date, :lock_version, :end_date, :_destroy],
+      worker_healths_attributes: [:id, :worker_id, :health_center_id, :health_regime, :lock_version, :start_date, :end_date, :_destroy],
+      worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :lock_version, :names, :relationship, :dayofbirth, :dni, :_destroy],
+      worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :lock_version, :numberoftuition, :start_date, :end_date, :_destroy],
+      worker_otherstudies_attributes: [:id, :worker_id, :study, :lock_version, :level, :_destroy],
+      worker_experiences_attributes: [:id, :worker_id, :businessname, :lock_version, :title, :salary, :bossincharge, :exitreason, :start_date, :end_date, :_destroy])
   end
 
   def worker_contract_file_param

@@ -65,19 +65,16 @@
                 %thead
                   %tr
                     %th Codigo
-                    %th Insumo
-                    %th Unidad de Medida
+                    %th Partida
                     %th Metrado
                     %th Descripción
                 %tbody
                   - @partworkdetails.each do |partworkdetail|
                     %tr
                       %td
-                        = partworkdetail.article.code
+                        = partworkdetail.itembybudget.order
                       %td
-                        = partworkdetail.article.name
-                      %td
-                        = partworkdetail.article.unit_of_measurement.name
+                        = partworkdetail.itembybudget.subbudgetdetail
                       %td
                         = partworkdetail.bill_of_quantitties
                       %td
@@ -86,20 +83,6 @@
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
   %i.fa.fa-arrow-left>
   Retornar al listado de Ordenes de Compra
-
-= javascript_include_tag 'plugin/flot/jquery.flot.cust'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
-= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
-= javascript_include_tag 'plugin/flot/jquery.flot.resize'
-= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
-= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
-= javascript_include_tag 'plugin/datatables/ColReorder.min'
-= javascript_include_tag 'plugin/datatables/FixedColumns.min'
-= javascript_include_tag 'plugin/datatables/ColVis.min'
-= javascript_include_tag 'plugin/datatables/ZeroClipboard'
-= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
-= javascript_include_tag 'plugin/datatables/DT_bootstrap'
 
 :javascript
   

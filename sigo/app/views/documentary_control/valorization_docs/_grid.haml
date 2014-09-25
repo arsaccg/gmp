@@ -23,13 +23,13 @@
           - @type_val.each do |type_val|
             - if type_val.id == 1
               .tab-pane.active{:id => "tab-#{type_val.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Nombres
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_val.valorization_docs.each do |lawre|
@@ -51,13 +51,13 @@
                               Eliminar
             - else
               .tab-pane{:id => "tab-#{type_val.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Nombres
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_val.valorization_docs.each do |lawre|

@@ -5,6 +5,21 @@
     %h2 Trabajadores
   .widget-body
     = simple_form_for([:production, @worker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      = f.hidden_field :lock_version
+      - f.fields_for :worker_center_of_studies do |del|
+        = del.hidden_field :lock_version
+      - f.fields_for :worker_contracts do |del|
+        = del.hidden_field :lock_version        
+      - f.fields_for :worker_details do |del|
+        = del.hidden_field :lock_version
+      - f.fields_for :worker_experiences do |del|
+        = del.hidden_field :lock_version        
+      - f.fields_for :worker_familiars do |del|
+        = del.hidden_field :lock_version     
+      - f.fields_for :worker_healths do |del|
+        = del.hidden_field :lock_version  
+      - f.fields_for :worker_otherstudies do |del|
+        = del.hidden_field :lock_version        
       %fieldset
         %legend{style: "font-weight: 600;"} DATOS LABORALES
         .row
@@ -1194,6 +1209,7 @@
       $("#fieldset4").css("display", "");
       $("#fieldset5").css("display", "");
       $("#fieldset6").css("display", "");
+      $("#fieldset7").css("display", "");
     }
     if('#{@worker.typeofworker}'=="obrero"){
       $("#categoria").css("display", "");
@@ -1232,6 +1248,7 @@
       $("#fieldset4").css("display", "");
       $("#fieldset5").css("display", "");
       $("#fieldset6").css("display", "");
+      $("#fieldset7").css("display", "");
     }
     else {
       $("#row1").css("display", "none");
@@ -1247,6 +1264,7 @@
       $("#fieldset4").css("display", "none");
       $("#fieldset5").css("display", "none");
       $("#fieldset6").css("display", "none");
+      $("#fieldset7").css("display", "none");
     }
   });
   $("input.radiobox").change(function() {

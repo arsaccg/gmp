@@ -7,6 +7,9 @@
   .widget-body
     = simple_form_for([:production, @partofequipment], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
+        - f.fields_for :part_of_equipment_details do |del|
+          = del.hidden_field :lock_version
+        = f.hidden_field :lock_version
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
         .row
@@ -155,10 +158,10 @@
                               - Phase.get_subphases(phas.code).each do |subphase|
                                 -if part.phase_id == subphase.id
                                   %option{:value => "#{subphase.id}", :selected=>"selected"}
-                                    = subphase.name
+                                    = subphase.code.to_s + ' - ' + subphase.name
                                 -else
                                   %option{:value => "#{subphase.id}"}
-                                    = subphase.name
+                                    = subphase.code.to_s + ' - ' + subphase.name
 
                       %td.effective-hours.col-lg-2
                         = text_field_tag 'part_of_equipment[part_of_equipment_details_attributes][' + @reg_n.to_s + '][effective_hours]', part.effective_hours , class: "form-control effective-hours", onchange: "sumHours(this);"

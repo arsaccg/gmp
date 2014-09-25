@@ -1,6 +1,7 @@
 class Logistics::PurchaseOrdersController < ApplicationController
+  include ApplicationHelper
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
-  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete], if: Proc.new { |c| c.request.format.json? }
   def index
     @company = params[:company_id]
     @company = get_company_cost_center('company')
@@ -82,13 +83,130 @@ class Logistics::PurchaseOrdersController < ApplicationController
     render(partial: 'table_order_delivery_items', :layout => false)
   end
 
+  def display_orders
+    @cc = get_company_cost_center('cost_center')
+    display_length = params[:iDisplayLength]
+    pager_number = params[:iDisplayStart]
+    @pagenumber = params[:iDisplayStart]
+    keyword = params[:sSearch]
+
+    array = Array.new
+    if @pagenumber != 'NaN' && keyword != ''
+      po = ActiveRecord::Base.connection.execute("
+        SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+        FROM purchase_orders po, users u, entities e
+        WHERE po.cost_center_id = "+@cc.to_s+"
+        AND po.user_id = u.id
+        AND po.entity_id = e.id
+        ORDER BY po.id ASC
+        LIMIT #{display_length}
+        OFFSET #{pager_number}"
+      )
+    elsif @pagenumber == 'NaN'
+      po = ActiveRecord::Base.connection.execute("
+        SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+        FROM purchase_orders po, users u, entities e
+        WHERE po.cost_center_id = "+@cc.to_s+"
+        AND po.user_id = u.id
+        AND po.entity_id = e.id
+        ORDER BY po.id ASC
+        LIMIT #{display_length}"
+      )
+    elsif keyword != ''
+      po = ActiveRecord::Base.connection.execute("
+        SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+        FROM purchase_orders po, users u, entities e
+        WHERE po.cost_center_id = "+@cc.to_s+"
+        AND po.user_id = u.id
+        AND po.entity_id = e.id
+        ORDER BY po.id ASC"
+      )
+    else
+      po = ActiveRecord::Base.connection.execute("
+        SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+        FROM purchase_orders po, users u, entities e
+        WHERE po.cost_center_id = "+@cc.to_s+"
+        AND po.user_id = u.id
+        AND po.entity_id = e.id
+        ORDER BY po.id ASC
+        LIMIT #{display_length}
+        OFFSET #{pager_number}
+        "
+      )
+    end
+
+    po.each do |dos|
+      @state = ""
+      @action = ""
+      @description = ""
+      @last_state_date = ""
+      case dos[1]
+      when 'pre_issued'
+        @state = "<i class='fa fa-flag' style='visibility: hidden;margin-right: 15px;'></i><span class='label' style='color: #000;'>"+translate_purchase_order_state(dos[1])+"</span>"
+        if current_user.has_role? :canceller
+          @action = "<a style='margin-right: 5px;' class='btn btn-warning btn-xs' data-original-title='Editar' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"/edit','content',{company_id:"+get_company_cost_center('company').to_s+"},null,'GET') rel='tooltip'><i class='fa fa-edit'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1].to_s)+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-danger btn-xs' data-original-title='Eliminar Orden' data-placement='top' onclick=javascript:delete_to_url('/logistics/purchase_orders/"+dos[0].to_s+"','content','/logistics/purchase_orders?company_id="+get_company_cost_center('company').to_s+"') rel='tooltip'><i class='fa fa-trash-o'></i></a>"
+        else
+          "<a style='margin-right: 5px;' class='btn btn-warning btn-xs' data-original-title='Editar' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"/edit','content',{company_id:"+get_company_cost_center('company').to_s+"},null,'GET') rel='tooltip'><i class='fa fa-edit'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1].to_s)+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>"
+        end
+
+      when 'issued'
+        @state = "<i class='fa fa-flag' style='color: #FF7A00;margin-right: 15px;'></i><span class='label label-warning' style='background-color: #FF7A00;'>"+translate_purchase_order_state(dos[1])+"</span>"
+        if current_user.has_role? :canceller
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_prev_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/purchase_orders/"+dos[0].to_s+"/purchase_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-danger btn-xs' data-original-title='Anular' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'canceled'},null,'GET') rel='tooltip'><i class='fa fa-times'></i></a>"
+        else
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_prev_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/purchase_orders/"+dos[0].to_s+"/purchase_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
+        end
+
+      when 'revised'
+        @state = "<i class='fa fa-flag' style='color: #c79121;margin-right: 15px;'></i><span class='label label-warning'>"+translate_purchase_order_state(dos[1])+"</span>"
+        if current_user.has_role? :canceller
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_prev_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/purchase_orders/"+dos[0].to_s+"/purchase_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-danger btn-xs' data-original-title='Anular' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'canceled'},null,'GET') rel='tooltip'><i class='fa fa-times'></i></a>"
+        else
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_prev_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/purchase_orders/"+dos[0].to_s+"/purchase_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
+        end
+
+      when 'canceled'
+        @state = "<i class='fa fa-flag' style='color: #a90329;margin-right: 15px;'></i><span class='label label-danger'>"+translate_purchase_order_state(dos[1])+"</span>"
+        @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/purchase_orders/"+dos[0].to_s+"/purchase_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
+
+      when 'approved'
+        @state= "<i class='fa fa-flag' style='color: #25CA25;margin-right: 15px;'></i><span class='label label-success' style='background-color: #25CA25;'>"+translate_purchase_order_state(dos[1])+"</span>"
+        if current_user.has_role? :canceller
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_prev_state(dos[1].to_s)+"'},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/purchase_orders/"+dos[0].to_s+"/purchase_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-danger btn-xs' data-original-title='Anular' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'canceled'},null,'GET') rel='tooltip'><i class='fa fa-times'></i></a>"
+        else
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/purchase_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_prev_state(dos[1].to_s)+"'},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/purchase_orders/"+dos[0].to_s+"/purchase_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
+        end
+      end
+
+      if dos[2].nil?
+        @description = "No se tiene una descripción"
+      else
+        @description = dos[2]
+      end
+
+      pur = PurchaseOrder.find(dos[0])
+      if pur.state_per_order_purchases.last != nil
+        @last_state_date = pur.state_per_order_purchases.last.created_at.strftime("%d/%m/%Y")
+      else
+        @last_state_date = pur.created_at.strftime("%d/%m/%Y")
+      end
+
+      array << [dos[0].to_s.rjust(5, '0'),@state,@description.to_s,dos[3].to_s,@last_state_date.to_s ,dos[4].strftime("%d/%m/%Y").to_s,dos[5], @action]
+    end
+    render json: { :aaData => array }
+  end
+
   def more_items_from_delivery_orders
     @reg_n = ((Time.now.to_f)*100).to_i
-    delivery_ids = params[:ids_delivery_order].join(",")
+    if !params[:ids_delivery_order].nil?
+      @delivery_ids = params[:ids_delivery_order].join(",")
+    else
+      @delivery_ids = 0
+    end
     @delivery_orders_detail = Array.new
     @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @cost_center.delivery_orders.where("state LIKE 'approved'").each do |deo|
-      deo.delivery_order_details.where("id NOT IN (#{delivery_ids})").each do |dodw|
+      deo.delivery_order_details.where("id NOT IN (#{@delivery_ids})").each do |dodw|
         @delivery_orders_detail << dodw
       end
     end
@@ -112,7 +230,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @operation = params[:operation]
 
     @reg_main = params[:reg_n]
-
     @name_concept = params[:name_concept]
     @name_type = params[:name_type]
     @name_apply = params[:name_apply]
@@ -156,6 +273,10 @@ class Logistics::PurchaseOrdersController < ApplicationController
     purchaseOrder = PurchaseOrder.find(params[:id])
     purchaseOrder.update_attributes(purchase_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index, company_id: params[:company_id]
+  rescue ActiveRecord::StaleObjectError
+    purchaseOrder.reload
+    flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
     redirect_to :action => :index, company_id: params[:company_id]
   end
 
@@ -337,6 +458,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
       :date_of_issue, 
       :expiration_date, 
       :delivery_date, 
+      :lock_version,
       :retention, 
       :money_id, 
       :method_of_payment_id, 
@@ -346,11 +468,12 @@ class Logistics::PurchaseOrdersController < ApplicationController
       :description, 
       purchase_order_details_attributes: [
         :id, 
-        :puchase_order_id, 
+        :purchase_order_id, 
         :delivery_order_detail_id, 
         :unit_price, 
         :igv, 
         :amount, 
+        :lock_version,
         :unit_price_before_igv, 
         :unit_price_igv, 
         :discount_before, 
@@ -360,7 +483,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         :_destroy,
         purchase_order_extra_calculations_attributes: [
           :id,
-          :puchase_order_detail_id,
+          :purchase_order_detail_id,
           :extra_calculation_id,
           :value,
           :apply,

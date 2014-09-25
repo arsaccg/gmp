@@ -1,0 +1,20 @@
+.white-table
+  %div{'style' => 'padding: 10px;'}
+    - if @distribution.nil?
+      %h2 Aún no se ha cargado el archivo de la programación para este presupuesto.
+      %br
+      =form_tag do_import_management_distributions_path, multipart: true do
+        = hidden_field_tag 'cost_center_id', @cost_center_id
+        = hidden_field_tag 'budget_id', @budget_id
+        = file_field_tag :file  
+        = submit_tag "Importar"
+      %span *Subir el archivo en format CSV
+    - else
+      %h2 Ya se cargó el archivo de la programación correctamente en este presupuesto. Deseas reemplazarlo?
+      %br
+      =form_tag do_import_management_distributions_path, multipart: true do
+        = hidden_field_tag 'cost_center_id', @cost_center_id
+        = hidden_field_tag 'budget_id', @budget_id
+        = file_field_tag :file  
+        = submit_tag "Importar"
+      %span *Subir el archivo en format CSV

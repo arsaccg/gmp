@@ -504,3 +504,140 @@ function bar_graph_category(div, categoria, series2, title_c, tipo, abrev, suffi
     series: series2
   });
 }
+
+
+
+/*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~ METODOS DE TOBI *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*/
+function load_url_ondiv(url, div_name){ /*  usar este owo  */
+  var url_str = url;
+  var div_name = div_name;
+
+  $("." + div_name).html("<br/><br/><br/><center>Cargando <img src='/assets/ajax-loader3.gif'/></center>");
+
+  $.ajax({
+    url: url_str,
+  }).done(function( data ) {
+    $("." + div_name).html(data);
+  });
+
+  $(".side-panel").height($(document).height()-80);
+  
+  return false
+
+}
+
+function post_to_url(url, form_id, response_div){
+  var url_str = url;
+  var form_id_str = form_id;
+  var div_name = response_div;
+
+  $("#" + form_id).ajaxForm(function(){
+       alert($(this));
+       console.log($(this));
+    });
+
+  var str_data = $("#" + form_id).serialize();
+  console.log(str_data);
+
+  $("." + div_name).html("<br/><br/><br/><center><img src='/assets/ajax-loader.gif' /></center>")
+
+  $.ajax({
+    type: "POST",
+    url: url_str,
+    data: str_data
+  }).done(function( msg ) {
+    $("." + div_name).html(msg);
+  });
+}
+
+function post_to_url_class(url, form_id, response_div){
+  var url_str = url;
+  var form_id_str = form_id;
+  var div_name = response_div;
+
+  $("." + form_id).ajaxForm(function(){
+       alert($(this));
+       console.log($(this));
+    });
+
+  var str_data = $("." + form_id).serialize();
+  console.log(str_data);
+
+  $("." + div_name).html("<br/><br/><br/><center><img src='/assets/ajax-loader.gif' /></center>")
+
+  $.ajax({
+    type: "POST",
+    url: url_str,
+    data: str_data
+  }).done(function( msg ) {
+    $("." + div_name).html(msg);
+  });
+}
+
+
+function delete_to_url_into_div(url, div_name)
+{
+  var url_str = url;
+  var div_name = div_name;
+
+  $("." + div_name).html("<br/><br/><br/><center><img src='/assets/ajax-loader.gif' /></center>")
+
+    $.ajax({
+    url: url_str,
+    type: 'DELETE'
+  }).done(function( data ) {
+    $("." + div_name).html(data);
+  });
+  return false
+}
+
+
+// Funcion que dibuja el WBS desde una entrada de datos preformateado en JSON
+
+function draw_wbs(url_data, id_response){
+    var url_str = url_data;
+    var dataTable;
+
+
+    //Get the json data
+    $.ajax({
+      type: "GET",
+      url: url_str
+    }).done(function(json) {
+       var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Name');
+          data.addColumn('string', 'Manager');
+          data.addColumn('string', 'ToolTip');
+          data.addRows(json);
+      var chart = new google.visualization.OrgChart(document.getElementById(id_response));
+        chart.draw(data, {allowHtml:true, title: 'WBS', nodeClass: 'node-style'});
+    });
+  }
+
+function post_response_json(url_request, params){
+  var url_str = url_request;
+  var obj_response;
+
+  $.ajax({
+    type: "POST",
+      url: url_str,
+    data: params
+  }).done(function(json){
+    obj_response = json;
+  });
+
+  return obj_response;
+}
+
+Number.prototype.format_currency = function() {
+    return this.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+};
+
+function replaceAll(find, replace, str) {
+  str = str.toString();
+  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}

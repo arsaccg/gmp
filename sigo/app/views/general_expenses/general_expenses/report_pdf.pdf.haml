@@ -1,12 +1,7 @@
 %html
   %head
     %meta{charset: "utf-8"}
-    = stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
-    = stylesheet_link_tag "font-awesome.min", media: "screen", rel: "stylesheet", type: "text/css"
-    = stylesheet_link_tag "smartadmin-production", media: "screen", rel: "stylesheet", type: "text/css"
-    = stylesheet_link_tag "smartadmin-production_unminified", media: "screen", rel: "stylesheet", type: "text/css"
-    = stylesheet_link_tag "smartadmin-skins", media: "screen", rel: "stylesheet", type: "text/css"
-    = stylesheet_link_tag "custom", media: "screen", rel: "stylesheet", type: "text/css"
+    = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
   %body
     #main
       #content
@@ -15,58 +10,58 @@
             %tr
               %th{'colspan' => 10, "style"=>"text-align:center;font-size: large;background-color:#FFFFCC;border-color: #FFFFCC;"} DESAGREGADO DE GASTOS GENERALES Y UTILIDAD
             %tr
-              %th{"style"=>"text-align:center;background-color:#FFFFCC;border-color: #FFFFCC;"} Obra: 
+              %th{"style"=>"text-align:center;background-color:#FFFFCC;border-color: #FFFFCC;font-size: 14px;"} Obra: 
               -if @ccd!=nil
-                %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;background-color:#FFFFCC;border-color: #FFFFCC;"}= @ccd.name.to_s
+                %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;background-color:#FFFFCC;border-color: #FFFFCC;font-size: 14px;"}= @ccd.name.to_s
               -else
-                %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;background-color:#FFFFCC;border-color: #FFFFCC;"} No Hay Datos Ingresados
+                %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;background-color:#FFFFCC;border-color: #FFFFCC;font-size: 14px;"} No Hay Datos Ingresados
             %tr
-              %th{"style"=>"text-align:center;background-color:#FFFFCC;border-color: #FFFFCC;"} Fecha:
-              %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;background-color:#FFFFCC;border-color: #FFFFCC;"}= GeneralExpense.last.updated_at.strftime('%d-%m-%Y') rescue Time.now.strftime('%d-%m-%Y')
+              %th{"style"=>"text-align:center;background-color:#FFFFCC;border-color: #FFFFCC;font-size: 14px;"} Fecha:
+              %th{'colspan' => 9,"style"=>"text-align:left;font-weight: normal;background-color:#FFFFCC;border-color: #FFFFCC;font-size: 14px;"}= GeneralExpense.last.updated_at.strftime('%d-%m-%Y') rescue Time.now.strftime('%d-%m-%Y')
             %tr
-              %th{"style"=>"text-align:right;background-color:#FFFFCC;border-color: #FFFFCC;"} C.D. (S/.) :
+              %th{"style"=>"text-align:right;background-color:#FFFFCC;border-color: #FFFFCC;font-size: 14px;"} C.D. (S/.) :
               -if @ccd!=nil
-                %th{"style"=>"text-align:left;font-weight: normal;background-color:#FFFFCC;border-color: #FFFFCC;"}= number_to_currency(@ccd.direct_cost.to_f.to_s, unit: 'S/. ', precision: 2)
+                %th{"style"=>"text-align:left;font-weight: normal;background-color:#FFFFCC;border-color: #FFFFCC;font-size: 14px;"}= number_to_currency(@ccd.direct_cost.to_f.to_s, unit: 'S/. ', precision: 2)
               -else
-                %th{"style"=>"text-align:left;font-weight: normal;background-color:#FFFFCC;border-color: #FFFFCC;"} No Hay Datos Ingresados
-              %th{'colspan' => 8,"style"=>"text-align:right;background-color:#FFFFCC;border-color: #FFFFCC;"}
+                %th{"style"=>"text-align:left;font-weight: normal;background-color:#FFFFCC;border-color: #FFFFCC;font-size: 14px;"} No Hay Datos Ingresados
+              %th{'colspan' => 8,"style"=>"text-align:right;background-color:#FFFFCC;border-color: #FFFFCC;font-size: 14px;"}
             %tr
-              %th{"style"=>"text-align:left"} Codigo
-              %th{"style"=>"text-align:left"} Descripción
-              %th{"style"=>"text-align:left"} Unidad
-              %th{"style"=>"text-align:right"} Personas
-              %th{"style"=>"text-align:right"} %Participacion
-              %th{"style"=>"text-align:right"} Tiempo
-              %th{"style"=>"text-align:right"} Cantidad
-              %th{"style"=>"text-align:right"} Sueldo/Costo
-              %th{"style"=>"text-align:right"} Parcial
-              %th{"style"=>"text-align:center"} Total
+              %th{"style"=>"text-align:left;font-size: 14px;"} Codigo
+              %th{"style"=>"text-align:left;font-size: 14px;"} Descripción
+              %th{"style"=>"text-align:left; font-size: 14px;"} Unidad
+              %th{"style"=>"text-align:right; font-size: 14px;"} Personas
+              %th{"style"=>"text-align:right;font-size: 14px;"} %Participacion
+              %th{"style"=>"text-align:right;font-size: 14px;"} Tiempo
+              %th{"style"=>"text-align:right;font-size: 14px;"} Cantidad
+              %th{"style"=>"text-align:right;font-size: 14px;"} Sueldo/Costo
+              %th{"style"=>"text-align:right;font-size: 14px;"} Parcial
+              %th{"style"=>"text-align:center;font-size: 14px;"} Total
           %tbody
-            -@phases.each do |ph|
-              -ge = GeneralExpense.where("cost_center_id = #{@cc} AND code_phase = "+ph[0].to_s)
-              %tr
-                %th{"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}= ph[0].to_s+ "00"
-                %th{'colspan' => 8,"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}= Phase.find_by_code(ph[0].to_s).name
-                %th{"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}=number_to_currency(ph[1], unit: 'S/. ', precision: 2)
-              -ge.each do |ge|
+            -@todo.each do |rpt|
+              -if rpt[0].to_s.length==2 && rpt[1] ==nil
                 %tr
-                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}= Phase.find(ge.phase_id.to_s).code
-                  %th{'colspan' => 8,"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}= Phase.find(ge.phase_id.to_s).name
-                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}=number_to_currency(ge.total, unit: 'S/. ', precision: 2)
+                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}= rpt[0].to_s+ "00"
+                  %th{'colspan' => 8,"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}= rpt[2].to_s
+                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#296191;border-color: #296191;color:white;"}=number_to_currency(rpt[3].to_f, unit: 'S/. ', precision: 2)
+              -elsif rpt[1].to_s.length==4 && rpt[0] ==nil
+                %tr
+                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}= rpt[1]
+                  %th{'colspan' => 8,"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}= rpt[2].to_s
+                  %th{"style"=>"text-align:center;font-size: 14px;background-color:#FFE500;border-color: #FFE500"}=number_to_currency(rpt[3], unit: 'S/. ', precision: 2)
+              -else
+                %tr
+                  %th{"style"=>"text-align:left;font-weight: normal;font-size: 12px;"}= rpt[4]
+                  %th{"style"=>"text-align:left;font-weight: normal;font-size: 12px;"}= rpt[5]
+                  %th{"style"=>"text-align:left;font-weight: normal;font-size: 12px;"}= rpt[6]
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}= rpt[7] rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}= rpt[8] rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}= rpt[9] rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}= rpt[11] rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}=number_to_currency(rpt[12], unit: 'S/. ', precision: 2) rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}=number_to_currency(rpt[10], unit: 'S/. ', precision: 2) rescue '-'
+                  %th{"style"=>"text-align:right;font-weight: normal;font-size: 12px;"}
 
-                -ge.general_expense_details.each do |ged|
-                  %tr
-                    %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).code.to_s
-                    %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).name.to_s
-                    %th{"style"=>"text-align:left;font-weight: normal;"}= Article.find(ged.article_id).unit_of_measurement.symbol.to_s
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=ged.people rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=ged.participation rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=ged.time rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=ged.amount rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=number_to_currency(ged.cost, unit: 'S/. ', precision: 2) rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}=number_to_currency(ged.parcial, unit: 'S/. ', precision: 2) rescue '-'
-                    %th{"style"=>"text-align:right;font-weight: normal;"}
             %tr
               %th{"style"=>"text-align:center;background-color:#632523;border-color:#632523;color:white;"}
               %th{'colspan' => 8,"style"=>"text-align:left;font-size: 14px;background-color:#632523;border-color:#632523;color:white;"} Total Gastos
-              %th{"style"=>"text-align:center;font-size: 14px;background-color:#632523;border-color:#632523;color:white;"}= number_to_currency(@t, unit: 'S/. ', precision: 2)
+              %th{"style"=>"text-align:center;font-size: 14px;background-color:#632523;border-color:#632523;color:white;"}= number_to_currency(@total, unit: 'S/. ', precision: 2)

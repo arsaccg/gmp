@@ -23,14 +23,14 @@
           - @type_book.each do |type_book|
             - if type_book.id == 1
               .tab-pane.active{:id => "tab-#{type_book.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Nombres
                         %th Descripción
-                        %th Fecha
-                        %th Documentos
+                        %th.col-md-1 Fecha
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_book.book_works.each do |lawre|
@@ -55,14 +55,14 @@
                               Eliminar
             - else
               .tab-pane{:id => "tab-#{type_book.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Nombres
                         %th Descripción
-                        %th Fecha
-                        %th Documentos
+                        %th.col-md-1 Fecha
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_book.book_works.each do |lawre|

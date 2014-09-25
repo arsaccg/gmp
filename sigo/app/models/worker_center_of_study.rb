@@ -1,3 +1,3 @@
 class WorkerCenterOfStudy < ActiveRecord::Base
-	belongs_to :worker
+	belongs_to :worker, :touch => true
 end

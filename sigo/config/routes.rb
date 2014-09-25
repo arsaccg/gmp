@@ -157,6 +157,7 @@ ArsacLogistica::Application.routes.draw do
         post 'display_articles'
         post 'show_rows_delivery_orders'
         get 'show_tracking_orders'
+        post 'display_orders'
       end
       member do
         get 'gorevise'
@@ -176,6 +177,7 @@ ArsacLogistica::Application.routes.draw do
         post 'get_exchange_rate_per_date'
         post 'add_modal_extra_operations'
         post 'add_more_row_form_extra_op'
+        post 'display_orders'
       end
       member do
         put 'show_delivery_order_item_field'
@@ -215,6 +217,9 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'get_subcategory_form_category'
         post 'get_specific_from_subcategory'
+      end
+      member do
+        post 'display_category'
       end
     end    
     resources :suppliers
@@ -359,12 +364,15 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :valuation_of_equipments do
       collection do
+        get 'report_of_equipment_pdf'
+        get 'part_equipment_pdf'
         post 'get_report'
         post 'part_equipment'
         post 'report_of_equipment'
       end
       member do
         get 'approve'
+        get 'report_pdf'
       end
     end
     resources :part_works do
@@ -382,6 +390,7 @@ ArsacLogistica::Application.routes.draw do
     resources :category_of_workers
     resources :part_of_equipments do
       collection do
+
         post 'get_equipment_form_subcontract'
         post 'get_unit'
         post 'add_more_register'
@@ -401,6 +410,7 @@ ArsacLogistica::Application.routes.draw do
     resources :subcontract_equipments do
       collection do
         post 'add_more_advance'
+        get 'get_report'
       end
     end
     resources :subcontracts do
@@ -408,6 +418,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_more_article'
         post 'add_more_advance'
         post 'display_articles'
+        post 'getsc_prebudgets'
       end
     end
     namespace :daily_works do
@@ -577,6 +588,21 @@ ArsacLogistica::Application.routes.draw do
         post 'do_import'
       end
     end
+
+    
+    # Todo lo de abajo pertenece a TOBI
+    resources :invoices
+    resources :charges
+    resources :advances
+    resources :managers
+    resources :inputcategories do
+      collection do
+        get 'feo_of_work'
+        get 'feo_pdf'
+        get 'get_input_detail'
+      end
+    end    
+    # HASTA AQUI!
   end
 
   namespace :payrolls do
@@ -609,7 +635,7 @@ ArsacLogistica::Application.routes.draw do
         post 'display_articles'
         post 'add_concept'
         post 'show_details'
-        post 'report'
+        get 'report'
         get 'report_pdf'
       end
     end
@@ -621,4 +647,133 @@ ArsacLogistica::Application.routes.draw do
       end
     end
   end
+
+  #TOBI...
+  namespace :management do
+    get 'dashboard' => 'dashboard#index'
+    post 'dashboard' => 'dashboard#index'
+    resources :cost_centers
+    resources :extensionscontrols do
+      collection do
+        post 'approve'
+        post 'disprove'
+      end
+    end
+    
+    resources :distributions do
+      collection do
+        get 'import_distributions'
+        post 'import_distributions'
+        get 'do_import'
+        post 'do_import'
+      end
+      member do
+        get 'show_form'
+      end
+    end
+    
+    resources :wbsitems do
+      collection do
+        get 'get_json_data'
+        get 'add_items_to_wbs'
+        get 'get_items_by_wbs_code'
+        get 'get_items_by_budget'
+        get 'get_credit'
+        get 'get_items_from_project'
+        get 'get_child'
+        get 'get_items_json'
+        get 'set_gantt'
+        get 'graph_gantt'
+        post 'save_gantt'
+        get 'showbymonth_gantt'
+        get 'showperitem_gantt'
+        get 'show_measured'
+        post 'add_phases_to_item'
+        get 'add_phases_to_item'
+      end
+    end
+    resources :budgets do 
+      collection do 
+        get 'load_elements'
+        post 'load_elements'
+        post 'load_elements_without'
+        get 'get_cookies'
+        get 'get_budget_by_project'
+        get 'administrate_budget'
+        get 'get_budgets'
+        post 'get_budgets'
+        get 'display_articles'
+        post 'display_articles'
+      end
+      member do
+        delete 'destroy_admin'
+        get 'resume'
+      end
+    end
+    resources :items
+    resources :itembybudgets do 
+      collection do
+        get 'filter_by_budget'
+      end
+    end
+
+    resources :sectors do
+      collection do
+        get 'set_sectors_by_cost_center'
+        post 'set_sectors_by_cost_center'
+      end
+    end
+
+    resources :measured_by_sector do
+      member do
+        get 'update_sector'
+        post 'update_sector'
+      end 
+    end
+
+
+    resources :inputbybudgetanditems do
+      collection do
+        get 'filter_by_budget_and_item'
+        get 'add'
+        get 'update_input'
+        post 'update_input'
+      end
+    end
+
+    resources :itembywbses do
+      collection do 
+        get 'save_data'
+        post 'save_data'
+        get 'get_wbsitem_assigned'
+        get 'add_data_item'
+      end
+    end
+
+    resources :valorizations do
+      member do 
+        get 'newvalorization'
+        get 'changevalorization'
+        get 'finalize'
+        get 'show_data'
+        get 'change_data_ge'
+        get 'change_data_u'
+        get 'change_data_r'
+        get 'change_data_rnd'
+        get 'change_data_rnm'
+        get 'change_data_da'
+        get 'change_data_aom'
+        get 'report'
+      end
+    end
+
+    resources :valorizationitems do 
+      collection do 
+        get 'update_valorization_item'
+      end
+    end
+
+    resources :managers
+  end
+  #...TOBI
 end

@@ -85,6 +85,6 @@ class DocumentaryControl::IssuedLettersController < ApplicationController
 
   private
   def issu_parameters
-    params.require(:issued_letter).permit(:name, :description, :type_of_doc, :year, :code, :document, :type_of_issued_letter_id)
+    params.require(:issued_letter).permit(:name, :description, :type_of_doc, :year, :code, :document, :type_of_issued_letter_id, :date)
   end
 end

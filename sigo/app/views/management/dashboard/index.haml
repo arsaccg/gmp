@@ -1,0 +1,183 @@
+.row-fluid
+  .span2
+    -if true #sys_admin?
+      #accordion-resizer{heigh: "300px"}
+        #accordion(class="small-font" style="margin-top: -12px; margin-left:3px; ")
+          %h4 Planeamiento
+          %div
+            %p(class="small-font")
+              =image_tag('icon_taskgantt.png', :width =>"16px")
+
+              %a{:href=>"javascript:load_project_edition();"}
+                Proyecto
+            %p(class="small-font")
+
+              %a{:href=>"javascript:load_url_ondiv('" + management_wbsitems_path.to_s + "\', 'right-area');"}
+                =image_tag('orgchart.png', :width =>"16px")
+                Diagrama WBS
+            %p(class="small-font")
+              =image_tag('upload.png', :width =>"16px")
+
+              %a{:href=>"javascript:load_url_ondiv('" + new_management_budget_path.to_s + "\', 'right-area');"}
+                Importar de S10
+            %p(class="small-font")
+              =image_tag('clock.png', :width =>"16px")
+
+              %a{:href=>"javascript:load_budgets_by_project();"}
+                Presupuestos
+
+            %p(class="small-font")
+              =image_tag('icon_taskgantt.png', :width =>"16px")
+
+              %a{:href=>"javascript:load_gantt_by_project();"}
+                Diagrama Gantt
+            %p(class="small-font")
+              =image_tag('icon_taskgantt.png', :width =>"16px")
+
+              %a{:href=>"javascript:load_import_distribution();"}
+                Importar xls de distribucion
+            %br
+          %h4
+            Control
+          %div
+            %p(class="small-font")
+              %a{:href=>"javascript:load_administrate_budget();"}
+                =image_tag('calendar.png', :width =>"16px")
+                Presupuestos
+            %p(class="small-font")
+              %a{:href=>"javascript:load_gantt_month_by_project();"}
+                =image_tag('calendar.png', :width =>"16px")
+                Distribucion
+            %p(class="small-font")
+              %a{:href=>"javascript:load_front_by_item();"}
+                =image_tag('calendar.png', :width =>"16px")
+                Frentes por Partida
+            %p(class="small-font")
+              %a{:href=>"javascript:load_control_amplicacion();"}
+                =image_tag('project.png', :width =>"16px")
+                Ampliaciones
+            %p(class="small-font")
+              %a{:href=>"javascript:load_control_advance();"}
+                =image_tag('project.png', :width =>"16px")
+                Adelantos
+            %p(class="small-font")
+              %a{:href=>"javascript:load_valorizations_by_project();"}
+                =image_tag('calendar.png', :width =>"16px")
+                Valorizaciones
+          %h3
+            Reportes
+          %div
+            %p(class="small-font")
+              %a{:href=>"javascript:load_feo();"}
+                =image_tag('calendar.png', :width =>"16px")
+                FEO
+            %p(class="small-font")
+              %a{:href=>"#", target: 'blank', id: "load_feo_link"}
+                =image_tag('calendar.png', :width =>"16px")
+                Exportar FEO
+          %h3
+            Mantenimiento
+          %div
+            %p(class="small-font")
+              %a{:href=>"javascript:load_units();"}
+                =image_tag('project.png', :width =>"16px")
+                Unidades
+            %p(class="small-font")
+              %a{:href=>"javascript:load_inputs();"}
+                =image_tag('project.png', :width =>"16px")
+                Insumos
+
+
+
+ 
+
+  %div(class="span10 side-panel right-area" style="margin-left: 12px; margin-top: -12px;")
+    %h4
+      = @project.name
+    /%h6(style="color: red;")
+    /  = flash[:error]
+    
+
+:javascript
+
+
+
+  function load_budgets_by_project(){
+    load_url_ondiv("#{get_budget_by_project_management_budgets_path.to_s}?project_id=" + project_selected_data['id'], 'right-area');
+  }
+
+  function load_gantt_by_project(){
+    load_url_ondiv("#{set_gantt_management_wbsitems_path.to_s}?project_id=" + project_selected_data['id'], 'right-area');
+  }
+
+  function load_gantt_month_by_project(){
+    load_url_ondiv("#{showbymonth_gantt_management_wbsitems_path.to_s}?project_id=" + project_selected_data['id'], 'right-area');
+  }
+
+  function load_gantt_per_item(){
+    load_url_ondiv("#{showperitem_gantt_management_wbsitems_path.to_s}?project_id=" + project_selected_data['id'], 'right-area');
+  }
+
+  function load_administrate_budget(){
+    load_url_ondiv("#{administrate_budget_management_budgets_path.to_s}?project_id=" + project_selected_data['id'], 'right-area');
+  }
+
+  function load_measured_month_by_project(){
+    load_url_ondiv("#{show_measured_management_wbsitems_path.to_s}?project_id=" + project_selected_data['id'], 'right-area');
+  }
+
+
+  function load_feo(){
+    url_div = load_url_ondiv("#{feo_of_work_administration_inputcategories_path.to_s}?budget_sale=#{@budget_sale}&budget_goal=#{@budget_goal}&project_id="+ project_selected_data['id'], 'right-area');
+  }
+
+  function load_feo_export(){
+    url_div = "#{feo_of_work_administration_inputcategories_path.to_s}.csv?budget_sale=#{@budget_sale}&budget_goal=#{@budget_goal}&project_id="+ project_selected_data['id'];
+    $('#load_feo_link').attr('href',url_div);
+  }
+
+
+  function load_control_amplicacion(){
+    load_url_ondiv("#{management_extensionscontrols_path.to_s}?project_id="+ project_selected_data['id'], 'right-area');
+  }
+
+  function load_control_advance(){
+    load_url_ondiv("#{administration_advances_path.to_s}?project_id=" + project_selected_data['id'], 'right-area');
+  }
+
+  function load_valorizations_by_project(){
+    load_url_ondiv("#{management_valorizations_path.to_s}?project_id=" + project_selected_data['id'], 'right-area');
+  }
+
+  function load_project_edition(){
+    load_url_ondiv("#{edit_management_cost_center_path(@project.id.to_s).to_s}", 'right-area');
+  }
+  
+  function load_units(){
+    load_url_ondiv("#{units_path}?project_id=#{(@project.id.to_s).to_s}", 'right-area');
+  }
+
+  function load_inputs(){
+    load_url_ondiv("#{inputs_path}?project_id=#{(@project.id.to_s).to_s}", 'right-area');
+  }
+  
+  function load_import_distribution(){
+    load_url_ondiv("#{import_distributions_management_distributions_path}?project_id=#{(@project.id.to_s).to_s}", 'right-area');
+  }
+
+  function load_front_by_item(){
+    load_url_ondiv("#{set_sectors_by_cost_center_management_sectors_path}?project_id=#{(@project.id.to_s).to_s}", 'right-area');
+  }
+
+
+  project_selected_data = #{@project_selected};
+  $(".brand").html(project_selected_data['name']); 
+  $(".content-load").height($(document).height()-380);
+  $(".botom-load").height(200);
+
+  $("#accordion").accordion({
+                        heightStyle: "fill"
+                      });
+
+  load_feo_export();
+

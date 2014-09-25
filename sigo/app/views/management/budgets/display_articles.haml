@@ -1,0 +1,12 @@
+- @article_hash.each do |k, v|
+  - p k
+  %tr
+    %td 
+      = k["code"]  rescue " "
+    %td
+      = k["name"] rescue " "
+    %td
+      = k["symbol"] rescue " "
+    %td
+      %a{href: 'javascript:load_url_ondiv(\'' + add_management_inputbybudgetanditems_path + '?coditem=' + @item_id + '&cod_input=' + k["code"] + '&quantity=0&price=0&order=' + @order.gsub('.', 'a') + '&input=' + k["name"].gsub(' ', '_') + '&budget_id=' + @budget_id + '&unit=' + k["symbol"] + '\', \'botom-load\')', class: 'btn btn-info btn-mini' + ((@cod_input_arr.include? k["code"]) ? ' disabled' : '')}
+        Agregar
