@@ -364,6 +364,8 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :valuation_of_equipments do
       collection do
+        get 'report_of_equipment_pdf'
+        get 'part_equipment_pdf'
         post 'get_report'
         post 'part_equipment'
         post 'report_of_equipment'
@@ -388,6 +390,7 @@ ArsacLogistica::Application.routes.draw do
     resources :category_of_workers
     resources :part_of_equipments do
       collection do
+
         post 'get_equipment_form_subcontract'
         post 'get_unit'
         post 'add_more_register'

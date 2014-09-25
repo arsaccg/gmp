@@ -274,6 +274,10 @@ class Logistics::PurchaseOrdersController < ApplicationController
     purchaseOrder.update_attributes(purchase_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index, company_id: params[:company_id]
+  rescue ActiveRecord::StaleObjectError
+    purchaseOrder.reload
+    flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+    redirect_to :action => :index, company_id: params[:company_id]
   end
 
   # DO DELETE row
@@ -454,6 +458,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
       :date_of_issue, 
       :expiration_date, 
       :delivery_date, 
+      :lock_version,
       :retention, 
       :money_id, 
       :method_of_payment_id, 
@@ -468,6 +473,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         :unit_price, 
         :igv, 
         :amount, 
+        :lock_version,
         :unit_price_before_igv, 
         :unit_price_igv, 
         :discount_before, 

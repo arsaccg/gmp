@@ -149,6 +149,6 @@ class Production::WorkerContractsController < ApplicationController
 
   private
   def worker_contract_parameters
-    params.require(:worker_contract).permit(:camp, :contract_type_id, :article_id, :destaque, :salary, :regime, :bonus, :viatical, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract)
+    params.require(:worker_contract).permit(:camp, :lock_version, :contract_type_id, :article_id, :destaque, :salary, :regime, :bonus, :viatical, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract)
   end
 end

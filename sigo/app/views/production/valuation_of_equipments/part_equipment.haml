@@ -30,11 +30,11 @@
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= workerDetail3[1] + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= Article.find_by_id(Article.find_article_by_global_article2(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])).unit_of_measurement.name
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[3], unit: 'S/. ', precision: 2)
-              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[7])
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[7].to_f)
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[9], unit: 'S/. ', precision: 2)
               %th{ 'style' => 'text-align:center;vertical-align: middle' }= sprintf('%.2f', workerDetail3[2].to_s)
               %th{ 'style' => 'text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[4].to_s, unit: 'S/. ', precision: 2)
-              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',(workerDetail3[7]+workerDetail3[2]).to_s)
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',(workerDetail3[7].to_f+workerDetail3[2]).to_s)
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                 = number_to_currency((workerDetail3[9].to_f + workerDetail3[4].to_f), unit: 'S/. ', precision: 2)
               %th
@@ -46,6 +46,8 @@
         %h4.modal-title No hay datos.
         %br
       %footer
+        %a.btn.btn-primary.btn-xs{ :href => "#{part_equipment_pdf_production_valuation_of_equipments_path}.pdf?name=#{@name}&code=#{@code}&start_date=#{@start_date}&end_date=#{@end_date}&cad=#{@cad}&id=#{@id}", :target => '_blank', :style=>"float: right;"}
+          Ver PDF
         %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
           Salir
     %br
@@ -53,7 +55,7 @@
 :javascript
 
   function report_of_equipment(subcontract) {
-    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}", subcontractequipment: subcontract, name: "#{@name}" };
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}", subcontractequipment: subcontract, name: "#{@name}", id:"#{@id}" };
     load_url_ajax('#{report_of_equipment_production_valuation_of_equipments_path}', 'report-equipment', data, '', 'POST');
     $('#part-equipment').modal('hide');
     $('#report-equipment').modal({

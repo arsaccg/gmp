@@ -145,6 +145,10 @@ class Logistics::OrderOfServicesController < ApplicationController
     orderOfService.update_attributes(order_service_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index, company_id: params[:company_id]
+  rescue ActiveRecord::StaleObjectError
+    orderOfService.reload
+    flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+    redirect_to :action => :index, company_id: params[:company_id]    
   end
 
   # Este es el cambio de estado
@@ -288,6 +292,7 @@ class Logistics::OrderOfServicesController < ApplicationController
       :method_of_payment_id, 
       :entity_id, 
       :cost_center_id, 
+      :lock_version, 
       :money_id, 
       :exchange_of_rate, 
       :user_id, 
@@ -301,6 +306,7 @@ class Logistics::OrderOfServicesController < ApplicationController
         :phase_id, 
         :unit_price, 
         :igv, 
+        :lock_version, 
         :amount, 
         :unit_price_before_igv,
         :unit_price_igv, 
@@ -312,7 +318,8 @@ class Logistics::OrderOfServicesController < ApplicationController
         order_service_extra_calculations_attributes: [
           :id,
           :order_of_service_detail_id,
-          :extra_calculation_id,
+          :extra_calculation_id, 
+          :lock_version,
           :value,
           :apply,
           :operation,

@@ -1,6 +1,6 @@
 class PurchaseOrderDetail < ActiveRecord::Base
 	belongs_to :delivery_order_detail
-	belongs_to :purchase_order
+	belongs_to :purchase_order, :touch => true
 	belongs_to :user
 	has_many :stock_input_details
 	has_many :purchase_order_extra_calculations

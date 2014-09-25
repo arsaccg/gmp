@@ -82,17 +82,13 @@ class Production::SubcontractsController < ApplicationController
 
   def update
     subcontract = Subcontract.find(params[:id])
-    if subcontract.update_attributes(subcontracts_parameters)
-     flash[:notice] = "Se ha actualizado correctamente los datos."
-     redirect_to :action => :index, company_id: params[:company_id], type: params[:subcontract]['type']
-    else
-     subcontract.errors.messages.each do |attribute, error|
-       flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
-     end
-     # Load new()
-     @subcontract = subcontract
-     render :edit, layout: false
-    end
+    subcontract.update_attributes(subcontracts_parameters)
+    flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index, company_id: params[:company_id], type: params[:subcontract]['type']
+  rescue ActiveRecord::StaleObjectError
+    subcontract.reload
+    flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+    redirect_to :action => :index, company_id: params[:company_id]    
   end
 
   def destroy
@@ -116,7 +112,8 @@ class Production::SubcontractsController < ApplicationController
     params.require(:subcontract).permit(
      :entity_id, 
      :valorization, 
-     :terms_of_payment, 
+     :terms_of_payment,
+     :lock_version,
      :initial_amortization_number, 
      :initial_amortization_percent, 
      :guarantee_fund, 
@@ -128,7 +125,8 @@ class Production::SubcontractsController < ApplicationController
        :id, 
        :subcontract_id, 
        :article_id, 
-       :phase_id, 
+       :phase_id,
+       :lock_version, 
        :amount, 
        :unit_price, 
        :partial, 
@@ -138,6 +136,7 @@ class Production::SubcontractsController < ApplicationController
      ],
      subcontract_advances_attributes: [
        :id,
+       :lock_version,
        :subcontract_id,
        :date_of_issue,
        :advance,

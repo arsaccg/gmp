@@ -14,7 +14,7 @@ class Production::WeeklyReportsController < ApplicationController
     @article= params[:article]
     puts @article.inspect
     if params[:article]=='0'
-      working = WorkingGroup.all
+      working = WorkingGroup.where("cost_center_id ="+get_company_cost_center('cost_center').to_s)
       working.each do |wg|
         @cad4 << wg.id
       end
