@@ -6,11 +6,6 @@ class Logistics::EntitiesController < ApplicationController
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
     @type_entities = TypeEntity.all
-    @ids = Array.new
-    @type_entities.each do |te|
-      @ids << te.id
-    end
-    @ids= @ids.to_json
     @i=0
     render layout: false
   end
