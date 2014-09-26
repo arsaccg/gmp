@@ -1,15 +1,12 @@
-# config valid only for Capistrano 3.1
-lock '3.2.1'
-
  
-set :application, 'Sistema SIGO'
+set :application, 'Sistema'
 set :repo_url, 'git@github.com:arsaccg/gmp.git'
  
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/home/developerasac/sigo/sigo1/'
+set :deploy_to, '/home/developerasac/sigo1'
 
 # Default value for :scm is :git
 # set :scm, :git
