@@ -17,6 +17,8 @@ role :db,  %w{developerasac@192.168.2.100}
 
 server '192.168.2.100', user: 'developerasac', roles: %w{web app}
 
+#set :deploy_to, '/home/developerasac/sigo/sigo1/'
+
 
 # Custom SSH Options
 # ==================
