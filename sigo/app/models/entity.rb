@@ -32,7 +32,7 @@ class Entity < ActiveRecord::Base
 	        FROM entities ent, entities_type_entities ete
 	        WHERE ete.type_entity_id = "+type_ent.to_s+"
 	        AND ete.entity_id = ent.id
-          AND ent.name LIKE '%" + keyword + "%'
+          AND (ent.name LIKE '%" + keyword + "%' OR ent.ruc LIKE '%" + keyword + "%')
 	        ORDER BY ent.id DESC 
 	        LIMIT " + display_length + " 
 	        OFFSET " + pager_number
@@ -43,7 +43,7 @@ class Entity < ActiveRecord::Base
 	        FROM entities ent, entities_type_entities ete
 	        WHERE ete.type_entity_id = "+type_ent.to_s+"
 	        AND ete.entity_id = ent.id
-          AND ent.name LIKE '%" + keyword + "%'
+          AND (ent.name LIKE '%" + keyword + "%' OR ent.ruc LIKE '%" + keyword + "%')
 	        ORDER BY ent.id DESC 
 	        LIMIT " + display_length + " 
 	        OFFSET " + pager_number
@@ -54,7 +54,7 @@ class Entity < ActiveRecord::Base
 	        FROM entities ent, entities_type_entities ete
 	        WHERE ete.type_entity_id = "+type_ent.to_s+"
 	        AND ete.entity_id = ent.id
-          AND (ent.name LIKE '%" + keyword + "%' OR ent.paternal_surname LIKE '%" + keyword + "%' OR ent.maternal_surname LIKE '%" + keyword + "%')
+          AND (ent.name LIKE '%" + keyword + "%' OR ent.paternal_surname LIKE '%" + keyword + "%' OR ent.maternal_surname LIKE '%" + keyword + "%' OR ent.dni LIKE '%" + keyword + "%')
 	        ORDER BY ent.id DESC 
 	        LIMIT " + display_length + " 
 	        OFFSET " + pager_number
