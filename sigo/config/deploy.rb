@@ -2,7 +2,7 @@
 lock '3.2.1'
 
  
-set :application, 'Sistema SIGO'
+set :application, 'SistemaSIGO'
 set :repo_url, 'git@github.com:arsaccg/gmp.git'
  
 # Default branch is :master
