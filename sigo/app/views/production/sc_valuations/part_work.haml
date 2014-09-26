@@ -1,4 +1,4 @@
-.modal-dialog
+.modal-dialog{"style"=>"width:1050px;"}
   .modal-content
     .modal-header
       %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
@@ -16,6 +16,7 @@
               %th Cantidad
               %th P.U.
               %th Parcial
+              %th Total
               
           %tbody
           - @workers_array2.each do |workerDetail2|
@@ -26,6 +27,7 @@
               %th= workerDetail2[3]
               %th= workerDetail2[4]
               %th= workerDetail2[5]
+              %th= ""
       - else
         %h4.modal-title No hay datos.
         %br

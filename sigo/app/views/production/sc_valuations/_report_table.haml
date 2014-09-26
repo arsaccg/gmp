@@ -1,7 +1,7 @@
 #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
   -if @flag=="no"
     -if @nhsub=="no"
-      %strong No se encontró ninguna subcontrato con ese proveedor
+      %strong No se encontró ningun subcontrato con ese proveedor
     -else
       %strong Por favor escoja otro fecha, ya que la fecha de inicio es menor a la última valorización
   -else
@@ -9,48 +9,49 @@
       %div
         .jarviswidget-editbox
         .widget-body
-          %table.table.table-bordered{ style: "width: 850px;margin: 0 auto" }
-            %thead
+
+          %table.panel.panel-primary{ style: "height: 90px; width: 850px;margin: 0 auto" }
+            %thead.panel-heading
               %tr
-                %th{'colspan' => 4, "style"=>"color:#5f5f5f;text-align:center;font-size: large"}= "VALORIZACIÓN N°"+ ' ' + @numbercode
-              %tr
+                %th{'colspan' => 4, "style"=>"text-align:center;font-size: large"}=@entity.name.to_s + " - VALORIZACIÓN N°"+ ' ' + @numbercode
+            %tbody{:style=>"font-size:100%;"}
+              %tr{"bgcolor"=>"#ECF3F8"}
                 %th{"style"=>"color:#5f5f5f;text-align:center;"} OBRA:
-                %th{'colspan' => 3, "style"=>"color:#5f5f5f;"}= CostCenterDetail.find_by_cost_center_id(@cc).name.to_s
-              %tr
-                %th{"style"=>"color:#5f5f5f;text-align:center;"} Contratista:
-                %th{'colspan' => 3, "style"=>"color:#5f5f5f;"}= @entity.name.to_s
+                %th{'colspan' => 3, "style"=>"font-weight: normal;color:#5f5f5f;"}= CostCenterDetail.find_by_cost_center_id(@cc).name.to_s
               %tr
                 %th{"style"=>"color:#5f5f5f;text-align:center;"} Razón Social:
-                %th{'colspan' => 3, "style"=>"color:#5f5f5f;"}= @entity.name.to_s
-              %tr
+                %th{'colspan' => 3, "style"=>"font-weight: normal;color:#5f5f5f;"}= @entity.name.to_s
+              %tr{"bgcolor"=>"#ECF3F8"}
                 %th{"style"=>"color:#5f5f5f;text-align:center;"} RUC:
-                %th{'colspan' => 3, "style"=>"color:#5f5f5f;"}= @entity.ruc.to_s
-              %tr
-                %th{"style"=>"color:#5f5f5f;text-align:center;width: 15%"} Monto contratado
-                %th{"style"=>"color:#5f5f5f;text-align:center"} Adelanto
-                %th{"style"=>"color:#5f5f5f;text-align:center"} Amortización Acumulada
-                %th{"style"=>"color:#5f5f5f;text-align:center"} Saldo
-            %tbody
+                %th{'colspan' => 3, "style"=>"font-weight: normal;color:#5f5f5f;"}= @entity.ruc.to_s
+              %tr{"bgcolor"=>"#3276B1","style"=>"height:25px;"}
+                %th{"style"=>"color:white;text-align:center;width: 15%"} Monto contratado
+                %th{"style"=>"color:white;text-align:center"} Adelanto
+                %th{"style"=>"color:white;text-align:center"} Amortización Acumulada
+                %th{"style"=>"color:white;text-align:center"} Saldo
+
               %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontract.contract_amount, unit: 'S/. ', precision: 2)
               %th#adelanto{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subadvances, unit: 'S/. ', precision: 2)
               %th#amortAcum2{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@accumulated_amortizaciondeadelanto, unit: 'S/. ', precision: 2)
               %th#saldo{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@balance, unit: 'S/. ', precision: 2)
+
       %div
         .jarviswidget-editbox
         .widget-body
-          %table.table.table-bordered{ style: "width: 850px;margin: 0 auto" }
-            %thead
-              %tr
-                %th{ 'colspan' => 6, "style"=>"color:#5f5f5f;text-align:center"}= "#{@inicio[0].to_s} A LA #{@fin[0].to_s} DEL #{@start_date.to_date.strftime('%d-%m-%y')} AL #{@end_date.to_date.strftime('%d-%m-%y')}" 
-      
-              %tr
-                %th{"style"=>"color:#5f5f5f;text-align:center;width: 50px"} Item
-                %th{"style"=>"color:#5f5f5f;text-align:center;width: 300px"} Descripcion
-                %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;width: 200px;text-align:center"} Actual
-                %th{"style"=>"color:#5f5f5f;text-align:center;width: 150px"} Acumulado Anterior
-                %th{"style"=>"color:#5f5f5f;text-align:center;width: 150px"} Acumulado Actual
+          %h1{"style"=>"font-size: large;color:#5f5f5f; font-weight:bold;text-align:center;"}
+            = "SEMANA N° #{@inicio[0].split[1].to_s} - #{@fin[0].split[1].to_s} / DEL #{@start_date.to_date.strftime('%d-%m-%y')} AL #{@end_date.to_date.strftime('%d-%m-%y')}"
+
+          %table.panel.panel-primary.table-bordered{ style: "height: 530px;width: 850px;margin: 0 auto" }
+            %thead.panel-heading
+   
+              %tr{"bgcolor"=>"#3276B1",style: "height: 45px;"}
+                %th{"style"=>"color:white;text-align:center;width: 50px"} Item
+                %th{"style"=>"color:white;text-align:center;width: 300px"} Descripcion
+                %th{ 'colspan' => 2, "style"=>"color:white;width: 200px;text-align:center"} Actual
+                %th{"style"=>"color:white;text-align:center;width: 150px"} Acumulado Anterior
+                %th{"style"=>"color:white;text-align:center;width: 150px"} Acumulado Actual
             %tbody
-              %tr
+              %tr{"bgcolor"=>"#ECF3F8"}
                 %th{"style"=>"color:#5f5f5f"} 1.00
                 %th{"style"=>"color:#5f5f5f"} Valorización sin IGV
                 %th{"style"=>"color:#5f5f5f;text-align:center"}
@@ -72,7 +73,7 @@
                   %input.form-control#number{:value => "#{sprintf('%.2f',@subcontract.initial_amortization_number.to_f)}", "style"=> "width: 80;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
                 %th#amortLast{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@amortizaciondeadelanto, unit: 'S/. ', precision: 2)
                 %th#amortAcum{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@accumulated_amortizaciondeadelanto, unit: 'S/. ', precision: 2)
-              %tr
+              %tr{"bgcolor"=>"#ECF3F8"}
                 %th{"style"=>"color:#5f5f5f"} 3.00
                 %th{"style"=>"color:#5f5f5f"} Total a Facturar
                 %th{"style"=>"color:#5f5f5f"} 
@@ -86,13 +87,13 @@
                 %th#igvTotal{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalbilligv, unit: 'S/. ', precision: 2)
                 %th#lastIgv{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalfacigv, unit: 'S/. ', precision: 2)
                 %th#acumIgv{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@accumulated_totalfacigv, unit: 'S/. ', precision: 2)
-              %tr
-                %th{"style"=>"color:#5f5f5f"} 5.00
-                %th{"style"=>"color:#5f5f5f"} TOTAL INCLUIDO IGV
-                %th#totalInIgv{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalbillwigv, unit: 'S/. ', precision: 2)
-                %th#lastTotal{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalincluidoigv, unit: 'S/. ', precision: 2)
-                %th#acumTotal{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@accumulated_totalincluidoigv, unit: 'S/. ', precision: 2)
-              %tr
+              %tr{"bgcolor"=>"#3276B1"}
+                %th{"style"=>"color:white"} 5.00
+                %th{"style"=>"color:white"} TOTAL INCLUIDO IGV
+                %th#totalInIgv{ 'colspan' => 2, "style"=>"color:white;text-align:center"}= number_to_currency(@totalbillwigv, unit: 'S/. ', precision: 2)
+                %th#lastTotal{"style"=>"color:white;text-align:center"}= number_to_currency(@totalincluidoigv, unit: 'S/. ', precision: 2)
+                %th#acumTotal{"style"=>"color:white;text-align:center"}= number_to_currency(@accumulated_totalincluidoigv, unit: 'S/. ', precision: 2)
+              %tr{"bgcolor"=>"#ECF3F8"}
                 %th{"style"=>"color:#5f5f5f"} 6.00
                 %th{"style"=>"color:#5f5f5f"} RETENCIONES
                 %th#ret{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@retention, unit: 'S/. ', precision: 2)
@@ -147,13 +148,13 @@
                   %input#other.form-control{}
                 %th#lastOther{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@otrosdescuentos, unit: 'S/. ', precision: 2)
                 %th#acumOther{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@otrosdescuentos, unit: 'S/. ', precision: 2)
-              %tr
-                %th{"style"=>"color:#5f5f5f"} 07
-                %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
-                %th{"style"=>"color:#5f5f5f"}
-                %th#netpay{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@netoactualpagar, unit: 'S/. ', precision: 2)
-                %th#lastnetpay{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@netoapagar, unit: 'S/. ', precision: 2)
-                %th#acumnetpay{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@accumulated_netoapagar, unit: 'S/. ', precision: 2)
+              %tr{"bgcolor"=>"#3276B1"}
+                %th{"style"=>"color:white"} 07
+                %th{"style"=>"color:white"} NETO A PAGAR
+                %th{"style"=>"color:white"}
+                %th#netpay{"style"=>"color:white;text-align:center"}= number_to_currency(@netoactualpagar, unit: 'S/. ', precision: 2)
+                %th#lastnetpay{"style"=>"color:white;text-align:center"}= number_to_currency(@netoapagar, unit: 'S/. ', precision: 2)
+                %th#acumnetpay{"style"=>"color:white;text-align:center"}= number_to_currency(@accumulated_netoapagar, unit: 'S/. ', precision: 2)
                 = hidden_field_tag 'sv_valuation[name]', @entity.name
                 = hidden_field_tag 'sv_valuation[code]', @numbercode
                 = hidden_field_tag 'sv_valuation[start_date]', @start_date
