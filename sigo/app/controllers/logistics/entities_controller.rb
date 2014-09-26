@@ -1,6 +1,7 @@
 class Logistics::EntitiesController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+  skip_before_filter  :verify_authenticity_token
   def index
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
@@ -12,6 +13,17 @@ class Logistics::EntitiesController < ApplicationController
   def show
     @entity = Entity.find(params[:id])
     render layout: false
+  end
+
+  def show_entities
+    display_length = params[:iDisplayLength]
+    type_ent = params[:type_ent]
+    pager_number = params[:iDisplayStart]
+    keyword = params[:sSearch]
+    array = Array.new
+    comp = get_company_cost_center('company')
+    array = Entity.get_entities(type_ent, comp, display_length, pager_number, keyword)
+    render json: { :aaData => array }
   end
 
   def new
