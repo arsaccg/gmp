@@ -37,15 +37,15 @@
 		%table.panel.panel-primary.table-bordered{ style: "width: 850px" }
 			%thead.panel-heading
 				%tr
-					%th{style: "padding-left: 6px;padding-top: 5px; padding-bottom: 5px;"} #
-					%th{style: "padding-left: 10px;padding-top: 5px; padding-bottom: 5px;"} #Parte
-					%th{style: "padding-left: 20px;padding-top: 5px; padding-bottom: 5px;"} Fecha
-					%th{style: "padding-left: 10px;padding-top: 5px; padding-bottom: 5px;"} H.inicio
-					%th{style: "padding-left: 10px;padding-top: 5px; padding-bottom: 5px;"} H.fin
-					%th{style: "padding-left: 10px;padding-top: 5px; padding-bottom: 5px;"} H.horas
-					%th{style: "padding-left: 15px;padding-top: 5px; padding-bottom: 5px;"} H.Efectivas
-					%th{style: "padding-left: 60px;padding-top: 5px; padding-bottom: 5px;"} Suministro
-					%th{style: "padding-left: 15px;padding-top: 5px; padding-bottom: 5px;"} Combustible
+					%th{style: "height:35px;text-align:center;vertical-align: middle;"} #
+					%th{style: "height:35px;text-align:center;vertical-align: middle;"} #Parte
+					%th{style: "height:35px;text-align:center;vertical-align: middle;"} Fecha
+					%th{style: "height:35px;text-align:center;vertical-align: middle;"} H.inicio
+					%th{style: "height:35px;text-align:center;vertical-align: middle;"} H.fin
+					%th{style: "height:35px;text-align:center;vertical-align: middle;"} H.horas
+					%th{style: "height:35px;text-align:center;vertical-align: middle;"} H.Efectivas
+					%th{style: "height:35px;text-align:center;vertical-align: middle;"} Suministro
+					%th{style: "height:35px;text-align:center;vertical-align: middle;"} Combustible
 			%tbody
 			- index = 1
 			- status = false
@@ -81,7 +81,7 @@
 						- row6 = '--'
 						- row7 = '--'
 						- row8 = '--'
-				%tr
+				%tr{"style" =>"font-size:75%;"}
 					%th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle;padding-top: 7px; padding-bottom: 7px;'}
 						= index
 					%th{'style' => 'font-weight: normal;text-align:center;vertical-align: middle'}

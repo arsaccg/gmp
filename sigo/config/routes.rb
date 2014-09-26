@@ -150,7 +150,11 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :type_entities
     resources :type_of_articles
-    resources :entities
+    resources :entities do
+      collection do
+        post 'show_entities'
+      end
+    end
     resources :delivery_orders do
       collection do
         post 'add_delivery_order_item_field'
@@ -415,6 +419,7 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :subcontracts do
       collection do
+        get 'report_pdf'
         post 'add_more_article'
         post 'add_more_advance'
         post 'display_articles'

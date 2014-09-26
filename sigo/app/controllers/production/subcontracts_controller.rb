@@ -22,8 +22,23 @@ class Production::SubcontractsController < ApplicationController
   end
 
   def show
+    @cc = get_company_cost_center('cost_center')
+    @id=params[:id]
     @subcontract = Subcontract.find(params[:id])
     render layout: false
+  end
+
+  def report_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @subcontract = Subcontract.find(params[:id])
+        @company = Company.find(get_company_cost_center('company'))
+        render :pdf => "reporte_subcontrato-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'production/subcontracts/report_pdf.pdf.haml',
+               :page_size => 'A4'
+      end
+    end    
   end
  
   def new
