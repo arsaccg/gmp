@@ -129,12 +129,12 @@
     }
 
     function dt_7() {
-      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables("#{@ids}"));
+      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
     }
 
   }
 
-  function runDataTables(element) {
+  function runDataTables() {
 
     $('#dt_basic').dataTable({
       bProcessing  : true,
