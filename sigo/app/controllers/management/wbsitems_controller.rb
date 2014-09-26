@@ -171,7 +171,7 @@ class Management::WbsitemsController < ApplicationController
 	  	end
   	else
   		wbsitem = Wbsitem.new(wbsitem_parameters)
-  		wbsitem.codewbs=params[:wbsitem][:project_id];
+  		wbsitem.codewbs=params[:wbsitem][:project_id]
   	end
   	wbsitem.save
   	redirect_to :action =>:index

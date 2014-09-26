@@ -7,6 +7,9 @@
     .jarviswidget-editbox
     .widget-body
       = simple_form_for([:logistics, @head], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
+        - f.fields_for :stock_input_details do |del|
+          = del.hidden_field :lock_version
+        = f.hidden_field :lock_version          
         %fieldset
           = hidden_field_tag "stock_input[input]", "1"
           = hidden_field_tag "supplier-selected", @head.supplier_id

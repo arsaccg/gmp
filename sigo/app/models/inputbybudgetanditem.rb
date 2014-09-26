@@ -111,7 +111,7 @@ class Inputbybudgetanditem < ActiveRecord::Base
 			PresupuestoPartidaDetalle.CodInsumo, 
 			SubpresupuestoDetalle.orden, 
 			Insumo.descripcion, 
-			Unidad.Simbolo"
+			Unidad.Simbolo "
 
 		#arr_thread = []
 		#thread_count = 0;
