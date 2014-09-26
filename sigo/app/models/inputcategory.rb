@@ -20,6 +20,23 @@ class Inputcategory < ActiveRecord::Base
     end
 
     def self.build_query_sum(budgetid)
+        # str =  "SELECT T1.wbscode, T1.fase, CONCAT('0', T1.category_id) as category_id, T1.description, SUM(T1.amount) AS amount_sale
+        #         FROM (
+        #           SELECT itembywbses.wbscode,category_id, wbsitems.fase, inputcategories.description, itembybudgets.item_id,itembybudgets.`order` AS item_order ,SUM(inputbybudgetanditems.price*inputbybudgetanditems.quantity*itembywbses.measured) AS amount
+        #           FROM inputcategories, inputbybudgetanditems, itembybudgets
+        #           RIGHT JOIN itembywbses ON
+        #           itembywbses.item_id = itembybudgets.item_id AND
+        #           itembywbses.order_budget = itembybudgets.`order` 
+        #           LEFT JOIN wbsitems ON
+        #           itembywbses.wbsitem_id = wbsitems.id
+        #           GROUP BY category_id, itembybudgets.item_id
+        #           ORDER BY category_id
+        #         ) AS T1, itembybudgets
+        #         WHERE itembybudgets.item_id = T1.item_id AND
+        #         itembybudgets.`order` = T1.item_order 
+        #         GROUP BY T1.wbscode, category_id
+        #         ORDER BY category_id" 
+
         str = "SELECT CONCAT('0', inputcategories.category_id) as category_id, inputcategories.description, SUM(ROUND(ROUND(items.price * items.quantity, 2) * items.measured, 4))
                   FROM inputcategories,
                   (

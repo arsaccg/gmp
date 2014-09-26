@@ -27,7 +27,9 @@ class Administration::InputcategoriesController < ApplicationController
 		@data_w = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s)
     	@data = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, 1)
 
+    p "~~~~~~~~~~p @data~~~~~~~~~~"
     p @data
+    p "~~~~~~~~~~p @data_w~~~~~~~~~~"
     p @data_w
 
     @data_excel = Array.new
