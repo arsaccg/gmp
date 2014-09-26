@@ -10,7 +10,7 @@
 			#content
 				%div
 					.widget-body
-						%table.panel.panel-primary{ style: "height: 150px; width: 850px;margin: 0 auto" }
+						%table.panel.panel-primary{ style: "height: 150px; width: 950px;margin: 0 auto" }
 							%thead.panel-heading
 								%tr
 									%th{'colspan' => 4, "style"=>"text-align:center;font-size: large"}=@valuationofequipment.name.to_s+" - VALORIZACIÓN N°"+ ' ' + @valuationofequipment.code
@@ -36,26 +36,26 @@
 								%th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.balance, unit: 'S/. ', precision: 2)
 				%br
 				-if @workers_array3.count>0
-					%h1.page-title.txt-color-blueDark Parte de Equipos
-					%table.panel.panel-primary.table-bordered{ style: "height: 3000px; width: 850px" }
+					%h1.page-title.txt-color-blueDark{"style"=>"margin-left:35px;"} Parte de Equipos
+					%table.panel.panel-primary.table-bordered{ style: "height: 3000px; width: 950px;margin-left:40px;" }
 						%thead.panel-heading
-							%tr
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;"} #
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;"} Equipo
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;"} Und
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;"} Precio U.
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;"} Metrado Anterior
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;"} Monto Anterior
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;"} Metrado Actual
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;"} Monto Actual
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;"} Metrado Acumulado
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;"} Monto Acumulado
+							%tr{"style" =>"font-size:small;"}
+								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} #
+								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Equipo
+								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Und
+								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Precio U.
+								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Metrado Anterior
+								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Monto Anterior
+								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Metrado Actual
+								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Monto Actual
+								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Metrado Acumulado
+								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Monto Acumulado
 
 						%tbody
 						- index = 1
 						- @array.each do |workerDetail3|
-							%tr
-								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= index
+							%tr{"style" =>"font-size:70%;"}
+								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle;height:45px;' }= index
 								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= workerDetail3[1] + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])
 								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= Article.find_by_id(Article.find_article_by_global_article2(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])).unit_of_measurement.name
 								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[3], unit: 'S/. ', precision: 2)

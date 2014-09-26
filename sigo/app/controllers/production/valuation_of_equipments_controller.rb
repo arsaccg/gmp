@@ -484,7 +484,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         end
         render :pdf => "parte_equipos_#{@code}-#{Time.now.strftime('%d-%m-%Y')}", 
                :template => 'production/valuation_of_equipments/part_equipment_pdf.pdf.haml',
-               :page_size => 'A4'
+               :page_size => 'A4',
+               :orientation => 'Landscape'
       end
     end
   end
