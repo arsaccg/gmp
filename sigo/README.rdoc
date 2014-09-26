@@ -1,16 +1,14 @@
-== SISTEMA GMP
+== SISTEMA GMP- SIGO
 
-Repositorio Oficial del ERP
+Repositorio Oficial del BI
 
-Integrantes del Grupo:
+Integrantes del Equipo:
 
-* elnaufrago2009@gmail.com (cel. 952631806)
-* mail@joelibaceta.com (cel. 979625987)
-* giancarlo.paredes.prieto@gmail.com  (cel. 989186666)
-* lc.contreras09@gmail.com  (cel. 984119657)
-* pelaezarras@gmail.com  (cel. 991697278)
 * dvex.cabrera@gmail.com (cel. 943272480)
-
+* lc.contreras09@gmail.com  (cel. 984119657)
+* mail@joelibaceta.com (cel. 979625987)
+* antonny.aguilarc@gmail.com
+* steventorrestorreblanca@hotmail.com
 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.
