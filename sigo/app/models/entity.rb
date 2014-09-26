@@ -22,7 +22,7 @@ class Entity < ActiveRecord::Base
 		return Entity.find(executor_id).name
 	end
 
-	  def self.get_entities(type_ent, comp, display_length, pager_number, keyword = '')
+	  def self.get_entities(type_ent, comp, display_length, pager_number, keyword)
     result = Array.new
     @type  = TypeEntity.find(type_ent.to_s)
     if keyword != '' && pager_number != 'NaN'
@@ -32,6 +32,7 @@ class Entity < ActiveRecord::Base
 	        FROM entities ent, entities_type_entities ete
 	        WHERE ete.type_entity_id = "+type_ent.to_s+"
 	        AND ete.entity_id = ent.id
+          AND ent.name LIKE '%" + keyword + "%'
 	        ORDER BY ent.id DESC 
 	        LIMIT " + display_length + " 
 	        OFFSET " + pager_number
@@ -42,6 +43,7 @@ class Entity < ActiveRecord::Base
 	        FROM entities ent, entities_type_entities ete
 	        WHERE ete.type_entity_id = "+type_ent.to_s+"
 	        AND ete.entity_id = ent.id
+          AND ent.name LIKE '%" + keyword + "%'
 	        ORDER BY ent.id DESC 
 	        LIMIT " + display_length + " 
 	        OFFSET " + pager_number
@@ -52,6 +54,7 @@ class Entity < ActiveRecord::Base
 	        FROM entities ent, entities_type_entities ete
 	        WHERE ete.type_entity_id = "+type_ent.to_s+"
 	        AND ete.entity_id = ent.id
+          AND (ent.name LIKE '%" + keyword + "%' OR ent.paternal_surname LIKE '%" + keyword + "%' OR ent.maternal_surname LIKE '%" + keyword + "%')
 	        ORDER BY ent.id DESC 
 	        LIMIT " + display_length + " 
 	        OFFSET " + pager_number
