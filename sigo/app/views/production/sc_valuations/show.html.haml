@@ -7,16 +7,16 @@
 %div
   .jarviswidget-editbox
   .widget-body
-    %table.table.table-bordered{ style: "width: 700px;margin: 0 auto" }
-      %thead
+    %table.panel.panel-primary{ style: "height: 90px; width: 850px;margin: 0 auto" }
+      %thead.panel-heading
         %tr
-          %th{'colspan' => 4, "style"=>"color:#5f5f5f;text-align:center;font-size: large"}= @scvaluation.name + ' ' + @scvaluation.code
-        %tr
-          %th{"style"=>"color:#5f5f5f;text-align:center"} Monto contratado
-          %th{"style"=>"color:#5f5f5f;text-align:center"} Adelanto
-          %th{"style"=>"color:#5f5f5f;text-align:center"} Amortización Acumulada
-          %th{"style"=>"color:#5f5f5f;text-align:center"} Saldo
-      %tbody
+          %th{'colspan' => 4, "style"=>"text-align:center;font-size: large"}= @scvaluation.name + ' ' + @scvaluation.code
+        %tr{"bgcolor"=>"#3276B1","style"=>"height:25px;"}
+          %th{"style"=>"color:white;text-align:center"} Monto contratado
+          %th{"style"=>"color:white;text-align:center"} Adelanto
+          %th{"style"=>"color:white;text-align:center"} Amortización Acumulada
+          %th{"style"=>"color:white;text-align:center"} Saldo
+      %tbody{:style=>"font-size:100%;"}
         %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.hired_amount.to_f)
         %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.advances.to_f)
         %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.accumulated_amortization.to_f)
@@ -25,14 +25,14 @@
 %div
   .jarviswidget-editbox
   .widget-body
-    %table.table.table-bordered{ style: "width: 900px;margin: 0 auto" }
-      %thead
-        %tr
-          %th{"style"=>"color:#5f5f5f;text-align:center"} Item
-          %th{"style"=>"color:#5f5f5f;text-align:center"} Descripcion
-          %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"} Actual
-          %th{"style"=>"color:#5f5f5f;text-align:center"} Acumulado Anterior
-          %th{"style"=>"color:#5f5f5f;text-align:center"} Acumulado Actual
+    %table.panel.panel-primary.table-bordered{ style: "height: 530px;width: 850px;margin: 0 auto" }
+      %thead.panel-heading
+        %tr{"bgcolor"=>"#3276B1",style: "height: 45px;"}
+          %th{"style"=>"color:white;text-align:center"} Item
+          %th{"style"=>"color:white;text-align:center"} Descripcion
+          %th{ 'colspan' => 2, "style"=>"color:white;text-align:center"} Actual
+          %th{"style"=>"color:white;text-align:center"} Acumulado Anterior
+          %th{"style"=>"color:white;text-align:center"} Acumulado Actual
       %tbody
         %tr
           %th{"style"=>"color:#5f5f5f"} 1.00
@@ -64,13 +64,13 @@
           %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.billigv.to_f)
           %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@totalfacigv.to_f)
           %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.accumulated_billigv.to_f)
-        %tr
-          %th{"style"=>"color:#5f5f5f"}
-          %th{"style"=>"color:#5f5f5f"} Total Incluido IGV
-          %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.totalbill.to_f)
-          %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@totalincluidoigv.to_f)
-          %th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.accumulated_totalbill.to_f)
-        %tr
+        %tr{"bgcolor"=>"#3276B1"}
+          %th{"style"=>"color:white"}
+          %th{"style"=>"color:white"} Total Incluido IGV
+          %th{ 'colspan' => 2, "style"=>"color:white;text-align:center"}= sprintf('%.2f',@scvaluation.totalbill.to_f)
+          %th{"style"=>"color:white;text-align:center"}= sprintf('%.2f',@totalincluidoigv.to_f)
+          %th{"style"=>"color:white;text-align:center"}= sprintf('%.2f',@scvaluation.accumulated_totalbill.to_f)
+        %tr{"bgcolor"=>"#ECF3F8"}
           %th{"style"=>"color:#5f5f5f"} 6.00
           %th{"style"=>"color:#5f5f5f"} Retenciones
           %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@scvaluation.retention.to_f)
@@ -120,12 +120,12 @@
           %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@scvaluation.otherdiscount.to_f)
           %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@otrosdescuentos.to_f)
           %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@scvaluation.accumulated_otherdiscount.to_f)
-        %tr
-          %th{"style"=>"color:#5f5f5f"} 07
-          %th{"style"=>"color:#5f5f5f"} NETO A PAGAR
-          %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@scvaluation.net_payment.to_f)
-          %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@netoapagar)
-          %th{"style"=>"color:#5f5f5f;text-align:center"}=sprintf('%.2f',@scvaluation.accumulated_net_payment.to_f)
+        %tr{"bgcolor"=>"#3276B1"}
+          %th{"style"=>"color:white"} 07
+          %th{"style"=>"color:white"} NETO A PAGAR
+          %th{ 'colspan' => 2, "style"=>"color:white;text-align:center"}=sprintf('%.2f',@scvaluation.net_payment.to_f)
+          %th{"style"=>"color:white;text-align:center"}=sprintf('%.2f',@netoapagar)
+          %th{"style"=>"color:white;text-align:center"}=sprintf('%.2f',@scvaluation.accumulated_net_payment.to_f)
   %br
   %br
   #part-work.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
