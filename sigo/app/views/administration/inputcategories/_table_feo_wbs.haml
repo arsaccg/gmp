@@ -1,10 +1,11 @@
-%table(id="scroll-table" class="table table-bordered table-condensed table-hover white-table small-font table-light"  width="100%")
+%table(id="scroll-table" class="table table-bordered table-condensed table-hover white-table small-font table-light" width="100%")
   %thead
     %tr
       %th(rowspan = "2")
         %strong CODIGO
       %th(rowspan = "2")
         %strong FEO DE OBRA
+      %th(rowspan = "2")
       %th
         %strong PRESUPUESTO VENTA
       %th
@@ -16,7 +17,6 @@
         %strong Parcial 
   %tbody 
     - direct_cost_sale, direct_cost_goal = 0, 0
-    
     -@wbsitems.each do |wbs|  
       %tr
         %td(colspan="5")
@@ -24,20 +24,55 @@
       - @inputcategories.each do |input|
         - if @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"] != nil
           -partial_sale, partial_goal = @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"], @data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"]
-          %tr
-            %td= ("---" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
-            %td= @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][3]
-            %td(style ="text-align: right;")= number_to_currency(@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
-            %td(style ="text-align: right;")= number_to_currency(@data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
+          - if (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length == 2
+            %tr(style="color:#3276b1;")
+              %td= ("--" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
+              %td
+                %strong= @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][3]
+              %td
+              %td(style="text-align: right; font-size: 13px;")
+                %strong= number_to_currency(@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
+              %td(style="text-align: right; font-size: 13px;")
+                %strong= number_to_currency(@data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
+              -direct_cost_sale = direct_cost_sale + @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][4]
+              -direct_cost_goal = direct_cost_goal + @data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"][4]
+          - elsif (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length == 4
+            %tr(style="color:green;")
+              %td= ("--" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
+              %td= @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][3]
+              %td
+              %td(style ="text-align: right; font-size: 12px;")= number_to_currency(@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
+              %td(style ="text-align: right; font-size: 12px;")= number_to_currency(@data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
+          -else
+            %tr
+              %td= ("--" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
+              %td= @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][3]
+              %td
+                %center
+                  %a(href="javascript:;"){class: "btn btn-default btn-xs"}
+                    %i(class="fa fa-search")
+              %td(style ="text-align: right;")= number_to_currency(@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
+              %td(style ="text-align: right;")= number_to_currency(@data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
     %tr   
       %td
       %td(style="font-size:115%;")
         %strong COSTO DIRECTO
+      %td
       %td(style="text-align: right; font-size:115%;")
         %strong= number_to_currency(direct_cost_sale.to_s, :unit=>'S/. ')
       %td(style="text-align: right; font-size:115%;")
         %strong= number_to_currency(direct_cost_goal.to_s, :unit=>'S/. ')
 
+#itemsModalWbs.modal.fade(tabindex="-1" role="dialog" aria-labelledby="myModalLabel")
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button(type="button" class="close" data-dismiss="modal" aria-hidden="true")
+          %span(aria-hidden="true") X
+        %h3.modal-title#myModalLabel
+          Detalle
+      .modal-body
+        .detail-inputs
 :javascript
 
   $(document).ready(function(){
@@ -46,6 +81,13 @@
     $("[class*='table_']").css("display","none");
     
   });
+
+  function get_input_detail(d_sale, b_goal, b_cat){
+    $("#itemsModalWbs").modal();
+    load_url_ondiv("#{get_input_detail_administration_inputcategories_path}?category_id=0" + b_cat + "&budget_sale_id=" + d_sale + "&budget_goal_id=" + b_goal,  "detail-inputs");
+  }
+
+
 
   function toggle_table(table_id){  
       $("[class^='itme_"+ table_id + "']").each(function() {
