@@ -1,0 +1,198 @@
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Lista de Entidades
+    %ul.nav.nav-tabs.pull-right.in
+      %li.active
+        %a{"data-toggle" => "tab", href: "#hb1"}
+          %span.hidden-mobile.hidden-tablet Proveedores
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = TypeEntity.find_by_preffix("P").entities.count
+      %li
+        %a{"data-toggle" => "tab", href: "#hb2"}
+          %span.hidden-mobile.hidden-tablet Contratistas
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = TypeEntity.find_by_preffix("C").entities.count
+      %li
+        %a{"data-toggle" => "tab", href: "#hb3"}
+          %span.hidden-mobile.hidden-tablet Trabajadores
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = TypeEntity.find_by_preffix("T").entities.count
+      %li
+        %a{"data-toggle" => "tab", href: "#hb4"}
+          %span.hidden-mobile.hidden-tablet Clientes
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = TypeEntity.find_by_preffix("CL").entities.count
+
+  %div
+    / widget edit box
+    .jarviswidget-editbox
+      / This area used as dropdown edit box
+    / end widget edit box
+    / widget content
+    .widget-body
+      .tab-content
+        #hb1.tab-pane.active
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th Nombre/Razón Social
+                        %th Dirección
+                        %th RUC
+                        %th Acciones
+                    %tbody
+        #hb2.tab-pane
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic2.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th Nombre
+                        %th RUC
+                        %th Acciones
+                    %tbody
+        #hb3.tab-pane
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic3.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th Nombre
+                        %th Apellidos
+                        %th DNI
+                        %th Acciones
+                    %tbody
+        #hb4.tab-pane
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic4.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th Nombre
+                        %th RUC
+                        %th Acciones
+                    %tbody
+    
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });
+
+  // PAGE RELATED SCRIPTS
+
+  loadDataTableScripts();
+  function loadDataTableScripts() {
+
+    loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
+
+    function dt_2() {
+      loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
+    }
+
+    function dt_3() {
+      loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
+    }
+
+    function dt_4() {
+      loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
+    }
+
+    function dt_5() {
+      loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
+    }
+
+    function dt_6() {
+      loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
+    }
+
+    function dt_7() {
+      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables("#{@ids}"));
+    }
+
+  }
+
+  function runDataTables(element) {
+
+    $('#dt_basic').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
+      sAjaxSource  : "#{show_entities_logistics_entities_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "type_ent", "value": "1"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $('#dt_basic2').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
+      sAjaxSource  : "#{show_entities_logistics_entities_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "type_ent", "value": "2"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $('#dt_basic3').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
+      sAjaxSource  : "#{show_entities_logistics_entities_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "type_ent", "value": "3"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $('#dt_basic4').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
+      sAjaxSource  : "#{show_entities_logistics_entities_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "type_ent", "value": "7"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });    
+  }

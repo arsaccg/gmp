@@ -21,4 +21,137 @@ class Entity < ActiveRecord::Base
 	def self.find_name_supplier(supplier_id)
 		return Entity.find(executor_id).name
 	end
+
+	  def self.get_entities(type_ent, comp, display_length, pager_number, keyword = '')
+    result = Array.new
+    @type  = TypeEntity.find(type_ent.to_s)
+    if keyword != '' && pager_number != 'NaN'
+    	if @type.preffix == "CL" || @type.preffix == "C"
+	      entities = ActiveRecord::Base.connection.execute("
+	        SELECT ent.id, ent.name, ent.ruc
+	        FROM entities ent, entities_type_entities ete
+	        WHERE ete.type_entity_id = "+type_ent.to_s+"
+	        AND ete.entity_id = ent.id
+	        ORDER BY ent.id DESC 
+	        LIMIT " + display_length + " 
+	        OFFSET " + pager_number
+	      )
+    	elsif @type.preffix == "P"
+    		entities = ActiveRecord::Base.connection.execute("
+	        SELECT ent.id, ent.name, ent.address, ent.ruc
+	        FROM entities ent, entities_type_entities ete
+	        WHERE ete.type_entity_id = "+type_ent.to_s+"
+	        AND ete.entity_id = ent.id
+	        ORDER BY ent.id DESC 
+	        LIMIT " + display_length + " 
+	        OFFSET " + pager_number
+	      )
+	    elsif @type.preffix == "T"
+    		entities = ActiveRecord::Base.connection.execute("
+	        SELECT ent.id, ent.name, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname), ent.dni
+	        FROM entities ent, entities_type_entities ete
+	        WHERE ete.type_entity_id = "+type_ent.to_s+"
+	        AND ete.entity_id = ent.id
+	        ORDER BY ent.id DESC 
+	        LIMIT " + display_length + " 
+	        OFFSET " + pager_number
+	      )
+	    	
+    	end
+    elsif pager_number != 'NaN'
+      if @type.preffix == "CL" || @type.preffix == "C"
+	      entities = ActiveRecord::Base.connection.execute("
+	        SELECT ent.id, ent.name, ent.ruc
+	        FROM entities ent, entities_type_entities ete
+	        WHERE ete.type_entity_id = "+type_ent.to_s+"
+	        AND ete.entity_id = ent.id
+	        ORDER BY ent.id DESC 
+	        LIMIT " + display_length + " 
+	        OFFSET " + pager_number
+	      )
+    	elsif @type.preffix == "P"
+    		entities = ActiveRecord::Base.connection.execute("
+	        SELECT ent.id, ent.name, ent.address, ent.ruc
+	        FROM entities ent, entities_type_entities ete
+	        WHERE ete.type_entity_id = "+type_ent.to_s+"
+	        AND ete.entity_id = ent.id
+	        ORDER BY ent.id DESC 
+	        LIMIT " + display_length + " 
+	        OFFSET " + pager_number
+	      )
+	    elsif @type.preffix == "T"
+    		entities = ActiveRecord::Base.connection.execute("
+	        SELECT ent.id, ent.name, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname), ent.dni
+	        FROM entities ent, entities_type_entities ete
+	        WHERE ete.type_entity_id = "+type_ent.to_s+"
+	        AND ete.entity_id = ent.id
+	        ORDER BY ent.id DESC 
+	        LIMIT " + display_length + " 
+	        OFFSET " + pager_number
+	      )
+	    	
+    	end
+    else
+      if @type.preffix == "CL" || @type.preffix == "C"
+	      entities = ActiveRecord::Base.connection.execute("
+	        SELECT ent.id, ent.name, ent.ruc
+	        FROM entities ent, entities_type_entities ete
+	        WHERE ete.type_entity_id = "+type_ent.to_s+"
+	        AND ete.entity_id = ent.id
+	        ORDER BY ent.id DESC 
+	        LIMIT " + display_length
+	      )
+    	elsif @type.preffix == "P"
+    		entities = ActiveRecord::Base.connection.execute("
+	        SELECT ent.id, ent.name, ent.address, ent.ruc
+	        FROM entities ent, entities_type_entities ete
+	        WHERE ete.type_entity_id = "+type_ent.to_s+"
+	        AND ete.entity_id = ent.id
+	        ORDER BY ent.id DESC 
+	        LIMIT " + display_length
+	      )
+	    elsif @type.preffix == "T"
+    		entities = ActiveRecord::Base.connection.execute("
+	        SELECT ent.id, ent.name, CONCAT(ent.paternal_surname, ' ' ,ent.maternal_surname), ent.dni
+	        FROM entities ent, entities_type_entities ete
+	        WHERE ete.type_entity_id = "+type_ent.to_s+"
+	        AND ete.entity_id = ent.id
+	        ORDER BY ent.id DESC 
+	        LIMIT " + display_length
+	      )
+	    	
+    	end
+    end
+
+    entities.each do |ent|
+      if @type.preffix == "CL" || @type.preffix == "C"
+      	result << [
+      		ent[1],
+      		ent[2],
+      		if @type.preffix == "CL"
+						"<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
+					else
+						"<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"/edit','content',{company_id:'"+comp.to_s+"',type:'entity'},null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
+      		end
+      	]
+
+    	elsif @type.preffix == "P"
+      	result << [
+      		ent[1],
+      		ent[2],
+      		ent[3],
+					"<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"/edit','content',{company_id:'"+comp.to_s+"',type:'entity'},null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
+      	]
+	    elsif @type.preffix == "T"
+      	result << [
+      		ent[1],
+      		ent[2],
+      		ent[3],
+					"<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"/edit','content',{company_id:'"+comp.to_s+"',type:'worker'},null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
+      	]
+	    	
+    	end
+    end
+    return result
+  end
 end
