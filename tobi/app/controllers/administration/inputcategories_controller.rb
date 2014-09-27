@@ -55,6 +55,21 @@ class Administration::InputcategoriesController < ApplicationController
 		render :partial => 'input_detail', :layout => false
 	end
 
+	def get_input_wbs_detail
+		order,coditem,cod_input,budget_id = params[:order].gsub("d","."),params[:coditem],params[:cod_input],params[:budget_id]
+
+		@input_sale = Inputbybudgetanditems.where("`order` like '01.01.02.01.01' and `coditem` like '010009223055' and `cod_input` like CONCAT('021802','%') and budget_id = 1;")
+		@input_goal = Inputbybudgetanditems.where("`order` like '01.01.02.01.01' and `coditem` like '010009223055' and `cod_input` like CONCAT('021802','%') and budget_id = 1;")
+
+		# select i.`cod_input`,i.`input`,i.`quantity`,i.`price` from inputbybudgetanditems as i 
+		# where i.`order` like '01.01.02.01.01' 
+		# and i.`coditem` like '010009223055' #and i.`coditem` like '010009223055' 
+		# and i.`cod_input` like CONCAT('021802','%')
+		# and i.budget_id = 1;
+
+		render :partial => 'input_detail_wbs', :layout => false
+	end
+
 	def get_input_budget_item(orderitem, budgetid, wbs = nil)
     	#SELECT input, SUM(quantity), price, cod_input, coditem FROM inputbybudgetanditems
 		#WHERE `cod_input` LIKE '020205%' AND `budget_id` = 44

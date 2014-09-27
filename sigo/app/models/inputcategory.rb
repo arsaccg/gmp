@@ -82,9 +82,9 @@ class Inputcategory < ActiveRecord::Base
                             
         #             GROUP BY T1.wbscode, category_id
         #             ORDER BY category_id;"
-        str = "SELECT T1.wbscode, T1.fase, CONCAT('0', T1.category_id) as category_id, T1.description, SUM(T1.amount) AS amount_sale
+        str = "SELECT T1.wbscode, T1.fase, CONCAT('0', T1.category_id) as category_id, T1.description, SUM(T1.amount) AS amount_sale, T1.coditem,T1.item_order,T1.measured
                FROM (
-                SELECT itembywbses.wbscode, category_id, wbsitems.fase, inputcategories.description, itembybudgets.item_id,itembybudgets.`order` AS item_order ,SUM(inputbybudgetanditems.price*inputbybudgetanditems.quantity*itembywbses.measured) AS amount
+                SELECT itembywbses.wbscode, category_id, wbsitems.fase, inputcategories.description, itembybudgets.item_id,itembybudgets.`order` AS item_order ,SUM(inputbybudgetanditems.price*inputbybudgetanditems.quantity*itembywbses.measured) AS amount, inputbybudgetanditems.coditem, itembywbses.measured
                  FROM inputcategories, inputbybudgetanditems, itembybudgets
                  RIGHT JOIN itembywbses ON
                  itembywbses.coditem = itembybudgets.item_code AND
