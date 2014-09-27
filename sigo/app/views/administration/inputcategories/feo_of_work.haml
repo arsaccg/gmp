@@ -7,14 +7,21 @@
     #tabs(class="small-font")
       %ul
         %li
-          %a(href="#tabs-1")
-            Feo de Obra
+          %a(href="#tabs-1") Feo de Obra
         %li
-          %a(href="#tabs-2")Feo de Obra por Fases
+          %a(href="#tabs-2") Feo de Obra por Fases
       #tabs-1
         = render :partial => "table_feo"
       #tabs-2
         = render :partial => "table_feo_wbs"
+
+/%ul(class="nav nav-tabs" role="tablist")
+/  %li(class="active")
+/    %a(href="#") Feo de Obra
+/  %li
+/    %a(href="#") Feo de Obra por Fases
+/  %li
+/    %a(href="#") Messages
 
 :javascript
   $(function() {
