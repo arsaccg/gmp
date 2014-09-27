@@ -1,0 +1,23 @@
+%table(class="table table-bordered table-hover table-condensed white-table" width="100%")
+  %thead
+    %th
+      Codigo
+    %th
+      Nombre
+    %th
+      Presupuesto Meta
+    %th
+      Presupuesto Venta
+  %tbody
+    - @input_sale.each do |item|
+      %tr
+        %td
+          = item.coditem
+        %td
+          = item.input
+        %td(style="text-align: right;")
+          = number_to_currency(item.quantity*item.price*@measured, :unit=>'S/. ')
+        %td(style="text-align: right;")
+          -item_goal = @input_goal.where(cod_input: item.cod_input).first rescue nil
+          = number_to_currency(item_goal.quantity*item_goal.price*@measured, :unit=>'S/. ') rescue "--s"
+
