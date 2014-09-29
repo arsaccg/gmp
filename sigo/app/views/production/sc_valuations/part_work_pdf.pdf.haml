@@ -38,7 +38,6 @@
 								%tr{"style" =>"height:50px;"}
 									%th{"style"=>"text-align:center;vertical-align: middle;"} Codigo
 									%th{"style"=>"text-align:center;vertical-align: middle;"} Partida
-									%th{"style"=>"text-align:center;vertical-align: middle;"} Unidad
 									%th{"style"=>"text-align:center;vertical-align: middle;"} Cantidad
 									%th{"style"=>"text-align:center;vertical-align: middle;"} P.U.
 									%th{"style"=>"text-align:center;vertical-align: middle;"} Parcial
@@ -47,13 +46,17 @@
 							%tbody
 							- @workers_array2.each do |workerDetail2|
 								%tr{"style" =>"font-size:95%;height:50px;"}
-									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[0]
+									%th{"style" =>";padding-left:6px;font-weight:normal;text-align:left;vertical-align: middle;"}= workerDetail2[2]
 									%th{"style" =>"font-weight:normal;padding-left:10px;text-align:left;vertical-align: middle;"}= workerDetail2[1]
-									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[2]
 									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[3].round(2)
 									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[4]
 									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[5]
-									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= "12345"
+									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}
+										-@subcontract.subcontract_details.each do |sub|
+											-if sub.itembybudget.order==workerDetail2[2]
+												= workerDetail2[3].round(2)-sub.amount
+											-else
+												=""									
 					- else
 						%h4.modal-title No hay datos.
 						%br
