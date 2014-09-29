@@ -16,7 +16,7 @@
         %td
           = item.input
         %td(style="text-align: right;")
-          = number_to_currency(item.quantity*item.price*@measured, :unit=>'S/. ')
+          = number_to_currency(item.quantity*item.price*@measured, :unit=>'S/. ') rescue "--"
         %td(style="text-align: right;")
           -item_goal = @input_goal.where(cod_input: item.cod_input).first rescue nil
           = number_to_currency(item_goal.quantity*item_goal.price*@measured, :unit=>'S/. ') rescue "--"
