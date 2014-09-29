@@ -1,0 +1,60 @@
+%html
+	%head
+	%meta{charset: "utf-8"}
+	= wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
+	%body
+	= image_tag @company.avatar.url, alt: "#{@company.name}"
+	%br
+	%br
+	#main
+		#content
+			%div
+				.jarviswidget-editbox
+				.widget-body
+					%table.panel.panel-primary{ style: "height: 90px; width: 1100px;margin-left: 20px;" }
+						%thead.panel-heading
+							%tr
+								%th{'colspan' => 4, "style"=>"text-align:center;font-size: large"}= @scvaluation.name + ' ' + @scvaluation.code
+							%tr{"bgcolor"=>"#3276B1","style"=>"height:25px;"}
+								%th{"style"=>"color:white;text-align:center"} Monto contratado
+								%th{"style"=>"color:white;text-align:center"} Adelanto
+								%th{"style"=>"color:white;text-align:center"} Amortización Acumulada
+								%th{"style"=>"color:white;text-align:center"} Saldo
+						%tbody{:style=>"font-size:100%;"}
+							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.hired_amount.to_f)
+							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.advances.to_f)
+							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.accumulated_amortization.to_f)
+							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.balance.to_f)
+			%br
+			.modal-dialog{"style"=>"width:1100px;"}
+				.modal-content
+				.modal-header
+					%h4.modal-title Valorización sin IGV
+				.modal-body
+					-if @workers_array2.count>0
+						%h1.page-title.txt-color-blueDark Parte de Obra
+						%table.panel.panel-primary.table-bordered{"style"=>"width:1100px;"}
+							%thead.panel-heading
+								%tr{"style" =>"height:50px;"}
+									%th{"style"=>"text-align:center;vertical-align: middle;"} Codigo
+									%th{"style"=>"text-align:center;vertical-align: middle;"} Partida
+									%th{"style"=>"text-align:center;vertical-align: middle;"} Unidad
+									%th{"style"=>"text-align:center;vertical-align: middle;"} Cantidad
+									%th{"style"=>"text-align:center;vertical-align: middle;"} P.U.
+									%th{"style"=>"text-align:center;vertical-align: middle;"} Parcial
+									%th{"style"=>"text-align:center;vertical-align: middle;"} Total
+									
+							%tbody
+							- @workers_array2.each do |workerDetail2|
+								%tr{"style" =>"font-size:95%;height:50px;"}
+									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[0]
+									%th{"style" =>"font-weight:normal;padding-left:10px;text-align:left;vertical-align: middle;"}= workerDetail2[1]
+									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[2]
+									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[3].round(2)
+									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[4]
+									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[5]
+									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= "12345"
+					- else
+						%h4.modal-title No hay datos.
+						%br
+					%footer

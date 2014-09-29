@@ -341,6 +341,8 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :sc_valuations do
       collection do
+        get 'report_pdf'
+        get 'part_work_pdf'
         post 'get_report'
         post 'part_work'
         post 'part_people'
