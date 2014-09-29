@@ -39,7 +39,7 @@
             =itembudget.cod_input
           %td(style="text-align: right;") 
             - if @budget.type_of_budget.to_i == 0 # Si es Meta
-              %input(type="text"){class: 'input_quantity_' + itembudget.id.to_s, :value=>number_with_precision(itembudget.quantity, :precision => 4), :id => "itembudget_quantity_" + itembudget.cod_input.to_s, :onblur => "update_table_input('" + itembudget.id.to_s + "')" }
+              %input(type="text"){class: 'input_quantity_' + itembudget.id.to_s, :value=>number_with_precision(itembudget.quantity, :precision => 4), :id => "itembudget_quantity_" + itembudget.cod_input.to_s, :onblur => "update_table_input('" + itembudget.id.to_s + "')", disabled: true }
             - else # Si es Meta
               %span
                 = number_with_precision(itembudget.quantity, :precision => 4)

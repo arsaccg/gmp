@@ -53,6 +53,7 @@ class Administration::InputcategoriesController < ApplicationController
 
 		p "~~~~~@wbsitems~~~~~"
 		p @wbsitems
+		render :feo_of_work_wbs, :layout => false
 	end
 
 
