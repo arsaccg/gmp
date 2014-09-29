@@ -7,6 +7,7 @@ class Production::ScValuationsController < ApplicationController
 	end
 
   def show
+    @id = params[:id] 
     @scvaluation=ScValuation.find_by_id(params[:id])
     @valorizacionsinigv = 0
     @amortizaciondeadelanto = 0
@@ -41,6 +42,53 @@ class Production::ScValuationsController < ApplicationController
       end
     end
     render layout: false
+  end
+
+  def report_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @cc = get_company_cost_center('cost_center')
+        @company = Company.find(get_company_cost_center('company'))
+        @id = params[:id] 
+        @scvaluation=ScValuation.find_by_id(params[:id])
+        @valorizacionsinigv = 0
+        @amortizaciondeadelanto = 0
+        @totalfacturar = 0
+        @totalfacigv = 0
+        @totalincluidoigv = 0
+        @retenciones = 0
+        @detraccion = 0
+        @fondogarantia1 = 0
+        @fondogarantia2 = 0
+        @descuentoequipos = 0
+        @otrosdescuentos = 0
+        @netoapagar = 0
+        @code = 0
+        @code = @scvaluation.code.to_i - 1
+        @code = @code.to_s.rjust(3,'0')
+        @valuationgroup = getsc_valuation2(@scvaluation.start_date, @scvaluation.end_date, @scvaluation.name, @code)
+        if @valuationgroup.count > 0
+          @valuationgroup.each do |workerDetail|
+            @valorizacionsinigv = workerDetail[0]
+            @amortizaciondeadelanto = workerDetail[1]
+            @totalfacturar = workerDetail[2]
+            @totalfacigv = workerDetail[3]
+            @totalincluidoigv = workerDetail[4]
+            @retenciones = workerDetail[5]
+            @detraccion = workerDetail[6]
+            @fondogarantia1 = workerDetail[7]
+            @fondogarantia2 = workerDetail[8]
+            @descuentoequipos = workerDetail[9]
+            @otrosdescuentos = workerDetail[10]
+            @netoapagar = workerDetail[11]
+          end
+        end
+        render :pdf => "resumen_valorizaciones_sc_#{@scvaluation.name}-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'production/sc_valuations/report_pdf.pdf.haml',
+               :page_size => 'A4'
+      end
+    end
   end
 
 	def new
@@ -353,16 +401,40 @@ class Production::ScValuationsController < ApplicationController
   end
 
   def part_work
-    start_date = params[:start_date]
-    end_date = params[:end_date]
-    cad = params[:cad]
+    @id = params[:id]
+    @start_date = params[:start_date]
+    @end_date = params[:end_date]
+    @cad = params[:cad]
     @totalprice2 = 0
     cc = get_company_cost_center("cost_center")
-    @workers_array2 = business_days_array2(start_date, end_date, cad,cc)
+    @workers_array2 = business_days_array2(@start_date, @end_date, @cad,cc)
     @workers_array2.each do |workerDetail|
       @totalprice2 += workerDetail[5]
     end
     render layout: false
+  end
+
+  def part_work_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @scvaluation=ScValuation.find_by_id(params[:id])
+        start_date = params[:start_date]
+        end_date = params[:end_date]
+        cad = params[:cad]
+        @cc = get_company_cost_center('cost_center')
+        @company = Company.find(get_company_cost_center('company'))
+        @totalprice2 = 0
+        cc = get_company_cost_center("cost_center")
+        @workers_array2 = business_days_array2(start_date, end_date, cad,@cc)
+        @workers_array2.each do |workerDetail|
+          @totalprice2 += workerDetail[5]
+        end
+        render :pdf => "parte_obra_#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'production/sc_valuations/part_work_pdf.pdf.haml',
+               :page_size => 'A4'
+      end
+    end
   end
 
   def part_people
