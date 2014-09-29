@@ -58,7 +58,7 @@ class Management::ItembywbsesController < ApplicationController
     end 
 
     @wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs)
-    @budgets = Budget.where(:cost_center_id => get_company_cost_center('cost_center'))
+    @budgets = Budget.where(cost_center_id: get_company_cost_center('cost_center'), id: params[:budget_id])
     @wbsitems_arr = Array.new
     @budgets.each do |budget|
       temp_wbsitems = budget.itembywbses

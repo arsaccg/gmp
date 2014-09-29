@@ -24,7 +24,7 @@
                 %td
                   %strong=number_to_currency(number_with_precision(get_total_cost("", budget.id), :precision => 2).to_s , :unit=>'S/. ') rescue ""
               %td
-                %a(data-method ="delete"){:href=>"javascript:delete_to_url_into_div('" + management_budget_path(budget.id).to_s + "?authenticity_token=" + form_authenticity_token + "', 'right-area');"}
+                %a(data-method ="delete"){:href=>"javascript:delete_to_url_into_div('" + management_budget_path(budget.id).to_s + "?authenticity_token=" + form_authenticity_token + "', 'right-area');", data: { confirm: "¿Está seguro que desea eliminar este presupuesto?"}}
                   %i(class='fa fa-times')
     %br
     .group-bar
@@ -47,7 +47,7 @@
                 %td(colspan="2")     
                   %strong=budget.description
               %td
-                %a(data-method ="delete"){:href=>"javascript:delete_to_url_into_div('" + management_budget_path(budget.id).to_s + "?authenticity_token=" + form_authenticity_token + "', 'right-area');"}
+                %a(data-method ="delete"){:href=>"javascript:delete_to_url_into_div('" + management_budget_path(budget.id).to_s + "?authenticity_token=" + form_authenticity_token + "', 'right-area');", data: { confirm: "¿Está seguro que desea eliminar este presupuesto?"}}
                   %i(class='fa fa-times')
   .col-md-9
     .group-bar

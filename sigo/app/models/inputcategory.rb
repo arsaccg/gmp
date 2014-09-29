@@ -88,12 +88,13 @@ class Inputcategory < ActiveRecord::Base
                  FROM inputcategories, inputbybudgetanditems, itembybudgets
                  RIGHT JOIN itembywbses ON
                  itembywbses.coditem = itembybudgets.item_code AND
-                 itembywbses.order_budget = itembybudgets.`order` 
+                 itembywbses.order_budget = itembybudgets.`order` AND
+                 itembywbses.budget_id = '" + budgetid.to_s  + "'
                  LEFT JOIN wbsitems ON
                  itembywbses.wbsitem_id = wbsitems.id
                  WHERE
                  inputbybudgetanditems.cod_input LIKE CONCAT('0', CONCAT(category_id, '%'))  AND
-                 inputbybudgetanditems.budget_id = '1' AND
+                 inputbybudgetanditems.budget_id = '" + budgetid.to_s  + "' AND
                  inputbybudgetanditems.coditem=itembybudgets.item_code AND
                  inputbybudgetanditems.budget_id = itembybudgets.budget_id AND
                  inputbybudgetanditems.`order` = itembybudgets.`order` 
@@ -106,6 +107,7 @@ class Inputcategory < ActiveRecord::Base
                
                GROUP BY T1.wbscode, category_id
                ORDER BY category_id;"
+        str2 = "T.T Funciona"
         return str 
     end
     

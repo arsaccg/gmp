@@ -88,7 +88,7 @@
         
         / end search mobile button
         /cost center details button
-        .btn-header.pull-right
+        .btn-header.pull-right#general-data-cost-center
           %span
             %a{"href"=> "#", "data-toggle"=>"modal", "data-target"=>"#cost_center_general_data", title: "Datos generales del centro de costo"}
               %i.fa.fa-info-circle
@@ -1064,6 +1064,7 @@
       if (!window.jQuery.ui) {
       	document.write('<script src="js/libs/jquery-ui-1.10.3.min.js"><\/script>');
       }
+
     /
       JS TOUCH : include this plugin for mobile drag / drop touch events
       <script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script>
