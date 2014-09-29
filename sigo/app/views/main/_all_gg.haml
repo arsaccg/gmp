@@ -1,0 +1,21 @@
+.modal-dialog{:style => 'width:55%'}
+  .modal-content
+    .modal-header{"style"=>"background-color:#296191;color:white;padding-top:8px;padding-bottom:8px"}
+      %button{"class"=>"close", "data-dismiss"=>"modal"}
+        %span{"aria-hidden"=>"true","style"=>"color:white;"} &times;
+        %span{"class"=>"sr-only"} Close
+      %h4{"class"=>"modal-title","style"=>"font-weight:900; text-align: center;"} Datos Generales del Proyecto
+    .modal-body{"style"=>"background-color:#E6E6E6;"}
+      %table.table.table-bordered.table-hover
+        %tr
+          %th{ :style => "background-color: #f9f9f9;"}
+            CÓDIGO
+          %th{ :style => "background-color: #f9f9f9;"}
+            FASE
+          %th{ :style => "background-color: #f9f9f9;"}
+            TOTAL
+        - @all_gg.each do |gg|
+          %tr
+            %td= gg.phase.code
+            %td= gg.phase.name
+            %td= number_to_currency gg.total, preffix: 'S/.', precision: 2

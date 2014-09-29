@@ -6,6 +6,7 @@ class Phase < ActiveRecord::Base
   has_many :part_of_equipment_details
   has_many :subcontract_details
   has_many :wbsitems
+  has_many :general_expenses
   
   #Validaciones
   include ActiveModel::Validations

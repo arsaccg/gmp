@@ -42,7 +42,7 @@
           %th G.G
           - @gastos_generales.each do |ga_ge|
             %td
-              %a.btn.btn-default.btn-xs{:href => "javascript:void(0);"}
+              %a.btn.btn-default.btn-xs{:href => "javascript:show_phases('#{@project_id}', 90);"}
                 %i.fa.fa-search
             %td= number_to_currency ga_ge[0], unit: 'S/. ', precision: 2
             %td= number_to_currency ga_ge[1], unit: 'S/. ', precision: 2
@@ -51,11 +51,9 @@
             - else
               %td= number_to_currency ga_ge[2], unit: 'S/. ', precision: 2
         %tr
-          %th UTILIDAD
+          %th{"style"=>"border-right: none;"} UTILIDAD
           - @utility.each do |util|
-            %td
-              %a.btn.btn-default.btn-xs{:href => "javascript:void(0);"}
-                %i.fa.fa-search
+            %td{"style"=>"border-left: none;"}
             %td= number_to_currency util[0], unit: 'S/. ', precision: 2
             %td= number_to_currency util[1], unit: 'S/. ', precision: 2
             - if util[2] < 0
@@ -66,7 +64,7 @@
           %th GASTOS DE GESTIÓN
           - @gastos_gestion.each do |gg|
             %td
-              %a.btn.btn-default.btn-xs{:href => "javascript:void(0);"}
+              %a.btn.btn-default.btn-xs{:href => "javascript:show_phases('#{@project_id}', 94);"}
                 %i.fa.fa-search
             %td= number_to_currency gg[0], unit: 'S/. ', precision: 2
             %td= number_to_currency gg[1], unit: 'S/. ', precision: 2

@@ -145,11 +145,11 @@ class MainController < ApplicationController
   end
 
   def projecting_operating_results
-    project_id =  params[:cost_center]
+    @project_id =  params[:cost_center]
 
-    @cost_center_detail = CostCenter.find(project_id).cost_center_detail
-    @budget_sale = Budget.where("`type_of_budget` = 0 AND `subbudget_code` IS NOT NULL AND `cost_center_id` = (?)", project_id).first rescue nil
-    @budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", project_id).first rescue @budget_sale
+    @cost_center_detail = CostCenter.find(@project_id).cost_center_detail
+    @budget_sale = Budget.where("`type_of_budget` = 0 AND `subbudget_code` IS NOT NULL AND `cost_center_id` = (?)", @project_id).first rescue nil
+    @budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", @project_id).first rescue @budget_sale
 
     @inputcategories = Inputcategory.all
 
@@ -197,6 +197,11 @@ class MainController < ApplicationController
 
     render(:partial => 'op_result', :layout => false)
 
+  end
+
+  def show_phases
+    @all_gg = GeneralExpense.where('code_phase = ? AND cost_center_id = ?', params[:code_phase], params[:cost_center_id])
+    render(:partial => 'all_gg', :layout => false)
   end
 
 end

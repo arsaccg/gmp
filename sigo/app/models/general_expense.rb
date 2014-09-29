@@ -1,5 +1,6 @@
 class GeneralExpense < ActiveRecord::Base
   has_many :general_expense_details
+  belongs_to :phase
   accepts_nested_attributes_for :general_expense_details, :allow_destroy => true
 
   def self.getOwnArticles(word)
