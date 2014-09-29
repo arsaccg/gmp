@@ -402,6 +402,11 @@ class Production::ScValuationsController < ApplicationController
 
   def part_work
     @id = params[:id]
+    scvaluation = ScValuation.find_by_id(@id)
+    entity = Entity.find_by_name(scvaluation.name)
+    puts entity.name
+    @subcontract = Subcontract.find_by_entity_id(entity.id)
+
     @start_date = params[:start_date]
     @end_date = params[:end_date]
     @cad = params[:cad]
@@ -419,6 +424,9 @@ class Production::ScValuationsController < ApplicationController
       format.html
       format.pdf do
         @scvaluation=ScValuation.find_by_id(params[:id])
+        entity = Entity.find_by_name(@scvaluation.name)
+        puts entity.name
+        @subcontract = Subcontract.find_by_entity_id(entity.id)
         start_date = params[:start_date]
         end_date = params[:end_date]
         cad = params[:cad]
