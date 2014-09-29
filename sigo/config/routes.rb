@@ -606,6 +606,7 @@ ArsacLogistica::Application.routes.draw do
     resources :inputcategories do
       collection do
         get 'feo_of_work'
+        get 'feo_of_work_wbs'
         get 'feo_pdf'
         get 'get_input_detail'
         get 'get_input_wbs_detail'

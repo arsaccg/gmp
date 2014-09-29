@@ -542,7 +542,7 @@ margin-right: 100px;
   text-align: right;
 }
 
-.individual-panel, .content-load, .botom-load {
+.individual-panel, .content-load, .botom-load, .feo-load {
   overflow: auto;
 }
 

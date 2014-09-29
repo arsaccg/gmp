@@ -22,11 +22,7 @@ class Administration::InputcategoriesController < ApplicationController
 		@inputcategories = Inputcategory.all
 
 		@data_w = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s)
-    	@data = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, 1)
-
-	    p @data
-	    p @data_w
-
+    	
 	    @data_excel = Array.new
 	    csv = Array.new
 
@@ -42,6 +38,24 @@ class Administration::InputcategoriesController < ApplicationController
 	      format.xls { send_data csv_string.to_csv(col_sep: "\t") }
 	    end
 	end
+
+	def feo_of_work_wbs
+		project_id =  get_company_cost_center('cost_center')
+
+		#@budget_goal = Budget.find(params[:budget_goal]) rescue @budget_sale #Budget.where(:cost_center_id).last
+		@budget_sale = Budget.where("`type_of_budget` = 0 AND `subbudget_code` IS NOT NULL AND `cost_center_id` = (?)", project_id).first rescue nil
+  		@budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", project_id).first rescue @budget_sale
+
+		@wbsitems = Wbsitem.where(cost_center_id: project_id).order(:codewbs)
+		@inputcategories = Inputcategory.all
+
+		@data = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, 1)
+
+		p "~~~~~@wbsitems~~~~~"
+		p @wbsitems
+	end
+
+
 
 	def get_input_detail
 		category_id, budget_sale_id, budget_goal_id = params[:category_id], params[:budget_sale_id], params[:budget_goal_id]
