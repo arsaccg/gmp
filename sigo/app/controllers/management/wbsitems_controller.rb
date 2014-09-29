@@ -69,7 +69,7 @@ class Management::WbsitemsController < ApplicationController
   def update
     @wbsitem = Wbsitem.find(params[:id])  
     @wbsitem.update_attributes(wbsitem_parameters)
-    render :index, layout: false
+    redirect_to action: :index
   end
 
   def edit    

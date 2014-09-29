@@ -12,6 +12,8 @@ class Management::InputbybudgetanditemsController < ApplicationController
     @budget = Budget.find(@budget_id)
     @order = params[:order].gsub("d",".")
 
+    @measured = params[:measured] rescue 0.0
+
     @pdf_table_array = Array.new
 
   	@itembybudgetanditems = Inputbybudgetanditem.select("id, cod_input, sum(quantity) as quantity, price, input, unit").where("budget_id = ? AND inputbybudgetanditems.order LIKE ?", params[:budget_id],  @order + "%").group(' cod_input, price, input, unit').order(:cod_input)

@@ -35,7 +35,10 @@
             -for i in 3..n
               %span(style="padding-left: 20px;")
             =itembudget.order
-            %a{:href=>"javascript:filter_by_budget_and_item('" + filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s + "?budget_id=" + @budget_id + "&item_id=" + itembudget.item_id.to_s + "&order=" + order_str + "');"}
+            - measure
+            - if itembudget.measured.to_f != 0
+              - measured = itembudget.measured
+            %a{:href=>"javascript:filter_by_budget_and_item('" + filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s + "?budget_id=" + @budget_id + "&item_id=" + itembudget.item_id.to_s + "&order=" + order_str + "&measured=" + measured + "');"}
               = get_title_or_description(itembudget)
           - if itembudget.measured.to_f == 0
             - @var_cost = number_with_precision(get_total_cost(itembudget.order, itembudget.budget_id).to_f, :precision => 2).to_s
