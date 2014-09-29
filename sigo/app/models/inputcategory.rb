@@ -107,6 +107,7 @@ class Inputcategory < ActiveRecord::Base
                
                GROUP BY T1.wbscode, category_id
                ORDER BY category_id;"
+        str2 = "T.T Funciona"
         return str 
     end
     
