@@ -30,7 +30,7 @@
           %tr
             %td{:style => "background-color: #f9f9f9;"}= opr[0]
             %td{:style => "background-color: #f9f9f9;"}
-              %a.btn.btn-default.btn-xs{:href => "javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{opr[4]});"}
+              %a.btn.btn-default.btn-xs{:href => "javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{opr[4]}');"}
                 %i.fa.fa-search
             %td{"style"=>"background-color: #f9f9f9;"}= number_to_currency opr[1], unit: 'S/. ', precision: 2
             %td{"style"=>"background-color: #f9f9f9;"}= number_to_currency opr[2], unit: 'S/. ', precision: 2
@@ -42,7 +42,7 @@
           %th G.G
           - @gastos_generales.each do |ga_ge|
             %td
-              %a.btn.btn-default.btn-xs{:href => "javascript:get_input_detail('4', '5', '1');"}
+              %a.btn.btn-default.btn-xs{:href => "javascript:void(0);"}
                 %i.fa.fa-search
             %td= number_to_currency ga_ge[0], unit: 'S/. ', precision: 2
             %td= number_to_currency ga_ge[1], unit: 'S/. ', precision: 2
@@ -54,7 +54,7 @@
           %th UTILIDAD
           - @utility.each do |util|
             %td
-              %a.btn.btn-default.btn-xs{:href => "javascript:get_input_detail('4', '5', '1');"}
+              %a.btn.btn-default.btn-xs{:href => "javascript:void(0);"}
                 %i.fa.fa-search
             %td= number_to_currency util[0], unit: 'S/. ', precision: 2
             %td= number_to_currency util[1], unit: 'S/. ', precision: 2
@@ -66,7 +66,7 @@
           %th GASTOS DE GESTIÓN
           - @gastos_gestion.each do |gg|
             %td
-              %a.btn.btn-default.btn-xs{:href => "javascript:get_input_detail('4', '5', '1');"}
+              %a.btn.btn-default.btn-xs{:href => "javascript:void(0);"}
                 %i.fa.fa-search
             %td= number_to_currency gg[0], unit: 'S/. ', precision: 2
             %td= number_to_currency gg[1], unit: 'S/. ', precision: 2
