@@ -38,6 +38,7 @@
                   %th N° de Centro de Costo
                   %th Centro de Costo
                   %th Gastos Diversos de Gestion
+                  %th Resultados Operativos
               %tbody
                 -if @cost_centers!=nil
                   -@cost_centers.each do |cc|
@@ -49,6 +50,11 @@
                         %span
                           %a{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
                             %i.fa.fa-folder-open
+                      %td
+                        %span
+                          %a{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
+                            %i.fa.fa-usd
+
                 -else
                   =""
   /end cost center row
@@ -282,7 +288,8 @@
       / end widget
 #gdg.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgLabel", role: "dialog", tabindex: "-1"}
 #gdgn.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgnLabel", role: "dialog", tabindex: "-1"}
-#gdge.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgeLabel", role: "dialog", tabindex: "-1"}                   
+#gdge.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgeLabel", role: "dialog", tabindex: "-1"}
+#operating-result.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "operatingResultLabel", role: "dialog", tabindex: "-1"}
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -777,4 +784,13 @@
   function gdg_edit(id){
     data = { authenticity_token: "#{form_authenticity_token}"};
     load_modal_ajax('/general_expenses/diverse_expenses_of_managements/'+id+'/edit', 'gdge', 'gdg', data, null, 'GET');
+  }
+
+  function load_operating_result(cost_center_id){
+    data = { authenticity_token : "#{form_authenticity_token}", cost_center : cost_center_id }
+    load_url_ajax('#{projecting_operating_results_path}', 'operating-result', data, 'avoid-opacity', 'POST');
+    $('#operating-result').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
   }

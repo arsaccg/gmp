@@ -100,6 +100,8 @@ class Production::AnalysisOfValuationsController < ApplicationController
       budgetanditems_list << [ workerDetail[2], workerDetail[5], workerDetail[3] ]
     end
 
+    # Order by the 1 param of array
+    @meta_part_work = @meta_part_work.sort_by { |k| k[0] }
     
     if budgetanditems_list.count > 0
       # Mano de Obra

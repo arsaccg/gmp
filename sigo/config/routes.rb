@@ -17,6 +17,7 @@ ArsacLogistica::Application.routes.draw do
   get 'display_table_messages_ose' => 'main#display_table_messages_ose', as: :display_table_messages_ose
   get 'display_worker_pending' => 'main#display_worker_pending', as: :display_worker_pending
   get 'management_dashboard' => 'main#management_dashboard', as: :management_dashboard
+  post 'projecting_operating_results' => 'main#projecting_operating_results', as: :projecting_operating_results
   get 'home' => 'main#home'
   post 'home' => 'main#home'
   
@@ -341,6 +342,8 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :sc_valuations do
       collection do
+        get 'report_pdf'
+        get 'part_work_pdf'
         post 'get_report'
         post 'part_work'
         post 'part_people'
