@@ -180,7 +180,7 @@ class MainController < ApplicationController
             @total_sale += sale
             @total_goal += goal
 
-            @direct_cost << [name.to_s, sale.to_f, goal.to_f, (sale.to_f-goal.to_f)]
+            @direct_cost << [name.to_s, sale.to_f, goal.to_f, (sale.to_f-goal.to_f), input.category_id]
         end
       end
     end
