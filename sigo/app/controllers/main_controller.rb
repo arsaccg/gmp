@@ -144,4 +144,59 @@ class MainController < ApplicationController
     render layout: false
   end
 
+  def projecting_operating_results
+    project_id =  params[:cost_center]
+
+    @cost_center_detail = CostCenter.find(project_id).cost_center_detail
+    @budget_sale = Budget.where("`type_of_budget` = 0 AND `subbudget_code` IS NOT NULL AND `cost_center_id` = (?)", project_id).first rescue nil
+    @budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", project_id).first rescue @budget_sale
+
+    @inputcategories = Inputcategory.all
+
+    @data_w = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s)
+
+    # Make Data
+    @direct_cost = Array.new
+    @gastos_generales = Array.new
+    @utility = Array.new
+    @gastos_gestion = Array.new
+
+    @total_venta = 0
+    @total_meta = 0
+    @total_sale = 0
+    @total_goal = 0
+    
+    @inputcategories.each_with_index do |input, i|
+      partial_sale = @data_w[0]["0#{input.category_id}"] rescue nil
+      partial_goal = @data_w[1]["0#{input.category_id}"] rescue nil
+      if partial_sale != nil && partial_goal != nil
+        l = (@data_w[0]["0#{input.category_id}"][0]).length rescue 1
+        case l
+          when 2
+            name = @data_w[0]["0#{input.category_id}"][1]
+            goal = @data_w[0]["0#{input.category_id}"][2]
+            sale = @data_w[1]["0#{input.category_id}"][2]
+
+            @total_sale += sale
+            @total_goal += goal
+
+            @direct_cost << [name.to_s, sale.to_f, goal.to_f, (sale.to_f-goal.to_f)]
+        end
+      end
+    end
+
+    gastos_generales_sigo = GeneralExpense.where('code_phase = ?', 90).sum(:total)
+    gastos_gestion_sigo = GeneralExpense.where('code_phase = ?', 94).sum(:total)
+
+    @gastos_generales << [ @cost_center_detail.general_cost.to_f, gastos_generales_sigo.to_f, @cost_center_detail.general_cost.to_f-gastos_generales_sigo.to_f ]
+    @utility << [ @cost_center_detail.utility.to_f, 0, @cost_center_detail.utility.to_f-0 ]
+    @gastos_gestion << [ 0, gastos_gestion_sigo.to_f, 0-gastos_gestion_sigo.to_f ]
+
+    @total_venta = @total_sale.to_f + @cost_center_detail.general_cost.to_f + @cost_center_detail.utility.to_f
+    @total_meta = @total_goal.to_f + gastos_generales_sigo.to_f + gastos_gestion_sigo.to_f
+
+    render(:partial => 'op_result', :layout => false)
+
+  end
+
 end
