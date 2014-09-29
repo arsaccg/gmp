@@ -27,7 +27,9 @@ class Administration::InputcategoriesController < ApplicationController
 		@data_w = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s)
     	@data = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, 1)
 
+    p "~~~~~~~~~~p @data~~~~~~~~~~"
     p @data
+    p "~~~~~~~~~~p @data_w~~~~~~~~~~"
     p @data_w
 
     @data_excel = Array.new
@@ -51,6 +53,21 @@ class Administration::InputcategoriesController < ApplicationController
 		@input_budget_item_sale = Inputcategory.get_inputs(budget_sale_id, category_id.to_s)
 		@input_budget_item_goal = Inputcategory.get_inputs(budget_goal_id, category_id.to_s)
 		render :partial => 'input_detail', :layout => false
+	end
+
+	def get_input_wbs_detail
+		order,coditem,cod_input,budget_id = params[:order].gsub("d","."),params[:coditem],params[:cod_input],params[:budget_id]
+
+		@input_sale = Inputbybudgetanditems.where("`order` like '01.01.02.01.01' and `coditem` like '010009223055' and `cod_input` like CONCAT('021802','%') and budget_id = 1;")
+		@input_goal = Inputbybudgetanditems.where("`order` like '01.01.02.01.01' and `coditem` like '010009223055' and `cod_input` like CONCAT('021802','%') and budget_id = 1;")
+
+		# select i.`cod_input`,i.`input`,i.`quantity`,i.`price` from inputbybudgetanditems as i 
+		# where i.`order` like '01.01.02.01.01' 
+		# and i.`coditem` like '010009223055' #and i.`coditem` like '010009223055' 
+		# and i.`cod_input` like CONCAT('021802','%')
+		# and i.budget_id = 1;
+
+		render :partial => 'input_detail_wbs', :layout => false
 	end
 
 	def get_input_budget_item(orderitem, budgetid, wbs = nil)

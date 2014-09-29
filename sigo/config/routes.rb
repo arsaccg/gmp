@@ -607,6 +607,7 @@ ArsacLogistica::Application.routes.draw do
         get 'feo_of_work'
         get 'feo_pdf'
         get 'get_input_detail'
+        get 'get_input_wbs_detail'
       end
     end    
     # HASTA AQUI!
