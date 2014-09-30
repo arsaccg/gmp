@@ -404,7 +404,6 @@ class Production::ScValuationsController < ApplicationController
     @id = params[:id]
     scvaluation = ScValuation.find_by_id(@id)
     entity = Entity.find_by_name(scvaluation.name)
-    puts entity.name
     @subcontract = Subcontract.find_by_entity_id(entity.id)
 
     @start_date = params[:start_date]

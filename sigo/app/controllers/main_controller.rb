@@ -147,13 +147,13 @@ class MainController < ApplicationController
   def projecting_operating_results
     @project_id =  params[:cost_center]
 
-    @cost_center_detail = CostCenter.find(@project_id).cost_center_detail
+    @cost_center_detail = CostCenter.find(@project_id).cost_center_detail rescue nil
     @budget_sale = Budget.where("`type_of_budget` = 0 AND `subbudget_code` IS NOT NULL AND `cost_center_id` = (?)", @project_id).first rescue nil
     @budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", @project_id).first rescue @budget_sale
 
     @inputcategories = Inputcategory.all
 
-    @data_w = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s)
+    @data_w = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s) rescue nil
 
     # Make Data
     @direct_cost = Array.new
@@ -188,15 +188,29 @@ class MainController < ApplicationController
     gastos_generales_sigo = GeneralExpense.where('code_phase = ?', 90).sum(:total)
     gastos_gestion_sigo = GeneralExpense.where('code_phase = ?', 94).sum(:total)
 
-    @gastos_generales << [ @cost_center_detail.general_cost.to_f, gastos_generales_sigo.to_f, @cost_center_detail.general_cost.to_f-gastos_generales_sigo.to_f ]
-    @utility << [ @cost_center_detail.utility.to_f, 0, @cost_center_detail.utility.to_f-0 ]
-    @gastos_gestion << [ 0, gastos_gestion_sigo.to_f, 0-gastos_gestion_sigo.to_f ]
+    @gastos_generales << [ @cost_center_detail.general_cost.to_f, gastos_generales_sigo.to_f, @cost_center_detail.general_cost.to_f-gastos_generales_sigo.to_f ] rescue nil
+    @utility << [ @cost_center_detail.utility.to_f, 0, @cost_center_detail.utility.to_f-0 ] rescue nil
+    @gastos_gestion << [ 0, gastos_gestion_sigo.to_f, 0-gastos_gestion_sigo.to_f ] rescue nil
 
-    @total_venta = @total_sale.to_f + @cost_center_detail.general_cost.to_f + @cost_center_detail.utility.to_f
-    @total_meta = @total_goal.to_f + gastos_generales_sigo.to_f + gastos_gestion_sigo.to_f
+    @total_venta = (@total_sale.to_f + @cost_center_detail.general_cost.to_f + @cost_center_detail.utility.to_f) rescue 0
+    @total_meta = (@total_goal.to_f + gastos_generales_sigo.to_f + gastos_gestion_sigo.to_f) rescue 0
 
     render(:partial => 'op_result', :layout => false)
 
+  end
+
+  def full_project_operating_results
+    project_id =  params[:cost_center]
+
+    @budget_sale = Budget.where("`type_of_budget` = 0 AND `subbudget_code` IS NOT NULL AND `cost_center_id` = (?)", project_id).first rescue nil
+    @budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", project_id).first rescue @budget_sale
+
+    @wbsitems = Wbsitem.where(cost_center_id: project_id).order(:codewbs)
+    @inputcategories = Inputcategory.all
+
+    @data_w = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s)
+
+    render(:partial => 'administration/inputcategories/table_feo', :layout => false)
   end
 
   def show_phases

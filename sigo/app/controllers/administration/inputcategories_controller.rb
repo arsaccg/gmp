@@ -51,8 +51,6 @@ class Administration::InputcategoriesController < ApplicationController
 
 		@data = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, 1)
 
-		p "~~~~~@wbsitems~~~~~"
-		p @wbsitems
 		render :feo_of_work_wbs, :layout => false
 	end
 
