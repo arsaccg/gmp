@@ -107,6 +107,11 @@ function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, seman
 }
 
 function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,week6,week7,week8,week9,week10,title,series2,unit){
+  if (unit=="Cantidad de Horas Hombre") {
+    var val= ' hh'
+  }else{
+    var val= ' trab.'
+  };
   $('#'+div_id).highcharts({
     chart: {
         type: 'area'
@@ -136,7 +141,7 @@ function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,wee
     },
     tooltip: {
         shared: true,
-        valueSuffix: ' cc'
+        valueSuffix: val
     },
     plotOptions: {
         area: {

@@ -132,10 +132,6 @@ class Production::WeeklyReportsController < ApplicationController
     # GLOBAL Variables
     type = 'column'
     type2 = 'spline'
-    puts "------------------------------------------------"
-    puts @catwh.inspect
-    puts @catwp.inspect
-    puts "-------------------------------------------------"
     @i=0
     @serieh = Array.new
     @seriep = Array.new
