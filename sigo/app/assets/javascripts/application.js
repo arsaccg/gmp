@@ -136,7 +136,7 @@ function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,wee
     },
     tooltip: {
         shared: true,
-        valueSuffix: ' millions'
+        valueSuffix: ' cc'
     },
     plotOptions: {
         area: {

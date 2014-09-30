@@ -7,12 +7,15 @@ class Production::WeeklyReportsController < ApplicationController
   end
 
   def get_report
+    @cc = get_company_cost_center('cost_center')
   	@week3 = Array.new
     @cad = Array.new
     @cad4 = Array.new
     @result = params[:start_date].split(/,/)
     @article= params[:article]
-    puts @article.inspect
+    start_date = @result[1]
+    end_date = @result[2]
+    #Semanas que estan en la leyenda del gráfico
     if params[:article]=='0'
       working = WorkingGroup.where("cost_center_id ="+get_company_cost_center('cost_center').to_s)
       working.each do |wg|
@@ -20,8 +23,6 @@ class Production::WeeklyReportsController < ApplicationController
       end
       @article = @cad4.join(',')
     end
-    start_date = @result[1]
-    end_date = @result[2]
     @week = CostCenter.getWeek(get_company_cost_center('cost_center'),Time.now.to_date.to_s)
     if @week.count>=10
       @week3 = CostCenter.getWeek3(get_company_cost_center('cost_center'),end_date.to_s,10)
@@ -41,6 +42,8 @@ class Production::WeeklyReportsController < ApplicationController
         @cad << week3[1] + ' ' + week3[2].strftime("%d/%m") + '-' + week3[3].strftime("%d/%m")
       end
     end
+
+    #Semanas que estan en la leyenda del gráfico-fin
     @costcenter = get_company_cost_center('cost_center')
     weeks = ActiveRecord::Base.connection.execute("
       SELECT wcc.id, wcc.end_date
@@ -64,35 +67,25 @@ class Production::WeeklyReportsController < ApplicationController
         ")
       end
     end
+    #Semanas que estan en la leyenda del gráfico-fin
+
     @weekhh =Array.new
     @weekcp =Array.new
+
+    #revisa partes por semana
     @weeks.each do|inter|
       @weekhh << ActiveRecord::Base.connection.execute("
-        SELECT c.name, ppd.total_hours AS total_h, pp.date_of_creation
-        FROM part_people pp, part_person_details ppd, articles a, workers w, categories c, worker_contracts wc
-        WHERE pp.date_of_creation BETWEEN '" + inter[1].to_date.to_s + "' AND '" + inter[2].to_date.to_s + "'
-        AND pp.blockweekly=0
-        AND ppd.part_person_id=pp.id
-        AND ppd.worker_id=w.id
-        AND wc.article_id=a.id
+        SELECT ar.name
+        FROM part_people pp, part_person_details ppd, workers w, worker_contracts wc, articles ar
+        WHERE pp.cost_center_id = "+@cc.to_s+"
+        AND pp.date_of_creation BETWEEN '" + inter[1].to_date.to_s + "' AND '" + inter[2].to_date.to_s + "'
+        AND pp.blockweekly =0
+        AND pp.working_group_id IN (" + @article.to_s + ")
+        AND ppd.part_person_id = pp.id
+        AND ppd.worker_id = w.id
         AND w.id = wc.worker_id
-        AND a.category_id = c.id
-        AND pp.working_group_id IN(" + @article.to_s + ")
-        GROUP BY c.name
-      ")
-
-      @weekcp << ActiveRecord::Base.connection.execute("
-        SELECT c.name AS C_name, Sum(1) AS Cantidad_personas, pp.date_of_creation
-        FROM part_people pp, part_person_details ppd, articles a, workers w, categories c, worker_contracts wc
-        WHERE pp.date_of_creation BETWEEN '"+inter[1].to_date.to_s+"' AND '"+ inter[2].to_date.to_s+"'
-        AND pp.blockweekly=0
-        AND ppd.part_person_id=pp.id
-        AND ppd.worker_id=w.id
-        AND wc.article_id=a.id
-        AND w.id = wc.worker_id
-        AND a.category_id = c.id
-        AND pp.working_group_id IN("+@article.to_s+")
-        GROUP BY c.name
+        AND wc.article_id = ar.id
+        GROUP BY ar.name
       ")
     end
     @catehh = Array.new
@@ -101,15 +94,10 @@ class Production::WeeklyReportsController < ApplicationController
     @weekhh.each do |a|
       a.each do |b|
         @catehh << b[0]
-      end
-    end
-    @catehh = @catehh.uniq
-
-    @weekcp.each do |a|
-      a.each do |b|
         @catecp << b[0]
       end
     end
+    @catehh = @catehh.uniq
     @catecp = @catecp.uniq
     
     @catwh = Array.new
@@ -117,50 +105,26 @@ class Production::WeeklyReportsController < ApplicationController
     @catehh.each do |cat|
       @weeks.each do |w|
         catwh = ActiveRecord::Base.connection.execute("
-          SELECT SUM(ppd.total_hours)
-          FROM part_people pp, part_person_details ppd, articles a, workers w, categories c, worker_contracts wc
-          WHERE pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
-          AND pp.blockweekly=0
-          AND wc.article_id=a.id
-          AND w.id = wc.worker_id
+          SELECT SUM(ppd.total_hours), Sum(1)
+          FROM part_people pp, part_person_details ppd, workers w, worker_contracts wc, articles ar
+          WHERE pp.cost_center_id = "+@cc.to_s+"
+          AND pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
+          AND pp.blockweekly =0
+          AND pp.working_group_id IN (" + @article.to_s + ")
           AND ppd.part_person_id = pp.id
           AND ppd.worker_id = w.id
-          AND a.category_id = c.id
-          AND c.name LIKE '"+cat.to_s+"'
-          AND pp.working_group_id IN("+@article.to_s+")
-          GROUP BY c.name
+          AND w.id = wc.worker_id
+          AND wc.article_id = ar.id
+          AND ar.name = '"+cat.to_s+"'
+          GROUP BY ar.name
         ")
         if catwh.count==1
           catwh.each do |c|
             @catwh << c[0].to_f
+            @catwp << c[1].to_f
           end
         else
           @catwh<<0
-        end
-      end
-    end
-
-    @catecp.each do |cat|
-      @weeks.each do |w|
-        catwp = ActiveRecord::Base.connection.execute("
-          SELECT SUM(1)
-          FROM part_people pp, part_person_details ppd, articles a, workers w, categories c, worker_contracts wc
-          WHERE pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
-          AND pp.blockweekly=0
-          AND ppd.part_person_id = pp.id
-          AND ppd.worker_id = w.id
-          AND wc.article_id=a.id
-          AND w.id = wc.worker_id
-          AND a.category_id = c.id
-          AND c.name LIKE '"+cat.to_s+"'
-          AND pp.working_group_id IN("+@article.to_s+")
-          GROUP BY c.name
-        ")
-        if catwp.count==1
-          catwp.each do |c|
-            @catwp << c[0].to_f
-          end
-        else
           @catwp<<0
         end
       end
@@ -168,7 +132,10 @@ class Production::WeeklyReportsController < ApplicationController
     # GLOBAL Variables
     type = 'column'
     type2 = 'spline'
-
+    puts "------------------------------------------------"
+    puts @catwh.inspect
+    puts @catwp.inspect
+    puts "-------------------------------------------------"
     @i=0
     @serieh = Array.new
     @seriep = Array.new
