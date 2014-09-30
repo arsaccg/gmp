@@ -105,7 +105,7 @@ class Production::WeeklyReportsController < ApplicationController
     @catehh.each do |cat|
       @weeks.each do |w|
         catwh = ActiveRecord::Base.connection.execute("
-          SELECT SUM(ppd.total_hours), Sum(1)
+          SELECT SUM(ppd.total_hours)
           FROM part_people pp, part_person_details ppd, workers w, worker_contracts wc, articles ar
           WHERE pp.cost_center_id = "+@cc.to_s+"
           AND pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
@@ -118,13 +118,37 @@ class Production::WeeklyReportsController < ApplicationController
           AND ar.name = '"+cat.to_s+"'
           GROUP BY ar.name
         ")
+
+        catwp = ActiveRecord::Base.connection.execute("
+          SELECT SUM(1)
+          FROM part_people pp, part_person_details ppd, workers w, worker_contracts wc, articles ar
+          WHERE pp.cost_center_id = "+@cc.to_s+"
+          AND pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
+          AND pp.blockweekly =0
+          AND pp.working_group_id IN (" + @article.to_s + ")
+          AND ppd.part_person_id = pp.id
+          AND ppd.worker_id = w.id
+          AND w.id = wc.worker_id
+          AND wc.article_id = ar.id
+          AND ar.name = '"+cat.to_s+"'
+          GROUP BY pp.date_of_creation
+        ")
         if catwh.count==1
           catwh.each do |c|
             @catwh << c[0].to_f
-            @catwp << c[1].to_f
           end
         else
           @catwh<<0
+        end
+        @max = 0
+        if catwp.count>0
+          catwp.each do |c|
+            if c[0].to_f > @max
+              @max = c[0]
+            end
+          end
+            @catwp <<  @max.to_f
+        else
           @catwp<<0
         end
       end
