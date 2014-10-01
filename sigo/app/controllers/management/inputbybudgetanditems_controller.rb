@@ -14,6 +14,8 @@ class Management::InputbybudgetanditemsController < ApplicationController
 
     @measured = params[:measured] rescue "0.0"
     @must_be_blocked = @measured.to_f > 0 ? false : true
+    p '~~~~~~~~~~~~~~~~~~~~~~~@must_be_blocked~~~~~~~~~~~~~~~~~~~'
+    p @must_be_blocked
 
     @pdf_table_array = Array.new
 

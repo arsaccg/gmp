@@ -1,4 +1,4 @@
-%table(class="table table-bordered table-hover table-condensed white-table" width="100%")
+%table(class="table table-bordered table-hover /*table-condensed*/ white-table" width="100%")
   %thead
     %th
       Codigo
@@ -18,7 +18,7 @@
         %td
           = item.input
         %td
-          = 'U'
+          = item.unit
         %td(style="text-align: right;")
           = number_to_currency(item.quantity*item.price*@measured, :unit=>'S/. ') rescue "--"
         %td(style="text-align: right;")

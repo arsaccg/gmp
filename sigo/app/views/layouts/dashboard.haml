@@ -870,6 +870,18 @@
           .modal-body{"style"=>"background-color:#E6E6E6;"}
             .detail-inputs
 
+    #itemsModalWbs.modal.fade(tabindex="-1" role="dialog" aria-labelledby="myModalLabelWbs")
+      .modal-dialog{ :style => 'width: 60%;' }
+        .modal-content
+          .modal-header{"style"=>"background-color:#296191;color:white;padding-top:8px;padding-bottom:8px"}
+            %button(class="close" data-dismiss="modal")
+              %span(aria-hidden="true" style="color:white;") &times;
+              %span{"class"=>"sr-only"} Close
+            %h4.modal-title#myModalLabelWbs{"style"=>"font-weight:900;"}
+              Detalle
+          .modal-body{"style"=>"background-color:#E6E6E6;"}
+            .detail-inputs_wbs
+
     #cost_center_general_data.modal.fade{"aria-hidden" => "true", role: "dialog", tabindex: "-1"}
       .modal-dialog{"style"=>"width:70%;margin-top:0px;"}
         .modal-content
