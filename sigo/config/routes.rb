@@ -346,6 +346,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         get 'report_pdf'
         get 'part_work_pdf'
+        get 'part_equipment_pdf'
         post 'get_report'
         post 'part_work'
         post 'part_people'
