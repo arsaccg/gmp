@@ -135,7 +135,7 @@ function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,wee
         },
         labels: {
             formatter: function() {
-                return this.value / 1000;
+                return this.value + val;
             }
         }
     },
@@ -436,7 +436,6 @@ function show_report_inventory(url, parameters, wurl, wname, wparameters){
 
 function bar_graph_category(div, categoria, series2, title_c, tipo, abrev, suffix){
   var arreglo = categoria.split(',')
-  console.log(suffix);
 
   $('#'+div).highcharts({
     chart: {

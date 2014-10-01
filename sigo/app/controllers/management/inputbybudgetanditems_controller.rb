@@ -12,7 +12,10 @@ class Management::InputbybudgetanditemsController < ApplicationController
     @budget = Budget.find(@budget_id)
     @order = params[:order].gsub("d",".")
 
-    @measured = params[:measured] rescue 0.0
+    @measured = params[:measured] rescue "0.0"
+    @must_be_blocked = @measured.to_f > 0 ? false : true
+    p '~~~~~~~~~~~~~~~~~~~~~~~@must_be_blocked~~~~~~~~~~~~~~~~~~~'
+    p @must_be_blocked
 
     @pdf_table_array = Array.new
 
@@ -22,10 +25,9 @@ class Management::InputbybudgetanditemsController < ApplicationController
 
     if @itembybudgetanditems != nil
       @itembybudgetanditems.each do |itembudget|
-        @pdf_table_array << [itembudget.input, itembudget.cod_input,  itembudget.quantity.to_f.round(4), itembudget.unit, itembudget.price.round(4), (itembudget.quantity.to_f * itembudget.price.to_f).round(4) ]
+        @pdf_table_array << [ itembudget.input, itembudget.cod_input,  itembudget.quantity.to_f.round(4), itembudget.unit, itembudget.price.round(4), (itembudget.quantity.to_f * itembudget.price.to_f).round(4) ]
       end
     end
-
     render :index, :layout => false
   end
   
@@ -34,6 +36,9 @@ class Management::InputbybudgetanditemsController < ApplicationController
     input.price = params[:price]
     input.quantity = params[:quantity]
     input.save
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~itembybudget = Itembybudget.where('`order` LIKE ? AND `item_code` LIKE ? AND `budget_id` = ?', )
+    #~~~~~~~~~~~~~~~~~~~~~~~~~get_sumatory_one_to_one(order, budget)
     render :nothing => true, :status => 200, :content_type => 'text/html', layout: false
   end
 
@@ -70,7 +75,7 @@ class Management::InputbybudgetanditemsController < ApplicationController
     @item.input = params[:input].gsub('_', ' ')
     @item.budget_id = params[:budget_id]
     @item.subbudget_code = params[:subbudget_code]
-    @item.unit = params[:unit]
+    @item.unit = params[:unit].gsub('_', '%')
 
     p "****************Inputbybudgetanditem*****************"
     @item.save

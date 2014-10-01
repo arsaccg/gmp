@@ -509,17 +509,24 @@ margin-right: 100px;
   text-align: right;
 }
 
-#itemsModal {
-}
+
 #itemsModal table{
   font-size: 11px;
 }
-
-#itemsModal table td:nth-child(1), #itemsModal table th:nth-child(1){
+#itemsModal table td:nth-child(1), #itemsModal table th:nth-child(1), #itemsModal table td:nth-child(3), #itemsModal table th:nth-child(3){
   width: 70px;
 }
+#itemsModal table td:nth-child(4), #itemsModal table th:nth-child(4), #itemsModal table th:nth-child(5), #itemsModal table th:nth-child(5){
+  width: 100px;
+}
 
-#itemsModal table td:nth-child(3), #itemsModal table th:nth-child(3), #itemsModal table th:nth-child(4), #itemsModal table th:nth-child(4){
+#itemsModalWbs table{
+  font-size: 11px;
+}
+#itemsModalWbs table td:nth-child(1), #itemsModalWbs table th:nth-child(1), #itemsModalWbs table td:nth-child(3), #itemsModalWbs table th:nth-child(3){
+  width: 70px;
+}
+#itemsModalWbs table td:nth-child(4), #itemsModalWbs table th:nth-child(4), #itemsModalWbs table th:nth-child(5), #itemsModalWbs table th:nth-child(5){
   width: 100px;
 }
 
@@ -581,4 +588,18 @@ margin-right: 100px;
 
 .white-table>tbody>tr>td{
   vertical-align: middle;
+}
+
+table.inputbybandi-table th:nth-child(4), table.inputbybandi-table th:nth-child(6), table.inputbybandi-table td:nth-child(4), table.inputbybandi-table td:nth-child(6){
+  width: 65px;
+}
+table.inputbybandi-table th:nth-child(2), table.inputbybandi-table td:nth-child(2){
+  width: 64%;
+}
+
+.green{
+  color:green;
+}
+.red{
+  color:red;
 }
