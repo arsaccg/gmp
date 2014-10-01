@@ -30,6 +30,8 @@
                   -@subcontract.subcontract_details.each do |sub|
                     -if sub.itembybudget.order==workerDetail2[2]
                       = workerDetail2[3].round(2)-sub.amount
+                -else
+                  =""
       - else
         %h4.modal-title No hay datos.
         %br
