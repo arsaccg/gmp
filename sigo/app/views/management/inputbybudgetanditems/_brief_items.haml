@@ -20,6 +20,6 @@
       %a(href ='#{filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s}.pdf?budget_id=#{@budget_id}&item_id=#{@item_id}&order=#{@order}' class='btn btn-default btn-mini btn-danger')
         %i.fa.fa-download
         PDF 
-      %a(href='#' data-toggle='modal' data-target="#itemsModal" class='btn btn-success btn-mini')
+      %a(href='#' data-toggle='modal' data-target="#itemsModal" class='btn btn-success btn-mini #{@must_be_blocked ? "disabled" : "" }')
         %i.fa.fa-plus
         Agregar
