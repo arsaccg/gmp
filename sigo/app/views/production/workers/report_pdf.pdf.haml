@@ -1,0 +1,47 @@
+%html
+  %head
+    %meta{charset: "utf-8"}
+    = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
+  %body
+    #main
+      #content
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th{'colspan' => 6, "style"=>"text-align:center;font-size: large;"}= "LISTADO DE TRABAJADORES - ARSAC - " + @cc.code.to_s + " - " + @cc.name.to_s
+            %tr{"style"=> "font-size:14px"}
+              %th{"style"=>"text-align:center"} Item
+              %th{"style"=>"text-align:center"} Código TOBI
+              %th{"style"=>"text-align:center"} Puesto
+              %th{"style"=>"text-align:center"} Nombre
+              %th{"style"=>"text-align:center"} DNI
+              %th{"style"=>"text-align:center"} Dirección
+          %tbody{"style"=> "font-size:12px"}
+            -@i=1
+            -if @todo.count>0
+              -@todo.each do |to|
+                -if to[0].nil? && to[5].nil?
+                  %tr
+                    -if to[1].to_s=="Activo"
+                      %th{'colspan' => 6, "style"=>"text-align:left; background-color: #3276b1; font-weight: bold;color:white; "}
+                        %label{"style"=>"margin-left:50px"}=to[1].to_s
+                    -if to[1].to_s=="Cesado"
+                      %th{'colspan' => 6, "style"=>"text-align:left; background-color: #a90303; font-weight: bold;color:white; "}
+                        %label{"style"=>"margin-left:50px"}=to[1].to_s
+                  -@i=1
+                -elsif to[0].nil? && to[5]==0
+                  %tr
+                    %th{"style"=>"text-align:left;font-weight: bold; "}
+                    %th{'colspan' => 5, "style"=>"text-align:left; font-weight: bold; "}= to[1].to_s
+                  -@i=1
+                -else
+                  %tr
+                    %th{"style"=>"text-align:left; font-weight: normal; "}= @i
+                    %th{"style"=>"text-align:left; font-weight: normal; "}= to[0].to_s
+                    %th{"style"=>"text-align:left; font-weight: normal; "}= to[1].to_s
+                    %th{"style"=>"text-align:left; font-weight: normal; "}= to[2].to_s
+                    %th{"style"=>"text-align:left; font-weight: normal; "}= to[3].to_s
+                    %th{"style"=>"text-align:left; font-weight: normal; "}= to[4].to_s + " "+ to[5].to_s
+                  -@i+=1
+            -else
+              %th{'colspan' => 6, "style"=>"text-align:center;font-size: large;"} No se encontraron trabajadores registrados con los datos especificados

@@ -1,0 +1,70 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Listar Trabajadores
+  .widget-body
+    .row
+      %section.col.col-10{"style"=> "margin-left:30px"}
+        %label Tipos de Trabajador:
+        %select.select2#type_worker{:name => "tipo[]", :style => "width:605px;padding: 0;border: none;", :multiple => true}
+          %option{:value => "empleado"} Empleado
+          %option{:value => "obrero"} Obrero
+          %option{:value => "pensionista"} Pensionista
+          %option{:value => "formacion"} Personal en Formación
+          %option{:value => "externo"} Externos
+         
+    %br
+    .row
+      %section.col.col-10{"style"=> "margin-left:30px"}
+        .form-group
+          %label Estado de Trabajador:
+          %label.radio-inline
+            %input.checkbox#ac{:type => 'checkbox', :value => "active"}
+            %span Activo
+          %label.radio-inline
+            %input.checkbox#ce{:type => 'checkbox', :value => "ceased"}
+            %span Cesado
+          %a.btn.btn-primary{"style"=> "margin-left:267px", :onclick=> "generate();", :target => "_blank"}
+            %i.fa.fa-list 
+            Generar Listado
+
+
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado de Parte Personas
+
+:javascript
+  $(document).ready(function () {
+    $('#type_worker').select2();
+  });
+
+  $('#backlist').click(function(){
+    load_url_ajax("#{production_workers_path}", 'content', null, null, 'GET');
+  });
+
+  function generate(){
+    var st1 = null;
+    var st2 = null;
+    if(document.getElementById('ac').checked){
+      st1 = $('#ac').val();
+    }
+    if(document.getElementById('ce').checked){
+      st2 = $('#ce').val();
+    }
+    var type = $('#type_worker').val();
+    if(st1!=null || st2!= null && type!=null){
+      data = { authenticity_token: "#{form_authenticity_token}", state1: st1, state2:st2, type:type};
+      window.open("/production/workers/list_pdf?state1="+st1+"&&state2="+st2+"&&type="+type+"", '_blank');
+    }else{
+      $.smallBox({
+        title : "Aviso",
+        content : "<i class='fa fa-clock-o'></i> <i>Escoja por lo menos un tipo de trabajador y un estado</i>",
+        color : "#C46A69",
+        iconSmall : "fa fa-times fa-2x fadeInRight animated",
+        timeout : 4000
+      });
+    }
+
+  }
+
