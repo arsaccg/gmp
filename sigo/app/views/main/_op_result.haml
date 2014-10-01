@@ -6,15 +6,15 @@
         %span{"class"=>"sr-only"} Close
       %h4{"class"=>"modal-title","style"=>"font-weight:900; text-align: center;"} Datos Generales del Proyecto
     .modal-body{"style"=>"background-color:#E6E6E6;"}
-      %table.table.table-bordered.table-hover
+      %table.table.table-bordered.table-hover{:style => 'font-size: 12px;'}
         %tr
           %th{ :style => "border-right: none;"}
           %th{ :style => "border-left: none;width: 1%;"}
-          %th{ :style => "background-color: #f9f9f9;"}
+          %th{ :style => "background-color: #f9f9f9;text-align: center;"}
             VENTA
-          %th{ :style => "background-color: #f9f9f9;"}
+          %th{ :style => "background-color: #f9f9f9;text-align: center;"}
             META
-          %th{ :style => "background-color: #f9f9f9;"}
+          %th{ :style => "background-color: #f9f9f9;text-align: center;"}
             DIFERENCIA
         %tr
           %th
@@ -22,11 +22,11 @@
           %th
             %a.btn.btn-default.btn-xs{:href => "javascript:load_full_operating_result('#{@project_id}');"}
               %i.fa.fa-search
-          %th
+          %th{:style => 'text-align:right;'}
             = number_to_currency(@total_sale, unit: 'S/. ', precision: 2)
-          %th
+          %th{:style => 'text-align:right;'}
             = number_to_currency(@total_goal, unit: 'S/. ', precision: 2)
-          %th
+          %th{:style => 'text-align:right;'}
             = number_to_currency(@total_sale-@total_goal, unit: 'S/. ', precision: 2)
         - @direct_cost.each do |opr|
           %tr
@@ -34,52 +34,52 @@
             %td{:style => "background-color: #f9f9f9;"}
               %a.btn.btn-default.btn-xs{:href => "javascript:get_input_detail('#{@budget_sale.id.to_s}', '#{@budget_goal.id.to_s}', '#{opr[4]}');"}
                 %i.fa.fa-search
-            %td{"style"=>"background-color: #f9f9f9;"}= number_to_currency opr[1], unit: 'S/. ', precision: 2
-            %td{"style"=>"background-color: #f9f9f9;"}= number_to_currency opr[2], unit: 'S/. ', precision: 2
+            %td{"style"=>"background-color: #f9f9f9;text-align:right;"}= number_to_currency opr[1], unit: 'S/. ', precision: 2
+            %td{"style"=>"background-color: #f9f9f9;text-align:right;"}= number_to_currency opr[2], unit: 'S/. ', precision: 2
             - if opr[3] < 0
-              %td{"style"=>"background-color: #f9f9f9; color:red;"}= number_to_currency opr[3], unit: 'S/. ', precision: 2
+              %td{"style"=>"background-color: #f9f9f9; color:red;text-align:right;"}= number_to_currency opr[3], unit: 'S/. ', precision: 2
             - else
-              %td{"style"=>"background-color: #f9f9f9;"}= number_to_currency opr[3], unit: 'S/. ', precision: 2
+              %td{"style"=>"background-color: #f9f9f9;text-align:right;"}= number_to_currency opr[3], unit: 'S/. ', precision: 2
         %tr
           %th G.G
           - @gastos_generales.each do |ga_ge|
             %td
               %a.btn.btn-default.btn-xs{:href => "javascript:show_phases('#{@project_id}', 90);"}
                 %i.fa.fa-search
-            %td= number_to_currency ga_ge[0], unit: 'S/. ', precision: 2
-            %td= number_to_currency ga_ge[1], unit: 'S/. ', precision: 2
+            %td{:style => 'text-align:right;'}= number_to_currency ga_ge[0], unit: 'S/. ', precision: 2
+            %td{:style => 'text-align:right;'}= number_to_currency ga_ge[1], unit: 'S/. ', precision: 2
             - if ga_ge[2] < 0
-              %td{"style"=>"color:red;"}= number_to_currency ga_ge[2], unit: 'S/. ', precision: 2
+              %td{"style"=>"color:red;text-align:right;"}= number_to_currency ga_ge[2], unit: 'S/. ', precision: 2
             - else
               %td= number_to_currency ga_ge[2], unit: 'S/. ', precision: 2
         %tr
           %th{"style"=>"border-right: none;"} UTILIDAD
           - @utility.each do |util|
             %td{"style"=>"border-left: none;"}
-            %td= number_to_currency util[0], unit: 'S/. ', precision: 2
-            %td= number_to_currency util[1], unit: 'S/. ', precision: 2
+            %td{:style => 'text-align:right;'}= number_to_currency util[0], unit: 'S/. ', precision: 2
+            %td{:style => 'text-align:right;'}= number_to_currency util[1], unit: 'S/. ', precision: 2
             - if util[2] < 0
-              %td{"style"=>"color:red;"}= number_to_currency util[2], unit: 'S/. ', precision: 2
+              %td{"style"=>"color:red;text-align:right;"}= number_to_currency util[2], unit: 'S/. ', precision: 2
             - else
-              %td= number_to_currency util[2], unit: 'S/. ', precision: 2
+              %td{:style => 'text-align:right;'}= number_to_currency util[2], unit: 'S/. ', precision: 2
         %tr
           %th GASTOS DE GESTIÓN
           - @gastos_gestion.each do |gg|
             %td
               %a.btn.btn-default.btn-xs{:href => "javascript:show_phases('#{@project_id}', 94);"}
                 %i.fa.fa-search
-            %td= number_to_currency gg[0], unit: 'S/. ', precision: 2
-            %td= number_to_currency gg[1], unit: 'S/. ', precision: 2
+            %td{:style => 'text-align:right;'}= number_to_currency gg[0], unit: 'S/. ', precision: 2
+            %td{:style => 'text-align:right;'}= number_to_currency gg[1], unit: 'S/. ', precision: 2
             - if gg[2] < 0
-              %td{"style"=>"color:red;"}= number_to_currency gg[2], unit: 'S/. ', precision: 2
+              %td{"style"=>"color:red;text-align:right;"}= number_to_currency gg[2], unit: 'S/. ', precision: 2
             - else
               %td= number_to_currency gg[2], unit: 'S/. ', precision: 2
-        %tr
-          %th{"style"=>"background-color: #f9f9f9;border-right: none;"} TOTAL
-          %th{"style"=>"background-color: #f9f9f9;border-left: none;"}
-          %td{"style"=>"background-color: #f9f9f9;"}= number_to_currency @total_venta, unit: 'S/. ', precision: 2
-          %td{"style"=>"background-color: #f9f9f9;"}= number_to_currency @total_meta, unit: 'S/. ', precision: 2
+        %tr{:style => 'font-weight: bold;font-size: 14px;'}
+          %th{"style"=>"background-color: #40E1E9;border-right: none;"} TOTAL
+          %th{"style"=>"background-color: #40E1E9;border-left: none;border-right: 1px solid #40E1E9;"}
+          %td{"style"=>"background-color: #40E1E9;border-right: 1px solid #40E1E9;text-align:right;"}= number_to_currency @total_venta, unit: 'S/. ', precision: 2
+          %td{"style"=>"background-color: #40E1E9;border-right: 1px solid #40E1E9;text-align:right;"}= number_to_currency @total_meta, unit: 'S/. ', precision: 2
           - if (@total_venta - @total_meta) < 0
-            %td{"style"=>"background-color: #f9f9f9;"}= number_to_currency (@total_venta - @total_meta), unit: 'S/. ', precision: 2
+            %td{"style"=>"background-color: #40E1E9;text-align:right;"}= number_to_currency (@total_venta - @total_meta), unit: 'S/. ', precision: 2
           - else
-            %td{"style"=>"background-color: #f9f9f9;"}= number_to_currency (@total_venta - @total_meta), unit: 'S/. ', precision: 2
+            %td{"style"=>"background-color: #40E1E9;text-align:right;"}= number_to_currency (@total_venta - @total_meta), unit: 'S/. ', precision: 2
