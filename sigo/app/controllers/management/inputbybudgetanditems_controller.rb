@@ -12,7 +12,8 @@ class Management::InputbybudgetanditemsController < ApplicationController
     @budget = Budget.find(@budget_id)
     @order = params[:order].gsub("d",".")
 
-    @measured = params[:measured] rescue 0.0
+    @measured = params[:measured] rescue "0.0"
+    @must_be_blocked = @measured.to_f > 0 ? false : true
 
     @pdf_table_array = Array.new
 
