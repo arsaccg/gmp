@@ -268,6 +268,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       AND p.working_group_id IN (" + working_group_id + ")
       AND p.id = pwd.part_work_id
       AND pwd.itembybudget_id =  ibb.id
+      AND ibb.budget_id =  4
       GROUP BY ibb.subbudgetdetail"
     )
 

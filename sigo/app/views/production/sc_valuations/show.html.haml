@@ -150,7 +150,7 @@
   });
 
   function part_work() {
-    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@scvaluation.start_date}", end_date: "#{@scvaluation.end_date}", cad: "#{@scvaluation.working_group}", id: "#{@scvaluation.id}" };
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@scvaluation.start_date}", end_date: "#{@scvaluation.end_date}", cad: "#{@scvaluation.working_group}", name: "#{@scvaluation.name}" };
     load_url_ajax('#{part_work_production_sc_valuations_path}', 'part-work', data, '', 'POST');
     $('#part-work').modal({
       keyboard: false,
@@ -168,7 +168,7 @@
   }
 
   function part_equipment() {
-    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@scvaluation.start_date}", end_date: "#{@scvaluation.end_date}", cad: "#{@scvaluation.working_group}",id: "#{@scvaluation.id}" };
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@scvaluation.start_date}", end_date: "#{@scvaluation.end_date}", cad: "#{@scvaluation.working_group}",name: "#{@scvaluation.name}" };
     load_url_ajax('#{part_equipment_production_sc_valuations_path}', 'part-equipment', data, '', 'POST');
     $('#part-equipment').modal({
       keyboard: false,
