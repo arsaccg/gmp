@@ -36,6 +36,9 @@ class Management::InputbybudgetanditemsController < ApplicationController
     input.price = params[:price]
     input.quantity = params[:quantity]
     input.save
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~itembybudget = Itembybudget.where('`order` LIKE ? AND `item_code` LIKE ? AND `budget_id` = ?', )
+    #~~~~~~~~~~~~~~~~~~~~~~~~~get_sumatory_one_to_one(order, budget)
     render :nothing => true, :status => 200, :content_type => 'text/html', layout: false
   end
 
@@ -72,7 +75,7 @@ class Management::InputbybudgetanditemsController < ApplicationController
     @item.input = params[:input].gsub('_', ' ')
     @item.budget_id = params[:budget_id]
     @item.subbudget_code = params[:subbudget_code]
-    @item.unit = params[:unit]
+    @item.unit = params[:unit].gsub('_', '%')
 
     p "****************Inputbybudgetanditem*****************"
     @item.save
