@@ -29,6 +29,11 @@
       %button.btn.btn-primary.btn-default#show-table{:type => 'button'}
         %i.fa.fa-search
         Consultar
+  .row
+    .col-md-2
+      %button.btn.btn-primary.btn-default#table-totales{:type => 'button',"style"=>" margin-left: 835px; ", :disabled=>"disabled"}
+        %i.fa.fa-search
+        Ver totales
 
   %br
   .row
@@ -57,6 +62,14 @@
         iconSmall : "fa fa-times fa-2x fadeInRight animated",
         timeout : 4000
       });
-
     }
+  });
+
+  $('#table-totales').click(function(){
+    data = { authenticity_token: "#{form_authenticity_token}", weeks: $('#weeks').val(), wg: $('#wg').val(), catehh:$('#cat').val()};
+    load_url_ajax('#{tablas_totales_production_weekly_reports_path}', 'tablas-totales', data, '', 'POST');
+    $('#tablas-totales').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });    
   });

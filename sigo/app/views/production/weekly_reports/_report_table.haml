@@ -1,4 +1,9 @@
 #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+  %input#flag{"style"=>"display:none", :value=>"#{@contador}"}
+  %input#weeks{"style"=>"display:none", :value=>"#{@inicio}"}
+  %input#wg{"style"=>"display:none", :value=>"#{@article}"}
+  %input#cat{"style"=>"display:none", :value=>"#{@arr}"}
+  #tablas-totales.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "tablasTotalesLabel", role: "dialog", tabindex: "-1"}
   :javascript
     $(document).ready(function () {
       load_graphic_for_weekly_report('container-graphic','#{@cad[0]}','#{@cad[1]}','#{@cad[2]}','#{@cad[3]}','#{@cad[4]}','#{@cad[5]}','#{@cad[6]}','#{@cad[7]}','#{@cad[8]}','#{@cad[9]}','por Cantidad de Horas', jQuery.parseJSON("#{escape_javascript @serieh.to_json}"),'Cantidad de Horas Hombre');
@@ -9,7 +14,14 @@
   :javascript
     $(document).ready(function () {
       load_graphic_for_weekly_report('container-graphic-2','#{@cad[0]}','#{@cad[1]}','#{@cad[2]}','#{@cad[3]}','#{@cad[4]}','#{@cad[5]}','#{@cad[6]}','#{@cad[7]}','#{@cad[8]}','#{@cad[9]}','por Cantidad de Trabajadores', jQuery.parseJSON("#{escape_javascript @seriep.to_json}"),'Cantidad de Trabajadores');
+      if($('#flag').val()>0){
+        $('#table-totales').attr("disabled", false);
+      }else{
+        $('#table-totales').attr("disabled", true);
+      }
     });
   %br
   .row
     %div{:id => "container-graphic-2"}
+
+
