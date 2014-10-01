@@ -76,33 +76,55 @@ class GeneralExpenses::GeneralExpensesController < ApplicationController
     total.each do |t|
       @total = t[0]
     end
-    render :pdf => "reporte_gastos_generales-#{Time.now.strftime('%d-%m-%Y')}", 
-           :template => 'general_expenses/general_expenses/report_pdf.pdf.haml',
-           :orientation => 'Landscape',
-           :page_size => 'A4'
+    render :layout => false
   end
 
   def report_pdf
     respond_to do |format|
       format.html
       format.pdf do
-        @phases = ActiveRecord::Base.connection.execute(" SELECT code_phase, SUM(total) FROM  general_expenses WHERE cost_center_id = "+get_company_cost_center('cost_center').to_s+" GROUP BY code_phase")
         @ccd = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center').to_s)
         @cc = get_company_cost_center('cost_center').to_s
-        @ge = GeneralExpense.where('cost_center_id = '+get_company_cost_center('cost_center').to_s)
-        @ids = Array.new
-        @t = Array.new
-        @ge.each do |g|
-          @ids << g.id
-        end
-        @ids=@ids.join(',')
-        t=ActiveRecord::Base.connection.execute("
-          SELECT SUM(ged.parcial) 
-          FROM  general_expense_details ged
-          WHERE ged.general_expense_id IN ("+@ids.to_s+")
+        @poe =ActiveRecord::Base.connection.execute("
+          SELECT ge.code_phase, p.code, p.name, ge.total, ar.code, ar.name, u.name, ged.people, ged.participation, ged.time, ged.parcial, ged.amount, ged.cost
+          FROM general_expense_details ged, general_expenses ge, articles ar, phases p, unit_of_measurements u
+          WHERE ge.cost_center_id = "+@cc.to_s+"
+          AND ge.id=ged.general_expense_id
+          AND ar.id = ged.article_id
+          AND p.id = ge.phase_id
+          AND ar.unit_of_measurement_id = u.id
+          ORDER BY p.code ASC 
         ")
-        t.each do |t|
-          @t = t[0]
+        total = ActiveRecord::Base.connection.execute("
+          SELECT SUM(total)
+          FROM general_expenses
+          WHERE cost_center_id = "+@cc.to_s+"
+        ")
+        @todo = Array.new
+        @abuelo = Array.new
+        @padre = Array.new
+        @poe.each do |poe|
+          if !@abuelo.include?(poe[0])
+            suma = ActiveRecord::Base.connection.execute("
+                SELECT SUM(total)
+                FROM general_expenses
+                WHERE cost_center_id = "+@cc.to_s+"
+                AND code_phase = "+poe[0].to_s+"
+              ")
+            suma.each do |s|
+              @sum=s[0]
+            end
+            @abuelo << poe[0]
+            @todo << [poe[0],nil,Phase.find_by_code(poe[0].to_s).name.to_s,@sum.to_f,nil,nil,nil,nil,nil,nil,nil,nil,nil]
+          end
+          if !@padre.include?(poe[1])
+            @padre << poe[1]
+            @todo << [nil, poe[1],poe[2].to_s,poe[3],nil,nil,nil,nil,nil,nil,nil,nil,nil]
+          end
+          @todo << poe
+        end
+        total.each do |t|
+          @total = t[0]
         end
         render :pdf => "reporte_gastos_generales-#{Time.now.strftime('%d-%m-%Y')}", 
                :template => 'general_expenses/general_expenses/report_pdf.pdf.haml',

@@ -21,8 +21,10 @@
     .col-sm-4{"style"=>"margin:15px;"}
       %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_general_expenses_general_expense_path}', 'content', null, null, 'GET')"}
         Agregar Gasto
-      %a.btn.btn-primary.btn-mini{:href => "#{report_general_expenses_general_expenses_path}.pdf", :target => "_blank"}
+      %a.btn.btn-primary.btn-mini{href: 'javascript:void(0);', :onclick => 'report();', "style"=>" color: white; "}
         Ver Reporte
+      %a.btn.btn-primary.btn-mini{:href => "#{report_pdf_general_expenses_general_expenses_path}.pdf", :target => "_blank"}
+        Ver Reporte PDF
   %br
   .row
     #widget-grid{ "style"=>"  height: 60%; overflow-y: scroll; "} 
@@ -30,3 +32,15 @@
         = render :partial => 'table'
   .row{"style"=>"height: 40%; overflow-y: scroll;"}
     #detail
+
+#report.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "reportLabel", role: "dialog", tabindex: "-1"}
+
+:javascript
+  function report() {
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    load_url_ajax('#{report_general_expenses_general_expenses_path}', 'report', data, '', 'GET');
+    $('#report').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
