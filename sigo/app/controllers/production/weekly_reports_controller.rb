@@ -51,6 +51,7 @@ class Production::WeeklyReportsController < ApplicationController
       WHERE  wcc.start_date <  '" + end_date.to_s + "' AND wcc.end_date >  '" + start_date.to_s + "'"
     )
     weeks.each do |id|
+      @inicio = id[0]
       if id[0].to_i<13
         @weeks = ActiveRecord::Base.connection.execute("
           SELECT wcc.name, wcc.start_date, wcc.end_date
@@ -98,8 +99,9 @@ class Production::WeeklyReportsController < ApplicationController
       end
     end
     @catehh = @catehh.uniq
+    @arr = @catehh.join(",")
     @catecp = @catecp.uniq
-    
+    @wek = Array.new
     @catwh = Array.new
     @catwp = Array.new
     @catehh.each do |cat|
@@ -132,6 +134,7 @@ class Production::WeeklyReportsController < ApplicationController
           AND ar.name = '"+cat.to_s+"'
           GROUP BY pp.date_of_creation
         ")
+        @wek << w
         if catwh.count==1
           catwh.each do |c|
             @catwh << c[0].to_f
@@ -160,9 +163,7 @@ class Production::WeeklyReportsController < ApplicationController
     @seriep = Array.new
 
     @serie1 = Array.new
-    @spline1 = Array.new
     @serie2 = Array.new
-    @spline2 = Array.new
 
     @catehh.each do |c|
       f=@i+9
@@ -185,6 +186,93 @@ class Production::WeeklyReportsController < ApplicationController
     end
     @serieh = @serie1
     @seriep = @serie2
+    @contador = @serieh.count
     render(partial: 'report_table', :layout => false)
+  end
+
+  def tablas_totales
+    @article = params[:wg]
+    @cat = params[:catehh].split(',')
+    @cc = get_company_cost_center('cost_center')
+    @totalH = Array.new
+    @totalT = Array.new
+    weeks = ActiveRecord::Base.connection.execute("
+      SELECT wcc.id, wcc.end_date
+      FROM  weeks_for_cost_center_" + @cc.to_s + " wcc
+      WHERE  wcc.id = "+params[:weeks].to_s
+    )
+    weeks.each do |id|
+      @inicio = id[0]
+      if id[0].to_i<13
+        @weeks = ActiveRecord::Base.connection.execute("
+          SELECT wcc.name, wcc.start_date, wcc.end_date
+          FROM  weeks_for_cost_center_" + @cc.to_s + " wcc
+          WHERE  wcc.end_date <  '" + id[1].to_date.to_s + "'
+        ")
+      else
+        first_id = id[0].to_i-9
+        last_id = id[0].to_i + 1
+        @weeks = ActiveRecord::Base.connection.execute("
+          SELECT wcc.name, wcc.start_date, wcc.end_date
+          FROM  weeks_for_cost_center_" + @cc.to_s + " wcc
+          WHERE  wcc.id >=" + first_id.to_i.to_s + " AND wcc.id < " + last_id.to_s + "
+        ")
+      end
+    end
+    @weeks.each do |w|
+      totalH = ActiveRecord::Base.connection.execute("
+        SELECT SUM(ppd.total_hours)
+        FROM part_people pp, part_person_details ppd, workers w, worker_contracts wc, articles ar
+        WHERE pp.cost_center_id = "+@cc.to_s+"
+        AND pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
+        AND pp.blockweekly =0
+        AND pp.working_group_id IN (" + @article.to_s + ")
+        AND ppd.part_person_id = pp.id
+        AND ppd.worker_id = w.id
+        AND w.id = wc.worker_id
+        AND wc.article_id = ar.id
+      ")
+      totalH.each do |th|
+        @tot = th[0]
+      end
+      if @tot.nil?
+        @tot=0
+      end
+      @maxArr=Array.new
+      @cat.each do |cat|
+        totalT = ActiveRecord::Base.connection.execute("
+          SELECT SUM(1)
+          FROM part_people pp, part_person_details ppd, workers w, worker_contracts wc, articles ar
+          WHERE pp.cost_center_id = "+@cc.to_s+"
+          AND pp.date_of_creation BETWEEN '"+w[1].to_date.to_s+"' AND '"+w[2].to_date.to_s+"'
+          AND pp.blockweekly =0
+          AND pp.working_group_id IN (" + @article.to_s + ")
+          AND ppd.part_person_id = pp.id
+          AND ppd.worker_id = w.id
+          AND w.id = wc.worker_id
+          AND wc.article_id = ar.id
+          AND ar.name = '"+cat.to_s+"'
+          GROUP BY pp.date_of_creation
+        ")
+        @max = 0
+        @tott = 0
+        if totalT.count>0
+          totalT.each do |c|
+            if c[0].to_f > @max
+              @max = c[0]
+            end
+          end
+        end
+        @maxArr<<@max
+        @max=0
+      end
+      @maxArr.each do |tot|
+        @tott+=tot
+      end
+      @totalT << [w[0].to_s+ " del "+ w[1].strftime("%d-%m-%Y").to_s+ " al "+ w[1].strftime("%d-%m-%Y").to_s,@tot, @tott]
+      @tott = 0
+      @tot = 0
+    end
+    render layout: false
   end
 end

@@ -372,6 +372,7 @@ ArsacLogistica::Application.routes.draw do
     resources :weekly_reports do
       collection do
         post 'get_report'
+        post 'tablas_totales'
       end
     end
     resources :valuation_of_equipments do
