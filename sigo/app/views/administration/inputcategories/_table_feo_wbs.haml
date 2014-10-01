@@ -67,23 +67,17 @@
       %td(style="text-align: right; font-size:115%;")
         %strong= number_to_currency(direct_cost_goal.to_s, :unit=>'S/. ')
 
-#itemsModalWbs.modal.fade(tabindex="-1" role="dialog" aria-labelledby="myModalLabelWbs")
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button(type="button" class="close" data-dismiss="modal" aria-hidden="true")
-          %span(aria-hidden="true") X
-        %h3.modal-title#myModalLabelWbs
-          Detalle
-      .modal-body
-        .detail-inputs_wbs
+
 :javascript
 
   $(document).ready(function(){
   });
 
   function get_input_detail_wbs(order,coditem,cod_input,measured,budget_sale,budget_goal){
-    $("#itemsModalWbs").modal();
+    $("#itemsModalWbs").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
 
     load_url_ondiv("#{get_input_wbs_detail_administration_inputcategories_path}?order=" + order + "&coditem=" + coditem + "&cod_input=" + cod_input + "&measured=" + measured + "&budget_sale=" + budget_sale + "&budget_goal=" + budget_goal,  "detail-inputs_wbs");
   }

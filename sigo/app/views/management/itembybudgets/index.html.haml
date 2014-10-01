@@ -58,8 +58,7 @@
                 = number_to_currency(price.to_f * itembudget.measured.to_f, :unit=>'S/.')
           
 :javascript
-  function toogle_detail(code)
-  { 
+  function toogle_detail(code){ 
     $("[id^='detail_" +  code +"']" ).slideToggle("slow");
   } 
 

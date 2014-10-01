@@ -287,7 +287,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def business_days_array3(start_date, end_date, working_group_id,sector_id)
     workers_array3 = ActiveRecord::Base.connection.execute("
-      SELECT  art.name, 
+      SELECT CONCAT(si.code, ' ', si.description), 
       uom.name, 
       SUM( poed.effective_hours ), 
       si.price_no_igv, 
