@@ -83,7 +83,10 @@
   });
 
   function get_input_detail_wbs(order,coditem,cod_input,measured,budget_sale,budget_goal){
-    $("#itemsModalWbs").modal();
+    $("#itemsModalWbs").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
 
     load_url_ondiv("#{get_input_wbs_detail_administration_inputcategories_path}?order=" + order + "&coditem=" + coditem + "&cod_input=" + cod_input + "&measured=" + measured + "&budget_sale=" + budget_sale + "&budget_goal=" + budget_goal,  "detail-inputs_wbs");
   }

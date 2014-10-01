@@ -112,7 +112,10 @@
   }
 
   function get_input_detail(d_sale, b_goal, b_cat){
-    $("#itemsModal").modal();
+    $("#itemsModal").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
     load_url_ondiv("#{get_input_detail_administration_inputcategories_path}?category_id=0" + b_cat + "&budget_sale_id=" + d_sale + "&budget_goal_id=" + b_goal, "detail-inputs");
   }
 

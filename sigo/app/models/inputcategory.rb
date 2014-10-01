@@ -42,10 +42,10 @@ class Inputcategory < ActiveRecord::Base
 
     def self.get_inputs(budget_id, category_prefix)
       hash_inputs = Hash.new
-      str_query = "SELECT  inputs.input ,inputs.cod_input, SUM(inputs.quantity * inputs.price * itembybudgets.measured)
+      str_query = "SELECT  inputs.input ,inputs.cod_input, inputs.unit, SUM(inputs.quantity * inputs.price * itembybudgets.measured)
                 FROM itembybudgets,
                      (
-                     SELECT quantity, price, `order`, item_id, cod_input, budget_id, input
+                     SELECT quantity, price, `order`, item_id, cod_input, budget_id, input, unit
                      FROM inputbybudgetanditems
                      ) AS inputs
 

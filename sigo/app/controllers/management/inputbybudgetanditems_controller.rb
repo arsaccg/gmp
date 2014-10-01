@@ -23,10 +23,9 @@ class Management::InputbybudgetanditemsController < ApplicationController
 
     if @itembybudgetanditems != nil
       @itembybudgetanditems.each do |itembudget|
-        @pdf_table_array << [itembudget.input, itembudget.cod_input,  itembudget.quantity.to_f.round(4), itembudget.unit, itembudget.price.round(4), (itembudget.quantity.to_f * itembudget.price.to_f).round(4) ]
+        @pdf_table_array << [ itembudget.input, itembudget.cod_input,  itembudget.quantity.to_f.round(4), itembudget.unit, itembudget.price.round(4), (itembudget.quantity.to_f * itembudget.price.to_f).round(4) ]
       end
     end
-
     render :index, :layout => false
   end
   
