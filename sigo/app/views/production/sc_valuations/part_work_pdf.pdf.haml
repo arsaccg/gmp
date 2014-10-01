@@ -8,24 +8,25 @@
 	%br
 	#main
 		#content
-			%div
-				.jarviswidget-editbox
-				.widget-body
-					%table.panel.panel-primary{ style: "height: 90px; width: 1100px;margin-left: 20px;" }
-						%thead.panel-heading
-							%tr
-								%th{'colspan' => 4, "style"=>"text-align:center;font-size: large"}= @scvaluation.name + ' ' + @scvaluation.code
-							%tr{"bgcolor"=>"#3276B1","style"=>"height:25px;"}
-								%th{"style"=>"color:white;text-align:center"} Monto contratado
-								%th{"style"=>"color:white;text-align:center"} Adelanto
-								%th{"style"=>"color:white;text-align:center"} Amortización Acumulada
-								%th{"style"=>"color:white;text-align:center"} Saldo
-						%tbody{:style=>"font-size:100%;"}
-							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.hired_amount.to_f)
-							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.advances.to_f)
-							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.accumulated_amortization.to_f)
-							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.balance.to_f)
-			%br
+			-if !@scvaluation.nil?
+				%div
+					.jarviswidget-editbox
+					.widget-body
+						%table.panel.panel-primary{ style: "height: 90px; width: 1100px;margin-left: 20px;" }
+							%thead.panel-heading
+								%tr
+									%th{'colspan' => 4, "style"=>"text-align:center;font-size: large"}= @scvaluation.name + ' ' + @scvaluation.code
+								%tr{"bgcolor"=>"#3276B1","style"=>"height:25px;"}
+									%th{"style"=>"color:white;text-align:center"} Monto contratado
+									%th{"style"=>"color:white;text-align:center"} Adelanto
+									%th{"style"=>"color:white;text-align:center"} Amortización Acumulada
+									%th{"style"=>"color:white;text-align:center"} Saldo
+							%tbody{:style=>"font-size:100%;"}
+								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.hired_amount.to_f)
+								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.advances.to_f)
+								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.accumulated_amortization.to_f)
+								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.balance.to_f)
+				%br
 			.modal-dialog{"style"=>"width:1100px;"}
 				.modal-content
 				.modal-header
@@ -56,7 +57,7 @@
 											-if sub.itembybudget.order==workerDetail2[2]
 												= workerDetail2[3].round(2)-sub.amount
 											-else
-												=""									
+												=""                                 
 					- else
 						%h4.modal-title No hay datos.
 						%br
