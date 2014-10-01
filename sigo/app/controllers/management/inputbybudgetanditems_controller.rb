@@ -37,8 +37,13 @@ class Management::InputbybudgetanditemsController < ApplicationController
     input.quantity = params[:quantity]
     input.save
 
-    #~~~~~~~~~~~~~~~~~~~~~~~~~itembybudget = Itembybudget.where('`order` LIKE ? AND `item_code` LIKE ? AND `budget_id` = ?', )
-    #~~~~~~~~~~~~~~~~~~~~~~~~~get_sumatory_one_to_one(order, budget)
+    itembybudget = Itembybudget.where('`order` LIKE ? AND `item_code` LIKE ? AND `budget_id` = ?', input.order, input.coditem, input.budget_id).first
+    itembybudget.price = get_sumatory_one_to_one(input.order, input.budget_id)
+
+    p "~~~~~~~~~~~itembybudget.price~~~~~~~~~~~"
+    p itembybudget.price
+    itembybudget.save
+
     render :nothing => true, :status => 200, :content_type => 'text/html', layout: false
   end
 
