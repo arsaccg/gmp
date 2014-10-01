@@ -1,6 +1,6 @@
 =render :partial=> 'brief_items'
 %form(id="form-wbs" action="#" name="itemform" method="POST" class="form-horizontal")
-  %table(class="table-bordered table-hover white-table small-font" width="100%")
+  %table(class="table-bordered table-hover white-table small-font inputbybandi-table" width="100%")
     %thead 
       %th
       %th 
@@ -16,7 +16,7 @@
       %th 
         %strong Total
       %th 
-        %strong Acciones
+        %strong 
     %tbody
       - @itembybudgetanditems.each do |itembudget|
         - puts "ITEM"
@@ -39,7 +39,7 @@
             =itembudget.cod_input
           %td(style="text-align: right;") 
             - if @budget.type_of_budget.to_i == 0 # Si es Meta
-              %input(type="text"){class: 'input_quantity_' + itembudget.id.to_s, :value=>number_with_precision(itembudget.quantity, :precision => 4), :id => "itembudget_quantity_" + itembudget.cod_input.to_s, :onblur => "update_table_input('" + itembudget.id.to_s + "')", disabled: true }
+              %input(type="text"){class: 'input_quantity_' + itembudget.id.to_s, :value=>number_with_precision(itembudget.quantity, :precision => 4), :id => "itembudget_quantity_" + itembudget.cod_input.to_s, :onblur => "update_table_input('" + itembudget.id.to_s + "')", disabled: @must_be_blocked }
             - else # Si es Meta
               %span
                 = number_with_precision(itembudget.quantity, :precision => 4)
@@ -47,7 +47,7 @@
             =itembudget.unit rescue "-"
           %td(style="text-align: right;")
             - if @budget.type_of_budget.to_i == 0 # Si es Meta
-              %input(type="text"){class: 'input-small small-font input_price_' + itembudget.id.to_s, :value=>number_with_precision(itembudget.price, :precision => 4).to_s, :id => "itembudget_price_" + itembudget.cod_input.to_s, :onblur => "update_table_input('" + itembudget.id.to_s + "')"} 
+              %input(type="text"){class: 'input_price_' + itembudget.id.to_s, :value=>number_with_precision(itembudget.price, :precision => 4).to_s, :id => "itembudget_price_" + itembudget.cod_input.to_s, :onblur => "update_table_input('" + itembudget.id.to_s + "')"} 
             - else # Si es Meta
               %span
                 = number_with_precision(itembudget.price, :precision => 4)
@@ -76,5 +76,3 @@
     load_url_ondiv("#{update_input_management_inputbybudgetanditems_path}?price=" + var_price + "&quantity="+ var_quantity + "&input_id=" + id, "rand" );
     $(".itembudget_total_" + id).text(Math.round(var_quantity*var_price)); 
   }
-
-

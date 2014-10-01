@@ -1,12 +1,14 @@
 #content-inside
   .row
-    .col-xs-9.col-sm-7.col-md-7.col-lg-9
+    .col-xs-9.col-sm-7.col-md-7.col-lg-6
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Lista de Trabajadores
-    .col-xs-2.col-sm-7.col-md-7.col-lg-2
+    .col-xs-2.col-sm-7.col-md-7.col-lg-4
       %a#smart-mod-eg2.btn.btn-primary{"style" => "margin-top:20px"}
         Agregar Trabajador
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{list_production_workers_path}', 'content',null, null, 'Post')", "style" => "margin-top:20px"}
+        Listar Trabajadores 
     .row
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:buttonoth"}
@@ -64,3 +66,10 @@
       backdrop: 'static'
     });
   }
+
+  function listar() {
+    $('#list').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }  

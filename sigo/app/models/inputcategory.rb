@@ -42,10 +42,10 @@ class Inputcategory < ActiveRecord::Base
 
     def self.get_inputs(budget_id, category_prefix)
       hash_inputs = Hash.new
-      str_query = "SELECT  inputs.input ,inputs.cod_input, SUM(inputs.quantity * inputs.price * itembybudgets.measured)
+      str_query = "SELECT  inputs.input ,inputs.cod_input, inputs.unit, SUM(inputs.quantity * inputs.price * itembybudgets.measured)
                 FROM itembybudgets,
                      (
-                     SELECT quantity, price, `order`, item_id, cod_input, budget_id, input
+                     SELECT quantity, price, `order`, item_id, cod_input, budget_id, input, unit
                      FROM inputbybudgetanditems
                      ) AS inputs
 
@@ -82,10 +82,14 @@ class Inputcategory < ActiveRecord::Base
                             
         #             GROUP BY T1.wbscode, category_id
         #             ORDER BY category_id;"
-        str = "SELECT T1.wbscode, T1.fase, CONCAT('0', T1.category_id) as category_id, T1.description, SUM(T1.amount) AS amount_sale, T1.coditem,T1.item_order,T1.measured
-               FROM (
-                SELECT itembywbses.wbscode, category_id, wbsitems.fase, inputcategories.description, itembybudgets.item_id,itembybudgets.`order` AS item_order ,SUM(inputbybudgetanditems.price*inputbybudgetanditems.quantity*itembywbses.measured) AS amount, inputbybudgetanditems.coditem, itembywbses.measured
-                 FROM inputcategories, inputbybudgetanditems, itembybudgets
+        str = "SELECT T1.wbscode, T1.fase, CONCAT('0', T1.category_id) as category_id, T1.description, 
+                SUM(T1.amount) AS amount_sale, T1.coditem,T1.item_order,T1.measured
+               FROM inputcategories, (
+                SELECT itembywbses.wbscode, category_id, wbsitems.fase, inputcategories.description, 
+                  itembybudgets.item_id, itembybudgets.`order` AS item_order, 
+                  SUM(ROUND(inputbybudgetanditems.price*ROUND(inputbybudgetanditems.quantity*itembywbses.measured, 2),2) AS amount, 
+                  inputbybudgetanditems.coditem, itembywbses.measured
+                 FROM inputbybudgetanditems, itembybudgets
                  RIGHT JOIN itembywbses ON
                  itembywbses.coditem = itembybudgets.item_code AND
                  itembywbses.order_budget = itembybudgets.`order` AND
@@ -107,7 +111,6 @@ class Inputcategory < ActiveRecord::Base
                
                GROUP BY T1.wbscode, category_id
                ORDER BY category_id;"
-        
         return str 
     end
     
