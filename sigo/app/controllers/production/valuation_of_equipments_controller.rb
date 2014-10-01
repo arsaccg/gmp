@@ -86,6 +86,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @subcontractequipment = SubcontractEquipment.find_by_entity_id(params[:executor])
       @cad = @subcontractequipment.id
       @numbercode = 1
+      @detraccion = @subcontractequipment.detraction
       @subadvances = 0
       @fuel_discount = 0
       @initial_amortization_percent = 0

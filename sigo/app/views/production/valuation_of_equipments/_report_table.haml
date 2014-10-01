@@ -88,9 +88,9 @@
                 %th{ 'colspan' => 5, "style"=>"color:#5f5f5f"} Retenciones
               %tr
                 %th{"style"=>"color:#5f5f5f; text-align:center;"} 05.01
-                %th{"style"=>"color:#5f5f5f"} Detracción del Total (Incl. I.G.V.)
+                %th{"style"=>"color:#5f5f5f"}= "Detracción del Total (Incl. I.G.V.) ("+@detraccion.to_s+"%)"
                 %th{"style"=>"color:#5f5f5f"}
-                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100), unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100), unit: 'S/. ', precision: 0)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalincluidoigv.to_f*@detraccion.to_f/100, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@bill.to_f+@billigv.to_f+@totalincluidoigv.to_f)*((@subcontractequipment.detraction.to_f+@detracciontotal.to_f)/100), unit: 'S/. ', precision: 2)
               %tr
