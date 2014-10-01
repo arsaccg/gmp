@@ -43,6 +43,7 @@ class Management::InputbybudgetanditemsController < ApplicationController
     p "~~~~~~~~~~~itembybudget.price~~~~~~~~~~~"
     p itembybudget.price
     itembybudget.save
+    p itembybudget
 
     render :nothing => true, :status => 200, :content_type => 'text/html', layout: false
   end
@@ -86,7 +87,7 @@ class Management::InputbybudgetanditemsController < ApplicationController
     @item.save
 
     #render :nothing => true, :status => 200, :content_type => 'text/html', layout: false
-    redirect_to filter_by_budget_and_item_management_inputbybudgetanditems_path + "?budget_id=" + @item.budget_id.to_s + "&item_id=" + @item.item_id.to_s + "&order=" + @item.order.gsub(".","d")
+    redirect_to filter_by_budget_and_item_management_inputbybudgetanditems_path + "?budget_id=" + @item.budget_id.to_s + "&item_id=" + @item.item_id.to_s + "&order=" + @item.order.gsub(".","d") + "&measured=1"
   end
 
   private
