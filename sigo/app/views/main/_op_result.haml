@@ -17,9 +17,11 @@
           %th{ :style => "background-color: #f9f9f9;"}
             DIFERENCIA
         %tr
-          %th{ :style => "border-right: none;"}
+          %th
             COSTO DIRECTO
-          %th{ :style => "border-left: none;"}
+          %th
+            %a.btn.btn-default.btn-xs{:href => "javascript:load_full_operating_result('#{@project_id}');"}
+              %i.fa.fa-search
           %th
             = number_to_currency(@total_sale, unit: 'S/. ', precision: 2)
           %th

@@ -1,11 +1,11 @@
-%table(id="scroll-table" class="table table-bordered table-condensed table-hover white-table small-font table-light" width="100%")
+%table.table.table-bordered.table-condensed.table-hover.white-table.small-font.table-light#scroll-table(width="100%")
   %thead
     %tr
-      %th(rowspan = "2")
+      %th{:rowspan => 2, :style => 'width: 10%;'}
         %strong CODIGO
       %th(rowspan = "2")
         %strong FEO DE OBRA
-      %th(rowspan = "2")
+      %th{:rowspan => 2, :style => 'width: 5%;'}
       %th
         %strong PRESUPUESTO VENTA
       %th

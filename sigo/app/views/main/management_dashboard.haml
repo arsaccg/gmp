@@ -48,11 +48,11 @@
                       %td= cc.name.to_s
                       %td
                         %span
-                          %a{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
+                          %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
                             %i.fa.fa-folder-open
                       %td
                         %span
-                          %a{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
+                          %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
                             %i.fa.fa-usd
 
                 -else
@@ -797,6 +797,15 @@
       keyboard: false,
       backdrop: 'static'
     });
+  }
+
+  function load_full_operating_result(cost_center_id){
+    $("#itemsModal").modal({
+      keyboard: false,
+      backdrop: false
+    });
+
+    load_url_ondiv("#{full_project_operating_results_path}?authenticity_token=#{form_authenticity_token}&cost_center=" + cost_center_id, "detail-inputs");
   }
 
   function get_input_detail(d_sale, b_goal, b_cat){
