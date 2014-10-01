@@ -336,6 +336,84 @@ class Production::WorkersController < ApplicationController
     render layout: false
   end
 
+  def list
+    render layout: false
+  end
+
+  def list_pdf
+    @cc = CostCenter.find(get_company_cost_center('cost_center'))
+    @type = params[:type].split(',')
+    @todo = Array.new
+    @typeofworker = Array.new
+    @active = Array.new
+    @cesado = Array.new
+    if params[:state1]!='null'
+      @type.each do |ty|
+        active = ActiveRecord::Base.connection.execute("
+          SELECT ar.code, ar.name, Concat(e.name, ' ', e.second_name, ' ', e.paternal_surname, ' ',e.maternal_surname), e.dni, e.address, concat( e.city, ' - ',e.province, ' - ', e.department)
+          FROM articles ar, entities e, workers w, worker_contracts wc
+          WHERE w.cost_center_id = "+@cc.id.to_s+"
+          AND w.state LIKE '"+params[:state1].to_s+"'
+          AND w.typeofworker = '"+ty.to_s+"'
+          AND w.entity_id = e.id
+          AND w.id = wc.worker_id
+          AND wc.article_id = ar.id
+          GROUP BY w.id
+        ")
+        if active.count > 0
+          if @active.count==0
+            @active << [nil,"Activo",nil,nil,nil,nil]
+            @todo << [nil,"Activo",nil,nil,nil,nil]
+          end
+          active.each do |a|
+            if !@typeofworker.include?(ty.to_s)
+              @typeofworker << ty.to_s
+              @todo << [nil,ty.to_s.capitalize,nil,nil,nil,0]
+            end
+            @todo << a
+          end
+        end
+      end
+    end
+    @typeofworker = Array.new
+    puts @typeofworker.inspect
+    if params[:state2]!='null'
+      @type.each do |ty|
+        cesado = ActiveRecord::Base.connection.execute("
+          SELECT ar.code, ar.name, Concat(e.name, ' ', e.second_name, ' ', e.paternal_surname, ' ',e.maternal_surname), e.dni, e.address, concat(e.city, ' - ',e.province, ' - ', e.department)
+          FROM articles ar, entities e, workers w, worker_contracts wc
+          WHERE w.cost_center_id = "+@cc.id.to_s+"
+          AND w.state LIKE '"+params[:state2].to_s+"'
+          AND w.typeofworker = '"+ty.to_s+"'
+          AND w.entity_id = e.id
+          AND w.id = wc.worker_id
+          AND wc.article_id = ar.id
+          GROUP BY w.id
+        ")
+        if cesado.count > 0
+          if @cesado.count==0
+            @cesado << [nil,"Cesado",nil,nil,nil,nil]
+            @todo << [nil,"Cesado",nil,nil,nil,nil]
+          end
+          cesado.each do |c|
+            if !@typeofworker.include?(ty.to_s)
+              @typeofworker << ty.to_s
+              @todo << [nil,ty.to_s.capitalize,nil,nil,nil,0]
+            end
+            @todo << c
+          end
+        end
+      end
+    end
+    @todo.each do |t|
+      puts t.inspect
+    end
+    render :pdf => "reporte_listado_de_trabajadores-#{Time.now.strftime('%d-%m-%Y')}", 
+           :template => 'production/workers/report_pdf.pdf.haml',
+           :orientation => 'Landscape',
+           :page_size => 'A4'
+  end  
+
   def worker_pdf
     @company = Company.find(session[:company])
     @date = Time.now

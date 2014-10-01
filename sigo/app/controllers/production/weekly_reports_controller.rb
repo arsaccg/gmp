@@ -118,7 +118,6 @@ class Production::WeeklyReportsController < ApplicationController
           AND ar.name = '"+cat.to_s+"'
           GROUP BY ar.name
         ")
-
         catwp = ActiveRecord::Base.connection.execute("
           SELECT SUM(1)
           FROM part_people pp, part_person_details ppd, workers w, worker_contracts wc, articles ar
