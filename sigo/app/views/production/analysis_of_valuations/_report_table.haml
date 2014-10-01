@@ -27,8 +27,12 @@
               %tr
                 %td Total
                 %td
-                  %span.label.label-danger{"style"=>"color:#fff"}
-                    = number_to_currency @total_price_meta, unit: 'S/.', precision: 2
+                  - if @total_price_meta < 0
+                    %span.label.label-danger{"style"=>"color:#fff"}
+                      = number_to_currency @total_price_meta, unit: 'S/.', precision: 2
+                  - else
+                    %span.label.label-success{"style"=>"color:#fff"}
+                      = number_to_currency @total_price_meta, unit: 'S/.', precision: 2  
 
       %div{ :style => 'width:33%; display:inline-block;' }
         %h1.page-title.txt-color-blueDark Totales REAL
@@ -50,8 +54,12 @@
               %tr
                 %td Total
                 %td
-                  %span.label.label-danger{"style"=>"color:#fff"}
-                    = number_to_currency @total_price_real, unit: 'S/.', precision: 2
+                  - if @total_price_real < 0
+                    %span.label.label-danger{"style"=>"color:#fff"}
+                      = number_to_currency @total_price_real, unit: 'S/.', precision: 2
+                  - else
+                    %span.label.label-success{"style"=>"color:#fff"}
+                      = number_to_currency @total_price_real, unit: 'S/.', precision: 2
 
       %div{ :style => 'width:33%; display:inline-block;' }
         %h1.page-title.txt-color-blueDark Resultado
@@ -71,7 +79,7 @@
                     %span.label.label-danger{"style"=>"color:#fff"}
                       = number_to_currency (@total_price_meta - @total_price_real), unit: 'S/.', precision: 2
                   - else
-                    %span.label.label-success{"style"=>"color:#fff"}
+                    %span.label.label-info{"style"=>"color:#fff"}
                       = number_to_currency (@total_price_meta - @total_price_real), unit: 'S/.', precision: 2
     
       -if @workers_array2.count>0
@@ -101,7 +109,7 @@
                 %tr
                   %th{ :colspan => 4 } SUB-TOTAL
                   %td{:style => 'text-align:right;'}
-                    %span.label.label-danger{"style"=>"color:#fff;text-align:right;"}
+                    %span.label.label-success{"style"=>"color:#fff;text-align:right;font-size: 11px;"}
                       = number_to_currency @totalprice2, unit: 'S/.', precision: 2
 
       .container-part-people
@@ -124,7 +132,7 @@
             %tr
               %th{'colspan' => 3} Total
               %th{:style => 'text-align:right;'}
-                %span.label.label-danger{"style"=>"color:#fff;text-align:right;"}
+                %span.label.label-success{"style"=>"color:#fff;text-align:right;font-size: 11px;"}
                   = number_to_currency @m_price_part_person, unit: 'S/.', precision: 2
 
         -if @workers_array.count>0
@@ -156,7 +164,7 @@
                   %tr
                     %th{'colspan' => 4} Total
                     %th{:style => 'text-align:right;'}
-                      %span.label.label-danger{"style"=>"color:#fff;text-align:right;"}
+                      %span.label.label-success{"style"=>"color:#fff;text-align:right;font-size: 11px;"}
                         = number_to_currency @totalprice, unit: 'S/.', precision: 2
 
       .container-stock-input
@@ -182,7 +190,7 @@
               %tr
                 %th{'colspan' => 4} Total
                 %th{:style => 'text-align:right;'}
-                  %span.label.label-danger{"style"=>"color:#fff;text-align:right;"}
+                  %span.label.label-success{"style"=>"color:#fff;text-align:right;font-size: 11px;"}
                     = number_to_currency @total_stock_input_meta, unit: 'S/.', precision: 2
 
         -if @stock_inputs.count>0
@@ -227,7 +235,7 @@
               %tr
                 %th{'colspan' => 3} Total
                 %th{:style => 'text-align:right;'}
-                  %span.label.label-danger{"style"=>"color:#fff;text-align:right;"}
+                  %span.label.label-success{"style"=>"color:#fff;text-align:right;font-size: 11px;"}
                     = number_to_currency @m_price_part_equipment, unit: 'S/.', precision: 2
 
         -if @workers_array3.count>0
@@ -254,7 +262,7 @@
                 %tr
                   %th{'colspan' => 3} Total
                   %th{:style => 'text-align:right;'}
-                    %span.label.label-danger{"style"=>"color:#fff;text-align:right;"}
+                    %span.label.label-success{"style"=>"color:#fff; text-align:right;font-size: 11px;"}
                       = number_to_currency @totalprice3, unit: 'S/.', precision: 2
       .container-part-subcontracts
 
@@ -278,7 +286,7 @@
               %tr
                 %th{'colspan' => 3} Total
                 %th{:style => 'text-align:right;'}
-                  %span.label.label-danger{"style"=>"color:#fff;"}
+                  %span.label.label-success{"style"=>"color:#fff;text-align:right;font-size: 11px;"}
                     = number_to_currency @m_price_part_subcontract, unit: 'S/.', precision: 2
     - else
       .alert.alert-warning.fade.in

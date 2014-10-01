@@ -48,11 +48,11 @@
                       %td= cc.name.to_s
                       %td
                         %span
-                          %a{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
+                          %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
                             %i.fa.fa-folder-open
                       %td
                         %span
-                          %a{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
+                          %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
                             %i.fa.fa-usd
 
                 -else
@@ -286,10 +286,14 @@
             / end content
         / end widget div
       / end widget
+
 #gdg.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgLabel", role: "dialog", tabindex: "-1"}
+
 #gdgn.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgnLabel", role: "dialog", tabindex: "-1"}
 #gdge.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgeLabel", role: "dialog", tabindex: "-1"}
 #operating-result.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "operatingResultLabel", role: "dialog", tabindex: "-1"}
+
+#show-phase.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "90Label", role: "dialog", tabindex: "-1"}
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -792,5 +796,28 @@
     $('#operating-result').modal({
       keyboard: false,
       backdrop: 'static'
+    });
+  }
+
+  function load_full_operating_result(cost_center_id){
+    $("#itemsModal").modal({
+      keyboard: false,
+      backdrop: false
+    });
+
+    load_url_ondiv("#{full_project_operating_results_path}?authenticity_token=#{form_authenticity_token}&cost_center=" + cost_center_id, "detail-inputs");
+  }
+
+  function get_input_detail(d_sale, b_goal, b_cat){
+    $("#itemsModal").modal();
+    load_url_ondiv("#{get_input_detail_administration_inputcategories_path}?category_id=0" + b_cat + "&budget_sale_id=" + d_sale + "&budget_goal_id=" + b_goal, "detail-inputs");
+  }
+
+  function show_phases(cost_center_id, code_phase){
+    data = { authenticity_token : "#{form_authenticity_token}", cost_center_id : cost_center_id, code_phase : code_phase }
+    load_url_ajax('#{show_phases_path}', 'show-phase', data, 'avoid-opacity', 'POST');
+    $('#show-phase').modal({
+      keyboard: false,
+      backdrop: false
     });
   }

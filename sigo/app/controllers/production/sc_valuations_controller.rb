@@ -326,6 +326,26 @@ class Production::ScValuationsController < ApplicationController
     return workers_array3
   end
 
+  def business_days_array4(start_date, end_date, working_group_id, cost_center)
+    workers_array3 = ActiveRecord::Base.connection.execute("
+      SELECT  art.name, 
+      uom.name, 
+      SUM( poed.effective_hours ), 
+      si.price_no_igv, 
+      si.price_no_igv*SUM( poed.effective_hours), 
+      art.id
+      FROM part_of_equipments poe, part_of_equipment_details poed, articles_from_cost_center_"+get_company_cost_center('cost_center').to_s+" art, unit_of_measurements uom, subcontract_equipment_details si
+      WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND poe.id=poed.part_of_equipment_id
+      AND si.article_id=art.id
+      AND poe.equipment_id=si.id
+      AND uom.id = art.unit_of_measurement_id
+      AND poed.working_group_id IN(" + working_group_id + ")
+      GROUP BY art.name
+    ")
+    return workers_array3
+  end
+
   def getsc_valuation(start_date, end_date, entityname)
     valuationgroup = ActiveRecord::Base.connection.execute("
       SELECT accumulated_valuation, 
@@ -401,12 +421,12 @@ class Production::ScValuationsController < ApplicationController
   end
 
   def part_work
-    @id = params[:id]
-    scvaluation = ScValuation.find_by_id(@id)
-    entity = Entity.find_by_name(scvaluation.name)
-    puts entity.name
-    @subcontract = Subcontract.find_by_entity_id(entity.id)
-
+    if !params[:id].nil?
+      @id = params[:id]
+      scvaluation = ScValuation.find_by_id(@id)
+      entity = Entity.find_by_name(scvaluation.name)
+      @subcontract = Subcontract.find_by_entity_id(entity.id)
+    end
     @start_date = params[:start_date]
     @end_date = params[:end_date]
     @cad = params[:cad]
@@ -423,10 +443,12 @@ class Production::ScValuationsController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        @scvaluation=ScValuation.find_by_id(params[:id])
-        entity = Entity.find_by_name(@scvaluation.name)
-        puts entity.name
-        @subcontract = Subcontract.find_by_entity_id(entity.id)
+          @scvaluation=ScValuation.find_by_id(params[:id])
+        if !@scvaluation.nil?
+          entity = Entity.find_by_name(@scvaluation.name)
+          puts entity.name
+          @subcontract = Subcontract.find_by_entity_id(entity.id)
+        end
         start_date = params[:start_date]
         end_date = params[:end_date]
         cad = params[:cad]
@@ -459,16 +481,42 @@ class Production::ScValuationsController < ApplicationController
   end
 
   def part_equipment
-    start_date = params[:start_date]
-    end_date = params[:end_date]
+    @start_date = params[:start_date]
+    @end_date = params[:end_date]
     cost_center = get_company_cost_center('cost_center')
-    cad = params[:cad]
+    @cad = params[:cad]
+    @id = params[:id]
+    @scvaluation=ScValuation.find_by_id(params[:id])
     @totalprice3 = 0
-    @workers_array3 = business_days_array3(start_date, end_date, cad,cost_center)
+    @workers_array3 = business_days_array4(@start_date, @end_date, @cad,cost_center)
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
     end
     render layout: false
+  end
+
+  def part_equipment_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @cc = get_company_cost_center('cost_center')
+        @company = Company.find(get_company_cost_center('company'))
+        @start_date = params[:start_date]
+        @end_date = params[:end_date]
+        cost_center = get_company_cost_center('cost_center')
+        @cad = params[:cad]
+        @id = params[:id]
+        @scvaluation=ScValuation.find_by_id(params[:id])
+        @totalprice3 = 0
+        @workers_array3 = business_days_array4(@start_date, @end_date, @cad,cost_center)
+        @workers_array3.each do |workerDetail|
+          @totalprice3 += workerDetail[4]
+        end
+        render :pdf => "parte_equipos_#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'production/sc_valuations/part_equipment_pdf.pdf.haml',
+               :page_size => 'A4'
+      end
+    end
   end
 
   def approve
