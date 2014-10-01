@@ -351,7 +351,7 @@
     }
 
     function part_work() {
-      data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}" };
+      data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}",name: "#{@entity.name}" };
       load_url_ajax('#{part_work_production_sc_valuations_path}', 'part-work', data, '', 'POST');
       $('#part-work').modal({
         keyboard: false,
