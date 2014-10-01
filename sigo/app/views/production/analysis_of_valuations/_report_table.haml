@@ -5,11 +5,11 @@
     %h2
       Análisis de Producción
 
-  .container-summary-total
+  .container-summary-total{ :style => 'border: 20px solid; padding: 17px 30px;' }
     - if @message_warning.nil?
-      %div{ :style => 'width:31%; display:inline-block;' }
+      %div{ :style => 'width:33%; display:inline-block;' }
         %h1.page-title.txt-color-blueDark Costo META
-        .widget-body
+        .widget-body{ :style => 'font-size: 14px;' }
           %table.table.table-bordered
             %tbody
               %tr
@@ -38,13 +38,13 @@
                     %span.label.label-success{"style"=>"color:#fff;font-size: 14px;"}
                       = number_to_currency @total_price_meta, unit: 'S/.', precision: 2  
 
-      %div{ :style => 'width:31%; display:inline-block;' }
+      %div{ :style => 'width:33%; display:inline-block;' }
         %h1.page-title.txt-color-blueDark Resultado
-        .widget-body
+        .widget-body{ :style => 'font-size: 14px;' }
           %table.table.table-bordered
             %tbody
               %tr
-                %td VENTA
+                %td PRODUCCIÓN
                 %td{:style => 'text-align:right;'}
                   = number_to_currency @total_price_meta, unit: 'S/.', precision: 2
                   %a.btn.btn-default.btn-xs{ :href => "javascript:show_modal_venta()"}
@@ -63,9 +63,9 @@
                     %span.label.label-info{"style"=>"color:#fff;font-size: 14px;"}
                       = number_to_currency (@total_price_meta - @total_price_real), unit: 'S/.', precision: 2
 
-      %div{ :style => 'width:31%; display:inline-block;' }
+      %div{ :style => 'width:33%; display:inline-block;' }
         %h1.page-title.txt-color-blueDark Costo REAL
-        .widget-body
+        .widget-body{ :style => 'font-size: 14px;' }
           %table.table.table-bordered
             %tbody
               %tr
@@ -109,9 +109,9 @@
               %button{"class"=>"close", "data-dismiss"=>"modal"}
                 %span{"aria-hidden"=>"true","style"=>"color:white;"} &times;
                 %span{"class"=>"sr-only"} Close
-              %h4{"class"=>"modal-title","style"=>"font-weight:900;"} Detalle
-            .modal-body{ :style => 'font-size: 11px;background-color:#E6E6E6;' }
-              %table.table.table-bordered.white-table.table-hover
+              %h4{"class"=>"modal-title","style"=>"font-weight:900;"} Producción
+            .modal-body{ :style => 'background-color:#E6E6E6;' }
+              %table.table.table-bordered.white-table.table-hover{ :style => 'font-size: 12px' }
                 %thead
                   %tr
                     %th{ :colspan => 2 } VENTA
@@ -134,7 +134,7 @@
                 %tr
                   %th{ :colspan => 4 } SUB-TOTAL
                   %td{:style => 'text-align:right;'}
-                    %span.label.label-success{"style"=>"color:#fff;text-align:right;font-size: 11px;"}
+                    %span.label.label-success{"style"=>"color:#fff;text-align:right;font-size: 12px;"}
                       = number_to_currency @totalprice2, unit: 'S/.', precision: 2
 
       #container_part_people_meta.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1" }
