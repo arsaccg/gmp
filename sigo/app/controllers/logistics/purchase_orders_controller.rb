@@ -206,7 +206,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @delivery_orders_detail = Array.new
     @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @cost_center.delivery_orders.where("state LIKE 'approved'").each do |deo|
-      deo.delivery_order_details.where("id NOT IN (#{@delivery_ids})").each do |dodw|
+      deo.delivery_order_details.where("id NOT IN (#{@delivery_ids}) AND requested IS NULL").each do |dodw|
         @delivery_orders_detail << dodw
       end
     end

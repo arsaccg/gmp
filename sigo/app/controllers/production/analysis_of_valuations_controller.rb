@@ -4,9 +4,15 @@ class Production::AnalysisOfValuationsController < ApplicationController
   	@workingGroups = WorkingGroup.all
     @sector = Sector.where("code LIKE '__'")
     @subsectors = Sector.where("code LIKE '____'").first
-    @front_chiefs = PositionWorker.find(1).workers # Jefes de Frentes
-    @master_builders = PositionWorker.find(2).workers # Capatazes o Maestros de Obra
-    @executors = Subcontract.where('entity_id <> 0') # Exclude the Subcontract Default
+
+    front_chief_ids = WorkingGroup.distinct.select(:front_chief_id).map(&:front_chief_id)
+    @front_chiefs = Entity.where(:id => front_chief_ids) # Jefes de Frentes
+    # PositionWorker.find(1).workers
+    master_builder_ids = WorkingGroup.distinct.select(:master_builder_id).map(&:master_builder_id)
+    @master_builders = Entity.where(:id => master_builder_ids) # Capatazes o Maestros de Obra
+    # PositionWorker.find(2).workers
+    executor_ids = Subcontract.distinct.select(:entity_id).where('entity_id <> 0').map(&:entity_id)
+    @executors = Entity.where(:id => executor_ids) # Exclude the Subcontract Default
     render layout: false
   end
 

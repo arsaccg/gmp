@@ -21,7 +21,7 @@ class PurchaseOrderDetail < ActiveRecord::Base
 	    .where{(companies.id.eq "#{company_id}") &
 	           (purchase_orders.entity_id.eq "#{supplier_id}") &
            	   (purchase_orders.state.eq "approved")}
-        .where('purchase_order_details.id NOT IN (' + list_not_in + ')')
+        .where('purchase_order_details.id NOT IN (' + list_not_in.to_s + ')')
         .where('purchase_order_details.received IS NULL')
 	  end
 end

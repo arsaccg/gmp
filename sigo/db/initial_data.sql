@@ -94,7 +94,7 @@ INSERT INTO `inputcategories` (`category_id`, `description`, `created_at`, `upda
 (1, 'PERSONAL', NOW(), NOW()), 
 (2, 'MATERIAL', NOW(), NOW()), 
 (3, 'EQUIPOS', NOW(), NOW()),
-(3, 'SUBCONTRATOS Y SERVICIOS', NOW(), NOW());
+(4, 'SUBCONTRATOS Y SERVICIOS', NOW(), NOW());
 
 -- Data Methods of Payments
 INSERT INTO `method_of_payments` (`name`, `symbol`, `created_at`, `updated_at`) VALUES 

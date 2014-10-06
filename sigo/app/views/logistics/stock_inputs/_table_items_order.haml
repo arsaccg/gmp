@@ -6,7 +6,7 @@
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
-      %table#dt_basic.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+      %table#modal-more-items.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
         %thead
           %tr
             %th O/Compra
@@ -46,3 +46,13 @@
                   %label.checkbox
                     = check_box("order_delivery", "approved", { class: 'order_check' }, y.id)
                     %i
+
+%br
+
+%button.btn.btn-sm.btn-primary.btn-prev#add-purchase-order-items{"type" => "button", "onclick" => "javascript:add_more_items();"}
+  %i.fa.fa-plus
+  Agregar
+
+%button.btn.btn-sm.btn-primary.btn-prev{"type" => "button", "data-dismiss" => "modal"}
+  %i.fa.fa-times
+  Salir

@@ -45,7 +45,7 @@ form label { text-align: left !important; }
 
 @media screen and (min-width: 768px){
   #modalDeliveryItems .modal-dialog { width: 1260px; }
-  #modalPurchaseOrderItems .modal-dialog { width: 960px; }
+  #modalPurchaseOrderItems .modal-dialog { width: 70%; }
 }
 
 #summary-delivery-orders tbody tr td.label-status i, #summary-purchase-orders tbody tr td.label-status i {

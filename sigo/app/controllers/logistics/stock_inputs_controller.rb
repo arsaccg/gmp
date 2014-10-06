@@ -139,7 +139,7 @@ class Logistics::StockInputsController < ApplicationController
     #    @tableItems << y
     #  end
     #end
-    logger.info "@ids_items:" + @ids_items
+    logger.info "@ids_items:" + @ids_items.to_s
     PurchaseOrderDetail.get_approved_more_items(@company, params[:supplier_id], @ids_items).each do |y|
       @tableItems << y
     end

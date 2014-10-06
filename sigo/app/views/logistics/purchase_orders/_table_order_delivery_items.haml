@@ -32,7 +32,8 @@
           %i.fa.fa-superscript
     %td
       = text_area_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][description]', dode.description, class: "form-control description"
-    %td{:style => "width: 1%;"}
-      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+    %td
+      %a.btn.btn-default{href: "javascript:delete_item('"+@reg_n.to_s+"')", :style => 'width: 100%;margin: 10px 0;'}
+        %i.fa.fa-times
   - @reg_n += 1
   - i += 1
