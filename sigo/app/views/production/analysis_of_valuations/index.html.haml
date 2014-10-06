@@ -28,7 +28,7 @@
               %option{:value => "0"} Seleccione un jefe de frente
               - @front_chiefs.each do |front_chief|
                 %option{:value => "#{front_chief.id}"}
-                  = front_chief.entity.name + ' ' + front_chief.entity.paternal_surname
+                  = front_chief.name.to_s + ' ' + front_chief.second_name.to_s + ' ' + front_chief.paternal_surname.to_s + ' ' + front_chief.maternal_surname.to_s
         .col-md-2
           %label Ejecutor
           %br
@@ -36,8 +36,8 @@
             %select.form-control#exe{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
               %option{:value => "0"} Seleccione un ejecutor
               - @executors.each do |ex|
-                %option{:value => "#{ex.entity_id}"}
-                  = Entity.find_by_id(ex.entity_id).name
+                %option{:value => "#{ex.id}"}
+                  = ex.name.to_s + ' ' + ex.second_name.to_s + ' ' + ex.paternal_surname.to_s + ' ' + ex.maternal_surname.to_s
         .col-md-2
           %label Capataz
           %br
@@ -46,7 +46,7 @@
               %option{:value => "0"} Seleccione un capataz
               - @master_builders.each do |master_builder|
                 %option{:value => "#{master_builder.id}"}
-                  = master_builder.entity.name + ' ' + master_builder.entity.paternal_surname
+                  = master_builder.name.to_s + ' ' + master_builder.second_name.to_s + ' ' + master_builder.paternal_surname.to_s + ' ' + master_builder.maternal_surname.to_s
       .row
         .col-md-1
         .col-md-3
