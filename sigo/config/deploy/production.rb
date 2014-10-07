@@ -15,7 +15,7 @@ role :db,  %w{developerasac@190.41.42.150}
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-server '190.41.42.150', user: 'developerasac', roles: %w{web app}
+server '190.41.42.150', user: 'userdeploy', roles: %w{web app}
 
 #set :deploy_to, '/home/developerasac/sigo/sigo1/'
 
