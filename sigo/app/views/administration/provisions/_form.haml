@@ -13,6 +13,8 @@
             %label.control-label Tipo de Orden
             .input-group
               %select.select2.form-control#type-order-selected{:name => 'type_of_order_consult', :style => 'width:100%;padding: 0;border: none;'}
+                %option{:value => nil}
+                  Seleccionar tipo de orden
                 %option{:value => 'purchase_order'}
                   Orden de Compra
                 %option{:value => 'service_order'}

@@ -33,12 +33,22 @@
       load_url_ajax("#{logistics_stock_inputs_path}", 'content', null, null, 'GET');
     });
 
+    $('#po_selected').select2({ width: '100%' });
+
     $('#btn-add-more-items-do').click(function(){
       $('#modalPurchaseOrderItems').modal('toggle', {
         keyboard: false,
         backdrop: 'static'
       });
     });
+
+    $('#supplier-selected').change(function(){
+      supplier_id = $(this).val();
+      $('#po_selected').select2('data', null);
+      target = '/logistics/stock_inputs/' + supplier_id + '/show_purchase_orders'
+      load_url_ajax(target, 'po_selected', null, 'avoid-opacity', 'PUT');
+    });
+
   });
   
   //Validations
@@ -140,9 +150,12 @@
 
   function display_pucharse_orders(){
     supplier_id = $('#supplier-selected').val();
+    supplier_title = $("#supplier-selected option:selected").text();
+    $('#supplier-selected').select2("readonly", true);
     url = "/logistics/stock_inputs/" + supplier_id + "/show_purchase_order_item_field";
     data = { authenticity_token: "#{form_authenticity_token}" }
     load_url_ajax(url, 'modalPodContent', data, 'avoid-opacity', 'PUT');
+    $('h2#supplier_selected').html('Proveedor: ' + supplier_title);
   }
 
   function delete_item(code){

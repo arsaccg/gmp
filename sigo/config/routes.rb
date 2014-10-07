@@ -249,6 +249,7 @@ ArsacLogistica::Application.routes.draw do
       end
       member do
         put 'show_purchase_order_item_field'
+        put 'show_purchase_orders'
       end
     end
     resources :stock_outputs do

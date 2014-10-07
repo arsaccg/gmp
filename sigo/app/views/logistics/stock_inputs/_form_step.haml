@@ -5,7 +5,6 @@
     = hidden_field_tag "stock_input[company_id]", session[:company]
     = hidden_field_tag "stock_input[input]", "1"
     .row
-      .col-md-1
       .col-md-2
         %label.control-label Almacén
         .input-group
@@ -26,29 +25,19 @@
                 = x.name
           %span.input-group-addon
             %i.fa.fa-gears
-      .col-md-1
-      .col-md-2
-        %label.control-label Periodo
-        .input-group
-          %select(name='stock_input[period]' class = 'select2 form-control' id = 'period-select' style='width:100%;padding: 0;border: none;')
-            - @periods.select(:year).uniq.each do |x|
-              %optgroup{:label => "#{x.year.to_i}"}
-                - @periods.where("year = ?", x.year).each do |y|
-                  %option(value = "#{y.year.to_s}#{y.month.to_s.rjust(2, "0")}")
-                    = y.year.to_s + " - " + y.month.to_s.rjust(2, "0")
-    .row
-      .col-md-1
-      .col-md-2
+
+      .col-md-1{ :style => 'width: 6%;' }
         %label.control-label Serie
-        = text_field(:stock_input, :series, placeholder: "Serie", class: "form-control col-md-3")
-      .col-md-1
+        = text_field(:stock_input, :series, placeholder: "Serie", class: "form-control")
+
       .col-md-2
         %label.control-label N° Documento
         .input-group
           = text_field(:stock_input, :document, placeholder: "N° Documento", class: "form-control")
           %span.input-group-addon
             %i.fa.fa-file
-      .col-md-1
+
+      .col-md-2
       .col-md-2
         %label.control-label Fecha
         .input-group
@@ -59,16 +48,18 @@
       .col-md-12
         %label.control-label Glosa
         .input-group
-          = text_area(:stock_input, :description, placeholder: "Glosa", class: "form-control")
+          = text_field(:stock_input, :description, placeholder: "Glosa", class: "form-control")
           %span.input-group-addon
             %i.fa.fa-align-justify
   %br
   %fieldset
     .row
-      .col-md-6
+      .col-md-2
         .actions
           %button.btn.btn-sm.btn-success#btn-add-more-items-do{'type' => 'button'}
             Agregar más Items
+      .col-md-6
+        %h2#supplier_selected{ :style => 'margin:0' }
   %br
   %fieldset
     %table.table.table-condensed.table-bordered.table-striped.table-hover.smart-form#summary-pod{ :style => "font-size: 12px;", 'aria-describedby' => "data-table_info" }
@@ -76,7 +67,6 @@
         %tr
           %th Codigo
           %th Descripción
-          %th Proveedor
           %th{'style' => 'width: 4%;'}
             Unidad
           %th{'style' => 'width: 5%;'}
@@ -96,19 +86,27 @@
           %i.fa.fa-save
           Guardar
 
-  #modalPurchaseOrderItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
+  #modalPurchaseOrderItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog"}
     .modal-dialog
       .modal-content
         .modal-body{ :style => 'overflow: hidden;' }
-          .col-md-12
+          .col-md-6
             %div
               %label.control-label Proveedor
               .input-group
                 %select.select2.form-control#supplier-selected{ :name => 'stock_input[supplier_id]', :style => 'width:100%;padding: 0;border: none;'}
+                  %option{ :value => nil }
+                    Seleccionar Proveedor
                   - @suppliers.each do |x|
                     %option(value = "#{x.id}")
                       = x.name
-            %br
+          .col-md-6
+            %div
+              %label.control-label Ordenes de Compra
+              .input-group
+                %select.select2.form-control#po_selected{:name => "purchase_orders[]", :style => "padding: 0;border: none;", :multiple => true}
+
+          .col-md-12{ :style => 'margin-top:10px;' }
             %div
               %button.btn.btn-info{ :type => 'button', :onclick => 'display_pucharse_orders();' }
                 %i.fa.fa-search-minus

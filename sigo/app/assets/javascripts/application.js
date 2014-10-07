@@ -396,7 +396,9 @@ function load_items_delivery_order_ajax(url, div_id, parameters){
       $('#'+div_name).html(data);
     },
     error : function(xhr, ajaxOptions, thrownError) {
-      container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+      console.log(xhr);
+      console.log(ajaxOptions);
+      console.log(thrownError);
     }
   });
 }

@@ -47,7 +47,7 @@ class Logistics::StockInputsController < ApplicationController
     end
     @ids = @ids.uniq.join(',')
     @suppliers = Entity.where('id IN ('+@ids+')')
-    @periods = LinkTime.group(:year, :month)
+    #@periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     render layout: false
@@ -144,6 +144,15 @@ class Logistics::StockInputsController < ApplicationController
       @tableItems << y
     end
     render(partial: 'modal_more_items', :layout => false)
+  end
+
+  def show_purchase_orders
+    str_option = ""
+    supplier_id = params[:id]
+    PurchaseOrder.select(:id).select(:description).where("entity_id = ? AND state LIKE 'approved'", supplier_id).each do |purchaseOrder|
+      str_option += "<option value=" + purchaseOrder.id.to_s + ">" + purchaseOrder.id.to_s.rjust(5, '0') + ' - ' + purchaseOrder.description.to_s + "</option>"
+    end
+    render :json => str_option
   end
 
   private
