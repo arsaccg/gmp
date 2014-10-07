@@ -77,7 +77,7 @@ gem 'json'
 gem 'activerecord-import'
 
 gem 'capistrano'
-gem 'capistrano-bundler'
+#gem 'capistrano-bundler'
 
 # Gem Haml
 gem 'haml-rails'
