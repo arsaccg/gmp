@@ -124,7 +124,7 @@
           %th{"style"=>"color:white"} 07
           %th{"style"=>"color:white"} NETO A PAGAR
           %th{ 'colspan' => 2, "style"=>"color:white;text-align:center"}=number_to_currency(@scvaluation.net_payment.to_f, unit: 'S/. ', precision: 2)
-          %th{"style"=>"color:white;text-align:center"}=number_to_currency(@netoapagar)
+          %th{"style"=>"color:white;text-align:center"}=number_to_currency(@netoapagar, unit: 'S/. ', precision: 2)
           %th{"style"=>"color:white;text-align:center"}=number_to_currency(@scvaluation.accumulated_net_payment.to_f, unit: 'S/. ', precision: 2)
   %br
   %br
