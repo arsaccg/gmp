@@ -19,7 +19,7 @@
             %th Fase
             %th C/Atención
             %th Seleccionar
-        %tbody
+        %tbody#table-items
           - @tableItems.each do |x|
             - x.purchase_order_details.where("received IS NULL").each do |y|
               - @pending = y.amount.to_i - PurchaseOrderDetail.get_total_received(y.id).to_i
