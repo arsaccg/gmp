@@ -27,3 +27,14 @@
     .row
       %article.col-xs-12
         = render :partial => 'table'
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-docs{type: "button"}
+  %i.fa.fa-arrow-left>
+    &nbsp;
+    Regresar al Listado de Documentos
+
+:javascript
+
+  $('#backlist-docs').click(function(){
+    load_url_ajax("#{logistics_documents_path}", 'content', null, null, 'GET');
+  });
