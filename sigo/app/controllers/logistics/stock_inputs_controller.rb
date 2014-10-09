@@ -21,7 +21,12 @@ class Logistics::StockInputsController < ApplicationController
       # Verified If All Received
       @head.stock_input_details.each do |x|
         @pod = PurchaseOrderDetail.find(x.purchase_order_detail.id)
-        if @pod.amount <= PurchaseOrderDetail.get_total_received(x.purchase_order_detail.id)
+        sum = 0
+        total = StockInputDetail.where("purchase_order_detail_id = ?",@pod.id)
+        total.each do |tt|
+          sum+=tt.amount.to_i
+        end
+        if @pod.amount == sum
           @pod.update_attributes(:received => 1)
         end
       end
@@ -84,6 +89,17 @@ class Logistics::StockInputsController < ApplicationController
     head = StockInput.find(params[:id])
     head.year = head.period.to_s[0,4]
     head.update_attributes(stock_input_parameters)
+    head.stock_input_details.each do |x|
+      @pod = PurchaseOrderDetail.find(x.purchase_order_detail.id)
+      sum = 0
+      total = StockInputDetail.where("purchase_order_detail_id = ?",@pod.id)
+      total.each do |tt|
+        sum+=tt.amount.to_i
+      end
+      if @pod.amount == sum
+        @pod.update_attributes(:received => 1)
+      end
+    end
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index
   rescue ActiveRecord::StaleObjectError
@@ -95,6 +111,15 @@ class Logistics::StockInputsController < ApplicationController
   def destroy
     sinput = StockInput.find(params[:id])
     sinput.stock_input_details.each do |sin|
+      @pod = PurchaseOrderDetail.find(sin.purchase_order_detail.id)
+      sum = 0
+      total = StockInputDetail.where("purchase_order_detail_id = ?",@pod.id)
+      total.each do |tt|
+        sum+=tt.amount.to_i
+      end
+      if @pod.amount == sum
+        @pod.update_attributes(:received => nil)
+      end
       sinputdetail = StockInputDetail.destroy(sin.id)
     end
     item = StockInput.destroy(params[:id])
@@ -156,7 +181,9 @@ class Logistics::StockInputsController < ApplicationController
     str_option = ""
     supplier_id = params[:id]
     PurchaseOrder.select(:id).select(:description).where("entity_id = ? AND state LIKE 'approved'", supplier_id).each do |purchaseOrder|
-      str_option += "<option value=" + purchaseOrder.id.to_s + ">" + purchaseOrder.id.to_s.rjust(5, '0') + ' - ' + purchaseOrder.description.to_s + "</option>"
+      if purchaseOrder.purchase_order_details.where("received IS NULL").count > 0 
+        str_option += "<option value=" + purchaseOrder.id.to_s + ">" + purchaseOrder.id.to_s.rjust(5, '0') + ' - ' + purchaseOrder.description.to_s + "</option>"
+      end
     end
     render :json => str_option
   end
