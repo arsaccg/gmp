@@ -1,19 +1,18 @@
 .row
   .col-md-1
-  .col-md-2
-    %label Ejecutor
+  .col-md-4
+    %label Contratos
     %br
-    %label.input{for: "executor_id"}
-      %select.form-control#exe{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
-        %option{:value => "0"} Seleccione un Proveedor
-        - @executors.each do |ex|
-          %option{:value => "#{ex.entity_id}"}
-            = ex.entity.name
-  .col-md-3
+    %select#exe{:name =>"valuation_of_equipment[subcontract_equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
+      %option{:value => "0"} Seleccione un Contrato
+      - @executors.each do |ex|
+        %option{:value => "#{ex.entity_id}", :rel => "#{ex.id}"}
+          = ex.entity.name.to_s + ' - ' + ex.contract_description.to_s
+  .col-md-2
     %label Fecha de inicio
     %input#start-date-input.string.optional.form-control{'name'=>'date1', type: "date"}
 
-  .col-md-3
+  .col-md-2
     %label Fecha de fin
     %input#end-date-input.string.optional.form-control{'name'=>'date2', type: "date"}
 
@@ -31,17 +30,18 @@
 
 :javascript
   $(document).ready(function () {
-    $('select').select2({width:'200'});
+    $('select').select2({width:'100%'});
   });
 
   $('#show-table').click(function(){
     var start_date = $('#start-date-input').val();
     var end_date = $('#end-date-input').val();
     var exe = $('#exe').val();
+    var subcontract = $('#exe').attr('rel');
 
     if(start_date != null && end_date != null && exe!=0) {
       if(new Date(start_date) < new Date(end_date)) {
-        var parameters = { company_id: "#{@company}", executor: exe, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
+        var parameters = { company_id: "#{@company}", executor: exe, subcontract: subcontract, start_date: start_date, end_date: end_date, authenticity_token: "#{form_authenticity_token}" };
 
         load_items_delivery_order_ajax("#{get_report_production_valuation_of_equipments_path}", 'table-information-result', parameters);
       } else {

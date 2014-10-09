@@ -159,6 +159,7 @@
         = hidden_field_tag 'valuation_of_equipment[accumulated_fuel_discount]', @fuel_discount+@descuentocombustible
         = hidden_field_tag 'valuation_of_equipment[accumulated_other_discount]', 0
         = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]', @bill+@billigv-(@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f + @netoapagar
+        = hidden_field_tag 'valuation_of_equipment[subcontract_equipment_id]', @subcontract_equipment_id
 
         %footer
           %button.btn.btn-primary{type: "submit"}

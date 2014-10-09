@@ -2,8 +2,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @company = get_company_cost_center('company')
-    @valuationofequipment = ValuationOfEquipment.all
-    @subcontractequipmentdetail = SubcontractEquipmentDetail.all
+    #@valuationofequipment = ValuationOfEquipment.all
+    @subcontractEquipments = SubcontractEquipment.all
+    #@subcontractequipmentdetail = SubcontractEquipmentDetail.all
     render layout: false
   end
     
@@ -59,7 +60,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
   def get_report
     @name = Entity.find_by_id(params[:executor]).name
-
+    @subcontract_equipment_id = params[:subcontract]
     if SubcontractEquipment.find_by_entity_id(params[:executor])!=nil
       if ValuationOfEquipment.count > 0
         last = ValuationOfEquipment.where("name LIKE ? ", @name).last

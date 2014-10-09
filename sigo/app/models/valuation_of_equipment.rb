@@ -1,6 +1,7 @@
 class ValuationOfEquipment < ActiveRecord::Base
-
-	state_machine :state, :initial => :disapproved do
+  belongs_to :subcontract_equipment
+  
+  state_machine :state, :initial => :disapproved do
 
     event :approve do
       transition :disapproved => :approved
