@@ -112,8 +112,14 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def show_purchase_order_item_field
-    @company = get_company_cost_center('company')
-    @tableItems = PurchaseOrder.get_approved_by_company_and_supplier(@company, params[:id])
+    @company = get_company_cost_center('cost_center')
+    #@tableItems = PurchaseOrder.get_approved_by_company_and_supplier(@company, params[:id], params[:order])
+    if params[:order]==""
+      @tableItems = PurchaseOrder.where("entity_id = "+params[:id].to_s+" AND cost_center_id = "+@company.to_s)
+    else
+      order = params[:order].to_a.join(',')
+      @tableItems = PurchaseOrder.where("entity_id = "+params[:id].to_s+" AND cost_center_id = "+@company.to_s+" AND id IN ("+order+")")
+    end
     render(partial: 'table_items_order', :layout => false)
   end
 
