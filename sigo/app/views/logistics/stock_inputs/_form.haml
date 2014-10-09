@@ -5,7 +5,7 @@
     %h2 Ingreso a Almacén
   %div{:style => "padding-top: 0"}
     .jarviswidget-editbox
-    .widget-body
+    .widget-body{:style=>"width: 95%;margin: 2%;"}
       = simple_form_for([:logistics, @head], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
         - f.fields_for :stock_input_details do |del|
           = del.hidden_field :lock_version
@@ -16,11 +16,11 @@
           .row
             .col-md-3
               .row
-                .col-md-12
+                .col-md-10
                   .form-group
                     %label.control-label Almacén
                     .input-group
-                      %select.form-control#category-select{:name =>"stock_input[warehouse_id]"}
+                      %select.form-control#category-select{:name =>"stock_input[warehouse_id]",}
                         - @warehouses.each do |x|
                           - if @head.warehouse_id == x.id
                             %option{:value => "#{x.id}", :rel => "", :selected => true}
@@ -32,7 +32,7 @@
                         %i.fa.fa-gears
             .col-md-2
               .row
-                .col-md-12
+                .col-md-10
                   .form-group
                     %label.control-label Formato
                     .input-group
@@ -48,7 +48,7 @@
                         %i.fa.fa-gears
             .col-md-2
               .row
-                .col-md-12
+                .col-md-10
                   .form-group
                     %label.control-label Periodo
                     .input-group
@@ -62,15 +62,15 @@
                               - else
                                 %option(value = "#{y.year.to_s}#{y.month.to_s.rjust(2, "0")}")
                                   = y.year.to_s + " - " + y.month.to_s.rjust(2, "0")
-            .col-md-1
+            .col-sm-1{:style=>"width:7.5%"}
               .row
-                .col-md-12
+                .col-md-9
                   .form-group
                     %label.control-label Serie
                     = text_field(:stock_input, :series, :value => "#{@head.series}", placeholder: "Serie", class: "form-control col-md-3")
             .col-md-2
               .row
-                .col-md-12
+                .col-md-10
                   .form-group
                     %label.control-label N° Documento
                     .input-group
@@ -79,7 +79,7 @@
                         %i.fa.fa-file
             .col-md-2
               .row
-                .col-md-12
+                .col-md-10
                   .form-group
                     %label.control-label Fecha
                     .input-group
@@ -94,34 +94,36 @@
                   = text_area(:stock_input, :description, :value => "#{@head.description}", placeholder: "Glosa", class: "form-control")
                   %span.input-group-addon
                     %i.fa.fa-align-justify
-        
-          %fieldset
-            .row
-              .col-md-6
-                .actions
-                  %button.btn.btn-sm.btn-success#btn-add-more-items-do{'type' => 'button'}
-                    Agregar más items
+          .row
+            %fieldset
+              .row
+                .col-md-6
+                  .actions
+                    %button.btn.btn-sm.btn-success#btn-add-more-items-do{'type' => 'button'}
+                      Agregar más items
+            %br
           
-        %fieldset
-          %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-pod" aria-describedby="data-table_info")
-            %thead
-              %tr
-                %th Codigo
-                %th Descripción
-                %th{'style' => 'width: 4%;'}
-                  Unidad
-                %th{'style' => 'width: 5%;'}
-                  Cantidad Total
-                %th{'style' => 'width: 4%;'}
-                  Cantidad Pendiente
-                %th{'style' => 'width: 6%;'}
-                  Cantidad Recibida
-                %th{'style' => 'width: 4%;'}
-                  Eliminar
-            %tbody(id="table-items-paso2")
-              = render :partial => 'table_items_detail_edit'
+            %fieldset
+              %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-pod" aria-describedby="data-table_info")
+                %thead
+                  %tr
+                    %th Codigo
+                    %th Descripción
+                    %th{'style' => 'width: 4%;'}
+                      Unidad
+                    %th{'style' => 'width: 5%;'}
+                      Cantidad Total
+                    %th{'style' => 'width: 4%;'}
+                      Cantidad Pendiente
+                    %th{'style' => 'width: 6%;'}
+                      Cantidad Recibida
+                    %th{'style' => 'width: 4%;'}
+                      Eliminar
+                %tbody(id="table-items-paso2")
+                  = render :partial => 'table_items_detail_edit'
 
         .form-actions{:style => "margin-top: 0;"}
+          %br
           .row
             .col-md-12
               %button.btn.btn-primary{type: "submit"}
