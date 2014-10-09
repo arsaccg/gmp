@@ -10,82 +10,80 @@
 		#content
 			-if !@scvaluation.nil?
 				%div
-					.jarviswidget-editbox
-					.widget-body
-						%table.panel.panel-primary{ style: "height: 90px; width: 1100px;margin-left: 20px;" }
-							%thead.panel-heading
-								%tr
-									%th{'colspan' => 4, "style"=>"text-align:center;font-size: large"}= @scvaluation.name + ' ' + @scvaluation.code
-								%tr{"bgcolor"=>"#3276B1","style"=>"height:25px;"}
-									%th{"style"=>"color:white;text-align:center"} Monto contratado
-									%th{"style"=>"color:white;text-align:center"} Adelanto
-									%th{"style"=>"color:white;text-align:center"} Amortización Acumulada
-									%th{"style"=>"color:white;text-align:center"} Saldo
-							%tbody{:style=>"font-size:100%;"}
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.hired_amount.to_f)
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.advances.to_f)
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.accumulated_amortization.to_f)
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.balance.to_f)
-				%br
-			.modal-dialog{"style"=>"width:1100px;"}
-				.modal-content
-				.modal-header
-					%h4.modal-title Valorización sin IGV
-				.modal-body
-					-if @workers_array2.count>0
-						%h1.page-title.txt-color-blueDark Parte de Obra
-						%table.panel.panel-primary.table-bordered{"style"=>"width:1100px;"}
-							%thead.panel-heading
-								%tr{"style" =>"height:50px;"}
-									%th{"style"=>"text-align:center;vertical-align: middle;"} Codigo
-									%th{"style"=>"text-align:center;vertical-align: middle;"} Partida
-									%th{"style"=>"text-align:center;vertical-align: middle;"} P.U.
-									%th{"style"=>"text-align:center;vertical-align: middle;"} Total
-									%th{"style"=>"text-align:center;vertical-align: middle;"} Actual
-									%th{"style"=>"text-align:center;vertical-align: middle;"} Parcial
-									%th{"style"=>"text-align:center;vertical-align: middle;"} Acumulado
-									%th{"style"=>"text-align:center;vertical-align: middle;"} Saldo
-									
-							%tbody
-							-i=0
-							- @workers_array2.each do |workerDetail2|
-								%tr{"style" =>"font-size:95%;height:50px;"}
-									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[2]
-									%th{"style" =>"font-weight:normal;text-align:left;padding-left:10px;vertical-align: middle;"}= workerDetail2[1]
-									%th{"style" =>"padding-left:5px;padding-right:5px;font-weight:normal;text-align:center;vertical-align: middle;"}
-										-if !@subcontract.nil?
-											-@subcontract.subcontract_details.each do |sub|
-												-if sub.itembybudget.order==workerDetail2[2]
-													=number_to_currency(sub.unit_price, unit: 'S/.', precision: 2)
-										-else
-											=""
-									%th{"style" =>"padding-left:5px;padding-right:5px;font-weight:normal;text-align:center;vertical-align: middle;"}
-										-if !@subcontract.nil?
-											-@subcontract.subcontract_details.each do |sub|
-												-if sub.itembybudget.order==workerDetail2[2]
-													=number_to_currency(sub.amount, unit: '', precision: 2)
-										-else
-											=""
-									%th{"style" =>"padding-left:5px;padding-right:5px;font-weight:normal;text-align:center;vertical-align: middle;"}= number_to_currency(workerDetail2[3], unit: '', precision: 2)
+					%table.panel.panel-primary{ style: "height: 90px; width: 1100px;margin-left: 20px;" }
+						%thead.panel-heading
+							%tr
+								%th{'colspan' => 4, "style"=>"text-align:center;font-size: large"}= @scvaluation.name + ' ' + @scvaluation.code
+							%tr{"bgcolor"=>"#3276B1","style"=>"height:25px;"}
+								%th{"style"=>"color:white;text-align:center"} Monto contratado
+								%th{"style"=>"color:white;text-align:center"} Adelanto
+								%th{"style"=>"color:white;text-align:center"} Amortización Acumulada
+								%th{"style"=>"color:white;text-align:center"} Saldo
+						%tbody{:style=>"font-size:100%;"}
+							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.hired_amount.to_f)
+							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.advances.to_f)
+							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.accumulated_amortization.to_f)
+							%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.balance.to_f)
+			%br
+		.modal-dialog{"style"=>"width:1100px;"}
+			.modal-content
+			.modal-header
+				%h4.modal-title Valorización sin IGV
+			.modal-body
+				-if @workers_array2.count>0
+					%h1.page-title.txt-color-blueDark Parte de Obra
+					%table.panel.panel-primary.table-bordered{"style"=>"width:1200px;"}
+						%thead.panel-heading
+							%tr{"style" =>"height:50px;"}
+								%th{"style"=>"text-align:center;vertical-align: middle;"} Codigo
+								%th{"style"=>"text-align:center;vertical-align: middle;"} Partida
+								%th{"style"=>"text-align:center;vertical-align: middle;"} P.U.
+								%th{"style"=>"text-align:center;vertical-align: middle;"} Total
+								%th{"style"=>"text-align:center;vertical-align: middle;"} Actual
+								%th{"style"=>"text-align:center;vertical-align: middle;"} Parcial
+								%th{"style"=>"text-align:center;vertical-align: middle;"} Acumulado
+								%th{"style"=>"text-align:center;vertical-align: middle;"} Saldo
+								
+						%tbody
+						-i=0
+						- @workers_array2.each do |workerDetail2|
+							%tr{"style" =>"font-size:95%;height:50px;"}
+								%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}= workerDetail2[2]
+								%th{"style" =>"font-weight:normal;text-align:left;padding-left:10px;vertical-align: middle;"}= workerDetail2[1]
+								%th{"style" =>"padding-left:5px;padding-right:5px;font-weight:normal;text-align:center;vertical-align: middle;"}
+									-if !@subcontract.nil?
+										-@subcontract.subcontract_details.each do |sub|
+											-if sub.itembybudget.order==workerDetail2[2]
+												=number_to_currency(sub.unit_price, unit: 'S/.', precision: 2)
+									-else
+										=""
+								%th{"style" =>"padding-left:5px;padding-right:5px;font-weight:normal;text-align:center;vertical-align: middle;"}
+									-if !@subcontract.nil?
+										-@subcontract.subcontract_details.each do |sub|
+											-if sub.itembybudget.order==workerDetail2[2]
+												=number_to_currency(sub.amount, unit: '', precision: 2)
+									-else
+										=""
+								%th{"style" =>"padding-left:5px;padding-right:5px;font-weight:normal;text-align:center;vertical-align: middle;"}= number_to_currency(workerDetail2[3], unit: '', precision: 2)
 
-									%th{"style" =>"padding-left:5px;padding-right:5px;font-weight:normal;text-align:center;vertical-align: middle;"}
-										-if !@subcontract.nil?
-											-@subcontract.subcontract_details.each do |sub|
-												-if sub.itembybudget.order==workerDetail2[2]
-													=number_to_currency((sub.unit_price*workerDetail2[3].round(2)).round(2), unit: 'S/. ', precision: 2)
-										-else
-											=""
-									%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}
-										= number_to_currency(@array5[i], unit: '', precision: 2)
-									%th{"style" =>"padding-left:5px;padding-right:5px;font-weight:normal;text-align:center;vertical-align: middle;"}
-										-if !@subcontract.nil?
-											-@subcontract.subcontract_details.each do |sub|
-												-if sub.itembybudget.order==workerDetail2[2]
-													= number_to_currency(sub.amount.round-@array5[i], unit: '', precision: 2)
-													-i=i+1
-										-else
-											=""
-					- else
-						%h4.modal-title No hay datos.
-						%br
-					%footer
+								%th{"style" =>"padding-left:5px;padding-right:5px;font-weight:normal;text-align:center;vertical-align: middle;"}
+									-if !@subcontract.nil?
+										-@subcontract.subcontract_details.each do |sub|
+											-if sub.itembybudget.order==workerDetail2[2]
+												=number_to_currency((sub.unit_price*workerDetail2[3].round(2)).round(2), unit: 'S/. ', precision: 2)
+									-else
+										=""
+								%th{"style" =>"font-weight:normal;text-align:center;vertical-align: middle;"}
+									= number_to_currency(@array5[i], unit: '', precision: 2)
+								%th{"style" =>"padding-left:5px;padding-right:5px;font-weight:normal;text-align:center;vertical-align: middle;"}
+									-if !@subcontract.nil?
+										-@subcontract.subcontract_details.each do |sub|
+											-if sub.itembybudget.order==workerDetail2[2]
+												= number_to_currency(sub.amount.round-@array5[i], unit: '', precision: 2)
+												-i=i+1
+									-else
+										=""
+				- else
+					%h4.modal-title No hay datos.
+					%br
+				%footer
