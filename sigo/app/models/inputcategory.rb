@@ -82,14 +82,14 @@ class Inputcategory < ActiveRecord::Base
                             
         #             GROUP BY T1.wbscode, category_id
         #             ORDER BY category_id;"
-        str = "SELECT T1.wbscode, T1.fase, CONCAT('0', T1.category_id) as category_id, T1.description, 
+        str = "SELECT T1.wbscode, T1.fase, CONCAT('0', T1.code) as code, T1.name, 
                 SUM(T1.amount) AS amount_sale, T1.coditem,T1.item_order,T1.measured
                FROM (
-                SELECT itembywbses.wbscode, category_id, wbsitems.fase, inputcategories.description, 
+                SELECT itembywbses.wbscode, code, wbsitems.fase, type_of_articles.name, 
                   itembybudgets.item_id, itembybudgets.`order` AS item_order, 
                   SUM(inputbybudgetanditems.price*inputbybudgetanditems.quantity*itembywbses.measured) AS amount, 
                   inputbybudgetanditems.coditem, itembywbses.measured
-                 FROM inputcategories, inputbybudgetanditems, itembybudgets
+                 FROM type_of_articles, inputbybudgetanditems, itembybudgets
                  RIGHT JOIN itembywbses ON
                  itembywbses.coditem = itembybudgets.item_code AND
                  itembywbses.order_budget = itembybudgets.`order` AND
@@ -97,20 +97,20 @@ class Inputcategory < ActiveRecord::Base
                  LEFT JOIN wbsitems ON
                  itembywbses.wbsitem_id = wbsitems.id
                  WHERE
-                 inputbybudgetanditems.cod_input LIKE CONCAT('0', CONCAT(category_id, '%'))  AND
+                 inputbybudgetanditems.cod_input LIKE CONCAT('0', CONCAT(code, '%'))  AND
                  inputbybudgetanditems.budget_id = '" + budgetid.to_s  + "' AND
                  inputbybudgetanditems.coditem=itembybudgets.item_code AND
                  inputbybudgetanditems.budget_id = itembybudgets.budget_id AND
                  inputbybudgetanditems.`order` = itembybudgets.`order` 
-                 GROUP BY category_id, itembybudgets.item_id
-                   ORDER BY category_id
+                 GROUP BY code, itembybudgets.item_id
+                   ORDER BY code
                ) AS T1, itembybudgets
                
                WHERE itembybudgets.item_id = T1.item_id AND
                itembybudgets.`order` = T1.item_order 
                
-               GROUP BY T1.wbscode, category_id
-               ORDER BY category_id;"
+               GROUP BY T1.wbscode, code
+               ORDER BY code;"
         return str 
     end
     
