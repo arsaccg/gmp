@@ -11,7 +11,6 @@
         %thead
           %tr
             %th Almacén
-            %th Periodo
             %th Fecha
             %th Documento
             %th Proveedor
@@ -23,8 +22,6 @@
               %tr
                 %td 
                   = unit.warehouse.name
-                %td
-                  = unit.period
                 %td
                   = unit.issue_date.strftime('%d/%m/%Y')
                 %td

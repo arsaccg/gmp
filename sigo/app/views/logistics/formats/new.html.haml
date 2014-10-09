@@ -8,13 +8,22 @@
     .row
       %article.col-sm-12.col-md-12.col-lg-6
         = render :partial => 'form'
-  %button.btn.btn-sm.btn-primary.btn-prev#backlist-cost{type: "button"}
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-formats{type: "button"}
     %i.fa.fa-arrow-left>
       &nbsp;
-      = t('activerecord.actions.back')
+      Ver el Listado de Formatos
+
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-docs{type: "button"}
+    %i.fa.fa-arrow-left>
+      &nbsp;
+      Regresar al Listado de Documentos
 
 :javascript
 
-  $('#backlist-cost').click(function(){
+  $('#backlist-formats').click(function(){
       load_url_ajax("#{logistics_formats_path}", 'content', null, null, 'GET');
+  });
+
+  $('#backlist-docs').click(function(){
+      load_url_ajax("#{logistics_documents_path}", 'content', null, null, 'GET');
   });

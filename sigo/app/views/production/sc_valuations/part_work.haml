@@ -29,17 +29,17 @@
                 -if !@subcontract.nil?
                   -@subcontract.subcontract_details.each do |sub|
                     -if sub.itembybudget.order==workerDetail2[2]
-                      =sub.unit_price
+                      =number_to_currency(sub.unit_price, unit: 'S/. ', precision: 2)
                 -else
                   =""
               %th{"style" =>"font-weight:normal;"}
                 -if !@subcontract.nil?
                   -@subcontract.subcontract_details.each do |sub|
                     -if sub.itembybudget.order==workerDetail2[2]
-                      =sub.amount
+                      =number_to_currency(sub.amount, unit: '', precision: 2)
                 -else
                   =""
-              %th{"style" =>"font-weight:normal;"}= workerDetail2[3].round(2)
+              %th{"style" =>"font-weight:normal;"}= number_to_currency(workerDetail2[3], unit: '', precision: 2)
 
               %th{"style" =>"font-weight:normal;"}
                 -if !@subcontract.nil?
@@ -49,12 +49,12 @@
                 -else
                   =""
               %th{"style" =>"font-weight:normal;"}
-                = @array5[i].round(2)
+                = number_to_currency(@array5[i], unit: '', precision: 2)
               %th{"style" =>"font-weight:normal;"}
                 -if !@subcontract.nil?
                   -@subcontract.subcontract_details.each do |sub|
                     -if sub.itembybudget.order==workerDetail2[2]
-                      = sub.amount-@array5[i].round(2)
+                      = number_to_currency(sub.amount-@array5[i], unit: '', precision: 2)
                       -i=i+1
                 -else
                   =""

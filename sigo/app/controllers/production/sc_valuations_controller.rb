@@ -125,7 +125,6 @@ class Production::ScValuationsController < ApplicationController
       @scValuation = ScValuation.new
       @totalprice = 0
       @totalprice2 = 0
-      @totalprice3 = 0
       @subadvances = 0
       @valorizacionsinigv = 0
       @amortizaciondeadelanto = 0
@@ -181,7 +180,13 @@ class Production::ScValuationsController < ApplicationController
       else
         @cad = '0'
       end
+
       @cc = get_company_cost_center('cost_center')
+      @totalprice3 = 0
+      @workers_arrayE = business_days_array4(@start_date, @end_date, @cad,@cc)
+      @workers_arrayE.each do |workerDetail|
+        @totalprice3 += workerDetail[4]
+      end
       @workers_array = business_days_array(@start_date, @end_date, @cad, @cc)
       @workers_array2 = business_days_array2(@start_date, @end_date, @cad, @cc)
       @workers_array3 = business_days_array3(@start_date, @end_date, @cad, @cc)
@@ -204,7 +209,7 @@ class Production::ScValuationsController < ApplicationController
       @totalbill= @totalprice2.to_f-@subcontract.initial_amortization_number.to_f
       @totalbilligv= (@totalprice2-@subcontract.initial_amortization_number.to_f)*@subcontract.igv
       @totalbillwigv= @totalbill+@totalbilligv
-      @retention=@subcontract.detraction.to_i+@subcontract.guarantee_fund.to_i+@totalprice+@totalprice3
+      @retention=@subcontract.detraction.to_i+(@subcontract.guarantee_fund.to_f/100)*@totalprice2+@totalprice+@totalprice3+@descuentomateriales+@otrosdescuentos
       @valuationgroup = getsc_valuation(@start_date, @end_date, @entity.name)
       if @valuationgroup.count > 0
         @valuationgroup.each do |workerDetail|
