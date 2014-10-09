@@ -26,7 +26,10 @@
           -partial_sale, partial_goal = @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"], @data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"]
           - if (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length == 2
             %tr(style="color:#3276b1;")
-              %td= ("--" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
+              %td
+                %span(style="color:transparent;")
+                  = ("_" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length)
+                = (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
               %td
                 %strong= @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][3]
               %td
@@ -38,7 +41,9 @@
               -direct_cost_goal = direct_cost_goal + @data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"][4] rescue 0
           - elsif (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length == 4
             %tr(style="color:green;")
-              %td= ("--" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
+              %td
+                %span(style="color:transparent;")
+                  = ("_" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
               %td= @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][3]
               %td
               %td(style ="text-align: right; font-size: 12px;")= number_to_currency(@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
@@ -49,7 +54,9 @@
             -category_id=@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]
             -measured=@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][7]
             %tr
-              %td= ("--" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
+              %td
+                %span(style="color:transparent;")
+                  = ("_" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
               %td= @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][3]
               %td
                 %center
