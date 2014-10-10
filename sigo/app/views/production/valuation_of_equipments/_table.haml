@@ -19,7 +19,7 @@
           - @subcontractEquipments.each do |subcontract_equipment|
             - if subcontract_equipment.valuation_of_equipments.count > 0
               - count = 1
-              %tr{ :style => 'background-color: #ecf3f8; font-weight:bold; color: #090968;' }
+              %tr{ :style => 'background-color: #ecf3f8; font-weight:bold; color: #030350;' }
                 %td
                 %td{ :colspan => 6 }
                   = subcontract_equipment.entity.name.to_s + ' ' + subcontract_equipment.entity.second_name.to_s + ' ' + subcontract_equipment.entity.paternal_surname.to_s + ' ' + subcontract_equipment.entity.maternal_surname.to_s + ' - ' + subcontract_equipment.contract_description

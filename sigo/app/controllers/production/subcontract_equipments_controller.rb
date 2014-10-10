@@ -18,7 +18,7 @@ class Production::SubcontractEquipmentsController < ApplicationController
   def new
     @company = params[:company_id]
     @subcontractEquipment = SubcontractEquipment.new
-    @suppliers = TypeEntity.find_by_name('Proveedores').entities
+    @suppliers = TypeEntity.find_by_preffix('P').entities
     @igv = FinancialVariable.find_by_name("IGV").value
     @company = params[:company_id]
     render layout: false
