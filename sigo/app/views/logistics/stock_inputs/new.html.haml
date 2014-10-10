@@ -150,13 +150,23 @@
 
   function display_pucharse_orders(){
     supplier_id = $('#supplier-selected').val();
-    supplier_title = $("#supplier-selected option:selected").text();
-    order = $('#po_selected').val();
-    $('#supplier-selected').select2("readonly", true);
-    url = "/logistics/stock_inputs/" + supplier_id + "/show_purchase_order_item_field";
-    data = { authenticity_token: "#{form_authenticity_token}", order: order }
-    load_url_ajax(url, 'modalPodContent', data, 'avoid-opacity', 'PUT');
-    $('h2#supplier_selected').html('Proveedor: ' + supplier_title);
+    if(supplier_id != 0){
+      supplier_title = $("#supplier-selected option:selected").text();
+      order = $('#po_selected').val();
+      $('#supplier-selected').select2("readonly", true);
+      url = "/logistics/stock_inputs/" + supplier_id + "/show_purchase_order_item_field";
+      data = { authenticity_token: "#{form_authenticity_token}", order: order }
+      load_url_ajax(url, 'modalPodContent', data, 'avoid-opacity', 'PUT');
+      $('h2#supplier_selected').html('Proveedor: ' + supplier_title);
+    }else{
+      $.smallBox({
+        title : "Aviso",
+        content : "<i class='fa fa-clock-o'></i> <i> Escoja un proveedor</i>",
+        color : "#C46A69",
+        iconSmall : "fa fa-times fa-2x fadeInRight animated",
+        timeout : 4000
+      });      
+    }
   }
 
   function delete_item(code){

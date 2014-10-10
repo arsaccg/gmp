@@ -26,7 +26,7 @@
           %span.input-group-addon
             %i.fa.fa-gears
 
-      .col-md-1{ :style => 'width: 6%;' }
+      .col-md-1{ :style => 'width: 10%;' }
         %label.control-label Serie
         = text_field(:stock_input, :series, placeholder: "Serie", class: "form-control")
 
@@ -95,7 +95,7 @@
               %label.control-label Proveedor
               .input-group
                 %select.select2.form-control#supplier-selected{ :name => 'stock_input[supplier_id]', :style => 'width:100%;padding: 0;border: none;'}
-                  %option{ :value => nil }
+                  %option{ :value => 0 }
                     Seleccionar Proveedor
                   - @suppliers.each do |x|
                     %option(value = "#{x.id}")

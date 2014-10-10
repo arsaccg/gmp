@@ -87,7 +87,11 @@ class Logistics::StockInputsController < ApplicationController
 
   def update
     head = StockInput.find(params[:id])
-    head.year = head.period.to_s[0,4]
+    ids1 = Array.new
+    ids2 = Array.new
+    head.stock_input_details.each do |x|
+      ids1 << x.purchase_order_detail_id
+    end
     head.update_attributes(stock_input_parameters)
     head.stock_input_details.each do |x|
       @pod = PurchaseOrderDetail.find(x.purchase_order_detail.id)
@@ -98,6 +102,14 @@ class Logistics::StockInputsController < ApplicationController
       end
       if @pod.amount == sum
         @pod.update_attributes(:received => 1)
+      end
+    end
+    head.stock_input_details.each do |x|
+      ids2 << x.purchase_order_detail_id
+    end
+    ids1.each do |x|
+      if !ids2.include?(x)
+        PurchaseOrderDetail.find(x).update_attributes(:received => nil)
       end
     end
     flash[:notice] = "Se ha actualizado correctamente los datos."
