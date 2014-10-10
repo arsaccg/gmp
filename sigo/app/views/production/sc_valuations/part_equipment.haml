@@ -18,11 +18,11 @@
           %tbody
           - @workers_array3.each do |workerDetail3|
             %tr
-              %th= workerDetail3[0]
-              %th= sprintf('%.2f',workerDetail3[2])
-              %th= workerDetail3[1]
-              %th= workerDetail3[3]
-              %th= number_to_currency(workerDetail3[4], unit: 'S/. ', precision: 2)
+              %th= workerDetail3[6].to_s+" "+workerDetail3[0].to_s
+              %th{:style=>"text-align:right;"}= sprintf('%.2f',workerDetail3[2])
+              %th{:style=>"text-align:right;"}= workerDetail3[1]
+              %th{:style=>"text-align:right;"}= workerDetail3[3]
+              %th{:style=>"text-align:right;"}= number_to_currency(workerDetail3[4], unit: 'S/. ', precision: 2)
       - else
         %h4.modal-title No hay datos.
         %br

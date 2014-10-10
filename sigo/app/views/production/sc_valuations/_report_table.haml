@@ -58,7 +58,7 @@
                   %span{"style"=>"width=20px"}
                     %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_work();'}
                       %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
-                %th#total{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@totalprice2, unit: 'S/. ', precision: 2)
+                %th#total{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@totalprice4, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@valorizacionsinigv, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@accumulated_valorizacionsinigv, unit: 'S/. ', precision: 2)
               %tr
@@ -110,7 +110,7 @@
                 %th{"style"=>"color:#5f5f5f"} 6.02
                 %th{"style"=>"color:#5f5f5f"} Fondo de Garantía N°01
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= "0.0"+@subcontract.guarantee_fund
-                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(((@subcontract.guarantee_fund.to_f/100)*@totalprice2), unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(((@subcontract.guarantee_fund.to_f/100)*@totalprice4), unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@fondogarantia1, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@accumulated_fondogarantia1, unit: 'S/. ', precision: 2)
               %tr
@@ -160,7 +160,7 @@
                 = hidden_field_tag 'sv_valuation[start_date]', @start_date
                 = hidden_field_tag 'sv_valuation[end_date]', @end_date
                 = hidden_field_tag 'sv_valuation[working_group]', @cad
-                = hidden_field_tag 'sv_valuation[valuation]', @totalprice2
+                = hidden_field_tag 'sv_valuation[valuation]', @totalprice4
                 = hidden_field_tag 'sv_valuation[initial_amortization_number]', @subcontract.initial_amortization_number.to_f
                 = hidden_field_tag 'sv_valuation[initial_amortization_percentage]', @subcontract.initial_amortization_percent
                 = hidden_field_tag 'sv_valuation[bill]', @totalbill
@@ -168,7 +168,7 @@
                 = hidden_field_tag 'sv_valuation[totalbill]', @totalbillwigv
                 = hidden_field_tag 'sv_valuation[retention]', @retention
                 = hidden_field_tag 'sv_valuation[detraction]', @subcontract.detraction
-                = hidden_field_tag 'sv_valuation[guarantee_fund1]', (@subcontract.guarantee_fund.to_f/100)*@totalprice2
+                = hidden_field_tag 'sv_valuation[guarantee_fund1]', (@subcontract.guarantee_fund.to_f/100)*@totalprice4
                 = hidden_field_tag 'sv_valuation[guarantee_fund2]', @totalprice
                 = hidden_field_tag 'sv_valuation[equipment_discount]', @totalprice3
                 = hidden_field_tag 'sv_valuation[material_discount]', @descuentomateriales
