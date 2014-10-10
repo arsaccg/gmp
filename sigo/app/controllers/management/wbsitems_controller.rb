@@ -305,7 +305,7 @@ class Management::WbsitemsController < ApplicationController
     @wbsitem.fase = @phase
     @wbsitem.phase_id = Phase.where(code: ((@phase.split(' '))[0]).to_i).first.id
     @wbsitem.save
-    render false, layout: false
+    render nothing: true, layout: false
   end
 
   def showperitem_gantt
