@@ -16,6 +16,7 @@
             %th Año
             %th Precio sin IGV
             %th Horas Contratadas
+            %th Estado
             %th Acciones
         %tbody
           - @partequi.each do |part|
@@ -35,6 +36,11 @@
                 = number_to_currency part.price_no_igv.to_f, unit: "S/.", precision: 2
               %td
                 =part.contracted_amount
+              %td
+                -if part.state=="active"
+                  ="Activo"
+                -else
+                  ="Inactivo"
               %td
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_subcontract_equipment_detail_path(part.id)}', 'content', {company_id: '#{@company}', subcontract: '#{@subcontract}'} , null, 'GET')"}
                   Editar
