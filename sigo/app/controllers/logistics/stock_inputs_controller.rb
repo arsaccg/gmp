@@ -112,15 +112,15 @@ class Logistics::StockInputsController < ApplicationController
     sinput = StockInput.find(params[:id])
     sinput.stock_input_details.each do |sin|
       @pod = PurchaseOrderDetail.find(sin.purchase_order_detail.id)
+      sinputdetail = StockInputDetail.destroy(sin.id)
       sum = 0
       total = StockInputDetail.where("purchase_order_detail_id = ?",@pod.id)
       total.each do |tt|
         sum+=tt.amount.to_i
       end
-      if @pod.amount == sum
-        @pod.update_attributes(:received => nil)
+      if @pod.amount > sum
+          @pod.update_attributes(:received => nil)
       end
-      sinputdetail = StockInputDetail.destroy(sin.id)
     end
     item = StockInput.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
