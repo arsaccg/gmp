@@ -98,6 +98,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         WHERE po.cost_center_id = "+@cc.to_s+"
         AND po.user_id = u.id
         AND po.entity_id = e.id
+        AND (po.id LIKE '%"+keyword.to_s+"%' OR po.description LIKE '%"+keyword.to_s+"%' OR e.name LIKE '%"+keyword.to_s+"%' )
         ORDER BY po.id ASC
         LIMIT #{display_length}
         OFFSET #{pager_number}"
