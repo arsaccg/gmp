@@ -118,8 +118,8 @@ class Logistics::StockInputsController < ApplicationController
       total.each do |tt|
         sum+=tt.amount.to_i
       end
-      if @pod.amount >= sum
-        @pod.update_attributes(:received => nil)
+      if @pod.amount > sum
+          @pod.update_attributes(:received => nil)
       end
     end
     item = StockInput.destroy(params[:id])

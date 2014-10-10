@@ -187,8 +187,36 @@ class Production::ScValuationsController < ApplicationController
       @workers_arrayE.each do |workerDetail|
         @totalprice3 += workerDetail[4]
       end
-      @workers_array = business_days_array(@start_date, @end_date, @cad, @cc)
+
+
+
+
+
+      @array5 = Array.new
+      @workers_array5 = business_days_array5(@start_date, @end_date, @cad,@cc)
+      @workers_array5.each do |worker|
+          @array5 << worker[3]   
+      end
+      @totalprice4=0
+      i=0
       @workers_array2 = business_days_array2(@start_date, @end_date, @cad, @cc)
+      entity = Entity.find_by_id(params[:executor])
+      @subcontract = Subcontract.find_by_entity_id(entity.id)
+      @workers_array2.each do |workerDetail|
+        @subcontract.subcontract_details.each do |sub|
+          if sub.itembybudget.order==workerDetail[2]
+            @totalprice4 += sub.unit_price*workerDetail[3]
+            i=i+1
+          end
+        end
+      end
+
+
+
+
+
+      @workers_array = business_days_array(@start_date, @end_date, @cad, @cc)
+
       @workers_array3 = business_days_array3(@start_date, @end_date, @cad, @cc)
       @workers_array.each do |workerDetail|
         @totalprice += workerDetail[7].to_f + workerDetail[8].to_f + workerDetail[9].to_f
@@ -306,6 +334,7 @@ class Production::ScValuationsController < ApplicationController
       AND p.block=0 
       AND pwd.itembybudget_id =  ibb.id
       GROUP BY ibb.subbudgetdetail
+      ORDER BY ibb.order
     ")
     return workers_array2
   end
@@ -328,6 +357,7 @@ class Production::ScValuationsController < ApplicationController
       AND p.block=0 
       AND pwd.itembybudget_id =  ibb.id
       GROUP BY ibb.subbudgetdetail
+      ORDER BY ibb.order
     ")
     return workers_array2
   end
@@ -360,7 +390,8 @@ class Production::ScValuationsController < ApplicationController
       SUM( poed.effective_hours ), 
       si.price_no_igv, 
       si.price_no_igv*SUM( poed.effective_hours), 
-      art.id
+      art.id,
+      si.code
       FROM part_of_equipments poe, part_of_equipment_details poed, articles_from_cost_center_"+get_company_cost_center('cost_center').to_s+" art, unit_of_measurements uom, subcontract_equipment_details si
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
@@ -368,7 +399,7 @@ class Production::ScValuationsController < ApplicationController
       AND poe.equipment_id=si.id
       AND uom.id = art.unit_of_measurement_id
       AND poed.working_group_id IN(" + working_group_id + ")
-      GROUP BY art.name
+      GROUP BY si.code
     ")
     return workers_array3
   end
