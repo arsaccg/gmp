@@ -105,6 +105,11 @@
                   - @rental.each do |rent|
                     %option{:value => "#{rent.id}"}
                       = rent.name
+          %section.col.col-4
+            %label.label Activo
+            %label.checkbox
+              = hidden_field_tag 'subcontract_equipment_detail[state]','inactive'
+              = check_box_tag 'subcontract_equipment_detail[state]', "active", nil, { class: 'subcontract_equipment_detail_active' }
         .row
           .col.col-4
             %label.label Horas Mínimas
@@ -138,6 +143,7 @@
 
 :javascript
   $(document).ready(function () {
+    $('.subcontract_equipment_detail_active').attr("style", 'position: relative; left: 0;');
     var article_id = $('#article').val();
     complete_infocombo("#{get_component_from_article_production_subcontract_equipment_details_path}", article_id, "#{form_authenticity_token}", 0);
 

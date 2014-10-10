@@ -86,7 +86,12 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @end_date = params[:end_date]
       @subcontractequipment = SubcontractEquipment.find_by_entity_id(params[:executor])
       @cad = @subcontractequipment.id
-      @numbercode = 1
+      @lastvaluation = ValuationOfEquipment.find(:last,:conditions => [ "subcontract_equipment_id = ?", @subcontractequipment.id])
+      if !@lastvaluation.nil?
+        @numbercode = @lastvaluation.code.to_i+1
+      else
+        @numbercode = 1
+      end
       @detraccion = @subcontractequipment.detraction
       @subadvances = 0
       @fuel_discount = 0
@@ -132,6 +137,20 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       SELECT poe.equipment_id, sed.code, SUM(poed.effective_hours), sed.price_no_igv, SUM(poed.effective_hours)*sed.price_no_igv
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND poe.id=poed.part_of_equipment_id
+      AND poe.cost_center_id = '" + cost_center.to_s + "'
+      AND poe.equipment_id=sed.id
+      AND poe.subcontract_equipment_id = " + working_group_id.to_s + "
+      GROUP BY poe.equipment_id
+    ")
+    return workers_array3
+  end
+
+  def business_days_array5(end_date, working_group_id, cost_center)
+    workers_array3 = ActiveRecord::Base.connection.execute("
+      SELECT poe.equipment_id, sed.code, SUM(poed.effective_hours), sed.price_no_igv, SUM(poed.effective_hours)*sed.price_no_igv
+      FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
+      WHERE poe.date <= '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.cost_center_id = '" + cost_center.to_s + "'
       AND poe.equipment_id=sed.id
@@ -232,6 +251,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @totalprice3 = 0
     @cc = get_company_cost_center('cost_center')
     @workers_array3 = business_days_array3(@start_date, @end_date, @cad,@cc)
+    @workers_array5 = business_days_array5(@end_date,@cad,@cc)
     @art = Array.new
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
@@ -417,6 +437,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         @totalprice3 = 0
         @cc = get_company_cost_center('cost_center')
         @workers_array3 = business_days_array3(@start_date, @end_date, @cad,@cc)
+        @workers_array5 = business_days_array5(@end_date,@cad,@cc)
         @art = Array.new
         @workers_array3.each do |workerDetail|
           @totalprice3 += workerDetail[4]
@@ -524,6 +545,39 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
   private
   def valuation_of_equipment_parameters
-    params.require(:valuation_of_equipment).permit(:name , :code , :start_date , :end_date , :working_group , :valuation , :initial_amortization_number , :initial_amortization_percentage , :bill , :billigv , :totalbill , :retention , :other_discount, :detraction , :fuel_discount , :othvaluation_of_equipmenter_discount , :hired_amount , :advances , :accumulated_amortization , :balance , :net_payment , :accumulated_valuation , :accumulated_initial_amortization_number , :accumulated_bill , :accumulated_billigv , :accumulated_totalbill , :accumulated_retention , :accumulated_detraction , :accumulated_fuel_discount , :accumulated_other_discount , :accumulated_net_payment)
+    params.require(:valuation_of_equipment).permit(
+      :name, 
+      :code, 
+      :start_date, 
+      :end_date, 
+      :working_group, 
+      :valuation, 
+      :initial_amortization_number, 
+      :initial_amortization_percentage, 
+      :bill, 
+      :billigv, 
+      :totalbill, 
+      :retention, 
+      :other_discount, 
+      :detraction, 
+      :fuel_discount, 
+      :othvaluation_of_equipmenter_discount, 
+      :hired_amount, 
+      :advances, 
+      :accumulated_amortization, 
+      :balance, 
+      :net_payment, 
+      :accumulated_valuation, 
+      :accumulated_initial_amortization_number, 
+      :accumulated_bill, 
+      :accumulated_billigv, 
+      :accumulated_totalbill, 
+      :accumulated_retention, 
+      :accumulated_detraction, 
+      :accumulated_fuel_discount, 
+      :accumulated_other_discount, 
+      :accumulated_net_payment, 
+      :subcontract_equipment_id
+    )
   end
 end
