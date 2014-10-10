@@ -185,6 +185,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_modal_extra_operations'
         post 'add_more_row_form_extra_op'
         post 'display_orders'
+        post 'showing_delivery_orders_table_result'
       end
       member do
         put 'show_delivery_order_item_field'
