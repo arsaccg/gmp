@@ -545,6 +545,39 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
   private
   def valuation_of_equipment_parameters
-    params.require(:valuation_of_equipment).permit(:name , :code , :start_date , :end_date , :working_group , :valuation , :initial_amortization_number , :initial_amortization_percentage , :bill , :billigv , :totalbill , :retention , :other_discount, :detraction , :fuel_discount , :othvaluation_of_equipmenter_discount , :hired_amount , :advances , :accumulated_amortization , :balance , :net_payment , :accumulated_valuation , :accumulated_initial_amortization_number , :accumulated_bill , :accumulated_billigv , :accumulated_totalbill , :accumulated_retention , :accumulated_detraction , :accumulated_fuel_discount , :accumulated_other_discount , :accumulated_net_payment)
+    params.require(:valuation_of_equipment).permit(
+      :name, 
+      :code, 
+      :start_date, 
+      :end_date, 
+      :working_group, 
+      :valuation, 
+      :initial_amortization_number, 
+      :initial_amortization_percentage, 
+      :bill, 
+      :billigv, 
+      :totalbill, 
+      :retention, 
+      :other_discount, 
+      :detraction, 
+      :fuel_discount, 
+      :othvaluation_of_equipmenter_discount, 
+      :hired_amount, 
+      :advances, 
+      :accumulated_amortization, 
+      :balance, 
+      :net_payment, 
+      :accumulated_valuation, 
+      :accumulated_initial_amortization_number, 
+      :accumulated_bill, 
+      :accumulated_billigv, 
+      :accumulated_totalbill, 
+      :accumulated_retention, 
+      :accumulated_detraction, 
+      :accumulated_fuel_discount, 
+      :accumulated_other_discount, 
+      :accumulated_net_payment, 
+      :subcontract_equipment_id
+    )
   end
 end
