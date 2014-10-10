@@ -49,83 +49,91 @@
       load_url_ajax(target, 'po_selected', null, 'avoid-opacity', 'PUT');
     });
 
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_stock_input'));
+    }
   });
   
   //Validations
-  $("#new_stock_input").ajaxForm({
-    beforeSubmit: function(arr, $form, options) {
-      $form.validate({
-        rules: {
-          'stock_input[supplier_id]': {
-            required: true
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules: {
+              'stock_input[supplier_id]': {
+                required: true
+              },
+              'stock_input[warehouse_id]': {
+                required: true
+              },
+              'stock_input[format_id]': {
+                required: true
+              },
+              'stock_input[series]': {
+                required: true,
+                minlength : 3,
+                maxlength : 3
+              },
+              'stock_input[document]': {
+                required: true,
+                minlength : 1,
+                maxlength : 10
+              },
+              'stock_input[issue_date]': {
+                required: true
+              },
+              'stock_input[description]': {
+                required: true
+              }
+            },
+            
+            messages: {
+              'stock_input[supplier_id]': "(*)",
+              'stock_input[warehouse_id]':{
+                required: 'Seleccione un almacen'
+              },
+              'stock_input[format_id]': "Seleccione un formato",
+              'stock_input[series]' : {
+                required : 'Campo Obligatorio',
+                minlength : "Mín 3 dígitos.",
+                maxlength : "Máx 3 dígitos."
+              },
+              'stock_input[document]' : {
+                required : 'Campo Obligatorio',
+                minlength : "Mín 1 dígito.",
+                maxlength : "Máx 10 dígitos.",
+              },
+              'stock_input[issue_date]': "Campo obligatorio",
+              'stock_input[description]': "Escriba una descripcion"
           },
-          'stock_input[warehouse_id]': {
-            required: true
-          },
-          'stock_input[format_id]': {
-            required: true
-          },
-          'stock_input[period]': {
-            required: true
-          },
-          'stock_input[series]': {
-            required: true,
-            minlength : 3,
-            maxlength : 3
-          },
-          'stock_input[document]': {
-            required: true,
-            minlength : 1,
-            maxlength : 10
-          },
-          'stock_input[issue_date]': {
-            required: true
-          },
-          'stock_input[description]': {
-            required: true
-          }
-        },
-        
-        messages: {
-          'stock_input[supplier_id]': "(*)",
-          'stock_input[warehouse_id]': "(*)",
-          'stock_input[format_id]': "(*)",
-          'stock_input[period]': "(*)",
-          'stock_input[series]' : {
-            required : '(*)',
-            minlength : "Mín 3 dígitos.",
-            maxlength : "Máx 3 dígitos."
-          },
-          'stock_input[document]' : {
-            required : '(*)',
-            minlength : "Mín 1 dígito.",
-            maxlength : "Máx 10 dígitos.",
-          },
-          'stock_input[issue_date]': "(*)",
-          'stock_input[description]': "(*)"
-        },
-        
-        highlight: function (element) {
-          $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-        },
-        unhighlight: function (element) {
-          $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
-        },
-        errorElement: 'span',
-        errorClass: 'help-block',
-        errorPlacement: function (error, element) {
-          if (element.parent('.input-group').length) {
-            error.insertAfter(element.parent());
-          } else {
-            error.insertAfter(element);
-          }
-        }
-      });
 
-      return $form.valid();
-    },
-    target: '#content'
-  });
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      }
+    });
+  }
 
   function add_more_items(){
     var ids_items = new Array();
@@ -150,7 +158,7 @@
 
   function display_pucharse_orders(){
     supplier_id = $('#supplier-selected').val();
-    if(supplier_id != 0){
+    if(supplier_id != "Seleccionar Proveedor"){
       supplier_title = $("#supplier-selected option:selected").text();
       order = $('#po_selected').val();
       $('#supplier-selected').select2("readonly", true);
@@ -158,6 +166,8 @@
       data = { authenticity_token: "#{form_authenticity_token}", order: order }
       load_url_ajax(url, 'modalPodContent', data, 'avoid-opacity', 'PUT');
       $('h2#supplier_selected').html('Proveedor: ' + supplier_title);
+      $('#stock_input_supplier_id').val(supplier_id);
+      $('#save').attr("disabled",false);
     }else{
       $.smallBox({
         title : "Aviso",
