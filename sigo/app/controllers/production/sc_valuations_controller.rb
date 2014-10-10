@@ -7,8 +7,13 @@ class Production::ScValuationsController < ApplicationController
 	end
 
   def show
-    @id = params[:id] 
+    @cc = get_company_cost_center('cost_center')
     @scvaluation=ScValuation.find_by_id(params[:id])
+    @start_date = @scvaluation.start_date.to_s
+    @end_date = @scvaluation.end_date.to_s
+    @inicio = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+@cc.to_s+" WHERE start_date <= '"+@start_date+"' AND end_date >= '"+@start_date.to_s+"'").first
+    @fin = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+@cc.to_s+" WHERE start_date <= '"+@end_date+"' AND end_date >= '"+@end_date.to_s+"'").first
+    @id = params[:id]
     @valorizacionsinigv = 0
     @amortizaciondeadelanto = 0
     @totalfacturar = 0
