@@ -1,0 +1,46 @@
+%table#modal-more-items.table.table-bordered.table-hover.has-tickbox
+  %thead
+    %tr
+      %th Orden de Suministro
+      %th Código
+      %th Descripción
+      %th U.M.
+      %th Cantidad
+      %th Por Atender
+      %th Sector
+      %th Fase
+      %th Centro Atención
+      %th Fecha Programada
+      %th
+        %button.btn-xs.btn-success{ :type => 'button', :onclick => 'check_all_checkboxes();' }
+          %i.fa.fa-hand-o-down
+  - @delivery_orders_detail.each do |dod|
+    %tr
+      %td.col-md-1
+        = dod.delivery_order.id.to_s.rjust(5, '0')
+      %td.col-md-1
+        = dod.article.code
+      %td.col-md-5
+        = dod.article.name
+      %td.col-md-1
+        = dod.unit_of_measurement.symbol
+      %td.col-md-1
+        = dod.amount.to_i
+      %td.col-md-1
+        %code
+          - if PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod.id).first != nil
+            = dod.amount.to_i - PurchaseOrder.get_total_amount_items_requested_by_purchase_order(dod.id).first.at(0).to_i
+          - else
+            = dod.amount.to_i
+      %td.sector.col-md-1.order_delivery_sector
+        = dod.sector.name
+      %td.order_delivery_phase
+        = dod.phase.name
+      %td.order_delivery_centro_atencion.col-md-2
+        = dod.center_of_attention.name
+      %td.order_delivery_fecha_programada.col-md-2
+        = dod.scheduled_date
+      %td
+        %label.checkbox
+          = check_box("order_delivery", "approved", { class: 'order_check' }, dod.id)
+          %i

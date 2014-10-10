@@ -198,20 +198,30 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def more_items_from_delivery_orders
-    @reg_n = ((Time.now.to_f)*100).to_i
-    if !params[:ids_delivery_order].nil?
-      @delivery_ids = params[:ids_delivery_order].join(",")
-    else
-      @delivery_ids = 0
-    end
-    @delivery_orders_detail = Array.new
     @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    @deliveryOrders = Array.new
+
     @cost_center.delivery_orders.where("state LIKE 'approved'").each do |deo|
-      deo.delivery_order_details.where("id NOT IN (#{@delivery_ids}) AND requested IS NULL").each do |dodw|
+      if deo.delivery_order_details.where(:requested => nil).count > 0
+        @deliveryOrders << deo
+      end
+    end
+
+    render(partial: 'modal_more_items_delivery', :layout => false)
+  end
+
+  def showing_delivery_orders_table_result
+    @delivery_orders_detail = Array.new
+    @reg_n = ((Time.now.to_f)*100).to_i
+    delivery_order_id = params[:delivery_orders]
+
+    DeliveryOrder.where(:id => delivery_order_id).where(:state => 'approved').each do |deo|
+      deo.delivery_order_details.where(:requested => nil).each do |dodw|
         @delivery_orders_detail << dodw
       end
     end
-    render(partial: 'modal_more_items_delivery', :layout => false)
+
+    render(partial: 'table_result_delivery_orders', :layout => false)
   end
 
   # BEGIN Extra Operations
