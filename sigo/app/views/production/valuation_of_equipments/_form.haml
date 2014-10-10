@@ -37,7 +37,7 @@
     var start_date = $('#start-date-input').val();
     var end_date = $('#end-date-input').val();
     var exe = $('#exe').val();
-    var subcontract = $('#exe').attr('rel');
+    var subcontract = $('option:selected', $('#exe')).attr('rel');
 
     if(start_date != null && end_date != null && exe!=0) {
       if(new Date(start_date) < new Date(end_date)) {

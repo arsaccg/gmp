@@ -20,14 +20,14 @@
                   - @suppliers.each do |supply|
                     -if @subcontractEquipment.entity_id== supply.id
                       %option{:value => "#{supply.id}", :selected=>"selected"}
-                        = supply.name
+                        = 'RUC: ' + supply.ruc.to_s + ' - ' + supply.name.to_s
                     -else
                       %option{:value => "#{supply.id}"}
-                        = supply.name
+                        = 'RUC: ' + supply.ruc.to_s + ' - ' + supply.name.to_s
                 -else
                   - @suppliers.each do |supply|
                     %option{:value => "#{supply.id}"}
-                      = supply.name
+                      = 'RUC: ' + supply.ruc.to_s + ' - ' + supply.name.to_s
 
           %section.col.col-4
             %label.label Valorizaciones
