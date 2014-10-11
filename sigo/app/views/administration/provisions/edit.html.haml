@@ -14,6 +14,13 @@
 
 :javascript
 
+  $(document).ready(function () {
+    if($('form').length > 0) {
+      submit_validate($('form'));
+    }
+
+  });
+
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
   $('#backlist-provisions').click(function(){
@@ -32,6 +39,9 @@
     var unit_price = parseFloat($(element).parent().siblings('.unit-price').find('input').val());
     var discount_before = parseFloat($(element).parent().siblings('.discount-before').find('input').val());
     var discount_after = parseFloat($(element).parent().siblings('.discount-after').find('input').val());
+
+    if (isNaN(discount_before)) discount_before = 0;
+    if (isNaN(discount_after)) discount_after = 0;
 
     var total_price = parseFloat(((amount * unit_price) - discount_before)*(1+igv)).toFixed(2);
     var net_total_price = parseFloat(total_price) + parseFloat(discount_after)
@@ -77,14 +87,70 @@
     $('#modalDeliveryItems').modal('hide');
   }
 
-  function enableFieldsForIgv(element){
-    if($(element).is(":checked")){
-      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      console.log(price_without_igv);
-      console.log($(element).parent().parent().siblings('.price-with-igv').find('input'));
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*(parseFloat("#{@igv}"))).toFixed(2));
-    } else {
-      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
-    }
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules: {
+            'provision[document_provision_id]': {
+              required: true
+            },
+            'provision[number_document_provision]': {
+              required: true
+            },
+            'provision[accounting_date]': {
+              required: true
+            },
+            'provision[series]': {
+              required: true
+            },
+            'provision[entity_id]': {
+              required: true
+            }
+          },
+          
+          messages: {
+            'provision[document_provision_id]':  {
+              required: "Porfavor, especifica el tipo de Documento."
+            },
+            'provision[number_document_provision]':  {
+              required: "Porfavor, especifica el numero del documento."
+            },
+            'provision[accounting_date]':  {
+              required: "Porfavor, especifica la fecha."
+            },
+            'provision[series]':  {
+              required: "Porfavor, especifica la serie."
+             },
+            'provision[entity_id]': {
+              required: "Porfavor, especifica al proveedor."
+            }
+          },
+
+          highlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+          },
+          unhighlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+          },
+          errorElement: 'span',
+          errorClass: 'help-block',
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
   }
