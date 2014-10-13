@@ -40,7 +40,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
         FROM delivery_orders do, users u
         WHERE do.cost_center_id = "+@cc.to_s+"
         AND do.user_id = u.id
-        ORDER BY do.id ASC
+        ORDER BY do.id DESC
         LIMIT #{display_length}
         OFFSET #{pager_number}"
       )
@@ -50,7 +50,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
         FROM delivery_orders do, users u
         WHERE do.cost_center_id = "+@cc.to_s+"
         AND do.user_id = u.id
-        ORDER BY do.id ASC
+        ORDER BY do.id DESC
         LIMIT #{display_length}"
       )
     elsif keyword != '' && state == ''
@@ -60,7 +60,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
         WHERE do.cost_center_id = "+@cc.to_s+"
         AND do.user_id = u.id
         AND do.description LIKE '%#{keyword}%'
-        ORDER BY do.id ASC"
+        ORDER BY do.id DESC"
       )
     elsif state != '' && state!=nil
       de_o = ActiveRecord::Base.connection.execute("
@@ -69,7 +69,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
         WHERE do.cost_center_id = "+@cc.to_s+"
         AND do.user_id = u.id
         AND do.state LIKE '"+state.to_s+"'
-        ORDER BY do.id ASC
+        ORDER BY do.id DESC
         LIMIT #{display_length}
         OFFSET #{pager_number}"
       )  
@@ -79,10 +79,9 @@ class Logistics::DeliveryOrdersController < ApplicationController
         FROM delivery_orders do, users u
         WHERE do.cost_center_id = "+@cc.to_s+"
         AND do.user_id = u.id
-        ORDER BY do.id ASC
+        ORDER BY do.id DESC
         LIMIT #{display_length}
-        OFFSET #{pager_number}
-        "
+        OFFSET #{pager_number}"
       )
     end
     de_o.each do |dos|
