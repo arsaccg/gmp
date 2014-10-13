@@ -2,7 +2,7 @@
   .modal-content
     .modal-body
       .row
-        .col-xs-12.col-sm-7.col-md-7.col-lg-4
+        .col-xs-12.col-sm-7.col-md-7.col-lg-9
           %h2.page-title.txt-color-blueDark
             %i.fa.fa-pencil-square-o.fa-fw 
             ="Lista de Gastos Diversos de Gestion de: "+@cc.name
@@ -20,7 +20,7 @@
               %i.fa-fw.fa.fa-check
               %strong Error!
               = flash[:error]
-        .col-sm-4{"style"=>"margin:15px;"}
+        .col-sm-1{"style"=>"margin-top:10px;"}
           %button.btn.btn-primary.btn-mini
             %span{"style"=>"width=20px;text-align:center"}
               %a{href: 'javascript:void(0);', :onclick => 'gdg_new('+"#{@cc.id.to_s}"+');', "style"=>" color: white; "}
@@ -30,6 +30,12 @@
         #widget-grid
           %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
             = render :partial => 'table'
+
+      %br
+      .row
+        #table_detail.col-md-12
+
+      %br
 
       %footer
         %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}

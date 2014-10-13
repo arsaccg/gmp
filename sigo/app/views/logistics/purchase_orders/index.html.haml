@@ -79,6 +79,7 @@
   
   function runDataTables() {
     $('#summary-purchase-orders').dataTable({
+      bDestroy: true,
       bProcessing  : true,
       sProcessing  : true,
       bServerSide  : true,
@@ -89,6 +90,7 @@
       },
       fnServerParams: function ( aoData ) {
         aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
+        aoData.push( {"name": "state", "value": $('#state').val()} );
       },
       sPaginationType : 'bootstrap_full'
     });
@@ -96,4 +98,11 @@
     $("#dt_basic_filter div input").keyup(function() {
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
     });
+  }  
+
+  function filtro(state) {
+    $('#state').val(state);
+    runDataTables();
+    $('#summary-purchase-orders_wrapper').removeClass("dataTables_wrapper");
+>>>>>>> e71ebcd7303f58d5e289ae1f58f4f57f6ba0e802
   }

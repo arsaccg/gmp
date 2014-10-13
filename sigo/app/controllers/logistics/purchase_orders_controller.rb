@@ -89,8 +89,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
     pager_number = params[:iDisplayStart]
     @pagenumber = params[:iDisplayStart]
     keyword = params[:sSearch]
+    state = params[:state]
     array = Array.new
-    if @pagenumber != 'NaN' && keyword != ''
+    if @pagenumber != 'NaN' && keyword != '' && state == ''
       po = ActiveRecord::Base.connection.execute("
         SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
         FROM purchase_orders po, users u, entities e
@@ -102,7 +103,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         LIMIT #{display_length}
         OFFSET #{pager_number}"
       )
-    elsif @pagenumber == 'NaN'
+    elsif @pagenumber == 'NaN' && state == ''
       po = ActiveRecord::Base.connection.execute("
         SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
         FROM purchase_orders po, users u, entities e
@@ -112,7 +113,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         ORDER BY po.id ASC
         LIMIT #{display_length}"
       )
-    elsif keyword != ''
+    elsif keyword != '' && state == ''
       po = ActiveRecord::Base.connection.execute("
         SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
         FROM purchase_orders po, users u, entities e
@@ -121,6 +122,18 @@ class Logistics::PurchaseOrdersController < ApplicationController
         AND po.entity_id = e.id
         ORDER BY po.id ASC"
       )
+    elsif state != '' && state!=nil
+      po = ActiveRecord::Base.connection.execute("
+        SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+        FROM purchase_orders po, users u, entities e
+        WHERE po.cost_center_id = "+@cc.to_s+"
+        AND po.user_id = u.id
+        AND po.entity_id = e.id
+        AND po.state LIKE '"+state.to_s+"'
+        ORDER BY po.id ASC
+        LIMIT #{display_length}
+        OFFSET #{pager_number}"
+      )       
     else
       po = ActiveRecord::Base.connection.execute("
         SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
@@ -130,8 +143,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         AND po.entity_id = e.id
         ORDER BY po.id ASC
         LIMIT #{display_length}
-        OFFSET #{pager_number}
-        "
+        OFFSET #{pager_number}"
       )
     end
 

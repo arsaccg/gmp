@@ -27,9 +27,12 @@
                 %td
                   = unit.document
                 %td
-                  = Entity.find(unit.supplier_id).name
+                  - if !Entity.find(unit.supplier_id).nil?
+                    = Entity.find(unit.supplier_id).name
+                  - else
+                    = ""
                 %td
-                  = unit.format.name
+                  = unit.format.name rescue ''
                 %td
                   %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_stock_input_path(unit.id)}', 'content', {company_id: '#{@company}', blockweekly: 1}, null, 'GET')"}
                     Ver información

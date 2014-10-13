@@ -77,8 +77,10 @@
   }
 
   $('#dt_basic_wrapper').removeClass("dataTables_wrapper");
+
   function runDataTables() {
     $('#dt_basic').dataTable({
+      bDestroy: true,
       bProcessing  : true,
       sProcessing  : true,
       bServerSide  : true,
@@ -88,7 +90,8 @@
         oSettings.fnDrawCallback = $('a.btn').tooltip('hide');
       },
       fnServerParams: function ( aoData ) {
-        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}"} );
+        aoData.push( {"name": "state", "value": $('#state').val()} );
       },
       sPaginationType : 'bootstrap_full'
     });
@@ -96,4 +99,11 @@
     $("#dt_basic_filter div input").keyup(function() {
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
     });
+  }
+
+
+  function filtro(state) {
+    $('#state').val(state);
+    runDataTables();
+    $('#dt_basic_wrapper').removeClass("dataTables_wrapper");
   }

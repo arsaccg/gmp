@@ -35,7 +35,7 @@
                 %td
                   = Entity.find(Worker.find(unit.responsible_id).entity_id).name + ' ' + Entity.find(Worker.find(unit.responsible_id).entity_id).paternal_surname
                 %td
-                  = unit.format.name
+                  = unit.format.name rescue '-'
                 %td
                   %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_stock_output_path(unit.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                     Ver información

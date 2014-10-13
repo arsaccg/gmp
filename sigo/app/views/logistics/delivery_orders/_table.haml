@@ -4,10 +4,28 @@
       %i.fa.fa-table
     %h2
       = "Lista de Ordenes de Suministros"
+      %input#state{"style"=>"display:none"}
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
       .widget-body-toolbar
+        .btn-group{:style=>"margin-left:80%"}
+          %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", :type => "button"} Filtar por Estado
+          %ul.dropdown-menu{:role => "menu"}
+            %li
+              %a{:href => "javascript:void(0)", :onclick =>"filtro();"} Todos         
+            %li
+              %a{:href => "javascript:void(0)", :onclick =>'filtro("pre_issued");'} Pre-Emitido
+            %li
+              %a{:href => "javascript:void(0)", :onclick =>'filtro("issued");'} Emitido
+            %li
+              %a{:href => "javascript:void(0)", :onclick =>'filtro("observed");'} Observado
+            %li
+              %a{:href => "javascript:void(0)", :onclick =>'filtro("revised");'} Revisado
+            %li
+              %a{:href => "javascript:void(0)", :onclick =>'filtro("approved");'} Aprobado
+            %li
+              %a{:href => "javascript:void(0)", :onclick =>'filtro("canceled");'} Cancelado
       %table.summary-delivery-orders.table.table-striped.table-bordered.table-hover#dt_basic
         %thead
           %tr
@@ -20,3 +38,10 @@
             %th Responsable
             %th Acciones
         %tbody{ :id => "body-summary-delivery-orders" }
+
+
+
+
+
+
+
