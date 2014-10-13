@@ -50,6 +50,16 @@ class Administration::InputcategoriesController < ApplicationController
 		@inputcategories = Inputcategory.all
 
 		@data = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, 1)
+		# @data = Array.new
+		# @wbsitems.each do |w|
+		# 	if  w.codewbs.to_i > 100
+		# 		d = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, w.codewbs)
+		# 	else
+		# 		d = 0
+		# 	end
+		# 	@data << d
+		# end
+		p @data
 
 		render :feo_of_work_wbs, :layout => false
 	end
@@ -64,16 +74,14 @@ class Administration::InputcategoriesController < ApplicationController
 	end
 
 	def get_input_wbs_detail
-		order,coditem,cod_input,@measured,budget_sale,budget_goal = params[:order].gsub("d","."),params[:coditem],params[:cod_input],params[:measured].to_f,params[:budget_sale],params[:budget_goal]
+		codewbs, category_prefix, budget_sale,budget_goal = params[:codewbs], params[:category_prefix], params[:budget_sale],params[:budget_goal]
+		# order,coditem,cod_input,@measured,budget_sale,budget_goal = params[:order].gsub("d","."),params[:coditem],params[:cod_input],params[:measured].to_f,params[:budget_sale],params[:budget_goal]
 
-		@input_sale = Inputbybudgetanditem.where("`order` like ? and `coditem` like ? and `cod_input` like CONCAT(?,'%') and budget_id = ?",order,coditem,cod_input,budget_sale)
-		@input_goal = Inputbybudgetanditem.where("`order` like ? and `coditem` like ? and `cod_input` like CONCAT(?,'%') and budget_id = ?",order,coditem,cod_input,budget_goal)
+		@input_budget_item_sale = Inputcategory.get_inputs_wbs(budget_sale, codewbs, category_prefix)
+		@input_budget_item_goal = Inputcategory.get_inputs_wbs(budget_goal, codewbs, category_prefix)
 
-		# select i.`cod_input`,i.`input`,i.`quantity`,i.`price` from inputbybudgetanditems as i 
-		# where i.`order` like '01.01.02.01.01' 
-		# and i.`coditem` like '010009223055' #and i.`coditem` like '010009223055' 
-		# and i.`cod_input` like CONCAT('021802','%')
-		# and i.budget_id = 1;
+		# @input_sale = Inputbybudgetanditem.where("`order` like ? and `coditem` like ? and `cod_input` like CONCAT(?,'%') and budget_id = ?",order,coditem,'0'+cod_input,budget_sale)
+		# @input_goal = Inputbybudgetanditem.where("`order` like ? and `coditem` like ? and `cod_input` like CONCAT(?,'%') and budget_id = ?",order,coditem,cod_input,budget_goal)
 
 		render :partial => 'input_detail_wbs', :layout => false
 	end
