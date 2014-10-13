@@ -25,13 +25,14 @@
         - if (wbs.codewbs != '1') && (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"] != nil)
           -partial_sale, partial_goal = @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"], @data[1]["#{wbs.codewbs.to_s}#{input.category_id}"]
           - if (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]) < 10  #codigo
-            %tr(style="color:#3276b1;")
+            %tr{class: "first_#{wbs.codewbs.to_s}_#{input.category_id}"}(style="color:#3276b1;")
               %td
                 %span(style="color:transparent;")
                   = ("_" * 2)
                 = (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]).to_s 
               %td
-                %strong= @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][3]  #nombre
+                %a{href: "javascript:toogle_three('second', '#{wbs.codewbs.to_s}_#{input.category_id.to_s}')"}
+                  %strong= @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][3]  #nombre
               %td
               %td(style="text-align: right; font-size: 13px;")
                 %strong= number_to_currency(@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ') #monto
@@ -53,7 +54,7 @@
             -coditem=@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][5]  #coditem
             -category_id=@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]  #category_id
             -measured=@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][7] #metrado
-            %tr
+            %tr{class: "second_#{wbs.codewbs.to_s}_#{input.category_id}"}
               %td
                 %span(style="color:transparent;")
                   = ("_" * 4)
@@ -80,6 +81,20 @@
 
   $(document).ready(function(){
   });
+
+  function toogle_three(level, id)
+  {
+    tr_level = $("[class^='" + level + "_" +  id + "']");
+    tr_level.css("display") == 'table-row' ? tr_level.css("display","none") : tr_level.css("display","table-row");
+    
+    switch(level){
+      case "second":
+        $("[class^='third_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('third', id); }
+        });
+        break;
+    }
+  }
 
   function get_input_detail_wbs(codewbs, category_prefix, budget_sale,budget_goal){
     $("#itemsModalWbs").modal({
