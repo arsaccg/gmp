@@ -42,95 +42,83 @@
 						%tr{"style" =>"font-size:80%"}
 							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 1.00
 							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} Valorización sin IGV
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}
-								%span{"style"=>"width=20px;text-align:center"}
-									%a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_work();'}
-										%i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center;vertical-align: middle"}=number_to_currency(@scvaluation.valuation.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center;vertical-align: middle"}=number_to_currency(@valorizacionsinigv.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center;vertical-align: middle"}=number_to_currency(@scvaluation.accumulated_valuation.to_f, unit: 'S/. ', precision: 2)
+							%th{'colspan'=>2,"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px;vertical-align: middle"}=number_to_currency(@scvaluation.valuation.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px;vertical-align: middle"}=number_to_currency(@valorizacionsinigv.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px;vertical-align: middle"}=number_to_currency(@scvaluation.accumulated_valuation.to_f, unit: 'S/. ', precision: 2)
 						%tr{"style" =>"font-size:80%"}
 							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 2.00
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 
-								Amortización de Adelanto (SIN. I.G.V.)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.initial_amortization_percentage.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.initial_amortization_number.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@amortizaciondeadelanto.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.accumulated_initial_amortization_number.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"}
+								="Amortización de Adelanto (SIN. I.G.V.)"
+								%span{"style"=>"float: right; padding-right:15px;font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.initial_amortization_percentage.to_f, unit: 'S/. ', precision: 2)
+							%th{'colspan'=>2,"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.initial_amortization_number.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@amortizaciondeadelanto.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.accumulated_initial_amortization_number.to_f, unit: 'S/. ', precision: 2)
 						%tr{"style" =>"font-size:80%"}
 							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 3.00
 							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} Total a Facturar
-							%th{ 'colspan' => 2, "style"=>"color:#5f5f5f;font-weight:normal;text-align:center"}= number_to_currency(@scvaluation.bill.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@totalfacturar.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.accumulated_bill.to_f, unit: 'S/. ', precision: 2)
+							%th{ 'colspan' => 2, "style"=>"color:#5f5f5f;font-weight:normal;text-align:right;padding-right:10px"}= number_to_currency(@scvaluation.bill.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@totalfacturar.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.accumulated_bill.to_f, unit: 'S/. ', precision: 2)
 						%tr{"style" =>"font-size:80%"}
 							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 4.00
 							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} I.G.V. del Total a Facturar
-							%th{ 'colspan' => 2, "style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}= number_to_currency(@scvaluation.billigv.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}= number_to_currency(@totalfacigv.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}= number_to_currency(@scvaluation.accumulated_billigv.to_f, unit: 'S/. ', precision: 2)
+							%th{ 'colspan' => 2, "style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}= number_to_currency(@scvaluation.billigv.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}= number_to_currency(@totalfacigv.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}= number_to_currency(@scvaluation.accumulated_billigv.to_f, unit: 'S/. ', precision: 2)
 						%tr{"bgcolor"=>"#3276B1","style"=>"font-size:90%;"}
 							%th{"style"=>"font-weight:normal;color:white"}
 							%th{"style"=>"color:white;padding-left:10px;"} Total Incluido IGV
-							%th{ 'colspan' => 2, "style"=>"color:white;text-align:center"}= number_to_currency(@scvaluation.totalbill.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"color:white;text-align:center"}= number_to_currency(@totalincluidoigv.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"color:white;text-align:center"}= number_to_currency(@scvaluation.accumulated_totalbill.to_f, unit: 'S/. ', precision: 2)
+							%th{ 'colspan' => 2, "style"=>"color:white;text-align:right;padding-right:10px"}= number_to_currency(@scvaluation.totalbill.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"color:white;text-align:right;padding-right:10px"}= number_to_currency(@totalincluidoigv.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"color:white;text-align:right;padding-right:10px"}= number_to_currency(@scvaluation.accumulated_totalbill.to_f, unit: 'S/. ', precision: 2)
 						%tr{"bgcolor"=>"#ECF3F8","style"=>"font-size:90%;"}
 							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 6.00
 							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} Retenciones
-							%th{ 'colspan' => 2, "style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.retention.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@retenciones.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.accumulated_retention.to_f, unit: 'S/. ', precision: 2)
+							%th{ 'colspan' => 2, "style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.retention.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@retenciones.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.accumulated_retention.to_f, unit: 'S/. ', precision: 2)
 						%tr{"style" =>"font-size:80%"}
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 6.01
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} Detracción del Total (Incl. I.G.V.)
-							%th{ 'colspan' => 2, "style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.detraction.to_f.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@detraccion.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.accumulated_detraction.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} 6.01
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} Detracción del Total (Incl. I.G.V.)
+							%th{ 'colspan' => 2, "style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.detraction.to_f.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@detraccion.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.accumulated_detraction.to_f, unit: 'S/. ', precision: 2)
 						%tr{"style" =>"font-size:80%"}
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 6.02
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} Fondo de Garantía N°01
-							%th{ 'colspan' => 2, "style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.guarantee_fund1.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@fondogarantia1.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.accumulated_guarantee_fund1.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} 6.02
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} Fondo de Garantía N°01
+							%th{ 'colspan' => 2, "style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.guarantee_fund1.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@fondogarantia1.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.accumulated_guarantee_fund1.to_f, unit: 'S/. ', precision: 2)
 						%tr{"style" =>"font-size:80%"}
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 6.03
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} Fondo de Garantía N°02
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}
-								%span{"style"=>"width=20px;text-align:center"}
-									%a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_people();'}
-										%i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}      
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center;vertical-align: middle"}= number_to_currency(@scvaluation.guarantee_fund2.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center;vertical-align: middle"}= number_to_currency(@fondogarantia2.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center;vertical-align: middle"}= number_to_currency(@scvaluation.accumulated_guarantee_fund2.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} 6.03
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} Fondo de Garantía N°02     
+							%th{'colspan'=>2,"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px;vertical-align: middle"}= number_to_currency(@scvaluation.guarantee_fund2.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px;vertical-align: middle"}= number_to_currency(@fondogarantia2.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px;vertical-align: middle"}= number_to_currency(@scvaluation.accumulated_guarantee_fund2.to_f, unit: 'S/. ', precision: 2)
 						%tr{"style" =>"font-size:80%"}
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 6.04
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} Descuento de Equipos
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}
-								%span{"style"=>"width=20px;text-align:center"}
-									%a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_equipment();'}
-										%i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center;vertical-align: middle"}=number_to_currency(@scvaluation.equipment_discount.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center;vertical-align: middle"}=number_to_currency(@descuentoequipos.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center;vertical-align: middle"}=number_to_currency(@scvaluation.accumulated_equipment_discount.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} 6.04
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} Descuento de Equipos
+							%th{'colspan'=>2,"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px;vertical-align: middle"}=number_to_currency(@scvaluation.equipment_discount.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px;vertical-align: middle"}=number_to_currency(@descuentoequipos.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px;vertical-align: middle"}=number_to_currency(@scvaluation.accumulated_equipment_discount.to_f, unit: 'S/. ', precision: 2)
 						%tr{"style" =>"font-size:80%"}
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 6.05
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} Descuento de Materiales
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} 6.05
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} Descuento de Materiales
 							%th{ 'colspan' => 2, "style"=>"color:#5f5f5f"}
 							%th{"style"=>"font-weight:normal;color:#5f5f5f"}
 							%th{"style"=>"font-weight:normal;color:#5f5f5f"}
 						%tr{"style" =>"font-size:80%"}
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} 6.06
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:10px;"} Descuento de Otros (Incl. I.G.V.)
-							%th{ 'colspan' => 2, "style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.otherdiscount.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@otrosdescuentos.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:center"}=number_to_currency(@scvaluation.accumulated_otherdiscount.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} 6.06
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;padding-left:18px;"} Descuento de Otros (Incl. I.G.V.)
+							%th{ 'colspan' => 2, "style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.otherdiscount.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@otrosdescuentos.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"font-weight:normal;color:#5f5f5f;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.accumulated_otherdiscount.to_f, unit: 'S/. ', precision: 2)
 						%tr{"bgcolor"=>"#3276B1","style"=>"font-size:90%;"}
 							%th{"style"=>"color:white;padding-left:10px;"} 07
 							%th{"style"=>"color:white;padding-left:10px;"} NETO A PAGAR
-							%th{ 'colspan' => 2, "style"=>"color:white;text-align:center"}=number_to_currency(@scvaluation.net_payment.to_f, unit: 'S/. ', precision: 2)
-							%th{"style"=>"color:white;text-align:center"}=number_to_currency(@netoapagar, unit: 'S/. ', precision: 2)
-							%th{"style"=>"color:white;text-align:center"}=number_to_currency(@scvaluation.accumulated_net_payment.to_f, unit: 'S/. ', precision: 2)
+							%th{ 'colspan' => 2, "style"=>"color:white;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.net_payment.to_f, unit: 'S/. ', precision: 2)
+							%th{"style"=>"color:white;text-align:right;padding-right:10px"}=number_to_currency(@netoapagar, unit: 'S/. ', precision: 2)
+							%th{"style"=>"color:white;text-align:right;padding-right:10px"}=number_to_currency(@scvaluation.accumulated_net_payment.to_f, unit: 'S/. ', precision: 2)
 			%br
 			%br
 			#part-work.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
