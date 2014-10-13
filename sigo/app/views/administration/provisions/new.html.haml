@@ -106,6 +106,9 @@
     var discount_before = parseFloat($(element).parent().siblings('.discount-before').find('input').val());
     var discount_after = parseFloat($(element).parent().siblings('.discount-after').find('input').val());
 
+    if (isNaN(discount_before)) discount_before = 0;
+    if (isNaN(discount_after)) discount_after = 0;
+
     var total_price = parseFloat(((amount * unit_price) - discount_before)*(1+igv)).toFixed(2);
     var net_total_price = parseFloat(total_price) + parseFloat(discount_after)
 
@@ -148,18 +151,6 @@
     }
 
     $('#modalDeliveryItems').modal('hide');
-  }
-
-  function enableFieldsForIgv(element){
-    if($(element).is(":checked")){
-      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      console.log(price_without_igv);
-      console.log($(element).parent().parent().siblings('.price-with-igv').find('input'));
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*(parseFloat("#{@igv}"))).toFixed(2));
-    } else {
-      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
-    }
   }
 
   loadScript("#{ asset_path 'plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js', type: :javascript }", runBootstrapWizard);

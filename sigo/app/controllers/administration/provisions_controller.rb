@@ -170,7 +170,7 @@ class Administration::ProvisionsController < ApplicationController
         provision = ProvisionDetail.find_by_order_detail_id(purchase_order_detail.id)
         if !provision.nil?
           pending = purchase_order_detail.amount - provision.amount
-          total = pending*purchase_detail.unit_price*(1+igv)
+          total = pending*purchase_order_detail.unit_price*(1+igv)
         else
           pending = purchase_order_detail.amount
           total = purchase_order_detail.unit_price_igv
@@ -255,6 +255,9 @@ class Administration::ProvisionsController < ApplicationController
       provision_details_attributes: [
         :id,
         :provision_id,
+        :article_code,
+        :article_name,
+        :unit_of_measurement,
         :current_unit_price,
         :current_igv, 
         :lock_version,
@@ -263,6 +266,7 @@ class Administration::ProvisionsController < ApplicationController
         :account_accountant_id,
         :amount,
         :unit_price_igv,
+        :net_price_after_igv,
         :_destroy
       ]
     )
