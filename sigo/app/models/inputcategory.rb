@@ -59,6 +59,26 @@ class Inputcategory < ActiveRecord::Base
       return hash_inputs
     end
 
+    def self.get_inputs_wbs(budget_id, codewbs, category_prefix)
+      hash_inputs = Hash.new
+      str_query = "SELECT `inputbybudgetanditems`.input, `inputbybudgetanditems`.cod_input, `inputbybudgetanditems`.unit, ( `inputbybudgetanditems`.price * `inputbybudgetanditems`.quantity * `itembybudgets`.measured ) as amount
+                  FROM `wbsitems` , `itembywbses` , `inputbybudgetanditems` , `itembybudgets` , `inputcategories` 
+                  WHERE `itembywbses`.wbscode = `wbsitems`.codewbs
+                  AND `inputbybudgetanditems`.`order` = `itembywbses`.order_budget
+                  AND `inputbybudgetanditems`.coditem = `itembywbses`.coditem
+                  AND `inputbybudgetanditems`.budget_id ="+budget_id.to_s+"
+                  AND `inputcategories`.level_n = 1
+                  and `wbsitems`.codewbs = "+codewbs.to_s+"
+                  AND `inputbybudgetanditems`.cod_input LIKE CONCAT( '0', CONCAT( `inputcategories`.category_id, '%' ) ) 
+                  AND `inputbybudgetanditems`.cod_input like '0"+category_prefix.to_s+"%'
+                  AND `itembybudgets`.budget_id ="+budget_id.to_s+"
+                  AND  `itembybudgets`.item_code =  `itembywbses`.coditem
+                  AND  `itembybudgets`.`order` =  `itembywbses`.order_budget
+                  ORDER BY  `inputbybudgetanditems`.cod_input"
+      ActiveRecord::Base.connection.execute(str_query).each { |item| hash_inputs[item[1]] =  item }
+      return hash_inputs
+    end
+
     def self.build_query_phases(budgetid)
         # str = "SELECT T1.wbscode, T1.fase,  CONCAT('0', T1.category_id) as category_id, T1.description,  SUM(T1.amount) AS amount_sale
         #             FROM (
@@ -113,22 +133,6 @@ class Inputcategory < ActiveRecord::Base
                
         #        GROUP BY T1.wbscode, code
         #        ORDER BY code;"
-
-          #~~Nuevo agrupa por WBS y budget. ej 121: 0501 Seguridad en Obra y 5~~
-          # str = "SELECT *, SUBSTRING(inputbybudgetanditems.cod_input, 2, 3) as group_code,
-          #         sum(inputbybudgetanditems.quantity * inputbybudgetanditems.price * itembybudgets.measured) as amount, itembybudgets.measured
-          #       FROM wbsitems, itembywbses, inputbybudgetanditems, itembybudgets#, inputcategories
-          #       WHERE wbsitems.codewbs = "+wbscode.to_s+" 
-          #         and itembywbses.wbscode = wbsitems.codewbs
-          #         and itembywbses.order_budget
-          #         and inputbybudgetanditems.coditem = itembywbses.coditem
-          #         and inputbybudgetanditems.`order` = itembywbses.order_budget  
-          #         and inputbybudgetanditems.budget_id = "+budgetid.to_s+"
-          #         and itembybudgets.`order` = itembywbses.order_budget
-          #         #and inputcategories.category_id < 10000
-          #       group by group_code
-          #       order by group_code;
-          #       "
           str = "SELECT  `wbsitems`.codewbs, `wbsitems`.id, `inputcategories`.category_id, `inputcategories`.description, SUM(  `inputbybudgetanditems`.price * `inputbybudgetanditems`.quantity *  `itembybudgets`.measured ) as amount, `itembywbses`.coditem, `itembywbses`.order_budget, `itembybudgets`.measured
                 FROM  `wbsitems` ,  `itembywbses` ,  `inputbybudgetanditems` ,  `itembybudgets` ,  `inputcategories` 
                 WHERE  `itembywbses`.wbscode =  `wbsitems`.codewbs

@@ -61,7 +61,7 @@
               %td= @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][3]
               %td
                 %center
-                  %a(href="javascript:get_input_detail_wbs('#{item_order.gsub(".","d")}', '#{coditem}', '#{category_id}', #{measured}, #{@budget_sale.id.to_s},#{@budget_goal.id.to_s});"){class: "btn btn-default btn-xs"}
+                  %a(href="javascript:get_input_detail_wbs(#{wbs.codewbs.to_s}, #{input.category_id}, #{@budget_sale.id.to_s}, #{@budget_goal.id.to_s});"){class: "btn btn-default btn-xs"}
                     %i(class="fa fa-search")
               %td(style ="text-align: right;")= number_to_currency(@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ')
               %td(style ="text-align: right;")= number_to_currency(@data[1]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ') rescue number_to_currency(0, :unit=>'S/. ')
@@ -81,13 +81,13 @@
   $(document).ready(function(){
   });
 
-  function get_input_detail_wbs(order,coditem,cod_input,measured,budget_sale,budget_goal){
+  function get_input_detail_wbs(codewbs, category_prefix, budget_sale,budget_goal){
     $("#itemsModalWbs").modal({
       backdrop: 'static',
       keyboard: false
     });
 
-    load_url_ondiv("#{get_input_wbs_detail_administration_inputcategories_path}?order=" + order + "&coditem=" + coditem + "&cod_input=" + cod_input + "&measured=" + measured + "&budget_sale=" + budget_sale + "&budget_goal=" + budget_goal,  "detail-inputs_wbs");
+    load_url_ondiv("#{get_input_wbs_detail_administration_inputcategories_path}?codewbs=" + codewbs + "&category_prefix=" + category_prefix + "&budget_sale=" + budget_sale + "&budget_goal=" + budget_goal,  "detail-inputs_wbs");
   }
 
   function toggle_table(table_id){  
