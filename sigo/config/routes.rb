@@ -205,6 +205,7 @@ ArsacLogistica::Application.routes.draw do
         post 'display_articles'
         post 'add_modal_extra_operations'
         post 'add_more_row_form_extra_op'
+        post 'display_orders'
       end
       member do
         get 'gorevise'
