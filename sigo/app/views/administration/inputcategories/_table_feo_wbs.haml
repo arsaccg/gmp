@@ -22,48 +22,49 @@
         %td(colspan="5")
           %strong= wbs.name
       - @inputcategories.each do |input|
-        - if @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"] != nil
-          -partial_sale, partial_goal = @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"], @data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"]
-          - if (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length == 2
+        - if (wbs.codewbs != '1') && (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"] != nil)
+          -partial_sale, partial_goal = @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"], @data[1]["#{wbs.codewbs.to_s}#{input.category_id}"]
+          - if (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]) < 10  #codigo
             %tr(style="color:#3276b1;")
               %td
                 %span(style="color:transparent;")
-                  = ("_" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length)
-                = (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
+                  = ("_" * 2)
+                = (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]).to_s 
               %td
-                %strong= @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][3]
+                %strong= @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][3]  #nombre
               %td
               %td(style="text-align: right; font-size: 13px;")
-                %strong= number_to_currency(@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
+                %strong= number_to_currency(@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ') #monto
               %td(style="text-align: right; font-size: 13px;")
-                %strong= number_to_currency(@data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ') rescue number_to_currency(0, :unit=>'S/. ')
-              -direct_cost_sale = direct_cost_sale + @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][4]
-              -direct_cost_goal = direct_cost_goal + @data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"][4] rescue 0
-          - elsif (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length == 4
-            %tr(style="color:green;")
-              %td
-                %span(style="color:transparent;")
-                  = ("_" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
-              %td= @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][3]
-              %td
-              %td(style ="text-align: right; font-size: 12px;")= number_to_currency(@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
-              %td(style ="text-align: right; font-size: 12px;")= number_to_currency(@data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ') rescue number_to_currency(0, :unit=>'S/. ')
+                %strong= number_to_currency(@data[1]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ') rescue number_to_currency(0, :unit=>'S/. ')
+              -direct_cost_sale = direct_cost_sale + @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][4]
+              -direct_cost_goal = direct_cost_goal + @data[1]["#{wbs.codewbs.to_s}#{input.category_id}"][4] rescue 0
+            / - elsif (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]).length == 4
+            /   %tr(style="color:green;")
+            /     %td
+            /       %span(style="color:transparent;")
+            /         = ("_" * (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]).to_s 
+            /     %td= @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][3]
+            /     %td
+            /     %td(style ="text-align: right; font-size: 12px;")= number_to_currency(@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ')
+            /     %td(style ="text-align: right; font-size: 12px;")= number_to_currency(@data[1]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ') rescue number_to_currency(0, :unit=>'S/. ')
           -else
-            -item_order=@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][6]
-            -coditem=@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][5]
-            -category_id=@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]
-            -measured=@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][7]
+            -item_order=@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][6] #itemorder
+            -coditem=@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][5]  #coditem
+            -category_id=@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]  #category_id
+            -measured=@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][7] #metrado
             %tr
               %td
                 %span(style="color:transparent;")
-                  = ("_" * (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).length) + (@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][2]).to_s 
-              %td= @data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][3]
+                  = ("_" * 4)
+                =(@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]).to_s 
+              %td= @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][3]
               %td
                 %center
                   %a(href="javascript:get_input_detail_wbs('#{item_order.gsub(".","d")}', '#{coditem}', '#{category_id}', #{measured}, #{@budget_sale.id.to_s},#{@budget_goal.id.to_s});"){class: "btn btn-default btn-xs"}
                     %i(class="fa fa-search")
-              %td(style ="text-align: right;")= number_to_currency(@data[0]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ')
-              %td(style ="text-align: right;")= number_to_currency(@data[1]["#{wbs.codewbs.to_s}0#{input.category_id}"][4], :unit=>'S/. ') rescue number_to_currency(0, :unit=>'S/. ')
+              %td(style ="text-align: right;")= number_to_currency(@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ')
+              %td(style ="text-align: right;")= number_to_currency(@data[1]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ') rescue number_to_currency(0, :unit=>'S/. ')
     %tr   
       %td
       %td(style="font-size:115%;")

@@ -12,8 +12,9 @@ class Inputcategory < ActiveRecord::Base
             ActiveRecord::Base.connection.execute(query_str_goal).each { |item| hash_categories_goal[item[0]] = item }
         else
             query_str_sale, query_str_goal = Inputcategory.build_query_phases(budgetid_sale), Inputcategory.build_query_phases(budgetid_goal)
-            ActiveRecord::Base.connection.execute(query_str_sale).each { |item| hash_categories_sale[item[0] + item[2]] = item }
-            ActiveRecord::Base.connection.execute(query_str_goal).each { |item| hash_categories_goal[item[0] + item[2]] = item }
+            # query_str_sale, query_str_goal = Inputcategory.build_query_phases(wbs, budgetid_sale), Inputcategory.build_query_phases(wbs, budgetid_goal)
+            ActiveRecord::Base.connection.execute(query_str_sale).each { |item| hash_categories_sale[item[0].to_s + item[2].to_s] = item } #codigo + categoria
+            ActiveRecord::Base.connection.execute(query_str_goal).each { |item| hash_categories_goal[item[0].to_s + item[2].to_s] = item }
         end
 
         return hash_categories_sale, hash_categories_goal
@@ -82,35 +83,65 @@ class Inputcategory < ActiveRecord::Base
                             
         #             GROUP BY T1.wbscode, category_id
         #             ORDER BY category_id;"
-        str = "SELECT T1.wbscode, T1.fase, CONCAT('0', T1.code) as code, T1.name, 
-                SUM(T1.amount) AS amount_sale, T1.coditem,T1.item_order,T1.measured
-               FROM (
-                SELECT itembywbses.wbscode, code, wbsitems.fase, type_of_articles.name, 
-                  itembybudgets.item_id, itembybudgets.`order` AS item_order, 
-                  SUM(inputbybudgetanditems.price*inputbybudgetanditems.quantity*itembywbses.measured) AS amount, 
-                  inputbybudgetanditems.coditem, itembywbses.measured
-                 FROM type_of_articles, inputbybudgetanditems, itembybudgets
-                 RIGHT JOIN itembywbses ON
-                 itembywbses.coditem = itembybudgets.item_code AND
-                 itembywbses.order_budget = itembybudgets.`order` AND
-                 itembywbses.budget_id = '" + budgetid.to_s  + "'
-                 LEFT JOIN wbsitems ON
-                 itembywbses.wbsitem_id = wbsitems.id
-                 WHERE
-                 inputbybudgetanditems.cod_input LIKE CONCAT('0', CONCAT(code, '%'))  AND
-                 inputbybudgetanditems.budget_id = '" + budgetid.to_s  + "' AND
-                 inputbybudgetanditems.coditem=itembybudgets.item_code AND
-                 inputbybudgetanditems.budget_id = itembybudgets.budget_id AND
-                 inputbybudgetanditems.`order` = itembybudgets.`order` 
-                 GROUP BY code, itembybudgets.item_id
-                   ORDER BY code
-               ) AS T1, itembybudgets
+
+        # str = "SELECT T1.wbscode, T1.fase, CONCAT('0', T1.code) as code, T1.name, 
+        #         SUM(T1.amount) AS amount_sale, T1.coditem,T1.item_order,T1.measured
+        #        FROM (
+        #         SELECT itembywbses.wbscode, code, wbsitems.fase, type_of_articles.name, 
+        #           itembybudgets.item_id, itembybudgets.`order` AS item_order, 
+        #           SUM(inputbybudgetanditems.price*inputbybudgetanditems.quantity*itembywbses.measured) AS amount, 
+        #           inputbybudgetanditems.coditem, itembywbses.measured
+        #          FROM type_of_articles, inputbybudgetanditems, itembybudgets
+        #          RIGHT JOIN itembywbses ON
+        #          itembywbses.coditem = itembybudgets.item_code AND
+        #          itembywbses.order_budget = itembybudgets.`order` AND
+        #          itembywbses.budget_id = " + budgetid.to_s  + "
+        #          LEFT JOIN wbsitems ON
+        #          itembywbses.wbsitem_id = wbsitems.id
+        #          WHERE
+        #          inputbybudgetanditems.cod_input LIKE CONCAT('0', CONCAT(code, '%'))  AND
+        #          inputbybudgetanditems.budget_id = " + budgetid.to_s  + " AND
+        #          inputbybudgetanditems.coditem=itembybudgets.item_code AND
+        #          inputbybudgetanditems.budget_id = itembybudgets.budget_id AND
+        #          inputbybudgetanditems.`order` = itembybudgets.`order` 
+        #          GROUP BY code, itembybudgets.item_id
+        #            ORDER BY code
+        #        ) AS T1, itembybudgets
                
-               WHERE itembybudgets.item_id = T1.item_id AND
-               itembybudgets.`order` = T1.item_order 
+        #        WHERE itembybudgets.item_id = T1.item_id AND
+        #        itembybudgets.`order` = T1.item_order 
                
-               GROUP BY T1.wbscode, code
-               ORDER BY code;"
+        #        GROUP BY T1.wbscode, code
+        #        ORDER BY code;"
+
+          #~~Nuevo agrupa por WBS y budget. ej 121: 0501 Seguridad en Obra y 5~~
+          # str = "SELECT *, SUBSTRING(inputbybudgetanditems.cod_input, 2, 3) as group_code,
+          #         sum(inputbybudgetanditems.quantity * inputbybudgetanditems.price * itembybudgets.measured) as amount, itembybudgets.measured
+          #       FROM wbsitems, itembywbses, inputbybudgetanditems, itembybudgets#, inputcategories
+          #       WHERE wbsitems.codewbs = "+wbscode.to_s+" 
+          #         and itembywbses.wbscode = wbsitems.codewbs
+          #         and itembywbses.order_budget
+          #         and inputbybudgetanditems.coditem = itembywbses.coditem
+          #         and inputbybudgetanditems.`order` = itembywbses.order_budget  
+          #         and inputbybudgetanditems.budget_id = "+budgetid.to_s+"
+          #         and itembybudgets.`order` = itembywbses.order_budget
+          #         #and inputcategories.category_id < 10000
+          #       group by group_code
+          #       order by group_code;
+          #       "
+          str = "SELECT  `wbsitems`.codewbs, `wbsitems`.id, `inputcategories`.category_id, `inputcategories`.description, SUM(  `inputbybudgetanditems`.price * `inputbybudgetanditems`.quantity *  `itembybudgets`.measured ) as amount, `itembywbses`.coditem, `itembywbses`.order_budget, `itembybudgets`.measured
+                FROM  `wbsitems` ,  `itembywbses` ,  `inputbybudgetanditems` ,  `itembybudgets` ,  `inputcategories` 
+                WHERE  `itembywbses`.wbscode =  `wbsitems`.codewbs
+                AND  `inputbybudgetanditems`.`order` =  `itembywbses`.order_budget
+                AND  `inputbybudgetanditems`.coditem =  `itembywbses`.coditem
+                AND  `inputbybudgetanditems`.budget_id ="+budgetid.to_s+"
+                AND  `inputcategories`.level_n <2 
+                AND  `inputbybudgetanditems`.cod_input LIKE CONCAT(  '0', CONCAT(  `inputcategories`.category_id,  '%' ) ) 
+                AND  `itembybudgets`.budget_id ="+budgetid.to_s+"
+                AND  `itembybudgets`.item_code =  `itembywbses`.coditem
+                AND  `itembybudgets`.`order` =  `itembywbses`.order_budget
+                GROUP BY  `wbsitems`.codewbs,  `inputcategories`.category_id
+                ORDER BY  `wbsitems`.codewbs, CONCAT(  `inputcategories`.category_id,  '' ) "
         return str 
     end
     
