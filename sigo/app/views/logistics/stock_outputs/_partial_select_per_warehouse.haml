@@ -2,11 +2,11 @@
 .col-md-8
   %select{:name => 'article_selected', :class => 'select2 form-control', :id => 'article-select-warehouse', :style => 'width:100%;padding: 0'}
     - @articles.each do |art|
-      -rest=Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i)
+      -rest = Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i)
       -if rest.count>0
-        -rest=Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i).first.at(0).to_i
+        -rest = rest.first.at(0).to_i
       -else
-        -rest=0
+        -rest = 0
       -if (art[4]-rest)>0
         %option{:value => "#{art[0]}-#{@warehouse}"}
           = art[1] + ' - ' + art[2] + ' - ' + art[3]

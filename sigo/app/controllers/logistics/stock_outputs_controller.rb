@@ -33,7 +33,7 @@ class Logistics::StockOutputsController < ApplicationController
     @head = StockInput.new
     @cost_center = get_company_cost_center('cost_center')
     @responsibles = Worker.where("cost_center_id = ?",@cost_center)
-    @periods = LinkTime.group(:year, :month)
+    # @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
     @working_groups = WorkingGroup.all
@@ -79,7 +79,7 @@ class Logistics::StockOutputsController < ApplicationController
     @cost_center = get_company_cost_center('cost_center')
     @head = StockInput.find(params[:id])
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
-    @periods = LinkTime.group(:year, :month)
+    # @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}").where(cost_center_id: "#{@head.cost_center_id}")
     @articles = Article.getSpecificArticlesforStockOutputs(@cost_center)
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
