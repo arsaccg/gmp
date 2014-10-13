@@ -30,9 +30,11 @@ class Logistics::DeliveryOrdersController < ApplicationController
     pager_number = params[:iDisplayStart]
     @pagenumber = params[:iDisplayStart]
     keyword = params[:sSearch]
+    state = params[:state]
 
     array = Array.new
-    if @pagenumber != 'NaN' && keyword != ''
+        
+    if @pagenumber != 'NaN' && keyword != '' && state == ''
       de_o = ActiveRecord::Base.connection.execute("
         SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
         FROM delivery_orders do, users u
@@ -42,7 +44,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
         LIMIT #{display_length}
         OFFSET #{pager_number}"
       )
-    elsif @pagenumber == 'NaN'
+    elsif @pagenumber == 'NaN' && state == ''
       de_o = ActiveRecord::Base.connection.execute("
         SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
         FROM delivery_orders do, users u
@@ -51,7 +53,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
         ORDER BY do.id ASC
         LIMIT #{display_length}"
       )
-    elsif keyword != ''
+    elsif keyword != '' && state == ''
       de_o = ActiveRecord::Base.connection.execute("
         SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
         FROM delivery_orders do, users u
@@ -60,6 +62,17 @@ class Logistics::DeliveryOrdersController < ApplicationController
         AND do.description LIKE '%#{keyword}%'
         ORDER BY do.id ASC"
       )
+    elsif state != '' && state!=nil
+      de_o = ActiveRecord::Base.connection.execute("
+        SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+        FROM delivery_orders do, users u
+        WHERE do.cost_center_id = "+@cc.to_s+"
+        AND do.user_id = u.id
+        AND do.state LIKE '"+state.to_s+"'
+        ORDER BY do.id ASC
+        LIMIT #{display_length}
+        OFFSET #{pager_number}"
+      )  
     else
       de_o = ActiveRecord::Base.connection.execute("
         SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
