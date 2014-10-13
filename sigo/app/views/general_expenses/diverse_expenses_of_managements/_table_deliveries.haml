@@ -1,0 +1,32 @@
+%table.table.table-striped.table-bordered.table-hover.smart-form
+  %thead
+    %tr
+      %th.smart-form Codigo
+      %th.smart-form Monto
+      %th.smart-form Fecha de Entrega
+      %th.smart-form Proveedor
+      %th.smart-form Concepto
+      %th.smart-form Factura
+      %th.smart-form Fecha de Factura
+      %th.smart-form Monto de Factura
+      %th.smart-form Detraccion
+      %th.smart-form Pago a Cuenta
+      %th.smart-form Comision IGV
+      %th.smart-form Devolucion neta
+      %th.smart-form Saldo
+  %tbody#items_table
+    - @gdg.diverse_expenses_of_management_details.each do |gdg|
+      %tr
+        %td= gdg.code.to_s
+        %td= gdg.delivered_date.to_date.strftime("%d-%m-%Y").to_s
+        %td= number_to_currency(gdg.amount.to_f, unit: 'S/. ', precision: 2)
+        %td= Entity.find(gdg.entity_id).name.to_s
+        %td= gdg.bill_concept.to_s
+        %td= gdg.bill.to_s
+        %td= gdg.bill_date.to_date.strftime("%d-%m-%Y").to_s
+        %td= number_to_currency(gdg.bill_amount.to_f, unit: 'S/. ', precision: 2)
+        %td= number_to_currency(gdg.bill_detraction.to_f, unit: 'S/. ', precision: 2)
+        %td= number_to_currency(gdg.bill_to_account.to_f, unit: 'S/. ', precision: 2)
+        %td= number_to_currency(gdg.igv_commission.to_f, unit: 'S/. ', precision: 2)
+        %td= number_to_currency(gdg.net_return.to_f, unit: 'S/. ', precision: 2)
+        %td= number_to_currency(gdg.balance.to_f, unit: 'S/. ', precision: 2)

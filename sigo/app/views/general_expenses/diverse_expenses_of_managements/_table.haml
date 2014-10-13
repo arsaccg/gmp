@@ -20,8 +20,9 @@
         %tbody
           - @gdg.each do |gdg|
             %tr
-              %td 
-                = gdg.name.to_s
+              %td
+                %a.link_detail{ :href => "javascript:show_summary_table('#{show_summary_table_general_expenses_diverse_expenses_of_management_path(gdg.id)}')" } 
+                  = gdg.name.to_s
               %td
                 = gdg.percentage.to_s
               %td 
@@ -43,6 +44,28 @@
   $(document).ready(function () {
     
   });
+
+  function show_summary_table(url){
+    $.ajax({
+      type: 'POST',
+      url: url,
+      async: false,
+      dataType : 'html',
+      beforeSend : function() {
+        $("#table_detail").html('<h1><i class="fa fa-cog fa-spin"></i> Cargando...</h1>');
+      },
+      success: function(data) {
+        $("#table_detail").css({
+          opacity : '0.0'
+        }).html(data).delay(50).animate({
+          opacity : '1.0'
+        }, 300);
+      },
+      error : function(xhr, ajaxOptions, thrownError) {
+        $("#table_detail").html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+      }
+    });
+  }
 
   // PAGE RELATED SCRIPTS
 

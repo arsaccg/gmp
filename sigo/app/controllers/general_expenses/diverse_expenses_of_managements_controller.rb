@@ -69,6 +69,11 @@ class GeneralExpenses::DiverseExpensesOfManagementsController < ApplicationContr
     end
   end
 
+  def show_summary_table
+    @gdg = DiverseExpensesOfManagement.find(params[:id])
+    render(:partial => 'table_deliveries', :layout => false)
+  end
+
   def add_deliveries
     @montoe = params[:montoe]
     @fechae = params[:fechae]
