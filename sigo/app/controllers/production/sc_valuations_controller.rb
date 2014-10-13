@@ -7,6 +7,9 @@ class Production::ScValuationsController < ApplicationController
 	end
 
   def show
+    @boton1="<a class='btn btn-xs btn-danger' data-original-title='Metrado de Avance' data-placement='top' href='javascript:void(0);' onclick='part_work();'></a>"
+    @boton2='<a class="btn btn-xs btn-danger" data-original-title="Detalle de Descuento de Personal" data-placement="top" href="javascript:void(0);" onclick="part_people();"><i class="fa fa-list-ol" style="color:white"></i></a>'
+    @boton3='<a class="btn btn-xs btn-danger" data-original-title="Detalle del Descuento de Equipos" data-placement="top" href="javascript:void(0);" onclick="part_equipment();"><i class="fa fa-list-ol" style="color:white"></i></a>'
     @cc = get_company_cost_center('cost_center')
     @scvaluation=ScValuation.find_by_id(params[:id])
     @start_date = @scvaluation.start_date.to_s
@@ -396,7 +399,8 @@ class Production::ScValuationsController < ApplicationController
       si.price_no_igv, 
       si.price_no_igv*SUM( poed.effective_hours), 
       art.id,
-      si.code
+      si.code,
+      art.code
       FROM part_of_equipments poe, part_of_equipment_details poed, articles_from_cost_center_"+get_company_cost_center('cost_center').to_s+" art, unit_of_measurements uom, subcontract_equipment_details si
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id

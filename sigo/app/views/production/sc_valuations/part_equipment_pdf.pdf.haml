@@ -35,6 +35,7 @@
 					%table.panel.panel-primary.table-bordered{"style"=>"width:1100px;"}
 						%thead.panel-heading
 							%tr{"style" =>"height:50px;"}
+								%th{"style"=>"text-align:center;vertical-align: middle;"}Código
 								%th{"style"=>"text-align:center;vertical-align: middle;"} Descripcion
 								%th{"style"=>"text-align:center;vertical-align: middle;"} Cantidad
 								%th{"style"=>"text-align:center;vertical-align: middle;"} Unidad
@@ -43,6 +44,7 @@
 						%tbody
 						- @workers_array3.each do |workerDetail3|
 							%tr{"style" =>"font-size:95%;height:50px;"}
+								%th{"style"=>"font-weight:normal;text-align:center;"}= workerDetail3[7].to_s
 								%th{"style" =>";padding-left:6px;font-weight:normal;text-align:left;vertical-align: middle;"}=workerDetail3[6].to_s+" "+workerDetail3[0]
 								%th{"style" =>"padding-right: 16px;font-weight:normal;text-align:right;vertical-align: middle;"}= sprintf('%.2f',workerDetail3[2])
 								%th{"style" =>"padding-right: 16px;font-weight:normal;text-align:right;vertical-align: middle;"}= workerDetail3[1]

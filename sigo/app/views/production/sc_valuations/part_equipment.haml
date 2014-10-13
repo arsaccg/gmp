@@ -1,4 +1,4 @@
-.modal-dialog{:style=>"width:700px;"}
+.modal-dialog{:style=>"width:1000px;"}
   .modal-content
     .modal-header
       %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
@@ -10,6 +10,7 @@
         %table.table.table-bordered
           %thead
             %tr
+              %th Código
               %th Descripcion
               %th Cantidad
               %th Unidad
@@ -18,11 +19,12 @@
           %tbody
           - @workers_array3.each do |workerDetail3|
             %tr
-              %th= workerDetail3[6].to_s+" "+workerDetail3[0].to_s
-              %th{:style=>"text-align:right;"}= sprintf('%.2f',workerDetail3[2])
-              %th{:style=>"text-align:right;"}= workerDetail3[1]
-              %th{:style=>"text-align:right;"}= workerDetail3[3]
-              %th{:style=>"text-align:right;"}= number_to_currency(workerDetail3[4], unit: 'S/. ', precision: 2)
+              %th{:style=>"font-weight:normal;"}= workerDetail3[7].to_s
+              %th{:style=>"font-weight:normal;"}= workerDetail3[6].to_s+" "+workerDetail3[0].to_s
+              %th{:style=>"text-align:right;font-weight:normal;"}= sprintf('%.2f',workerDetail3[2])
+              %th{:style=>"text-align:right;font-weight:normal;"}= workerDetail3[1]
+              %th{:style=>"text-align:right;font-weight:normal;"}= workerDetail3[3]
+              %th{:style=>"text-align:right;font-weight:normal;"}= number_to_currency(workerDetail3[4], unit: 'S/. ', precision: 2)
       - else
         %h4.modal-title No hay datos.
         %br

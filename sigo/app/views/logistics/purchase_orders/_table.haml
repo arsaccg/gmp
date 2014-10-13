@@ -1,22 +1,37 @@
 #wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
-  %header
-    %span.widget-icon
-      %i.fa.fa-table
-    %h2 Lista de Ordenes de Compra
-  %div
-    .jarviswidget-editbox
-    .widget-body.no-padding
-      .widget-body-toolbar
-      %table#summary-purchase-orders.table.table-striped.table-bordered.table-hover
-        %thead
-          %tr
-            %th Código
-            %th{'style' => 'width:120px !important;'}
-              Estado
-            %th Descripcion
-            %th Proveedor
-            %th Fecha del ultimo Estado
-            %th Fecha de Expiración
-            %th Responsable
-            %th Acciones
-        %tbody{ :id => "body-summary-purchase-orders" }        
+	%header
+		%span.widget-icon
+			%i.fa.fa-table
+		%h2 Lista de Ordenes de Compra
+	%div
+		.jarviswidget-editbox
+		.widget-body.no-padding
+			.widget-body-toolbar
+			%table#summary-purchase-orders.table.table-striped.table-bordered.table-hover
+				%thead
+					%tr
+						%th Código
+						%th
+							.btn-group
+								%button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", :type => "button"} Estado
+
+								%ul.dropdown-menu{:role => "menu"}
+									%li
+										%a{:href => "#"} Pre-Emitido
+									%li
+										%a{:href => "#"} Emitido
+									%li
+										%a{:href => "#"} Observado
+									%li
+										%a{:href => "#"} Revisado
+									%li
+										%a{:href => "#"} Aprobado
+									%li
+										%a{:href => "#"} Cancelado
+						%th Descripcion
+						%th Proveedor
+						%th Fecha del ultimo Estado
+						%th Fecha de Expiración
+						%th Responsable
+						%th Acciones
+				%tbody{ :id => "body-summary-purchase-orders" }        

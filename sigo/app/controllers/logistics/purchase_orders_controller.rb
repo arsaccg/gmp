@@ -89,7 +89,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
     pager_number = params[:iDisplayStart]
     @pagenumber = params[:iDisplayStart]
     keyword = params[:sSearch]
-
     array = Array.new
     if @pagenumber != 'NaN' && keyword != ''
       po = ActiveRecord::Base.connection.execute("

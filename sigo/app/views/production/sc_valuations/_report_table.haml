@@ -45,8 +45,8 @@
                 %th{"style"=>"color:#5f5f5f;padding-left:8px;"}
                   ="Valorización sin IGV"
                   %span{"style"=>"width=20px"}
-                    %a.btn.bg-color-blueDark{:style=>"float:right;margin-right:10px;", href: 'javascript:void(0);', :onclick => 'part_work();'}
-                      %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
+                    %a#boton1.btn.btn-xs.btn-danger{:style=>"float:right;margin-right:10px;", href: 'javascript:void(0);', :onclick => 'part_work();',"data-toggle" => "tooltip", :title => "Metrado de Avance"}
+                      %i.fa.fa-list-ol{"style"=>"color:white"}
                 %th#total{'colspan'=>2,"style"=>"color:#5f5f5f;vertical-align: middle;text-align:right;padding-right:18px;"}= number_to_currency(@totalprice4, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:right;padding-right:18px;"}= number_to_currency(@valorizacionsinigv, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:right;padding-right:18px;"}= number_to_currency(@accumulated_valorizacionsinigv, unit: 'S/. ', precision: 2)
@@ -54,8 +54,8 @@
                 %th{"style"=>"color:#5f5f5f;text-align:center"} 2.00
                 %th{"style"=>"color:#5f5f5f;padding-left:8px;"} 
                   ="Amortización de Adelanto (SIN. I.G.V.)"
+                  %input.form-control#percent{:value => "#{sprintf('%.2f', @subcontract.initial_amortization_percent.to_f)}", :readonly => true, "style"=> "width: 150px;margin: 0 auto;text-align: center;float: left;margin-right: 10px;", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
                   %input#flag{:type =>"checkbox", :onchange => 'check();'} Usar Porcentaje
-                  %input.form-control#percent{:value => "#{sprintf('%.2f', @subcontract.initial_amortization_percent.to_f)}", :readonly => true, "style"=> "width: 70;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
                 %th{'colspan'=>2,"style"=>"color:#5f5f5f;text-align:center"}
                   %input.form-control#number{:value => "#{sprintf('%.2f',@subcontract.initial_amortization_number.to_f)}", "style"=> "width: 80;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
                 %th#amortLast{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:right;padding-right:18px;"}= number_to_currency(@amortizaciondeadelanto, unit: 'S/. ', precision: 2)
@@ -105,8 +105,8 @@
                 %th{'colspan'=>2,"style"=>"color:#5f5f5f;padding-left:18px;"} 
                   ="Fondo de Garantía N°02"
                   %span{"style"=>"width=20px"}
-                    %a.btn.bg-color-blueDark{:style=>"width:43px;height:32px;float:right;margin-right:10px;", href: 'javascript:void(0);', :onclick => 'part_people();'}
-                      %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}        
+                    %a#boton2.btn.btn-xs.btn-danger{:style=>"float:right;margin-right:10px;", href: 'javascript:void(0);', :onclick => 'part_people();',"data-toggle" => "tooltip", :title => "Detalle de Descuento de Personal"}
+                      %i.fa.fa-list-ol{"style"=>"color:white"}        
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:right;padding-right:18px;"}= number_to_currency(@totalprice, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:right;padding-right:18px;"}= number_to_currency(@fondogarantia2, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:right;padding-right:18px;"}= number_to_currency(@accumulated_fondogarantia2, unit: 'S/. ', precision: 2)
@@ -115,8 +115,8 @@
                 %th{'colspan'=>2,"style"=>"color:#5f5f5f;padding-left:18px;"} 
                   ="Descuento de Equipos"
                   %span{"style"=>"width=20px"}
-                    %a.btn.bg-color-blueDark{:style=>"width:43px;height:32px;float:right;margin-right:10px;", href: 'javascript:void(0);', :onclick => 'part_equipment();'}
-                      %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
+                    %a#boton3.btn.btn-xs.btn-danger{:style=>"float:right;margin-right:10px;", href: 'javascript:void(0);', :onclick => 'part_equipment();',"data-toggle" => "tooltip", :title => "Detalle de Descuento de Equipos"}
+                      %i.fa.fa-list-ol{"style"=>"color:white"}
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:right;padding-right:18px;"}= number_to_currency(@totalprice3, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:right;padding-right:18px;"}= number_to_currency(@descuestoequipos, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:right;padding-right:18px;"}= number_to_currency(@accumulated_descuestoequipos, unit: 'S/. ', precision: 2)
@@ -198,6 +198,25 @@
       $('#new_sc_valuation').ajaxForm({
         target: '#content'
       });
+
+      $("#boton1").hover(function () {
+        $('#boton1').tooltip('show');
+      },function(){
+        $('#boton1').tooltip('hide');
+      })
+
+      $("#boton2").hover(function () {
+        $('#boton2').tooltip('show');
+      },function(){
+        $('#boton2').tooltip('hide');
+      })
+
+      $("#boton3").hover(function () {
+        $('#boton3').tooltip('show');
+      },function(){
+        $('#boton3').tooltip('hide');
+      })
+
     });
 
     function check(){
