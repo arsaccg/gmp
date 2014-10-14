@@ -12671,8 +12671,12 @@ input.ui-button {
         }
 
         tr.highlight td, tr.unread.highlight td {
-            background: #ffc !important;
+            background: #57889c !important;
             color: #333
+        }
+
+        .seleccionado td {
+            background-color: #57889c;
         }
 
         .inbox-checkbox-triggered {
