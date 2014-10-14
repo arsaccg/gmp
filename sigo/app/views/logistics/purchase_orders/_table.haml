@@ -10,21 +10,21 @@
       .widget-body-toolbar
         .btn-group{:style=>"margin-left:80%"}
           %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", :type => "button"} Filtar por Estado
-          %ul.dropdown-menu{:role => "menu"}
+          %ul.dropdown-menu#li-estado{:role => "menu"}
             %li
-              %a{:href => "javascript:void(0)", :onclick =>"filtro();"} Todos          
+              %a#todos{:href => "javascript:void(0)", :onclick =>"filtro();"} Todos         
             %li
-              %a{:href => "javascript:void(0)", :onclick =>'filtro("pre_issued");'} Pre-Emitido
+              %a#pre_issued{:href => "javascript:void(0)", :onclick =>'filtro("pre_issued");'} Pre-Emitido
             %li
-              %a{:href => "javascript:void(0)", :onclick =>'filtro("issued");'} Emitido
+              %a#issued{:href => "javascript:void(0)", :onclick =>'filtro("issued");'} Emitido
             %li
-              %a{:href => "javascript:void(0)", :onclick =>'filtro("observed");'} Observado
+              %a#observed{:href => "javascript:void(0)", :onclick =>'filtro("observed");'} Observado
             %li
-              %a{:href => "javascript:void(0)", :onclick =>'filtro("revised");'} Revisado
+              %a#revised{:href => "javascript:void(0)", :onclick =>'filtro("revised");'} Revisado
             %li
-              %a{:href => "javascript:void(0)", :onclick =>'filtro("approved");'} Aprobado
+              %a#approved{:href => "javascript:void(0)", :onclick =>'filtro("approved");'} Aprobado
             %li
-              %a{:href => "javascript:void(0)", :onclick =>'filtro("canceled");'} Cancelado      
+              %a#canceled{:href => "javascript:void(0)", :onclick =>'filtro("canceled");'} Cancelado       
       %table#summary-purchase-orders.table.table-striped.table-bordered.table-hover
         %thead
           %tr

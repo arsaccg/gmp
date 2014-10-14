@@ -31,58 +31,96 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @pagenumber = params[:iDisplayStart]
     keyword = params[:sSearch]
     state = params[:state]
-
     array = Array.new
         
-    if @pagenumber != 'NaN' && keyword != '' && state == ''
-      de_o = ActiveRecord::Base.connection.execute("
-        SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
-        FROM delivery_orders do, users u
-        WHERE do.cost_center_id = "+@cc.to_s+"
-        AND do.user_id = u.id
-        ORDER BY do.id DESC
-        LIMIT #{display_length}
-        OFFSET #{pager_number}"
-      )
-    elsif @pagenumber == 'NaN' && state == ''
-      de_o = ActiveRecord::Base.connection.execute("
-        SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
-        FROM delivery_orders do, users u
-        WHERE do.cost_center_id = "+@cc.to_s+"
-        AND do.user_id = u.id
-        ORDER BY do.id DESC
-        LIMIT #{display_length}"
-      )
-    elsif keyword != '' && state == ''
-      de_o = ActiveRecord::Base.connection.execute("
-        SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
-        FROM delivery_orders do, users u
-        WHERE do.cost_center_id = "+@cc.to_s+"
-        AND do.user_id = u.id
-        AND do.description LIKE '%#{keyword}%'
-        ORDER BY do.id DESC"
-      )
-    elsif state != '' && state!=nil
-      de_o = ActiveRecord::Base.connection.execute("
-        SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
-        FROM delivery_orders do, users u
-        WHERE do.cost_center_id = "+@cc.to_s+"
-        AND do.user_id = u.id
-        AND do.state LIKE '"+state.to_s+"'
-        ORDER BY do.id DESC
-        LIMIT #{display_length}
-        OFFSET #{pager_number}"
-      )  
+    if @pagenumber != 'NaN' && keyword != ''
+      if state == ""
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          AND do.description LIKE '%#{keyword}%'
+          ORDER BY do.id DESC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}"
+        )
+      else
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          AND do.description LIKE '%#{keyword}%'
+          AND do.state LIKE '"+state.to_s+"'
+          ORDER BY do.id DESC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}"
+        )        
+      end
+    elsif @pagenumber == 'NaN'
+      if state == ""
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          ORDER BY do.id DESC
+          LIMIT #{display_length}"
+        )
+      else
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          AND do.state LIKE '"+state.to_s+"'
+          ORDER BY do.id DESC
+          LIMIT #{display_length}"
+        )        
+      end
+    elsif keyword != ''
+      if state == ""
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          ORDER BY do.id DESC"
+        )
+      else
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          AND do.state LIKE '"+state.to_s+"'
+          ORDER BY do.id DESC"
+        )        
+      end
     else
-      de_o = ActiveRecord::Base.connection.execute("
-        SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
-        FROM delivery_orders do, users u
-        WHERE do.cost_center_id = "+@cc.to_s+"
-        AND do.user_id = u.id
-        ORDER BY do.id DESC
-        LIMIT #{display_length}
-        OFFSET #{pager_number}"
-      )
+      if state == ""
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          ORDER BY do.id DESC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}"
+        )
+      else
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          AND do.state LIKE '"+state.to_s+"'
+          ORDER BY do.id DESC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}"
+        )        
+      end
     end
     de_o.each do |dos|
       @state = ""

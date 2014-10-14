@@ -104,6 +104,15 @@
 
   function filtro(state) {
     $('#state').val(state);
+    var as=$('#li-estado').children().find('a');
+    as.each(function(){
+      var id = $(this).attr('id');
+      if(id==state){
+        $(this).attr('style', 'background-color: #57889c; color: white; ');
+      }else{
+        $(this).attr('style', 'background-color: white; color: black; ');
+      }
+    });
     runDataTables();
     $('#dt_basic_wrapper').removeClass("dataTables_wrapper");
   }
