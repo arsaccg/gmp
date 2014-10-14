@@ -34,61 +34,104 @@ class Logistics::OrderOfServicesController < ApplicationController
 
     array = Array.new
         
-    if @pagenumber != 'NaN' && keyword != '' && state == ''
-      os = ActiveRecord::Base.connection.execute("
-        SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
-        FROM order_of_services os, users u, entities e
-        WHERE os.cost_center_id = "+@cc.to_s+"
-        AND os.user_id = u.id
-        AND os.entity_id = e.id
-        ORDER BY os.id ASC
-        LIMIT #{display_length}
-        OFFSET #{pager_number}"
-      )
-    elsif @pagenumber == 'NaN' && state == ''
-      os = ActiveRecord::Base.connection.execute("
-        SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
-        FROM order_of_services os, users u, entities e
-        WHERE os.cost_center_id = "+@cc.to_s+"
-        AND os.user_id = u.id
-        AND os.entity_id = e.id
-        ORDER BY os.id ASC
-        LIMIT #{display_length}"
-      )
-    elsif keyword != '' && state == ''
-      os = ActiveRecord::Base.connection.execute("
-        SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
-        FROM order_of_services os, users u, entities e
-        WHERE os.cost_center_id = "+@cc.to_s+"
-        AND os.user_id = u.id
-        AND os.entity_id = e.id
-        AND os.description LIKE '%#{keyword}%'
-        ORDER BY os.id ASC"
-      )
-    elsif state != '' && state!=nil
-      os = ActiveRecord::Base.connection.execute("
-        SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
-        FROM order_of_services os, users u, entities e
-        WHERE os.cost_center_id = "+@cc.to_s+"
-        AND os.user_id = u.id
-        AND os.entity_id = e.id
-        AND os.state LIKE '"+state.to_s+"'
-        ORDER BY os.id ASC
-        LIMIT #{display_length}
-        OFFSET #{pager_number}"
-      )  
+    if @pagenumber != 'NaN' && keyword != ''
+      if state == ""
+        os = ActiveRecord::Base.connection.execute("
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM order_of_services os, users u, entities e
+          WHERE os.cost_center_id = "+@cc.to_s+"
+          AND os.user_id = u.id
+          AND os.entity_id = e.id
+          AND os.description LIKE '%#{keyword}%'
+          ORDER BY os.id ASC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}"
+        )
+      else
+        os = ActiveRecord::Base.connection.execute("
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM order_of_services os, users u, entities e
+          WHERE os.cost_center_id = "+@cc.to_s+"
+          AND os.user_id = u.id
+          AND os.entity_id = e.id
+          AND os.description LIKE '%#{keyword}%'
+          AND os.state LIKE '"+state.to_s+"'
+          ORDER BY os.id ASC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}"
+        )        
+      end
+    elsif @pagenumber == 'NaN'
+      if state == ""
+        os = ActiveRecord::Base.connection.execute("
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM order_of_services os, users u, entities e
+          WHERE os.cost_center_id = "+@cc.to_s+"
+          AND os.user_id = u.id
+          AND os.entity_id = e.id
+          ORDER BY os.id ASC
+          LIMIT #{display_length}"
+        )
+      else
+        os = ActiveRecord::Base.connection.execute("
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM order_of_services os, users u, entities e
+          WHERE os.cost_center_id = "+@cc.to_s+"
+          AND os.user_id = u.id
+          AND os.entity_id = e.id
+          AND os.state LIKE '"+state.to_s+"'
+          ORDER BY os.id ASC
+          LIMIT #{display_length}"
+        )        
+      end
+    elsif keyword != ''
+      if state == ""
+        os = ActiveRecord::Base.connection.execute("
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM order_of_services os, users u, entities e
+          WHERE os.cost_center_id = "+@cc.to_s+"
+          AND os.user_id = u.id
+          AND os.entity_id = e.id
+          ORDER BY os.id ASC"
+        )
+      else
+        os = ActiveRecord::Base.connection.execute("
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM order_of_services os, users u, entities e
+          WHERE os.cost_center_id = "+@cc.to_s+"
+          AND os.user_id = u.id
+          AND os.state LIKE '"+state.to_s+"'
+          AND os.entity_id = e.id
+          ORDER BY os.id ASC"
+        )
+      end 
     else
-      os = ActiveRecord::Base.connection.execute("
-        SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
-        FROM order_of_services os, users u, entities e
-        WHERE os.cost_center_id = "+@cc.to_s+"
-        AND os.user_id = u.id
-        AND os.entity_id = e.id
-        ORDER BY os.id ASC
-        LIMIT #{display_length}
-        OFFSET #{pager_number}
-        "
-      )
+      if state == ""
+        os = ActiveRecord::Base.connection.execute("
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM order_of_services os, users u, entities e
+          WHERE os.cost_center_id = "+@cc.to_s+"
+          AND os.user_id = u.id
+          AND os.entity_id = e.id
+          ORDER BY os.id ASC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}
+          "
+        )
+      else
+        os = ActiveRecord::Base.connection.execute("
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          FROM order_of_services os, users u, entities e
+          WHERE os.cost_center_id = "+@cc.to_s+"
+          AND os.user_id = u.id
+          AND os.entity_id = e.id
+          AND os.state LIKE '"+state.to_s+"'
+          ORDER BY os.id ASC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}
+          "
+        )        
+      end
     end
     os.each do |dos|
       @state = ""

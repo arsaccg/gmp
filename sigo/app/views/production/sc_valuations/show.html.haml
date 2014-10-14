@@ -41,9 +41,9 @@
           %th{"style"=>"color:#5f5f5f;padding-left:5px;"}
             = "Valorización sin IGV"
             %span{"style"=>"float:right;margin-right:15px; width=20px;text-align:center"}
-              %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => 'part_work();'}
-                %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
-          %th{'colspan' => 2,"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;;vertical-align: middle"}=number_to_currency(@scvaluation.valuation.to_f, unit: 'S/. ', precision: 2)
+              %a#boton2.btn.btn-xs.btn-danger{href: 'javascript:void(0);', :onclick => 'part_work();',"data-toggle" => "tooltip", :title => "Metrado de Avance"}
+                %i.fa.fa-list-ol{"style"=>"color:white"}
+          %th{'colspan' => 2,"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;vertical-align: middle"}=number_to_currency(@scvaluation.valuation.to_f, unit: 'S/. ', precision: 2)
           %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;;vertical-align: middle"}=number_to_currency(@valorizacionsinigv.to_f, unit: 'S/. ', precision: 2)
           %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;;vertical-align: middle"}=number_to_currency(@scvaluation.accumulated_valuation.to_f, unit: 'S/. ', precision: 2)
         %tr
@@ -95,8 +95,8 @@
           %th{"style"=>"color:#5f5f5f;padding-left:14px;"}
             ="Fondo de Garantía N°02"
             %span{"style"=>"float:right;margin-right:15px; width=20px;text-align:center"}
-              %a.btn.bg-color-blueDark{ href: 'javascript:void(0);', :onclick => 'part_people();'}
-                %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}      
+              %a#boton3.btn.btn-xs.btn-danger{ href: 'javascript:void(0);', :onclick => 'part_people();',"data-toggle" => "tooltip", :title => "Detalle de Descuento de Personal"}
+                %i.fa.fa-list-ol{"style"=>"color:white"}      
           %th{ 'colspan' => 2,"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;;vertical-align: middle"}= number_to_currency(@scvaluation.guarantee_fund2.to_f, unit: 'S/. ', precision: 2)
           %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;;vertical-align: middle"}= number_to_currency(@fondogarantia2.to_f, unit: 'S/. ', precision: 2)
           %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;;vertical-align: middle"}= number_to_currency(@scvaluation.accumulated_guarantee_fund2.to_f, unit: 'S/. ', precision: 2)
@@ -105,8 +105,8 @@
           %th{"style"=>"color:#5f5f5f;padding-left:14px;"} 
             ="Descuento de Equipos"
             %span{"style"=>"margin-right:15px;float:right;width=20px;text-align:center"}
-              %a.btn.bg-color-blueDark{ href: 'javascript:void(0);', :onclick => 'part_equipment();'}
-                %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
+              %a#boton1.btn.btn-xs.btn-danger{ href: 'javascript:void(0);', :onclick => 'part_equipment();',"data-toggle" => "tooltip", :title => "Detalle de Descuento de Equipos"}
+                %i.fa.fa-list-ol{"style"=>"color:white"}
           %th{'colspan'=>2,"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;;vertical-align: middle"}=number_to_currency(@scvaluation.equipment_discount.to_f, unit: 'S/. ', precision: 2)
           %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;;vertical-align: middle"}=number_to_currency(@descuentoequipos.to_f, unit: 'S/. ', precision: 2)
           %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;;vertical-align: middle"}=number_to_currency(@scvaluation.accumulated_equipment_discount.to_f, unit: 'S/. ', precision: 2)
@@ -123,7 +123,7 @@
           %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;"}=number_to_currency(@otrosdescuentos.to_f, unit: 'S/. ', precision: 2)
           %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:8px;"}=number_to_currency(@scvaluation.accumulated_otherdiscount.to_f, unit: 'S/. ', precision: 2)
         %tr{"bgcolor"=>"#3276B1"}
-          %th{"style"=>"color:white"} 07
+          %th{"style"=>"color:white;text-align:center;"} 07
           %th{"style"=>"color:white;padding-left:5px;"} NETO A PAGAR
           %th{ 'colspan' => 2, "style"=>"color:white;text-align:right;padding-right:8px;"}=number_to_currency(@scvaluation.net_payment.to_f, unit: 'S/. ', precision: 2)
           %th{"style"=>"color:white;text-align:right;padding-right:8px;"}=number_to_currency(@netoapagar, unit: 'S/. ', precision: 2)
@@ -144,6 +144,28 @@
   Retornar al listado de Valorizaciones SC
 :javascript
 
+$(document).ready(function() {
+    $("#boton1").hover(function () {
+      $('#boton1').tooltip('show');
+    },function(){
+      $('#boton1').tooltip('hide');
+    })
+
+    $("#boton2").hover(function () {
+      $('#boton2').tooltip('show');
+    },function(){
+      $('#boton2').tooltip('hide');
+    })
+
+    $("#boton3").hover(function () {
+      $('#boton3').tooltip('show');
+    },function(){
+      $('#boton3').tooltip('hide');
+    })
+
+
+
+})
   $('#backlist').click(function(){
       load_url_ajax("#{production_sc_valuations_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
   });

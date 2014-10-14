@@ -16,32 +16,32 @@
               %label Descripcion
               .input-group.col-md-11.col-md-11
                 %i.icon-append.fa.fa-user
-                = text_field_tag 'diverse_expenses_of_management[name]', "#{@gdg.name}" , class: "form-control quantity", :required => true, :readonly => true
+                = text_field_tag 'diverse_expenses_of_management[name]', "#{@gdg.name}" , class: "form-control quantity", :required => true
             .col-md-1
               %label Porcentaje
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'diverse_expenses_of_management[percentage]', "#{@gdg.percentage}"+"%" , class: "form-control quantity", :required => true, :readonly => true
+                = text_field_tag 'diverse_expenses_of_management[percentage]', "#{@gdg.percentage}" , class: "form-control quantity", :required => true
             .col-md-2
               %label Monto de G.D.G.
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'diverse_expenses_of_management[amount]', number_to_currency(@gdg.amount, unit: 'S/. ', precision: 2) , class: "form-control quantity", :required => true, :readonly => true
+                = text_field_tag 'diverse_expenses_of_management[amount]', "#{@gdg.amount}", class: "form-control quantity", :required => true
             .col-md-2
               %label Gastos de G.D.G
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'diverse_expenses_of_management[expenses]', number_to_currency(@gdg.expenses, unit: 'S/. ', precision: 2) , class: "form-control quantity", :required => true, :readonly => true
+                = text_field_tag 'diverse_expenses_of_management[expenses]',  "#{@gdg.expenses}", class: "form-control quantity", :required => true
             .col-md-2
-              %label Entraga Acumulado
+              %label Entrega Acumulado
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'diverse_expenses_of_management[total_delivered]', number_to_currency(@gdg.total_delivered, unit: 'S/. ', precision: 2) , class: "form-control quantity", :required => true, :readonly => true
+                = text_field_tag 'diverse_expenses_of_management[total_delivered]', "#{@gdg.total_delivered}", class: "form-control quantity", :required => true, :readonly =>true
             .col-md-2
               %label Saldo por entregar
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag '', number_to_currency((@gdg.amount.to_f - @gdg.total_delivered.to_f).to_s, unit: 'S/. ', precision: 2) , class: "form-control quantity", :required => true, :readonly => true
+                = text_field_tag '',"#{@gdg.amount.to_f - @gdg.total_delivered.to_f}" , class: "form-control quantity", :required => true, :readonly =>true
                   
           %br
           %br

@@ -112,6 +112,8 @@ class Production::SubcontractEquipmentsController < ApplicationController
       end
       @todo << poe
     end
+    puts @todo
+    
     render :pdf => "reporte_listado_de_equipos-#{Time.now.strftime('%d-%m-%Y')}", 
            :template => 'production/subcontract_equipments/report_pdf.pdf.haml',
            :orientation => 'Landscape',

@@ -13,93 +13,67 @@
           = hidden_field_tag "stock_input[input]", "0"
           .row
             .col-md-3
-              .row
-                .col-md-12
-                  .form-group
-                    %label.control-label Almacén
-                    .input-group
-                      %select.form-control#category-select{:name =>"stock_input[warehouse_id]"}
-                        - @warehouses.each do |x|
-                          - if @head.warehouse_id == x.id
-                            %option{:value => "#{x.id}", :rel => "", :selected => true}
-                              = x.name
-                          - else
-                            %option{:value => "#{x.id}"}
-                              = x.name
-                      %span.input-group-addon
-                        %i.fa.fa-gears
-            .col-md-2
-              .row
-                .col-md-12
-                  .form-group
-                    %label.control-label Formato
-                    .input-group
-                      %select.form-control#format-select{:name =>"stock_input[format_id]"}
-                        - @formats.each do |x|
-                          - if @head.format_id == x.id
-                            %option{:value => "#{x.id}", :rel => "", :selected => true}
-                              = x.name
-                          - else
-                            %option{:value => "#{x.id}"}
-                              = x.name
-                      %span.input-group-addon
-                        %i.fa.fa-gears
-            .col-md-2
-              .row
-                .col-md-12
-                  .form-group
-                    %label.control-label Periodo
-                    .input-group
-                      %select(name='stock_input[period]' class = 'select2 form-control' id = 'period-select' style='width:100%;padding: 0;border: none;')
-                        - @periods.select(:year).uniq.each do |x|
-                          %optgroup{:label => "#{x.year.to_i}"}
-                            - @periods.where("year = ?", x.year).each do |y|
-                              - if @head.period == y.year.to_s + y.month.to_s.rjust(2, "0")
-                                %option{:value => "#{y.year.to_s}#{y.month.to_s.rjust(2, "0")}", :rel => "", :selected => true}
-                                  = y.year.to_s + " - " + y.month.to_s.rjust(2, "0")
-                              - else
-                                %option(value = "#{y.year.to_s}#{y.month.to_s.rjust(2, "0")}")
-                                  = y.year.to_s + " - " + y.month.to_s.rjust(2, "0")
-            .col-md-2
-              .row
-                .col-md-12
-                  .form-group
-                    %label.control-label N° Documento
-                    .input-group
-                      = text_field(:stock_input, :document, :value => "#{@head.document}", placeholder: "N° Documento", class: "form-control")
-                      %span.input-group-addon
-                        %i.fa.fa-file
-            .col-md-2
-              .row
-                .col-md-12
-                  .form-group
-                    %label.control-label Fecha
-                    .input-group
-                      = f.input :issue_date, placeholder: "Fecha", as: :string, :input_html => {:class => 'form-control', type: "date", :required => true}, label: false
-                      %span.input-group-addon
-                        %i.fa.fa-calendar
+              %label.control-label Almacén
+              .input-group
+                %select.form-control#category-select{:name =>"stock_input[warehouse_id]"}
+                  - @warehouses.each do |x|
+                    - if @head.warehouse_id == x.id
+                      %option{:value => "#{x.id}", :rel => "", :selected => true}
+                        = x.name
+                    - else
+                      %option{:value => "#{x.id}"}
+                        = x.name
+                %span.input-group-addon
+                  %i.fa.fa-gears
 
-          .row
-            .col-md-9
-              .form-group
-                %label.control-label Grupo de Trabajo
-                .input-group
-                  %select(name='stock_input[working_group_id]' class = 'select2 form-control' id = 'working_group-select' style='width:100%;padding: 0;border: none;')
-                    - @working_groups.each do |working_group|
-                      - if @head.working_group_id == working_group.id
-                        %option{:value => "#{working_group.id}", :selected => true}
-                          = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname
-                      - else
-                        %option{:value => "#{working_group.id}"}
-                          = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname
+            .col-md-2
+              %label.control-label Formato
+              .input-group
+                %select.form-control#format-select{:name =>"stock_input[format_id]"}
+                  - @formats.each do |x|
+                    - if @head.format_id == x.id
+                      %option{:value => "#{x.id}", :rel => "", :selected => true}
+                        = x.name
+                    - else
+                      %option{:value => "#{x.id}"}
+                        = x.name
+                %span.input-group-addon
+                  %i.fa.fa-gears
+
+            .col-md-2
+              %label.control-label N° Documento
+              .input-group
+                = text_field(:stock_input, :document, :value => "#{@head.document}", placeholder: "N° Documento", class: "form-control")
+                %span.input-group-addon
+                  %i.fa.fa-file
+
+            .col-md-2
+              %label.control-label Fecha
+              .input-group
+                = f.input :issue_date, placeholder: "Fecha", as: :string, :input_html => {:class => 'form-control', type: "date", :required => true}, label: false
+                %span.input-group-addon
+                  %i.fa.fa-calendar
+
+            .col-md-3
+              %label.control-label Grupo de Trabajo
+              %select(name='stock_input[working_group_id]' class = 'select2 form-control' id = 'working_group-select' style='width:100%;padding: 0;border: none;')
+                - @working_groups.each do |working_group|
+                  - if @head.working_group_id == working_group.id
+                    %option{:value => "#{working_group.id}", :selected => true}
+                      = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname
+                  - else
+                    %option{:value => "#{working_group.id}"}
+                      = Worker.find(working_group.front_chief_id).entity.name + ' ' + Worker.find(working_group.front_chief_id).entity.paternal_surname + ' - ' + Entity.find(working_group.executor_id).name + ' - ' + Worker.find(working_group.master_builder_id).entity.name + ' ' + Worker.find(working_group.master_builder_id).entity.paternal_surname
           .row
             .col-md-12
-              .form-group
-                %label.control-label Glosa
-                .input-group
-                  = text_area(:stock_input, :description, :value => "#{@head.description}", placeholder: "Glosa", class: "form-control")
-                  %span.input-group-addon
-                    %i.fa.fa-align-justify
+              %label.control-label Glosa
+              .input-group
+                = text_area(:stock_input, :description, :value => "#{@head.description}", placeholder: "Glosa", class: "form-control")
+                %span.input-group-addon
+                  %i.fa.fa-align-justify
+        %br
+        %h2 Detalle de la Salida de Almacén
+        %br
         %fieldset
           %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-pod" aria-describedby="data-table_info")
             %thead
@@ -116,7 +90,7 @@
                   Eliminar
             %tbody(id="table-items-paso2")
               = render :partial => 'table_items_detail_edit'
-
+        %br
         .form-actions{:style => "margin-top: 0;"}
           .row
             .col-md-12

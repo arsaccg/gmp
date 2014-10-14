@@ -664,6 +664,9 @@ ArsacLogistica::Application.routes.draw do
         post 'create_expense'
         patch 'update_expense'
       end
+      member do
+        post 'show_summary_table'
+      end
     end
   end
 

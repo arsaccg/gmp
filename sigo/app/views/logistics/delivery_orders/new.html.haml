@@ -11,6 +11,6 @@
   Retornar al listado de Ordenes de Suministro
   
 :javascript
-  $('#backlist-purchase-order').click(function(){
+  $('#backlist-delivery-order').click(function(){
     load_url_ajax("#{logistics_delivery_orders_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
   });
