@@ -34,10 +34,18 @@
               %td
                 = number_to_currency( (gdg.amount.to_f-gdg.total_delivered.to_f).to_s, unit: 'S/. ', precision: 2)
               %td
-                %a.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg_edit('+gdg.id.to_s+');', "style"=>" color: white; "}
-                  Agregar Entregas
+                %a.btn.btn-success.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg_edit('+gdg.id.to_s+');', "style"=>" color: white; "}
+                  Editar
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item?', :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{general_expenses_diverse_expenses_of_management_path(gdg.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{general_expenses_diverse_expenses_of_managements_path}?cc_id=#{@cc}')"}}
+                  Eliminar
 
 :javascript
+
+
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });  
 
   $(".link_detail").click(function() {
     console.log("1");

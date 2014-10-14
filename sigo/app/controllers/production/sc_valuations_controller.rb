@@ -565,6 +565,8 @@ class Production::ScValuationsController < ApplicationController
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
     end
+    @totalprice5=0
+    @prices= Array.new
     @todo = Array.new
     @abuelo = Array.new
     @padre = Array.new
@@ -574,17 +576,19 @@ class Production::ScValuationsController < ApplicationController
       if !@abuelo.include?(@code[2,2])
         @abuelo << @code[2,2]
         @todo << [@code[2,2],nil,nil,nil,nil,nil,nil,nil]
+
       end
       if !@padre.include?(@code[2,4])
         @padre << @code[2,4]
         @todo << [@code[2,4],nil,nil,nil,nil,nil,nil,nil]
+
       end
       if !@hijo.include?(@code[2,6])
         @hijo << @code[2,6]
         @todo << [@code[2,6],nil,nil,nil,nil,nil,nil,nil]
       end
+      
       @todo << workers_array3
-      puts @todo
     end
     render layout: false
   end
