@@ -7,7 +7,7 @@
     .jarviswidget-editbox
     .widget-body.no-padding
       .widget-body-toolbar
-      %table#dt_basic.table.table-striped.table-bordered.table-hover
+      %table#dt_basic.table.table-striped.table-bordered
         %thead
           %tr
             %th Descripcion
@@ -38,6 +38,13 @@
                   Agregar Entregas
 
 :javascript
+
+  $(".link_detail").click(function() {
+    console.log("1");
+    $('table#dt_basic tr').removeClass("seleccionado");
+    $(this).parents("tr").addClass("seleccionado");
+  });
+ 
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
 
@@ -63,3 +70,4 @@
       }
     });
   }
+

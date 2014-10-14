@@ -14238,6 +14238,17 @@ tr.unread.highlight td {
   /*#ffffcc;*/
   color: #333333;
 }
+
+tr.seleccionado td,
+tr.seleccionado td,
+tr.seleccionado td a.link_detail {
+  background: #57889c !important;
+  /*#ffffcc;*/
+  color: white;
+}
+
+
+
 .inbox-checkbox-triggered {
   display: inline-block;
 }
