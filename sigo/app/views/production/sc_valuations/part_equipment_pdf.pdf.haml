@@ -9,48 +9,51 @@
 	%br
 	#main
 		#content
-			-if !@scvaluation.nil?
-				%div
-					.jarviswidget-editbox
-					.widget-body
-						%table.panel.panel-primary{ style: "height: 90px; width: 1100px;margin-left: 20px;" }
-							%thead.panel-heading
+			-if @workers_array3.count>0
+				%table.table.table-bordered{"style"=>"width:900px;"}
+					%thead
+						%tr
+							%th{'colspan' => 10, "style"=>"text-align:center;font-size: large;"}= "LISTADO DE EQUIPOS "
+						%tr{"style"=> "font-size:14px"}
+							%th{"style"=>"text-align:center"} Item
+							%th{"style"=>"text-align:center"} Código TOBI
+							%th{"style"=>"text-align:center"} Descripción
+							%th{"style"=>"text-align:center"} Cantidad
+							%th{"style"=>"text-align:center"} Unidad
+							%th{"style"=>"text-align:center"} P.U.
+							%th{"style"=>"text-align:center"} Parcial
+					%tbody{"style"=> "font-size:12px"}
+						-@i=1
+						-@todo.each do |to|
+							-if to[1].nil? && to[0].to_s.length == 2
 								%tr
-									%th{'colspan' => 4, "style"=>"text-align:center;font-size: large"}= @scvaluation.name + ' ' + @scvaluation.code
-								%tr{"bgcolor"=>"#3276B1","style"=>"height:25px;"}
-									%th{"style"=>"color:white;text-align:center"} Monto contratado
-									%th{"style"=>"color:white;text-align:center"} Adelanto
-									%th{"style"=>"color:white;text-align:center"} Amortización Acumulada
-									%th{"style"=>"color:white;text-align:center"} Saldo
-							%tbody{:style=>"font-size:100%;"}
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.hired_amount.to_f)
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.advances.to_f)
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.accumulated_amortization.to_f)
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= sprintf('%.2f',@scvaluation.balance.to_f)
-			%br
-			.modal-header{"style"=>"width:1100px;"}
-			.modal-body
-				%h3.modal-title{"style"=>"font-size:300%;margin-bottom:6px;"} Parte de Equipos
-				-if @workers_array3.count>0
-					%table.panel.panel-primary.table-bordered{"style"=>"width:1100px;"}
-						%thead.panel-heading
-							%tr{"style" =>"height:50px;"}
-								%th{"style"=>"text-align:center;vertical-align: middle;"}Código
-								%th{"style"=>"text-align:center;vertical-align: middle;"} Descripcion
-								%th{"style"=>"text-align:center;vertical-align: middle;"} Cantidad
-								%th{"style"=>"text-align:center;vertical-align: middle;"} Unidad
-								%th{"style"=>"text-align:center;vertical-align: middle;"} P.U.
-								%th{"style"=>"text-align:center;vertical-align: middle;"} Parcial
-						%tbody
-						- @workers_array3.each do |workerDetail3|
-							%tr{"style" =>"font-size:95%;height:50px;"}
-								%th{"style"=>"font-weight:normal;text-align:center;"}= workerDetail3[7].to_s
-								%th{"style" =>";padding-left:6px;font-weight:normal;text-align:left;vertical-align: middle;"}=workerDetail3[6].to_s+" "+workerDetail3[0]
-								%th{"style" =>"padding-right: 16px;font-weight:normal;text-align:right;vertical-align: middle;"}= sprintf('%.2f',workerDetail3[2])
-								%th{"style" =>"padding-right: 16px;font-weight:normal;text-align:right;vertical-align: middle;"}= workerDetail3[1]
-								%th{"style" =>"padding-right: 16px;font-weight:normal;text-align:right;vertical-align: middle;"}= workerDetail3[3]
-								%th{"style" =>"padding-right: 16px;font-weight:normal;text-align:right;vertical-align: middle;"}= number_to_currency(workerDetail3[4], unit: 'S/. ', precision: 2)
-				- else
-					%h4.modal-title No hay datos.
-					%br
+									%th{"style"=>"text-align:left; background-color: #727272; font-weight: bold; "}
+									%th{"style"=>"text-align:left; background-color: #727272; font-weight: bold; "}= to[0]
+									%th{'colspan' => 8, "style"=>"text-align:left; background-color: #727272; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+								-@i=1
+							-elsif to[1].nil? && to[0].to_s.length == 4
+								%tr
+									%th{"style"=>"text-align:left; background-color: #A5A5A5; font-weight: bold; "}
+									%th{"style"=>"text-align:left; background-color: #A5A5A5; font-weight: bold; "}= to[0]
+									%th{'colspan' => 8, "style"=>"text-align:left; background-color: #A5A5A5; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+								-@i=1
+							-elsif to[1].nil? && to[0].to_s.length == 6
+								%tr
+									%th{"style"=>"text-align:left; background-color: #BFBFBF; font-weight: bold; "}
+									%th{"style"=>"text-align:left; background-color: #BFBFBF; font-weight: bold; "}= to[0]
+									%th{'colspan' => 8,"style"=>"text-align:left; background-color: #BFBFBF; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+								-@i=1
+							-else
+								%tr
+									%th{"style"=>"text-align:left; font-weight: normal; "}= @i
+									%th{:style=>"font-weight:normal;"}= to[7].to_s
+									%th{:style=>"font-weight:normal;"}= to[6].to_s+" "+to[0].to_s
+									%th{:style=>"text-align:right;font-weight:normal;"}= sprintf('%.2f',to[2])
+									%th{:style=>"text-align:right;font-weight:normal;"}= to[1]
+									%th{:style=>"text-align:right;font-weight:normal;"}= to[3]
+									%th{:style=>"text-align:right;font-weight:normal;"}= number_to_currency(to[4], unit: 'S/. ', precision: 2)
+								-@i+=1
+			- else
+				%h4.modal-title No hay datos.
+				%br
 				%footer
