@@ -10,21 +10,46 @@
         %table.table.table-bordered
           %thead
             %tr
-              %th Código
-              %th Descripcion
-              %th Cantidad
-              %th Unidad
-              %th P.U.
-              %th Parcial
-          %tbody
-          - @workers_array3.each do |workerDetail3|
-            %tr
-              %th{:style=>"font-weight:normal;"}= workerDetail3[7].to_s
-              %th{:style=>"font-weight:normal;"}= workerDetail3[6].to_s+" "+workerDetail3[0].to_s
-              %th{:style=>"text-align:right;font-weight:normal;"}= sprintf('%.2f',workerDetail3[2])
-              %th{:style=>"text-align:right;font-weight:normal;"}= workerDetail3[1]
-              %th{:style=>"text-align:right;font-weight:normal;"}= workerDetail3[3]
-              %th{:style=>"text-align:right;font-weight:normal;"}= number_to_currency(workerDetail3[4], unit: 'S/. ', precision: 2)
+              %th{'colspan' => 10, "style"=>"text-align:center;font-size: large;"}= "LISTADO DE EQUIPOS "
+            %tr{"style"=> "font-size:14px"}
+              %th{"style"=>"text-align:center"} Item
+              %th{"style"=>"text-align:center"} Código TOBI
+              %th{"style"=>"text-align:center"} Descripción
+              %th{"style"=>"text-align:center"} Cantidad
+              %th{"style"=>"text-align:center"} Unidad
+              %th{"style"=>"text-align:center"} P.U.
+              %th{"style"=>"text-align:center"} Parcial
+          %tbody{"style"=> "font-size:12px"}
+            -@i=1
+            -@todo.each do |to|
+              -if to[1].nil? && to[0].to_s.length == 2
+                %tr
+                  %th{"style"=>"text-align:left; background-color: #727272; font-weight: bold; "}
+                  %th{"style"=>"text-align:left; background-color: #727272; font-weight: bold; "}= to[0]
+                  %th{'colspan' => 8, "style"=>"text-align:left; background-color: #727272; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+                -@i=1
+              -elsif to[1].nil? && to[0].to_s.length == 4
+                %tr
+                  %th{"style"=>"text-align:left; background-color: #A5A5A5; font-weight: bold; "}
+                  %th{"style"=>"text-align:left; background-color: #A5A5A5; font-weight: bold; "}= to[0]
+                  %th{'colspan' => 8, "style"=>"text-align:left; background-color: #A5A5A5; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+                -@i=1
+              -elsif to[1].nil? && to[0].to_s.length == 6
+                %tr
+                  %th{"style"=>"text-align:left; background-color: #BFBFBF; font-weight: bold; "}
+                  %th{"style"=>"text-align:left; background-color: #BFBFBF; font-weight: bold; "}= to[0]
+                  %th{'colspan' => 8,"style"=>"text-align:left; background-color: #BFBFBF; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+                -@i=1
+              -else
+                %tr
+                  %th{"style"=>"text-align:left; font-weight: normal; "}= @i
+                  %th{:style=>"font-weight:normal;"}= to[7].to_s
+                  %th{:style=>"font-weight:normal;"}= to[6].to_s+" "+to[0].to_s
+                  %th{:style=>"text-align:right;font-weight:normal;"}= sprintf('%.2f',to[2])
+                  %th{:style=>"text-align:right;font-weight:normal;"}= to[1]
+                  %th{:style=>"text-align:right;font-weight:normal;"}= to[3]
+                  %th{:style=>"text-align:right;font-weight:normal;"}= number_to_currency(to[4], unit: 'S/. ', precision: 2)
+                -@i+=1
       - else
         %h4.modal-title No hay datos.
         %br
