@@ -60,19 +60,55 @@
                 = text_field_tag 'total_quantity_provision', nil, class: 'form-control', id: 'total_quantity_provision', readonly: true
         
       %fieldset
-        %legend Información de Provisiones
+        %legend Información de la Provisión
         .row
-          %section.col.col-4
-            %label.label Neto a Pagar
-            %label.input{for: "net_pay"}
-              %i.icon-append.fa.fa-user
-              = f.input :net_pay, placeholder: "A pagar", input_html: { class: 'form-control' }, label: false
+          %section.col.col-2
+            %label.label Sub-Total
+            %label.input{for: "sub_total"}
+              .input-group
+                %span.input-group-addon
+                  %span S/.
+                %input.form-control#subtotal-field{ :name => "sub-total", :placeholder => "Sub-Total" }
 
-          %section.col.col-4
+          %section.col.col-2
             %label.label IGV
             %label.input{for: "igv"}
-              %i.icon-append.fa.fa-user
-              = f.input :igv, placeholder: "IGV", input_html: { class: 'form-control' }, label: false
+              .input-group
+                %span.input-group-addon
+                  %span S/.
+                %input.form-control#igv-field{ :name => "igv", :placeholder => "IGV" }
+
+          %section.col.col-2
+            %label.label Total
+            %label.input{for: "total"}
+              .input-group
+                %span.input-group-addon
+                  %span S/.
+                %input.form-control#total-field{ :name => "total", :placeholder => "Total" }
+        
+          %section.col.col-2
+            %label.label % de Detracción
+            %label.input{for: "percent_detraction"}
+              .input-group
+                %span.input-group-addon
+                  %span %
+                = f.input :percent_detraction, placeholder: "% Detracción", input_html: { class: 'form-control' }, label: false
+
+          %section.col.col-2
+            %label.label S/. Detracción
+            %label.input{for: "detraction"}
+              .input-group
+                %span.input-group-addon
+                  %span S/.
+                = f.input :detraction, placeholder: "Detracción", input_html: { class: 'form-control' }, label: false
+
+          %section.col.col-2
+            %label.label Neto a Pagar
+            %label.input{for: "net_pay"}
+              .input-group
+                %span.input-group-addon
+                  %span S/.
+                = f.input :net_pay, placeholder: "A pagar", input_html: { class: 'form-control' }, label: false
 
       %footer
         %button.btn.btn-primary{type: "submit"}
@@ -101,9 +137,19 @@
           $('#supplier_provision').val(data.provision[0].supplier_provision)
           $('#total_quantity_provision').val(data.provision[0].total_quantity_provision);
           $('#type_document_provision').val(data.provision[0].type_document_provision);
+          $('#subtotal-field').val(data.provision[0].total_quantity_provision);
+          $('#total-field').val(data.provision[0].total_quantity_provision_with_igv);
+          $('#igv-field').val(data.provision[0].igv);
         }
       });
     });
+
+    $('#payment_order_percent_detraction').change(function(){
+      value = $(this).val()/100;
+      detraction_value = $('#total-field').val()*value
+      $('#payment_order_detraction').val(parseFloat(detraction_value).toFixed(2));
+      $('#payment_order_net_pay').val(parseFloat($('#total-field').val()-detraction_value).toFixed(2))
+    })
 
     if($('#provision-select').val()){
       $.ajax({
@@ -113,11 +159,15 @@
         async: false,
         context: document.body,
         success: function(data){
+          console.log(data.provision[0]);
           $('#date_doc_provision').val(data.provision[0].date_doc_provision);
           $('#number_document_provision').val(data.provision[0].number_document_provision);
           $('#supplier_provision').val(data.provision[0].supplier_provision)
           $('#total_quantity_provision').val(data.provision[0].total_quantity_provision);
           $('#type_document_provision').val(data.provision[0].type_document_provision);
+          $('#subtotal-field').val(data.provision[0].total_quantity_provision);
+          $('#total-field').val(data.provision[0].total_quantity_provision_with_igv);
+          $('#igv-field').val(data.provision[0].igv);
         }
       });
     }

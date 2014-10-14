@@ -43,7 +43,7 @@
                     = payment_order.provision.number_document_provision.to_s
                   %td
                     - quantity = 0
-                    - if payment_order.order_id != nil
+                    - if payment_order.provision.order_id != nil
                       - payment_order.provision.provision_details.each do |detail|
                         - quantity += detail.unit_price_igv
                     - else

@@ -1,7 +1,7 @@
 class Provision < ActiveRecord::Base
   belongs_to :cost_center
   belongs_to :document_provision
-  belongs_to :payment_order
+  has_one :payment_order
   belongs_to :entity
   has_many :provision_details
   has_many :provision_direct_purchase_details
