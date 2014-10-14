@@ -358,6 +358,25 @@ function delete_to_url(url, div_name, url_index){ /* Method DELETE */
   return false;
 }
 
+/******************** PRUEBA ****************/
+
+function delete_to_url_on_div(url, div_name, url_index, url_index_verb){ /* Method DELETE */
+  var url_str = url;
+  var div_name = div_name;
+
+  $.ajax({
+    url: url_str,
+    type: 'DELETE',
+    async: false,
+    context: document.body,
+    success: function(data){
+      load_url_ajax(url_index, div_name , null, null, url_index_verb)
+      //$("#" + div_name).html(data);
+    }
+  });
+  return false;
+}
+
 function append_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
 
   var url_str = url;

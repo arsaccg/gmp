@@ -93,8 +93,13 @@ class GeneralExpenses::DiverseExpensesOfManagementsController < ApplicationContr
   end
 
   def destroy
-    gdg = DiverseExpensesOfManagement.destroy(params[:id])
-    flash[:notice] = "Se ha eliminado correctamente."
+    gdg = DiverseExpensesOfManagement.find(params[:id])
+    if gdg.diverse_expenses_of_management_details.count > 0
+      flash[:notice] = "Se tienen detalles en este Gasto Diverso."
+    else
+      DiverseExpensesOfManagement.destroy(params[:id])
+      flash[:notice] = "Se ha eliminado correctamente."
+    end
     render :json => gdg
   end
 
