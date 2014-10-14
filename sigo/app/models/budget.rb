@@ -303,6 +303,10 @@ class Budget < ActiveRecord::Base
     return data_mysql.first
   end
 
+  def cod_with_description
+    "#{cod_budget}_#{description}"
+  end
+
 end
 
 

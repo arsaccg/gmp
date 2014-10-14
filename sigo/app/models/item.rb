@@ -40,4 +40,8 @@ class Item < ActiveRecord::Base
 		Item.import items_buffer
 		#arr_thread.each {|t| t.join }
 	end
+
+	def code_with_name
+    	"#{item_code}_#{description}"
+  	end
 end

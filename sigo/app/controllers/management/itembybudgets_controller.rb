@@ -15,9 +15,32 @@ class Management::ItembybudgetsController < ApplicationController
   end
 
   def new
+    @itembybudget = Itembybudget.new
+    @cost_center_id = get_company_cost_center('cost_center')
+    render :new, :layout => false
+  end
+
+  def create
+    @itembybudget = Itembybudget.new(itembybudget_parameters)
+    item = Item.find(@itembybudget.item_id)
+    budget = Budget.find(@itembybudget.budget_id)
+    @itembybudget.item_code = item.item_code
+    #@itembybudget.subbudgetdetail = item.description
+    @itembybudget.subbudget_code = budget.subbudget_code
+    @itembybudget.budget_code = budget.cod_budget[0, 6]
+
+    p @itembybudget
+    #if @itembybudget.save
+    #  flash[:notice] = "Se ha creado correctamente cuenta contable."
+    #end
+    render :new, layout: false
   end
 
   def show
   end
 
+  private
+  def itembybudget_parameters
+    params.require(:itembybudget).permit(:budget_id, :item_id, :subbudgetdetail, :order, :measured)
+  end
 end
