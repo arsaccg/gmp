@@ -8,7 +8,7 @@ repeat :all do
     image_tag @company.avatar.path, :fit => [100, 50]
   end
   bounding_box [bounds.right - 650, bounds.bottom + 500], :width  => 500 do
-    text "ORDEN DE COMPRA - #{@purchaseOrder.id.to_s.rjust(5, '0')}", :align => :center, :style => :bold
+    text "ORDEN DE COMPRA - N° #{@purchaseOrder.id.to_s.rjust(5, '0')}", :align => :center, :style => :bold
   end
   move_down 10
 
@@ -55,15 +55,17 @@ end
 move_down 3
 index=1
 @purchaseOrderDetails.each do |data|
+  if(@purchaseOrderDetails.first==data)
   stroke_horizontal_rule
+  end
   pad(1) {
     table([ ["#{index}", "#{data.delivery_order_detail.article.code}", "#{data.delivery_order_detail.article.name}", "#{data.delivery_order_detail.center_of_attention.abbreviation}", "#{data.delivery_order_detail.sector.code}", "#{data.delivery_order_detail.phase.code}", "#{data.delivery_order_detail.unit_of_measurement.symbol}", "#{sprintf("%.2f", data.amount)}", "#{number_to_currency(data.unit_price, unit: @purchaseOrder.money.symbol, precision: 2)}", ".00", "#{number_to_currency(data.amount*data.unit_price, unit: @purchaseOrder.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "ffffff"}, :column_widths => [35,60,275,35,40,40,30,60,90,50,55]) do
       style(columns(0..1), :align => :center)
       style(columns(3..10), :align => :center)
-      style(columns(0..10), :size => 9)
+      style(columns(0..10), :size => 7)
     end
     move_down 2
-    text "#{data.description}", :size => 9
+    text "#{data.description}", :size => 7
   }
   stroke_horizontal_rule
   move_down 2
@@ -73,7 +75,7 @@ index=1
     total = "#{pdf.page_count}"
     index2 += 1
     bounding_box [bounds.right - 80, bounds.bottom + 520], :width  => 200 do
-      text "Página #{index2}", :size => 9
+      text "Página #{index2}", :size => 7
     end
     move_down 152
   end
@@ -81,15 +83,15 @@ end
 
 move_down 10
 
-text "Glosa", :style => :bold
-text "#{@purchaseOrder.description}"
+text "Glosa", :style => :bold, :size => 9
+text "#{@purchaseOrder.description}", :size => 9
 repeat :all do
   bounding_box [bounds.right - 63, bounds.bottom + 520], :width  => 200 do
-    text "of #{total}", :size => 9
+    text "de #{total}", :size => 9
   end
 end
 bounding_box [bounds.left, bounds.bottom + 82], :width  => bounds.width do
-  text "#{@total_neto.to_i.to_words.capitalize} y #{number_with_precision (@total_neto-@total_neto.to_i)*100, :precision => 0}/100 #{@purchaseOrder.money.name}"
+  text "#{@total_neto.to_i.to_words.capitalize} y #{number_with_precision (@total_neto-@total_neto.to_i)*100, :precision => 0}/100 #{@purchaseOrder.money.name}", :size => 8,:style => :bold
 end
 bounding_box [bounds.left, bounds.bottom + 70], :width  => bounds.width do
   table([ 
@@ -98,7 +100,7 @@ bounding_box [bounds.left, bounds.bottom + 70], :width  => bounds.width do
     2. Indicar procedencia, marca y lote de producción en casos aplicables
     3. Adjuntar certificado de calidad, en casos aplicables", ""]
   ], :width => 550, :column_widths => [70, 410, 70]) do
-      style(columns(0..2), :size => 10)
+      style(columns(0..2), :size => 8)
     end
 end
 
@@ -109,7 +111,7 @@ bounding_box [bounds.right - 200, bounds.bottom + 80], :width  => bounds.width d
     ["TOTAL NETO #{@purchaseOrder.money.symbol}"," #{number_to_currency(@total_neto, unit: '', precision: 2)}"]
   ], :width => 220, :cell_style => {:border_color=> "ffffff", :height => 21}, :column_widths => [130, 90]) do
       style(columns(1), :align => :right)
-      style(columns(0..1), :size => 12)
+      style(columns(0..1), :size => 7)
       columns(0..1).font_style = :bold
     end
 end
