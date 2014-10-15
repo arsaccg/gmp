@@ -26,7 +26,7 @@ class GeneralExpenses::LoansController < ApplicationController
     loan.state = params[:state]
     loan.refund_date = params[:refund_date]
     loan.cost_center_beneficiary_id = params[:cost_center_beneficiary_id]
-    loan.cost_center_lender_id = params[:cc_id]
+    loan.cost_center_lender_id = params[:cost_center_lender_id]
     if loan.save
       loan.errors.messages.each do |attribute, error|
         flash[:error] =  flash[:error].to_s + error.to_s + "  "
@@ -66,10 +66,18 @@ class GeneralExpenses::LoansController < ApplicationController
 
   def index
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
-    @loan = Loan.where('cost_center_lender_id=?', @cc)
+    @presto = Loan.where('cost_center_lender_id=?', @cc.id)
+    @prestaron = Loan.where('cost_center_beneficiary_id=?', @cc.id)
     render layout: false
   end
 
   def show
+    @type = params[:type]
+    @cost_center1 = params[:cc1]
+    @cost_center2 = params[:cc2]
+    if @type == "presto"
+      @loan = Loan.where("cost_center_lender_id = ? AND cost_center_beneficiary_id = ?",@cost_center1, @cost_center2)
+    end
+    render layout: false
   end
 end

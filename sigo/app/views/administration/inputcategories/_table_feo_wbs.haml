@@ -41,6 +41,9 @@
                 %a{href: "javascript:toogle_three('third', '#{wbs.codewbs.to_s}_#{input.category_id.to_s}')"}
                   %strong= @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][3]  #nombre
               %td
+                %center
+                  %a(href="javascript:get_input_detail_wbs(#{wbs.codewbs.to_s}, #{input.category_id}, #{@budget_sale.id.to_s}, #{@budget_goal.id.to_s});"){class: "btn btn-default btn-xs"}
+                    %i(class="fa fa-search")
               %td(style="text-align: right; font-size: 13px;")
                 %strong= number_to_currency(@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ') #monto
               %td(style="text-align: right; font-size: 13px;")
