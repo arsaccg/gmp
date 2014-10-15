@@ -9,6 +9,22 @@ class Administration::PaymentOrdersController < ApplicationController
 
   def show
     @paymentOrder = PaymentOrder.find(params[:id])
+    provision = @paymentOrder.provision
+    @total_quantity = 0
+    @total_quantity_with_igv = 0
+
+    if provision.order_id != nil
+      provision.provision_details.each do |provision_detail|
+        @total_quantity += provision_detail.unit_price_igv.to_f # Precio antes de IGV
+        @total_quantity_with_igv += provision_detail.net_price_after_igv.to_f # Precio despues de IGV
+      end
+    else
+      provision.provision_direct_purchase_details.each do |provision_detail|
+        @total_quantity += provision_detail.unit_price_before_igv # Precio antes de IGV
+        @total_quantity_with_igv += provision_detail.unit_price_igv # Precio despues de IGV
+      end
+    end
+
     render layout: false    
   end
 
@@ -95,6 +111,6 @@ class Administration::PaymentOrdersController < ApplicationController
 
   private
   def payment_order_parameters
-    params.require(:payment_order).permit(:provision_id, :net_pay, :igv, :percent_detraction, :detraction)
+    params.require(:payment_order).permit(:provision_id, :net_pay, :igv, :percent_detraction, :detraction, :cost_center_id)
   end
 end
