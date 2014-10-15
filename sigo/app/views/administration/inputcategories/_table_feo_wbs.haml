@@ -19,11 +19,11 @@
     - direct_cost_sale, direct_cost_goal = 0, 0
     -@wbsitems.each do |wbs|  
       %tr{class: "first_#{wbs.codewbs.to_s}"}
-        %td(colspan="5")
-          - wbs_length = wbs.codewbs.to_s.length
+        - wbs_length = wbs.codewbs.to_s.length
+        %td{class: "title-n#{wbs_length}"}(colspan="5")
           %span(style="color:transparent;")
             = ("_" * (wbs_length-1) * 2)
-          - if wbs_length > 2
+          - if wbs_length > 1
             %a.black{href: "javascript:toogle_three('second', '#{wbs.codewbs.to_s}')"}
               %strong= wbs.name
           -else
