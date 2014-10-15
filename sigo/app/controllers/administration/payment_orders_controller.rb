@@ -19,7 +19,7 @@ class Administration::PaymentOrdersController < ApplicationController
   end
 
   def create
-    paymentOrder = PaymentOrder.new(healthcenter_parameters)
+    paymentOrder = PaymentOrder.new(payment_order_parameters)
     if paymentOrder.save
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index
@@ -41,7 +41,7 @@ class Administration::PaymentOrdersController < ApplicationController
 
   def update
     paymentOrder = PaymentOrder.find(params[:id])
-    if paymentOrder.update_attributes(healthcenter_parameters)
+    if paymentOrder.update_attributes(payment_order_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
     else
@@ -64,21 +64,30 @@ class Administration::PaymentOrdersController < ApplicationController
     data_provision = Array.new
     provision = Provision.find(params[:provision_id])
     total_quantity = 0
+    total_quantity_with_igv = 0
+
     if provision.order_id != nil
       provision.provision_details.each do |provision_detail|
-        total_quantity += provision_detail.unit_price_igv
+        total_quantity += provision_detail.unit_price_igv.to_f # Precio antes de IGV
+        total_quantity_with_igv += provision_detail.net_price_after_igv.to_f # Precio despues de IGV
       end
     else
       provision.provision_direct_purchase_details.each do |provision_detail|
-        total_quantity += provision_detail.unit_price_igv
+        total_quantity += provision_detail.unit_price_before_igv # Precio antes de IGV
+        total_quantity_with_igv += provision_detail.unit_price_igv # Precio despues de IGV
       end
     end
+
+    igv = (((total_quantity_with_igv.to_f - total_quantity.to_f) / total_quantity.to_f).round(2))*total_quantity
+
     data_provision = [
       :type_document_provision => provision.document_provision.name, 
       :number_document_provision => provision.number_document_provision, 
       :date_doc_provision => provision.accounting_date, 
       :supplier_provision => provision.entity.name.to_s + ' ' + provision.entity.paternal_surname.to_s + ' ' + provision.entity.maternal_surname.to_s, 
-      :total_quantity_provision => total_quantity
+      :total_quantity_provision => total_quantity.round(2),
+      :total_quantity_provision_with_igv => total_quantity_with_igv.round(2),
+      :igv => igv.round(2)
     ]
 
     render json: { :provision => data_provision }
@@ -86,6 +95,6 @@ class Administration::PaymentOrdersController < ApplicationController
 
   private
   def payment_order_parameters
-    params.require(:payment_order).permit(:provision_id, :net_pay, :igv)
+    params.require(:payment_order).permit(:provision_id, :net_pay, :igv, :percent_detraction, :detraction)
   end
 end

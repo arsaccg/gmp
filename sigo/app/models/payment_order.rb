@@ -1,3 +1,3 @@
 class PaymentOrder < ActiveRecord::Base
-	has_many :provisions
+	belongs_to :provision
 end
