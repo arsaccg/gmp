@@ -11,7 +11,7 @@ repeat :all do
     text @company.ruc, :size => 9
   end
   bounding_box [bounds.right - 530, bounds.bottom + 680], :width  => 500 do
-    text "ORDEN DE SUMINISTRO - #{@cost_center_code + ' ' + @deliveryOrder.id.to_s.rjust(5, '0')}", :align => :center, :style => :bold
+    text "ORDEN DE SUMINISTRO - N° #{@cost_center_code + '-' + @deliveryOrder.id.to_s.rjust(5, '0')}", :align => :center, :style => :bold
   end
   move_down 30
 
@@ -26,26 +26,27 @@ repeat :all do
         columns(2).font_style = :bold
       end
 
-  move_down 5
 
   table([ ["ITEM", "CÓDIGO", "DESCRIPCIÓN","At.","Sector","FASE", "U.M", "CANTIDAD"] ], :width => 540, :column_widths => [33,55,227,40,40,40,35,70]) do
-        style(columns(0..1), :align => :center)
-        style(columns(3..7), :align => :center)
+        style(columns(0..7), :align => :center)
         style(columns(0..7), :size => 9)
       end
 end
 move_down 3
 index=1
 @deliveryOrderDetails.each do |data|
+  if(@deliveryOrderDetails.first == data)
   stroke_horizontal_rule
+  end
   pad(1) {
     table([ ["#{index}", "#{data.article.code}", "#{data.article.name}", "#{data.center_of_attention.abbreviation}", "#{data.sector.code}", "#{data.phase.code}", "#{data.unit_of_measurement.symbol}", "#{data.amount}"] ], :width => 540, :cell_style => {:border_color=> "ffffff"}, :column_widths => [33,60,222,40,40,40,35,70]) do
+        columns(0).font_style = :bold
         style(columns(0..1), :align => :center)
         style(columns(3..7), :align => :center)
-      style(columns(0..7), :size => 9)
+      style(columns(0..7), :size => 7.5)
     end
     move_down 4
-    text "#{data.description}", :size => 9
+    text "#{data.description}", :size => 7.5
   }
   stroke_horizontal_rule
   move_down 3
@@ -63,11 +64,11 @@ end
 
 move_down 40
 
-text "Glosa", :style => :bold
-text "#{@deliveryOrder.description}", :size => 10
+text "Glosa", :style => :bold, :size =>9
+text "#{@deliveryOrder.description}", :size => 9
 repeat :all do
   bounding_box [bounds.right - 63, bounds.bottom + 720], :width  => 200 do
-    text "of #{total}", :size => 9
+    text "de #{total}", :size => 9
   end
 end
 bounding_box [bounds.left, bounds.bottom + 50], :width  => bounds.width do
