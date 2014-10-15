@@ -18,20 +18,27 @@
   %tbody 
     - direct_cost_sale, direct_cost_goal = 0, 0
     -@wbsitems.each do |wbs|  
-      %tr
-        %td(colspan="5")
-          %strong= wbs.name
+      %tr{class: "first_#{wbs.codewbs.to_s}"}
+        - wbs_length = wbs.codewbs.to_s.length
+        %td{class: "title-n#{wbs_length}"}(colspan="5")
+          %span(style="color:transparent;")
+            = ("_" * (wbs_length-1) * 2)
+          - if wbs_length > 1
+            %a.black{href: "javascript:toogle_three('second', '#{wbs.codewbs.to_s}')"}
+              %strong= wbs.name
+          -else
+            %strong= wbs.name
       - @inputcategories.each do |input|
         - if (wbs.codewbs != '1') && (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"] != nil)
           -partial_sale, partial_goal = @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"], @data[1]["#{wbs.codewbs.to_s}#{input.category_id}"]
           - if (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]) < 10  #codigo
-            %tr{class: "first_#{wbs.codewbs.to_s}_#{input.category_id}"}(style="color:#3276b1;")
+            %tr{class: "second_#{wbs.codewbs.to_s}_#{input.category_id}"}(style="color:#3276b1;")
               %td
                 %span(style="color:transparent;")
-                  = ("_" * 2)
+                  = ("_" * 6)
                 = (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]).to_s 
               %td
-                %a{href: "javascript:toogle_three('second', '#{wbs.codewbs.to_s}_#{input.category_id.to_s}')"}
+                %a{href: "javascript:toogle_three('third', '#{wbs.codewbs.to_s}_#{input.category_id.to_s}')"}
                   %strong= @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][3]  #nombre
               %td
               %td(style="text-align: right; font-size: 13px;")
@@ -54,10 +61,10 @@
             -coditem=@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][5]  #coditem
             -category_id=@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]  #category_id
             -measured=@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][7] #metrado
-            %tr{class: "second_#{wbs.codewbs.to_s}_#{input.category_id}"}
+            %tr{class: "third_#{wbs.codewbs.to_s}_#{input.category_id}"}
               %td
                 %span(style="color:transparent;")
-                  = ("_" * 4)
+                  = ("_" * 8)
                 =(@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]).to_s 
               %td= @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][3]
               %td
@@ -89,9 +96,8 @@
     
     switch(level){
       case "second":
-        $("[class^='third_" +  id + "']").each(function(){
-          if ($(this).css("display") == 'table-row'){ toogle_three('third', id); }
-        });
+        tr_level = $("[class^='third_" +  id + "']");
+        tr_level.css("display","none");
         break;
     }
   }

@@ -619,3 +619,13 @@ table.inputbybandi-table th:nth-child(2), table.inputbybandi-table td:nth-child(
 select {
   width: 100%;
 }
+
+.title-n1{
+  font-size: 12px;
+}
+.title-n2{
+  font-size: 11px;
+}
+.title-n3{
+  font-size: 10px;
+}

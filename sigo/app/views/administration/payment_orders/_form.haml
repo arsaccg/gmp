@@ -11,7 +11,7 @@
           %section.col.col-4
             %label.label Provisiones
             %label.input
-              %select.form-control#provision-select{:name =>"payment_order[provision_id]"}
+              %select.form-control#provision-select{:name =>"payment_order[provision_id]", :style => 'border:none;width:100%;'}
                 - if @action == 'edit'
                   %option{:value => nil}
                     Seleccionar alguna de las Provisiones
@@ -21,10 +21,10 @@
                 - @provisions.each do |provision|
                   - if @paymentOrder.provision_id == provision.id
                     %option{:value => "#{provision.id}", :selected => true}
-                      = 'Provision N° ' + provision.number_document_provision
+                      = 'Provision N° ' + provision.id.to_s.rjust(5, '0') + ' - ' + provision.entity.name.to_s + ' ' + provision.entity.second_name.to_s + ' ' + provision.entity.paternal_surname.to_s + ' ' + provision.entity.maternal_surname.to_s + ' (RUC: ' + provision.entity.ruc.to_s + ')'
                   - else
                     %option{:value => "#{provision.id}"}
-                      = 'Provision N° ' + provision.number_document_provision
+                      = 'Provision N° ' + provision.id.to_s.rjust(5, '0') + ' - ' + provision.entity.name.to_s + ' ' + provision.entity.second_name.to_s + ' ' + provision.entity.paternal_surname.to_s + ' ' + provision.entity.maternal_surname.to_s + ' (RUC: ' + provision.entity.ruc.to_s + ')'
 
           %section.col.col-4
             %label.label Tipo de Documento
@@ -86,13 +86,13 @@
                   %span S/.
                 %input.form-control#total-field{ :name => "total", :placeholder => "Total" }
         
-          %section.col.col-2
+          %section.col.col-1
             %label.label % de Detracción
             %label.input{for: "percent_detraction"}
               .input-group
+                = f.input :percent_detraction, input_html: { class: 'form-control' }, label: false
                 %span.input-group-addon
                   %span %
-                = f.input :percent_detraction, placeholder: "% Detracción", input_html: { class: 'form-control' }, label: false
 
           %section.col.col-2
             %label.label S/. Detracción
@@ -117,6 +117,8 @@
 
 :javascript
   $(document).ready(function () {
+
+    $('select').select2();
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
