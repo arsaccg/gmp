@@ -1,5 +1,4 @@
 ArsacLogistica::Application.routes.draw do
-
   devise_for :users, :controllers => {:registrations => "users/registrations"}, :path_names => { 
     :sign_up => 'arsac_register'
   }
@@ -668,6 +667,13 @@ ArsacLogistica::Application.routes.draw do
         post 'show_summary_table'
       end
     end
+
+    resources :loans do
+      collection do
+        post 'create_loan'
+      end
+    end
+
   end
 
   #TOBI...

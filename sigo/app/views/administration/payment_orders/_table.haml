@@ -53,6 +53,8 @@
                   %td
                     = number_to_currency(payment_order.net_pay, :unit => 'S/.', :precision => 2)
                   %td
+                    %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{administration_payment_order_path(payment_order.id)}', 'content', null, null, 'GET')"}
+                      Ver Información
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_administration_payment_order_path(payment_order.id)}', 'content', null, null, 'GET')"}
                       Editar
                     %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{payment_order.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{administration_payment_order_path(payment_order.id)}', 'content', '#{administration_payment_orders_path}')"}}

@@ -1,0 +1,106 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        = "Provisión N° " + @provision.id.to_s.rjust(5, '0')
+  %section#widget-grid
+    .row
+      %article.col-lg-2
+      %article.col-sm-12.col-md-12.col-lg-8
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = "Provisión N° " + @provision.id.to_s.rjust(5, '0')
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Información Principal
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Tipo de Documento
+                    %th Numero de Documento
+                    %th Serie
+                    %th Fecha
+                    %th Glosa
+                %tbody
+                  %tr
+                    %td
+                      = @provision.document_provision.name.to_s
+                    %td
+                      = @provision.number_document_provision.to_s
+                    %td
+                      = @provision.series.to_s
+                    %td
+                      = @provision.accounting_date.strftime('%d/%m/%Y')
+                    %td
+                      = @provision.description.to_s
+
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = "Detalle de la Provisión N° " + @provision.id.to_s.rjust(5, '0')
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Información Detallada
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Código
+                    %th Nombre del Artículo
+                    %th Cuenta Contable
+                    %th Unidad
+                    %th Cantidad a Atender
+                    %th Precio Unitario
+                    %th IGV
+                    %th Total Neto con IGV
+                    %th Total Neto con IGV y Descuentos
+                %tbody
+                  - @provision.provision_details.each do |provision_detail|
+                    %tr
+                      %td
+                        = provision_detail.article_code.to_s
+                      %td
+                        = provision_detail.article_name.to_s
+                      %td
+                        = provision_detail.account_accountant.name.to_s
+                      %td
+                        = provision_detail.unit_of_measurement.to_s
+                      %td
+                        = provision_detail.amount.to_f
+                      %td
+                        = number_to_currency provision_detail.current_unit_price.to_f, unit: 'S/.', precision: 2
+                      %td
+                        = (provision_detail.current_igv*100).round(0).to_s + '%'
+                      %td
+                        = number_to_currency provision_detail.unit_price_igv, unit: 'S/.', precision: 2
+                      %td
+                        = number_to_currency provision_detail.net_price_after_igv, unit: 'S/.', precision: 2
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-provisions{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Provisiones
+
+:javascript
+  
+  $('#backlist-provisions').click(function(){
+    load_url_ajax("#{administration_provisions_path}", 'content', null, null, 'GET');
+  });

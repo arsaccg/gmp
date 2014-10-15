@@ -21,17 +21,17 @@
               %label Porcentaje
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'diverse_expenses_of_management[percentage]', "#{@gdg.percentage}" , class: "form-control quantity", :required => true
+                = text_field_tag 'diverse_expenses_of_management[percentage]', "#{@gdg.percentage}" , class: "form-control quantity", :required => true,as: :float
             .col-md-2
               %label Monto de G.D.G.
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'diverse_expenses_of_management[amount]', "#{@gdg.amount}", class: "form-control quantity", :required => true
+                = text_field_tag 'diverse_expenses_of_management[amount]', "#{@gdg.amount}", class: "form-control quantity", :required => true,as: :integer
             .col-md-2
               %label Gastos de G.D.G
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'diverse_expenses_of_management[expenses]',  "#{@gdg.expenses}", class: "form-control quantity", :required => true
+                = text_field_tag 'diverse_expenses_of_management[expenses]',  "#{@gdg.expenses}", class: "form-control quantity", :required => true, as: :integer
             .col-md-2
               %label Entrega Acumulado
               .input-group.col-md-11
@@ -41,123 +41,7 @@
               %label Saldo por entregar
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag '',"#{@gdg.amount.to_f - @gdg.total_delivered.to_f}" , class: "form-control quantity", :required => true, :readonly =>true
-                  
-          %br
-          %br
-          %br
-        %fieldset
-          %legend Entregas
-          .row
-            .col-md-3
-              %label Codigo
-              .input-group.col-md-11
-                %input#code.form-control
-                %i.icon-append.fa.fa-superscript        
-            .col-md-3
-              %label Monto
-              .input-group.col-md-11
-                %input#montoe.form-control{onkeypress: "return isNumber(event);"}
-                %i.icon-append.fa.fa-superscript
-            .col-md-3
-              %label Fecha de Entrega
-              .input-group.col-md-11
-                %input#fechae.form-control{type: "date", as: :date}
-                %i.icon-append.fa.fa-calendar
-            .col-md-3
-              %label Proveedor
-              .input-group.col-md-11
-                %select.form-control#proveedore
-                  %option{:value => nil, :selected => true} Seleccionar proveedor
-                  - @proveedor.each do |ent|
-                    %option{:value => "#{ent.id}"}
-                      = ent.name  
-                %i.icon-append.fa.fa-group
-          %br        
-          .row
-            .col-md-3
-              %label Concepto
-              .input-group.col-md-11
-                %input#conceptoe.form-control
-                %i.icon-append.fa.fa-book
-            .col-md-3
-              %label Factura
-              .input-group.col-md-11
-                %input#factura.form-control
-                %i.icon-append.fa.fa-superscript
-            .col-md-3
-              %label Fecha de Factura
-              .input-group.col-md-11
-                %input#fechafae.form-control{type: "date", as: :date}
-                %i.icon-append.fa.fa-calendar
-            .col-md-3
-              %label Monto de Factura
-              .input-group.col-md-11
-                %input#montofae.form-control{onkeypress: "return isNumber(event);"}
-                %i.icon-append.fa.fa-superscript
-          %br        
-          .row
-            .col-md-3
-              %label Detracción de Factura
-              .input-group.col-md-11
-                %input#detraccionfae.form-control{onkeypress: "return isNumber(event);"}
-                %i.icon-append.fa.fa-superscript
-            .col-md-3
-              %label A cuenta
-              .input-group.col-md-11
-                %input#acuentafae.form-control{onkeypress: "return isNumber(event);"}
-                %i.icon-append.fa.fa-superscript
-            .col-md-3
-              %label Comision IGV
-              .input-group.col-md-11
-                %input#igvfae.form-control{onkeypress: "return isNumber(event);"}
-                %i.icon-append.fa.fa-superscript
-            .col-md-3{"style"=>" margin-top: 15px; "}
-              %a(href="javascript:add_item();" id="btn-add-article" class="btn btn-success" role="button")
-                Agregar Entrega
-          %br
-          %br
-          %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
-            %thead
-              %tr
-                %th.smart-form Codigo
-                %th.smart-form Monto
-                %th.smart-form Fecha de Entrega
-                %th.smart-form Proveedor
-                %th.smart-form Concepto
-                %th.smart-form Factura
-                %th.smart-form Fecha de Factura
-                %th.smart-form Monto de Factura
-                %th.smart-form Detraccion
-                %th.smart-form Pago a Cuenta
-                %th.smart-form Comision IGV
-                %th.smart-form Devolucion neta
-                %th.smart-form Saldo
-                %th{:style => "width: 1%;"} Eliminar
-            %tbody(id="items_table")
-              - @gdg.diverse_expenses_of_management_details.each do |gdg|
-                %tr
-                  %td(style="display:none")
-                    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][id]', gdg.id.to_i.to_s
-                  %td= gdg.code.to_s
-                  %td= gdg.delivered_date.to_date.strftime("%d-%m-%Y").to_s
-                  %td= number_to_currency(gdg.amount.to_f, unit: 'S/. ', precision: 2)
-                  %td= Entity.find(gdg.entity_id).name.to_s
-                  %td= gdg.bill_concept.to_s
-                  %td= gdg.bill.to_s
-                  %td= gdg.bill_date.to_date.strftime("%d-%m-%Y").to_s
-                  %td= number_to_currency(gdg.bill_amount.to_f, unit: 'S/. ', precision: 2)
-                  %td= number_to_currency(gdg.bill_detraction.to_f, unit: 'S/. ', precision: 2)
-                  %td= number_to_currency(gdg.bill_to_account.to_f, unit: 'S/. ', precision: 2)
-                  %td= number_to_currency(gdg.igv_commission.to_f, unit: 'S/. ', precision: 2)
-                  %td= number_to_currency(gdg.net_return.to_f, unit: 'S/. ', precision: 2)
-                  %td= number_to_currency(gdg.balance.to_f, unit: 'S/. ', precision: 2)
-                  %td.delete-item
-                    %label.checkbox
-                      = check_box 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
-                      %i
-                  - @reg_n += 1
-             
+                = text_field_tag '',"#{@gdg.amount.to_f - @gdg.total_delivered.to_f}" , class: "form-control quantity", :required => true, :readonly =>true  
         %br
         %br
         %footer
@@ -179,10 +63,28 @@
           form_element.validate({
             // Rules for form validation
             rules : {
+              'diverse_expenses_of_management[percentage]' : {
+                number : true,
+              },
+              'diverse_expenses_of_management[amount]' : {
+                number : true,
+              },
+              'diverse_expenses_of_management[expenses]' : {
+                number : true,
+              }
             },
 
             // Messages for form validation
             messages : {
+              'diverse_expenses_of_management[percentage]' : {
+                number : "Debe ingresar un numero válido.",
+              },
+              'diverse_expenses_of_management[amount]' : {
+                number : "Debe ingresar un numero válido.",
+              },
+              'diverse_expenses_of_management[expenses]' : {
+                number : "Debe ingresar un numero válido.",
+              }
             },
 
             // Do not change code below
@@ -206,6 +108,7 @@
 
     $("#details").click(function(e) {
       $('form#upload_deregister').submit();
+
       data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
       load_modal_ajax('#{general_expenses_diverse_expenses_of_managements_path}', 'gdg', 'gdge', data2, null, 'GET');
       $.smallBox({
