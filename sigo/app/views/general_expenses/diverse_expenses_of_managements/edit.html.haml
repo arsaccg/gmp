@@ -21,17 +21,17 @@
               %label Porcentaje
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'diverse_expenses_of_management[percentage]', "#{@gdg.percentage}" , class: "form-control quantity", :required => true
+                = text_field_tag 'diverse_expenses_of_management[percentage]', "#{@gdg.percentage}" , class: "form-control quantity", :required => true,as: :float
             .col-md-2
               %label Monto de G.D.G.
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'diverse_expenses_of_management[amount]', "#{@gdg.amount}", class: "form-control quantity", :required => true
+                = text_field_tag 'diverse_expenses_of_management[amount]', "#{@gdg.amount}", class: "form-control quantity", :required => true,as: :integer
             .col-md-2
               %label Gastos de G.D.G
               .input-group.col-md-11
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'diverse_expenses_of_management[expenses]',  "#{@gdg.expenses}", class: "form-control quantity", :required => true
+                = text_field_tag 'diverse_expenses_of_management[expenses]',  "#{@gdg.expenses}", class: "form-control quantity", :required => true, as: :integer
             .col-md-2
               %label Entrega Acumulado
               .input-group.col-md-11
@@ -179,10 +179,28 @@
           form_element.validate({
             // Rules for form validation
             rules : {
+              'diverse_expenses_of_management[percentage]' : {
+                number : true,
+              },
+              'diverse_expenses_of_management[amount]' : {
+                number : true,
+              },
+              'diverse_expenses_of_management[expenses]' : {
+                number : true,
+              }
             },
 
             // Messages for form validation
             messages : {
+              'diverse_expenses_of_management[percentage]' : {
+                number : "Debe ingresar un numero válido.",
+              },
+              'diverse_expenses_of_management[amount]' : {
+                number : "Debe ingresar un numero válido.",
+              },
+              'diverse_expenses_of_management[expenses]' : {
+                number : "Debe ingresar un numero válido.",
+              }
             },
 
             // Do not change code below
@@ -206,6 +224,7 @@
 
     $("#details").click(function(e) {
       $('form#upload_deregister').submit();
+
       data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
       load_modal_ajax('#{general_expenses_diverse_expenses_of_managements_path}', 'gdg', 'gdge', data2, null, 'GET');
       $.smallBox({
