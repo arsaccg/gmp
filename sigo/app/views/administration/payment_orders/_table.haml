@@ -40,7 +40,7 @@
               - @paymentOrders.each do |payment_order|
                 %tr
                   %td
-                    = payment_order.provision.number_document_provision.to_s
+                    = payment_order.provision.number_document_provision.to_s rescue '-'
                   %td
                     - quantity = 0
                     - if payment_order.provision.order_id != nil

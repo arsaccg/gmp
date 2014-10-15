@@ -10,6 +10,7 @@
       %table#dt_basic.table.table-striped.table-bordered.table-hover
         %thead
           %tr
+            %th N° de la Provisión
             %th N° de Documento
             %th Documento
             %th Glosa
@@ -20,6 +21,8 @@
         %tbody
           - @provision.each do |provision|
             %tr
+              %td
+                = provision.id.to_s.rjust(5, '0')
               %td
                 = provision.number_document_provision
               %td

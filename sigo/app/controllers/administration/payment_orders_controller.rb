@@ -95,6 +95,6 @@ class Administration::PaymentOrdersController < ApplicationController
 
   private
   def payment_order_parameters
-    params.require(:payment_order).permit(:provision_id, :net_pay, :igv)
+    params.require(:payment_order).permit(:provision_id, :net_pay, :igv, :percent_detraction, :detraction)
   end
 end
