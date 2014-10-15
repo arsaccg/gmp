@@ -7,6 +7,11 @@ class Administration::ProvisionsController < ApplicationController
     render layout: false
   end
 
+  def show
+    @provision = Provision.find(params[:id])
+    render layout: false  
+  end
+
   def new
     @provision = Provision.new
     @documentProvisions = DocumentProvision.all
