@@ -574,8 +574,6 @@ margin-right: 100px;
 
   -webkit-border-radius: 5px 5px 0px 0px;
         border-radius: 5px 5px 0px 0px;
-
-  height: 29px;
 }
 
 .white-table{
@@ -607,7 +605,8 @@ table.inputbybandi-table th:nth-child(2), table.inputbybandi-table td:nth-child(
   color:green;
 }
 .red{
-  color:red;
+  /*color:red;*/
+  color:#a90329;
 }
 .blue{
   color:#3276b1;
@@ -620,12 +619,14 @@ select {
   width: 100%;
 }
 
-.title-n1{
+.title-n1 strong{
   font-size: 12px;
 }
-.title-n2{
+.title-n2 strong{
   font-size: 11px;
+  color:green;
 }
-.title-n3{
+.title-n3 strong{
   font-size: 10px;
+  color:#a90329;
 }
