@@ -9,7 +9,7 @@
 		.modal-body
 			%fieldset
 				%input#cc{ :value => "#{@cc.id.to_i.to_s}", "style"=>"display:none"}
-				.row
+				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label Beneficiario
 					%section.col-md-5
@@ -18,7 +18,7 @@
 							- @costcenters.each do |ph|
 								%option{:value => "#{ph.id}"}
 									= ph.name
-				.row
+				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label Entregado a
 					%section.col-md-5
@@ -26,15 +26,15 @@
 							%input#person.form-control{placeholder: "Persona"}
 							%span.input-group-addon
 								%i.icon-append.fa.fa-user
-				.row
+				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label Fecha
 					%section.col-md-5
 						.input-group
-							%input#loan_date.form-control{placeholder: ""}
+							%input#loan_date.form-control{as: :string,type: "date"}
 							%span.input-group-addon
-								%i.icon-append.fa.fa-user
-				.row
+								%i.icon-append.fa.fa-calendar
+				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label Forma de Préstamo
 					%section.col-md-5
@@ -43,23 +43,23 @@
 							%option{:value => "1"} Cheque
 							%option{:value => "2"} Transferencia
 							%option{:value => "3"} Efectivo
-				.row
+				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label Monto
 					%section.col-md-5
 						.input-group
 							%input#amount.form-control{placeholder: ""}
 							%span.input-group-addon
-								%i.icon-append.fa.fa-user
-				.row
+								%i.icon-append.fa.fa-plus-circle
+				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label Motivo
 					%section.col-md-5
 						.input-group
 							%textarea#description.form-control{placeholder: ""}
 							%span.input-group-addon
-								%i.icon-append.fa.fa-user
-				.row
+								%i.icon-append.fa.fa-list-alt
+				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label Forma de Devolución
 					%section.col-md-5
@@ -68,23 +68,23 @@
 							%option{:value => "1"} Cheque
 							%option{:value => "2"} Transferencia
 							%option{:value => "3"} Efectivo
-				.row
+				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label N° Cheque
 					%section.col-md-5
 						.input-group
 							%input#check_number.form-control{placeholder: ""}
 							%span.input-group-addon
-								%i.icon-append.fa.fa-user
-				.row
+								%i.icon-append.fa.fa-bar-chart
+				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label Fecha de Cheque
 					%section.col-md-5
 						.input-group
-							%input#check_date.form-control{placeholder: ""}
+							%input#check_date.form-control{{as: :string,type: "date"}}
 							%span.input-group-addon
-								%i.icon-append.fa.fa-user
-				.row
+								%i.icon-append.fa.fa-calendar
+				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label Estado
 					%section.col-md-5
@@ -93,14 +93,14 @@
 							%option{:value => "1"} Pendiente
 							%option{:value => "2"} Devuelto
 
-				.row
+				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label Fecha de Devolución
 					%section.col-md-5
 						.input-group
-							%input#refund_date.form-control{placeholder: ""}
+							%input#refund_date.form-control{{as: :string,type: "date"}}
 							%span.input-group-addon
-								%i.icon-append.fa.fa-user
+								%i.icon-append.fa.fa-calendar
 			%footer
 				%button.btn.btn-primary#smart-mod-eg1{type: "button", "style"=>"float:right;"}
 					%i.fa.fa-save

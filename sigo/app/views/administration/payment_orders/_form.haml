@@ -68,7 +68,7 @@
               .input-group
                 %span.input-group-addon
                   %span S/.
-                %input.form-control#subtotal-field{ :name => "sub-total", :placeholder => "Sub-Total" }
+                %input.form-control#subtotal-field{ :name => "sub-total", :placeholder => "Sub-Total", :readonly => true }
 
           %section.col.col-2
             %label.label IGV
@@ -76,7 +76,7 @@
               .input-group
                 %span.input-group-addon
                   %span S/.
-                %input.form-control#igv-field{ :name => "payment_order[igv]", :placeholder => "IGV" }
+                %input.form-control#igv-field{ :name => "payment_order[igv]", :placeholder => "IGV", :readonly => true }
 
           %section.col.col-2
             %label.label Total
@@ -84,7 +84,7 @@
               .input-group
                 %span.input-group-addon
                   %span S/.
-                %input.form-control#total-field{ :name => "total", :placeholder => "Total" }
+                %input.form-control#total-field{ :name => "total", :placeholder => "Total", :readonly => true }
         
           %section.col.col-1
             %label.label % de Detracción
