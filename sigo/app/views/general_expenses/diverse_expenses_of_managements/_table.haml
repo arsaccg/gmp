@@ -6,7 +6,6 @@
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
-      .widget-body-toolbar
       %table#dt_basic.table.table-striped.table-bordered
         %thead
           %tr
@@ -34,8 +33,10 @@
               %td
                 = number_to_currency( (gdg.amount.to_f-gdg.total_delivered.to_f).to_s, unit: 'S/. ', precision: 2)
               %td
-                %a.btn.btn-success.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg_edit('+gdg.id.to_s+');', "style"=>" color: white; "}
+                %a.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg_edit('+gdg.id.to_s+');', "style"=>" color: white; "}
                   Editar
+                %a.btn.btn-info.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg_show('+gdg.id.to_s+');', "style"=>" color: white; "}
+                  Agregar Entregas
                 %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item?', :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url_on_div('#{general_expenses_diverse_expenses_of_management_path(gdg.id)}', 'gdg', '#{general_expenses_diverse_expenses_of_managements_path}' + '?cc_id=#{gdg.cost_center_id}', 'GET')"}}
                   Eliminar
 
