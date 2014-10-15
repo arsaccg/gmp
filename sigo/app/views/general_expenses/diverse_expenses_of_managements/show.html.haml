@@ -1,2 +1,228 @@
-%h1 GeneralExpenses::DiverseExpensesOfManagements#show
-%p Find me in app/views/general_expenses/diverse_expenses_of_managements/show.html.haml
+.modal-dialog{"style"=>"width: 100%"}
+  .modal-content
+    .modal-header
+      %header
+        %h2
+          %span.widget-icon
+            %i.fa.fa-pencil-square-o.fa-fw 
+          %strong Gasto de Gestión: Agregar Entregas
+    .modal-body
+      = form_for @gdg, url: general_expenses_diverse_expenses_of_management_path(@gdg.id), as: :patch, html: { class: "smart-form", id: "upload_deregister" } do |f|
+        %input#cc{ :value => "#{@gdg.cost_center_id.to_i.to_s}", "style"=>"display:none"}
+        %input#gdg{ :value => "#{@gdg.id.to_i.to_s}", "style"=>"display:none"}
+        %fieldset
+          %legend Entregas
+          .row
+            .col-md-3
+              %label Codigo
+              .input-group.col-md-11
+                %input#code.form-control
+                %i.icon-append.fa.fa-superscript        
+            .col-md-3
+              %label Monto
+              .input-group.col-md-11
+                %input#montoe.form-control{onkeypress: "return isNumber(event);"}
+                %i.icon-append.fa.fa-superscript
+            .col-md-3
+              %label Fecha de Entrega
+              .input-group.col-md-11
+                %input#fechae.form-control{type: "date", as: :date}
+            .col-md-3
+              %label Proveedor
+              .input-group.col-md-11
+                %select.form-control#proveedore
+                  %option{:value => nil, :selected => true} Seleccionar proveedor
+                  - @proveedor.each do |ent|
+                    %option{:value => "#{ent.id}"}
+                      = ent.name  
+                %i.icon-append.fa.fa-group
+          %br        
+          .row
+            .col-md-3
+              %label Concepto
+              .input-group.col-md-11
+                %input#conceptoe.form-control
+                %i.icon-append.fa.fa-book
+            .col-md-3
+              %label Factura
+              .input-group.col-md-11
+                %input#factura.form-control
+                %i.icon-append.fa.fa-superscript
+            .col-md-3
+              %label Fecha de Factura
+              .input-group.col-md-11
+                %input#fechafae.form-control{type: "date", as: :date}
+            .col-md-3
+              %label Monto de Factura
+              .input-group.col-md-11
+                %input#montofae.form-control{onkeypress: "return isNumber(event);"}
+                %i.icon-append.fa.fa-superscript
+          %br        
+          .row
+            .col-md-3
+              %label Detracción de Factura
+              .input-group.col-md-11
+                %input#detraccionfae.form-control{onkeypress: "return isNumber(event);"}
+                %i.icon-append.fa.fa-superscript
+            .col-md-3
+              %label A cuenta
+              .input-group.col-md-11
+                %input#acuentafae.form-control{onkeypress: "return isNumber(event);"}
+                %i.icon-append.fa.fa-superscript
+            .col-md-3
+              %label Comision IGV
+              .input-group.col-md-11
+                %input#igvfae.form-control{onkeypress: "return isNumber(event);"}
+                %i.icon-append.fa.fa-superscript
+            .col-md-3{"style"=>" margin-top: 15px; "}
+              %a(href="javascript:add_item();" id="btn-add-article" class="btn btn-success" role="button")
+                Agregar Entrega
+          %br
+          %br
+          %table.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+            %thead
+              %tr
+                %th.smart-form Codigo
+                %th.smart-form Monto
+                %th.smart-form Fecha de Entrega
+                %th.smart-form Proveedor
+                %th.smart-form Concepto
+                %th.smart-form Factura
+                %th.smart-form Fecha de Factura
+                %th.smart-form Monto de Factura
+                %th.smart-form Detraccion
+                %th.smart-form Pago a Cuenta
+                %th.smart-form Comision IGV
+                %th.smart-form Devolucion neta
+                %th.smart-form Saldo
+                %th{:style => "width: 1%;"} Eliminar
+            %tbody(id="items_table")
+              - @gdg.diverse_expenses_of_management_details.each do |gdg|
+                %tr
+                  %td(style="display:none")
+                    = hidden_field_tag 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes][' + @reg_n.to_s + '][id]', gdg.id.to_i.to_s
+                  %td= gdg.code.to_s
+                  %td= gdg.delivered_date.to_date.strftime("%d-%m-%Y").to_s
+                  %td= number_to_currency(gdg.amount.to_f, unit: 'S/. ', precision: 2)
+                  %td= Entity.find(gdg.entity_id).name.to_s
+                  %td= gdg.bill_concept.to_s
+                  %td= gdg.bill.to_s
+                  %td= gdg.bill_date.to_date.strftime("%d-%m-%Y").to_s
+                  %td= number_to_currency(gdg.bill_amount.to_f, unit: 'S/. ', precision: 2)
+                  %td= number_to_currency(gdg.bill_detraction.to_f, unit: 'S/. ', precision: 2)
+                  %td= number_to_currency(gdg.bill_to_account.to_f, unit: 'S/. ', precision: 2)
+                  %td= number_to_currency(gdg.igv_commission.to_f, unit: 'S/. ', precision: 2)
+                  %td= number_to_currency(gdg.net_return.to_f, unit: 'S/. ', precision: 2)
+                  %td= number_to_currency(gdg.balance.to_f, unit: 'S/. ', precision: 2)
+                  %td.delete-item
+                    %label.checkbox
+                      = check_box 'diverse_expenses_of_management[diverse_expenses_of_management_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                      %i
+                  - @reg_n += 1
+             
+        %br
+        %br
+        %footer
+          %button.btn.btn-primary#details{type: "button", "style"=>"float:right;"}
+            %i.fa.fa-save
+              Guardar
+          %button.btn.btn-info#show{"data-dismiss" => "modal", type: "button"}
+            Salir  
+
+  :javascript
+    $(document).ready(function () {
+      $('select').select2({width:'100%'});
+      submit_form($('form#upload_deregister'))
+    });
+
+    function submit_form(form_element){
+      form_element.ajaxForm({
+        beforeSubmit: function() {
+          form_element.validate({
+            // Rules for form validation
+            rules : {
+            },
+
+            // Messages for form validation
+            messages : {
+            },
+
+            // Do not change code below
+            errorPlacement : function(error, element) {
+              error.insertAfter(element.parent());
+            }
+          });
+          // Remove all Help-inLine
+          $(".help-inline").remove();
+          // Client Valid
+          return form_element.valid();
+        },
+        success: function (data){
+          $(".help-inline").parent().addClass("state-error");
+        },
+        error: function(xhr, status, error) {
+          console.log(error);
+        }
+      })
+    }
+
+    $("#details").click(function(e) {
+      $('form#upload_deregister').submit();
+      data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
+      load_modal_ajax('#{general_expenses_diverse_expenses_of_managements_path}', 'gdg', 'gdgs', data2, null, 'GET');
+      $.smallBox({
+        title : "Exito",
+        content : "<i class='fa fa-clock-o'></i> <i>Se actualizó el gasto de gestion</i>",
+        color : "#659265",
+        iconSmall : "fa fa-check fa-2x fadeInRight animated",
+        timeout : 4000
+      });
+    });
+
+    $("#show").click(function() {
+      data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
+      load_modal_ajax('#{general_expenses_diverse_expenses_of_managements_path}', 'gdg', 'gdge', data2, null, 'GET');
+    });
+
+    function isNumber(evt) {
+      evt = (evt) ? evt : window.event;
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+          return false;
+      }
+      return true;
+    }
+
+    function add_item(){
+      var montoe = $("#montoe").val();
+      var fechae= $("#fechae").val();
+      var proveedore = $("#proveedore").val();
+      var conceptoe = $("#conceptoe").val();
+      var fechafae = $("#fechafae").val();
+      var montofae = $("#montofae").val();
+      var detraccionfae = $("#detraccionfae").val()
+      var acuentafae = $("#acuentafae").val();
+      var igvfae = $("#igvfae").val();
+      var code = $("#code").val();
+      var factura = $("#factura").val();
+      var gdg = "#{@gdg.id.to_i.to_s}";
+      console.log($('#gdg').val());
+      console.log(gdg);
+
+      if(montoe != "" && fechae != "" && proveedore != "" && conceptoe != "" && fechafae != "" && montofae != "" && detraccionfae != "" && acuentafae != "" && igvfae != "" && code !="" && factura!=""){
+        str_item = {authenticity_token: "#{form_authenticity_token}", montoe: montoe, fechae: fechae, proveedore: proveedore, conceptoe: conceptoe, fechafae: fechafae, montofae: montofae, detraccionfae: detraccionfae, acuentafae: acuentafae, igvfae: igvfae, gdg: gdg , code:code, factura:factura};
+        append_url_ajax('#{add_deliveries_general_expenses_diverse_expenses_of_managements_path}', 'items_table', str_item, 0, 'POST');
+      }else{
+        $.smallBox({
+          title : "Aviso",
+          content : "<i class='fa fa-clock-o'></i> <i>Llene todos los campos para poder crear la entrega</i>",
+          color : "#C46A69",
+          iconSmall : "fa fa-times fa-2x fadeInRight animated",
+          timeout : 4000
+        });
+      }
+    }
+
+    function delete_item(code){
+      $("#tr" + code).remove();
+    }
