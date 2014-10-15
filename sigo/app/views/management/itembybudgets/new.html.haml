@@ -17,33 +17,39 @@
               %fieldset
                 .row
                   %section.col.col-10
-                    %label.label Titulo
-                    %label.input{for: "subbudgetdetail"}
-                      %i.icon-append.fa.fa-user
-                      = f.input :subbudgetdetail, placeholder: "Titulo", input_html: { class: 'form-control' }, label: false
+                    %label.label Presupuesto
+                    %label.input{for: "budget_code"}
+                      = f.collection_select :budget_code, Budget.where( cost_center_id: @cost_center_id ), :cod_budget, :cod_with_description, {:prompt => 'Seleccionar Presupuesto ...'}, { class: 'form-control' }
                 .row
                   %section.col.col-10
                     %label.label Orden
                     %label.input{for: "order"}
                       %i.icon-append.fa.fa-user
                       = f.input :order, placeholder: "Orden", input_html: { class: 'form-control' }, label: false
-                .row
-                  %section.col.col-10
-                    %label.label Presupuesto
-                    %label.input{for: "budget_id"}
-                      = f.collection_select :budget_id, Budget.where( cost_center_id: @cost_center_id ), :id, :cod_with_description, {:prompt => 'Seleccionar Presupuesto ...'}, { class: 'form-control' }
+                / .row
+                /   %section.col.col-10
+                /     %label.label Presupuesto
+                /     %label.input{for: "budget_id"}
+                /       = f.collection_select :budget_id, Budget.where( cost_center_id: @cost_center_id ), :id, :cod_with_description, {:prompt => 'Seleccionar Presupuesto ...'}, { class: 'form-control' }
+                /       =# f.select :budget_id, Budget.where( cost_center_id: @cost_center_id ).map{ |c| ["#{c.cod_budget}_#{c.description}", c.id] }
                 .row
                   %section.col.col-10
                     %label.label Item
                     %label.input{for: "item_id"}
                       /= f.collection_select :item_id, Item.where(budget_code: '0403025').group(:item_code).order(:item_code), :id, :code_with_name, {:prompt => 'Seleccionar Item ...'}, { class: 'form-control' }
-                      = f.collection_select :item_id, Item.all.group(:item_code).order(:item_code), :id, :code_with_name, {:prompt => 'Seleccionar Item ...'}, { class: 'form-control' }
+                      = f.collection_select :item_id, Item.where( "item_code like ?", '____________' ).group(:item_code).order(:item_code), :id, :code_with_name, {:prompt => 'Seleccionar Item ...'}, { class: 'form-control' }
+                .row
+                  %section.col.col-10
+                    %label.label Titulo
+                    %label.input{for: "subbudgetdetail"}
+                      %i.icon-append.fa.fa-user
+                      = f.input :subbudgetdetail, placeholder: "Titulo", input_html: { class: 'form-control' }, label: false
                 .row
                   %section.col.col-10
                     %label.label Metrado
                     %label.input{for: "measured"}
                       %i.icon-append.fa.fa-superscript
-                      = f.input :measured, placeholder: "Metrado", input_html: { class: 'form-control' }, label: false
+                      = f.input :measured, placeholder: "Vacio si es de nivel superior", input_html: { class: 'form-control' }, label: false
                 .row
                   %section.col.col-10
                     = f.input :budget_id, :as => :hidden
@@ -56,3 +62,12 @@
   %a.btn.btn-sm.btn-primary#backlist-companies{:href=>"javascript: load_url_ondiv('"+get_budget_by_project_management_budgets_path().to_s+"', 'right-area');"}
     %i.fa.fa-arrow-left
     Retornar al listado de partidas
+
+:javascript
+  $('#itembybudget_item_id').change(function() {
+    $( "select option:selected" ).each(function() {
+      item_name = $( this ).text().substring(13);
+    });
+
+    $('#itembybudget_subbudgetdetail').val(item_name);
+  });

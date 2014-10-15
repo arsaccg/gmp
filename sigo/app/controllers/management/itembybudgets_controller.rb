@@ -23,9 +23,10 @@ class Management::ItembybudgetsController < ApplicationController
   def create
     @itembybudget = Itembybudget.new(itembybudget_parameters)
     item = Item.find(@itembybudget.item_id)
-    budget = Budget.find(@itembybudget.budget_id)
+    budget = Budget.where(cod_budget: @itembybudget.budget_code).first
+    # budget = Budget.find(@itembybudget.budget_id)
     @itembybudget.item_code = item.item_code
-    #@itembybudget.subbudgetdetail = item.description
+    @itembybudget.budget_id = budget.id
     @itembybudget.subbudget_code = budget.subbudget_code
     @itembybudget.budget_code = budget.cod_budget[0, 6]
 
@@ -41,6 +42,6 @@ class Management::ItembybudgetsController < ApplicationController
 
   private
   def itembybudget_parameters
-    params.require(:itembybudget).permit(:budget_id, :item_id, :subbudgetdetail, :order, :measured)
+    params.require(:itembybudget).permit(:budget_id, :budget_code, :item_id, :subbudgetdetail, :order, :measured)
   end
 end

@@ -12,7 +12,9 @@ class GeneralExpenses::DiverseExpensesOfManagementsController < ApplicationContr
   def show
     flash[:error] = nil
     @gdg = DiverseExpensesOfManagement.find(params[:id])
-    render :show
+    @proveedor = TypeEntity.find_by_preffix('P').entities
+    @reg_n = ((Time.now.to_f)*100).to_i
+    render layout: false
   end
 
   def new
@@ -44,8 +46,6 @@ class GeneralExpenses::DiverseExpensesOfManagementsController < ApplicationContr
   def edit
     @gdg = DiverseExpensesOfManagement.find(params[:id])
     @action = 'edit'
-    @proveedor = TypeEntity.find_by_preffix('P').entities
-    @reg_n = ((Time.now.to_f)*100).to_i
     render layout: false
   end
 
@@ -59,7 +59,7 @@ class GeneralExpenses::DiverseExpensesOfManagementsController < ApplicationContr
       end
       ActiveRecord::Base.connection.execute("UPDATE diverse_expenses_of_managements SET total_delivered='"+@total.to_f.to_s+"' WHERE id="+gdg.id.to_s)
       flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index
+      redirect_to :action => :index, :cc_id=>gdg.cost_center_id
     else
       gdg.errors.messages.each do |attribute, error|
         flash[:error] =  flash[:error].to_s + error.to_s + "  "

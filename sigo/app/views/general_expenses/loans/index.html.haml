@@ -1,0 +1,47 @@
+.modal-dialog{ style: "width: 750px;" }
+	.modal-content
+		.modal-header
+			%header
+				%h2
+					%span.widget-icon
+						%i.fa.fa-pencil-square-o.fa-fw 
+					%strong Lista de Préstamos
+		.modal-body
+			%h2 PRESTO
+			%table.table.table-striped.table-bordered.table-hover.smart-form
+				%thead
+					%tr
+						%th Beneficiario
+						%th Total
+						%th Devuelto
+						%th Pendiente
+				%tbody
+					%tr
+						%td 
+						%td 
+						%td 
+						%td 		
+			%br
+			%h2 LE PRESTARON
+			%table.table.table-striped.table-bordered.table-hover.smart-form
+				%thead
+					%tr
+						%th Beneficiario
+						%th Total
+						%th Devuelto
+						%th Pendiente
+				%tbody
+					%tr
+						%td 
+						%td 
+						%td 
+						%td 				
+
+			%footer
+				%br
+				%button.btn.btn-primary.btn-mini
+					%span{"style"=>"width=20px;text-align:center"}
+						%a{href: 'javascript:void(0);', :onclick => 'loan_new('+"#{@cc.id.to_s}"+');', "style"=>" color: white; "}
+							Agregar Préstamo
+				%button.btn.btn-info#new{"data-dismiss" => "modal", type: "button","style"=>"float:right;"}
+					Salir      

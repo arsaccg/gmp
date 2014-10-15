@@ -1,0 +1,157 @@
+.modal-dialog{ style: "width: 750px;" }
+	.modal-content
+		.modal-header
+			%header
+				%h2
+					%span.widget-icon
+						%i.fa.fa-pencil-square-o.fa-fw 
+					%strong Formulario del Préstamo
+		.modal-body
+			%fieldset
+				%input#cc{ :value => "#{@cc.id.to_i.to_s}", "style"=>"display:none"}
+				.row
+					%section.col-md-5
+						%label Beneficiario
+					%section.col-md-5
+						%select#beneficiary.select2.form-control{:name => "general_expense[phase_id]"}
+							%option{:value => nil} Seleccione un Beneficiario
+							- @costcenters.each do |ph|
+								%option{:value => "#{ph.id}"}
+									= ph.name
+				.row
+					%section.col-md-5
+						%label Entregado a
+					%section.col-md-5
+						.input-group
+							%input#person.form-control{placeholder: "Persona"}
+							%span.input-group-addon
+								%i.icon-append.fa.fa-user
+				.row
+					%section.col-md-5
+						%label Fecha
+					%section.col-md-5
+						.input-group
+							%input#loan_date.form-control{placeholder: ""}
+							%span.input-group-addon
+								%i.icon-append.fa.fa-user
+				.row
+					%section.col-md-5
+						%label Forma de Préstamo
+					%section.col-md-5
+						.input-group
+							%input#loan_type.form-control{placeholder: ""}
+							%span.input-group-addon
+								%i.icon-append.fa.fa-user
+				.row
+					%section.col-md-5
+						%label Monto
+					%section.col-md-5
+						.input-group
+							%input#amount.form-control{placeholder: ""}
+							%span.input-group-addon
+								%i.icon-append.fa.fa-user
+				.row
+					%section.col-md-5
+						%label Motivo
+					%section.col-md-5
+						.input-group
+							%input#description.form-control{placeholder: ""}
+							%span.input-group-addon
+								%i.icon-append.fa.fa-user
+				.row
+					%section.col-md-5
+						%label Forma de Devolución
+					%section.col-md-5
+						.input-group
+							%input#refund_type.form-control{placeholder: ""}
+							%span.input-group-addon
+								%i.icon-append.fa.fa-user
+				.row
+					%section.col-md-5
+						%label N° Cheque
+					%section.col-md-5
+						.input-group
+							%input#check_number.form-control{placeholder: ""}
+							%span.input-group-addon
+								%i.icon-append.fa.fa-user
+				.row
+					%section.col-md-5
+						%label Fecha de Cheque
+					%section.col-md-5
+						.input-group
+							%input#check_date.form-control{placeholder: ""}
+							%span.input-group-addon
+								%i.icon-append.fa.fa-user
+				.row
+					%section.col-md-5
+						%label Estado
+					%section.col-md-5
+						.input-group
+							%input#state.form-control{placeholder: ""}
+							%span.input-group-addon
+								%i.icon-append.fa.fa-user
+				.row
+					%section.col-md-5
+						%label Fecha de Devolución
+					%section.col-md-5
+						.input-group
+							%input#refund_date.form-control{placeholder: ""}
+							%span.input-group-addon
+								%i.icon-append.fa.fa-user
+			%footer
+				%button.btn.btn-primary#smart-mod-eg1{type: "button", "style"=>"float:right;"}
+					%i.fa.fa-save
+						Guardar
+				%button.btn.btn-info#new{"data-dismiss" => "modal", type: "button"}
+					Salir      
+
+:javascript
+	$("#smart-mod-eg1").click(function(e) {
+		if($('#beneficiary').val()!='' && $('#person').val()!= '' && $('#loan_date').val()!= '' && $('#loan_type').val()!=''  && $('#amount').val()!=''  && $('#description').val()!=''  && $('#refund_type').val()!='' && $('#state').val()!=''  && $('#refund_date').val()!=''){
+			data = { authenticity_token: "#{form_authenticity_token}", cost_center_beneficiary_id: $('#beneficiary').val(), person: $('#person').val(), amount: $('#amount').val(), loan_date: $('#loan_date').val(), loan_type: $('#loan_type').val(), cost_center_lender_id: $('#cc').val(), description: $('#description').val(), refund_type: $('#refund_type').val(), check_number: $('#check_number').val(), check_date: $('#check_date').val(), state: $('#state').val(), refund_date: $('#refund_date').val()};
+			data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
+			load_url_ajax('#{create_loan_general_expenses_loans_path}', 'loan_new', data, null, 'POST');
+			load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_new', data2, null, 'GET');
+			$.smallBox({
+				title : "Exito",
+				content : "<i class='fa fa-clock-o'></i> <i>Se creó el préstamo</i>",
+				color : "#659265",
+				iconSmall : "fa fa-check fa-2x fadeInRight animated",
+				timeout : 4000
+			});
+		}else{
+			$.smallBox({
+				title : "Aviso",
+				content : "<i class='fa fa-clock-o'></i> <i>Llene todos los campos para poder crear el gasto</i>",
+				color : "#C46A69",
+				iconSmall : "fa fa-times fa-2x fadeInRight animated",
+				timeout : 4000
+			});
+		}
+	});
+
+	function minmax(value, min, max){
+		if(parseInt(value) < min || isNaN(value)){ 
+			return min; 
+		}else{
+			if(parseInt(value) > max){
+				return max; 
+			}else{
+				return value;
+			}
+		}
+	}
+
+	function isNumber(evt) {
+		evt = (evt) ? evt : window.event;
+		var charCode = (evt.which) ? evt.which : evt.keyCode;
+		if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+				return false;
+		}
+		return true;
+	}
+
+	$("#new").click(function() {
+		data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
+		load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_new', data2, null, 'GET');
+	});
