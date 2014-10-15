@@ -16,11 +16,12 @@
 						%th Devuelto
 						%th Pendiente
 				%tbody
-					%tr
-						%td 
-						%td 
-						%td 
-						%td 		
+					-@presto.each do |presto|
+						%tr
+							%td=CostCenter.find(presto.cost_center_beneficiary_id).name
+							%td=presto.amount
+							%td 
+							%td     
 			%br
 			%h2 LE PRESTARON
 			%table.table.table-striped.table-bordered.table-hover.smart-form
@@ -31,11 +32,13 @@
 						%th Devuelto
 						%th Pendiente
 				%tbody
-					%tr
-						%td 
-						%td 
-						%td 
-						%td 				
+					-@prestaron.each do |prestaron|
+						-if !prestaron.nil?
+							%tr
+								%td
+								%td=prestaron.amount
+								%td 
+								%td        
 
 			%footer
 				%br
