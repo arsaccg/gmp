@@ -2,6 +2,7 @@ load 'socket_connector/socket_connector.rb'
 
 class Management::WbsitemsController < ApplicationController
   layout "dashboard"
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 
   include SOCKET_CONNECTOR
   

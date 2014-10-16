@@ -2,7 +2,7 @@ class GeneralExpenses::LoansController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def new
-    @costcenters = CostCenter.all
+    @costcenters = CostCenter.where('id not in (?)', params[:cc_id])
     @cc = CostCenter.find(get_company_cost_center('cost_center')) rescue nil
     @loan = Loan.new
     render layout: false

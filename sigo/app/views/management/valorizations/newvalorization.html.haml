@@ -13,7 +13,7 @@
               %i.fa.fa-eye
             %h2 Valorizacion
           .widget-body
-            =simple_form_for([:management, @valorization], html: {class: "form-horizontal smart-form", autocomplete: 'off', :id => "v_form"}) do |f|
+            =simple_form_for([:management, @valorization], html: {class: "form-horizontal smart-form", autocomplete: 'off', :id => "new_valorization"}) do |f|
               %fieldset
                 .row.form-inline
                   %section.col.col-10
@@ -39,7 +39,7 @@
                     = f.input :budget_id, :as => :hidden
 
               %footer
-                %a{:href=>"javascript:post_to_url('" + management_valorizations_path.to_s + "', 'new_valorization', 'right-area');", :class=>"btn btn-success"}
+                %a{:href=>"javascript:post_to_url('" + management_valorizations_path.to_s + "?authenticity_token=#{form_authenticity_token}', 'new_valorization', 'right-area');", :class=>"btn btn-success"}
                   %i.fa.fa-save
                   Guardar Valorizacion
 
