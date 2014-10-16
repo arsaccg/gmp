@@ -50,6 +50,16 @@ class GeneralExpenses::LoansController < ApplicationController
     end
   end
 
+  def display_workers
+    word = params[:q]
+    workers_hash = Array.new
+    workers = Loan.getWorkers(word)
+    workers.each do |art|
+      workers_hash << {'name' => art[1],"paternal_surname"=> art[2],"maternal_surname"=> art[3]}
+    end
+    render json: {:workers => workers_hash}
+  end
+
   def edit
     @reg_n=((Time.now.to_f)*100).to_i
     @loan = Loan.find(params[:id])
@@ -65,8 +75,14 @@ class GeneralExpenses::LoansController < ApplicationController
   end
 
   def index
-    @cc = CostCenter.find(get_company_cost_center('cost_center'))
+    @cc = CostCenter.find(params[:cc_id])
+    presto = ActiveRecord::Base.connection.execute("SELECT cost_center_lender_id,cost_center_beneficiary_id,SUM(amount),state
+FROM  `loans` 
+WHERE  `cost_center_lender_id` ="+@cc.id.to_s+" GROUP BY cost_center_beneficiary_id,state")
+
+
     @presto = Loan.where('cost_center_lender_id=?', @cc.id)
+
     @prestaron = Loan.where('cost_center_beneficiary_id=?', @cc.id)
     render layout: false
   end

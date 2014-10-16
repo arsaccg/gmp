@@ -671,6 +671,7 @@ ArsacLogistica::Application.routes.draw do
     resources :loans do
       collection do
         post 'create_loan'
+        post 'display_workers'
       end
     end
 
