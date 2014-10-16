@@ -1,4 +1,4 @@
-.modal-dialog{ style: "width: 750px;" }
+.modal-dialog#modalid{ style: "width: 750px;" }
 	.modal-content
 		.modal-header
 			%header
@@ -22,10 +22,7 @@
 					%section.col-md-5
 						%label Entregado a
 					%section.col-md-5
-						.input-group
-							%input#person.form-control{placeholder: "Persona"}
-							%span.input-group-addon
-								%i.icon-append.fa.fa-user
+						%input#worker-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'worker_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
 				.row{"style"=>"margin-bottom:3%;"}
 					%section.col-md-5
 						%label Fecha
@@ -68,20 +65,20 @@
 							%option{:value => "1"} Cheque
 							%option{:value => "2"} Transferencia
 							%option{:value => "3"} Efectivo
-				.row{"style"=>"margin-bottom:3%;"}
+				.row#checkn{"style"=>"margin-bottom:3%;display:none;"}
 					%section.col-md-5
 						%label N° Cheque
 					%section.col-md-5
 						.input-group
-							%input#check_number.form-control{placeholder: ""}
+							%input#check_number.form-control
 							%span.input-group-addon
 								%i.icon-append.fa.fa-bar-chart
-				.row{"style"=>"margin-bottom:3%;"}
+				.row#checkd{"style"=>"margin-bottom:3%;display:none;"}
 					%section.col-md-5
 						%label Fecha de Cheque
 					%section.col-md-5
 						.input-group
-							%input#check_date.form-control{{as: :string,type: "date"}}
+							%input#check_date.form-control{as: :string,type: "date"}
 							%span.input-group-addon
 								%i.icon-append.fa.fa-calendar
 				.row{"style"=>"margin-bottom:3%;"}
@@ -93,7 +90,7 @@
 							%option{:value => "1"} Pendiente
 							%option{:value => "2"} Devuelto
 
-				.row{"style"=>"margin-bottom:3%;"}
+				.row#devdate{"style"=>"margin-bottom:3%;display:none;"}
 					%section.col-md-5
 						%label Fecha de Devolución
 					%section.col-md-5
@@ -109,9 +106,64 @@
 					Salir      
 
 :javascript
+
+$('#modalid').on('shown.bs.modal', function() {
+		$(document).off('focusin.modal');
+});
+
+	function isNumber(n) {
+		return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+	$(document).ready(function (){
+
+		$('#loan_new').attr("tabindex","");
+
+		$('#worker-select').select2({
+			placeholder: "Buscar Trabajadores...",
+			minimumInputLength: 3,
+			ajax: {
+				url: "#{display_workers_general_expenses_loans_path}",
+				dataType: 'json',
+				type: 'POST',
+				quietMillis: 100,
+				data: function(term, page){
+					return {
+						q: term,
+						page: page,
+						authenticity_token: "#{form_authenticity_token}"
+					};
+				},
+				results: function(data, page){
+					return {results: data.workers};
+				}
+			},
+			formatResult: function(node){ return '<div>' + node.name + ' ' + node.paternal_surname + ' ' + node.maternal_surname + '</div>' },
+			formatSelection: function(node){ return (node.name + ' ' + node.paternal_surname + ' ' + node.maternal_surname) },
+			escapeMarkup: function (m) { return m; }
+		});
+
+			$("#refund_type").change(function() {
+					// foo is the id of the other select box 
+					if ($(this).val() == "1") {
+							$("#checkn").show();
+							$("#checkd").show();
+					}else{
+							$("#checkn").hide();
+							$("#checkd").hide();
+					} 
+			});
+			$("#state").change(function() {
+					// foo is the id of the other select box 
+					if ($(this).val() == "2") {
+							$("#devdate").show();
+					}else{
+							$("#devdate").hide();
+					} 
+			});
+	});
 	$("#smart-mod-eg1").click(function(e) {
-		if($('#beneficiary').val()!='' && $('#person').val()!= '' && $('#loan_date').val()!= '' && $('#loan_type').val()!=''  && $('#amount').val()!=''  && $('#description').val()!=''  && $('#refund_type').val()!='' && $('#state').val()!=''  && $('#refund_date').val()!=''){
-			data = { authenticity_token: "#{form_authenticity_token}", cost_center_beneficiary_id: $('#beneficiary').val(), person: $('#person').val(), amount: $('#amount').val(), loan_date: $('#loan_date').val(), loan_type: $('#loan_type').val(), cost_center_lender_id: $('#cc').val(), description: $('#description').val(), refund_type: $('#refund_type').val(), check_number: $('#check_number').val(), check_date: $('#check_date').val(), state: $('#state').val(), refund_date: $('#refund_date').val()};
+		if($('#beneficiary').val()!='' && $('#person').val()!= '' && $('#loan_date').val()!= '' && $('#loan_type').val()!=''  && $('#amount').val()!='' && !isNaN($('#amount').val())  && $('#description').val()!=''  && $('#refund_type').val()!='' && $('#state').val()!=''  && $('#refund_date').val()!=''){
+			data = { authenticity_token: "#{form_authenticity_token}", cost_center_beneficiary_id: $('#beneficiary').val(), person: $('#worker-select').val(), amount: $('#amount').val(), loan_date: $('#loan_date').val(), loan_type: $('#loan_type').val(), cost_center_lender_id: $('#cc').val(), description: $('#description').val(), refund_type: $('#refund_type').val(), check_number: $('#check_number').val(), check_date: $('#check_date').val(), state: $('#state').val(), refund_date: $('#refund_date').val()};
 			data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
 			load_url_ajax('#{create_loan_general_expenses_loans_path}', 'loan_new', data, null, 'POST');
 			load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_new', data2, null, 'GET');
@@ -125,7 +177,7 @@
 		}else{
 			$.smallBox({
 				title : "Aviso",
-				content : "<i class='fa fa-clock-o'></i> <i>Llene todos los campos para poder crear el gasto</i>",
+				content : "<i class='fa fa-clock-o'></i> <i>Ingrese los datos correctamente.</i>",
 				color : "#C46A69",
 				iconSmall : "fa fa-times fa-2x fadeInRight animated",
 				timeout : 4000
@@ -158,3 +210,4 @@
 		data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
 		load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_new', data2, null, 'GET');
 	});
+

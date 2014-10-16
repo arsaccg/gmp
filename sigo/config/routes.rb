@@ -589,6 +589,8 @@ ArsacLogistica::Application.routes.draw do
     resources :provision_articles do
       collection do
         post 'puts_details_in_provision'
+        post 'add_modal_extra_operations'
+        post 'add_more_row_form_extra_op'        
       end
     end
     resources :account_accountants do
@@ -671,6 +673,7 @@ ArsacLogistica::Application.routes.draw do
     resources :loans do
       collection do
         post 'create_loan'
+        post 'display_workers'
       end
     end
 

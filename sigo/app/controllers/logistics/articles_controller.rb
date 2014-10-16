@@ -206,7 +206,7 @@ class Logistics::ArticlesController < ApplicationController
         WHERE a.type_of_article_id = toa.id 
         AND a.category_id = c.id 
         AND uom.id = a.unit_of_measurement_id 
-        AND a.name LIKE '%#{keyword}%'
+        AND (a.name LIKE '%#{keyword}%' OR a.code LIKE '%#{keyword}%')
         ORDER BY a.id ASC
         LIMIT #{display_length}
         OFFSET #{pager_number}"
@@ -240,7 +240,7 @@ class Logistics::ArticlesController < ApplicationController
         WHERE a.type_of_article_id = toa.id 
         AND a.category_id = c.id 
         AND uom.id = a.unit_of_measurement_id 
-        AND a.name LIKE '%#{keyword}%'
+        AND (a.name LIKE '%#{keyword}%' OR a.code LIKE '%#{keyword}%')
         ORDER BY a.id ASC"
       )
     else

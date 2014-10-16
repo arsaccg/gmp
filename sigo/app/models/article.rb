@@ -46,7 +46,7 @@ class Article < ActiveRecord::Base
         FROM articles_from_cost_center_" + cost_center_id.to_s + " especific, type_of_articles toa, unit_of_measurements uom 
         WHERE especific.unit_of_measurement_id = uom.id 
         AND especific.type_of_article_id = toa.id
-        AND especific.name LIKE '%" + keyword + "%' OR especific.code LIKE '%" + keyword + "%'
+        AND (especific.name LIKE '%" + keyword + "%' OR especific.code LIKE '%" + keyword + "%')
         GROUP BY 2
         LIMIT " + display_length + "
         OFFSET " + pager_number + "
@@ -247,7 +247,7 @@ class Article < ActiveRecord::Base
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT DISTINCT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol
       FROM articles a, unit_of_measurements u 
-      WHERE (a.code LIKE '04%' || a.code LIKE '03%' || a.code LIKE '02%')
+      WHERE (a.code LIKE '05%' || a.code LIKE '04%' || a.code LIKE '03%' || a.code LIKE '02%')
       AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) 
       AND a.unit_of_measurement_id = u.id
     ")
