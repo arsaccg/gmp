@@ -89,10 +89,16 @@ WHERE  `cost_center_lender_id` ="+@cc.id.to_s+" GROUP BY cost_center_beneficiary
 
   def show
     @type = params[:type]
-    @cost_center1 = params[:cc1]
-    @cost_center2 = params[:cc2]
-    if @type == "presto"
-      @loan = Loan.where("cost_center_lender_id = ? AND cost_center_beneficiary_id = ?",@cost_center1, @cost_center2)
+    @cost_center1 = CostCenter.find(params[:cc1])
+    @cost_center2 = CostCenter.find(params[:cc2])
+    @loan = Loan.where("cost_center_lender_id = ? AND cost_center_beneficiary_id = ?",@cost_center1.id, @cost_center2.id)
+    @total = 0
+    @devuelto = 0
+    @loan.each do |loan|
+      @total+= loan.amount
+      if loan.state == 2
+        @devuelto += loan.amount
+      end
     end
     render layout: false
   end

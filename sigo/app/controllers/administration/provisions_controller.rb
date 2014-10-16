@@ -71,10 +71,17 @@ class Administration::ProvisionsController < ApplicationController
   end
 
   def update
-    provision = Provision.find(params[:id])
-    provision.update_attributes(provisions_parameters)
-    flash[:notice] = "Se ha actualizado correctamente los datos."
-    redirect_to :action => :index
+    if params[:provision]['order_id'] != nil
+      provision = Provision.find(params[:id])
+      provision.update_attributes(provisions_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index
+    else
+      provision = Provision.find(params[:id])
+      provision.update_attributes(provision_direct_purchase_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :controller => :provision_articles, :action => :index
+    end
   rescue ActiveRecord::StaleObjectError
     provision.reload
     flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
@@ -304,7 +311,17 @@ class Administration::ProvisionsController < ApplicationController
         :discount_before,
         :unit_price_igv,
         :description,
-        :_destroy
+        :_destroy,
+        provision_direct_extra_calculations_attributes: [
+          :id,
+          :provision_direct_purchase_detail_id,
+          :extra_calculation_id,
+          :value,
+          :apply,
+          :operation,
+          :type,
+          :_destroy
+        ]
       ]
     )
   end

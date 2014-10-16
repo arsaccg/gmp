@@ -85,34 +85,197 @@
                   %div(class="col-lg-3")
                     %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
                       Agregar Insumo
+          .row{:style=>"overflow-x:scroll"}
+            %fieldset{ :style => "margin-top: 20px; margin-bottom: 20px;" }
+              %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary-direct-provisions{:style => "font-size: 12px;", 'aria-describedby' => "data-table_info"}
+                %thead
+                  %tr
+                    %th Nombre del Artículo
+                    %th Unidad de Medida
+                    %th Cuenta Contable
+                    %th Sector
+                    %th Fase
+                    %th Cantidad
+                    %th Precio Unitario
+                    %th Total antes de IGV
+                    %th ¿Aplica IGV?
+                    %th Total después de IGV
+                    %th Operaciones Adicionales
+                    %th Descripción
+                    %th Acción
+                %tbody{:id => "provisions_direct_items_table"}
+                  - array_values = Array.new
+                  - @provision.provision_direct_purchase_details.each do |pod|
+                    - array_values << @reg_n.to_s
+                    %tr{id: "tr-" + @reg_n.to_s}
+                      %td{:style => "display:none", :class => "provision_article-id"}
+                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_id]', pod.article_id
+                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][id]', pod.id.to_i rescue nil
+                      %td= Article.find(pod.article_id).name.to_s
+                      %td= Article.find(pod.article_id).unit_of_measurement.symbol.to_s
+                      %td.account-accountant
+                        %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :required => true, title:'No puede dejar este campo vacio'}
+                          %option{:value => nil, :disabled => true} Seleccionar cuenta contable
+                          - @account_accountants.each do |account_accountant|
+                            %option{:value => "#{account_accountant.id}", :selected=>"#{account_accountant.id}"=="#{pod.account_accountant_id}"}
+                              = '(' + account_accountant.code + ') ' + account_accountant.name
+                      %td.sector
+                        %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
+                          %option{:value => nil, :disabled => true} Seleccionar Sector
+                          - @sectors.each do |sector|
+                            %optgroup{:label => "#{sector.name}"}
+                              -Sector.getSubSectors(sector.code).each do |subsector|
+                                %option{:value => "#{subsector.id}", :selected=>"#{subsector.id}"=="#{pod.sector_id}"}
+                                  = subsector.name
+                      %td.phase
+                        %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
+                          %option{:value => nil, :disabled => true} Seleccionar Fase
+                          - @phases.each do |phase|
+                            %option{:value => "#{phase.id}", :selected=>"#{phase.id}"=="#{pod.phase_id}"}
+                              = phase.code + " " + phase.name
 
-          %fieldset{ :style => "margin-top: 20px; margin-bottom: 20px;" }
-            %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary-direct-provisions{:style => "font-size: 12px;", 'aria-describedby' => "data-table_info"}
-              %thead
-                %tr
-                  %th Nombre del Artículo
-                  %th Unidad de Medida
-                  %th Cuenta Contable
-                  %th Sector
-                  %th Fase
-                  %th Cantidad
-                  %th Precio Unitario
-                  %th Total antes de IGV
-                  %th ¿Aplica IGV?
-                  %th Total después de IGV
-                  %th Operaciones Adicionales
-                  %th Descripción
-                  %th Acción
-              %tbody{:id => "provisions_direct_items_table"}
+                      %td.amount
+                        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"
+
+                      %td.unit-price
+                        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', pod.price, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
+
+                      %td.discount-before{:style => "display:none", :class => "provision_discount-before"}
+                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', pod.discount_before, class: "discount_before-item"
+
+                      %td.price-without-igv
+                        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', pod.unit_price_before_igv, class: "form-control unit-price-without-igv", :readonly => true
+
+                      %td.check-igv
+                        %label.checkbox
+                          = check_box_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][igv]', pod.igv, { class: 'provision_direct_igv', onchange: "enableFieldsForIgv(this);" }
+                          %i
+
+                      %td.quantity-igv{:style => "display:none", :class => "provision_quantity-igv"}
+                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',pod.quantity_igv, class: "igv-item"
+
+                      %td.price-with-igv
+                        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv, class: "form-control unit-price-igv", :readonly => true
+
+                      %td.discount-after{:style => "display:none", :class => "provision_discount-after"}
+                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_after]', pod.discount_after, class: "discount_after-item"
+
+                      %td{:style => 'text-align: center'}
+                        %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-provision-#{@reg_n.to_s}", 'onclick' => "set_id_modeling(this, #{@reg_n.to_s})"}
+                          %strong
+                            %i.fa.fa-superscript
+
+                      %td.description
+                        = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', pod.description, class: "form-control description"   
+                      %td.delete-item
+                    - @reg_n += 1
+
+
+                - i = 0
+                - @provision.provision_direct_purchase_details.each do |pod|
+                  .modal.fade{"id" => "modal-provision-#{array_values[i]}", "aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
+                    .modal-dialog
+                      .modal-content
+                        .modal-header
+                          %button{"type" => "button", "class" => "close", "data-dismiss" => "modal", "aria-hidden" => "true"} ×
+                          %h4.modal-title Operaciones Adicionales
+                        .modal-body
+                          .smart-form
+                            %fieldset
+                              = hidden_field_tag 'id_modal', "#{array_values[i]}", :id => "modal-provision-#{array_values[i]}-hidden"
+                              .row
+                                %label.label.col.col-2{for: "extra_calculation_id"} Concepto
+                                .col.col-10
+                                  %label.input
+                                    %select.form-control{:name =>"extra_calculation_id", :id => "modal-provision-#{array_values[i]}-select-calc"}
+                                      - @extra_calculations.each do |calculation|
+                                        %option{:value => "#{calculation.id}"}
+                                          = calculation.concept
+
+                              .row
+                                %label.label.col.col-2{for: "type"} Tipo
+                                .col.col-10
+                                  %label.input
+                                    %select.form-control{:name =>"type", :id => "modal-provision-#{array_values[i]}-select-type"}
+                                      %option{:value => "percent"}
+                                        (%)
+                                      %option{:value => "soles"}
+                                        (S/.)
+
+                              .row
+                                %label.label.col.col-2{for: "value"} Valor
+                                .col.col-10
+                                  %label.input
+                                    %i.icon-append.fa.fa-money
+                                    = text_field_tag 'value', nil, id: "modal-provision-#{array_values[i]}-input-value", onkeypress: "return isNumber(event);"
+
+                              .row
+                                %label.label.col.col-2{for: "apply"} Aplicar
+                                .col.col-10
+                                  %label.input
+                                    %select.form-control{:name =>"apply", :id => "modal-provision-#{array_values[i]}-select-apply"}
+                                      %option{:value => "before"}
+                                        Antes de IGV
+                                      %option{:value => "after"}
+                                        Después de IGV
+
+                              .row
+                                %label.label.col.col-2{for: "operation"} +/-
+                                .col.col-10
+                                  %label.input
+                                    %select.form-control{:name =>"operation", :id => "modal-provision-#{array_values[i]}-select-operation"}
+                                      %option{:value => "sum"}
+                                        = '+'
+                                      %option{:value => "minius"}
+                                        = '-'
+
+                            %fieldset
+                              %h3 Listado de Operaciones
+                              %br
+                              .row
+                                %section.col.col-md-12{'id' => "modal-provision-#{array_values[i]}-section"}
+                                  - pod.provision_direct_extra_calculations.each do |order_operation|
+                                    - @reg_n_2 = ((Time.now.to_f)*100).to_i
+                                    .col.col-md-12
+                                      .col.col-md-1
+                                        %i.fa.fa-check
+                                      .col.col-md-3
+                                        = order_operation.extra_calculation.concept rescue 'Concepto errado'
+                                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][extra_calculation_id]', order_operation.extra_calculation_id rescue nil
+                                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][id]', order_operation.id
+                                      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][type]', order_operation.type rescue nil
+                                      .col.col-md-2
+                                        - if order_operation.type == 'soles'
+                                          = order_operation.value.to_s + '(S/.)'
+                                        - elsif order_operation.type == 'percent'
+                                          = order_operation.value.to_s + '(%)'
+                                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][value]', order_operation.value rescue nil
+                                      .col.col-md-3
+                                        - if order_operation.apply == 'before'
+                                          Antes de IGV
+                                        - elsif order_operation.apply == 'after'
+                                          Después de IGV
+                                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][apply]', order_operation.apply rescue nil
+                                      .col.col-md-3
+                                        = check_box_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][_destroy]'
+                                        %label Eliminar
+                                      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][operation]', order_operation.operation rescue nil
+                            %footer
+                              %button{:type => "button", :class => "btn btn-primary", :onclick => "add_extra_operation(this)", :rel => "modal-provision-#{array_values[i]}"} Agregar Operación
+                  - i += 1
 
         .col-sm-12.col-md-12{:style => "margin-bottom: 20px;"}
           .row
             %button.btn.btn-primary{type: "submit"}
               %i.fa.fa-save
                 Guardar
+#modalDeliveryItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
+  .modal-dialog
+    .modal-content
+      .modal-body#modalDeliveryItemsContent                
 :javascript
   
-  $(document).ready(function(){
+  $(document).ready(function(){ 
     $('select').select2();
     $('#article-select').select2({
       placeholder: "Buscar Insumos...",
@@ -316,4 +479,110 @@
 
   function delete_item(code){
     $("#tr-" + code).remove();
+  }
+
+  function add_extra_operation(obj){
+
+    var id_content = $(obj).attr('rel') + '-section';
+
+    var concept = '#' + $(obj).attr('rel') + '-select-calc';
+    var type = '#' + $(obj).attr('rel') + '-select-type';
+    var name_concept = '#' + $(obj).attr('rel') + '-select-calc option:selected';
+    var name_type = '#' + $(obj).attr('rel') + '-select-type option:selected';
+
+    var value = '#' + $(obj).attr('rel') + '-input-value';
+
+    var apply = '#' + $(obj).attr('rel') + '-select-apply';
+    var operation = '#' + $(obj).attr('rel') + '-select-operation';
+    var name_apply = '#' + $(obj).attr('rel') + '-select-apply option:selected';
+
+    var reg_n = '#' + $(obj).attr('rel') + '-hidden';
+
+    var str_data = { concept: $(concept).val(), type: $(type).val(), value: $(value).val(), apply: $(apply).val(), operation: $(operation).val(), name_concept: $(name_concept).text(), name_type: $(name_type).text(), name_apply: $(name_apply).text(), reg_n: $(reg_n).val() };
+
+    /* Data for Calculate */
+    amount_bruto = $('#tr-' + $(reg_n).val() + ' td.amount input').val()*$('#tr-' + $(reg_n).val() + ' td.unit-price input').val();
+
+    /* Referencial Data */
+    path_jquery_before = '#tr-' + $(reg_n).val() + ' td.price-without-igv input';
+    path_jquery_after = '#tr-' + $(reg_n).val() + ' td.price-with-igv input';
+    path_jquery_igv = '#tr-' + $(reg_n).val() + ' td.check-igv .checkbox input';
+    /* Amounts */
+    path_jquery_discount_before = '#tr-' + $(reg_n).val() + ' td.discount-before input';
+    path_jquery_discount_after = '#tr-' + $(reg_n).val() + ' td.discount-after input';
+    path_jquery_discount_igv = '#tr-' + $(reg_n).val() + ' td.discount-igv input';
+
+    
+    if($(concept).val()!='' && $(type).val()!='' && $(value).val()!='' && $(apply).val()!='' && $(operation).val()!='' && $(name_concept).text()!='' && $(name_type).text()!='' && $(name_apply).text()!='' && $(reg_n).val()!='' ){
+      if($(path_jquery_before).val() != ''){
+
+        ancient_value_before = parseFloat($(path_jquery_before).val());
+        ancient_value_after = parseFloat($(path_jquery_after).val());
+
+        if( $(apply).val() == 'before' ){
+
+          if( $(operation).val() == 'sum' ){
+            if( $(type).val() == 'soles' ){
+              value_before = $(path_jquery_discount_before).val() + parseFloat($(value).val());
+              $(path_jquery_discount_before).val(value_before);
+            } else {
+              value_before = $(path_jquery_discount_before).val() + parseFloat((amount_bruto*($(value).val()/100)));
+              $(path_jquery_discount_before).val(value_before);
+            }
+          } else {
+            if( $(type).val() == 'soles' ){
+              value_before = $(path_jquery_discount_before).val() - parseFloat($(value).val());
+              $(path_jquery_discount_before).val(value_before);
+              console.log($(path_jquery_discount_before).val());
+            } else {
+              value_before = $(path_jquery_discount_before).val() - parseFloat((amount_bruto*($(value).val()/100)));
+              $(path_jquery_discount_before).val(value_before);
+              console.log($(path_jquery_discount_before).val());
+            }
+          }
+
+          if($(path_jquery_igv).is(":checked")){
+            $(path_jquery_before).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
+            $(path_jquery_discount_igv).val( (parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val())) * (1 - parseFloat("#{@igv}")) );
+            $(path_jquery_after).val( (parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val())) * parseFloat("#{@igv}") );
+          } else {
+            $(path_jquery_before).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
+            $(path_jquery_after).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
+            $(path_jquery_discount_igv).val(0);
+          }
+
+        } else {
+
+          if( $(operation).val() == 'sum' ){
+            if( $(type).val() == 'soles' ){
+              value_after = $(path_jquery_discount_after).val() + parseFloat($(value).val()).toFixed(2);
+              $(path_jquery_discount_after).val(value_after);
+            } else {
+              value_after = $(path_jquery_discount_after).val() + parseFloat($(path_jquery_after).val()*($(value).val()/100)).toFixed(2);
+              $(path_jquery_discount_after).val(value_after);
+            }
+          } else {
+            if( $(type).val() == 'soles' ){
+              value_after = $(path_jquery_discount_after).val() - parseFloat($(value).val()).toFixed(2);
+              $(path_jquery_discount_after).val(value_after);
+            } else {
+              value_after = $(path_jquery_discount_after).val() - parseFloat($(path_jquery_after).val()*($(value).val()/100)).toFixed(2);
+              $(path_jquery_discount_after).val(value_after);
+            }
+          }
+
+        }
+        append_url_ajax('#{add_more_row_form_extra_op_administration_provision_articles_path}', id_content, str_data, 0, 'POST');
+
+      } else {
+
+        alert('No se ha calculado el Precio antes de IGV.');
+
+      }
+    }else{
+      alert('Llene todos los campos antes de agregar una operación.');    
+    }
+
+
+
   }

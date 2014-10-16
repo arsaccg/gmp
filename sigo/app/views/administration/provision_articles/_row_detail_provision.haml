@@ -60,3 +60,9 @@
 
   %td{:style => "width: 1%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')", :class => 'btn'} X
+
+:javascript
+  $(document).ready(function(){
+    str_item = {authenticity_token: "#{form_authenticity_token}", id_m: "#{@reg_n.to_s}"};
+    append_url_ajax('#{add_modal_extra_operations_administration_provision_articles_path}', 'new_provision', str_item, 0, 'POST');
+  });
