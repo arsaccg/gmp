@@ -68,7 +68,7 @@
               .input-group
                 %span.input-group-addon
                   %span S/.
-                %input.form-control#subtotal-field{ :name => "sub-total", :placeholder => "Sub-Total", :readonly => true }
+                = f.input :sub_total, placeholder: "Sub-Total", input_html: { class: 'form-control', id: 'subtotal-field' }, label: false, readonly: true
 
           %section.col.col-2
             %label.label IGV
@@ -76,7 +76,15 @@
               .input-group
                 %span.input-group-addon
                   %span S/.
-                %input.form-control#igv-field{ :name => "payment_order[igv]", :placeholder => "IGV", :readonly => true }
+                = f.input :igv, placeholder: "IGV", input_html: { class: 'form-control', id: 'igv-field' }, label: false, readonly: true
+
+          %section.col.col-2
+            %label.label Percepción
+            %label.input{for: "perception"}
+              .input-group
+                %span.input-group-addon
+                  %span S/.
+                = f.input :perception, placeholder: "Percepción", input_html: { class: 'form-control', id: 'igv-field' }, label: false, readonly: true
 
           %section.col.col-2
             %label.label Total
@@ -84,7 +92,7 @@
               .input-group
                 %span.input-group-addon
                   %span S/.
-                %input.form-control#total-field{ :name => "total", :placeholder => "Total", :readonly => true }
+                = f.input :total, placeholder: "Total", input_html: { class: 'form-control', id: 'total-field' }, label: false, readonly: true
         
           %section.col.col-1
             %label.label % de Detracción
@@ -109,6 +117,25 @@
                 %span.input-group-addon
                   %span S/.
                 = f.input :net_pay, placeholder: "A pagar", input_html: { class: 'form-control' }, label: false
+
+      %fieldset
+        %legend Información de Descuentos
+        .row
+          %section.col.col-2
+            %label.label Fondo de Garantía N° 01
+            %label.input{for: "sub_total"}
+              .input-group
+                %span.input-group-addon
+                  %span S/.
+                = f.input :guarantee_fund_n1, placeholder: "Fondo Garantia 1", input_html: { class: 'form-control' }, label: false
+
+          %section.col.col-2
+            %label.label Otros Descuentos
+            %label.input{for: "sub_total"}
+              .input-group
+                %span.input-group-addon
+                  %span S/.
+                = f.input :other_discounts, placeholder: "Otros Descuentos", input_html: { class: 'form-control' }, label: false
 
       %footer
         %button.btn.btn-primary{type: "submit"}
