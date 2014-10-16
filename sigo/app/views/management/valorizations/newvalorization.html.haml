@@ -13,7 +13,7 @@
               %i.fa.fa-eye
             %h2 Valorizacion
           .widget-body
-            =simple_form_for([:management, @valorization], html: {class: "form-horizontal smart-form", autocomplete: 'off', :id => "v_form"}) do |f|
+            =simple_form_for([:management, @valorization], html: {class: "form-horizontal smart-form", autocomplete: 'off', :id => "new_valorization"}) do |f|
               %fieldset
                 .row.form-inline
                   %section.col.col-10
@@ -21,25 +21,19 @@
                     %label.input{for: "valorization_date"}
                       = f.input :valorization_date, input_html: { class: 'form-control' }, label: false
 
-                - all_budgets = Budget.where(:cost_center_id => @budget.cost_center_id)
-                - num_val = 0
-                - all_budgets.each do |ab|
-                  - num_val = num_val + Valorization.where(:budget_id => ab.id).count
-                  - num_val = num_val + 1
-
                 .row
                   %section.col.col-10
                     %label.label Titulo
                     %label.input{for: "name"}
                       %i.icon-append.fa.fa-user
-                      = f.input :name, placeholder: "Titulo", input_html: { class: 'form-control', value: "Val"+num_val.to_s }, label: false, disabled: true
+                      = f.input :name, placeholder: "Titulo", input_html: { class: 'form-control', value: "Val#{@num_val}" }, label: false, disabled: true
 
                 .row
                   %section.col.col-10
                     = f.input :budget_id, :as => :hidden
 
               %footer
-                %a{:href=>"javascript:post_to_url('" + management_valorizations_path.to_s + "', 'new_valorization', 'right-area');", :class=>"btn btn-success"}
+                %a{:href=>"javascript:post_to_url('" + management_valorizations_path.to_s + "?authenticity_token=#{form_authenticity_token}', 'new_valorization', 'right-area');", :class=>"btn btn-success"}
                   %i.fa.fa-save
                   Guardar Valorizacion
 

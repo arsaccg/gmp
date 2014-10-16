@@ -14,7 +14,6 @@ class Administration::InputcategoriesController < ApplicationController
 	def feo_of_work
 		project_id =  get_company_cost_center('cost_center')
 
-		#@budget_goal = Budget.find(params[:budget_goal]) rescue @budget_sale #Budget.where(:cost_center_id).last
 		@budget_sale = Budget.where("`type_of_budget` = 0 AND `subbudget_code` IS NOT NULL AND `cost_center_id` = (?)", project_id).first rescue nil
   		@budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", project_id).first rescue @budget_sale
 
