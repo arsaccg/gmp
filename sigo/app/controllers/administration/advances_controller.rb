@@ -1,6 +1,7 @@
 class Administration::AdvancesController < ApplicationController
 	#before_filter :authorize_manager
   	before_filter :authenticate_user!
+  	protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 	# ESTO PERTENECE A TOBI!!!!
 	def index
 		@advances = Advance.where(:cost_center_id => get_company_cost_center('cost_center'))
@@ -19,10 +20,9 @@ class Administration::AdvancesController < ApplicationController
 	end
 
 	def update
-		@advance = Advance.find(params[:advance_id])
+		@advance = Advance.find(params[:id])
 	    @advance.update_attributes(advances_parameters)
 		redirect_to :action => :index
-		
 	end
 
 	def create
@@ -40,8 +40,11 @@ class Administration::AdvancesController < ApplicationController
 	end
 
 	def destroy
-		@advance = Advance.destroy(params[:id])
-		redirect_to :action => :index
+		@advance = Advance.find(params[:id])
+	    @advance.destroy
+
+	    @advances = Advance.where(:cost_center_id => get_company_cost_center('cost_center'))
+		render :index, :layout => false
 	end
 
 	private
