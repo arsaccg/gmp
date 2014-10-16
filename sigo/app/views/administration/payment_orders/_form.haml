@@ -84,7 +84,7 @@
               .input-group
                 %span.input-group-addon
                   %span S/.
-                = f.input :perception, placeholder: "Percepción", input_html: { class: 'form-control', id: 'igv-field' }, label: false, readonly: true
+                = f.input :perception, placeholder: "Percepción", input_html: { class: 'form-control', id: 'perception-field' }, label: false, readonly: true
 
           %section.col.col-2
             %label.label Total
@@ -98,7 +98,7 @@
             %label.label % de Detracción
             %label.input{for: "percent_detraction"}
               .input-group
-                = f.input :percent_detraction, input_html: { class: 'form-control' }, label: false
+                = f.input :percent_detraction, input_html: { class: 'form-control', onkeypress: 'return isNumber(event);' }, label: false
                 %span.input-group-addon
                   %span %
 
@@ -108,7 +108,7 @@
               .input-group
                 %span.input-group-addon
                   %span S/.
-                = f.input :detraction, placeholder: "Detracción", input_html: { class: 'form-control' }, label: false
+                = f.input :detraction, placeholder: "Detracción", input_html: { class: 'form-control' }, label: false, readonly: true
 
           %section.col.col-2
             %label.label Neto a Pagar
@@ -168,6 +168,7 @@
           $('#type_document_provision').val(data.provision[0].type_document_provision);
           $('#subtotal-field').val(data.provision[0].total_quantity_provision);
           $('#total-field').val(data.provision[0].total_quantity_provision_with_igv);
+          $('#perception-field').val(data.provision[0].perception);
           $('#igv-field').val(data.provision[0].igv);
         }
       });
@@ -196,6 +197,7 @@
           $('#type_document_provision').val(data.provision[0].type_document_provision);
           $('#subtotal-field').val(data.provision[0].total_quantity_provision);
           $('#total-field').val(data.provision[0].total_quantity_provision_with_igv);
+          $('#perception-field').val(data.provision[0].perception);
           $('#igv-field').val(data.provision[0].igv);
         }
       });
@@ -265,4 +267,13 @@
       error: function(xhr, status, error) {
       }
     });
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
   }
