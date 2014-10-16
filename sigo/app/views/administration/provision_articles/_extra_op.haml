@@ -1,0 +1,65 @@
+- @id_modal = 'modal-provision-' + @modal.to_s
+.modal.fade{"id" => "#{@id_modal}", "aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button{"type" => "button", "class" => "close", "data-dismiss" => "modal", "aria-hidden" => "true"} ×
+        %h4.modal-title Operaciones Adicionales
+      .modal-body
+        .smart-form
+          %fieldset
+            = hidden_field_tag 'id_modal', '', id: "#{@id_modal}-hidden"
+            .row
+              %label.label.col.col-2{for: "extra_calculation_id"} Concepto
+              .col.col-10
+                %label.input
+                  %select.form-control{:name =>"extra_calculation_id", :id => "#{@id_modal}-select-calc"}
+                    - @extra_calculations.each do |calculation|
+                      %option{:value => "#{calculation.id}"}
+                        = calculation.concept
+
+            .row
+              %label.label.col.col-2{for: "type"} Tipo
+              .col.col-10
+                %label.input
+                  %select.form-control{:name =>"type", :id => "#{@id_modal}-select-type"}
+                    %option{:value => "percent"}
+                      (%)
+                    %option{:value => "soles"}
+                      (S/.)
+
+            .row
+              %label.label.col.col-2{for: "value"} Valor
+              .col.col-10
+                %label.input
+                  %i.icon-append.fa.fa-money
+                  = text_field_tag 'value', nil, id: "#{@id_modal}-input-value", onkeypress: "return isNumber(event);"
+
+            .row
+              %label.label.col.col-2{for: "apply"} Aplicar
+              .col.col-10
+                %label.input
+                  %select.form-control{:name =>"apply", :id => "#{@id_modal}-select-apply"}
+                    %option{:value => "before"}
+                      Antes de IGV
+                    %option{:value => "after"}
+                      Después de IGV
+
+            .row
+              %label.label.col.col-2{for: "operation"} +/-
+              .col.col-10
+                %label.input
+                  %select.form-control{:name =>"operation", :id => "#{@id_modal}-select-operation"}
+                    %option{:value => "sum"}
+                      = '+'
+                    %option{:value => "minius"}
+                      = '-'
+
+          %fieldset
+            %h3 Listado de Operaciones
+            %br
+            .row
+              %section.col.col-md-12{'id' => "#{@id_modal}-section"}
+
+          %footer
+            %button{:type => "button", :class => "btn btn-primary", :onclick => "add_extra_operation(this)", :rel => "#{@id_modal}"} Agregar Operación

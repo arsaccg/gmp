@@ -30,11 +30,14 @@ class Administration::ProvisionArticlesController < ApplicationController
     @provision = Provision.find(params[:id])
     @documentProvisions = DocumentProvision.all
     @suppliers = TypeEntity.find_by_preffix('P').entities
-
+    @sectors = Sector.where("code LIKE '__' ")
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       @igv= val.value.to_f+1
     end
-
+    @account_accountants = AccountAccountant.where("code LIKE  '_______'")
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @extra_calculations = ExtraCalculation.all
     @action = 'edit'
     render layout: false
   end
@@ -49,6 +52,26 @@ class Administration::ProvisionArticlesController < ApplicationController
   end
 
   #CUSTOM METHODS
+  def add_modal_extra_operations
+    @modal = params[:id_m]
+    @extra_calculations = ExtraCalculation.all
+    render(partial: 'extra_op', :layout => false)
+  end
+
+  def add_more_row_form_extra_op
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @concept = params[:concept ]
+    @type = params[:type]
+    @value = params[:value]
+    @apply = params[:apply]
+    @operation = params[:operation]
+
+    @reg_main = params[:reg_n]
+    @name_concept = params[:name_concept]
+    @name_type = params[:name_type]
+    @name_apply = params[:name_apply]
+    render(partial: 'extra_op_form', :layout => false)
+  end
 
   def puts_details_in_provision
     @data_orders = Array.new
