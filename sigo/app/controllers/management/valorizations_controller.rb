@@ -1,6 +1,7 @@
 class Management::ValorizationsController < ApplicationController
   #before_filter :authorize_manager
   before_filter :authenticate_user!
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   
   def index
     @budgets=Budget.where(:cost_center_id => params[:project_id])
@@ -12,6 +13,12 @@ class Management::ValorizationsController < ApplicationController
     @budget = Budget.find(params[:id])
     @valorization = Valorization.new
     @valorization.budget_id = @budget.id 
+
+    all_budgets = Budget.where(:cost_center_id => @budget.cost_center_id)
+    @num_val = 1
+    all_budgets.each do |i|
+      @num_val = @num_val + Valorization.where(budget_id: i.id).count
+    end
 
     render :newvalorization, layout: false
   end
