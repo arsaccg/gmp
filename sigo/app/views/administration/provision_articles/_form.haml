@@ -512,81 +512,77 @@
     path_jquery_discount_after = '#tr-' + $(reg_n).val() + ' td.discount-after input';
     path_jquery_discount_igv = '#tr-' + $(reg_n).val() + ' td.discount-igv input';
 
-    console.log('first')
-    console.log(path_jquery_before)
-    console.log(path_jquery_after)
-    console.log(path_jquery_igv)
-    console.log('second')
-    console.log(path_jquery_discount_before)
-    console.log(path_jquery_discount_after)
-    console.log(path_jquery_discount_igv)
+    
+    if($(concept).val()!='' && $(type).val()!='' && $(value).val()!='' && $(apply).val()!='' && $(operation).val()!='' && $(name_concept).text()!='' && $(name_type).text()!='' && $(name_apply).text()!='' && $(reg_n).val()!='' ){
+      if($(path_jquery_before).val() != ''){
 
+        ancient_value_before = parseFloat($(path_jquery_before).val());
+        ancient_value_after = parseFloat($(path_jquery_after).val());
 
-    if($(path_jquery_before).val() != ''){
+        if( $(apply).val() == 'before' ){
 
-      ancient_value_before = parseFloat($(path_jquery_before).val());
-      ancient_value_after = parseFloat($(path_jquery_after).val());
-
-      if( $(apply).val() == 'before' ){
-
-        if( $(operation).val() == 'sum' ){
-          if( $(type).val() == 'soles' ){
-            value_before = $(path_jquery_discount_before).val() + parseFloat($(value).val());
-            $(path_jquery_discount_before).val(value_before);
+          if( $(operation).val() == 'sum' ){
+            if( $(type).val() == 'soles' ){
+              value_before = $(path_jquery_discount_before).val() + parseFloat($(value).val());
+              $(path_jquery_discount_before).val(value_before);
+            } else {
+              value_before = $(path_jquery_discount_before).val() + parseFloat((amount_bruto*($(value).val()/100)));
+              $(path_jquery_discount_before).val(value_before);
+            }
           } else {
-            value_before = $(path_jquery_discount_before).val() + parseFloat((amount_bruto*($(value).val()/100)));
-            $(path_jquery_discount_before).val(value_before);
+            if( $(type).val() == 'soles' ){
+              value_before = $(path_jquery_discount_before).val() - parseFloat($(value).val());
+              $(path_jquery_discount_before).val(value_before);
+              console.log($(path_jquery_discount_before).val());
+            } else {
+              value_before = $(path_jquery_discount_before).val() - parseFloat((amount_bruto*($(value).val()/100)));
+              $(path_jquery_discount_before).val(value_before);
+              console.log($(path_jquery_discount_before).val());
+            }
           }
-        } else {
-          if( $(type).val() == 'soles' ){
-            value_before = $(path_jquery_discount_before).val() - parseFloat($(value).val());
-            $(path_jquery_discount_before).val(value_before);
-            console.log($(path_jquery_discount_before).val());
-          } else {
-            value_before = $(path_jquery_discount_before).val() - parseFloat((amount_bruto*($(value).val()/100)));
-            $(path_jquery_discount_before).val(value_before);
-            console.log($(path_jquery_discount_before).val());
-          }
-        }
 
-        if($(path_jquery_igv).is(":checked")){
-          $(path_jquery_before).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
-          $(path_jquery_discount_igv).val( (parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val())) * (1 - parseFloat("#{@igv}")) );
-          $(path_jquery_after).val( (parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val())) * parseFloat("#{@igv}") );
+          if($(path_jquery_igv).is(":checked")){
+            $(path_jquery_before).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
+            $(path_jquery_discount_igv).val( (parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val())) * (1 - parseFloat("#{@igv}")) );
+            $(path_jquery_after).val( (parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val())) * parseFloat("#{@igv}") );
+          } else {
+            $(path_jquery_before).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
+            $(path_jquery_after).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
+            $(path_jquery_discount_igv).val(0);
+          }
+
         } else {
-          $(path_jquery_before).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
-          $(path_jquery_after).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
-          $(path_jquery_discount_igv).val(0);
+
+          if( $(operation).val() == 'sum' ){
+            if( $(type).val() == 'soles' ){
+              value_after = $(path_jquery_discount_after).val() + parseFloat($(value).val()).toFixed(2);
+              $(path_jquery_discount_after).val(value_after);
+            } else {
+              value_after = $(path_jquery_discount_after).val() + parseFloat($(path_jquery_after).val()*($(value).val()/100)).toFixed(2);
+              $(path_jquery_discount_after).val(value_after);
+            }
+          } else {
+            if( $(type).val() == 'soles' ){
+              value_after = $(path_jquery_discount_after).val() - parseFloat($(value).val()).toFixed(2);
+              $(path_jquery_discount_after).val(value_after);
+            } else {
+              value_after = $(path_jquery_discount_after).val() - parseFloat($(path_jquery_after).val()*($(value).val()/100)).toFixed(2);
+              $(path_jquery_discount_after).val(value_after);
+            }
+          }
+
         }
+        append_url_ajax('#{add_more_row_form_extra_op_administration_provision_articles_path}', id_content, str_data, 0, 'POST');
 
       } else {
 
-        if( $(operation).val() == 'sum' ){
-          if( $(type).val() == 'soles' ){
-            value_after = $(path_jquery_discount_after).val() + parseFloat($(value).val()).toFixed(2);
-            $(path_jquery_discount_after).val(value_after);
-          } else {
-            value_after = $(path_jquery_discount_after).val() + parseFloat($(path_jquery_after).val()*($(value).val()/100)).toFixed(2);
-            $(path_jquery_discount_after).val(value_after);
-          }
-        } else {
-          if( $(type).val() == 'soles' ){
-            value_after = $(path_jquery_discount_after).val() - parseFloat($(value).val()).toFixed(2);
-            $(path_jquery_discount_after).val(value_after);
-          } else {
-            value_after = $(path_jquery_discount_after).val() - parseFloat($(path_jquery_after).val()*($(value).val()/100)).toFixed(2);
-            $(path_jquery_discount_after).val(value_after);
-          }
-        }
+        alert('No se ha calculado el Precio antes de IGV.');
 
       }
-
-      append_url_ajax('#{add_more_row_form_extra_op_administration_provision_articles_path}', id_content, str_data, 0, 'POST');
-
-    } else {
-
-      alert('No se ha calculado el Precio antes de IGV.');
-
+    }else{
+      alert('Llene todos los campos antes de agregar una operación.');    
     }
+
+
 
   }
