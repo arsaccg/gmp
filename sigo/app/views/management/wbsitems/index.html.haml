@@ -157,23 +157,23 @@
   }
   
   get_data('#{management_wbsitems_path}.json');
-  draw_to_div('#{get_items_json_management_wbsitems_path}.json' + '?project_id=' + $('#cost_center_selected').data("id"));
+  draw_to_div('#{get_items_json_management_wbsitems_path}.json');
   
 
   function load_budgets(){
-    load_url_ajax("#{management_wbsitems_path.to_s}?project_id=" + $('#cost_center_selected').data("id"), 'content', '', '', 'get');
+    load_url_ajax("#{management_wbsitems_path.to_s}", 'content', '', '', 'get');
   }
   
   function execute_items_wbs(type_budget){
-    load_url_ajax("#{add_items_to_wbs_management_wbsitems_path}?project_id=" +  $('#cost_center_selected').data("id") + "&type_budget=" +  type_budget, 'content', '', '', 'get');
+    load_url_ajax("#{add_items_to_wbs_management_wbsitems_path}?type_budget=" +  type_budget, 'content', '', '', 'get');
   }
 
   function new_item(){
-    load_url_ondiv("#{new_management_wbsitem_path.to_s}?project_id=" + $('#cost_center_selected').data("id"), 'graph-org');
+    load_url_ondiv("#{new_management_wbsitem_path.to_s}", 'graph-org');
   }
 
   function get_items_for_project(){
-    load_url_ondiv("#{get_items_from_project_management_wbsitems_path.to_s}?project_id=" +  $('#cost_center_selected').data("id"), 'graph-org');
+    load_url_ondiv("#{get_items_from_project_management_wbsitems_path.to_s}", 'graph-org');
   }
   
   
