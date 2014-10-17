@@ -20,7 +20,7 @@
     -@wbsitems.each do |wbs|  
       %tr{class: "first_#{wbs.codewbs.to_s}"}
         - wbs_length = wbs.codewbs.to_s.length
-        %td{class: "title-n#{wbs_length}"}(colspan="5")
+        %td{class: "title-n#{wbs_length}"}(colspan="3")
           %span(style="color:transparent;")
             = ("_" * (wbs_length-1) * 2)
           - if wbs_length > 1
@@ -28,6 +28,8 @@
               %strong= wbs.name
           -else
             %strong= wbs.name
+        %td{class: "title-n#{wbs_length} right-text"}
+        %td{class: "title-n#{wbs_length} right-text"}
       - @inputcategories.each do |input|
         - if (wbs.codewbs != '1') && (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"] != nil)
           -partial_sale, partial_goal = @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"], @data[1]["#{wbs.codewbs.to_s}#{input.category_id}"]
@@ -88,11 +90,20 @@
 
 
 :javascript
-  $(document).ready(function(){
-    suma = 0;
-    $("[class^='second_111']").each(function(){ 
-      suma += parseInt($('td:nth-child(4)',this).text().trim().substring(4).replace(",", "")); 
-      $('.first_111').val(suma + '');
+  $('.t_feo').ready(function(){
+    $("[class^='first_']").each(function(){
+      wbs_number = $(this).attr('class').substring(6);
+
+      suma1 = 0;
+      suma2 = 0;
+      $("[class^='second_"+ wbs_number +"']").each(function(){ 
+        suma1 += parseInt($('td:nth-child(4)',this).text().trim().substring(4).replace(",", ""));
+        suma2 += parseInt($('td:nth-child(5)',this).text().trim().substring(4).replace(",", "")); 
+      });
+      monto1 = 'S/. ' + suma1.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      monto2 = 'S/. ' + suma2.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      $('.first_'+ wbs_number +' td:nth-child(2)').text(monto1);
+      $('.first_'+ wbs_number +' td:nth-child(3)').text(monto2);
     });
   });
 
