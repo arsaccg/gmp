@@ -8,7 +8,7 @@ class Management::WbsitemsController < ApplicationController
   
   def index
     @cost_center_selected = CostCenter.find(get_company_cost_center('cost_center'))
-  	@wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs)  
+  	@wbsitems = Wbsitem.where(cost_center_id: get_company_cost_center('cost_center')).order(:codewbs) #Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs)  
     @result = get_child("1")
     
     @fourth=0 
@@ -24,6 +24,9 @@ class Management::WbsitemsController < ApplicationController
         @fourth += 1
       end
     end 
+
+    p "wbsitems"
+    p @wbsitems
 
     respond_to do |format|
       format.html {
@@ -46,7 +49,7 @@ class Management::WbsitemsController < ApplicationController
   end
 
   def show_measured
-    @wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs) 
+    @wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs) 
     @itembywbses = Array.new
     @wbsitems.each do |item|
       item.itembywbses.each do |i|
@@ -61,8 +64,10 @@ class Management::WbsitemsController < ApplicationController
  
 
   def new    
-  	@wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs)  
-  	@wbsitem = Wbsitem.new 
+  	@wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs)  
+  	@wbsitem = Wbsitem.new
+
+
 
   	render :new, layout: false
   end
@@ -85,7 +90,7 @@ class Management::WbsitemsController < ApplicationController
   end
 
   def get_items_from_project
-    @wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs)  
+    @wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs)  
     @data = Phase.all
     render :get_items_from_project, layout: false
   end
@@ -159,28 +164,28 @@ class Management::WbsitemsController < ApplicationController
 
   def create 
   	if (params[:major_item]!=nil)
-	  	wbsitem_selected = Wbsitem.find(params[:major_item])
+ 	  	wbsitem_selected = Wbsitem.find(params[:major_item])
 
-	  	last_id = Wbsitem.find(:all, :conditions=>["codewbs like ?", wbsitem_selected.codewbs + "_"]).count
-	  	last_id_total = Wbsitem.find(:all, :conditions=>["codewbs like ?", wbsitem_selected.codewbs + "%"]).count
-	  	
-	  	wbsitem = Wbsitem.new(wbsitem_parameters)
-	  	if last_id_total.to_s == "0"
-	  		wbsitem.codewbs = wbsitem_selected.codewbs + (last_id).to_s
-	  	else
-	  		wbsitem.codewbs = wbsitem_selected.codewbs + (last_id+1).to_s
-	  	end
+ 	  	last_id = Wbsitem.find(:all, :conditions=>["codewbs like ?", wbsitem_selected.codewbs + "_"]).count
+ 	  	last_id_total = Wbsitem.find(:all, :conditions=>["codewbs like ?", wbsitem_selected.codewbs + "%"]).count
+  	  	
+ 	  	wbsitem = Wbsitem.new(wbsitem_parameters)
+ 	  	if last_id_total.to_s == "0"
+ 	  		wbsitem.codewbs = wbsitem_selected.codewbs + (last_id).to_s
+ 	  	else
+ 	  		wbsitem.codewbs = wbsitem_selected.codewbs + (last_id+1).to_s
+ 	  	end
   	else
   		wbsitem = Wbsitem.new(wbsitem_parameters)
-  		wbsitem.codewbs=params[:wbsitem][:project_id]
+  		wbsitem.codewbs=get_company_cost_center('cost_center').to_s#params[:wbsitem][:project_id]
   	end
+    wbsitem.cost_center_id = get_company_cost_center('cost_center').to_s
   	wbsitem.save
   	redirect_to :action =>:index
   end
 
   def get_json_data
-
-  	filter = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%")
+  	filter = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%")
 
   	puts "FILTER"
   	p filter
@@ -246,7 +251,7 @@ class Management::WbsitemsController < ApplicationController
   end
 
   def set_gantt
-    @wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs) 
+    @wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs) 
 
     @wbsitems_xls = @wbsitems.select('id, codewbs, name')
 
@@ -271,7 +276,7 @@ class Management::WbsitemsController < ApplicationController
   end
 
   def graph_gantt
-    @wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs) 
+    @wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs) 
     
     respond_to do |format|
       format.html {
@@ -287,7 +292,7 @@ class Management::WbsitemsController < ApplicationController
 
   #para mostrar x mes
   def showbymonth_gantt
-    @wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs) 
+    @wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs) 
     @itembywbses = Array.new
     @wbsitems.each do |item|
       item.itembywbses.each do |i|
@@ -310,7 +315,7 @@ class Management::WbsitemsController < ApplicationController
   end
 
   def showperitem_gantt
-    @wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs) 
+    @wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs) 
     @itembywbses = Array.new
     @wbsitems.each do |item|
       item.itembywbses.each do |i|

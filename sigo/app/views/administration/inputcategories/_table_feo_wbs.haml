@@ -88,8 +88,12 @@
 
 
 :javascript
-
   $(document).ready(function(){
+    suma = 0;
+    $("[class^='second_111']").each(function(){ 
+      suma += parseInt($('td:nth-child(4)',this).text().trim().substring(4).replace(",", "")); 
+      $('.first_111').val(suma + '');
+    });
   });
 
   function toogle_three(level, id)
