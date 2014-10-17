@@ -102,27 +102,30 @@
   function calculatePrice(element){
     var amount = parseInt($(element).val());
     var igv = parseFloat($(element).parent().siblings('.current-igv').find('input').val());
-    var unit_price = parseFloat($(element).parent().siblings('.unit-price').find('input').val());
+    var unit_price = parseFloat($(element).parent().siblings('.unit-price').find('input').val()).toFixed(2);
     var discount_before = $(element).parent().siblings('.discount-before').find('input');
     var discount_after = $(element).parent().siblings('.discount-after').find('input');
 
     var total_dis_bes = 0;
     var total_dis_bep = 0;
-    var total_dis_afs = 0;
-    var total_dis_afp = 0;
-  
-
     discount_before.each(function(){
       if($(this).attr('class')=="discount_before-item-soles"){
-        total_dis_bes+=parseFloat($(this).val());
+        total_dis_bes+=parseFloat($(this).val()).toFixed(2);
       }else{
         if($(this).attr('class')=="discount_before-item-percent"){
-          total_dis_bep+=parseFloat((amount*unit_price*parseFloat($(this).val())));
+          total_dis_bep+=parseFloat((amount*unit_price*parseFloat($(this).val()))).toFixed(2);
         }
       }
     });
-    var total_price = (((amount * unit_price) - total_dis_bes - total_dis_bep)*(1+igv)).toFixed(2);
+    var sdb = (total_dis_bes + total_dis_bep).toFixed(2);
+    $(element).parent().siblings('.discount-before').find('#db').html('S/. '+sdb);
+    var a =(1+igv).toFixed(2)
+    var total_price = (((amount * unit_price) - total_dis_bes - total_dis_bep)*(a)).toFixed(2);
+    $(element).parent().siblings('.price-with-igv').find('input').val(total_price);
 
+
+    var total_dis_afs = 0;
+    var total_dis_afp = 0;
     discount_after.each(function(){
       if($(this).attr('class')=="discount_after-item-soles"){
         total_dis_afs+=parseFloat($(this).val());
@@ -133,8 +136,8 @@
       }
     });    
     var net_total_price = parseFloat(total_price) - total_dis_afs - total_dis_afp
-
-    $(element).parent().siblings('.price-with-igv').find('input').val(total_price);
+    var sda = (total_dis_afs + total_dis_afp).toFixed(2);
+    $(element).parent().siblings('.discount-after').find('#da').html('S/. '+sda);
     $(element).parent().siblings('.neto-price-with-igv').find('input').val(parseFloat(net_total_price).toFixed(2));
   }
 

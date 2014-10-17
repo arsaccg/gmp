@@ -25,7 +25,8 @@
       = number_to_currency(data_order_detail[5], unit: 'S/.', precision: 2)
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_unit_price]', data_order_detail[5], class: "unit-price-item"
     %td.discount-before
-      = number_to_currency(data_order_detail[9].to_i, unit: 'S/.', precision: 2)
+      %div#db
+        = number_to_currency(data_order_detail[9].to_i, unit: 'S/.', precision: 2)
       -if @type_of_order_name == 'purchase_order'
         -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
           -if pdec.type =="percent"
@@ -60,7 +61,8 @@
     %td.price-with-igv
       = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', data_order_detail[6] , class: "form-control unit-price-igv", :readonly => true
     %td.discount-after
-      = number_to_currency(data_order_detail[10].to_i, unit: 'S/.', precision: 2)
+      %div#da
+        = number_to_currency(data_order_detail[10].to_i, unit: 'S/.', precision: 2)
       -if @type_of_order_name == 'purchase_order'
         -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%after%'").each do |pdec|
           -if pdec.type =="percent"
