@@ -103,14 +103,36 @@
     var amount = parseInt($(element).val());
     var igv = parseFloat($(element).parent().siblings('.current-igv').find('input').val());
     var unit_price = parseFloat($(element).parent().siblings('.unit-price').find('input').val());
-    var discount_before = parseFloat($(element).parent().siblings('.discount-before').find('input').val());
-    var discount_after = parseFloat($(element).parent().siblings('.discount-after').find('input').val());
+    var discount_before = $(element).parent().siblings('.discount-before').find('input');
+    var discount_after = $(element).parent().siblings('.discount-after').find('input');
 
-    if (isNaN(discount_before)) discount_before = 0;
-    if (isNaN(discount_after)) discount_after = 0;
+    var total_dis_bes = 0;
+    var total_dis_bep = 0;
+    var total_dis_afs = 0;
+    var total_dis_afp = 0;
+  
 
-    var total_price = parseFloat(((amount * unit_price) - discount_before)*(1+igv)).toFixed(2);
-    var net_total_price = parseFloat(total_price) + parseFloat(discount_after)
+    discount_before.each(function(){
+      if($(this).attr('class')=="discount_before-item-soles"){
+        total_dis_bes+=parseFloat($(this).val());
+      }else{
+        if($(this).attr('class')=="discount_before-item-percent"){
+          total_dis_bep+=parseFloat((amount*unit_price*parseFloat($(this).val())));
+        }
+      }
+    });
+    var total_price = (((amount * unit_price) - total_dis_bes - total_dis_bep)*(1+igv)).toFixed(2);
+
+    discount_after.each(function(){
+      if($(this).attr('class')=="discount_after-item-soles"){
+        total_dis_afs+=parseFloat($(this).val());
+      }else{
+        if($(this).attr('class')=="discount_after-item-percent"){
+          total_dis_afp+=parseFloat((total_price*parseFloat($(this).val())));
+        }
+      }
+    });    
+    var net_total_price = parseFloat(total_price) - total_dis_afs - total_dis_afp
 
     $(element).parent().siblings('.price-with-igv').find('input').val(total_price);
     $(element).parent().siblings('.neto-price-with-igv').find('input').val(parseFloat(net_total_price).toFixed(2));

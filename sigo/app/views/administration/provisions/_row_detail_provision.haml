@@ -26,7 +26,34 @@
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_unit_price]', data_order_detail[5], class: "unit-price-item"
     %td.discount-before
       = number_to_currency(data_order_detail[9].to_i, unit: 'S/.', precision: 2)
-      = hidden_field_tag 'discount_before', data_order_detail[9], class: "discount_before-item"
+      -if @type_of_order_name == 'purchase_order'
+        -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
+          -if pdec.type =="percent"
+            -value = pdec.value.to_f/100
+            -if pdec.operation == "minius"
+              -value = value *(-1)
+            = hidden_field_tag 'discount_before', value, class: "discount_before-item-percent"
+          -elsif pdec.type == "soles"
+            -value = pdec.value.to_f
+            -if pdec.operation == "minius"
+              -value = value *(-1)              
+            = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
+          -value = 0
+      -elsif @type_of_order_name == 'service_order' 
+        = hidden_field_tag 'discount_before', "service", class: "discount_before-item-soles"
+        -OrderServiceDetail.find(data_order_detail[0]).order_service_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
+          = hidden_field_tag 'discount_before', "service", class: "discount_before-item-soles"
+          -if pdec.type =="percent"
+            -value = pdec.value.to_f/100
+            -if pdec.operation == "minius"
+              -value = value *(-1)
+            = hidden_field_tag 'discount_before', value, class: "discount_before-item-percent"
+          -elsif pdec.type == "soles"
+            -value = pdec.value.to_f
+            -if pdec.operation == "minius"
+              -value = value *(-1)              
+            = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
+          -value = 0          
     %td.current-igv
       = (data_order_detail[7]*100).round.to_s + '%'
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_igv]',data_order_detail[7], class: "igv-item"
@@ -34,7 +61,35 @@
       = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', data_order_detail[6] , class: "form-control unit-price-igv", :readonly => true
     %td.discount-after
       = number_to_currency(data_order_detail[10].to_i, unit: 'S/.', precision: 2)
-      = hidden_field_tag 'discount_after', data_order_detail[10], class: "discount_after-item"
+      -if @type_of_order_name == 'purchase_order'
+        -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%after%'").each do |pdec|
+          -if pdec.type =="percent"
+            -value = pdec.value.to_f/100
+            -if pdec.operation == "minius"
+              -value = value *(-1)
+            = hidden_field_tag 'discount_after', value, class: "discount_after-item-percent"
+          -elsif pdec.type == "soles"
+            -value = pdec.value.to_f
+            -if pdec.operation == "minius"
+              -value = value *(-1)              
+            = hidden_field_tag 'discount_after', value, class: "discount_after-item-soles"
+          -value = 0
+      -elsif @type_of_order_name == 'service_order' 
+        = hidden_field_tag 'discount_after', "service", class: "discount_after-item-soles"
+        -OrderServiceDetail.find(data_order_detail[0]).order_service_extra_calculations.where("apply LIKE '%after%'").each do |pdec|
+          = hidden_field_tag 'discount_after', "service", class: "discount_after-item-soles"
+          -if pdec.type =="percent"
+            -value = pdec.value.to_f/100
+            -if pdec.operation == "minius"
+              -value = value *(-1)
+            = hidden_field_tag 'discount_after', value, class: "discount_after-item-percent"
+          -elsif pdec.type == "soles"
+            -value = pdec.value.to_f
+            -if pdec.operation == "minius"
+              -value = value *(-1)              
+            = hidden_field_tag 'discount_after', value, class: "discount_after-item-soles"
+          -value = 0          
+    
     %td.neto-price-with-igv
       = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][net_price_after_igv]', data_order_detail[11] , class: "form-control net-price-after-igv", :readonly => true
     %td{:style => "width: 1%;"}
