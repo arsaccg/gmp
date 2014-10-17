@@ -137,9 +137,8 @@ class Management::BudgetsController < ApplicationController
   end
 
   def administrate_budget
-    project = CostCenter.find(get_company_cost_center('cost_center'))
-    @valorization = project.valorizations
-    @budget = project.budgets
+    #project = CostCenter.find(get_company_cost_center('cost_center'))
+    @budget = Budget.where(cost_center_id: get_company_cost_center('cost_center'))
     render :administrate_budget, layout: false
   end
 

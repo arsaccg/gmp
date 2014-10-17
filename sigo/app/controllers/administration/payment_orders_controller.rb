@@ -80,6 +80,7 @@ class Administration::PaymentOrdersController < ApplicationController
     data_provision = Array.new
     provision = Provision.find(params[:provision_id])
     igv = 0
+    perception = 0
     total_quantity = 0
     total_quantity_without_igv = 0 # Valor que contiene solo CantdxPrecio.
     total_quantity_with_igv = 0 # Valor que contiene el IGV sumado a la anterior variable.
@@ -91,6 +92,7 @@ class Administration::PaymentOrdersController < ApplicationController
 
         total_quantity_without_igv += (provision_detail.current_unit_price*provision_detail.amount)
         total_quantity_with_igv += (provision_detail.current_unit_price*provision_detail.amount) + (provision_detail.current_igv*(provision_detail.current_unit_price*provision_detail.amount))
+        perception += (provision_detail.net_price_after_igv - provision_detail.unit_price_igv)
       end
     else
       provision.provision_direct_purchase_details.each do |provision_detail|
@@ -106,6 +108,7 @@ class Administration::PaymentOrdersController < ApplicationController
       :number_document_provision => provision.number_document_provision, 
       :date_doc_provision => provision.accounting_date, 
       :supplier_provision => provision.entity.name.to_s + ' ' + provision.entity.paternal_surname.to_s + ' ' + provision.entity.maternal_surname.to_s, 
+      :perception => perception,
       :total_quantity_provision => total_quantity_without_igv.round(2),
       :total_quantity_provision_with_igv => total_quantity_with_igv.round(2),
       :igv => igv.round(0)

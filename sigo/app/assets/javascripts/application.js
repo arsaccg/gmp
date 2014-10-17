@@ -607,7 +607,7 @@ function delete_to_url_into_div(url, div_name)
 
   $("." + div_name).html("<br/><br/><br/><center><img src='/assets/ajax-loader.gif' /></center>")
 
-    $.ajax({
+  $.ajax({
     url: url_str,
     type: 'DELETE'
   }).done(function( data ) {

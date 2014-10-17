@@ -75,12 +75,39 @@ class GeneralExpenses::LoansController < ApplicationController
   end
 
   def index
+    cant1=0
+    cant2=0
+    arr1=Array.new
+    arr2=Array.new
     @cc = CostCenter.find(params[:cc_id])
-    presto = ActiveRecord::Base.connection.execute("SELECT cost_center_lender_id,cost_center_beneficiary_id,SUM(amount),state
+    @arreglo1 = ActiveRecord::Base.connection.execute("SELECT cost_center_beneficiary_id
 FROM  `loans` 
-WHERE  `cost_center_lender_id` ="+@cc.id.to_s+" GROUP BY cost_center_beneficiary_id,state")
+WHERE  `cost_center_lender_id` ="+@cc.id.to_s+" GROUP BY cost_center_beneficiary_id")
 
+    presto = ActiveRecord::Base.connection.execute("SELECT cost_center_lender_id,cost_center_beneficiary_id,amount,state
+FROM  `loans` 
+WHERE  `cost_center_lender_id` ="+@cc.id.to_s+"")
 
+    @arreglo1.each do |ar|
+      presto.each do |presto|
+        if ar[0]==presto[1]
+          if (presto[3].to_i==1)
+            cant1+= presto[2]
+          end
+          if (presto[3].to_i==2)
+            cant2+= presto[2]
+          end
+        end
+      end
+      arr1<< cant1
+      arr2<< cant2
+    end
+
+    puts "-----"
+    puts arr1
+    puts "------"
+    puts arr2
+    puts "-----"
     @presto = Loan.where('cost_center_lender_id=?', @cc.id)
 
     @prestaron = Loan.where('cost_center_beneficiary_id=?', @cc.id)

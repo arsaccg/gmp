@@ -1,10 +1,10 @@
 class Management::ValorizationsController < ApplicationController
   #before_filter :authorize_manager
-  before_filter :authenticate_user!
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
-  
+  before_filter :authenticate_user!
+    
   def index
-    @budgets=Budget.where(:cost_center_id => params[:project_id])
+    @budgets=Budget.where(:cost_center_id => get_company_cost_center('cost_center'))
     render :index, :layout => false
   end
   
@@ -38,9 +38,14 @@ class Management::ValorizationsController < ApplicationController
 
   def destroy
     @valorization = Valorization.find(params[:id])
-    cost_center_id = Budget.find(@valorization.budget_id).cost_center_id
     @valorization.destroy
-    redirect_to administrate_budget_management_budgets_path + "?project_id=" + cost_center_id.to_s
+    
+    # project = CostCenter.find(get_company_cost_center('cost_center'))
+    # @valorization = project.valorizations
+    # @budget = project.budgets
+    #render "management/budgets/administrate_budget", layout: false
+    @budgets=Budget.where(:cost_center_id => get_company_cost_center('cost_center'))
+    render action: :index, layout: false
   end
 
 

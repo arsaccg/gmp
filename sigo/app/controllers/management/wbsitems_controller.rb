@@ -122,7 +122,7 @@ class Management::WbsitemsController < ApplicationController
       end
     end
 
-    @wbsitems = Wbsitem.order(:codewbs)  
+    @wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs)  
     @data = Phase.all
     render :get_items_from_project, layout: false
 
