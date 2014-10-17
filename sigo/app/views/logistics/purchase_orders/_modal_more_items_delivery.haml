@@ -6,7 +6,7 @@
 
 .row
   .col-md-6
-    %label Seleccionar Ordenes de Servicios:
+    %label Seleccionar Ordenes de Suministro:
     %select.select2#selected_deliv_orders{:name =>"delivery_orders[]", :style => 'width:100%;padding: 0;border: none;', :multiple => true}
       - @deliveryOrders.each do |delivery_order|
         %option{ :value => "#{delivery_order.id}" }
@@ -42,5 +42,12 @@
   });
 
   function check_all_checkboxes(){
-    $('#modal-more-items tbody tr td .checkbox .order_check').prop('checked', true);
+    var cont = parseInt($('#cont').val());
+    if(cont%2==0 || cont == 0){
+      $('#modal-more-items tbody tr td .checkbox .order_check').prop('checked', true);
+      $('#cont').val(cont+1);
+    }else{
+      $('#modal-more-items tbody tr td .checkbox .order_check').prop('checked', false);
+      $('#cont').val(cont+1);
+    }
   }

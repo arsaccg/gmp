@@ -2,6 +2,7 @@
   = hidden_field_tag "company_id", @company
   = hidden_field_tag "purchase_order[cost_center_id]", @cost_center
   %fieldset
+    %input#cont{:style=>"display:none;", :value=>0}
     .row
       .col-md-4
         .form-group
@@ -63,13 +64,7 @@
         .form-group
           %label.col-md-3.control-label Proveedores
           .col-md-9
-            .input-group
-              %select.form-control{:name =>"purchase_order[entity_id]"}
-                - @suppliers.each do |supp|
-                  %option{:value => "#{supp.id}"}
-                    = supp.name.to_s + ' ' + supp.paternal_surname.to_s
-              %span.input-group-addon
-                %i.fa.fa-truck
+            %input#proveedor-select.form-control{"name" =>"purchase_order[entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
       .col-md-4
         .form-group
           %label.col-md-2.control-label Estado

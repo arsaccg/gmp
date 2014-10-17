@@ -199,3 +199,14 @@
       return max; 
     else return value;
   }
+
+  function check_all_checkboxes(){
+    var cont = parseInt($('#cont').val());
+    if(cont%2==0 || cont == 0){
+      $('#modal-more-items tbody tr td .checkbox .order_check').prop('checked', true);
+      $('#cont').val(cont+1);
+    }else{
+      $('#modal-more-items tbody tr td .checkbox .order_check').prop('checked', false);
+      $('#cont').val(cont+1);
+    }
+  }    

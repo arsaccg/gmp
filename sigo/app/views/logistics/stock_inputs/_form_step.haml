@@ -9,6 +9,7 @@
       %section.col-md-12
         .col-md-3{"style"=>" margin-right: 20px; "}
           %label.control-label Almacén
+          %input#cont{:style=>"display:none;", :value=>0}
           .input-group
             %select.form-control#warehouse-select{:name =>"stock_input[warehouse_id]"}
               -if @warehouses.count == 1

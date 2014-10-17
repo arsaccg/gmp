@@ -14,6 +14,7 @@
           .row{:style=>"display:none;"}
             = hidden_field_tag "stock_input[input]", "1"
             = f.input :supplier_id
+            %input#cont{:style=>"display:none;", :value=>0}
           .row
             %section.col-md-12
               .col-md-3{"style"=>" margin-right: 20px; "}

@@ -18,7 +18,9 @@
             %th Sector
             %th Fase
             %th C/Atención
-            %th Seleccionar
+            %th 
+              %button.btn-xs.btn-success{ :type => 'button', :onclick => 'check_all_checkboxes();' }
+                %i.fa.fa-hand-o-down               
         %tbody#table-items
           - @tableItems.each do |x|
             - x.purchase_order_details.each do |y|

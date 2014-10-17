@@ -12,7 +12,9 @@
         - f.fields_for :purchase_order_details do |del|
           = del.hidden_field :lock_version
         = f.hidden_field :lock_version
+        %input#cont{:style=>"display:none;", :value=>0}
         .col-sm-12
+
           %fieldset
             %legend{'style' => 'border:none'}
             .row
@@ -84,17 +86,7 @@
                 .form-group
                   %label.col-md-3.control-label Proveedores
                   .col-md-9
-                    .input-group
-                      %select.form-control#category-select{:name =>"purchase_order[entity_id]"}
-                        - @suppliers.each do |supp|
-                          - if @purchaseOrder.entity_id == supp.id
-                            %option{:value => "#{supp.id}", :selected => true}
-                              = supp.name
-                          - else
-                            %option{:value => "#{supp.id}"}
-                              = supp.name
-                      %span.input-group-addon
-                        %i.fa.fa-truck
+                    %input#proveedor-select.form-control{"name" =>"purchase_order[entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@purchaseOrder.entity_id}"}
               .col-md-4
                 .form-group
                   %label.col-md-2.control-label Estado
@@ -306,6 +298,46 @@
 :javascript
   
   $(document).ready(function(){
+    $('#proveedor-select').select2({
+      placeholder: "Buscar proveedor...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_proveedor_logistics_purchase_orders_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      initSelection: function(element, callback) {
+        var id=$(element).val();
+        if (id != "") {
+          $.ajax("#{display_proveedor_logistics_purchase_orders_path}", {
+            type: 'POST',
+            data: {
+              element: id,
+              authenticity_token: "#{form_authenticity_token}"
+            },
+            dataType: "json"
+          }).done(function(data) { 
+            callback(data.articles[0]);
+          });
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name +'</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
+
+
 
     $.cost_center = "#{@purchaseOrder.cost_center_id}";
 
