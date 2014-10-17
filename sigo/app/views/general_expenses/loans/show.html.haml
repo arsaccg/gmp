@@ -1,2 +1,74 @@
-%h1 GeneralExpenses::Loans#show
-%p Find me in app/views/general_expenses/loans/show.html.haml
+.modal-dialog{ style: "width: 750px;" }
+  .modal-content
+    .modal-header
+      %header
+        %h2
+          %span.widget-icon
+            %i.fa.fa-pencil-square-o.fa-fw 
+          %strong= "DE C.C. "+@cost_center1.code.to_s+"-"+@cost_center1.name.to_s+" A "+@cost_center2.code.to_s+"-"+@cost_center2.name.to_s
+    .modal-body
+      %input#cc{"style"=>"display:none;", :value=>"#{@cc}"}
+      %fieldset
+        %table.table.table-striped.table-bordered.table-hover.smart-form
+          %thead.panel-heading
+            %tr
+              %th Total
+              %th Devuelto
+              %th Pendiente
+          %tbody{:style=>"font-size:100%;"}
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@total.to_f, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@devuelto.to_f, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@total.to_f - @devuelto.to_f, unit: 'S/. ', precision: 2)
+        %br
+        %br
+
+        %table.table.table-striped.table-bordered.table-hover.smart-form
+          %thead.panel-heading
+            %tr
+              %th N° Prestamo
+              %th Fecha de Prestamo
+              %th Monto
+              %th Estado
+              %th Acciones
+          %tbody
+            - @loan.each do |loan|
+              %tr
+                %td= loan.id
+                %td=loan.loan_date.strftime("%d-%m-%Y").to_s
+                %td= number_to_currency(loan.amount.to_f, unit: 'S/. ', precision: 2)
+                %td
+                  -if loan.state == "1"
+                    Pendiente
+                  -else
+                    Devuelto
+                %td
+                  %a{:href=>"javascript:show_details("+loan.id.to_s+");" }(class="small-font")
+                    Ver Detalle
+      %br
+      .row{"style"=>"height: 40%; overflow-y: scroll;"}
+        #detail
+      %br
+      
+
+      %footer
+        %button.btn.btn-info#show{"data-dismiss" => "modal", type: "button"}
+          Salir   
+
+:javascript
+
+  $("#show").click(function() {
+    data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
+    load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_show', data2, null, 'GET');
+  });
+
+  function show_details(id){
+    $("#detail").empty();
+    $("#detail").css("display","block");
+    str_item = {authenticity_token: "#{form_authenticity_token}", id: id};
+    append_url_ajax('#{show_details_general_expenses_loans_path}', 'detail', str_item, 0, 'POST');
+  }
+
+  function delete_item(code){
+    $("#" + code).empty();
+    $("#" + code).css("display","none");
+  }  

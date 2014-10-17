@@ -1,71 +1,78 @@
 .modal-dialog{ style: "width: 750px;" }
-	.modal-content
-		.modal-header
-			%header
-				%h2
-					%span.widget-icon
-						%i.fa.fa-pencil-square-o.fa-fw 
-					%strong Lista de Préstamos
-		.modal-body
-			%table.table.table-striped.table-bordered.table-hover.smart-form{"style"=>"width:300px;margin-left:29%;"}
-				%thead
-					%tr
-						%td{"colspan"=>2,"style"=>"text-align:center"} RESUMEN
-				%tbody
-					%tr
-						-suma1=0
-						-@presto.each do |presto|
-							-suma1+=presto.amount
-						%td PRESTO S/. (PENDIENTE)
-						%td=suma1
-					%tr
-						-suma2=0
-						-@prestaron.each do |prestaron|
-							-suma2+=prestaron.amount
-						%td LE PRESTARON S/. (PENDIENTE)
-						%td=suma2
-					%tr
-						%td RESULTADO
-						%td=suma1-suma2
-			%h2 PRESTO
-			%table.table.table-striped.table-bordered.table-hover.smart-form
-				%thead
-					%tr
-						%th Beneficiario
-						%th Total
-						%th Devuelto
-						%th Pendiente
-				%tbody
-					-@presto.each do |presto|
-						%tr
-							%td=CostCenter.find(presto.cost_center_beneficiary_id).name
-							%td=presto.amount
-							%td
-							%td
-			%br
-			%h2 LE PRESTARON
-			%table.table.table-striped.table-bordered.table-hover.smart-form
-				%thead
-					%tr
-						%th Beneficiario
-						%th Total
-						%th Devuelto
-						%th Pendiente
-				%tbody
-					-@prestaron.each do |prestaron|
-						-if !prestaron.id.nil?
-							%tr
-								%td=CostCenter.find(prestaron.cost_center_lender_id).name
-								%td=prestaron.amount
-								%td
-								%td
+  .modal-content
+    .modal-header
+      %header
+        %h2
+          %span.widget-icon
+            %i.fa.fa-pencil-square-o.fa-fw 
+          %strong Lista de Préstamos
+    .modal-body
+      %table.table.table-striped.table-bordered.table-hover.smart-form{"style"=>"width:300px;margin-left:29%;"}
+        %thead
+          %tr
+            %td{"colspan"=>2,"style"=>"text-align:center"} RESUMEN
+        %tbody
+          %tr
+            -suma1=0
+            -@presto.each do |presto|
+              -suma1+=presto.amount
+            %td PRESTO S/. (PENDIENTE)
+            %td=number_to_currency(suma1.to_f, unit: 'S/. ', precision: 2)
+          %tr
+            -suma2=0
+            -@prestaron.each do |prestaron|
+              -suma2+=prestaron.amount
+            %td LE PRESTARON S/. (PENDIENTE)
+            %td=number_to_currency(suma2.to_f, unit: 'S/. ', precision: 2)
+          %tr
+            %td RESULTADO
+            %td=number_to_currency(suma1.to_f-suma2.to_f, unit: 'S/. ', precision: 2)
+      %h2 PRESTO
+      %table.table.table-striped.table-bordered.table-hover.smart-form
+        %thead
+          %tr
+            %th Beneficiario
+            %th Total
+            %th Devuelto
+            %th Pendiente
+            %th Ver Detalle
+        %tbody
+          -@ledeben.each do |presto|
+            %tr
+              %td=CostCenter.find(presto[0]).name
+              %td=number_to_currency(presto[1].to_f + presto[2].to_f, unit: 'S/. ', precision: 2)
+              %td=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
+              %td=number_to_currency(presto[2].to_f, unit: 'S/. ', precision: 2)
+              %td
+                %a.btn.btn-success.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_show('+"#{@cc.id.to_s}"+','+"#{presto[0]}"+','+"#{@cc.id.to_s}"+');'}
+                  %i.fa.fa-usd              
+      %br
+      %h2 LE PRESTARON
+      %table.table.table-striped.table-bordered.table-hover.smart-form
+        %thead
+          %tr
+            %th Beneficiario
+            %th Total
+            %th Devuelto
+            %th Pendiente
+            %th Ver Detalle
+        %tbody
+          -@debe.each do |presto|
+            %tr
+              %td=CostCenter.find(presto[0]).name
+              %td=number_to_currency(presto[1].to_f + presto[2].to_f, unit: 'S/. ', precision: 2)
+              %td=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
+              %td=number_to_currency(presto[2].to_f, unit: 'S/. ', precision: 2)
+              %td                    
+                %a.btn.btn-success.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_show('+"#{presto[0]}"+','+"#{@cc.id.to_s}"+','+"#{@cc.id.to_s}"+');'}
+                  %i.fa.fa-usd
 
 
-			%footer
-				%br
-				%button.btn.btn-primary.btn-mini
-					%span{"style"=>"width=20px;text-align:center"}
-						%a{href: 'javascript:void(0);', :onclick => 'loan_new('+"#{@cc.id.to_s}"+');', "style"=>" color: white; "}
-							Agregar Préstamo
-				%button.btn.btn-info#new{"data-dismiss" => "modal", type: "button","style"=>"float:right;"}
-					Salir      
+      %footer
+        %br
+        %button.btn.btn-primary.btn-mini
+          %span{"style"=>"width=20px;text-align:center"}
+            %a{href: 'javascript:void(0);', :onclick => 'loan_new('+"#{@cc.id.to_s}"+');', "style"=>" color: white; "}
+              Agregar Préstamo
+        %button.btn.btn-info#new{"data-dismiss" => "modal", type: "button","style"=>"float:right;"}
+          Salir      

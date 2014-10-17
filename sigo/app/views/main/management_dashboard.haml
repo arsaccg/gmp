@@ -300,6 +300,7 @@
 
 #loan.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
 #loan_new.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
+#loan_show.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
 
 #operating-result.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "operatingResultLabel", role: "dialog", tabindex: "-1"}
 
@@ -795,6 +796,15 @@
     load_modal_ajax('#{new_general_expenses_diverse_expenses_of_management_path}', 'gdgn', 'gdg', data, null, 'GET');
   }
 
+  function gdg_edit(id){
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    load_modal_ajax('/general_expenses/diverse_expenses_of_managements/'+id+'/edit', 'gdge', 'gdg', data, null, 'GET');
+  }
+
+  function gdg_show(id){
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    load_modal_ajax('/general_expenses/diverse_expenses_of_managements/'+id+'', 'gdgs', 'gdg', data, null, 'GET');
+  }  
 
   function loan(id){
     data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
@@ -810,15 +820,10 @@
     load_modal_ajax('#{new_general_expenses_loan_path}', 'loan_new', 'loan', data, null, 'GET');
   }
 
-  function gdg_edit(id){
-    data = { authenticity_token: "#{form_authenticity_token}"};
-    load_modal_ajax('/general_expenses/diverse_expenses_of_managements/'+id+'/edit', 'gdge', 'gdg', data, null, 'GET');
-  }
-
-  function gdg_show(id){
-    data = { authenticity_token: "#{form_authenticity_token}"};
-    load_modal_ajax('/general_expenses/diverse_expenses_of_managements/'+id+'', 'gdgs', 'gdg', data, null, 'GET');
-  }  
+  function loan_show(cc1,cc2,cc3){
+    data = { authenticity_token: "#{form_authenticity_token}", cc1:cc1, cc2:cc2, cc3:cc3};
+    load_modal_ajax('#{general_expenses_loan_path("show")}', 'loan_show', 'loan', data, null, 'GET');
+  }    
 
   function load_operating_result(cost_center_id){
     data = { authenticity_token : "#{form_authenticity_token}", cost_center : cost_center_id }

@@ -1,0 +1,38 @@
+%a{href: "javascript:delete_item('detail')", "style"=>"  width: 50px; float: right; color: white; background: #2070a8; "}(class="btn") X
+%row{"style"=>"margin-left:10px"}
+  %br
+  %table.table.table-striped.table-bordered.table-hover.smart-form
+    %thead
+      %tr
+        %th{'colspan' => 4, "style"=>"text-align:center;"}= "PRESTAMO N° "+ @loan.id.to_s
+    %tbody
+      %tr
+        %th{:style=>"width:20%;font-weight: normal;"}= "ENTREGADO A: "
+        %th{:style=>"width:30%;"}= @loan.person.to_s.upcase
+        %th{:style=>"width:20%;font-weight: normal;"} FECHA: 
+        %th{:style=>"width:30%;"}= @loan.loan_date.strftime("%d-%m-%Y").to_s
+      %tr
+        %th{:style=>"width:20%;font-weight: normal;"} FORMA DE PRESTAMO: 
+        %th{:style=>"width:30%;"}
+          -if @loan.loan_type == "1"
+            ="CHEQUE"
+          -elsif @loan.loan_type == "2"
+            ="TRANSFERENCIA"
+          -else
+            ="EFECTIVO"
+        %th{:style=>"width:20%;font-weight: normal;"} MOTIVO:
+        %th{:style=>"width:30%;"}= @loan.description.to_s
+      %tr
+        %th{:style=>"width:20%;font-weight: normal;"} FORMA DE DEVOLUCIÓN: 
+        %th{:style=>"width:30%;"}
+          -if @loan.refund_type == "1"
+            ="CHEQUE"
+          -elsif @loan.refund_type == "2"
+            ="TRANSFERENCIA"
+          -else
+            ="EFECTIVO"
+        -if @loan.refund_type == "1"
+          %th{:style=>"width:20%;font-weight: normal;"}
+            =" N° DE CHEQUE:"
+          %th{:style=>"width:30%;"}
+            = @loan.check_number.to_s
