@@ -172,7 +172,7 @@ class Administration::ProvisionsController < ApplicationController
     if @type_of_order_name == 'purchase_order' 
       order_detail_ids.each do |order_detail_id|
         purchase_order_detail = PurchaseOrderDetail.find(order_detail_id)
-        igv = 0
+        igv = 0.18
         if purchase_order_detail.igv != nil
           igv = (purchase_order_detail.unit_price_igv/(purchase_order_detail.amount*purchase_order_detail.unit_price))-1
         end
@@ -182,12 +182,40 @@ class Administration::ProvisionsController < ApplicationController
         provision = ProvisionDetail.find_by_order_detail_id(purchase_order_detail.id)
         if !provision.nil?
           pending = purchase_order_detail.amount - provision.amount
-          total = pending*purchase_order_detail.unit_price*(1+igv)
+          some_results = PurchaseOrderDetail.calculate_amounts(order_detail_id, pending, purchase_order_detail.unit_price, igv)
+          #total = (pending*purchase_order_detail.unit_price*(1+igv))
+          @data_orders << [ 
+            purchase_order_detail.id, 
+            purchase_order_detail.delivery_order_detail.article.code, 
+            purchase_order_detail.delivery_order_detail.article.name, 
+            purchase_order_detail.delivery_order_detail.article.unit_of_measurement.symbol, 
+            purchase_order_detail.amount, 
+            purchase_order_detail.unit_price, 
+            some_results[4].round(2), 
+            igv, 
+            pending, 
+            some_results[1], 
+            some_results[2],
+            some_results[5].round(2)
+          ]
         else
           pending = purchase_order_detail.amount
-          total = purchase_order_detail.unit_price_igv
+          total = purchase_order_detail.total - purchase_order_detail.quantity_igv - purchase_order_detail.discount_before
+          @data_orders << [ 
+            purchase_order_detail.id, 
+            purchase_order_detail.delivery_order_detail.article.code, 
+            purchase_order_detail.delivery_order_detail.article.name, 
+            purchase_order_detail.delivery_order_detail.article.unit_of_measurement.symbol, 
+            purchase_order_detail.amount, 
+            purchase_order_detail.unit_price, 
+            total, 
+            igv, 
+            pending, 
+            purchase_order_detail.discount_before, 
+            purchase_order_detail.discount_after,
+            purchase_order_detail.unit_price_igv
+          ]
         end
-        @data_orders << [ purchase_order_detail.id, purchase_order_detail.delivery_order_detail.article.code, purchase_order_detail.delivery_order_detail.article.name, purchase_order_detail.delivery_order_detail.article.unit_of_measurement.symbol, purchase_order_detail.amount, purchase_order_detail.unit_price, total, igv, pending ]
       end
     elsif @type_of_order_name == 'service_order'
       order_detail_ids.each do |order_detail_id|
