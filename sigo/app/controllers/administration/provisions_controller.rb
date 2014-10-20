@@ -200,7 +200,7 @@ class Administration::ProvisionsController < ApplicationController
           ]
         else
           pending = purchase_order_detail.amount
-          total = purchase_order_detail.total - purchase_order_detail.quantity_igv - purchase_order_detail.discount_before
+          total = purchase_order_detail.unit_price_before_igv.to_f - purchase_order_detail.quantity_igv.to_f - purchase_order_detail.discount_before.to_f
           @data_orders << [ 
             purchase_order_detail.id, 
             purchase_order_detail.delivery_order_detail.article.code, 
