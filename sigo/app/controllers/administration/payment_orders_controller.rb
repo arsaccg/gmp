@@ -138,6 +138,8 @@ class Administration::PaymentOrdersController < ApplicationController
       :igv, 
       :percent_detraction, 
       :detraction, 
+      :guarantee_fund_n1, 
+      :other_discounts, 
       :cost_center_id
     )
   end
