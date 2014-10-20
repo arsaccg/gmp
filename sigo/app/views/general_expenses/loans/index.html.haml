@@ -1,69 +1,69 @@
 .modal-dialog{ style: "width: 750px;" }
   .modal-content
-    .modal-header
+    .modal-header{"style"=>"height:75px;"}
       %header
         %h2
           %span.widget-icon
             %i.fa.fa-pencil-square-o.fa-fw 
           %strong Lista de Préstamos
     .modal-body
-      %table.table.table-striped.table-bordered.table-hover.smart-form{"style"=>"width:300px;margin-left:29%;"}
-        %thead
-          %tr
-            %td{"colspan"=>2,"style"=>"text-align:center"} RESUMEN
+      %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:350px;height:100px;margin-left:26%;"}
+        %thead.panel-heading
+          %tr{"style"=>"height:25px"}
+            %td{"colspan"=>2,"style"=>"text-align:center;font-weight:bold;"} RESUMEN
         %tbody
           %tr
             -suma1=0
             -@presto.each do |presto|
               -suma1+=presto.amount
-            %td PRESTO S/. (PENDIENTE)
-            %td=number_to_currency(suma1.to_f, unit: 'S/. ', precision: 2)
+            %td{"style"=>"font-weight:bold;color:green;font-size:13px;"} PRESTO S/. (PENDIENTE)
+            %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;"}=number_to_currency(suma1.to_f, unit: 'S/. ', precision: 2)
           %tr
             -suma2=0
             -@prestaron.each do |prestaron|
               -suma2+=prestaron.amount
-            %td LE PRESTARON S/. (PENDIENTE)
-            %td=number_to_currency(suma2.to_f, unit: 'S/. ', precision: 2)
+            %td{"style"=>"font-weight:bold;color:red;font-size:13px;"} LE PRESTARON S/. (PENDIENTE)
+            %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;"}=number_to_currency(suma2.to_f, unit: 'S/. ', precision: 2)
           %tr
-            %td RESULTADO
-            %td=number_to_currency(suma1.to_f-suma2.to_f, unit: 'S/. ', precision: 2)
-      %h2 PRESTO
-      %table.table.table-striped.table-bordered.table-hover.smart-form
-        %thead
-          %tr
-            %th Beneficiario
-            %th Total
-            %th Devuelto
-            %th Pendiente
-            %th Ver Detalle
+            %td{"style"=>"font-weight:bold;font-size:13px;"} RESULTADO
+            %td#res{"style"=>"text-align:right;font-size:11px;font-weight:bold;"}=number_to_currency(suma1.to_f-suma2.to_f, unit: 'S/. ', precision: 2)
+      %h2{"style"=>"font-weight:bold;color:green;"} PRESTO
+      %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:98%;height:90px;"}
+        %thead.panel-heading
+          %tr{"style"=>"height:25px;text"}
+            %th{"style"=>"text-align:center;"} Beneficiario
+            %th{"style"=>"text-align:center;width:100px;"} Total
+            %th{"style"=>"text-align:center;width:100px;"} Devuelto
+            %th{"style"=>"text-align:center;width:100px;"} Pendiente
+            %th{"style"=>"text-align:center;"} Ver Detalle
         %tbody
           -@ledeben.each do |presto|
             %tr
-              %td=CostCenter.find(presto[0]).name
-              %td=number_to_currency(presto[1].to_f + presto[2].to_f, unit: 'S/. ', precision: 2)
-              %td=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
-              %td=number_to_currency(presto[2].to_f, unit: 'S/. ', precision: 2)
-              %td
+              %td{"style"=>"padding-left:5px;"}=CostCenter.find(presto[0]).name
+              %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f + presto[2].to_f, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;"}=number_to_currency(presto[2].to_f, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;"}
                 %a.btn.btn-success.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_show('+"#{@cc.id.to_s}"+','+"#{presto[0]}"+','+"#{@cc.id.to_s}"+');'}
                   %i.fa.fa-usd              
       %br
-      %h2 LE PRESTARON
-      %table.table.table-striped.table-bordered.table-hover.smart-form
-        %thead
-          %tr
-            %th Beneficiario
-            %th Total
-            %th Devuelto
-            %th Pendiente
-            %th Ver Detalle
+      %h2{"style"=>"font-weight:bold;color:red;"} LE PRESTARON
+      %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:98%;height:90px;"}
+        %thead.panel-heading
+          %tr{"style"=>"height:25px"}
+            %th{"style"=>"text-align:center;"} Beneficiario
+            %th{"style"=>"text-align:center;width:100px;"} Total
+            %th{"style"=>"text-align:center;width:100px;"} Devuelto
+            %th{"style"=>"text-align:center;width:100px;"} Pendiente
+            %th{"style"=>"text-align:center;"} Ver Detalle
         %tbody
           -@debe.each do |presto|
             %tr
-              %td=CostCenter.find(presto[0]).name
-              %td=number_to_currency(presto[1].to_f + presto[2].to_f, unit: 'S/. ', precision: 2)
-              %td=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
-              %td=number_to_currency(presto[2].to_f, unit: 'S/. ', precision: 2)
-              %td                    
+              %td{"style"=>"padding-left:5px;"}=CostCenter.find(presto[0]).name
+              %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f + presto[2].to_f, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;"}=number_to_currency(presto[2].to_f, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;"}                    
                 %a.btn.btn-success.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_show('+"#{presto[0]}"+','+"#{@cc.id.to_s}"+','+"#{@cc.id.to_s}"+');'}
                   %i.fa.fa-usd
 
@@ -75,4 +75,15 @@
             %a{href: 'javascript:void(0);', :onclick => 'loan_new('+"#{@cc.id.to_s}"+');', "style"=>" color: white; "}
               Agregar Préstamo
         %button.btn.btn-info#new{"data-dismiss" => "modal", type: "button","style"=>"float:right;"}
-          Salir      
+          Salir
+
+:javascript      
+
+  $(document).ready(function (){
+    if($('#res').val()<0){
+      document.getElementById('res').style.color = 'red'; 
+    }
+    else{
+      document.getElementById('res').style.color = 'blue';
+    }
+  });

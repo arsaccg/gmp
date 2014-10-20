@@ -25,10 +25,11 @@ class Provision < ActiveRecord::Base
     end
   end
 
+  # Functions for Direct Purchase Provisions
+
   def self.sumProvisionDetail(provision_id)
     sum = 0
     provisiondetails = ProvisionDetail.where("provision_id = ?",provision_id)
-    puts provisiondetails.inspect
     provisiondetails.each do |pd|
       sum = pd.amount * pd.current_unit_price rescue 1
     end

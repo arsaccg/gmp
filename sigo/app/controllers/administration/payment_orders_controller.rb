@@ -4,6 +4,10 @@ class Administration::PaymentOrdersController < ApplicationController
 
   def index
     @paymentOrders = PaymentOrder.all
+    @workers = ""
+    TypeEntity.find_by_preffix('T').entities.each do |entity|
+      @workers += '[' + entity.name.to_s + ' ' + entity.second_name.to_s + ' ' + entity.paternal_surname.to_s + ' ' + entity.maternal_surname.to_s + ']'
+    end
     render layout: false
   end
 
@@ -90,9 +94,9 @@ class Administration::PaymentOrdersController < ApplicationController
         total_quantity += provision_detail.unit_price_igv.to_f # Precio antes de IGV
         #total_quantity_with_igv += provision_detail.net_price_after_igv.to_f # Precio despues de IGV
 
-        total_quantity_without_igv += (provision_detail.current_unit_price*provision_detail.amount)
-        total_quantity_with_igv += (provision_detail.current_unit_price*provision_detail.amount) + (provision_detail.current_igv*(provision_detail.current_unit_price*provision_detail.amount))
-        perception += (provision_detail.net_price_after_igv - provision_detail.unit_price_igv)
+        total_quantity_without_igv += (provision_detail.current_unit_price.to_f*provision_detail.amount.to_f) - provision_detail.discount_before_igv.to_f
+        total_quantity_with_igv += total_quantity_without_igv.to_f + (provision_detail.current_igv.to_f*total_quantity_without_igv.to_f) + provision_detail.discount_after_igv.to_f
+        perception += provision_detail.amount_perception.to_f
       end
     else
       provision.provision_direct_purchase_details.each do |provision_detail|
@@ -117,8 +121,40 @@ class Administration::PaymentOrdersController < ApplicationController
     render json: { :provision => data_provision }
   end
 
+  def generate_payslip
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @destinatary = params[:destinatary]
+        payment_order = PaymentOrder.find(params[:id])
+        @codes_orders = ""
+        @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+        payment_order.provision.provision_details.each do |payment_detail|
+          if payment_detail.type_of_order == 'purchase_order'
+            @codes_orders += PurchaseOrderDetail.find(payment_detail.order_detail_id).purchase_order.id.to_s.rjust(5,'0') + ' / '
+          else
+            @codes_orders += OrderOfServiceDetail.find(payment_detail.order_detail_id).order_service.id.to_s.rjust(5,'0') + ' / '
+          end
+        end
+        render :pdf => "Orden_de_pago-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'administration/payment_orders/payslip_pdf.pdf.haml',
+               :orientation => 'Landscape',
+               :page_size => 'Letter'
+      end
+    end
+  end
+
   private
   def payment_order_parameters
-    params.require(:payment_order).permit(:provision_id, :net_pay, :igv, :percent_detraction, :detraction, :cost_center_id)
+    params.require(:payment_order).permit(
+      :provision_id, 
+      :net_pay, 
+      :igv, 
+      :percent_detraction, 
+      :detraction, 
+      :guarantee_fund_n1, 
+      :other_discounts, 
+      :cost_center_id
+    )
   end
 end

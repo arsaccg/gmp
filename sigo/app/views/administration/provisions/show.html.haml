@@ -72,6 +72,7 @@
                     %th Precio Unitario
                     %th IGV
                     %th Total Neto con IGV
+                    %th Percepción
                     %th Total Neto con IGV y Descuentos
                 %tbody
                   - @provision.provision_details.each do |provision_detail|
@@ -92,6 +93,8 @@
                         = (provision_detail.current_igv*100).round(0).to_s + '%'
                       %td
                         = number_to_currency provision_detail.unit_price_igv, unit: 'S/.', precision: 2
+                      %td
+                        = number_to_currency provision_detail.amount_perception, unit: 'S/.', precision: 2                        
                       %td
                         = number_to_currency provision_detail.net_price_after_igv, unit: 'S/.', precision: 2
 
