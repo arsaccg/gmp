@@ -183,7 +183,7 @@ class Administration::ProvisionsController < ApplicationController
         if !provision.nil?
           pending = purchase_order_detail.amount - provision.amount
           some_results = PurchaseOrderDetail.calculate_amounts(order_detail_id, pending, purchase_order_detail.unit_price, igv)
-          #total = (pending*purchase_order_detail.unit_price*(1+igv))
+          
           @data_orders << [ 
             purchase_order_detail.id, 
             purchase_order_detail.delivery_order_detail.article.code, 
