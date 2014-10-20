@@ -23,7 +23,7 @@
                 = subsector.name  
   %td.smart-form
     %div
-      %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
+      %select.select2-container.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
         %option{:value => nil, :selected => true, :disabled => true} Seleccionar Fase
         - @phases.each do |phase|
           %option{:value => "#{phase.id}"}
