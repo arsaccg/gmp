@@ -177,13 +177,24 @@ class Administration::ProvisionsController < ApplicationController
           igv = (purchase_order_detail.unit_price_igv/(purchase_order_detail.amount*purchase_order_detail.unit_price))-1
         end
         # Lo que falta Atender
+        provision = ProvisionDetail.find_by_order_detail_id(purchase_order_detail.id)
         pending = 0
         total = 0
-        provision = ProvisionDetail.find_by_order_detail_id(purchase_order_detail.id)
+        percepcion = purchase_order_detail.purchase_order_extra_calculations.find_by_extra_calculation_id(2)
         if !provision.nil?
           pending = purchase_order_detail.amount - provision.amount
           some_results = PurchaseOrderDetail.calculate_amounts(order_detail_id, pending, purchase_order_detail.unit_price, igv)
           #total = (pending*purchase_order_detail.unit_price*(1+igv))
+          if !percepcion.nil?
+            if percepcion.type=="soles"
+              percepcion = (percepcion.value.to_f+some_results[4].round(2))
+            else
+              percepcion = ((percepcion.value.to_f/100)*some_results[4].round(2))
+            end
+          else
+            percepcion = 0
+          end
+
           @data_orders << [ 
             purchase_order_detail.id, 
             purchase_order_detail.delivery_order_detail.article.code, 
@@ -196,11 +207,21 @@ class Administration::ProvisionsController < ApplicationController
             pending, 
             some_results[1], 
             some_results[2],
-            some_results[5].round(2)
+            some_results[5].round(2),
+            percepcion
           ]
         else
           pending = purchase_order_detail.amount
           total = purchase_order_detail.unit_price_before_igv.to_f - purchase_order_detail.quantity_igv.to_f - purchase_order_detail.discount_before.to_f
+          if !percepcion.nil?
+            if percepcion.type=="soles"
+              percepcion = (percepcion.value.to_f+total)
+            else
+              percepcion = ((percepcion.value.to_f/100)*total)
+            end
+          else
+            percepcion = 0
+          end 
           @data_orders << [ 
             purchase_order_detail.id, 
             purchase_order_detail.delivery_order_detail.article.code, 
@@ -213,8 +234,10 @@ class Administration::ProvisionsController < ApplicationController
             pending, 
             purchase_order_detail.discount_before, 
             purchase_order_detail.discount_after,
-            purchase_order_detail.unit_price_igv
+            purchase_order_detail.unit_price_igv,
+            percepcion
           ]
+
         end
       end
     elsif @type_of_order_name == 'service_order'
@@ -229,6 +252,16 @@ class Administration::ProvisionsController < ApplicationController
         total = 0 
         total_neto = 0 
         provision = ProvisionDetail.find_by_order_detail_id(service_order_detail.id)
+        percepcion = service_order_detail.order_service_extra_calculations.find_by_extra_calculation_id(2)
+        if percepcion.nil?
+          percepcion="0.00"
+        else        
+          if percepcion.type=="soles"
+            percepcion = "S/. "+percepcion.value.to_f.to_s
+          else
+            percepcion = percepcion.value.to_f.to_s + "%"
+          end
+        end
         if !provision.nil?
           pending = service_order_detail.amount - provision.amount
           total = (((pending * service_order_detail.unit_price) + service_order_detail.discount_before.to_i) * (1 + igv))
@@ -250,7 +283,8 @@ class Administration::ProvisionsController < ApplicationController
           pending,
           service_order_detail.discount_before.to_i*-1,
           service_order_detail.discount_after.to_i,
-          total_neto
+          total_neto,
+          percepcion
         ]
       end
     end
