@@ -27,34 +27,33 @@
     %td.discount-before
       %div#db
         = number_to_currency(data_order_detail[9].to_i, unit: 'S/.', precision: 2)
-      -if @type_of_order_name == 'purchase_order'
-        -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
-          -if pdec.type =="percent"
-            -value = pdec.value.to_f/100
-            -if pdec.operation == "minius"
-              -value = value *(-1)
+      - if @type_of_order_name == 'purchase_order'
+        - PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
+          - if pdec.type =="percent"
+            - value = pdec.value.to_f/100
+            - if pdec.operation == "minius"
+              - value = value *(-1)
             = hidden_field_tag 'discount_before', value, class: "discount_before-item-percent"
-          -elsif pdec.type == "soles"
-            -value = pdec.value.to_f
-            -if pdec.operation == "minius"
-              -value = value *(-1)              
+          - elsif pdec.type == "soles"
+            - value = pdec.value.to_f
+            - if pdec.operation == "minius"
+              - value = value *(-1)              
             = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
-          -value = 0
-      -elsif @type_of_order_name == 'service_order' 
-        = hidden_field_tag 'discount_before', "service", class: "discount_before-item-soles"
-        -OrderServiceDetail.find(data_order_detail[0]).order_service_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
+          - value = 0
+      - elsif @type_of_order_name == 'service_order'
+        - OrderServiceDetail.find(data_order_detail[0]).order_service_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
           = hidden_field_tag 'discount_before', "service", class: "discount_before-item-soles"
-          -if pdec.type =="percent"
-            -value = pdec.value.to_f/100
-            -if pdec.operation == "minius"
-              -value = value *(-1)
+          - if pdec.type =="percent"
+            - value = pdec.value.to_f/100
+            - if pdec.operation == "minius"
+              - value = value *(-1)
             = hidden_field_tag 'discount_before', value, class: "discount_before-item-percent"
-          -elsif pdec.type == "soles"
-            -value = pdec.value.to_f
-            -if pdec.operation == "minius"
-              -value = value *(-1)              
+          - elsif pdec.type == "soles"
+            - value = pdec.value.to_f
+            - if pdec.operation == "minius"
+              - value = value *(-1)              
             = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
-          -value = 0          
+          - value = 0          
     %td.current-igv
       = (data_order_detail[7]*100).round.to_s + '%'
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_igv]',data_order_detail[7], class: "igv-item"
