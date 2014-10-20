@@ -57,7 +57,7 @@
                       Ver Información
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_administration_payment_order_path(payment_order.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-success.btn-xs{ :href => '#', :target => '_blank' }
+                    %a.btn.btn-success.btn-xs{ :href => "javascript:show_pdf(#{payment_order.id});" }
                       Ver PDF
                     %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{payment_order.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{administration_payment_order_path(payment_order.id)}', 'content', '#{administration_payment_orders_path}')"}}
                       Eliminar
@@ -118,4 +118,22 @@
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
     });
     
+  }
+
+  function show_pdf(payment_id){
+    $.SmartMessageBox({
+      title : "Seleccionar al destinatario de la Orden de Pago",
+      content : "",
+      buttons : "[CANCELAR][ACEPTAR]",
+      input : "select",
+      options : "#{@workers}"
+    }, function(ButtonPress, Value) {
+      if (ButtonPress == 'ACEPTAR'){
+        var win = window.open('/administration/payment_orders/' + payment_id + '/generate_payslip.pdf?destinatary=' + Value, '_blank');
+        if(win)
+          win.focus();
+      }
+    });
+
+    e.preventDefault();
   }

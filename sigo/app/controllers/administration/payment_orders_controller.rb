@@ -4,6 +4,10 @@ class Administration::PaymentOrdersController < ApplicationController
 
   def index
     @paymentOrders = PaymentOrder.all
+    @workers = ""
+    TypeEntity.find_by_preffix('T').entities.each do |entity|
+      @workers += '[' + entity.name.to_s + ' ' + entity.second_name.to_s + ' ' + entity.paternal_surname.to_s + ' ' + entity.maternal_surname.to_s + ']'
+    end
     render layout: false
   end
 
@@ -118,14 +122,24 @@ class Administration::PaymentOrdersController < ApplicationController
   end
 
   def generate_payslip
-    payment_order = PaymentOrder.find(params[:id])
-    @codes_orders = ""
-    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-    payment_order.provision.provision_details.each do |payment_detail|
-      if payment_detail.type_of_order == 'purchase_order'
-        PurchaseOrderDetail.find(payment_detail.order_detail_id)
-      else
-        OrderOfServiceDetail.find(payment_detail.order_detail_id)
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @destinatary = params[:destinatary]
+        payment_order = PaymentOrder.find(params[:id])
+        @codes_orders = ""
+        @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+        payment_order.provision.provision_details.each do |payment_detail|
+          if payment_detail.type_of_order == 'purchase_order'
+            @codes_orders += PurchaseOrderDetail.find(payment_detail.order_detail_id).purchase_order.id.to_s.rjust(5,'0') + ' / '
+          else
+            @codes_orders += OrderOfServiceDetail.find(payment_detail.order_detail_id).order_service.id.to_s.rjust(5,'0') + ' / '
+          end
+        end
+        render :pdf => "Orden_de_pago-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'administration/payment_orders/payslip_pdf.pdf.haml',
+               :orientation => 'Landscape',
+               :page_size => 'Letter'
       end
     end
   end
