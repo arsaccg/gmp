@@ -53,7 +53,7 @@
             -if pdec.operation == "sum"
               -value = value *(-1)              
             = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
-          -value = 0          
+          - value = 0          
     %td.current-igv
       = (data_order_detail[7]*100).round.to_s + '%'
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_igv]',data_order_detail[7], class: "igv-item"
