@@ -26,7 +26,7 @@
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_unit_price]', data_order_detail[5], class: "unit-price-item"
     %td.discount-before
       %div#db
-        = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount_with_discount_before_igv]', data_order_detail[9].to_f.round(2), class: "form-control amount_with_discount_before_igv", :readonly => true
+        = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][discount_before_igv]', data_order_detail[9].to_f.round(2), class: "form-control amount_with_discount_before_igv", :readonly => true
       -if @type_of_order_name == 'purchase_order'
         -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
           -if pdec.type =="percent"
@@ -61,8 +61,7 @@
       = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', data_order_detail[6] , class: "form-control unit-price-igv", :readonly => true
     %td.discount-after
       %div#da
-        = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount_after_igv_with_discount]', data_order_detail[10].to_f.round(2), class: "form-control amount_after_igv_with_discount", :readonly => true  
-        
+        = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][discount_after_igv]', data_order_detail[10].to_f.round(2), class: "form-control amount_after_igv_with_discount", :readonly => true  
       -if @type_of_order_name == 'purchase_order'
         -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%after%'").each do |pdec|
           -if pdec.type =="percent"
@@ -95,23 +94,28 @@
         = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount_perception]', data_order_detail[12].round(2), class: "form-control perception", :readonly => true
       -if @type_of_order_name == 'purchase_order'
         -pdec = PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.find_by_extra_calculation_id(2)
-        -if pdec.type =="percent"
-          -value = pdec.value.to_f/100
-          = hidden_field_tag 'perception', value, class: "perception-percent"
-        -elsif pdec.type == "soles"
-          -value = pdec.value.to_f 
-          = hidden_field_tag 'perception', value, class: "perception-soles"
-        -value = 0
+        -if !pdec.nil?
+          -if pdec.type =="percent"
+            -value = pdec.value.to_f/100
+            = hidden_field_tag 'perception', value, class: "perception-percent"
+          -elsif pdec.type == "soles"
+            -value = pdec.value.to_f 
+            = hidden_field_tag 'perception', value, class: "perception-soles"
+          -value = 0
+        -else
+          = hidden_field_tag 'perception', 0, class: "perception-soles"
       -elsif @type_of_order_name == 'service_order' 
         -pdec = OrderServiceDetail.find(data_order_detail[0]).order_service_extra_calculations.find_by_extra_calculation_id(2)
-        -if pdec.type =="percent"
-          -value = pdec.value.to_f/100
-          = hidden_field_tag 'perception', value, class: "perception-percent"
-        -elsif pdec.type == "soles"
-          -value = pdec.value.to_f 
-          = hidden_field_tag 'perception', value, class: "perception-soles"
-        -value = 0        
-
+        -if !pdec.nil?
+          -if pdec.type =="percent"
+            -value = pdec.value.to_f/100
+            = hidden_field_tag 'perception', value, class: "perception-percent"
+          -elsif pdec.type == "soles"
+            -value = pdec.value.to_f 
+            = hidden_field_tag 'perception', value, class: "perception-soles"
+          -value = 0  
+        -else
+          = hidden_field_tag 'perception', 0, class: "perception-soles"      
     %td.neto-price-with-igv
       = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][net_price_after_igv]', data_order_detail[11] , class: "form-control net-price-after-igv", :readonly => true
     %td{:style => "width: 1%;"}

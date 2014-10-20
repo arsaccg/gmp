@@ -69,6 +69,7 @@
                 %th IGV
                 %th Total Neto
                 %th Total Descuentos después de IGV
+                %th Percepción
                 %th Total Neto con Descuentos
                 %th Eliminar
             %tbody{:id => "provisions_items_table"}
@@ -95,14 +96,95 @@
                     = number_to_currency(pd.current_unit_price.to_s, unit: 'S/.', precision: 2)
                     = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_unit_price]', pd.current_unit_price, class: "unit-price-item"
                   %td.discount-before
-                    = number_to_currency(0, unit: 'S/.', precision: 2)
+                    %div#db
+                      = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][discount_before_igv]', pd.discount_before_igv.to_f.round(2), class: "form-control amount_with_discount_before_igv", :readonly => true
+                    -if pd.type_of_order == 'purchase_order'
+                      -PurchaseOrderDetail.find(pd.order_detail_id).purchase_order_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
+                        -if pdec.type =="percent"
+                          -value = pdec.value.to_f/100
+                          -if pdec.operation == "sum"
+                            -value = value *(-1)
+                          = hidden_field_tag 'discount_before', value, class: "discount_before-item-percent"
+                        -elsif pdec.type == "soles"
+                          -value = pdec.value.to_f
+                          -if pdec.operation == "sum"
+                            -value = value *(-1)
+                          = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
+                        -value = 0
+                    -elsif pd.type_of_order == 'service_order' 
+                      = hidden_field_tag 'discount_before', "service", class: "discount_before-item-soles"
+                      -OrderServiceDetail.find(pd.order_detail_id).order_service_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
+                        -if pdec.type =="percent"
+                          -value = pdec.value.to_f/100
+                          -if pdec.operation == "sum"
+                            -value = value *(-1)
+                          = hidden_field_tag 'discount_before', value, class: "discount_before-item-percent"
+                        -elsif pdec.type == "soles"
+                          -value = pdec.value.to_f
+                          -if pdec.operation == "sum"
+                            -value = value *(-1)              
+                          = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
+                        - value = 0  
                   %td.current-igv
                     = (pd.current_igv*100).round.to_s + '%'
                     = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_igv]',pd.current_igv, class: "igv-item"
                   %td.price-with-igv
                     = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pd.unit_price_igv.to_s , class: "form-control unit-price-igv", :readonly => true
                   %td.discount-after
-                    = number_to_currency(0, unit: 'S/.', precision: 2)
+                    %div#da
+                      = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][discount_after_igv]', pd.discount_after_igv.to_f.round(2), class: "form-control amount_after_igv_with_discount", :readonly => true  
+                      
+                    -if pd.type_of_order == 'purchase_order'
+                      -PurchaseOrderDetail.find(pd.order_detail_id).purchase_order_extra_calculations.where("apply LIKE '%after%'").each do |pdec|
+                        -if pdec.type =="percent"
+                          -value = pdec.value.to_f/100
+                          -if pdec.operation == "sum"
+                            -value = value *(-1)
+                          = hidden_field_tag 'discount_after', value, class: "discount_after-item-percent"
+                        -elsif pdec.type == "soles"
+                          -value = pdec.value.to_f
+                          -if pdec.operation == "sum"
+                            -value = value *(-1)              
+                          = hidden_field_tag 'discount_after', value, class: "discount_after-item-soles"
+                        -value = 0
+                    -elsif pd.type_of_order == 'service_order' 
+                      = hidden_field_tag 'discount_after', "service", class: "discount_after-item-soles"
+                      -OrderServiceDetail.find(pd.order_detail_id).order_service_extra_calculations.where("apply LIKE '%after%'").each do |pdec|
+                        -if pdec.type =="percent"
+                          -value = pdec.value.to_f/100
+                          -if pdec.operation == "sum"
+                            -value = value *(-1)
+                          = hidden_field_tag 'discount_after', value, class: "discount_after-item-percent"
+                        -elsif pdec.type == "soles"
+                          -value = pdec.value.to_f
+                          -if pdec.operation == "sum"
+                            -value = value *(-1)              
+                          = hidden_field_tag 'discount_after', value, class: "discount_after-item-soles"
+                        -value = 0     
+                  %td.perception
+                    %div#per
+                      = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount_perception]', pd.amount_perception.to_f.round(2), class: "form-control perception", :readonly => true
+                    -if pd.type_of_order == 'purchase_order'
+                      -pdec = PurchaseOrderDetail.find(pd.order_detail_id).purchase_order_extra_calculations.find_by_extra_calculation_id(2)
+                      - if !pdec.nil?
+                        -if pdec.type =="percent"
+                          -value = pdec.value.to_f/100
+                          = hidden_field_tag 'perception', value, class: "perception-percent"
+                        -elsif pdec.type == "soles"
+                          -value = pdec.value.to_f 
+                          = hidden_field_tag 'perception', value, class: "perception-soles"
+                        -value = 0
+                      -elsif pd.type_of_order == 'service_order' 
+                        -pdec = OrderServiceDetail.find(pd.order_detail_id).order_service_extra_calculations.find_by_extra_calculation_id(2)
+                        -if pdec.type =="percent"
+                          -value = pdec.value.to_f/100
+                          = hidden_field_tag 'perception', value, class: "perception-percent"
+                        -elsif pdec.type == "soles"
+                          -value = pdec.value.to_f 
+                          = hidden_field_tag 'perception', value, class: "perception-soles"
+                        -value = 0                       
+                    -else
+                      = hidden_field_tag 'perception', value, class: "perception-soles"
                   %td.neto-price-with-igv
                     = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][net_price_after_igv]', pd.net_price_after_igv.to_s , class: "form-control net-price-after-igv", :readonly => true
                   %td.delete-item
