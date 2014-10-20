@@ -55,7 +55,7 @@ class GeneralExpenses::LoansController < ApplicationController
     workers_hash = Array.new
     workers = Loan.getWorkers(word)
     workers.each do |art|
-      workers_hash << {'name' => art[1],"paternal_surname"=> art[2],"maternal_surname"=> art[3]}
+      workers_hash << {'name' => art[1],"paternal_surname"=> art[2],"maternal_surname"=> art[3],"id"=> art[0],"dni"=> art[4]}
     end
     render json: {:workers => workers_hash}
   end

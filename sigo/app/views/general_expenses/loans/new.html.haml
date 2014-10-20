@@ -106,6 +106,7 @@
           Salir      
 
 :javascript
+
   function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
@@ -116,6 +117,7 @@
     $('#worker-select').select2({
       placeholder: "Buscar Trabajadores...",
       minimumInputLength: 3,
+      id: function(data) { return data.id; },
       ajax: {
         url: "#{display_workers_general_expenses_loans_path}",
         dataType: 'json',
@@ -132,8 +134,8 @@
           return {results: data.workers};
         }
       },
-      formatResult: function(node){ return '<div>' + node.name + ' ' + node.paternal_surname + ' ' + node.maternal_surname + '</div>' },
-      formatSelection: function(node){ return (node.name + ' ' + node.paternal_surname + ' ' + node.maternal_surname) },
+      formatResult: function(node){ return '<div>' +'DNI° '+ node.dni+' - '+ node.name + ' ' + node.paternal_surname + ' ' + node.maternal_surname + '</div>' },
+      formatSelection: function(node){ return ('DNI° '+node.dni+' - '+node.name + ' ' + node.paternal_surname + ' ' + node.maternal_surname) },
       escapeMarkup: function (m) { return m; }
     });
 
@@ -157,7 +159,7 @@
       });
   });
   $("#smart-mod-eg1").click(function(e) {
-    if($('#beneficiary').val()!='' && $('#person').val()!= '' && $('#loan_date').val()!= '' && $('#loan_type').val()!=''  && $('#amount').val()!='' && !isNaN($('#amount').val())  && $('#description').val()!=''  && $('#refund_type').val()!='' && $('#state').val()!=''  && $('#refund_date').val()!=''){
+    if($('#beneficiary').val()!='' && $('#person').val()!= '' && $('#loan_date').val()!= '' && $('#loan_type').val()!=''  && $('#amount').val()!='' && !isNaN($('#amount').val())  && $('#description').val()!=''  && $('#refund_type').val()!='' && $('#state').val()!=''){
       data = { authenticity_token: "#{form_authenticity_token}", cost_center_beneficiary_id: $('#beneficiary').val(), person: $('#worker-select').val(), amount: $('#amount').val(), loan_date: $('#loan_date').val(), loan_type: $('#loan_type').val(), cost_center_lender_id: $('#cc').val(), description: $('#description').val(), refund_type: $('#refund_type').val(), check_number: $('#check_number').val(), check_date: $('#check_date').val(), state: $('#state').val(), refund_date: $('#refund_date').val()};
       data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
       load_url_ajax('#{create_loan_general_expenses_loans_path}', 'loan_new', data, null, 'POST');
