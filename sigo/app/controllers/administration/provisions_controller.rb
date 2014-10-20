@@ -194,6 +194,7 @@ class Administration::ProvisionsController < ApplicationController
           else
             percepcion = 0
           end
+
           @data_orders << [ 
             purchase_order_detail.id, 
             purchase_order_detail.delivery_order_detail.article.code, 
