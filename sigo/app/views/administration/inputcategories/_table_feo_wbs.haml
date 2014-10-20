@@ -46,12 +46,12 @@
                 %center
                   %a(href="javascript:get_input_detail_wbs(#{wbs.codewbs.to_s}, #{input.category_id}, #{@budget_sale.id.to_s}, #{@budget_goal.id.to_s});"){class: "btn btn-default btn-xs"}
                     %i(class="fa fa-search")
-              %td(style="text-align: right; font-size: 13px;")
+              %td(style="text-align: right; font-size: 11px;")
                 %strong= number_to_currency(@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ') #monto
-              %td(style="text-align: right; font-size: 13px;")
+              %td(style="text-align: right; font-size: 11px;")
                 %strong= number_to_currency(@data[1]["#{wbs.codewbs.to_s}#{input.category_id}"][4], :unit=>'S/. ') rescue number_to_currency(0, :unit=>'S/. ')
               -direct_cost_sale = direct_cost_sale + @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][4]
-              -direct_cost_goal = direct_cost_goal + @data[1]["#{wbs.codewbs.to_s}#{input.category_id}"][4] rescue 0
+              -direct_cost_goal = direct_cost_goal + (@data[1]["#{wbs.codewbs.to_s}#{input.category_id}"][4] rescue 0)
             / - elsif (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]).length == 4
             /   %tr(style="color:green;")
             /     %td
@@ -94,12 +94,13 @@
     $("[class^='first_']").each(function(){
       wbs_number = $(this).attr('class').substring(6);
 
-      suma1 = 0;
-      suma2 = 0;
+      suma1 = 0.00;
+      suma2 = 0.00;
       $("[class^='second_"+ wbs_number +"']").each(function(){ 
-        suma1 += parseInt($('td:nth-child(4)',this).text().trim().substring(4).replace(",", ""));
-        suma2 += parseInt($('td:nth-child(5)',this).text().trim().substring(4).replace(",", "")); 
+        suma1 += parseFloat($('td:nth-child(4)',this).text().trim().substring(4).replace(",", ""));
+        suma2 += parseFloat($('td:nth-child(5)',this).text().trim().substring(4).replace(",", "")); 
       });
+      console.log("suma1: "+suma1);
       monto1 = 'S/. ' + suma1.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
       monto2 = 'S/. ' + suma2.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
       $('.first_'+ wbs_number +' td:nth-child(2)').text(monto1);
