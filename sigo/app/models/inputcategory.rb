@@ -61,20 +61,22 @@ class Inputcategory < ActiveRecord::Base
 
     def self.get_inputs_wbs(budget_id, codewbs, category_prefix)
       hash_inputs = Hash.new
-      str_query = "SELECT `inputbybudgetanditems`.input, `inputbybudgetanditems`.cod_input, `inputbybudgetanditems`.unit, ( `inputbybudgetanditems`.price * `inputbybudgetanditems`.quantity * `itembybudgets`.measured ) as amount
-                  FROM `wbsitems` , `itembywbses` , `inputbybudgetanditems` , `itembybudgets` , `inputcategories` 
+      str_query = "SELECT ibi.input, ibi.cod_input, ibi.unit, sum(ibi.amount) as amount_t, ibi.cod_input from (
+                  SELECT `inputbybudgetanditems`.input, `inputbybudgetanditems`.cod_input, `inputbybudgetanditems`.unit, ( `inputbybudgetanditems`.price * `inputbybudgetanditems`.quantity * `itembybudgets`.measured ) as amount
+                  FROM `wbsitems` , `itembywbses` , `inputbybudgetanditems` , `itembybudgets`
                   WHERE `itembywbses`.wbscode = `wbsitems`.codewbs
+                  AND `itembywbses`.budget_id ="+budget_id.to_s+"
                   AND `inputbybudgetanditems`.`order` = `itembywbses`.order_budget
                   AND `inputbybudgetanditems`.coditem = `itembywbses`.coditem
                   AND `inputbybudgetanditems`.budget_id ="+budget_id.to_s+"
-                  AND `inputcategories`.level_n = 1
                   and `wbsitems`.codewbs = "+codewbs.to_s+"
-                  AND `inputbybudgetanditems`.cod_input LIKE CONCAT( '0', CONCAT( `inputcategories`.category_id, '%' ) ) 
                   AND `inputbybudgetanditems`.cod_input like '0"+category_prefix.to_s+"%'
                   AND `itembybudgets`.budget_id ="+budget_id.to_s+"
                   AND  `itembybudgets`.item_code =  `itembywbses`.coditem
                   AND  `itembybudgets`.`order` =  `itembywbses`.order_budget
-                  ORDER BY  `inputbybudgetanditems`.cod_input"
+                  GROUP by  `inputbybudgetanditems`.id
+                  ORDER BY  `inputbybudgetanditems`.cod_input) as ibi
+                  GROUP by  ibi.cod_input"
       ActiveRecord::Base.connection.execute(str_query).each { |item| hash_inputs[item[1]] =  item }
       return hash_inputs
     end
@@ -136,6 +138,7 @@ class Inputcategory < ActiveRecord::Base
           str = "SELECT  `wbsitems`.codewbs, `wbsitems`.id, `inputcategories`.category_id, `inputcategories`.description, SUM(  `inputbybudgetanditems`.price * `inputbybudgetanditems`.quantity *  `itembybudgets`.measured ) as amount, `itembywbses`.coditem, `itembywbses`.order_budget, `itembybudgets`.measured
                 FROM  `wbsitems` ,  `itembywbses` ,  `inputbybudgetanditems` ,  `itembybudgets` ,  `inputcategories` 
                 WHERE  `itembywbses`.wbscode =  `wbsitems`.codewbs
+                AND `itembywbses`.budget_id ="+budgetid.to_s+"
                 AND  `inputbybudgetanditems`.`order` =  `itembywbses`.order_budget
                 AND  `inputbybudgetanditems`.coditem =  `itembywbses`.coditem
                 AND  `inputbybudgetanditems`.budget_id ="+budgetid.to_s+"
