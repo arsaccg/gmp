@@ -117,8 +117,28 @@ class Administration::PaymentOrdersController < ApplicationController
     render json: { :provision => data_provision }
   end
 
+  def generate_payslip
+    payment_order = PaymentOrder.find(params[:id])
+    @codes_orders = ""
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    payment_order.provision.provision_details.each do |payment_detail|
+      if payment_detail.type_of_order == 'purchase_order'
+        PurchaseOrderDetail.find(payment_detail.order_detail_id)
+      else
+        OrderOfServiceDetail.find(payment_detail.order_detail_id)
+      end
+    end
+  end
+
   private
   def payment_order_parameters
-    params.require(:payment_order).permit(:provision_id, :net_pay, :igv, :percent_detraction, :detraction, :cost_center_id)
+    params.require(:payment_order).permit(
+      :provision_id, 
+      :net_pay, 
+      :igv, 
+      :percent_detraction, 
+      :detraction, 
+      :cost_center_id
+    )
   end
 end
