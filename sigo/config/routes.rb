@@ -570,6 +570,9 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'get_info_from_provision'
       end
+      member do
+        get 'generate_payslip'
+      end
     end
     resources :document_provisions
     resources :provisions do
