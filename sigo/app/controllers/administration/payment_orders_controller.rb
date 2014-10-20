@@ -94,9 +94,9 @@ class Administration::PaymentOrdersController < ApplicationController
         total_quantity += provision_detail.unit_price_igv.to_f # Precio antes de IGV
         #total_quantity_with_igv += provision_detail.net_price_after_igv.to_f # Precio despues de IGV
 
-        total_quantity_without_igv += (provision_detail.current_unit_price*provision_detail.amount)
-        total_quantity_with_igv += (provision_detail.current_unit_price*provision_detail.amount) + (provision_detail.current_igv*(provision_detail.current_unit_price*provision_detail.amount))
-        perception += (provision_detail.net_price_after_igv - provision_detail.unit_price_igv)
+        total_quantity_without_igv += (provision_detail.current_unit_price.to_f*provision_detail.amount.to_f) - provision_detail.discount_before_igv.to_f
+        total_quantity_with_igv += total_quantity_without_igv.to_f + (provision_detail.current_igv.to_f*total_quantity_without_igv.to_f) + provision_detail.discount_after_igv.to_f
+        perception += provision_detail.amount_perception.to_f
       end
     else
       provision.provision_direct_purchase_details.each do |provision_detail|
