@@ -69,7 +69,7 @@
                 %th IGV
                 %th Total Neto
                 %th Total Descuentos después de IGV
-                /%th Percepción
+                %th Percepción
                 %th Total Neto con Descuentos
                 %th Eliminar
             %tbody{:id => "provisions_items_table"}
@@ -161,7 +161,7 @@
                             -value = value *(-1)              
                           = hidden_field_tag 'discount_after', value, class: "discount_after-item-soles"
                         -value = 0     
-                  %td.perception{:style => 'display:none'}
+                  %td.perception
                     %div#per
                       = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount_perception]', pd.amount_perception.to_f.round(2), class: "form-control perception", :readonly => true
                     -if pd.type_of_order == 'purchase_order'
