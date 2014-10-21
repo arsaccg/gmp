@@ -125,21 +125,45 @@ class Administration::PaymentOrdersController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
+
         @destinatary = params[:destinatary]
-        payment_order = PaymentOrder.find(params[:id])
-        @codes_orders = ""
+        @payment_order = PaymentOrder.find(params[:id])
         @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-        payment_order.provision.provision_details.each do |payment_detail|
+        @company = Company.find(get_company_cost_center('company'))
+        @current_user = current_user.first_name.to_s + ' ' + current_user.last_name.to_s + ' ' + current_user.surname
+        @codes_orders = Array.new
+        @suppliers = Array.new
+        @ruc = Array.new
+
+        @payment_order.provision.provision_details.each do |payment_detail|
           if payment_detail.type_of_order == 'purchase_order'
-            @codes_orders += PurchaseOrderDetail.find(payment_detail.order_detail_id).purchase_order.id.to_s.rjust(5,'0') + ' / '
+            obj = PurchaseOrderDetail.find(payment_detail.order_detail_id).purchase_order
+            @codes_orders << obj.id.to_s.rjust(5,'0')
+            if !@suppliers.include? (obj.entity.name.to_s + ' ' + obj.entity.second_name.to_s + ' ' + obj.entity.paternal_surname.to_s + ' ' + obj.entity.maternal_surname.to_s)
+              @suppliers << obj.entity.name.to_s + ' ' + obj.entity.second_name.to_s + ' ' + obj.entity.paternal_surname.to_s + ' ' + obj.entity.maternal_surname.to_s
+            end
+            if !@ruc.include? obj.entity.ruc.to_s
+              @ruc << obj.entity.ruc.to_s
+            end
           else
-            @codes_orders += OrderOfServiceDetail.find(payment_detail.order_detail_id).order_service.id.to_s.rjust(5,'0') + ' / '
+            obj = OrderOfServiceDetail.find(payment_detail.order_detail_id).order_service
+            @codes_orders << obj.id.to_s.rjust(5,'0')
+            if !@suppliers.include? (obj.entity.name.to_s + ' ' + obj.entity.second_name.to_s + ' ' + obj.entity.paternal_surname.to_s + ' ' + obj.entity.maternal_surname.to_s)
+              @suppliers << obj.entity.name.to_s + ' ' + obj.entity.second_name.to_s + ' ' + obj.entity.paternal_surname.to_s + ' ' + obj.entity.maternal_surname.to_s
+            end
+            if !@ruc.include? obj.entity.ruc.to_s
+              @ruc << obj.entity.ruc.to_s
+            end
           end
         end
+
+        @subject = @payment_order.provision.description
+
         render :pdf => "Orden_de_pago-#{Time.now.strftime('%d-%m-%Y')}", 
                :template => 'administration/payment_orders/payslip_pdf.pdf.haml',
+               :page_size => 'A4',
                :orientation => 'Landscape',
-               :page_size => 'Letter'
+               :dpi => '300'
       end
     end
   end
@@ -154,7 +178,10 @@ class Administration::PaymentOrdersController < ApplicationController
       :detraction, 
       :guarantee_fund_n1, 
       :other_discounts, 
-      :cost_center_id
+      :cost_center_id,
+      :perception,
+      :total,
+      :sub_total
     )
   end
 end

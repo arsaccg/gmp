@@ -28,16 +28,16 @@
               - when '01'
                 %i(class="fa fa-user")
               - when '02'
-                %i(class="fa fa-wrench")
+                %i(class="fa fa-shopping-cart")
               - when '03'
-                %i(class="fa fa-certificate")
+                %i(class="fa fa-truck")
               - when '04'
-                %i(class="fa fa-file")
+                %i(class="fa fa-file-text")
           %td
             =itembudget.input
           %td
             =itembudget.cod_input
-          %td(style="text-align: right;") 
+          %td(style="text-align: right;")
             - if @budget.type_of_budget.to_i == 0 # Si es Meta
               %input(type="text"){class: 'input_quantity_' + itembudget.id.to_s, :value=>number_with_precision(itembudget.quantity, :precision => 4), :id => "itembudget_quantity_" + itembudget.cod_input.to_s, :onblur => "update_table_input('" + itembudget.id.to_s + "')", disabled: @must_be_blocked }
             - else # Si es Meta

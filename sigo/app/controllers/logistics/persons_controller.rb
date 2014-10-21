@@ -107,7 +107,7 @@ class Logistics::PersonsController < ApplicationController
     end
     respond_to do |format|
       format.json { 
-        data = ActiveRecord::Base.connection.execute("SELECT id,name FROM `cost_centers` WHERE `company_id` IN (#{cost_centers})")
+        data = ActiveRecord::Base.connection.execute("SELECT id,name FROM `cost_centers` WHERE `company_id` IN (#{cost_centers}) AND status LIKE 'A'")
         render :json => data
       }
     end
