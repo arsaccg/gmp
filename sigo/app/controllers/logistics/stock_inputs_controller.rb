@@ -103,6 +103,9 @@ class Logistics::StockInputsController < ApplicationController
       if @pod.amount == sum
         @pod.update_attributes(:received => 1)
       end
+      if @pod.amount != sum
+        @pod.update_attributes(:received => nil)
+      end
     end
     head.stock_input_details.each do |x|
       ids2 << x.purchase_order_detail_id
