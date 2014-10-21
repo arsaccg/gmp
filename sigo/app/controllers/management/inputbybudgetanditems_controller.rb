@@ -14,19 +14,36 @@ class Management::InputbybudgetanditemsController < ApplicationController
 
     @measured = params[:measured] rescue "0.0"
     @must_be_blocked = @measured.to_f > 0 ? false : true
-    p '~~~~~~~~~~~~~~~~~~~~~~~@must_be_blocked~~~~~~~~~~~~~~~~~~~'
-    p @must_be_blocked
 
     @pdf_table_array = Array.new
 
-  	@itembybudgetanditems = Inputbybudgetanditem.select("id, cod_input, sum(quantity) as quantity, price, input, unit").where("budget_id = ? AND inputbybudgetanditems.order LIKE ?", params[:budget_id],  @order + "%").group(' cod_input, price, input, unit').order(:cod_input)
+  	if @measured.to_f > 0
+      @itembybudgetanditems = Inputbybudgetanditem.select("id, cod_input, quantity, price, input, unit").where("budget_id = ? AND inputbybudgetanditems.order LIKE ?", params[:budget_id],  @order + "%").group('').order(:cod_input)
+    else
+      @itembybudgetanditems = Inputbybudgetanditem.select("id, cod_input, quantity, price, input, unit").where("budget_id = ? AND inputbybudgetanditems.order LIKE ?", params[:budget_id],  @order + "%").group('coditem, price').order(:cod_input)
+      # @itembybudgetanditems = ActiveRecord::Base.connection.execute("SELECT ibi.id, ibi.cod_input, SUM( ibi.quantity * ib.measured ) AS quantity, ibi.price, ibi.input, ibi.unit
+      # FROM  `inputbybudgetanditems` AS ibi,  `itembybudgets` AS ib
+      # WHERE ibi.`order` LIKE  '01.01.01%'
+      # AND ibi.`order` = ib.`order` 
+      # AND ibi.`budget_id` =4
+      # AND ib.`budget_id` =4
+      # GROUP BY ibi.cod_input, ibi.price
+      # ORDER BY ibi.cod_input")
+    end
+
     p @itembybudgetanditems
     @pdf_table_array << ["Insumo", "Codigo", "Cantidad", "Unidad", "Precio", "Total"]
 
     if @itembybudgetanditems != nil
-      @itembybudgetanditems.each do |itembudget|
-        @pdf_table_array << [ itembudget.input, itembudget.cod_input,  itembudget.quantity.to_f.round(4), itembudget.unit, itembudget.price.round(4), (itembudget.quantity.to_f * itembudget.price.to_f).round(4) ]
-      end
+      # if @measured.to_f > 0
+        @itembybudgetanditems.each do |itembudget|
+          @pdf_table_array << [ itembudget.input, itembudget.cod_input,  itembudget.quantity.to_f.round(4), itembudget.unit, itembudget.price.round(4), (itembudget.quantity.to_f * itembudget.price.to_f).round(4) ]
+        end
+      # else
+      #   @itembybudgetanditems.each do |itembudget|
+      #     @pdf_table_array << [ itembudget[4], itembudget[1], itembudget[2].to_f.round(4), itembudget[5], itembudget[3].round(4), (itembudget[2].to_f * itembudget[3].to_f).round(4) ]
+      #   end
+      # end
     end
     render :index, :layout => false
   end
