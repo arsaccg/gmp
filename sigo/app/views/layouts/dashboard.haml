@@ -132,99 +132,101 @@
               %a{href: "#{management_dashboard_path}", title: "Dashboard de Gestión"}
                 %i.fa.fa-lg.fa-fw.fa-home
                 Dashboard
-          - if (current_user.has_role? :director) || (current_user.has_role? :companies)
-            %li
-              %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
-                %i.fa.fa-lg.fa-fw.fa-gears
-                Companias
           - if (current_user.has_role? :director) || (current_user.has_role? :users)
             %li
               %a{href: "#{logistics_persons_path}", title: "Gestión de Usuarios"}
                 %i.fa.fa-lg.fa-fw.fa-group
                 Usuarios
-          - if (current_user.has_role? :director) || (current_user.has_role? :maintainer)
+          - if (current_user.has_role? :director) || (current_user.has_role? :maintainer) || (current_user.has_role? :companies)
             %li
               %a{href: "#", title: "Mantenimiento"}
                 %i.fa.fa-lg.fa-fw.fa-wrench
                 Mantenimientos
               %ul
-                %li
-                  %a{href: '#'}
-                    %i.fa.fa-lg.fa-fw.fa-list-alt
-                    Sistema
-                  %ul
-                    %li
-                      %a{href: "#{logistics_type_of_articles_path}", title: "Articulos"}
-                        %i.fa.fa-lg.fa-fw.fa-filter
-                        Tipo de Insumos
-                    %li
-                      %a{href: "#{administration_account_accountants_path}", title: "Cuentas Contables"}
-                        %i.fa.fa-lg.fa-fw.fa-tasks
-                        Cuentas Contables
-                      %ul
-                        %li
-                          %a{href: "#{import_administration_account_accountants_path}", title: "Importar Cuentas Contables"}
-                            %i.fa.fa-fw.fa-file-text
-                            Importar
-                    %li
-                      %a{href: "#{administration_sub_dailies_path}", title: "Sub Diarios"}
-                        %i.fa.fa-lg.fa-fw.fa-tasks
-                        Sub Diarios
-                      %ul
-                        %li
-                          %a{href: "#{import_administration_sub_dailies_path}", title: "Importar Sub Diarios"}
-                            %i.fa.fa-fw.fa-file-text
-                            Importar
-                    %li
-                      %a{href: "#{logistics_extra_calculations_path}", title: "Operaciones Adicionales"}
-                        %i.fa.fa-lg.fa-fw.fa-tasks
-                        Operaciones Adicionales
-                    %li
-                      %a{href: "#{logistics_financial_variables_path}", title: "Variables Financieras"}
-                        %i.fa.fa-lg.fa-fw.fa-tasks
-                        Variables Financieras
-                    %li
-                      %a{href: "#{logistics_theoretical_values_path}", title: "Valores Teóricos"}
-                        %i.fa.fa-lg.fa-fw.fa-tasks
-                        Valores Teóricos
+                - if (current_user.has_role? :director) || (current_user.has_role? :maintainer)
+                  %li
+                    %a{href: '#'}
+                      %i.fa.fa-lg.fa-fw.fa-list-alt
+                      Sistema
+                    %ul
+                      %li
+                        %a{href: "#{logistics_type_of_articles_path}", title: "Articulos"}
+                          %i.fa.fa-lg.fa-fw.fa-filter
+                          Tipo de Insumos
+                      %li
+                        %a{href: "#{administration_account_accountants_path}", title: "Cuentas Contables"}
+                          %i.fa.fa-lg.fa-fw.fa-tasks
+                          Cuentas Contables
+                        %ul
+                          %li
+                            %a{href: "#{import_administration_account_accountants_path}", title: "Importar Cuentas Contables"}
+                              %i.fa.fa-fw.fa-file-text
+                              Importar
+                      %li
+                        %a{href: "#{administration_sub_dailies_path}", title: "Sub Diarios"}
+                          %i.fa.fa-lg.fa-fw.fa-tasks
+                          Sub Diarios
+                        %ul
+                          %li
+                            %a{href: "#{import_administration_sub_dailies_path}", title: "Importar Sub Diarios"}
+                              %i.fa.fa-fw.fa-file-text
+                              Importar
+                      %li
+                        %a{href: "#{logistics_extra_calculations_path}", title: "Operaciones Adicionales"}
+                          %i.fa.fa-lg.fa-fw.fa-tasks
+                          Operaciones Adicionales
+                      %li
+                        %a{href: "#{logistics_financial_variables_path}", title: "Variables Financieras"}
+                          %i.fa.fa-lg.fa-fw.fa-tasks
+                          Variables Financieras
+                      %li
+                        %a{href: "#{logistics_theoretical_values_path}", title: "Valores Teóricos"}
+                          %i.fa.fa-lg.fa-fw.fa-tasks
+                          Valores Teóricos
                 %li
                   %a{href: '#'}
                     %i.fa.fa-lg.fa-fw.fa-list-alt
                     Globales
                   %ul
-                    %li
-                      %a{href: "#{logistics_categories_path}", title: "Fases"}
-                        %i.fa.fa-lg.fa-fw.fa-tasks
-                        Grupos
-                    %li
-                      %a{href: "#{logistics_articles_path}", title: "Articulos"}
-                        %i.fa.fa-lg.fa-fw.fa-desktop
-                        Articulos
-                    %li
-                      %a{href: "#{logistics_unit_of_measurements_path}", title: "Unidad de Medida"}
-                        %i.fa.fa-lg.fa-fw.fa-home{'style'=>"position: relative;bottom: 11px;"}
-                        %span.menu-item-parent{'style'=>"width: 100px;"}
-                          Unidades de Medida
-                    %li
-                      %a{href: "#{logistics_phases_path}", title: "Fases"}
-                        %i.fa.fa-lg.fa-fw.fa-tasks
-                        Fases
-                    %li
-                      %a{href: "#{logistics_money_index_path}", title: "Monedas"}
-                        %i.fa.fa-lg.fa-fw.fa-tasks
-                        Monedas
-                    %li
-                      %a{href: "#{logistics_exchange_of_rates_path}", title: "Tipo de Cambio"}
-                        %i.fa.fa-lg.fa-fw.fa-tasks
-                        Tipo de Cambio
-                    %li
-                      %a{href: "#{logistics_method_of_payments_path}", title: "Formas de Pago"}
-                        %i.fa.fa-lg.fa-fw.fa-dot-circle-o
-                        Formas de Pago
-                    %li
-                      %a{href: "#{logistics_banks_path}", title: "Bancos"}
-                        %i.fa.fa-lg.fa-fw.fa-tasks
-                        Bancos
+                    - if (current_user.has_role? :director) || (current_user.has_role? :maintainer)
+                      %li
+                        %a{href: "#{logistics_categories_path}", title: "Fases"}
+                          %i.fa.fa-lg.fa-fw.fa-tasks
+                          Grupos
+                      %li
+                        %a{href: "#{logistics_articles_path}", title: "Articulos"}
+                          %i.fa.fa-lg.fa-fw.fa-desktop
+                          Articulos
+                      %li
+                        %a{href: "#{logistics_unit_of_measurements_path}", title: "Unidad de Medida"}
+                          %i.fa.fa-lg.fa-fw.fa-home{'style'=>"position: relative;bottom: 11px;"}
+                          %span.menu-item-parent{'style'=>"width: 100px;"}
+                            Unidades de Medida
+                      %li
+                        %a{href: "#{logistics_phases_path}", title: "Fases"}
+                          %i.fa.fa-lg.fa-fw.fa-tasks
+                          Fases
+                      %li
+                        %a{href: "#{logistics_money_index_path}", title: "Monedas"}
+                          %i.fa.fa-lg.fa-fw.fa-tasks
+                          Monedas
+                      %li
+                        %a{href: "#{logistics_exchange_of_rates_path}", title: "Tipo de Cambio"}
+                          %i.fa.fa-lg.fa-fw.fa-tasks
+                          Tipo de Cambio
+                      %li
+                        %a{href: "#{logistics_method_of_payments_path}", title: "Formas de Pago"}
+                          %i.fa.fa-lg.fa-fw.fa-dot-circle-o
+                          Formas de Pago
+                      %li
+                        %a{href: "#{logistics_banks_path}", title: "Bancos"}
+                          %i.fa.fa-lg.fa-fw.fa-tasks
+                          Bancos
+                    - if (current_user.has_role? :director) || (current_user.has_role? :companies)
+                      %li
+                        %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
+                          %i.fa.fa-lg.fa-fw.fa-gears
+                          Companias
                 %li
                   %a{href: '#'}
                     %i.fa.fa-lg.fa-fw.fa-list-alt
@@ -267,64 +269,85 @@
                       %a{href: "#{production_position_workers_path}", title: 'Trabajadores'}
                         %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                         Cargo de Trabajadores
-          - if (current_user.has_role? :director) || (current_user.has_role? :planning)
+          -# if (current_user.has_role? :director) || (current_user.has_role? :planning)
+          - if (current_user.has_role? :director) || (current_user.has_role? :planning) || (current_user.has_role? :report) || (current_user.has_role? :overheads)
             /TOBI...
             %li
               %a{href: "#", title: "Planeamiento"}
                 %i.fa.fa-lg.fa-fw.fa-book
                 Planeamiento
               %ul
-                %li
-                  %a{href: '#'}
-                    %i.fa.fa-lg.fa-fw.fa-list-alt
-                    General
-                  %ul
-                    %li
-                      %a{href: "#{management_wbsitems_path}", title: "Wbs"}
-                        %i.fa.fa-lg.fa-fw.fa-sitemap
-                        Wbs
-                    %li
-                      %a{href: "#{new_management_budget_path}", title: "Importar de S10"}
-                        %i.fa.fa-lg.fa-fw.fa-download
-                        Importar de S10
-                    %li
-                      %a{href: "#{get_budget_by_project_management_budgets_path}", title: "Presupuestos"}
-                        %i.fa.fa-lg.fa-fw.fa-money
-                        Presupuestos
-                    %li
-                      %a{href: "#{import_distributions_management_distributions_path}", title: "Xls de Distribución"}
-                        %i.fa.fa-lg.fa-fw.fa-file-o
-                        Importar xls de Distribución
-                %li
-                  %a{href: '#'}
-                    %i.fa.fa-lg.fa-fw.fa-book
-                    Control
-                  %ul
-                    %li
-                      %a{href: "#{administrate_budget_management_budgets_path}", title: "Presupuestos"}
-                        %i.fa.fa-lg.fa-fw.fa-money
-                        Presupuestos
-                    %li
-                      %a{href: "#{management_extensionscontrols_path}", title: "Ampliaciones"}
-                        %i.fa.fa-lg.fa-fw.fa-book
-                        Ampliaciones
-                    %li
-                      %a{href: "#{administration_advances_path}", title: "Adelantos"}
-                        %i.fa.fa-lg.fa-fw.fa-money
-                        Adelantos
+                - if (current_user.has_role? :director) || (current_user.has_role? :planning)
+                  %li
+                    %a{href: '#'}
+                      %i.fa.fa-lg.fa-fw.fa-list-alt
+                      General
+                    %ul
+                      %li
+                        %a{href: "#{management_wbsitems_path}", title: "Wbs"}
+                          %i.fa.fa-lg.fa-fw.fa-sitemap
+                          Wbs
+                      %li
+                        %a{href: "#{new_management_budget_path}", title: "Importar de S10"}
+                          %i.fa.fa-lg.fa-fw.fa-download
+                          Importar de S10
+                      %li
+                        %a{href: "#{get_budget_by_project_management_budgets_path}", title: "Presupuestos"}
+                          %i.fa.fa-lg.fa-fw.fa-money
+                          Presupuestos
+                      %li
+                        %a{href: "#{import_distributions_management_distributions_path}", title: "Xls de Distribución"}
+                          %i.fa.fa-lg.fa-fw.fa-file-o
+                          Importar xls de Distribución
+                  %li
+                    %a{href: '#'}
+                      %i.fa.fa-lg.fa-fw.fa-book
+                      Control
+                    %ul
+                      %li
+                        %a{href: "#{administrate_budget_management_budgets_path}", title: "Presupuestos"}
+                          %i.fa.fa-lg.fa-fw.fa-money
+                          Presupuestos
+                      %li
+                        %a{href: "#{management_extensionscontrols_path}", title: "Ampliaciones"}
+                          %i.fa.fa-lg.fa-fw.fa-book
+                          Ampliaciones
+                      %li
+                        %a{href: "#{administration_advances_path}", title: "Adelantos"}
+                          %i.fa.fa-lg.fa-fw.fa-money
+                          Adelantos
                 %li
                   %a{href: '#'}
                     %i.fa.fa-lg.fa-fw.fa-clipboard
                     Reportes
                   %ul
-                    %li
-                      %a{href: "#{feo_of_work_administration_inputcategories_path}", title: "FEO"}
-                        %i.fa.fa-lg.fa-fw.fa-table
-                        FEO
-                    %li
-                      %a(href="#{feo_of_work_administration_inputcategories_path}.csv" target="_blank" title="Exportar FEO")
-                        %i.fa.fa-lg.fa-fw.fa-upload
-                        Exportar FEO
+                    - if (current_user.has_role? :director) || (current_user.has_role? :planning)
+                      %li
+                        %a{href: "#{feo_of_work_administration_inputcategories_path}", title: "FEO"}
+                          %i.fa.fa-lg.fa-fw.fa-table
+                          FEO
+                      %li
+                        %a(href="#{feo_of_work_administration_inputcategories_path}.csv" target="_blank" title="Exportar FEO")
+                          %i.fa.fa-lg.fa-fw.fa-upload
+                          Exportar FEO
+                    /...TOBI
+                    - if (current_user.has_role? :director) || (current_user.has_role? :report)
+                      %li
+                        %a{href: "#{reports_reportofthemonths_path}", title: "Reporte Mensual" }
+                          %i.fa.fa-lg.fa-fw.fa-clipboard
+                          %span.menu-item-parent
+                            Reporte Mensual
+                - if (current_user.has_role? :director) || (current_user.has_role? :overheads)
+                  %li
+                    %a{href: "#", title: "Gastos Generales"}
+                      %i.fa.fa-lg.fa-fw.fa-calendar
+                      Gastos Generales
+                    %ul
+                      %li
+                        %a{href: "#{general_expenses_general_expenses_path}", title: "Declaración de GG."}
+                          %i.fa.fa-lg.fa-fw.fa-list-alt
+                          Declaración de GG.
+                /TOBI...
             /...TOBI
           - if (current_user.has_role? :director) || (current_user.has_role? :control_documentary)
             %li
@@ -724,16 +747,6 @@
                       %a{href: "#{administration_contract_types_path}", title: "Tipos de Contrato"}
                         %i.fa.fa-lg.fa-fw.fa-list-alt
                         Tipos de Contrato
-          - if (current_user.has_role? :director) || (current_user.has_role? :overheads)
-            %li
-              %a{href: "#", title: "Gastos Generales"}
-                %i.fa.fa-lg.fa-fw.fa-calendar
-                Gastos Generales
-              %ul
-                %li
-                  %a{href: "#{general_expenses_general_expenses_path}", title: "Declaración de GG."}
-                    %i.fa.fa-lg.fa-fw.fa-list-alt
-                    Declaración de GG.
           - if (current_user.has_role? :director) || (current_user.has_role? :payroll)
             %li
               %a{href: "#", title: "Planillas"}
@@ -795,27 +808,20 @@
                   %a{href: "#{calendar_biddings_works_path}"}
                     %i.fa.fa-lg.fa-fw.fa-list-alt
                     Calendario de Licitaciones
-          - if (current_user.has_role? :director) || (current_user.has_role? :report)
-            %li
-              %a{href: "#", title: "Reportes"}
-                %i.fa.fa-lg.fa-fw.fa-bar-chart-o
-                Reportes
-              %ul
-                %li
-                  %a{href: "#{reports_reportofthemonths_path}", title: "Reporte Mensual" }
-                    %i.fa.fa-lg.fa-fw.fa-clipboard
-                    %span.menu-item-parent
-                      Reporte Mensual
           - if (current_user.has_role? :director) || (current_user.has_role? :entities)
             %li
-              %a{href: "#{logistics_type_entities_path}", title: "Tipo de Entidades"}
-                %i.fa.fa-lg.fa-fw.fa-sitemap
-                Tipo de Entidades
-          - if (current_user.has_role? :director) || (current_user.has_role? :entities)
-            %li
-              %a{href: "#{logistics_entities_path}", title: "Entidades"}
+              %a{href: "#"}
                 %i.fa.fa-lg.fa-fw.fa-group
                 Entidades
+              %ul
+                %li
+                  %a{href: "#{logistics_entities_path}", title: "Entidades"}
+                    %i.fa.fa-lg.fa-fw.fa-group
+                    Entidades
+                %li
+                  %a{href: "#{logistics_type_entities_path}", title: "Tipo de Entidades"}
+                    %i.fa.fa-lg.fa-fw.fa-sitemap
+                    Tipo de Entidades
           %li
             %a{href: "##{logistics_person_path(current_user.id)}", title: "Usuario"}
               %i.fa.fa-lg.fa-fw.fa-user

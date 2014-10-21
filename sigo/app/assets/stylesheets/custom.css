@@ -621,6 +621,7 @@ select {
 
 .title-n1{
   font-size: 14px;
+  color:transparent;
   font-weight: bold;
 }
 .title-n2{
@@ -636,6 +637,7 @@ select {
 
 .title-n1 strong{
   font-size: 12px;
+  color:#333 !important;
 }
 .title-n2 strong{
   font-size: 11px;

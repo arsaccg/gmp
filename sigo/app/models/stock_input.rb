@@ -82,6 +82,17 @@ class StockInput < ActiveRecord::Base
 
   end
 
+  def self.getSupplier(word, cc)
+    ent = ActiveRecord::Base.connection.execute("
+      SELECT ent.id, CONCAT( ent.ruc,  ' - ', ent.name )
+      FROM purchase_orders po, entities ent
+      WHERE po.state =  'approved'
+      AND po.entity_id = ent.id
+      AND (ent.name LIKE  '%"+word.to_s+"%' OR ent.ruc LIKE  '%"+word.to_s+"%')
+      AND po.cost_center_id = "+cc.to_s+"
+      GROUP BY ent.id")
+    return ent
+  end
 
 
 

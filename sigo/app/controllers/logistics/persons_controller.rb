@@ -88,7 +88,7 @@ class Logistics::PersonsController < ApplicationController
 
   def update_profile
     @person = User.find(current_user.id)
-    @person.update_attributes(user_params)
+    @person.update(user_params)
     sign_in(@person, :bypass=>true)
     flash[:notice] = "Se ha actualizado correctamente al usuario #{@person.first_name + ' ' + @person.last_name}."
     redirect_to :layout => false
@@ -107,7 +107,7 @@ class Logistics::PersonsController < ApplicationController
     end
     respond_to do |format|
       format.json { 
-        data = ActiveRecord::Base.connection.execute("SELECT id,name FROM `cost_centers` WHERE `company_id` IN (#{cost_centers})")
+        data = ActiveRecord::Base.connection.execute("SELECT id,name FROM `cost_centers` WHERE `company_id` IN (#{cost_centers}) AND status LIKE 'A'")
         render :json => data
       }
     end

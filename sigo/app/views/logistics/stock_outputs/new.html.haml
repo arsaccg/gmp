@@ -89,9 +89,6 @@
           'stock_input[format_id]': {
             required: true
           },
-          'stock_input[period]': {
-            required: true
-          },
           'stock_input[series]': {
             required: true
           },
@@ -118,7 +115,6 @@
           'stock_input[responsible_id]': "(*)",
           'stock_input[warehouse_id]': "(*)",
           'stock_input[format_id]': "(*)",
-          'stock_input[period]': "(*)",
           'stock_input[series]': "(*)",
           'stock_input[document]' : {
             required : '(*)',
@@ -233,6 +229,20 @@
           }
         }
 
+        if(data.step == 3 && data.direction == 'next'){
+          var $valid = $("#new_stock_input").valid();
+          if (!$valid) {
+            e.preventDefault();
+            $.smallBox({
+              title: "Para continuar <font color=yellow>ingrese todos los datos requerridos</font>.",
+              content: "<i class='fa fa-clock-o'></i> <i>Hace unos segundos...</i>",
+              color: "#c46a69",
+              iconSmall: "fa fa-times bounce animated",
+              timeout: 4000
+            });
+          }          
+        }
+
       });
 
       // Finalizar
@@ -260,8 +270,8 @@
 
   function add_article_item(){
 
-    var data = $("#article-select-warehouse").val();
-    str_item = { authenticity_token: "#{form_authenticity_token}", data: data };
+    var data = $("#article-selected").val();
+    str_item = { authenticity_token: "#{form_authenticity_token}", data: data, warehouse: $('#warehouse').val()};
 
     append_url_ajax('#{partial_table_per_warehouse_logistics_stock_outputs_path}', 'partial_table_per_warehouse', str_item, 0, 'POST');
   }
