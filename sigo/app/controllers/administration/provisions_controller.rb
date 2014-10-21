@@ -27,7 +27,7 @@ class Administration::ProvisionsController < ApplicationController
         provision_checked = Array.new
         total_amount = 0
         provision.provision_details.each do |detail|
-          if !provision_checked.include? detail
+          if !provision_checked.include? detail.order_detail_id
             provision_checked << detail.order_detail_id
             ProvisionDetail.where('order_detail_id = ?', detail.order_detail_id).each do |details|
               total_amount += details.amount
