@@ -300,6 +300,7 @@
 
 #loan.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
 #loan_new.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
+#loan_edit.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
 #loan_show.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
 
 #operating-result.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "operatingResultLabel", role: "dialog", tabindex: "-1"}
@@ -818,6 +819,10 @@
   function loan_new(id){
     data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
     load_modal_ajax('#{new_general_expenses_loan_path}', 'loan_new', 'loan', data, null, 'GET');
+  }
+  function loan_edit(id){
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    load_modal_ajax('/general_expenses/loans/'+id+'/edit', 'loan_edit', 'loan', data, null, 'GET');
   }
 
   function loan_show(cc1,cc2,cc3){
