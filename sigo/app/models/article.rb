@@ -254,11 +254,12 @@ class Article < ActiveRecord::Base
     return mysql_result
   end
 
-  def self.getSpecificArticlesPerWarehouse(warehouse_id)
+  def self.getSpecificArticlesPerWarehouse(warehouse_id, word)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT a.id, a.code, a.name, u.name, SUM( sid.amount ) 
       FROM articles a, unit_of_measurements u, stock_inputs si, stock_input_details sid
       WHERE a.id = sid.article_id
+      AND (a.code LIKE '%#{word}%' OR a.name LIKE '%#{word}%')
       AND si.input =1
       AND si.id = sid.stock_input_id
       AND si.warehouse_id = #{warehouse_id}
@@ -311,11 +312,12 @@ class Article < ActiveRecord::Base
       AND a.unit_of_measurement_id = u.id 
       AND a.category_id = c.id 
       AND toa.id = a.type_of_article_id
-      AND a.id IN( #{article} )
+      AND a.id = #{article}
       GROUP BY a.code
     ")
     return mysql_result
   end
+
   def self.getSpecificArticlesforStockOutputs5(article)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT art.name, pod.unit_price
