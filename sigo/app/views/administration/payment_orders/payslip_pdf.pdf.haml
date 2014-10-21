@@ -1,10 +1,297 @@
-%html
+!!!
+%html{lang: "en-us"}
   %head
     %meta{charset: "utf-8"}
-    = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
+    = wicked_pdf_stylesheet_link_tag "bootstrap.min"
+    :css
+      .col-md-1,.col-md-2,.col-md-3,.col-md-4,.col-md-5,.col-md-6,.col-md-7,.col-md-8,.col-md-9,.col-md-10,.col-md-11,.col-md-12 { display: inline-block; }
   %body
-    #main
-      %h1= @destinatary
+    .page{ :style => 'width: 500px; display: inline-block;' }
+      .row
+        .col-md-4
+          = wicked_pdf_image_tag @company.avatar.url
 
-      %h4 Ordenes
-      %p= @codes_orders
+      .row
+        .col-md-4
+          %span{ :style => 'color: transparent;' } ----------------------------------------------
+        .col-md-4{ :style => 'text-align:center;' }
+          %h4{ :style => 'text-decoration:underline;' } ORDEN DE PAGO
+        .col-md-2{ :style => 'padding-left: 4em;' }
+          %p= 'N° ' + @payment_order.id.to_s.rjust(4, '0') + ' - ' + @cost_center.code.to_s + ' - ARSAC'
+
+      .row
+        .col-md-8
+          %p
+            Para: 
+            %strong= @destinatary.to_s
+          %p
+            De: 
+            %strong= @current_user.to_s
+        .col-md-4{ :style => 'padding-left: 13em;' }
+          %p
+            Fecha: 
+            %strong= Time.now.strftime('%d-%m-%Y')
+          %p 
+            CC:
+            %strong= @cost_center.code
+
+      .row
+        .col-md-12
+          %p
+            %strong Asunto: 
+            = @subject.to_s
+
+      .row
+        .col-md-8
+          %p
+            %strong Proveedor: 
+            = @suppliers.join(',') 
+        .col-md-4{ :style => 'padding-left: 17em;' }
+          %p
+            %strong RUC: 
+            = @ruc.join(', ')
+
+      .row
+        .col-md-12
+          %p
+            %strong= 'Obra: "' + @cost_center.name + '". Por medio del presente solicito la Autorización de pago de: '
+
+      .row
+        .col-md-12
+          %p
+            %strong Orden de Compra N° 
+            = @codes_orders.join(' / ')
+
+      .row
+        .col-md-12{ :style => 'margin-left: 4em;' }
+          %table
+            %tr
+              %th= 'ORDEN DE COMPRA N° ' + @codes_orders.join(' / ')
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } --------
+                %span{ :style => 'font-weight: bold; text-decoration: underline;' } AMORTIZACIÓN
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                Subtotal
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                I.G.V
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                Percepción
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                %strong Total
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } --------
+                %span{ :style => 'font-weight: bold; text-decoration: underline;' } DESCUENTOS
+            %tr
+              %td 
+                %span{ :style => 'color: transparent;' } --------
+                Detracción
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } --------
+                Fondo de Garantia N° 01
+            %tr
+              %td 
+                %span{ :style => 'color: transparent;' } --------
+                Otros Descuentos
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                %strong Total Descuentos
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                %strong Neto a Pagar
+
+        .col-md-12{ :style => 'margin-left: 2em;' }
+          %table
+            %tr
+              %td -
+            %tr
+              %td -
+            %tr
+              %td
+                = number_to_currency @payment_order.sub_total, unit: 'S/.', precision: 2
+            %tr
+              %td
+                = number_to_currency @payment_order.igv, unit: 'S/.', precision: 2
+            %tr
+              %td
+                = number_to_currency @payment_order.perception, unit: 'S/.', precision: 2
+            %tr
+              %td
+                %strong
+                  = number_to_currency @payment_order.total, unit: 'S/.', precision: 2
+            %tr
+              %td -
+            %tr
+              %td
+                = number_to_currency @payment_order.detraction, unit: 'S/.', precision: 2
+            %tr
+              %td
+                = number_to_currency @payment_order.guarantee_fund_n1, unit: 'S/.', precision: 2
+            %tr
+              %td
+                = number_to_currency @payment_order.other_discounts, unit: 'S/.', precision: 2
+            %tr
+              %td
+                %strong
+                  = number_to_currency (@payment_order.detraction + @payment_order.guarantee_fund_n1 + @payment_order.other_discounts), unit: 'S/.', precision: 2
+            %tr
+              %td
+                %strong
+                  = number_to_currency (@payment_order.total.to_f - (@payment_order.detraction.to_f + @payment_order.guarantee_fund_n1.to_f + @payment_order.other_discounts.to_f)), unit: 'S/.', precision: 2
+
+    .page-copy{ :style => 'width: 500px; display: inline-block;' }
+      .row
+        .col-md-4
+          = wicked_pdf_image_tag @company.avatar.url
+
+      .row
+        .col-md-4
+          %span{ :style => 'color: transparent;' } ----------------------------------------------
+        .col-md-4{ :style => 'text-align:center;' }
+          %h4{ :style => 'text-decoration:underline;' } ORDEN DE PAGO
+        .col-md-2{ :style => 'padding-left: 4em;' }
+          %p= 'N° ' + @payment_order.id.to_s.rjust(4, '0') + ' - ' + @cost_center.code.to_s + ' - ARSAC'
+
+      .row
+        .col-md-8
+          %p
+            Para: 
+            %strong= @destinatary.to_s
+          %p
+            De: 
+            %strong= @current_user.to_s
+        .col-md-4{ :style => 'padding-left: 13em;' }
+          %p
+            Fecha: 
+            %strong= Time.now.strftime('%d-%m-%Y')
+          %p 
+            CC:
+            %strong= @cost_center.code
+
+      .row
+        .col-md-12
+          %p
+            %strong Asunto: 
+            = @subject.to_s
+
+      .row
+        .col-md-8
+          %p
+            %strong Proveedor: 
+            = @suppliers.join(',') 
+        .col-md-4{ :style => 'padding-left: 17em;' }
+          %p
+            %strong RUC: 
+            = @ruc.join(', ')
+
+      .row
+        .col-md-12
+          %p
+            %strong= 'Obra: "' + @cost_center.name + '". Por medio del presente solicito la Autorización de pago de: '
+
+      .row
+        .col-md-12
+          %p
+            %strong Orden de Compra N° 
+            = @codes_orders.join(' / ')
+
+      .row
+        .col-md-12{ :style => 'margin-left: 4em;' }
+          %table
+            %tr
+              %th= 'ORDEN DE COMPRA N° ' + @codes_orders.join(' / ')
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } --------
+                %span{ :style => 'font-weight: bold; text-decoration: underline;' } AMORTIZACIÓN
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                Subtotal
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                I.G.V
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                Percepción
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                %strong Total
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } --------
+                %span{ :style => 'font-weight: bold; text-decoration: underline;' } DESCUENTOS
+            %tr
+              %td 
+                %span{ :style => 'color: transparent;' } --------
+                Detracción
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } --------
+                Fondo de Garantia N° 01
+            %tr
+              %td 
+                %span{ :style => 'color: transparent;' } --------
+                Otros Descuentos
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                %strong Total Descuentos
+            %tr
+              %td
+                %span{ :style => 'color: transparent;' } -----------------------
+                %strong Neto a Pagar
+
+        .col-md-12{ :style => 'margin-left: 2em;' }
+          %table
+            %tr
+              %td -
+            %tr
+              %td -
+            %tr
+              %td
+                = number_to_currency @payment_order.sub_total, unit: 'S/.', precision: 2
+            %tr
+              %td
+                = number_to_currency @payment_order.igv, unit: 'S/.', precision: 2
+            %tr
+              %td
+                = number_to_currency @payment_order.perception, unit: 'S/.', precision: 2
+            %tr
+              %td
+                %strong
+                  = number_to_currency @payment_order.total, unit: 'S/.', precision: 2
+            %tr
+              %td -
+            %tr
+              %td
+                = number_to_currency @payment_order.detraction, unit: 'S/.', precision: 2
+            %tr
+              %td
+                = number_to_currency @payment_order.guarantee_fund_n1, unit: 'S/.', precision: 2
+            %tr
+              %td
+                = number_to_currency @payment_order.other_discounts, unit: 'S/.', precision: 2
+            %tr
+              %td
+                %strong
+                  = number_to_currency (@payment_order.detraction + @payment_order.guarantee_fund_n1 + @payment_order.other_discounts), unit: 'S/.', precision: 2
+            %tr
+              %td
+                %strong
+                  = number_to_currency (@payment_order.total.to_f - (@payment_order.detraction.to_f + @payment_order.guarantee_fund_n1.to_f + @payment_order.other_discounts.to_f)), unit: 'S/.', precision: 2
