@@ -6,18 +6,19 @@
     :css
       .col-md-1,.col-md-2,.col-md-3,.col-md-4,.col-md-5,.col-md-6,.col-md-7,.col-md-8,.col-md-9,.col-md-10,.col-md-11,.col-md-12 { display: inline-block; }
   %body
-    .page{ :style => 'width: 500px; display: inline-block;' }
+    .page.col-md-6{ :style => 'width:49%;' }
       .row
-        .col-md-4
+        .col-md-12
           = wicked_pdf_image_tag @company.avatar.url
 
       .row
-        .col-md-4
-          %span{ :style => 'color: transparent;' } ----------------------------------------------
-        .col-md-4{ :style => 'text-align:center;' }
-          %h4{ :style => 'text-decoration:underline;' } ORDEN DE PAGO
-        .col-md-2{ :style => 'padding-left: 4em;' }
-          %p= 'N° ' + @payment_order.id.to_s.rjust(4, '0') + ' - ' + @cost_center.code.to_s + ' - ARSAC'
+        .col-md-2
+
+        .col-md-6{ :style => 'text-align:center;' }
+          %h4{ :style => 'text-decoration:underline; margin-top: 0;' } ORDEN DE PAGO
+        .col-md-3{ :style => 'text-align:right;' }
+          %p{ :style => 'margin-top: 0;' }
+            = 'N° ' + @payment_order.id.to_s.rjust(4, '0') + ' - ' + @cost_center.code.to_s + ' - ARSAC'
 
       .row
         .col-md-8
@@ -27,13 +28,13 @@
           %p
             De: 
             %strong= @current_user.to_s
-        .col-md-4{ :style => 'padding-left: 13em;' }
+        .col-md-3{ :style => 'padding-left: 35px;' }
           %p
-            Fecha: 
-            %strong= Time.now.strftime('%d-%m-%Y')
+            %span Fecha: 
+            %strong{ :style => 'padding-left: 15px;' }= Time.now.strftime('%d-%m-%Y')
           %p 
-            CC:
-            %strong= @cost_center.code
+            %span{ :style => 'padding-left: 15px;' } CC:
+            %strong{ :style => 'padding-left: 15px;' }= @cost_center.code
 
       .row
         .col-md-12
@@ -46,7 +47,7 @@
           %p
             %strong Proveedor: 
             = @suppliers.join(',') 
-        .col-md-4{ :style => 'padding-left: 17em;' }
+        .col-md-3
           %p
             %strong RUC: 
             = @ruc.join(', ')
@@ -63,7 +64,7 @@
             = @codes_orders.join(' / ')
 
       .row
-        .col-md-12{ :style => 'margin-left: 4em;' }
+        .col-md-4
           %table
             %tr
               %th= 'ORDEN DE COMPRA N° ' + @codes_orders.join(' / ')
@@ -112,7 +113,7 @@
                 %span{ :style => 'color: transparent;' } -----------------------
                 %strong Neto a Pagar
 
-        .col-md-12{ :style => 'margin-left: 2em;' }
+        .col-md-4
           %table
             %tr
               %td -
@@ -145,24 +146,118 @@
             %tr
               %td
                 %strong
-                  = number_to_currency (@payment_order.detraction + @payment_order.guarantee_fund_n1 + @payment_order.other_discounts), unit: 'S/.', precision: 2
+                  = number_to_currency (@payment_order.detraction.to_f + @payment_order.guarantee_fund_n1.to_f + @payment_order.other_discounts.to_f), unit: 'S/.', precision: 2
             %tr
               %td
                 %strong
                   = number_to_currency (@payment_order.total.to_f - (@payment_order.detraction.to_f + @payment_order.guarantee_fund_n1.to_f + @payment_order.other_discounts.to_f)), unit: 'S/.', precision: 2
 
-    .page-copy{ :style => 'width: 500px; display: inline-block;' }
+        .row
+          .col-md-12
+
+        .col-md-12
+          %div{ :style => 'border: 1px solid black;' }
+            %h7.col-md-12{ :style => 'font-weight:bold;text-decoration: underline;' } CONTROL DE ANTICIPOS
+            %table.col-md-12
+              %tr
+                %td{ :style => 'width: 25%;' } Adelanto Otorgado
+                %td{ :style => 'width: 25%; text-align: center;' } 
+                  %p -
+                %td{ :style => 'width: 25%;' } Amortizaciones
+                %td{ :style => 'width: 25%; text-align: center;' } 
+                  %p -
+              %tr
+                %td{ :style => 'width: 25%;' } Saldo Pendiente por Amortizar
+                %td{ :style => 'width: 25%; text-align: center;' } 
+                  %p -
+
+        .row
+          .col-md-12
+        
+        .col-md-12
+          %div{ :style => 'border: 1px solid black;' }
+            %p.col-md-12
+              %strong Partida
+              %span 1.- AGLOMERANTES (CEMENTO, YESO, CAL HIDRAÚLICA, ADHITIVOS)
+            %table.col-md-12
+              %tr
+                %td{ :style => 'width: 17.3%;' }
+                  %p
+                    %strong Monto Presupuesto
+                %td{ :style => 'width: 16.7%; text-align: center;' } -
+                %td{ :style => 'width: 16.6%;' }
+                  %p
+                    %strong Consumido
+                %td{ :style => 'width: 16.7%; text-align: center;' } -
+                %td{ :style => 'width: 16.3%;' }
+                  %p
+                    %strong Saldo
+                %td{ :style => 'width: 16.7%; text-align: center;' } -
+
+        .row
+          .col-md-12
+
+        .col-md-12
+          %div{ :style => 'border: 1px solid black;' }
+            %p.col-md-12{ :style => 'text-decoration:underline;' }
+              %strong Información Bancaria
+
+            %table.col-md-12
+              %tr
+                %td{ :style => 'width: 25%;' } Entidad Bancaria
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+                %td{ :style => 'width: 25%;' } Tipo de Cuenta
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+              %tr
+                %td{ :style => 'width: 25%;' } Moneda
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+                %td{ :style => 'width: 25%;' } N° de Cuenta
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+              %tr
+                %td{ :style => 'width: 25%;' } Cta. Detracción
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+                %td{ :style => 'width: 25%;' } CCI
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+
+        .row
+          .col-md-12
+
+        .col-md-12
+          %p.col-md-12{ :style => 'text-decoration:underline;' }
+            %strong Tipo de pago:
+          %table.col-md-12
+            %tr
+              %td
+                %p
+                  %strong Realizar Transferencia Interbancaria a la Cta. del Proveedor :
+              %td
+                %p{ :style => 'padding-left:10px;' }= @suppliers.join(',') 
+
+    .page-copy.col-md-6{ :style => 'width:50%;' }
       .row
-        .col-md-4
+        .col-md-12
           = wicked_pdf_image_tag @company.avatar.url
 
       .row
-        .col-md-4
-          %span{ :style => 'color: transparent;' } ----------------------------------------------
-        .col-md-4{ :style => 'text-align:center;' }
-          %h4{ :style => 'text-decoration:underline;' } ORDEN DE PAGO
-        .col-md-2{ :style => 'padding-left: 4em;' }
-          %p= 'N° ' + @payment_order.id.to_s.rjust(4, '0') + ' - ' + @cost_center.code.to_s + ' - ARSAC'
+        .col-md-2
+
+        .col-md-6{ :style => 'text-align:center;' }
+          %h4{ :style => 'text-decoration:underline; margin-top: 0;' } ORDEN DE PAGO
+        .col-md-3{ :style => 'text-align:right;' }
+          %p{ :style => 'margin-top: 0;' }
+            = 'N° ' + @payment_order.id.to_s.rjust(4, '0') + ' - ' + @cost_center.code.to_s + ' - ARSAC'
 
       .row
         .col-md-8
@@ -172,13 +267,13 @@
           %p
             De: 
             %strong= @current_user.to_s
-        .col-md-4{ :style => 'padding-left: 13em;' }
+        .col-md-3{ :style => 'padding-left: 35px;' }
           %p
-            Fecha: 
-            %strong= Time.now.strftime('%d-%m-%Y')
+            %span Fecha: 
+            %strong{ :style => 'padding-left: 15px;' }= Time.now.strftime('%d-%m-%Y')
           %p 
-            CC:
-            %strong= @cost_center.code
+            %span{ :style => 'padding-left: 15px;' } CC:
+            %strong{ :style => 'padding-left: 15px;' }= @cost_center.code
 
       .row
         .col-md-12
@@ -191,7 +286,7 @@
           %p
             %strong Proveedor: 
             = @suppliers.join(',') 
-        .col-md-4{ :style => 'padding-left: 17em;' }
+        .col-md-3
           %p
             %strong RUC: 
             = @ruc.join(', ')
@@ -208,7 +303,7 @@
             = @codes_orders.join(' / ')
 
       .row
-        .col-md-12{ :style => 'margin-left: 4em;' }
+        .col-md-4
           %table
             %tr
               %th= 'ORDEN DE COMPRA N° ' + @codes_orders.join(' / ')
@@ -257,7 +352,7 @@
                 %span{ :style => 'color: transparent;' } -----------------------
                 %strong Neto a Pagar
 
-        .col-md-12{ :style => 'margin-left: 2em;' }
+        .col-md-4
           %table
             %tr
               %td -
@@ -290,8 +385,101 @@
             %tr
               %td
                 %strong
-                  = number_to_currency (@payment_order.detraction + @payment_order.guarantee_fund_n1 + @payment_order.other_discounts), unit: 'S/.', precision: 2
+                  = number_to_currency (@payment_order.detraction.to_f + @payment_order.guarantee_fund_n1.to_f + @payment_order.other_discounts.to_f), unit: 'S/.', precision: 2
             %tr
               %td
                 %strong
                   = number_to_currency (@payment_order.total.to_f - (@payment_order.detraction.to_f + @payment_order.guarantee_fund_n1.to_f + @payment_order.other_discounts.to_f)), unit: 'S/.', precision: 2
+
+        .row
+          .col-md-12
+
+        .col-md-12
+          %div{ :style => 'border: 1px solid black;' }
+            %h7.col-md-12{ :style => 'font-weight:bold;text-decoration: underline;' } CONTROL DE ANTICIPOS
+            %table.col-md-12
+              %tr
+                %td{ :style => 'width: 25%;' } Adelanto Otorgado
+                %td{ :style => 'width: 25%; text-align: center;' } 
+                  %p -
+                %td{ :style => 'width: 25%;' } Amortizaciones
+                %td{ :style => 'width: 25%; text-align: center;' } 
+                  %p -
+              %tr
+                %td{ :style => 'width: 25%;' } Saldo Pendiente por Amortizar
+                %td{ :style => 'width: 25%; text-align: center;' } 
+                  %p -
+
+        .row
+          .col-md-12
+        
+        .col-md-12
+          %div{ :style => 'border: 1px solid black;' }
+            %p.col-md-12
+              %strong Partida
+              %span 1.- AGLOMERANTES (CEMENTO, YESO, CAL HIDRAÚLICA, ADHITIVOS)
+            %table.col-md-12
+              %tr
+                %td{ :style => 'width: 17.3%;' }
+                  %p
+                    %strong Monto Presupuesto
+                %td{ :style => 'width: 16.7%; text-align: center;' } -
+                %td{ :style => 'width: 16.6%;' }
+                  %p
+                    %strong Consumido
+                %td{ :style => 'width: 16.7%; text-align: center;' } -
+                %td{ :style => 'width: 16.3%;' }
+                  %p
+                    %strong Saldo
+                %td{ :style => 'width: 16.7%; text-align: center;' } -
+
+        .row
+          .col-md-12
+
+        .col-md-12
+          %div{ :style => 'border: 1px solid black;' }
+            %p.col-md-12{ :style => 'text-decoration:underline;' }
+              %strong Información Bancaria
+
+            %table.col-md-12
+              %tr
+                %td{ :style => 'width: 25%;' } Entidad Bancaria
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+                %td{ :style => 'width: 25%;' } Tipo de Cuenta
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+              %tr
+                %td{ :style => 'width: 25%;' } Moneda
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+                %td{ :style => 'width: 25%;' } N° de Cuenta
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+              %tr
+                %td{ :style => 'width: 25%;' } Cta. Detracción
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+                %td{ :style => 'width: 25%;' } CCI
+                %td{ :style => 'width: 25%; text-align: center;' }
+                  %p
+                    %strong -
+
+        .row
+          .col-md-12
+
+        .col-md-12
+          %p.col-md-12{ :style => 'text-decoration:underline;' }
+            %strong Tipo de pago:
+          %table.col-md-12
+            %tr
+              %td
+                %p
+                  %strong Realizar Transferencia Interbancaria a la Cta. del Proveedor :
+              %td
+                %p{ :style => 'padding-left:10px;' }= @suppliers.join(',') 
