@@ -161,8 +161,9 @@ class Administration::PaymentOrdersController < ApplicationController
 
         render :pdf => "Orden_de_pago-#{Time.now.strftime('%d-%m-%Y')}", 
                :template => 'administration/payment_orders/payslip_pdf.pdf.haml',
-               :page_size => 'A4',
+               :page_size => 'A3',
                :orientation => 'Landscape',
+               #:show_as_html => true,
                :dpi => '300'
       end
     end
