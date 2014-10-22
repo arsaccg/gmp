@@ -60,6 +60,9 @@
               .col-sm-12.col-md-12.col-lg-12
                 %h1= company.name
                 %p= "RUC: #{company.ruc}"
+                %span#logo{:style => 'margin-top: 9px;float:right;'}
+                  - if !company.nil?
+                    = image_tag company.avatar.url, alt: "#{company.name}"
                 %p
                   %a.btn.btn-primary.btn-lg{ 'href' => 'javascript:void(0)', 'id' => "btn-#{company.id}", 'data-target' => "#modal-#{company.id}", "role" => "button" }
                     Ver información
