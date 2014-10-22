@@ -146,7 +146,7 @@
             %tr
               %td
                 %strong
-                  = number_to_currency (@payment_order.detraction + @payment_order.guarantee_fund_n1 + @payment_order.other_discounts), unit: 'S/.', precision: 2
+                  = number_to_currency (@payment_order.detraction.to_f + @payment_order.guarantee_fund_n1.to_f + @payment_order.other_discounts.to_f), unit: 'S/.', precision: 2
             %tr
               %td
                 %strong
@@ -181,7 +181,7 @@
               %span 1.- AGLOMERANTES (CEMENTO, YESO, CAL HIDRAÚLICA, ADHITIVOS)
             %table.col-md-12
               %tr
-                %td{ :style => 'width: 16.7%;' }
+                %td{ :style => 'width: 17.3%;' }
                   %p
                     %strong Monto Presupuesto
                 %td{ :style => 'width: 16.7%; text-align: center;' } -
@@ -189,7 +189,7 @@
                   %p
                     %strong Consumido
                 %td{ :style => 'width: 16.7%; text-align: center;' } -
-                %td{ :style => 'width: 16.6%;' }
+                %td{ :style => 'width: 16.3%;' }
                   %p
                     %strong Saldo
                 %td{ :style => 'width: 16.7%; text-align: center;' } -
@@ -385,7 +385,7 @@
             %tr
               %td
                 %strong
-                  = number_to_currency (@payment_order.detraction + @payment_order.guarantee_fund_n1 + @payment_order.other_discounts), unit: 'S/.', precision: 2
+                  = number_to_currency (@payment_order.detraction.to_f + @payment_order.guarantee_fund_n1.to_f + @payment_order.other_discounts.to_f), unit: 'S/.', precision: 2
             %tr
               %td
                 %strong
@@ -420,7 +420,7 @@
               %span 1.- AGLOMERANTES (CEMENTO, YESO, CAL HIDRAÚLICA, ADHITIVOS)
             %table.col-md-12
               %tr
-                %td{ :style => 'width: 16.7%;' }
+                %td{ :style => 'width: 17.3%;' }
                   %p
                     %strong Monto Presupuesto
                 %td{ :style => 'width: 16.7%; text-align: center;' } -
@@ -428,7 +428,7 @@
                   %p
                     %strong Consumido
                 %td{ :style => 'width: 16.7%; text-align: center;' } -
-                %td{ :style => 'width: 16.6%;' }
+                %td{ :style => 'width: 16.3%;' }
                   %p
                     %strong Saldo
                 %td{ :style => 'width: 16.7%; text-align: center;' } -
