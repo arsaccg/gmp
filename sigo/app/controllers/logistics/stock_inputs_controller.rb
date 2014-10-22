@@ -45,17 +45,20 @@ class Logistics::StockInputsController < ApplicationController
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
     @head = StockInput.new
-    @ids=Array.new
-    po = PurchaseOrder.where('state LIKE "approved"')
-    po.each do |podo|
-      @ids << podo.entity_id
-    end
-    @ids = @ids.uniq.join(',')
-    @suppliers = Entity.where('id IN ('+@ids+')')
     #@periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     render layout: false
+  end
+
+  def display_supplier
+    word = params[:q]
+    article_hash = Array.new
+    articles = StockInput.getSupplier(word, get_company_cost_center('cost_center'))
+    articles.each do |art|
+      article_hash << {'id' => art[0].to_s, 'name' => art[1]}
+    end
+    render json: {:articles => article_hash}
   end
 
   def show

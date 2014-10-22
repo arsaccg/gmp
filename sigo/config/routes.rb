@@ -248,6 +248,7 @@ ArsacLogistica::Application.routes.draw do
         post 'show_rows_stock_inputs'
         post 'add_items_from_pod'
         post 'more_items_from_pod'
+        post 'display_supplier'
       end
       member do
         put 'show_purchase_order_item_field'
@@ -261,6 +262,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_items_from_pod'
         post 'partial_select_per_warehouse'
         post 'partial_table_per_warehouse'
+        post 'display_articles_per_warehouse'
       end
     end
     resources :working_groups

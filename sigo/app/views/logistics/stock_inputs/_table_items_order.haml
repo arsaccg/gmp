@@ -23,6 +23,7 @@
                 %i.fa.fa-hand-o-down               
         %tbody#table-items
           - @tableItems.each do |x|
+            %input#sname{:style=>"display:none",:value=> x.entity.ruc.to_s+"-"+x.entity.name}
             - x.purchase_order_details.each do |y|
               -del = StockInputDetail.where("purchase_order_detail_id = "+y.id.to_s)
               -tot=0

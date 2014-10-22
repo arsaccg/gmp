@@ -43,14 +43,43 @@ class Logistics::StockOutputsController < ApplicationController
 
   def partial_select_per_warehouse
     @warehouse = params[:warehouse_id]
-    @articles = Article.getSpecificArticlesPerWarehouse(@warehouse)
     render(:partial => 'partial_select_per_warehouse', layout: false)
   end
 
+  def display_articles_per_warehouse
+    word = params[:q]
+    warehouse = params[:warehouse]
+    idsn = params[:idsn]
+    if idsn == ""
+      idsn = 0
+    else
+      idsn=idsn.split('-')
+      idsn=idsn.join(',')
+    end
+    article_hash = Array.new
+    articles = Article.getSpecificArticlesPerWarehouse(warehouse,word, idsn)
+    articles.each do |art|
+      article_hash << {'id' => art[0].to_s, 'name' => art[1] + ' - ' + art[2] + ' - ' + art[3]}
+    end
+    render json: {:articles => article_hash}
+  end
+
   def partial_table_per_warehouse
-    article_warehouse = params[:data].split('-')
-    @warehouse = article_warehouse[1]
-    @article = Article.getSpecificArticlePerConsult(article_warehouse[1], article_warehouse[0])
+    article_warehouse = params[:data]
+    @warehouse = params[:warehouse]
+    @article=Array.new
+    article = Article.getSpecificArticlePerConsult(@warehouse, article_warehouse)
+    article.each do |art|
+      rest = Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i)
+      if rest.count>0
+        rest = rest.first.at(0).to_i
+      else
+        rest = 0
+      end
+      if (art[4]-rest)>0
+      end    
+      @article << [art[0], art[1], art[2], art[3], art[4], art[4]-rest]
+    end
     render(:partial => 'partial_table_per_warehouse', layout: false)
   end
 

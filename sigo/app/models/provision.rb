@@ -13,12 +13,12 @@ class Provision < ActiveRecord::Base
     case type_of_order
       when "purchase_order" then
         order_amount = PurchaseOrderDetail.find(order_id).amount
-        if order_amount == total_amount
+        if order_amount.to_i == total_amount.to_i
           PurchaseOrderDetail.find(order_id).update_attributes(:received_provision => 1)
         end
       when "service_order" then
         order_amount = OrderOfServiceDetail.find(order_id).amount
-        if order_amount == total_amount
+        if order_amount.to_i == total_amount.to_i
           OrderOfServiceDetail.find(order_id).update_attributes(:received => 1)
         end
       else raise "Unknown Order"

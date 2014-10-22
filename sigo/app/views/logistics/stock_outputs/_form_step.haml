@@ -45,7 +45,8 @@
               %th{ 'style' => 'width: 30%;text-align:center' } Artículo
               %th{ 'style' => 'width: 15%;text-align:center' } Unidad
               %th{ 'style' => 'width: 20%;text-align:center' } Cantidad Total en Almacen
-              %th{ 'style' => 'width: 15%;text-align:center' } Seleccionar
+              %th{ 'style' => 'width: 7%;text-align:center;display:none' } Seleccionar
+              %th{ 'style' => 'width: 7%;text-align:center' } Eliminar
           %tbody#partial_table_per_warehouse
         
   #step3.step-pane
@@ -70,7 +71,7 @@
         .col-md-2
           %label.control-label N° Documento
           .input-group
-            = text_field(:stock_input, :document, placeholder: "N° Documento", class: "form-control")
+            = text_field(:stock_input, :document, placeholder: "N° Documento", class: "form-control", :required => true, :title=>"(*)")
             %span.input-group-addon
               %i.fa.fa-file
 
@@ -85,7 +86,7 @@
         .col-md-2
           %label.control-label Fecha
           .input-group
-            = f.input :issue_date, placeholder: "Fecha", as: :string, :input_html => {:class => 'form-control', type: "date", :required => true}, label: false
+            = f.input :issue_date, placeholder: "Fecha", as: :string, :required => true, :input_html => {:class => 'form-control', type: "date"}, label: false
             %span.input-group-addon
               %i.fa.fa-calendar
       .row
@@ -134,7 +135,7 @@
     %br/
     %br/
     %br/
-
+    %input#ids{:style=>"display:none"}
 #modalPurchaseOrderItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
   .modal-dialog
     .modal-content
@@ -150,6 +151,6 @@
   $("#btn-add-article").click(function(){
     var article_id = $("#article-select").val();
     str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), amount: $("#article-amount").val()};
-
     append_url_ajax('#{add_stock_input_item_field_logistics_stock_outputs_path}', 'summary-pod', str_item, 0, 'POST');
   });
+

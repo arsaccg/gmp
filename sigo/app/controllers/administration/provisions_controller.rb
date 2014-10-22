@@ -27,7 +27,7 @@ class Administration::ProvisionsController < ApplicationController
         provision_checked = Array.new
         total_amount = 0
         provision.provision_details.each do |detail|
-          if !provision_checked.include? detail
+          if !provision_checked.include? detail.order_detail_id
             provision_checked << detail.order_detail_id
             ProvisionDetail.where('order_detail_id = ?', detail.order_detail_id).each do |details|
               total_amount += details.amount
@@ -90,6 +90,18 @@ class Administration::ProvisionsController < ApplicationController
 
   def destroy
     provision = Provision.find(params[:id])
+    # BEGIN Return all Orders to Received Null
+    order_ids = provision.provision_details.select(:order_detail_id).map(&:order_detail_id)
+    if provision.provision_details.first.type_of_order == 'purchase_order'
+      PurchaseOrderDetail.where(:id => order_ids).each do |purchase_order_detail|
+        purchase_order_detail.update_attributes(:received_provision => nil)
+      end
+    elsif provision.provision_details.first.type_of_order == 'service_order'
+      OrderOfService.where(:id => order_ids).each do |order_service|
+        order_service.update_attributes(:received => nil)
+      end
+    end
+    # END Return all Orders to Received Null
     provision.provision_details.destroy_all
     provision_destroyed = Provision.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."

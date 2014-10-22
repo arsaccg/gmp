@@ -17,7 +17,7 @@
                   %option{:value => "#{x.id}"}
                     = x.name
               -else
-                %option{:value => nil} Seleccione un almacen
+                %option{:value => nil, :disabled => true} Seleccione un almacen
                 - @warehouses.each do |x|
                   %option{:value => "#{x.id}"}
                     = x.name
@@ -26,8 +26,8 @@
         .col-md-3{"style"=>" margin-right: 20px; "}
           %label.control-label Formato
           .input-group
-            %select.form-control#format-select{:name =>"stock_input[format_id]"}
-              %option{:value => nil} Seleccione un Formato
+            %select.form-control#format-select{:name =>"stock_input[format_id]", :required => true}
+              %option{:value => nil, :disabled => true} Seleccione un Formato
               - @formats.each do |x|
                 %option{:value => "#{x.id}"}
                   = x.name
@@ -97,17 +97,13 @@
           %div
             %label.control-label Proveedor
             .input-group
-              %select.select2.form-control#supplier-selected{:style => 'width:100%;padding: 0;border: none;'}
-                %option{ :value => 0 }
-                  Seleccionar Proveedor
-                - @suppliers.each do |x|
-                  %option(value = "#{x.id}")
-                    = x.name
+              %input#supplier-selected.bigdrop.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:500px;padding: 0;border: none;'}
+
         .col-md-6
           %div
             %label.control-label Ordenes de Compra
             .input-group
-              %select.select2.form-control#po_selected{:name => "purchase_orders[]", :style => "padding: 0;border: none;", :multiple => true}
+              %select.form-control#po_selected{:name => "purchase_orders[]", :style => "padding: 0;border: none;", :multiple => true}
 
         .col-md-12{ :style => 'margin-top:10px;' }
           %div
@@ -115,4 +111,4 @@
               %i.fa.fa-search-minus
                 Consultar
 
-        .col-md-12#modalPodContent{ :style => 'margin-top:10px;' }
+        .col-md-12#modalPodContent{ :style => 'margin-top:10px;' }   

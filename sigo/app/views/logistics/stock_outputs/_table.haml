@@ -11,7 +11,6 @@
         %thead
           %tr
             %th Almacén
-            %th Periodo
             %th Fecha
             %th Documento
             %th Responsable
@@ -23,8 +22,6 @@
               %tr
                 %td 
                   = unit.warehouse.name
-                %td
-                  = unit.period
                 %td
                   -if unit.issue_date.nil?
                     No se a registrado la fecha

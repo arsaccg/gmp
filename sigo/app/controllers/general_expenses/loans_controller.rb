@@ -39,7 +39,7 @@ class GeneralExpenses::LoansController < ApplicationController
     loan = Loan.find(params[:id])
     if loan.update_attributes(loan_params)
       flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, :controller => "warehouse_orders"
+      redirect_to :action => :index, :controller => "loans"
     else
       con.errors.messages.each do |attribute, error|
         flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
@@ -61,9 +61,8 @@ class GeneralExpenses::LoansController < ApplicationController
   end
 
   def edit
-    @reg_n=((Time.now.to_f)*100).to_i
+    @costcenters = CostCenter.all
     @loan = Loan.find(params[:id])
-    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @action = 'edit'
     render layout: false
   end

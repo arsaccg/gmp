@@ -1,14 +1,40 @@
 .col-md-1
 .col-md-8
-  %select{:name => 'article_selected', :class => 'select2 form-control', :id => 'article-select-warehouse', :style => 'width:100%;padding: 0'}
-    - @articles.each do |art|
-      -rest = Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i)
-      -if rest.count>0
-        -rest = rest.first.at(0).to_i
-      -else
-        -rest = 0
-      -if (art[4]-rest)>0
-        %option{:value => "#{art[0]}-#{@warehouse}"}
-          = art[1] + ' - ' + art[2] + ' - ' + art[3]
+  %input#article-selected.bigdrop.form-control{'name' => 'article_selected', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;'}
 .col-md-2
-  %button{'type' => 'button', 'onclick' => 'javascript:add_article_item()'} Agregar Insumo
+  %button#add{'type' => 'button', 'onclick' => 'javascript:add_article_item()'} Agregar Insumo
+%input#warehouse{:style=>"display:none;",:value=>"#{@warehouse}"}
+
+:javascript
+  $(document).ready(function(){
+    $(".select").select2();
+    $('#article-selected').select2({
+      placeholder: "Buscar Articulos...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_articles_per_warehouse_logistics_stock_outputs_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}",
+            warehouse: "#{@warehouse}",
+            idsn: $('#ids').val()
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.name + '</div>' },
+      formatSelection: function(node){ return (node.id + node.name) },
+      escapeMarkup: function (m) { return m; }
+    });
+  });  
+
+  $('#article-selected').change(function(){
+    $('#add').focus();
+  });
