@@ -2,7 +2,7 @@
 .col-md-8
   %input#article-selected.bigdrop.form-control{'name' => 'article_selected', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;'}
 .col-md-2
-  %button{'type' => 'button', 'onclick' => 'javascript:add_article_item()'} Agregar Insumo
+  %button#add{'type' => 'button', 'onclick' => 'javascript:add_article_item()'} Agregar Insumo
 %input#warehouse{:style=>"display:none;",:value=>"#{@warehouse}"}
 
 :javascript
@@ -21,7 +21,8 @@
             q: term,
             page: page,
             authenticity_token: "#{form_authenticity_token}",
-            warehouse: "#{@warehouse}"
+            warehouse: "#{@warehouse}",
+            idsn: $('#ids').val()
           };
         },
         results: function(data, page){
@@ -33,3 +34,7 @@
       escapeMarkup: function (m) { return m; }
     });
   });  
+
+  $('#article-selected').change(function(){
+    $('#add').focus();
+  });

@@ -271,13 +271,30 @@
   function add_article_item(){
 
     var data = $("#article-selected").val();
-    str_item = { authenticity_token: "#{form_authenticity_token}", data: data, warehouse: $('#warehouse').val()};
-
+    str_item = { authenticity_token: "#{form_authenticity_token}", data: data, warehouse: $('#warehouse').val()};    
     append_url_ajax('#{partial_table_per_warehouse_logistics_stock_outputs_path}', 'partial_table_per_warehouse', str_item, 0, 'POST');
+    var cad=[];
+    var i = 0;
+    $('#partial_table_per_warehouse').children().each(function(){
+      cad[i]=$(this).attr('id').substring(2,10);
+      i++;
+    });
+    cad=cad.join();
+    $('#ids').val('');
+    $('#ids').val(cad);
   }
 
   function delete_item(code){
     $("#tr" + code).remove();
+    var cad=[];
+    var i = 0;
+    $('#partial_table_per_warehouse').children().each(function(){
+      cad[i]=$(this).attr('id').substring(2,10);
+      i++;
+    });
+    cad=cad.join();
+    $('#ids').val('');
+    $('#ids').val(cad);
   }
 
   function isNumber(evt) {

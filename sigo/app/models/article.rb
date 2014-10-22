@@ -254,7 +254,7 @@ class Article < ActiveRecord::Base
     return mysql_result
   end
 
-  def self.getSpecificArticlesPerWarehouse(warehouse_id, word)
+  def self.getSpecificArticlesPerWarehouse(warehouse_id, word,idsn)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT a.id, a.code, a.name, u.name, SUM( sid.amount ) 
       FROM articles a, unit_of_measurements u, stock_inputs si, stock_input_details sid
@@ -264,6 +264,7 @@ class Article < ActiveRecord::Base
       AND si.id = sid.stock_input_id
       AND si.warehouse_id = #{warehouse_id}
       AND a.unit_of_measurement_id = u.id
+      AND a.id NOT IN (#{idsn})
       GROUP BY a.code
     ")
     return mysql_result
