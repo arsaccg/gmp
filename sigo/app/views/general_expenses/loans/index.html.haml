@@ -21,7 +21,7 @@
           %tr
             -suma2=0
             -@debe.each do |prestaron|
-              -suma2+=prestaron[2].to_f
+              -suma2+=prestaron[1].to_f
             %td{"style"=>"font-weight:bold;color:red;font-size:13px;padding-left:5px;"} LE PRESTARON S/. (PENDIENTE)
             %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;padding-right:5px;"}=number_to_currency(suma2.to_f, unit: 'S/. ', precision: 2)
           %tr
