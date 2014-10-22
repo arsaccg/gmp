@@ -18,32 +18,30 @@ class Management::InputbybudgetanditemsController < ApplicationController
     @pdf_table_array = Array.new
 
   	if @measured.to_f > 0
-      @itembybudgetanditems = Inputbybudgetanditem.select("id, cod_input, quantity, price, input, unit").where("budget_id = ? AND inputbybudgetanditems.order LIKE ?", params[:budget_id],  @order + "%").group('').order(:cod_input)
+      #@itembybudgetanditems = Inputbybudgetanditem.select("id, cod_input, quantity, price, input, unit").where("budget_id = ? AND inputbybudgetanditems.order LIKE ?", params[:budget_id],  @order + "%").group('').order(:cod_input)
+      @itembybudgetanditems = ActiveRecord::Base.connection.execute("SELECT ibi.id, ibi.cod_input, ibi.quantity AS quantity, ibi.price, ibi.input, ibi.unit
+      FROM  `inputbybudgetanditems` AS ibi
+      WHERE ibi.`order` LIKE  '" +@order+ "'
+      AND ibi.`budget_id` ="+@budget_id+"
+      ORDER BY ibi.cod_input")
     else
-      @itembybudgetanditems = Inputbybudgetanditem.select("id, cod_input, quantity, price, input, unit").where("budget_id = ? AND inputbybudgetanditems.order LIKE ?", params[:budget_id],  @order + "%").group('coditem, price').order(:cod_input)
-      # @itembybudgetanditems = ActiveRecord::Base.connection.execute("SELECT ibi.id, ibi.cod_input, SUM( ibi.quantity * ib.measured ) AS quantity, ibi.price, ibi.input, ibi.unit
-      # FROM  `inputbybudgetanditems` AS ibi,  `itembybudgets` AS ib
-      # WHERE ibi.`order` LIKE  '01.01.01%'
-      # AND ibi.`order` = ib.`order` 
-      # AND ibi.`budget_id` =4
-      # AND ib.`budget_id` =4
-      # GROUP BY ibi.cod_input, ibi.price
-      # ORDER BY ibi.cod_input")
+      @itembybudgetanditems = ActiveRecord::Base.connection.execute("SELECT ibi.id, ibi.cod_input, SUM( ibi.quantity * ib.measured ) AS quantity, ibi.price, ibi.input, ibi.unit
+      FROM  `inputbybudgetanditems` AS ibi,  `itembybudgets` AS ib
+      WHERE ibi.`order` LIKE  '" +@order+ "%'
+      AND ibi.`order` = ib.`order` 
+      AND ibi.`budget_id` ="+@budget_id+"
+      AND ib.`budget_id` ="+@budget_id+"
+      GROUP BY ibi.cod_input, ibi.price
+      ORDER BY ibi.cod_input")
     end
 
     p @itembybudgetanditems
     @pdf_table_array << ["Insumo", "Codigo", "Cantidad", "Unidad", "Precio", "Total"]
 
     if @itembybudgetanditems != nil
-      # if @measured.to_f > 0
-        @itembybudgetanditems.each do |itembudget|
-          @pdf_table_array << [ itembudget.input, itembudget.cod_input,  itembudget.quantity.to_f.round(4), itembudget.unit, itembudget.price.round(4), (itembudget.quantity.to_f * itembudget.price.to_f).round(4) ]
-        end
-      # else
-      #   @itembybudgetanditems.each do |itembudget|
-      #     @pdf_table_array << [ itembudget[4], itembudget[1], itembudget[2].to_f.round(4), itembudget[5], itembudget[3].round(4), (itembudget[2].to_f * itembudget[3].to_f).round(4) ]
-      #   end
-      # end
+      @itembybudgetanditems.each do |itembudget|
+        @pdf_table_array << [ itembudget[4], itembudget[1], itembudget[2].to_f.round(4), itembudget[5], itembudget[3].round(4), (itembudget[2].to_f * itembudget[3].to_f).round(4) ]
+      end
     end
     render :index, :layout => false
   end
@@ -62,6 +60,32 @@ class Management::InputbybudgetanditemsController < ApplicationController
     itembybudget.save
     p itembybudget
 
+    render :nothing => true, :status => 200, :content_type => 'text/html', layout: false
+  end
+
+  def update_input_group
+    #actualizar precio en grupo
+    main_order = params[:order].gsub("d",".")
+    new_price = params[:price]
+
+    input = Inputbybudgetanditem.find(params[:input_id])
+    if input.cod_input != '0359700510'
+      inputs = Inputbybudgetanditem.where('`order` LIKE ? AND `budget_id` = ? AND `cod_input` = ?', main_order+'%', input.budget_id, input.cod_input)
+
+      inputs.each do |i|
+        i.price = new_price
+        p "~~~~~~~~~~~itembybudgetanditem~~~~~~~~~~~"
+        p i
+        i.save
+        itembybudget = Itembybudget.where('`order` LIKE ? AND `item_code` LIKE ? AND `budget_id` = ?', i.order, i.coditem, i.budget_id).first
+        itembybudget.price = get_sumatory_one_to_one(i.order, i.budget_id)  
+        p "~~~~~~~~~~~itembybudget.price~~~~~~~~~~~"
+        p itembybudget.price
+        itembybudget.save
+        p itembybudget
+      end
+    end
+    
     render :nothing => true, :status => 200, :content_type => 'text/html', layout: false
   end
 

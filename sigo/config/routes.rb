@@ -776,6 +776,7 @@ ArsacLogistica::Application.routes.draw do
         get 'add'
         get 'update_input'
         post 'update_input'
+        get 'update_input_group'
       end
     end
 

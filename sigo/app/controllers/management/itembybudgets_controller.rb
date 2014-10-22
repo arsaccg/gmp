@@ -3,7 +3,6 @@ class Management::ItembybudgetsController < ApplicationController
   
   def index
   	@itembybudgets = Itembybudget.all
-  	
   end
 
   def filter_by_budget 
@@ -11,7 +10,6 @@ class Management::ItembybudgetsController < ApplicationController
     @budget_id = params[:budget_id]
   	@itembybudgets = Itembybudget.where(:budget_id=>params[:budget_id])
   	render :index, :layout => false
-    
   end
 
   def new
@@ -31,9 +29,9 @@ class Management::ItembybudgetsController < ApplicationController
     @itembybudget.budget_code = budget.cod_budget[0, 6]
 
     p @itembybudget
-    #if @itembybudget.save
-    #  flash[:notice] = "Se ha creado correctamente cuenta contable."
-    #end
+    if @itembybudget.save
+      flash[:notice] = "Se ha creado correctamente nuevapartida."
+    end
     render :new, layout: false
   end
 
