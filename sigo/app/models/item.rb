@@ -42,6 +42,6 @@ class Item < ActiveRecord::Base
 	end
 
 	def code_with_name
-    	"#{item_code}_#{description}"
+    	"#{description}_#{item_code}"
   	end
 end

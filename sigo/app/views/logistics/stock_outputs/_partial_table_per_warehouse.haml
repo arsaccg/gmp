@@ -1,10 +1,5 @@
 - @article.each do |art|
-  -rest=Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i)
-  -if rest.count>0
-    -rest=Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i).first.at(0).to_i
-  -else
-    -rest=0
-  %tr
+  %tr{:id=>"tr#{art[0]}"}
     %td
       = art[1]
     %td
@@ -12,8 +7,11 @@
     %td{ 'style' => 'text-align:center' }
       = art[3]
     %td{ 'style' => 'text-align:center' } 
-      = art[4] - rest
-    %td
+      = art[5]
+    %td{:style=>"display:none"}
       %label.checkbox
         = check_box("order_delivery", "approved", { class: 'order_check', :checked=>true }, art[0])
         %i
+    %td
+      %a.btn.btn-default{href: "javascript:delete_item('"+art[0].to_s+"')", :style => 'width: 50%;'}
+        %i.fa.fa-times
