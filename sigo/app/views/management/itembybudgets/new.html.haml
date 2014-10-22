@@ -1,3 +1,8 @@
+-flash.each do |key, value|
+  %div(class="alert alert-#{key} notice")
+    %a(href="#" data-dismiss="alert" class="close") ×
+    = value
+
 #content-inside
   .row
     .col-xs-12.col-sm-12.col-md-12.col-lg-7
@@ -66,7 +71,9 @@
 :javascript
   $('#itembybudget_item_id').change(function() {
     $( "select option:selected" ).each(function() {
-      item_name = $( this ).text().substring(13);
+      str = $( this ).text();
+      l = str.length
+      item_name = str.substring(0, str.length - 13);
     });
 
     $('#itembybudget_subbudgetdetail').val(item_name);
