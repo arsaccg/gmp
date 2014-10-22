@@ -42,7 +42,7 @@
         %tbody
           -@ledeben.each do |presto|
             %tr
-              %td{"style"=>"padding-left:5px;"}=CostCenter.find(presto[0]).code.to_s+" - "+CostCenter.find(presto[0]).name.to_s
+              %td{"style"=>"padding-left:5px; color: black;"}=CostCenter.find(presto[0]).code.to_s+" - "+CostCenter.find(presto[0]).name.to_s
               %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f + presto[2].to_f, unit: 'S/. ', precision: 2)
               %td{"style"=>"text-align:center;"}=number_to_currency(presto[2].to_f, unit: 'S/. ', precision: 2)
               %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
@@ -62,10 +62,10 @@
         %tbody
           -@debe.each do |presto|
             %tr
-              %td{"style"=>"padding-left:5px;"}=CostCenter.find(presto[0]).code.to_s+" - "+CostCenter.find(presto[0]).name.to_s
+              %td{"style"=>"padding-left:5px; color: black;"}=CostCenter.find(presto[0]).code.to_s+" - "+CostCenter.find(presto[0]).name.to_s
               %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f + presto[2].to_f, unit: 'S/. ', precision: 2)
-              %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
               %td{"style"=>"text-align:center;"}=number_to_currency(presto[2].to_f, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
               %td{"style"=>"text-align:center;"}                    
                 %a.btn.btn-success.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_show('+"#{presto[0]}"+','+"#{@cc.id.to_s}"+','+"#{@cc.id.to_s}"+');'}
                   %i.fa.fa-usd
