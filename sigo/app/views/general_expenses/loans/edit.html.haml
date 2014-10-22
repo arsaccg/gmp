@@ -1,6 +1,6 @@
 .modal-dialog{"style"=>"width: 50%"}
   .modal-content
-    .modal-header
+    .modal-header{"style"=>"padding:0px;"}
       %header
         %h2
           %span.widget-icon
@@ -11,84 +11,82 @@
         %fieldset
           %input#cc{ :value => "#{@loan.cost_center_lender_id.to_i.to_s}", "style"=>"display:none"}
           %input#loan{ :value => "#{@loan.id.to_i.to_s}", "style"=>"display:none"}
-          .row{"style"=>"margin-bottom:3%;"}
+          .row{"style"=>"margin-bottom:1%;"}
             .col-md-5
-              %label Beneficiario
-            .col-md-5
+              %label{"style"=>"font-size:14px;"} Beneficiario
+            .col-md-6
               %select#beneficiary.form-control{:name =>"loan[cost_center_beneficiary_id]"}
                 %option{:value => nil, :selected => true, :disabled => true} Seleccione un Beneficiario
                 - @costcenters.each do |ph|
                   %option{:value => "#{ph.id}", :selected => "#{@loan.cost_center_beneficiary_id}"=="#{ph.id}"}
                     = ph.name
-          .row{"style"=>"margin-bottom:3%;"}
+          .row{"style"=>"margin-bottom:1%;"}
             .col-md-5
-              %label Entregado a
+              %label{"style"=>"font-size:14px;"} Entregado a
+            .col-md-6
+              .input-group.col-md-12
+                %input#worker-select.form-control{'name' => 'loan[person]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;','value'=>"#{@loan.person}"}
+          .row{"style"=>"margin-bottom:1%;"}
             .col-md-5
-              .input-group.col-md-11
-                -e=Entity.find(Worker.find(@loan.person).entity_id)
-                %i.icon-append.fa.fa-superscript
-                = text_field_tag 'loan[person]', "#{e.name}"+" "+"#{e.paternal_surname}"+" "+"#{e.maternal_surname}", class: "form-control quantity", :required => true,:readonly=>true,as: :float
-          .row{"style"=>"margin-bottom:3%;"}
-            .col-md-5
-              %label Fecha
-            .col-md-5
+              %label{"style"=>"font-size:14px;"} Fecha
+            .col-md-6
               = text_field_tag 'loan[loan_date]', "#{@loan.loan_date}" , class: "form-control quantity", :required => true,as: :string,:type=>"date"
-          .row{"style"=>"margin-bottom:3%;"}
+          .row{"style"=>"margin-bottom:1%;"}
             .col-md-5
-              %label Forma de Préstamo
-            .col-md-5
+              %label{"style"=>"font-size:14px;"} Forma de Préstamo
+            .col-md-6
               %select#loan_type.form-control{:name =>"loan[loan_type]"}
                 %option{:value => nil, :disabled => true} Seleccione una Forma
                 %option{:value => "1",:selected => "#{@loan.loan_type}"=="1"} Cheque
                 %option{:value => "2",:selected => "#{@loan.loan_type}"=="2"} Transferencia
                 %option{:value => "3",:selected => "#{@loan.loan_type}"=="3"} Efectivo
-          .row{"style"=>"margin-bottom:3%;"}
+          .row{"style"=>"margin-bottom:1%;"}
             .col-md-5
-              %label Monto
-            .col-md-5
-              .input-group.col-md-11
+              %label{"style"=>"font-size:14px;"} Monto
+            .col-md-6
+              .input-group.col-md-12
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'loan[amount]', "#{@loan.amount}", class: "form-control quantity", :required => true, :readonly =>true
-          .row{"style"=>"margin-bottom:3%;"}
+                = text_field_tag 'loan[amount]', "#{@loan.amount}", class: "form-control quantity", :required => true
+          .row{"style"=>"margin-bottom:1%;"}
             .col-md-5
-              %label Motivo
-            .col-md-5
-              .input-group.col-md-11
+              %label{"style"=>"font-size:14px;"} Motivo
+            .col-md-6
+              .input-group.col-md-12
                 %i.icon-append.fa.fa-superscript
                 = text_area_tag 'loan[description]', "#{@loan.description}", class: "form-control quantity", :required => true
-          .row{"style"=>"margin-bottom:3%;"}
+          .row{"style"=>"margin-bottom:1%;"}
             .col-md-5
-              %label Forma de Devolución
-            .col-md-5
+              %label{"style"=>"font-size:14px;"} Forma de Devolución
+            .col-md-6
               %select#refund_type.form-control{:name =>"loan[refund_type]"}
                 %option{:value => nil, :disabled => true} Seleccione una Forma
                 %option{:value => "1",:selected => "#{@loan.refund_type}"=="1"} Cheque
                 %option{:value => "2",:selected => "#{@loan.refund_type}"=="2"} Transferencia
                 %option{:value => "3",:selected => "#{@loan.refund_type}"=="3"} Efectivo
-          .row#checkn{"style"=>"margin-bottom:3%;display:none;"}
+          .row#checkn{"style"=>"margin-bottom:1%;display:none;"}
             .col-md-5
-              %label N° Cheque
-            .col-md-5
-              .input-group.col-md-11
+              %label{"style"=>"font-size:14px;"} N° Cheque
+            .col-md-6
+              .input-group.col-md-12
                 %i.icon-append.fa.fa-superscript
-                = text_field_tag 'loan[check_number]',"#{@loan.loan_date}", class: "form-control quantity",as: :float
-          .row#checkd{"style"=>"margin-bottom:3%;display:none;"}
+                = text_field_tag 'loan[check_number]',"#{@loan.check_number}", class: "form-control quantity",as: :float
+          .row#checkd{"style"=>"margin-bottom:1%;display:none;"}
             .col-md-5
-              %label Fecha de Cheque
-            .col-md-5
+              %label{"style"=>"font-size:14px;"} Fecha de Cheque
+            .col-md-6
               = text_field_tag 'loan[check_date]', "#{@loan.check_date}" , class: "form-control quantity",as: :string,:type=>"date"
-          .row{"style"=>"margin-bottom:3%;"}
+          .row{"style"=>"margin-bottom:1%;"}
             .col-md-5
-              %label Estado
-            .col-md-5
+              %label{"style"=>"font-size:14px;"} Estado
+            .col-md-6
               %select#state.select2.form-control{:name =>"loan[state]"}
                 %option{:value => nil, :disabled => true} Seleccione un Estado
                 %option{:value => "1",:selected => "#{@loan.state}"=="1"} Pendiente
                 %option{:value => "2",:selected => "#{@loan.state}"=="2"} Devuelto
-          .row#devdate{"style"=>"margin-bottom:3%;display:none;"}
+          .row#devdate{"style"=>"margin-bottom:1%;display:none;"}
             .col-md-5
-              %label Fecha de Devolución
-            .col-md-5
+              %label{"style"=>"font-size:14px;"} Fecha de Devolución
+            .col-md-6
               = text_field_tag 'loan[check_date]', "#{@loan.check_date}" , class: "form-control quantity",as: :string,:type=>"date"
         %br
         %br
@@ -96,14 +94,67 @@
           %button.btn.btn-primary#details{type: "button", "style"=>"float:right;"}
             %i.fa.fa-save
               Guardar
-          %button.btn.btn-info#edit{"data-dismiss" => "modal", type: "button"}
+          %button.btn.btn-danger#edit{"data-dismiss" => "modal", type: "button"}
             Salir  
 
   :javascript
     $(document).ready(function () {
+      $('#loan_edit').attr("tabindex","");
+      $('#worker-select').select2({
+        placeholder: "Seleccionar trabajador",
+        minimumInputLength: 3,
+        id: function(data) { return data.id; },
+        ajax: {
+          url: "#{display_workers_general_expenses_loans_path}",
+          dataType: 'json',
+          type: 'POST',
+          quietMillis: 100,
+          data: function(term, page){
+            return {
+              q: term,
+              page: page,
+              authenticity_token: "#{form_authenticity_token}"
+            };
+          },
+          results: function(data, page){
+            return {results: data.workers};
+          }
+        },
+        initSelection: function(element, callback) {
+          var id=$(element).val();
+          if (id != "") {
+            $.ajax("#{display_workers_general_expenses_loans_path}", {
+              type: 'POST',
+              data: {
+                element: id,
+                authenticity_token: "#{form_authenticity_token}"
+              },
+              dataType: "json"
+            }).done(function(data) { 
+              callback(data.workers[0]);
+            });
+          }
+        },
+        formatResult: function(node){ return '<div>' +'DNI° '+ node.dni+' - '+ node.name + ' ' + node.paternal_surname + ' ' + node.maternal_surname + '</div>' },
+        formatSelection: function(node){ return ('DNI° '+node.dni+' - '+node.name + ' ' + node.paternal_surname + ' ' + node.maternal_surname) },
+        escapeMarkup: function (m) { return m; }
+      });
       $('select').select2({width:'100%'});
       submit_form($('form#upload_deregister'))
 
+      if ($("#refund_type").val()=="1"){
+          $("#checkn").show();
+          $("#checkd").show();
+      }else{
+          $("#checkn").hide();
+          $("#checkd").hide();     
+      }
+
+      if ($("#state").val() == "2") {
+          $("#devdate").show();
+      }else{
+          $("#devdate").hide();
+      } 
 
       $("#refund_type").change(function() {
           // foo is the id of the other select box 
@@ -181,6 +232,7 @@
     $("#edit").click(function() {
       data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
       load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_edit', data2, null, 'GET');
+
     });
 
     function isNumber(evt) {

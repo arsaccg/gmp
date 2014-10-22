@@ -1,4 +1,4 @@
-.modal-dialog{ style: "width: 750px;" }
+.modal-dialog{ style: "width: 900px;" }
   .modal-content
     .modal-header{"style"=>"height:75px;"}
       %header
@@ -7,31 +7,31 @@
             %i.fa.fa-pencil-square-o.fa-fw 
           %strong Lista de Préstamos
     .modal-body
-      %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:350px;height:100px;margin-left:26%;"}
-        %thead.panel-heading
+      %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:450px;height:100px;margin-left:23%;"}
+        %thead.panel-heading{"style"=>"background-color:#1E486E;"}
           %tr{"style"=>"height:25px"}
             %td{"colspan"=>2,"style"=>"text-align:center;font-weight:bold;"} RESUMEN
         %tbody
           %tr
             -suma1=0
-            -@presto.each do |presto|
-              -suma1+=presto.amount
-            %td{"style"=>"font-weight:bold;color:green;font-size:13px;"} PRESTO S/. (PENDIENTE)
-            %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;"}=number_to_currency(suma1.to_f, unit: 'S/. ', precision: 2)
+            -@ledeben.each do |presto|
+              -suma1+=presto[1].to_f
+            %td{"style"=>"font-weight:bold;color:green;font-size:13px;padding-left:5px;"} PRESTO S/. (PENDIENTE)
+            %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;width:150px;padding-right:5px;"}=number_to_currency(suma1.to_f, unit: 'S/. ', precision: 2)
           %tr
             -suma2=0
-            -@prestaron.each do |prestaron|
-              -suma2+=prestaron.amount
-            %td{"style"=>"font-weight:bold;color:red;font-size:13px;"} LE PRESTARON S/. (PENDIENTE)
-            %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;"}=number_to_currency(suma2.to_f, unit: 'S/. ', precision: 2)
+            -@debe.each do |prestaron|
+              -suma2+=prestaron[2].to_f
+            %td{"style"=>"font-weight:bold;color:red;font-size:13px;padding-left:5px;"} LE PRESTARON S/. (PENDIENTE)
+            %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;padding-right:5px;"}=number_to_currency(suma2.to_f, unit: 'S/. ', precision: 2)
           %tr
-            %td{"style"=>"font-weight:bold;font-size:13px;"} RESULTADO
-            %td#res{"style"=>"text-align:right;font-size:11px;font-weight:bold;"}=number_to_currency(suma1.to_f-suma2.to_f, unit: 'S/. ', precision: 2)
+            %td{"style"=>"font-weight:bold;font-size:13px;padding-left:5px;"} RESULTADO
+            %td#res{"style"=>"text-align:right;font-size:11px;font-weight:bold;padding-right:5px;"}=suma1.to_f-suma2.to_f
       %h2{"style"=>"font-weight:bold;color:green;"} PRESTO
       %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:98%;height:90px;"}
-        %thead.panel-heading
+        %thead.panel-heading{"style"=>"background-color:#1E486E;"}
           %tr{"style"=>"height:25px;text"}
-            %th{"style"=>"text-align:center;"} Beneficiario
+            %th{"style"=>"text-align:center;"} Centro de Costo Beneficiario
             %th{"style"=>"text-align:center;width:100px;"} Total
             %th{"style"=>"text-align:center;width:100px;"} Devuelto
             %th{"style"=>"text-align:center;width:100px;"} Pendiente
@@ -39,19 +39,19 @@
         %tbody
           -@ledeben.each do |presto|
             %tr
-              %td{"style"=>"padding-left:5px;"}=CostCenter.find(presto[0]).name
+              %td{"style"=>"padding-left:5px;"}=CostCenter.find(presto[0]).code.to_s+" - "+CostCenter.find(presto[0]).name.to_s
               %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f + presto[2].to_f, unit: 'S/. ', precision: 2)
-              %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
               %td{"style"=>"text-align:center;"}=number_to_currency(presto[2].to_f, unit: 'S/. ', precision: 2)
+              %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
               %td{"style"=>"text-align:center;"}
                 %a.btn.btn-success.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_show('+"#{@cc.id.to_s}"+','+"#{presto[0]}"+','+"#{@cc.id.to_s}"+');'}
                   %i.fa.fa-usd              
       %br
       %h2{"style"=>"font-weight:bold;color:red;"} LE PRESTARON
       %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:98%;height:90px;"}
-        %thead.panel-heading
+        %thead.panel-heading{"style"=>"background-color:#1E486E;"}
           %tr{"style"=>"height:25px"}
-            %th{"style"=>"text-align:center;"} Beneficiario
+            %th{"style"=>"text-align:center;"} Centro de Costo Beneficiario
             %th{"style"=>"text-align:center;width:100px;"} Total
             %th{"style"=>"text-align:center;width:100px;"} Devuelto
             %th{"style"=>"text-align:center;width:100px;"} Pendiente
@@ -59,7 +59,7 @@
         %tbody
           -@debe.each do |presto|
             %tr
-              %td{"style"=>"padding-left:5px;"}=CostCenter.find(presto[0]).name
+              %td{"style"=>"padding-left:5px;"}=CostCenter.find(presto[0]).code.to_s+" - "+CostCenter.find(presto[0]).name.to_s
               %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f + presto[2].to_f, unit: 'S/. ', precision: 2)
               %td{"style"=>"text-align:center;"}=number_to_currency(presto[1].to_f, unit: 'S/. ', precision: 2)
               %td{"style"=>"text-align:center;"}=number_to_currency(presto[2].to_f, unit: 'S/. ', precision: 2)
@@ -74,16 +74,19 @@
           %span{"style"=>"width=20px;text-align:center"}
             %a{href: 'javascript:void(0);', :onclick => 'loan_new('+"#{@cc.id.to_s}"+');', "style"=>" color: white; "}
               Agregar Préstamo
-        %button.btn.btn-info#new{"data-dismiss" => "modal", type: "button","style"=>"float:right;"}
+        %button.btn.btn-danger#new{"data-dismiss" => "modal", type: "button","style"=>"float:right;"}
           Salir
 
-:javascript      
+:javascript    
+
+  console.log(parseInt($('#res').html()))
+  if(parseFloat($('#res').html())< 0){
+    document.getElementById('res').style.color = 'red'; 
+  }
+  else{
+    document.getElementById('res').style.color = 'blue';
+  }  
 
   $(document).ready(function (){
-    if($('#res').val()<0){
-      document.getElementById('res').style.color = 'red'; 
-    }
-    else{
-      document.getElementById('res').style.color = 'blue';
-    }
+
   });

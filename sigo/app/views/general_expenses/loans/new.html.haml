@@ -1,4 +1,4 @@
-.modal-dialog#modalid{ style: "width: 750px;" }
+.modal-dialog#modalid{ style: "width: 50%;" }
   .modal-content
     .modal-header
       %header
@@ -9,91 +9,91 @@
     .modal-body
       %fieldset
         %input#cc{ :value => "#{@cc.id.to_i.to_s}", "style"=>"display:none"}
-        .row{"style"=>"margin-bottom:3%;"}
+        .row{"style"=>"margin-bottom:1%;"}
           %section.col-md-5
-            %label Beneficiario
-          %section.col-md-5
+            %label{"style"=>"font-size:14px;"} Beneficiario
+          %section.col-md-6
             %select#beneficiary.select2.form-control
               %option{:value => nil} Seleccione un Beneficiario
               - @costcenters.each do |ph|
                 %option{:value => "#{ph.id}"}
                   = ph.name
-        .row{"style"=>"margin-bottom:3%;"}
+        .row{"style"=>"margin-bottom:1%;"}
           %section.col-md-5
-            %label Entregado a
-          %section.col-md-5
+            %label{"style"=>"font-size:14px;"} Entregado a
+          %section.col-md-6
             %input#worker-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'worker_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
-        .row{"style"=>"margin-bottom:3%;"}
+        .row{"style"=>"margin-bottom:1%;"}
           %section.col-md-5
-            %label Fecha
-          %section.col-md-5
+            %label{"style"=>"font-size:14px;"} Fecha
+          %section.col-md-6
             .input-group
               %input#loan_date.form-control{as: :string,type: "date"}
               %span.input-group-addon
                 %i.icon-append.fa.fa-calendar
-        .row{"style"=>"margin-bottom:3%;"}
+        .row{"style"=>"margin-bottom:1%;"}
           %section.col-md-5
-            %label Forma de Préstamo
-          %section.col-md-5
+            %label{"style"=>"font-size:14px;"} Forma de Préstamo
+          %section.col-md-6
             %select#loan_type.select2.form-control
               %option{:value => nil} Seleccione una Forma
               %option{:value => "1"} Cheque
               %option{:value => "2"} Transferencia
               %option{:value => "3"} Efectivo
-        .row{"style"=>"margin-bottom:3%;"}
+        .row{"style"=>"margin-bottom:1%;"}
           %section.col-md-5
-            %label Monto
-          %section.col-md-5
+            %label{"style"=>"font-size:14px;"} Monto
+          %section.col-md-6
             .input-group
               %input#amount.form-control{placeholder: ""}
               %span.input-group-addon
                 %i.icon-append.fa.fa-plus-circle
-        .row{"style"=>"margin-bottom:3%;"}
+        .row{"style"=>"margin-bottom:1%;"}
           %section.col-md-5
-            %label Motivo
-          %section.col-md-5
+            %label{"style"=>"font-size:14px;"} Motivo
+          %section.col-md-6
             .input-group
               %textarea#description.form-control{placeholder: ""}
               %span.input-group-addon
                 %i.icon-append.fa.fa-list-alt
-        .row{"style"=>"margin-bottom:3%;"}
+        .row{"style"=>"margin-bottom:1%;"}
           %section.col-md-5
-            %label Forma de Devolución
-          %section.col-md-5
+            %label{"style"=>"font-size:14px;"} Forma de Devolución
+          %section.col-md-6
             %select#refund_type.select2.form-control
               %option{:value => nil} Seleccione una Forma
               %option{:value => "1"} Cheque
               %option{:value => "2"} Transferencia
               %option{:value => "3"} Efectivo
-        .row#checkn{"style"=>"margin-bottom:3%;display:none;"}
+        .row#checkn{"style"=>"margin-bottom:1%;display:none;"}
           %section.col-md-5
-            %label N° Cheque
-          %section.col-md-5
+            %label{"style"=>"font-size:14px;"} N° Cheque
+          %section.col-md-6
             .input-group
               %input#check_number.form-control
               %span.input-group-addon
                 %i.icon-append.fa.fa-bar-chart
-        .row#checkd{"style"=>"margin-bottom:3%;display:none;"}
+        .row#checkd{"style"=>"margin-bottom:1%;display:none;"}
           %section.col-md-5
-            %label Fecha de Cheque
-          %section.col-md-5
+            %label{"style"=>"font-size:14px;"} Fecha de Cheque
+          %section.col-md-6
             .input-group
               %input#check_date.form-control{as: :string,type: "date"}
               %span.input-group-addon
                 %i.icon-append.fa.fa-calendar
-        .row{"style"=>"margin-bottom:3%;"}
+        .row{"style"=>"margin-bottom:1%;"}
           %section.col-md-5
-            %label Estado
-          %section.col-md-5
+            %label{"style"=>"font-size:14px;"} Estado
+          %section.col-md-6
             %select#state.select2.form-control
               %option{:value => nil} Seleccione un Estado
               %option{:value => "1"} Pendiente
               %option{:value => "2"} Devuelto
 
-        .row#devdate{"style"=>"margin-bottom:3%;display:none;"}
+        .row#devdate{"style"=>"margin-bottom:1%;display:none;"}
           %section.col-md-5
-            %label Fecha de Devolución
-          %section.col-md-5
+            %label{"style"=>"font-size:14px;"} Fecha de Devolución
+          %section.col-md-6
             .input-group
               %input#refund_date.form-control{{as: :string,type: "date"}}
               %span.input-group-addon
@@ -102,7 +102,7 @@
         %button.btn.btn-primary#smart-mod-eg1{type: "button", "style"=>"float:right;"}
           %i.fa.fa-save
             Guardar
-        %button.btn.btn-info#new{"data-dismiss" => "modal", type: "button"}
+        %button.btn.btn-danger#new{"data-dismiss" => "modal", type: "button"}
           Salir      
 
 :javascript

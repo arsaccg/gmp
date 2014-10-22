@@ -5,11 +5,16 @@
         %h2
           %span.widget-icon
             %i.fa.fa-pencil-square-o.fa-fw 
-          %strong= "DE C.C. "+@cost_center1.code.to_s+"-"+@cost_center1.name.to_s+" A "+@cost_center2.code.to_s+"-"+@cost_center2.name.to_s
+          %br
+          %strong{"style"=>"font-size:16px;"}= "DE : "
+          %a{"style"=>"font-size:16px;font-weight:bold;color:#1E486E;"}="C.C. "+@cost_center1.code.to_s+"-"+@cost_center1.name.to_s
+          %br
+          %strong{"style"=>"font-size:16px;"}="AL  : "
+          %a{"style"=>"font-size:16px;font-weight:bold;color:#1E486E;"}="C.C. "+@cost_center2.code.to_s+"-"+@cost_center2.name.to_s
     .modal-body
       %input#cc{"style"=>"display:none;", :value=>"#{@cc}"}
       %fieldset
-        %table#dt.table.table-striped.table-bordered.table-hover.smart-form
+        %table.table.table-striped.table-bordered.table-hover.smart-form
           %thead.panel-heading
             %tr
               %th Total
@@ -22,7 +27,7 @@
         %br
         %br
 
-        %table.table.table-striped.table-bordered.table-hover.smart-form
+        %table#dt_basic.table.table-striped.table-bordered.table-hover.smart-form
           %thead.panel-heading
             %tr
               %th N° Prestamo
@@ -43,7 +48,7 @@
                   -else
                     Devuelto
                 %td
-                  %a.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_edit('+"#{@cost_center1.id.to_s}"+');', "style"=>" color: white; "}
+                  %a#edit.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_edit('+"#{loan.id.to_s}"+');', "style"=>" color: white; "}
                     Editar
       %br
       .row{"style"=>"height: 40%; overflow-y: scroll;"}
@@ -52,7 +57,7 @@
       
 
       %footer
-        %button.btn.btn-info#show{"data-dismiss" => "modal", type: "button"}
+        %button.btn.btn-danger#show{"data-dismiss" => "modal", type: "button"}
           Salir   
 
 :javascript
@@ -61,7 +66,7 @@
 
     $(".link_detail").click(function() {
       console.log("1");
-      $('table#dt tr').removeClass("seleccionado");
+      $('table#dt_basic tr').removeClass("seleccionado");
       $(this).parents("tr").addClass("seleccionado");
     });
  

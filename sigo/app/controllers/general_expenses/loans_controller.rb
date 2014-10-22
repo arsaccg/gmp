@@ -3,7 +3,7 @@ class GeneralExpenses::LoansController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def new
     @costcenters = CostCenter.where('id not in (?)', params[:cc_id])
-    @cc = CostCenter.find(get_company_cost_center('cost_center')) rescue nil
+    @cc = CostCenter.find(params[:cc_id]) rescue nil
     @loan = Loan.new
     render layout: false
   end
@@ -63,6 +63,7 @@ class GeneralExpenses::LoansController < ApplicationController
   def edit
     @costcenters = CostCenter.all
     @loan = Loan.find(params[:id])
+
     @action = 'edit'
     render layout: false
   end
@@ -167,4 +168,10 @@ class GeneralExpenses::LoansController < ApplicationController
     @loan= Loan.find(params[:id])
     render(partial: 'show_detail', :layout => false)
   end  
+
+
+  private
+  def loan_params
+    params.require(:loan).permit(:person,:loan_date,:loan_type,:amount,:description,:refund_type,:check_number,:check_date,:state,:refund_date,:cost_center_beneficiary_id,:cost_center_lender_id)
+  end
 end
