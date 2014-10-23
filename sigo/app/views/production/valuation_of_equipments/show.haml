@@ -37,7 +37,11 @@
         %tbody
           %tr{"bgcolor"=>"#ECF3F8"}
             %th{"style"=>"color:#5f5f5f;text-align:center"} 1.00
-            %th{"style"=>"color:#5f5f5f;padding-left:8px;"} Valorización sin IGV
+            %th{"style"=>"color:#5f5f5f;padding-left:8px;"}
+              ="Valorización sin IGV"
+              %span{"style"=>"width=20px;float:right;padding-right:11px;"}
+                %a#boton1.btn.btn-xs.btn-danger{href: 'javascript:void(0);', :onclick => 'part_equipment();',"data-toggle" => "tooltip", :title => "Detalle de Equipos"}
+                  %i.fa.fa-list-ol{"style"=>"color:white"}            
             %th{'colspan'=>2,"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;;vertical-align: middle"}= number_to_currency(@valuationofequipment.valuation, unit: 'S/. ', precision: 2)
             %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;;vertical-align: middle"}= number_to_currency(@valorizacionsinigv, unit: 'S/. ', precision: 2)
             %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;;vertical-align: middle"}= number_to_currency(@valuationofequipment.accumulated_valuation, unit: 'S/. ', precision: 2)
@@ -91,13 +95,13 @@
           %tr{"bgcolor"=>"#ECF3F8"}
             %th{"style"=>"color:#5f5f5f"}
             %th{"style"=>"color:#5f5f5f;padding-left:18px;"} TOTAL RETENCIONES
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.retention, unit: 'S/. ', precision: 2)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.retention, unit: 'S/. ', precision: 0)
             %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency(@retenciones, unit: 'S/. ', precision: 2)
             %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_retention, unit: 'S/. ', precision: 2)
           %tr{"bgcolor"=>"#3276B1"}
             %th{"style"=>"color:white;text-align:center"} 6.00
             %th{"style"=>"color:white;padding-left:8px;"} NETO A PAGAR: TOTAL (INCL. I.G.V.) - TOTAL RETEN.
-            %th{ 'colspan' => 2, "style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.net_payment, unit: 'S/. ', precision: 2)          
+            %th{ 'colspan' => 2, "style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.net_payment, unit: 'S/. ', precision: 0)          
             %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@netoapagar, unit: 'S/. ', precision: 2)
             %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_net_payment, unit: 'S/. ', precision: 2)
       %br

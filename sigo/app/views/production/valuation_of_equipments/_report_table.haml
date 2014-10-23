@@ -106,7 +106,7 @@
               %tr
                 %th{"style"=>"color:#5f5f5f"}
                 %th{"style"=>"color:#5f5f5f;padding-left:18px;"} TOTAL RETENCIONES
-                %th#totalretention{"style"=>"color:#5f5f5f;text-align:center", 'original' => "#{(@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f}"}= number_to_currency((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f, unit: 'S/. ', precision: 2)
+                %th#totalretention{"style"=>"color:#5f5f5f;text-align:center", 'original' => "#{(@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f}"}= number_to_currency((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f, unit: 'S/. ', precision: 0)
                 %th#lasttr{"style"=>"color:#5f5f5f;text-align:center", 'original' =>"#{@retenciones.to_f}"}= number_to_currency(@retenciones.to_f, unit: 'S/. ', precision: 2)
                 %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@bill.to_f+@billigv.to_f+@totalincluidoigv.to_f)*((@subcontractequipment.detraction.to_f+@detracciontotal.to_f)/100)+@fuel_discount.to_f+@totalretenciones.to_f, unit: 'S/. ', precision: 2)
               %tr{"bgcolor"=>"#3276B1"}
