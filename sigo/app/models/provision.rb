@@ -37,12 +37,8 @@ class Provision < ActiveRecord::Base
 
   def self.sumProvisionDetail2(provision_id)
     sum = 0
-    add=ActiveRecord::Base.connection.execute("
-      SELECT SUM((amount * current_unit_price - discount_before_igv)*(1 + TRUNCATE(current_igv , 2 ))-discount_after_igv+ 2*amount_perception)
-      FROM  provision_details
-      WHERE  provision_id ="+provision_id.to_s)
-    add.each do |a|
-      sum=a[0]
+    Provision.find(provision_id).provision_details.each do |provision_detail|
+      sum += provision_detail.net_price_after_igv.to_f
     end
     return sum
   end

@@ -35,13 +35,13 @@ class Logistics::PurchaseOrdersController < ApplicationController
     article_hash = Array.new
     @name = get_company_cost_center('cost_center')
     type_ent = TypeEntity.find_by_preffix('P').id
-    if params[:element]!=''
+    if !params[:element].nil?
       articles = ActiveRecord::Base.connection.execute("
             SELECT ent.id, ent.name, ent.ruc
             FROM entities ent, entities_type_entities ete
             WHERE ete.type_entity_id = "+type_ent.to_s+"
             AND ete.entity_id = ent.id
-            AND ent.id = "+word.to_s
+            AND ent.id = " + word.to_s
           )      
     else
       articles = ActiveRecord::Base.connection.execute("
