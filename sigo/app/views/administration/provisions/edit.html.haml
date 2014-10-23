@@ -69,9 +69,10 @@
         }
       }
     });
+
     var sda = (total_dis_afs + total_dis_afp).toFixed(2);
     var net_total_price = parseFloat(total_price) - sda
-    var per_am;
+    var per_am=0;
     perception.each(function(){
       if($(this).attr('class')=="perception-soles"){
         per_am=parseFloat($(this).val()).toFixed(2);

@@ -177,8 +177,9 @@
         .col-md-12
           %div{ :style => 'border: 1px solid black;' }
             %p.col-md-12
-              %strong Partida
-              %span 1.- AGLOMERANTES (CEMENTO, YESO, CAL HIDRAÚLICA, ADHITIVOS)
+              %strong Partida: 
+              %span
+                = @codes_tobi.join(', ')
             %table.col-md-12
               %tr
                 %td{ :style => 'width: 17.3%;' }
@@ -416,8 +417,9 @@
         .col-md-12
           %div{ :style => 'border: 1px solid black;' }
             %p.col-md-12
-              %strong Partida
-              %span 1.- AGLOMERANTES (CEMENTO, YESO, CAL HIDRAÚLICA, ADHITIVOS)
+              %strong Partida: 
+              %span
+                = @codes_tobi.join(', ')
             %table.col-md-12
               %tr
                 %td{ :style => 'width: 17.3%;' }
