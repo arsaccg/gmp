@@ -32,7 +32,7 @@ class Logistics::ReportStocksController < ApplicationController
       sheet1.row(@row).replace [ artr[0], artr[1], artr[2] ]
       @row += 1
     end
-    book.write '/home/giancarlo/Desktop/excelfile.xls'
+    book.write 'excelfile.xls'
     redirect_to :action => :index, company_id: session[:company]
   end
 

@@ -27,7 +27,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
   end
 
   def display_proveedor
-
     if params[:element].nil?
       word = params[:q]
     else
@@ -36,13 +35,23 @@ class Logistics::PurchaseOrdersController < ApplicationController
     article_hash = Array.new
     @name = get_company_cost_center('cost_center')
     type_ent = TypeEntity.find_by_preffix('P').id
-    articles = ActiveRecord::Base.connection.execute("
-          SELECT ent.id, ent.name, ent.ruc
-          FROM entities ent, entities_type_entities ete
-          WHERE ete.type_entity_id = "+type_ent.to_s+"
-          AND ete.entity_id = ent.id
-          AND (ent.id = "+word.to_s+" OR ent.name LIKE '%" + word.to_s + "%' OR ent.ruc LIKE '%" + word.to_s + "%')"
-        )
+    if params[:element]!=''
+      articles = ActiveRecord::Base.connection.execute("
+            SELECT ent.id, ent.name, ent.ruc
+            FROM entities ent, entities_type_entities ete
+            WHERE ete.type_entity_id = "+type_ent.to_s+"
+            AND ete.entity_id = ent.id
+            AND ent.id = "+word.to_s
+          )      
+    else
+      articles = ActiveRecord::Base.connection.execute("
+            SELECT ent.id, ent.name, ent.ruc
+            FROM entities ent, entities_type_entities ete
+            WHERE ete.type_entity_id = "+type_ent.to_s+"
+            AND ete.entity_id = ent.id
+            AND (ent.id = "+word.to_s+" OR ent.name LIKE '%" + word.to_s + "%' OR ent.ruc LIKE '%" + word.to_s + "%')"
+          )
+    end
     articles.each do |art|
       article_hash << {'id' => art[0].to_s, 'code' => art[2], 'name' => art[1]}
     end

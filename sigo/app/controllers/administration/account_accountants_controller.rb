@@ -46,6 +46,52 @@ class Administration::AccountAccountantsController < ApplicationController
     end
   end
 
+  def display
+    display_length = params[:iDisplayLength]
+    pager_number = params[:iDisplayStart]
+    @pagenumber = params[:iDisplayStart]
+    keyword = params[:sSearch]
+    state = params[:state]
+    array = Array.new
+    if @pagenumber != 'NaN' && keyword != ''
+      @po = ActiveRecord::Base.connection.execute("
+        SELECT id, code, name
+        FROM account_accountants
+        WHERE (id LIKE '%"+keyword.to_s+"%' OR code LIKE '%"+keyword.to_s+"%' OR name LIKE '%"+keyword.to_s+"%' )
+        AND code NOT LIKE 'cod_ctacbl'
+        ORDER BY code ASC
+        LIMIT #{display_length}
+        OFFSET #{pager_number}")
+    elsif @pagenumber == 'NaN'
+      @po = ActiveRecord::Base.connection.execute("
+        SELECT id, code, name
+        FROM account_accountants
+        WHERE (id LIKE '%"+keyword.to_s+"%' OR code LIKE '%"+keyword.to_s+"%' OR name LIKE '%"+keyword.to_s+"%' )
+        AND code NOT LIKE 'cod_ctacbl'
+        ORDER BY code ASC
+        LIMIT #{display_length}")
+    elsif keyword != ''
+      @po = ActiveRecord::Base.connection.execute("
+        SELECT id, code, name
+        FROM account_accountants
+        WHERE code NOT LIKE 'cod_ctacbl'
+        ORDER BY code ASC
+        LIMIT #{display_length}")
+    else
+      @po = ActiveRecord::Base.connection.execute("
+        SELECT id, code, name
+        FROM account_accountants
+        WHERE code NOT LIKE 'cod_ctacbl'
+        ORDER BY code ASC
+        LIMIT #{display_length}")      
+    end
+
+    @po.each do |dos|
+      array << [dos[1].to_s,dos[2].to_s,"<a class='btn btn-warning btn-xs' onclick = javascript:load_url_ajax('/administration/account_accountants/"+dos[0].to_s+"/edit','content',null,null,'GET')> Editar </a> " + " <a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/administration/account_accountants/"+dos[0].to_s+"','content','/administration/account_accountants') data-placement='left' data-popout='true' data-singleton='true' data-toggle='confirmation' data-title='Esta seguro de eliminar el item " + dos[2].to_s + "'  data-original-title='' title=''> Eliminar </a>"]
+    end
+    render json: { :aaData => array }
+  end
+
   def destroy
     accountAccountant = AccountAccountant.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."

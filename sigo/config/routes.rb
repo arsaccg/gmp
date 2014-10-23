@@ -603,6 +603,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         get 'import'
         post 'do_import'
+        post 'display'
       end
     end
 
