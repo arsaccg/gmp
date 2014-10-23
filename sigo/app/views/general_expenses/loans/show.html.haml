@@ -45,7 +45,7 @@
                   -else
                     %span.label.label-success{"style"=>"background-color: #3276B1;color:white;text-align:center;width:100px;font-weight:bold;"} Devuelto
                 %td{"style"=>"text-align:center;"}
-                  %a#edit.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_edit('+"#{loan.id.to_s}"+');', "style"=>" color: white;font-size:11px; "}
+                  %a#edit.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_edit('+"#{loan.id.to_s}"+','+"#{@cost_center1.id}"+','+"#{@cost_center2.id}"+','+"#{@cc}"+');', "style"=>" color: white;font-size:11px; "}
                     Editar
       %br
       .row{"style"=>"height: 40%; overflow-y: scroll;"}

@@ -61,6 +61,10 @@ class GeneralExpenses::LoansController < ApplicationController
   end
 
   def edit
+    @cc1 = params[:cc1]
+    @cc2 = params[:cc2]
+    @cc3 = params[:cc3]
+
     @costcenters = CostCenter.all
     @loan = Loan.find(params[:id])
 
