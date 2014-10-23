@@ -318,14 +318,14 @@ class Administration::ProvisionsController < ApplicationController
       PurchaseOrder.all.each do |purchase|
         if !aux.include? purchase.entity.id
           aux << purchase.entity.id
-          str_options += ('<option value=' + purchase.entity.id.to_s + '>' + purchase.entity.name.to_s + ' ' + purchase.entity.paternal_surname.to_s + ' ' + purchase.entity.maternal_surname.to_s + '</option>')
+          str_options += ('<option value=' + purchase.entity.id.to_s + '>' + purchase.entity.ruc.to_s + ' - ' + purchase.entity.name.to_s + ' ' + purchase.entity.paternal_surname.to_s + ' ' + purchase.entity.maternal_surname.to_s + '</option>')
         end
       end
     elsif params[:type] == 'service_order'
       OrderOfService.all.each do |service|
         if !aux.include? service.entity.id
           aux << service.entity.id
-          str_options += ('<option value=' + service.entity.id.to_s + '>' + service.entity.name.to_s + ' ' + service.entity.paternal_surname.to_s + ' ' + service.entity.maternal_surname.to_s + '</option>')
+          str_options += ('<option value=' + service.entity.id.to_s + '>' + service.entity.ruc.to_s + ' - ' + service.entity.name.to_s + ' ' + service.entity.paternal_surname.to_s + ' ' + service.entity.maternal_surname.to_s + '</option>')
         end
       end
     end

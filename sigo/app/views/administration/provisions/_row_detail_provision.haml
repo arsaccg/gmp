@@ -10,7 +10,7 @@
       = data_order_detail[2]
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][article_name]', data_order_detail[2]
     %td
-      %select.form-control{:name =>"provision[provision_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :required => true, title:'No puede dejar este campo vacio'}
+      %select.form-control.account_accountant{:name =>"provision[provision_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :style => 'border:none;width:100%;', :required => true, title:'No puede dejar este campo vacio'}
         %option{:value => nil, :selected => true, :disabled => true} Seleccionar cuenta contable
         - @account_accountants.each do |account_accountant|
           %option{:value => "#{account_accountant.id}"}
@@ -121,3 +121,7 @@
     %td{:style => "width: 1%;"}
       %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
   - @reg_n += 1
+
+:javascript
+  
+  $('select.account_accountant').select2();
