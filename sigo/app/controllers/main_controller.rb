@@ -56,6 +56,7 @@ class MainController < ApplicationController
   end
 
   def management_dashboard
+    @company= Company.all
     @cost_centers = CostCenter.all
     puts @cost_centers
     render layout: false

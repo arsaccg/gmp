@@ -22,7 +22,7 @@
           %section.col-md-5
             %label{"style"=>"font-size:14px;"} Entregado a
           %section.col-md-6
-            %input#worker-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'worker_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+            %input#worker-select.form-control{'name' => 'worker_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
         .row{"style"=>"margin-bottom:1%;"}
           %section.col-md-5
             %label{"style"=>"font-size:14px;"} Fecha
@@ -102,10 +102,15 @@
         %button.btn.btn-primary#smart-mod-eg1{type: "button", "style"=>"float:right;"}
           %i.fa.fa-save
             Guardar
-        %button.btn.btn-danger#new{"data-dismiss" => "modal", type: "button"}
+        %button.btn.btn-danger#new2{"data-dismiss" => "modal", type: "button"}
           Salir      
 
 :javascript
+
+  $("#new2").click(function() {
+    data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
+    load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_new', data2, null, 'GET');
+  });
 
   function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
@@ -203,7 +208,3 @@
     return true;
   }
 
-  $("#new").click(function() {
-    data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
-    load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_new', data2, null, 'GET');
-  });
