@@ -115,7 +115,7 @@ class Administration::PaymentOrdersController < ApplicationController
       :perception => perception,
       :total_quantity_provision => total_quantity_without_igv.round(2),
       :total_quantity_provision_with_igv => total_quantity_with_igv.round(2),
-      :igv => igv.round(0)
+      :igv => igv.round(2)
     ]
 
     render json: { :provision => data_provision }

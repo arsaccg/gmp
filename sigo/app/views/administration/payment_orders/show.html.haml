@@ -73,11 +73,11 @@
                 %tbody
                   %tr
                     %td
-                      = number_to_currency @total_quantity, unit: 'S/.', precision: 2
+                      = number_to_currency @paymentOrder.sub_total.to_f, unit: 'S/.', precision: 2
                     %td
                       = number_to_currency @paymentOrder.igv.to_f, unit: 'S/.', precision: 2
                     %td
-                      = number_to_currency @total_quantity_with_igv, unit: 'S/.', precision: 2
+                      = number_to_currency @paymentOrder.total.to_f, unit: 'S/.', precision: 2
                     %td
                       = @paymentOrder.percent_detraction.to_i.to_s + '%'
                     %td
