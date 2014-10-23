@@ -143,7 +143,10 @@ class Administration::ProvisionsController < ApplicationController
               else
                 pending = purchase_detail.amount
               end
-              @data_orders << [ detail_order.article.code, detail_order.article.name, purchase_detail.amount, purchase_detail.unit_price_igv, purchase_detail.unit_price, purchase_detail.description, purchase_detail.id, pending ]
+              if pending > 0
+                @data_orders << [ detail_order.article.code, detail_order.article.name, purchase_detail.amount, purchase_detail.unit_price_igv, purchase_detail.unit_price, purchase_detail.description, purchase_detail.id, pending ]
+                
+              end
             end
           end
         end
@@ -189,12 +192,16 @@ class Administration::ProvisionsController < ApplicationController
           igv = (purchase_order_detail.unit_price_igv/(purchase_order_detail.amount*purchase_order_detail.unit_price))-1
         end
         # Lo que falta Atender
-        provision = ProvisionDetail.find_by_order_detail_id(purchase_order_detail.id)
         pending = 0
         total = 0
         percepcion = purchase_order_detail.purchase_order_extra_calculations.find_by_extra_calculation_id(2)
+        provision = ProvisionDetail.where("order_detail_id  = "+ purchase_order_detail.id.to_s)
         if !provision.nil?
-          pending = purchase_order_detail.amount - provision.amount
+          amount = 0
+          provision.each do |pd|
+            amount += pd.amount
+          end
+          pending = purchase_order_detail.amount - amount
           some_results = PurchaseOrderDetail.calculate_amounts(order_detail_id, pending, purchase_order_detail.unit_price, igv)
           #total = (pending*purchase_order_detail.unit_price*(1+igv))
           if !percepcion.nil?

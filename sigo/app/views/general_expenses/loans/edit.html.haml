@@ -218,8 +218,8 @@
     $("#details").click(function(e) {
       $('form#upload_deregister').submit();
 
-      data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
-      load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_edit', data2, null, 'GET');
+      data2 = { authenticity_token: "#{form_authenticity_token}", cc1:"#{@cc1}", cc2:"#{@cc2}", cc3:"#{@cc3}"};
+      load_modal_ajax('#{general_expenses_loan_path("show")}', 'loan_show', 'loan_edit', data2, null, 'GET');
       $.smallBox({
         title : "Exito",
         content : "<i class='fa fa-clock-o'></i> <i>Se actualizó el gasto de gestion</i>",
@@ -230,8 +230,8 @@
     });
 
     $("#edit").click(function() {
-      data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
-      load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_edit', data2, null, 'GET');
+      data2 = { authenticity_token: "#{form_authenticity_token}", cc1:"#{@cc1}", cc2:"#{@cc2}", cc3:"#{@cc3}"};
+      load_modal_ajax('#{general_expenses_loan_path("show")}', 'loan_show', 'loan_edit', data2, null, 'GET');
 
     });
 

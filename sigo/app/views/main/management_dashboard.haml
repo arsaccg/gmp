@@ -820,8 +820,8 @@
     data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
     load_modal_ajax('#{new_general_expenses_loan_path}', 'loan_new', 'loan', data, null, 'GET');
   }
-  function loan_edit(id){
-    data = { authenticity_token: "#{form_authenticity_token}"};
+  function loan_edit(id,cc1,cc2,cc3){
+    data = { authenticity_token: "#{form_authenticity_token}", cc1:cc1, cc2:cc2, cc3:cc3};
     load_modal_ajax('/general_expenses/loans/'+id+'/edit', 'loan_edit', 'loan_show', data, null, 'GET');
   }
 
