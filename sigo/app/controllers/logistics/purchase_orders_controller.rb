@@ -49,7 +49,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
             FROM entities ent, entities_type_entities ete
             WHERE ete.type_entity_id = "+type_ent.to_s+"
             AND ete.entity_id = ent.id
-            AND (ent.id = "+word.to_s+" OR ent.name LIKE '%" + word.to_s + "%' OR ent.ruc LIKE '%" + word.to_s + "%')"
+            AND (ent.id = '%"+word.to_s+"%' OR ent.name LIKE '%" + word.to_s + "%' OR ent.ruc LIKE '%" + word.to_s + "%')"
           )
     end
     articles.each do |art|

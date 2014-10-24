@@ -603,6 +603,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_modal_extra_operations'
         post 'add_more_row_form_extra_op'
         post 'display_articles'
+        post 'display_proveedor'
       end
     end
     resources :account_accountants do
