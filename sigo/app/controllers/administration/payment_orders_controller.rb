@@ -91,11 +91,12 @@ class Administration::PaymentOrdersController < ApplicationController
 
     if provision.order_id != nil
       provision.provision_details.each do |provision_detail|
-        total_quantity += provision_detail.unit_price_igv.to_f # Precio antes de IGV
+        #total_quantity += provision_detail.unit_price_igv.to_f # Precio antes de IGV
         #total_quantity_with_igv += provision_detail.net_price_after_igv.to_f # Precio despues de IGV
 
         total_quantity_without_igv += (provision_detail.current_unit_price.to_f*provision_detail.amount.to_f) - provision_detail.discount_before_igv.to_f
-        total_quantity_with_igv += total_quantity_without_igv.to_f + (provision_detail.current_igv.to_f*total_quantity_without_igv.to_f) + provision_detail.discount_after_igv.to_f
+        total_quantity_with_igv += (provision_detail.unit_price_igv.to_f + provision_detail.discount_after_igv.to_f)
+        igv =  provision_detail.current_igv.to_f
         perception += provision_detail.amount_perception.to_f
       end
     else
@@ -105,7 +106,9 @@ class Administration::PaymentOrdersController < ApplicationController
       end
     end
 
-    igv = (((total_quantity_with_igv.to_f - total_quantity_without_igv.to_f) / total_quantity_without_igv.to_f).round(2))*total_quantity_without_igv
+    igv = (total_quantity_without_igv*igv).round(2)
+
+    #igv = (((total_quantity_with_igv.to_f - total_quantity_without_igv.to_f) / total_quantity_without_igv.to_f).round(2))*total_quantity_without_igv
 
     data_provision = [
       :type_document_provision => provision.document_provision.name, 
