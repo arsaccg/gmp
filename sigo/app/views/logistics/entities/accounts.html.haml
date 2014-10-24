@@ -22,29 +22,26 @@
               - @money.each do |ph|
                 %option{:value => "#{ph.id}"}
                   = ph.name+" ("+ph.symbol+")"
-        .row
-          %section.col.col-4
+          %section.col.col-3
             %label.label Tipo de Cuenta
             %label.input
-              %i.icon-append.fa.fa-superscript
-              %input#account_type.form-control{placeholder: "Tipo de Cuenta"}
+              %select#account_type.select2.form-control
+                %option{:value => nil, :disabled=>true, :selected=>true} Seleccione un Tipo de Cuenta
+                %option{:value => "Ahorros"} Ahorros
+                %option{:value => "Corriente"} Corriente
+                %option{:value => "Detraccion"} Detracción
+        .row
           %section.col.col-4
             %label.label Número de Cuenta
             %label.input
               %i.icon-append.fa.fa-superscript
               %input#account_number.form-control{ placeholder: "Número de Cuenta", onkeypress: "return isNumber(event);"}
-        .row
-          %section.col.col-4
-            %label.label Cta. Detracción
-            %label.input
-              %i.icon-append.fa.fa-superscript
-              %input#account_detraction.form-control{ placeholder: "Cta. Detracción", onkeypress: "return isNumber(event);"}
           %section.col.col-4
             %label.label CCI
             %label.input
               %i.icon-append.fa.fa-superscript
               %input#cci.form-control{ placeholder: "CCI", onkeypress: "return isNumber(event);"}
-          %section.col.col-4
+          %section.col.col-4{:style=>" margin-top: 20px; "}
             %a{:href => "javascript:add_account();", :id => "btn-add-account", :class => "btn btn-success", :role => "button"}
               Agregar Cuenta
 
@@ -57,7 +54,6 @@
                 %th Moneda
                 %th Tipo de Cuenta
                 %th Número de cuenta
-                %th Cta. Detracción
                 %th CCI
                 %th Eliminar
             %tbody#account-details
@@ -75,8 +71,6 @@
                   %td
                     = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][account_number]', eb.account_number.to_s , class: "form-control", :readonly => true
                     = hidden_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][id]', eb.id
-                  %td
-                    = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][account_detraction]', eb.account_detraction.to_s , class: "form-control", :readonly => true
                   %td
                     = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][cci]', eb.cci.to_s , class: "form-control", :readonly => true
                   %td
@@ -129,7 +123,7 @@
     var detraction=$("#account_detraction").val();
     var cci=$("#cci").val();
 
-    if(bank != "" && money != "" && type != "" && number != "" && detraction != "" && cci != ""){
+    if(bank != "" && money != "" && type != "" && number != ""){
       str_item = {authenticity_token: "#{form_authenticity_token}", bank: bank, money: money, type: type, number: number, detraction: detraction, cci: cci, ent:#{@ent.id}};
       append_url_ajax('#{add_account_logistics_entities_path}', 'account-details', str_item, 0, 'POST');
     }else{

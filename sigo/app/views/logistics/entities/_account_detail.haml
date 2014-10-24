@@ -11,8 +11,6 @@
   %td
     = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][account_number]', @number.to_s , class: "form-control", :readonly => true
   %td
-    = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][account_detraction]', @detraction.to_s , class: "form-control", :readonly => true
-  %td
     = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][cci]', @cci.to_s , class: "form-control", :readonly => true
   %td.delete-item{ :style => 'text-align: center;' }
     %button.btn.btn-default{ type: 'button', onclick: "delete_item('" + @reg.to_s + "')", style: 'padding: 2px 6px;' }
