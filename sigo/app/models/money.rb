@@ -2,6 +2,7 @@ class Money < ActiveRecord::Base
 	has_many :purchase_order
 	has_many :works
 	has_many :exchange_of_rate
+	has_many :entity_banks
 	# Validaciones
 	include ActiveModel::Validations
 	#validates :code, :uniqueness => { :scope => :name, :message => "El código debe ser único" }
