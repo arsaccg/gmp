@@ -601,7 +601,8 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'puts_details_in_provision'
         post 'add_modal_extra_operations'
-        post 'add_more_row_form_extra_op'        
+        post 'add_more_row_form_extra_op'
+        post 'display_articles'
       end
     end
     resources :account_accountants do
