@@ -471,6 +471,13 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @purchaseOrderDetails = @purchaseOrder.purchase_order_details
     aux = 0
     @deliveryOrders = Array.new
+
+    # Operations after IGV
+    @perceptions = 0
+    @discounts = 0
+    @charges = 0
+    @others = 0
+
     @purchaseOrder.purchase_order_details.each do |pod|
       current_id = pod.delivery_order_detail.delivery_order.id
       if aux != current_id
