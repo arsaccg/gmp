@@ -110,7 +110,7 @@
                           = dod.unit_of_measurement.symbol
                         %td.col-md-1
                           .col-md-9
-                            = text_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][amount]', dod.amount.to_i , class: "form-control quantity", id: 'article-amount'
+                            = text_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][amount]', dod.amount.to_f , class: "form-control quantity", id: 'article-amount'
                         %td.precio
                           %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][sector_id]"}
                             - @sectors.each do |sect|

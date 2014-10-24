@@ -155,7 +155,7 @@
                         %td.unit-of-measurement
                           =pod.delivery_order_detail.unit_of_measurement.symbol rescue '-'
                         %td.amount
-                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount.to_i, class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pod.delivery_order_detail.amount rescue 0})"
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount, class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pod.delivery_order_detail.amount rescue 0})"
                           %code= "Por atender: #{pod.delivery_order_detail.amount rescue 0}"
                         %td.unit-price
                           = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', pod.unit_price.to_f, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);"
