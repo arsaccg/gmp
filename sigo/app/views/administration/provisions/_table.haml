@@ -13,6 +13,7 @@
             %th N° de la Provisión
             %th N° de Documento
             %th Documento
+            %th Proveedor
             %th Glosa
             %th Monto sin IGV
             %th IGV
@@ -27,6 +28,8 @@
                 = provision.number_document_provision
               %td
                 = provision.document_provision.name
+              %td
+                = provision.entity.name
               %td
                 = provision.description
               %td
