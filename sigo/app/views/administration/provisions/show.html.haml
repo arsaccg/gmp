@@ -72,7 +72,7 @@
                     %th Precio Unitario
                     %th IGV
                     %th Total Neto con IGV
-                    %th Percepción
+                    /%th Percepción
                     %th Total Neto con IGV y Descuentos
                 %tbody
                   - @provision.provision_details.each do |provision_detail|
@@ -94,9 +94,7 @@
                       %td
                         = number_to_currency provision_detail.unit_price_igv, unit: 'S/.', precision: 2
                       %td
-                        = number_to_currency provision_detail.amount_perception, unit: 'S/.', precision: 2                        
-                      %td
-                        = number_to_currency provision_detail.net_price_after_igv, unit: 'S/.', precision: 2
+                        = number_to_currency (provision_detail.net_price_after_igv.to_f - provision_detail.amount_perception.to_f), unit: 'S/.', precision: 2
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-provisions{type: "button"}
   %i.fa.fa-arrow-left>

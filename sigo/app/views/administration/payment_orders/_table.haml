@@ -33,6 +33,7 @@
             %thead
               %tr
                 %th Número de la Provisión
+                %th Proveedor
                 %th Cantidad a Pagar
                 %th Cantidad Pagada
                 %th Acciones
@@ -41,6 +42,8 @@
                 %tr
                   %td
                     = payment_order.provision.number_document_provision.to_s rescue '-'
+                  %td
+                    = payment_order.provision.entity.name.to_s + ' ' + payment_order.provision.entity.paternal_surname.to_s + ' ' + payment_order.provision.entity.maternal_surname.to_s 
                   %td
                     - quantity = 0
                     - if payment_order.provision.order_id != nil

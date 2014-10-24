@@ -89,7 +89,7 @@
               -value = value *(-1)              
             = hidden_field_tag 'discount_after', value, class: "discount_after-item-soles"
           -value = 0          
-    %td.perception
+    %td.perception{:style => 'display:none'}
       %div#per
         = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount_perception]', data_order_detail[12].round(2), class: "form-control perception", :readonly => true
       -if @type_of_order_name == 'purchase_order'

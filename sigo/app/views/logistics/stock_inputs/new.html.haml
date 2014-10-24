@@ -145,7 +145,11 @@
         // Remove all Help-inLine
         $(".help-inline").remove();
         // Client Valid
-        return $(form['selector']).valid();
+        if ( ( $('#summary-pod tbody tr').size() > 0 ) && ( $(form['selector']).valid() ) ) {
+          return true;
+        } else {
+          return false;
+        }
       },
       target: '#content',
       success: function (data){

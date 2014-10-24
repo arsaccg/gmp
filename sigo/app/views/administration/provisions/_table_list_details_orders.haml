@@ -23,9 +23,9 @@
           %code
             = order[7]
         %td
-          = number_to_currency((order[4]), unit: 'S/. ', precision: 2)
+          = number_to_currency((order[4]), unit: order[8], precision: 2)
         %td
-          = number_to_currency(order[3], unit: 'S/. ', precision: 2)
+          = number_to_currency(order[3], unit: order[8], precision: 2)
         %td
           = order[5]
         %td.orders-checked

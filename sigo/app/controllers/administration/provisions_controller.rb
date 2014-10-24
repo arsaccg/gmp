@@ -134,6 +134,7 @@ class Administration::ProvisionsController < ApplicationController
               # Lo que falta Atender
               pending = 0
               current_amount = 0
+              currency = ''
               provision = ProvisionDetail.where(order_detail_id: purchase_detail.id)
               if provision.count > 0
                 provision.each do |prov|
@@ -143,9 +144,9 @@ class Administration::ProvisionsController < ApplicationController
               else
                 pending = purchase_detail.amount
               end
+              currency = purchase_detail.purchase_order.money.symbol
               if pending > 0
-                @data_orders << [ detail_order.article.code, detail_order.article.name, purchase_detail.amount, purchase_detail.unit_price_igv, purchase_detail.unit_price, purchase_detail.description, purchase_detail.id, pending ]
-                
+                @data_orders << [ detail_order.article.code, detail_order.article.name, purchase_detail.amount, purchase_detail.unit_price_igv, purchase_detail.unit_price, purchase_detail.description, purchase_detail.id, pending, currency ]
               end
             end
           end
@@ -159,6 +160,7 @@ class Administration::ProvisionsController < ApplicationController
               # Lo que falta Atender
               pending = 0
               current_amount = 0
+              currency = ''
               provision = ProvisionDetail.where(order_detail_id: service_detail.id)
               if provision.count > 0
                 provision.each do |prov|
@@ -168,6 +170,7 @@ class Administration::ProvisionsController < ApplicationController
               else
                 pending = service_detail.amount
               end
+              currency = service_detail.order_of_service.money.symbol rescue 'S/.'
               @data_orders << [ service_detail.article.code, service_detail.article.name, service_detail.amount, (service_detail.unit_price_igv.to_f + service_detail.discount_after.to_f), service_detail.unit_price_before_igv.to_f, service_detail.description, service_detail.id, pending ]
             end
           end
@@ -226,7 +229,7 @@ class Administration::ProvisionsController < ApplicationController
             pending, 
             some_results[1], 
             some_results[2],
-            some_results[5].round(2),
+            (some_results[5].round(2) - percepcion.to_f),
             percepcion
           ]
         else
@@ -253,7 +256,7 @@ class Administration::ProvisionsController < ApplicationController
             pending, 
             purchase_order_detail.discount_before, 
             purchase_order_detail.discount_after,
-            purchase_order_detail.unit_price_igv,
+            (purchase_order_detail.unit_price_igv.to_f - percepcion.to_f),
             percepcion
           ]
 

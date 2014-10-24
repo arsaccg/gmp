@@ -158,6 +158,7 @@
                     %th Unidad de Medida
                     %th Precio Unitario
                     %th Total antes de IGV
+                    %th IGV
                     %th Total después de IGV
                     %th Glosa
                 %tbody(id="purchase_detail_items_table")
@@ -168,16 +169,18 @@
                       %td
                         = purchasedetail.delivery_order_detail.article.name
                       %td
-                        = purchasedetail.amount
+                        = purchasedetail.amount.to_f
                       %td
                         - if purchasedetail.delivery_order_detail.unit_of_measurement != nil
                           = purchasedetail.delivery_order_detail.unit_of_measurement.name
                         - else
                           = "No tiene Unidad de Medida"
                       %td
-                        = number_to_currency(purchasedetail.unit_price.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                        = number_to_currency(purchasedetail.unit_price.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 4)
                       %td
-                        = number_to_currency((purchasedetail.amount.to_i * purchasedetail.unit_price.to_f).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                        = number_to_currency((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                      %td
+                        = number_to_currency purchasedetail.quantity_igv*-1, unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
                         = number_to_currency(purchasedetail.unit_price_igv.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
                       %td
