@@ -88,7 +88,7 @@
                       %td
                         = provision_detail.amount.to_f
                       %td
-                        = number_to_currency provision_detail.current_unit_price.to_f, unit: 'S/.', precision: 2
+                        = number_to_currency provision_detail.current_unit_price.to_f, unit: 'S/.', precision: 4
                       %td
                         = (provision_detail.current_igv*100).round(0).to_s + '%'
                       %td
