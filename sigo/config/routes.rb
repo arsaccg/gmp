@@ -155,6 +155,11 @@ ArsacLogistica::Application.routes.draw do
     resources :entities do
       collection do
         post 'show_entities'
+        post 'accounts'
+        post 'add_account'
+      end
+      member do
+        patch 'update_bank_account'
       end
     end
     resources :delivery_orders do

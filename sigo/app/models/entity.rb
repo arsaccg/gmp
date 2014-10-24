@@ -5,10 +5,12 @@ class Entity < ActiveRecord::Base
   has_many :subcontracts
   has_many :subcontract_equipments
   has_many :provisions
+  has_many :entity_banks
   has_and_belongs_to_many :type_entities
   has_many :workers
   belongs_to :cost_center
   accepts_nested_attributes_for :type_entities, :allow_destroy => true
+  accepts_nested_attributes_for :entity_banks, :allow_destroy => true
 
   include ActiveModel::Validations
   validates :ruc, :uniqueness => { :message => "El RUC debe ser unico."}, :allow_blank => true, :case_sensitive => false
@@ -132,10 +134,12 @@ class Entity < ActiveRecord::Base
           ent[1],
           ent[2],
           if @type.preffix == "CL"
-            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/accounts','content',{entity:"+ent[0].to_s+"},null,'POST')>Cuentas Bancarias</a> "+"<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
           else
-            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"/edit','content',{company_id:'"+comp.to_s+"',type:'entity'},null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
+            "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/accounts','content',{entity:"+ent[0].to_s+"},null,'POST')>Cuentas Bancarias</a> "+"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"/edit','content',{company_id:'"+comp.to_s+"',type:'entity'},null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
           end
+          
+
         ]
 
       elsif @type.preffix == "P"
@@ -143,14 +147,14 @@ class Entity < ActiveRecord::Base
           ent[1],
           ent[2],
           ent[3],
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"/edit','content',{company_id:'"+comp.to_s+"',type:'entity'},null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/accounts','content',{entity:"+ent[0].to_s+"},null,'POST')>Cuentas Bancarias</a> "+"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"/edit','content',{company_id:'"+comp.to_s+"',type:'entity'},null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
         ]
       elsif @type.preffix == "T"
         result << [
           ent[1],
           ent[2],
           ent[3],
-          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"/edit','content',{company_id:'"+comp.to_s+"',type:'worker'},null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"','content',null,null,'GET')>Ver Detalle</a> "+"<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/accounts','content',{entity:"+ent[0].to_s+"},null,'POST')>Cuentas Bancarias</a> "+"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/entities/"+ent[0].to_s+"/edit','content',{company_id:'"+comp.to_s+"',type:'worker'},null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/entities/"+ent[0].to_s+"','content','/logistics/entities?company_id="+comp.to_s+"') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar "+ent[1].to_s+"?' data-toggle='confirmation' data-original-title='' title=''>Eliminar</a>"
         ]
         
       end

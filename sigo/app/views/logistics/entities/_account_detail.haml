@@ -1,0 +1,19 @@
+%tr{:id=>"tr-#{@reg}"}
+  %td
+    = @bank.business_name.to_s
+    = hidden_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][bank_id]', @bank.id
+  %td
+    = @money.name.to_s + " ("+ @money.symbol.to_s+")"
+    = hidden_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][money_id]', @money.id
+  %td
+    = hidden_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][entity_id]', @ent
+    = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][account_type]', @type.to_s , class: "form-control", :readonly => true
+  %td
+    = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][account_number]', @number.to_s , class: "form-control", :readonly => true
+  %td
+    = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][account_detraction]', @detraction.to_s , class: "form-control", :readonly => true
+  %td
+    = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][cci]', @cci.to_s , class: "form-control", :readonly => true
+  %td.delete-item{ :style => 'text-align: center;' }
+    %button.btn.btn-default{ type: 'button', onclick: "delete_item('" + @reg.to_s + "')", style: 'padding: 2px 6px;' }
+      %i.fa.fa-times

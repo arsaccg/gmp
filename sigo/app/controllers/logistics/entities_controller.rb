@@ -26,6 +26,42 @@ class Logistics::EntitiesController < ApplicationController
     render json: { :aaData => array }
   end
 
+  def accounts
+    @money = Money.all
+    @bank = Bank.all
+    @ent = Entity.find(params[:entity])
+    @reg = ((Time.now.to_f)*100).to_i
+    render layout: false
+  end
+
+  def add_account
+    @bank = Bank.find(params[:bank])
+    @money = Money.find(params[:money])
+    @type = params[:type]
+    @number = params[:number]
+    @detraction = params[:detraction]
+    @cci = params[:cci]
+    @reg = ((Time.now.to_f)*100).to_i
+    @ent = params[:ent]
+    render(partial: 'account_detail', :layout => false)
+  end  
+
+  def update_bank_account
+    entity = Entity.find(params[:id])
+    entity.cost_center_id = get_company_cost_center('cost_center')
+    if entity.update_attributes(entity_parameters)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index
+    else
+      entity.errors.messages.each do |attribute, error|
+        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @entity = entity
+      render :accounts, layout: false
+    end    
+  end
+
   def new
     @reg_n = Time.now.to_i
     @type_entities = TypeEntity.all
@@ -127,6 +163,17 @@ class Logistics::EntitiesController < ApplicationController
 
   private
   def entity_parameters
-    params.require(:entity).permit(:name, :second_name, :date_of_birth,:paternal_surname, :maternal_surname, :dni, :ruc, :gender, :city, :province, :department, :alienslicense, {:type_entity_ids => []}, :address)
+    params.require(:entity).permit(:name, :second_name, :date_of_birth,:paternal_surname, :maternal_surname, :dni, :ruc, :gender, :city, :province, :department, :alienslicense, {:type_entity_ids => []}, :address, entity_banks_attributes: [
+      :id,
+      :bank_id,
+      :money_id,
+      :entity_id,
+      :account_type,
+      :account_number,
+      :account_detraction,
+      :cci,
+      :_destroy
+      ])
   end
+
 end
