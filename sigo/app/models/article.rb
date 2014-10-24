@@ -260,7 +260,7 @@ class Article < ActiveRecord::Base
       FROM articles a, unit_of_measurements u, stock_inputs si, stock_input_details sid
       WHERE a.id = sid.article_id
       AND (a.code LIKE '%#{word}%' OR a.name LIKE '%#{word}%')
-      AND si.input =1
+      AND si.input = 1
       AND si.id = sid.stock_input_id
       AND si.warehouse_id = #{warehouse_id}
       AND a.unit_of_measurement_id = u.id
@@ -309,6 +309,7 @@ class Article < ActiveRecord::Base
       WHERE a.id = sid.article_id 
       AND si.id = sid.stock_input_id 
       AND si.input = 0 
+      AND si.status = 'A'
       AND si.warehouse_id = #{warehouse_id} 
       AND a.unit_of_measurement_id = u.id 
       AND a.category_id = c.id 

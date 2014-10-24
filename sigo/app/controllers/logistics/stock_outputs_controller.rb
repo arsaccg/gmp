@@ -12,7 +12,6 @@ class Logistics::StockOutputsController < ApplicationController
 
   def create
     @head = StockInput.new(stock_input_parameters)
-    @head.year = @head.period.to_s[0,4]
     @head.user_inserts_id = current_user.id
     @head.series = 0
     @head.supplier_id = 0
@@ -59,7 +58,15 @@ class Logistics::StockOutputsController < ApplicationController
     article_hash = Array.new
     articles = Article.getSpecificArticlesPerWarehouse(warehouse,word, idsn)
     articles.each do |art|
-      article_hash << {'id' => art[0].to_s, 'name' => art[1] + ' - ' + art[2] + ' - ' + art[3]}
+      rest = Article.getSpecificArticlesforStockOutputs4(warehouse,art[0].to_i)
+      if rest.count>0
+        rest = rest.first.at(0).to_i
+      else
+        rest = 0
+      end
+      if (art[4]-rest)>0
+        article_hash << {'id' => art[0].to_s, 'name' => art[1] + ' - ' + art[2] + ' - ' + art[3]}
+      end        
     end
     render json: {:articles => article_hash}
   end
@@ -125,7 +132,6 @@ class Logistics::StockOutputsController < ApplicationController
 
   def update
     head = StockInput.find(params[:id])
-    head.year = head.period.to_s[0,4]
     head.update_attributes(stock_input_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index
