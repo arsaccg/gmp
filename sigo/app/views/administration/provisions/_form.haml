@@ -57,48 +57,44 @@
         = f.input :order_id, :as => :hidden, :input_html => {:class => 'form-control', :value => 1 }, label: false
       .row
         .col-md-4
-          .form-group
-            %label.col-md-4.control-label Tipo Documento
-            .col-md-8
-              .input-group
-                %select.select2.form-control{:name => 'provision[document_provision_id]', :style => 'width:100%;padding: 0;border: none;'}
-                  - @documentProvisions.each do |x|
-                    %option(value = "#{x.id}")
-                      = x.name
+          %label.control-label Tipo Documento
+          .input-group
+            %select.select2.form-control{:name => 'provision[document_provision_id]', :style => 'width:100%;padding: 0;border: none;'}
+              - @documentProvisions.each do |x|
+                %option(value = "#{x.id}")
+                  = x.name
+
+        .col-md-2
+          %label.control-label Numero de Documento
+          .input-group
+            = f.input :number_document_provision, :input_html => {:class => 'form-control'}, label: false
+            %span.input-group-addon
+              %i.fa.fa-calendar
+
         .col-md-4
-          .form-group
-            %label.col-md-4.control-label Numero de Documento
-            .col-md-8
-              .input-group
-                = f.input :number_document_provision, :input_html => {:class => 'form-control'}, label: false
-                %span.input-group-addon
-                  %i.fa.fa-calendar
-        .col-md-4
-          .form-group
-            %label.col-md-4.control-label Fecha
-            .col-md-8
-              .input-group
-                = f.input :accounting_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
-                %span.input-group-addon
-                  %i.fa.fa-calendar
-      .row
-        .col-md-4
-          .form-group
-            %label.col-md-4.control-label Serie
-            .col-md-8
-              .input-group
-                = f.input :series, placeholder: "Serie", :input_html => {:class => 'form-control'}, label: false
-                %span.input-group-addon
-                  %i.fa.fa-money
+          %label.control-label Fecha
+          .input-group
+            = f.input :accounting_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+            %span.input-group-addon
+              %i.fa.fa-calendar
+      
+        .col-md-2
+          %label.control-label Serie
+          .input-group
+            = f.input :series, placeholder: "Serie", :input_html => {:class => 'form-control'}, label: false
+            %span.input-group-addon
+              %i.fa.fa-money
+
       .row
         .col-md-12
-          .form-group
-            %label.col-md-2.control-label Glosa
-            .col-md-10
-              .input-group
-                = f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
-                %span.input-group-addon
-                  %i.fa.fa-align-justify
+          %label.control-label Glosa
+          .input-group
+            = f.input :description, placeholder: "Glosa", :input_html => {:class => 'form-control'}, label: false
+            %span.input-group-addon
+              %i.fa.fa-align-justify
+
+      %br
+
     %fieldset
       %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary-provisions{:style => "font-size: 12px;", 'aria-describedby' => "data-table_info"}
         %thead
