@@ -180,9 +180,9 @@
 
         if(data.step == 2 && data.direction == 'next'){
 
-          if( $.trim($('#dt_basic').html()).length ) {
+          if( $.trim($('#items').html()).length ) {
             var index = 0;
-            $('#dt_basic tbody#partial_table_per_warehouse tr td .checkbox .order_check').each(function(){
+            $('#items tbody#partial_table_per_warehouse tr td .checkbox .order_check').each(function(){
               if( $(this).is(':checked') ){
                 status = true
                 data_items_sel[index] = $(this).val();
