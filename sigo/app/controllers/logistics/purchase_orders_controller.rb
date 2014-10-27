@@ -473,10 +473,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @deliveryOrders = Array.new
 
     # Operations after IGV
-    @perceptions = 0
-    @discounts = 0
-    @charges = 0
-    @others = 0
+    
 
     @purchaseOrder.purchase_order_details.each do |pod|
       current_id = pod.delivery_order_detail.delivery_order.id
@@ -502,9 +499,32 @@ class Logistics::PurchaseOrdersController < ApplicationController
         @igv = 0.18
       end
     end
-
+    @percepcion_neto=0
+    @descuento_neto=0
+    @cargo_neto=0
+    @otro_neto=0
     @igv_neto = @total*@igv
     @total_neto = @total + @igv_neto
+
+    @perceptions = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=2")
+    @perceptions.each do |p|
+      @percepcion_neto+=p[0]
+    end
+
+    @discounts = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=1")
+    @discounts.each do |p|
+      @descuento_neto+=p[0]
+    end
+
+    @charges = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=3")
+    @charges.each do |p|
+      @cargo_neto+=p[0]
+    end
+
+    @others = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=4")
+    @others.each do |p|
+      @otro_neto+=p[0]
+    end
 
     if @purchaseOrder.state == 'pre_issued'
       @state_per_order_purchase_approved = @purchaseOrder.state_per_order_purchases.where("state LIKE 'pre_issued'").last
