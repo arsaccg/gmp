@@ -40,7 +40,7 @@ class Management::InputbybudgetanditemsController < ApplicationController
 
     if @itembybudgetanditems != nil
       @itembybudgetanditems.each do |itembudget|
-        @pdf_table_array << [ itembudget[4], itembudget[1], itembudget[2].to_f.round(4), itembudget[5], itembudget[3].round(4), (itembudget[2].to_f * itembudget[3].to_f).round(4) ]
+        @pdf_table_array << [ itembudget[4], itembudget[1], itembudget[2].to_f.round(4), itembudget[5], itembudget[3].to_f.round(4), (itembudget[2].to_f * itembudget[3].to_f).round(4) ]
       end
     end
     render :index, :layout => false
@@ -105,7 +105,7 @@ class Management::InputbybudgetanditemsController < ApplicationController
 
     if @itembybudgetanditems != nil
       @itembybudgetanditems.each do |itembudget|
-        @pdf_table_array << [itembudget.input, itembudget.cod_input,  itembudget.quantity.to_f.round(4), itembudget.unit, itembudget.price.round(4), (itembudget.quantity.to_f * itembudget.price.to_f).round(4) ]
+        @pdf_table_array << [itembudget.input, itembudget.cod_input,  itembudget.quantity.to_f.round(4), itembudget.unit, itembudget.price.to_f.round(4), (itembudget.quantity.to_f * itembudget.price.to_f).round(4) ]
       end
     end
 
