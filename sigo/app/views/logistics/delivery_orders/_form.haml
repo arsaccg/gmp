@@ -96,12 +96,13 @@
                     %th Eliminar
                 %tbody(id="article_items_table")
                   - if @action != nil && @action == 'edit'
+                    - i = 1
                     - @deliveryOrder.delivery_order_details.each do |dod|
                       %tr(class="order_delivery_item"){id: "tr" + dod.id.to_s}
                         %td.article-id(style="display:none")
-                          = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][article_id]', dod.article_id.to_i
+                          = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][article_id]', dod.article_id.to_i
                         %td.measurement-id(style="display:none")
-                          = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][unit_of_measurement_id]', dod.unit_of_measurement_id.to_i
+                          = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][unit_of_measurement_id]', dod.unit_of_measurement_id.to_i
                         %td
                           = dod.article.code
                         %td
@@ -110,9 +111,9 @@
                           = dod.unit_of_measurement.symbol
                         %td.col-md-1
                           .col-md-9
-                            = text_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][amount]', dod.amount.to_f , class: "form-control quantity", id: 'article-amount'
+                            = text_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][amount]', dod.amount.to_f , class: "form-control quantity", id: 'article-amount'
                         %td.precio
-                          %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][sector_id]"}
+                          %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{(dod.created_at.to_time.to_i + i).to_s}][sector_id]"}
                             - @sectors.each do |sect|
                               - if sect.id == dod.sector.id
                                 %option{:value => "#{sect.id}", :selected => true}
@@ -121,7 +122,7 @@
                                 %option{:value => "#{sect.id}"}
                                   = sect.name
                         %td
-                          %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][phase_id]"}
+                          %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{(dod.created_at.to_time.to_i + i).to_s}][phase_id]"}
                             - @phases.each do |phas|
                               - if phas.id == dod.phase_id
                                 %option{:value => "#{phas.id}", :selected => true}
@@ -130,7 +131,7 @@
                                 %option{:value => "#{phas.id}"}
                                   = phas.name
                         %td(class="order_delivery_centro_atencion")
-                          %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][center_of_attention_id]"}
+                          %select.form-control{:name =>"delivery_order[delivery_order_details_attributes][#{(dod.created_at.to_time.to_i + i).to_s}][center_of_attention_id]"}
                             - @centerOfAttentions.each do |centerOfAttention|
                               - if centerOfAttention.id == dod.center_of_attention.id
                                 %option{:value => "#{centerOfAttention.id}", :selected => true}
@@ -139,18 +140,19 @@
                                 %option{:value => "#{centerOfAttention.id}"}
                                   = centerOfAttention.name
                         %td.order_delivery_fecha_programada
-                          %input.scheduled-date{:type => "date", :name => "delivery_order[delivery_order_details_attributes][#{dod.created_at.to_time.to_i.to_s}][scheduled_date]", :value => dod.scheduled_date}
+                          %input.scheduled-date{:type => "date", :name => "delivery_order[delivery_order_details_attributes][#{(dod.created_at.to_time.to_i + i).to_s}][scheduled_date]", :value => dod.scheduled_date}
                         //%td(class="order_delivery_equipos")
                         %td
-                          = text_area_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][description]', dod.description, class: "form-control description"
+                          = text_area_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][description]', dod.description, class: "form-control description"
                         %td(style="display:none")
-                          = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][id]', dod.id
+                          = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][id]', dod.id
                         %td(style="display:none")
-                          = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][delivery_order_id]', @deliveryOrder.id
+                          = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][delivery_order_id]', @deliveryOrder.id
                         %td.delete-item
                           %label.checkbox
-                            = check_box 'delivery_order', '[delivery_order_details_attributes][' + dod.created_at.to_time.to_i.to_s + '][_destroy]'
+                            = check_box 'delivery_order', '[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][_destroy]'
                             %i
+                      - i += 1
         %footer
           %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
             %i.fa.fa-save

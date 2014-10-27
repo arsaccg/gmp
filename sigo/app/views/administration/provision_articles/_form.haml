@@ -67,17 +67,23 @@
             %legend Elección del Insumo
             .row
               .col-lg-12.col-md-12
-                %label.col-lg-2.control-label{:for => "article_id"} Insumos
+                %label.col-lg-1.control-label{:for => "article_id"} Insumos
                 .col-lg-6.col-md-6
                   %input#article-select.select2.bigdrop.select2-offscreen.form-control{'name' => 'article_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
 
                 .col-lg-1.col-md-1
                   = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
 
-                .col-lg-2.col-md-2
-                  %div(class="col-lg-3")
+                .col-lg-2.col-md-2{ :style => "margin-right: 30px;" }
+                  %div
                     %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
                       Agregar Insumo
+
+                .col-lg-2.col-md-2
+                  %div
+                    %a#btn-add-orders(href="javascript:add_order_item();" class="btn btn-info" role="button")
+                      Agregar Insumo de Ordenes
+
           .row{:style=>"overflow-x:scroll"}
             %fieldset{ :style => "margin-top: 20px; margin-bottom: 20px;" }
               %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary-direct-provisions{:style => "font-size: 12px;", 'aria-describedby' => "data-table_info"}
@@ -262,10 +268,12 @@
             %button.btn.btn-primary{type: "submit"}
               %i.fa.fa-save
                 Guardar
-#modalDeliveryItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
+
+#modalOrderItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
   .modal-dialog
     .modal-content
-      .modal-body#modalDeliveryItemsContent                
+      .modal-body#modalOrderItemsContent
+
 :javascript
   
   $(document).ready(function(){ 
@@ -615,6 +623,9 @@
       alert('Llene todos los campos antes de agregar una operación.');    
     }
 
+  }
 
-
+  function add_order_item(){
+    $('#modalOrderItemsContent')
+    $('#modalOrderItems').modal();
   }
