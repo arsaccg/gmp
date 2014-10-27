@@ -511,17 +511,17 @@ class Logistics::PurchaseOrdersController < ApplicationController
       @percepcion_neto+=p[0]
     end
 
-    @discounts = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=1")
+    @discounts = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=2")
     @discounts.each do |p|
       @descuento_neto+=p[0]
     end
 
-    @charges = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=3")
+    @charges = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=2")
     @charges.each do |p|
       @cargo_neto+=p[0]
     end
 
-    @others = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=4")
+    @others = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=2")
     @others.each do |p|
       @otro_neto+=p[0]
     end
