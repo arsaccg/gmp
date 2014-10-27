@@ -111,18 +111,18 @@
     var total_dis_bep = 0;
     discount_before.each(function(){
       if($(this).attr('class')=="discount_before-item-soles"){
-        total_dis_bes+=parseFloat($(this).val()).toFixed(2);
+        total_dis_bes+=parseFloat($(this).val());
       }else{
         if($(this).attr('class')=="discount_before-item-percent"){
-          total_dis_bep+=parseFloat((amount*unit_price*parseFloat($(this).val()))).toFixed(2);
+          total_dis_bep+=parseFloat((amount*unit_price*parseFloat($(this).val())));
         }
       }
     });
-    var sdb = (total_dis_bes + total_dis_bep).toFixed(2);
-    var a =(1+igv).toFixed(2)
-    var total_price = (((amount * unit_price) - total_dis_bes - total_dis_bep)*(a)).toFixed(2);
-    $(element).parent().siblings('.price-with-igv').find('input').val(total_price);
-    $(element).parent().siblings('.discount-after').children('#db').find('input').val(sdb);
+    var sdb = (total_dis_bes + total_dis_bep);
+    var a =(1+igv);
+    var total_price = (((amount * unit_price) - total_dis_bes - total_dis_bep)*(a));
+    $(element).parent().siblings('.price-with-igv').find('input').val(total_price.toFixed(2));
+    $(element).parent().siblings('.discount-before').children('#db').find('input').val(sdb.toFixed(2));
 
     var total_dis_afs = 0;
     var total_dis_afp = 0;
@@ -131,25 +131,25 @@
         total_dis_afs+=parseFloat($(this).val());
       }else{
         if($(this).attr('class')=="discount_after-item-percent"){
-          total_dis_afp+=parseFloat((total_price*parseFloat($(this).val())));
+          total_dis_afp+=parseFloat(total_price*parseFloat($(this).val()));
         }
       }
     });
     var per_am;
     perception.each(function(){
       if($(this).attr('class')=="perception-soles"){
-        per_am=parseFloat($(this).val()).toFixed(2);
+        per_am=parseFloat($(this).val());
       }else{
         if($(this).attr('class')=="perception-percent"){
-          per_am=parseFloat(total_price*parseFloat($(this).val())).toFixed(2);
+          per_am=parseFloat(total_price*parseFloat($(this).val()));
         }
       }
     });
     var net_total_price = parseFloat(total_price) - total_dis_afs - total_dis_afp
-    var sda = (total_dis_afs + total_dis_afp).toFixed(2);
-    $(element).parent().siblings('.discount-after').children('#da').find('input').val(sda*-1);
+    var sda = (total_dis_afs + total_dis_afp);
+    $(element).parent().siblings('.discount-after').children('#da').find('input').val((sda*-1).toFixed(2));
     $(element).parent().siblings('.neto-price-with-igv').find('input').val(parseFloat(net_total_price).toFixed(2));
-    $(element).parent().siblings('.perception').children('#per').find('input').val(per_am);
+    $(element).parent().siblings('.perception').children('#per').find('input').val(per_am.toFixed(2));
   }
 
   function isNumber(evt) {
