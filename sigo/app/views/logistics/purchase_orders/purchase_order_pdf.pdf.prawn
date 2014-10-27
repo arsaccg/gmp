@@ -121,7 +121,7 @@ if(@percepcion_neto!=0)
       end     
   end
 else
-  bounding_box [bounds.right - 200, bounds.bottom + 80], :width  => bounds.width do
+  bounding_box [bounds.right - 200, bounds.bottom + 100], :width  => bounds.width do
     table([ 
       ["TOTAL","#{number_to_currency(@total, unit: @purchaseOrder.money.symbol, precision: 2)}"],
       ["IGV #{number_to_percentage(@igv*100, precision: 0)}","#{number_to_currency(@igv_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]
