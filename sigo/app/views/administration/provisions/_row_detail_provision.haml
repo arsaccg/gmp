@@ -22,7 +22,7 @@
       = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount]', data_order_detail[8], class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{data_order_detail[8]})"
       %code= "Por atender: #{data_order_detail[8]}"
     %td.unit-price
-      = number_to_currency(data_order_detail[5], unit: 'S/.', precision: 2)
+      = number_to_currency(data_order_detail[5], unit: 'S/.', precision: 4)
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_unit_price]', data_order_detail[5], class: "unit-price-item"
     %td.discount-before
       %div#db
