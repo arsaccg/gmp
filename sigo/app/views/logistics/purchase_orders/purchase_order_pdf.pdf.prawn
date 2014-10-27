@@ -103,18 +103,37 @@ bounding_box [bounds.left, bounds.bottom + 70], :width  => bounds.width do
     end
 end
 
-bounding_box [bounds.right - 200, bounds.bottom + 80], :width  => bounds.width do
-  table([ 
-    ["TOTAL","#{number_to_currency(@total, unit: @purchaseOrder.money.symbol, precision: 2)}"],
-    ["IGV #{number_to_percentage(@igv*100, precision: 0)}","#{number_to_currency(@igv_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]
-  ], :width => 190, :cell_style => {:border_color=> "ffffff", :height => 21}, :column_widths => [100, 90]) do
-      style(columns(0..1), :size => 10, :align => :right)
-      columns(0..1).font_style = :bold
-    end
-  table([ 
-    ["TOTAL NETO "," #{number_to_currency(@total_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]
-  ], :width => 190, :cell_style => {:border_bottom_color=> "ffffff",:border_left_color=> "ffffff",:border_right_color=> "ffffff", :height => 21}, :column_widths => [100, 90]) do
-      style(columns(0..1), :size => 10, :align => :right)
-      columns(0..1).font_style = :bold
-    end     
+if(@percepcion_neto!=0)
+  bounding_box [bounds.right - 200, bounds.bottom + 100], :width  => bounds.width do
+    table([ 
+      ["TOTAL","#{number_to_currency(@total, unit: @purchaseOrder.money.symbol, precision: 2)}"],
+      ["IGV #{number_to_percentage(@igv*100, precision: 0)}","#{number_to_currency(@igv_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"],
+      ["PERCEPCION","#{number_to_currency(@percepcion_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]
+    ], :width => 190, :cell_style => {:border_color=> "ffffff", :height => 21}, :column_widths => [100, 90]) do
+        style(columns(0..1), :size => 10, :align => :right)
+        columns(0..1).font_style = :bold
+      end
+    table([ 
+      ["TOTAL NETO "," #{number_to_currency(@total_neto+@percepcion_neto+@descuento_neto+@otro_neto+@cargo_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]
+    ], :width => 190, :cell_style => {:border_bottom_color=> "ffffff",:border_left_color=> "ffffff",:border_right_color=> "ffffff", :height => 21}, :column_widths => [100, 90]) do
+        style(columns(0..1), :size => 10, :align => :right)
+        columns(0..1).font_style = :bold
+      end     
+  end
+else
+  bounding_box [bounds.right - 200, bounds.bottom + 80], :width  => bounds.width do
+    table([ 
+      ["TOTAL","#{number_to_currency(@total, unit: @purchaseOrder.money.symbol, precision: 2)}"],
+      ["IGV #{number_to_percentage(@igv*100, precision: 0)}","#{number_to_currency(@igv_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]
+    ], :width => 190, :cell_style => {:border_color=> "ffffff", :height => 21}, :column_widths => [100, 90]) do
+        style(columns(0..1), :size => 10, :align => :right)
+        columns(0..1).font_style = :bold
+      end
+    table([ 
+      ["TOTAL NETO "," #{number_to_currency(@total_neto+@percepcion_neto+@descuento_neto+@otro_neto+@cargo_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]
+    ], :width => 190, :cell_style => {:border_bottom_color=> "ffffff",:border_left_color=> "ffffff",:border_right_color=> "ffffff", :height => 21}, :column_widths => [100, 90]) do
+        style(columns(0..1), :size => 10, :align => :right)
+        columns(0..1).font_style = :bold
+      end     
+  end
 end
