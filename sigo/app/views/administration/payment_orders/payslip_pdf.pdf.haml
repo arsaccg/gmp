@@ -136,13 +136,13 @@
               %td -
             %tr
               %td
-                = number_to_currency @payment_order.detraction, unit: 'S/.', precision: 2
+                = number_to_currency @payment_order.detraction.to_f, unit: 'S/.', precision: 2
             %tr
               %td
-                = number_to_currency @payment_order.guarantee_fund_n1, unit: 'S/.', precision: 2
+                = number_to_currency @payment_order.guarantee_fund_n1.to_f, unit: 'S/.', precision: 2
             %tr
               %td
-                = number_to_currency @payment_order.other_discounts, unit: 'S/.', precision: 2
+                = number_to_currency @payment_order.other_discounts.to_f, unit: 'S/.', precision: 2
             %tr
               %td
                 %strong
@@ -376,13 +376,13 @@
               %td -
             %tr
               %td
-                = number_to_currency @payment_order.detraction, unit: 'S/.', precision: 2
+                = number_to_currency @payment_order.detraction.to_f, unit: 'S/.', precision: 2
             %tr
               %td
-                = number_to_currency @payment_order.guarantee_fund_n1, unit: 'S/.', precision: 2
+                = number_to_currency @payment_order.guarantee_fund_n1.to_f, unit: 'S/.', precision: 2
             %tr
               %td
-                = number_to_currency @payment_order.other_discounts, unit: 'S/.', precision: 2
+                = number_to_currency @payment_order.other_discounts.to_f, unit: 'S/.', precision: 2
             %tr
               %td
                 %strong

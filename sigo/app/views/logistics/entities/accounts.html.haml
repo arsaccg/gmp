@@ -41,8 +41,8 @@
             %label.input
               %i.icon-append.fa.fa-superscript
               %input#cci.form-control{ placeholder: "CCI", onkeypress: "return isNumber(event);"}
-          %section.col.col-4{:style=>" margin-top: 20px; "}
-            %a{:href => "javascript:add_account();", :id => "btn-add-account", :class => "btn btn-success", :role => "button"}
+          %section.col.col-4
+            %a{:href => "javascript:add_account();", :id => "btn-add-account", :class => "btn btn-success", :role => "button", :style => "padding: 5px; margin-top: 2em;"}
               Agregar Cuenta
 
         %fieldset
