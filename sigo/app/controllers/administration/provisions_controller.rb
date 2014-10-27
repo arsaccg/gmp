@@ -199,7 +199,7 @@ class Administration::ProvisionsController < ApplicationController
         total = 0
         percepcion = purchase_order_detail.purchase_order_extra_calculations.find_by_extra_calculation_id(2)
         provision = ProvisionDetail.where("order_detail_id  = "+ purchase_order_detail.id.to_s)
-        if !provision.nil?
+        if provision.count > 0
           amount = 0
           provision.each do |pd|
             amount += pd.amount
@@ -216,6 +216,10 @@ class Administration::ProvisionsController < ApplicationController
           else
             percepcion = 0
           end
+
+          puts '------- 1 -------'
+          puts some_results[4]
+          puts '------- 1 -------'
 
           @data_orders << [ 
             purchase_order_detail.id, 
@@ -234,7 +238,7 @@ class Administration::ProvisionsController < ApplicationController
           ]
         else
           pending = purchase_order_detail.amount
-          total = purchase_order_detail.unit_price_before_igv.to_f - purchase_order_detail.quantity_igv.to_f - purchase_order_detail.discount_before.to_f
+          total = (purchase_order_detail.unit_price.to_f * purchase_order_detail.amount.to_f).to_f - purchase_order_detail.discount_before.to_f - purchase_order_detail.quantity_igv.to_f
           if !percepcion.nil?
             if percepcion.type=="soles"
               percepcion = (percepcion.value.to_f+total)
@@ -251,12 +255,12 @@ class Administration::ProvisionsController < ApplicationController
             purchase_order_detail.delivery_order_detail.article.unit_of_measurement.symbol, 
             purchase_order_detail.amount, 
             purchase_order_detail.unit_price, 
-            total, 
+            total.round(2), 
             igv, 
             pending, 
             purchase_order_detail.discount_before, 
             purchase_order_detail.discount_after,
-            (purchase_order_detail.unit_price_igv.to_f - percepcion.to_f),
+            (total.round(2) + purchase_order_detail.discount_after.to_f - percepcion.to_f),
             percepcion
           ]
 
