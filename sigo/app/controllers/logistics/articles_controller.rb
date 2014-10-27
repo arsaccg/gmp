@@ -184,6 +184,9 @@ class Logistics::ArticlesController < ApplicationController
     elsif type.code == "05"
       @group = Category.where("code LIKE '__' AND code > 73 OR code = 72")
     end 
+
+    p 'get_group'
+    p @group
     render json: {:group => @group}  
   end
 

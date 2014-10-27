@@ -26,6 +26,7 @@ class Logistics::CategoriesController < ApplicationController
     category = Category.new(category_parameters)
     category.code = params[:extrafield]['first_code'].to_s + params[:category]['code'].to_s
     if category.save
+      ActiveRecord::Base.connection.execute("CALL `update_inputcategories`")
       flash[:notice] = "Se ha creado correctamente la nueva categoria."
       redirect_to :action => :index
     else
@@ -85,6 +86,8 @@ class Logistics::CategoriesController < ApplicationController
 
   def get_subcategory_form_category
     @subcategories = Category.where("code LIKE ?", params[:category_code]+"__")
+    p 'get_subcategory_form_category'
+    p @subcategories
     render json: {:subcategories => @subcategories}  
   end
 

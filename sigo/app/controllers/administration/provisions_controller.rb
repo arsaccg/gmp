@@ -234,7 +234,8 @@ class Administration::ProvisionsController < ApplicationController
             some_results[1], 
             some_results[2],
             (some_results[5].round(2) - percepcion.to_f),
-            percepcion
+            percepcion,
+            purchase_order_detail.purchase_order.money.symbol
           ]
         else
           pending = purchase_order_detail.amount
@@ -261,7 +262,8 @@ class Administration::ProvisionsController < ApplicationController
             purchase_order_detail.discount_before, 
             purchase_order_detail.discount_after,
             (total.round(2) + purchase_order_detail.discount_after.to_f - percepcion.to_f),
-            percepcion
+            percepcion,
+            purchase_order_detail.purchase_order.money.symbol
           ]
 
         end
@@ -310,7 +312,8 @@ class Administration::ProvisionsController < ApplicationController
           service_order_detail.discount_before.to_i*-1,
           service_order_detail.discount_after.to_i,
           total_neto,
-          percepcion
+          percepcion,
+          service_order_detail.service_order.money.symbol
         ]
       end
     end
