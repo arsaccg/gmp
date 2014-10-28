@@ -219,10 +219,6 @@ class Administration::ProvisionsController < ApplicationController
             percepcion = 0
           end
 
-          puts '------- 1 -------'
-          puts some_results[4]
-          puts '------- 1 -------'
-
           @data_orders << [ 
             purchase_order_detail.id, 
             purchase_order_detail.delivery_order_detail.article.code, 
