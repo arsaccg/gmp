@@ -36,7 +36,7 @@
   }
 
   function calculatePrice(element){
-    var amount = parseInt($(element).val());
+    var amount = parseFloat($(element).val());
 
     var price_without_igv = parseFloat($(element).parent().siblings('.unit-price').find('input').val() * amount).toFixed(2);
 
