@@ -1,23 +1,37 @@
 - @data_orders.each do |data_order_detail|
   %tr{id: "tr" + @reg_n.to_s}
-    %td(style="display:none" class="provision-di")
+    %td{ :style => "display:none" :class => "provision-di" }
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][order_detail_id]', data_order_detail[0]
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][type_of_order]', @type_of_order_name
-    %td
+    %td{ :style => "display:none" }
       = data_order_detail[1]
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][article_code]', data_order_detail[1]
     %td
       = data_order_detail[2]
       = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][article_name]', data_order_detail[2]
+    %td.unit-of-measurement
+      = data_order_detail[3]
+      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][unit_of_measurement]', data_order_detail[3]
     %td
       %select.form-control.account_accountant{:name =>"provision[provision_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :style => 'border:none;width:100%;', :required => true, title:'No puede dejar este campo vacio'}
         %option{:value => nil, :selected => true, :disabled => true} Seleccionar cuenta contable
         - @account_accountants.each do |account_accountant|
           %option{:value => "#{account_accountant.id}"}
             = '(' + account_accountant.code + ') ' + account_accountant.name
-    %td.unit-of-measurement
-      = data_order_detail[3]
-      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][unit_of_measurement]', data_order_detail[3]
+    %td.sector
+      %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
+        %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
+        - @sectors.each do |sector|
+          %optgroup{:label => "#{sector.name}"}
+            -Sector.getSubSectors(sector.code).each do |subsector|
+              %option{:value => "#{subsector.id}"}
+                = subsector.name
+    %td.phase
+      %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
+        %option{:value => nil, :selected => true, :disabled => true} Seleccionar Fase
+        - @phases.each do |phase|
+          %option{:value => "#{phase.id}"}
+            = phase.code + " " + phase.name
     %td.amount
       = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount]', data_order_detail[8], class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{data_order_detail[8]})"
       %code= "Por atender: #{data_order_detail[8]}"
@@ -118,6 +132,8 @@
           = hidden_field_tag 'perception', 0, class: "perception-soles"      
     %td.neto-price-with-igv
       = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][net_price_after_igv]', data_order_detail[11] , class: "form-control net-price-after-igv", :readonly => true
+    %td.description
+    = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
     %td{:style => "width: 1%;"}
       %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
   - @reg_n += 1

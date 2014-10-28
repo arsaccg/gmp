@@ -79,6 +79,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @moneys = Money.all
     @methodOfPayments = MethodOfPayment.all
     @numbercode = @numbercode.to_s.rjust(5,'0')
+    #= hidden_field_tag 'purchase_order[code]', @numbercode
     render layout: false
   end
 

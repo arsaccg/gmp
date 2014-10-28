@@ -104,7 +104,14 @@
                       %span.input-group-addon
                         %i.fa.fa-male
             .row
-              .col-md-12
+              .col-md-4
+                %label.col-md-3.control-label N° O.C.
+                .col-md-9
+                  .input-group
+                    = f.input :code, placeholder: "N° O.C.", :input_html => {:class => 'form-control'}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-male
+              .col-md-8
                 .form-group
                   %label.col-md-2.control-label Glosa
                   .col-md-10
