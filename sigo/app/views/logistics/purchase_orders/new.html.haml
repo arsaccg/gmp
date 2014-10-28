@@ -6,7 +6,7 @@
           %header{:role => 'heading'}
             %span.widget-icon
               %i.fa.fa-cloud-upload
-            %h2 Crear Orden de Compra
+            %h2="Crear Orden de Compra N° "+@numbercode
           %div{:role => 'content'}
             .widget-body
               = render :partial => 'form_new_order'
@@ -128,7 +128,7 @@
 
   // PAGE RELATED SCRIPTS
   function calculatePriceWithourIgv(element){
-    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
+    var amount = parseFloat($(element).parent().siblings('.amount').find('input').val());
 
     var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
 

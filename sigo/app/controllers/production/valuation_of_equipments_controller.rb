@@ -315,6 +315,11 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       end
       i+=1
     end
+    @array.each do |a|
+      puts "-------"
+      puts a
+      puts "-------"
+    end
     render layout: false
   end
 
