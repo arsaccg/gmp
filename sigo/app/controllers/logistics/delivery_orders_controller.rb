@@ -36,7 +36,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     if @pagenumber != 'NaN' && keyword != ''
       if state == ""
         de_o = ActiveRecord::Base.connection.execute("
-          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
           FROM delivery_orders do, users u
           WHERE do.cost_center_id = "+@cc.to_s+"
           AND do.user_id = u.id
@@ -47,7 +47,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
         )
       else
         de_o = ActiveRecord::Base.connection.execute("
-          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
           FROM delivery_orders do, users u
           WHERE do.cost_center_id = "+@cc.to_s+"
           AND do.user_id = u.id
@@ -61,7 +61,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     elsif @pagenumber == 'NaN'
       if state == ""
         de_o = ActiveRecord::Base.connection.execute("
-          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
           FROM delivery_orders do, users u
           WHERE do.cost_center_id = "+@cc.to_s+"
           AND do.user_id = u.id
@@ -70,7 +70,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
         )
       else
         de_o = ActiveRecord::Base.connection.execute("
-          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
           FROM delivery_orders do, users u
           WHERE do.cost_center_id = "+@cc.to_s+"
           AND do.user_id = u.id
@@ -82,7 +82,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     elsif keyword != ''
       if state == ""
         de_o = ActiveRecord::Base.connection.execute("
-          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
           FROM delivery_orders do, users u
           WHERE do.cost_center_id = "+@cc.to_s+"
           AND do.user_id = u.id
@@ -90,7 +90,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
         )
       else
         de_o = ActiveRecord::Base.connection.execute("
-          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
           FROM delivery_orders do, users u
           WHERE do.cost_center_id = "+@cc.to_s+"
           AND do.user_id = u.id
@@ -101,7 +101,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     else
       if state == ""
         de_o = ActiveRecord::Base.connection.execute("
-          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
           FROM delivery_orders do, users u
           WHERE do.cost_center_id = "+@cc.to_s+"
           AND do.user_id = u.id
@@ -111,7 +111,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
         )
       else
         de_o = ActiveRecord::Base.connection.execute("
-          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
           FROM delivery_orders do, users u
           WHERE do.cost_center_id = "+@cc.to_s+"
           AND do.user_id = u.id
@@ -163,7 +163,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
         end
       end
 
-      array << [dos[0].to_s.rjust(5, '0'),@state,dos[2],dos[3].strftime("%d/%m/%Y").to_s,dos[4].strftime("%d/%m/%Y").to_s,dos[5], @action]
+      array << [dos[6].to_s.rjust(5, '0'),@state,dos[2],dos[3].strftime("%d/%m/%Y").to_s,dos[4].strftime("%d/%m/%Y").to_s,dos[5], @action]
     end
     render json: { :aaData => array }
   end
@@ -172,6 +172,13 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @company = params[:company_id]
     @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @deliveryOrder = DeliveryOrder.new
+    @last = DeliveryOrder.find(:last,:conditions => [ "cost_center_id = ?", @cost_center.id])
+    if !@last.nil?
+      @numbercode = @last.code.to_i+1
+    else
+      @numbercode = 1
+    end
+    @numbercode = @numbercode.to_s.rjust(5,'0')
     render layout: false
   end
 
@@ -391,6 +398,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   private
   def delivery_order_parameters
     params.require(:delivery_order).permit(
+      :code,
       :date_of_issue, 
       :scheduled, 
       :description, 

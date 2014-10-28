@@ -1,6 +1,7 @@
 = simple_form_for([:logistics, @purchaseOrder], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
   = hidden_field_tag "company_id", @company
   = hidden_field_tag "purchase_order[cost_center_id]", @cost_center
+  = hidden_field_tag 'purchase_order[code]', @numbercode
   %fieldset
     %input#cont{:style=>"display:none;", :value=>0}
     .row

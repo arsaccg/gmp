@@ -193,7 +193,6 @@ class Production::AnalysisOfValuationsController < ApplicationController
       # Consumo de Materiales
       @meta_stock_inputs = Array.new
       arr_stock_input = Array.new
-      @stock_inputs = business_days_array4(start_date, end_date, @cad, @cad2)
 
       # TODO META Materiales
       all_meta_materials = Budget.budget_meta_info_per_material(budgetanditems_list.map(&:first).collect {|x| "'#{x}'"}.join(", "), @cost_center)
@@ -210,6 +209,45 @@ class Production::AnalysisOfValuationsController < ApplicationController
         # TOTAL META
         @total_stock_input_meta += (meta_material[2]*value_quantity_from_partes)*meta_material[3]
       end
+
+      # TODO REAL MATERIALES
+      @real_materiales = Array.new
+      price_pu_a = 0
+      amount_pu_a = 0
+      prom_pon_price = 0
+      prom_pon_amount = 0
+      articles_output = get_articles_outputs(start_date, end_date, @cad, @cad2, get_company_cost_center('cost_center'))
+      articles_output.each do |ao|
+        articles_in_purchase = get_articles_purchase_orders(start_date, end_date, @cad2, get_company_cost_center('cost_center'), ao[0])
+        get_articles_purchase_orders_tamount(start_date, end_date, @cad2, get_company_cost_center('cost_center'), ao[0]).each do |a|
+          amount_pu_a=a[0]
+        end
+        if articles_in_purchase.count == 1
+          articles_in_purchase.each do |aip|
+            @real_materiales << [aip[0], aip[1],aip[2],aip[3],aip[4],aip[5], aip[4]*aip[5]]
+            @total_stock_input_real += aip[4]*aip[5]
+          end
+        else
+          #art.id, art.code, art.name, u.symbol, pod.unit_price, pod.amount
+          articles_in_purchase.each do |aip|
+            prom_pon_amount = aip[5].to_f/amount_pu_a.to_f
+            prom_pon_price += aip[4]*prom_pon_amount
+            @id = aip[0]
+            @code = aip[1]
+            @name = aip[2]
+            @unit_sym = aip[3]
+          end
+          @real_materiales << [@id, @code, @name, @unit_sym, prom_pon_price, amount_pu_a, prom_pon_price*amount_pu_a]
+          @total_stock_input_real += prom_pon_price*amount_pu_a
+        end
+      end
+
+                                            
+
+
+
+
+
 
       # ORDER ARRAY META
       @meta_stock_inputs = arr_stock_input.group_by { |a,b,_,d| [a,b,d] }.map { |(a,b,c),arr_stock_input| [a,b,arr_stock_input.reduce(0) { |t,(_,_,e,_)| t + e },c] }
@@ -334,6 +372,59 @@ class Production::AnalysisOfValuationsController < ApplicationController
     return workers_array3
   end
 
+  def get_articles_outputs(start_date, end_date, working_group, sector, cc)
+    articles = ActiveRecord::Base.connection.execute("
+      SELECT art.id
+      FROM articles art, stock_inputs si, stock_input_details sid
+      WHERE sid.stock_input_id = si.id
+      AND si.status =  'A'
+      AND si.issue_date BETWEEN '#{start_date}' AND '#{end_date}'
+      AND si.working_group_id IN (#{working_group})
+      AND si.cost_center_id = #{cc}
+      AND sid.sector_id IN (#{sector})
+      AND sid.purchase_order_detail_id IS NULL 
+      AND sid.article_id = art.id
+      GROUP BY art.id
+    ")
+    return articles  
+  end
+
+  def get_articles_purchase_orders(start_date, end_date, sector, cc, article_id)
+    articles = ActiveRecord::Base.connection.execute("
+      SELECT art.id, art.code, art.name, u.symbol, pod.unit_price, pod.amount
+      FROM purchase_orders po, purchase_order_details pod, delivery_order_details dod, articles art, unit_of_measurements u
+      WHERE po.id = pod.purchase_order_id
+      AND po.state =  'approved'
+      AND po.cost_center_id = #{cc}
+      AND pod.delivery_order_detail_id = dod.id
+      AND pod.received = 1
+      AND po.date_of_issue BETWEEN '#{start_date}' AND '#{end_date}'
+      AND dod.sector_id IN (#{sector})
+      AND art.unit_of_measurement_id = u.id
+      AND dod.article_id = art.id
+      AND art.id IN (#{article_id})
+    ")
+    return articles 
+  end
+
+  def get_articles_purchase_orders_tamount(start_date, end_date, sector, cc, article_id)
+    articles = ActiveRecord::Base.connection.execute("
+      SELECT SUM(pod.amount)
+      FROM purchase_orders po, purchase_order_details pod, delivery_order_details dod, articles art, unit_of_measurements u
+      WHERE po.id = pod.purchase_order_id
+      AND po.state =  'approved'
+      AND po.cost_center_id = #{cc}
+      AND pod.delivery_order_detail_id = dod.id
+      AND pod.received = 1
+      AND po.date_of_issue BETWEEN '#{start_date}' AND '#{end_date}'
+      AND dod.sector_id IN (#{sector})
+      AND art.unit_of_measurement_id = u.id
+      AND dod.article_id = art.id
+      AND art.id IN (#{article_id})
+      GROUP BY art.id
+    ")
+    return articles 
+  end  
   # END Methods for report Table.
 
   def frontChief

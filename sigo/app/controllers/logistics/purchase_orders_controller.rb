@@ -69,9 +69,16 @@ class Logistics::PurchaseOrdersController < ApplicationController
     TypeEntity.where("id = 1").each do |tent|
       @suppliers = tent.entities
     end
+    @last = PurchaseOrder.find(:last,:conditions => [ "cost_center_id = ?", @cost_center])
+    if !@last.nil?
+      @numbercode = @last.code.to_i+1
+    else
+      @numbercode = 1
+    end
     @deliveryOrders = DeliveryOrder.where("cost_center_id = ? AND state LIKE ?", @cost_center,'approved')
     @moneys = Money.all
     @methodOfPayments = MethodOfPayment.all
+    @numbercode = @numbercode.to_s.rjust(5,'0')
     render layout: false
   end
 
@@ -126,7 +133,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     if @pagenumber != 'NaN' && keyword != ''
       if state == ""
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -138,7 +145,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         )
       else
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -153,7 +160,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     elsif @pagenumber == 'NaN'
       if state == ""
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -163,7 +170,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         )
       else
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -176,7 +183,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     elsif keyword != ''
       if state == ""
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -185,7 +192,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         )
       else
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -197,7 +204,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     else
       if state == ""
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -208,7 +215,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         )
       else
         po = ActiveRecord::Base.connection.execute("
-          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name)
+          SELECT po.id, po.state, po.description, CONCAT_WS( ' ', e.name, e.paternal_surname), po.expiration_date, CONCAT_WS( ' ', u.first_name, u.last_name),po.code
           FROM purchase_orders po, users u, entities e
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
@@ -277,7 +284,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
         @last_state_date = pur.created_at.strftime("%d/%m/%Y")
       end
 
-      array << [dos[0].to_s.rjust(5, '0'),@state,@description.to_s,dos[3].to_s,@last_state_date.to_s ,dos[4].strftime("%d/%m/%Y").to_s,dos[5], @action]
+      array << [dos[6].to_s.rjust(5, '0'),@state,@description.to_s,dos[3].to_s,@last_state_date.to_s ,dos[4].strftime("%d/%m/%Y").to_s,dos[5], @action]
     end
     render json: { :aaData => array }
   end
@@ -578,6 +585,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
   private
   def purchase_order_parameters
     params.require(:purchase_order).permit(
+      :code,
       :exchange_of_rate, 
       :date_of_issue, 
       :expiration_date, 

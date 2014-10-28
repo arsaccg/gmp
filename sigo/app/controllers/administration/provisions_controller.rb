@@ -110,23 +110,22 @@ class Administration::ProvisionsController < ApplicationController
 
   #CUSTOM METHODS
   def display_orders
-    @type_order = params[:type_of_order_consult]
     supplier = params[:supplier]
     @supplier_obj = Entity.find(supplier)
-    if @type_order == 'purchase_order' 
-      @orders = PurchaseOrder.where('entity_id = ? AND state = ?', supplier, 'approved')
-    elsif @type_order == 'service_order' 
-      @orders = OrderOfService.where('entity_id = ? AND state = ?', supplier, 'approved')
-    end
+    @orders_po = PurchaseOrder.select(:id).select(:date_of_issue).select(:description).where('entity_id = ? AND state = ?', supplier, 'approved')
+    @orders_oos = OrderOfService.where('entity_id = ? AND state = ?', supplier, 'approved')
+
     render(:partial => 'table_list_orders', :layout => false)
   end
 
   def display_details_orders
-    orders = params[:ids_orders]
+    orders_po = params[:data_orders_po]
+    orders_oos = params[:data_orders_oos]
     @type_order = params[:type_of_order_selected]
     @data_orders = Array.new
-    if @type_order == 'purchase_order' 
-      orders.each do |order_id|
+
+    if !orders_po.nil?
+      orders_po.each do |order_id|
         if PurchaseOrder.find(order_id).approved?
           PurchaseOrder.find(order_id).purchase_order_details.each do |purchase_detail|
             if !purchase_detail.received_provision
@@ -152,8 +151,10 @@ class Administration::ProvisionsController < ApplicationController
           end
         end
       end
-    elsif @type_order == 'service_order'
-      orders.each do |order_id|
+    end
+
+    if !orders_oos.nil?
+      orders_oos.each do |order_id|
         if OrderOfService.find(order_id).approved?
           OrderOfService.find(order_id).order_of_service_details.each do |service_detail|
             if !service_detail.received
@@ -177,6 +178,7 @@ class Administration::ProvisionsController < ApplicationController
         end
       end
     end
+
     render(:partial => 'table_list_details_orders', :layout => false)
   end
 
