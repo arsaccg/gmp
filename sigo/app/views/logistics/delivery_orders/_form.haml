@@ -3,11 +3,12 @@
     %span.widget-icon
       %i.fa.fa-pencil-square-o.fa-fw 
     %h2
-      %strong Orden de Suministro
+      %strong="Orden de Suministro N° "+@numbercode
   %div{:style => "padding-top: 0"}
     .jarviswidget-editbox
     .widget-body 
       = simple_form_for([:logistics, @deliveryOrder], html: {class: 'smart-form', autocomplete: 'off' }) do |f|
+        = hidden_field_tag "delivery_order[code]", @numbercode
         
         %fieldset{ :style => 'padding-bottom: 25px;' }
           - if @deliveryOrder.id != nil

@@ -86,7 +86,7 @@
               %tr
                 %th{"style"=>"color:#5f5f5f; text-align:center;padding-left:15px;"} 05.01
                 %th{"style"=>"color:#5f5f5f;padding-left:18px;"}= "Detracción del Total (Incl. I.G.V.) ("+@detraccion.to_s+"%)"
-                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100), unit: 'S/. ', precision: 0)
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalincluidoigv.to_f*@detraccion.to_f/100, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@bill.to_f+@billigv.to_f+@totalincluidoigv.to_f)*((@subcontractequipment.detraction.to_f+@detracciontotal.to_f)/100), unit: 'S/. ', precision: 2)
               %tr
@@ -106,16 +106,16 @@
               %tr
                 %th{"style"=>"color:#5f5f5f"}
                 %th{"style"=>"color:#5f5f5f;padding-left:18px;"} TOTAL RETENCIONES
-                %th#totalretention{"style"=>"color:#5f5f5f;text-align:center", 'original' => "#{(@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f}"}= number_to_currency((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f, unit: 'S/. ', precision: 0)
+                %th#totalretention{"style"=>"color:#5f5f5f;text-align:center", 'original' => "#{((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f}"}= number_to_currency(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f, unit: 'S/. ', precision: 2)
                 %th#lasttr{"style"=>"color:#5f5f5f;text-align:center", 'original' =>"#{@retenciones.to_f}"}= number_to_currency(@retenciones.to_f, unit: 'S/. ', precision: 2)
                 %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@bill.to_f+@billigv.to_f+@totalincluidoigv.to_f)*((@subcontractequipment.detraction.to_f+@detracciontotal.to_f)/100)+@fuel_discount.to_f+@totalretenciones.to_f, unit: 'S/. ', precision: 2)
               %tr{"bgcolor"=>"#3276B1"}
                 %th{"style"=>"color:white; text-align:center;"} 06
                 %th{"style"=>"color:white"} NETO A PAGAR
 
-                %th#net-pay{ "style"=>"color:white;text-align:center", 'original' => "#{(@bill-@billigv)-((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f)}"}= number_to_currency((@bill+@billigv)-((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f), unit: 'S/. ', precision: 2)
+                %th#net-pay{ "style"=>"color:white;text-align:center", 'original' => "#{(@bill-@billigv)-(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f)}"}= number_to_currency((@bill+@billigv)-(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f), unit: 'S/. ', precision: 2)
                 %th#lastnetpay{"style"=>"color:white;text-align:center", 'original' =>"#{@netoapagar.to_f}"}= number_to_currency(@netoapagar.to_f, unit: 'S/. ', precision: 2)
-                %th#acumnetpay{"style"=>"color:white;text-align:center"}= number_to_currency(@bill.to_f+@billigv.to_f-(@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f + @netoapagar.to_f, unit: 'S/. ', precision: 2)
+                %th#acumnetpay{"style"=>"color:white;text-align:center"}= number_to_currency(@bill.to_f+@billigv.to_f-((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f + @netoapagar.to_f, unit: 'S/. ', precision: 2)
 
         %br
         #part-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
@@ -123,7 +123,7 @@
         #report-equipment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
 
                 
-        = hidden_field_tag 'totalretention', (@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f, 'id' => 'input-totalretention'
+        = hidden_field_tag 'totalretention', ((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f, 'id' => 'input-totalretention'
         = hidden_field_tag 'valuation_of_equipment[name]', @subcontractequipment.entity.name
         = hidden_field_tag 'valuation_of_equipment[code]', @numbercode
         = hidden_field_tag 'valuation_of_equipment[start_date]', @start_date
@@ -135,24 +135,24 @@
         = hidden_field_tag 'valuation_of_equipment[bill]', @bill
         = hidden_field_tag 'valuation_of_equipment[billigv]', @billigv
         = hidden_field_tag 'valuation_of_equipment[totalbill]', @bill+@billigv
-        = hidden_field_tag 'valuation_of_equipment[retention]', (@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f
+        = hidden_field_tag 'valuation_of_equipment[retention]', ((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f
         = hidden_field_tag 'valuation_of_equipment[detraction]', @subcontractequipment.detraction
         = hidden_field_tag 'valuation_of_equipment[fuel_discount]', @fuel_discount
         = hidden_field_tag 'valuation_of_equipment[hired_amount]', @subcontractequipment.contract_amount
         = hidden_field_tag 'valuation_of_equipment[advances]', @subadvances
         = hidden_field_tag 'valuation_of_equipment[accumulated_amortization]', @subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f
         = hidden_field_tag 'valuation_of_equipment[balance]', @balance
-        = hidden_field_tag 'valuation_of_equipment[net_payment]', @bill+@billigv-(@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f
+        = hidden_field_tag 'valuation_of_equipment[net_payment]', @bill+@billigv-((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f
         = hidden_field_tag 'valuation_of_equipment[accumulated_valuation]', @totalprice+@valorizacionsinigv
         = hidden_field_tag 'valuation_of_equipment[accumulated_initial_amortization_number]', @subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f
         = hidden_field_tag 'valuation_of_equipment[accumulated_bill]', @bill+@totalfacturar
         = hidden_field_tag 'valuation_of_equipment[accumulated_billigv]', @billigv+@totalfacigv
         = hidden_field_tag 'valuation_of_equipment[accumulated_totalbill]', @bill+@billigv+@totalincluidoigv
-        = hidden_field_tag 'valuation_of_equipment[accumulated_retention]', (@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f + @totalretenciones
+        = hidden_field_tag 'valuation_of_equipment[accumulated_retention]', ((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f + @totalretenciones
         = hidden_field_tag 'valuation_of_equipment[accumulated_detraction]', @subcontractequipment.detraction.to_f+@detracciontotal
         = hidden_field_tag 'valuation_of_equipment[accumulated_fuel_discount]', @fuel_discount+@descuentocombustible
         = hidden_field_tag 'valuation_of_equipment[accumulated_other_discount]', 0
-        = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]', @bill+@billigv-(@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)+@fuel_discount.to_f + @netoapagar
+        = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]', @bill+@billigv-((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f + @netoapagar
         = hidden_field_tag 'valuation_of_equipment[subcontract_equipment_id]', @subcontract_equipment_id
 
         %footer
