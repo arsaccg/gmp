@@ -13,7 +13,7 @@
             %span.widget-icon
               %i.fa.fa-table
             %h2 
-            = 'Orden de Compra N° ' + @purchaseOrder.id.to_s.rjust(5, '0')
+            = 'Orden de Compra N° ' + @purchaseOrder.code.to_s.rjust(5, '0')
           %div
             .jarviswidget-editbox
               / This area used as dropdown edit box
@@ -33,7 +33,7 @@
                 %tbody(id="article_items_table")
                   %tr
                     %td
-                      = @purchaseOrder.id.to_s.rjust(5, '0')
+                      = @purchaseOrder.code.to_s.rjust(5, '0')
                     %td
                       = translate_purchase_order_state(@purchaseOrder.state)
                     %td
@@ -119,7 +119,7 @@
               %span.widget-icon
                 %i.fa.fa-table
               %h2 
-              = 'Historial de Estado de la Orden de Compra N° ' + @purchaseOrder.id.to_s.rjust(5, '0')
+              = 'Historial de Estado de la Orden de Compra N° ' + @purchaseOrder.code.to_s.rjust(5, '0')
             %div
               .jarviswidget-editbox
                 / This area used as dropdown edit box
@@ -171,7 +171,7 @@
                       %td
                         = purchasedetail.delivery_order_detail.article.name
                       %td
-                        = purchasedetail.amount.to_f
+                        = purchasedetail.amount.round(4).to_f
                       %td
                         - if purchasedetail.delivery_order_detail.unit_of_measurement != nil
                           = purchasedetail.delivery_order_detail.unit_of_measurement.name

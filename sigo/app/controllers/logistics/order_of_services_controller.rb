@@ -37,7 +37,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     if @pagenumber != 'NaN' && keyword != ''
       if state == ""
         os = ActiveRecord::Base.connection.execute("
-          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name), os.code
           FROM order_of_services os, users u, entities e
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
@@ -49,7 +49,7 @@ class Logistics::OrderOfServicesController < ApplicationController
         )
       else
         os = ActiveRecord::Base.connection.execute("
-          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name), os.code
           FROM order_of_services os, users u, entities e
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
@@ -64,7 +64,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     elsif @pagenumber == 'NaN'
       if state == ""
         os = ActiveRecord::Base.connection.execute("
-          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name), os.code
           FROM order_of_services os, users u, entities e
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
@@ -74,7 +74,7 @@ class Logistics::OrderOfServicesController < ApplicationController
         )
       else
         os = ActiveRecord::Base.connection.execute("
-          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name), os.code
           FROM order_of_services os, users u, entities e
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
@@ -87,7 +87,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     elsif keyword != ''
       if state == ""
         os = ActiveRecord::Base.connection.execute("
-          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name), os.code
           FROM order_of_services os, users u, entities e
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
@@ -96,7 +96,7 @@ class Logistics::OrderOfServicesController < ApplicationController
         )
       else
         os = ActiveRecord::Base.connection.execute("
-          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name), os.code
           FROM order_of_services os, users u, entities e
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
@@ -108,7 +108,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     else
       if state == ""
         os = ActiveRecord::Base.connection.execute("
-          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name), os.code
           FROM order_of_services os, users u, entities e
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
@@ -120,7 +120,7 @@ class Logistics::OrderOfServicesController < ApplicationController
         )
       else
         os = ActiveRecord::Base.connection.execute("
-          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name)
+          SELECT os.id, os.state, os.description, CONCAT_WS(  ' ', e.name, e.paternal_surname), os.date_of_issue, CONCAT_WS(  ' ', u.first_name, u.last_name), os.code
           FROM order_of_services os, users u, entities e
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
@@ -178,7 +178,7 @@ class Logistics::OrderOfServicesController < ApplicationController
       else
         @fecha = OrderOfService.find(dos[0]).state_per_order_of_services.last.created_at.strftime("%d/%m/%Y").to_s
       end
-      array << [dos[0].to_s.rjust(5, '0'), @state, dos[2].to_s, dos[3].to_s, @fecha, dos[4].strftime("%d/%m/%Y").to_s, dos[5].to_s, @action]
+      array << [dos[6].to_s.rjust(5, '0'), @state, dos[2].to_s, dos[3].to_s, @fecha, dos[4].strftime("%d/%m/%Y").to_s, dos[5].to_s, @action]
     end
     render json: { :aaData => array }
   end
@@ -205,6 +205,13 @@ class Logistics::OrderOfServicesController < ApplicationController
     @cost_center_id = get_company_cost_center('cost_center')
     @cost_center = CostCenter.find(@cost_center_id)
     @orderOfService = OrderOfService.new
+    @last = OrderOfService.find(:last,:conditions => [ "cost_center_id = ?", @cost_center_id])
+    if !@last.nil?
+      @numbercode = @last.code.to_i+1
+    else
+      @numbercode = 1
+    end
+    @numbercode = @numbercode.to_s.rjust(5,'0')
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       if val != nil
         @igv= val.value.to_f+1
@@ -448,6 +455,7 @@ class Logistics::OrderOfServicesController < ApplicationController
   private
   def order_service_parameters
     params.require(:order_of_service).permit(
+      :code,
       :date_of_issue, 
       :date_of_service, 
       :method_of_payment_id, 

@@ -3,11 +3,12 @@
     %span.widget-icon
       %i.fa.fa-pencil-square-o.fa-fw 
     %h2
-      %strong Orden de Servicio
+      %strong="Orden de Servicio N° "+@numbercode
   %div{:style => "padding-top: 0"}
     .jarviswidget-editbox
     .widget-body 
       = simple_form_for([:logistics, @orderOfService], html: {class: 'form-horizontal', autocomplete: 'off' }) do |f|
+        = hidden_field_tag "order_of_service[code]", @numbercode
         - f.fields_for :order_of_service_details do |del|
           = del.hidden_field :lock_version
         = f.hidden_field :lock_version
