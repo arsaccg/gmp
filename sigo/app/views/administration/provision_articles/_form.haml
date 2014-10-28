@@ -270,7 +270,7 @@
                 Guardar
 
 #modalOrderItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
-  .modal-dialog
+  .modal-dialog{ :style => 'width: 60%;' }
     .modal-content
       .modal-body#modalOrderItemsContent
 
@@ -626,6 +626,204 @@
   }
 
   function add_order_item(){
-    $('#modalOrderItemsContent')
-    $('#modalOrderItems').modal();
+    if( $('#proveedor-select').val() ){
+
+      supplier = $('#proveedor-select').val();
+      data = { supplier: supplier, authenticity_token: "#{form_authenticity_token}" }
+      load_items_delivery_order_ajax('#{display_orders_administration_provisions_path}', 'modalOrderItemsContent', data);
+      $('#modalOrderItems').modal({
+        backdropt: 'static',
+        keyboard: false
+      });
+
+    } else {
+
+      $.smallBox({
+        title : "No se puede agregar Items de las Ordenes de Compra/Servicios",
+        content : "No se tiene un proveedor definido.", 
+        color : "#963b49",
+        //timeout: 8000,
+        icon : "fa fa-bell"
+      });
+
+    }
+  }
+
+  function show_me_the_details(){
+
+    status_po = false;
+    status_oos = false;
+
+    var data_orders_po = new Array();
+    var data_orders_oos = new Array();
+
+    if( ( $('#list-orders_po tbody tr td.orders-checked').length > 0 ) && ( $('#list-orders_oos tbody tr td.orders-checked').length > 0 ) ){
+
+      var index = 0;
+      $('#list-orders_po tbody tr td.orders-checked .checkbox .order_check').each(function(){
+        if( $(this).is(':checked') ){
+          status_po = true
+          data_orders_po[index] = $(this).val();
+          index++;
+        }
+      });
+
+      var jndex = 0;
+      $('#list-orders_oos tbody tr td.orders-checked .checkbox .order_check').each(function(){
+        if( $(this).is(':checked') ){
+          status_oos = true
+          data_orders_oos[jndex] = $(this).val();
+          jndex++;
+        }
+      });
+
+      if((status_po) && (status_oos)){
+
+        data = { data_orders_po: data_orders_po, data_orders_oos: data_orders_oos, authenticity_token: "#{form_authenticity_token}" }
+        load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'show_containter_details', data);
+
+      } else { 
+
+        e.preventDefault();
+        $.smallBox({
+          title: "Antes de continuar debes de haber seleccionado alguna Orden.",
+          content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+          color: "#c46a69",
+          iconSmall: "fa fa-times bounce animated",
+          timeout: 4000
+        });
+      }
+
+    } else {
+
+      if( ( $('#list-orders_po tbody tr td.orders-checked').length > 0 ) ) {
+
+        var index = 0;
+        $('#list-orders_po tbody tr td.orders-checked .checkbox .order_check').each(function(){
+          if( $(this).is(':checked') ){
+            status_po = true
+            data_orders_po[index] = $(this).val();
+            index++;
+          }
+        });
+
+        if(status_po){
+
+          data = { data_orders_po: data_orders_po, authenticity_token: "#{form_authenticity_token}" }
+          load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'show_containter_details', data);
+
+        } else { 
+
+          e.preventDefault();
+          $.smallBox({
+            title: "Antes de continuar debes de haber seleccionado alguna Orden.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });
+        }
+
+      } else {
+
+        if( ( $('#list-orders_oos tbody tr td.orders-checked').length > 0 ) ) {
+
+          var jndex = 0;
+          $('#list-orders_oos tbody tr td.orders-checked .checkbox .order_check').each(function(){
+            if( $(this).is(':checked') ){
+              status_oos = true
+              data_orders_oos[jndex] = $(this).val();
+              jndex++;
+            }
+          });
+
+          if(status_oos){
+
+            data = { data_orders_oos: data_orders_oos, authenticity_token: "#{form_authenticity_token}" }
+            load_items_delivery_order_ajax('#{display_details_orders_administration_provisions_path}', 'show_containter_details', data);
+
+          } else { 
+
+            e.preventDefault();
+            $.smallBox({
+              title: "Antes de continuar debes de haber seleccionado alguna Orden.",
+              content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+              color: "#c46a69",
+              iconSmall: "fa fa-times bounce animated",
+              timeout: 4000
+            });
+          }
+
+        } else {
+
+          e.preventDefault();
+          $.smallBox({
+            title: "Antes de continuar debes de haber seleccionado alguna Orden.",
+            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+            color: "#c46a69",
+            iconSmall: "fa fa-times bounce animated",
+            timeout: 4000
+          });
+
+        }
+
+      }
+
+    }
+
+  }
+
+  function put_the_details(){
+
+    var data_orders_detail = new Array();
+    var status_detail = false;
+
+    if($('#list-orders-details tbody tr td.orders-checked').length > 0){
+
+      var index = 0;
+      $('#list-orders-details tbody tr td.orders-checked .checkbox .order_check').each(function(){
+        if( $(this).is(':checked') ){
+          status_detail = true;
+          data_orders_detail[index] = $(this).val();
+          index++;
+        }
+      });
+
+      if(status_detail){
+        data = { ids_orders_details: data_orders_detail, authenticity_token: "#{form_authenticity_token}", type_of_order: $('#type_of_order_name').val() };
+        load_items_delivery_order_ajax('#{puts_details_in_provision_administration_provisions_path}', 'provisions_items_table', data);
+
+        $.smallBox({
+          title: "Ahora puedes completar la información de la provisión.",
+          content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+          color: "#5F895F",
+          iconSmall: "fa fa-check bounce animated",
+          timeout: 4000
+        });
+
+      } else {
+
+        e.preventDefault();
+        $.smallBox({
+          title: "Antes de continuar debes de haber seleccionado alguna Orden.",
+          content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+          color: "#c46a69",
+          iconSmall: "fa fa-times bounce animated",
+          timeout: 4000
+        });
+      }
+
+    } else {
+
+      e.preventDefault();
+      $.smallBox({
+        title: "El proveedor seleccionado no tiene orden alguna asignada.",
+        content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
+        color: "#c46a69",
+        iconSmall: "fa fa-times bounce animated",
+        timeout: 4000
+      });
+
+    }
+
   }
