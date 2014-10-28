@@ -1,19 +1,23 @@
 %span(style='padding-left: 30px;' class='small-font')
   %i.fa.fa-user 
   Mano de Obra : 
-  =number_to_currency(Wbsitem.get_brief(@item_id, @budget_id, @order)[0].to_s, :unit=>'')
+  %span#t_mano_de_obra
+    =number_to_currency(Wbsitem.get_brief(@item_id, @budget_id, @order)[0].to_s, :unit=>'')
 %span(style='padding-left: 20px;' class='small-font')
   %i.fa.fa-shopping-cart 
   Materiales : 
-  = number_to_currency(Wbsitem.get_brief(@item_id, @budget_id, @order)[1].to_s, :unit=>'')
+  %span#t_materiales
+    = number_to_currency(Wbsitem.get_brief(@item_id, @budget_id, @order)[1].to_s, :unit=>'')
 %span(style='padding-left: 20px;' class='small-font')
   %i.fa.fa-truck
   Equipos : 
-  = number_to_currency(Wbsitem.get_brief(@item_id, @budget_id, @order)[2].to_s, :unit=>'')
+  %span#t_equipos
+    = number_to_currency(Wbsitem.get_brief(@item_id, @budget_id, @order)[2].to_s, :unit=>'')
 %span(style='padding-left: 20px;' class='small-font')
   %i.fa.fa-file-text
   Subcontratos :  
-  =number_to_currency(Wbsitem.get_brief(@item_id, @budget_id, @order)[3].to_s, :unit=>'')
+  %span#t_subcontratos
+    =number_to_currency(Wbsitem.get_brief(@item_id, @budget_id, @order)[3].to_s, :unit=>'')
 - if @budget.type_of_budget.to_i == 0
   .btn-group
     %span(style='padding-left: 30px;' class='small-font')

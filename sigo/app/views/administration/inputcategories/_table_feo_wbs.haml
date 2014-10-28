@@ -108,6 +108,11 @@
       monto2 = 'S/. ' + suma2.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 
     });
+
+    min_code_base = "#{@project_id}";
+    for (i = 1; i <= 9; i++) { 
+      toogle_three('second', min_code_base + i);
+    }
   });
 
   function toogle_three(level, id)

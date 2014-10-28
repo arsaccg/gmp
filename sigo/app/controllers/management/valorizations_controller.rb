@@ -4,6 +4,8 @@ class Management::ValorizationsController < ApplicationController
   before_filter :authenticate_user!
     
   def index
+    @redir = params[:redir]
+    p @redir
     @budgets=Budget.where(:cost_center_id => get_company_cost_center('cost_center'))
     render :index, :layout => false
   end
@@ -45,7 +47,7 @@ class Management::ValorizationsController < ApplicationController
     # @budget = project.budgets
     #render "management/budgets/administrate_budget", layout: false
     @budgets=Budget.where(:cost_center_id => get_company_cost_center('cost_center'))
-    render action: :index, layout: false
+    render action: :index, redir: 1, layout: false
   end
 
 

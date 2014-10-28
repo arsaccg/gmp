@@ -17,37 +17,36 @@
                 %strong
                   =val.month
               %td
-                .btn-group 
+                .btn-group
                   -if val.charged? == false
-                    %a{:href=>"javascript:load_edit_valorization('"+show_data_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-info")
-                      %i(class="icon-search")
-                    %a{:href=>"javascript:load_edit_valorization('"+changevalorization_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-default")
-                      %i(class="icon-pencil") 
+                    %a.btn-xs{:href=>"javascript:load_edit_valorization('"+show_data_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-info")
+                      %i(class="fa fa-search")
+                    %a.btn-xs{:href=>"javascript:load_edit_valorization('"+changevalorization_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-default")
+                      %i(class="fa fa-pencil") 
 
                   
                   
-                  %a{:href=>"javascript:load_url_ondiv('#{administration_invoices_path}?budget_id=#{item.id}', 'right-area')"}(class="btn btn-mini")
-                    %i(class="icon-book")
+                  %a.btn-xs{:href=>"javascript:load_url_ondiv('#{administration_invoices_path}?budget_id=#{item.id}', 'right-area')"}(class="btn btn-mini")
+                    %i(class="fa fa-book")
                     Cobros
 
-                  %a{:href=>"javascript:load_resume('"+report_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini")
-                    %i(class="icon-file")
+                  %a.btn-xs{:href=>"javascript:load_resume('"+report_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini")
+                    %i(class="fa fa-file")
                     Reporte
 
                   -if val.pending? == false && val.charged? == false
-                    %a{:href=>"javascript:load_edit_valorization('"+finalize_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini")
-                      %i(class="icon-ban-circle")
+                    %a.btn-xs{:href=>"javascript:load_edit_valorization('"+finalize_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini")
+                      %i(class="fa fa-ban")
                       Bloquear
                       
-                    %a{:href=>"javascript:load_edit_valorization('"+finalize_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-danger")
-                      %i(class="icon-remove")
-
-    %a{:href=>"javascript:load_url_ondiv(#{administrate_budget_management_budgets_path}, 'right-area')"} Ir a control de Presupuestos
-
+                    %a.btn-xs{:href=>"javascript:load_edit_valorization('"+finalize_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-danger")
+                      %i(class="fa fa-trash-o")
 
 :javascript 
   $('.right-area').ready( function(){
-    load_url_ondiv('#{administrate_budget_management_budgets_path}', 'right-area');
+    if ("#{@redir}" == "1"){
+      load_url_ondiv('#{administrate_budget_management_budgets_path}', 'right-area');
+    }
   });
 
   function load_edit(url){
@@ -63,7 +62,7 @@
     load_url_ondiv(url, 'right-area');
   }
   function load_resume(url){
-    load_url_ondiv(url + '?project_id=' + project_selected_data['id'], 'right-area');
+    load_url_ondiv(url, 'right-area');
   }
   function load_delete(url){
     delete_to_url_into_div(url+"?authenticity_token=#{form_authenticity_token}", 'right-area');

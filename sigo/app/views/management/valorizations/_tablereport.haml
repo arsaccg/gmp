@@ -70,38 +70,38 @@
     - @itembybudgets.where("`order` LIKE ?", ib.order.to_s + "%").each do |ibb|
      
       - si = hash_items[ibb.id.to_s]
-      %tr{class: "detail_" + ib.id.to_s}
-        %td
-          = ibb.id
-          = ibb.subbudgetdetail
-        %td(style="text-align: center;")
-          = si[4] rescue " "
-        %td(style="text-align: right;")
-          = "S/. #{((si[5].to_f) / (si[6].to_f)).round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[6].to_f.round(2) rescue 0
-        %td(style="text-align: right;")
-          = "S/. #{si[5].to_f.round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[8].to_f.round(2) rescue 0
-        %td(style="text-align: right;")
-          = "S/. #{si[9].to_f.round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[10].to_f.round(2) rescue 0
-        %td(style="text-align: right;")
-          = "S/. #{si[11].to_f.round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[12].to_f.round(2) rescue 0
-        %td(style="text-align: right;")
-          = "S/. #{si[13].to_f.round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[14].to_f.round(2) rescue 0
-        %td(style="text-align: right;")
-          = "S/. #{si[15].to_f.round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[16].round(2) rescue 0
-          = '%' 
-      -# sub_sub_item = Valorization.get_sub_itembybudgets(si.order.to_s, @valorization.id.to_s)
+  /     %tr{class: "detail_" + ib.id.to_s}
+  /       %td
+  /         = ibb.id
+  /         = ibb.subbudgetdetail
+  /       %td(style="text-align: center;")
+  /         = si[4] rescue " "
+  /       %td(style="text-align: right;")
+  /         = "S/. #{((si[5].to_f) / (si[6].to_f)).round(2) rescue 0}"
+  /       %td(style="text-align: right;")
+  /         = si[6].to_f.round(2) rescue 0
+  /       %td(style="text-align: right;")
+  /         = "S/. #{si[5].to_f.round(2) rescue 0}"
+  /       %td(style="text-align: right;")
+  /         = si[8].to_f.round(2) rescue 0
+  /       %td(style="text-align: right;")
+  /         = "S/. #{si[9].to_f.round(2) rescue 0}"
+  /       %td(style="text-align: right;")
+  /         = si[10].to_f.round(2) rescue 0
+  /       %td(style="text-align: right;")
+  /         = "S/. #{si[11].to_f.round(2) rescue 0}"
+  /       %td(style="text-align: right;")
+  /         = si[12].to_f.round(2) rescue 0
+  /       %td(style="text-align: right;")
+  /         = "S/. #{si[13].to_f.round(2) rescue 0}"
+  /       %td(style="text-align: right;")
+  /         = si[14].to_f.round(2) rescue 0
+  /       %td(style="text-align: right;")
+  /         = "S/. #{si[15].to_f.round(2) rescue 0}"
+  /       %td(style="text-align: right;")
+  /         = si[16].round(2) rescue 0
+  /         = '%' 
+  /     -# sub_sub_item = Valorization.get_sub_itembybudgets(si.order.to_s, @valorization.id.to_s)
         
   %tr
     %td(colspan="15")

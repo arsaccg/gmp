@@ -153,7 +153,7 @@
   }
  
   function change_data_ge(input_id){
-    $("#" + input_id).val( $("#" + input_id).val().toFixed(2) );
+    $("#" + input_id).val( parseFloat($("#" + input_id).val()).toFixed(2) );
     new_value=$("#" + input_id).val();
     load_url_ondiv("#{change_data_ge_management_valorization_path.to_s}?id=#{@valorization.id}&new_value=" + new_value, "item");
   }
