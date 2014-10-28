@@ -128,7 +128,7 @@
 
   // PAGE RELATED SCRIPTS
   function calculatePriceWithourIgv(element){
-    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
+    var amount = parseFloat($(element).parent().siblings('.amount').find('input').val());
 
     var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
 
