@@ -12,6 +12,7 @@
         = f.hidden_field :lock_version
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
+          %input#today{:value=>Time.now.strftime("%Y/%m/%d")}
         .row
           %section.col.col-6
             .row
@@ -304,7 +305,8 @@
               required : true
             },
             'part_of_equipment[date]':{
-              required : true
+              required : true,
+              lessThan : "#today"
             },
             'part_of_equipment[subcontract_equipment_id]':{
               required : true
@@ -338,7 +340,8 @@
               required : 'Por favor, ingrese el combustible.'
             },
             'part_of_equipment[date]':{
-              required : 'Por favor, ingrese la fecha.'
+              required : 'Por favor, ingrese la fecha.',
+              lessThan : 'La fecha no puede ser mayor a hoy'
             },
             'part_of_equipment[subcontract_equipment_id]':{
               required : 'Por favor, seleccione el proveedor.'

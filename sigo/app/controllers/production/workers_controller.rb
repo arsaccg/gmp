@@ -138,6 +138,7 @@ class Production::WorkersController < ApplicationController
     @entites = TypeEntity.find_by_name('Trabajadores').entities
     @company = params[:company_id]
     @action = 'edit'
+    @years = getyears()
     @register = params[:register]
     render layout: false
   end
@@ -431,7 +432,7 @@ class Production::WorkersController < ApplicationController
     elsif ( !@afp.nil? ) && ( @afp.afp.type_of_afp ) == 'SPP'
       @nombre = "Nombre de AFP"
     else
-      @nombre = ""
+      @nombre = "TIPO"
     end
     @bank = WorkerDetail.where("worker_id = ?",params[:id]).last
     @worker_center_of_studies = @worker.worker_center_of_studies
