@@ -88,7 +88,7 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
 
     if subcontract_equipment.update_attributes(:contract_amount => @sum_contract_amount)
       flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, company_id: params[:company_id], subcontract: params[:subcontract]
     end
   rescue ActiveRecord::StaleObjectError
     subcontract.reload
