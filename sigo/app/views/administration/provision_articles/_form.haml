@@ -89,8 +89,8 @@
               %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary-direct-provisions{:style => "font-size: 12px;", 'aria-describedby' => "data-table_info"}
                 %thead
                   %tr
-                    %th Nombre del Artículo
-                    %th Unidad de Medida
+                    %th{ :style => 'width: 14%;' } Nombre del Artículo
+                    %th U.M.
                     %th Cuenta Contable
                     %th Sector
                     %th Fase
@@ -378,8 +378,8 @@
 
   function calculatePriceWithoutIgv(element){
     var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
-
-    var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
+    var discount = parseFloat($(element).parent().siblings('.discount-before').find('input').val()).toFixed(2);
+    var price_without_igv = parseFloat(($(element).val() * amount) - discount).toFixed(2);
 
     $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
     $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
@@ -387,8 +387,19 @@
 
   function calculatePrice(element){
     var amount = parseInt($(element).val());
+    var discount = parseFloat($(element).parent().siblings('.discount-before').find('input').val()).toFixed(2);
+    var price_without_igv = parseFloat(($(element).parent().siblings('.unit-price').find('input').val() * amount)-discount).toFixed(2);
 
-    var price_without_igv = parseFloat($(element).parent().siblings('.unit-price').find('input').val() * amount).toFixed(2);
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  functio calculatePriceWithoutIgvFromDiscount(element){
+    var discount = parseInt($(element).val());
+    var amount = parseFloat($(element).parent().siblings('.amount').find('input').val()).toFixed(2);
+    var price = parseFloat($(element).parent().siblings('.unit-price').find('input').val()).toFixed(2);
+
+    var price_without_igv = (amount*price)-discount;
 
     $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
     $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
@@ -411,6 +422,14 @@
         return false;
     }
     return true;
+  }
+
+  function minmax(value, min, max){
+    if(parseInt(value) < min || isNaN(value)) 
+      return min; 
+    else if(parseInt(value) > max) 
+      return max; 
+    else return value;
   }
 
   function set_id_modeling(obj, id_modeling){
@@ -652,12 +671,14 @@
     });
     var sdb = (total_dis_bes + total_dis_bep).toFixed(2);
     var a =(1+igv).toFixed(2)
-    var total_price = (((amount * unit_price) - sdb)*(a)).toFixed(2);
-    $(element).parent().siblings('.price-with-igv').find('input').val(total_price);
+    var total_price = (((amount * unit_price) - sdb)).toFixed(2);
+    $(element).parent().siblings('.price-without-igv').find('input').val(total_price);
     $(element).parent().siblings('.discount-after').children('#db').find('input').val(sdb);
 
+    
     var total_dis_afs = 0;
     var total_dis_afp = 0;
+    /*
     discount_after.each(function(){
       if($(this).attr('class')=="discount_after-item-soles"){
         total_dis_afs+=parseFloat($(this).val());
@@ -667,10 +688,11 @@
         }
       }
     });
-
+    */
     var sda = (total_dis_afs + total_dis_afp).toFixed(2);
-    var net_total_price = parseFloat(total_price) - sda
     var per_am=0;
+    /*
+    var net_total_price = parseFloat(total_price) - sda
     perception.each(function(){
       if($(this).attr('class')=="perception-soles"){
         per_am=parseFloat($(this).val()).toFixed(2);
@@ -680,7 +702,9 @@
         }
       }
     });
+    */
+    var net_total_price = (((amount * unit_price) - sdb)*(a)).toFixed(2);
     $(element).parent().siblings('.discount-after').children('#da').find('input').val(sda*-1);
-    $(element).parent().siblings('.neto-price-with-igv').find('input').val(parseFloat(net_total_price).toFixed(2));
-    $(element).parent().siblings('.perception').children('#per').find('input').val(per_am);
+    $(element).parent().siblings('.unit-price-igv').find('input').val(parseFloat(net_total_price).toFixed(2));
+    /*$(element).parent().siblings('.perception').children('#per').find('input').val(per_am);*/
   }

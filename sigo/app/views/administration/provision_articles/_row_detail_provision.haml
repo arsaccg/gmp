@@ -31,7 +31,7 @@
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', nil, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
 
   %td.discount-before{ :class => "provision_discount-before"}
-    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before_igv]', nil , class: "form-control unit-price-igv", onkeypress: "return isNumber(event);"
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', nil , class: "form-control unit-price-igv", onfocusout: "calculatePriceWithoutIgvFromDiscount(this);", onkeypress: "return isNumber(event);"
 
   %td.price-without-igv
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', nil, class: "form-control unit-price-without-igv", :readonly => true

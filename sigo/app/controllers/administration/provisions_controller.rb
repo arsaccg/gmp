@@ -196,9 +196,9 @@ class Administration::ProvisionsController < ApplicationController
       data = order_detail_id.split('-')
       if data[1] == 'purchase'
         purchase_order_detail = PurchaseOrderDetail.find(data[0])
-        igv = 0.18
+        igv = 0
         if purchase_order_detail.igv != nil
-          igv = (purchase_order_detail.unit_price_igv/(purchase_order_detail.amount*purchase_order_detail.unit_price))-1
+          igv = (purchase_order_detail.quantity_igv.to_f*-1)/purchase_order_detail.unit_price_before_igv.to_f
         end
         # Lo que falta Atender
         pending = 0
@@ -230,18 +230,18 @@ class Administration::ProvisionsController < ApplicationController
             purchase_order_detail.delivery_order_detail.article.unit_of_measurement.symbol, 
             purchase_order_detail.amount, 
             purchase_order_detail.unit_price, 
-            some_results[4].round(2), 
+            some_results[3].round(2), 
             igv, 
             pending, 
             some_results[1], 
             some_results[2],
-            (some_results[5].round(2) - percepcion.to_f),
+            some_results[4].round(2),
             percepcion,
             purchase_order_detail.purchase_order.money.symbol
           ]
         else
           pending = purchase_order_detail.amount
-          total = (purchase_order_detail.unit_price.to_f * purchase_order_detail.amount.to_f).to_f - purchase_order_detail.discount_before.to_f - purchase_order_detail.quantity_igv.to_f
+          total = (purchase_order_detail.unit_price.to_f * purchase_order_detail.amount.to_f).to_f - purchase_order_detail.discount_before.to_f
           if !percepcion.nil?
             if percepcion.type=="soles"
               percepcion = (percepcion.value.to_f+total)
@@ -263,7 +263,7 @@ class Administration::ProvisionsController < ApplicationController
             pending, 
             purchase_order_detail.discount_before, 
             purchase_order_detail.discount_after,
-            (total.round(2) + purchase_order_detail.discount_after.to_f - percepcion.to_f),
+            ((total.round(2)*igv.to_f) + total.round(2)).round(2),
             percepcion,
             purchase_order_detail.purchase_order.money.symbol
           ]
@@ -273,7 +273,7 @@ class Administration::ProvisionsController < ApplicationController
         service_order_detail = OrderOfServiceDetail.find(data[0])
         igv = 0
         if service_order_detail.igv != nil
-          igv = (-1*service_order_detail.quantity_igv/(service_order_detail.unit_price_before_igv))
+          igv = (-1*service_order_detail.quantity_igv)/(service_order_detail.unit_price_before_igv)
         end
         # Lo que falta Atender
         pending = 0
