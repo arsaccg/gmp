@@ -11,13 +11,23 @@
         .col-sm-12
           %fieldset{ :style => 'margin-top: 20px;' }
             = hidden_field_tag 'provision[cost_center_id]', @cost_center, class: 'form-control', id: 'cost-center-selected'
-            .col-md-4
+            .col-md-8
               .form-group
-                %label.col-md-4.control-label Proveedores
-                .col-md-8
+                %label.col-md-2.control-label Proveedores
+                .col-md-10
                   %input#proveedor-select.form-control{"name" =>"provision[entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@provision.entity_id}"}
 
             .col-md-4
+              .form-group
+                %label.col-md-4.control-label Fecha
+                .col-md-8
+                  .input-group
+                    = f.input :accounting_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-calendar
+
+          %fieldset
+            .col-md-3
               .form-group
                 %label.col-md-4.control-label Tipo Documento
                 .col-md-8
@@ -29,9 +39,18 @@
                       - else
                         %option{:value => "#{x.id}"}
                           = x.name
-            .col-md-4
+            .col-md-2
               .form-group
-                %label.col-md-4.control-label Numero de Documento
+                %label.col-md-3.control-label Serie
+                .col-md-8
+                  .input-group
+                    = f.input :series, placeholder: "Serie", :input_html => {:class => 'form-control'}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-money
+
+            .col-md-3
+              .form-group
+                %label.col-md-4.control-label N° Doc.
                 .col-md-8
                   .input-group
                     = f.input :number_document_provision, :input_html => {:class => 'form-control'}, label: false
@@ -39,23 +58,6 @@
                       %i.fa.fa-calendar
 
             .col-md-4
-              .form-group
-                %label.col-md-4.control-label Fecha
-                .col-md-8
-                  .input-group
-                    = f.input :accounting_date, as: :string, :input_html => {:class => 'form-control', :type => "date"}, label: false
-                    %span.input-group-addon
-                      %i.fa.fa-calendar
-            .col-md-4
-              .form-group
-                %label.col-md-4.control-label Serie
-                .col-md-8
-                  .input-group
-                    = f.input :series, placeholder: "Serie", :input_html => {:class => 'form-control'}, label: false
-                    %span.input-group-addon
-                      %i.fa.fa-money
-
-            .col-md-12
               .form-group
                 %label.col-md-2.control-label Glosa
                 .col-md-10
@@ -74,99 +76,101 @@
                 .col-lg-1.col-md-1
                   = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
 
-                .col-lg-1.col-md-1{ :style => "margin-right: 30px;" }
+                .col-lg-2.col-md-2
                   %div
                     %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
-                      Agregar Insumo
+                      Agregar
 
                 .col-lg-2.col-md-2
                   %div
                     %a#btn-add-orders(href="javascript:add_order_item();" class="btn btn-info" role="button")
-                      Agregar Insumo de Ordenes
+                      Agregar de Ordenes
 
           .row{:style=>"overflow-x:scroll"}
             %fieldset{ :style => "margin-top: 20px; margin-bottom: 20px;" }
-              %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary-direct-provisions{:style => "font-size: 12px;", 'aria-describedby' => "data-table_info"}
+              %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary-direct-provisions{:style => "font-size: 12px; width: 1600px;", 'aria-describedby' => "data-table_info"}
                 %thead
                   %tr
                     %th{ :style => 'width: 14%;' } Nombre del Artículo
                     %th U.M.
                     %th Cuenta Contable
-                    %th Sector
-                    %th Fase
+                    %th{ :style => 'width: 6%;'} Sector
+                    %th{ :style => 'width: 6%;'} Fase
                     %th Cantidad
                     %th Precio Unitario
                     %th Descuentos
-                    %th Total antes de IGV
-                    %th ¿Aplica IGV?
-                    %th Total después de IGV
+                    %th Total sin IGV
+                    %th IGV
+                    %th IGV(S/.)
+                    %th Total con IGV
                     /%th Operaciones Adicionales
                     %th Descripción
-                    %th Acción
+                    %th
                 %tbody{:id => "provisions_direct_items_table"}
-                  - array_values = Array.new
-                  - @provision.provision_direct_purchase_details.each do |pod|
-                    - array_values << @reg_n.to_s
-                    %tr{id: "tr-" + @reg_n.to_s}
-                      %td{:style => "display:none", :class => "provision_article-id"}
-                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_id]', pod.article_id
-                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][id]', pod.id.to_i rescue nil
-                      %td= Article.find(pod.article_id).name.to_s
-                      %td= Article.find(pod.article_id).unit_of_measurement.symbol.to_s
-                      %td.account-accountant
-                        %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :required => true, title:'No puede dejar este campo vacio'}
-                          %option{:value => nil, :disabled => true} Seleccionar cuenta contable
-                          - @account_accountants.each do |account_accountant|
-                            %option{:value => "#{account_accountant.id}", :selected=>"#{account_accountant.id}"=="#{pod.account_accountant_id}"}
-                              = '(' + account_accountant.code + ') ' + account_accountant.name
-                      %td.sector
-                        %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
-                          %option{:value => nil, :disabled => true} Seleccionar Sector
-                          - @sectors.each do |sector|
-                            %optgroup{:label => "#{sector.name}"}
-                              -Sector.getSubSectors(sector.code).each do |subsector|
-                                %option{:value => "#{subsector.id}", :selected=>"#{subsector.id}"=="#{pod.sector_id}"}
-                                  = subsector.name
-                      %td.phase
-                        %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
-                          %option{:value => nil, :disabled => true} Seleccionar Fase
-                          - @phases.each do |phase|
-                            %option{:value => "#{phase.id}", :selected=>"#{phase.id}"=="#{pod.phase_id}"}
-                              = phase.code + " " + phase.name
+                  - if @action == 'edit'
+                    - array_values = Array.new
+                    - @provision.provision_direct_purchase_details.each do |pod|
+                      - array_values << @reg_n.to_s
+                      %tr{id: "tr-" + @reg_n.to_s}
+                        %td{:style => "display:none", :class => "provision_article-id"}
+                          = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_id]', pod.article_id
+                          = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][id]', pod.id.to_i rescue nil
+                        %td= Article.find(pod.article_id).name.to_s
+                        %td= Article.find(pod.article_id).unit_of_measurement.symbol.to_s
+                        %td.account-accountant
+                          %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :required => true, title:'No puede dejar este campo vacio'}
+                            %option{:value => nil, :disabled => true} Seleccionar cuenta contable
+                            - @account_accountants.each do |account_accountant|
+                              %option{:value => "#{account_accountant.id}", :selected=>"#{account_accountant.id}"=="#{pod.account_accountant_id}"}
+                                = '(' + account_accountant.code + ') ' + account_accountant.name
+                        %td.sector
+                          %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
+                            %option{:value => nil, :disabled => true} Seleccionar Sector
+                            - @sectors.each do |sector|
+                              %optgroup{:label => "#{sector.name}"}
+                                -Sector.getSubSectors(sector.code).each do |subsector|
+                                  %option{:value => "#{subsector.id}", :selected=>"#{subsector.id}"=="#{pod.sector_id}"}
+                                    = subsector.name
+                        %td.phase
+                          %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
+                            %option{:value => nil, :disabled => true} Seleccionar Fase
+                            - @phases.each do |phase|
+                              %option{:value => "#{phase.id}", :selected=>"#{phase.id}"=="#{pod.phase_id}"}
+                                = phase.code + " " + phase.name
 
-                      %td.amount
-                        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"
-                      
-                      %td.unit-price
-                        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', pod.price, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
+                        %td.amount
+                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"
+                        
+                        %td.unit-price
+                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', pod.price, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
 
-                      %td.discount-before{:class => "provision_discount-before"}
-                        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', pod.discount_before , class: "form-control unit-price-igv", onkeypress: "return isNumber(event);"
+                        %td.discount-before{:class => "provision_discount-before"}
+                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', pod.discount_before , class: "form-control unit-price-igv", onkeypress: "return isNumber(event);"
 
-                      %td.price-without-igv
-                        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', pod.unit_price_before_igv, class: "form-control unit-price-without-igv", :readonly => true
+                        %td.price-without-igv
+                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', pod.unit_price_before_igv, class: "form-control unit-price-without-igv", :readonly => true
 
-                      %td.check-igv
-                        %label.checkbox
-                          = check_box_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][igv]', pod.igv, { class: 'provision_direct_igv', onchange: "enableFieldsForIgv(this);" }
-                          %i
+                        %td.check-igv
+                          %label.checkbox
+                            = check_box_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][igv]', pod.igv, { class: 'provision_direct_igv', onchange: "enableFieldsForIgv(this);" }
+                            %i
 
-                      %td.quantity-igv{:style => "display:none", :class => "provision_quantity-igv"}
-                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',pod.quantity_igv, class: "igv-item"
+                        %td.quantity-igv{:style => "display:none", :class => "provision_quantity-igv"}
+                          = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',pod.quantity_igv, class: "igv-item"
 
-                      %td.price-with-igv
-                        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv, class: "form-control unit-price-igv", :readonly => true
+                        %td.price-with-igv
+                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv, class: "form-control unit-price-igv", :readonly => true
 
-                      %td.description
-                        = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', pod.description, class: "form-control description"
+                        %td.description
+                          = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', pod.description, class: "form-control description"
 
-                      %td.delete-item
-                        %label.checkbox
-                          = check_box 'provision', '[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][_destroy]'
+                        %td.delete-item
+                          %label.checkbox
+                            = check_box 'provision', '[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][_destroy]'
 
-                    - @reg_n += 1
+                      - @reg_n += 1
 
-        .col-sm-12.col-md-12{:style => "margin-bottom: 20px;"}
+        .col-sm-12.col-md-12{:style => "margin-bottom: 20px; margin-top: 20px;"}
           .row
             %button.btn.btn-primary{type: "submit"}
               %i.fa.fa-save
@@ -409,6 +413,7 @@
     if($(element).is(":checked")){
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
       $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*#{@igv}).toFixed(2));
+      $(element).parent().parent().siblings('.quantity-igv').find('input').val(parseFloat(price_without_igv*#{@igv-1}).toFixed(2));
     } else {
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
       $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);

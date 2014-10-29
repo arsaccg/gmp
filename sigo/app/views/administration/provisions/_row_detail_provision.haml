@@ -2,6 +2,7 @@
   %tr{id: "tr-" + @reg_n.to_s}
     %td{ :style => "display:none", :class => "provision-di" }
       = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][order_detail_id]', data_order_detail[0]
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_id]', data_order_detail[14]
     %td{ :style => "display:none" }
       = data_order_detail[1]
       = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_code]', data_order_detail[1]
@@ -16,7 +17,7 @@
         %option{:value => nil, :selected => true, :disabled => true} Seleccionar cuenta contable
         - @account_accountants.each do |account_accountant|
           %option{:value => "#{account_accountant.id}"}
-            = '(' + account_accountant.code + ') ' + account_accountant.name
+            = account_accountant.code
     %td.sector
       %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
         %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
@@ -30,7 +31,7 @@
         %option{:value => nil, :selected => true, :disabled => true} Seleccionar Fase
         - @phases.each do |phase|
           %option{:value => "#{phase.id}"}
-            = phase.code + " " + phase.name
+            = phase.code
     %td.amount
       = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', data_order_detail[8], class: "form-control amount-item", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{data_order_detail[8]})"
       %code= "Por atender: #{data_order_detail[8]}"
@@ -71,7 +72,8 @@
       = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', data_order_detail[6] , class: "form-control unit-price-igv", :readonly => true  
     %td.current-igv
       = (data_order_detail[7]*100).round.to_s + '%'
-      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',data_order_detail[7], class: "igv-item"
+    %td.quantity-igv
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',(data_order_detail[6]*data_order_detail[7]).round(2), class: "form-control igv-item", :readonly => true
     %td.unit-price-igv
       = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', data_order_detail[11] , class: "form-control net-price-after-igv", :readonly => true
     %td.description
