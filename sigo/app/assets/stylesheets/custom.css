@@ -617,6 +617,19 @@ table.inputbybandi-table th:nth-child(2), table.inputbybandi-table td:nth-child(
 .black{
   color:#333;
 }
+.green a{
+  color:green;
+}
+.red a{
+  /*color:red;*/
+  color:#a90329;
+}
+.blue a{
+  color:#3276b1;
+}
+.black a{
+  color:#333;
+}
 
 select {
   width: 100%;

@@ -422,4 +422,33 @@ module ApplicationHelper
     return total_sum
   end
 
+
+  def get_color_by_order(order)
+    if order.length < 3
+      return "red"
+    elsif order.length < 6
+      return "green"
+    elsif order.length < 9
+      return "blue"
+    else
+      return "black" 
+    end
+  end
+
+  def get_clasification_by_order(order)
+    if order.length < 3
+      return "first"
+    elsif order.length < 6
+      return "second"
+    elsif order.length < 9
+      return "third"
+    elsif order.length < 12
+      return "fourth"
+    elsif order.length < 15
+      return "fifth"
+    else
+      return "sixth" 
+    end
+  end
+
 end

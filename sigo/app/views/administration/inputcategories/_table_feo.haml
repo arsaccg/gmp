@@ -78,6 +78,9 @@
         %strong= number_to_currency(direct_cost_goal.to_s, :unit=>'S/. ')
 
 :javascript
+  $(document).ready(function(){
+    $("[id*='itme_']").css("display","none");
+  });
 
   function toogle_three(level, id)
   {
@@ -92,10 +95,6 @@
         break;
     }
   }
-
-  $(document).ready(function(){
-    $("[id*='itme_']").css("display","none");
-  });
 
   function show_table(table_id){ $("#itme_"+String(table_id)).css("display","table-row"); }
   function hide_table(table_id){ $("#itme_"+String(table_id)).css("display","none"); }
