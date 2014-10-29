@@ -71,9 +71,7 @@ class Management::ValorizationsController < ApplicationController
                   WHERE itembybudgets.budget_id = '" + @budget.id.to_s + "'
                 ORDER BY itembybudgets.`order`;"
 
-    connection = ActiveRecord::Base.connection
     @results = ActiveRecord::Base.connection.execute(str_query) 
-
     
 
     @valorization.semicomplete
@@ -177,7 +175,7 @@ class Management::ValorizationsController < ApplicationController
   ###~###
 
   def report
-    @itembybudgets = Itembybudget.all
+    @itembybudgets = Itembybudget.where('CHAR_LENGTH(`order`) > 3')
     @valorization = Valorization.find(params[:id])
     @budget = Budget.where(:id => @valorization.budget_id).first
 

@@ -29,79 +29,80 @@
 
 %tbody
   - hash_items = Hash.new
-  -@itembybudgets_main.each do |ib|
-    %tr
-      %td(colspan="4")
-        %strong
-          =ib.order
-          %a{href: "javascript:toogle_detail('" + ib.id.to_s + "')"}
-            -p353=ib.title
-      %td(style="text-align: right;")
-        %strong
-          = "S/. #{sprintf('%.2f', amount_contractual(ib.order, @budget.id))}"  #Monto
-      %td
-      %td(style="text-align: right;")
-        %strong
-          = "S/. #{sprintf('%.2f', amount_prev(ib.order, @budget.id, @valorization.created_at))}" #Monto
-      %td
-      %td(style="text-align: right;")
-        %strong
-          = "S/. #{sprintf('%.2f', amount_actual(ib.order, @budget.id, @valorization.id))}" #Monto
-      %td
-      %td(style="text-align: right;")
-        %strong
-          = "S/. #{sprintf('%.2f', amount_acumulated(ib.order, @budget.id, @valorization.created_at, @valorization.id))}" #Monto
-      %td
-      %td(style="text-align: right;")
-        %strong
-          = "S/. #{sprintf('%.2f', amount_remainder(ib.order, @budget.id, @valorization.created_at, @valorization.id))}" #Monto
-      %td(style="text-align: right;")
-        %strong
-          = "#{advance_percent(ib.order, @budget.id, @valorization.created_at, @valorization.id).round(2)} %"
+  -cache do
+    -@itembybudgets_main.each do |ib|
+      %tr
+        %td(colspan="4")
+          %strong
+            =ib.order
+            %a{href: "javascript:toogle_detail('" + ib.id.to_s + "')"}
+              -p353=ib.title
+        %td(style="text-align: right;")
+          %strong
+            = "S/. #{sprintf('%.2f', amount_contractual(ib.order, @budget.id))}"  #Monto
+        %td
+        %td(style="text-align: right;")
+          %strong
+            = "S/. #{sprintf('%.2f', amount_prev(ib.order, @budget.id, @valorization.created_at))}" #Monto
+        %td
+        %td(style="text-align: right;")
+          %strong
+            = "S/. #{sprintf('%.2f', amount_actual(ib.order, @budget.id, @valorization.id))}" #Monto
+        %td
+        %td(style="text-align: right;")
+          %strong
+            = "S/. #{sprintf('%.2f', amount_acumulated(ib.order, @budget.id, @valorization.created_at, @valorization.id))}" #Monto
+        %td
+        %td(style="text-align: right;")
+          %strong
+            = "S/. #{sprintf('%.2f', amount_remainder(ib.order, @budget.id, @valorization.created_at, @valorization.id))}" #Monto
+        %td(style="text-align: right;")
+          %strong
+            = "#{advance_percent(ib.order, @budget.id, @valorization.created_at, @valorization.id).round(2)} %"
 
-    
-    - sub_item = Valorization.get_sub_itembybudgets(ib.order.to_s, @valorization.id.to_s)
-    - sub_item.each do |si|
-      - key_str = si[0].to_s
-      - if key_str != nil
-        -if si != nil
-          - hash_items[key_str] = si  
-          
-    - @itembybudgets.where("`order` LIKE ?", ib.order.to_s + "%").each do |ibb|
-     
-      - si = hash_items[ibb.id.to_s]
-  /     %tr{class: "detail_" + ib.id.to_s}
-  /       %td
-  /         = ibb.id
-  /         = ibb.subbudgetdetail
-  /       %td(style="text-align: center;")
-  /         = si[4] rescue " "
-  /       %td(style="text-align: right;")
-  /         = "S/. #{((si[5].to_f) / (si[6].to_f)).round(2) rescue 0}"
-  /       %td(style="text-align: right;")
-  /         = si[6].to_f.round(2) rescue 0
-  /       %td(style="text-align: right;")
-  /         = "S/. #{si[5].to_f.round(2) rescue 0}"
-  /       %td(style="text-align: right;")
-  /         = si[8].to_f.round(2) rescue 0
-  /       %td(style="text-align: right;")
-  /         = "S/. #{si[9].to_f.round(2) rescue 0}"
-  /       %td(style="text-align: right;")
-  /         = si[10].to_f.round(2) rescue 0
-  /       %td(style="text-align: right;")
-  /         = "S/. #{si[11].to_f.round(2) rescue 0}"
-  /       %td(style="text-align: right;")
-  /         = si[12].to_f.round(2) rescue 0
-  /       %td(style="text-align: right;")
-  /         = "S/. #{si[13].to_f.round(2) rescue 0}"
-  /       %td(style="text-align: right;")
-  /         = si[14].to_f.round(2) rescue 0
-  /       %td(style="text-align: right;")
-  /         = "S/. #{si[15].to_f.round(2) rescue 0}"
-  /       %td(style="text-align: right;")
-  /         = si[16].round(2) rescue 0
-  /         = '%' 
-  /     -# sub_sub_item = Valorization.get_sub_itembybudgets(si.order.to_s, @valorization.id.to_s)
+      
+      - sub_item = Valorization.get_sub_itembybudgets(ib.order.to_s, @valorization.id.to_s)
+      - sub_item.each do |si|
+        - key_str = si[0].to_s
+        - if key_str != nil
+          -if si != nil
+            - hash_items[key_str] = si  
+         
+      - @itembybudgets.where("`order` LIKE ?", ib.order.to_s + "%").each do |ibb|
+        
+        - si = hash_items[ibb.id.to_s]
+        %tr{class: "detail_" + ib.id.to_s}
+          %td
+            = ibb.id
+            = ibb.subbudgetdetail
+          %td(style="text-align: center;")
+            = si[4] rescue " "
+          %td(style="text-align: right;")
+            = "S/. #{((si[5].to_f) / (si[6].to_f)).round(2) rescue 0}"
+          %td(style="text-align: right;")
+            = si[6].to_f.round(2) rescue 0
+          %td(style="text-align: right;")
+            = "S/. #{si[5].to_f.round(2) rescue 0}"
+          %td(style="text-align: right;")
+            = si[8].to_f.round(2) rescue 0
+          %td(style="text-align: right;")
+            = "S/. #{si[9].to_f.round(2) rescue 0}"
+          %td(style="text-align: right;")
+            = si[10].to_f.round(2) rescue 0
+          %td(style="text-align: right;")
+            = "S/. #{si[11].to_f.round(2) rescue 0}"
+          %td(style="text-align: right;")
+            = si[12].to_f.round(2) rescue 0
+          %td(style="text-align: right;")
+            = "S/. #{si[13].to_f.round(2) rescue 0}"
+          %td(style="text-align: right;")
+            = si[14].to_f.round(2) rescue 0
+          %td(style="text-align: right;")
+            = "S/. #{si[15].to_f.round(2) rescue 0}"
+          %td(style="text-align: right;")
+            = si[16].round(2) rescue 0
+            = '%' 
+        -# sub_sub_item = Valorization.get_sub_itembybudgets(si.order.to_s, @valorization.id.to_s)
         
   %tr
     %td(colspan="15")

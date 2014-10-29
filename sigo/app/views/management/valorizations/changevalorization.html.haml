@@ -41,31 +41,87 @@
           SALDO
     %tbody
       - @results.each do |row|
-        %tr
+        %tr(class="#{get_clasification_by_order(row[2])}_#{row[2]}")
           %td
-            = row[0]
-          %td
-            = row[2]
-            = row[1]
-          %td
-            = "UND"
-          %td
-            %span
-              = row[4].to_f.round(2)
-          %td
-            %span{id: "prev_" + row[0].to_s}
-              = row[3].to_f.round(2)
-          %td
-            -if row[4].to_f.round(2) > 0
+            = row[2] #row[0]
+          %td(class="#{get_color_by_order(row[2])}")
+            %span(style="color:transparent;")
+              ='_'*(row[2].length-2)
+            %a{:href => "javascript:toogle_three('#{get_clasification_by_order(row[2]+'.00')}', '#{row[2]}');"}
+              = #row[2]
+              = row[1]
+          -if row[4].to_f.round(2) > 0
+            %td
+              = "UND"
+            %td
+              %span
+                = row[4].to_f.round(2)
+            %td
+              %span{id: "prev_" + row[0].to_s}
+                = row[3].to_f.round(2)
+            %td
               %input{:type=>"text", :class=>"input-mini", :id => "itembudget_#{row[0].to_s}", :name => "measured[#{row[0].to_s}]", :onblur => "update_data('#{row[0].to_s}', '#{row[4].to_f.round(2)}')", :onchange=>"update_valorization_item('#{row[0].to_s}')", :value => row[5].to_f.round(2), :style=>"text-align: right;"}
-          %td
-            %span{id: "total_" + row[0].to_s}
-              = (row[3] + row[5]).to_f.round(2)
-          %td
-            %span{id: "credit_" + row[0].to_s}
-              = sprintf('%.2f', (row[4].to_f.round(2) - row[5]).to_f.round(2))
+            %td
+              %span{id: "total_" + row[0].to_s}
+                = (row[3] + row[5]).to_f.round(2)
+            %td
+              %span{id: "credit_" + row[0].to_s}
+                = sprintf('%.2f', (row[4].to_f.round(2) - row[5]).to_f.round(2))
+          -else
+            %td
+            %td
+            %td
+            %td
+            %td
+            %td
+        -@last_result = row
 
 :javascript
+  $('.right-area').ready(function(){
+    hide_all();
+  });
+
+  function hide_all(){
+    last_result = parseInt("#{@last_result[2]}");
+    for (i = 1; i <= last_result; i++) { 
+      order_code = pad(i, 2);
+      console.log(order_code);
+      toogle_three('second', order_code);
+    }
+  }
+
+  function pad (str, max) {
+    str = str.toString();
+    return str.length < max ? pad("0" + str, max) : str;
+  }
+
+  function toogle_three(level, id){
+    tr_level = $("[class^='" + level + "_" +  id + "']");
+    tr_level.css("display") == 'table-row' ? tr_level.css("display","none") : tr_level.css("display","table-row");
+    
+    switch(level){
+      case "second":
+        $("[class^='third_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('third', id); }
+        });
+        break;
+      case "third":
+        $("[class^='fourth_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('fourth', id); }
+        });
+        break;
+      case "fourth":
+        $("[class^='fifth_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('fifth', id); }
+        });
+        break;
+      case "fifth":
+        $("[class^='sixth_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('sixth', id); }
+        });
+        break;
+    }
+  }
 
   function update_data(itembudget_id, measured_total){
     partial_measured=parseFloat($("#itembudget_" + itembudget_id).val());
