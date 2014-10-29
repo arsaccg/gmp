@@ -109,7 +109,7 @@
             %label.label Activo
             %label.checkbox
               = hidden_field_tag 'subcontract_equipment_detail[state]','inactive'
-              = check_box_tag 'subcontract_equipment_detail[state]', "active", nil, { class: 'subcontract_equipment_detail_active' }
+              = check_box_tag 'subcontract_equipment_detail[state]', "active", @partequi.state, { class: 'subcontract_equipment_detail_active' }
         .row
           .col.col-4
             %label.label Horas Mínimas

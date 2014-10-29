@@ -199,7 +199,7 @@ class Budget < ActiveRecord::Base
   def self.budget_meta_info_per_equipment(list_itembybudget_orders, cost_center_id)
     # For Table Meta in Analysis Production - Equipos
     data_mysql = ActiveRecord::Base.connection.execute("
-      SELECT itembybudgets.order, inputs.input as name, inputs.quantity as quantity, inputs.price as price
+      SELECT itembybudgets.order, inputs.input as name, inputs.quantity as quantity, inputs.price as price, inputs.cod_input as code
       FROM itembybudgets, budgets,
         (
          SELECT quantity, price, `order`, item_id, cod_input, budget_id, input
@@ -222,7 +222,7 @@ class Budget < ActiveRecord::Base
   def self.budget_meta_info_per_material(list_itembybudget_orders, cost_center_id)
     # For Table Meta in Analysis Production - Equipos
     data_mysql = ActiveRecord::Base.connection.execute("
-      SELECT itembybudgets.order, inputs.input as name, inputs.quantity as quantity, inputs.price as price, inputs.cod_input
+      SELECT itembybudgets.order, inputs.input as name, inputs.quantity as quantity, inputs.price as price, inputs.cod_input as code
       FROM itembybudgets, budgets,
         (
          SELECT quantity, price, `order`, item_id, cod_input, budget_id, input

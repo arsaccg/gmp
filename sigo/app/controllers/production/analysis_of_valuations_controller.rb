@@ -160,13 +160,13 @@ class Production::AnalysisOfValuationsController < ApplicationController
           break
         };
         # MAKE ARRAY META
-        arr_equipment << [ meta_equip[1], meta_equip[2]*value_quantity_from_partes, meta_equip[3] ]
+        arr_equipment << [ meta_equip[1], meta_equip[2]*value_quantity_from_partes, meta_equip[3], meta_equip[4] ]
         # TOTAL META
         @m_price_part_equipment += (meta_equip[2]*value_quantity_from_partes)*meta_equip[3]
       end
 
       # ORDER ARRAY META
-      @meta_part_equipment = arr_equipment.group_by { |a,_,c| [a,c] }.map { |(a,b),arr_equipment| [a,arr_equipment.reduce(0) { |t,(_,e,_)| t + e },b] }
+      @meta_part_equipment = arr_equipment.group_by { |a,_,c,d| [a,c,d] }.map { |(a,b,d),arr_equipment| [a,arr_equipment.reduce(0) { |t,(_,e,_)| t + e },b,d] }
 
 
       # TODO META subcontratos
@@ -219,26 +219,25 @@ class Production::AnalysisOfValuationsController < ApplicationController
       articles_output = get_articles_outputs(start_date, end_date, @cad, @cad2, get_company_cost_center('cost_center'))
       articles_output.each do |ao|
         articles_in_purchase = get_articles_purchase_orders(start_date, end_date, @cad2, get_company_cost_center('cost_center'), ao[0])
-        get_articles_purchase_orders_tamount(start_date, end_date, @cad2, get_company_cost_center('cost_center'), ao[0]).each do |a|
-          amount_pu_a=a[0]
-        end
-        if articles_in_purchase.count == 1
+        if articles_in_purchase.count <1
+          @real_materiales << [ao[0], Article.find(ao[0]).code, Article.find(ao[0]).name, Article.find(ao[0]).unit_of_measurement.symbol, 0, ao[1], 0]
+        elsif articles_in_purchase.count == 1
           articles_in_purchase.each do |aip|
-            @real_materiales << [aip[0], aip[1],aip[2],aip[3],aip[4],aip[5], aip[4]*aip[5]]
-            @total_stock_input_real += aip[4]*aip[5]
+            @real_materiales << [aip[0], aip[1],aip[2],aip[3],aip[4],ao[1], aip[4]*ao[1]]
+            @total_stock_input_real += aip[4]*ao[1]
           end
         else
           #art.id, art.code, art.name, u.symbol, pod.unit_price, pod.amount
           articles_in_purchase.each do |aip|
-            prom_pon_amount = aip[5].to_f/amount_pu_a.to_f
+            prom_pon_amount = aip[5].to_f/ao[1].to_f
             prom_pon_price += aip[4]*prom_pon_amount
             @id = aip[0]
             @code = aip[1]
             @name = aip[2]
             @unit_sym = aip[3]
           end
-          @real_materiales << [@id, @code, @name, @unit_sym, prom_pon_price, amount_pu_a, prom_pon_price*amount_pu_a]
-          @total_stock_input_real += prom_pon_price*amount_pu_a
+          @real_materiales << [@id, @code, @name, @unit_sym, prom_pon_price, ao[1], prom_pon_price*ao[1]]
+          @total_stock_input_real += prom_pon_price*ao[1]
         end
       end
 
@@ -337,7 +336,8 @@ class Production::AnalysisOfValuationsController < ApplicationController
       SUM( poed.effective_hours ), 
       si.price_no_igv, 
       si.price_no_igv*SUM( poed.effective_hours), 
-      art.id
+      art.name,
+      art.code
       FROM part_of_equipments poe, part_of_equipment_details poed, articles_from_cost_center_"+get_company_cost_center('cost_center').to_s+" art, unit_of_measurements uom, subcontract_equipment_details si
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poed.sector_id IN(" + sector_id + ")
@@ -374,7 +374,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def get_articles_outputs(start_date, end_date, working_group, sector, cc)
     articles = ActiveRecord::Base.connection.execute("
-      SELECT art.id
+      SELECT art.id, SUM(sid.amount)
       FROM articles art, stock_inputs si, stock_input_details sid
       WHERE sid.stock_input_id = si.id
       AND si.status =  'A'
@@ -391,14 +391,13 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def get_articles_purchase_orders(start_date, end_date, sector, cc, article_id)
     articles = ActiveRecord::Base.connection.execute("
-      SELECT art.id, art.code, art.name, u.symbol, pod.unit_price, pod.amount
+      SELECT art.id, art.code, art.name, u.symbol, pod.unit_price
       FROM purchase_orders po, purchase_order_details pod, delivery_order_details dod, articles art, unit_of_measurements u
       WHERE po.id = pod.purchase_order_id
       AND po.state =  'approved'
       AND po.cost_center_id = #{cc}
       AND pod.delivery_order_detail_id = dod.id
       AND pod.received = 1
-      AND po.date_of_issue BETWEEN '#{start_date}' AND '#{end_date}'
       AND dod.sector_id IN (#{sector})
       AND art.unit_of_measurement_id = u.id
       AND dod.article_id = art.id

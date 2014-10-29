@@ -634,7 +634,7 @@
             .input-group
               %select.col-sm-6.form-control#educationtype{:name =>"worker[levelofinstruction]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px', class: 'educationtype' }
                 -if @action == 'edit'
-                  %option{:value => "0", :selected => 'selected'} Seleccione un nivel
+                  %option{:value => nil, :selected => 'selected', :disabled=>true} Seleccione un nivel
                   %option{:value => "Sin Educación Formal", :selected => "#{@worker.levelofinstruction}"=="Sin Educación Formal"} Sin Educación Formal
                   %option{:value => "Educación Especial Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Especial Incompleta"} Educación Especial Incompleta
                   %option{:value => "Educación Especial Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Especial Completa"} Educación Especial Completa
@@ -777,12 +777,12 @@
                     %td.col-2=oos.start_date
                     %td.col-2=oos.end_date
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_center_of_studies][' + @reg_n.to_s + '][id]', oos.id
+                      = hidden_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_center_of_studies][' + @reg_n.to_s + '][worker_id]', @worker.id
+                      = hidden_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
                     %td.delete-item
                       %label.checkbox
-                        = check_box 'worker[worker_center_of_studies]', '[' + @reg_n.to_s + '][_destroy]'
+                        = check_box 'worker[worker_center_of_studies_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
         %br
@@ -807,12 +807,12 @@
                     %td{style: "width: 50%;"}=oos.study
                     %td{style: "width: 40%;"}=oos.level
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_otherstudies][' + @reg_n.to_s + '][id]', oos.id
+                      = hidden_field_tag 'worker[worker_otherstudies_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_otherstudies][' + @reg_n.to_s + '][worker_id]', @worker.id
+                      = hidden_field_tag 'worker[worker_otherstudies_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
                     %td.delete-item{style: "width: 10%;"}
                       %label.checkbox
-                        = check_box 'worker[worker_otherstudies]', '[' + @reg_n.to_s + '][_destroy]'
+                        = check_box 'worker[worker_otherstudies_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
         %br
@@ -1018,12 +1018,12 @@
                     %td{style: "width: 10%;"}=oos.start_date
                     %td{style: "width: 10%;"}=oos.end_date
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_experiences][' + @reg_n.to_s + '][id]', oos.id
+                      = hidden_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_experiences][' + @reg_n.to_s + '][worker_id]', @worker.id
+                      = hidden_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
                     %td.delete-item{style: "width: 5%;"}
                       %label.checkbox
-                        = check_box 'worker[worker_experiences]', '[' + @reg_n.to_s + '][_destroy]'
+                        = check_box 'worker[worker_experiences_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
         %br
