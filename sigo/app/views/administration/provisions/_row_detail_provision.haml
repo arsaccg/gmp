@@ -1,19 +1,18 @@
 - @data_orders.each do |data_order_detail|
-  %tr{id: "tr" + @reg_n.to_s}
-    %td{ :style => "display:none" :class => "provision-di" }
-      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][order_detail_id]', data_order_detail[0]
-      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][type_of_order]', @type_of_order_name
+  %tr{id: "tr-" + @reg_n.to_s}
+    %td{ :style => "display:none", :class => "provision-di" }
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][order_detail_id]', data_order_detail[0]
     %td{ :style => "display:none" }
       = data_order_detail[1]
-      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][article_code]', data_order_detail[1]
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_code]', data_order_detail[1]
     %td
       = data_order_detail[2]
-      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][article_name]', data_order_detail[2]
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_name]', data_order_detail[2]
     %td.unit-of-measurement
       = data_order_detail[3]
-      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][unit_of_measurement]', data_order_detail[3]
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_of_measurement]', data_order_detail[3]
     %td
-      %select.form-control.account_accountant{:name =>"provision[provision_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :style => 'border:none;width:100%;', :required => true, title:'No puede dejar este campo vacio'}
+      %select.form-control.account_accountant{:name =>"provision[provision_direct_purchase_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :style => 'border:none;width:100%;', :required => true, title:'No puede dejar este campo vacio'}
         %option{:value => nil, :selected => true, :disabled => true} Seleccionar cuenta contable
         - @account_accountants.each do |account_accountant|
           %option{:value => "#{account_accountant.id}"}
@@ -33,14 +32,14 @@
           %option{:value => "#{phase.id}"}
             = phase.code + " " + phase.name
     %td.amount
-      = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount]', data_order_detail[8], class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{data_order_detail[8]})"
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', data_order_detail[8], class: "form-control amount-item", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{data_order_detail[8]})"
       %code= "Por atender: #{data_order_detail[8]}"
     %td.unit-price
       = number_to_currency(data_order_detail[5], unit: data_order_detail[13], precision: 4)
-      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_unit_price]', data_order_detail[5], class: "unit-price-item"
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][current_unit_price]', data_order_detail[5], class: "unit-price-item"
     %td.discount-before
       %div#db
-        = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][discount_before_igv]', data_order_detail[9].to_f.round(2), class: "form-control amount_with_discount_before_igv", :readonly => true
+        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before_igv]', data_order_detail[9].to_f.round(2), class: "form-control amount_with_discount_before_igv", :readonly => true
       -if @type_of_order_name == 'purchase_order'
         -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
           -if pdec.type =="percent"
@@ -68,76 +67,16 @@
               -value = value *(-1)              
             = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
           - value = 0          
+    %td.price-with-igv
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', data_order_detail[6] , class: "form-control unit-price-igv", :readonly => true  
     %td.current-igv
       = (data_order_detail[7]*100).round.to_s + '%'
-      = hidden_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][current_igv]',data_order_detail[7], class: "igv-item"
-    %td.price-with-igv
-      = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', data_order_detail[6] , class: "form-control unit-price-igv", :readonly => true
-    %td.discount-after
-      %div#da
-        = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][discount_after_igv]', data_order_detail[10].to_f.round(2), class: "form-control amount_after_igv_with_discount", :readonly => true  
-      -if @type_of_order_name == 'purchase_order'
-        -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%after%'").each do |pdec|
-          -if pdec.type =="percent"
-            -value = pdec.value.to_f/100
-            -if pdec.operation == "sum"
-              -value = value *(-1)
-            = hidden_field_tag 'discount_after', value, class: "discount_after-item-percent"
-          -elsif pdec.type == "soles"
-            -value = pdec.value.to_f
-            -if pdec.operation == "sum"
-              -value = value *(-1)              
-            = hidden_field_tag 'discount_after', value, class: "discount_after-item-soles"
-          -value = 0
-      -elsif @type_of_order_name == 'service_order' 
-        = hidden_field_tag 'discount_after', "service", class: "discount_after-item-soles"
-        -OrderServiceDetail.find(data_order_detail[0]).order_service_extra_calculations.where("apply LIKE '%after%'").each do |pdec|
-          -if pdec.type =="percent"
-            -value = pdec.value.to_f/100
-            -if pdec.operation == "sum"
-              -value = value *(-1)
-            = hidden_field_tag 'discount_after', value, class: "discount_after-item-percent"
-          -elsif pdec.type == "soles"
-            -value = pdec.value.to_f
-            -if pdec.operation == "sum"
-              -value = value *(-1)              
-            = hidden_field_tag 'discount_after', value, class: "discount_after-item-soles"
-          -value = 0          
-    %td.perception{:style => 'display:none'}
-      %div#per
-        = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][amount_perception]', data_order_detail[12].round(2), class: "form-control perception", :readonly => true
-      -if @type_of_order_name == 'purchase_order'
-        -pdec = PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.find_by_extra_calculation_id(2)
-        -if !pdec.nil?
-          -if pdec.type =="percent"
-            -value = pdec.value.to_f/100
-            = hidden_field_tag 'perception', value, class: "perception-percent"
-          -elsif pdec.type == "soles"
-            -value = pdec.value.to_f 
-            = hidden_field_tag 'perception', value, class: "perception-soles"
-          -value = 0
-        -else
-          = hidden_field_tag 'perception', 0, class: "perception-soles"
-      -elsif @type_of_order_name == 'service_order' 
-        -pdec = OrderServiceDetail.find(data_order_detail[0]).order_service_extra_calculations.find_by_extra_calculation_id(2)
-        -if !pdec.nil?
-          -if pdec.type =="percent"
-            -value = pdec.value.to_f/100
-            = hidden_field_tag 'perception', value, class: "perception-percent"
-          -elsif pdec.type == "soles"
-            -value = pdec.value.to_f 
-            = hidden_field_tag 'perception', value, class: "perception-soles"
-          -value = 0  
-        -else
-          = hidden_field_tag 'perception', 0, class: "perception-soles"      
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][current_igv]',data_order_detail[7], class: "igv-item"
     %td.neto-price-with-igv
-      = text_field_tag 'provision[provision_details_attributes][' + @reg_n.to_s + '][net_price_after_igv]', data_order_detail[11] , class: "form-control net-price-after-igv", :readonly => true
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][net_price_after_igv]', data_order_detail[11] , class: "form-control net-price-after-igv", :readonly => true
     %td.description
-    = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
+      = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
     %td{:style => "width: 1%;"}
       %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+      
   - @reg_n += 1
-
-:javascript
-  
-  $('select.account_accountant').select2();
