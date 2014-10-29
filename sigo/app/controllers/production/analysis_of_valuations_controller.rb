@@ -160,13 +160,13 @@ class Production::AnalysisOfValuationsController < ApplicationController
           break
         };
         # MAKE ARRAY META
-        arr_equipment << [ meta_equip[1], meta_equip[2]*value_quantity_from_partes, meta_equip[3] ]
+        arr_equipment << [ meta_equip[1], meta_equip[2]*value_quantity_from_partes, meta_equip[3], meta_equip[4] ]
         # TOTAL META
         @m_price_part_equipment += (meta_equip[2]*value_quantity_from_partes)*meta_equip[3]
       end
 
       # ORDER ARRAY META
-      @meta_part_equipment = arr_equipment.group_by { |a,_,c| [a,c] }.map { |(a,b),arr_equipment| [a,arr_equipment.reduce(0) { |t,(_,e,_)| t + e },b] }
+      @meta_part_equipment = arr_equipment.group_by { |a,_,c,d| [a,c,d] }.map { |(a,b,d),arr_equipment| [a,arr_equipment.reduce(0) { |t,(_,e,_)| t + e },b,d] }
 
 
       # TODO META subcontratos
@@ -224,7 +224,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
         elsif articles_in_purchase.count == 1
           articles_in_purchase.each do |aip|
             @real_materiales << [aip[0], aip[1],aip[2],aip[3],aip[4],ao[1], aip[4]*ao[1]]
-            @total_stock_input_real += aip[4]*ao[0]
+            @total_stock_input_real += aip[4]*ao[1]
           end
         else
           #art.id, art.code, art.name, u.symbol, pod.unit_price, pod.amount
@@ -336,7 +336,8 @@ class Production::AnalysisOfValuationsController < ApplicationController
       SUM( poed.effective_hours ), 
       si.price_no_igv, 
       si.price_no_igv*SUM( poed.effective_hours), 
-      art.id
+      art.name,
+      art.code
       FROM part_of_equipments poe, part_of_equipment_details poed, articles_from_cost_center_"+get_company_cost_center('cost_center').to_s+" art, unit_of_measurements uom, subcontract_equipment_details si
       WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND poed.sector_id IN(" + sector_id + ")
