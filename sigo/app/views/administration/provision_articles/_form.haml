@@ -394,7 +394,7 @@
     $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
   }
 
-  functio calculatePriceWithoutIgvFromDiscount(element){
+  function calculatePriceWithoutIgvFromDiscount(element){
     var discount = parseInt($(element).val());
     var amount = parseFloat($(element).parent().siblings('.amount').find('input').val()).toFixed(2);
     var price = parseFloat($(element).parent().siblings('.unit-price').find('input').val()).toFixed(2);
