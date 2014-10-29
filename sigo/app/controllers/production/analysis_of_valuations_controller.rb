@@ -224,7 +224,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
         elsif articles_in_purchase.count == 1
           articles_in_purchase.each do |aip|
             @real_materiales << [aip[0], aip[1],aip[2],aip[3],aip[4],ao[1], aip[4]*ao[1]]
-            @total_stock_input_real += aip[4]*ao[0]
+            @total_stock_input_real += aip[4]*ao[1]
           end
         else
           #art.id, art.code, art.name, u.symbol, pod.unit_price, pod.amount
