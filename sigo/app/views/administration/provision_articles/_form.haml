@@ -74,7 +74,7 @@
                 .col-lg-1.col-md-1
                   = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
 
-                .col-lg-2.col-md-2{ :style => "margin-right: 30px;" }
+                .col-lg-1.col-md-1{ :style => "margin-right: 30px;" }
                   %div
                     %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
                       Agregar Insumo
@@ -96,10 +96,11 @@
                     %th Fase
                     %th Cantidad
                     %th Precio Unitario
+                    %th Descuentos
                     %th Total antes de IGV
                     %th ¿Aplica IGV?
                     %th Total después de IGV
-                    %th Operaciones Adicionales
+                    /%th Operaciones Adicionales
                     %th Descripción
                     %th Acción
                 %tbody{:id => "provisions_direct_items_table"}
@@ -135,12 +136,12 @@
 
                       %td.amount
                         = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"
-
+                      
                       %td.unit-price
                         = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', pod.price, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
 
-                      %td.discount-before{:style => "display:none", :class => "provision_discount-before"}
-                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', pod.discount_before, class: "discount_before-item"
+                      %td.discount-before{:class => "provision_discount-before"}
+                        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', pod.discount_before , class: "form-control unit-price-igv", onkeypress: "return isNumber(event);"
 
                       %td.price-without-igv
                         = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', pod.unit_price_before_igv, class: "form-control unit-price-without-igv", :readonly => true
@@ -156,112 +157,14 @@
                       %td.price-with-igv
                         = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv, class: "form-control unit-price-igv", :readonly => true
 
-                      %td.discount-after{:style => "display:none", :class => "provision_discount-after"}
-                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_after]', pod.discount_after, class: "discount_after-item"
-
-                      %td{:style => 'text-align: center'}
-                        %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-provision-#{@reg_n.to_s}", 'onclick' => "set_id_modeling(this, #{@reg_n.to_s})"}
-                          %strong
-                            %i.fa.fa-superscript
-
                       %td.description
-                        = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', pod.description, class: "form-control description"   
+                        = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', pod.description, class: "form-control description"
+
                       %td.delete-item
+                        %label.checkbox
+                          = check_box 'provision', '[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][_destroy]'
+
                     - @reg_n += 1
-
-
-                - i = 0
-                - @provision.provision_direct_purchase_details.each do |pod|
-                  .modal.fade{"id" => "modal-provision-#{array_values[i]}", "aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
-                    .modal-dialog
-                      .modal-content
-                        .modal-header
-                          %button{"type" => "button", "class" => "close", "data-dismiss" => "modal", "aria-hidden" => "true"} ×
-                          %h4.modal-title Operaciones Adicionales
-                        .modal-body
-                          .smart-form
-                            %fieldset
-                              = hidden_field_tag 'id_modal', "#{array_values[i]}", :id => "modal-provision-#{array_values[i]}-hidden"
-                              .row
-                                %label.label.col.col-2{for: "extra_calculation_id"} Concepto
-                                .col.col-10
-                                  %label.input
-                                    %select.form-control{:name =>"extra_calculation_id", :id => "modal-provision-#{array_values[i]}-select-calc"}
-                                      - @extra_calculations.each do |calculation|
-                                        %option{:value => "#{calculation.id}"}
-                                          = calculation.concept
-
-                              .row
-                                %label.label.col.col-2{for: "type"} Tipo
-                                .col.col-10
-                                  %label.input
-                                    %select.form-control{:name =>"type", :id => "modal-provision-#{array_values[i]}-select-type"}
-                                      %option{:value => "percent"}
-                                        (%)
-                                      %option{:value => "soles"}
-                                        (S/.)
-
-                              .row
-                                %label.label.col.col-2{for: "value"} Valor
-                                .col.col-10
-                                  %label.input
-                                    %i.icon-append.fa.fa-money
-                                    = text_field_tag 'value', nil, id: "modal-provision-#{array_values[i]}-input-value", onkeypress: "return isNumber(event);"
-
-                              .row
-                                %label.label.col.col-2{for: "apply"} Aplicar
-                                .col.col-10
-                                  %label.input
-                                    %select.form-control{:name =>"apply", :id => "modal-provision-#{array_values[i]}-select-apply"}
-                                      %option{:value => "before"}
-                                        Antes de IGV
-                                      %option{:value => "after"}
-                                        Después de IGV
-
-                              .row
-                                %label.label.col.col-2{for: "operation"} +/-
-                                .col.col-10
-                                  %label.input
-                                    %select.form-control{:name =>"operation", :id => "modal-provision-#{array_values[i]}-select-operation"}
-                                      %option{:value => "sum"}
-                                        = '+'
-                                      %option{:value => "minius"}
-                                        = '-'
-
-                            %fieldset
-                              %h3 Listado de Operaciones
-                              %br
-                              .row
-                                %section.col.col-md-12{'id' => "modal-provision-#{array_values[i]}-section"}
-                                  - pod.provision_direct_extra_calculations.each do |order_operation|
-                                    - @reg_n_2 = ((Time.now.to_f)*100).to_i
-                                    .col.col-md-12
-                                      .col.col-md-1
-                                        %i.fa.fa-check
-                                      .col.col-md-3
-                                        = order_operation.extra_calculation.concept rescue 'Concepto errado'
-                                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][extra_calculation_id]', order_operation.extra_calculation_id rescue nil
-                                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][id]', order_operation.id
-                                      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][type]', order_operation.type rescue nil
-                                      .col.col-md-2
-                                        - if order_operation.type == 'soles'
-                                          = order_operation.value.to_s + '(S/.)'
-                                        - elsif order_operation.type == 'percent'
-                                          = order_operation.value.to_s + '(%)'
-                                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][value]', order_operation.value rescue nil
-                                      .col.col-md-3
-                                        - if order_operation.apply == 'before'
-                                          Antes de IGV
-                                        - elsif order_operation.apply == 'after'
-                                          Después de IGV
-                                        = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][apply]', order_operation.apply rescue nil
-                                      .col.col-md-3
-                                        = check_box_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][_destroy]'
-                                        %label Eliminar
-                                      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + array_values[i].to_s + '][provision_direct_extra_calculations_attributes][' + @reg_n_2.to_s + '][operation]', order_operation.operation rescue nil
-                            %footer
-                              %button{:type => "button", :class => "btn btn-primary", :onclick => "add_extra_operation(this)", :rel => "modal-provision-#{array_values[i]}"} Agregar Operación
-                  - i += 1
 
         .col-sm-12.col-md-12{:style => "margin-bottom: 20px;"}
           .row
@@ -521,110 +424,6 @@
     $("#tr-" + code).remove();
   }
 
-  function add_extra_operation(obj){
-
-    var id_content = $(obj).attr('rel') + '-section';
-
-    var concept = '#' + $(obj).attr('rel') + '-select-calc';
-    var type = '#' + $(obj).attr('rel') + '-select-type';
-    var name_concept = '#' + $(obj).attr('rel') + '-select-calc option:selected';
-    var name_type = '#' + $(obj).attr('rel') + '-select-type option:selected';
-
-    var value = '#' + $(obj).attr('rel') + '-input-value';
-
-    var apply = '#' + $(obj).attr('rel') + '-select-apply';
-    var operation = '#' + $(obj).attr('rel') + '-select-operation';
-    var name_apply = '#' + $(obj).attr('rel') + '-select-apply option:selected';
-
-    var reg_n = '#' + $(obj).attr('rel') + '-hidden';
-
-    var str_data = { concept: $(concept).val(), type: $(type).val(), value: $(value).val(), apply: $(apply).val(), operation: $(operation).val(), name_concept: $(name_concept).text(), name_type: $(name_type).text(), name_apply: $(name_apply).text(), reg_n: $(reg_n).val() };
-
-    /* Data for Calculate */
-    amount_bruto = $('#tr-' + $(reg_n).val() + ' td.amount input').val()*$('#tr-' + $(reg_n).val() + ' td.unit-price input').val();
-
-    /* Referencial Data */
-    path_jquery_before = '#tr-' + $(reg_n).val() + ' td.price-without-igv input';
-    path_jquery_after = '#tr-' + $(reg_n).val() + ' td.price-with-igv input';
-    path_jquery_igv = '#tr-' + $(reg_n).val() + ' td.check-igv .checkbox input';
-    /* Amounts */
-    path_jquery_discount_before = '#tr-' + $(reg_n).val() + ' td.discount-before input';
-    path_jquery_discount_after = '#tr-' + $(reg_n).val() + ' td.discount-after input';
-    path_jquery_discount_igv = '#tr-' + $(reg_n).val() + ' td.discount-igv input';
-
-    
-    if($(concept).val()!='' && $(type).val()!='' && $(value).val()!='' && $(apply).val()!='' && $(operation).val()!='' && $(name_concept).text()!='' && $(name_type).text()!='' && $(name_apply).text()!='' && $(reg_n).val()!='' ){
-      if($(path_jquery_before).val() != ''){
-
-        ancient_value_before = parseFloat($(path_jquery_before).val());
-        ancient_value_after = parseFloat($(path_jquery_after).val());
-
-        if( $(apply).val() == 'before' ){
-
-          if( $(operation).val() == 'sum' ){
-            if( $(type).val() == 'soles' ){
-              value_before = $(path_jquery_discount_before).val() + parseFloat($(value).val());
-              $(path_jquery_discount_before).val(value_before);
-            } else {
-              value_before = $(path_jquery_discount_before).val() + parseFloat((amount_bruto*($(value).val()/100)));
-              $(path_jquery_discount_before).val(value_before);
-            }
-          } else {
-            if( $(type).val() == 'soles' ){
-              value_before = $(path_jquery_discount_before).val() - parseFloat($(value).val());
-              $(path_jquery_discount_before).val(value_before);
-              console.log($(path_jquery_discount_before).val());
-            } else {
-              value_before = $(path_jquery_discount_before).val() - parseFloat((amount_bruto*($(value).val()/100)));
-              $(path_jquery_discount_before).val(value_before);
-              console.log($(path_jquery_discount_before).val());
-            }
-          }
-
-          if($(path_jquery_igv).is(":checked")){
-            $(path_jquery_before).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
-            $(path_jquery_discount_igv).val( (parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val())) * (1 - parseFloat("#{@igv}")) );
-            $(path_jquery_after).val( (parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val())) * parseFloat("#{@igv}") );
-          } else {
-            $(path_jquery_before).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
-            $(path_jquery_after).val( parseFloat(amount_bruto) + parseFloat($(path_jquery_discount_before).val()) );
-            $(path_jquery_discount_igv).val(0);
-          }
-
-        } else {
-
-          if( $(operation).val() == 'sum' ){
-            if( $(type).val() == 'soles' ){
-              value_after = $(path_jquery_discount_after).val() + parseFloat($(value).val()).toFixed(2);
-              $(path_jquery_discount_after).val(value_after);
-            } else {
-              value_after = $(path_jquery_discount_after).val() + parseFloat($(path_jquery_after).val()*($(value).val()/100)).toFixed(2);
-              $(path_jquery_discount_after).val(value_after);
-            }
-          } else {
-            if( $(type).val() == 'soles' ){
-              value_after = $(path_jquery_discount_after).val() - parseFloat($(value).val()).toFixed(2);
-              $(path_jquery_discount_after).val(value_after);
-            } else {
-              value_after = $(path_jquery_discount_after).val() - parseFloat($(path_jquery_after).val()*($(value).val()/100)).toFixed(2);
-              $(path_jquery_discount_after).val(value_after);
-            }
-          }
-
-        }
-        append_url_ajax('#{add_more_row_form_extra_op_administration_provision_articles_path}', id_content, str_data, 0, 'POST');
-
-      } else {
-
-        alert('No se ha calculado el Precio antes de IGV.');
-
-      }
-    }else{
-      alert('Llene todos los campos antes de agregar una operación.');    
-    }
-
-  }
-
   function add_order_item(){
     if( $('#proveedor-select').val() ){
 
@@ -791,7 +590,9 @@
 
       if(status_detail){
         data = { ids_orders_details: data_orders_detail, authenticity_token: "#{form_authenticity_token}", type_of_order: $('#type_of_order_name').val() };
-        load_items_delivery_order_ajax('#{puts_details_in_provision_administration_provisions_path}', 'provisions_direct_items_table', data);
+        append_url_ajax('#{puts_details_in_provision_administration_provisions_path}', 'provisions_direct_items_table', data, null, 'POST');
+
+        $('select.account_accountant').select2();
 
         $.smallBox({
           title: "Ahora puedes completar la información de la provisión.",
@@ -826,4 +627,60 @@
 
     }
 
+  }
+
+  /* For items from Orders */
+
+  function calculatePrice_from_orders(element){
+    var amount = parseInt($(element).val());
+    var igv = parseFloat($(element).parent().siblings('.current-igv').find('input').val());
+    var unit_price = parseFloat($(element).parent().siblings('.unit-price').find('input').val());
+    var discount_before = $(element).parent().siblings('.discount-before').find('input');
+    var discount_after = $(element).parent().siblings('.discount-after').find('input');
+    var perception = $(element).parent().siblings('.perception').find('input');
+
+    var total_dis_bes = 0;
+    var total_dis_bep = 0;
+    discount_before.each(function(){
+      if($(this).attr('class')=="discount_before-item-soles"){
+        total_dis_bes+=parseFloat($(this).val()).toFixed(2);
+      }else{
+        if($(this).attr('class')=="discount_before-item-percent"){
+          total_dis_bep+=parseFloat((amount*unit_price*parseFloat($(this).val()))).toFixed(2);
+        }
+      }
+    });
+    var sdb = (total_dis_bes + total_dis_bep).toFixed(2);
+    var a =(1+igv).toFixed(2)
+    var total_price = (((amount * unit_price) - sdb)*(a)).toFixed(2);
+    $(element).parent().siblings('.price-with-igv').find('input').val(total_price);
+    $(element).parent().siblings('.discount-after').children('#db').find('input').val(sdb);
+
+    var total_dis_afs = 0;
+    var total_dis_afp = 0;
+    discount_after.each(function(){
+      if($(this).attr('class')=="discount_after-item-soles"){
+        total_dis_afs+=parseFloat($(this).val());
+      }else{
+        if($(this).attr('class')=="discount_after-item-percent"){
+          total_dis_afp+=parseFloat((total_price*parseFloat($(this).val())));
+        }
+      }
+    });
+
+    var sda = (total_dis_afs + total_dis_afp).toFixed(2);
+    var net_total_price = parseFloat(total_price) - sda
+    var per_am=0;
+    perception.each(function(){
+      if($(this).attr('class')=="perception-soles"){
+        per_am=parseFloat($(this).val()).toFixed(2);
+      }else{
+        if($(this).attr('class')=="perception-percent"){
+          per_am=parseFloat(total_price*parseFloat($(this).val())).toFixed(2);
+        }
+      }
+    });
+    $(element).parent().siblings('.discount-after').children('#da').find('input').val(sda*-1);
+    $(element).parent().siblings('.neto-price-with-igv').find('input').val(parseFloat(net_total_price).toFixed(2));
+    $(element).parent().siblings('.perception').children('#per').find('input').val(per_am);
   }

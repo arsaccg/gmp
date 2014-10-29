@@ -30,7 +30,7 @@
           = order[5].to_s
         %td.orders-checked
           %label.checkbox
-            = check_box("order_selected", "selected", { class: 'order_check' }, order[6])
+            = check_box("order_selected", "selected", { class: 'order_check' }, (order[6].to_s + '-' + order[9].to_s))
             %i
 -  else
   %h3{:style => 'text-align:center;'}

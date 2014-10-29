@@ -4,7 +4,7 @@
   %td= @name_article
   %td= @unit_of_measurement
   %td.account-accountant
-    %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :required => true, title:'No puede dejar este campo vacio'}
+    %select.form-control.account_accountant{:name =>"provision[provision_direct_purchase_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :required => true, title:'No puede dejar este campo vacio'}
       %option{:value => nil, :selected => true, :disabled => true} Seleccionar cuenta contable
       - @account_accountants.each do |account_accountant|
         %option{:value => "#{account_accountant.id}"}
@@ -30,8 +30,8 @@
   %td.unit-price
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', nil, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
 
-  %td.discount-before{:style => "display:none", :class => "provision_discount-before"}
-    = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', nil, class: "discount_before-item"
+  %td.discount-before{ :class => "provision_discount-before"}
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before_igv]', nil , class: "form-control unit-price-igv", onkeypress: "return isNumber(event);"
 
   %td.price-without-igv
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', nil, class: "form-control unit-price-without-igv", :readonly => true
@@ -47,22 +47,8 @@
   %td.price-with-igv
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil, class: "form-control unit-price-igv", :readonly => true
 
-  %td.discount-after{:style => "display:none", :class => "provision_discount-after"}
-    = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_after]', nil, class: "discount_after-item"
-
-  %td{:style => 'text-align: center'}
-    %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-provision-#{@reg_n.to_s}", 'onclick' => "set_id_modeling(this, #{@reg_n.to_s})"}
-      %strong
-        %i.fa.fa-superscript
-
   %td.description
     = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
 
   %td{:style => "width: 1%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')", :class => 'btn'} X
-
-:javascript
-  $(document).ready(function(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", id_m: "#{@reg_n.to_s}"};
-    append_url_ajax('#{add_modal_extra_operations_administration_provision_articles_path}', 'new_provision', str_item, 0, 'POST');
-  });
