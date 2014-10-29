@@ -182,7 +182,7 @@
                       %td
                         = number_to_currency((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
                       %td
-                        = number_to_currency purchasedetail.quantity_igv*-1, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                        = number_to_currency purchasedetail.quantity_igv.to_f*-1, unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
                         = number_to_currency ((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f)-purchasedetail.quantity_igv.to_f), unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
