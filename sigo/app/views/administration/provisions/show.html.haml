@@ -70,31 +70,33 @@
                     %th Unidad
                     %th Cantidad a Atender
                     %th Precio Unitario
+                    %th Descuento
                     %th IGV
                     %th Total Neto con IGV
-                    /%th Percepción
                     %th Total Neto con IGV y Descuentos
                 %tbody
-                  - @provision.provision_details.each do |provision_detail|
+                  - @provision.provision_direct_purchase_details.each do |provision_detail|
                     %tr
                       %td
-                        = provision_detail.article_code.to_s
+                        = provision_detail.article.code.to_s
                       %td
-                        = provision_detail.article_name.to_s
+                        = provision_detail.article.name.to_s
                       %td
                         = provision_detail.account_accountant.name.to_s
                       %td
-                        = provision_detail.unit_of_measurement.to_s
+                        = provision_detail.article.unit_of_measurement.symbol.to_s
                       %td
                         = provision_detail.amount.to_f
                       %td
-                        = number_to_currency provision_detail.current_unit_price.to_f, unit: 'S/.', precision: 4
+                        = number_to_currency provision_detail.price.to_f, unit: 'S/.', precision: 2
                       %td
-                        = (provision_detail.current_igv*100).round(0).to_s + '%'
+                        = number_to_currency provision_detail.discount_before.to_f, unit: 'S/.', precision: 2
                       %td
-                        = number_to_currency provision_detail.unit_price_igv, unit: 'S/.', precision: 2
+                        = number_to_currency provision_detail.quantity_igv.to_f, unit: 'S/.', precision: 2
                       %td
-                        = number_to_currency (provision_detail.net_price_after_igv.to_f - provision_detail.amount_perception.to_f), unit: 'S/.', precision: 2
+                        = number_to_currency (provision_detail.price+provision_detail.unit_price_igv-provision_detail.discount_before.to_f).to_f, unit: 'S/.', precision: 2
+                      %td
+                        = number_to_currency ((provision_detail.price.to_f+provision_detail.unit_price_igv.to_f-provision_detail.discount_before.to_f-provision_detail.discount_after.to_f).to_f), unit: 'S/.', precision: 2
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-provisions{type: "button"}
   %i.fa.fa-arrow-left>
@@ -103,5 +105,5 @@
 :javascript
   
   $('#backlist-provisions').click(function(){
-    load_url_ajax("#{administration_provisions_path}", 'content', null, null, 'GET');
+    load_url_ajax("#{administration_provision_articles_path}", 'content', null, null, 'GET');
   });
