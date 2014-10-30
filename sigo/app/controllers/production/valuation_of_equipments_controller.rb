@@ -12,7 +12,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
     @start_date = @valuationofequipment.start_date
     @end_date = @valuationofequipment.end_date
-
+    @ids=params[:id]
     @valorizacionsinigv = 0
     @amortizaciondeadelanto = 0
     @totalfacturar = 0
@@ -150,7 +150,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     workers_array3 = ActiveRecord::Base.connection.execute("
       SELECT poe.equipment_id, sed.code, SUM(poed.effective_hours), sed.price_no_igv, SUM(poed.effective_hours)*sed.price_no_igv
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
-      WHERE poe.date <= '" + end_date + "'
+      WHERE poe.date < '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.cost_center_id = '" + cost_center.to_s + "'
       AND poe.equipment_id=sed.id
@@ -160,11 +160,11 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     return workers_array3
   end
 
-  def last(end_date, working_group_id, article, cost_center)
+  def last(start_date,end_date, working_group_id, article, cost_center)
     last = ActiveRecord::Base.connection.execute("
       SELECT poe.equipment_id, sed.code, SUM(poed.effective_hours), sed.price_no_igv, SUM(poed.effective_hours)*sed.price_no_igv
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
-      WHERE poe.date <  '" + end_date.to_s + "'
+      WHERE poe.date BETWEEN '" + start_date + "'  AND '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.cost_center_id = '" + cost_center.to_s + "'
       AND poe.equipment_id=sed.id
@@ -242,6 +242,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
 
   def part_equipment
+    @ids= params[:ids]
     @id = params[:id]
     @name = params[:name]
     @code = params[:code]
@@ -261,18 +262,34 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     if @art==''
       @art=0
     end
+
+    @val=ActiveRecord::Base.connection.execute("SELECT start_date,end_date FROM valuation_of_equipments WHERE name LIKE '" + @name + "' AND start_date LIKE DATE_SUB('" + @start_date + "', INTERVAL 1 MONTH) ")
+
+    puts "-------1--------"
     if params[:id]==nil
-      if ValuationOfEquipment.where("name LIKE ? ", @name).last.present?
-        thelast = ValuationOfEquipment.where("name LIKE ? ", @name).last
-        @last_end = thelast.end_date
+    puts "-------params id--------"
+      if @val.count!=0
+        puts "------if-val.count--------"
+        @thelast = @val.to_a.last
+        puts "----thelast----"
+        puts @thelast
+        puts "---------------"
+        @last_end = @start_date
         @cc = get_company_cost_center('cost_center')
-        @last = last(@last_end, @cad, @art, @cc)
+        @last = last(@thelast[0].to_s,@thelast[1].to_s, @cad, @art, @cc)
+        puts "------@last count--"
+        puts @last.to_a
+        puts "------@last count end--"
         @try = "last"
+
       else
+        puts "------else------"
         @last = Array.new
         @workers_array3.each do |wa3|
           @last << [[0,0,0]]
         end
+        puts "------@last else ceros--"
+        puts @last.to_a
       end
     else
       @cc = get_company_cost_center('cost_center')
@@ -287,39 +304,37 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         end
       end
     end
+
     @array = Array.new
-    @first = Array.new
-    @second = Array.new
+    @present = Array.new
+    @past = Array.new
+    @match = Array.new
+    @notmatch = Array.new
+    @notmatch2 = Array.new
+
     @workers_array3.each do |wa3|
-      @first << wa3
+      @present << wa3  
     end
     @last.each do |wa3|
-      @second << wa3
+      @past << wa3
     end
 
-    @first.each do |arr|
-      i=0
-      @second.each do |sec|
-        if @second.count == 1 && i==0
-          if arr[0]==sec[0]
-            @array << (arr + sec).to_a
-          else
-            cero = [0,0,0]
-            @array << (arr+ cero).to_a
-          end 
-        else
-          sec[i]
-          @array << (arr + [sec[i]]).to_a
+    @present.each do |pres|
+      cont=0
+      @past.each do |past|
+        if pres[0]==past[0]
+          cont+=1
+          past[2]
+          @match << (pres + [past[2]]).to_a
         end
-        break
       end
-      i+=1
+      if cont==0
+        @notmatch << (pres + [0]).to_a
+      end
     end
-    @array.each do |a|
-      puts "-------"
-      puts a
-      puts "-------"
-    end
+
+    @array = @match + @notmatch
+
     render layout: false
   end
 
@@ -432,8 +447,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       format.pdf do
         puts "------------params id ----------------"
         @company = Company.find(get_company_cost_center('company'))
-        @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+        @valuationofequipment=ValuationOfEquipment.find_by_id(params[:ids])
         @id = params[:id]
+        @ids = params[:ids]
         @name = params[:name]
         @code = params[:code]
         @start_date = params[:start_date]
@@ -452,22 +468,38 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         if @art==''
           @art=0
         end
+
+        @val=ActiveRecord::Base.connection.execute("SELECT start_date,end_date FROM valuation_of_equipments WHERE name LIKE '" + @name + "' AND start_date LIKE DATE_SUB('" + @start_date + "', INTERVAL 1 MONTH) ")
+
+        puts "-------1--------"
         if params[:id]==nil
-          if ValuationOfEquipment.where("name LIKE ? ", @name).last.present?
-            thelast = ValuationOfEquipment.where("name LIKE ? ", @name).last
-            @last_end = thelast.end_date
+        puts "-------params id--------"
+          if @val.count!=0
+            puts "------if-val.count--------"
+            @thelast = @val.to_a.last
+            puts "----thelast----"
+            puts @thelast
+            puts "---------------"
+            @last_end = @start_date
             @cc = get_company_cost_center('cost_center')
-            @last = last(@last_end, @cad, @art, @cc)
+            @last = last(@thelast[0].to_s,@thelast[1].to_s, @cad, @art, @cc)
+            puts "------@last count--"
+            puts @last.to_a
+            puts "------@last count end--"
             @try = "last"
+
           else
+            puts "------else------"
             @last = Array.new
             @workers_array3.each do |wa3|
               @last << [[0,0,0]]
             end
+            puts "------@last else ceros--"
+            puts @last.to_a
           end
         else
           @cc = get_company_cost_center('cost_center')
-          @last_end =ValuationOfEquipment.find(params[:id]).start_date
+          @last_end =ValuationOfEquipment.find(params[:ids]).start_date
           @last = last(@last_end, @cad, @art, @cc)
           puts @last.count
           if @last.count==0
@@ -478,38 +510,37 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             end
           end
         end
+
         @array = Array.new
-        @first = Array.new
-        @second = Array.new
+        @present = Array.new
+        @past = Array.new
+        @match = Array.new
+        @notmatch = Array.new
+        @notmatch2 = Array.new
+
         @workers_array3.each do |wa3|
-          @first << wa3
+          @present << wa3  
         end
         @last.each do |wa3|
-          @second << wa3
+          @past << wa3
         end
 
-        @first.each do |arr|
-          i=0
-          @second.each do |sec|
-            if @second.count == 1 && i==0
-              if arr[0]==sec[0]
-                @array << (arr + sec).to_a
-              else
-                cero = [0,0,0]
-                @array << (arr+ cero).to_a
-              end 
-            else
-              sec[i]
-              puts sec[i]
-              puts sec
-              puts "-----------"
-              puts arr
-              @array << (arr + [sec[i]]).to_a
+        @present.each do |pres|
+          cont=0
+          @past.each do |past|
+            if pres[0]==past[0]
+              cont+=1
+              past[2]
+              @match << (pres + [past[2]]).to_a
             end
-            break
           end
-          i+=1
+          if cont==0
+            @notmatch << (pres + [0]).to_a
+          end
         end
+
+        @array = @match + @notmatch
+
         render :pdf => "parte_equipos_#{@code}-#{Time.now.strftime('%d-%m-%Y')}", 
                :template => 'production/valuation_of_equipments/part_equipment_pdf.pdf.haml',
                :page_size => 'A4',

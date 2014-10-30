@@ -175,15 +175,15 @@ class Management::ValorizationsController < ApplicationController
   ###~###
 
   def report
-    @itembybudgets = Itembybudget.where('CHAR_LENGTH(`order`) > 3')
     @valorization = Valorization.find(params[:id])
+    @itembybudgets = Itembybudget.where('CHAR_LENGTH(`order`) > 3 AND budget_id = ?', @valorization.budget_id)
     @budget = Budget.where(:id => @valorization.budget_id).first
 
     @valorizationitem = Valorizationitem.where(:valorization_id => @valorization.id)
 
     @project = CostCenter.find(@budget.cost_center_id)
 
-    @itembybudgets_main = Itembybudget.select('id, `title`, `order`, CHAR_LENGTH(`order`)').where('CHAR_LENGTH(`order`) < 3')
+    @itembybudgets_main = Itembybudget.select('id, `title`, `order`, CHAR_LENGTH(`order`)').where('CHAR_LENGTH(`order`) < 3 AND budget_id = ?', @valorization.budget_id)
     #SELECT `order`,CHAR_LENGTH(`order`) WHERE CHAR_LENGTH(`order`) < 3
     render :report, layout: false
   end

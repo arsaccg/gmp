@@ -26,9 +26,11 @@
         %td
           = number_to_currency((order[4].to_f), unit: order[8].to_s, precision: 4)
         %td
+          = number_to_currency order[11].to_f, unit: order[8].to_s, precision: 2
         %td
+          = number_to_currency order[10].to_f, unit: order[8].to_s, precision: 2
         %td
-          = number_to_currency(order[3].to_f, unit: order[8].to_s, precision: 2)
+          = number_to_currency((order[11].to_f+order[10].to_f), unit: order[8].to_s, precision: 2)
         %td.orders-checked
           %label.checkbox
             = check_box("order_selected", "selected", { class: 'order_check' }, (order[6].to_s + '-' + order[9].to_s))
