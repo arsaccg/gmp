@@ -102,8 +102,9 @@
                     %th Total sin IGV
                     %th IGV
                     %th IGV(S/.)
+                    %th Total con IGV
                     %th Descripción
-                    %th
+                    %th Eliminar
                 %tbody{:id => "provisions_direct_items_table"}
                   - if @action == 'edit'
                     - array_values = Array.new
@@ -145,8 +146,8 @@
                             = check_box_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][igv]', pod.igv, { class: 'provision_direct_igv', onchange: "enableFieldsForIgv(this);" }
                             %i
 
-                        %td.quantity-igv{:style => "display:none", :class => "provision_quantity-igv"}
-                          = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',pod.quantity_igv, class: "igv-item"
+                        %td.quantity-igv{ :class => "provision_quantity-igv"}
+                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',pod.quantity_igv, class: "form-control igv-item", :readonly => true
 
                         %td.price-with-igv
                           = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv, class: "form-control unit-price-igv", :readonly => true
@@ -157,6 +158,7 @@
                         %td.delete-item
                           %label.checkbox
                             = check_box 'provision[provision_direct_purchase_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                            %i
 
                       :javascript
                         $(document).ready(function(){
@@ -241,7 +243,7 @@
                             escapeMarkup: function (m) { return m; }
                           });
                         });
-                        
+
                       - @reg_n += 1
 
         .col-sm-12.col-md-12{:style => "margin-bottom: 20px; margin-top: 20px;"}

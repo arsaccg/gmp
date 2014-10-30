@@ -94,7 +94,7 @@
                       %td
                         = number_to_currency provision_detail.quantity_igv.to_f, unit: 'S/.', precision: 2
                       %td
-                        = number_to_currency (provision_detail.price+provision_detail.unit_price_igv-provision_detail.discount_before.to_f).to_f, unit: 'S/.', precision: 2
+                        = number_to_currency (provision_detail.price.to_f+provision_detail.unit_price_igv.to_f-provision_detail.discount_before.to_f).to_f, unit: 'S/.', precision: 2
                       %td
                         = number_to_currency ((provision_detail.price.to_f+provision_detail.unit_price_igv.to_f-provision_detail.discount_before.to_f-provision_detail.discount_after.to_f).to_f), unit: 'S/.', precision: 2
 
