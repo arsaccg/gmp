@@ -156,90 +156,92 @@
 
                         %td.delete-item
                           %label.checkbox
-                            = check_box 'provision', '[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][_destroy]'
+                            = check_box 'provision[provision_direct_purchase_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+
                       :javascript
-                          $(document).ready(function(){ 
-                            var a = #{@reg_n} + "a";
-                            var p = #{@reg_n} + "p";
+                        $(document).ready(function(){
+                          var a = #{@reg_n} + "a";
+                          var p = #{@reg_n} + "p";
 
-                            $('#'+a).select2({
-                              placeholder: "Buscar cuenta contable...",
-                              minimumInputLength: 3,
-                              ajax: {
-                                url: "#{account3l_administration_provision_articles_path}",
-                                dataType: 'json',
-                                type: 'POST',
-                                quietMillis: 100,
-                                data: function(term, page){
-                                  return {
-                                    q: term,
-                                    page: page,
+                          $('#'+a).select2({
+                            placeholder: "Buscar cuenta contable...",
+                            minimumInputLength: 3,
+                            ajax: {
+                              url: "#{account3l_administration_provision_articles_path}",
+                              dataType: 'json',
+                              type: 'POST',
+                              quietMillis: 100,
+                              data: function(term, page){
+                                return {
+                                  q: term,
+                                  page: page,
+                                  authenticity_token: "#{form_authenticity_token}"
+                                };
+                              },
+                              results: function(data, page){
+                                return {results: data.articles};
+                              }
+                            },
+                            initSelection: function(element, callback) {
+                              var id=$(element).val();
+                              if (id != "") {
+                                $.ajax("#{account3l_administration_provision_articles_path}", {
+                                  type: 'POST',
+                                  data: {
+                                    element: id,
                                     authenticity_token: "#{form_authenticity_token}"
-                                  };
-                                },
-                                results: function(data, page){
-                                  return {results: data.articles};
-                                }
-                              },
-                              initSelection: function(element, callback) {
-                                var id=$(element).val();
-                                if (id != "") {
-                                  $.ajax("#{account3l_administration_provision_articles_path}", {
-                                    type: 'POST',
-                                    data: {
-                                      element: id,
-                                      authenticity_token: "#{form_authenticity_token}"
-                                    },
-                                    dataType: "json"
-                                  }).done(function(data) { 
-                                    callback(data.articles[0]);
-                                  });
-                                }
-                              },
-                              formatResult: function(node){ return '<div>' + node.code +'</div>' },
-                              formatSelection: function(node){ return (node.code) },
-                              escapeMarkup: function (m) { return m; }
-                            });
+                                  },
+                                  dataType: "json"
+                                }).done(function(data) { 
+                                  callback(data.articles[0]);
+                                });
+                              }
+                            },
+                            formatResult: function(node){ return '<div>' + node.code +'</div>' },
+                            formatSelection: function(node){ return (node.code) },
+                            escapeMarkup: function (m) { return m; }
+                          });
 
-                            $('#'+p).select2({
-                              placeholder: "Buscar cuenta contable...",
-                              minimumInputLength: 3,
-                              ajax: {
-                                url: "#{phases3l_administration_provision_articles_path}",
-                                dataType: 'json',
-                                type: 'POST',
-                                quietMillis: 100,
-                                data: function(term, page){
-                                  return {
-                                    q: term,
-                                    page: page,
+                          $('#'+p).select2({
+                            placeholder: "Buscar cuenta contable...",
+                            minimumInputLength: 3,
+                            ajax: {
+                              url: "#{phases3l_administration_provision_articles_path}",
+                              dataType: 'json',
+                              type: 'POST',
+                              quietMillis: 100,
+                              data: function(term, page){
+                                return {
+                                  q: term,
+                                  page: page,
+                                  authenticity_token: "#{form_authenticity_token}"
+                                };
+                              },
+                              results: function(data, page){
+                                return {results: data.articles};
+                              }
+                            },
+                            initSelection: function(element, callback) {
+                              var id=$(element).val();
+                              if (id != "") {
+                                $.ajax("#{phases3l_administration_provision_articles_path}", {
+                                  type: 'POST',
+                                  data: {
+                                    element: id,
                                     authenticity_token: "#{form_authenticity_token}"
-                                  };
-                                },
-                                results: function(data, page){
-                                  return {results: data.articles};
-                                }
-                              },
-                              initSelection: function(element, callback) {
-                                var id=$(element).val();
-                                if (id != "") {
-                                  $.ajax("#{phases3l_administration_provision_articles_path}", {
-                                    type: 'POST',
-                                    data: {
-                                      element: id,
-                                      authenticity_token: "#{form_authenticity_token}"
-                                    },
-                                    dataType: "json"
-                                  }).done(function(data) { 
-                                    callback(data.articles[0]);
-                                  });
-                                }
-                              },
-                              formatResult: function(node){ return '<div>' + node.code +'</div>' },
-                              formatSelection: function(node){ return (node.code) },
-                              escapeMarkup: function (m) { return m; }
-                            });
-                          });     
+                                  },
+                                  dataType: "json"
+                                }).done(function(data) { 
+                                  callback(data.articles[0]);
+                                });
+                              }
+                            },
+                            formatResult: function(node){ return '<div>' + node.code +'</div>' },
+                            formatSelection: function(node){ return (node.code) },
+                            escapeMarkup: function (m) { return m; }
+                          });
+                        });
+                        
                       - @reg_n += 1
 
         .col-sm-12.col-md-12{:style => "margin-bottom: 20px; margin-top: 20px;"}
