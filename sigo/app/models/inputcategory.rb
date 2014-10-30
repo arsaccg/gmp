@@ -82,59 +82,6 @@ class Inputcategory < ActiveRecord::Base
     end
 
     def self.build_query_phases(budgetid)
-        # str = "SELECT T1.wbscode, T1.fase,  CONCAT('0', T1.category_id) as category_id, T1.description,  SUM(T1.amount) AS amount_sale
-        #             FROM (
-        #                     SELECT itembywbses.wbscode,category_id, wbsitems.fase, inputcategories.description, itembybudgets.item_id,itembybudgets.`order` AS item_order ,SUM(inputbybudgetanditems.price*inputbybudgetanditems.quantity*itembywbses.measured) AS amount
-        #                     FROM inputcategories, inputbybudgetanditems, itembybudgets
-        #                     RIGHT JOIN  itembywbses ON
-        #                                 itembywbses.item_id = itembybudgets.item_id AND
-        #                                 itembywbses.order_budget = itembybudgets.`order` 
-        #                     LEFT JOIN   wbsitems ON
-        #                                 itembywbses.wbsitem_id = wbsitems.id
-        #                     WHERE inputbybudgetanditems.cod_input LIKE CONCAT('0', CONCAT(category_id, '%'))  AND
-        #                           inputbybudgetanditems.budget_id = '" + budgetid + "' AND
-        #                           inputbybudgetanditems.item_id=itembybudgets.item_id AND
-        #                           inputbybudgetanditems.budget_id = itembybudgets.budget_id AND
-        #                           inputbybudgetanditems.`order` = itembybudgets.`order` 
-        #                     GROUP BY category_id, itembybudgets.item_id
-        #                     ORDER BY category_id 
-        #                 ) AS T1, itembybudgets
-                      
-        #             WHERE itembybudgets.item_id =  T1.item_id AND
-        #                   itembybudgets.`order` =  T1.item_order 
-                            
-        #             GROUP BY T1.wbscode, category_id
-        #             ORDER BY category_id;"
-
-        # str = "SELECT T1.wbscode, T1.fase, CONCAT('0', T1.code) as code, T1.name, 
-        #         SUM(T1.amount) AS amount_sale, T1.coditem,T1.item_order,T1.measured
-        #        FROM (
-        #         SELECT itembywbses.wbscode, code, wbsitems.fase, type_of_articles.name, 
-        #           itembybudgets.item_id, itembybudgets.`order` AS item_order, 
-        #           SUM(inputbybudgetanditems.price*inputbybudgetanditems.quantity*itembywbses.measured) AS amount, 
-        #           inputbybudgetanditems.coditem, itembywbses.measured
-        #          FROM type_of_articles, inputbybudgetanditems, itembybudgets
-        #          RIGHT JOIN itembywbses ON
-        #          itembywbses.coditem = itembybudgets.item_code AND
-        #          itembywbses.order_budget = itembybudgets.`order` AND
-        #          itembywbses.budget_id = " + budgetid.to_s  + "
-        #          LEFT JOIN wbsitems ON
-        #          itembywbses.wbsitem_id = wbsitems.id
-        #          WHERE
-        #          inputbybudgetanditems.cod_input LIKE CONCAT('0', CONCAT(code, '%'))  AND
-        #          inputbybudgetanditems.budget_id = " + budgetid.to_s  + " AND
-        #          inputbybudgetanditems.coditem=itembybudgets.item_code AND
-        #          inputbybudgetanditems.budget_id = itembybudgets.budget_id AND
-        #          inputbybudgetanditems.`order` = itembybudgets.`order` 
-        #          GROUP BY code, itembybudgets.item_id
-        #            ORDER BY code
-        #        ) AS T1, itembybudgets
-               
-        #        WHERE itembybudgets.item_id = T1.item_id AND
-        #        itembybudgets.`order` = T1.item_order 
-               
-        #        GROUP BY T1.wbscode, code
-        #        ORDER BY code;"
           str = "SELECT  `wbsitems`.codewbs, `wbsitems`.id, `inputcategories`.category_id, `inputcategories`.description, SUM(  `inputbybudgetanditems`.price * `inputbybudgetanditems`.quantity *  `itembybudgets`.measured ) as amount, `itembywbses`.coditem, `itembywbses`.order_budget, `itembybudgets`.measured
                 FROM  `wbsitems` ,  `itembywbses` ,  `inputbybudgetanditems` ,  `itembybudgets` ,  `inputcategories` 
                 WHERE  `itembywbses`.wbscode =  `wbsitems`.codewbs
