@@ -156,7 +156,7 @@
 
                         %td.delete-item
                           %label.checkbox
-
+                            = check_box 'provision', '[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][_destroy]'
                       :javascript
                           $(document).ready(function(){ 
                             var a = #{@reg_n} + "a";
