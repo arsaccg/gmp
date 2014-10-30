@@ -145,7 +145,20 @@ class Administration::ProvisionsController < ApplicationController
               end
               currency = purchase_detail.purchase_order.money.symbol
               if pending > 0
-                @data_orders << [ detail_order.article.code, detail_order.article.name, purchase_detail.amount, purchase_detail.unit_price_igv, purchase_detail.unit_price, purchase_detail.description, purchase_detail.id, pending, currency, 'purchase' ]
+                @data_orders << [ 
+                  detail_order.article.code, 
+                  detail_order.article.name, 
+                  purchase_detail.amount, 
+                  purchase_detail.unit_price_igv, 
+                  purchase_detail.unit_price, 
+                  purchase_detail.description, 
+                  purchase_detail.id, 
+                  pending, 
+                  currency, 
+                  'purchase',
+                  (purchase_detail.quantity_igv.to_f*-1).round(2), 
+                  purchase_detail.unit_price_before_igv.to_f.round(2)
+                ]
               end
             end
           end
@@ -172,7 +185,20 @@ class Administration::ProvisionsController < ApplicationController
                 pending = service_detail.amount
               end
               currency = service_detail.order_of_service.money.symbol rescue 'S/.'
-              @data_orders << [ service_detail.article.code, service_detail.article.name, service_detail.amount, (service_detail.unit_price_igv.to_f + service_detail.discount_after.to_f), service_detail.unit_price_before_igv.to_f, service_detail.description, service_detail.id, pending, currency, 'service' ]
+              @data_orders << [ 
+                service_detail.article.code, 
+                service_detail.article.name, 
+                service_detail.amount, 
+                (service_detail.unit_price_igv.to_f + service_detail.discount_after.to_f), 
+                service_detail.unit_price_before_igv.to_f, 
+                service_detail.description, 
+                service_detail.id, 
+                pending, 
+                currency, 
+                'service',
+                (service_detail.quantity_igv.to_f*-1).round(2),
+                service_detail.unit_price_before_igv.to_f.round(2)
+              ]
             end
           end
         end

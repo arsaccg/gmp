@@ -632,7 +632,7 @@
             %label.control-label Situación Educativa
             %br
             .input-group
-              %select.col-sm-6.form-control#educationtype{:name =>"worker[levelofinstruction]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px', class: 'educationtype' }
+              %select.col-sm-6.form-control#educationtype{:name =>"worker[levelofinstruction]", 'style' => 'width:200px', class: 'educationtype' }
                 -if @action == 'edit'
                   %option{:value => nil, :selected => 'selected', :disabled=>true} Seleccione un nivel
                   %option{:value => "Sin Educación Formal", :selected => "#{@worker.levelofinstruction}"=="Sin Educación Formal"} Sin Educación Formal
@@ -697,24 +697,16 @@
               %select.form-control{:name =>"worker[primarystartdate]", :style => 'width:100%;padding: 0;border: none;'}
                 -if !@years.nil?
                   - @years.each do |years|
-                    - if @worker.primarystartdate == years
-                      %option{:value => "#{years}", :selected => true}
-                        = years
-                    - else
-                      %option{:value => "#{years}"}
-                        = years
+                    %option{:value => "#{years}", :selected => @worker.primarystartdate==years}
+                      = years
           %section.col.col-2
             %label.label Hasta
             %label.input{for: "primaryenddate"}
               %select.form-control{:name =>"worker[primaryenddate]", :style => 'width:100%;padding: 0;border: none;'}
                 -if !@years.nil?
                   - @years.each do |years|
-                    - if @worker.primarystartdate == years
-                      %option{:value => "#{years}", :selected => true}
-                        = years
-                    - else
-                      %option{:value => "#{years}"}
-                        = years
+                    %option{:value => "#{years}", :selected => @worker.primaryenddate==years}
+                      = years
         .row
           %section.col.col-5
             %label.label Colegio Secundaria
@@ -730,24 +722,16 @@
               %select.form-control{:name =>"worker[highschoolstartdate]", :style => 'width:100%;padding: 0;border: none;'}
                 -if !@years.nil?
                   - @years.each do |years|
-                    - if @worker.primarystartdate == years
-                      %option{:value => "#{years}", :selected => true}
-                        = years
-                    - else
-                      %option{:value => "#{years}"}
-                        = years
+                    %option{:value => "#{years}", :selected => @worker.highschoolstartdate==years}
+                      = years
           %section.col.col-2
             %label.label Hasta
             %label.input{for: "highschoolenddate"}
               %select.form-control{:name =>"worker[highschoolenddate]", :style => 'width:100%;padding: 0;border: none;'}
                 -if !@years.nil?
                   - @years.each do |years|
-                    - if @worker.primarystartdate == years
-                      %option{:value => "#{years}", :selected => true}
-                        = years
-                    - else
-                      %option{:value => "#{years}"}
-                        = years
+                    %option{:value => "#{years}", :selected => @worker.highschoolenddate==years}
+                      = years
         .row
           %section.col.col-2
             %div
@@ -774,8 +758,10 @@
                     %td.col-2=oos.profession
                     %td.col-2=oos.title
                     %td.col-2=oos.numberoftuition
-                    %td.col-2=oos.start_date
-                    %td.col-2=oos.end_date
+                    %td.col-2
+                      = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][start_date]', oos.start_date , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', as: :string, :type => "date"
+                    %td.col-2
+                      = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][end_date]', oos.end_date, class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', as: :string, :type => "date"
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
