@@ -248,7 +248,7 @@ else
           style(row(0), :background_color => 'A0D8A0')
         end
   @worker_center_of_studies.each do |data|
-    table([ ["#{data.name}", "#{data.profession}", "#{data.title}", "#{data.numberoftuition}", if "#{data.start_date}"!="" then "#{data.start_date.to_s}" end, if "#{data.end_date}"!="" then "#{data.end_date.to_s}" end] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [160,100,70,70,60,60]) do
+    table([ ["#{data.name}", "#{data.profession}", "#{data.title}", "#{data.numberoftuition}", if "#{data.start_date}"!="" then "#{data.start_date.strftime("%m/%Y").to_s}" end, if "#{data.end_date}"!="" then "#{data.end_date.strftime("%m/%Y").to_s}" end] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [160,100,70,70,60,60]) do
           style(columns(0..5), :align => :center)
             style(columns(0..5), :size => 7)
           end
