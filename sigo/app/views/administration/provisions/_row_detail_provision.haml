@@ -30,7 +30,7 @@
       %code= "Por atender: #{data_order_detail[8]}"
     %td.unit-price
       = number_to_currency(data_order_detail[5], unit: data_order_detail[13], precision: 4)
-      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][current_unit_price]', data_order_detail[5], class: "unit-price-item"
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', data_order_detail[5], class: "unit-price-item"
     %td.discount-before
       %div#db
         = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', data_order_detail[9].to_f.round(2), class: "form-control amount_with_discount_before_igv", :readonly => true
