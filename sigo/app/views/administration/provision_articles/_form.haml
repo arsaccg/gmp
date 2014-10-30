@@ -118,11 +118,7 @@
                         %td= Article.find(pod.article_id).name.to_s
                         %td= Article.find(pod.article_id).unit_of_measurement.symbol.to_s
                         %td.account-accountant
-                          %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :required => true, title:'No puede dejar este campo vacio'}
-                            %option{:value => nil, :disabled => true} Seleccionar cuenta contable
-                            - @account_accountants.each do |account_accountant|
-                              %option{:value => "#{account_accountant.id}", :selected=>"#{account_accountant.id}"=="#{pod.account_accountant_id}"}
-                                = '(' + account_accountant.code + ') ' + account_accountant.name
+                          %input{'name' => 'provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
                         %td.sector
                           %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
                             %option{:value => nil, :disabled => true} Seleccionar Sector
@@ -132,11 +128,7 @@
                                   %option{:value => "#{subsector.id}", :selected=>"#{subsector.id}"=="#{pod.sector_id}"}
                                     = subsector.name
                         %td.phase
-                          %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
-                            %option{:value => nil, :disabled => true} Seleccionar Fase
-                            - @phases.each do |phase|
-                              %option{:value => "#{phase.id}", :selected=>"#{phase.id}"=="#{pod.phase_id}"}
-                                = phase.code + " " + phase.name
+                          %input{'name' => 'provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][phase_id]', 'type' => 'hidden', 'id' => "#{@reg_n.to_s}"+'p', 'style' => 'width:100%;padding: 0;border: none;'}
 
                         %td.amount
                           = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"
@@ -167,7 +159,59 @@
                         %td.delete-item
                           %label.checkbox
                             = check_box 'provision', '[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][_destroy]'
+                      :javascript
+                          $(document).ready(function(){ 
+                            var a = #{@reg_n} + "a";
+                            var p = #{@reg_n} + "p";
 
+                            $('#'+a).select2({
+                              placeholder: "Buscar cuenta contable...",
+                              minimumInputLength: 3,
+                              ajax: {
+                                url: "#{account3l_administration_provision_articles_path}",
+                                dataType: 'json',
+                                type: 'POST',
+                                quietMillis: 100,
+                                data: function(term, page){
+                                  return {
+                                    q: term,
+                                    page: page,
+                                    authenticity_token: "#{form_authenticity_token}"
+                                  };
+                                },
+                                results: function(data, page){
+                                  return {results: data.articles};
+                                }
+                              },
+                              formatResult: function(node){ return '<div>' + node.code +'</div>' },
+                              formatSelection: function(node){ return (node.code) },
+                              escapeMarkup: function (m) { return m; }
+                            });
+
+                            $('#'+p).select2({
+                              placeholder: "Buscar cuenta contable...",
+                              minimumInputLength: 3,
+                              ajax: {
+                                url: "#{phases3l_administration_provision_articles_path}",
+                                dataType: 'json',
+                                type: 'POST',
+                                quietMillis: 100,
+                                data: function(term, page){
+                                  return {
+                                    q: term,
+                                    page: page,
+                                    authenticity_token: "#{form_authenticity_token}"
+                                  };
+                                },
+                                results: function(data, page){
+                                  return {results: data.articles};
+                                }
+                              },
+                              formatResult: function(node){ return '<div>' + node.code +'</div>' },
+                              formatSelection: function(node){ return (node.code) },
+                              escapeMarkup: function (m) { return m; }
+                            });
+                          });     
                       - @reg_n += 1
 
         .col-sm-12.col-md-12{:style => "margin-bottom: 20px; margin-top: 20px;"}
