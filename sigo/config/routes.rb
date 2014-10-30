@@ -604,6 +604,8 @@ ArsacLogistica::Application.routes.draw do
         post 'add_more_row_form_extra_op'
         post 'display_articles'
         post 'display_proveedor'
+        post 'account3l'
+        post 'phases3l'
       end
     end
     resources :account_accountants do
