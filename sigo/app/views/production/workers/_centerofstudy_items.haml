@@ -13,18 +13,10 @@
       = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][numberoftuition]', @numberoftuition.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
   %td.col-md-1.start_date{:style => "width:5%"}
     %div
-      %select.form-control{:name =>"worker[worker_center_of_studies_attributes]" + @reg_n.to_s + "[start_date]", :style => 'width:100%;padding: 0;border: none;'}
-        -if !@years.nil?
-          - @years.each do |years|
-            %option{:value => "#{years}"}
-              = years
+      = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][start_date]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', as: :string, :type => "date"
   %td.col-md-1.end_date{:style => "width:5%"}
     %div
-      %select.form-control{:name =>"worker[worker_center_of_studies_attributes]" + @reg_n.to_s + "[end_date]", :style => 'width:100%;padding: 0;border: none;'}
-        -if !@years.nil?
-          - @years.each do |years|
-            %option{:value => "#{years}"}
-              = years
+      = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][end_date]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', as: :string, :type => "date"
   %td{:style => "width: 1%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
 
