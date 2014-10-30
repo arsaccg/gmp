@@ -30,14 +30,14 @@
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= workerDetail3[1] + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= Article.find_by_id(Article.find_article_by_global_article2(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])).unit_of_measurement.name
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[3], unit: 'S/. ', precision: 2)
-              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[7].to_f)
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[5].to_f)
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                 - @workers_array5.each do |workers|
                   -if workers[1]==workerDetail3[1]
                     = number_to_currency((workers[4].to_f-workerDetail3[4].to_f), unit: 'S/. ', precision: 2)
               %th{ 'style' => 'text-align:center;vertical-align: middle' }= sprintf('%.2f', workerDetail3[2].to_s)
               %th{ 'style' => 'text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[4].to_s, unit: 'S/. ', precision: 2)
-              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',(workerDetail3[7].to_f+workerDetail3[2]).to_s)
+              %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',(workerDetail3[5].to_f+workerDetail3[2]).to_s)
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
                 - @workers_array5.each do |workers|
                   -if workers[1]==workerDetail3[1]
@@ -51,7 +51,7 @@
         %h4.modal-title No hay datos.
         %br
       %footer
-        %a.btn.btn-sm.btn-success.btn-prev{ :href => "#{part_equipment_pdf_production_valuation_of_equipments_path}.pdf?name=#{@name}&code=#{@code}&start_date=#{@start_date}&end_date=#{@end_date}&cad=#{@cad}&id=#{@id}", :target => '_blank', :style=>"float: right;"}
+        %a.btn.btn-sm.btn-success.btn-prev{ :href => "#{part_equipment_pdf_production_valuation_of_equipments_path}.pdf?name=#{@name}&code=#{@code}&start_date=#{@start_date}&end_date=#{@end_date}&cad=#{@cad}&ids=#{@ids}", :target => '_blank', :style=>"float: right;"}
           Ver PDF
         %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
           Salir
