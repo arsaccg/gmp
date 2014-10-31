@@ -41,14 +41,11 @@ class Administration::PaymentOrdersController < ApplicationController
   def create
     paymentOrder = PaymentOrder.new(payment_order_parameters)
     codes = Array.new
-    Provision.find(paymentOrder.provision_id).provision_details.each do |p|
-      if p.type_of_order=="purchase_order"
-        codes << PurchaseOrderDetail.find(p.order_detail_id).delivery_order_detail.article.code
-      elsif p.type_of_order=="order_service"
-        codes << OrderoOServiceDetail.find(p.order_detail_id).delivery_order_detail.article.code
-      end
+    Provision.find(paymentOrder.provision_id).provision_direct_purchase_details.each do |p|
+      codes << p.article.code
     end
     codes = codes.join('-')
+    paymentOrder.cost_center_id = get_company_cost_center('cost_center')
     paymentOrder.article_code = codes
     if paymentOrder.save
       flash[:notice] = "Se ha creado correctamente."
@@ -72,15 +69,12 @@ class Administration::PaymentOrdersController < ApplicationController
   def update
     paymentOrder = PaymentOrder.find(params[:id])
     codes = Array.new
-    Provision.find(paymentOrder.provision_id).provision_details.each do |p|
-      if p.type_of_order=="purchase_order"
-        codes << PurchaseOrderDetail.find(p.order_detail_id)..article.code
-      elsif p.type_of_order=="order_service"
-        codes << OrderoOServiceDetail.find(p.order_detail_id).delivery_order_detail.article.code
-      end
+    Provision.find(paymentOrder.provision_id).provision_direct_purchase_details.each do |p|
+      codes << p.article.code
     end
     codes = codes.join('-')
     paymentOrder.article_code = codes    
+    paymentOrder.cost_center_id = get_company_cost_center('cost_center')
     if paymentOrder.update_attributes(payment_order_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
