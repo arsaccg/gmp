@@ -293,7 +293,9 @@ class Administration::ProvisionsController < ApplicationController
             ((total.round(2)*igv.to_f) + total.round(2)).round(2),
             percepcion,
             purchase_order_detail.purchase_order.money.symbol,
-            purchase_order_detail.delivery_order_detail.article.id
+            purchase_order_detail.delivery_order_detail.article.id,
+            purchase_order_detail.delivery_order_detail.phase_id,
+            purchase_order_detail.delivery_order_detail.sector_id
           ]
 
         end
@@ -349,7 +351,9 @@ class Administration::ProvisionsController < ApplicationController
           (total_neto-percepcion_value), # [11]
           percepcion, # [12]
           service_order_detail.order_of_service.money.symbol, # [13]
-          service_order_detail.article.id
+          service_order_detail.article.id,
+          service_order_detail.phase_id,
+          service_order_detail.sector_id,
         ]
       end
     end
