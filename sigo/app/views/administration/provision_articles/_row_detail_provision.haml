@@ -1,6 +1,7 @@
 %tr{id: "tr-" + @reg_n.to_s}
   %td{:style => "display:none", :class => "provision_article-id"}
     = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article
+    = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][flag]', 1
   %td= @name_article
   %td= @unit_of_measurement
   %td.account-accountant

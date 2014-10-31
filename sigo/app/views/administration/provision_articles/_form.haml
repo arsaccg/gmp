@@ -119,15 +119,23 @@
                         %td.account-accountant
                           %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value'=>pod.account_accountant_id}
                         %td.sector
-                          %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
-                            %option{:value => nil, :disabled => true} Seleccionar Sector
-                            - @sectors.each do |sector|
-                              %optgroup{:label => "#{sector.name}"}
-                                -Sector.getSubSectors(sector.code).each do |subsector|
-                                  %option{:value => "#{subsector.id}", :selected=>"#{subsector.id}"=="#{pod.sector_id}"}
-                                    = subsector.name
+                          -if pod.flag.to_i == 1
+                            %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
+                              %option{:value => nil, :disabled => true} Seleccionar Sector
+                              - @sectors.each do |sector|
+                                %optgroup{:label => "#{sector.name}"}
+                                  -Sector.getSubSectors(sector.code).each do |subsector|
+                                    %option{:value => "#{subsector.id}", :selected=>"#{subsector.id}"=="#{pod.sector_id}"}
+                                      = subsector.name
+                          -else
+                            - s = Sector.find(pod.sector_id)
+                            = s.code + " - " + s.name
                         %td.phase
-                          %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'type' => 'hidden', 'id' => "#{@reg_n.to_s}"+'p', 'style' => 'width:100%;padding: 0;border: none;', 'value'=>pod.phase_id}
+                          -if pod.flag.to_i == 1
+                            %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'type' => 'hidden', 'id' => "#{@reg_n.to_s}"+'p', 'style' => 'width:100%;padding: 0;border: none;', 'value'=>pod.phase_id}
+                          -else
+                            -p = Phase.find(pod.phase_id)
+                            = p.code
 
                         %td.amount
                           = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"

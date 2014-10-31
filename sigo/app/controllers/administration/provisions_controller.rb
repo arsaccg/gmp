@@ -441,6 +441,7 @@ class Administration::ProvisionsController < ApplicationController
         :unit_price_before_igv,
         :igv,
         :quantity_igv,
+        :flag,
         #:discount_after,
         :discount_before,
         :unit_price_igv,
