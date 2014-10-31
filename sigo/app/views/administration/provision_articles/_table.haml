@@ -10,7 +10,7 @@
       %table#dt_basic.table.table-striped.table-bordered.table-hover
         %thead
           %tr
-            %th N° de Documento
+            %th N° de Factura
             %th Documento
             %th Proveedor
             %th Glosa
@@ -22,7 +22,7 @@
           - @provision.each do |provision|
             %tr
               %td
-                = provision.number_document_provision
+                = provision.series.to_s + ' - ' + provision.number_document_provision.to_s
               %td
                 = provision.document_provision.name
               %td
@@ -30,9 +30,9 @@
               %td
                 = provision.description
               %td
-                = number_to_currency(Provision.sumProvisionDetailDirectPurchaseBeforeIGV(provision), unit: 'S/. ', precision: 2)
+                = number_to_currency provision.provision_direct_purchase_details.sum(:unit_price_before_igv), unit: 'S/. ', precision: 2
               %td
-                = (ProvisionDirectPurchaseDetail.where("provision_id = ?", provision.id).first.quantity_igv.to_i * 100).to_s + '%' rescue '18%'
+                = number_to_currency provision.provision_direct_purchase_details.sum(:quantity_igv), unit: 'S/. ', precision: 2
               %td
                 = number_to_currency(Provision.sumProvisionDetailDirectPurchaseAfterIGV(provision), unit: 'S/. ', precision: 2)
               %td

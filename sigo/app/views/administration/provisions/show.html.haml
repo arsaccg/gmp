@@ -71,9 +71,10 @@
                     %th Cantidad a Atender
                     %th Precio Unitario
                     %th Descuento
+                    %th Parcial sin IGV
                     %th IGV
-                    %th Total Neto con IGV
-                    %th Total Neto con IGV y Descuentos
+                    %th Parcial con IGV
+                    %th Parcial con IGV y Descuentos
                 %tbody
                   - @provision.provision_direct_purchase_details.each do |provision_detail|
                     %tr
@@ -88,15 +89,17 @@
                       %td
                         = provision_detail.amount.to_f
                       %td
-                        = number_to_currency provision_detail.price.to_f, unit: 'S/.', precision: 2
+                        = number_to_currency provision_detail.price.to_f, unit: 'S/.', precision: 4
                       %td
                         = number_to_currency provision_detail.discount_before.to_f, unit: 'S/.', precision: 2
                       %td
+                        = number_to_currency provision_detail.unit_price_before_igv.to_f, unit: 'S/.', precision: 2
+                      %td
                         = number_to_currency provision_detail.quantity_igv.to_f, unit: 'S/.', precision: 2
                       %td
-                        = number_to_currency (provision_detail.price.to_f+provision_detail.unit_price_igv.to_f-provision_detail.discount_before.to_f).to_f, unit: 'S/.', precision: 2
+                        = number_to_currency (provision_detail.unit_price_before_igv.to_f+provision_detail.quantity_igv.to_f).to_f, unit: 'S/.', precision: 2
                       %td
-                        = number_to_currency ((provision_detail.price.to_f+provision_detail.unit_price_igv.to_f-provision_detail.discount_before.to_f-provision_detail.discount_after.to_f).to_f), unit: 'S/.', precision: 2
+                        = number_to_currency ((provision_detail.unit_price_before_igv.to_f+provision_detail.quantity_igv.to_f-provision_detail.discount_after.to_f).to_f), unit: 'S/.', precision: 2
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-provisions{type: "button"}
   %i.fa.fa-arrow-left>
