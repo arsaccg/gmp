@@ -34,6 +34,7 @@
                   %tr
                     %td
                       = @purchaseOrder.code.to_s.rjust(5, '0')
+
                     %td
                       = translate_purchase_order_state(@purchaseOrder.state)
                     %td
@@ -153,6 +154,7 @@
                 %thead
                   %tr
                     %th Codigo
+                    %th Orden de Suministro
                     %th Insumo
                     %th Cantidad
                     %th Unidad de Medida
@@ -169,6 +171,8 @@
                     %tr
                       %td
                         = purchasedetail.delivery_order_detail.article.code
+                      %td
+                        = purchasedetail.delivery_order_detail.delivery_order.id.to_s.rjust(5, '0')+" - "+purchasedetail.delivery_order_detail.delivery_order.description.to_s
                       %td
                         = purchasedetail.delivery_order_detail.article.name
                       %td
@@ -197,9 +201,24 @@
                       %td
                         = number_to_currency((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f-des).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
                       %td
-                        = number_to_currency purchasedetail.quantity_igv.to_f*-1, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                        -if purchasedetail.quantity_igv.to_f == 0
+                          = number_to_currency purchasedetail.quantity_igv.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                        -else
+                          = number_to_currency purchasedetail.quantity_igv.to_f*-1, unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
-                        = number_to_currency ((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f-des)-purchasedetail.quantity_igv.to_f), unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                        - desf = 0
+                        - purchasedetail.purchase_order_extra_calculations.where("apply LIKE 'after' AND extra_calculation_id NOT IN (2)").each do |poec|
+                          - if poec.type == 'percent'
+                            -if poec.operation == 'sum'
+                              - desf -= (poec.value/100)*((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f)-purchasedetail.quantity_igv.to_f)
+                            -else
+                              - desf += (poec.value/100)*((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f)-purchasedetail.quantity_igv.to_f)
+                          - elsif poec.type == 'soles'
+                            -if poec.operation == 'sum'
+                              - desf -= poec.value
+                            -else
+                              - desf += poec.value                      
+                        = number_to_currency ((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f-des)-purchasedetail.quantity_igv.to_f-desf), unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
                         - sum = 0
                         - purchasedetail.purchase_order_extra_calculations.where(:extra_calculation_id => 2).where(:apply => 'after').each do |poec|
@@ -209,7 +228,7 @@
                             - sum += poec.value
                         = number_to_currency sum.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
-                        = number_to_currency (((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f)-purchasedetail.quantity_igv.to_f) + sum.to_f), unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                        = number_to_currency (((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f-des)-purchasedetail.quantity_igv.to_f-desf)+ sum.to_f), unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
                         = purchasedetail.description
                         
