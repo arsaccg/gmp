@@ -1,3 +1,32 @@
+:javascript
+
+  function update_data(itembudget_id, measured_total){
+
+    partial_measured=parseFloat($("#itembudget_" + itembudget_id).text());
+
+    prev_measured=parseFloat($("#prev_" + itembudget_id).text());
+    $("#total_" + itembudget_id).text(partial_measured + prev_measured);
+    $("#credit_" + itembudget_id).text(Number((measured_total - (partial_measured + prev_measured)).toFixed(2)));
+
+    price=parseFloat($("#pu_" + itembudget_id).text());
+    $("#pc_" + itembudget_id).text(Number((price * measured_total).toFixed(2)));
+    meter=parseFloat($("#prev_" + itembudget_id).text());
+    $("#aprev_" + itembudget_id).text(Number((price * meter).toFixed(2)));
+    meter=parseFloat($("#itembudget_" + itembudget_id).text());
+    $("#a_val_act_" + itembudget_id).text(Number((price * meter).toFixed(2)));
+
+    amount1=parseFloat($("#a_val_act_" + itembudget_id).text());
+    amount2=parseFloat($("#aprev_" + itembudget_id).text());
+    $("#a_total" + itembudget_id).text(Number((amount1 + amount2).toFixed(2)));
+
+    amount1=parseFloat($("#pc_" + itembudget_id).text());
+    amount2=parseFloat($("#a_total" + itembudget_id).text());
+    $("#remainder" + itembudget_id).text(Number((amount1 - amount2).toFixed(2)));
+  
+    $("#percent" + itembudget_id).text(Number(((amount2/amount1)*100).toFixed(2)));   
+  }
+
+
 %tbody
   - hash_items = Hash.new
   - cache do
@@ -42,6 +71,7 @@
       - @itembybudgets.where("`order` LIKE ?", ib.order.to_s + "%").each do |ibb|
         
         - si = hash_items[ibb.id.to_s]
+        - p si
         %tr{class: "detail_" + ib.id.to_s}
           %td
             = ibb.id

@@ -23,4 +23,8 @@ class PaymentOrder < ActiveRecord::Base
 
     return names_category
   end
+
+  def self.try_function(code, budget_id)
+    ActiveRecord::Base.connection.execute("select get_amount_feo_by_code('"+code+"', "+budget_id+")").first[0]
+  end
 end
