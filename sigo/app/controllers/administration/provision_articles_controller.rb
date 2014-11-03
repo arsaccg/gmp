@@ -118,8 +118,66 @@ class Administration::ProvisionArticlesController < ApplicationController
     @id_article = data_article[1]
     @name_article = data_article[0]
     @unit_of_measurement = data_article[2]
-
     render(:partial => 'row_detail_provision', :layout => false)
+  end
+
+  def account3l
+    if params[:element].nil?
+      word = params[:q]
+    else
+      word = params[:element]
+    end       
+    article_hash = Array.new
+    if !params[:element].nil?    
+      articles = ActiveRecord::Base.connection.execute("
+        SELECT id, code
+        FROM account_accountants
+        WHERE id = #{word}"
+      )
+    else
+      articles = ActiveRecord::Base.connection.execute("
+        SELECT id, code
+        FROM account_accountants
+        WHERE code LIKE  '_______'
+        AND code LIKE '%#{word}%'"
+      )
+    end
+    articles.each do |art|
+      article_hash << {'id' => art[0].to_s, 'code' => art[1]}
+    end
+    render json: {:articles => article_hash}
+  end
+
+  def phases3l
+    if params[:element].nil?
+      word = params[:q]
+    else
+      word = params[:element]
+    end    
+    article_hash = Array.new
+    name = get_company_cost_center('cost_center')
+    if !params[:element].nil?
+      articles = ActiveRecord::Base.connection.execute("
+        SELECT DISTINCT p.id, p.code 
+        FROM wbsitems w, phases p, general_expenses ge 
+        WHERE (w.cost_center_id = #{name} AND w.phase_id = p.id OR ge.phase_id = p.id) 
+        AND p.id = #{word}
+        ORDER BY p.code ASC"
+      )
+    else
+      articles = ActiveRecord::Base.connection.execute("
+        SELECT DISTINCT p.id, p.code 
+        FROM wbsitems w, phases p, general_expenses ge 
+        WHERE (w.cost_center_id = #{name} AND w.phase_id = p.id OR ge.phase_id = p.id) 
+        AND (p.code LIKE '%#{word}%' OR p.name LIKE '%#{word}%')
+        ORDER BY p.code ASC"
+      )
+    end
+
+    articles.each do |art|
+      article_hash << {'id' => art[0].to_s, 'code' => art[1]}
+    end
+    render json: {:articles => article_hash}
   end
 
   def display_articles

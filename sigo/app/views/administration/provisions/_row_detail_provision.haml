@@ -13,31 +13,20 @@
       = data_order_detail[3]
       = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_of_measurement]', data_order_detail[3]
     %td
-      %select.form-control.account_accountant{:name =>"provision[provision_direct_purchase_details_attributes][" + @reg_n.to_s + "][account_accountant_id]", :style => 'border:none;width:100%;', :required => true, title:'No puede dejar este campo vacio'}
-        %option{:value => nil, :selected => true, :disabled => true} Seleccionar cuenta contable
-        - @account_accountants.each do |account_accountant|
-          %option{:value => "#{account_accountant.id}"}
-            = account_accountant.code
+      %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}    
+
     %td.sector
-      %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
-        %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
-        - @sectors.each do |sector|
-          %optgroup{:label => "#{sector.name}"}
-            -Sector.getSubSectors(sector.code).each do |subsector|
-              %option{:value => "#{subsector.id}"}
-                = subsector.name
+      = Sector.find(data_order_detail[16]).code.to_s + ' - '+ Sector.find(data_order_detail[16]).name.to_s
+      %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][sector_id]', 'style' => 'display:none;', 'value'=>data_order_detail[16]}      
     %td.phase
-      %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
-        %option{:value => nil, :selected => true, :disabled => true} Seleccionar Fase
-        - @phases.each do |phase|
-          %option{:value => "#{phase.id}"}
-            = phase.code
+      = Phase.find(data_order_detail[15]).code.to_s
+      %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'style' => 'display:none;', 'value'=>data_order_detail[15]}
     %td.amount
       = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', data_order_detail[8], class: "form-control amount-item", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{data_order_detail[8]})"
       %code= "Por atender: #{data_order_detail[8]}"
     %td.unit-price
       = number_to_currency(data_order_detail[5], unit: data_order_detail[13], precision: 4)
-      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][current_unit_price]', data_order_detail[5], class: "unit-price-item"
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', data_order_detail[5], class: "unit-price-item"
     %td.discount-before
       %div#db
         = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', data_order_detail[9].to_f.round(2), class: "form-control amount_with_discount_before_igv", :readonly => true
@@ -82,4 +71,34 @@
     %td{:style => "width: 1%;"}
       %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
 
+  :javascript
+    $(document).ready(function(){ 
+      var a = #{@reg_n} + "a";
+      var p = #{@reg_n} + "p";
+
+      $('#'+a).select2({
+        placeholder: "Buscar cuenta contable...",
+        minimumInputLength: 3,
+        ajax: {
+          url: "#{account3l_administration_provision_articles_path}",
+          dataType: 'json',
+          type: 'POST',
+          quietMillis: 100,
+          data: function(term, page){
+            return {
+              q: term,
+              page: page,
+              authenticity_token: "#{form_authenticity_token}"
+            };
+          },
+          results: function(data, page){
+            return {results: data.articles};
+          }
+        },
+        formatResult: function(node){ return '<div>' + node.code +'</div>' },
+        formatSelection: function(node){ return (node.code) },
+        escapeMarkup: function (m) { return m; }
+      });
+
+    });     
   - @reg_n += 1

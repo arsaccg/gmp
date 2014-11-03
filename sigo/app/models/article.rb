@@ -12,11 +12,12 @@ class Article < ActiveRecord::Base
   	has_many :worker_contracts
 	  has_many :part_work_details
     has_many :theoretical_values
+    has_many :provision_direct_purchase_details
     
     has_many :inputbybudgetanditems
-  	belongs_to :category
-  	belongs_to :type_of_article
-  	belongs_to :unit_of_measurement
+    belongs_to :category
+    belongs_to :type_of_article
+    belongs_to :unit_of_measurement
     
   	belongs_to :rep_inv_article, :foreign_key => 'id'
 

@@ -10,7 +10,7 @@
       %table#dt_basic.table.table-striped.table-bordered.table-hover
         %thead
           %tr
-            %th N° de Documento
+            %th N° de Factura
             %th Documento
             %th Proveedor
             %th Glosa
@@ -22,7 +22,7 @@
           - @provision.each do |provision|
             %tr
               %td
-                = provision.number_document_provision
+                = provision.series.to_s + ' - ' + provision.number_document_provision.to_s
               %td
                 = provision.document_provision.name
               %td
@@ -30,12 +30,14 @@
               %td
                 = provision.description
               %td
-                = number_to_currency(Provision.sumProvisionDetailDirectPurchaseBeforeIGV(provision), unit: 'S/. ', precision: 2)
+                = number_to_currency provision.provision_direct_purchase_details.sum(:unit_price_before_igv), unit: 'S/. ', precision: 2
               %td
-                = (ProvisionDirectPurchaseDetail.where("provision_id = ?", provision.id).first.quantity_igv.to_i * 100).to_s + '%' rescue '18%'
+                = number_to_currency provision.provision_direct_purchase_details.sum(:quantity_igv), unit: 'S/. ', precision: 2
               %td
                 = number_to_currency(Provision.sumProvisionDetailDirectPurchaseAfterIGV(provision), unit: 'S/. ', precision: 2)
               %td
+                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{administration_provision_path(provision.id)}', 'content', null, null, 'GET')"}
+                  Ver Información              
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_administration_provision_article_path(provision.id)}', 'content', null, null, 'GET')"}
                   Editar
                 %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar' , :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{administration_provision_article_path(provision.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{administration_provision_articles_path}')"}}
