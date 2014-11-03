@@ -8,6 +8,7 @@ class Management::ValorizationsController < ApplicationController
     p @redir
     @budgets=Budget.where(:cost_center_id => get_company_cost_center('cost_center'))
     render :index, :layout => false
+    #=P
   end
   
   def newvalorization
