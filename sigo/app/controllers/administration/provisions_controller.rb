@@ -112,7 +112,7 @@ class Administration::ProvisionsController < ApplicationController
   def display_orders
     supplier = params[:supplier]
     @supplier_obj = Entity.find(supplier)
-    @orders_po = PurchaseOrder.select(:id).select(:date_of_issue).select(:description).where('entity_id = ? AND state = ?', supplier, 'approved')
+    @orders_po = PurchaseOrder.select(:id).select(:date_of_issue).select(:code).select(:description).where('entity_id = ? AND state = ?', supplier, 'approved')
     @orders_oos = OrderOfService.where('entity_id = ? AND state = ?', supplier, 'approved')
 
     render(:partial => 'table_list_orders', :layout => false)
@@ -288,7 +288,7 @@ class Administration::ProvisionsController < ApplicationController
             total.round(2), 
             igv, 
             pending, 
-            purchase_order_detail.discount_before, 
+            purchase_order_detail.discount_before.to_f.abs, 
             purchase_order_detail.discount_after,
             ((total.round(2)*igv.to_f) + total.round(2)).round(2),
             percepcion,

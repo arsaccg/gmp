@@ -885,15 +885,15 @@
     var price_with_igv = 0;
 
     $('#provisions_direct_items_table tr td.price-without-igv input').each(function(i, v){
-      price_without_igv = $(v).val() + price_without_igv;
+      price_without_igv = parseFloat($(v).val()) + parseFloat(price_without_igv);
     });
 
     $('#provisions_direct_items_table tr td.quantity-igv input').each(function(i, v){
-      igv = $(v).val() + igv;
+      igv = parseFloat($(v).val()) + parseFloat(igv);
     });
 
-    $('#provisions_direct_items_table tr td.price-with-igv input').each(function(i, v){
-      price_with_igv = $(v).val() + price_with_igv;
+    $('#provisions_direct_items_table tr td.unit-price-igv input').each(function(i, v){
+      price_with_igv = parseFloat($(v).val()) + parseFloat(price_with_igv);
     });
 
     $('#stp_total_wt_igv').html('S/. ' + parseFloat(price_without_igv).toFixed(2));
