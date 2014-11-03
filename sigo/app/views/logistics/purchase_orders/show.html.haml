@@ -34,6 +34,7 @@
                   %tr
                     %td
                       = @purchaseOrder.code.to_s.rjust(5, '0')
+
                     %td
                       = translate_purchase_order_state(@purchaseOrder.state)
                     %td
@@ -153,6 +154,7 @@
                 %thead
                   %tr
                     %th Codigo
+                    %th Orden de Suministro
                     %th Insumo
                     %th Cantidad
                     %th Unidad de Medida
@@ -169,6 +171,8 @@
                     %tr
                       %td
                         = purchasedetail.delivery_order_detail.article.code
+                      %td
+                        = purchasedetail.delivery_order_detail.delivery_order.id.to_s.rjust(5, '0')+" - "+purchasedetail.delivery_order_detail.delivery_order.description.to_s
                       %td
                         = purchasedetail.delivery_order_detail.article.name
                       %td

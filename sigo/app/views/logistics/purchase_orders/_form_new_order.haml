@@ -86,7 +86,7 @@
         %label.col-md-3.control-label N° O.C.
         .col-md-9
           .input-group
-            = f.input :code, placeholder: "N° O.C.", :input_html => {:class => 'form-control'}, label: false
+            = f.input :code, :input_html => {:class => 'form-control', :value => @numbercode}, label: false,:readonly => true
             %span.input-group-addon
               %i.fa.fa-male
       .col-md-8
