@@ -165,12 +165,26 @@
   function add_more_items(){
     var data_delivery_order = new Array();
     status = false;
+    var ids = new Array();
+    var idst = document.getElementsByClassName('pod-di-id');
     var index = 0;
+    if(idst.length > 0){
+      $.each(idst, function(){
+        ids[index] = $(this).val();
+        index++;
+      });
+    }
+    index = 0;
+    var flag = 0;
     $('#modal-more-items tbody tr td .checkbox .order_check').each(function(){
       if( $(this).is(':checked') ){
-        status = true
-        data_delivery_order[index] = $(this).val();
-        index++;
+        if(ids.indexOf($(this).val())==-1){
+          data_delivery_order[index] = $(this).val();
+          status = true;
+          index++;
+        }else{
+          flag = 1;
+        }
       }
     });
 
@@ -180,6 +194,17 @@
       append_url_ajax('#{add_modal_extra_operations_logistics_purchase_orders_path}', 'new_purchase_order', data, 0, 'POST');
     }
 
+    if(flag == 1){
+      $.smallBox({
+        title : "Aviso",
+        content : "Algunas de las ordenes seleccionadas ya han sido agregadas", 
+        color: "#c46a69",
+        timeout: 8000,
+        icon : "fa fa-bell"
+      });
+    }
+
+    $('#cont').val(0);
     $('#modalDeliveryItems').modal('hide');
   };
 

@@ -114,7 +114,7 @@ if(@percepcion_neto!=0)
         columns(0..1).font_style = :bold
       end
     table([ 
-      ["TOTAL NETO "," #{number_to_currency(@total_neto+@percepcion_neto+@descuento_neto+@otro_neto+@cargo_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]
+      ["TOTAL NETO "," #{number_to_currency(@total_neto+@percepcion_neto-@descuento_neto-@otro_neto-@cargo_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]
     ], :width => 190, :cell_style => {:border_bottom_color=> "ffffff",:border_left_color=> "ffffff",:border_right_color=> "ffffff", :height => 21}, :column_widths => [100, 90]) do
         style(columns(0..1), :size => 10, :align => :right)
         columns(0..1).font_style = :bold
