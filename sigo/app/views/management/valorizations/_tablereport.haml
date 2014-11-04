@@ -1,40 +1,11 @@
-:javascript
-
-  function update_data(itembudget_id, measured_total){
-
-    partial_measured=parseFloat($("#itembudget_" + itembudget_id).text());
-
-    prev_measured=parseFloat($("#prev_" + itembudget_id).text());
-    $("#total_" + itembudget_id).text(partial_measured + prev_measured);
-    $("#credit_" + itembudget_id).text(Number((measured_total - (partial_measured + prev_measured)).toFixed(2)));
-
-    price=parseFloat($("#pu_" + itembudget_id).text());
-    $("#pc_" + itembudget_id).text(Number((price * measured_total).toFixed(2)));
-    meter=parseFloat($("#prev_" + itembudget_id).text());
-    $("#aprev_" + itembudget_id).text(Number((price * meter).toFixed(2)));
-    meter=parseFloat($("#itembudget_" + itembudget_id).text());
-    $("#a_val_act_" + itembudget_id).text(Number((price * meter).toFixed(2)));
-
-    amount1=parseFloat($("#a_val_act_" + itembudget_id).text());
-    amount2=parseFloat($("#aprev_" + itembudget_id).text());
-    $("#a_total" + itembudget_id).text(Number((amount1 + amount2).toFixed(2)));
-
-    amount1=parseFloat($("#pc_" + itembudget_id).text());
-    amount2=parseFloat($("#a_total" + itembudget_id).text());
-    $("#remainder" + itembudget_id).text(Number((amount1 - amount2).toFixed(2)));
-  
-    $("#percent" + itembudget_id).text(Number(((amount2/amount1)*100).toFixed(2)));   
-  }
-
-
 %tbody
   - hash_items = Hash.new
-  -@itembybudgets_main.each do |ib|
-    %tr
-      %td(colspan="3")
+  - @itembybudgets_main.each do |ib|
+    %tr(class="first_#{ib.order}")
+      %td(class="#{get_color_by_order(ib.order)}" colspan="3")
         %strong
           =ib.order
-          %a{href: "javascript:toogle_detail('" + ib.id.to_s + "')"}
+          %a{href: "javascript:toogle_three('#{get_clasification_by_order(ib.order+'.00')}', '#{ib.order}');"}
             =ib.subbudgetdetail == ''? ib.title : ib.subbudgetdetail
       %td(style="text-align: right;")
         %strong
@@ -73,39 +44,55 @@
     - @itembybudgets.where("`order` LIKE ?", ib.order.to_s + "%").each do |ibb|
       
       - si = hash_items[ibb.id.to_s]
-      %tr{class: "detail_" + ib.id.to_s}
-        %td
-          = ibb.id
-          = ibb.subbudgetdetail == ''? ibb.title : ibb.subbudgetdetail
+      %tr(class="#{get_clasification_by_order(ibb.order)}_#{ibb.order}")
+        %td(class="#{get_color_by_order(ibb.order)}")
+          %span(style="color:transparent;")
+            ='_'*(ibb.order.length-2)
+          %a{:href => "javascript:toogle_three('#{get_clasification_by_order(ibb.order+'.00')}', '#{ibb.order}');"}
+            = ibb.order
+            = ibb.subbudgetdetail == ''? ibb.title : ibb.subbudgetdetail
         / %td(style="text-align: center;")
         /   = si[4] rescue " "
-        %td(style="text-align: right;")
-          = "S/. #{((si[5].to_f) / (si[6].to_f)).round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[6].to_f.round(2) rescue 0
-        %td(style="text-align: right;")
-          = "S/. #{si[5].to_f.round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[8].to_f.round(2) rescue 0
-        %td(style="text-align: right;")
-          = "S/. #{si[9].to_f.round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[10].to_f.round(2) rescue 0
-        %td(style="text-align: right;")
-          = "S/. #{si[11].to_f.round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[12].to_f.round(2) rescue 0
-        %td(style="text-align: right;")
-          = "S/. #{si[13].to_f.round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[14].to_f.round(2) rescue 0
-        %td(style="text-align: right;")
-          = "S/. #{si[15].to_f.round(2) rescue 0}"
-        %td(style="text-align: right;")
-          = si[16].round(2) rescue 0
-          = '%' 
-      -# sub_sub_item = Valorization.get_sub_itembybudgets(si.order.to_s, @valorization.id.to_s)
-        
+        -if (si[6].to_f rescue 0) > 0
+          %td(style="text-align: right;")
+            = "S/. #{si[5].to_f rescue 0}" #PRECIO UNITARIO
+          %td(style="text-align: right;")
+            = si[6].to_f.round(2) rescue 0 #PRESUPUESTO CONTRACTUAL 
+          %td(style="text-align: right;")
+            = "S/. #{(si[5].to_f * (si[6].to_f)).round(2) rescue 0}"
+          %td(style="text-align: right;")
+            = si[8].to_f.round(2) rescue 0 #ACUMULADO ANTERIOR  
+          %td(style="text-align: right;")
+            = "S/. #{si[9].to_f.round(2) rescue 0}"
+          %td(style="text-align: right;")
+            = si[10].to_f.round(2) rescue 0 #VALORIZACION ACTUAL  
+          %td(style="text-align: right;")
+            = "S/. #{si[11].to_f.round(2) rescue 0}"
+          %td(style="text-align: right;")
+            = si[12].to_f.round(2) rescue 0 #ACUMULADO ACTUAL 
+          %td(style="text-align: right;")
+            = "S/. #{si[13].to_f.round(2) rescue 0}"
+          %td(style="text-align: right;")
+            = si[14].to_f.round(2) rescue 0 #SALDO POR VALORIZAR  
+          %td(style="text-align: right;")
+            = "S/. #{si[15].to_f.round(2) rescue 0}"
+          %td(style="text-align: right;")
+            = si[16].round(2) rescue 0 #PORCENTAJE DE AVANCE
+            = '%' 
+        -else
+          %td
+          %td
+          %td
+          %td
+          %td
+          %td
+          %td
+          %td
+          %td
+          %td
+          %td
+          %td
+    
   %tr
     %td(colspan="15")
       - @direct_cost_cont = 0
@@ -139,7 +126,7 @@
       %strong
         COSTO DIRECTO
     %td
-    %td(colspan="2")
+    %td
     %td
       %strong
         -#MONTO contract
@@ -172,7 +159,7 @@
       Gastos Generales
     %td
       = (@budget.general_expenses.to_f * 100).round(2).to_s + '%'
-    %td(colspan="2")
+    %td
     %td
       -#MONTO contract
       - num = (@direct_cost_cont * @budget.general_expenses.to_f).round(2)
@@ -206,7 +193,7 @@
         Utilidad
     %td
       =(@budget.utility.to_f * 100).round(2).to_s + '%'
-    %td(colspan="2")
+    %td
     %td
       -#MONTO contract
       - num = (@direct_cost_cont * @budget.utility.to_f).round(2)
@@ -235,7 +222,7 @@
       = ((@direct_cost_acc * @budget.utility.to_f)/(@direct_cost_cont * @budget.utility.to_f) * 100).round(2)
       ='%'
   %tr 
-    %td(colspan="4")
+    %td(colspan="3")
       %strong
         COSTO DE OBRA
     %td
@@ -270,6 +257,34 @@
         ='%'
 
 :javascript
+  
+  function toogle_three(level, id){
+    tr_level = $("[class^='" + level + "_" +  id + "']");
+    tr_level.css("display") == 'table-row' ? tr_level.css("display","none") : tr_level.css("display","table-row");
+    
+    switch(level){
+      case "second":
+        $("[class^='third_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('third', id); }
+        });
+        break;
+      case "third":
+        $("[class^='fourth_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('fourth', id); }
+        });
+        break;
+      case "fourth":
+        $("[class^='fifth_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('fifth', id); }
+        });
+        break;
+      case "fifth":
+        $("[class^='sixth_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('sixth', id); }
+        });
+        break;
+    }
+  }
 
   function toogle_detail(id_str){
     
