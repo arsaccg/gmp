@@ -11,11 +11,20 @@
         .col-sm-12
           %fieldset{ :style => 'margin-top: 20px;' }
             = hidden_field_tag 'provision[cost_center_id]', @cost_center, class: 'form-control', id: 'cost-center-selected'
-            .col-md-8
+            .col-md-6
               .form-group
                 %label.col-md-2.control-label Proveedores
                 .col-md-10
                   %input#proveedor-select.form-control{"name" =>"provision[entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@provision.entity_id}"}
+
+            .col-md-2
+              .form-group
+                %label.col-md-4.control-label N° Guia
+                .col-md-8
+                  .input-group
+                    = f.input :number_of_guide, placeholder: "N° Guia", :input_html => {:class => 'form-control'}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-calendar
 
             .col-md-4
               .form-group
@@ -76,15 +85,19 @@
                 .col-lg-1.col-md-1
                   = text_field_tag 'amount', nil, class: 'form-control', id: 'article-amount', value: '1'
 
-                .col-lg-2.col-md-2
+                .col-lg-1.col-md-1
                   %div
                     %a(href="javascript:add_article_item();" id="btn-add-article" class="btn btn-success" role="button")
                       Agregar
 
-                .col-lg-2.col-md-2
+                .col-lg-2.col-md-2{ :style => 'width: 13.666667%;' }
                   %div
                     %a#btn-add-orders(href="javascript:add_order_item();" class="btn btn-info" role="button")
                       Agregar de Ordenes
+
+                .col-lg-1.col-md-1
+                  %a#calculate-amounts{ :href => "javascript:calculate_amounts();", :class => "btn btn-info", :role => "button" }
+                    Calcular Totales
 
           .row{:style=>"overflow-x:scroll"}
             %fieldset{ :style => "margin-top: 20px; margin-bottom: 20px;" }
@@ -254,6 +267,23 @@
                         });
 
                       - @reg_n += 1
+
+              %br
+              %br
+
+          .row
+            %fieldset{ :style => "margin-top: 20px; margin-bottom: 20px;" }
+              %table.table.table-condensed.table-bordered.table-striped.table-hover.has-tickbox.smart-form#summary_totals_provisions{ :style => 'width:15%; float:right;' }
+                %tbody
+                  %tr
+                    %td{ :style => 'font-weight: bold;' } Total sin IGV
+                    %td{ :style => 'font-weight: bold;', :id => 'stp_total_wt_igv' } S/. 0.00
+                  %tr
+                    %td{ :style => 'font-weight: bold;' } IGV
+                    %td{ :style => 'font-weight: bold;', :id => 'stp_total_igv' } S/. 0.00
+                  %tr
+                    %td{ :style => 'font-weight: bold;' } Total con IGV
+                    %td{ :style => 'font-weight: bold;', :id => 'stp_total_w_igv' } S/. 0.00
 
         .col-sm-12.col-md-12{:style => "margin-bottom: 20px; margin-top: 20px;"}
           .row
@@ -467,12 +497,22 @@
     append_url_ajax('#{puts_details_in_provision_administration_provision_articles_path}', 'provisions_direct_items_table', str_item, 0, 'POST');
   }
 
+  /* Funciones de Calculo */
+
   function calculatePriceWithoutIgv(element){
     var amount = parseFloat($(element).parent().siblings('.amount').find('input').val()).toFixed(4);
-    var discount = parseFloat($(element).parent().siblings('.discount-before').find('input').val()).toFixed(4);
+    var discount = parseFloat($(element).parent().siblings('.discount-before').find('input.discount-before').val()).toFixed(4);
+    var discount_percent = $(element).parent().siblings('.discount-before').find('.discount-before-percent').val();
     
     if(isNaN(discount)){
       discount = 0;
+    }
+
+    if(isNaN(discount_percent)){
+      discount_percent = 0;
+    } else {
+      discount = (discount_percent/100) * ($(element).val() * amount);
+      $(element).parent().siblings('.discount-before').find('.discount-before').val(discount);
     }
 
     var price_without_igv = parseFloat(($(element).val() * amount) - discount).toFixed(2);
@@ -483,8 +523,22 @@
 
   function calculatePrice(element){
     var amount = parseFloat($(element).val()).toFixed(4);
-    var discount = parseFloat($(element).parent().siblings('.discount-before').find('input').val()).toFixed(4);
+    var discount = parseFloat($(element).parent().siblings('.discount-before').find('input.discount-before').val()).toFixed(4);
+    var discount_percent = $(element).parent().siblings('.discount-before').find('.discount-before-percent').val();
+
+    if(isNaN(discount)){
+      discount = 0;
+    }
+
+    if(isNaN(discount_percent)){
+      discount_percent = 0;
+    } else {
+      discount = (discount_percent/100) * ($(element).parent().siblings('.unit-price').find('input').val() * amount);
+      $(element).parent().siblings('.discount-before').find('.discount-before').val(discount);
+    }
+
     var price_without_igv = parseFloat(($(element).parent().siblings('.unit-price').find('input').val() * amount)-discount).toFixed(2);
+
 
     $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
     $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
@@ -495,11 +549,32 @@
     var amount = parseFloat($(element).parent().siblings('.amount').find('input').val()).toFixed(4);
     var price = parseFloat($(element).parent().siblings('.unit-price').find('input').val()).toFixed(4);
 
+    if(isNaN(discount)){ discount = 0; }
+    if(isNaN(amount)){ amount = 0; }
+    if(isNaN(price)){ price = 0; }
+
+    var discount_percent = parseFloat((discount/(amount*price))*100).toFixed(2);
     var price_without_igv = (amount*price)-discount;
 
+    $(element).siblings('.discount-before-percent').val(discount_percent);
     $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
     $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
   }
+
+  function calculatePriceWithoutIgvFromDiscountPercent(element){
+
+    var amount = parseFloat($(element).parent().siblings('.amount').find('input').val()).toFixed(4);
+    var price = parseFloat($(element).parent().siblings('.unit-price').find('input').val()).toFixed(4);
+    var discount = parseFloat( (amount*price)*($(element).val()/100) ).toFixed(2);
+
+    var price_without_igv = (amount*price)-discount;
+
+    $(element).siblings('.discount-before').val(discount);
+    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
+    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+  }
+
+  /* Funciones de Calculo */
 
   function enableFieldsForIgv(element){
     if($(element).is(":checked")){
@@ -805,4 +880,26 @@
     $(element).parent().siblings('.discount-after').children('#da').find('input').val(sda*-1);
     $(element).parent().siblings('.unit-price-igv').find('input').val(parseFloat(net_total_price).toFixed(2));
     /*$(element).parent().siblings('.perception').children('#per').find('input').val(per_am);*/
+  }
+
+  function calculate_amounts(){
+    var price_without_igv = 0;
+    var igv = 0;
+    var price_with_igv = 0;
+
+    $('#provisions_direct_items_table tr td.price-without-igv input').each(function(i, v){
+      price_without_igv = parseFloat($(v).val()) + parseFloat(price_without_igv);
+    });
+
+    $('#provisions_direct_items_table tr td.quantity-igv input').each(function(i, v){
+      igv = parseFloat($(v).val()) + parseFloat(igv);
+    });
+
+    $('#provisions_direct_items_table tr td.unit-price-igv input').each(function(i, v){
+      price_with_igv = parseFloat($(v).val()) + parseFloat(price_with_igv);
+    });
+
+    $('#stp_total_wt_igv').html('S/. ' + parseFloat(price_without_igv).toFixed(2));
+    $('#stp_total_igv').html('S/. ' + parseFloat(igv).toFixed(2));
+    $('#stp_total_w_igv').html('S/. ' + parseFloat(price_with_igv).toFixed(2));
   }

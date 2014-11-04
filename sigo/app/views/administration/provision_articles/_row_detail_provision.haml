@@ -24,7 +24,9 @@
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', nil, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
 
   %td.discount-before{ :class => "provision_discount-before"}
-    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', nil , class: "form-control unit-price-igv", onfocusout: "calculatePriceWithoutIgvFromDiscount(this);", onkeypress: "return isNumber(event);"
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', nil , class: "form-control discount-before", onfocusout: "calculatePriceWithoutIgvFromDiscount(this);", onkeypress: "return isNumber(event);", placeholder: 'Importe'
+    - if @action == 'direct'
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before_percent]', nil , class: "form-control discount-before-percent", onfocusout: "calculatePriceWithoutIgvFromDiscountPercent(this);", placeholder: 'Porcentaje', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, 100)"
 
   %td.price-without-igv
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', nil, class: "form-control unit-price-without-igv", :readonly => true
@@ -43,8 +45,9 @@
   %td.description
     = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
 
-  %td{:style => "width: 1%;"}
-    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')", :class => 'btn'} X
+  %td{:style => "width: 1%; text-align:center;"}
+    %a.btn.btn-default.btn-xs{href: "javascript:delete_item('"+@reg_n.to_s+"')", :class => 'btn'}
+      %i.fa.fa-times
 
 
 :javascript

@@ -139,7 +139,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
           WHERE po.cost_center_id = "+@cc.to_s+"
           AND po.user_id = u.id
           AND po.entity_id = e.id
-          AND (po.id LIKE '%"+keyword.to_s+"%' OR po.description LIKE '%"+keyword.to_s+"%' OR e.name LIKE '%"+keyword.to_s+"%' )
+          AND (po.id LIKE '%"+keyword.to_s+"%' OR po.description LIKE '%"+keyword.to_s+"%' OR po.code LIKE '%"+keyword.to_s+"%' OR e.name LIKE '%"+keyword.to_s+"%' )
           ORDER BY po.id DESC
           LIMIT #{display_length}
           OFFSET #{pager_number}"
@@ -152,7 +152,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
           AND po.user_id = u.id
           AND po.entity_id = e.id
           AND po.state LIKE '"+state.to_s+"'
-          AND (po.id LIKE '%"+keyword.to_s+"%' OR po.description LIKE '%"+keyword.to_s+"%' OR e.name LIKE '%"+keyword.to_s+"%' )
+          AND (po.id LIKE '%"+keyword.to_s+"%' OR po.description LIKE '%"+keyword.to_s+"%' OR po.code LIKE '%"+keyword.to_s+"%' OR e.name LIKE '%"+keyword.to_s+"%' )
           ORDER BY po.id DESC
           LIMIT #{display_length}
           OFFSET #{pager_number}"
