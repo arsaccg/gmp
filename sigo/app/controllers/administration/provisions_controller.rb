@@ -132,7 +132,7 @@ class Administration::ProvisionsController < ApplicationController
   def display_orders
     supplier = params[:supplier]
     @supplier_obj = Entity.find(supplier)
-    @orders_po = PurchaseOrder.select(:id).select(:date_of_issue).select(:description).where('entity_id = ? AND state = ?', supplier, 'approved')
+    @orders_po = PurchaseOrder.select(:id).select(:date_of_issue).select(:code).select(:description).where('entity_id = ? AND state = ?', supplier, 'approved')
     @orders_oos = OrderOfService.where('entity_id = ? AND state = ?', supplier, 'approved')
 
     render(:partial => 'table_list_orders', :layout => false)
@@ -143,6 +143,8 @@ class Administration::ProvisionsController < ApplicationController
     orders_oos = params[:data_orders_oos]
     @type_order = params[:type_of_order_selected]
     @data_orders = Array.new
+
+    @igv = FinancialVariable.where("name LIKE '%IGV%'").first.value # IGV in Percent
 
     if !orders_po.nil?
       orders_po.each do |order_id|
@@ -164,12 +166,15 @@ class Administration::ProvisionsController < ApplicationController
                 pending = purchase_detail.amount
               end
               currency = purchase_detail.purchase_order.money.symbol
+
+              data_pod = PurchaseOrderDetail.calculate_amounts(purchase_detail.id, pending, purchase_detail.unit_price, @igv)
+              
               if pending > 0
                 @data_orders << [ 
                   detail_order.article.code, 
                   detail_order.article.name, 
                   purchase_detail.amount, 
-                  purchase_detail.unit_price_igv, 
+                  data_pod[5].round(2), 
                   purchase_detail.unit_price, 
                   purchase_detail.description, 
                   purchase_detail.id, 
@@ -177,7 +182,7 @@ class Administration::ProvisionsController < ApplicationController
                   currency, 
                   'purchase',
                   (purchase_detail.quantity_igv.to_f*-1).round(2), 
-                  purchase_detail.unit_price_before_igv.to_f.round(2)
+                  data_pod[3].round(2)
                 ]
               end
             end
@@ -238,14 +243,13 @@ class Administration::ProvisionsController < ApplicationController
     @sectors = Sector.where("code LIKE '__' ")
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
 
+    @igv = FinancialVariable.where("name LIKE '%IGV%'").first.value # IGV in Percent
+
     order_detail_ids.each do |order_detail_id|
       data = order_detail_id.split('-')
       if data[1] == 'purchase'
         purchase_order_detail = PurchaseOrderDetail.find(data[0])
-        igv = 0
-        if purchase_order_detail.igv != nil
-          igv = (purchase_order_detail.quantity_igv.to_f*-1)/purchase_order_detail.unit_price_before_igv.to_f
-        end
+
         # Lo que falta Atender
         pending = 0
         total = 0
@@ -257,7 +261,7 @@ class Administration::ProvisionsController < ApplicationController
             amount += pd.amount
           end
           pending = purchase_order_detail.amount - amount
-          some_results = PurchaseOrderDetail.calculate_amounts(data[0], pending, purchase_order_detail.unit_price, igv)
+          some_results = PurchaseOrderDetail.calculate_amounts(data[0], pending, purchase_order_detail.unit_price, @igv)
           #total = (pending*purchase_order_detail.unit_price*(1+igv))
           if !percepcion.nil?
             if percepcion.type=="soles"
@@ -277,7 +281,7 @@ class Administration::ProvisionsController < ApplicationController
             purchase_order_detail.amount, 
             purchase_order_detail.unit_price, 
             some_results[3].round(2), 
-            igv, 
+            @igv, 
             pending, 
             some_results[1], 
             some_results[2],
@@ -297,7 +301,10 @@ class Administration::ProvisionsController < ApplicationController
             end
           else
             percepcion = 0
-          end 
+          end
+
+          some_results = PurchaseOrderDetail.calculate_amounts(data[0], pending, purchase_order_detail.unit_price, @igv)
+
           @data_orders << [ 
             purchase_order_detail.id, 
             purchase_order_detail.delivery_order_detail.article.code, 
@@ -305,12 +312,12 @@ class Administration::ProvisionsController < ApplicationController
             purchase_order_detail.delivery_order_detail.article.unit_of_measurement.symbol, 
             purchase_order_detail.amount, 
             purchase_order_detail.unit_price, 
-            total.round(2), 
-            igv, 
+            some_results[3].round(2), 
+            @igv, 
             pending, 
-            purchase_order_detail.discount_before, 
-            purchase_order_detail.discount_after,
-            ((total.round(2)*igv.to_f) + total.round(2)).round(2),
+            some_results[1].abs, 
+            some_results[2],
+            some_results[4].round(2),
             percepcion,
             purchase_order_detail.purchase_order.money.symbol,
             purchase_order_detail.delivery_order_detail.article.id,

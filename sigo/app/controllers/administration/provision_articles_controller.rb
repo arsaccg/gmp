@@ -106,6 +106,7 @@ class Administration::ProvisionArticlesController < ApplicationController
   end
 
   def puts_details_in_provision
+    @action = 'direct'
     @data_orders = Array.new
     params_article = params[:article_id].split('-')
     @amount = params[:amount]

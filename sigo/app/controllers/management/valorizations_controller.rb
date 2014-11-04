@@ -61,7 +61,7 @@ class Management::ValorizationsController < ApplicationController
  
 
     str_query = "SELECT  itembybudgets.id, 
-                  IF(itembybudgets.title = 'REGISTRO RESTRINGIDO', itembybudgets.subbudgetdetail, itembybudgets.title),  
+                  IF(itembybudgets.subbudgetdetail = '', itembybudgets.title, itembybudgets.subbudgetdetail),  
                   itembybudgets.order,  
                   IFNULL(get_prev_valorizations('" + @valorization.valorization_date.to_s.gsub('UTC', '') + "', itembybudgets.id),0), 
                   measured,
@@ -71,6 +71,7 @@ class Management::ValorizationsController < ApplicationController
                   valorizationitems.valorization_id = '" + @valorization.id.to_s + "'
                   WHERE itembybudgets.budget_id = '" + @budget.id.to_s + "'
                 ORDER BY itembybudgets.`order`;"
+    p str_query
 
     @results = ActiveRecord::Base.connection.execute(str_query) 
     
@@ -184,8 +185,7 @@ class Management::ValorizationsController < ApplicationController
 
     @project = CostCenter.find(@budget.cost_center_id)
 
-    @itembybudgets_main = Itembybudget.select('id, `title`, `order`, CHAR_LENGTH(`order`)').where('CHAR_LENGTH(`order`) < 3 AND budget_id = ?', @valorization.budget_id)
-    #SELECT `order`,CHAR_LENGTH(`order`) WHERE CHAR_LENGTH(`order`) < 3
+    @itembybudgets_main = Itembybudget.select('id, `title`, `subbudgetdetail`, `order`, CHAR_LENGTH(`order`)').where('CHAR_LENGTH(`order`) < 3 AND budget_id = ?', @valorization.budget_id)
     render :report, layout: false
   end
 
