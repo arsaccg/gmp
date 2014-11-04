@@ -66,10 +66,13 @@
       = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',(data_order_detail[6]*data_order_detail[7]).round(2), class: "form-control igv-item", :readonly => true
     %td.unit-price-igv
       = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', data_order_detail[11] , class: "form-control net-price-after-igv", :readonly => true
+    %td.order_origin{:style => "text-align:center;"}
+      = data_order_detail[17]
     %td.description
       = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
-    %td{:style => "width: 1%;"}
-      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+    %td{:style => "width: 1%; text-align:center;"}
+      %a.btn-default.btn-xs{href: "javascript:delete_item('"+@reg_n.to_s+"')", :class => 'btn'}
+        %i.fa.fa-times
 
   :javascript
     $(document).ready(function(){ 
