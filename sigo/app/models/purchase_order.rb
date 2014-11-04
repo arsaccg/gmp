@@ -67,4 +67,5 @@ class PurchaseOrder < ActiveRecord::Base
 
     return flag
   end
+
 end
