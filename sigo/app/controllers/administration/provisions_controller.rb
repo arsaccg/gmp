@@ -23,39 +23,59 @@ class Administration::ProvisionsController < ApplicationController
     # Si es una Provision de Compra
     if params[:provision]['order_id'] != nil
       provision = Provision.new(provisions_parameters)
-      if provision.save
-        provision_checked = Array.new
-        total_amount = 0
-        provision.provision_details.each do |detail|
-          if !provision_checked.include? detail.order_detail_id
-            provision_checked << detail.order_detail_id
-            ProvisionDetail.where('order_detail_id = ?', detail.order_detail_id).each do |details|
-              total_amount += details.amount
+      flag = Provision.where("entity_id = ? AND series = ? AND number_document_provision = ? AND document_provision_id = 1", provision.entity_id, provision.series,provision.number_document_provision)
+      if flag.count ==0
+        if provision.save
+          provision_checked = Array.new
+          total_amount = 0
+          provision.provision_details.each do |detail|
+            if !provision_checked.include? detail.order_detail_id
+              provision_checked << detail.order_detail_id
+              ProvisionDetail.where('order_detail_id = ?', detail.order_detail_id).each do |details|
+                total_amount += details.amount
+              end
+              Provision.update_received_order(total_amount, detail.order_detail_id, detail.type_of_order)
             end
-            Provision.update_received_order(total_amount, detail.order_detail_id, detail.type_of_order)
           end
+          flash[:notice] = "Se ha creado correctamente la nueva provision."
+          redirect_to :action => :index
+        else
+          provision.errors.messages.each do |attribute, error|
+            flash[:error] =  flash[:error].to_s + error.to_s + "  "
+          end
+          # Load new()
+          @provision = provision
+          render :new, layout: false
         end
-        flash[:notice] = "Se ha creado correctamente la nueva provision."
-        redirect_to :action => :index
       else
         provision.errors.messages.each do |attribute, error|
-          flash[:error] =  flash[:error].to_s + error.to_s + "  "
+          flash[:error] =  "Ya existe esa factura registrada con los mismos datos"
         end
         # Load new()
         @provision = provision
         render :new, layout: false
       end
+      
     else
       # Si es una provision de Compra Directa
       provision = Provision.new(provision_direct_purchase_parameters)
-      if provision.save
-        flash[:notice] = "Se ha creado correctamente la nueva provision."
-        redirect_to :controller => :provision_articles, :action => :index
-      else
-        provision.errors.messages.each do |attribute, error|
-          flash[:error] = flash[:error].to_s + error.to_s + "  "
+      flag = Provision.where("entity_id = ? AND series = ? AND number_document_provision = ? AND document_provision_id = 1", provision.entity_id, provision.series,provision.number_document_provision)
+      if flag.count == 0
+        if provision.save
+          flash[:notice] = "Se ha creado correctamente la nueva provision."
+          redirect_to :controller => :provision_articles, :action => :index
+        else
+          provision.errors.messages.each do |attribute, error|
+            flash[:error] = flash[:error].to_s + error.to_s + "  "
+          end
+          # Load new()
+          @provision = provision
+          redirect_to :controller => :provision_articles, :action => :new
         end
+      else
+        flash[:error] = "Ya existe esa factura registrada"
         # Load new()
+        @provision = Provision.new(provision_direct_purchase_parameters)
         redirect_to :controller => :provision_articles, :action => :new
       end
     end

@@ -5,7 +5,7 @@
   %td= @name_article
   %td= @unit_of_measurement
   %td.account-accountant
-    %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+    %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', :required => true, title:'No puede dejar este campo vacio'}
   %td.sector
     %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
       %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
@@ -15,7 +15,7 @@
             %option{:value => "#{subsector.id}"}
               = subsector.name
   %td.phase
-    %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'type' => 'hidden', 'id' => "#{@reg_n.to_s}"+'p', 'style' => 'width:100%;padding: 0;border: none;'}
+    %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'type' => 'hidden', 'id' => "#{@reg_n.to_s}"+'p', 'style' => 'width:100%;padding: 0;border: none;', :required => true, title:'No puede dejar este campo vacio'}
 
   %td.amount
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', @amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"
