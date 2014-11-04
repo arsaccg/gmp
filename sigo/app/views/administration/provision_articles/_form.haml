@@ -146,11 +146,9 @@
                         %td.phase
                           -if pod.flag.to_i == 1
                             %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'type' => 'hidden', 'id' => "#{@reg_n.to_s}"+'p', 'style' => 'width:100%;padding: 0;border: none;', 'value'=>pod.phase_id}
-                            %div.cont 1
                           -else
                             -p = Phase.find(pod.phase_id)
                             = p.code
-                            %div.cont 0
 
                         %td.amount
                           = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"
@@ -297,7 +295,7 @@
       .modal-body#modalOrderItemsContent
 
 :javascript
-  
+
   $(document).ready(function(){ 
     $('select').select2();
     $('#proveedor-select').select2({
