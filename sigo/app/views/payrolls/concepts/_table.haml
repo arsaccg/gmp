@@ -33,7 +33,7 @@
               %tr
                 %th Nombre
                 %th Código
-                %th Porcentage
+                %th Porcentaje
                 %th Monto
                 %th Tope
                 %th Acciones
@@ -43,7 +43,7 @@
                   %td
                     = con.name.to_s
                   %td
-                    = con.code.to_s
+                    = con.code[1,con.code.length].to_s
                   %td
                     - if con.percentage != nil
                       = con.percentage.to_s + "%"

@@ -2,7 +2,7 @@ class Payrolls::ConceptsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @con = Concept.all
+    @con = Concept.where("status NOT LIKE 0")
     render layout: false
   end
 
@@ -13,7 +13,8 @@ class Payrolls::ConceptsController < ApplicationController
 
   def new
     @con = Concept.new
-    @conde = Concept.where("code NOT LIKE '1%'")
+    @condeTrab = Concept.where("code like '2%'")
+    @condeEmp = Concept.where("code like '3%'")
     render layout: false
   end
 
@@ -24,6 +25,7 @@ class Payrolls::ConceptsController < ApplicationController
     con.concept_details.each do |ccd|
       ccd.status = 0
     end
+    con.code=params[:tipo]+con.code
     if con.save
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index
@@ -37,6 +39,8 @@ class Payrolls::ConceptsController < ApplicationController
   end
 
   def edit
+    @condeTrab = Concept.where("code like '2%'")
+    @condeEmp = Concept.where("code like '3%'")
     @con = Concept.find(params[:id])
     ids = Array.new
     @reg_n = ((Time.now.to_f)*100).to_i
@@ -53,6 +57,7 @@ class Payrolls::ConceptsController < ApplicationController
 
   def update
     con = Concept.find(params[:id])
+    con.code=params[:tipo]+con.code
     if con.update_attributes(con_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
