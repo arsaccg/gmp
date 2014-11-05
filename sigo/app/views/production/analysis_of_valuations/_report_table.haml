@@ -245,7 +245,7 @@
                       %td= m_stock_input[1]
                       %td{ :style => 'text-align:right;' }= m_stock_input[2].round(2)
                       %td{ :style => 'text-align:right;' }= number_to_currency m_stock_input[3], unit: 'S/.', precision: 2
-                      %td{ :style => 'text-align:right;' }= number_to_currency (m_stock_input[2]*m_stock_input[3]), unit: 'S/.', precision: 2
+                      %td{ :style => 'text-align:right;' }= number_to_currency (m_stock_input[2].to_f*m_stock_input[3].to_f), unit: 'S/.', precision: 2
                       -@i=0
                       -@cant=0
                       -@price=0
@@ -273,13 +273,13 @@
                       -else
                         %td{ :style => 'text-align:right;' }= m_stock_input[2].round(2).to_f - @cant.to_f
                       -@dif_c+= m_stock_input[2].round(4).to_f - @cant.to_f
-                      -if (m_stock_input[2]*m_stock_input[3]).to_f - @price.to_f < 0
+                      -if (m_stock_input[2].to_f*m_stock_input[3].to_f).to_f - @price.to_f < 0
                         %td{ :style => 'text-align:right;color:red;' }
                           %span.label.label{"style"=>"color: red;text-align:right;font-size: 11px;background-color: yellow;"}
                             = number_to_currency ((m_stock_input[2]*m_stock_input[3]).to_f - @price.to_f), unit: 'S/.', precision: 2
                       -else
-                        %td{ :style => 'text-align:right;' }= number_to_currency ((m_stock_input[2]*m_stock_input[3]).to_f - @price.to_f), unit: 'S/.', precision: 2
-                      -@dif_p+=(m_stock_input[2]*m_stock_input[3]).to_f - @price.to_f
+                        %td{ :style => 'text-align:right;' }= number_to_currency ((m_stock_input[2].to_f*m_stock_input[3].to_f).to_f - @price.to_f), unit: 'S/.', precision: 2
+                      -@dif_p+=(m_stock_input[2].to_f*m_stock_input[3].to_f).to_f - @price.to_f
                   - @j = 0
                   - @real_materiales.each do |rm|
                     -if !@pos.include?(@j)
@@ -360,7 +360,7 @@
                       %td= m_equip[0]
                       %td{ :style => 'text-align:right;' }= m_equip[1].round(2)
                       %td{ :style => 'text-align:right;' }= number_to_currency m_equip[2], unit: 'S/.', precision: 2
-                      %td{ :style => 'text-align:right;' }= number_to_currency (m_equip[1]*m_equip[2]), unit: 'S/.', precision: 2
+                      %td{ :style => 'text-align:right;' }= number_to_currency (m_equip[1].to_f*m_equip[2].to_f), unit: 'S/.', precision: 2
                       -@i=0
                       -@cant=0
                       -@price=0
