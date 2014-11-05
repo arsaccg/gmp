@@ -31,6 +31,15 @@
           = "#{advance_percent(ib.order, @budget.id, @valorization.valorization_date, @valorization.id).round(2)} %"
 
     
+    -si_prev = Hash.new
+    -vals = Valorization.where("valorization_date < ? AND budget_id = ?", @valorization.valorization_date.to_s, @valorization.budget_id).order(:valorization_date)
+    -vals.each do |vs|
+      -val = Valorization.get_sub_itembybudgets(ib.order, vs.id.to_s, @valorization.budget_id)
+      -val.each do |v|
+        -si_prev[v[2]] = [v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7], v[10], v[11], 0.0, 0.0, v[12], v[13], v[14], v[15], v[16]]
+
+
+
     - sub_item = Valorization.get_sub_itembybudgets(ib.order.to_s, @valorization.id.to_s, @budget.id.to_s)
     - sub_item.each do |si|
       - p "~~~~~~~~~~~~~~~~si~~~~~~~~~~~~~~~"
@@ -53,32 +62,75 @@
             = ibb.subbudgetdetail == ''? ibb.title : ibb.subbudgetdetail
         / %td(style="text-align: center;")
         /   = si[4] rescue " "
-        -if (si[6].to_f rescue 0) > 0
-          %td(style="text-align: right;")
-            = "S/. #{si[5].to_f rescue 0}" #PRECIO UNITARIO
-          %td(style="text-align: right;")
-            = si[6].to_f.round(2) rescue 0 #PRESUPUESTO CONTRACTUAL 
-          %td(style="text-align: right;")
-            = "S/. #{(si[5].to_f * (si[6].to_f)).round(2) rescue 0}"
-          %td(style="text-align: right;")
-            = si[8].to_f.round(2) rescue 0 #ACUMULADO ANTERIOR  
-          %td(style="text-align: right;")
-            = "S/. #{si[9].to_f.round(2) rescue 0}"
-          %td(style="text-align: right;")
-            = si[10].to_f.round(2) rescue 0 #VALORIZACION ACTUAL  
-          %td(style="text-align: right;")
-            = "S/. #{si[11].to_f.round(2) rescue 0}"
-          %td(style="text-align: right;")
-            = si[12].to_f.round(2) rescue 0 #ACUMULADO ACTUAL 
-          %td(style="text-align: right;")
-            = "S/. #{si[13].to_f.round(2) rescue 0}"
-          %td(style="text-align: right;")
-            = si[14].to_f.round(2) rescue 0 #SALDO POR VALORIZAR  
-          %td(style="text-align: right;")
-            = "S/. #{si[15].to_f.round(2) rescue 0}"
-          %td(style="text-align: right;")
-            = si[16].round(2) rescue 0 #PORCENTAJE DE AVANCE
-            = '%' 
+        -if ibb.measured != nil && ibb.measured > 0
+          -if (si[6].to_f rescue 0) > 0
+            %td(style="text-align: right;")
+              = "S/. #{si[5].to_f rescue 0}" #PRECIO UNITARIO
+            %td(style="text-align: right;")
+              = si[6].to_f.round(2) rescue 0 #PRESUPUESTO CONTRACTUAL 
+            %td(style="text-align: right;")
+              = "S/. #{(si[5].to_f * (si[6].to_f)).round(2) rescue 0}"
+            %td(style="text-align: right;")
+              = si[8].to_f.round(2) rescue 0 #ACUMULADO ANTERIOR  
+            %td(style="text-align: right;")
+              = "S/. #{si[9].to_f.round(2) rescue 0}"
+            %td(style="text-align: right;")
+              = si[10].to_f.round(2) rescue 0 #VALORIZACION ACTUAL  
+            %td(style="text-align: right;")
+              = "S/. #{si[11].to_f.round(2) rescue 0}"
+            %td(style="text-align: right;")
+              = si[12].to_f.round(2) rescue 0 #ACUMULADO ACTUAL 
+            %td(style="text-align: right;")
+              = "S/. #{si[13].to_f.round(2) rescue 0}"
+            %td(style="text-align: right;")
+              = si[14].to_f.round(2) rescue 0 #SALDO POR VALORIZAR  
+            %td(style="text-align: right;")
+              = "S/. #{si[15].to_f.round(2) rescue 0}"
+            %td(style="text-align: right;")
+              = si[16].round(2) rescue 0 #PORCENTAJE DE AVANCE
+              = '%' 
+          -elsif si_prev[ibb.order] != nil
+            %td(style="text-align: right;")
+              ="S/. #{si_prev[ibb.order][5]}"
+            %td(style="text-align: right;")
+              =si_prev[ibb.order][6]
+            %td(style="text-align: right;")
+              ="S/. #{si_prev[ibb.order][7]}"
+            %td(style="text-align: right;")
+              =si_prev[ibb.order][8]
+            %td(style="text-align: right;")
+              ="S/. #{si_prev[ibb.order][9]}"
+            %td(style="text-align: right;")
+              =si_prev[ibb.order][10]
+            %td(style="text-align: right;")
+              ="S/. #{si_prev[ibb.order][11]}"
+            %td(style="text-align: right;")
+              =si_prev[ibb.order][12]
+            %td(style="text-align: right;")
+              ="S/. #{si_prev[ibb.order][13]}"
+            %td(style="text-align: right;")
+              =si_prev[ibb.order][14]
+            %td(style="text-align: right;")
+              ="S/. #{si_prev[ibb.order][15]}"
+            %td(style="text-align: right;")
+              =si_prev[ibb.order][16]
+              = '%'
+          -else
+            %td(style="text-align: right;")
+              = "S/. #{ibb.price }"
+            %td(style="text-align: right;")
+              =ibb.measured
+            %td(style="text-align: right;")
+              = "S/. #{ibb.price * ibb.measured}"
+            %td
+            %td
+            %td
+            %td
+            %td
+            %td
+            %td
+            %td
+            %td
         -else
           %td
           %td
