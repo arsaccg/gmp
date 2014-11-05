@@ -10,7 +10,7 @@
     - @orders_po.each do |order|
       %tr
         %td
-          = order.id.to_s.rjust(5, '0')
+          = order.code.to_s.rjust(5, '0')
         %td
           = order.date_of_issue.strftime("%d-%m-%Y")
         %td

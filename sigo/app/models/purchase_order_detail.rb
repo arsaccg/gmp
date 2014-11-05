@@ -53,7 +53,11 @@ class PurchaseOrderDetail < ActiveRecord::Base
     end
 
     total_without_igv = initial_total + discounts_before_igv
-    total_with_igv = (current_igv+1) * total_without_igv
+    if current_igv <= 1 && current_igv >= 0
+      total_with_igv = (current_igv * total_without_igv) + total_without_igv 
+    else
+      total_with_igv = total_without_igv - current_igv
+    end
 
     PurchaseOrderDetail.find(purchase_order_detail_id).purchase_order_extra_calculations.where("apply LIKE 'before'").each do |extra_calculation|
       if extra_calculation.type == 'percent'
