@@ -15,7 +15,7 @@ class Production::CategoryOfWorkersController < ApplicationController
 
   def new
     @categoryOfWorker = CategoryOfWorker.new
-    @subgroups = Category.distinct.select(:id).select(:code).select(:name).joins("INNER JOIN articles a ON a.category_id = categories.id WHERE a.type_of_article_id = 1")
+    @subgroups = Category.distinct.select(:id).select(:code).select(:name).where("code LIKE '71__'")
     render layout: false
   end
 
@@ -24,7 +24,8 @@ class Production::CategoryOfWorkersController < ApplicationController
 
   def edit
     @categoryOfWorker = CategoryOfWorker.find(params[:id])
-    @subgroups = Category.joins("INNER JOIN articles a ON a.category_id = categories.id WHERE a.type_of_article_id = 1")
+    @subgroups = Category.distinct.select(:id).select(:code).select(:name).where("code LIKE '71__'")
+    @action = 'edit'
     render layout: false
   end
 
@@ -48,6 +49,6 @@ class Production::CategoryOfWorkersController < ApplicationController
 
   private
   def category_worker_parameters
-    params.require(:category_of_worker).permit(:article_id, :normal_price, :he_60_price, :he_100_price)
+    params.require(:category_of_worker).permit(:name, :category_id, :article_id, :normal_price, :he_60_price, :he_100_price)
   end
 end

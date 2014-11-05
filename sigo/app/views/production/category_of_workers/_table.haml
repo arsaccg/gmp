@@ -12,7 +12,7 @@
           %tr
             %th N°
             %th Nombre
-            %th Unidad
+            %th Sub-Grupo
             %th Precio Normal
             %th Precio 60
             %th Precio 100
@@ -23,9 +23,9 @@
               %td
                 = categoryOfWorker.id
               %td 
-                = categoryOfWorker.article.name rescue ''
+                = categoryOfWorker.name.to_s rescue 'No tiene nombre.'
               %td
-                = categoryOfWorker.article.unit_of_measurement.name rescue 'No tiene una unidad de medida'
+                = categoryOfWorker.category.name.to_s rescue 'No tiene Sub-Grupo.'
               %td
                 - if categoryOfWorker.normal_price != nil
                   = number_to_currency(categoryOfWorker.normal_price.to_f, unit: "S/.", precision: 2)
