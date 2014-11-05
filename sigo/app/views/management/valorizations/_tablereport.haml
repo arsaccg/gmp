@@ -13,7 +13,7 @@
       %td
       %td(style="text-align: right;")
         %strong
-          = "S/. #{sprintf('%.2f', amount_prev(ib.order, @budget.id, @valorization.created_at))}" #Monto
+          = "S/. #{sprintf('%.2f', amount_prev(ib.order, @budget.id, @valorization.valorization_date))}" #Monto
       %td
       %td(style="text-align: right;")
         %strong
@@ -21,14 +21,14 @@
       %td
       %td(style="text-align: right;")
         %strong
-          = "S/. #{sprintf('%.2f', amount_acumulated(ib.order, @budget.id, @valorization.created_at, @valorization.id))}" #Monto
+          = "S/. #{sprintf('%.2f', amount_acumulated(ib.order, @budget.id, @valorization.valorization_date, @valorization.id))}" #Monto
       %td
       %td(style="text-align: right;")
         %strong
-          = "S/. #{sprintf('%.2f', amount_remainder(ib.order, @budget.id, @valorization.created_at, @valorization.id))}" #Monto
+          = "S/. #{sprintf('%.2f', amount_remainder(ib.order, @budget.id, @valorization.valorization_date, @valorization.id))}" #Monto
       %td(style="text-align: right;")
         %strong
-          = "#{advance_percent(ib.order, @budget.id, @valorization.created_at, @valorization.id).round(2)} %"
+          = "#{advance_percent(ib.order, @budget.id, @valorization.valorization_date, @valorization.id).round(2)} %"
 
     
     - sub_item = Valorization.get_sub_itembybudgets(ib.order.to_s, @valorization.id.to_s, @budget.id.to_s)
@@ -106,7 +106,7 @@
      
         - @direct_cost_cont = @direct_cost_cont + c_amount_contractual
 
-        - c_amount_prev = amount_prev(ib.order, @budget.id, @valorization.created_at)
+        - c_amount_prev = amount_prev(ib.order, @budget.id, @valorization.valorization_date)
    
         - @direct_cost_prev = @direct_cost_prev + c_amount_prev
  
@@ -114,9 +114,9 @@
     
         - @direct_cost_act = @direct_cost_act + c_amount_act 
  
-        - c_amount_acc = amount_acumulated(ib.order, @budget.id, @valorization.created_at, @valorization.id)
+        - c_amount_acc = amount_acumulated(ib.order, @budget.id, @valorization.valorization_date, @valorization.id)
         - @direct_cost_acc = @direct_cost_acc + c_amount_acc 
-        - c_amount_rem = amount_remainder(ib.order, @budget.id, @valorization.created_at, @valorization.id)
+        - c_amount_rem = amount_remainder(ib.order, @budget.id, @valorization.valorization_date, @valorization.id)
      
         - @direct_cost_rem = @direct_cost_rem + c_amount_rem 
  
