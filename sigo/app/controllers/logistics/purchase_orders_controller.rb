@@ -516,22 +516,22 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
     @perceptions = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=2")
     @perceptions.each do |p|
-      @percepcion_neto+=p[0]
+      @percepcion_neto+=p[0].to_f
     end
 
     @discounts = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=2")
     @discounts.each do |p|
-      @descuento_neto+=p[0]
+      @descuento_neto+=p[0].to_f
     end
 
     @charges = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=2")
     @charges.each do |p|
-      @cargo_neto+=p[0]
+      @cargo_neto+=p[0].to_f
     end
 
     @others = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=2")
     @others.each do |p|
-      @otro_neto+=p[0]
+      @otro_neto+=p[0].to_f
     end
 
     if @purchaseOrder.state == 'pre_issued'
