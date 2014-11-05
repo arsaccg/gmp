@@ -42,8 +42,12 @@
                 - else
                   = "No tiene un precio 100%."
               %td
+                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_category_of_worker_path(categoryOfWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                  Ver Información
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_category_of_worker_path(categoryOfWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
+                %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_category_of_worker_path(categoryOfWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                  Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

@@ -18,6 +18,10 @@
         %i.fa-fw.fa.fa-times
         %strong Error!
         = flash[:error]
+
+    .col-xs-12.col-sm-5.col-md-5.col-lg-4
+      %a.btn.btn-primary.btn-mini{ :onclick => "javascript:load_url_ajax('#{new_production_category_of_worker_path}', 'content', null, null, 'GET')" }
+        Agregar Categoria
   %br
   .row
   #widget-grid

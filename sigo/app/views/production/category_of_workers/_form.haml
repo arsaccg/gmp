@@ -8,19 +8,33 @@
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
+
         .row
           %section.col.col-10
             %label.label Nombre
             %label.input{for: "normal_price"}
               %i.icon-append.fa.fa-user
-              = hidden_field_tag 'category_of_worker[article_id]', @categoryOfWorker.article_id
-              = text_field_tag 'category_of_worker[article_name]', @categoryOfWorker.article.name, class: "form-control", readonly: true
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+
         .row
           %section.col.col-10
-            %label.label Unidad
-            %label.input{for: "normal_price"}
-              %i.icon-append.fa.fa-user
-              = text_field_tag 'category_of_worker[article_unit_name]', @categoryOfWorker.article.unit_of_measurement.name, class: "form-control", readonly: true
+            %label.label Sub-Grupo
+            %label.input{for: "category_id"}
+              %select.form-control{:name =>"category_of_worker[category_id]", :style => 'width:100%;padding: 0;border: none;'}
+                %option{:value => ''}
+                  = 'Seleccione sub-Grupo'
+                - @subgroups.each do |subgroup|
+                  - if @action == 'edit'
+                    - if @categoryOfWorker.category_id == subgroup.id
+                      %option{:value => "#{subgroup.id}", :selected => true}
+                        = '(' + subgroup.code + ') ' + subgroup.name
+                    - else
+                      %option{:value => "#{subgroup.id}"}
+                        = '(' + subgroup.code + ') ' + subgroup.name
+                  - else
+                    %option{:value => "#{subgroup.id}"}
+                      = '(' + subgroup.code + ') ' + subgroup.name
+
         .row
           %section.col.col-10
             %label.label Precio Normal

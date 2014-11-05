@@ -84,10 +84,10 @@ class Production::WorkerContractsController < ApplicationController
     if workercontract.save
       flash[:notice] = "Se ha creado correctamente el contrato."
       @worker = Worker.find_by_id(params[:worker_contract]['worker_id'])
-      cat = CategoryOfWorker.find_by_article_id(workercontract.article_id)
-      if !cat.nil?
-        ActiveRecord::Base.connection.execute("INSERT INTO category_of_workers (article_id) VALUES ("+ workercontract.article_id.to_i.to_s+")")
-      end
+      #cat = CategoryOfWorker.find_by_article_id(workercontract.article_id)
+      #if !cat.nil?
+        #ActiveRecord::Base.connection.execute("INSERT INTO category_of_workers (article_id) VALUES ("+ workercontract.article_id.to_i.to_s+")")
+      #end
       @worker.approve
       redirect_to :action => :index, worker_id: params[:worker_contract]['worker_id']
     else
@@ -126,10 +126,10 @@ class Production::WorkerContractsController < ApplicationController
     workercontract = WorkerContract.find(params[:id])
     if workercontract.update_attributes(worker_contract_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
-      cat = CategoryOfWorker.find_by_article_id(workercontract.article_id)
-      if cat.nil?
-        ActiveRecord::Base.connection.execute("INSERT INTO category_of_workers (article_id) VALUES ("+ workercontract.article_id.to_i.to_s+")")
-      end
+      #cat = CategoryOfWorker.find_by_article_id(workercontract.article_id)
+      #if cat.nil?
+        #ActiveRecord::Base.connection.execute("INSERT INTO category_of_workers (article_id) VALUES ("+ workercontract.article_id.to_i.to_s+")")
+      #end
       redirect_to :action => :index, worker_id: params[:worker_contract]['worker_id']
     else
       workercontract.errors.messages.each do |attribute, error|
