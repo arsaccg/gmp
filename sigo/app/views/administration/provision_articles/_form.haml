@@ -119,8 +119,11 @@
                     %th IGV
                     %th IGV(S/.)
                     %th Total con IGV
+                    %th Cod.Orden
                     %th Descripción
-                    %th Eliminar
+                    %th{:style => "text-align:center;"}
+                      %a.btn.btn-danger.btn-xs{ :href => 'javascript:void(0)' }
+                        %i.fa.fa-trash-o
                 %tbody{:id => "provisions_direct_items_table"}
                   - if @action == 'edit'
                     - array_values = Array.new
@@ -176,6 +179,9 @@
                         %td.price-with-igv
                           = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv, class: "form-control unit-price-igv", :readonly => true
 
+                        %td.order_origin{:style => "text-align:center;"}
+                          = '-'
+
                         %td.description
                           = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', pod.description, class: "form-control description"
 
@@ -188,7 +194,6 @@
                         $(document).ready(function(){
                           var a = #{@reg_n} + "a";
                           var p = #{@reg_n} + "p";
-
                           $('#'+a).select2({
                             placeholder: "Buscar cuenta contable...",
                             minimumInputLength: 3,
@@ -299,7 +304,7 @@
       .modal-body#modalOrderItemsContent
 
 :javascript
-  
+
   $(document).ready(function(){ 
     $('select').select2();
     $('#proveedor-select').select2({
@@ -364,6 +369,8 @@
       formatSelection: function(node){ return (node.code + ' - ' + node.name + ' - ' + node.symbol) },
       escapeMarkup: function (m) { return m; }
     });
+
+
 
     $('#new_provision').ajaxForm({
       beforeSubmit: function() {

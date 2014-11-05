@@ -42,11 +42,14 @@
   %td.price-with-igv
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil, class: "form-control unit-price-igv", :readonly => true
 
+  %td.order_origin
+    = '-'
+
   %td.description
     = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
 
   %td{:style => "width: 1%; text-align:center;"}
-    %a.btn.btn-default.btn-xs{href: "javascript:delete_item('"+@reg_n.to_s+"')", :class => 'btn'}
+    %a.btn-default.btn-xs{href: "javascript:delete_item('"+@reg_n.to_s+"')", :class => 'btn'}
       %i.fa.fa-times
 
 

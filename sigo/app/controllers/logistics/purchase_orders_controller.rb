@@ -600,7 +600,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
       :state, 
       :description, 
       purchase_order_details_attributes: [
-        :id, 
+        :id,
+        :discount_before_percent,
+        :number_of_guide,
         :purchase_order_id, 
         :delivery_order_detail_id, 
         :unit_price, 

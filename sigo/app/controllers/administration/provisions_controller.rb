@@ -288,7 +288,8 @@ class Administration::ProvisionsController < ApplicationController
             some_results[4].round(2),
             percepcion,
             purchase_order_detail.purchase_order.money.symbol,
-            purchase_order_detail.delivery_order_detail.article.id
+            purchase_order_detail.delivery_order_detail.article.id,
+            purchase_order_detail.purchase_order.code.to_s.rjust(5, '0')
           ]
         else
           pending = purchase_order_detail.amount
@@ -322,7 +323,8 @@ class Administration::ProvisionsController < ApplicationController
             purchase_order_detail.purchase_order.money.symbol,
             purchase_order_detail.delivery_order_detail.article.id,
             purchase_order_detail.delivery_order_detail.phase_id,
-            purchase_order_detail.delivery_order_detail.sector_id
+            purchase_order_detail.delivery_order_detail.sector_id,
+            purchase_order_detail.purchase_order.code.to_s.rjust(5, '0')
           ]
 
         end
@@ -381,6 +383,7 @@ class Administration::ProvisionsController < ApplicationController
           service_order_detail.article.id,
           service_order_detail.phase_id,
           service_order_detail.sector_id,
+          service_order_detail.order_of_service.code.to_s.rjust(5, '0')
         ]
       end
     end
