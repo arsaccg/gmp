@@ -128,21 +128,13 @@
 
   // PAGE RELATED SCRIPTS
   function calculatePriceWithourIgv(element){
-    var amount = parseFloat($(element).parent().siblings('.amount').find('input').val());
-
-    var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
-
-    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
-    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+    var reg = $(element).attr('id').split("_")[6];
+    calcularcondescuentos(reg);
   }
 
   function calculatePrice(element){
-    var amount = parseInt($(element).val());
-
-    var price_without_igv = parseFloat($(element).parent().siblings('.unit-price').find('input').val() * amount).toFixed(2);
-
-    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
-    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+    var reg = $(element).attr('id').split("_")[6];
+    calcularcondescuentos(reg);
   }
 
   function isNumber(evt) {
@@ -223,15 +215,8 @@
   */
 
   function enableFieldsForIgv(element){
-    if($(element).is(":checked")){
-      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*parseFloat("#{@igv}")).toFixed(2));
-      $(element).parent().parent().siblings('.discount-igv').find('input').val(parseFloat(price_without_igv * (1 - parseFloat("#{@igv}"))));
-    } else {
-      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
-      $(element).parent().parent().siblings('.discount-igv').find('input').val(0);
-    }
+    var reg = $(element).attr('id').split("_")[6];
+    calcularcondescuentos(reg);
   }
   
   //Bootstrap Wizard Validations
@@ -354,11 +339,9 @@
           if( $(type).val() == 'soles' ){
             value_before = $(path_jquery_discount_before).val() - parseFloat($(value).val());
             $(path_jquery_discount_before).val(value_before);
-            console.log($(path_jquery_discount_before).val());
           } else {
             value_before = $(path_jquery_discount_before).val() - parseFloat((amount_bruto*($(value).val()/100)));
             $(path_jquery_discount_before).val(value_before);
-            console.log($(path_jquery_discount_before).val());
           }
         }
 
@@ -409,4 +392,58 @@
     id_modal_target = $(obj).attr('data-target');
     $id_generated = $current_tr_parent.split('-')[1];
     $(id_modal_target + '-hidden').val($id_generated);
+  }
+
+  function calcularcondescuentos(reg){
+    var dib = $('#'+reg+'b').children();
+    var dia = $('#'+reg+'a').children();
+    var price = parseFloat($('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price').val());
+    var amount = parseFloat($('#purchase_order_purchase_order_details_attributes_'+reg+'_amount').val());
+    var igv = $('#purchase_order_purchase_order_details_attributes_'+reg+'_igv').is(':checked');
+
+    var db_m = 0;
+    var da_m = 0;
+    var a_igv_c_d = 0;
+    var d_igv_c_d = 0;
+
+    if($('#'+reg+'b > input').length > 0){
+      dib.each(function(){
+        if(Math.abs($(this).attr('value')) < 1.0){
+          db_m = parseFloat(db_m)+parseFloat(parseFloat($(this).attr('value'))*price*amount);
+        }else{
+          db_m =parseFloat(db_m)+parseFloat($(this).attr('value'));
+        }
+      });
+    }
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_before').val(Math.abs(db_m.toFixed(2)));
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_before_igv').val(parseFloat(price*amount-db_m).toFixed(2));
+
+    var total = 0;
+    if(igv){
+      if($('#'+reg+'a > input').length > 0){
+        dia.each(function(){
+          if(Math.abs($(this).attr('value')) < 1.0){
+            da_m = parseFloat(da_m)+parseFloat(parseFloat($(this).attr('value'))*price*amount*1.18);
+          }else{
+            da_m =parseFloat(da_m)+parseFloat($(this).attr('value'));
+          }
+        });  
+      }
+      total=((parseFloat(price*amount-db_m)*1.18)-da_m).toFixed(2);
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val((parseFloat(price*amount-db_m)*1.18).toFixed(2))
+    }else{
+      if($('#'+reg+'a > input').length > 0){
+        dia.each(function(){
+          if(Math.abs($(this).attr('value')) < 1.0){
+            da_m = parseFloat(da_m)+parseFloat(parseFloat($(this).attr('value'))*price*amount);
+          }else{
+            da_m =parseFloat(da_m)+parseFloat($(this).attr('value'));
+          }
+        });    
+      }
+      total=(parseFloat(price*amount-db_m)-da_m).toFixed(2);
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val('0');
+    }
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_after').val(da_m.toFixed(2));
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_igv').val(total);
   }
