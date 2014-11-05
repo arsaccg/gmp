@@ -5,6 +5,8 @@
     %h2 Categoria del Trabajador
   .widget-body
     = simple_form_for([:production, @categoryOfWorker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %header Datos Principales
+      %br
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
@@ -56,7 +58,29 @@
       
       %fieldset
         .row
-          %section.col.col-10
+          %section.col.col-6
+            %header{ :style => 'margin-left: 0;' } Ganancias Fijas
+            %br
+            - if @action == 'new'
+              - @concept_earnings.each do |concept|
+                .row
+                  %section.col.col-10
+                    %label.label= concept.name.to_s
+                    %label.input{for: "#{concept.code}"}
+                      %i.icon-append.fa.fa-credit-card
+                      = text_field_tag "category_of_worker[category_of_worker_concepts_attributes][" + @reg_n.to_s + "][#{concept.name.gsub!(' ', '_')}]", nil, class: "form-control"
+
+          %section.col.col-6
+            %header{ :style => 'margin-left: 0;' } Descuentos Fijos
+            %br
+            - if @action == 'new'
+              - @concept_discounts.each do |concept|
+                .row
+                  %section.col.col-10
+                    %label.label= concept.name.to_s
+                    %label.input{for: "#{concept.code}"}
+                      %i.icon-append.fa.fa-credit-card
+                      = text_field_tag "category_of_worker[category_of_worker_concepts_attributes][" + @reg_n.to_s + "][#{concept.name.gsub!(' ', '_')}]", nil, class: "form-control"
 
       %footer
         %button.btn.btn-primary{type: "submit"}
