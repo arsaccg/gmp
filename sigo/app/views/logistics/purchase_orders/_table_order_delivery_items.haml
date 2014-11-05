@@ -7,10 +7,6 @@
     %td=dode.article.name
     %td.unit-of-measurement
       =dode.unit_of_measurement.symbol
-    %td.discount-before{ :style => "display:none"}
-      = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_before]', nil, class: "form-control discount-before"
-    %td.discount-after{ :style => "display:none"}
-      = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_after]', nil, class: "form-control discount-after"
     %td.discount-igv{ :style => "display:none"}
       = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][quantity_igv]', nil, class: "form-control discount-igv"
     %td.amount
@@ -18,12 +14,18 @@
       %code= "Por atender: #{dode.amount}"
     %td.unit-price
       = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', nil, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);", :required => true, title:'No puede dejar este campo vacio'
+    %td.discount-before{:style => 'text-align: center'}
+      = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_before]', nil, class: "form-control discount-before", :readonly => true
+      %div{id: @reg_n.to_s+"b",:style => "display:none"}
     %td.price-without-igv
       = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', nil, class: "form-control unit-price-before-igv", :readonly => true
     %td.check-igv
       %label.checkbox
         = check_box_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', nil, nil, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
         %i
+    %td.discount-after{:style => 'text-align: center'}
+      = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_after]', nil, class: "form-control discount-after", :readonly => true
+      %div{id: @reg_n.to_s+"a",:style => "display:none"}
     %td.price-with-igv
       = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil , class: "form-control unit-price-igv", :readonly => true
     %td.aditional-operations{:style => 'text-align: center'}

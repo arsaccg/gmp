@@ -12,3 +12,31 @@
     = @name_apply
     = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_main.to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n.to_s + '][apply]', @apply
   = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_main.to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n.to_s + '][operation]', @operation
+
+:javascript
+  $(document).ready(function(){
+    var reg = #{@reg_main};
+    var reg2;
+    if(#{@apply=="before"}){
+      reg2 = reg + "b > input";
+    }else{
+      reg2 = reg + "a > input";
+    }    
+    var hijos = $('#'+reg2).length;
+    var id = reg+"-"+hijos;
+    var value = 0;
+    if(#{@operation=="sum"}){
+      value = parseFloat(#{@value})*-1;
+    }else{
+      value = #{@value};
+    }
+    if(#{@type=="percent"}){
+      value = value/100;
+    }
+    if(#{@apply=="before"}){
+      $('#'+reg+"b").append( "<input id="+id+" value="+value+"></input>" );
+    }else{
+      $('#'+reg+"a").append( "<input id="+id+" value="+value+"></input>" );
+    }
+    calcularcondescuentos(#{@reg_main});
+  });
