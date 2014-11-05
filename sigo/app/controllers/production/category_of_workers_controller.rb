@@ -14,6 +14,8 @@ class Production::CategoryOfWorkersController < ApplicationController
   end
 
   def new
+    @categoryOfWorker = CategoryOfWorker.new
+    @subgroups = Category.distinct.select(:id).select(:code).select(:name).joins("INNER JOIN articles a ON a.category_id = categories.id WHERE a.type_of_article_id = 1")
     render layout: false
   end
 
@@ -22,7 +24,7 @@ class Production::CategoryOfWorkersController < ApplicationController
 
   def edit
     @categoryOfWorker = CategoryOfWorker.find(params[:id])
-    @company = params[:company_id]
+    @subgroups = Category.joins("INNER JOIN articles a ON a.category_id = categories.id WHERE a.type_of_article_id = 1")
     render layout: false
   end
 

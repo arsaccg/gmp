@@ -2,6 +2,7 @@ class Category < ActiveRecord::Base
 	include ActiveModel::Validations
 	
 	has_many :articles
+	has_one :category_of_worker
 
 	#Validaciones
 	include ActiveModel::Validations
