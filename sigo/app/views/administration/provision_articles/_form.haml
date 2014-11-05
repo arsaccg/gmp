@@ -3,11 +3,14 @@
     %span.widget-icon
       %i.fa.fa-pencil-square-o.fa-fw 
     %h2
-      %strong Editar Provision
+      %strong Provision
   %div
     .jarviswidget-editbox
     .widget-body 
       = simple_form_for([:administration, @provision], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
+        = flash[:error]
+        = @provision.inspect
+        %br
         .col-sm-12
           %fieldset{ :style => 'margin-top: 20px;' }
             = hidden_field_tag 'provision[cost_center_id]', @cost_center, class: 'form-control', id: 'cost-center-selected'
@@ -15,7 +18,7 @@
               .form-group
                 %label.col-md-2.control-label Proveedores
                 .col-md-10
-                  %input#proveedor-select.form-control{"name" =>"provision[entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@provision.entity_id}"}
+                  %input#proveedor-select.form-control{"name" =>"provision[entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@provision.entity_id}", :required => true, title:'No puede dejar este campo vacio'}
 
             .col-md-2
               .form-group
