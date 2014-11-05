@@ -302,8 +302,6 @@ module ApplicationHelper
   end
 
   def amount_acumulated(orderitem, budget_id, current_created_at, valorizationid)
- 
-
     str_date = current_created_at.strftime("%Y-%m-%d  %T")
       items=ActiveRecord::Base.connection.execute("SELECT get_amount_acumulated('#{orderitem}', '#{budget_id}', '#{str_date}', '#{valorizationid}')")
     items.each do |item|
