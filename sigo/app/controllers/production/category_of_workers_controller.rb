@@ -14,6 +14,12 @@ class Production::CategoryOfWorkersController < ApplicationController
   end
 
   def new
+    @categoryOfWorker = CategoryOfWorker.new
+    @subgroups = Category.distinct.select(:id).select(:code).select(:name).where("code LIKE '71__'")
+    @concept_earnings = Concept.where(:type_concept => 'Fijo').where(:status => 1).where("code LIKE '1%'")
+    @concept_discounts = Concept.where(:type_concept => 'Fijo').where(:status => 1).where("code LIKE '2%'")
+    @action = 'new'
+    @reg_n = ((Time.now.to_f)*100).to_i
     render layout: false
   end
 
@@ -22,7 +28,11 @@ class Production::CategoryOfWorkersController < ApplicationController
 
   def edit
     @categoryOfWorker = CategoryOfWorker.find(params[:id])
-    @company = params[:company_id]
+    @subgroups = Category.distinct.select(:id).select(:code).select(:name).where("code LIKE '71__'")
+    @concept_earnings = Concept.where(:type_concept => 'Fijo').where(:status => 1).where("code LIKE '1%'")
+    @concept_discounts = Concept.where(:type_concept => 'Fijo').where(:status => 1).where("code LIKE '2%'")
+    @action = 'edit'
+    @reg_n = ((Time.now.to_f)*100).to_i
     render layout: false
   end
 
@@ -46,6 +56,6 @@ class Production::CategoryOfWorkersController < ApplicationController
 
   private
   def category_worker_parameters
-    params.require(:category_of_worker).permit(:article_id, :normal_price, :he_60_price, :he_100_price)
+    params.require(:category_of_worker).permit(:name, :category_id, :article_id, :normal_price, :he_60_price, :he_100_price)
   end
 end

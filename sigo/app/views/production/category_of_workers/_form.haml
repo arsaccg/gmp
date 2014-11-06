@@ -5,27 +5,43 @@
     %h2 Categoria del Trabajador
   .widget-body
     = simple_form_for([:production, @categoryOfWorker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %header Datos Principales
+      %br
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
+
         .row
           %section.col.col-10
             %label.label Nombre
             %label.input{for: "normal_price"}
               %i.icon-append.fa.fa-user
-              = hidden_field_tag 'category_of_worker[article_id]', @categoryOfWorker.article_id
-              = text_field_tag 'category_of_worker[article_name]', @categoryOfWorker.article.name, class: "form-control", readonly: true
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+
         .row
           %section.col.col-10
-            %label.label Unidad
-            %label.input{for: "normal_price"}
-              %i.icon-append.fa.fa-user
-              = text_field_tag 'category_of_worker[article_unit_name]', @categoryOfWorker.article.unit_of_measurement.name, class: "form-control", readonly: true
+            %label.label Sub-Grupo
+            %label.input{for: "category_id"}
+              %select.form-control{:name =>"category_of_worker[category_id]", :style => 'width:100%;padding: 0;border: none;'}
+                %option{:value => ''}
+                  = 'Seleccione sub-Grupo'
+                - @subgroups.each do |subgroup|
+                  - if @action == 'edit'
+                    - if @categoryOfWorker.category_id == subgroup.id
+                      %option{:value => "#{subgroup.id}", :selected => true}
+                        = '(' + subgroup.code + ') ' + subgroup.name
+                    - else
+                      %option{:value => "#{subgroup.id}"}
+                        = '(' + subgroup.code + ') ' + subgroup.name
+                  - else
+                    %option{:value => "#{subgroup.id}"}
+                      = '(' + subgroup.code + ') ' + subgroup.name
+
         .row
           %section.col.col-10
             %label.label Precio Normal
             %label.input{for: "normal_price"}
-              %i.icon-append.fa.fa-user
+              %i.icon-append.fa.fa-credit-card
               = f.input :normal_price, placeholder: "Precio Normal", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
@@ -39,6 +55,33 @@
             %label.input{for: "he_100_price"}
               %i.icon-append.fa.fa-credit-card
               = f.input :he_100_price, placeholder: "Precio Horas Extras 100%", input_html: { class: 'form-control' }, label: false
+      
+      %fieldset
+        .row
+          %section.col.col-6
+            %header{ :style => 'margin-left: 0;' } Ganancias Fijas
+            %br
+            - if @action == 'new'
+              - @concept_earnings.each do |concept|
+                .row
+                  %section.col.col-10
+                    %label.label= concept.name.to_s
+                    %label.input{for: "#{concept.code}"}
+                      %i.icon-append.fa.fa-credit-card
+                      = text_field_tag "category_of_worker[category_of_worker_concepts_attributes][" + @reg_n.to_s + "][#{concept.name.gsub!(' ', '_')}]", nil, class: "form-control"
+
+          %section.col.col-6
+            %header{ :style => 'margin-left: 0;' } Descuentos Fijos
+            %br
+            - if @action == 'new'
+              - @concept_discounts.each do |concept|
+                .row
+                  %section.col.col-10
+                    %label.label= concept.name.to_s
+                    %label.input{for: "#{concept.code}"}
+                      %i.icon-append.fa.fa-credit-card
+                      = text_field_tag "category_of_worker[category_of_worker_concepts_attributes][" + @reg_n.to_s + "][#{concept.name.gsub!(' ', '_')}]", nil, class: "form-control"
+
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 

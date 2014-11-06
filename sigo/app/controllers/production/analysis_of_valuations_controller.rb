@@ -162,7 +162,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
         # MAKE ARRAY META
         arr_equipment << [ meta_equip[1], meta_equip[2]*value_quantity_from_partes, meta_equip[3], meta_equip[4] ]
         # TOTAL META
-        @m_price_part_equipment += (meta_equip[2]*value_quantity_from_partes)*meta_equip[3]
+        @m_price_part_equipment += (meta_equip[2].to_f*value_quantity_from_partes.to_f)*meta_equip[3].to_f
       end
 
       # ORDER ARRAY META
@@ -183,7 +183,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
         # MAKE ARRAY META
         arr_part_subcontract << [ meta_subcon[1], meta_subcon[2]*value_quantity_from_partes, meta_subcon[3] ]
         # TOTAL META
-        @m_price_part_subcontract += (meta_subcon[2]*value_quantity_from_partes)*meta_subcon[3]
+        @m_price_part_subcontract += (meta_subcon[2].to_f*value_quantity_from_partes.to_f)*meta_subcon[3].to_f
       end
 
       # ORDER ARRAY META
@@ -207,7 +207,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
         # MAKE Array META
         arr_stock_input << [meta_material[4], meta_material[1], meta_material[2]*value_quantity_from_partes, meta_material[3] ]
         # TOTAL META
-        @total_stock_input_meta += (meta_material[2]*value_quantity_from_partes)*meta_material[3]
+        @total_stock_input_meta += (meta_material[2].to_f*value_quantity_from_partes.to_f)*meta_material[3].to_f
       end
 
       # TODO REAL MATERIALES
@@ -237,7 +237,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
             @unit_sym = aip[3]
           end
           @real_materiales << [@id, @code, @name, @unit_sym, prom_pon_price, ao[1], prom_pon_price*ao[1]]
-          @total_stock_input_real += prom_pon_price*ao[1]
+          @total_stock_input_real += prom_pon_price.to_f*ao[1].to_f
         end
       end
 

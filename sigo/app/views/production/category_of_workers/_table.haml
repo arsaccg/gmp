@@ -12,7 +12,7 @@
           %tr
             %th N°
             %th Nombre
-            %th Unidad
+            %th Sub-Grupo
             %th Precio Normal
             %th Precio 60
             %th Precio 100
@@ -23,9 +23,9 @@
               %td
                 = categoryOfWorker.id
               %td 
-                = categoryOfWorker.article.name rescue ''
+                = categoryOfWorker.name.to_s rescue 'No tiene nombre.'
               %td
-                = categoryOfWorker.article.unit_of_measurement.name rescue 'No tiene una unidad de medida'
+                = categoryOfWorker.category.name.to_s rescue 'No tiene Sub-Grupo.'
               %td
                 - if categoryOfWorker.normal_price != nil
                   = number_to_currency(categoryOfWorker.normal_price.to_f, unit: "S/.", precision: 2)
@@ -42,8 +42,12 @@
                 - else
                   = "No tiene un precio 100%."
               %td
+                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_category_of_worker_path(categoryOfWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                  Ver Información
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_category_of_worker_path(categoryOfWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
+                %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_category_of_worker_path(categoryOfWorker.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                  Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
