@@ -17,6 +17,8 @@ class Production::WorkerContractsController < ApplicationController
   end
 
   def new
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @concepts=Concept.where("type_concept like 'Fijo'")
     @typeofcontract = params[:typeofcontract]
     @articles = TypeOfArticle.find_by_code('01').articles
     @contractypes = ContractType.all
@@ -100,7 +102,10 @@ class Production::WorkerContractsController < ApplicationController
   end
 
   def edit
+    @reg_n = ((Time.now.to_f)*100).to_i
+    @concepts=Concept.where("type_concept like 'Fijo'")
     @workercontract = WorkerContract.find(params[:id])
+    @id=params[:id]
     @worker = Worker.find_by_id(@workercontract.worker_id)
     @articles = TypeOfArticle.find_by_code('01').articles
     @contractypes = ContractType.all
@@ -130,7 +135,7 @@ class Production::WorkerContractsController < ApplicationController
       #if cat.nil?
         #ActiveRecord::Base.connection.execute("INSERT INTO category_of_workers (article_id) VALUES ("+ workercontract.article_id.to_i.to_s+")")
       #end
-      redirect_to :action => :index, worker_id: params[:worker_contract]['worker_id']
+      redirect_to :action => :index, worker_id: workercontract.worker_id
     else
       workercontract.errors.messages.each do |attribute, error|
         flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
@@ -149,6 +154,6 @@ class Production::WorkerContractsController < ApplicationController
 
   private
   def worker_contract_parameters
-    params.require(:worker_contract).permit(:camp, :lock_version, :contract_type_id, :article_id, :destaque, :salary, :regime, :bonus, :viatical, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract)
+    params.require(:worker_contract).permit(:camp, :lock_version, :contract_type_id, :article_id, :destaque, :salary, :regime, :bonus, :viatical, :days, :start_date, :end_date, :worker_id, :numberofcontract, :typeofcontract, worker_contract_details_attributes:[:id, :worker_id,:worker_contract_id,:concept_id,:amount, :_destroy])
   end
 end

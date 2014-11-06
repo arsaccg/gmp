@@ -11,11 +11,10 @@
 %h4 
   REPORTE
 %h5
-  VALORIZACION "
   =@valorization.name rescue " "
-  " DEL MES DE "
-  =@valorization.month rescue " "
-  "
+  DEL MES DE
+  = t("date.month_names")[@month].upcase rescue " "
+  = @year rescue " "
 
 %br
 .row-fuild

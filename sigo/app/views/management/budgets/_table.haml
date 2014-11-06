@@ -12,16 +12,17 @@
       %th Acciones
   %tbody
     - @budget.each do |item|
+      -cost = get_bugdet_cost(item.id)
       %tr
         %td= item.id
         %td
-          %strong= item.description
+          %strong= item.description 
         %td
-          %strong= number_to_currency(get_bugdet_cost(item.id), :unit=>'S/. ')
-        %td= number_with_precision(item.general_expenses, :precision => 4) rescue 0
-        %td= number_with_precision(item.general_expenses * suma, :precision => 4) rescue 0
-        %td= number_with_precision(item.utility, :precision => 4) rescue 0
-        %td= number_with_precision(item.utility * suma, :precision => 4) rescue 0
+          %strong= number_to_currency(cost, :unit=>'S/. ')
+        %td= number_to_currency((cost * item.general_expenses rescue 0), :unit=>'S/. ')
+        %td= number_with_precision(item.general_expenses*100, :precision => 2) rescue 0
+        %td= number_to_currency((cost * item.utility rescue 0), :unit=>'S/. ')
+        %td= number_with_precision(item.utility*100, :precision => 2) rescue 0
         %td
         %td
           .btn-group
@@ -43,7 +44,13 @@
               - item.valorizations.each do |valorization|
                 %tr
                   %td= valorization.id
-                  %td= valorization.month
+                  %td
+                    - month = valorization.valorization_date.to_date.strftime("%-m").to_i
+                    - year = valorization.valorization_date.to_date.strftime("%Y").to_i 
+                    
+                    Valorizacion:
+                    = t("date.month_names")[month]
+                    = year
                   %td
                     .btn-group
                       %a{:href=>"javascript:load_url_ondiv('" + edit_management_valorization_path(valorization.id).to_s+ "', 'right-area')"}(class="btn btn-mini btn-default")
