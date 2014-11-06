@@ -5,10 +5,10 @@
         %i.fa.fa-pencil-square-o.fa-fw 
         = Budget.where(:id => @valorization.budget_id).first.description
       %h3.page-title.txt-color-blueDark
-        Valorizacion N 
-        = @valorization.name
-        del Mes de
-        = @valorization.month
+        =@valorization.name rescue " "
+        DEL MES DE
+        = t("date.month_names")[@month] rescue " "
+        = @year rescue " "
 .row
   .col-md-12
     = render :partial => "table"

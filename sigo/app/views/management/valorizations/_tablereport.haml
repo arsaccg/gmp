@@ -2,11 +2,13 @@
   - hash_items = Hash.new
   - @itembybudgets_main.each do |ib|
     %tr(class="first_#{ib.order}")
-      %td(class="#{get_color_by_order(ib.order)}" colspan="3")
+      %td(class="#{get_color_by_order(ib.order)}")
         %strong
           =ib.order
           %a{href: "javascript:toogle_three('#{get_clasification_by_order(ib.order+'.00')}', '#{ib.order}');"}
             =ib.subbudgetdetail == ''? ib.title : ib.subbudgetdetail
+      %td
+      %td
       %td(style="text-align: right;")
         %strong
           = number_to_currency(amount_contractual(ib.order, @budget.id), :unit=>'S/. ')
@@ -180,131 +182,131 @@
         COSTO DIRECTO
     %td
     %td
-    %td
+    %td(style="text-align: right;")
       %strong
         -#MONTO contract
         = number_to_currency( @direct_cost_cont, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       %strong
         -#MONTO anterior
         = number_to_currency( @direct_cost_prev, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       %strong
         -#MONTO actual  
         = number_to_currency( @direct_cost_act, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       %strong
         -#MONTO acumulado
         = number_to_currency( @direct_cost_acc, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       %strong
         -#SALDO
         = number_to_currency( @direct_cost_rem, :unit=>'S/. ')
-    %td
+    %td(style="text-align: right;")
       = (@direct_cost_acc / @direct_cost_cont * 100).round(2) rescue 0
       ='%'
   %tr 
     %td
       Gastos Generales
-    %td
+    %td(style="text-align: right;")
       = (@budget.general_expenses.to_f * 100).round(2).to_s + '%'
     %td
-    %td
+    %td(style="text-align: right;")
       -#MONTO contract
       - num = (@direct_cost_cont * @budget.general_expenses.to_f).round(2)
       = number_to_currency( num, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       -#MONTO anterior
       - num = (@direct_cost_prev * @budget.general_expenses.to_f).round(2)
       = number_to_currency( num, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       -#MONTO actual  
       - num = (@direct_cost_act * @budget.general_expenses.to_f).round(2) 
       = number_to_currency( num, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       -#MONTO acumulado
       - num = (@direct_cost_acc * @budget.general_expenses.to_f).round(2) 
       = number_to_currency( num, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       -#SALDO
       - num = (@direct_cost_rem * @budget.general_expenses.to_f).round(2)
       = number_to_currency( num, :unit=>'S/. ')
-    %td
+    %td(style="text-align: right;")
       = ((@direct_cost_acc * @budget.general_expenses.to_f)/(@direct_cost_cont * @budget.general_expenses.to_f) * 100).round(2)
       ='%'
   %tr 
     %td
       %strong
         Utilidad
-    %td
+    %td(style="text-align: right;")
       =(@budget.utility.to_f * 100).round(2).to_s + '%'
     %td
-    %td
+    %td(style="text-align: right;")
       -#MONTO contract
       - num = (@direct_cost_cont * @budget.utility.to_f).round(2)
       = number_to_currency( num, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       -#MONTO anterior
       - num = (@direct_cost_prev * @budget.utility.to_f).round(2)
       = number_to_currency( num, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       -#MONTO actual  
       - num = (@direct_cost_act * @budget.utility.to_f).round(2) 
       = number_to_currency( num, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       -#MONTO acumulado
       - num = (@direct_cost_acc * @budget.utility.to_f).round(2) 
       = number_to_currency( num, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       -#SALDO
       - num = (@direct_cost_rem * @budget.utility.to_f).round(2)
       = number_to_currency( num, :unit=>'S/. ')
-    %td
+    %td(style="text-align: right;")
       = ((@direct_cost_acc * @budget.utility.to_f)/(@direct_cost_cont * @budget.utility.to_f) * 100).round(2)
       ='%'
   %tr 
     %td(colspan="3")
       %strong
         COSTO DE OBRA
-    %td
+    %td(style="text-align: right;")
       %strong
         =#MONTO contract
         -contractual =@direct_cost_cont + (@direct_cost_cont * @budget.general_expenses.to_f) + (@direct_cost_cont * @budget.utility.to_f)
         = number_to_currency( contractual, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       %strong
         =#MONTO anterior
         = number_to_currency( ((@direct_cost_prev + (@direct_cost_prev * @budget.general_expenses) + (@direct_cost_prev * @budget.utility)) rescue 0), :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       %strong
         =#MONTO actual  
         = number_to_currency( ((@direct_cost_act + (@direct_cost_act * @budget.general_expenses) + (@direct_cost_act * @budget.utility)) rescue 0), :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       %strong
         =#MONTO acumulado
         -accumulated = @direct_cost_acc + (@direct_cost_acc * @budget.general_expenses.to_f) + (@direct_cost_acc * @budget.utility.to_f)
         = number_to_currency( accumulated, :unit=>'S/. ')
     %td
-    %td
+    %td(style="text-align: right;")
       %strong
         =#SALDO
         = number_to_currency( ((@direct_cost_rem + (@direct_cost_rem * @budget.general_expenses) + (@direct_cost_rem * @budget.utility)) rescue 0), :unit=>'S/. ')
-    %td
+    %td(style="text-align: right;")
       %strong
         =((accumulated/contractual)*100).round(2)
         ='%'
