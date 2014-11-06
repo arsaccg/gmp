@@ -9,7 +9,6 @@
     .widget-body 
       = simple_form_for([:administration, @provision], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
         = flash[:error]
-        = @provision.inspect
         %br
         .col-sm-12
           %fieldset{ :style => 'margin-top: 20px;' }
