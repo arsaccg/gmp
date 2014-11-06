@@ -3,6 +3,7 @@
 -- Note: comments before and after the routine body will not be stored by the server
 -- --------------------------------------------------------------------------------
 DELIMITER $$
+DROP FUNCTION IF EXISTS `get_amount_prev` $$
 
 CREATE DEFINER=`root`@`localhost` FUNCTION `get_amount_prev`(v_order TEXT, v_budget_id INTEGER, v_current_date DATETIME) RETURNS float
 BEGIN

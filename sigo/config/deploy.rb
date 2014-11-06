@@ -6,7 +6,7 @@ set :repo_url, 'git@github.com:arsaccg/gmp.git'
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/home/userdeploy/sigo1'
+set :deploy_to, '/home/userdeploy/sigo12'
 
 # Default value for :scm is :git
 # set :scm, :git
