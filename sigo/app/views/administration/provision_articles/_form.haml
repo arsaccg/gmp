@@ -8,8 +8,6 @@
     .jarviswidget-editbox
     .widget-body 
       = simple_form_for([:administration, @provision], html: {class: 'form-horizontal', novalidate: 'novalidate', autocomplete: 'off' }) do |f|
-        = flash[:error]
-        = @provision.inspect
         %br
         .col-sm-12
           %fieldset{ :style => 'margin-top: 20px;' }
@@ -131,8 +129,10 @@
                       - array_values << @reg_n.to_s
                       %tr{id: "tr-" + @reg_n.to_s}
                         %td{:style => "display:none", :class => "provision_article-id"}
+                          = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][order_detail_id]', pod.order_detail_id
                           = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_id]', pod.article_id
                           = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][id]', pod.id.to_i rescue nil
+                          = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][type_order]', pod.type_order
                         %td= Article.find(pod.article_id).name.to_s
                         %td= Article.find(pod.article_id).unit_of_measurement.symbol.to_s
                         %td.account-accountant
@@ -157,20 +157,49 @@
                             = p.code
 
                         %td.amount
-                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"
+                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);"
                         
                         %td.unit-price
-                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', pod.price, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
+                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', pod.price, class: "form-control unit-price-item", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);"
 
-                        %td.discount-before{:class => "provision_discount-before"}
-                          = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', pod.discount_before , class: "form-control unit-price-igv", onkeypress: "return isNumber(event);"
+                        %td.discount-before
+                          %div#db
+                            = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', pod.discount_before, class: "form-control amount_with_discount_before_igv", :readonly => true
+                          -if pod.type_order == 'purchase_order'
+                            -PurchaseOrderDetail.find(pod.order_detail_id).purchase_order_extra_calculations.where("apply LIKE '%before%' AND extra_calculation_id = 1").each do |pdec|
+                              -if pdec.type =="percent"
+                                -value = pdec.value.to_f/100
+                                -if pdec.operation == "sum"
+                                  -value = value *(-1)
+                                = hidden_field_tag 'discount_before', value, class: "discount_before-item-percent"
+                              -elsif pdec.type == "soles"
+                                -value = pdec.value.to_f
+                                -if pdec.operation == "sum"
+                                  -value = value *(-1)
+                                = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
+                              -value = 0
+                          -elsif pod.type_order == 'service_order' 
+                            = hidden_field_tag 'discount_before', "service", class: "discount_before-item-soles"
+                            -OrderServiceDetail.find(pod.order_detail_id).order_service_extra_calculations.where("apply LIKE '%before%' AND extra_calculation_id = 1").each do |pdec|
+                              -if pdec.type =="percent"
+                                -value = pdec.value.to_f/100
+                                -if pdec.operation == "sum"
+                                  -value = value *(-1)
+                                = hidden_field_tag 'discount_before', value, class: "discount_before-item-percent"
+                              -elsif pdec.type == "soles"
+                                -value = pdec.value.to_f
+                                -if pdec.operation == "sum"
+                                  -value = value *(-1)              
+                                = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
+                              - value = 0          
+                        
 
                         %td.price-without-igv
                           = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', pod.unit_price_before_igv, class: "form-control unit-price-without-igv", :readonly => true
 
                         %td.check-igv
                           %label.checkbox
-                            = check_box_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][igv]', pod.igv, { class: 'provision_direct_igv', onchange: "enableFieldsForIgv(this);" }
+                            = check_box_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][igv]', pod.igv, { class: 'provision_direct_igv', onchange: "calculatePrice_from_orders(this);" }
                             %i
 
                         %td.quantity-igv{ :class => "provision_quantity-igv"}
@@ -830,21 +859,19 @@
   /* For items from Orders */
 
   function calculatePrice_from_orders(element){
-    var amount = parseInt($(element).val());
+    var amount = parseFloat($(element).val());
     var igv = parseFloat($(element).parent().siblings('.current-igv').find('input').val());
     var unit_price = parseFloat($(element).parent().siblings('.unit-price').find('input').val());
     var discount_before = $(element).parent().siblings('.discount-before').find('input');
-    var discount_after = $(element).parent().siblings('.discount-after').find('input');
-    var perception = $(element).parent().siblings('.perception').find('input');
-
+    console.log(discount_before)
     var total_dis_bes = 0;
     var total_dis_bep = 0;
     discount_before.each(function(){
       if($(this).attr('class')=="discount_before-item-soles"){
-        total_dis_bes+=parseFloat($(this).val()).toFixed(2);
+        total_dis_bes+=parseFloat($(this).val());
       }else{
         if($(this).attr('class')=="discount_before-item-percent"){
-          total_dis_bep+=parseFloat((amount*unit_price*parseFloat($(this).val()))).toFixed(2);
+          total_dis_bep+=parseFloat((amount*unit_price*parseFloat($(this).val())));
         }
       }
     });
@@ -852,41 +879,12 @@
     var a =(1+igv).toFixed(2)
     var total_price = (((amount * unit_price) - sdb)).toFixed(2);
     $(element).parent().siblings('.price-without-igv').find('input').val(total_price);
-    $(element).parent().siblings('.discount-after').children('#db').find('input').val(sdb);
+    $(element).parent().siblings('.discount-before').children('#db').find('input').val(sdb);
+    console.log($(element).parent().siblings('.discount-before').children('#db').find('input'))
 
-    
-    var total_dis_afs = 0;
-    var total_dis_afp = 0;
-    /*
-    discount_after.each(function(){
-      if($(this).attr('class')=="discount_after-item-soles"){
-        total_dis_afs+=parseFloat($(this).val());
-      }else{
-        if($(this).attr('class')=="discount_after-item-percent"){
-          total_dis_afp+=parseFloat((total_price*parseFloat($(this).val())));
-        }
-      }
-    });
-    */
-    var sda = (total_dis_afs + total_dis_afp).toFixed(2);
-    var per_am=0;
-    /*
-    var net_total_price = parseFloat(total_price) - sda
-    perception.each(function(){
-      if($(this).attr('class')=="perception-soles"){
-        per_am=parseFloat($(this).val()).toFixed(2);
-      }else{
-        if($(this).attr('class')=="perception-percent"){
-          per_am=parseFloat(total_price*parseFloat($(this).val())).toFixed(2);
-        }
-      }
-    });
-    */
     $(element).parent().siblings('.quantity-igv').find('input').val(parseFloat(((amount * unit_price) - sdb)*igv).toFixed(2));
     var net_total_price = (((amount * unit_price) - sdb)*(a)).toFixed(2);
-    $(element).parent().siblings('.discount-after').children('#da').find('input').val(sda*-1);
     $(element).parent().siblings('.unit-price-igv').find('input').val(parseFloat(net_total_price).toFixed(2));
-    /*$(element).parent().siblings('.perception').children('#per').find('input').val(per_am);*/
   }
 
   function calculate_amounts(){
