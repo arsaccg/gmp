@@ -1,8 +1,10 @@
 - @data_orders.each do |data_order_detail|
+
   %tr{id: "tr-" + @reg_n.to_s}
     %td{ :style => "display:none", :class => "provision-di" }
       = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][order_detail_id]', data_order_detail[0]
-      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_id]', data_order_detail[14]
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_id]', data_order_detail[12]
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][type_order]', data_order_detail[16]
     %td{ :style => "display:none" }
       = data_order_detail[1]
       = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_code]', data_order_detail[1]
@@ -13,25 +15,24 @@
       = data_order_detail[3]
       = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_of_measurement]', data_order_detail[3]
     %td
-      %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}    
-
+      %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
     %td.sector
-      = Sector.find(data_order_detail[16]).code.to_s + ' - '+ Sector.find(data_order_detail[16]).name.to_s
-      %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][sector_id]', 'style' => 'display:none;', 'value'=>data_order_detail[16]}      
+      = Sector.find(data_order_detail[14]).code.to_s + ' - '+ Sector.find(data_order_detail[14]).name.to_s
+      %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][sector_id]', 'style' => 'display:none;', 'value'=>data_order_detail[14]}
     %td.phase
       = Phase.find(data_order_detail[15]).code.to_s
       %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'style' => 'display:none;', 'value'=>data_order_detail[15]}
     %td.amount
-      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', data_order_detail[8], class: "form-control amount-item", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{data_order_detail[8]})"
-      %code= "Por atender: #{data_order_detail[8]}"
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', data_order_detail[4], class: "form-control amount-item", onfocusout: "calculatePrice_from_orders(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{data_order_detail[4]})"
+      %code= "Por atender: #{data_order_detail[4]}"
     %td.unit-price
-      = number_to_currency(data_order_detail[5], unit: data_order_detail[13], precision: 4)
+      = number_to_currency(data_order_detail[5], unit: data_order_detail[11], precision: 4)
       = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', data_order_detail[5], class: "unit-price-item"
     %td.discount-before
       %div#db
-        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', data_order_detail[9].to_f.round(2), class: "form-control amount_with_discount_before_igv", :readonly => true
-      -if @type_of_order_name == 'purchase_order'
-        -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
+        = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', data_order_detail[6].to_f.round(2), class: "form-control amount_with_discount_before_igv", :readonly => true
+      -if data_order_detail[16] == 'purchase_order'
+        -PurchaseOrderDetail.find(data_order_detail[0]).purchase_order_extra_calculations.where("apply LIKE '%before%' AND extra_calculation_id = 1").each do |pdec|
           -if pdec.type =="percent"
             -value = pdec.value.to_f/100
             -if pdec.operation == "sum"
@@ -43,9 +44,8 @@
               -value = value *(-1)
             = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
           -value = 0
-      -elsif @type_of_order_name == 'service_order' 
-        = hidden_field_tag 'discount_before', "service", class: "discount_before-item-soles"
-        -OrderServiceDetail.find(data_order_detail[0]).order_service_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
+      -elsif data_order_detail[16] == 'service_order' 
+        -OrderOfServiceDetail.find(data_order_detail[0]).order_service_extra_calculations.where("apply LIKE '%before%' AND extra_calculation_id = 1").each do |pdec|
           -if pdec.type =="percent"
             -value = pdec.value.to_f/100
             -if pdec.operation == "sum"
@@ -54,20 +54,20 @@
           -elsif pdec.type == "soles"
             -value = pdec.value.to_f
             -if pdec.operation == "sum"
-              -value = value *(-1)              
+              -value = value *(-1)
             = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
           - value = 0          
     %td.price-without-igv
-      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', data_order_detail[6] , class: "form-control unit-price-igv", :readonly => true  
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', data_order_detail[7] , class: "form-control unit-price-igv", :readonly => true  
     %td.current-igv
-      = (data_order_detail[7]*100).round.to_s + '%'
-      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][percent_igv]',data_order_detail[7], class: "igv-item"
+      = (data_order_detail[8]*100).round.to_s + '%'
+      = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][percent_igv]',data_order_detail[8], class: "igv-item"
     %td.quantity-igv
-      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',(data_order_detail[6]*data_order_detail[7]).round(2), class: "form-control igv-item", :readonly => true
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',(data_order_detail[9]).round(2), class: "form-control igv-item", :readonly => true
     %td.unit-price-igv
-      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', data_order_detail[11] , class: "form-control net-price-after-igv", :readonly => true
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', data_order_detail[10] , class: "form-control net-price-after-igv", :readonly => true
     %td.order_origin{:style => "text-align:center;"}
-      = data_order_detail[17]
+      = data_order_detail[13]
     %td.description
       = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
     %td{:style => "width: 1%; text-align:center;"}

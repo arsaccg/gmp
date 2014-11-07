@@ -15,6 +15,8 @@ class Payrolls::ConceptsController < ApplicationController
     @con = Concept.new
     @condeTrab = Concept.where("code like '2%'")
     @condeEmp = Concept.where("code like '3%'")
+    @date_week = Time.now.strftime('%Y-%m-%d')
+    @cost_center = get_company_cost_center('cost_center')
     render layout: false
   end
 
@@ -41,16 +43,22 @@ class Payrolls::ConceptsController < ApplicationController
   def edit
     @condeTrab = Concept.where("code like '2%'")
     @condeEmp = Concept.where("code like '3%'")
+    @date_week = Time.now.strftime('%Y-%m-%d')
+    @cost_center = get_company_cost_center('cost_center')
+
     @con = Concept.find(params[:id])
     ids = Array.new
     @reg_n = ((Time.now.to_f)*100).to_i
     ids << @con.id
+    
     @con.concept_details.each do |co|
       ids << co.subconcept_id
     end
+    
     ids = ids.join(',')
     @coned=@con.concept_details.where("status = 0")
-    @conde = Concept.where("id NOT IN ("+ids+")")
+    @conde = Concept.where("id NOT IN (" + ids.to_s + ")")
+    
     @action = 'edit'
     render layout: false
   end
@@ -86,6 +94,18 @@ class Payrolls::ConceptsController < ApplicationController
     render :json => con
   end
 
+    # CUSTOM METHODS
+
+  def display_concepts
+    word = params[:q]
+    concepts_hash = Array.new
+    concepts = Concept.where(:type_concept => 'Fijo').where(:status => 1).where("code LIKE '1%' AND name LIKE '%#{word}%'")
+    concepts.each do |concept|
+      concepts_hash << { 'id' => concept.id, 'name' => concept.name }
+    end
+    render json: { :concepts => concepts_hash }
+  end
+
   def add_subconcept
     @reg_n = ((Time.now.to_f)*100).to_i
     @subconcept = Concept.find(params[:subconcept])
@@ -101,7 +121,18 @@ class Payrolls::ConceptsController < ApplicationController
         :concept_id, 
         :category, 
         :subconcept_id, 
-        :status
-      ])
+        :status,
+        :_destroy
+      ],
+      concept_valorizations_attributes: [
+        :id,
+        :concept_id,
+        :date_week,
+        :cost_center_id,
+        :concept_reference_id,
+        :amount,
+        :_destroy
+      ]
+    )
   end
 end

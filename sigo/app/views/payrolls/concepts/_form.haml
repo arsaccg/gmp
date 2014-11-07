@@ -12,13 +12,18 @@
             %label.input
               %i.icon-append.fa.fa-credit-card
               = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          
+          %section.col.col-2
+            %label.label Valorizaciones
+            %label.input
+              %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization()' }
+                %i.fa.fa-superscript
+                Definir
+
           %section.col.col-4
             %label.label Código
             %label.input
-              -if @action=="edit"
-                = f.input :code, placeholder: "Código", input_html: { class: 'form-control', :value=>@con.code[1,@con.code.length] }, label: false
-              -else
-                = f.input :code, placeholder: "Código", input_html: { class: 'form-control'}, label: false              
+              = f.input :code, placeholder: "Código", input_html: { class: 'form-control'}, label: false              
           %section.col.col-4
             %label.label Tipo
             %label.input
@@ -98,10 +103,8 @@
 
           %section.col.col-4
             %div
-              %a(href="javascript:add_concept();" id="btn-add-con" class="btn btn-success" role="button")
+              %a{ :href => "javascript:add_concept();", :id => "btn-add-con", :class => "btn btn-success", :role => "button", :style => 'padding: 7px;'}
                 Agregar concepto
-
-
 
         %br  
         %br
@@ -138,18 +141,39 @@
           %i.fa.fa-save 
           Guardar
 
+#modal_valorization.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "modalValorizationLabel", role: "dialog" }
+  .modal-dialog
+    .modal-content
+      .modal-body{ :style => 'overflow: hidden;' }
+        
+        %section.col-md-9
+          %label{ :style => 'font-size: 13px;' } Buscar Conceptos:
+          =#%label.input
+          %input#concepts_list.form-control{ "name" => "concept_item", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;' }
+        %section.col-md-3
+          %a.btn.btn-sm.btn-info{ :href => 'javascript:void(0)', :onclick => 'javascript:add_concept_valorization()', :style => 'margin-top: 23px;' }
+            Añadir Concepto
+        
+        %br
+
+        %section.col-md-12{ :style => 'margin-top: 20px;' }
+          #modalValorizationItemsContent
+        
+        %br
+
+      .modal-footer
+        %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Cerrar
+
 :javascript
   $(document).ready(function () {
 
     $('input[type="radio"]').click(function(){
         if($(this).attr("value")=="Trabajador"){
-            console.log("Trabajador")
             $("#condeEmp").hide();
             $("#condeDef").hide();
             $("#condeTrab").show();
         }
         if($(this).attr("value")=="Empresa"){
-            console.log("Empresa")
             $("#condeTrab").hide();
             $("#condeDef").hide();
             $("#condeEmp").show();
@@ -245,9 +269,7 @@
       cat = $("#e").val()
       sub = $("#conde2").val()
     }
-    console.log($("#conde").val());
-    console.log(cat);
-    console.log(cat.length);
+
     if($("#conde1").val() != 0 || $("#conde2").val()!=0 || $("#conde").val() != 0 && cat.length > 1){
       str_item = {authenticity_token: "#{form_authenticity_token}", subconcept: sub, category: cat, status: 0};
       append_url_ajax('#{add_subconcept_payrolls_concepts_path}', 'concept_items_table', str_item, 0, 'POST');
@@ -258,4 +280,49 @@
 
   function delete_item(code){
     $("#tr" + code).remove();
+  }
+
+  function show_me_the_valorization(){
+    $('#modal_valorization').modal({
+      backdrop : 'static',
+      keyword : false
+    });
+  }
+
+  $('#concepts_list').select2({
+    placeholder: "Buscar Concepto...",
+    minimumInputLength: 3,
+    ajax: {
+      url: "#{display_concepts_payrolls_concepts_path}",
+      dataType: 'json',
+      type: 'POST',
+      quietMillis: 100,
+      data: function(term, page){
+        return {
+          q: term,
+          page: page,
+          authenticity_token: "#{form_authenticity_token}"
+        };
+      },
+      results: function(data, page){
+        return {results: data.concepts};
+      }
+    },
+    formatResult: function(node){ return '<div>' + node.name + '</div>' },
+    formatSelection: function(node){ return node.name },
+    escapeMarkup: function (m) { return m; }
+  });
+
+  function add_concept_valorization(){
+    var concept_id = 0
+    var concept_name = ''
+
+    data_selected = $('#concepts_list').select2('data');
+    concept_id = data_selected.id
+    concept_name = data_selected.name
+
+    $('#modalValorizationItemsContent').append(
+      '<div><input name=concept[concept_valorizations_attributes][concept_reference_id] value=' + concept_id + ' type=hidden /><input name=concept[concept_valorizations_attributes][date_week] value=' + "#{@date_week}" + ' type=hidden /><input name=concept[concept_valorizations_attributes][cost_center_id] value=' + "#{@cost_center}" + ' type=hidden /></div><br /><label> - ' + concept_name + '</label>'
+    )
+
   }

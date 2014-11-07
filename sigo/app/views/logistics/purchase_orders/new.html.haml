@@ -430,7 +430,8 @@
         });  
       }
       total=((parseFloat(price*amount-db_m)*1.18)-da_m).toFixed(2);
-      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val((parseFloat(price*amount-db_m)*0.18).toFixed(2))
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val((parseFloat(price*amount-db_m)*0.18).toFixed(2));
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val((parseFloat(price*amount-db_m)*1.18).toFixed(2));
     }else{
       if($('#'+reg+'a > input').length > 0){
         dia.each(function(){
@@ -443,7 +444,8 @@
       }
       total=(parseFloat(price*amount-db_m)-da_m).toFixed(2);
       $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val('0');
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val((parseFloat(price*amount-db_m)).toFixed(2));
     }
-    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_after').val(da_m.toFixed(2));
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_after').val(Math.abs(da_m).toFixed(2));
     $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_igv').val(total);
   }

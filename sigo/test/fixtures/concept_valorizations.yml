@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  concept_id: 1
+  date_week: 2014-11-07
+  cost_center_id: 1
+  concept_reference_id: 1
+  amount: MyString
+
+two:
+  concept_id: 1
+  date_week: 2014-11-07
+  cost_center_id: 1
+  concept_reference_id: 1
+  amount: MyString
