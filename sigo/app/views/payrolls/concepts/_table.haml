@@ -43,7 +43,8 @@
                   %td
                     = con.name.to_s
                   %td
-                    = con.code[1,con.code.length].to_s
+                    =# con.code[1,con.code.length].to_s
+                    = con.code.to_s
                   %td
                     - if con.percentage != nil
                       = con.percentage.to_s + "%"
