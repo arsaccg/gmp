@@ -109,9 +109,6 @@ class Administration::ProvisionArticlesController < ApplicationController
     @action = 'direct'
     @data_orders = Array.new
     params_article = params[:article_id].split('-')
-    puts "------------------------------------------------------------------------------------------"
-    puts params_article
-    puts "------------------------------------------------------------------------------------------"
     @amount = params[:amount]
     @reg_n = ((Time.now.to_f)*100).to_i
     @account_accountants = AccountAccountant.where("code LIKE  '_______'")
