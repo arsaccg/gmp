@@ -12,6 +12,14 @@
             %label.input
               %i.icon-append.fa.fa-credit-card
               = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          
+          %section.col.col-2
+            %label.label Valorizaciones
+            %label.input
+              %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization()' }
+                %i.fa.fa-superscript
+                Definir
+
           %section.col.col-4
             %label.label Código
             %label.input
@@ -95,10 +103,8 @@
 
           %section.col.col-4
             %div
-              %a(href="javascript:add_concept();" id="btn-add-con" class="btn btn-success" role="button")
+              %a{ :href => "javascript:add_concept();", :id => "btn-add-con", :class => "btn btn-success", :role => "button", :style => 'padding: 7px;'}
                 Agregar concepto
-
-
 
         %br  
         %br
@@ -135,18 +141,29 @@
           %i.fa.fa-save 
           Guardar
 
+  #modal_valorization.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "modalValorizationLabel", role: "dialog", tabindex: "-1" }
+    .modal-dialog
+      .modal-content
+        .modal-body
+          
+          %section
+            %label.label Conceptos
+            %label.input
+              %input#concepts_list.form-control{ "name" => "concept_item", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;' }
+          
+          %section
+            #modalValorizationItemsContent
+
 :javascript
   $(document).ready(function () {
 
     $('input[type="radio"]').click(function(){
         if($(this).attr("value")=="Trabajador"){
-            console.log("Trabajador")
             $("#condeEmp").hide();
             $("#condeDef").hide();
             $("#condeTrab").show();
         }
         if($(this).attr("value")=="Empresa"){
-            console.log("Empresa")
             $("#condeTrab").hide();
             $("#condeDef").hide();
             $("#condeEmp").show();
@@ -256,3 +273,31 @@
   function delete_item(code){
     $("#tr" + code).remove();
   }
+
+  function show_me_the_valorization(){
+    $('#modal_valorization').modal();
+  }
+
+  $('#concepts_list').select2({
+    placeholder: "Buscar Concepto...",
+    minimumInputLength: 3,
+    ajax: {
+      url: "#{display_proveedor_logistics_purchase_orders_path}",
+      dataType: 'json',
+      type: 'POST',
+      quietMillis: 100,
+      data: function(term, page){
+        return {
+          q: term,
+          page: page,
+          authenticity_token: "#{form_authenticity_token}"
+        };
+      },
+      results: function(data, page){
+        return {results: data.articles};
+      }
+    },
+    formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name +'</div>' },
+    formatSelection: function(node){ return (node.code + ' - ' + node.name ) },
+    escapeMarkup: function (m) { return m; }
+  });
