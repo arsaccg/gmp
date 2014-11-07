@@ -863,7 +863,7 @@
     var igv = parseFloat($(element).parent().siblings('.current-igv').find('input').val());
     var unit_price = parseFloat($(element).parent().siblings('.unit-price').find('input').val());
     var discount_before = $(element).parent().siblings('.discount-before').find('input');
-    console.log(discount_before)
+
     var total_dis_bes = 0;
     var total_dis_bep = 0;
     discount_before.each(function(){
@@ -880,7 +880,6 @@
     var total_price = (((amount * unit_price) - sdb)).toFixed(2);
     $(element).parent().siblings('.price-without-igv').find('input').val(total_price);
     $(element).parent().siblings('.discount-before').children('#db').find('input').val(sdb);
-    console.log($(element).parent().siblings('.discount-before').children('#db').find('input'))
 
     $(element).parent().siblings('.quantity-igv').find('input').val(parseFloat(((amount * unit_price) - sdb)*igv).toFixed(2));
     var net_total_price = (((amount * unit_price) - sdb)*(a)).toFixed(2);
