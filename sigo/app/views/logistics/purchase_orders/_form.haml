@@ -138,19 +138,22 @@
                 %table#summary-delivery-orders.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
                   %thead
                     %tr
-                      %th Código de la orden de Suministro
+                      %th Código
                       %th Nombre del Artículo
-                      %th Unidad de Medida
+                      %th U.M.
                       %th Cantidad
                       %th Precio Unitario
-                      %th Descuento antes IGV
+                      %th Otros antes IGV
                       %th Total antes de IGV
                       %th IGV?
-                      %th Después IGV
                       %th Total después de IGV
-                      %th Operaciones Adicionales
+                      %th Otros después IGV
+                      %th Neto a Pagar
+                      %th Otros
                       %th Descripción
-                      %th Eliminar
+                      %th{:style => "text-align:center;"}
+                        %a.btn.btn-danger.btn-xs{ :href => 'javascript:void(0)' }
+                          %i.fa.fa-trash-o
                   %tbody#order_delivery_items_table
                     - array_values = Array.new
                     - j = 0
@@ -195,6 +198,8 @@
                             - else
                               = check_box_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', nil, nil, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
                               %i
+                        %td.total_igv
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][total_igv]', pod.unit_price_before_igv.to_f+pod.quantity_igv.to_f, class: "form-control unit-price-before-igv", :readonly => true
                         %td.discount-after{:style => 'text-align: center'}
                           = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_after]', pod.discount_after, class: "form-control discount-after", :readonly => true
                           %div{:id => @reg_n.to_s+"a", :style => "display:none;"}

@@ -23,6 +23,8 @@
       %label.checkbox
         = check_box_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', nil, nil, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
         %i
+    %td.total_igv
+      = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][total_igv]', nil, class: "form-control unit-price-before-igv", :readonly => true        
     %td.discount-after{:style => 'text-align: center'}
       = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_after]', nil, class: "form-control discount-after", :readonly => true
       %div{id: @reg_n.to_s+"a",:style => "display:none"}
