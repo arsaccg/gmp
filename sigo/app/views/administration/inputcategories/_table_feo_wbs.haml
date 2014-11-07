@@ -104,8 +104,8 @@
         suma2 += parseFloat($('td:nth-child(5)',this).text().trim().substring(4).replace(",", "")); 
       });
       console.log("suma1: "+suma1);
-      monto1 = 'S/. ' + suma1.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-      monto2 = 'S/. ' + suma2.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      monto1 = 'S/. ' + suma1.format_currency();
+      monto2 = 'S/. ' + suma2.format_currency();
 
     });
 

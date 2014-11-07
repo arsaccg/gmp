@@ -14,8 +14,12 @@
           - item.valorizations.each do |val|  
             %tr
               %td
+                - month = val.valorization_date.to_date.strftime("%-m").to_i
+                - year = val.valorization_date.to_date.strftime("%Y").to_i 
                 %strong
-                  =val.month
+                  Valorizacion:
+                  = t("date.month_names")[month]
+                  = year
               %td
                 .btn-group
                   -if val.charged? == false

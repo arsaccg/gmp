@@ -15,10 +15,7 @@
           %section.col.col-4
             %label.label Código
             %label.input
-              -if @action=="edit"
-                = f.input :code, placeholder: "Código", input_html: { class: 'form-control', :value=>@con.code[1,@con.code.length] }, label: false
-              -else
-                = f.input :code, placeholder: "Código", input_html: { class: 'form-control'}, label: false              
+              = f.input :code, placeholder: "Código", input_html: { class: 'form-control'}, label: false              
           %section.col.col-4
             %label.label Tipo
             %label.input

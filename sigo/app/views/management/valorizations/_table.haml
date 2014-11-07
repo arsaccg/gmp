@@ -132,14 +132,14 @@
     val_month = parseFloat($("#direct_cost").text()) + parseFloat($("#item_generale").val()) + parseFloat($("#item_utility").val());
     $("#valorization_month").text(val_month.toFixed(2));
 
-    val_construction = parseFloat($("#valorization_month").text()) + parseFloat($("#item_readjustment").val()) + parseFloat($("#item_no_direct_r").val()) + parseFloat($("#item_no_materials_r").val());
+    val_construction = parseFloat($("#valorization_month").text()) + parseFloat($("#item_readjustment").val()) - parseFloat($("#item_no_direct_r").val()) - parseFloat($("#item_no_materials_r").val());
     
     $("#valorization_construction").text(val_construction.toFixed(2));
 
     amortization = parseFloat($("#item_direct_advance").val()) + parseFloat($("#item_advance_of_materials").val());
     $("#amortization").text(amortization.toFixed(2));
 
-    total = parseFloat($("#amortization").text()) + parseFloat($("#valorization_construction").text());
+    total = parseFloat($("#valorization_construction").text()) - parseFloat($("#amortization").text());
     $("#total_val").text(total.toFixed(2));
 
     

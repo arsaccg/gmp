@@ -84,6 +84,7 @@ class Management::ValorizationsController < ApplicationController
   def create
     valorization = Valorization.new(valorization_parameters)
     valorization.month = "Valorizacion : " + valorization.valorization_date.strftime("%B %Y")
+
     valorization.save
 
     cost_center_id = Budget.find(valorization.budget_id).cost_center_id
@@ -108,6 +109,10 @@ class Management::ValorizationsController < ApplicationController
 
   def show_data
     @valorization = Valorization.find(params[:id])
+    
+    @month = @valorization.valorization_date.to_date.strftime("%-m").to_i
+    @year = @valorization.valorization_date.to_date.strftime("%Y").to_i 
+
     render :show_data, layout: false
   end
 
@@ -186,6 +191,10 @@ class Management::ValorizationsController < ApplicationController
     @project = CostCenter.find(@budget.cost_center_id)
 
     @itembybudgets_main = Itembybudget.select('id, `title`, `subbudgetdetail`, `order`, CHAR_LENGTH(`order`)').where('CHAR_LENGTH(`order`) < 3 AND budget_id = ?', @valorization.budget_id)
+    
+    @month = @valorization.valorization_date.to_date.strftime("%-m").to_i
+    @year = @valorization.valorization_date.to_date.strftime("%Y").to_i 
+
     render :report, layout: false
   end
 
