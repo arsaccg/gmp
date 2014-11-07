@@ -444,6 +444,6 @@
       total=(parseFloat(price*amount-db_m)-da_m).toFixed(2);
       $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val('0');
     }
-    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_after').val(da_m.toFixed(2));
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_after').val(Math.abs(da_m).toFixed(2));
     $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_igv').val(total);
   }
