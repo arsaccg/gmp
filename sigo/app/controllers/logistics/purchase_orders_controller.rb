@@ -513,7 +513,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @cargo_neto=0
     @otro_neto=0
     #@igv_neto = @total*@igv
-    @total_neto = @total + @igv_neto
+    @total_neto = @total + @total*@igv
 
     @perceptions = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=2")
     @perceptions.each do |p|
