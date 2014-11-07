@@ -88,10 +88,14 @@
                     .col-md-3
                       %label.label=Concept.find(wor.concept_id).name 
                     .col-md-7
+                      -top=100000000000
+                      -if !Concept.find(wor.concept_id).top.nil?
+                        -top=Concept.find(wor.concept_id).top
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][worker_id]',wor.worker_id
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][worker_contract_id]',wor.worker_contract_id
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][concept_id]',wor.concept_id
-                      = text_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][amount]',wor.amount
+                      = text_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][amount]',wor.amount, onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, "+top.to_s+")"
+
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][id]',wor.id
                 -i+=1
             -else
@@ -101,10 +105,13 @@
                     .col-md-3
                       %label.label=con.name
                     .col-md-7
+                      -top=100000000000
+                      -if !con.top.nil?
+                        -top=con.top
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
-                      = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]'
+                      = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, "+top.to_s+")"
                 -@reg_n+=1
           -else
             -@concepts.each do |con|
@@ -113,11 +120,14 @@
                   .col-md-3
                     %label.label=con.name
                   .col-md-7
+                    -top=100000000000
+                    -if !con.top.nil?
+                      -top=con.top
                     = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
                     = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
                     = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
 
-                    = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]'
+                    = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, "+top.to_s+")"
               -@reg_n+=1
         .row
           %section.col.col-2
@@ -227,7 +237,29 @@
       }
     });
   }
+  function calculatePrice(element){
+    if ($(element).val()>10){
+      alert("Ingrese datos correctos");
+      //$(element).val('');
+    }
+  }
 
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  function minmax(value, min, max){
+    if(parseInt(value) < min || isNaN(value)) 
+      return min; 
+    else if(parseInt(value) > max) 
+      return max; 
+    else return value;
+  }
 
   function delete_item(code){
     $("#tr" + code).remove();
