@@ -196,11 +196,9 @@
                         %td.price-without-igv
                           = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', pod.unit_price_before_igv, class: "form-control unit-price-without-igv", :readonly => true
 
-                        %td.check-igv
-                          %label.checkbox
-                            = check_box_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][igv]', pod.igv, { class: 'provision_direct_igv', onchange: "calculatePrice_from_orders(this);" }
-                            %i
-
+                        %td.current-igv
+                          = ((pod.quantity_igv.to_f/pod.unit_price_before_igv.to_f)*100).round.to_s + '%'
+                          = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][igv]',(pod.quantity_igv.to_f/pod.unit_price_before_igv.to_f).to_f, class: "igv-item"
                         %td.quantity-igv{ :class => "provision_quantity-igv"}
                           = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',pod.quantity_igv, class: "form-control igv-item", :readonly => true
 
