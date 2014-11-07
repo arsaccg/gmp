@@ -179,8 +179,7 @@
                                 = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
                               -value = 0
                           -elsif pod.type_order == 'service_order' 
-                            = hidden_field_tag 'discount_before', "service", class: "discount_before-item-soles"
-                            -OrderServiceDetail.find(pod.order_detail_id).order_service_extra_calculations.where("apply LIKE '%before%' AND extra_calculation_id = 1").each do |pdec|
+                            -OrderOfServiceDetail.find(pod.order_detail_id).order_service_extra_calculations.where("apply LIKE '%before%' AND extra_calculation_id = 1").each do |pdec|
                               -if pdec.type =="percent"
                                 -value = pdec.value.to_f/100
                                 -if pdec.operation == "sum"
