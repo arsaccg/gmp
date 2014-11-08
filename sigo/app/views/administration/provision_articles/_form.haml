@@ -612,11 +612,12 @@
   function enableFieldsForIgv(element){
     if($(element).is(":checked")){
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*#{@igv}).toFixed(2));
+      $(element).parent().parent().siblings('.unit-price-igv').find('input').val(parseFloat(price_without_igv*#{@igv}).toFixed(2));
       $(element).parent().parent().siblings('.quantity-igv').find('input').val(parseFloat(price_without_igv*#{@igv-1}).toFixed(2));
     } else {
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+      $(element).parent().parent().siblings('.provision_quantity-igv').find('input').val(0.0);
+      $(element).parent().parent().siblings('.unit-price-igv').find('input').val(price_without_igv);
     }
   }
 

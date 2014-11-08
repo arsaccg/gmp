@@ -3,7 +3,7 @@
 -- Note: comments before and after the routine body will not be stored by the server
 -- --------------------------------------------------------------------------------
 DELIMITER $$
-
+DROP FUNCTION IF EXISTS `get_prev_valorizations` $$
 CREATE DEFINER=`root`@`localhost` FUNCTION `get_prev_valorizations`(v_current_date DATETIME, v_itembybudget_id INTEGER) RETURNS float
 BEGIN
 	
