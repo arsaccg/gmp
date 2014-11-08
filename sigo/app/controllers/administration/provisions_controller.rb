@@ -20,64 +20,26 @@ class Administration::ProvisionsController < ApplicationController
   end
 
   def create
-    # Si es una Provision de Compra
-    if params[:provision]['order_id'] != nil
-      provision = Provision.new(provisions_parameters)
-      flag = Provision.where("entity_id = ? AND series = ? AND number_document_provision = ? AND document_provision_id = 1", provision.entity_id, provision.series,provision.number_document_provision)
-      if flag.count ==0
-        if provision.save
-          provision_checked = Array.new
-          total_amount = 0
-          provision.provision_details.each do |detail|
-            if !provision_checked.include? detail.order_detail_id
-              provision_checked << detail.order_detail_id
-              ProvisionDetail.where('order_detail_id = ?', detail.order_detail_id).each do |details|
-                total_amount += details.amount
-              end
-              Provision.update_received_order(total_amount, detail.order_detail_id, detail.type_of_order)
-            end
-          end
-          flash[:notice] = "Se ha creado correctamente la nueva provision."
-          redirect_to :action => :index
-        else
-          provision.errors.messages.each do |attribute, error|
-            flash[:error] =  flash[:error].to_s + error.to_s + "  "
-          end
-          # Load new()
-          @provision = provision
-          render :new, layout: false
-        end
+    # Si es una provision de Compra Directa
+    provision = Provision.new(provision_direct_purchase_parameters)
+    flag = Provision.where("entity_id = ? AND series = ? AND number_document_provision = ? AND document_provision_id = 1", provision.entity_id, provision.series,provision.number_document_provision)
+    if flag.count == 0
+      if provision.save
+        flash[:notice] = "Se ha creado correctamente la nueva provision."
+        redirect_to :controller => :provision_articles, :action => :index
       else
         provision.errors.messages.each do |attribute, error|
-          flash[:error] =  "Ya existe esa factura registrada con los mismos datos"
+          flash[:error] = flash[:error].to_s + error.to_s + "  "
         end
         # Load new()
         @provision = provision
-        render :new, layout: false
-      end
-      
-    else
-      # Si es una provision de Compra Directa
-      provision = Provision.new(provision_direct_purchase_parameters)
-      flag = Provision.where("entity_id = ? AND series = ? AND number_document_provision = ? AND document_provision_id = 1", provision.entity_id, provision.series,provision.number_document_provision)
-      if flag.count == 0
-        if provision.save
-          flash[:notice] = "Se ha creado correctamente la nueva provision."
-          redirect_to :controller => :provision_articles, :action => :index
-        else
-          provision.errors.messages.each do |attribute, error|
-            flash[:error] = flash[:error].to_s + error.to_s + "  "
-          end
-          # Load new()
-          @provision = provision
-          redirect_to :controller => :provision_articles, :action => :new
-        end
-      else
-        flash[:error] = "Ya existe esa factura registrada"
-        # Load new()
-        @provision = Provision.new(provision_direct_purchase_parameters)
         redirect_to :controller => :provision_articles, :action => :new
       end
+    else
+      flash[:error] = "Ya existe esa factura registrada"
+      # Load new()
+      @provision = Provision.new(provision_direct_purchase_parameters)
+      redirect_to :controller => :provision_articles, :action => :new
     end
   end
 
@@ -91,17 +53,10 @@ class Administration::ProvisionsController < ApplicationController
   end
 
   def update
-    if params[:provision]['order_id'] != nil
-      provision = Provision.find(params[:id])
-      provision.update_attributes(provisions_parameters)
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index
-    else
-      provision = Provision.find(params[:id])
-      provision.update_attributes(provision_direct_purchase_parameters)
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :controller => :provision_articles, :action => :index
-    end
+    provision = Provision.find(params[:id])
+    provision.update_attributes(provision_direct_purchase_parameters)
+    flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :controller => :provision_articles, :action => :index
   rescue ActiveRecord::StaleObjectError
     provision.reload
     flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
@@ -363,40 +318,6 @@ class Administration::ProvisionsController < ApplicationController
   end
 
   private
-  def provisions_parameters
-    params.require(:provision).permit(
-      :cost_center_id, 
-      :entity_id, 
-      :order_id, 
-      :lock_version,
-      :document_provision_id, 
-      :number_document_provision, 
-      :accounting_date, 
-      :series, 
-      :description,
-      provision_details_attributes: [
-        :id,
-        :provision_id,
-        :article_code,
-        :article_name,
-        :amount_perception,
-        :discount_before_igv,
-        :discount_after_igv,
-        :unit_of_measurement,
-        :current_unit_price,
-        :current_igv, 
-        :lock_version,
-        :order_detail_id,
-        :type_of_order,
-        :account_accountant_id,
-        :amount,
-        :unit_price_igv,
-        :net_price_after_igv,
-        :_destroy
-      ]
-    )
-  end
-
   def provision_direct_purchase_parameters
     params.require(:provision).permit(
       :cost_center_id, 
