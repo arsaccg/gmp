@@ -6,8 +6,7 @@
         = "Provisión N° " + @provision.id.to_s.rjust(5, '0')
   %section#widget-grid
     .row
-      %article.col-lg-2
-      %article.col-sm-12.col-md-12.col-lg-8
+      %article.col-sm-12.col-md-8.col-lg-8
         #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
           %header
             %span.widget-icon
@@ -19,8 +18,6 @@
               / This area used as dropdown edit box
             .widget-body.no-padding
               .alert.alert-info.no-margin.fade.in
-                %button.close{"data-dismiss" => "alert"}
-                  ×
                 %i.fa-fw.fa.fa-info
                 Información Principal
               %table.table.table-hover
@@ -44,6 +41,32 @@
                     %td
                       = @provision.description.to_s
 
+      %article.col-sm-12.col-md-4.col-lg-4
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = "Totales de la Provisión N° " + @provision.id.to_s.rjust(5, '0')
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %i.fa-fw.fa.fa-info
+                Información Totalizada
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Total sin IGV
+                    %th IGV
+                    %th Total con IGV
+                %tbody
+                  %tr
+                    %td= number_to_currency @total_without_igv, unit: 'S/.', precision: 2
+                    %td= number_to_currency @igv, unit: 'S/.', precision: 2
+                    %td= number_to_currency @total_with_igv, unit: 'S/.', precision: 2
+
     .row
       %article.col-sm-12.col-md-12.col-lg-12
         #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
@@ -57,8 +80,6 @@
               / This area used as dropdown edit box
             .widget-body.no-padding
               .alert.alert-info.no-margin.fade.in
-                %button.close{"data-dismiss" => "alert"}
-                  ×
                 %i.fa-fw.fa.fa-info
                 Información Detallada
               %table.table.table-hover

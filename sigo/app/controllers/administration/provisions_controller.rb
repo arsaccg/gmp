@@ -9,6 +9,16 @@ class Administration::ProvisionsController < ApplicationController
 
   def show
     @provision = Provision.find(params[:id])
+    @total_without_igv = 0
+    @igv = 0
+    @total_with_igv = 0
+
+    @provision.provision_direct_purchase_details.each do |provision_detail|
+      @total_without_igv += provision_detail.unit_price_before_igv.to_f
+      @igv += provision_detail.quantity_igv.to_f
+      @total_with_igv += (provision_detail.unit_price_before_igv.to_f+provision_detail.quantity_igv.to_f-provision_detail.discount_after.to_f).to_f
+    end
+    
     render layout: false  
   end
 
