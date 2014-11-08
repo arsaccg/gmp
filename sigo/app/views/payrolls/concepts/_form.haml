@@ -4,7 +4,7 @@
       %i.fa.fa-eye
     %h2 Conceptos
   .widget-body
-    = simple_form_for([:payrolls, @con], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:payrolls, @con], html: {class: 'smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-10
@@ -110,7 +110,7 @@
         %br
 
         .col-lg-12
-          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox
             %thead
               %tr
                 %th.col-2 Nombre
@@ -132,7 +132,7 @@
                     %td= oos.category
                     %td.delete-item
                       %label.checkbox
-                        = check_box 'concept[concept_details_attributes]', '[' + @reg_n.to_s + '][status]'
+                        = check_box 'concept[concept_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
 
@@ -141,28 +141,51 @@
           %i.fa.fa-save 
           Guardar
 
-#modal_valorization.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "modalValorizationLabel", role: "dialog" }
-  .modal-dialog
-    .modal-content
-      .modal-body{ :style => 'overflow: hidden;' }
-        
-        %section.col-md-9
-          %label{ :style => 'font-size: 13px;' } Buscar Conceptos:
-          =#%label.input
-          %input#concepts_list.form-control{ "name" => "concept_item", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;' }
-        %section.col-md-3
-          %a.btn.btn-sm.btn-info{ :href => 'javascript:void(0)', :onclick => 'javascript:add_concept_valorization()', :style => 'margin-top: 23px;' }
-            Añadir Concepto
-        
-        %br
+      #modal_valorization.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "modalValorizationLabel", role: "dialog" }
+        .modal-dialog{ :style => 'margin: 0 auto;' }
+          .modal-content
+            .modal-body{ :style => 'overflow: hidden; padding: 2em;' }
+              
+              %section.col-md-9
+                %label{ :style => 'font-size: 13px;' } Buscar Conceptos:
+                =#%label.input
+                %input#concepts_list.form-control{ "name" => "concept_item", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;' }
+              %section.col-md-3
+                %a.btn.btn-sm.btn-info{ :href => 'javascript:void(0)', :onclick => 'javascript:add_concept_valorization()', :style => 'margin-top: 19px; margin-left: 19px;' }
+                  Añadir Concepto
+              
+              %br
 
-        %section.col-md-12{ :style => 'margin-top: 20px;' }
-          #modalValorizationItemsContent
-        
-        %br
+              %section.col-md-12{ :style => 'margin-top: 20px;' }
+                #modalValorizationItemsContent
+                  %table#summary_valorization.table.table-striped.table-bordered.table-hover.smart-form
+                    %thead
+                      %tr
+                        %th Concepto
+                        %th
+                          %a.btn.btn-danger.btn-xs
+                            %i.fa.fa-trash-o
+                    %tbody#summary_valorization_items
+                      - if @action == 'edit'
+                        - @con.concept_valorizations.each do |concept_valorization|
+                          %tr
+                            %td(style="display:none")
+                              = hidden_field_tag 'concept[concept_valorizations_attributes][' + @reg_n.to_s + '][id]', concept_valorization.id
+                              = hidden_field_tag 'concept[concept_valorizations_attributes][' + @reg_n.to_s + '][concept_id]', @con.id
+                              = hidden_field_tag 'concept[concept_valorizations_attributes][' + @reg_n.to_s + '][concept_reference_id]', concept_valorization.concept_reference_id
+                              = hidden_field_tag 'concept[concept_valorizations_attributes][' + @reg_n.to_s + '][date_week]', concept_valorization.date_week
+                              = hidden_field_tag 'concept[concept_valorizations_attributes][' + @reg_n.to_s + '][cost_center_id]', concept_valorization.cost_center_id
+                            %td
+                              %label= '- ' + Concept.find(concept_valorization.concept_reference_id).name
+                            %td
+                              %label.checkbox
+                                = check_box 'concept[concept_valorizations_attributes][' + @reg_n.to_s + ']', '[_destroy]'
+                                %i
+                          - @reg_n += 1
+              %br
 
-      .modal-footer
-        %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Cerrar
+            .modal-footer{ :style => 'padding: 2em;' }
+              %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Cerrar
 
 :javascript
   $(document).ready(function () {
@@ -321,8 +344,14 @@
     concept_id = data_selected.id
     concept_name = data_selected.name
 
-    $('#modalValorizationItemsContent').append(
-      '<div><input name=concept[concept_valorizations_attributes][concept_reference_id] value=' + concept_id + ' type=hidden /><input name=concept[concept_valorizations_attributes][date_week] value=' + "#{@date_week}" + ' type=hidden /><input name=concept[concept_valorizations_attributes][cost_center_id] value=' + "#{@cost_center}" + ' type=hidden /></div><br /><label> - ' + concept_name + '</label>'
+    reg_n = (new Date).getTime();
+
+    $('#summary_valorization_items').append(
+      '<tr id=tr-' + reg_n + '><td style=display:none><input name=concept[concept_valorizations_attributes][' + reg_n + '][concept_reference_id] value=' + concept_id + ' type=hidden /><input name=concept[concept_valorizations_attributes][' + reg_n + '][date_week] value=' + "#{@date_week}" + ' type=hidden /><input name=concept[concept_valorizations_attributes][' + reg_n + '][cost_center_id] value=' + "#{@cost_center}" + ' type=hidden /></td><td><label> - ' + concept_name + '</label></td><td><a class=' + "'btn btn-default'" + ' href=javascript:delete_item(' + reg_n + ')><i class=' + "'fa fa-times'" + '></i></a></td></tr>'
     )
 
+  }
+
+  function delete_item(code){
+    $("#tr-" + code).remove();
   }
