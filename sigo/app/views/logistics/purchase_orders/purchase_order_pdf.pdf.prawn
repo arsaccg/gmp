@@ -124,7 +124,7 @@ else
   bounding_box [bounds.right - 200, bounds.bottom + 100], :width  => bounds.width do
     table([ 
       ["TOTAL","#{number_to_currency(@total, unit: @purchaseOrder.money.symbol, precision: 2)}"],
-      ["IGV #{number_to_percentage(@igv*100, precision: 0)}","#{number_to_currency(@total*@igv, unit: @purchaseOrder.money.symbol, precision: 2)}"]
+      ["IGV #{number_to_percentage(@igv*100, precision: 0)}","#{number_to_currency(@igv_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]
     ], :width => 190, :cell_style => {:border_color=> "ffffff", :height => 21}, :column_widths => [100, 90]) do
         style(columns(0..1), :size => 10, :align => :right)
         columns(0..1).font_style = :bold
