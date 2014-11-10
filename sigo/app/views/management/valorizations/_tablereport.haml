@@ -11,23 +11,23 @@
       %td
       %td(style="text-align: right;")
         %strong
-          = number_to_currency(amount_contractual(ib.order, @budget.id), :unit=>'S/. ')
+          = number_to_currency( amount_contractual(ib.order, @budget.id), :unit=>'S/. ' )
       %td
       %td(style="text-align: right;")
         %strong
-          = number_to_currency( amount_prev(ib.order, @budget.id, @valorization.valorization_date), :unit=>'S/. ')
+          = number_to_currency( amount_prev(ib.order, @budget.id, @valorization.valorization_date), :unit=>'S/. ' )
       %td
       %td(style="text-align: right;")
         %strong
-          = number_to_currency( amount_actual(ib.order, @budget.id, @valorization.id), :unit=>'S/. ')
+          = number_to_currency( amount_actual(ib.order, @budget.id, @valorization.id), :unit=>'S/. ' )
       %td
       %td(style="text-align: right;")
         %strong
-          = number_to_currency( amount_acumulated(ib.order, @budget.id, @valorization.valorization_date, @valorization.id), :unit=>'S/. ')
+          = number_to_currency( amount_acumulated(ib.order, @budget.id, @valorization.valorization_date, @valorization.id), :unit=>'S/. ' )
       %td
       %td(style="text-align: right;")
         %strong
-          = number_to_currency( amount_remainder(ib.order, @budget.id, @valorization.valorization_date, @valorization.id), :unit=>'S/. ')
+          = number_to_currency( amount_remainder(ib.order, @budget.id, @valorization.valorization_date, @valorization.id), :unit=>'S/. ' )
       %td(style="text-align: right;")
         %strong
           = "#{advance_percent(ib.order, @budget.id, @valorization.valorization_date, @valorization.id).round(2)} %"
@@ -357,6 +357,45 @@
         });
         break;
     }
+  }
+
+  function show_level(level){
+    toogle_three(level, '');
+
+    switch(level){
+      case "second":
+        $("[class^='first_']").each(function(){
+          if ($(this).css("display") == 'none'){ show_level('first'); }
+        });
+        break;
+      case "third":
+        $("[class^='second_']").each(function(){
+          if ($(this).css("display") == 'none'){ show_level('second'); }
+        });
+        break;
+      case "fourth":
+        $("[class^='third_']").each(function(){
+          if ($(this).css("display") == 'none'){ show_level('third'); }
+        });
+        break;
+      case "fifth":
+        $("[class^='fourth_']").each(function(){
+          if ($(this).css("display") == 'none'){ show_level('fourth'); }
+        });
+        break;
+      case "sixth":
+        $("[class^='fifth_']").each(function(){
+          if ($(this).css("display") == 'none'){ show_level('fifth'); }
+        });
+        break;
+    }
+  }
+
+  function openLevel(){
+    console.log('cambio');
+    var level = $('#level_r').val();
+    console.log(level);
+    show_level(level);
   }
 
   function toogle_detail(id_str){

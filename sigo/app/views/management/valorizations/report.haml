@@ -14,6 +14,13 @@
   %strong
     = "#{@budget.description}: #{@valorization.name rescue " "} DEL MES DE #{t("date.month_names")[@month].upcase rescue " "} #{@year rescue " "}"
 
+%select#level_r(onchange="openLevel()")
+  %option(value="")= 'Seleccionar Nivel'
+  %option(value="third")= '--Segundo'
+  %option(value="fourth")= '----Tercero'
+  %option(value="fifth")= '------Cuarto'
+  %option(value="sixth")= '--------Quinto'
+
 %br
 .row-fuild
   .span12
