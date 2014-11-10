@@ -381,9 +381,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
   def update
     purchaseOrder = PurchaseOrder.find(params[:id])
     purchaseOrder.update_attributes(purchase_order_parameters)
-    puts "--------------------------------------------------------------------------------------------------------------------"
-    puts purchaseOrder.inspect
-    puts "--------------------------------------------------------------------------------------------------------------------"
     PurchaseOrder.find(purchaseOrder.id).purchase_order_details.each do |po|
       detail = PurchaseOrderDetail.find(po.id)
       discounts_before = 0
@@ -421,13 +418,8 @@ class Logistics::PurchaseOrdersController < ApplicationController
             discounts_after += pod.value
           end
         end
-      end      
-      detail.discounts_before = discounts_before
-      detail.discounts_after = discounts_after
-      detail.quantity_igv = ((po.amount*po.unit_price-discounts_before)*(igv))
-      detail.unit_price_before_igv = po.amount*po.unit_price-discounts_before
-      detail.unit_price_igv = ((po.amount*po.unit_price-discounts_before)*(1+igv))- discounts_after
-      detail.update()  
+      end
+      detail.update_attributes(:discount_before=>discounts_before, :discount_after=>discounts_after, :quantity_igv=>((po.amount*po.unit_price-discounts_before)*(igv)), :unit_price_before_igv=>(po.amount*po.unit_price- discounts_before), :unit_price_igv => (((po.amount*po.unit_price-discounts_before)*(1+igv))- discounts_after))
     end
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index, company_id: params[:company_id]
