@@ -384,7 +384,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
     puts "--------------------------------------------------------------------------------------------------------------------"
     puts purchaseOrder.inspect
     puts "--------------------------------------------------------------------------------------------------------------------"
-    PurchaseOrder.find(purchaseOrder.id).purchase_order_details each do |po|
+    PurchaseOrder.find(purchaseOrder.id).purchase_order_details.each do |po|
       detail = PurchaseOrderDetail.find(po.id)
       discounts_before = 0
       discounts_after = 0
