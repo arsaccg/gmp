@@ -13,10 +13,8 @@
             %span.widget-icon
               %i.fa.fa-table
             %h2 
-            = 'Orden de Compra N° ' + @purchaseOrder.code.to_s.rjust(5, '0')
+              = 'Orden de Compra N° ' + @purchaseOrder.code.to_s.rjust(5, '0')
           %div
-            .jarviswidget-editbox
-              / This area used as dropdown edit box
             .widget-body.no-padding
               %table.table.table-hover
                 %thead
@@ -204,7 +202,35 @@
                         = number_to_currency (purchasedetail.unit_price_igv.to_f), unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
                         = purchasedetail.description
-                        
+
+
+      %article.col-sm-12.col-md-12.col-lg-4
+        #wid-id-3.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+              = 'Totales'
+          %div
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Antes de IGV
+                    %th IGV
+                    %th Despues de IGV
+                    %th Neto
+                %tbody
+                  %tr
+                    -@totales.each do |to|
+                      %td
+                        = number_to_currency to[0].to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                      %td
+                        = number_to_currency to[1].to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                      %td
+                        = number_to_currency (to[2].to_f-(to[0].to_f+to[1].to_f)), unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                      %td
+                        = number_to_currency to[2].to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
 - if @type_of_order.nil?
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
     %i.fa.fa-arrow-left>

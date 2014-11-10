@@ -23,6 +23,11 @@ class Logistics::PurchaseOrdersController < ApplicationController
       @purchasePerState = @purchaseOrder.state_per_order_purchases
     end
     @purchaseOrderDetails = @purchaseOrder.purchase_order_details
+    @totales = ActiveRecord::Base.connection.execute("
+            SELECT SUM(pod.unit_price_before_igv), SUM(pod.quantity_igv), SUM(pod.unit_price_igv)
+            FROM purchase_order_details pod
+            WHERE pod.purchase_order_id = #{@purchaseOrder.id}"
+          ) 
     render layout: false
   end
 
