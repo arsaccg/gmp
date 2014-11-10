@@ -1,0 +1,87 @@
+#content-inside
+  .row
+    .col-xs-6.col-sm-6.col-md-6.col-lg-6
+      %h2.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        = "Horas Totales por Semana del Centro de Costo " + @cc.code
+    .col-xs-4.col-sm-4.col-md-4.col-lg-4{ "style" => "margin-top: 10px;" }
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_thw_logistics_cost_centers_path}', 'content', {cc: #{@cc.id}}, null, 'GET')"}
+        Agregar Total Horas
+  - if flash[:notice] != nil
+    .alert.alert-success.fade.in{"style" => "clear:buttonoth"}
+      %button.close{"data-dismiss" => "alert"} ×
+      %i.fa-fw.fa.fa-check
+      %strong Éxito
+      = flash[:notice]
+  - if flash[:error] != nil
+    .alert.alert-danger.fade.in
+      %button.close{"data-dismiss" => "alert"} ×
+      %i.fa-fw.fa.fa-times
+      %strong Error!
+      = flash[:error]
+  
+  #widget-grid
+    .row
+      %article.col-xs-12
+        = render :partial => 'table_thw'
+
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+  
+  // PAGE RELATED SCRIPTS
+
+  loadDataTableScripts();
+  function loadDataTableScripts() {
+
+    loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
+
+    function dt_2() {
+      loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
+    }
+
+    function dt_3() {
+      loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
+    }
+
+    function dt_4() {
+      loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
+    }
+
+    function dt_5() {
+      loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
+    }
+
+    function dt_6() {
+      loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
+    }
+
+    function dt_7() {
+      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
+    }
+
+  }
+
+  $('#dt_basic_wrapper').removeClass("dataTables_wrapper");
+  
+  function runDataTables() {
+    $('#dt_basic').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      sAjaxSource  : "#{display_thw_logistics_cost_centers_path}",
+      fnDrawCallback : function(oSettings, json) {
+        oSettings.fnDrawCallback = $('a.btn').tooltip('hide');
+      },
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $("#dt_basic_filter div input").keyup(function() {
+      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+    });
+  } 
