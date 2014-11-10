@@ -654,6 +654,9 @@ ArsacLogistica::Application.routes.draw do
         post 'add_subconcept'
         post 'display_concepts'
       end
+      member do
+        get 'activate'
+      end
     end
     resources :afps
     resources :payrolls do 
