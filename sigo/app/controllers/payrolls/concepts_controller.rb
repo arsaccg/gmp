@@ -2,7 +2,7 @@ class Payrolls::ConceptsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @con = Concept.where("status NOT LIKE 0")
+    @con = Concept.all
     render layout: false
   end
 
@@ -24,6 +24,7 @@ class Payrolls::ConceptsController < ApplicationController
     flash[:error] = nil
     con = Concept.new(con_parameters)
     con.status = 1
+    con.company_id = get_company_cost_center('company')
     con.concept_details.each do |ccd|
       ccd.status = 0
     end
@@ -66,6 +67,7 @@ class Payrolls::ConceptsController < ApplicationController
   def update
     con = Concept.find(params[:id])
     con.code=params[:tipo]+con.code
+    con.company_id = get_company_cost_center('company')
     if con.update_attributes(con_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
@@ -94,6 +96,20 @@ class Payrolls::ConceptsController < ApplicationController
     render :json => con
   end
 
+  def activate
+    con = Concept.find(params[:id])
+    ActiveRecord::Base.connection.execute("
+          UPDATE concepts SET
+          status = 1
+          WHERE id = "+con.id.to_s+"
+        ")
+    ActiveRecord::Base.connection.execute("
+          UPDATE concept_details SET
+          status = 1
+          WHERE concept_id = "+con.id.to_s+" AND status = 0
+        ")
+    redirect_to :action => :index
+  end
     # CUSTOM METHODS
 
   def display_concepts
@@ -115,7 +131,7 @@ class Payrolls::ConceptsController < ApplicationController
 
   private
   def con_parameters
-    params.require(:concept).permit(:name, :percentage, :amount, :top, :code, :type_concept, 
+    params.require(:concept).permit(:name, :percentage, :amount, :top, :code, :type_obrero, :type_empleado, :company_id, 
       concept_details_attributes: [
         :id, 
         :concept_id, 

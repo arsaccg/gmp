@@ -36,6 +36,7 @@
                 %th Porcentaje
                 %th Monto
                 %th Tope
+                %th Estado
                 %th Acciones
             %tbody
               - @con.each do |con|
@@ -61,10 +62,19 @@
                     -else
                       ="--"
                   %td
+                    - if con.status==1
+                      %span.label.label-success{"style"=>"background-color: #25CA25;color:white;text-align:center;width:100px;font-weight:bold;"} Activo
+                    -else
+                      %span.label.label-success{"style"=>"background-color: #B50010;color:white;text-align:center;width:100px;font-weight:bold;"} Inactivo
+                  %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_payrolls_concept_path(con.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{con.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{payrolls_concept_path(con.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{payrolls_concepts_path}')"}}
-                      Eliminar
+                    -if con.status ==0
+                      %a.btn.btn-success.btn-xs{:style=>"width:72px;", :data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de activar el item ' + "#{con.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:load_url_ajax('#{activate_payrolls_concept_path(con.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Activar"}}
+                        Activar
+                    -else
+                      %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de desactivar el item ' + "#{con.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{payrolls_concept_path(con.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{payrolls_concepts_path}')"}}
+                        Desactivar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

@@ -36,6 +36,10 @@ class Production::CategoryOfWorkersController < ApplicationController
   def edit
     @categoryOfWorker = CategoryOfWorker.find(params[:id])
     @subgroups = Category.distinct.select(:id).select(:code).select(:name).where("code LIKE '71__'")
+
+    @concept_earnings = @categoryOfWorker.category_of_workers_concepts.where(:type_concept => 'Fijo').where("concept_code LIKE '1%'")
+    @concept_discounts = @categoryOfWorker.category_of_workers_concepts.where(:type_concept => 'Fijo').where("concept_code LIKE '2%'")
+
     @action = 'edit'
     @reg_n = ((Time.now.to_f)*100).to_i
     render layout: false

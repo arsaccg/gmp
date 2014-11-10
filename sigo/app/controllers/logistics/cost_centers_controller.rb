@@ -37,6 +37,7 @@ class Logistics::CostCentersController < ApplicationController
       if wbsitem.save
         CostCenter.create_table_weeks(costCenter.id)
         CostCenter.create_table_articles(costCenter.id)
+        CostCenter.create_table_total_hours(costCenter.id)
         add_weeks_table(costCenter.id,params[:startdate2])
         if current_user.has_role? :director
           ActiveRecord::Base.connection.execute("INSERT INTO cost_centers_users (cost_center_id , user_id) VALUES ("+costCenter.id.to_s+", "+current_user.id.to_s+")")
@@ -166,9 +167,112 @@ class Logistics::CostCentersController < ApplicationController
   end
 
 
+  def index_thw
+    @cc = CostCenter.find(get_company_cost_center('cost_center'))
+    render layout: false
+  end
+
+  def new_thw
+    @cc = CostCenter.find(get_company_cost_center('cost_center'))
+    @week_id = params[:id]
+    week_name = ActiveRecord::Base.connection.execute("
+      SELECT name
+      FROM weeks_for_cost_center_" + @cc.id.to_s + " 
+      WHERE id = "+params[:id].to_s
+    )
+    @week_name = week_name.first[0]
+    edit = ActiveRecord::Base.connection.execute("
+      SELECT total
+      FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + " 
+      WHERE status = 1
+      AND week_id = "+params[:id].to_s
+    )
+    edit.each do |e|
+      @total = e[0]
+    end
+    render layout: false
+  end
+
+  def create_thw
+    @error == "false"
+    @cc = CostCenter.find(get_company_cost_center('cost_center'))
+    if params[:total_hours]!= nil
+      ActiveRecord::Base.connection.execute("
+          UPDATE total_hours_per_week_per_cost_center_" + @cc.id.to_s + " SET
+          status = 0
+          WHERE week_id = "+params[:total_hours]['week_id'].to_s+"
+        ")
+      sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO total_hours_per_week_per_cost_center_" + @cc.id.to_s + " (week_id, total, status) VALUES (?,?,1)", params[:total_hours]['week_id'],params[:total_hours]['total']])
+      ActiveRecord::Base.connection.execute(sql)
+      redirect_to :action => :index_thw  
+    else
+      @error = "true"
+      puts "-------------------------------"
+      puts @error
+      render :new_thw, layout: false
+    end
+  end
+
+  def display_thw
+    @cc = CostCenter.find(get_company_cost_center('cost_center'))
+    @semanas = Array.new
+    display_length = params[:iDisplayLength]
+    pager_number = params[:iDisplayStart]
+    @pagenumber = params[:iDisplayStart]
+    keyword = params[:sSearch]
+    state = params[:state]
+    if @pagenumber != 'NaN' && keyword != ''
+      se = ActiveRecord::Base.connection.execute("
+        SELECT *
+        FROM weeks_for_cost_center_" + @cc.id.to_s + " 
+        LIMIT #{display_length}
+        OFFSET #{pager_number}"
+      )
+    elsif @pagenumber == 'NaN'
+      se = ActiveRecord::Base.connection.execute("
+        SELECT *
+        FROM weeks_for_cost_center_" + @cc.id.to_s + " 
+        LIMIT #{display_length}"
+      )
+    elsif keyword != ''
+      se = ActiveRecord::Base.connection.execute("
+        SELECT *
+        FROM weeks_for_cost_center_" + @cc.id.to_s + " 
+        ORDER BY id DESC"
+      )        
+    else
+      se = ActiveRecord::Base.connection.execute("
+        SELECT *
+        FROM weeks_for_cost_center_" + @cc.id.to_s + " 
+        LIMIT #{display_length}
+        OFFSET #{pager_number}"
+      )
+    end    
+    se.each do |art|
+      @action = ' '
+      incluido = ActiveRecord::Base.connection.execute("
+        SELECT 1
+        FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + " 
+        WHERE status = 1
+        AND week_id = "+art[0].to_s
+      )
+      if incluido.count > 0
+        @action = "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/cost_centers/new_thw','content',{id:"+art[0].to_s+"},null,'GET')>Editar</a>"
+      else
+        @action = "<a class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/logistics/cost_centers/new_thw','content',{id:"+art[0].to_s+"},null,'GET')>Agregar Totales</a>"
+      end
+      @semanas << [art[1].to_s,art[2].strftime("%d/%m/%Y").to_s, art[3].strftime("%d/%m/%Y").to_s , @action]
+    end
+    render json: {:aaData => @semanas}    
+
+  end
+
+  def show_thw
+    
+  end
+
+
   private
-
-
   def cost_center_parameters
     params.require(:cost_center).permit(:code, :name, :company_id)
   end

@@ -148,6 +148,13 @@ ArsacLogistica::Application.routes.draw do
       member do
         get 'update_timeline'
         get 'select_warehouses'
+        get 'show_thw'
+      end
+      collection do
+        get 'index_thw'
+        post 'display_thw'
+        get 'new_thw'
+        post 'create_thw'
       end
     end
     resources :type_entities
@@ -646,6 +653,9 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'add_subconcept'
         post 'display_concepts'
+      end
+      member do
+        get 'activate'
       end
     end
     resources :afps

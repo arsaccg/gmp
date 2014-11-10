@@ -46,6 +46,17 @@
             %label.label Monto
             %label.input
               = f.input :amount, placeholder: "Monto", input_html: { class: 'form-control' }, label: false
+          .section.col.col-md-6
+            %label.label Concepto Obrero
+            .form-group.in-line
+              .col-md-1
+              .col-md-10
+                .col-md-5
+                  = f.radio_button :type_obrero,  "Fijo", :selected=>@con.type_obrero=="Fijo"
+                  %label Fijo
+                .col-md-5
+                  = f.radio_button :type_obrero, "Variable", :selected=>@con.type_obrero=="Variable"
+                  %label Variable              
 
         .row
           %section.col.col-4
@@ -53,15 +64,15 @@
             %label.input
               = f.input :top, placeholder: "Tope", input_html: { class: 'form-control' }, label: false      
           .section.col.col-md-6
-            %label.label Concepto
+            %label.label Concepto Empleado
             .form-group.in-line
               .col-md-1
               .col-md-10
                 .col-md-5
-                  = f.radio_button :type_concept,  "Fijo", :selected=>@con.type_concept=="Fijo"
+                  = f.radio_button :type_empleado,  "Fijo", :selected=>@con.type_empleado=="Fijo"
                   %label Fijo
                 .col-md-5
-                  = f.radio_button :type_concept, "Variable", :selected=>@con.type_concept=="Variable"
+                  = f.radio_button :type_empleado, "Variable", :selected=>@con.type_empleado=="Variable"
                   %label Variable
                       
                     

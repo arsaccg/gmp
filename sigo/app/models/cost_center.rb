@@ -117,4 +117,17 @@ class CostCenter < ActiveRecord::Base
       )ENGINE=MyISAM;"
     )
   end
+
+  def self.create_table_total_hours(cost_center_id)
+    ActiveRecord::Base.connection.execute(
+      "CREATE TABLE total_hours_per_week_per_cost_center_" + cost_center_id.to_s + " 
+      (
+        id int NOT NULL AUTO_INCREMENT,
+        week_id integer,
+        total float,
+        status integer,
+        primary key (id)
+      )ENGINE=MyISAM;"
+    )
+  end  
 end

@@ -74,7 +74,7 @@
                       = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", 0.00, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
                 - @reg_n += 1
             - else
-              - @categoryOfWorker.category_of_workers_concepts.where(:type_concept => 'Fijo').where("concept_code LIKE '1%'").each do |cowc|
+              - @concept_earnings.each do |cowc|
                 .row
                   %section.col.col-10
                     %label.label= cowc.concept.name.to_s
@@ -101,7 +101,7 @@
                       = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", 0.00, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
                 - @reg_n += 1
             - else
-              - @categoryOfWorker.category_of_workers_concepts.where(:type_concept => 'Fijo').where("concept_code LIKE '2%'").each do |cowc|
+              - @concept_discounts.each do |cowc|
                 .row
                   %section.col.col-10
                     %label.label= cowc.concept.name.to_s
