@@ -1,83 +1,81 @@
-%div(style="font-size: 10px;")
-  OBRA: 
-  =@project.name
-  %br
-  PROPIETARIO:
-  %br
-  CONTRATISTA:
-  %br
-  SUPERVISION:
+/ %div(style="font-size: 10px;")
+/   OBRA: 
+/   =@project.name
+/   %br
+/   PROPIETARIO:
+/   %br
+/   CONTRATISTA:
+/   %br
+/   SUPERVISION:
 
-%h4 
-  REPORTE
+/ %h4 
+/   REPORTE
 %h5
-  =@valorization.name rescue " "
-  DEL MES DE
-  = t("date.month_names")[@month].upcase rescue " "
-  = @year rescue " "
+  %strong
+    = "#{@budget.description}: #{@valorization.name rescue " "} DEL MES DE #{t("date.month_names")[@month].upcase rescue " "} #{@year rescue " "}"
 
 %br
 .row-fuild
   .span12
-    %table(id="scroll-table" class="table-hover white-table small-font table-light"  width="100%")
+    %table(id="scroll-table" class="report_valorization table-hover white-table small-font table-light"  width="100%")
       %thead
         %tr
-          %th(rowspan="2")
+          %th.t-center(rowspan="2")
             %strong
               DESCRIPCION
           / %th(rowspan="2")
           /   %strong
           /     UND.
-          %th(rowspan="2")
+          %th.t-center(rowspan="2")
             %strong
               PRECIO UNITARIO
-          %th(colspan="2")
+          %th.t-center(colspan="2")
             %strong
               PRESUPUESTO CONTRACTUAL
-          %th(colspan="2")
+          %th.t-center(colspan="2")
             %strong
               ACUMULADO ANTERIOR
-          %th(colspan="2")
+          %th.t-center(colspan="2")
             %strong
               VALORIZACION ACTUAL
-          %th(colspan="2")
+          %th.t-center(colspan="2")
             %strong
               ACUMULADO ACTUAL
-          %th(colspan="2")
+          %th.t-center(colspan="2")
             %strong
               SALDO POR VALORIZAR
-          %th(rowspan="2")
+          %th.t-center(rowspan="2")
             %strong
-              PORCENTAJE DE AVANCE
+              AVANCE
         %tr 
-          %th  
+          %th.t-center  
             %strong
               METRADO
-          %th  
+          %th.t-center  
             %strong
               MONTO S/.
-          %th  
+          %th.t-center  
             %strong
               METRADO
-          %th  
+          %th.t-center  
             %strong
               MONTO S/.
-          %th  
+          %th.t-center  
             %strong
               METRADO
-          %th  
+          %th.t-center
             %strong
               MONTO S/.
-          %th  
+          %th.t-center
             %strong
               METRADO
-          %th  
+          %th.t-center
             %strong
               MONTO S/.
-          %th  
+          %th.t-center
             %strong
               METRADO
-          %th  
+          %th.t-center
             %strong
               MONTO S/.
       = render :partial => "tablereport"

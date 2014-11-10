@@ -612,11 +612,12 @@
   function enableFieldsForIgv(element){
     if($(element).is(":checked")){
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*#{@igv}).toFixed(2));
+      $(element).parent().parent().siblings('.unit-price-igv').find('input').val(parseFloat(price_without_igv*#{@igv}).toFixed(2));
       $(element).parent().parent().siblings('.quantity-igv').find('input').val(parseFloat(price_without_igv*#{@igv-1}).toFixed(2));
     } else {
       var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+      $(element).parent().parent().siblings('.provision_quantity-igv').find('input').val(0.0);
+      $(element).parent().parent().siblings('.unit-price-igv').find('input').val(price_without_igv);
     }
   }
 
@@ -889,15 +890,24 @@
     var price_with_igv = 0;
 
     $('#provisions_direct_items_table tr td.price-without-igv input').each(function(i, v){
-      price_without_igv = parseFloat($(v).val()) + parseFloat(price_without_igv);
+      if( $(v).val() == '' )
+        price_without_igv = 0 + parseFloat(price_without_igv);
+      else
+        price_without_igv = parseFloat($(v).val()) + parseFloat(price_without_igv);
     });
 
     $('#provisions_direct_items_table tr td.quantity-igv input').each(function(i, v){
-      igv = parseFloat($(v).val()) + parseFloat(igv);
+      if( $(v).val() == '' )
+        igv = 0 + parseFloat(igv);
+      else
+        igv = parseFloat($(v).val()) + parseFloat(igv);
     });
 
     $('#provisions_direct_items_table tr td.unit-price-igv input').each(function(i, v){
-      price_with_igv = parseFloat($(v).val()) + parseFloat(price_with_igv);
+      if( $(v).val() == '' )
+        price_with_igv = 0 + parseFloat(price_with_igv);
+      else
+        price_with_igv = parseFloat($(v).val()) + parseFloat(price_with_igv);
     });
 
     $('#stp_total_wt_igv').html('S/. ' + parseFloat(price_without_igv).toFixed(2));

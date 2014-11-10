@@ -25,18 +25,20 @@
                 %tbody
                   %tr
                     %td
-                      = @project.date_min
+                      = l @cost_center_detail.start_date_of_work, format: :medium  #@project.date_min
                     %td 
-                      = (@project.date_max - @project.date_min).to_i rescue ' '
+                      = @cost_center_detail.execution_term.to_f #(@project.date_max - @project.date_min).to_i rescue ' '
+                      días
                     %td
-                      = (@project.date_max - @project.date_min + @extensionscontrol.sum(:approved_deadline).to_i).to_i rescue ' '
+                      = @cost_center_detail.execution_term + @aditional_term #(@project.date_max - @project.date_min + @extensionscontrol.sum(:approved_deadline).to_i).to_i rescue ' '
+                      días
                     %td
-                      = @project.date_max
+                      = l @cost_center_detail.start_date_of_work + @cost_center_detail.execution_term, format: :medium #@project.date_max
+                      
                     %td
-                      = @project.date_max + (@extensionscontrol.sum(:approved_deadline).to_i).days rescue ' '
+                      = l @cost_center_detail.start_date_of_work + @cost_center_detail.execution_term + @aditional_term, format: :medium #@project.date_max + (@extensionscontrol.sum(:approved_deadline).to_i).days rescue ' '
 
-
-        %a(class="btn btn-danger"){:href => "javascript:load_url_ondiv('#{new_management_extensionscontrol_path}?project_id=#{@project.id}', 'right-area')"}
+        %a(class="btn btn-danger"){:href => "javascript:load_url_ondiv('#{new_management_extensionscontrol_path}', 'right-area')"}
           Registrar Ampliación
 
         %br
@@ -90,7 +92,7 @@
                 %td
                   = image_tag ext.files.url
                 %td
-                  %a(href="javascript:post_to_url('#{approve_management_extensionscontrols_path}?project_id=#{@project.id}&&extension_id=#{ext.id}','new_extensionscontrol', 'right-area')" class="btn btn-success")
+                  %a(href="javascript:post_to_url('#{approve_management_extensionscontrols_path}?extension_id=#{ext.id}','new_extensionscontrol', 'right-area')" class="btn btn-success")
                     Aprobar
-                  %a(href="javascript:post_to_url('#{disprove_management_extensionscontrols_path}project_id=#{@project.id}&&extension_id=#{ext.id}','new_extensionscontrol', 'right-area')" class="btn btn-warning")
+                  %a(href="javascript:post_to_url('#{disprove_management_extensionscontrols_path}?extension_id=#{ext.id}','new_extensionscontrol', 'right-area')" class="btn btn-warning")
                     Desaprobar

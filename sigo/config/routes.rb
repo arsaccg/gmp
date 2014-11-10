@@ -645,6 +645,7 @@ ArsacLogistica::Application.routes.draw do
     resources :concepts do
       collection do
         post 'add_subconcept'
+        post 'display_concepts'
       end
     end
     resources :afps

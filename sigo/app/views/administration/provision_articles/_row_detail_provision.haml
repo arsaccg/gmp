@@ -39,7 +39,7 @@
   %td.quantity-igv{ :class => "provision_quantity-igv"}
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',nil, class: "form-control igv-item", :readonly => true
 
-  %td.price-with-igv
+  %td.unit-price-igv
     = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil, class: "form-control unit-price-igv", :readonly => true
 
   %td.order_origin

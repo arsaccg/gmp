@@ -4,7 +4,14 @@ class Management::ExtensionscontrolsController < ApplicationController
 
   def index
     @extensionscontrol = Extensionscontrol.where(:cost_center_id => get_company_cost_center('cost_center')) 
-    @project = CostCenter.find(get_company_cost_center('cost_center'))
+    #@project = CostCenter.find(get_company_cost_center('cost_center'))
+    @cost_center_detail = CostCenterDetail.where(cost_center_id: get_company_cost_center('cost_center'))[0]
+    
+    @aditional_term = 0
+    @extensionscontrol.each do |ec|
+      @aditional_term += ec.approved_deadline
+    end
+
     render :index, :layout => false
   end
 
