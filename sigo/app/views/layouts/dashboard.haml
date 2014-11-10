@@ -269,6 +269,12 @@
                       %a{href: "#{production_position_workers_path}", title: 'Trabajadores'}
                         %i.fa.fa-lg.fa-fw.fa-bar-chart-o
                         Cargo de Trabajadores
+                    %li
+                      %a{href: "#{index_thw_logistics_cost_centers_path}", title: 'Horas por Semanas'}
+                        %i.fa.fa-lg.fa-fw.fa-calendar
+                        Horas Totales en Semana
+
+                        
           -# if (current_user.has_role? :director) || (current_user.has_role? :planning)
           - if (current_user.has_role? :director) || (current_user.has_role? :planning) || (current_user.has_role? :report) || (current_user.has_role? :overheads)
             /TOBI...
