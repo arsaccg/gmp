@@ -101,7 +101,7 @@
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][worker_id]',wor.worker_id
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][worker_contract_id]',wor.worker_contract_id
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][concept_id]',wor.concept_id
-                        = text_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][amount]',wor.amount, onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, "+top.to_s+")"
+                        = text_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][amount]',wor.amount, onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
                         -arr << wor.concept_id
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][id]',wor.id
                   -i+=1
@@ -125,7 +125,7 @@
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
-                        = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, "+top.to_s+")"
+                        = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
               -@reg_n+=1
             -else
               -concepts.each do |con|
@@ -140,7 +140,7 @@
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
-                      = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, "+top.to_s+")"
+                      = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
                 -@reg_n+=1
           -else
             -concepts.each do |con|
@@ -156,7 +156,7 @@
                     = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
                     = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
 
-                    = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, "+top.to_s+")"
+                    = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
               -@reg_n+=1
         .row
           %section.col.col-2
