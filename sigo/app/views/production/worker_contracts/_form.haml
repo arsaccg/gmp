@@ -76,6 +76,11 @@
                   %option{:value => '4 x 120'} 4 x 120
                   %option{:value => 'ESPECIAL'} ESPECIAL
         -if Worker.find(@worker_id).typeofworker!="externo"
+          -concepts=Array.new
+          -if Worker.find(@worker_id).typeofworker=="empleado"
+            -concepts=@concepts_empleado
+          -if Worker.find(@worker_id).typeofworker=="obrero"
+            -concepts=@concepts_obrero          
           -puts "-----"
           -puts @action
           -if @action=='edit'
@@ -84,7 +89,7 @@
             -arr=Array.new
             -if @workercontract.worker_contract_details.count>0
               -@workercontract.worker_contract_details.each do |wor|
-                -if Concept.find(wor.concept_id).status==1
+                -if Concept.find(wor.concept_id).status==1 && Concept.find(wor.concept_id).type_obrero!=nil && Concept.find(wor.concept_id).type_empleado!=nil
                   .row
                     %section.col.col-md-12
                       .col-md-3
@@ -103,7 +108,7 @@
               -puts "---arr---"
               -puts arr
               -puts "--------------"
-              -@concepts.each do |con|
+              -concepts.each do |con|
                 -cont=0
                 -arr.each do |arr|
                   -if con.id == arr
@@ -123,7 +128,7 @@
                         = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, "+top.to_s+")"
               -@reg_n+=1
             -else
-              -@concepts.each do |con|
+              -concepts.each do |con|
                 .row
                   %section.col.col-md-12
                     .col-md-3
@@ -138,7 +143,7 @@
                       = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, "+top.to_s+")"
                 -@reg_n+=1
           -else
-            -@concepts.each do |con|
+            -concepts.each do |con|
               .row
                 %section.col.col-md-12
                   .col-md-3

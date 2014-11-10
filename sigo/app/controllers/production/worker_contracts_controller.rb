@@ -19,6 +19,8 @@ class Production::WorkerContractsController < ApplicationController
   def new
     @reg_n = ((Time.now.to_f)*100).to_i
     @concepts=Concept.where("type_concept like 'Fijo' AND status like '1'")
+    @concepts_obrero=Concept.where("type_obrero like 'Fijo' AND status like '1'")
+    @concepts_empleado=Concept.where("type_empleado like 'Fijo' AND status like '1'")
     @typeofcontract = params[:typeofcontract]
     @articles = TypeOfArticle.find_by_code('01').articles
     @contractypes = ContractType.all
@@ -104,6 +106,8 @@ class Production::WorkerContractsController < ApplicationController
   def edit
     @reg_n = ((Time.now.to_f)*100).to_i
     @concepts=Concept.where("type_concept like 'Fijo' AND status like '1'")
+    @concepts_obrero=Concept.where("type_obrero like 'Fijo' AND status like '1'")
+    @concepts_empleado=Concept.where("type_empleado like 'Fijo' AND status like '1'")
     @workercontract = WorkerContract.find(params[:id])
     @id=params[:id]
     @worker = Worker.find_by_id(@workercontract.worker_id)
