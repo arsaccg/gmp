@@ -251,17 +251,19 @@ class Logistics::CostCentersController < ApplicationController
     se.each do |art|
       @action = ' '
       incluido = ActiveRecord::Base.connection.execute("
-        SELECT 1
+        SELECT total
         FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + " 
         WHERE status = 1
         AND week_id = "+art[0].to_s
       )
       if incluido.count > 0
         @action = "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/cost_centers/new_thw','content',{id:"+art[0].to_s+"},null,'GET')>Editar</a>"
+        @total = incluido.first[0]
       else
         @action = "<a class='btn btn-primary btn-xs' onclick=javascript:load_url_ajax('/logistics/cost_centers/new_thw','content',{id:"+art[0].to_s+"},null,'GET')>Agregar Totales</a>"
+        @total = 0
       end
-      @semanas << [art[1].to_s,art[2].strftime("%d/%m/%Y").to_s, art[3].strftime("%d/%m/%Y").to_s , @action]
+      @semanas << [art[1].to_s,art[2].strftime("%d/%m/%Y").to_s, art[3].strftime("%d/%m/%Y").to_s ,@total, @action]
     end
     render json: {:aaData => @semanas}    
 
