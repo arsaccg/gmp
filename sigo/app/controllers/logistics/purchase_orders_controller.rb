@@ -387,15 +387,15 @@ class Logistics::PurchaseOrdersController < ApplicationController
       po.purchase_order_extra_calculations.where("apply LIKE '%before%'").each do |pod|
         if pod.type =="percent"
           if pod.operation == "sum"
-            discounts_before += (pod.value.to_f/100*(-1))*po.amount*po.unit_price
+            discounts_before += (pod.value.to_f/100*(-1))*po.amount.to_f*po.unit_price.to_f
           else
-            discounts_before += pod.value.to_f/100*po.amount*po.unit_price
+            discounts_before += pod.value.to_f/100*po.amount.to_f*po.unit_price.to_f
           end
         elsif pod.type == "soles"
           if pod.operation == "sum"
-            discounts_before += pod.value *(-1)
+            discounts_before += pod.value.to_f *(-1)
           else
-            discounts_before += pod.value
+            discounts_before += pod.value.to_f
           end
         end
       end
@@ -406,15 +406,15 @@ class Logistics::PurchaseOrdersController < ApplicationController
       po.purchase_order_extra_calculations.where("apply LIKE '%after%'").each do |pod|
         if pod.type =="percent"
           if pod.operation == "sum"
-            discounts_after += (pod.value.to_f/100*(-1))*((po.amount*po.unit_price-discounts_before)*(1+igv))
+            discounts_after += (pod.value.to_f/100*(-1))*((po.amount.to_f*po.unit_price.to_f-discounts_before.to_f)*(1+igv.to_f))
           else
-            discounts_after += pod.value.to_f/100*((po.amount*po.unit_price-discounts_before)*(1+igv))
+            discounts_after += pod.value.to_f/100*((po.amount.to_f*po.unit_price.to_f-discounts_before.to_f)*(1+igv.to_f))
           end
         elsif pod.type == "soles"
           if pod.operation == "sum"
-            discounts_after += pod.value *(-1)
+            discounts_after += pod.value.to_f *(-1)
           else
-            discounts_after += pod.value
+            discounts_after += pod.value.to_f
           end
         end
       end
