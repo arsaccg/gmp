@@ -48,10 +48,10 @@
                     - quantity = 0
                     - if payment_order.provision.order_id != nil
                       - payment_order.provision.provision_details.each do |detail|
-                        - quantity += detail.unit_price_igv
+                        - quantity += detail.unit_price_igv.to_f
                     - else
                       - payment_order.provision.provision_direct_purchase_details.each do |detail|
-                        - quantity += detail.unit_price_igv
+                        - quantity += detail.unit_price_igv.to_f
                     = number_to_currency(quantity, :unit => 'S/.', :precision => 2)
                   %td
                     = number_to_currency(payment_order.net_pay, :unit => 'S/.', :precision => 2)
