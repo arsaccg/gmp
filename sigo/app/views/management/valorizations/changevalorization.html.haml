@@ -76,6 +76,12 @@
             %td
         -@last_result = row
 
+%br
+%a{:href=>"javascript:load_url_ondiv('#{management_valorizations_path}', 'right-area')"}(class="btn btn-primary btn-xs")
+  %i.fa.fa-arrow-left
+  Retornar al listado de valorizaciones
+
+
 :javascript
   $('.right-area').ready(function(){
     hide_all();

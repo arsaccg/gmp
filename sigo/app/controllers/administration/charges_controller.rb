@@ -6,6 +6,7 @@ class Administration::ChargesController < ApplicationController
 	def index
 		@charges = Charge.where(:invoice_id => params[:invoice_id])
 		@invoice_id = params[:invoice_id]
+		@budget_id = Valorization.find(Invoice.find(@invoice_id).valorization_id).budget_id
 		render :index, :layout => false
 	end
 

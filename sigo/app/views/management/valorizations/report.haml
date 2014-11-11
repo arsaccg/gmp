@@ -86,3 +86,8 @@
             %strong
               MONTO S/.
       = render :partial => "tablereport"
+
+%br
+%a{:href=>"javascript:load_url_ondiv('#{management_valorizations_path}', 'right-area')"}(class="btn btn-primary btn-xs")
+  %i.fa.fa-arrow-left
+  Retornar al listado de valorizaciones

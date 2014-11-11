@@ -10,7 +10,7 @@ class Administration::InvoicesController < ApplicationController
 	end
 
 	def new
-		@valorization = Valorization.find(params[:valorization_id])
+		p @valorization = Valorization.find(params[:valorization_id])
 		@action = params[:actionForm]
 		@action_label = "Registrar Factura"
 		@invoice = Invoice.new
@@ -40,7 +40,7 @@ class Administration::InvoicesController < ApplicationController
 	end
 
 	def update
-		@invoice = Invoice.find(params[:invoice_id])
+		@invoice = Invoice.find(params[:id])
 	    @invoice.update_attributes(invoice_parameters)
 		redirect_to :action => :index, :budget_id => @invoice.valorization.budget.id, :layout => false
 	end
