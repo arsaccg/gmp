@@ -418,7 +418,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
           end
         end
       end
-      detail.update_attributes(:discount_before=>discounts_before, :discount_after=>discounts_after, :quantity_igv=>((po.amount*po.unit_price-discounts_before)*(igv)), :unit_price_before_igv=>(po.amount*po.unit_price- discounts_before), :unit_price_igv => (((po.amount*po.unit_price-discounts_before)*(1+igv))- discounts_after))
+      detail.update_attributes(:discount_before=>discounts_before, :discount_after=>discounts_after, :quantity_igv=>((po.amount.to_f*po.unit_price.to_f-discounts_before.to_f)*(igv.to_f)), :unit_price_before_igv=>(po.amount.to_f*po.unit_price.to_f- discounts_before.to_f), :unit_price_igv => (((po.amount.to_f*po.unit_price.to_f-discounts_before.to_f)*(1+igv.to_f))- discounts_after.to_f))
     end
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index, company_id: params[:company_id]
