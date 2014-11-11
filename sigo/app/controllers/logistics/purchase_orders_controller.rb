@@ -13,6 +13,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
   def show
     @company = params[:company_id]
+    @parcial_without_igv = 0
+    @igv = 0
+    @parcial_with_igv = 0
     @purchaseOrder = PurchaseOrder.find(params[:id])
     if params[:state_change] != nil
       @state_change = params[:state_change]
@@ -23,11 +26,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
       @purchasePerState = @purchaseOrder.state_per_order_purchases
     end
     @purchaseOrderDetails = @purchaseOrder.purchase_order_details
-    @totales = ActiveRecord::Base.connection.execute("
-            SELECT SUM(pod.unit_price_before_igv), SUM(pod.quantity_igv), SUM(pod.unit_price_igv)
-            FROM purchase_order_details pod
-            WHERE pod.purchase_order_id = #{@purchaseOrder.id}"
-          ) 
+    
     render layout: false
   end
 
@@ -541,11 +540,6 @@ class Logistics::PurchaseOrdersController < ApplicationController
     @igv = 0
     @igv_neto = 0
 
-    @purchaseOrderDetails.each do |pod|
-      @total += pod.unit_price_before_igv.to_f
-      @igv_neto += pod.quantity_igv.abs.to_f
-    end
-
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       if val != nil
         @igv= val.value.to_f
@@ -553,6 +547,12 @@ class Logistics::PurchaseOrdersController < ApplicationController
         @igv = 0.18
       end
     end
+
+    @purchaseOrderDetails.each do |pod|
+      @total += pod.unit_price_before_igv.to_f.round(2)
+      @igv_neto += (pod.unit_price_before_igv.round(2)*@igv.round(2)).round(3).round(2)
+    end
+
     @percepcion_neto=0
     @descuento_neto=0
     @cargo_neto=0

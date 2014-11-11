@@ -415,8 +415,8 @@
         }
       });
     }
-    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_before').val(Math.abs(db_m.toFixed(2)));
-    $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_before_igv').val(parseFloat(price*amount-db_m).toFixed(2));
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_before').val(Math.abs(toFixed(db_m,2)));
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_before_igv').val(toFixed(parseFloat(price*amount-db_m),2));
 
     var total = 0;
     if(igv){
@@ -429,9 +429,9 @@
           }
         });  
       }
-      total=((parseFloat(price*amount-db_m)*1.18)-da_m).toFixed(2);
-      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val((parseFloat(price*amount-db_m)*0.18).toFixed(2));
-      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val((parseFloat(price*amount-db_m)*1.18).toFixed(2));
+      total=toFixed((parseFloat(price*amount-db_m)*1.18-da_m),2);
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val(toFixed(parseFloat(price*amount-db_m)*0.18,2));
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val(toFixed(parseFloat(price*amount-db_m)*1.18,2));
     }else{
       if($('#'+reg+'a > input').length > 0){
         dia.each(function(){
@@ -442,10 +442,19 @@
           }
         });    
       }
-      total=(parseFloat(price*amount-db_m)-da_m).toFixed(2);
+      total=toFixed(parseFloat(price*amount-db_m)-da_m,2);
       $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val('0');
-      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val((parseFloat(price*amount-db_m)).toFixed(2));
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val(toFixed(parseFloat(price*amount-db_m),2));
     }
-    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_after').val(Math.abs(da_m).toFixed(2));
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_after').val(Math.abs(toFixed(da_m,2));
     $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_igv').val(total);
+  }
+
+
+  function toFixed(num,dec){
+    dec= dec || 0;
+    var s = String(num);
+    console.log(num%1);
+    if(num%1)s= s.replace(/5$/, '6');
+    return Number((+s).toFixed(dec));
   }

@@ -183,25 +183,28 @@
                       %td
                         = number_to_currency(purchasedetail.unit_price.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 4)
                       %td
-                        = number_to_currency((purchasedetail.discount_before).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                        = number_to_currency((purchasedetail.discount_before.round(3).round(2)).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
                       %td
-                        = number_to_currency(purchasedetail.unit_price_before_igv.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                        = number_to_currency(purchasedetail.unit_price_before_igv.round(3).round(2).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
                       %td
-                        = number_to_currency purchasedetail.quantity_igv.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                        = number_to_currency purchasedetail.quantity_igv.round(3).round(2).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td              
-                        = number_to_currency ((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f-purchasedetail.discount_before.to_f)+purchasedetail.quantity_igv.to_f), unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                        = number_to_currency ((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f-purchasedetail.discount_before.round(3).round(2).to_f)+purchasedetail.quantity_igv.round(3).round(2).to_f), unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
                         - sum = 0
                         - purchasedetail.purchase_order_extra_calculations.where(:apply => 'after').each do |poec|
                           - if poec.type == 'percent'
-                            - sum += (poec.value/100)*((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f-purchasedetail.discount_before.to_f)+purchasedetail.quantity_igv.to_f)
+                            - sum += (poec.value/100)*((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f-purchasedetail.discount_before.round(3).round(2).to_f)+purchasedetail.quantity_igv.round(3).round(2).to_f)
                           - elsif poec.type == 'soles'
                             - sum += poec.value
-                        = number_to_currency sum.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                        = number_to_currency sum.round(3).round(2).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
-                        = number_to_currency (purchasedetail.unit_price_igv.to_f), unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                        = number_to_currency (purchasedetail.unit_price_igv.round(3).round(2).to_f), unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
                         = purchasedetail.description
+                    - @parcial_without_igv += purchasedetail.unit_price_before_igv.round(3).round(2).to_f
+                    - @igv += purchasedetail.quantity_igv.round(3).round(2).to_f
+                  - @parcial_with_igv += @parcial_without_igv + @igv
 
 
       %article.col-sm-12.col-md-12.col-lg-4
@@ -216,21 +219,18 @@
               %table.table.table-hover
                 %thead
                   %tr
-                    %th Antes de IGV
+                    %th Parcial sin IGV
                     %th IGV
-                    %th Despues de IGV
-                    %th Neto
+                    %th Parcia con IGV
                 %tbody
                   %tr
-                    -@totales.each do |to|
-                      %td
-                        = number_to_currency to[0].to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
-                      %td
-                        = number_to_currency to[1].to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
-                      %td
-                        = number_to_currency (to[2].to_f-(to[0].to_f+to[1].to_f)), unit: "#{@purchaseOrder.money.symbol}", precision: 2
-                      %td
-                        = number_to_currency to[2].to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
+                      = number_to_currency @parcial_without_igv, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
+                      = number_to_currency @igv, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
+                      = number_to_currency @parcial_with_igv, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+
 - if @type_of_order.nil?
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
     %i.fa.fa-arrow-left>
