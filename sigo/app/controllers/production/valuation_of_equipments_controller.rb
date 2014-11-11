@@ -508,13 +508,17 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         end
 
         @val1=ActiveRecord::Base.connection.execute("SELECT start_date,end_date FROM valuation_of_equipments WHERE name LIKE '" + @name + "' AND start_date < '" + @start_date + "'")
-        @val=@val.last
+
+
         puts "-------1--------"
         if params[:id]==nil
         puts "-------params id--------"
-          if @val.count!=0
+          if @val1.count!=0
+            @workers_array6 = business_days_array6(@val1.to_a.first[0].to_s, @val1.to_a.last[1].to_s, @cad,@cc)
+            puts "--------workers_array6----"
+            puts @workers_array6.to_a
             puts "------if-val.count--------"
-            @thelast = @val.to_a.last
+            @thelast = @val1.to_a.last
             puts "----thelast----"
             puts @thelast
             puts "---------------"
@@ -537,7 +541,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
           end
         else
           @cc = get_company_cost_center('cost_center')
-          @last_end =ValuationOfEquipment.find(params[:ids]).start_date
+          @last_end =ValuationOfEquipment.find(params[:id]).start_date
           @last = last(@last_end, @cad, @art, @cc)
           puts @last.count
           if @last.count==0
@@ -567,17 +571,37 @@ class Production::ValuationOfEquipmentsController < ApplicationController
           cont=0
           @past.each do |past|
             if pres[0]==past[0]
+            puts "------entra if pres[0]-----"
               cont+=1
               past[2]
-              @match << (pres + [past[2]]).to_a
+              acumul=9
+              @workers_array6.each do |acum|
+                puts"---acum--"
+                puts acum
+                puts "----pres[0]"
+                puts pres[0]
+                puts "----acum[0]---"
+                puts acum[0]
+                puts "----acum[1]--"
+                puts acum[1]
+                if acum[0]==pres[0]
+                  puts "----cumplio la igualdad--"
+                  acumul=acum[1]
+                end
+              end
+              @match << (pres + [acumul]).to_a
+              puts "------@match-----"
+              puts @match
             end
           end
           if cont==0
+            puts "------entra else cont =0-----"
             @notmatch << (pres + [0]).to_a
           end
         end
 
         @array = @match + @notmatch
+
 
         render :pdf => "parte_equipos_#{@code}-#{Time.now.strftime('%d-%m-%Y')}", 
                :template => 'production/valuation_of_equipments/part_equipment_pdf.pdf.haml',
