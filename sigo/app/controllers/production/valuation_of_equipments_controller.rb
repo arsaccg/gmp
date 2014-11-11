@@ -146,6 +146,20 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     return workers_array3
   end
 
+  def business_days_array6(start_date, end_date, working_group_id, cost_center)
+    workers_array3 = ActiveRecord::Base.connection.execute("
+      SELECT poe.equipment_id, SUM(poed.effective_hours)
+      FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
+      WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND poe.id=poed.part_of_equipment_id
+      AND poe.cost_center_id = '" + cost_center.to_s + "'
+      AND poe.equipment_id=sed.id
+      AND poe.subcontract_equipment_id = " + working_group_id.to_s + "
+      GROUP BY poe.equipment_id
+    ")
+    return workers_array3
+  end
+
   def business_days_array5(end_date, working_group_id, cost_center)
     workers_array3 = ActiveRecord::Base.connection.execute("
       SELECT poe.equipment_id, sed.code, SUM(poed.effective_hours), sed.price_no_igv, SUM(poed.effective_hours)*sed.price_no_igv
@@ -252,6 +266,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @totalprice3 = 0
     @cc = get_company_cost_center('cost_center')
     @workers_array3 = business_days_array3(@start_date, @end_date, @cad,@cc)
+
     @workers_array5 = business_days_array5(@end_date,@cad,@cc)
     @art = Array.new
     @workers_array3.each do |workerDetail|
@@ -263,14 +278,18 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @art=0
     end
 
-    @val=ActiveRecord::Base.connection.execute("SELECT start_date,end_date FROM valuation_of_equipments WHERE name LIKE '" + @name + "' AND start_date LIKE DATE_SUB('" + @start_date + "', INTERVAL 1 MONTH) ")
+    @val1=ActiveRecord::Base.connection.execute("SELECT start_date,end_date FROM valuation_of_equipments WHERE name LIKE '" + @name + "' AND start_date < '" + @start_date + "'")
+
 
     puts "-------1--------"
     if params[:id]==nil
     puts "-------params id--------"
-      if @val.count!=0
+      if @val1.count!=0
+        @workers_array6 = business_days_array6(@val1.to_a.first[0].to_s, @val1.to_a.last[1].to_s, @cad,@cc)
+        puts "--------workers_array6----"
+        puts @workers_array6.to_a
         puts "------if-val.count--------"
-        @thelast = @val.to_a.last
+        @thelast = @val1.to_a.last
         puts "----thelast----"
         puts @thelast
         puts "---------------"
@@ -323,12 +342,31 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       cont=0
       @past.each do |past|
         if pres[0]==past[0]
+        puts "------entra if pres[0]-----"
           cont+=1
           past[2]
-          @match << (pres + [past[2]]).to_a
+          acumul=9
+          @workers_array6.each do |acum|
+            puts"---acum--"
+            puts acum
+            puts "----pres[0]"
+            puts pres[0]
+            puts "----acum[0]---"
+            puts acum[0]
+            puts "----acum[1]--"
+            puts acum[1]
+            if acum[0]==pres[0]
+              puts "----cumplio la igualdad--"
+              acumul=acum[1]
+            end
+          end
+          @match << (pres + [acumul]).to_a
+          puts "------@match-----"
+          puts @match
         end
       end
       if cont==0
+        puts "------entra else cont =0-----"
         @notmatch << (pres + [0]).to_a
       end
     end
@@ -469,8 +507,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
           @art=0
         end
 
-        @val=ActiveRecord::Base.connection.execute("SELECT start_date,end_date FROM valuation_of_equipments WHERE name LIKE '" + @name + "' AND start_date LIKE DATE_SUB('" + @start_date + "', INTERVAL 1 MONTH) ")
-
+        @val1=ActiveRecord::Base.connection.execute("SELECT start_date,end_date FROM valuation_of_equipments WHERE name LIKE '" + @name + "' AND start_date < '" + @start_date + "'")
+        @val=@val.last
         puts "-------1--------"
         if params[:id]==nil
         puts "-------params id--------"
