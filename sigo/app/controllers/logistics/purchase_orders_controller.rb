@@ -550,7 +550,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
     @purchaseOrderDetails.each do |pod|
       @total += pod.unit_price_before_igv.to_f.round(2)
-      @igv_neto += (pod.unit_price_before_igv.round(2)*@igv.round(2)).round(3).round(2)
+      @igv_neto += (pod.unit_price_before_igv.to_f.round(2)*@igv.round(2)).round(3).round(2)
     end
 
     @percepcion_neto=0
