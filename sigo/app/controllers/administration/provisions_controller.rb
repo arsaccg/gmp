@@ -257,7 +257,7 @@ class Administration::ProvisionsController < ApplicationController
       else
         pending = @order.amount
       end
-      con_igv = pending*@order.unit_price
+      con_igv = pending*@order.unit_price.to_f
       discounts_before = 0
       @order_ec.each do |extra_calculation|
         if extra_calculation.type == 'percent'
