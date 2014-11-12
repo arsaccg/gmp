@@ -1,0 +1,271 @@
+= simple_form_for([:payrolls, @pay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+  = hidden_field_tag "company_id", @company
+  = hidden_field_tag "purchase_order[cost_center_id]", @cost_center
+  %h3
+    %strong Paso 1
+    \- Seleccionar la información básica
+  %fieldset
+    .row
+      %section.col.col-md-4
+        .col-xs-1
+        .form-group.in-line
+          %label.label Tipo de Trabajador
+          .col-md-12
+            .col-md-1
+            %label.radio-inline
+              %input.radiobox#t{:name=>"tworker",:type => 'radio', :value => "empleado", :onchange => "checkWorker();"}
+              %span Empleado
+            %label.radio-inline
+              %input.radiobox#e{:name=>"tworker",:type => 'radio', :value => "obrero", :onchange => "checkWorker();"}
+                %span Obrero
+    
+      %section.col.col-md-3
+        %label.label Periodo
+        %select#periodo.form-control.select2{:onchange => "semanas();"}
+          %option{:value=> 0} Seleccione un periodo
+          - @years.each do |x|
+            %optgroup{:label => "#{x}"}
+              - (1..12).each do |y|
+                %option{:value => "#{x.to_s}"+"-"+"#{y.to_s.rjust(2, "0")}"}
+                  = x.to_s + " - " + y.to_s.rjust(2, "0")
+
+      %section.col.col-md-3
+        %label.label Semana
+        %select#semana.form-control.select2{:disabled=>"disabled"}
+          %option{:value=> 0} Seleccione una Semana
+    .row
+      %section.col.col-4
+        %label.label Compañia: 
+        %label.input
+          %select.form-control#company
+            %option{:value=> 0} Seleccione una compañia
+            -@company.each do |cc|
+              %option{:value => "#{cc.id}"}= cc.name
+
+      %section.col.col-4
+        %label.label Centro de Costo
+        %label.input
+          %select.form-control#costcenter{:disabled=>"disabled", :onchange => "semanas();"}
+            %option{:value=> 0} Seleccione un Centro de Costo
+
+      %section.col.col-4
+        %label.label Tipo
+        %label.input
+          %select.form-control#tipo
+            %option{:value=> 0} Seleccione un tipo
+            %option{:value=> "normal"} Normal
+            %option{:value=> "G"} Gratificación
+            %option{:value=> "Q"} Quincena
+            %option{:value=> "R"} Reintegro
+            %option{:value=> "U"} Utilidades
+            %option{:value=> "V"} Vacaciones
+      %br
+          
+    %fieldset
+      %legend Información adicional
+      .row
+        %section
+          %label.label{"style"=>"font-size:14px;"} Información de AFP
+          %br
+          .col.col-2
+            %label.label Nombre
+          .col.col-2
+            %label.label Aporte F. P.(%)
+          .col.col-2
+            %label.label Prima de Seguro(%)
+          .col.col-2
+            %label.label Tope de Seguro($)
+          .col.col-2
+            %label.label C. Variable (%)
+          .col.col-2
+            %label.label Mixta (%)
+          %br
+        %section
+          -@afp.each do |afp|
+            .form-group
+              .col.col-lg-12
+                .col.col-2
+                  %label.label=afp.enterprise.to_s
+                .col.col-2
+                  %label.label=afp.contribution_fp.to_s
+                .col.col-2
+                  %label.label= afp.insurance_premium.to_s
+                .col.col-2
+                  %label.label= afp.top.to_s
+                .col.col-2
+                  %label.label= afp.c_variable.to_s
+                .col.col-2
+                  %label.label= afp.mixed.to_s
+            %br
+      .row
+        %section#infoadd{"style"=>"display:none"}
+          .section.col.col-md-8
+            %label.label{"style"=>"font-size:14px;"} Datos Generales
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Día/Horas Base de Cálculo
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"48.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Horas de Trabajo por día
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"8.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Días adelanto Quincena (15)
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"15.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Unidad Impositiva Tributaria
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"3700.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} # de deducciones(UIT) 5ta Cat.
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"7.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Tipo de Cambio Planilla
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"0.00"}
+        
+        %br
+
+:javascript
+  function checkWorker(){
+    if(document.getElementById('t').checked){
+      $('#infoadd').css("display", "block");
+      $('#costcenter').attr("disabled", document.getElementById('t').checked);
+    }else{
+      $('#infoadd').css("display", "none");
+      $('#costcenter').attr("disabled", !document.getElementById('e').checked);
+      $('#semana').attr("disabled", !document.getElementById('e').checked);
+    }
+  }
+
+  $('#company').change(function(){
+    var company_id = $('#company').val();
+    if(company_id != 0){
+      $('#costcenter').empty();
+      $('#costcenter').append(
+            $("<option></option>").attr("value", 0).text("Seleccione un Centro de Costo").attr("selected", "selected")
+          )
+      $('#semana').empty();
+      $('#semana').append(
+            $("<option></option>").attr("value", 0).text("Seleccione una Semana").attr("selected", "selected")
+          )
+      complete_cost("#{get_cc_payrolls_payslips_path}", company_id, "#{form_authenticity_token}", 0);
+    }else{
+      $('#costcenter').empty();
+      $('#costcenter').append(
+            $("<option></option>").attr("value", 0).text("Seleccione un Centro de Costo").attr("selected", "selected")
+          )
+      $('#semana').empty();
+      $('#semana').append(
+            $("<option></option>").attr("value", 0).text("Seleccione una Semana").attr("selected", "selected")
+          )
+
+    }
+  });
+
+  function complete_cost(url, company, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { company: company, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+        $.each(data.cc, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        $('#costcenter').empty();
+        $('#costcenter').append(
+          $("<option></option>").attr("value", 0).text("Seleccione un Centro de Costo").attr("selected", "selected")
+        )
+        $.each(newOptions, function(key,value){
+          $('#costcenter').append(
+            $("<option></option>").attr("value", value.id).text(value.name)
+          )
+        });
+    });
+  }
+
+  function semanas(){
+    var periodo = $('#periodo').val();
+    var cc = $('#costcenter').val();
+    console.log(periodo);
+    console.log(cc);
+    if(document.getElementById('e').checked && cc!=0 && periodo!= 0){
+      complete_semanas("#{get_sem_payrolls_payslips_path}", periodo, cc, "#{form_authenticity_token}", 0);
+    }
+  }
+
+  function complete_semanas(url, periodo, cc, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { periodo: periodo, cc:cc, authenticity_token: form_token}
+    }).done(function( data ) {
+      newOptions = [];
+        $.each(data.semana, function(key, value){
+          item = {};
+          item['name'] = value[0];
+          item['id'] = value[1];
+          console.log(value[0]);
+          console.log(value[1]);
+          newOptions.push(item);
+        });
+        $('#semana').empty();
+        $('#semana').append(
+          $("<option></option>").attr("value", 0).text("Seleccione una Semana").attr("selected", "selected")
+        )
+        $.each(newOptions, function(key,value){
+          $('#semana').append(
+            $("<option></option>").attr("value", value.id).text(value.name)
+          )
+        });
+    });
+  }
+
+  function generar(){
+    var worker_id = $('#worker').val();
+    var cost_center = $('#costcenter').val();
+    var ing = [];
+    var desc = [];
+    var ingresos = jQuery.parseJSON("#{escape_javascript @ing.to_json}");
+    var descuentos = jQuery.parseJSON("#{escape_javascript @des.to_json}");
+    var i=0;
+    $.each(ingresos, function( index, value ) {
+      if($('#ni'+value).val()!= "" && $('#vi'+value).val()!=""){
+        ing[i] = $('#ni'+value).val() + "-"+ $('#vi'+value).val(); 
+      }
+    });
+    i=0;
+    $.each(descuentos, function( index, value ) {
+      if($('#nd'+value).val()!= "" && $('#vd'+value).val()!=""){
+        desc[i] = $('#nd'+value).val() + "-"+ $('#vd'+value).val();
+        i=i+1;
+      }
+    });
+    if(isNaN(2)){
+      ing != null && worker_id != " " && cost_center != 0
+      str_item = {authenticity_token: "#{form_authenticity_token}", arregloin: ing, worker: worker_id, cost_center: cost_center, arreglodes:desc};
+      append_url_ajax('#{generate_payroll_payrolls_payrolls_path}', 'concept_items_table', str_item, 0, 'POST');
+    }else{
+      alert("Escoja a un trabajador");
+    }
+  }  
