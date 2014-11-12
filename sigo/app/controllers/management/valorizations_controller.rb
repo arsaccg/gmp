@@ -1,7 +1,7 @@
 class Management::ValorizationsController < ApplicationController
   #before_filter :authorize_manager
+  before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update, :newvalorization, :changevalorization, :finalize, :show_data, :change_data_ge, :change_data_u, :change_data_r, :change_data_rnd, :change_data_rnm, :change_data_da, :change_data_aom, :report ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
-  before_filter :authenticate_user!
     
   def index
     @redir = params[:redir]
@@ -89,12 +89,6 @@ class Management::ValorizationsController < ApplicationController
     cost_center_id = Budget.find(valorization.budget_id).cost_center_id
 
     redirect_to :controller => "management/budgets", project_id: cost_center_id, :action => :administrate_budget
-  end
-
-  def edit
-    #val_item = Valorizationitem
-    @valorization = Valorization.find(params[:id])
-    render :edit, layout: false
   end
 
   def finalize
