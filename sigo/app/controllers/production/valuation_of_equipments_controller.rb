@@ -402,6 +402,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @totalfuel_amount = 0
     @subcontractequipmentarticle= params[:subcontractequipment]
     @id= params[:id]
+    @ids= params[:ids]
     @cad= params[:cad]
     @start_date = params[:start_date]
     @end_date = params[:end_date]
@@ -636,7 +637,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       format.html
       format.pdf do
         @cc = get_company_cost_center('cost_center')
-        @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+        @valuationofequipment=ValuationOfEquipment.find(params[:ids])
         @company = Company.find(get_company_cost_center('company'))
         @totaldif = 0
         @totaltotalhours = 0
