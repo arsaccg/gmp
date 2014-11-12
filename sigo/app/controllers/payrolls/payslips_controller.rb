@@ -27,14 +27,14 @@ class Payrolls::PayslipsController < ApplicationController
     @pay = Payslip.new 
     @ing = Array.new
     @des = Array.new
+    @cc = CostCenter.find(get_company_cost_center('cost_center'))
     @ingresos = Concept.where("code LIKE '1%' AND type_obrero = 'Fijo'")
     @descuentos = Concept.where("code LIKE '2%' AND type_obrero = 'Fijo'")
     @company = Company.all
     @afp = Afp.all
-    @years = Array.new
-    (2000..2050).each do |x|
-      @years << x
-    end
+    @semanas = ActiveRecord::Base.connection.execute("
+      SELECT *
+      FROM weeks_for_cost_center_" + @cc.id.to_s)
     @ingresos.each do |ing|
       @ing << ing.id.to_s
     end
