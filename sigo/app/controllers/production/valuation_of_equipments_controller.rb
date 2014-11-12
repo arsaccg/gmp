@@ -109,6 +109,26 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @descuentootros = 0
       @totalretenciones = 0
       @netoapagar = 0
+      @code = 0
+      if !@lastvaluation.nil?
+        @code = @lastvaluation.code.to_i      
+        @code = @code.to_s.rjust(3,'0')
+        @valuationofequipment2 = getsc_valuation2(@valuationofequipment.start_date, @valuationofequipment.end_date, Entity.find(params[:executor]).name, @code)
+        if @valuationofequipment2.count > 0
+          @valuationofequipment2.each do |workerDetail|
+            @valorizacionsinigv = workerDetail[0]
+            @amortizaciondeadelanto = workerDetail[1]
+            @totalfacturar = workerDetail[2]
+            @totalfacigv = workerDetail[3]
+            @totalincluidoigv = workerDetail[4]
+            @retenciones = workerDetail[5]
+            @detraccion = workerDetail[6]
+            @descuentocombustible = workerDetail[7]
+            @otrosdescuentos = workerDetail[8]
+            @netoapagar = workerDetail[9]
+          end
+        end
+      end
       @subcontractequipment.subcontract_equipment_advances.each do |subadvances|
         @subadvances+=subadvances.advance
       end
