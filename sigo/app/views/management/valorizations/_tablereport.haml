@@ -11,23 +11,23 @@
       %td
       %td(style="text-align: right;")
         %strong
-          = number_to_currency( amount_contractual(ib.order, @budget.id), :unit=>'S/. ' )
+          = number_to_currency( amount_contractual(ib.order, @budget.id), :unit=>'' )
       %td
       %td(style="text-align: right;")
         %strong
-          = number_to_currency( amount_prev(ib.order, @budget.id, @valorization.valorization_date), :unit=>'S/. ' )
+          = number_to_currency( amount_prev(ib.order, @budget.id, @valorization.valorization_date), :unit=>'' )
       %td
       %td(style="text-align: right;")
         %strong
-          = number_to_currency( amount_actual(ib.order, @budget.id, @valorization.id), :unit=>'S/. ' )
+          = number_to_currency( amount_actual(ib.order, @budget.id, @valorization.id), :unit=>'' )
       %td
       %td(style="text-align: right;")
         %strong
-          = number_to_currency( amount_acumulated(ib.order, @budget.id, @valorization.valorization_date, @valorization.id), :unit=>'S/. ' )
+          = number_to_currency( amount_acumulated(ib.order, @budget.id, @valorization.valorization_date, @valorization.id), :unit=>'' )
       %td
       %td(style="text-align: right;")
         %strong
-          = number_to_currency( amount_remainder(ib.order, @budget.id, @valorization.valorization_date, @valorization.id), :unit=>'S/. ' )
+          = number_to_currency( amount_remainder(ib.order, @budget.id, @valorization.valorization_date, @valorization.id), :unit=>'' )
       %td(style="text-align: right;")
         %strong
           = "#{advance_percent(ib.order, @budget.id, @valorization.valorization_date, @valorization.id).round(2)} %"
@@ -67,63 +67,63 @@
         -if ibb.measured != nil && ibb.measured > 0
           -if (si[6].to_f rescue 0) > 0
             %td(style="text-align: right;")
-              = number_to_currency( (si[5].to_f rescue 0), :unit=>'S/. ')
+              = number_to_currency( (si[5].to_f  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si[5].to_f  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si[6].to_f rescue 0), :unit=>'')
+              = number_to_currency( (si[6].to_f  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si[6].to_f  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( ((si[5].to_f * si[6].to_f) rescue 0), :unit=>'S/. ')
+              = number_to_currency( ((si[5].to_f * si[6].to_f)  ), :unit=>'') == '0.00' ? '-' : number_to_currency( ((si[5].to_f * si[6].to_f)  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si[8].to_f rescue 0), :unit=>'')
+              = number_to_currency( (si[8].to_f  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si[8].to_f  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si[9].to_f rescue 0), :unit=>'S/. ')
+              = number_to_currency( (si[9].to_f  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si[9].to_f  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si[10].to_f rescue 0), :unit=>'')
+              = number_to_currency( (si[10].to_f  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si[10].to_f  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si[11].to_f rescue 0), :unit=>'S/. ')
+              = number_to_currency( (si[11].to_f  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si[11].to_f  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si[12].to_f rescue 0), :unit=>'')
+              = number_to_currency( (si[12].to_f  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si[12].to_f  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si[13].to_f rescue 0), :unit=>'S/. ')
+              = number_to_currency( (si[13].to_f  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si[13].to_f  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si[14].to_f rescue 0), :unit=>'')
+              = number_to_currency( (si[14].to_f  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si[14].to_f  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si[15].to_f rescue 0), :unit=>'S/. ')
+              = number_to_currency( (si[15].to_f  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si[15].to_f  ), :unit=>'')
             %td(style="text-align: right;")
               = si[16].round(2) rescue 0 #PORCENTAJE DE AVANCE
               = '%' 
           -elsif si_prev[ibb.order] != nil
             %td(style="text-align: right;")
-              = number_to_currency( (si_prev[ibb.order][5] rescue 0), :unit=>'S/. ')
+              = number_to_currency( (si_prev[ibb.order][5]  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si_prev[ibb.order][5]  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si_prev[ibb.order][6] rescue 0), :unit=>'')
+              = number_to_currency( (si_prev[ibb.order][6]  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si_prev[ibb.order][6]  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si_prev[ibb.order][7] rescue 0), :unit=>'S/. ')
+              = number_to_currency( (si_prev[ibb.order][7]  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si_prev[ibb.order][7]  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si_prev[ibb.order][8] rescue 0), :unit=>'')
+              = number_to_currency( (si_prev[ibb.order][8]  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si_prev[ibb.order][8]  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si_prev[ibb.order][9] rescue 0), :unit=>'S/. ')
+              = number_to_currency( (si_prev[ibb.order][9]  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si_prev[ibb.order][9]  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si_prev[ibb.order][10] rescue 0), :unit=>'')
+              = number_to_currency( (si_prev[ibb.order][10]  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si_prev[ibb.order][10]  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si_prev[ibb.order][11] rescue 0), :unit=>'S/. ')
+              = number_to_currency( (si_prev[ibb.order][11]  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si_prev[ibb.order][11]  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si_prev[ibb.order][12] rescue 0), :unit=>'')
+              = number_to_currency( (si_prev[ibb.order][12]  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si_prev[ibb.order][12]  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si_prev[ibb.order][13] rescue 0), :unit=>'S/. ')
+              = number_to_currency( (si_prev[ibb.order][13]  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si_prev[ibb.order][13]  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si_prev[ibb.order][14] rescue 0), :unit=>'')
+              = number_to_currency( (si_prev[ibb.order][14]  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si_prev[ibb.order][14]  ), :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (si_prev[ibb.order][15] rescue 0), :unit=>'S/. ')
+              = number_to_currency( (si_prev[ibb.order][15]  ), :unit=>'') == '0.00' ? '-' : number_to_currency( (si_prev[ibb.order][15]  ), :unit=>'')
             %td(style="text-align: right;")
               =si_prev[ibb.order][16]
               = '%'
           -else
             %td(style="text-align: right;")
-              = number_to_currency( ibb.price, :unit=>'S/. ')
+              = number_to_currency( ibb.price, :unit=>'')
             %td(style="text-align: right;")
               = number_to_currency( ibb.price, :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( (ibb.price * ibb.measured), :unit=>'S/. ')
+              = number_to_currency( (ibb.price * ibb.measured), :unit=>'')
             %td
             %td
             %td
@@ -185,27 +185,27 @@
     %td(style="text-align: right;")
       %strong
         -#MONTO contract
-        = number_to_currency( @direct_cost_cont, :unit=>'S/. ')
+        = number_to_currency( @direct_cost_cont, :unit=>'')
     %td
     %td(style="text-align: right;")
       %strong
         -#MONTO anterior
-        = number_to_currency( @direct_cost_prev, :unit=>'S/. ')
+        = number_to_currency( @direct_cost_prev, :unit=>'')
     %td
     %td(style="text-align: right;")
       %strong
         -#MONTO actual  
-        = number_to_currency( @direct_cost_act, :unit=>'S/. ')
+        = number_to_currency( @direct_cost_act, :unit=>'')
     %td
     %td(style="text-align: right;")
       %strong
         -#MONTO acumulado
-        = number_to_currency( @direct_cost_acc, :unit=>'S/. ')
+        = number_to_currency( @direct_cost_acc, :unit=>'')
     %td
     %td(style="text-align: right;")
       %strong
         -#SALDO
-        = number_to_currency( @direct_cost_rem, :unit=>'S/. ')
+        = number_to_currency( @direct_cost_rem, :unit=>'')
     %td(style="text-align: right;")
       = (@direct_cost_acc / @direct_cost_cont * 100).round(2) rescue 0
       ='%'
@@ -218,27 +218,27 @@
     %td(style="text-align: right;")
       -#MONTO contract
       - num = (@direct_cost_cont * @budget.general_expenses.to_f).round(2)
-      = number_to_currency( num, :unit=>'S/. ')
+      = number_to_currency( num, :unit=>'')
     %td
     %td(style="text-align: right;")
       -#MONTO anterior
       - num = (@direct_cost_prev * @budget.general_expenses.to_f).round(2)
-      = number_to_currency( num, :unit=>'S/. ')
+      = number_to_currency( num, :unit=>'')
     %td
     %td(style="text-align: right;")
       -#MONTO actual  
       - num = (@direct_cost_act * @budget.general_expenses.to_f).round(2) 
-      = number_to_currency( num, :unit=>'S/. ')
+      = number_to_currency( num, :unit=>'')
     %td
     %td(style="text-align: right;")
       -#MONTO acumulado
       - num = (@direct_cost_acc * @budget.general_expenses.to_f).round(2) 
-      = number_to_currency( num, :unit=>'S/. ')
+      = number_to_currency( num, :unit=>'')
     %td
     %td(style="text-align: right;")
       -#SALDO
       - num = (@direct_cost_rem * @budget.general_expenses.to_f).round(2)
-      = number_to_currency( num, :unit=>'S/. ')
+      = number_to_currency( num, :unit=>'')
     %td(style="text-align: right;")
       = ((@direct_cost_acc * @budget.general_expenses.to_f)/(@direct_cost_cont * @budget.general_expenses.to_f) * 100).round(2)
       ='%'
@@ -252,27 +252,27 @@
     %td(style="text-align: right;")
       -#MONTO contract
       - num = (@direct_cost_cont * @budget.utility.to_f).round(2)
-      = number_to_currency( num, :unit=>'S/. ')
+      = number_to_currency( num, :unit=>'')
     %td
     %td(style="text-align: right;")
       -#MONTO anterior
       - num = (@direct_cost_prev * @budget.utility.to_f).round(2)
-      = number_to_currency( num, :unit=>'S/. ')
+      = number_to_currency( num, :unit=>'')
     %td
     %td(style="text-align: right;")
       -#MONTO actual  
       - num = (@direct_cost_act * @budget.utility.to_f).round(2) 
-      = number_to_currency( num, :unit=>'S/. ')
+      = number_to_currency( num, :unit=>'')
     %td
     %td(style="text-align: right;")
       -#MONTO acumulado
       - num = (@direct_cost_acc * @budget.utility.to_f).round(2) 
-      = number_to_currency( num, :unit=>'S/. ')
+      = number_to_currency( num, :unit=>'')
     %td
     %td(style="text-align: right;")
       -#SALDO
       - num = (@direct_cost_rem * @budget.utility.to_f).round(2)
-      = number_to_currency( num, :unit=>'S/. ')
+      = number_to_currency( num, :unit=>'')
     %td(style="text-align: right;")
       = ((@direct_cost_acc * @budget.utility.to_f)/(@direct_cost_cont * @budget.utility.to_f) * 100).round(2)
       ='%'
