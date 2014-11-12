@@ -18,35 +18,14 @@
             %label.radio-inline
               %input.radiobox#e{:name=>"tworker",:type => 'radio', :value => "obrero", :onchange => "checkWorker();"}
                 %span Obrero
-    
-      %section.col.col-md-3
-        %label.label Periodo
-        %select#periodo.form-control.select2{:onchange => "semanas();"}
-          %option{:value=> 0} Seleccione un periodo
-          - @years.each do |x|
-            %optgroup{:label => "#{x}"}
-              - (1..12).each do |y|
-                %option{:value => "#{x.to_s}"+"-"+"#{y.to_s.rjust(2, "0")}"}
-                  = x.to_s + " - " + y.to_s.rjust(2, "0")
 
       %section.col.col-md-3
         %label.label Semana
-        %select#semana.form-control.select2{:disabled=>"disabled"}
-          %option{:value=> 0} Seleccione una Semana
-    .row
-      %section.col.col-4
-        %label.label Compañia: 
-        %label.input
-          %select.form-control#company
-            %option{:value=> 0} Seleccione una compañia
-            -@company.each do |cc|
-              %option{:value => "#{cc.id}"}= cc.name
-
-      %section.col.col-4
-        %label.label Centro de Costo
-        %label.input
-          %select.form-control#costcenter{:disabled=>"disabled", :onchange => "semanas();"}
-            %option{:value=> 0} Seleccione un Centro de Costo
+        %select#semana.form-control.select2
+          %option{:value=> nil, :selected => true, :disabled => true} Seleccione una Semana
+          -@semanas.each do |se|
+            %option{:value => se[0]}
+              =se[1] + ": "+ se[2].strftime("%d/%m/%Y").to_s+ " - "+ se[3].strftime("%d/%m/%Y").to_s
 
       %section.col.col-4
         %label.label Tipo
@@ -150,95 +129,6 @@
       $('#costcenter').attr("disabled", !document.getElementById('e').checked);
       $('#semana').attr("disabled", !document.getElementById('e').checked);
     }
-  }
-
-  $('#company').change(function(){
-    var company_id = $('#company').val();
-    if(company_id != 0){
-      $('#costcenter').empty();
-      $('#costcenter').append(
-            $("<option></option>").attr("value", 0).text("Seleccione un Centro de Costo").attr("selected", "selected")
-          )
-      $('#semana').empty();
-      $('#semana').append(
-            $("<option></option>").attr("value", 0).text("Seleccione una Semana").attr("selected", "selected")
-          )
-      complete_cost("#{get_cc_payrolls_payslips_path}", company_id, "#{form_authenticity_token}", 0);
-    }else{
-      $('#costcenter').empty();
-      $('#costcenter').append(
-            $("<option></option>").attr("value", 0).text("Seleccione un Centro de Costo").attr("selected", "selected")
-          )
-      $('#semana').empty();
-      $('#semana').append(
-            $("<option></option>").attr("value", 0).text("Seleccione una Semana").attr("selected", "selected")
-          )
-
-    }
-  });
-
-  function complete_cost(url, company, form_token, default_value){
-    $.ajax({
-        type: "POST",
-        url: url,
-        async: false,
-        data: { company: company, authenticity_token: form_token}
-    }).done(function( data ) {
-      newOptions = [];
-        $.each(data.cc, function(key, value){
-          item = {};
-          item['name'] = value.name;
-          item['id'] = value.id;
-          newOptions.push(item);
-        });
-        $('#costcenter').empty();
-        $('#costcenter').append(
-          $("<option></option>").attr("value", 0).text("Seleccione un Centro de Costo").attr("selected", "selected")
-        )
-        $.each(newOptions, function(key,value){
-          $('#costcenter').append(
-            $("<option></option>").attr("value", value.id).text(value.name)
-          )
-        });
-    });
-  }
-
-  function semanas(){
-    var periodo = $('#periodo').val();
-    var cc = $('#costcenter').val();
-    console.log(periodo);
-    console.log(cc);
-    if(document.getElementById('e').checked && cc!=0 && periodo!= 0){
-      complete_semanas("#{get_sem_payrolls_payslips_path}", periodo, cc, "#{form_authenticity_token}", 0);
-    }
-  }
-
-  function complete_semanas(url, periodo, cc, form_token, default_value){
-    $.ajax({
-        type: "POST",
-        url: url,
-        async: false,
-        data: { periodo: periodo, cc:cc, authenticity_token: form_token}
-    }).done(function( data ) {
-      newOptions = [];
-        $.each(data.semana, function(key, value){
-          item = {};
-          item['name'] = value[0];
-          item['id'] = value[1];
-          console.log(value[0]);
-          console.log(value[1]);
-          newOptions.push(item);
-        });
-        $('#semana').empty();
-        $('#semana').append(
-          $("<option></option>").attr("value", 0).text("Seleccione una Semana").attr("selected", "selected")
-        )
-        $.each(newOptions, function(key,value){
-          $('#semana').append(
-            $("<option></option>").attr("value", value.id).text(value.name)
-          )
-        });
-    });
   }
 
   function generar(){
