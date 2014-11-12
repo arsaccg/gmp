@@ -110,24 +110,33 @@ class Payrolls::PayslipsController < ApplicationController
     ing = params[:arregloin]
     des = params[:arreglodes]
     @reg_n = (Time.now.to_f*1000).to_i
+
     semana = ActiveRecord::Base.connection.execute("
       SELECT *
-      FROM weeks_for_cost_center_" + @cc.id.to_s+" wc
-      WHERE wc.id = "+ params[:semana].to_s).first
+      FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
+      WHERE wc.id = " + params[:semana].to_s).first
+
     tipo = params[:tipo]
+
     @max_hour = ActiveRecord::Base.connection.execute("
       SELECT total
-      FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s+"
+      FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + "
       WHERE status = 1
-      AND week_id = "+semana[0].to_s).first
+      AND week_id = " + semana[0].to_s).first
 
-    @max_hour = @max_hour[0]
+    if !@max_hour.nil?
+      @max_hour = @max_hour[0]
+    else
+      @max_hour = 0
+    end
+
     worker = params[:worker]
     @partes = Array.new
 
     if worker == "empleado"
+      # Future...
     elsif worker == "obrero"
-      partes =ActiveRecord::Base.connection.execute("
+      @partes =ActiveRecord::Base.connection.execute("
         SELECT ppd.worker_id, e.dni, CONCAT_WS(' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname), ar.name, pp.date_of_creation, af.type_of_afp, w.numberofchilds, SUM( ppd.normal_hours ) , SUM( 1 ) AS Dias, SUM( ppd.he_60 ) , SUM( ppd.he_100 ) , SUM( ppd.total_hours ) 
         FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
         WHERE pp.cost_center_id = "+@cc.id.to_s+"
@@ -141,38 +150,6 @@ class Payrolls::PayslipsController < ApplicationController
         AND wc.article_id = ar.id
         GROUP BY ppd.worker_id
         ")
-    end
-    @por_h=0
-    partes.each do |p|
-      @basico = 0
-      ing.each do |ing|
-        remb = ActiveRecord::Base.connection.execute("
-          SELECT wcd.amount
-          FROM worker_contract_details wcd, worker_contracts wc
-          WHERE wcd.worker_contract_id = wc.id
-          AND wc.worker_id ="+p[0].to_s+"
-          AND wcd.concept_id = "+ing+"
-          ")
-        if ing==1
-          if remb.firts[0].nil?
-            cat = CategoryOfWorker.find_by_name(p[3].to_s)
-            @basico=cat.normal_price.to_f/@max_hour.to_f
-          else
-            @basico=remb.first[0].to_f/@max_hour.to_f
-          end
-        end
-        if remb.firts[0].nil? && ing != 1
-          Concept.find(ing).concept_details.each do |cd|
-          end
-        elsif ing != 1
-          Concept.find(ing).concept_details.each do |cd|
-          end
-        end
-
-      end
-
-      @partes << [p[0],p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9],p[10],p[11],p[7].to_f*@basico]
-      @por_h = 0
     end
 
     render(partial: 'workers', :layout => false)

@@ -80,11 +80,8 @@
           -if Worker.find(@worker_id).typeofworker=="empleado"
             -concepts=@concepts_empleado
           -if Worker.find(@worker_id).typeofworker=="obrero"
-            -concepts=@concepts_obrero          
-          -puts "-----"
-          -puts @action
+            -concepts=@concepts_obrero
           -if @action=='edit'
-            -puts "---entra--"
             -i=1
             -arr=Array.new
             -if @workercontract.worker_contract_details.count>0
@@ -105,9 +102,6 @@
                         -arr << wor.concept_id
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][id]',wor.id
                   -i+=1
-              -puts "---arr---"
-              -puts arr
-              -puts "--------------"
               -concepts.each do |con|
                 -cont=0
                 -arr.each do |arr|

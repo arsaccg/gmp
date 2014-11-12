@@ -146,7 +146,7 @@ class Administration::ProvisionsController < ApplicationController
                   pending, 
                   currency, 
                   'purchase',
-                  (purchase_detail.quantity_igv.to_f*-1).round(2), 
+                  (purchase_detail.quantity_igv.to_f).round(2), 
                   data_pod[3].round(2)
                 ]
               end
@@ -289,10 +289,10 @@ class Administration::ProvisionsController < ApplicationController
         pending, 
         @order.unit_price,
         discounts_before,
-        con_igv-discounts_before,
+        (con_igv-discounts_before).round(4).round(2),
         @igv,
-        quantity_igv,
-        (con_igv-discounts_before)*(1+@igv),
+        quantity_igv.round(4).round(2),
+        ((con_igv-discounts_before)*(1+@igv)).round(4).round(2),
         @money,
         @article_id,
         @code,

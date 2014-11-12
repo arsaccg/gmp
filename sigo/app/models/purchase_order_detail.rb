@@ -27,7 +27,7 @@ class PurchaseOrderDetail < ActiveRecord::Base
 
   def self.calculate_amounts(purchase_order_detail_id, pending, unit_price, current_igv)
     data_result = Array.new
-    initial_total = pending*unit_price
+    initial_total = pending.to_f*unit_price.to_f
     discounts_before_igv = 0
     discounts_after_igv = 0
     total_without_igv = 0
@@ -40,7 +40,7 @@ class PurchaseOrderDetail < ActiveRecord::Base
         if extra_calculation.operation == "minius"
           discounts_before_igv += (initial_total*value)*-1
         else
-          discounts_before_igv += initial_total*value
+          discounts_before_igv += initial_total*value.to_f
         end
       elsif extra_calculation.type == 'soles'
         value = extra_calculation.value.to_f
