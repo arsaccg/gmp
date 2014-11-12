@@ -39,9 +39,10 @@ class Management::ValorizationsController < ApplicationController
   end
 
   def destroy
+    @redir = params[:id]
     @valorization = Valorization.find(params[:id])
     @valorization.destroy
-    
+
     # project = CostCenter.find(get_company_cost_center('cost_center'))
     # @valorization = project.valorizations
     # @budget = project.budgets
