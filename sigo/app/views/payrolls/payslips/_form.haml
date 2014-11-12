@@ -1,0 +1,161 @@
+= simple_form_for([:payrolls, @pay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+  = hidden_field_tag "company_id", @company
+  = hidden_field_tag "purchase_order[cost_center_id]", @cost_center
+  %h3
+    %strong Paso 1
+    \- Seleccionar la información básica
+  %fieldset
+    .row
+      %section.col.col-md-4
+        .col-xs-1
+        .form-group.in-line
+          %label.label Tipo de Trabajador
+          .col-md-12
+            .col-md-1
+            %label.radio-inline
+              %input.radiobox#t{:name=>"tworker",:type => 'radio', :value => "empleado", :onchange => "checkWorker();"}
+              %span Empleado
+            %label.radio-inline
+              %input.radiobox#e{:name=>"tworker",:type => 'radio', :value => "obrero", :onchange => "checkWorker();"}
+                %span Obrero
+
+      %section.col.col-md-3
+        %label.label Semana
+        %select#semana.form-control.select2
+          %option{:value=> nil, :selected => true, :disabled => true} Seleccione una Semana
+          -@semanas.each do |se|
+            %option{:value => se[0]}
+              =se[1] + ": "+ se[2].strftime("%d/%m/%Y").to_s+ " - "+ se[3].strftime("%d/%m/%Y").to_s
+
+      %section.col.col-4
+        %label.label Tipo
+        %label.input
+          %select.form-control#tipo
+            %option{:value=> 0} Seleccione un tipo
+            %option{:value=> "normal"} Normal
+            %option{:value=> "G"} Gratificación
+            %option{:value=> "Q"} Quincena
+            %option{:value=> "R"} Reintegro
+            %option{:value=> "U"} Utilidades
+            %option{:value=> "V"} Vacaciones
+      %br
+          
+    %fieldset
+      %legend Información adicional
+      .row
+        %section
+          %label.label{"style"=>"font-size:14px;"} Información de AFP
+          %br
+          .col.col-2
+            %label.label Nombre
+          .col.col-2
+            %label.label Aporte F. P.(%)
+          .col.col-2
+            %label.label Prima de Seguro(%)
+          .col.col-2
+            %label.label Tope de Seguro($)
+          .col.col-2
+            %label.label C. Variable (%)
+          .col.col-2
+            %label.label Mixta (%)
+          %br
+        %section
+          -@afp.each do |afp|
+            .form-group
+              .col.col-lg-12
+                .col.col-2
+                  %label.label=afp.enterprise.to_s
+                .col.col-2
+                  %label.label=afp.contribution_fp.to_s
+                .col.col-2
+                  %label.label= afp.insurance_premium.to_s
+                .col.col-2
+                  %label.label= afp.top.to_s
+                .col.col-2
+                  %label.label= afp.c_variable.to_s
+                .col.col-2
+                  %label.label= afp.mixed.to_s
+            %br
+      .row
+        %section#infoadd{"style"=>"display:none"}
+          .section.col.col-md-8
+            %label.label{"style"=>"font-size:14px;"} Datos Generales
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Día/Horas Base de Cálculo
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"48.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Horas de Trabajo por día
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"8.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Días adelanto Quincena (15)
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"15.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Unidad Impositiva Tributaria
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"3700.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} # de deducciones(UIT) 5ta Cat.
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"7.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Tipo de Cambio Planilla
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"0.00"}
+        
+        %br
+
+:javascript
+  function checkWorker(){
+    if(document.getElementById('t').checked){
+      $('#infoadd').css("display", "block");
+      $('#costcenter').attr("disabled", document.getElementById('t').checked);
+    }else{
+      $('#infoadd').css("display", "none");
+      $('#costcenter').attr("disabled", !document.getElementById('e').checked);
+      $('#semana').attr("disabled", !document.getElementById('e').checked);
+    }
+  }
+
+  function generar(){
+    var worker_id = $('#worker').val();
+    var cost_center = $('#costcenter').val();
+    var ing = [];
+    var desc = [];
+    var ingresos = jQuery.parseJSON("#{escape_javascript @ing.to_json}");
+    var descuentos = jQuery.parseJSON("#{escape_javascript @des.to_json}");
+    var i=0;
+    $.each(ingresos, function( index, value ) {
+      if($('#ni'+value).val()!= "" && $('#vi'+value).val()!=""){
+        ing[i] = $('#ni'+value).val() + "-"+ $('#vi'+value).val(); 
+      }
+    });
+    i=0;
+    $.each(descuentos, function( index, value ) {
+      if($('#nd'+value).val()!= "" && $('#vd'+value).val()!=""){
+        desc[i] = $('#nd'+value).val() + "-"+ $('#vd'+value).val();
+        i=i+1;
+      }
+    });
+    if(isNaN(2)){
+      ing != null && worker_id != " " && cost_center != 0
+      str_item = {authenticity_token: "#{form_authenticity_token}", arregloin: ing, worker: worker_id, cost_center: cost_center, arreglodes:desc};
+      append_url_ajax('#{generate_payroll_payrolls_payrolls_path}', 'concept_items_table', str_item, 0, 'POST');
+    }else{
+      alert("Escoja a un trabajador");
+    }
+  }  

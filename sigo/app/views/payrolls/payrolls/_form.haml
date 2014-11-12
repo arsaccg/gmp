@@ -1,0 +1,169 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Información de pago
+  .widget-body
+    -if @pay == nil
+      %strong No Hay Datos Ingresados
+    -else
+      = simple_form_for([:payrolls, @pay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+        %label.label= "Trabajador: "+ @entity.name.to_s+ " " +@entity.second_name.to_s + " "+@entity.paternal_surname.to_s+ " "+@entity.maternal_surname.to_s
+        %input#worker.form-control{:name => "payroll[worker_id]", :value => "#{@worker.id}", "style"=>"display:none;"}
+
+        %fieldset
+          %legend Información de pago
+          .row
+            %section.col.col-2
+              %label.control-label Ingresos 
+
+            %section.col.col-3
+              %select.form-control#ingresos
+                %option{:value=> 0} Seleccione una Tipo de Ingreso
+                -@ingresos.each do |ing|
+                  %option{:value => "#{ing.id}"}= ing.name
+
+            %section.col.col-3
+              %input#amount.string.optional.form-control
+
+            %section.col.col-2
+              %div
+                %a{:href => "javascript:add_ing();", :id => "btn-add-advance", :class => "btn btn-success", :role => "button"}
+                  Agregar Ingreso
+
+          .col-lg-12
+            %table#summary-advance.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+              %thead
+                %tr
+                  %th.col-2 Ingreso
+                  %th.col-5 Monto
+                  %th Eliminar
+              %tbody(id="ing_table")
+                - if @action == 'edit'
+                  - @pay.payroll_details.where("type_con LIKE 'Ingreso'").each do |con|
+                    %tr
+                      %td.col-md-4
+                        = hidden_field_tag 'payroll[payroll_details_attributes][' + @reg_n.to_s + '][concept_id]', con.concept_id, class: "form-control advance-item"
+                        =Concept.find(con.concept_id).name
+                      %td.col-md-4
+                        %input.string.optional.form-control{ 'name' => 'payrolls[payroll_details_attributes][' + @reg_n.to_s + '][amount]',value: con.amount}
+                      %td(style="display:none")
+                        = hidden_field_tag 'payroll[payroll_details_attributes][' + @reg_n.to_s + '][id]', con.id
+                      %td.col-md-4
+                        %label.checkbox
+                          = check_box 'payroll[payroll_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                          %i
+                      - @reg_n += 1
+          %br
+          %br
+          %br
+          %br
+          %br
+          %br
+          .row
+            %section.col.col-2
+              %label.control-label Descuentos 
+
+            %section.col.col-3
+              %select.form-control#descuentos
+                %option{:value=> 0} Seleccione una Tipo de Descuento
+                -@descuentos.each do |ing|
+                  %option{:value => "#{ing.id}"}= ing.name
+
+            %section.col.col-3
+              %input#amount.string.optional.form-control
+
+            %section.col.col-2
+              %div
+                %a{:href => "javascript:add_desc();", :id => "btn-add-advance", :class => "btn btn-success", :role => "button"}
+                  Agregar descuento
+
+          .col-lg-12
+            %table#summary-advance.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+              %thead
+                %tr
+                  %th.col-2 Descuento
+                  %th.col-5 Monto
+                  %th Eliminar
+              %tbody(id="desc_table")
+                - if @action == 'edit'
+                  - @pay.payroll_details.where("type_con LIKE 'Descuento'").each do |con|
+                    %tr
+                      %td.col-md-4
+                        = hidden_field_tag 'payroll[payroll_details_attributes][' + @reg_n.to_s + '][concept_id]', con.concept_id, class: "form-control advance-item"
+                        =Concept.find(con.concept_id).name
+                      %td.col-md-4
+                        %input.string.optional.form-control{ 'name' => 'payrolls[payroll_details_attributes][' + @reg_n.to_s + '][amount]',value: con.amount}
+                      %td(style="display:none")
+                        = hidden_field_tag 'payroll[payroll_details_attributes][' + @reg_n.to_s + '][id]', con.id
+                      %td.col-md-4
+                        %label.checkbox
+                          = check_box 'payroll[payroll_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
+                          %i
+                      - @reg_n += 1    
+        %footer
+          %button.btn.btn-primary{type: "submit"}
+            %i.fa.fa-save 
+            Guardar
+
+:javascript
+
+  function add_ing(){
+    str_item = {authenticity_token: "#{form_authenticity_token}", concept: $("#ingresos").val(), amount: $("#amount").val(), type: "Ingreso"};
+    append_url_ajax('#{add_concept_payrolls_payrolls_path}', 'ing_table', str_item, 0, 'POST');
+  }
+
+  function add_desc(){
+    str_item = {authenticity_token: "#{form_authenticity_token}", concept: $("#descuentos").val(), amount: $("#amount").val(), type: "Descuento"};
+    append_url_ajax('#{add_concept_payrolls_payrolls_path}', 'desc_table', str_item, 0, 'POST');
+  }  
+  
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
+
+  $(document).ready(function () {
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_payroll'));
+    }
+
+  });
+  
+  function submit_validate(form){    
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'payroll[worker_id]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'payroll[worker_id]' : {
+              required : 'Por favor, ingresar el trabajador.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }
