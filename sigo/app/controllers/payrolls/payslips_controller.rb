@@ -25,58 +25,35 @@ class Payrolls::PayslipsController < ApplicationController
 
   def new
     @pay = Payslip.new 
-    @ing = Array.new
-    @des = Array.new
+    @ingo = Array.new
+    @deso = Array.new
+    @inge = Array.new
+    @dese = Array.new
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
-    @ingresos = Concept.where("code LIKE '1%' AND type_obrero = 'Fijo'")
-    @descuentos = Concept.where("code LIKE '2%' AND type_obrero = 'Fijo'")
-    @company = Company.all
+    @ingresos = Concept.where("code LIKE '1%'")
+    @descuentos = Concept.where("code LIKE '2%'")
     @afp = Afp.all
     @semanas = ActiveRecord::Base.connection.execute("
       SELECT *
       FROM weeks_for_cost_center_" + @cc.id.to_s)
+
     @ingresos.each do |ing|
-      @ing << ing.id.to_s
+      if ing.type_obrero == "Fijo"
+        @ingo << ing.id.to_s
+      elsif ing.type_empleado == "Fijo"
+        @inge << ing.id.to_s
+      end
     end
+
     @descuentos.each do |des|
-      @des << des.id.to_s
+      if des.type_obrero == "Fijo"
+        @deso << des.id.to_s
+      elsif des.type_empleado == "Fijo"
+        @dese << des.id.to_s
+      end
     end
     render layout: false
   end
-
-  def get_cc
-    @cc = Company.find(params[:company]).cost_centers
-    render json: {:cc=>@cc}  
-  end
-
-  def get_sem
-    periodo = params[:periodo].split('-')
-    @mes = periodo[1]
-    @año = periodo[0]
-    @dia = 0
-    if @mes%2==0 && @mes!=8
-      if @mes==2
-        if @año%4 == 0
-          @dia = 29
-        else
-          @dia = 28
-        end
-      else
-        @dia = 30
-      end
-    else
-      @dia = 31
-    end
-    @fechai = @año.to_s+"-"+@mes.to_s+"-"+"01"
-    @fechaf = @año.to_s+"-"+@mes.to_s+"-"+@dia.to_s
-    semana = ActiveRecord::Base.connection.execute("
-      SELECT w.name, w.id
-      FROM weeks_for_cost_center_" + params[:cc].to_s + " w
-      WHERE w.end_date BETWEEN '"+ @fechai.to_s+"' AND '"+@fechaf.to_s+"'
-    ")
-    puts semana.to_a.inspect
-    render json: {:semana=>semana.to_a}
-  end  
 
   def create
     flash[:error] = nil
@@ -126,6 +103,38 @@ class Payrolls::PayslipsController < ApplicationController
       @pay = pay
       render :edit, layout: false
     end
+  end
+
+  def generate_payroll
+    @cc = CostCenter.find(get_company_cost_center('cost_center'))
+    ing = params[:arregloin]
+    des = params[:arreglodes]
+    @reg_n = (Time.now.to_f*1000).to_i
+    semana = ActiveRecord::Base.connection.execute("
+      SELECT *
+      FROM weeks_for_cost_center_" + @cc.id.to_s+" wc
+      WHERE wc.id = "+ params[:semana].to_s).first
+    tipo = params[:tipo]
+    worker = params[:worker]
+
+    if worker == "empleado"
+    elsif worker == "obrero"
+      @partes =ActiveRecord::Base.connection.execute("
+        SELECT ppd.worker_id, e.dni, CONCAT_WS(' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname), ar.name, pp.date_of_creation, af.type_of_afp, w.numberofchilds, SUM( ppd.normal_hours ) , SUM( 1 ) AS Dias, SUM( ppd.he_60 ) , SUM( ppd.he_100 ) , SUM( ppd.total_hours ) 
+        FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
+        WHERE pp.cost_center_id = "+@cc.id.to_s+"
+        AND ppd.part_person_id = pp.id
+        AND pp.date_of_creation BETWEEN '"+semana[2].to_s+"' AND  '"+semana[3].to_s+"'
+        AND ppd.worker_id = w.id
+        AND w.entity_id = e.id
+        AND wa.worker_id = w.id
+        AND af.id = wa.afp_id
+        AND wc.worker_id = w.id
+        AND wc.article_id = ar.id
+        GROUP BY ppd.worker_id
+        ")
+    end
+    render(partial: 'workers', :layout => false)
   end
 
   def destroy

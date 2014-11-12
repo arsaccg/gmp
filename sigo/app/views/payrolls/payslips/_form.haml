@@ -1,6 +1,4 @@
 = simple_form_for([:payrolls, @pay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
-  = hidden_field_tag "company_id", @company
-  = hidden_field_tag "purchase_order[cost_center_id]", @cost_center
   %h3
     %strong Paso 1
     \- Seleccionar la información básica
@@ -31,7 +29,7 @@
         %label.label Tipo
         %label.input
           %select.form-control#tipo
-            %option{:value=> 0} Seleccione un tipo
+            %option{:value=> nil, :selected => true, :disabled => true} Seleccione un tipo
             %option{:value=> "normal"} Normal
             %option{:value=> "G"} Gratificación
             %option{:value=> "Q"} Quincena
@@ -118,43 +116,63 @@
                   %input#dhbc.form-control{:value =>"0.00"}
         
         %br
+        %div{:style => "overflow-x: scroll"}
+          %table#dt_basic.table.table-striped.table-bordered.table-hover
+            %thead
+              %tr
+                %th DNI
+                %th Nombre
+                %th Cat.
+                %th C.C
+                %th Ult. Dia Tra
+                %th AFP
+                %th Hij
+                %th Horas
+                %th Dias
+                %th H.E.S.
+                %th H.FRDO
+                %th H.E.D.
+            %tbody#example
+
+
+  %footer
+    %button.btn.btn-primary{:onclick=>"generar();", :type => "button"}
+      %i.fa.fa-save 
+      Generar        
 
 :javascript
   function checkWorker(){
     if(document.getElementById('t').checked){
       $('#infoadd').css("display", "block");
-      $('#costcenter').attr("disabled", document.getElementById('t').checked);
     }else{
       $('#infoadd').css("display", "none");
-      $('#costcenter').attr("disabled", !document.getElementById('e').checked);
-      $('#semana').attr("disabled", !document.getElementById('e').checked);
     }
   }
 
   function generar(){
-    var worker_id = $('#worker').val();
-    var cost_center = $('#costcenter').val();
+    var worker_id = null;
+    var cost_center = #{@cc.id};
+    var semana = $('#semana').val();
+    var tipo = $('#tipo').val();
     var ing = [];
     var desc = [];
-    var ingresos = jQuery.parseJSON("#{escape_javascript @ing.to_json}");
-    var descuentos = jQuery.parseJSON("#{escape_javascript @des.to_json}");
-    var i=0;
-    $.each(ingresos, function( index, value ) {
-      if($('#ni'+value).val()!= "" && $('#vi'+value).val()!=""){
-        ing[i] = $('#ni'+value).val() + "-"+ $('#vi'+value).val(); 
-      }
-    });
-    i=0;
-    $.each(descuentos, function( index, value ) {
-      if($('#nd'+value).val()!= "" && $('#vd'+value).val()!=""){
-        desc[i] = $('#nd'+value).val() + "-"+ $('#vd'+value).val();
-        i=i+1;
-      }
-    });
-    if(isNaN(2)){
-      ing != null && worker_id != " " && cost_center != 0
-      str_item = {authenticity_token: "#{form_authenticity_token}", arregloin: ing, worker: worker_id, cost_center: cost_center, arreglodes:desc};
-      append_url_ajax('#{generate_payroll_payrolls_payrolls_path}', 'concept_items_table', str_item, 0, 'POST');
+
+    if(document.getElementById('t').checked){
+      var ingresos = #{@inge};
+      var descuentos = #{@dese};
+      worker_id = "empleado";
+    }
+
+    if(document.getElementById('e').checked){
+      var ingresos = #{@ingo};
+      var descuentos = #{@deso};
+      worker_id = "obrero";
+    }
+
+    if(worker_id != null && semana != '' && tipo != ''){
+      str_item = {authenticity_token: "#{form_authenticity_token}", arregloin: ingresos, cost_center: cost_center, arreglodes:descuentos, semana: semana, tipo:tipo, worker: worker_id};
+      $('#example').empty();
+      append_url_ajax('#{generate_payroll_payrolls_payslips_path}', 'example', str_item, 0, 'POST');
     }else{
       alert("Escoja a un trabajador");
     }

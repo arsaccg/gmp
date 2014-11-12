@@ -16,6 +16,7 @@
           %table.panel.panel-primary{ style: "height: 90px; width: 850px;margin: 0 auto" }
             %thead.panel-heading
               %tr
+                %th#trig.trig{"style"=>"display:none;"} 0
                 %th{'colspan' => 4, "style"=>"text-align:center;font-size: large"}= @subcontractequipment.entity.name + ' - VALORIZACIÓN N° ' + @numbercode
 
             %tbody
@@ -57,9 +58,9 @@
                   Amortización de Adelanto (SIN. I.G.V.)
                   %br
                   %input#flag{:type =>"checkbox", :onchange => 'check();'} Usar Porcentaje
-                  %input.form-control#percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 30%;margin: 0 auto;text-align:center;margin-left:65%;", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
+                  %input.form-control#percent.percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 30%;margin: 0 auto;text-align:center;margin-left:65%;", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
                 %th{"style"=>"color:#5f5f5f;text-align:center"}
-                  %input.form-control#number{:value => "#{@subcontractequipment.initial_amortization_number}", "style"=> "width: 50%;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
+                  %input.form-control#number.number{:value => "#{@subcontractequipment.initial_amortization_number}", "style"=> "width: 50%;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
                 %th#amortLast{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center", 'original' =>"#{@amortizaciondeadelanto.to_f}"}= number_to_currency(@amortizaciondeadelanto.to_f, unit: 'S/. ', precision: 2)
                 %th#amortAcum{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f, unit: 'S/. ', precision: 2)
               %tr{"bgcolor"=>"#ECF3F8"}
@@ -77,7 +78,7 @@
               %tr{"bgcolor"=>"#3276B1"}
                 %th{"style"=>"color:#5f5f5f"}
                 %th{"style"=>"color:white"} TOTAL INCLUIDO IGV
-                %th#total-igv{"style"=>"color:white;text-align:center", 'original' =>"#{@bill.to_f+@billigv.to_f}"}= number_to_currency(@bill.to_f+@billigv.to_f, unit: 'S/. ', precision: 2)
+                %th#total-igv.total-igv{"style"=>"color:white;text-align:center", 'original' =>"#{@bill.to_f+@billigv.to_f}"}= number_to_currency(@bill.to_f+@billigv.to_f, unit: 'S/. ', precision: 2)
                 %th#lastTotal{"style"=>"color:white;text-align:center", 'original' =>"#{@totalincluidoigv.to_f}"}= number_to_currency(@totalincluidoigv.to_f, unit: 'S/. ', precision: 2)
                 %th#acumTotal{"style"=>"color:white;text-align:center"}= number_to_currency(@bill.to_f+@billigv.to_f+@totalincluidoigv.to_f, unit: 'S/. ', precision: 2)
               %tr{"bgcolor"=>"#ECF3F8"}
@@ -86,7 +87,8 @@
               %tr
                 %th{"style"=>"color:#5f5f5f; text-align:center;padding-left:15px;"} 05.01
                 %th{"style"=>"color:#5f5f5f;padding-left:18px;"}= "Detracción del Total (Incl. I.G.V.) ("+@detraccion.to_s+"%)"
-                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round, unit: 'S/. ', precision: 2)
+                %th#detractionPercent{"style"=>"display:none;"}=@subcontractequipment.detraction.to_f/100
+                %th#totalDetraction{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@totalincluidoigv.to_f*@detraccion.to_f/100, unit: 'S/. ', precision: 2)
                 %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@bill.to_f+@billigv.to_f+@totalincluidoigv.to_f)*((@subcontractequipment.detraction.to_f+@detracciontotal.to_f)/100), unit: 'S/. ', precision: 2)
               %tr
@@ -163,6 +165,58 @@
     :javascript
 
       $(document).ready(function(){
+
+          $(document).on('DOMSubtreeModified','.total-igv', function(event){
+            $('#totalDetraction').text((parseFloat($('#total-igv').text())*parseFloat($('#detractionPercent').text())).toFixed(2));
+            console.log("total-igv: "+$('#total-igv').text());
+          });
+
+          $(document).on('DOMSubtreeModified','.trig', function(event){
+            $('#totalretention').html(parseFloat($('#totalretention').attr('original')));
+            $('#total').html(parseFloat($('#total').attr('original')).toFixed(2));
+            $('#amortLast').html(parseFloat($('#amortLast').attr('original')));
+            $('#lastTotalFac').html(parseFloat($('#lastTotalFac').attr('original')));
+            $('#lastIgv').html(parseFloat($('#lastIgv').attr('original')));
+            $('#lastTotal').html(parseFloat($('#lastTotal').attr('original')));
+            $('#lastnetpay').html(parseFloat($('#lastTotal').attr('original')));
+
+            if($('#total').text()!= ""){
+              console.log('#total.text!=nil');
+              $('#percent').text(' ');
+              $('#percent').val(($('#number').val()/parseInt($('#total').text())*100).toFixed(2));
+              $('#valuation_of_equipment_initial_amortization_number').val($('#number').val());
+              $('#valuation_of_equipment_initial_amortization_percentage').val(($('#number').val()/parseInt($('#total').text())*100).toFixed(2));
+              $('#amortAcum').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
+              $('#amortAcum2').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
+              $('#saldo').text((parseInt($('#adelanto').text())-parseFloat($('#amortAcum2').text())).toFixed(2));
+              $('#valuation_of_equipment_accumulated_amortization').val((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
+              $('#valuation_of_equipment_accumulated_initial_amortization_number').val((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
+              $('#totalfac').text((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
+              $('#valuation_of_equipment_bill').val((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
+              $('#acumTotalFac').text((parseFloat($('#lastTotalFac').text()) + parseFloat($('#totalfac').text())).toFixed(2));
+              $('#valuation_of_equipment_accumulated_bill').val((parseFloat($('#lastTotalFac').text()) + parseFloat($('#totalfac').text())).toFixed(2));
+
+              $('#igv').text(($('#totalfac').text()*0.18).toFixed(2));
+              $('#valuation_of_equipment_billigv').val(parseFloat($('#totalfac').text())*0.18);
+              $('#acumIgv').text((parseFloat($('#lastIgv').text()) + parseFloat($('#igv').text())).toFixed(2));
+              $('#valuation_of_equipment_accumulated_billigv').val((parseFloat($('#lastIgv').text()) + parseFloat($('#igv').text())).toFixed(2));
+
+              $('#total-igv').text((parseFloat($('#igv').text()) + parseFloat($('#totalfac').text())).toFixed(2));
+              $('#valuation_of_equipment_totalbill').val((parseFloat($('#igv').text()) + parseFloat($('#totalfac').text())).toFixed(2));
+              $('#acumTotal').text((parseFloat($('#lastTotal').text()) + parseFloat($('#total-igv').text())).toFixed(2));
+              $('#valuation_of_equipment_accumulated_totalbill').val((parseFloat($('#lastTotal').text()) + parseFloat($('#total-igv').text())).toFixed(2));
+
+              $('#net-pay').text($('#total-igv').text() - $('#totalretention').text());
+
+              $('#valuation_of_equipment_net_payment').val($('#total-igv').text() - $('#totalretention').text());
+              $('#acumnetpay').text((parseFloat($('#lastnetpay').text()) + parseFloat($('#net-pay').text())).toFixed(2));
+              console.log($('#acumnetpay').text());
+              console.log($('#lastnetpay').text());
+              console.log($('#net-pay').text());
+              $('#valuation_of_equipment_accumulated_net_payment').val((parseFloat($('#lastnetpay').text()) + parseFloat($('#net-pay').text())).toFixed(2));
+            }
+          });
+
         if($('#percent').val()!=0){
           $("#flag").attr('checked', true);
           check();
@@ -244,6 +298,7 @@
           $('#number').val(' ');
           $('#number').val((parseInt($('#total').text())*$('#percent').val()/100).toFixed(2));
         }
+        $('#trig').text('1');
       });
 
       $('#number').change(function(){
@@ -255,17 +310,19 @@
         $('#lastTotal').html(parseFloat($('#lastTotal').attr('original')));
         $('#lastnetpay').html(parseFloat($('#lastTotal').attr('original')));
         if($('#total').text()!= ""){
+          console.log('#total.text!=nil');
           $('#percent').text(' ');
           $('#percent').val(($('#number').val()/parseInt($('#total').text())*100).toFixed(2));
-
           $('#valuation_of_equipment_initial_amortization_number').val($('#number').val());
           $('#valuation_of_equipment_initial_amortization_percentage').val(($('#number').val()/parseInt($('#total').text())*100).toFixed(2));
           $('#amortAcum').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
           $('#amortAcum2').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
+
+
+
           $('#saldo').text((parseInt($('#adelanto').text())-parseFloat($('#amortAcum2').text())).toFixed(2));
           $('#valuation_of_equipment_accumulated_amortization').val((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
           $('#valuation_of_equipment_accumulated_initial_amortization_number').val((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
-
           $('#totalfac').text((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
           $('#valuation_of_equipment_bill').val((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
           $('#acumTotalFac').text((parseFloat($('#lastTotalFac').text()) + parseFloat($('#totalfac').text())).toFixed(2));
