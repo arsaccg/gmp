@@ -1,0 +1,28 @@
+-@partes.each do |pars|
+  %tr
+    %th{:style=>"font-weight: normal;"}
+      = hidden_field_tag 'id' + @reg_n.to_s, pars[0]
+      = pars[1].to_s
+    %th{:style=>"font-weight: normal;"}
+      = pars[2].to_s
+    %th{:style=>"font-weight: normal;"}
+      = pars[3].to_s
+    %th{:style=>"font-weight: normal;"}
+      = @cc.code.to_s
+    %th{:style=>"font-weight: normal;"}
+      =pars[4].strftime("%d/%m/%Y").to_s
+    %th{:style=>"font-weight: normal;"}
+      = pars[5].to_s
+    %th{:style=>"font-weight: normal;"}
+      = pars[6].to_i
+    %th{:style=>"font-weight: normal;"}
+      = pars[7].to_f
+    %th{:style=>"font-weight: normal;"}
+      = pars[8].to_i
+    %th{:style=>"font-weight: normal;"}
+      = pars[9].to_f
+    %th{:style=>"font-weight: normal;"}
+      0
+    %th{:style=>"font-weight: normal;"}
+      = pars[10].to_f
+  -@reg_n +=1
