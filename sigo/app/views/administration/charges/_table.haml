@@ -26,3 +26,7 @@
           = charge.financial_agent_client
         %td
           = charge.financial_agent_destiny
+
+%a{href: "javascript:load_url_ondiv('#{administration_invoices_path}?budget_id=#{@budget_id}', 'right-area');", class: "btn btn-primary btn-xs"}
+  %i.fa.fa-arrow-left
+  Volver al listado de Facturas 
