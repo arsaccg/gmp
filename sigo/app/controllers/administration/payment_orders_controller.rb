@@ -52,7 +52,6 @@ class Administration::PaymentOrdersController < ApplicationController
       redirect_to :action => :index
     else
       paymentOrder.errors.messages.each do |attribute, error|
-        puts flash[:error].to_s + error.to_s + "  "
       end
       @paymentOrder = paymentOrder
       render :new, layout: false 
@@ -152,26 +151,28 @@ class Administration::PaymentOrdersController < ApplicationController
         @ruc = Array.new
         @codes_tobi = Array.new
         @itembybudget_details = Array.new
+        @consumido = 0
+
         @payment_order.provision.provision_direct_purchase_details.each do |payment_detail|
           obj = nil
           @articles_ids = Array.new
           
           if !payment_detail.order_detail_id.nil?
-            puts "--------------------------------------------con orden----------------------------------------------------------------"
-            puts payment_detail.id
-            puts payment_detail.order_detail_id
-            puts "---------------------------------------------------------------------------------------------------------------------"
             if payment_detail.type_order == 'purchase_order'
               obj = PurchaseOrderDetail.find(payment_detail.order_detail_id).purchase_order
               
               obj.purchase_order_details.each do |pod|
-                @articles_ids <<Article.find_specific_in_article( pod.delivery_order_detail.article_id, get_company_cost_center('cost_center')).first[0]
+                a = Article.find_specific_in_article( pod.delivery_order_detail.article_id, get_company_cost_center('cost_center')).first
+                @articles_ids << a[0]
+                @articles_code = a[3]
               end
 
             else
               obj = OrderOfServiceDetail.find(payment_detail.order_detail_id).order_of_service
               obj.order_of_service_details.each do |pod|
-                @articles_ids << Article.find_specific_in_article(pod.article_id, get_company_cost_center('cost_center')).first[0] 
+                a = Article.find_specific_in_article(pod.article_id, get_company_cost_center('cost_center')).first
+                @articles_ids << a[0]
+                @articles_code = a[3]
               end              
             end
 
@@ -187,21 +188,28 @@ class Administration::PaymentOrdersController < ApplicationController
               if !@ruc.include? obj.entity.ruc.to_s
                 @ruc << obj.entity.ruc.to_s
               end
-
+              @consumido= ActiveRecord::Base.connection.execute("SELECT SUM(net_pay)
+                FROM payment_orders
+                WHERE article_code LIKE  '%"+@articles_code.to_s+"%'
+                AND id NOT IN ("+@payment_order.id.to_s+")
+                AND id < "+@payment_order.id.to_s+"
+                ").first[0]
               # Código Tobi
-              code = PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id)
-              puts "----------------------------------------------code----------------------"
-              puts code[0]
-              puts code[0][0]
-              puts code[0][1]
-              puts "------------------------------------------------------------------------"
-              @codes_tobi << [code[0][0],PaymentOrder.get_amount_feo_by_code_phase(code[0][1],@budget)]
-              puts "--------------------------------------------------------------------------------------"
+              @codes_tobi << [PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id),PaymentOrder.get_amount_feo_by_code_phase(@articles_code.to_s[0..5],@budget),@consumido]
+              @consumido = 0
             end
           else
-            @articles_ids << Article.find_specific_in_article(payment_detail.article_id, get_company_cost_center('cost_center')).first[0]
-            code = PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id)
-            @codes_tobi << [code[0][0],PaymentOrder.get_amount_feo_by_code_phase(code[0][1],@budget)]
+            a = Article.find_specific_in_article(payment_detail.article_id, get_company_cost_center('cost_center')).first
+            @articles_ids << a[0]
+            @articles_code = a[3]
+            @consumido= ActiveRecord::Base.connection.execute("SELECT SUM(net_pay)
+                FROM payment_orders
+                WHERE article_code LIKE  '%"+@articles_code.to_s+"%'
+                AND id NOT IN ("+@payment_order.id.to_s+")
+                AND id < "+@payment_order.id.to_s+"
+                ").first[0]
+            @codes_tobi << [PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id), PaymentOrder.get_amount_feo_by_code_phase(@articles_code.to_s[0..5],@budget),@consumido]
+              @consumido = 0
           end
 
         end
