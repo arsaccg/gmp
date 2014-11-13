@@ -12,3 +12,9 @@
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table'
+
+:javascript
+  $(document).ready(function () {
+    $('#modalLoadingLabelading').modal('hide');
+    $('.modal-backdrop.fade.in').remove();
+  });           

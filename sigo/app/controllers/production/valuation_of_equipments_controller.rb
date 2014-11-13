@@ -107,6 +107,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @detracciontotal = 0
       @descuentocombustible = 0
       @descuentootros = 0
+      @accumulated_descuentootros = 0
       @totalretenciones = 0
       @netoapagar = 0
       @code = 0
@@ -126,6 +127,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             @descuentocombustible = workerDetail[7]
             @otrosdescuentos = workerDetail[8]
             @netoapagar = workerDetail[9]
+            @descuentootros = workerDetail[11]
           end
         end
       end
@@ -238,7 +240,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       accumulated_fuel_discount, 
       accumulated_other_discount, 
       accumulated_net_payment, 
-      code 
+      code,
+      other_discount,
+      accumulated_other_discount
       FROM valuation_of_equipments 
       WHERE name LIKE '" + entityname.to_s + "' 
       AND code LIKE '" + code.to_s + "'
