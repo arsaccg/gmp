@@ -1,6 +1,8 @@
 class Management::ExtensionscontrolsController < ApplicationController
   #before_filter :authorize_manager
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :only => [:index, :shoe, :create, :update, :new, :approve, :disprove ]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+    
 
   def index
     @extensionscontrol = Extensionscontrol.where(:cost_center_id => get_company_cost_center('cost_center')) 
@@ -9,7 +11,9 @@ class Management::ExtensionscontrolsController < ApplicationController
     
     @aditional_term = 0
     @extensionscontrol.each do |ec|
-      @aditional_term += ec.approved_deadline
+      if ec.status == "approved"
+        @aditional_term += ec.approved_deadline
+      end
     end
 
     render :index, :layout => false
@@ -20,11 +24,10 @@ class Management::ExtensionscontrolsController < ApplicationController
 
   def create
     extensionscontrol = Extensionscontrol.new(extensions_parameters)
-    @project_id = params[:project_id]
     extensionscontrol.status
-    extensionscontrol.cost_center_id = @project_id
+    extensionscontrol.cost_center_id = get_company_cost_center('cost_center')
     extensionscontrol.save
-    redirect_to :action => :index, :cost_center_id => @project_id, :layout => false
+    redirect_to :action => :index, :layout => false
   end
 
   def update
@@ -38,16 +41,19 @@ class Management::ExtensionscontrolsController < ApplicationController
 
   def approve
     extensionscontrol = Extensionscontrol.find(params[:extension_id])
-    @project_id = params[:project_id]
+    @project_id = get_company_cost_center('cost_center')
     extensionscontrol.approve
     redirect_to :action => :index, :project_id => @project_id, :layout => false
   end
 
   def disprove
     extensionscontrol = Extensionscontrol.find(params[:extension_id])
-    @project_id = params[:project_id]
+    @project_id = get_company_cost_center('cost_center')
     extensionscontrol.disprove
     redirect_to :action => :index, :project_id => @project_id, :layout => false
+  end
+
+  def destroy
   end
 
   private

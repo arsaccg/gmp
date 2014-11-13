@@ -39,7 +39,7 @@ class Management::ValorizationsController < ApplicationController
   end
 
   def destroy
-    @redir = params[:id]
+    @redir = params[:redir]
     @valorization = Valorization.find(params[:id])
     @valorization.destroy
 
