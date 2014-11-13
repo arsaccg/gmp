@@ -136,20 +136,9 @@ class Payrolls::PayslipsController < ApplicationController
     if worker == "empleado"
       # Future...
     elsif worker == "obrero"
-      @partes =ActiveRecord::Base.connection.execute("
-        SELECT ppd.worker_id, e.dni, CONCAT_WS(' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname), ar.name, pp.date_of_creation, af.type_of_afp, w.numberofchilds, SUM( ppd.normal_hours ) , SUM( 1 ) AS Dias, SUM( ppd.he_60 ) , SUM( ppd.he_100 ) , SUM( ppd.total_hours ) 
-        FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
-        WHERE pp.cost_center_id = "+@cc.id.to_s+"
-        AND ppd.part_person_id = pp.id
-        AND pp.date_of_creation BETWEEN '"+semana[2].to_s+"' AND  '"+semana[3].to_s+"'
-        AND ppd.worker_id = w.id
-        AND w.entity_id = e.id
-        AND wa.worker_id = w.id
-        AND af.id = wa.afp_id
-        AND wc.worker_id = w.id
-        AND wc.article_id = ar.id
-        GROUP BY ppd.worker_id
-        ")
+
+      @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3])
+
     end
 
     render(partial: 'workers', :layout => false)
