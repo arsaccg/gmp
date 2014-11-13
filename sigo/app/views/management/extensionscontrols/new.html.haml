@@ -1,44 +1,65 @@
-%h1(style="text-align:center") Registro de Ampliaciones
-
-=simple_form_for [:management, @extensionscontrol], :html => {:class => 'form-horizontal'} do |f|
-  .fieldset
-    %legend
-      Nueva Ampliación
-    .control-group
-      %label(class="control-label") Motivo de la Ampliación
-      .controls
-        = f.input :motive, label: false, placeholder: 'Motivo de la Ampliación'
-    .control-group
-      %label(class="control-label") Plazo Solicitado
-      .controls
-        = f.input :requested_deadline, label: false, placeholder: "0.00"
-    .control-group
-      %label(class="control-label") Plazo Aprobado
-      .controls
-        = f.input :approved_deadline, label: false, placeholder: "0.00"
-    .control-group
-      %label(class="control-label") M.G.G Solicitados
-      .controls
-        = f.input :requested_mgg, label: false, placeholder: "0.00"
-    .control-group
-      %label(class="control-label") M.G.G Aprobados
-      .controls
-        = f.input :approved_mgg, label: false, placeholder: "0.00"
-    .control-group
-      %label(class="control-label") N° de Resolución
-      .controls
-        = f.input :resolution, label: false
-    .control-group
-      %label(class="control-label") Observaciones
-      .controls
-        = f.input :observation, label: false
-    .control-group
-      %label(class="control-label") Subir Archivos
-      .controls
-        = f.file_field :files
-    .form-actions
-      %a(href="javascript:post_to_url('#{management_extensionscontrols_path}?project_id=#{@project_id}','new_extensionscontrol', 'right-area')" class="btn btn-success" id="upload_pic")
-        Enviar
-      =# f.button :submit, value: 'Crear nueva ampliación', class: "btn btn-success"
-      %a{:href => "javascript:load_url_ondiv('"+management_extensionscontrols_path().to_s+"?project_id="+@project_id+"', 'right-area');", class: "btn btn-danger"}
-        Cancelar
+#content-inside
+  .row
+    .col-xs-12.col-sm-12.col-md-12.col-lg-7
+      %h2.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw  
+        Registro de Ampliaciones
+  #widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-6
+        #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-eye
+            %h2 Nueva Ampliación
+          .widget-body
+            =simple_form_for([:management, @extensionscontrol], html: {class: "form-horizontal smart-form", autocomplete: 'off'}) do |f|
+              %fieldset
+                .row.form-inline
+                  %section.col.col-10
+                    %label.label Motivo de la Ampliación
+                    %label.input{for: "motive"}
+                      = f.input :motive, placeholder: 'Motivo de la Ampliación', input_html: { class: 'form-control' }, label: false
+                .row.form-inline
+                  %section.col.col-10
+                    %label.label Plazo Solicitado
+                    %label.input{for: "requested_deadline"}
+                      = f.input :requested_deadline, placeholder: '0.00', input_html: { class: 'form-control' }, label: false
+                .row.form-inline
+                  %section.col.col-10
+                    %label.label Plazo Aprobado
+                    %label.input{for: "approved_deadline"}
+                      = f.input :approved_deadline, placeholder: '0.00', input_html: { class: 'form-control' }, label: false
+                .row.form-inline
+                  %section.col.col-10
+                    %label.label M.G.G Solicitados
+                    %label.input{for: "requested_mgg"}
+                      = f.input :requested_mgg, placeholder: '0.00', input_html: { class: 'form-control' }, label: false
+                .row.form-inline
+                  %section.col.col-10
+                    %label.label M.G.G Aprobados
+                    %label.input{for: "approved_mgg"}
+                      = f.input :approved_mgg, placeholder: '0.00', input_html: { class: 'form-control' }, label: false
+                .row.form-inline
+                  %section.col.col-10
+                    %label.label N° de Resolución
+                    %label.input{for: "resolution"}
+                      = f.input :resolution, input_html: { class: 'form-control' }, label: false
+                .row.form-inline
+                  %section.col.col-10
+                    %label.label Observaciones
+                    %label.input{for: "observation"}
+                      = f.input :observation, input_html: { class: 'form-control' }, label: false
+                .row.form-inline
+                  %section.col.col-10
+                    %label.label Subir Archivos
+                    %label.input{for: "files"}
+                      = f.input :files, input_html: { class: 'form-control' }, label: false
+              %footer
+                %a{href: "javascript:post_to_url('#{management_extensionscontrols_path}?authenticity_token=#{form_authenticity_token}','new_extensionscontrol', 'right-area')"}(class="btn btn-success")
+                  %i.fa.fa-save
+                  Guardar Valorizacion
+                
+%a.btn.btn-sm.btn-primary.btn-prev{href: "javascript:load_url_ondiv('#{management_extensionscontrols_path}', 'right-area');"}
+  %i.fa.fa-arrow-left
+  Retornar al listado de ampliaciones
