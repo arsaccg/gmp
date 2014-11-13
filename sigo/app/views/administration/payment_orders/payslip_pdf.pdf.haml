@@ -186,15 +186,18 @@
                   %td{ :style => 'width: 17.3%;' }
                     %p
                       %strong Monto Presupuesto
-                  %td{ :style => 'width: 16.7%; text-align: center;' }= ct[1].to_i
+                  %td{ :style => 'width: 16.7%; text-align: center;' }= number_to_currency (ct[1].to_f), unit: 'S/.', precision: 2
                   %td{ :style => 'width: 16.6%;' }
                     %p
                       %strong Consumido
-                  %td{ :style => 'width: 16.7%; text-align: center;' } -
+                  %td{ :style => 'width: 16.7%; text-align: center;' }= number_to_currency (ct[2].to_f), unit: 'S/.', precision: 2
                   %td{ :style => 'width: 16.3%;' }
                     %p
                       %strong Saldo
-                  %td{ :style => 'width: 16.7%; text-align: center;' } -
+                  -if ct[1].to_f-ct[2].to_f < 0
+                    %td{ :style => 'width: 16.7%; text-align: center;color:red' }= number_to_currency (ct[1].to_f-ct[2].to_f), unit: 'S/.', precision: 2
+                  -else
+                    %td{ :style => 'width: 16.7%; text-align: center;' }= number_to_currency (ct[1].to_f-ct[2].to_f), unit: 'S/.', precision: 2
             %br
 
         .row
@@ -428,15 +431,18 @@
                   %td{ :style => 'width: 17.3%;' }
                     %p
                       %strong Monto Presupuesto
-                  %td{ :style => 'width: 16.7%; text-align: center;' }= ct[1].to_i
+                  %td{ :style => 'width: 16.7%; text-align: center;' }= number_to_currency (ct[1].to_f), unit: 'S/.', precision: 2
                   %td{ :style => 'width: 16.6%;' }
                     %p
                       %strong Consumido
-                  %td{ :style => 'width: 16.7%; text-align: center;' } -
+                  %td{ :style => 'width: 16.7%; text-align: center;' }= number_to_currency (ct[2].to_f), unit: 'S/.', precision: 2
                   %td{ :style => 'width: 16.3%;' }
                     %p
                       %strong Saldo
-                  %td{ :style => 'width: 16.7%; text-align: center;' } -
+                  -if ct[1].to_f-ct[2].to_f < 0
+                    %td{ :style => 'width: 16.7%; text-align: center;color:red' }= number_to_currency (ct[1].to_f-ct[2].to_f), unit: 'S/.', precision: 2
+                  -else
+                    %td{ :style => 'width: 16.7%; text-align: center;' }= number_to_currency (ct[1].to_f-ct[2].to_f), unit: 'S/.', precision: 2
             %br
 
         .row

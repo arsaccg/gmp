@@ -151,6 +151,8 @@ class Administration::PaymentOrdersController < ApplicationController
         @ruc = Array.new
         @codes_tobi = Array.new
         @itembybudget_details = Array.new
+        @consumido = 0
+
         @payment_order.provision.provision_direct_purchase_details.each do |payment_detail|
           obj = nil
           @articles_ids = Array.new
@@ -186,15 +188,28 @@ class Administration::PaymentOrdersController < ApplicationController
               if !@ruc.include? obj.entity.ruc.to_s
                 @ruc << obj.entity.ruc.to_s
               end
-
+              @consumido= ActiveRecord::Base.connection.execute("SELECT SUM(net_pay)
+                FROM payment_orders
+                WHERE article_code LIKE  '%"+@articles_code.to_s+"%'
+                AND id NOT IN ("+@payment_order.id.to_s+")
+                AND id < "+@payment_order.id.to_s+"
+                ").first[0]
               # Código Tobi
-              @codes_tobi << [PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id),PaymentOrder.get_amount_feo_by_code_phase(@articles_code.to_s[0..5],@budget)]
+              @codes_tobi << [PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id),PaymentOrder.get_amount_feo_by_code_phase(@articles_code.to_s[0..5],@budget),@consumido]
+              @consumido = 0
             end
           else
             a = Article.find_specific_in_article(payment_detail.article_id, get_company_cost_center('cost_center')).first
             @articles_ids << a[0]
             @articles_code = a[3]
-            @codes_tobi << [PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id), PaymentOrder.get_amount_feo_by_code_phase(@articles_code.to_s[0..5],@budget)]
+            @consumido= ActiveRecord::Base.connection.execute("SELECT SUM(net_pay)
+                FROM payment_orders
+                WHERE article_code LIKE  '%"+@articles_code.to_s+"%'
+                AND id NOT IN ("+@payment_order.id.to_s+")
+                AND id < "+@payment_order.id.to_s+"
+                ").first[0]
+            @codes_tobi << [PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id), PaymentOrder.get_amount_feo_by_code_phase(@articles_code.to_s[0..5],@budget),@consumido]
+              @consumido = 0
           end
 
         end
