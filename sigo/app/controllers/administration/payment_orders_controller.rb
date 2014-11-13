@@ -239,7 +239,8 @@ class Administration::PaymentOrdersController < ApplicationController
       :cost_center_id,
       :perception,
       :total,
-      :sub_total
+      :sub_total,
+      :type_payment
     )
   end
 end

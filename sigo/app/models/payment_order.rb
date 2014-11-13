@@ -12,12 +12,12 @@ class PaymentOrder < ActiveRecord::Base
     ).first[0][0..3]
 
     mysql = ActiveRecord::Base.connection.execute("
-      SELECT name
+      SELECT name, code
       FROM categories
       WHERE code LIKE '" + code_category.to_s + "'"
     ).first
     if !names_category.include? mysql
-      names_category << mysql[0]
+      names_category << ( '(' + mysql[1].to_s + ') ' + mysql[0].to_s )
     end
     return names_category
   end

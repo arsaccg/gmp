@@ -58,6 +58,53 @@
                 %span.input-group-addon
                   %span S/.
                 = text_field_tag 'total_quantity_provision', nil, class: 'form-control', id: 'total_quantity_provision', readonly: true
+
+          %section.col.col-4
+            %label.label Tipo de Pago
+            %label.input
+              %select.form-control#type_payment-select{:name =>"payment_order[type_payment]", :style => 'border:none;width:100%;'}
+                - if @action == 'edit'
+                  %option{:value => nil}
+                    Seleccionar tipo de pago
+                  - if @paymentOrder.type_payment == 'cheque'
+                    %option{:value => "cheque", :selected => true}
+                      Cheque
+                    %option{:value => "efectivo"}
+                      Efectivo
+                    %option{:value => "transferencia"}
+                      Transferencia
+                  - elsif @paymentOrder.type_payment == 'efectivo'
+                    %option{:value => "cheque"}
+                      Cheque
+                    %option{:value => "efectivo", :selected => true}
+                      Efectivo
+                    %option{:value => "transferencia"}
+                      Transferencia
+                  - elsif @paymentOrder.type_payment == 'transferencia'
+                    %option{:value => "cheque"}
+                      Cheque
+                    %option{:value => "efectivo"}
+                      Efectivo
+                    %option{:value => "transferencia", :selected => true}
+                      Transferencia
+                  - else
+                    %option{:value => nil, :selected => true}
+                      Seleccionar alguna de las Provisiones
+                    %option{:value => "cheque"}
+                      Cheque
+                    %option{:value => "efectivo"}
+                      Efectivo
+                    %option{:value => "transferencia"}
+                      Transferencia
+                - else
+                  %option{:value => nil, :selected => true}
+                    Seleccionar alguna de las Provisiones
+                  %option{:value => "cheque"}
+                    Cheque
+                  %option{:value => "efectivo"}
+                    Efectivo
+                  %option{:value => "transferencia"}
+                    Transferencia
         
       %fieldset
         %legend Información de la Provisión
@@ -234,6 +281,9 @@
             },
             'payment_order[igv]' : {
               required : true
+            },
+            'payment_order[type_payment]' : {
+              required : true
             }
           },
 
@@ -247,6 +297,9 @@
             },
             'payment_order[igv]' : {
               required : "Por favor, ingrese el IGV el cual aplica."
+            },
+            'payment_order[type_payment]' : {
+              required : "Por favor, seleccionar el tipo de pago."
             }
           },
 
