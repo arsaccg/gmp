@@ -39,7 +39,7 @@ class Management::ValorizationsController < ApplicationController
   end
 
   def destroy
-    #@redir = params[:id]
+    @redir = params[:redir]
     @valorization = Valorization.find(params[:id])
     @valorization.destroy
 
@@ -48,7 +48,6 @@ class Management::ValorizationsController < ApplicationController
     # @budget = project.budgets
     #render "management/budgets/administrate_budget", layout: false
     @budgets=Budget.where(:cost_center_id => get_company_cost_center('cost_center'))
-    @redir = 1
     render action: :index, redir: 1, layout: false
   end
 

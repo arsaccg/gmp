@@ -26,9 +26,7 @@
                     %a.btn-xs{:href=>"javascript:load_edit_valorization('"+show_data_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-info")
                       %i(class="fa fa-search")
                     %a.btn-xs{:href=>"javascript:load_edit_valorization('"+changevalorization_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-default")
-                      %i(class="fa fa-pencil") 
-
-                  
+                      %i(class="fa fa-pencil")                   
                   
                   %a.btn-xs{:href=>"javascript:load_url_ondiv('#{administration_invoices_path}?budget_id=#{item.id}', 'right-area')"}(class="btn btn-mini")
                     %i(class="fa fa-book")
@@ -43,7 +41,7 @@
                       %i(class="fa fa-ban")
                       Bloquear
                       
-                    %a.btn-xs{:href=>"javascript:load_edit_valorization('"+finalize_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-danger")
+                    %a.btn-xs{:href=>"javascript:delete_to_url_into_div('"+management_valorization_path(val).to_s+"?authenticity_token="+form_authenticity_token+"&redir=0', 'right-area')", data: {confirm: "¿Esta seguro de eliminar esta valorizacion?"}}(class="btn btn-mini btn-danger")
                       %i(class="fa fa-trash-o")
 
 :javascript 
