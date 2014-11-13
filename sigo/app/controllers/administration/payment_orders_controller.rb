@@ -171,7 +171,7 @@ class Administration::PaymentOrdersController < ApplicationController
             else
               obj = OrderOfServiceDetail.find(payment_detail.order_detail_id).order_of_service
               obj.order_of_service_details.each do |pod|
-                @articles_ids << Article.find_specific_in_article(pod.delivery_order_detail.article_id, get_company_cost_center('cost_center')).first[0] 
+                @articles_ids << Article.find_specific_in_article(pod.article_id, get_company_cost_center('cost_center')).first[0] 
               end              
             end
 
