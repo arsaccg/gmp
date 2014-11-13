@@ -175,25 +175,27 @@
           .col-md-12
         
         .col-md-12
-          %div{ :style => 'border: 1px solid black;' }
-            %p.col-md-12
-              %strong Partida: 
-              %span
-                = @codes_tobi.join(', ')
-            %table.col-md-12
-              %tr
-                %td{ :style => 'width: 17.3%;' }
-                  %p
-                    %strong Monto Presupuesto
-                %td{ :style => 'width: 16.7%; text-align: center;' } -
-                %td{ :style => 'width: 16.6%;' }
-                  %p
-                    %strong Consumido
-                %td{ :style => 'width: 16.7%; text-align: center;' } -
-                %td{ :style => 'width: 16.3%;' }
-                  %p
-                    %strong Saldo
-                %td{ :style => 'width: 16.7%; text-align: center;' } -
+          - @codes_tobi.each do |ct|
+            %div{ :style => 'border: 1px solid black;' }
+              %p.col-md-12
+                %strong Partida: 
+                %span
+                  =ct[0].to_s
+              %table.col-md-12
+                %tr
+                  %td{ :style => 'width: 17.3%;' }
+                    %p
+                      %strong Monto Presupuesto
+                  %td{ :style => 'width: 16.7%; text-align: center;' }= ct[1].to_i
+                  %td{ :style => 'width: 16.6%;' }
+                    %p
+                      %strong Consumido
+                  %td{ :style => 'width: 16.7%; text-align: center;' } -
+                  %td{ :style => 'width: 16.3%;' }
+                    %p
+                      %strong Saldo
+                  %td{ :style => 'width: 16.7%; text-align: center;' } -
+            %br
 
         .row
           .col-md-12
@@ -415,25 +417,27 @@
           .col-md-12
         
         .col-md-12
-          %div{ :style => 'border: 1px solid black;' }
-            %p.col-md-12
-              %strong Partida: 
-              %span
-                = @codes_tobi.join(', ')
-            %table.col-md-12
-              %tr
-                %td{ :style => 'width: 17.3%;' }
-                  %p
-                    %strong Monto Presupuesto
-                %td{ :style => 'width: 16.7%; text-align: center;' } -
-                %td{ :style => 'width: 16.6%;' }
-                  %p
-                    %strong Consumido
-                %td{ :style => 'width: 16.7%; text-align: center;' } -
-                %td{ :style => 'width: 16.3%;' }
-                  %p
-                    %strong Saldo
-                %td{ :style => 'width: 16.7%; text-align: center;' } -
+          - @codes_tobi.each do |ct|
+            %div{ :style => 'border: 1px solid black;' }
+              %p.col-md-12
+                %strong Partida: 
+                %span
+                  =ct[0].to_s
+              %table.col-md-12
+                %tr
+                  %td{ :style => 'width: 17.3%;' }
+                    %p
+                      %strong Monto Presupuesto
+                  %td{ :style => 'width: 16.7%; text-align: center;' }= ct[1].to_i
+                  %td{ :style => 'width: 16.6%;' }
+                    %p
+                      %strong Consumido
+                  %td{ :style => 'width: 16.7%; text-align: center;' } -
+                  %td{ :style => 'width: 16.3%;' }
+                    %p
+                      %strong Saldo
+                  %td{ :style => 'width: 16.7%; text-align: center;' } -
+            %br
 
         .row
           .col-md-12
