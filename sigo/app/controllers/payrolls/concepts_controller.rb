@@ -115,7 +115,7 @@ class Payrolls::ConceptsController < ApplicationController
   def display_concepts
     word = params[:q]
     concepts_hash = Array.new
-    concepts = Concept.where(:type_concept => 'Fijo').where(:status => 1).where("code LIKE '1%' AND name LIKE '%#{word}%'")
+    concepts = Concept.where(:status => 1).where("code LIKE '1%' AND name LIKE '%#{word}%'")
     concepts.each do |concept|
       concepts_hash << { 'id' => concept.id, 'name' => concept.name }
     end

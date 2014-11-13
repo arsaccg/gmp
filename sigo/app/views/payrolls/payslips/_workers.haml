@@ -1,30 +1,34 @@
 -@partes.each do |pars|
   %tr
-    %th{:style=>"font-weight: normal;"}
+    %td
       = hidden_field_tag 'id' + @reg_n.to_s, pars[0]
+      = pars[0].to_s
+    %td
       = pars[1].to_s
-    %th{:style=>"font-weight: normal;"}
+    %td
       = pars[2].to_s
-    %th{:style=>"font-weight: normal;"}
-      = pars[3].to_s
-    %th{:style=>"font-weight: normal;"}
+    %td
       = @cc.code.to_s
-    %th{:style=>"font-weight: normal;"}
-      =pars[4].strftime("%d/%m/%Y").to_s
-    %th{:style=>"font-weight: normal;"}
-      = pars[5].to_s
-    %th{:style=>"font-weight: normal;"}
-      = pars[6].to_i
-    %th{:style=>"font-weight: normal;"}
-      = pars[7].to_f
-    %th{:style=>"font-weight: normal;"}
-      = pars[8].to_i
-    %th{:style=>"font-weight: normal;"}
-      = pars[9].to_f
-    %th{:style=>"font-weight: normal;"}
+    %td
+      =pars[3].strftime("%d/%m/%Y").to_s
+    %td{ :style => 'text-align: center' }
+      = pars[4].to_s
+    %td{ :style => 'text-align: center' }
+      = pars[5].to_i
+    %td{ :style => 'text-align: center' }
+      = pars[6].to_f
+    %td{ :style => 'text-align: center' }
+      = pars[7].to_i
+    %td{ :style => 'text-align: center' }
+      = pars[8].to_f
+    %td{ :style => 'text-align: center' }
       0
-    %th{:style=>"font-weight: normal;"}
-      = pars[10].to_f
-    %th{:style=>"font-weight: normal;"}
-      = pars[12].to_f      
+    %td{ :style => 'text-align: center' }
+      = pars[9].to_f
+    %td{ :style => 'text-align: right' }
+      = pars[10].to_f.round(4).round(2)
+    %td{ :style => 'text-align: right' }
+      = pars[11].to_f.round(4).round(2)
+    %td{ :style => 'text-align: right' }
+      = pars[12].to_f.round(4).round(2)
   -@reg_n +=1

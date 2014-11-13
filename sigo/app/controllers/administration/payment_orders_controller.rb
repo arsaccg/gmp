@@ -24,8 +24,8 @@ class Administration::PaymentOrdersController < ApplicationController
       end
     else
       provision.provision_direct_purchase_details.each do |provision_detail|
-        @total_quantity += provision_detail.unit_price_before_igv # Precio antes de IGV
-        @total_quantity_with_igv += provision_detail.unit_price_igv # Precio despues de IGV
+        @total_quantity += provision_detail.unit_price_before_igv.to_f # Precio antes de IGV
+        @total_quantity_with_igv += provision_detail.unit_price_igv.to_f # Precio despues de IGV
       end
     end
 
@@ -52,7 +52,6 @@ class Administration::PaymentOrdersController < ApplicationController
       redirect_to :action => :index
     else
       paymentOrder.errors.messages.each do |attribute, error|
-        puts flash[:error].to_s + error.to_s + "  "
       end
       @paymentOrder = paymentOrder
       render :new, layout: false 
@@ -141,7 +140,7 @@ class Administration::PaymentOrdersController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-
+        @budget = CostCenter.find(get_company_cost_center('cost_center')).budgets.where("type_of_budget = 0").first.id
         @destinatary = params[:destinatary]
         @payment_order = PaymentOrder.find(params[:id])
         @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
@@ -152,44 +151,70 @@ class Administration::PaymentOrdersController < ApplicationController
         @ruc = Array.new
         @codes_tobi = Array.new
         @itembybudget_details = Array.new
+        @consumido = 0
 
-        @payment_order.provision.provision_details.each do |payment_detail|
-          
+        @payment_order.provision.provision_direct_purchase_details.each do |payment_detail|
           obj = nil
-          articles_ids = 0
+          @articles_ids = Array.new
+          
+          if !payment_detail.order_detail_id.nil?
+            if payment_detail.type_order == 'purchase_order'
+              obj = PurchaseOrderDetail.find(payment_detail.order_detail_id).purchase_order
+              
+              obj.purchase_order_details.each do |pod|
+                a = Article.find_specific_in_article( pod.delivery_order_detail.article_id, get_company_cost_center('cost_center')).first
+                @articles_ids << a[0]
+                @articles_code = a[3]
+              end
 
-          if payment_detail.type_of_order == 'purchase_order'
-            obj = PurchaseOrderDetail.find(payment_detail.order_detail_id).purchase_order
-            
-            obj.purchase_order_details.each do |pod|
-              articles_ids = pod.delivery_order_detail.article_id
+            else
+              obj = OrderOfServiceDetail.find(payment_detail.order_detail_id).order_of_service
+              obj.order_of_service_details.each do |pod|
+                a = Article.find_specific_in_article(pod.article_id, get_company_cost_center('cost_center')).first
+                @articles_ids << a[0]
+                @articles_code = a[3]
+              end              
             end
 
+            if (!obj.nil?) && (@articles_ids.count != 0)
+
+              # Código de Ordenes
+              @codes_orders << obj.id.to_s.rjust(5,'0')
+              # Nombre de Proveedores
+              if !@suppliers.include? (obj.entity.name.to_s + ' ' + obj.entity.second_name.to_s + ' ' + obj.entity.paternal_surname.to_s + ' ' + obj.entity.maternal_surname.to_s)
+                @suppliers << obj.entity.name.to_s + ' ' + obj.entity.second_name.to_s + ' ' + obj.entity.paternal_surname.to_s + ' ' + obj.entity.maternal_surname.to_s
+              end
+              # RUC de Proveedores
+              if !@ruc.include? obj.entity.ruc.to_s
+                @ruc << obj.entity.ruc.to_s
+              end
+              @consumido= ActiveRecord::Base.connection.execute("SELECT SUM(net_pay)
+                FROM payment_orders
+                WHERE article_code LIKE  '%"+@articles_code.to_s+"%'
+                AND id NOT IN ("+@payment_order.id.to_s+")
+                AND id < "+@payment_order.id.to_s+"
+                ").first[0]
+              # Código Tobi
+              @codes_tobi << [PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id),PaymentOrder.get_amount_feo_by_code_phase(@articles_code.to_s[0..5],@budget),@consumido]
+              @consumido = 0
+            end
           else
-            obj = OrderOfServiceDetail.find(payment_detail.order_detail_id).order_service
-            articles_ids = obj.order_service_details.select(:article_id).map(&:article_id)
-          end
-
-          if (!obj.nil?) && (articles_ids != 0)
-
-            # Código de Ordenes
-            @codes_orders << obj.id.to_s.rjust(5,'0')
-            # Nombre de Proveedores
-            if !@suppliers.include? (obj.entity.name.to_s + ' ' + obj.entity.second_name.to_s + ' ' + obj.entity.paternal_surname.to_s + ' ' + obj.entity.maternal_surname.to_s)
-              @suppliers << obj.entity.name.to_s + ' ' + obj.entity.second_name.to_s + ' ' + obj.entity.paternal_surname.to_s + ' ' + obj.entity.maternal_surname.to_s
-            end
-            # RUC de Proveedores
-            if !@ruc.include? obj.entity.ruc.to_s
-              @ruc << obj.entity.ruc.to_s
-            end
-
-            # Código Tobi
-            @codes_tobi << PaymentOrder.get_tobi_codes(articles_ids, @cost_center.id)
+            a = Article.find_specific_in_article(payment_detail.article_id, get_company_cost_center('cost_center')).first
+            @articles_ids << a[0]
+            @articles_code = a[3]
+            @consumido= ActiveRecord::Base.connection.execute("SELECT SUM(net_pay)
+                FROM payment_orders
+                WHERE article_code LIKE  '%"+@articles_code.to_s+"%'
+                AND id NOT IN ("+@payment_order.id.to_s+")
+                AND id < "+@payment_order.id.to_s+"
+                ").first[0]
+            @codes_tobi << [PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id), PaymentOrder.get_amount_feo_by_code_phase(@articles_code.to_s[0..5],@budget),@consumido]
+              @consumido = 0
           end
 
         end
-
         @subject = @payment_order.provision.description
+        @codes_tobi= @codes_tobi.uniq
 
         render :pdf => "Orden_de_pago-#{Time.now.strftime('%d-%m-%Y')}", 
                :template => 'administration/payment_orders/payslip_pdf.pdf.haml',
