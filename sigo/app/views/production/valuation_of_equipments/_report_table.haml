@@ -109,14 +109,14 @@
                 %th{"style"=>"color:#5f5f5f"}
                 %th{"style"=>"color:#5f5f5f;padding-left:18px;"} TOTAL RETENCIONES
                 %th#totalretention{"style"=>"color:#5f5f5f;text-align:center", 'original' => "#{((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f}"}= number_to_currency(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f, unit: 'S/. ', precision: 2)
-                %th#lasttr{"style"=>"color:#5f5f5f;text-align:center", 'original' =>"#{@retenciones.to_f}"}= number_to_currency(@retenciones.to_f, unit: 'S/. ', precision: 2)
+                %th#lasttr{"style"=>"color:#5f5f5f;text-align:center", 'original' =>"#{((@totalincluidoigv.to_f*@detraccion.to_f/100)+(@descuentootros.to_f)).round(2)}"}= number_to_currency((@totalincluidoigv.to_f*@detraccion.to_f/100)+(@descuentootros.to_f), unit: 'S/. ', precision: 2)
                 %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((@bill.to_f+@billigv.to_f+@totalincluidoigv.to_f)*((@subcontractequipment.detraction.to_f+@detracciontotal.to_f)/100)+@fuel_discount.to_f+@totalretenciones.to_f, unit: 'S/. ', precision: 2)
               %tr{"bgcolor"=>"#3276B1"}
                 %th{"style"=>"color:white; text-align:center;"} 06
                 %th{"style"=>"color:white"} NETO A PAGAR
 
                 %th#net-pay{ "style"=>"color:white;text-align:center", 'original' => "#{(@bill-@billigv)-(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f)}"}= number_to_currency((@bill+@billigv)-(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f), unit: 'S/. ', precision: 2)
-                %th#lastnetpay{"style"=>"color:white;text-align:center", 'original' =>"#{@netoapagar.to_f}"}= number_to_currency(@netoapagar.to_f, unit: 'S/. ', precision: 2)
+                %th#lastnetpay{"style"=>"color:white;text-align:center", 'original' =>"#{@totalincluidoigv.to_f-((@totalincluidoigv.to_f*@detraccion.to_f/100)+(@descuentootros.to_f)).round(2)}"}= number_to_currency(@totalincluidoigv.to_f-((@totalincluidoigv.to_f*@detraccion.to_f/100)+(@descuentootros.to_f)).round(2), unit: 'S/. ', precision: 2)
                 %th#acumnetpay{"style"=>"color:white;text-align:center"}= number_to_currency(@bill.to_f+@billigv.to_f-((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f + @netoapagar.to_f, unit: 'S/. ', precision: 2)
 
         %br
@@ -150,11 +150,11 @@
         = hidden_field_tag 'valuation_of_equipment[accumulated_bill]', @bill+@totalfacturar
         = hidden_field_tag 'valuation_of_equipment[accumulated_billigv]', @billigv+@totalfacigv
         = hidden_field_tag 'valuation_of_equipment[accumulated_totalbill]', @bill+@billigv+@totalincluidoigv
-        = hidden_field_tag 'valuation_of_equipment[accumulated_retention]', ((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f + @totalretenciones
-        = hidden_field_tag 'valuation_of_equipment[accumulated_detraction]', @subcontractequipment.detraction.to_f+@detracciontotal
+        = hidden_field_tag 'valuation_of_equipment[accumulated_retention]', ((@totalincluidoigv.to_f*@detraccion.to_f/100)+(@descuentootros.to_f))
+        = hidden_field_tag 'valuation_of_equipment[accumulated_detraction]', @totalincluidoigv.to_f*@detraccion.to_f/100
         = hidden_field_tag 'valuation_of_equipment[accumulated_fuel_discount]', @fuel_discount+@descuentocombustible
         = hidden_field_tag 'valuation_of_equipment[accumulated_other_discount]', 0
-        = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]', @bill+@billigv-((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).round+@fuel_discount.to_f + @netoapagar
+        = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]', @bill+@billigv-((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100))+@fuel_discount.to_f + @netoapagar
         = hidden_field_tag 'valuation_of_equipment[subcontract_equipment_id]', @subcontract_equipment_id
 
         %footer
@@ -175,7 +175,11 @@
 
           $(document).on('DOMSubtreeModified','.totalDetraction', function(event){
             $('#sumDetraction').html((parseFloat($('#totalDetraction').text())+parseFloat($('#acumDetraction').attr('original'))).toFixed(2));
-            $('#totalretention').html(parseFloat($('#otherdiscounts').val())+parseFloat($('#totalDetraction').text()));
+            var a=0;
+            if ($('#otherdiscounts').val()!=''){
+              a=$('#otherdiscounts').val();
+            }
+            $('#totalretention').html(parseFloat(a)+parseFloat($('#totalDetraction').text()));
           });
 
           $(document).on('DOMSubtreeModified','.trig', function(event){
@@ -185,7 +189,7 @@
             $('#lastTotalFac').html(parseFloat($('#lastTotalFac').attr('original')));
             $('#lastIgv').html(parseFloat($('#lastIgv').attr('original')));
             $('#lastTotal').html(parseFloat($('#lastTotal').attr('original')));
-            $('#lastnetpay').html(parseFloat($('#lastTotal').attr('original')));
+            $('#lastnetpay').html(parseFloat($('#lastnetpay').attr('original')));
 
             if($('#total').text()!= ""){
               //console.log('#total.text!=nil');
@@ -215,7 +219,7 @@
               $('#acumTotal').text((parseFloat($('#lastTotal').text()) + parseFloat($('#total-igv').text())).toFixed(2));
               $('#valuation_of_equipment_accumulated_totalbill').val((parseFloat($('#lastTotal').text()) + parseFloat($('#total-igv').text())).toFixed(2));
 
-              $('#net-pay').text($('#total-igv').text() - $('#totalretention').text());
+              $('#net-pay').text(($('#total-igv').text() - $('#totalretention').text()).toFixed(2));
 
               $('#valuation_of_equipment_net_payment').val($('#total-igv').text() - $('#totalretention').text());
               $('#acumnetpay').text((parseFloat($('#lastnetpay').text()) + parseFloat($('#net-pay').text())).toFixed(2));
@@ -259,8 +263,12 @@
           $('#lastnetpay').html(parseFloat($('#lastnetpay').attr('original')));
           $('#lasttr').html(parseFloat($('#lasttr').attr('original')));
           $('#input-totalretention').val($('#totalretention').attr('original'));
-          $('#total-other-discounts').html(parseFloat(other_discount));
-          $(acumtr).text($('#totalretention').text()+$('#lasttr').text());
+          var b=0;
+          if (other_discount!=''){
+            b=other_discount;
+          }
+          $('#total-other-discounts').html(parseFloat(b));
+          $(acumtr).text($('#sumDetraction').text());
           $('#valuation_of_equipment_accumulated_retention').val(parseFloat($('#totalretention').text())+parseFloat($('#lasttr').text()));
           $('#net-pay').text(($('#total-igv').text() - $('#totalretention').text()).toFixed(2));
 
@@ -295,7 +303,7 @@
           $('#valuation_of_equipment_accumulated_retention').val(parseFloat($('#totalretention').text())+parseFloat($('#lasttr').text()));
           $('#valuation_of_equipment_other_discount').val($('#otherdiscounts').val());
           $('#valuation_of_equipment_accumulated_other_discount').val(parseFloat($('#total-other-discounts').text()));
-          $('#net-pay').text($('#total-igv').text() - $('#totalretention').text());
+          $('#net-pay').text(($('#total-igv').text() - $('#totalretention').text()).toFixed(2));
 
           $('#valuation_of_equipment_net_payment').val($('#total-igv').text() - $('#totalretention').text());
           $('#acumnetpay').text((parseFloat($('#lastnetpay').text()) + parseFloat($('#net-pay').text())).toFixed(2));
@@ -328,7 +336,7 @@
         $('#lastTotalFac').html(parseFloat($('#lastTotalFac').attr('original')));
         $('#lastIgv').html(parseFloat($('#lastIgv').attr('original')));
         $('#lastTotal').html(parseFloat($('#lastTotal').attr('original')));
-        $('#lastnetpay').html(parseFloat($('#lastTotal').attr('original')));
+        $('#lastnetpay').html(parseFloat($('#lastnetpay').attr('original')));
         if($('#total').text()!= ""){
           //console.log('#total.text!=nil');
           $('#percent').text(' ');
