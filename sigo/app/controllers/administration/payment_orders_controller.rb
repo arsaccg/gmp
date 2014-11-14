@@ -188,13 +188,15 @@ class Administration::PaymentOrdersController < ApplicationController
               if !@ruc.include? obj.entity.ruc.to_s
                 @ruc << obj.entity.ruc.to_s
               end
-              @consumido= ActiveRecord::Base.connection.execute("SELECT SUM(net_pay)
+              @consumido= ActiveRecord::Base.connection.execute("
+                SELECT (SUM(total)-(SUM(detraction)+SUM(guarantee_fund_n1)+SUM(other_discounts)))
                 FROM payment_orders
                 WHERE article_code LIKE  '%"+@articles_code.to_s+"%'
                 AND id NOT IN ("+@payment_order.id.to_s+")
                 AND id < "+@payment_order.id.to_s+"
-                ").first[0]
+                ").first[0].to_f
               # Código Tobi
+              @consumido += @payment_order.total.to_f - (@payment_order.detraction.to_f + @payment_order.guarantee_fund_n1.to_f + @payment_order.other_discounts.to_f)
               @codes_tobi << [PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id),PaymentOrder.get_amount_feo_by_code_phase(@articles_code.to_s[0..5],@budget),@consumido]
               @consumido = 0
             end
@@ -202,12 +204,14 @@ class Administration::PaymentOrdersController < ApplicationController
             a = Article.find_specific_in_article(payment_detail.article_id, get_company_cost_center('cost_center')).first
             @articles_ids << a[0]
             @articles_code = a[3]
-            @consumido= ActiveRecord::Base.connection.execute("SELECT SUM(net_pay)
+            @consumido= ActiveRecord::Base.connection.execute("
+                SELECT (SUM(total)-(SUM(detraction)+SUM(guarantee_fund_n1)+SUM(other_discounts)))
                 FROM payment_orders
                 WHERE article_code LIKE  '%"+@articles_code.to_s+"%'
                 AND id NOT IN ("+@payment_order.id.to_s+")
                 AND id < "+@payment_order.id.to_s+"
-                ").first[0]
+                ").first[0].to_f
+            @consumido += @payment_order.total.to_f - (@payment_order.detraction.to_f + @payment_order.guarantee_fund_n1.to_f + @payment_order.other_discounts.to_f)
             @codes_tobi << [PaymentOrder.get_tobi_codes(@articles_ids, @cost_center.id), PaymentOrder.get_amount_feo_by_code_phase(@articles_code.to_s[0..5],@budget),@consumido]
               @consumido = 0
           end
