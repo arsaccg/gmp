@@ -570,7 +570,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
     @perceptions = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=2")
     @perceptions.each do |p|
-      @percepcion_neto+=p[0].to_f
+      @percepcion_neto += p[0].to_f.abs
     end
 
     @discounts = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=1")
