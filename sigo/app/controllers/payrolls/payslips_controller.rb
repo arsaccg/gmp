@@ -30,8 +30,8 @@ class Payrolls::PayslipsController < ApplicationController
     @inge = Array.new
     @dese = Array.new
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
-    @ingresos = Concept.where("code LIKE '1%'")
-    @descuentos = Concept.where("code LIKE '2%'")
+    @ingresos = Concept.where("code LIKE '1%' AND status = 1")
+    @descuentos = Concept.where("code LIKE '2%' AND status = 1")
     @afp = Afp.all
     @semanas = ActiveRecord::Base.connection.execute("
       SELECT *
@@ -77,8 +77,8 @@ class Payrolls::PayslipsController < ApplicationController
     @des = Array.new
     @worker = Worker.find(params[:id])
     @entity =Entity.find(@worker.entity_id)
-    @ingresos = Concept.where("code LIKE '1%' AND type_concept = 'Fijo'")
-    @descuentos = Concept.where("code LIKE '2%' AND type_concept = 'Fijo'")
+    @ingresos = Concept.where("code LIKE '1%' AND type_concept = 'Fijo' AND status = 1")
+    @descuentos = Concept.where("code LIKE '2%' AND type_concept = 'Fijo' AND status = 1")
     @ingresos.each do |ing|
       @ing << ing.id.to_s
     end
@@ -107,6 +107,7 @@ class Payrolls::PayslipsController < ApplicationController
 
   def generate_payroll
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
+    company_id = get_company_cost_center('company')
     ing = params[:arregloin]
     des = params[:arreglodes]
     @reg_n = (Time.now.to_f*1000).to_i
@@ -134,13 +135,15 @@ class Payrolls::PayslipsController < ApplicationController
     @partes = Array.new
 
     if worker == "empleado"
+
       # Future...
+      
     elsif worker == "obrero"
 
-      @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3])
+      @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
+      @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], ing, @headers)
 
     end
-
     render(partial: 'workers', :layout => false)
   end
 

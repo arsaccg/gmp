@@ -10,8 +10,9 @@ class Production::SubcontractEquipmentsController < ApplicationController
   end
 
   def show
+    @cost_center_id = get_company_cost_center('cost_center')
     @company = params[:company_id]
-    @subcontractEq = SubcontractEquipment.find(params[:id])
+    @subcontract = SubcontractEquipment.find(params[:id])
     render layout: false
   end
 

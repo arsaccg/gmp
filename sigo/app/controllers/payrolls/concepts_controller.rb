@@ -13,8 +13,8 @@ class Payrolls::ConceptsController < ApplicationController
 
   def new
     @con = Concept.new
-    @condeTrab = Concept.where("code like '2%'")
-    @condeEmp = Concept.where("code like '3%'")
+    @condeTrab = Concept.where("code LIKE '2%'")
+    @condeEmp = Concept.where("code LIKE '3%'")
     @date_week = Time.now.strftime('%Y-%m-%d')
     @cost_center = get_company_cost_center('cost_center')
     render layout: false
@@ -25,10 +25,11 @@ class Payrolls::ConceptsController < ApplicationController
     con = Concept.new(con_parameters)
     con.status = 1
     con.company_id = get_company_cost_center('company')
-    con.concept_details.each do |ccd|
-      ccd.status = 0
-    end
-    con.code=params[:tipo]+con.code
+    #con.concept_details.each do |ccd|
+    #  ccd.status = 0
+    #end
+    con.code = params[:tipo].to_s + con.code.to_s
+    con.token = '[' + params[:concept]['name'].downcase.parameterize.to_s + ']'
     if con.save
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index
@@ -42,8 +43,8 @@ class Payrolls::ConceptsController < ApplicationController
   end
 
   def edit
-    @condeTrab = Concept.where("code like '2%'")
-    @condeEmp = Concept.where("code like '3%'")
+    @condeTrab = Concept.where("code LIKE '2%'")
+    @condeEmp = Concept.where("code LIKE '3%'")
     @date_week = Time.now.strftime('%Y-%m-%d')
     @cost_center = get_company_cost_center('cost_center')
 
@@ -66,8 +67,10 @@ class Payrolls::ConceptsController < ApplicationController
 
   def update
     con = Concept.find(params[:id])
-    con.code=params[:tipo]+con.code
+    con.code = params[:tipo].to_s + con.code.to_s
     con.company_id = get_company_cost_center('company')
+    con.token = '[' + params[:concept]['name'].downcase.parameterize.to_s + ']'
+    
     if con.update_attributes(con_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
@@ -86,12 +89,12 @@ class Payrolls::ConceptsController < ApplicationController
     ActiveRecord::Base.connection.execute("
           UPDATE concepts SET
           status = 0
-          WHERE id = "+con.id.to_s+"
+          WHERE id = " + con.id.to_s + "
         ")
     ActiveRecord::Base.connection.execute("
           UPDATE concept_details SET
           status = 0
-          WHERE concept_id = "+con.id.to_s+" AND status = 1
+          WHERE concept_id = " + con.id.to_s + " AND status = 1
         ")
     render :json => con
   end
@@ -101,12 +104,12 @@ class Payrolls::ConceptsController < ApplicationController
     ActiveRecord::Base.connection.execute("
           UPDATE concepts SET
           status = 1
-          WHERE id = "+con.id.to_s+"
+          WHERE id = " + con.id.to_s + "
         ")
     ActiveRecord::Base.connection.execute("
           UPDATE concept_details SET
           status = 1
-          WHERE concept_id = "+con.id.to_s+" AND status = 0
+          WHERE concept_id = " + con.id.to_s + " AND status = 0
         ")
     redirect_to :action => :index
   end
@@ -117,7 +120,7 @@ class Payrolls::ConceptsController < ApplicationController
     concepts_hash = Array.new
     concepts = Concept.where(:status => 1).where("code LIKE '1%' AND name LIKE '%#{word}%'")
     concepts.each do |concept|
-      concepts_hash << { 'id' => concept.id, 'name' => concept.name }
+      concepts_hash << { 'id' => concept.token, 'name' => '(' + concept.code.to_s + ') ' + concept.name }
     end
     render json: { :concepts => concepts_hash }
   end
@@ -140,13 +143,12 @@ class Payrolls::ConceptsController < ApplicationController
         :status,
         :_destroy
       ],
-      concept_valorizations_attributes: [
+      concept_valorization_attributes: [
         :id,
         :concept_id,
         :date_week,
         :cost_center_id,
-        :concept_reference_id,
-        :amount,
+        :formula,
         :_destroy
       ]
     )

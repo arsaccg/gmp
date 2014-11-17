@@ -23,14 +23,21 @@
           %section.col.col-10
             %label.label Compania
             %label.input{for: "company_id"}
-              %select.form-control#category-select{:name =>"cost_center[company_id]", :style => "width:100%;padding: 0;border: none;"}
-                - @companies.each do |company|
-                  - if @companyselected.to_i == company.id
-                    %option{:value => "#{company.id}", :rel => "", :selected => true}
+              -if @action == "edit"
+                %select.form-control#category-select{:name =>"cost_center[company_id]", :style => "width:100%;padding: 0;border: none;"}
+                  %option{:value => nil} Seleccione una compañía
+                  - @companies.each do |company|
+                    %option{:value => "#{company.id}", :selected => "#{@costCenter.company_id}"=="#{company.id}"}
                       = company.name
-                  - else
-                    %option{:value => "#{company.id}", :rel => ""}
-                      = company.name
+              -else
+                %select.form-control#category-select{:name =>"cost_center[company_id]", :style => "width:100%;padding: 0;border: none;"}
+                  - @companies.each do |company|
+                    - if @comp.to_i == company.id
+                      %option{:value => "#{company.id}", :rel => "", :selected => true}
+                        = company.name
+                    - else
+                      %option{:value => "#{company.id}", :rel => ""}
+                        = company.name
         -if @action !="edit"
           .row
             %section.col.col-10
@@ -119,7 +126,7 @@
         $('#new_cost_center').submit();
         $.smallBox({
           title : "Exito",
-          content : "<i class='fa fa-clock-o'></i> <i>Haz creado el centro de costo</i>",
+          content : "<i class='fa fa-clock-o'></i> <i>Centro de Costo creado satisfactoriamente.</i>",
           color : "#659265",
           iconSmall : "fa fa-check fa-2x fadeInRight animated",
           timeout : 4000
