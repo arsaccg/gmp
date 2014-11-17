@@ -158,7 +158,7 @@
         = hidden_field_tag 'valuation_of_equipment[subcontract_equipment_id]', @subcontract_equipment_id
 
         %footer
-          %button.btn.btn-primary{type: "submit"}
+          %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
             %i.fa.fa-save
               Guardar
 
@@ -321,7 +321,7 @@
       })
 
       $('#percent').change(function(){
-        $('#total').html(parseFloat($('#total').attr('original')));
+        $('#total').html(parseFloat($('#total').attr('original')).toFixed(2));
         if($('#total').text()!=""){
           $('#number').val(' ');
           $('#number').val((parseInt($('#total').text())*$('#percent').val()/100).toFixed(2));
@@ -331,7 +331,7 @@
 
       $('#number').change(function(){
         $('#totalretention').html(parseFloat($('#totalretention').attr('original')));
-        $('#total').html(parseFloat($('#total').attr('original')));
+        $('#total').html(parseFloat($('#total').attr('original')).toFixed(2));
         $('#amortLast').html(parseFloat($('#amortLast').attr('original')));
         $('#lastTotalFac').html(parseFloat($('#lastTotalFac').attr('original')));
         $('#lastIgv').html(parseFloat($('#lastIgv').attr('original')));
