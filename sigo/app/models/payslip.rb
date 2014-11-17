@@ -17,6 +17,8 @@ class Payslip < ActiveRecord::Base
       AND wc.article_id = ar.id
       GROUP BY ppd.worker_id
     ").each do |row|
+      # Remuneracion Básica
+      rem_basic = 0
       from_contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => 1).first
       if !from_contract.nil?
         if from_contract.amount != 0
@@ -27,8 +29,6 @@ class Payslip < ActiveRecord::Base
           from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => 1).first
           if from_category.amount != 0
             rem_basic = (from_category.amount.to_f/8)*row[7]
-          else
-            rem_basic = 0
           end
         end
       else
@@ -37,15 +37,45 @@ class Payslip < ActiveRecord::Base
         from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => 1).first
         if from_category.amount != 0
           rem_basic = (from_category.amount.to_f/8)*row[7]
-        else
-          rem_basic = 0
         end
       end
 
       dominicano = rem_basic/6 # Dominical 1/6
       cts = Concept.find(13).percentage.to_f/100 * rem_basic # % CTS - Data Static
-      
-      result << [ row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], rem_basic, dominicano, cts ]
+
+      # Viaticos
+      viaticos = 0
+      from_contract_viatico = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => 14).first
+      if !from_contract_viatico.nil?
+        if from_contract_viatico.amount != 0
+          viaticos = from_contract_viatico.amount.to_f
+        end
+      else
+        article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
+        category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
+        from_category_viatico = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => 14).first
+        if from_category_viatico.amount != 0
+          viaticos = from_category_viatico.amount.to_f
+        end
+      end
+
+      # Asignacion Escolar
+      asign_escolar = 0
+      from_contract_asign_escolar = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => 15).first
+      if !from_contract_asign_escolar.nil?
+        if from_contract_asign_escolar.amount != 0
+          asign_escolar = from_contract_asign_escolar.amount.to_f
+        end
+      else
+        article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
+        category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
+        from_category_asign_escolar = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => 15).first
+        if from_category_asign_escolar.amount != 0
+          asign_escolar = from_category_asign_escolar.amount.to_f
+        end
+      end
+
+      result << [ row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], rem_basic, dominicano, cts, viaticos, asign_escolar ]
     end
 
     return result

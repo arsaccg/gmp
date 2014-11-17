@@ -157,6 +157,14 @@
           .modal-content
             .modal-body{ :style => 'overflow: hidden; padding: 2em;' }
               
+              .alert.alert-block.alert-warning
+                %a.close{"data-dismiss" => "alert", :href => "#"} ×
+                %h4.alert-heading
+                  %i.fa.fa-check-square-o
+                  Revisa la Fórmula
+                %p
+                  Si modificas el nombre de los Tokens generados puede que haya errores en los calculos de los montos.
+
               %section.col-md-9
                 %label{ :style => 'font-size: 13px;' } Buscar Conceptos:
                 =#%label.input
@@ -169,34 +177,40 @@
 
               %section.col-md-12{ :style => 'margin-top: 20px;' }
                 #modalValorizationItemsContent
+
                   %table#summary_valorization.table.table-striped.table-bordered.table-hover.smart-form
                     %thead
                       %tr
-                        %th Concepto
-                        %th
-                          %a.btn.btn-danger.btn-xs
-                            %i.fa.fa-trash-o
+                        %th Fórmula
                     %tbody#summary_valorization_items
                       - if @action == 'edit'
-                        - @con.concept_valorizations.each do |concept_valorization|
-                          %tr
-                            %td(style="display:none")
-                              = hidden_field_tag 'concept[concept_valorizations_attributes][' + @reg_n.to_s + '][id]', concept_valorization.id
-                              = hidden_field_tag 'concept[concept_valorizations_attributes][' + @reg_n.to_s + '][concept_id]', @con.id
-                              = hidden_field_tag 'concept[concept_valorizations_attributes][' + @reg_n.to_s + '][concept_reference_id]', concept_valorization.concept_reference_id
-                              = hidden_field_tag 'concept[concept_valorizations_attributes][' + @reg_n.to_s + '][date_week]', concept_valorization.date_week
-                              = hidden_field_tag 'concept[concept_valorizations_attributes][' + @reg_n.to_s + '][cost_center_id]', concept_valorization.cost_center_id
+                        %tr
+                          - if !@con.concept_valorization.nil?
+                            %td{ :style => "display:none" }
+                              = hidden_field_tag 'concept[concept_valorization_attributes][id]', @con.concept_valorization.id
+                              = hidden_field_tag 'concept[concept_valorization_attributes][concept_id]', @con.id
+                              = hidden_field_tag 'concept[concept_valorization_attributes[date_week]', @con.concept_valorization.date_week
+                              = hidden_field_tag 'concept[concept_valorization_attributes][cost_center_id]', @con.concept_valorization.cost_center_id
                             %td
-                              %label= '- ' + Concept.find(concept_valorization.concept_reference_id).name
+                              = text_field_tag 'concept[concept_valorization_attributes][formula]', @con.concept_valorization.formula, class: 'form-control formula', id: 'formula_field_concept'
+                          - else
+                            %td{ :style => "display:none" }
+                              = hidden_field_tag 'concept[concept_valorization_attributes][date_week]', @date_week
+                              = hidden_field_tag 'concept[concept_valorization_attributes][cost_center_id]', @cost_center
                             %td
-                              %label.checkbox
-                                = check_box 'concept[concept_valorizations_attributes][' + @reg_n.to_s + ']', '[_destroy]'
-                                %i
-                          - @reg_n += 1
+                              = text_field_tag 'concept[concept_valorization_attributes][formula]', nil, class: 'form-control formula', id: 'formula_field_concept'
+                      - else
+                        %tr
+                          %td{ :style => "display:none" }
+                            = hidden_field_tag 'concept[concept_valorization_attributes][date_week]', @date_week
+                            = hidden_field_tag 'concept[concept_valorization_attributes][cost_center_id]', @cost_center
+                          %td
+                            = text_field_tag 'concept[concept_valorization_attributes][formula]', nil, class: 'form-control formula', id: 'formula_field_concept'
+                  
               %br
 
             .modal-footer{ :style => 'padding: 2em;' }
-              %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Cerrar
+              %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Guardar
 
 :javascript
   $(document).ready(function () {
@@ -352,14 +366,19 @@
     var concept_name = ''
 
     data_selected = $('#concepts_list').select2('data');
-    concept_id = data_selected.id
+    concept_token = data_selected.id
     concept_name = data_selected.name
 
     reg_n = (new Date).getTime();
 
-    $('#summary_valorization_items').append(
-      '<tr id=tr-' + reg_n + '><td style=display:none><input name=concept[concept_valorizations_attributes][' + reg_n + '][concept_reference_id] value=' + concept_id + ' type=hidden /><input name=concept[concept_valorizations_attributes][' + reg_n + '][date_week] value=' + "#{@date_week}" + ' type=hidden /><input name=concept[concept_valorizations_attributes][' + reg_n + '][cost_center_id] value=' + "#{@cost_center}" + ' type=hidden /></td><td><label> - ' + concept_name + '</label></td><td><a class=' + "'btn btn-default'" + ' href=javascript:delete_item(' + reg_n + ')><i class=' + "'fa fa-times'" + '></i></a></td></tr>'
-    )
+    old_formula = $('#formula_field_concept').val();
+
+    if (old_formula != '')
+      new_formula = old_formula + '+' + concept_token;
+    else
+      new_formula = concept_token;
+
+    $('#formula_field_concept').val(new_formula);
 
   }
 
