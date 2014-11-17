@@ -1,4 +1,8 @@
 es:
+  approved: Aprobado
+  disproved: Desaprobado
+  paided: Pagado
+  pending: Pendiente
   date:
     abbr_day_names:
     - dom
