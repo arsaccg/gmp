@@ -32,14 +32,8 @@
             0
           %td{ :style => 'text-align: center' }
             = pars[9].to_f
-          %td{ :style => 'text-align: right' }
-            = pars[10].to_f.round(4).round(2)
-          %td{ :style => 'text-align: right' }
-            = pars[11].to_f.round(4).round(2)
-          %td{ :style => 'text-align: right' }
-            = pars[12].to_f.round(4).round(2)
-          %td{ :style => 'text-align: right' }
-            = pars[13].to_f.round(4).round(2)
-          %td{ :style => 'text-align: right' }
-            = pars[14].to_f.round(4).round(2)
+          -(0..pars.count-11).each do |i|
+            -j=i+10
+            %td{ :style => 'text-align: right' }
+              = pars[j].to_f.round(4).round(2)
         -@reg_n +=1

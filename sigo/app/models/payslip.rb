@@ -47,7 +47,6 @@ class Payslip < ActiveRecord::Base
         end
       end
       @result[@i] << rem_basic
-
       ing.each do |ing|
         con = Concept.find(ing)
         if con.id != 1
@@ -57,11 +56,14 @@ class Payslip < ActiveRecord::Base
           contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => ing).first
 
           if !contract.nil?
-            if contract.amount != 0
+            if contract.amount != 0 && !contract.amount.nil?
               amount = contract.amount.to_f
+            else
+              formula = con.concept_valorization.formula
+              amount = Formule.translate_formules(formula, rem_basic)
             end
           else
-            article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
+            article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
             category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
             from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => ing).first
             if !from_category.nil?
@@ -75,14 +77,13 @@ class Payslip < ActiveRecord::Base
               amount = Formule.translate_formules(formula, rem_basic)
             end
           end
-          @result[@i] << amount      
+          @result[@i] << amount
         end
       end
 
       @i+=1
       amount = 0
     end
-
     return @result
   end
 end
