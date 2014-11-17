@@ -107,6 +107,7 @@ class Payrolls::PayslipsController < ApplicationController
 
   def generate_payroll
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
+    company_id = get_company_cost_center('company')
     ing = params[:arregloin]
     des = params[:arreglodes]
     @reg_n = (Time.now.to_f*1000).to_i
@@ -134,9 +135,14 @@ class Payrolls::PayslipsController < ApplicationController
     @partes = Array.new
 
     if worker == "empleado"
+
       # Future...
+      
     elsif worker == "obrero"
 
+      @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
+      @concepts = Concept.select(:id).select(:name).where(:company_id => company_id).where(:status => 1)
+      @headers = @headers + @concepts.map(&:name)
       @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3])
 
     end
