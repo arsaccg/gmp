@@ -348,7 +348,8 @@
 
 
 
-          $('#saldo').text((parseInt($('#adelanto').text())-parseFloat($('#amortAcum2').text())).toFixed(2));
+          $('#saldo').text((#{@subadvances} - parseFloat($('#amortAcum2').text())).toFixed(2));
+
           $('#valuation_of_equipment_accumulated_amortization').val((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
           $('#valuation_of_equipment_accumulated_initial_amortization_number').val((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
           $('#totalfac').text((parseInt($('#total').text()) - parseFloat($('#number').val())).toFixed(2));
