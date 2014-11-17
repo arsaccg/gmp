@@ -55,7 +55,9 @@
               %td 
                 = subcontract.contract_description
               %td
-                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_subcontract_equipment_details_path}', 'content', {company_id: '#{@company}', subcontract: '#{subcontract.id}'}, null, 'GET')"}
+                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_subcontract_equipment_path(subcontract.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                  Ver Info
+                %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{production_subcontract_equipment_details_path}', 'content', {company_id: '#{@company}', subcontract: '#{subcontract.id}'}, null, 'GET')"}
                   Equipos
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_subcontract_equipment_path(subcontract.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar
