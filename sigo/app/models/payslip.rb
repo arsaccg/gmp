@@ -59,8 +59,13 @@ class Payslip < ActiveRecord::Base
             if contract.amount != 0 && !contract.amount.nil?
               amount = contract.amount.to_f
             else
-              formula = con.concept_valorization.formula
-              amount = Formule.translate_formules(formula, rem_basic)
+              formula = con.concept_valorization
+              if formula.nil?
+                amount = con.amount.to_f
+              else
+                formula = formula.formula 
+                amount = Formule.translate_formules(formula, rem_basic)
+              end
             end
           else
             article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
@@ -73,8 +78,13 @@ class Payslip < ActiveRecord::Base
                 amount = Formule.translate_formules(formula, rem_basic)
               end
             else
-              formula = con.concept_valorization.formula
-              amount = Formule.translate_formules(formula, rem_basic)
+              formula = con.concept_valorization
+              if formula.nil?
+                amount = con.amount.to_f
+              else
+                formula = formula.formula 
+                amount = Formule.translate_formules(formula, rem_basic)
+              end
             end
           end
           @result[@i] << amount
