@@ -387,38 +387,47 @@ class Logistics::PurchaseOrdersController < ApplicationController
       po.purchase_order_extra_calculations.where("apply LIKE '%before%'").each do |pod|
         if pod.type =="percent"
           if pod.operation == "sum"
-            discounts_before += (pod.value.to_f/100*(-1))*po.amount.to_f*po.unit_price.to_f
+            discounts_before += ((pod.value.to_f/100)*((po.amount.to_f*po.unit_price.to_f).round(2))).round(2)
           else
-            discounts_before += pod.value.to_f/100*po.amount.to_f*po.unit_price.to_f
+            discounts_before -= ((pod.value.to_f/100)*((po.amount.to_f*po.unit_price.to_f).round(2))).round(2)
           end
         elsif pod.type == "soles"
           if pod.operation == "sum"
-            discounts_before += pod.value.to_f *(-1)
-          else
             discounts_before += pod.value.to_f
+          else
+            discounts_before -= pod.value.to_f
           end
         end
       end
+
       igv = 0
       if po.igv
-        igv = 0.18 
+        igv = 0.18 # Quien fue el pendejo que puso esto x defecto. ¿Q pasa si cambia de 18% a 19%? ¬__¬
       end
+
       po.purchase_order_extra_calculations.where("apply LIKE '%after%'").each do |pod|
         if pod.type =="percent"
+          igv_amount = ((((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f).round(2)) * (igv.to_f)).round(2) + ((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f).round(2)
           if pod.operation == "sum"
-            discounts_after += (pod.value.to_f/100*(-1))*((po.amount.to_f*po.unit_price.to_f-discounts_before.to_f)*(1+igv.to_f))
+            discounts_after += ((pod.value.to_f/100)*(igv_amount)).round(2)
           else
-            discounts_after += pod.value.to_f/100*((po.amount.to_f*po.unit_price.to_f-discounts_before.to_f)*(1+igv.to_f))
+            discounts_after -= ((pod.value.to_f/100)*(igv_amount)).round(2)
           end
         elsif pod.type == "soles"
           if pod.operation == "sum"
-            discounts_after += pod.value.to_f *(-1)
-          else
             discounts_after += pod.value.to_f
+          else
+            discounts_after -= pod.value.to_f
           end
         end
       end
-      detail.update_attributes(:discount_before=>discounts_before, :discount_after=>discounts_after, :quantity_igv=>((po.amount.to_f*po.unit_price.to_f-discounts_before.to_f)*(igv.to_f)), :unit_price_before_igv=>(po.amount.to_f*po.unit_price.to_f- discounts_before.to_f), :unit_price_igv => (((po.amount.to_f*po.unit_price.to_f-discounts_before.to_f)*(1+igv.to_f))- discounts_after.to_f))
+      detail.update_attributes(
+        :discount_before => discounts_before, 
+        :discount_after => discounts_after, 
+        :quantity_igv => (((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f).round(2)*(igv.to_f)).round(2), 
+        :unit_price_before_igv => ((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f).round(2), 
+        :unit_price_igv => ( ((((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f) * (igv.to_f)) + ((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f)) + discounts_after.to_f).round(2)
+      )
     end
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index, company_id: params[:company_id]
