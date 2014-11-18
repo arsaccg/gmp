@@ -203,7 +203,7 @@
                       %td
                         = purchasedetail.description
                     - @parcial_without_igv += purchasedetail.unit_price_before_igv.to_f.round(3).round(2).to_f
-                    - @igv += purchasedetail.quantity_igv.to_f.round(3).round(2).to_f
+                    - @igv += purchasedetail.quantity_igv.to_f.round(7).round(6).round(5).round(4).round(3).round(2).to_f
                   - @parcial_with_igv += @parcial_without_igv + @igv
 
 
@@ -221,7 +221,7 @@
                   %tr
                     %th Parcial sin IGV
                     %th IGV
-                    %th Parcia con IGV
+                    %th Parcial con IGV
                 %tbody
                   %tr
                     %td

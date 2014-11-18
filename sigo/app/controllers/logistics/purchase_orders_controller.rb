@@ -550,8 +550,16 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
     @purchaseOrderDetails.each do |pod|
       @total += pod.unit_price_before_igv.to_f.round(2)
-      @igv_neto += (pod.unit_price_before_igv.to_f.round(2)*@igv.round(2)).round(3).round(2)
+      @igv_neto += (pod.unit_price_before_igv.to_f*@igv).round(7).round(6).round(5).round(4).round(3).round(2)
+      #puts '----------------'
+      #puts 'Antes de IGV: ' + pod.unit_price_before_igv.to_f.to_s
+      #puts 'Antes X IGV: ' + (pod.unit_price_before_igv.to_f * @igv).round(7).round(6).round(5).round(4).round(3).round(2).to_s
+      #puts '----------------'
     end
+
+    puts '----------------'
+    puts @igv_neto
+    puts '----------------'
 
     @percepcion_neto=0
     @descuento_neto=0
@@ -562,7 +570,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
     @perceptions = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=2")
     @perceptions.each do |p|
-      @percepcion_neto+=p[0].to_f
+      @percepcion_neto += p[0].to_f.abs
     end
 
     @discounts = ActiveRecord::Base.connection.execute("SELECT d.discount_after FROM purchase_order_details d,purchase_order_extra_calculations e  WHERE d.purchase_order_id ="+@purchaseOrder.id.to_s+" AND e.purchase_order_detail_id=d.id AND e.extra_calculation_id=1")

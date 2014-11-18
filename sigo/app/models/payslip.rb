@@ -47,6 +47,7 @@ class Payslip < ActiveRecord::Base
         end
       end
       @result[@i] << rem_basic
+      total = 0
       ing.each do |ing|
         con = Concept.find(ing)
         if con.id != 1
@@ -58,13 +59,16 @@ class Payslip < ActiveRecord::Base
           if !contract.nil?
             if contract.amount != 0 && !contract.amount.nil?
               amount = contract.amount.to_f
+              total += amount
             else
               formula = con.concept_valorization
               if formula.nil?
                 amount = con.amount.to_f
+                total += amount
               else
                 formula = formula.formula 
-                amount = Formule.translate_formules(formula, rem_basic)
+                amount = Formule.translate_formules(formula, rem_basic,row[0])
+                total += amount
               end
             end
           else
@@ -73,27 +77,34 @@ class Payslip < ActiveRecord::Base
             from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => ing).first
             if !from_category.nil?
               if from_category.amount != 0.0 && !from_category.amount.nil?
+                amount = from_category.amount
+                total += amount.to_f
               else
                 formula = con.concept_valorization.formula
-                amount = Formule.translate_formules(formula, rem_basic)
+                amount = Formule.translate_formules(formula, rem_basic,row[0])
+                total += amount
               end
             else
               formula = con.concept_valorization
               if formula.nil?
                 amount = con.amount.to_f
+                total += amount
               else
                 formula = formula.formula 
-                amount = Formule.translate_formules(formula, rem_basic)
+                amount = Formule.translate_formules(formula, rem_basic,row[0])
+                total += amount
               end
             end
           end
           @result[@i] << amount
         end
       end
+      @result[@i] << total
 
       @i+=1
       amount = 0
     end
+    @result[0] << "Ingresos Totales"
     return @result
   end
 end
