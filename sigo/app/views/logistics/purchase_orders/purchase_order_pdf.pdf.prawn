@@ -56,7 +56,7 @@ index=1
   stroke_horizontal_rule
   end
   pad(1) {
-    table([ ["#{index}", "#{data.delivery_order_detail.article.code}", "#{data.delivery_order_detail.article.name}", "#{data.delivery_order_detail.center_of_attention.abbreviation}", "#{data.delivery_order_detail.sector.code}", "#{data.delivery_order_detail.phase.code}", "#{data.delivery_order_detail.unit_of_measurement.symbol}", "#{sprintf("%.4f", data.amount.to_f)}", "#{number_to_currency(data.unit_price.to_f, unit: @purchaseOrder.money.symbol, precision: 2)}", "#{(data.discount_before.to_f/(data.amount*data.unit_price.to_f).to_f*100).round(1)}%", "#{number_to_currency(data.unit_price_before_igv.to_f, unit: @purchaseOrder.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "ffffff"}, :column_widths => [35,60,275,35,40,40,30,60,90,50,55]) do
+    table([ ["#{index}", "#{data.delivery_order_detail.article.code}", "#{data.delivery_order_detail.article.name}", "#{data.delivery_order_detail.center_of_attention.abbreviation}", "#{data.delivery_order_detail.sector.code}", "#{data.delivery_order_detail.phase.code}", "#{data.delivery_order_detail.unit_of_measurement.symbol}", "#{sprintf("%.4f", data.amount.to_f)}", "#{number_to_currency(data.unit_price.to_f, unit: @purchaseOrder.money.symbol, precision: 4)}", "#{(data.discount_before.to_f/(data.amount*data.unit_price.to_f).to_f*100).round(1)}%", "#{number_to_currency(data.unit_price_before_igv.to_f, unit: @purchaseOrder.money.symbol, precision: 2)}"] ], :width => 770, :cell_style => {:border_color=> "ffffff"}, :column_widths => [35,60,275,35,40,40,30,60,90,50,55]) do
       columns(0).font_style = :bold
       style(columns(0..1), :align => :center)
       style(columns(3..7), :align => :center)
@@ -107,7 +107,7 @@ if(@percepcion_neto!=0)
   bounding_box [bounds.right - 200, bounds.bottom + 100], :width  => bounds.width do
     table([ 
       ["TOTAL","#{number_to_currency(@total, unit: @purchaseOrder.money.symbol, precision: 2)}"],
-      ["IGV #{number_to_percentage(@igv*100, precision: 0)}","#{number_to_currency(@total*@igv, unit: @purchaseOrder.money.symbol, precision: 2)}"],
+      ["IGV #{number_to_percentage(@igv*100, precision: 0)}","#{number_to_currency(@igv_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"],
       ["PERCEPCION","#{number_to_currency(@percepcion_neto, unit: @purchaseOrder.money.symbol, precision: 2)}"]
     ], :width => 190, :cell_style => {:border_color=> "ffffff", :height => 21}, :column_widths => [100, 90]) do
         style(columns(0..1), :size => 10, :align => :right)
