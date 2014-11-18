@@ -16,8 +16,8 @@ class Production::CategoryOfWorkersController < ApplicationController
   def new
     @categoryOfWorker = CategoryOfWorker.new
     @subgroups = Category.distinct.select(:id).select(:code).select(:name).where("code LIKE '71__'")
-    @concept_earnings = Concept.where(:type_concept => 'Fijo').where(:status => 1).where("code LIKE '1%'")
-    @concept_discounts = Concept.where(:type_concept => 'Fijo').where(:status => 1).where("code LIKE '2%'")
+    @concept_earnings = Concept.where(:type_obrero => 'Fijo').where(:status => 1).where("code LIKE '1%'")
+    @concept_discounts = Concept.where(:type_obrero => 'Fijo').where(:status => 1).where("code LIKE '2%'")
     @action = 'new'
     render layout: false
   end
