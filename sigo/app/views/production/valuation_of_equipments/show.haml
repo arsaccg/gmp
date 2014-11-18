@@ -111,11 +111,7 @@
             %th{"style"=>"color:white;padding-left:8px;"} NETO A PAGAR: TOTAL (INCL. I.G.V.) - TOTAL RETEN.
             %th{ 'colspan' => 2, "style"=>"color:white;text-align:right;padding-right:5px;"}=number_to_currency(@valuationofequipment.net_payment.to_f, unit: 'S/. ', precision: 2)
             %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency("%.2f" % (@totalincluidoigv-@valuationofequipment.accumulated_detraction.to_f+@otrosdescuentos), unit: 'S/. ', precision: 2)
-            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}               
-              - if !@valuationofequipment.other_discount.nil?
-                = number_to_currency(@valuationofequipment.accumulated_totalbill-((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).ceil+@valuationofequipment.other_discount+@valuationofequipment.accumulated_retention.to_f), unit: 'S/. ', precision: 2) 
-              -else
-                = number_to_currency(@valuationofequipment.accumulated_totalbill-(((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).ceil)+@valuationofequipment.accumulated_retention.to_f), unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_net_payment.to_f, unit: 'S/. ', precision: 2)
       %br
       %br
       - case @valuationofequipment.state
