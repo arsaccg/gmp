@@ -69,7 +69,7 @@
                     %label.input{for: "#{concept.code}"}
                       %i.icon-append.fa.fa-credit-card
                       = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_id]", concept.id
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][type_concept]", concept.type_concept
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][type_concept]", concept.type_obrero
                       = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_code]", concept.code
                       = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", 0.00, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
                 - @reg_n += 1
@@ -96,7 +96,7 @@
                     %label.input{for: "#{concept.code}"}
                       %i.icon-append.fa.fa-credit-card
                       = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_id]", concept.id
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][type_concept]", concept.type_concept
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][type_concept]", concept.type_obrero
                       = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_code]", concept.code
                       = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", 0.00, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
                 - @reg_n += 1
