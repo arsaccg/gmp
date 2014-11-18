@@ -1,6 +1,6 @@
 class Management::ExtensionscontrolsController < ApplicationController
   #before_filter :authorize_manager
-  before_filter :authenticate_user!, :only => [:index, :shoe, :create, :update, :new, :approve, :disprove ]
+  before_filter :authenticate_user!, :only => [:index, :show, :create, :edit, :update, :new, :approve, :disprove ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
     
 
@@ -30,7 +30,22 @@ class Management::ExtensionscontrolsController < ApplicationController
     redirect_to :action => :index, :layout => false
   end
 
+  def edit
+    @extensionscontrol = Extensionscontrol.find(params[:id])
+    render :edit, :layout => false
+  end
+
   def update
+    extensionscontrol = Extensionscontrol.find(params[:id])
+    if extensionscontrol.update_attributes(extensions_parameters)
+      flash[:notice] = "Se ha actualizado correctamente la ampliación."
+      redirect_to :action => :index
+    else
+      extensionscontrol.errors.messages.each do |attribute, error|
+        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
+      end
+      render :edit, layout: false
+    end
   end
 
   def new
@@ -58,7 +73,7 @@ class Management::ExtensionscontrolsController < ApplicationController
 
   private
   def extensions_parameters
-    params.require(:extensionscontrol).permit(:motive, :requested_deadline, :approved_deadline, :requested_mgg, :approved_mgg, :resolution, :observation, :files, :cost_center_id)
+    params.require(:extensionscontrol).permit(:motive, :status, :requested_deadline, :approved_deadline, :requested_mgg, :approved_mgg, :resolution, :observation, :files, :cost_center_id)
   end
 
 end
