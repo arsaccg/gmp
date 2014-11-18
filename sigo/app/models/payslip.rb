@@ -6,6 +6,8 @@ class Payslip < ActiveRecord::Base
     @i = 1
     @result[0] = headers
     @result[0] << "REMUNERACIÓN BÁSICA"
+    @result[0] << "HORAS EXTRAS 60%"
+    @result[0] << "HORAS EXTRAS 100%"
     amount = 0
     ActiveRecord::Base.connection.execute("
       SELECT ppd.worker_id, e.dni, CONCAT_WS(' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname), ar.name, pp.date_of_creation, af.type_of_afp, w.numberofchilds, SUM( ppd.normal_hours ) , SUM( 1 ) AS Dias, SUM( ppd.he_60 ) , SUM( ppd.he_100 ) , SUM( ppd.total_hours ) 
@@ -26,16 +28,19 @@ class Payslip < ActiveRecord::Base
       amount = 0
       # Remuneracion Básica
       rem_basic = 0
+      por_hora = 0
       from_contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => 1).first
       if !from_contract.nil?
         if !from_contract.amount.nil?
           rem_basic = (from_contract.amount/8)*row[7]
+          por_hora = from_contract.amount.to_f/8
         else
           article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
           category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
           from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => 1).first
           if from_category.amount != 0
             rem_basic = (from_category.amount.to_f/8)*row[7]
+            por_hora = from_category.amount.to_f/8
           end
         end
       else
@@ -44,13 +49,16 @@ class Payslip < ActiveRecord::Base
         from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => 1).first
         if from_category.amount != 0
           rem_basic = (from_category.amount.to_f/8)*row[7]
+          por_hora = from_category.amount.to_f/8
         end
       end
       @result[@i] << rem_basic
+      @result[@i] << row[9]*por_hora*1.6
+      @result[@i] << row[10]*por_hora*2
       total = 0
       ing.each do |ing|
         con = Concept.find(ing)
-        if con.id != 1
+        if con.id != 1 && con.id != 4 && con.id != 5
           if !@result[0].include?(con.name)
             @result[0] << con.name.to_s
           end
@@ -68,7 +76,7 @@ class Payslip < ActiveRecord::Base
               else
                 formula = formula.formula 
                 amount = Formule.translate_formules(formula, rem_basic,row[0])
-                total += amount
+                total += amount.to_f
               end
             end
           else
