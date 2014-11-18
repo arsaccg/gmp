@@ -19,10 +19,10 @@
             %strong
               = wbsitem.fase
             %div{id: wbsitem.id}
-            %a(class="btn btn-primary btn-mini"){href: "javascript:load_phases('" + wbsitem.id.to_s + "')"}
-              Asignar Fase
         %td
           .btn-group
+            %a(class="btn btn-success btn-mini"){href: "javascript:load_phases('" + wbsitem.id.to_s + "')"}
+              Asignar Fase
             %a(class="btn btn-primary btn-mini"){:href=>"javascript:load_url_ondiv('" + edit_management_wbsitem_path(wbsitem.id).to_s + "', 'graph-org');"}
               %i(class="icon-pencil")
               Editar

@@ -1,0 +1,70 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-12.col-md-12.col-lg-7
+      %h2.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw  
+        Cambio de Ampliación
+  #widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-6
+        #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-eye
+            %h2 Ampliación
+          .widget-body
+            =simple_form_for([:management, @extensionscontrol], html: {class: "form-horizontal smart-form", autocomplete: 'off', :id => "edit_extension"}) do |f|
+              %fieldset
+                .row.form-inline
+                  %section.col.col-10
+                    %label.label Motivo de la Ampliación
+                    %label.input{for: "motive"}
+                      = f.input :motive, placeholder: 'Motivo de la Ampliación', input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Estado
+                    %label.input{for: "status"}
+                      = f.input :status, input_html: { class: 'form-control' }, label: false, :collection => Extensionscontrol::STATUS_HASH.sort.map {|k,v| [v,k]}, include_blank: false
+                .row
+                  %section.col.col-10
+                    %label.label Plazo Solicitado
+                    %label.input{for: "requested_deadline"}
+                      = f.input :requested_deadline, placeholder: '0.00', input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Plazo Aprobado
+                    %label.input{for: "approved_deadline"}
+                      = f.input :approved_deadline, placeholder: '0.00', input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label M.G.G Solicitados
+                    %label.input{for: "requested_mgg"}
+                      = f.input :requested_mgg, placeholder: '0.00', input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label M.G.G Aprobados
+                    %label.input{for: "approved_mgg"}
+                      = f.input :approved_mgg, placeholder: '0.00', input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label N° de Resolución
+                    %label.input{for: "resolution"}
+                      = f.input :resolution, input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Observaciones
+                    %label.input{for: "observation"}
+                      = f.input :observation, input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Subir Archivos
+                    %label.input{for: "files"}
+                      = f.input :files, input_html: { class: 'form-control' }, label: false
+              %footer
+                %a{:href=>"javascript:post_to_url('#{management_extensionscontrol_path(@extensionscontrol)}?authenticity_token=#{form_authenticity_token}', 'edit_extension', 'right-area');", :class=>"btn btn-success"}
+                  %i.fa.fa-save
+                  Guardar Valorizacion
+
+  %a.btn.btn-sm.btn-primary.btn-prev#backlist-companies{:href=>"javascript: load_url_ondiv('"+administrate_budget_management_budgets_path.to_s+"', 'right-area');"}
+    %i.fa.fa-arrow-left
+    Retornar al listado de compañias
