@@ -92,7 +92,9 @@
                 %td
                   = image_tag ext.files.url
                 %td
-                  %a(href="javascript:post_to_url('#{approve_management_extensionscontrols_path}?extension_id=#{ext.id}','new_extensionscontrol', 'right-area')" class="btn btn-success")
-                    Aprobar
-                  %a(href="javascript:post_to_url('#{disprove_management_extensionscontrols_path}?extension_id=#{ext.id}','new_extensionscontrol', 'right-area')" class="btn btn-warning")
-                    Desaprobar
+                  %a.btn.btn-success.btn-xs{href: "javascript:load_url_ondiv('#{edit_management_extensionscontrol_path(ext)}', 'right-area')"}
+                    %i.fa.fa-pencil
+                  /%a(href="javascript:post_to_url('#{approve_management_extensionscontrols_path}?extension_id=#{ext.id}','new_extensionscontrol', 'right-area')" class="btn btn-success")
+                  /  Aprobar
+                  /%a(href="javascript:post_to_url('#{disprove_management_extensionscontrols_path}?extension_id=#{ext.id}','new_extensionscontrol', 'right-area')" class="btn btn-warning")
+                  /  Desaprobar

@@ -90,7 +90,7 @@ class Management::WbsitemsController < ApplicationController
   end
 
   def get_items_from_project
-    @wbsitems = Wbsitem.where("codewbs LIKE ?", get_company_cost_center('cost_center').to_s + "%").order(:codewbs)  
+    @wbsitems = Wbsitem.where("cost_center_id = ?", get_company_cost_center('cost_center')).order(:codewbs)  
     @data = Phase.all
     render :get_items_from_project, layout: false
   end
