@@ -53,43 +53,71 @@
               %i.fa.fa-sign-out
         / end logout button
     -if @company == nil
-      - current_user.companies.each do |company| 
-        .col-sm-8.col-md-8.col-lg-6
-          .well
-            .jumbotron{"style" => "overflow: hidden"}
-              .col-sm-12.col-md-12.col-lg-12
-                %h1= company.name
-                %p= "RUC: #{company.ruc}"
-                %p
-                  %a.btn.btn-primary.btn-lg{ 'href' => 'javascript:void(0)', 'id' => "btn-#{company.id}", 'data-target' => "#modal-#{company.id}", "role" => "button" }
-                    Ver información
-        .modal.fade{"id" => "modal-#{company.id}", "aria-hidden" => "true", "aria-labelledby" => "modalCompanyItemsLabel", role: "dialog", tabindex: "-1"}
-          .modal-dialog
-            .modal-content
-              .modal-header
-                %button.close{ 'type' => "button", 'data-dismiss' => "modal", 'aria-hidden' => "true" } ×
-                %h4= "Centro de Costos de " + company.name
-              .modal-body{ 'style' => 'overflow:hidden' }
-                - company.cost_centers.each do |cc|
-                  .col-sm-12.col-md-12.col-lg-12
-                    %h1= cc.name
-                    %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
-                      Ingresar
-        :javascript
-          $("a#btn-#{company.id}").click(function(){
-            $('#modal-#{company.id}').modal('show');
-          });
+      - if !current_user.has_role? :director 
+        - current_user.companies.each do |company| 
+          .col-sm-8.col-md-8.col-lg-6
+            .well
+              .jumbotron{"style" => "overflow: hidden"}
+                .col-sm-12.col-md-12.col-lg-12
+                  %h1= company.name
+                  %p= "RUC: #{company.ruc}"
+                  %span#logo{:style => 'margin-top: 9px;float:right;'}
+                    - if !company.nil?
+                      = image_tag company.avatar.url, alt: "#{company.name}"
+                  %p
+                    %a.btn.btn-primary.btn-lg{ 'href' => 'javascript:void(0)', 'id' => "btn-#{company.id}", 'data-target' => "#modal-#{company.id}", "role" => "button" }
+                      Ver información
+          .modal.fade{"id" => "modal-#{company.id}", "aria-hidden" => "true", "aria-labelledby" => "modalCompanyItemsLabel", role: "dialog", tabindex: "-1"}
+            .modal-dialog
+              .modal-content
+                .modal-header
+                  %button.close{ 'type' => "button", 'data-dismiss' => "modal", 'aria-hidden' => "true" } ×
+                  %h4= "Centro de Costos de " + company.name
+                .modal-body{ 'style' => 'overflow:hidden' }
+                  - company.cost_centers.each do |cc|
+                    .col-sm-12.col-md-12.col-lg-12
+                      %h1= cc.name
+                      %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
+                        Ingresar
+          :javascript
+            $("a#btn-#{company.id}").click(function(){
+              $('#modal-#{company.id}').modal('show');
+            });
+      - else
+        - Company.all.each do |company| 
+          .col-sm-8.col-md-8.col-lg-6
+            .well
+              .jumbotron{"style" => "overflow: hidden"}
+                .col-sm-12.col-md-12.col-lg-12
+                  %h1= company.name
+                  %p= "RUC: #{company.ruc}"
+                  %span#logo{:style => 'margin-top: 9px;float:right;'}
+                    - if !company.nil?
+                      = image_tag company.avatar.url, alt: "#{company.name}"
+                  %p
+                    %a.btn.btn-primary.btn-lg{ 'href' => 'javascript:void(0)', 'id' => "btn-#{company.id}", 'data-target' => "#modal-#{company.id}", "role" => "button" }
+                      Ver información
+          .modal.fade{"id" => "modal-#{company.id}", "aria-hidden" => "true", "aria-labelledby" => "modalCompanyItemsLabel", role: "dialog", tabindex: "-1"}
+            .modal-dialog
+              .modal-content
+                .modal-header
+                  %button.close{ 'type' => "button", 'data-dismiss' => "modal", 'aria-hidden' => "true" } ×
+                  %h4= "Centro de Costos de " + company.name
+                .modal-body{ 'style' => 'overflow:hidden' }
+                  - company.cost_centers.each do |cc|
+                    .col-sm-12.col-md-12.col-lg-12
+                      %h1= cc.name
+                      %a.btn.btn-primary.btn-lg{ "href"=> "#{show_panel_main_path(company.id)}?cost_center=#{cc.id}"}
+                        Ingresar
+          :javascript
+            $("a#btn-#{company.id}").click(function(){
+              $('#modal-#{company.id}').modal('show');
+            });
+
+    #part-contract.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partContractsLabel", role: "dialog"}
 
     = javascript_include_tag '//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js'
-    :javascript
-      if (!window.jQuery) {
-        document.write('<script src="js/libs/jquery-2.0.2.min.js"><\/script>');
-      }
     = javascript_include_tag "//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"
-    :javascript
-      if (!window.jQuery.ui) {
-        document.write('<script src="js/libs/jquery-ui-1.10.3.min.js"><\/script>');
-      }
     /
       JS TOUCH : include this plugin for mobile drag / drop touch events
       <script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script>
@@ -101,3 +129,12 @@
     / MAIN APP JS FILE
     = javascript_include_tag 'app'
     / Your GOOGLE ANALYTICS CODE Below
+    
+    :javascript
+        if (!window.jQuery) {
+          document.write('<script src="js/libs/jquery-2.0.2.min.js"><\/script>');
+        }
+    :javascript
+        if (!window.jQuery.ui) {
+          document.write('<script src="js/libs/jquery-ui-1.10.3.min.js"><\/script>');
+        }

@@ -1,0 +1,115 @@
+=render :partial=> 'brief_items'
+%form(id="form-wbs" action="#" name="itemform" method="POST" class="form-horizontal")
+  %table(class="table-bordered table-hover white-table small-font inputbybandi-table" width="100%")
+    %thead 
+      %th
+      %th 
+        %strong Insumo
+      %th 
+        %strong Código
+      %th 
+        %strong Cantidad
+      %th
+        %strong Unidad
+      %th 
+        %strong Precio
+      %th 
+        %strong Total
+      %th 
+        %strong 
+    %tbody
+      - @itembybudgetanditems.each do |itembudget|
+        - puts "ITEM"
+        - p itembudget
+        %tr 
+          %td
+            - str = itembudget[1].to_s
+            - case str[0..1]
+              - when '01'
+                %i(class="fa fa-user")
+              - when '02'
+                %i(class="fa fa-shopping-cart")
+              - when '03'
+                %i(class="fa fa-truck")
+              - when '04'
+                %i(class="fa fa-file-text")
+          %td
+            =itembudget[4]
+          %td
+            =itembudget[1]
+          %td(style="text-align: right;")
+            - if @budget.type_of_budget.to_i == 0 # Si es Meta
+              %input(type="text"){class: 'input_quantity_' + itembudget[0].to_s, :value=>number_with_precision(itembudget[2], :precision => 4), :id => "itembudget_quantity_" + itembudget[1].to_s, :onblur => "update_table_input('#{itembudget[0]}', '#{itembudget[1][0..1]}')", disabled: @must_be_blocked }
+            - else # Si es Meta
+              %span
+                = number_with_precision(itembudget[2], :precision => 4)
+          %td(style="text-align: center;")
+            =itembudget[5] rescue "-"
+          %td(style="text-align: right;")
+            - if @budget.type_of_budget.to_i == 0 # Si es Meta
+              %input(type="text"){class: 'input_price_' + itembudget[0].to_s, :value=>number_with_precision(itembudget[3], :precision => 4).to_s, :id => "itembudget_price_" + itembudget[1].to_s, :onblur => "update_table_input('#{itembudget[0]}', '#{itembudget[1][0..1]}')"} 
+            - else # Si es Meta
+              %span
+                = number_with_precision(itembudget[3], :precision => 4)
+          %td(style="text-align: right;") 
+            %strong
+              %span{class: "itembudget_total_" + itembudget[0].to_s}
+                = "S/."
+                - quantity = itembudget[2].to_f.round(4).to_s.to_f
+                - price = itembudget[3].to_f.round(4).to_s.to_f
+                - total=(quantity.round(4) * price.round(4)).round(2)
+                = total.round(2)
+          %td(style="text-align: right;") 
+            %strong
+              %a{:href => "javascript:delete_to_url_into_div('#{management_inputbybudgetanditem_path(itembudget[0]) + '?item_id=' + @item_id + '&budget_id=' + @budget_id + '&order=' + @order.gsub(".","d") + '&authenticity_token='+ form_authenticity_token}', 'botom-load')", data: { confirm: "¿Está seguro que desea eliminar este item?"} }
+                %i(class='fa fa-times')
+              
+            
+:javascript
+  var budget_id_sel = "#{@budget_id}";
+  var item_id_sel = "#{@item_id}";
+  var order_sel = "#{@order}";
+  
+  function  update_table_input(id, code){
+    var_quantity = $(".input_quantity_" + id).val();
+    var_price = $(".input_price_" + id).val();
+    prev_val = parseFloat( $(".itembudget_total_" + id).text().replace("S/.", "") );
+    new_val = +(var_quantity*var_price).toFixed(2);
+
+    if ("#{@must_be_blocked}" == "true"){
+      load_url_ondiv("#{update_input_group_management_inputbybudgetanditems_path}?price=" + var_price + "&order="+ "#{@order.gsub(".","d")}" + "&input_id=" + id, "rand" );
+    }else{
+      load_url_ondiv("#{update_input_management_inputbybudgetanditems_path}?price=" + var_price + "&quantity="+ var_quantity + "&input_id=" + id, "rand" );
+    }
+    $(".itembudget_total_" + id).text("S/. " + new_val);
+
+    console.log('prev_val: ' + prev_val);
+    console.log('new_val: ' + new_val);
+    console.log('code: ' + code);
+    update_brief_items(prev_val, new_val, code);
+  }
+
+  function update_brief_items(prev_val, new_val, code){
+    add_amount = new_val - prev_val;
+    console.log('add_amount: ' + add_amount);
+    category = '';
+
+    switch (code) {
+    case '01':
+        category = '#t_mano_de_obra';
+        break;
+    case '02':
+        category = '#t_materiales'
+        break;
+    case '03':
+        category = '#t_equipos'
+        break;
+    case '04':
+        category = '#t_subcontratos'
+        break;
+    }
+
+    new_val_brief_item = parseFloat($(category).text().replace(/,/g,'')) + add_amount;
+    console.log('new_val_brief_item: ' + new_val_brief_item);
+    $(category).text( new_val_brief_item.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') );
+  }

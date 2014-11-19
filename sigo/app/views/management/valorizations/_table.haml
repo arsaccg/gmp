@@ -1,0 +1,226 @@
+-budget = Budget.where(:id => @valorization.budget_id).first
+-igv = CostCenter.where(:id => budget.cost_center_id).last.igv.to_f rescue 0
+
+-puts "IGV : " + igv.to_s
+
+%div(id="tb_data")
+  %table(class="white-table table-bordered table table-condensed" style="width: 100%;")
+    %thead
+      %tr
+        %th
+          CONCEPTO
+        %th
+          MONTO
+    %tbody
+      %tr
+        %td
+          %strong
+            1.00 Valorizacion de obra
+        %td(style="text-align: right;")
+          %strong
+            %span{:id=>"valorization_construction"}
+      %tr
+        %td
+          %span(style="padding-left: 20px;")
+            %strong
+              1.01 Valorizacion Mensual
+        %td(style="text-align: right;")
+          %strong
+            %span{:id=>"valorization_month"}
+      %tr
+        %td
+          %span(style="padding-left: 20px;")
+            1.01.01 Costo Directo
+        %td(style="text-align: right;")
+          %span{:id=>"direct_cost"}
+            -total = 0
+            - val=Valorizationitem.where(:valorization_id => @valorization.id)
+            - val.each do |v|
+              - measure = v.actual_measured
+              - price = Itembybudget.where(:id => v.itembybudget_id).first.price rescue 0
+              - total = total + (measure * price) rescue 0
+            =total
+
+      %tr
+        %td
+          %span(style="padding-left: 20px;")
+            1.01.02 Gastos Generales
+        %td
+          %input{:type=>"text", :class=>"input-mini", :id => "item_generale", :name => "generale", :onblur => "update_data('#{igv}')", :onchange=>"change_data_ge('item_generale')", :value => @valorization.general_expenses, :style=>"text-align: right;"}
+      %tr
+        %td
+          %span(style="padding-left: 20px;")
+            1.01.03 Utilidad
+        %td
+          %input{:type=>"text", :class=>"input-mini", :id => "item_utility", :name => "utility", :onblur => "update_data('#{igv}')", :onchange=>"change_data_u('item_utility')", :value => @valorization.utility, :style=>"text-align: right;"}
+      %tr
+        %td
+          %span(style="padding-left: 20px;")
+            %strong
+              1.02 Reajuste (+)
+        %td
+          %input{:type=>"text", :class=>"input-mini", :id => "item_readjustment", :name => "readjustment", :onblur => "update_data('#{igv}')", :onchange=>"change_data_r('item_readjustment')", :value => @valorization.readjustment, :style=>"text-align: right;"}
+      %tr
+        %td
+          %span(style="padding-left: 20px;")
+            %strong
+              1.03 Reajuste que no Corresponde Adelanto Directo (-)
+        %td
+          %input{:type=>"text", :class=>"input-mini", :id => "item_no_direct_r", :name => "no_direct_r", :onblur => "update_data('#{igv}')", :onchange=>"change_data_rnd('item_no_direct_r')", :value => @valorization.no_direct_r, :style=>"text-align: right;"}
+      %tr
+        %td
+          %span(style="padding-left: 20px;")
+            %strong  
+              1.04 Reajuste que no Corresponde Adelanto de Materiales (-)
+        %td
+          %input{:type=>"text", :class=>"input-mini", :id => "item_no_materials_r", :name => "no_materials_r", :onblur => "update_data('#{igv}')", :onchange=>"change_data_rnm('item_no_materials_r')", :value => @valorization.no_materials_r, :style=>"text-align: right;"}
+      %tr
+        %td
+          %strong
+            2.00 Amortizacion
+        %td(style="text-align: right;")
+          %strong
+            %span{:id=>"amortization"}
+      %tr
+        %td
+          %span(style="padding-left: 20px;")
+            %strong  
+              2.01 Adelanto Directo
+        %td(style="text-align: right;")
+          %input{:type=>"text", :class=>"input-mini", :id => "item_direct_advance", :name => "direct_advance", :onblur => "update_data('#{igv}')", :onchange=>"change_data_da('item_direct_advance')", :value => @valorization.direct_advance, :style=>"text-align: right;"}
+      %tr
+        %td
+          %span(style="padding-left: 20px;")
+            %strong  
+              2.02 Adelanto de Materiales
+        %td
+          %input{:type=>"text", :class=>"input-mini", :id => "item_advance_of_materials", :name => "advance_of_materials", :onblur => "update_data('#{igv}')", :onchange=>"change_data_aom('item_advance_of_materials')", :value => @valorization.advance_of_materials, :style=>"text-align: right;"}
+      %tr
+        %td
+          %strong  
+            Valorizacion Neta
+        %td(style="text-align: right;")
+          %strong  
+            %span{:id=>"total_val"}
+      %tr
+        %td
+          Impuesto General a las Ventas
+          = (igv.to_f * 100).to_s rescue 0
+          ='%)'
+        %td(style="text-align: right;")
+          %span{:id=>"igv"}
+            = igv.to_s
+             
+      %tr
+        %td
+          %strong  
+            Monto a Cancelar
+        %td(style="text-align: right;")
+          %strong  
+            %span{:id=>"amount"}
+
+/float.format_currency()         
+:javascript 
+  $("[id*='item_']").blur();
+  update_data('#{igv}');
+  twoDecimals();
+  format_currency_all();
+
+  var valorization_construction, valorization_month, direct_cost, item_generale, item_utility, item_readjustment, item_no_direct_r, item_no_materials_r, amortization, total_val, igv_a, amount;
+
+  function format_currency_by_id(id){
+    var item = $("#"+id);
+    var sign = item.text().indexOf(',');
+    if(sign < 0){
+      var new_val = parseFloat(item.text()).format_currency();
+      item.text( new_val );
+    }    
+  }
+  function format_currency_all(){
+    format_currency_by_id('valorization_construction');
+    format_currency_by_id('valorization_month');
+    format_currency_by_id('direct_cost');
+    format_currency_by_id('amortization');
+    format_currency_by_id('total_val');
+    format_currency_by_id('igv');
+    format_currency_by_id('amount');
+  }
+
+  function update_data(val_igv) {
+    igv = parseFloat(val_igv);
+
+    direct_cost = parseFloat($("#direct_cost").text().replace(',',''));
+    item_generale = parseFloat($("#item_generale").val());
+    item_utility = parseFloat($("#item_utility").val());
+    item_readjustment = parseFloat($("#item_readjustment").val());
+    item_no_direct_r = parseFloat($("#item_no_direct_r").val());
+    item_no_materials_r = parseFloat($("#item_no_materials_r").val());
+    item_direct_advance = parseFloat($("#item_direct_advance").val());
+    item_advance_of_materials = parseFloat($("#item_advance_of_materials").val());
+
+    valorization_month = direct_cost + item_generale + item_utility;
+    $("#valorization_month").text(valorization_month.toFixed(2));
+
+    valorization_construction = valorization_month + item_readjustment - item_no_direct_r - item_no_materials_r;
+    $("#valorization_construction").text(valorization_construction.toFixed(2));
+
+    amortization = item_direct_advance + item_advance_of_materials;
+    $("#amortization").text(amortization.toFixed(2));
+
+    total_val = parseFloat($("#valorization_construction").text()) - parseFloat($("#amortization").text());
+    $("#total_val").text(total_val.toFixed(2));
+
+    igv_a = total_val * igv;
+    $("#igv").text(igv_a.toFixed(2));
+
+    amount = total_val * (igv + 1);
+    $("#amount").text(amount.toFixed(2));
+
+    twoDecimals();
+    format_currency_all();
+  }
+ 
+  function change_data_ge(input_id){
+    $("#" + input_id).val( parseFloat($("#" + input_id).val()).toFixed(2) );
+    new_value=$("#" + input_id).val();
+    load_url_ondiv("#{change_data_ge_management_valorization_path.to_s}?id=#{@valorization.id}&new_value=" + new_value, "item");
+  }
+
+  function change_data_u(input_id){
+    new_value=document.getElementById(input_id).value;
+    load_url_ondiv("#{change_data_u_management_valorization_path.to_s}?id=#{@valorization.id}&new_value=" + new_value, "item");
+  }
+
+  function change_data_r(input_id){
+    new_value=document.getElementById(input_id).value;
+    load_url_ondiv("#{change_data_r_management_valorization_path.to_s}?id=#{@valorization.id}&new_value=" + new_value, "item");
+  }
+
+  function change_data_rnd(input_id){
+    new_value=document.getElementById(input_id).value;
+    load_url_ondiv("#{change_data_rnd_management_valorization_path.to_s}?id=#{@valorization.id}&new_value=" + new_value, "item");
+  }
+
+  function change_data_rnm(input_id){
+    new_value=document.getElementById(input_id).value;
+    load_url_ondiv("#{change_data_rnm_management_valorization_path.to_s}?id=#{@valorization.id}&new_value=" + new_value, "item");
+  }
+
+  function change_data_da(input_id){
+    new_value=document.getElementById(input_id).value;
+    load_url_ondiv("#{change_data_da_management_valorization_path.to_s}?id=#{@valorization.id}&new_value=" + new_value, "item");
+  }
+
+  function change_data_aom(input_id){
+    new_value=document.getElementById(input_id).value;
+    load_url_ondiv("#{change_data_aom_management_valorization_path.to_s}?id=#{@valorization.id}&new_value=" + new_value, "item");
+  }
+
+
+
+
+  function twoDecimals(){
+    $('input[type=text]').val (function () {
+      return parseFloat(this.value).toFixed(2);
+    })
+  }

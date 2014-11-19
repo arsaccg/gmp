@@ -80,6 +80,8 @@
           %th{'style' => 'text-align:center;vertical-align: middle'}= sprintf('%.2f',@totaltotalhours)
           %th
           %th{'style' => 'text-align:center;vertical-align: middle'}= sprintf('%.2f',@totalfuel_amount)
-    %footer
-      %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
+    .modal-footer
+      %a.btn.btn-sm.btn-success.btn-prev{ :href => "#{report_of_equipment_pdf_production_valuation_of_equipments_path}.pdf?subcontractequipment=#{@subcontractequipmentarticle}&name=#{@entityname}&start_date=#{@start_date}&end_date=#{@end_date}&cad=#{@cad}&ids=#{@ids}", :target => '_blank', :style=>"float: right;"}
+        Ver PDF
+      %button.btn.btn-info{"data-dismiss" => "modal", type: "button",:style=>"float: left;"}
         Salir

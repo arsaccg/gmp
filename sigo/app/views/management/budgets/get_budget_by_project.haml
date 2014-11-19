@@ -1,0 +1,79 @@
+.row
+  .col-md-3
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;") Presupuesto Meta
+    .individual-panel
+      %table(class="table table-bordered table-hover white-table small-font" width="100%")
+        %tbody
+          - @budgets_goal.each do |budget|
+            %tr 
+              -if (budget.cod_budget.length > 7)
+                %td 
+                %td
+                  %a{:href=>"javascript:load_url_ondiv('" + filter_by_budget_management_itembybudgets_path.to_s + "?budget_id=" + budget.id.to_s + "', 'content-load');"}(class="small-font")
+                    = "--"
+                    =budget.description
+                %td
+                  %strong
+                    =number_to_currency(number_with_precision(get_total_cost("", budget.id), :precision => 2).to_s , :unit=>'S/. ') rescue "" 
+
+                %td
+              -else
+                %td(colspan="2")
+                  %strong=budget.description
+                %td
+                  %strong=number_to_currency(number_with_precision(get_total_cost("", budget.id), :precision => 2).to_s , :unit=>'S/. ') rescue ""
+              %td
+                %a(data-method ="delete"){:href=>"javascript:delete_to_url_into_div('" + management_budget_path(budget.id).to_s + "?authenticity_token=" + form_authenticity_token + "', 'right-area');", data: { confirm: "¿Está seguro que desea eliminar este presupuesto?"}}
+                  %i(class='fa fa-times')
+    %br
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;") Presupuesto Venta
+    .individual-panel
+      %table(class="table table-bordered table-hover white-table small-font" width="100%")
+        %tbody
+          - @budgets_sale.each do |budget|
+            %tr 
+              -if (budget.cod_budget.length > 7)
+                %td 
+                %td
+                  %a{:href=>"javascript:load_url_ondiv('" + filter_by_budget_management_itembybudgets_path.to_s + "?budget_id=" + budget.id.to_s + "', 'content-load');"}(class="small-font")
+                    = "--"
+                    =budget.description
+                %td
+                  %strong=number_to_currency(number_with_precision(get_total_cost("", budget.id) , :precision => 2).to_s , :unit=>'S/. ') rescue ""
+                %td
+              -else
+                %td(colspan="2")     
+                  %strong=budget.description
+              %td
+                %a(data-method ="delete"){:href=>"javascript:delete_to_url_into_div('" + management_budget_path(budget.id).to_s + "?authenticity_token=" + form_authenticity_token + "', 'right-area');", data: { confirm: "¿Está seguro que desea eliminar este presupuesto?"}}
+                  %i(class='fa fa-times')
+  .col-md-9
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;") Partidas
+      %a.f-right(href="javascript:load_url_ondiv('#{new_management_itembybudget_path}', 'right-area');") 
+        %span Nuevo +
+    .row
+      .col-md-12
+        .content-load
+    %br
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;")
+        Insumos
+        %span(id="brief-items")
+    .row
+      .col-md-12
+        .botom-load
+        
+= render partial: 'add_articles'
+
+        
+:javascript
+  $(".individual-panel").height($(document).height()/2 -100 );
+  $(".content-load").height($(document).height()/2 - 100); 
+  $(".botom-load").height($(document).height()/2 - 100); 
+  
+  
+
+  

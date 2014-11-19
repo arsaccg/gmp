@@ -2,7 +2,7 @@
   %header
     %span.widget-icon
       %i.fa.fa-eye
-    %h2 Expediente de Técnico
+    %h2 De la licitación
   .widget-body
     = simple_form_for([:documentary_control, @tech], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
@@ -29,7 +29,10 @@
         .row
           %section.col.col-md-12
             %label.label Documento
-            = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+            -if @action ==nil
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file", required: true
+            -else
+              = f.input :document, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
             %p.help-block
               - if @action == 'edit' && @tech.document.exists?
                 = 'Archivo subido: ' + File.basename(@tech.document.path, File.extname(@tech.document.path))
@@ -37,7 +40,7 @@
                 Subir el archivo correspondiente
 
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -64,7 +67,7 @@
             'technical_file[description]' : {
               required : true,
             },
-            'technical_file[type_of_technical_file_ids]':{
+            'technical_file[type_of_technical_file_id]':{
               required: true
             }
           },
@@ -77,7 +80,7 @@
             'technical_file[description]' : {
               required : "Por favor, ingrese una descripción para el documento"
             },
-            'technical_file[type_of_technical_file_ids]':{
+            'technical_file[type_of_technical_file_id]':{
               required: "Seleccione un tipo"
             }
           },
@@ -85,6 +88,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -95,8 +100,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();    
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();       
       }
     });
   }

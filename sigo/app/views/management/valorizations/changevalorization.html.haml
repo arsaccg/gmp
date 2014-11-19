@@ -1,0 +1,144 @@
+%h4
+  =@valorization.description rescue " "
+  = " " 
+  =@budget.name rescue " "
+=form_tag save_gantt_management_wbsitems_path, class: "form-horizontal", id: "gantt_form" do
+  %table(class="table-hover white-table small-font table-light"  width="100%")
+    %thead
+      %th
+        %strong
+          ITEM
+      %th
+        %strong
+          DESCRIPCION
+      %th
+        %strong
+          UND.
+      %th
+        %strong
+          METRADO
+          %br
+          CONTRATADO
+      %th
+        %strong
+          METRADO 
+          %br
+          ACUMULADO
+          %br
+          ANTERIOR 
+      %th
+        %strong
+          METRADO
+          %br
+          ACTUAL
+      %th
+        %strong
+          METRADO
+          %br
+          ACUMULADO
+      %th
+        %strong
+          SALDO
+    %tbody
+      - @results.each do |row|
+        %tr(class="#{get_clasification_by_order(row[2])}_#{row[2]}")
+          %td
+            = row[2] #row[0]
+          %td(class="#{get_color_by_order(row[2])}")
+            %span(style="color:transparent;")
+              ='_'*(row[2].length-2)
+            %a{:href => "javascript:toogle_three('#{get_clasification_by_order(row[2]+'.00')}', '#{row[2]}');"}
+              = #row[2]
+              = row[1]
+          -if row[4].to_f.round(2) > 0
+            %td
+              = "UND"
+            %td
+              %span
+                = row[4].to_f.round(2)
+            %td
+              %span{id: "prev_" + row[0].to_s}
+                = row[3].to_f.round(2)
+            %td
+              %input{:type=>"text", :class=>"input-mini", :id => "itembudget_#{row[0].to_s}", :name => "measured[#{row[0].to_s}]", :onblur => "update_data('#{row[0].to_s}', '#{row[4].to_f.round(2)}')", :onchange=>"update_valorization_item('#{row[0].to_s}')", :value => row[5].to_f.round(2), :style=>"text-align: right;"}
+            %td
+              %span{id: "total_" + row[0].to_s}
+                = (row[3] + row[5]).to_f.round(2)
+            %td
+              %span{id: "credit_" + row[0].to_s}
+                = sprintf('%.2f', (row[4].to_f.round(2) - row[5]).to_f.round(2))
+          -else
+            %td
+            %td
+            %td
+            %td
+            %td
+            %td
+        -@last_result = row
+
+%br
+%a{:href=>"javascript:load_url_ondiv('#{management_valorizations_path}', 'right-area')"}(class="btn btn-primary btn-xs")
+  %i.fa.fa-arrow-left
+  Retornar al listado de valorizaciones
+
+
+:javascript
+  $('.right-area').ready(function(){
+    hide_all();
+  });
+
+  function hide_all(){
+    last_result = parseInt("#{@last_result[2]}");
+    for (i = 1; i <= last_result; i++) { 
+      order_code = pad(i, 2);
+      console.log(order_code);
+      toogle_three('second', order_code);
+    }
+  }
+
+  function pad (str, max) {
+    str = str.toString();
+    return str.length < max ? pad("0" + str, max) : str;
+  }
+
+  function toogle_three(level, id){
+    tr_level = $("[class^='" + level + "_" +  id + "']");
+    tr_level.css("display") == 'table-row' ? tr_level.css("display","none") : tr_level.css("display","table-row");
+    
+    switch(level){
+      case "second":
+        $("[class^='third_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('third', id); }
+        });
+        break;
+      case "third":
+        $("[class^='fourth_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('fourth', id); }
+        });
+        break;
+      case "fourth":
+        $("[class^='fifth_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('fifth', id); }
+        });
+        break;
+      case "fifth":
+        $("[class^='sixth_" +  id + "']").each(function(){
+          if ($(this).css("display") == 'table-row'){ toogle_three('sixth', id); }
+        });
+        break;
+    }
+  }
+
+  function update_data(itembudget_id, measured_total){
+    partial_measured=parseFloat($("#itembudget_" + itembudget_id).val());
+    prev_measured=parseFloat($("#prev_" + itembudget_id).text());
+    $("#total_" + itembudget_id).text(partial_measured + prev_measured);
+    $("#credit_" + itembudget_id).text((measured_total - (partial_measured + prev_measured)).toFixed(2));
+  }
+ 
+  function update_valorization_item(item_id){
+    partial_measured=$("#itembudget_" + item_id).val();
+    load_url_ondiv("#{update_valorization_item_management_valorizationitems_path.to_s}?id=#{@valorization.id}&item=" + item_id + "&measured=" + partial_measured, "item");
+  }
+
+ 

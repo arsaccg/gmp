@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140726173542) do
+ActiveRecord::Schema.define(version: 20141009223256) do
 
   create_table "account_accountants", force: true do |t|
     t.string   "code"
@@ -43,6 +43,8 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.float    "c_variable"
   end
 
+  add_index "afp_details", ["afp_id"], name: "afp_id", using: :btree
+
   create_table "afps", force: true do |t|
     t.string   "enterprise"
     t.float    "mixed"
@@ -53,6 +55,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.float    "insurance_premium"
     t.float    "top"
     t.float    "c_variable"
+    t.string   "type_of_afp"
   end
 
   create_table "arbitration_documents", force: true do |t|
@@ -66,6 +69,23 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
   end
 
+  add_index "arbitration_documents", ["work_id"], name: "work_id", using: :btree
+
+  create_table "archeologies", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "archeologies", ["cost_center_id"], name: "cost_center_id", using: :btree
+
   create_table "articles", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -77,7 +97,49 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "category_id"
   end
 
+<<<<<<< HEAD
   create_table "articles_from_cost_center_4", force: true do |t|
+=======
+  add_index "articles", ["category_id"], name: "category_id", using: :btree
+  add_index "articles", ["type_of_article_id"], name: "type_of_article_id", using: :btree
+  add_index "articles", ["unit_of_measurement_id"], name: "unit_of_measurement_id", using: :btree
+
+  create_table "articles_from_cost_center_1", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  add_index "articles_from_cost_center_1", ["article_id"], name: "article_id", using: :btree
+  add_index "articles_from_cost_center_1", ["budget_id"], name: "budget_id", using: :btree
+  add_index "articles_from_cost_center_1", ["category_id"], name: "category_id", using: :btree
+  add_index "articles_from_cost_center_1", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "articles_from_cost_center_1", ["input_by_budget_and_items_id"], name: "input_by_budget_and_items_id", using: :btree
+  add_index "articles_from_cost_center_1", ["type_of_article_id"], name: "type_of_article_id", using: :btree
+  add_index "articles_from_cost_center_1", ["unit_of_measurement_id"], name: "unit_of_measurement_id", using: :btree
+
+  create_table "articles_from_cost_center_2", force: true do |t|
+    t.integer "article_id"
+    t.string  "code"
+    t.integer "type_of_article_id"
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "description"
+    t.integer "unit_of_measurement_id"
+    t.integer "cost_center_id"
+    t.integer "input_by_budget_and_items_id"
+    t.integer "budget_id"
+  end
+
+  create_table "articles_from_cost_center_3", force: true do |t|
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
     t.integer "article_id"
     t.string  "code"
     t.integer "type_of_article_id"
@@ -95,6 +157,11 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "ruc"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "money_id"
+    t.string   "account_type"
+    t.string   "account_number"
+    t.string   "account_detraction"
+    t.string   "cci"
   end
 
   create_table "book_works", force: true do |t|
@@ -109,6 +176,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "type_of_book_work_id"
+    t.date     "date"
   end
 
   create_table "budgets", force: true do |t|
@@ -142,6 +210,8 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "article_id"
   end
 
+  add_index "category_of_workers", ["article_id"], name: "article_id", using: :btree
+
   create_table "center_of_attentions", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -149,6 +219,8 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "abbreviation"
     t.integer  "cost_center_id"
   end
+
+  add_index "center_of_attentions", ["cost_center_id"], name: "cost_center_id", using: :btree
 
   create_table "certificates", force: true do |t|
     t.integer  "professional_id"
@@ -172,12 +244,20 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "num_days"
   end
 
+  add_index "certificates", ["charge_id"], name: "charge_id", using: :btree
+  add_index "certificates", ["other_work_id"], name: "other_work_id", using: :btree
+  add_index "certificates", ["professional_id"], name: "professional_id", using: :btree
+  add_index "certificates", ["work_id"], name: "work_id", using: :btree
+
   create_table "certificates_professionals", force: true do |t|
     t.integer  "certificate_id"
     t.integer  "professional_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "certificates_professionals", ["certificate_id"], name: "certificate_id", using: :btree
+  add_index "certificates_professionals", ["professional_id"], name: "professional_id", using: :btree
 
   create_table "charges", force: true do |t|
     t.string   "name"
@@ -190,6 +270,8 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "financial_agent_destiny"
     t.integer  "invoice_id"
   end
+
+  add_index "charges", ["invoice_id"], name: "invoice_id", using: :btree
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -211,6 +293,9 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
   end
 
+  add_index "companies_users", ["company_id"], name: "company_id", using: :btree
+  add_index "companies_users", ["user_id"], name: "user_id", using: :btree
+
   create_table "components", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -225,6 +310,9 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
   end
 
+  add_index "components_other_works", ["component_id"], name: "component_id", using: :btree
+  add_index "components_other_works", ["other_work_id"], name: "other_work_id", using: :btree
+
   create_table "components_works", force: true do |t|
     t.integer  "work_id"
     t.integer  "component_id"
@@ -233,13 +321,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
   end
 
   add_index "components_works", ["work_id", "component_id"], name: "index_components_works_on_work_id_and_component_id", using: :btree
-
-  create_table "componets_other_works", force: true do |t|
-    t.integer  "component_id"
-    t.integer  "other_works_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+  add_index "components_works", ["work_id"], name: "work_id", using: :btree
 
   create_table "concept_details", force: true do |t|
     t.integer  "concept_id"
@@ -249,6 +331,9 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "concept_details", ["concept_id"], name: "concept_id", using: :btree
+  add_index "concept_details", ["subconcept_id"], name: "subconcept_id", using: :btree
 
   create_table "concepts", force: true do |t|
     t.string   "name"
@@ -276,6 +361,9 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "type_of_contest_document_id"
   end
 
+  add_index "contest_documents", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "contest_documents", ["type_of_contest_document_id"], name: "type_of_contest_document_id", using: :btree
+
   create_table "contract_documents", force: true do |t|
     t.string   "attachment"
     t.string   "attachment_file_name"
@@ -287,6 +375,11 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
   end
 
+<<<<<<< HEAD
+=======
+  add_index "contract_documents", ["work_id"], name: "work_id", using: :btree
+
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   create_table "contract_types", force: true do |t|
     t.string   "description"
     t.string   "shortdescription"
@@ -308,6 +401,44 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "type_of_contractual_document_id"
   end
 
+  add_index "contractual_documents", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "contractual_documents", ["type_of_contractual_document_id"], name: "type_of_contractual_document_id", using: :btree
+
+  create_table "cost_center_details", force: true do |t|
+    t.string   "name"
+    t.date     "call_date"
+    t.integer  "snip_code"
+    t.string   "process_number"
+    t.date     "good_pro_date"
+    t.string   "referential_value"
+    t.string   "earned_value"
+    t.string   "direct_cost"
+    t.string   "general_cost"
+    t.string   "utility"
+    t.string   "IGV"
+    t.date     "contract_sign_date"
+    t.string   "contract_number"
+    t.date     "land_delivery_date"
+    t.date     "direct_advanced_payment_date"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "amazon_tax_condition",           default: "No aplica"
+    t.date     "direct_advanced_form_date"
+    t.date     "start_date_of_work"
+    t.string   "procurement_system"
+    t.integer  "execution_term"
+    t.string   "supervision"
+    t.date     "material_advanced_payment_date"
+    t.integer  "entity_id"
+    t.string   "district"
+    t.string   "province"
+    t.string   "department"
+  end
+
+  add_index "cost_center_details", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "cost_center_details", ["entity_id"], name: "entity_id", using: :btree
+
   create_table "cost_center_timelines", force: true do |t|
     t.integer "cost_center_id"
     t.date    "date"
@@ -317,6 +448,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer "day"
   end
 
+  add_index "cost_center_timelines", ["cost_center_id"], name: "cost_center_id", using: :btree
   add_index "cost_center_timelines", ["cost_center_id"], name: "index_cost_center_timelines_on_cost_center_id", using: :btree
 
   create_table "cost_centers", force: true do |t|
@@ -334,12 +466,17 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.date     "date_min"
   end
 
+  add_index "cost_centers", ["company_id"], name: "company_id", using: :btree
+
   create_table "cost_centers_users", force: true do |t|
     t.integer  "cost_center_id"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "cost_centers_users", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "cost_centers_users", ["user_id"], name: "user_id", using: :btree
 
   create_table "data_summary_accountings", force: true do |t|
     t.integer  "account_accountant_id"
@@ -358,13 +495,21 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "unit_of_measurement_id"
-    t.integer  "amount"
+    t.float    "amount"
     t.text     "description"
     t.integer  "delivery_order_id"
     t.date     "scheduled_date"
     t.integer  "center_of_attention_id"
     t.boolean  "requested"
+    t.integer  "lock_version",           default: 0, null: false
   end
+
+  add_index "delivery_order_details", ["article_id"], name: "article_id", using: :btree
+  add_index "delivery_order_details", ["center_of_attention_id"], name: "center_of_attention_id", using: :btree
+  add_index "delivery_order_details", ["delivery_order_id"], name: "delivery_order_id", using: :btree
+  add_index "delivery_order_details", ["phase_id"], name: "phase_id", using: :btree
+  add_index "delivery_order_details", ["sector_id"], name: "sector_id", using: :btree
+  add_index "delivery_order_details", ["unit_of_measurement_id"], name: "unit_of_measurement_id", using: :btree
 
   create_table "delivery_orders", force: true do |t|
     t.string   "state"
@@ -375,7 +520,11 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.date     "scheduled"
     t.text     "description"
     t.integer  "cost_center_id"
+    t.integer  "lock_version",   default: 0, null: false
   end
+
+  add_index "delivery_orders", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "delivery_orders", ["user_id"], name: "user_id", using: :btree
 
   create_table "distribution_items", force: true do |t|
     t.integer  "distribution_id"
@@ -394,6 +543,36 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
     t.integer  "cost_center_id"
     t.integer  "budget_id"
+  end
+
+  create_table "diverse_expenses_of_management_details", force: true do |t|
+    t.integer  "diverse_expenses_of_management_id"
+    t.string   "code"
+    t.float    "amount"
+    t.date     "delivered_date"
+    t.integer  "entity_id"
+    t.string   "bill_concept"
+    t.string   "bill"
+    t.date     "bill_date"
+    t.string   "bill_amount"
+    t.string   "bill_detraction"
+    t.string   "bill_to_account"
+    t.string   "igv_commission"
+    t.string   "net_return"
+    t.string   "balance"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "diverse_expenses_of_managements", force: true do |t|
+    t.string   "name"
+    t.string   "amount"
+    t.string   "expenses"
+    t.string   "total_delivered"
+    t.integer  "cost_center_id"
+    t.float    "percentage"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "document_provisions", force: true do |t|
@@ -442,7 +621,11 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "province"
     t.string   "department"
     t.string   "alienslicense"
+    t.integer  "cost_center_detail_id"
   end
+
+  add_index "entities", ["cost_center_detail_id"], name: "cost_center_detail_id", using: :btree
+  add_index "entities", ["cost_center_id"], name: "cost_center_id", using: :btree
 
   create_table "entities_type_entities", force: true do |t|
     t.integer  "entity_id"
@@ -452,6 +635,32 @@ ActiveRecord::Schema.define(version: 20140726173542) do
   end
 
   add_index "entities_type_entities", ["entity_id", "type_entity_id"], name: "index_entities_type_entities_on_entity_id_and_type_entity_id", using: :btree
+  add_index "entities_type_entities", ["entity_id"], name: "entity_id", using: :btree
+  add_index "entities_type_entities", ["type_entity_id"], name: "type_entity_id", using: :btree
+
+  create_table "entity_cost_center_details", force: true do |t|
+    t.integer  "cost_center_detail_id"
+    t.integer  "entity_id"
+    t.integer  "participation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "entity_cost_center_details", ["cost_center_detail_id"], name: "cost_center_detail_id", using: :btree
+  add_index "entity_cost_center_details", ["entity_id"], name: "entity_id", using: :btree
+
+  create_table "environments", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.datetime "document_updated_at"
+    t.integer  "document_file_size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "exchange_of_rates", force: true do |t|
     t.datetime "day"
@@ -505,6 +714,15 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
   end
 
+  create_table "folders", force: true do |t|
+    t.integer  "folderfa_id"
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "format_per_documents", force: true do |t|
     t.integer  "document_id"
     t.integer  "format_id"
@@ -535,10 +753,16 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "people"
     t.float    "participation"
     t.float    "time"
+<<<<<<< HEAD
     t.float    "salary"
     t.float    "parcial"
     t.float    "amount"
     t.float    "cost"
+=======
+    t.string   "parcial"
+    t.float    "amount"
+    t.string   "cost"
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -548,6 +772,11 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "cost_center_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+<<<<<<< HEAD
+=======
+    t.string   "total"
+    t.string   "code_phase"
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
 
   create_table "graphers", force: true do |t|
@@ -574,7 +803,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "ownitem"
     t.string   "cod_input"
     t.float    "quantity"
-    t.float    "price"
+    t.float    "price",          limit: 14
     t.float    "aprox"
     t.string   "order"
     t.float    "measured"
@@ -671,6 +900,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "year"
     t.string   "type_of_doc"
     t.integer  "type_of_issued_letter_id"
+    t.date     "date"
   end
 
   create_table "itembybudgets", force: true do |t|
@@ -727,6 +957,20 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "unity_code"
     t.integer  "deleted"
     t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "land_deliveries", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.integer  "type_of_land_delivery_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -813,6 +1057,20 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string "symbol"
   end
 
+  create_table "modification_files", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.integer  "type_of_modification_file_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "money", force: true do |t|
     t.string   "name"
     t.string   "symbol"
@@ -852,7 +1110,14 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.float    "discount_before"
     t.float    "discount_after"
     t.float    "quantity_igv"
+    t.integer  "lock_version",           default: 0, null: false
   end
+
+  add_index "order_of_service_details", ["article_id"], name: "article_id", using: :btree
+  add_index "order_of_service_details", ["order_of_service_id"], name: "order_of_service_id", using: :btree
+  add_index "order_of_service_details", ["phase_id"], name: "phase_id", using: :btree
+  add_index "order_of_service_details", ["sector_id"], name: "sector_id", using: :btree
+  add_index "order_of_service_details", ["unit_of_measurement_id"], name: "unit_of_measurement_id", using: :btree
 
   create_table "order_of_services", force: true do |t|
     t.string   "state"
@@ -867,7 +1132,14 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "money_id"
     t.float    "exchange_of_rate"
     t.date     "date_of_service"
+    t.integer  "lock_version",         default: 0, null: false
   end
+
+  add_index "order_of_services", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "order_of_services", ["entity_id"], name: "entity_id", using: :btree
+  add_index "order_of_services", ["method_of_payment_id"], name: "method_of_payment_id", using: :btree
+  add_index "order_of_services", ["money_id"], name: "money_id", using: :btree
+  add_index "order_of_services", ["user_id"], name: "user_id", using: :btree
 
   create_table "order_service_extra_calculations", force: true do |t|
     t.integer  "order_of_service_detail_id"
@@ -878,7 +1150,11 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
+    t.integer  "lock_version",               default: 0, null: false
   end
+
+  add_index "order_service_extra_calculations", ["extra_calculation_id"], name: "extra_calculation_id", using: :btree
+  add_index "order_service_extra_calculations", ["order_of_service_detail_id"], name: "order_of_service_detail_id", using: :btree
 
   create_table "other_works", force: true do |t|
     t.string   "name"
@@ -903,7 +1179,13 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "part_of_equipment_id"
     t.integer  "sector_id"
     t.float    "fuel"
+    t.integer  "lock_version",         default: 0, null: false
   end
+
+  add_index "part_of_equipment_details", ["part_of_equipment_id"], name: "part_of_equipment_id", using: :btree
+  add_index "part_of_equipment_details", ["phase_id"], name: "phase_id", using: :btree
+  add_index "part_of_equipment_details", ["sector_id"], name: "sector_id", using: :btree
+  add_index "part_of_equipment_details", ["working_group_id"], name: "working_group_id", using: :btree
 
   create_table "part_of_equipments", force: true do |t|
     t.string   "code"
@@ -922,8 +1204,18 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
+<<<<<<< HEAD
     t.integer  "block"
+=======
+    t.integer  "lock_version",             default: 0, null: false
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
+
+  add_index "part_of_equipments", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "part_of_equipments", ["equipment_id"], name: "equipment_id", using: :btree
+  add_index "part_of_equipments", ["subcategory_id"], name: "subcategory_id", using: :btree
+  add_index "part_of_equipments", ["subcontract_equipment_id"], name: "subcontract_equipment_id", using: :btree
+  add_index "part_of_equipments", ["worker_id"], name: "worker_id", using: :btree
 
   create_table "part_people", force: true do |t|
     t.integer  "working_group_id"
@@ -934,7 +1226,15 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "cost_center_id"
     t.integer  "block"
     t.integer  "blockweekly"
+<<<<<<< HEAD
+=======
+    t.integer  "cost_center_id"
+    t.integer  "lock_version",     default: 0, null: false
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
+
+  add_index "part_people", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "part_people", ["working_group_id"], name: "working_group_id", using: :btree
 
   create_table "part_person_details", force: true do |t|
     t.integer  "worker_id"
@@ -947,16 +1247,57 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
     t.integer  "part_person_id"
     t.integer  "sector_id"
+    t.integer  "lock_version",   default: 0, null: false
   end
+
+  add_index "part_person_details", ["phase_id"], name: "phase_id", using: :btree
+  add_index "part_person_details", ["sector_id"], name: "sector_id", using: :btree
+  add_index "part_person_details", ["worker_id"], name: "worker_id", using: :btree
 
   create_table "part_work_details", force: true do |t|
     t.integer  "part_work_id"
-    t.integer  "article_id"
+    t.integer  "itembybudget_id"
     t.float    "bill_of_quantitties"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lock_version",        default: 0, null: false
   end
+
+  add_index "part_work_details", ["itembybudget_id"], name: "article_id", using: :btree
+  add_index "part_work_details", ["part_work_id"], name: "part_work_id", using: :btree
+
+  create_table "part_worker_details", force: true do |t|
+    t.integer  "worker_id"
+    t.integer  "phase_id"
+    t.integer  "sector_id"
+    t.string   "assistance"
+    t.string   "reason_of_lack"
+    t.integer  "working_group_id"
+    t.integer  "cost_center_id"
+    t.integer  "part_worker_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "lock_version",     default: 0, null: false
+  end
+
+  add_index "part_worker_details", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "part_worker_details", ["part_worker_id"], name: "part_worker_id", using: :btree
+  add_index "part_worker_details", ["phase_id"], name: "phase_id", using: :btree
+  add_index "part_worker_details", ["sector_id"], name: "sector_id", using: :btree
+  add_index "part_worker_details", ["worker_id"], name: "worker_id", using: :btree
+  add_index "part_worker_details", ["working_group_id"], name: "working_group_id", using: :btree
+
+  create_table "part_workers", force: true do |t|
+    t.string   "number_part"
+    t.date     "date_of_creation"
+    t.integer  "company_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "lock_version",     default: 0, null: false
+  end
+
+  add_index "part_workers", ["company_id"], name: "company_id", using: :btree
 
   create_table "part_works", force: true do |t|
     t.integer  "working_group_id"
@@ -966,7 +1307,23 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
     t.integer  "sector_id"
     t.integer  "cost_center_id"
+<<<<<<< HEAD
     t.integer  "block"
+=======
+    t.integer  "lock_version",         default: 0, null: false
+  end
+
+  add_index "part_works", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "part_works", ["sector_id"], name: "sector_id", using: :btree
+  add_index "part_works", ["working_group_id"], name: "working_group_id", using: :btree
+
+  create_table "payment_orders", force: true do |t|
+    t.integer  "provision_id"
+    t.float    "net_pay"
+    t.float    "igv"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
 
   create_table "phases", force: true do |t|
@@ -988,24 +1345,11 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "photo_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "folder_id"
   end
 
   create_table "position_workers", force: true do |t|
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "professional_certificates", force: true do |t|
-    t.integer  "professional_id"
-    t.integer  "certificate_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "professional_trainings", force: true do |t|
-    t.integer  "professional_id"
-    t.integer  "training_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1048,7 +1392,37 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.float    "current_igv"
     t.float    "current_unit_price"
     t.float    "net_price_after_igv"
+<<<<<<< HEAD
+=======
+    t.integer  "lock_version",          default: 0, null: false
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
+
+  add_index "provision_details", ["account_accountant_id"], name: "account_accountant_id", using: :btree
+  add_index "provision_details", ["order_detail_id"], name: "order_detail_id", using: :btree
+  add_index "provision_details", ["provision_id"], name: "provision_id", using: :btree
+
+  create_table "provision_direct_purchase_details", force: true do |t|
+    t.integer  "article_id"
+    t.integer  "sector_id"
+    t.integer  "phase_id"
+    t.integer  "amount"
+    t.float    "price"
+    t.float    "unit_price_before_igv"
+    t.boolean  "igv"
+    t.float    "quantity_igv"
+    t.float    "discount_after"
+    t.float    "discount_before"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "provision_id"
+    t.integer  "account_accountant_id"
+    t.float    "unit_price_igv"
+    t.integer  "lock_version",          default: 0, null: false
+  end
+
+  add_index "provision_direct_purchase_details", ["article_id", "sector_id", "phase_id", "provision_id", "account_accountant_id"], name: "article_id", using: :btree
 
   create_table "provisions", force: true do |t|
     t.integer  "document_provision_id"
@@ -1061,7 +1435,13 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
+    t.integer  "lock_version",              default: 0, null: false
   end
+
+  add_index "provisions", ["cost_center_id"], name: "cost_center_id", using: :btree
+  add_index "provisions", ["document_provision_id"], name: "document_provision_id", using: :btree
+  add_index "provisions", ["entity_id"], name: "entity_id", using: :btree
+  add_index "provisions", ["order_id"], name: "order_id", using: :btree
 
   create_table "purchase_order_details", force: true do |t|
     t.integer  "delivery_order_detail_id"
@@ -1079,7 +1459,13 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.float    "quantity_igv"
     t.float    "discount_after"
     t.float    "discount_before"
+<<<<<<< HEAD
+=======
+    t.integer  "lock_version",             default: 0, null: false
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
+
+  add_index "purchase_order_details", ["delivery_order_detail_id", "purchase_order_id"], name: "delivery_order_detail_id", using: :btree
 
   create_table "purchase_order_extra_calculations", force: true do |t|
     t.integer  "purchase_order_detail_id"
@@ -1090,7 +1476,10 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
+    t.integer  "lock_version",             default: 0, null: false
   end
+
+  add_index "purchase_order_extra_calculations", ["purchase_order_detail_id", "extra_calculation_id"], name: "purchase_order_detail_id", using: :btree
 
   create_table "purchase_orders", force: true do |t|
     t.string   "state"
@@ -1107,6 +1496,24 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
     t.float    "exchange_of_rate"
     t.integer  "entity_id"
+    t.integer  "lock_version",         default: 0, null: false
+  end
+
+  add_index "purchase_orders", ["money_id", "method_of_payment_id", "user_id", "cost_center_id", "entity_id"], name: "money_id", using: :btree
+
+  create_table "qa_qcs", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_of_qa_qc_id"
+    t.integer  "type_of_qa_qc_supplier_id"
   end
 
   create_table "received_letters", force: true do |t|
@@ -1121,6 +1528,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "type_of_received_letter_id"
+    t.date     "date"
   end
 
   create_table "record_of_meetings", force: true do |t|
@@ -1214,6 +1622,11 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
   end
 
+  create_table "report_stocks", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "sc_valuations", force: true do |t|
     t.string   "name"
     t.date     "start_date"
@@ -1264,6 +1677,19 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "cost_center_id"
   end
 
+  create_table "securities", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.datetime "document_updated_at"
+    t.integer  "document_file_size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "state_per_order_details", force: true do |t|
     t.integer  "delivery_order_id"
     t.string   "state"
@@ -1288,6 +1714,14 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
   end
 
+  create_table "state_per_warehouse_orders", force: true do |t|
+    t.string   "state"
+    t.integer  "warehouse_order_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "stock_input_details", force: true do |t|
     t.integer  "stock_input_id"
     t.integer  "purchase_order_detail_id"
@@ -1302,6 +1736,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.float    "unit_cost"
     t.integer  "sector_id"
     t.integer  "phase_id"
+    t.integer  "lock_version",             default: 0, null: false
   end
 
   add_index "stock_input_details", ["article_id"], name: "index_stock_input_details_on_article_id", using: :btree
@@ -1330,6 +1765,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "responsible_id"
     t.integer  "supplier_id"
     t.string   "series"
+    t.integer  "lock_version",     default: 0, null: false
   end
 
   add_index "stock_inputs", ["company_id"], name: "index_stock_inputs_on_company_id", using: :btree
@@ -1351,6 +1787,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "subcontract_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lock_version",   default: 0, null: false
   end
 
   create_table "subcontract_details", force: true do |t|
@@ -1363,6 +1800,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
     t.integer  "subcontract_id"
     t.integer  "itembybudget_id"
+    t.integer  "lock_version",    default: 0, null: false
   end
 
   create_table "subcontract_equipment_advances", force: true do |t|
@@ -1371,6 +1809,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "subcontract_equipment_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lock_version",             default: 0, null: false
   end
 
   create_table "subcontract_equipment_details", force: true do |t|
@@ -1390,6 +1829,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
     t.integer  "subcontract_equipment_id"
     t.string   "code"
+    t.integer  "lock_version",             default: 0, null: false
   end
 
   create_table "subcontract_equipments", force: true do |t|
@@ -1405,6 +1845,8 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cost_center_id"
+    t.string   "contract_description"
+    t.integer  "lock_version",                 default: 0, null: false
   end
 
   create_table "subcontracts", force: true do |t|
@@ -1421,6 +1863,7 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "type"
     t.float    "igv"
     t.integer  "cost_center_id"
+    t.integer  "lock_version",                 default: 0, null: false
   end
 
   create_table "technical_files", force: true do |t|
@@ -1556,9 +1999,41 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "updated_at"
   end
 
+  create_table "type_of_land_deliveries", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "type_of_law_and_regulations", force: true do |t|
     t.string   "name"
     t.string   "preffix"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_modification_files", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_qa_qc_qualities", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_qa_qc_suppliers", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1590,6 +2065,14 @@ ActiveRecord::Schema.define(version: 20140726173542) do
   create_table "type_of_technical_libraries", force: true do |t|
     t.string   "name"
     t.string   "preffix"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "type_of_valorization_docs", force: true do |t|
+    t.string   "name"
+    t.string   "preffix"
+    t.integer  "cost_center_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1648,6 +2131,20 @@ ActiveRecord::Schema.define(version: 20140726173542) do
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+
+  create_table "valorization_docs", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "cost_center_id"
+    t.integer  "type_of_valorization_doc_id"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "valorizationitems", force: true do |t|
     t.integer  "valorization_id"
@@ -1708,6 +2205,28 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "code"
+    t.integer  "subcontract_equipment_id"
+  end
+
+  create_table "warehouse_order_details", force: true do |t|
+    t.integer  "article_id"
+    t.integer  "quantity"
+    t.integer  "sector_id"
+    t.integer  "phase_id"
+    t.integer  "warehouse_order_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "warehouse_orders", force: true do |t|
+    t.string   "code"
+    t.integer  "working_group_id"
+    t.date     "date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "cost_center_id"
+    t.string   "state"
+    t.integer  "user_id"
   end
 
   create_table "warehouses", force: true do |t|
@@ -1759,6 +2278,21 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "state"
   end
 
+<<<<<<< HEAD
+=======
+  create_table "weeks_for_cost_center_1", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+  create_table "weeks_for_cost_center_2", force: true do |t|
+    t.string "name"
+    t.date   "start_date"
+    t.date   "end_date"
+  end
+
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   create_table "weeks_for_cost_center_3", force: true do |t|
     t.string "name"
     t.date   "start_date"
@@ -1802,37 +2336,59 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.date     "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "afpnumber"
   end
+
+  add_index "worker_afps", ["afp_id", "worker_id"], name: "afp_id", using: :btree
 
   create_table "worker_center_of_studies", force: true do |t|
     t.string   "name"
     t.string   "profession"
     t.string   "title"
     t.string   "numberoftuition"
-    t.date     "start_date"
-    t.date     "end_date"
+    t.integer  "start_date"
+    t.integer  "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "worker_id"
+    t.integer  "lock_version",    default: 0, null: false
   end
+
+  add_index "worker_center_of_studies", ["worker_id"], name: "worker_id", using: :btree
 
   create_table "worker_contracts", force: true do |t|
     t.integer  "article_id"
     t.float    "camp"
     t.float    "destaque"
     t.float    "salary"
-    t.integer  "regime"
+    t.string   "regime"
     t.integer  "days"
     t.date     "start_date"
     t.date     "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "worker_id"
-    t.integer  "numberofcontract"
+    t.string   "numberofcontract"
     t.string   "typeofcontract"
     t.date     "end_date_2"
     t.integer  "contract_type_id"
+<<<<<<< HEAD
+=======
+    t.string   "reason_for_termination"
+    t.float    "viatical"
+    t.float    "bonus"
+    t.integer  "status"
+    t.string   "comment"
+    t.string   "document"
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.integer  "lock_version",           default: 0, null: false
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
+
+  add_index "worker_contracts", ["article_id", "worker_id", "contract_type_id"], name: "article_id", using: :btree
 
   create_table "worker_details", force: true do |t|
     t.integer  "bank_id"
@@ -1840,21 +2396,26 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.integer  "worker_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lock_version",   default: 0, null: false
   end
+
+  add_index "worker_details", ["bank_id"], name: "bank_id", using: :btree
 
   create_table "worker_experiences", force: true do |t|
     t.string   "businessname"
-    t.string   "businessaddress"
     t.string   "title"
     t.float    "salary"
     t.string   "bossincharge"
     t.string   "exitreason"
-    t.date     "start_date"
-    t.date     "end_date"
+    t.integer  "start_date"
+    t.integer  "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "worker_id"
+    t.integer  "lock_version", default: 0, null: false
   end
+
+  add_index "worker_experiences", ["businessname", "worker_id"], name: "businessname", using: :btree
 
   create_table "worker_familiars", force: true do |t|
     t.string   "paternal_surname"
@@ -1866,7 +2427,10 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "worker_id"
+    t.integer  "lock_version",     default: 0, null: false
   end
+
+  add_index "worker_familiars", ["dni", "worker_id"], name: "dni", using: :btree
 
   create_table "worker_healths", force: true do |t|
     t.integer  "health_center_id"
@@ -1876,7 +2440,13 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "health_regime"
+<<<<<<< HEAD
+=======
+    t.integer  "lock_version",     default: 0, null: false
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
+
+  add_index "worker_healths", ["health_center_id", "worker_id", "health_regime"], name: "health_center_id", using: :btree
 
   create_table "worker_otherstudies", force: true do |t|
     t.string   "study"
@@ -1884,14 +2454,20 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "worker_id"
+    t.integer  "lock_version", default: 0, null: false
   end
+
+  add_index "worker_otherstudies", ["worker_id"], name: "worker_id", using: :btree
 
   create_table "workers", force: true do |t|
     t.string   "phone"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "position_worker_id"
+<<<<<<< HEAD
     t.integer  "cost_center_id"
+=======
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
     t.integer  "entity_id"
     t.string   "email"
     t.string   "address"
@@ -1904,10 +2480,10 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "highschool"
     t.string   "primarydistrict"
     t.string   "highschooldistrict"
-    t.date     "primarystartdate"
-    t.date     "primaryenddate"
-    t.date     "highschoolstartdate"
-    t.date     "highschoolenddate"
+    t.integer  "primarystartdate"
+    t.integer  "primaryenddate"
+    t.integer  "highschoolstartdate"
+    t.integer  "highschoolenddate"
     t.string   "levelofinstruction"
     t.string   "quality"
     t.string   "security"
@@ -1971,8 +2547,17 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "unionized"
     t.string   "state"
     t.string   "income_fifth_category"
+<<<<<<< HEAD
     t.string   "afpnumber"
+=======
+    t.string   "lastgrade"
+    t.integer  "position_wg_id"
+    t.string   "number_position"
+    t.integer  "lock_version",                              default: 0, null: false
+>>>>>>> 5adc795bed5d808d741c369decbc55e3f7cd7b3e
   end
+
+  add_index "workers", ["position_worker_id", "entity_id", "cost_center_id"], name: "position_worker_id", using: :btree
 
   create_table "working_groups", force: true do |t|
     t.integer  "master_builder_id"
@@ -1986,6 +2571,8 @@ ActiveRecord::Schema.define(version: 20140726173542) do
     t.string   "name"
     t.integer  "cost_center_id"
   end
+
+  add_index "working_groups", ["master_builder_id", "front_chief_id", "executor_id", "user_inserts_id", "user_updates_id", "cost_center_id"], name: "master_builder_id", using: :btree
 
   create_table "works", force: true do |t|
     t.string   "specialty"

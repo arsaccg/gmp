@@ -1,0 +1,51 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-12.col-md-12.col-lg-7
+      %h2.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw  
+        Nueva Valorizacion
+  #widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-6
+        #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-eye
+            %h2 Valorizacion
+          .widget-body
+            =simple_form_for([:management, @valorization], html: {class: "form-horizontal smart-form", autocomplete: 'off', :id => "new_valorization"}) do |f|
+              %fieldset
+                .row.form-inline
+                  %section.col.col-10
+                    %label.label Mes
+                    %label.input{for: "valorization_date"}
+                      = f.input :valorization_date, input_html: { class: 'form-control' }, label: false
+
+                .row
+                  %section.col.col-10
+                    %label.label Titulo
+                    %label.input{for: "name"}
+                      %i.icon-append.fa.fa-user
+                      -#Esto no es lo que se envía
+                      = f.input :name, input_html: { class: 'form-control', value: "VALORIZACION N° #{@num_val}" }, label: false, disabled: true
+
+                .row
+                  %section.col.col-10
+                    = f.input :budget_id, :as => :hidden
+                    = f.input :name, input_html: { value: "VALORIZACION N° #{@num_val}" }, :as => :hidden
+
+              %footer
+                %a{:href=>"javascript:post_to_url('" + management_valorizations_path.to_s + "?authenticity_token=#{form_authenticity_token}', 'new_valorization', 'right-area');", :class=>"btn btn-success"}
+                  %i.fa.fa-save
+                  Guardar Valorizacion
+
+  %a.btn.btn-sm.btn-primary.btn-prev#backlist-companies{:href=>"javascript: load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"', 'right-area');"}
+    %i.fa.fa-arrow-left
+    Retornar al listado de compañias
+
+:javascript 
+  $("#valorization_valorization_date_3i").val("1");
+  $("valorization_valorization_date_3i").fadeOut();
+  function load_back(url){
+    load_url_ondiv(url, 'right-area');
+  }

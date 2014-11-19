@@ -1,9 +1,12 @@
 #content-inside
   .row
-    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+    .col-xs-12.col-sm-7.col-md-7.col-lg-8
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Lista de Contratos
+      %h1.page-title.txt-color-blueDark
+        %strong
+          = @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s + ', ' + @worker.entity.name.to_s + ' ' + @worker.entity.dni.to_s
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"}
@@ -19,12 +22,34 @@
         %strong Error!
         = flash[:error]
   .row
-    .col-sm-2
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Contrato'}, null, 'GET')"}
-        Agregar Contrato
+    - if Worker.find(@worker_id).typeofworker!="externo"
+      - if Worker.find(@worker_id).typeofworker=="obrero"
+        -if @workercontracts.count == 0
+          %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Contrato'}, null, 'GET')"}
+            Cambio de Categoría
+        -else
+          %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Adenda'}, null, 'GET')"}
+            Cambio de Categoría
+      -else
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Adenda'}, null, 'GET')"}
+          Agregar Adenda
+      .col-md-1
+      -if Worker.find(@worker_id).typeofworker=="empleado"
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_worker_contract_path}', 'content', {worker_id: '#{@worker_id}',typeofcontract: 'Renovacion'}, null, 'GET')"}
+          Agregar Renovacion
   %br
   .row
   #widget-grid
     .row
       %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
         = render :partial => 'table'
+
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-sector{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado de Trabajadores
+
+:javascript
+
+  $('#backlist-sector').click(function(){
+      load_url_ajax("#{production_workers_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+  });

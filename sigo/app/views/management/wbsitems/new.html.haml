@@ -1,0 +1,29 @@
+%br
+%br
+%br
+.form-tabbed
+  =simple_form_for [:management, @wbsitem], :html => {:class => 'form-horizontal', :id=>'form-data'} do |f|
+    .fieldset
+      .control-group
+        %label(class="control-label") Nodo Padre
+        .controls
+          - if (@wbsitems.count > 0)
+            %select(name="major_item")
+              =options_for_select(@wbsitems.collect{ |u| [ (("---") * u.codewbs.length.to_i) + " " + u.codewbs[1..u.codewbs.length] + " " +  " " + u.name, u.id]})
+      .control-group
+        %label(class="control-label") Nombre del Item
+        .controls
+          = f.input :name, label: false, input_html: { class: 'form-control' }
+      .control-group
+        %label(class="control-label") Descripcion
+        .controls
+          = f.input :description, label: false, :as => :text, input_html: { class: 'form-control' }
+      .control-group
+        %label(class="control-label") Notas
+        .controls
+          = f.input :notes, :as => :text, label: false, input_html: { class: 'form-control' }
+      .form-actions
+        %a{:href=>"javascript:post_to_url('" + management_wbsitems_path.to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
+          Crear nuevo elemento
+        %a(href="#" class= "btn btn-danger")
+          Cancelar

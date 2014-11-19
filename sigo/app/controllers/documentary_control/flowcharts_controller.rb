@@ -64,6 +64,6 @@ class DocumentaryControl::FlowchartsController < ApplicationController
 
   private
   def flow_parameters
-    params.require(:flowchart).permit(:name, :description, :photo)
+    params.require(:qa_qc).permit(:name, :description, :photo)
   end
 end

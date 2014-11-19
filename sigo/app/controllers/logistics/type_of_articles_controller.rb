@@ -17,6 +17,7 @@ class Logistics::TypeOfArticlesController < ApplicationController
     flash[:error] = nil
     typeOfArticle = TypeOfArticle.new(type_of_article_parameters)
     if typeOfArticle.save
+      ActiveRecord::Base.connection.execute("CALL `update_inputcategories`")
       flash[:notice] = "Se ha creado correctamente el tipo de insumo."
       redirect_to :action => :index
     else

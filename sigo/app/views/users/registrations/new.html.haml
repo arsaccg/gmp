@@ -33,7 +33,7 @@
       / <span id="logo"></span>
       #logo-group
         %span#logo
-          = image_tag 'logo.png', alt: "ARSAC"
+          = image_tag 'logo-sigo.png', alt: "ARSAC", style: 'width: 250px;'
         / END AJAX-DROPDOWN
     #main{role: "main"}
       / MAIN CONTENT
@@ -43,20 +43,11 @@
             %h1.txt-color-red.login-header-big ARSAC Contratistas Generales
             .hero
               .pull-left.login-desc-box-l
-                %h4.paragraph-header It's Okay to be Smart. Experience the simplicity of SmartAdmin, everywhere you go!
+                %h4.paragraph-header Somos una organización socialmente responsable, al otorgar bienestar a nuestros colaboradores tanto como a la sociedad que nos rodea, integrándolos en nuestros procesos constructivos, para asegurar la sostenibilidad de todos.
                 .login-app-icons
-                  %a.btn.btn-danger.btn-sm{href: "javascript:void(0);"} Frontend Template
-                  %a.btn.btn-danger.btn-sm{href: "javascript:void(0);"} Find out more
-              = image_tag 'demo/iphoneview.png', alt: "SmartAdmin", class: "pull-right display-image", style: "width:210px"
-            .row
-              .col-xs-12.col-sm-12.col-md-6.col-lg-6
-                %h5.about-heading About SmartAdmin - Are you up to date?
-                %p
-                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa.
-              .col-xs-12.col-sm-12.col-md-6.col-lg-6
-                %h5.about-heading Not just your average template!
-                %p
-                  Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi voluptatem accusantium!
+                
+              = image_tag 'demo/iphoneview.jpg', alt: "SmartAdmin", class: "pull-right display-image", style: "width:210px"
+
           .col-xs-12.col-sm-12.col-md-5.col-lg-4
             .well.no-padding
               = form_for(resource, :as => resource_name, :html => {:class => "smart-form client-form", :id => "signup-form"}, :url => registration_path(resource_name)) do |f|
@@ -107,8 +98,6 @@
       <script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script>
     / BOOTSTRAP JS
     = javascript_include_tag 'bootstrap/bootstrap.min'
-    / CUSTOM NOTIFICATION
-    = javascript_include_tag 'notification/SmartNotification.min'
     / JQUERY VALIDATE
     = javascript_include_tag 'plugin/jquery-validate/jquery.validate.min'
     / JQUERY MASKED INPUT

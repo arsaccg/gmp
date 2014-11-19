@@ -16,6 +16,7 @@
             %th Condiciones de Pago
             %th Fondo de Garantia
             %th Monto Contratado
+            %th Descripción
             %th Acciones
         %tbody
           - @subcontracts.each do |subcontract|
@@ -51,8 +52,12 @@
                 = number_to_currency(subcontract.guarantee_fund.to_f, unit: "S/.", precision: 2)
               %td 
                 = number_to_currency(subcontract.contract_amount.to_f, unit: "S/.", precision: 2)
+              %td 
+                = subcontract.contract_description
               %td
-                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_subcontract_equipment_details_path}', 'content', {company_id: '#{@company}', subcontract: '#{subcontract.id}'}, null, 'GET')"}
+                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_subcontract_equipment_path(subcontract.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                  Ver Info
+                %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{production_subcontract_equipment_details_path}', 'content', {company_id: '#{@company}', subcontract: '#{subcontract.id}'}, null, 'GET')"}
                   Equipos
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_production_subcontract_equipment_path(subcontract.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
                   Editar

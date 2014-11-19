@@ -2,37 +2,42 @@
 - @delivery_orders_detail.each do |dode|
   %tr{id: "tr-" + @reg_n.to_s}
     %td(style="display:none" class="pod-di")
-      = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][delivery_order_detail_id]', dode.id.to_i
+      = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][delivery_order_detail_id]', dode.id.to_i, class: 'pod-di-id'
     %td=dode.article.code
     %td=dode.article.name
     %td.unit-of-measurement
       =dode.unit_of_measurement.symbol
-    %td.discount-before{ :style => "display:none"}
-      = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_before]', nil, class: "form-control discount-before"
-    %td.discount-after{ :style => "display:none"}
-      = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_after]', nil, class: "form-control discount-after"
     %td.discount-igv{ :style => "display:none"}
       = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][quantity_igv]', nil, class: "form-control discount-igv"
     %td.amount
       = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][amount]', dode.amount, class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{dode.amount})"
       %code= "Por atender: #{dode.amount}"
     %td.unit-price
-      = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', nil, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);"
+      = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', nil, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);", :required => true, title:'No puede dejar este campo vacio'
+    %td.discount-before{:style => 'text-align: center'}
+      = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_before]', nil, class: "form-control discount-before", :readonly => true
+      %div{id: @reg_n.to_s+"b",:style => "display:none"}
     %td.price-without-igv
       = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', nil, class: "form-control unit-price-before-igv", :readonly => true
     %td.check-igv
       %label.checkbox
         = check_box_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', nil, nil, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
         %i
+    %td.total_igv
+      = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][total_igv]', nil, class: "form-control unit-price-before-igv", :readonly => true        
+    %td.discount-after{:style => 'text-align: center'}
+      = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_after]', nil, class: "form-control discount-after", :readonly => true
+      %div{id: @reg_n.to_s+"a",:style => "display:none"}
     %td.price-with-igv
       = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil , class: "form-control unit-price-igv", :readonly => true
     %td.aditional-operations{:style => 'text-align: center'}
-      %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-purchase-#{@for_id_modal[i]}", 'onclick' => "set_id_modeling(this, #{@reg_n.to_s})"}
+      %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-purchase-#{@for_id_modal[i]}", 'onclick' => "set_id_modeling(this, #{@for_id_modal[i]})"}
         %strong
           %i.fa.fa-superscript
     %td
       = text_area_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][description]', dode.description, class: "form-control description"
-    %td{:style => "width: 1%;"}
-      %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+    %td
+      %a.btn.btn-default{href: "javascript:delete_item('"+@reg_n.to_s+"')", :style => 'width: 100%;margin: 10px 0;'}
+        %i.fa.fa-times
   - @reg_n += 1
   - i += 1

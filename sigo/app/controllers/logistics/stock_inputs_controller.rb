@@ -21,7 +21,12 @@ class Logistics::StockInputsController < ApplicationController
       # Verified If All Received
       @head.stock_input_details.each do |x|
         @pod = PurchaseOrderDetail.find(x.purchase_order_detail.id)
-        if @pod.amount <= PurchaseOrderDetail.get_total_received(x.purchase_order_detail.id)
+        sum = 0
+        total = StockInputDetail.where("purchase_order_detail_id = ?",@pod.id)
+        total.each do |tt|
+          sum+=tt.amount.to_i
+        end
+        if @pod.amount == sum
           @pod.update_attributes(:received => 1)
         end
       end
@@ -40,17 +45,20 @@ class Logistics::StockInputsController < ApplicationController
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
     @head = StockInput.new
-    @ids=Array.new
-    po = PurchaseOrder.where('state LIKE "approved"')
-    po.each do |podo|
-      @ids << podo.entity_id
-    end
-    @ids = @ids.uniq.join(',')
-    @suppliers = Entity.where('id IN ('+@ids+')')
-    @periods = LinkTime.group(:year, :month)
+    #@periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "IWH")}
     render layout: false
+  end
+
+  def display_supplier
+    word = params[:q]
+    article_hash = Array.new
+    articles = StockInput.getSupplier(word, get_company_cost_center('cost_center'))
+    articles.each do |art|
+      article_hash << {'id' => art[0].to_s, 'name' => art[1]}
+    end
+    render json: {:articles => article_hash}
   end
 
   def show
@@ -82,16 +90,55 @@ class Logistics::StockInputsController < ApplicationController
 
   def update
     head = StockInput.find(params[:id])
-    head.year = head.period.to_s[0,4]
+    ids1 = Array.new
+    ids2 = Array.new
+    head.stock_input_details.each do |x|
+      ids1 << x.purchase_order_detail_id
+    end
     head.update_attributes(stock_input_parameters)
+    head.stock_input_details.each do |x|
+      @pod = PurchaseOrderDetail.find(x.purchase_order_detail.id)
+      sum = 0
+      total = StockInputDetail.where("purchase_order_detail_id = ?",@pod.id)
+      total.each do |tt|
+        sum+=tt.amount.to_i
+      end
+      if @pod.amount == sum
+        @pod.update_attributes(:received => 1)
+      end
+      if @pod.amount != sum
+        @pod.update_attributes(:received => nil)
+      end
+    end
+    head.stock_input_details.each do |x|
+      ids2 << x.purchase_order_detail_id
+    end
+    ids1.each do |x|
+      if !ids2.include?(x)
+        PurchaseOrderDetail.find(x).update_attributes(:received => nil)
+      end
+    end
     flash[:notice] = "Se ha actualizado correctamente los datos."
+    redirect_to :action => :index
+  rescue ActiveRecord::StaleObjectError
+    head.reload
+    flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
     redirect_to :action => :index
   end
 
   def destroy
     sinput = StockInput.find(params[:id])
     sinput.stock_input_details.each do |sin|
+      @pod = PurchaseOrderDetail.find(sin.purchase_order_detail.id)
       sinputdetail = StockInputDetail.destroy(sin.id)
+      sum = 0
+      total = StockInputDetail.where("purchase_order_detail_id = ?",@pod.id)
+      total.each do |tt|
+        sum+=tt.amount.to_i
+      end
+      if @pod.amount > sum
+          @pod.update_attributes(:received => nil)
+      end
     end
     item = StockInput.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente."
@@ -108,8 +155,14 @@ class Logistics::StockInputsController < ApplicationController
   end
 
   def show_purchase_order_item_field
-    @company = get_company_cost_center('company')
-    @tableItems = PurchaseOrder.get_approved_by_company_and_supplier(@company, params[:id])
+    @company = get_company_cost_center('cost_center')
+    #@tableItems = PurchaseOrder.get_approved_by_company_and_supplier(@company, params[:id], params[:order])
+    if params[:order]==""
+      @tableItems = PurchaseOrder.where("entity_id = "+params[:id].to_s+" AND cost_center_id = "+@company.to_s)
+    else
+      order = params[:order].to_a.join(',')
+      @tableItems = PurchaseOrder.where("entity_id = "+params[:id].to_s+" AND cost_center_id = "+@company.to_s+" AND id IN ("+order+")")
+    end
     render(partial: 'table_items_order', :layout => false)
   end
 
@@ -135,15 +188,26 @@ class Logistics::StockInputsController < ApplicationController
     #    @tableItems << y
     #  end
     #end
-    logger.info "@ids_items:" + @ids_items
+    logger.info "@ids_items:" + @ids_items.to_s
     PurchaseOrderDetail.get_approved_more_items(@company, params[:supplier_id], @ids_items).each do |y|
       @tableItems << y
     end
     render(partial: 'modal_more_items', :layout => false)
   end
 
+  def show_purchase_orders
+    str_option = ""
+    supplier_id = params[:id]
+    PurchaseOrder.select(:id).select(:description).where("entity_id = ? AND state LIKE 'approved'", supplier_id).each do |purchaseOrder|
+      if purchaseOrder.purchase_order_details.where("received IS NULL").count > 0 
+        str_option += "<option value=" + purchaseOrder.id.to_s + ">" + purchaseOrder.id.to_s.rjust(5, '0') + ' - ' + purchaseOrder.description.to_s + "</option>"
+      end
+    end
+    render :json => str_option
+  end
+
   private
   def stock_input_parameters
-    params.require(:stock_input).permit(:supplier_id, :warehouse_id, :period, :format_id, :series, :document, :issue_date, :description, :input, :company_id, :cost_center_id, stock_input_details_attributes: [:id, :stock_input_id, :purchase_order_detail_id, :article_id, :amount, :_destroy])
+    params.require(:stock_input).permit(:supplier_id, :lock_version, :warehouse_id, :period, :format_id, :series, :document, :issue_date, :description, :input, :company_id, :cost_center_id, stock_input_details_attributes: [:id, :stock_input_id, :purchase_order_detail_id, :article_id, :amount, :_destroy])
   end
 end

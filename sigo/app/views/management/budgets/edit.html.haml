@@ -1,0 +1,55 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-12.col-md-12.col-lg-7
+      %h2.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw  
+        Editar Presupuesto - 
+        =@budget.description
+  #widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-6
+        #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-eye
+            %h2 Presupuesto
+          .widget-body
+            = simple_form_for([:management, @budget], html: {class: 'form-horizontal smart-form', autocomplete: 'off', :id=>'form-data' }) do |f|
+              %fieldset
+                .row
+                  %section.col.col-10
+                    %label.label Codigo S10
+                    %label.input
+                      = @budget.cod_budget
+                .row
+                  %section.col.col-10
+                    %label.label Nombre
+                    %label.input{for: "description"}
+                      %i.icon-append.fa.fa-user
+                      = f.input :description, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Codigo del Proyecto
+                    %label.input{for: "cost_center_id"}
+                      %i.icon-append.fa.fa-superscript
+                      = f.input :cost_center_id, placeholder: "Codigo del Proyecto", input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label %Utilidad
+                    %label.input{for: "utility"}
+                      %i.icon-append.fa.fa-superscript
+                      = f.input :utility, placeholder: "%Utilidad", input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label %Gastos Generales
+                    %label.input{for: "general_expenses"}
+                      %i.icon-append.fa.fa-superscript
+                      = f.input :general_expenses, placeholder: "%Gastos Generales", input_html: { class: 'form-control' }, label: false
+              %footer
+                %a{:href=>"javascript:post_to_url('" + management_budget_path(@budget.id).to_s + "', 'form-data', 'right-area');", :class=>"btn btn-success"}
+                  %i.fa.fa-save
+                  Guardar
+
+  %a.btn.btn-sm.btn-primary.btn-prev#backlist-companies{:href=>"javascript:load_url_ondiv('"+administrate_budget_management_budgets_path().to_s+"?project_id="+@budget.cost_center_id.to_s+"', 'right-area');"}
+    %i.fa.fa-arrow-left
+    Retornar al listado de compañias

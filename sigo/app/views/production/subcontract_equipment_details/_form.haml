@@ -5,6 +5,7 @@
     %h2 Agregar Equipo a un Subcontrato
   .widget-body
     = simple_form_for([:production, @partequi], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      = f.hidden_field :lock_version
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
@@ -104,6 +105,11 @@
                   - @rental.each do |rent|
                     %option{:value => "#{rent.id}"}
                       = rent.name
+          %section.col.col-4
+            %label.label Activo
+            %label.checkbox
+              = hidden_field_tag 'subcontract_equipment_detail[state]','inactive'
+              = check_box_tag 'subcontract_equipment_detail[state]', "active", @partequi.state, { class: 'subcontract_equipment_detail_active' }
         .row
           .col.col-4
             %label.label Horas Mínimas
@@ -131,12 +137,13 @@
                     %i.fa.fa-briefcase.fa-md.fa-fw
         
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
 :javascript
   $(document).ready(function () {
+    $('.subcontract_equipment_detail_active').attr("style", 'position: relative; left: 0;');
     var article_id = $('#article').val();
     complete_infocombo("#{get_component_from_article_production_subcontract_equipment_details_path}", article_id, "#{form_authenticity_token}", 0);
 
@@ -259,6 +266,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -269,8 +278,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }
@@ -294,9 +307,7 @@
         data: { article_id: article_id, authenticity_token: form_token}
     }).done(function( data ) {
       var code = data.code;
-      console.log(code);
       var unit = data.unit;
-      console.log(unit);
       $('#cod-art').val(code);
       $('#unit-art').val(unit);
     });

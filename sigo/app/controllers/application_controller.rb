@@ -41,4 +41,17 @@ class ApplicationController < ActionController::Base
     summary.save!
   end
 
+  def get_sumatory_one_to_one(order, budget)
+    total_sum = 0
+    inputs = Inputbybudgetanditem.where("`order` LIKE ? AND budget_id = ? ", order + "%", budget)
+    inputs.each do |item|
+      price = item.price.to_f.round(4).to_s.to_f
+      quantity = item.quantity.to_f.round(4).to_s.to_f
+      partial = (price.round(4) * quantity.round(4)).round(2)
+
+      total_sum = total_sum + partial.round(2)
+    end
+    return total_sum
+  end
+
 end

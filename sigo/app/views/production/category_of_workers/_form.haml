@@ -5,40 +5,113 @@
     %h2 Categoria del Trabajador
   .widget-body
     = simple_form_for([:production, @categoryOfWorker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %header Datos Principales
+      %br
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
+
         .row
-          %section.col.col-10
-            %label.label Nombre
-            %label.input{for: "normal_price"}
+          %section.col.col-4
+            %label.label Nombre Categoria
+            %label.input{for: "name"}
               %i.icon-append.fa.fa-user
-              = hidden_field_tag 'category_of_worker[article_id]', @categoryOfWorker.article_id
-              = text_field_tag 'category_of_worker[article_name]', @categoryOfWorker.article.name, class: "form-control", readonly: true
-        .row
-          %section.col.col-10
-            %label.label Unidad
-            %label.input{for: "normal_price"}
-              %i.icon-append.fa.fa-user
-              = text_field_tag 'category_of_worker[article_unit_name]', @categoryOfWorker.article.unit_of_measurement.name, class: "form-control", readonly: true
-        .row
-          %section.col.col-10
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+
+          %section.col.col-4
+            %label.label Sub-Grupo
+            %label.input{for: "category_id"}
+              %select.form-control{:name =>"category_of_worker[category_id]", :style => 'width:100%;padding: 0;border: none;'}
+                %option{:value => ''}
+                  = 'Seleccione sub-Grupo'
+                - @subgroups.each do |subgroup|
+                  - if @action == 'edit'
+                    - if @categoryOfWorker.category_id == subgroup.id
+                      %option{:value => "#{subgroup.id}", :selected => true}
+                        = '(' + subgroup.code + ') ' + subgroup.name
+                    - else
+                      %option{:value => "#{subgroup.id}"}
+                        = '(' + subgroup.code + ') ' + subgroup.name
+                  - else
+                    %option{:value => "#{subgroup.id}"}
+                      = '(' + subgroup.code + ') ' + subgroup.name
+
+          %section.col.col-4
             %label.label Precio Normal
             %label.input{for: "normal_price"}
-              %i.icon-append.fa.fa-user
+              %i.icon-append.fa.fa-credit-card
               = f.input :normal_price, placeholder: "Precio Normal", input_html: { class: 'form-control' }, label: false
+
         .row
-          %section.col.col-10
+          %section.col.col-4
             %label.label Precio HE 60
             %label.input{for: "he_60_price"}
               %i.icon-append.fa.fa-credit-card
               = f.input :he_60_price, placeholder: "Precio Horas Extras 60%", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
+        
+          %section.col.col-4
             %label.label Precio HE 100
             %label.input{for: "he_100_price"}
               %i.icon-append.fa.fa-credit-card
               = f.input :he_100_price, placeholder: "Precio Horas Extras 100%", input_html: { class: 'form-control' }, label: false
+      
+      %fieldset
+        .row
+          - @reg_n = ((Time.now.to_f)*100).to_i
+          %section.col.col-6
+            %header{ :style => 'margin-left: 0;' } Ganancias Fijas
+            %br
+            - if @action == 'new'
+              - @concept_earnings.each do |concept|
+                .row
+                  %section.col.col-10
+                    %label.label= concept.name.to_s
+                    %label.input{for: "#{concept.code}"}
+                      %i.icon-append.fa.fa-credit-card
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_id]", concept.id
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][type_concept]", concept.type_obrero
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_code]", concept.code
+                      = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", 0.00, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
+                - @reg_n += 1
+            - else
+              - @concept_earnings.each do |cowc|
+                .row
+                  %section.col.col-10
+                    %label.label= cowc.concept.name.to_s
+                    %label.input{for: "#{cowc.concept.code}"}
+                      %i.icon-append.fa.fa-credit-card
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][id]", cowc.id
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][category_of_worker_id]", @categoryOfWorker.id
+                      = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", cowc.amount.to_f, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
+                - @reg_n += 1
+
+          %section.col.col-6
+            %header{ :style => 'margin-left: 0;' } Descuentos Fijos
+            %br
+            - if @action == 'new'
+              - @concept_discounts.each do |concept|
+                .row
+                  %section.col.col-10
+                    %label.label= concept.name.to_s
+                    %label.input{for: "#{concept.code}"}
+                      %i.icon-append.fa.fa-credit-card
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_id]", concept.id
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][type_concept]", concept.type_obrero
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_code]", concept.code
+                      = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", 0.00, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
+                - @reg_n += 1
+            - else
+              - @concept_discounts.each do |cowc|
+                .row
+                  %section.col.col-10
+                    %label.label= cowc.concept.name.to_s
+                    %label.input{for: "#{cowc.concept.code}"}
+                      %i.icon-append.fa.fa-credit-card
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][id]", cowc.id
+                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][category_of_worker_id]", @categoryOfWorker.id
+                      = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", cowc.amount.to_f, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
+                - @reg_n += 1
+
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -116,4 +189,22 @@
       error: function(xhr, status, error) {
       }
     });
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  function minmax(value, min, max){
+    console.log(value)
+    if(parseFloat(value) < min || isNaN(value)) 
+      return min; 
+    else if(parseFloat(value) > max) 
+      return max; 
+    else return value;
   }

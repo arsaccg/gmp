@@ -1,0 +1,108 @@
+%tr{id: "tr-" + @reg_n.to_s}
+  %td{:style => "display:none", :class => "provision_article-id"}
+    = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article
+    = hidden_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][flag]', 1
+  %td= @name_article
+  %td= @unit_of_measurement
+  %td.account-accountant
+    %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][account_accountant_id]', 'id' => "#{@reg_n.to_s}"+'a', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', :required => true, title:'No puede dejar este campo vacio'}
+  %td.sector
+    %select.form-control{:name =>"provision[provision_direct_purchase_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
+      %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
+      - @sectors.each do |sector|
+        %optgroup{:label => "#{sector.name}"}
+          -Sector.getSubSectors(sector.code).each do |subsector|
+            %option{:value => "#{subsector.id}"}
+              = subsector.name
+  %td.phase
+    %input{'name' => 'provision[provision_direct_purchase_details_attributes]['+@reg_n.to_s+'][phase_id]', 'type' => 'hidden', 'id' => "#{@reg_n.to_s}"+'p', 'style' => 'width:100%;padding: 0;border: none;', :required => true, title:'No puede dejar este campo vacio'}
+
+  %td.amount
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][amount]', @amount , class: "form-control unit-price-igv", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);"
+
+  %td.unit-price
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][price]', nil, class: "form-control unit-price-item", onfocusout: "calculatePriceWithoutIgv(this);", onkeypress: "return isNumber(event);"
+
+  %td.discount-before{ :class => "provision_discount-before"}
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before]', nil , class: "form-control discount-before", onfocusout: "calculatePriceWithoutIgvFromDiscount(this);", onkeypress: "return isNumber(event);", placeholder: 'Importe'
+    - if @action == 'direct'
+      = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][discount_before_percent]', nil , class: "form-control discount-before-percent", onfocusout: "calculatePriceWithoutIgvFromDiscountPercent(this);", placeholder: 'Porcentaje', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, 100)"
+
+  %td.price-without-igv
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', nil, class: "form-control unit-price-without-igv", :readonly => true
+
+  %td.check-igv
+    %label.checkbox
+      = check_box_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][igv]', nil, nil, { class: 'provision_direct_igv', onchange: "enableFieldsForIgv(this);" }
+      %i
+
+  %td.quantity-igv{ :class => "provision_quantity-igv"}
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][quantity_igv]',nil, class: "form-control igv-item", :readonly => true
+
+  %td.unit-price-igv
+    = text_field_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', nil, class: "form-control unit-price-igv", :readonly => true
+
+  %td.order_origin
+    = '-'
+
+  %td.description
+    = text_area_tag 'provision[provision_direct_purchase_details_attributes][' + @reg_n.to_s + '][description]', nil, class: "form-control description"
+
+  %td{:style => "width: 1%; text-align:center;"}
+    %a.btn-default.btn-xs{href: "javascript:delete_item('"+@reg_n.to_s+"')", :class => 'btn'}
+      %i.fa.fa-times
+
+
+:javascript
+  $(document).ready(function(){ 
+    var a = #{@reg_n} + "a";
+    var p = #{@reg_n} + "p";
+
+    $('#'+a).select2({
+      placeholder: "Buscar cuenta contable...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{account3l_administration_provision_articles_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code +'</div>' },
+      formatSelection: function(node){ return (node.code) },
+      escapeMarkup: function (m) { return m; }
+    });
+
+    $('#'+p).select2({
+      placeholder: "Buscar cuenta contable...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{phases3l_administration_provision_articles_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code +'</div>' },
+      formatSelection: function(node){ return (node.code) },
+      escapeMarkup: function (m) { return m; }
+    });
+  });    

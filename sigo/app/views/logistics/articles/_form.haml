@@ -8,45 +8,34 @@
       %fieldset
         -if @action=="edit"
           %input#code{:value => "#{@article.code[2,4]}", "style"=>"display:none;"}
+          %input#codeg{:value => "#{@article.code[2,2]}", "style"=>"display:none;"}
         -else
-          %input#code{:value => "0", "style"=>"display:none;"}
+          %input#code{:value => nil, "style"=>"display:none;"}
         .row
           %section.col.col-10
             %label.label Tipo de Articulo
             %label.input{for: "type_of_article_id"}
               %select.form-control#type-article-select{:name =>"article[type_of_article_id]"}
+                %option{ :value => nil} Seleccione un tipo
                 - @typeOfArticles.each do |typeArticle|
                   %option{:value => "#{typeArticle.id}", :rel => "#{typeArticle.code}", :selected => @typeOfArticle == typeArticle.id}
-                    = typeArticle.name
+                    = typeArticle.code + " - " + typeArticle.name
           %section.col.col-5
             %label.label Grupo
             %label.input{for: "category_id"}
               %select.form-control#category-select
-                -if @action == "edit"
-                  %option{ :value => "0"} Seleccione un grupo
-                  - @categories.each do |cat|
-                    -if @article.code[2,2] == cat.code
-                      %option{:value => "#{cat.code}", :rel => "#{cat.code}", :selected =>"selected" }
-                        = cat.name
-                    -else
-                      %option{:value => "#{cat.code}", :rel => "#{cat.code}"}
-                        = cat.name
-                -else
-                  %option{ :value => "0"} Seleccione un grupo
-                  - @categories.each do |cat|
-                    %option{:value => "#{cat.code}", :rel => "#{cat.code}"}
-                      = cat.name
+                %option{ :value => nil} Seleccione un grupo
           %section.col.col-5
             %label.label Sub Grupo
             %label.input{for: "subcategory_id"}
               %select.form-control#subcategory-select
-                %option{ :value => "0"} Seleccione un Subgrupo
+                %option{ :value => nil} Seleccione un Subgrupo
                 
           %section.col.col-5
             %label.label Específico
             %label.input{for: "specific_id"}
               %select.form-control#specific-select{:name =>"article[category_id]"}
-                %option{ :value => "0"} Seleccione un Especifico
+                %option{ :value => nil} Seleccione un Especifico
                 
         .row
           %section.col.col-3
@@ -75,7 +64,8 @@
           %section.col.col-10
             %label.label Unidad de medida
             %label.input{for: "unit_of_measurement_id"}
-            %select#unit-select-measure.form-control.select2{:name =>"article[unit_of_measurement_id]", :style => "width:100%;;padding: 0;border: none;"}
+            %select#unit-select-measure.form-control.select2{:name =>"article[unit_of_measurement_id]", :style => "width:100%;;padding: 0;border: none;",:required => true}
+              %option{:value => nil, :selected => true, :disabled => true} Seleccione una unidad
               - if @action == 'edit'
                 - @unitOfMeasurement.each do |unito|
                   - if @unitid == unito.id
@@ -96,7 +86,7 @@
               = f.input :description, placeholder: "Descripción del articulo", input_html: { class: 'form-control' }, label: false, rows: 4
 
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save
             Guardar
 
@@ -107,15 +97,19 @@
 
     var type = $('option:selected', $('#type-article-select')).attr('rel');
     $('#extrafield_first_code').val(type);
+    var type2= $('option:selected', $('#type-article-select')).val();
+    complete_group("#{get_group_logistics_articles_path}", type2, "#{form_authenticity_token}, 0");
 
     var category_code = $("#category-select").val();
     complete_infocombo("#{get_subcategory_form_category_logistics_categories_path}", category_code, "#{form_authenticity_token}", "0302");
     console.log("entró al complete");
 
-    if($('#subcategory-select').val()!=0){
+    if($('#subcategory-select').val()!=null){
       console.log("entró al al if");
       var subcategory_code = $('option:selected', $('#subcategory-select')).attr("rel");
+      console.log(subcategory_code);
       complete_infocombo2("#{get_specific_from_subcategory_logistics_categories_path}", subcategory_code, "#{form_authenticity_token}, 0");
+      console.log("salio del completeinfoc12");
     }
 
     if($('form[id^="edit_"]').length > 0) {
@@ -127,12 +121,51 @@
   });
 
   $('#type-article-select').change(function(){
-    var type = $('option:selected', $('#type-article-select')).attr('rel');
-    $('#extrafield_first_code').val(type);
+    if($(this).val()!=null){
+      var category_code = $(this).val();
+      complete_group("#{get_group_logistics_articles_path}", category_code, "#{form_authenticity_token}, 0");
+    }else{
+      $('#category-select').empty();
+      $('#category-select').append(
+            $("<option></option>").attr("value", null).text("Seleccione un grupo").attr("selected", "selected")
+          )
+      $('#subcategory-select').empty();
+      $('#subcategory-select').append(
+            $("<option></option>").attr("value", null).text("Seleccione un subgrupo").attr("selected", "selected")
+          )          
+      $('#specific-select').empty();
+      $('#specific-select').append(
+            $("<option></option>").attr("value", null).text("Seleccione un específico").attr("selected", "selected")
+          )
+    }
+    var code = $('option:selected', $('#type-article-select')).attr('rel')
+    $("#extrafield_first_code").val(code);
   });
 
+  $('#type-article-select').keyup(function(){
+    if($(this).val()!=null){
+      var category_code = $(this).val();
+      complete_group("#{get_group_logistics_articles_path}", category_code, "#{form_authenticity_token}, 0");
+    }else{
+      $('#category-select').empty();
+      $('#category-select').append(
+            $("<option></option>").attr("value", null).text("Seleccione un grupo").attr("selected", "selected")
+          )
+      $('#subcategory-select').empty();
+      $('#subcategory-select').append(
+            $("<option></option>").attr("value", null).text("Seleccione un subgrupo").attr("selected", "selected")
+          )          
+      $('#specific-select').empty();
+      $('#specific-select').append(
+            $("<option></option>").attr("value", null).text("Seleccione un específico").attr("selected", "selected")
+          )
+    }
+    var code = $('option:selected', $('#type-article-select')).attr('rel')
+    $("#extrafield_first_code").val(code);
+  });  
+
   $('#category-select').change(function(){
-    if($(this).val()!=0){
+    if($(this).val()!=null){
       var category_code = $(this).val();
       complete_infocombo("#{get_subcategory_form_category_logistics_categories_path}", category_code, "#{form_authenticity_token}, 0");
     }else{
@@ -151,10 +184,8 @@
 
   $('#category-select').keyup(function(){
     if($(this).val()!=0){
-      console.log("entró al keyup");
       var category_code = $(this).val();
       complete_infocombo("#{get_subcategory_form_category_logistics_categories_path}", category_code, "#{form_authenticity_token}, 0");
-      console.log("se supone que salio del complete_info");
     }else{
       $('#subcategory-select').empty();
       $('#subcategory-select').append(
@@ -244,6 +275,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -254,10 +287,55 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
+  }
+
+  function complete_group(url, category_code, form_token, default_value){
+    $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: { category_code: category_code, authenticity_token: form_token}
+      }).done(function( data ) {
+        newOptions = [];
+        $.each(data.group, function(key, value){
+          item = {};
+          item['name'] = value.name;
+          item['code'] = value.code;
+          item['id'] = value.id;
+          newOptions.push(item);
+        });
+        $('#category-select').empty();
+        $('#category-select').append(
+          $("<option></option>").attr("value", null).text("Seleccione un grupo")
+        )        
+        $('#subcategory-select').empty();
+        $('#subcategory-select').append(
+          $("<option></option>").attr("value", null).text("Seleccione un subgrupo")
+        )
+        $('#specific-select').empty();
+        $('#specific-select').append(
+          $("<option></option>").attr("value", null).text("Seleccione un específico")
+        )
+        $.each(newOptions, function(key,value){
+          if ($('#codeg').val() == value.code){
+            $('#category-select').append(
+              $("<option></option>").attr("value", value.code).text(value.code +" - "+value.name).attr("selected", "selected").attr("rel", value.code)
+            )
+          }else{
+            $('#category-select').append(
+              $("<option></option>").attr("value", value.code).text(value.code +" - "+value.name).attr("rel", value.code)
+            )
+          }
+        });
+      });
   }
 
   function complete_infocombo(url, category_code, form_token, default_value){
@@ -286,11 +364,11 @@
         $.each(newOptions, function(key,value){
           if ($('#code').val() == value.code){
             $('#subcategory-select').append(
-              $("<option></option>").attr("value", value.id).text(value.name).attr("selected", "selected").attr("rel", value.code)
+              $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name).attr("selected", "selected").attr("rel", value.code)
             )
           }else{
             $('#subcategory-select').append(
-              $("<option></option>").attr("value", value.id).text(value.name).attr("rel", value.code)
+              $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name).attr("rel", value.code)
             )
           }
         });
@@ -317,15 +395,18 @@
               $("<option></option>").attr("value", " ").text("Seleccione un específico").attr("selected", "selected").attr("rel", " ")
             )
         $.each(newOptions, function(key,value){
-          if ("#{@article.category_id} "== value.id){
+          console.log("entró sfcas");
+          console.log("#{@article.category_id}");
+          console.log(value.id);
+          if ("#{@article.category_id}"== value.id){
             console.log("entró al if dentro del ajax");
             $('#specific-select').append(
-              $("<option></option>").attr("value", value.id).text(value.name).attr("selected", "selected").attr("rel", value.code)
+              $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name).attr("selected", "selected").attr("rel", value.code)
             )
           } else {
             $('#specific-select').append(
 
-              $("<option></option>").attr("value", value.id).text(value.name).attr("rel", value.code)
+              $("<option></option>").attr("value", value.id).text(value.code +" - "+value.name).attr("rel", value.code)
             )
           }  
           // Default Value:

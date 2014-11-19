@@ -1,0 +1,59 @@
+
+.row-fluid
+  .span3
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;") Presupuesto Meta
+    .individual-panel
+      %table(class="table-bordered table-hover white-table small-font" width="100%")
+        %tbody
+          - @budgets_goal.each do |budget|
+            %tr   
+              -if (budget.cod_budget.length > 7)
+                %td
+                %td
+                  %a{:href=>"javascript:load_url_ondiv('" + filter_by_budget_management_itembybudgets_path.to_s + "?budget_id=" + budget.id.to_s + "', 'content-load');"}(class="small-font")
+                    = "--"
+                    =budget.description
+                    = " "
+                    =number_to_currency(number_with_precision(get_bugdet_cost(budget.id) , :precision => 2).to_s , :unit=>'S/. ') rescue "" 
+              -else
+                %td(colspan="2")
+                  %strong 
+                    =budget.description
+
+    %br
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;") Presupuesto Venta XXXX
+    .individual-panel
+      %table(class="table-bordered table-hover white-table small-font" width="100%")
+        %tbody
+          - @budgets_sale.each do |budget|
+            %tr 
+              -if (budget.cod_budget.length > 7)
+                %td 
+                %td
+                  %a{:href=>"javascript:load_url_ondiv('" + filter_by_budget_management_itembybudgets_path.to_s + "?budget_id=" + budget.id.to_s + "', 'content-load');"}(class="small-font")
+                    = "--"
+                    =budget.description
+                    = " "
+                    = number_to_currency(number_with_precision(get_bugdet_cost(budget.id) , :precision => 2).to_s , :unit=>'S/. ') rescue "" 
+                %td(colspan="2")
+              -else
+                %td(colspan="2")     
+                    
+                  %strong 
+                    =budget.description
+  .span9
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;") Partidas
+    .row-fluid
+      .span12
+        .content-load
+    %br
+    .group-bar
+      %strong(style="padding-left: 10px; font-size: 12px;")
+        Insumos
+        %span(id="brief-items")
+    .row-fluid
+      .span12
+        .botom-load

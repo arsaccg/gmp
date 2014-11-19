@@ -4,11 +4,14 @@ class Logistics::CategoriesController < ApplicationController
   def index
     flash[:error] = nil
     @categories =  Category.where("code LIKE '__' ")
-    @sub =  Category.where("code LIKE '____' ")
+    @sub =  Category.where("code LIKE '____' ").first
     render layout: false
   end
 
-  def show
+  def display_category
+    category_id = params[:id]
+    @category =  Category.find(category_id)
+    render(partial: 'table', :layout => false)
   end
 
   def new
@@ -23,6 +26,7 @@ class Logistics::CategoriesController < ApplicationController
     category = Category.new(category_parameters)
     category.code = params[:extrafield]['first_code'].to_s + params[:category]['code'].to_s
     if category.save
+      ActiveRecord::Base.connection.execute("CALL `update_inputcategories`")
       flash[:notice] = "Se ha creado correctamente la nueva categoria."
       redirect_to :action => :index
     else
@@ -82,6 +86,8 @@ class Logistics::CategoriesController < ApplicationController
 
   def get_subcategory_form_category
     @subcategories = Category.where("code LIKE ?", params[:category_code]+"__")
+    p 'get_subcategory_form_category'
+    p @subcategories
     render json: {:subcategories => @subcategories}  
   end
 

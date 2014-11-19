@@ -3,8 +3,8 @@ class Article < ActiveRecord::Base
   
     include ActiveModel::Validations 
 	
-    has_many :deliver_orders
-    
+    has_many :delivery_orders
+    has_many :warehouse_orders
   	has_many :subcontract_details
   	has_many :subcontract_equipment_details
   	has_many :part_work_details
@@ -12,11 +12,12 @@ class Article < ActiveRecord::Base
   	has_many :worker_contracts
 	  has_many :part_work_details
     has_many :theoretical_values
+    has_many :provision_direct_purchase_details
     
     has_many :inputbybudgetanditems
-  	belongs_to :category
-  	belongs_to :type_of_article
-  	belongs_to :unit_of_measurement
+    belongs_to :category
+    belongs_to :type_of_article
+    belongs_to :unit_of_measurement
     
   	belongs_to :rep_inv_article, :foreign_key => 'id'
 
@@ -31,10 +32,10 @@ class Article < ActiveRecord::Base
   def self.find_article_in_specific(id, cost_center_id)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT af.id, af.name, af.article_id, af.code, u.name
-      FROM articles_from_cost_center_"+cost_center_id.to_s+" af, unit_of_measurements u
+      FROM articles_from_cost_center_" + cost_center_id.to_s + " af, unit_of_measurements u
       WHERE af.unit_of_measurement_id = u.id
-      AND af.id =" + id.to_s + " 
-    ")
+      AND af.id = " + id.to_s
+    )
 
     return mysql_result
   end
@@ -46,7 +47,7 @@ class Article < ActiveRecord::Base
         FROM articles_from_cost_center_" + cost_center_id.to_s + " especific, type_of_articles toa, unit_of_measurements uom 
         WHERE especific.unit_of_measurement_id = uom.id 
         AND especific.type_of_article_id = toa.id
-        AND especific.name LIKE '%" + keyword + "%'
+        AND (especific.name LIKE '%" + keyword + "%' OR especific.code LIKE '%" + keyword + "%')
         GROUP BY 2
         LIMIT " + display_length + "
         OFFSET " + pager_number + "
@@ -67,7 +68,7 @@ class Article < ActiveRecord::Base
         FROM articles_from_cost_center_" + cost_center_id.to_s + " especific, type_of_articles toa, unit_of_measurements uom 
         WHERE especific.unit_of_measurement_id = uom.id 
         AND especific.type_of_article_id = toa.id
-        AND especific.name LIKE '%" + keyword + "%'
+        AND especific.name LIKE '%" + keyword + "%' OR especific.code LIKE '%" + keyword + "%'
         GROUP BY 2
         LIMIT " + display_length + "
         OFFSET " + pager_number + "
@@ -108,6 +109,22 @@ class Article < ActiveRecord::Base
 
     mysql_result.each do |data|
       name_article = data[1]
+    end
+
+    return name_article
+  end
+
+  def self.find_article_by_global_article2(article_id, cost_center_id)
+    name_article = ""
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.article_id, af.code, u.name
+      FROM articles_from_cost_center_"+cost_center_id.to_s+" af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.id =" + article_id.to_s + " 
+    ")
+
+    mysql_result.each do |data|
+      name_article = data[2]
     end
 
     return name_article
@@ -162,11 +179,39 @@ class Article < ActiveRecord::Base
     return name_article
   end
 
+  def self.find_idarticle_global_by_specific_idarticle(specific_article_id, cost_center_id)
+    article_data = Array.new
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.name, af.article_id, u.name
+      FROM articles_from_cost_center_" + cost_center_id.to_s + " af, unit_of_measurements u
+      WHERE af.unit_of_measurement_id = u.id
+      AND af.id =" + specific_article_id.to_s + " 
+      LIMIT 1
+    ")
+
+    mysql_result.each do |data|
+      article_data = [data[0], data[1], data[2]]
+    end
+
+    return article_data
+  end
+
   def self.get_article_per_type(type_article, cost_center)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT af.id, af.name, af.code, af.article_id, af.unit_of_measurement_id, u.name
       FROM articles_from_cost_center_" + cost_center.to_s + " af, unit_of_measurements u
       WHERE af.code LIKE '#{type_article}%'
+      AND af.unit_of_measurement_id = u.id
+    ")
+    return mysql_result
+  end
+
+  def self.get_article_todo_per_type(code, cost_center, type_article)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.code, af.unit_of_measurement_id, u.name
+      FROM articles af, unit_of_measurements u
+      WHERE ( af.code LIKE '#{code}%' OR af.name LIKE '%#{code}%' )
+      AND af.code <= '#{type_article}99999999'
       AND af.unit_of_measurement_id = u.id
     ")
     return mysql_result
@@ -203,22 +248,24 @@ class Article < ActiveRecord::Base
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT DISTINCT a.id, a.code, a.name, a.unit_of_measurement_id, u.symbol
       FROM articles a, unit_of_measurements u 
-      WHERE (a.code LIKE '04%' || a.code LIKE '03%' || a.code LIKE '02%')
+      WHERE (a.code LIKE '05%' || a.code LIKE '04%' || a.code LIKE '03%' || a.code LIKE '02%')
       AND ( a.name LIKE '%#{word}%' OR a.code LIKE '%#{word}%' ) 
       AND a.unit_of_measurement_id = u.id
     ")
     return mysql_result
   end
 
-  def self.getSpecificArticlesPerWarehouse(warehouse_id)
+  def self.getSpecificArticlesPerWarehouse(warehouse_id, word,idsn)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT a.id, a.code, a.name, u.name, SUM( sid.amount ) 
       FROM articles a, unit_of_measurements u, stock_inputs si, stock_input_details sid
       WHERE a.id = sid.article_id
-      AND si.input =1
+      AND (a.code LIKE '%#{word}%' OR a.name LIKE '%#{word}%')
+      AND si.input = 1
       AND si.id = sid.stock_input_id
       AND si.warehouse_id = #{warehouse_id}
       AND a.unit_of_measurement_id = u.id
+      AND a.id NOT IN (#{idsn})
       GROUP BY a.code
     ")
     return mysql_result
@@ -263,15 +310,17 @@ class Article < ActiveRecord::Base
       WHERE a.id = sid.article_id 
       AND si.id = sid.stock_input_id 
       AND si.input = 0 
+      AND si.status = 'A'
       AND si.warehouse_id = #{warehouse_id} 
       AND a.unit_of_measurement_id = u.id 
       AND a.category_id = c.id 
       AND toa.id = a.type_of_article_id
-      AND a.id IN( #{article} )
+      AND a.id = #{article}
       GROUP BY a.code
     ")
     return mysql_result
   end
+
   def self.getSpecificArticlesforStockOutputs5(article)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT art.name, pod.unit_price

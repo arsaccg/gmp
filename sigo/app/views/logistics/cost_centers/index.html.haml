@@ -1,12 +1,12 @@
 #content-inside
   .row
-    .col-xs-3.col-sm-3.col-md-3.col-lg-3
-      %h2.page-title.txt-color-blueDark
-        %i.fa.fa-pencil-square-o.fa-fw 
-        = t('activerecord.modelsdescription.cost_center')
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark{ "style" => "margin-bottom: 10px;"}
+        %i.fa.fa-pencil-square-o.fa-fw
+        Centros de Costo
     .col-xs-4.col-sm-4.col-md-4.col-lg-4{ "style" => "margin-top: 10px;" }
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_cost_center_path}', 'content', null, null, 'GET')"}
-        = t('activerecord.actions.add')
+      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_cost_center_path}', 'content', {company_id: #{@comp}}, null, 'GET')"} Nuevo
+  %br
   - if flash[:notice] != nil
     .alert.alert-success.fade.in{"style" => "clear:buttonoth"}
       %button.close{"data-dismiss" => "alert"} ×

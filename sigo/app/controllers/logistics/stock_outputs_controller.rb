@@ -12,7 +12,6 @@ class Logistics::StockOutputsController < ApplicationController
 
   def create
     @head = StockInput.new(stock_input_parameters)
-    @head.year = @head.period.to_s[0,4]
     @head.user_inserts_id = current_user.id
     @head.series = 0
     @head.supplier_id = 0
@@ -33,7 +32,7 @@ class Logistics::StockOutputsController < ApplicationController
     @head = StockInput.new
     @cost_center = get_company_cost_center('cost_center')
     @responsibles = Worker.where("cost_center_id = ?",@cost_center)
-    @periods = LinkTime.group(:year, :month)
+    # @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}")
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
     @working_groups = WorkingGroup.all
@@ -43,14 +42,51 @@ class Logistics::StockOutputsController < ApplicationController
 
   def partial_select_per_warehouse
     @warehouse = params[:warehouse_id]
-    @articles = Article.getSpecificArticlesPerWarehouse(@warehouse)
     render(:partial => 'partial_select_per_warehouse', layout: false)
   end
 
+  def display_articles_per_warehouse
+    word = params[:q]
+    warehouse = params[:warehouse]
+    idsn = params[:idsn]
+    if idsn == ""
+      idsn = 0
+    else
+      idsn=idsn.split('-')
+      idsn=idsn.join(',')
+    end
+    article_hash = Array.new
+    articles = Article.getSpecificArticlesPerWarehouse(warehouse,word, idsn)
+    articles.each do |art|
+      rest = Article.getSpecificArticlesforStockOutputs4(warehouse,art[0].to_i)
+      if rest.count>0
+        rest = rest.first.at(0).to_i
+      else
+        rest = 0
+      end
+      if (art[4]-rest)>0
+        article_hash << {'id' => art[0].to_s, 'name' => art[1] + ' - ' + art[2] + ' - ' + art[3]}
+      end        
+    end
+    render json: {:articles => article_hash}
+  end
+
   def partial_table_per_warehouse
-    article_warehouse = params[:data].split('-')
-    @warehouse = article_warehouse[1]
-    @article = Article.getSpecificArticlePerConsult(article_warehouse[1], article_warehouse[0])
+    article_warehouse = params[:data]
+    @warehouse = params[:warehouse]
+    @article=Array.new
+    article = Article.getSpecificArticlePerConsult(@warehouse, article_warehouse)
+    article.each do |art|
+      rest = Article.getSpecificArticlesforStockOutputs4(@warehouse,art[0].to_i)
+      if rest.count>0
+        rest = rest.first.at(0).to_i
+      else
+        rest = 0
+      end
+      if (art[4]-rest)>0
+      end    
+      @article << [art[0], art[1], art[2], art[3], art[4], art[4]-rest]
+    end
     render(:partial => 'partial_table_per_warehouse', layout: false)
   end
 
@@ -79,7 +115,7 @@ class Logistics::StockOutputsController < ApplicationController
     @cost_center = get_company_cost_center('cost_center')
     @head = StockInput.find(params[:id])
     @responsibles = Entity.joins(:type_entities).where("type_entities.preffix" => "T")
-    @periods = LinkTime.group(:year, :month)
+    # @periods = LinkTime.group(:year, :month)
     @warehouses = Warehouse.where(company_id: "#{@company}").where(cost_center_id: "#{@head.cost_center_id}")
     @articles = Article.getSpecificArticlesforStockOutputs(@cost_center)
     @formats = Format.joins{format_per_documents.document}.where{(documents.preffix.eq "OWH")}
@@ -96,7 +132,6 @@ class Logistics::StockOutputsController < ApplicationController
 
   def update
     head = StockInput.find(params[:id])
-    head.year = head.period.to_s[0,4]
     head.update_attributes(stock_input_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index
@@ -154,6 +189,6 @@ class Logistics::StockOutputsController < ApplicationController
 
   private
   def stock_input_parameters
-    params.require(:stock_input).permit(:responsible_id, :warehouse_id, :period, :format_id, :document, :issue_date, :description, :input, :working_group_id, :company_id, :cost_center_id, stock_input_details_attributes: [:id, :stock_input_id, :article_id, :amount, :sector_id, :phase_id, :equipment_id, :_destroy])
+    params.require(:stock_input).permit(:responsible_id, :warehouse_id, :lock_version, :period, :format_id, :document, :issue_date, :description, :input, :working_group_id, :company_id, :cost_center_id, stock_input_details_attributes: [:id, :stock_input_id, :article_id, :amount, :sector_id, :phase_id, :equipment_id, :lock_version, :_destroy])
   end
 end

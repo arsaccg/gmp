@@ -11,75 +11,165 @@
           %input{ 'name' => 'worker_contract[worker_id]', 'value' => "#{@worker_id}", 'readonly' => true, 'style' => 'display:none' }
         .row
           %section.col.col-md-12
-            .col-md-2
+            .col-md-3
               %label.label Numero de Contrato
-            .col-md-1
-              %label.input{for: "numberofcontract"}
-                = f.input :numberofcontract, input_html: { class: 'form-control' }, label: false
+            -if @action=='edit'
+              .col-md-2
+                %label.input{for: "numberofcontract"}
+                  = f.input :numberofcontract, input_html: { class: 'form-control' }, label: false,:readonly => true
+            -else
+              .col-md-2
+                %label.input{for: "numberofcontract"}
+                  = f.input :numberofcontract, input_html: { class: 'form-control', value: @numberofcontract.to_s }, label: false          
+
             .col-md-1
             .col-md-2{ 'style' => 'display:none' }
               %label.label Tipo de Contrato
             .col-md-1{ 'style' => 'display:none' }
               %label.input{for: "typeofcontract"}
-                = f.input :typeofcontract, input_html: { class: 'form-control', value: @typeofcontract}, label: false
+                = f.input :typeofcontract, input_html: { class: 'form-control', value: @typeofcontract.to_s}, label: false
         .row
-          %section.col.col-4
-            %label.label Categoría/Cargo del Trabajador
+          %section.col.col-6
+            %label.label Tipo de Contrato
+            %label.input{for: "contract_type_id"}
+              %select.form-control{:name =>"worker_contract[contract_type_id]", :style => 'width:100%;padding: 0;border: none;'}
+                - @contractypes.each do |contractype|
+                  - if @workercontract.contract_type_id == contractype.id
+                    %option{:value => "#{contractype.id}", :selected => true}
+                      = contractype.description
+                  - else
+                    %option{:value => "#{contractype.id}"}
+                      = contractype.description
+        .row
+          %section.col.col-6
+            -if @worker.typeofworker=='obrero'
+              %label.label Categoría del Trabajador
+            -elsif @worker.typeofworker=='empleado'
+              %label.label Cargo del Trabajador
             %label.input{for: "article_id"}
               %select.form-control{:name =>"worker_contract[article_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @articles.each do |article|
                   - if @workercontract.article_id == article.id
                     %option{:value => "#{article.id}", :selected => true}
-                      = article.name
+                      = article.code + ' ' + article.name
                   - else
                     %option{:value => "#{article.id}"}
-                      = article.name
+                      = article.code + ' ' + article.name
         .row
-          %section.col.col-md-12
-            .col-md-1
-              %label.label Campamento
-            .col-md-5
-              %label.input{for: "camp"}
-                = f.input :camp, input_html: { class: 'form-control' }, label: false
+          %section.col.col-6
+            %label.label Regimen
+            %label.input{for: "regime"}
+              %select.form-control{:name =>"worker_contract[regime]", :style => 'width:100%;padding: 0;border: none;'}
+                -if @action == 'edit'
+                  %option{:value => "0"} Seleccione un estado
+                  %option{:value => 'NORMAL', :selected => "#{@workercontract.regime}"=="NORMAL"} NORMAL
+                  %option{:value => '2 x 30', :selected => "#{@workercontract.regime}"=="2 x 30"} 2 x 30
+                  %option{:value => '4 x 60', :selected => "#{@workercontract.regime}"=="4 x 60"} 4 x 60
+                  %option{:value => '5 x 60', :selected => "#{@workercontract.regime}"=="5 x 60"} 5 x 60
+                  %option{:value => '4 x 120', :selected => "#{@workercontract.regime}"=="4 x 120"} 4 x 120
+                  %option{:value => 'ESPECIAL', :selected => "#{@workercontract.regime}"=="ESPECIAL"} ESPECIAL
+                -else
+                  %option{:value => 'NORMAL'} NORMAL
+                  %option{:value => '2 x 30'} 2 x 30
+                  %option{:value => '4 x 60'} 4 x 60
+                  %option{:value => '5 x 60'} 5 x 60
+                  %option{:value => '4 x 120'} 4 x 120
+                  %option{:value => 'ESPECIAL'} ESPECIAL
+        -if Worker.find(@worker_id).typeofworker!="externo"
+          -concepts=Array.new
+          -if Worker.find(@worker_id).typeofworker=="empleado"
+            -concepts=@concepts_empleado
+          -if Worker.find(@worker_id).typeofworker=="obrero"
+            -concepts=@concepts_obrero
+          -if @action=='edit'
+            -i=1
+            -arr=Array.new
+            -if @workercontract.worker_contract_details.count>0
+              -@workercontract.worker_contract_details.each do |wor|
+                -if Concept.find(wor.concept_id).status==1
+                  .row
+                    %section.col.col-md-12
+                      .col-md-3
+                        %label.label=Concept.find(wor.concept_id).name 
+                      .col-md-7
+                        -top=100000000000
+                        -if !Concept.find(wor.concept_id).top.nil?
+                          -top=Concept.find(wor.concept_id).top
+                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][worker_id]',wor.worker_id
+                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][worker_contract_id]',wor.worker_contract_id
+                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][concept_id]',wor.concept_id
+                        = text_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][amount]',wor.amount, onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
+                        -arr << wor.concept_id
+                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][id]',wor.id
+                  -i+=1
+              -concepts.each do |con|
+                -cont=0
+                -arr.each do |arr|
+                  -if con.id == arr
+                    -cont=1
+                -if cont == 0
+                  .row
+                    %section.col.col-md-12
+                      .col-md-3
+                        %label.label=con.name
+                      .col-md-7
+                      -top=10000000000000
+                      -if !con.top.nil?
+                        -top=con.top
+                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
+                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
+                        = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
+                        = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
+              -@reg_n+=1
+            -else
+              -concepts.each do |con|
+                .row
+                  %section.col.col-md-12
+                    .col-md-3
+                      %label.label=con.name
+                    .col-md-7
+                      -top=10000000000000
+                      -if !con.top.nil?
+                        -top=con.top
+                      = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
+                      = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
+                      = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
+                      = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
+                -@reg_n+=1
+          -else
+            -concepts.each do |con|
+              .row
+                %section.col.col-md-12
+                  .col-md-3
+                    %label.label=con.name
+                  .col-md-7
+                    -top=100000000000
+                    -if !con.top.nil?
+                      -top=con.top
+                    = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
+                    = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
+                    = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
+
+                    = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
+              -@reg_n+=1
         .row
-          %section.col.col-md-12
-            .col-md-1
-              %label.label Destaque
-            .col-md-5
-              %label.input{for: "destaque"}
-                = f.input :destaque, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-md-12
-            .col-md-1
-              %label.label Salario
-            .col-md-5
-              %label.input{for: "salary"}
-                = f.input :salary, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-md-12
-            .col-md-1
-              %label.label Regimen
-            .col-md-5
-              %label.input{for: "regime"}
-                = f.input :regime, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-md-12
-            .col-md-1
-              %label.label Dias
-            .col-md-5
-              %label.input{for: "days"}
-                = f.input :days, input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-1
-            %label.label Dia de Inicio
           %section.col.col-2
+            %label.label Dia de Inicio
+          %section.col.col-3
             %label.input{for: "start_date"}
               = f.input :start_date, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
-          %section.col.col-1
-            %label.label Dia de Fin
           %section.col.col-2
+            %label.label Dia de Fin
+          %section.col.col-3
             %label.input{for: "end_date"}
               = f.input :end_date, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false,  :onchange =>'calculatedays();'
+        .row
+          %section.col.col-md-12
+            .col-md-2
+              %label.label Duración
+            .col-md-8
+              %label.input{for: "days"}
+                = f.input :days, input_html: { class: 'form-control' }, label: false
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
@@ -170,7 +260,29 @@
       }
     });
   }
+  function calculatePrice(element){
+    if ($(element).val()>10){
+      alert("Ingrese datos correctos");
+      //$(element).val('');
+    }
+  }
 
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }
+
+  function minmax(value, min, max){
+    if(parseInt(value) < min || isNaN(value)) 
+      return min; 
+    else if(parseInt(value) > max) 
+      return max; 
+    else return value;
+  }
 
   function delete_item(code){
     $("#tr" + code).remove();

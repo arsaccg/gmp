@@ -23,15 +23,16 @@
           - @type_issu.each do |type_issu|
             - if type_issu.id == 1
               .tab-pane.active{:id => "tab-#{type_issu.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Tipo
                         %th Nombre
                         %th Código-Año
+                        %th.col-md-1 Fecha
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_issu.issued_letters.order(:type_of_doc).each do |lawre|
@@ -42,6 +43,7 @@
                             = lawre.name.to_s
                           %td
                             =lawre.code.to_s + " - "+ lawre.year.to_s
+                          %td= lawre.date.to_s
                           %td
                             = lawre.description.to_s
                           %td
@@ -53,19 +55,18 @@
                           %td
                             %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_issued_letter_path(lawre.id)}', 'content', null, null, 'GET')"}
                               Editar
-                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_issued_letter_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_issued_letters_path}')"}}
-                              Eliminar
             - else
               .tab-pane{:id => "tab-#{type_issu.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Tipo
                         %th Nombre
                         %th Código-Año
+                        %th.col-md-1 Fecha
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_issu.issued_letters.order(:type_of_doc).each do |lawre|
@@ -76,6 +77,7 @@
                             = lawre.name.to_s
                           %td
                             =lawre.code.to_s + " - "+ lawre.year.to_s
+                          %td= lawre.date.to_s
                           %td
                             = lawre.description.to_s
                           %td
@@ -87,8 +89,6 @@
                           %td
                             %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_documentary_control_issued_letter_path(lawre.id)}', 'content', null, null, 'GET')"}
                               Editar
-                            %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{lawre.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{documentary_control_issued_letter_path(lawre.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{documentary_control_issued_letters_path}')"}}
-                              Eliminar
 
 :javascript
   $(document).ready(function () {

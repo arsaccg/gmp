@@ -6,6 +6,8 @@
   .widget-body
     = simple_form_for([:documentary_control, @photo], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
+        = hidden_field_tag 'photo_of_work[folder_id]', @fa_id.to_s
+        %br
         .row
           %section.col.col-md-8
             %label.label Nombre
@@ -22,7 +24,10 @@
         .row
           %section.col.col-md-12
             %label.label Foto:
-            = f.input :photo, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+            - if @action == 'edit'
+              = f.input :photo, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
+            -else
+              = f.input :photo, :input_html => { :class => 'btn btn-default' }, label: false, as: "file", required: true
             %p.help-block
               - if @action == 'edit' && @photo.photo.exists?
                 = 'Archivo subido: ' + File.basename(@photo.photo.path, File.extname(@photo.photo.path))
@@ -30,12 +35,13 @@
                 Subir el archivo correspondiente
 
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary#save{type: "submit"}
           %i.fa.fa-save 
           Guardar
 
 :javascript
   $(document).ready(function () {
+    $('select').select2();
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -43,7 +49,7 @@
     }
 
   });
-  
+
   function submit_validate(form){
     $(form['selector']).ajaxForm({
       beforeSubmit: function() {
@@ -70,6 +76,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine

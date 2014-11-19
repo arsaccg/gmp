@@ -5,6 +5,9 @@
     %h2 Nuevo Parte de Personal
   .widget-body
     = simple_form_for([:production, @partperson], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      - f.fields_for :part_person_details do |del|
+        = del.hidden_field :lock_version
+      = f.hidden_field :lock_version    
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
@@ -44,7 +47,7 @@
             %select#worker-select.select2.form-control(name='worker_id' style='width:100%;padding: 0;border: none;')
               - @workers.each do |worker|
                 %option(value = "#{worker.id}")
-                  = worker.entity.dni.to_s + ' - ' + worker.entity.name.to_s + ' ' + worker.entity.second_name.to_s + ' ' + worker.entity.paternal_surname.to_s + ' ' + worker.entity.maternal_surname.to_s + ' - ' + worker.article.name.to_s
+                  = worker.entity.dni.to_s + ' - ' + worker.entity.name.to_s + ' ' + worker.entity.second_name.to_s + ' ' + worker.entity.paternal_surname.to_s + ' ' + worker.entity.maternal_surname.to_s
 
           %section.col.col-2
             %div
@@ -94,7 +97,7 @@
                         %i
                     - @reg_n += 1
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -143,6 +146,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -153,8 +158,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }

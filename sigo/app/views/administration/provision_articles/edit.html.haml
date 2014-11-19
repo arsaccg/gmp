@@ -1,0 +1,17 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-5
+  #widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        = render :partial => 'form'
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-provisions{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado de Provisiones
+
+:javascript
+  $(document).ready(function(){
+    $('#backlist-provisions').click(function(){
+      load_url_ajax("#{administration_provision_articles_path}", 'content', null, null, 'GET');
+    });
+  });

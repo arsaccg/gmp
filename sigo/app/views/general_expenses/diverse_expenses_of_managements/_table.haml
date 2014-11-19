@@ -1,0 +1,82 @@
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Gastos Diversos
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      %table#dt_basic.table.table-striped.table-bordered
+        %thead
+          %tr
+            %th Descripcion
+            %th Porcentaje
+            %th Monto
+            %th Gasto
+            %th Total Entregado
+            %th Saldo
+            %th Acciones
+        %tbody
+          - @gdg.each do |gdg|
+            %tr
+              %td
+                %a.link_detail{ :href => "javascript:show_summary_table('#{show_summary_table_general_expenses_diverse_expenses_of_management_path(gdg.id)}', this)" } 
+                  = gdg.name.to_s
+              %td
+                = gdg.percentage.to_s
+              %td 
+                = number_to_currency( gdg.amount.to_f.to_s, unit: 'S/. ', precision: 2)
+              %td
+                = number_to_currency( gdg.expenses.to_f.to_s, unit: 'S/. ', precision: 2)
+              %td 
+                = number_to_currency( gdg.total_delivered.to_f.to_s, unit: 'S/. ', precision: 2)
+              %td
+                = number_to_currency( (gdg.amount.to_f-gdg.total_delivered.to_f).to_s, unit: 'S/. ', precision: 2)
+              %td
+                %a.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg_edit('+gdg.id.to_s+');', "style"=>" color: white; "}
+                  Editar
+                %a.btn.btn-info.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg_show('+gdg.id.to_s+');', "style"=>" color: white; "}
+                  Agregar Entregas
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item?', :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url_on_div('#{general_expenses_diverse_expenses_of_management_path(gdg.id)}', 'gdg', '#{general_expenses_diverse_expenses_of_managements_path}' + '?cc_id=#{gdg.cost_center_id}', 'GET')"}}
+                  Eliminar
+
+:javascript
+
+
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });  
+
+  $(".link_detail").click(function() {
+    console.log("1");
+    $('table#dt_basic tr').removeClass("seleccionado");
+    $(this).parents("tr").addClass("seleccionado");
+  });
+ 
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  function show_summary_table(url, element){
+
+    $.ajax({
+      type: 'POST',
+      url: url,
+      async: false,
+      dataType : 'html',
+      beforeSend : function() {
+        $("#table_detail").html('<h1><i class="fa fa-cog fa-spin"></i> Cargando...</h1>');
+      },
+      success: function(data) {
+        $("#table_detail").css({
+          opacity : '0.0'
+        }).html(data).delay(50).animate({
+          opacity : '1.0'
+        }, 300);
+      },
+      error : function(xhr, ajaxOptions, thrownError) {
+        $("#table_detail").html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+      }
+    });
+  }
+

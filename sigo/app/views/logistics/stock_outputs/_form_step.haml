@@ -2,7 +2,7 @@
   #step1.step-pane.active
     %h3
       %strong Paso 1
-      \- Seleccionar CC / Responsable
+      \- Seleccionar Responsable / Almacén
 
     %fieldset
       .row
@@ -38,14 +38,15 @@
       .row#select_table_per_warehouse
       %br
       .row
-        %table#dt_basic.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form{ style: "width: 1000px;margin: 0 auto" }
+        %table#items.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form{ style: "width: 1000px;margin: 0 auto" }
           %thead
             %tr
               %th{ 'style' => 'width: 20%;text-align:center' } Código
               %th{ 'style' => 'width: 30%;text-align:center' } Artículo
               %th{ 'style' => 'width: 15%;text-align:center' } Unidad
               %th{ 'style' => 'width: 20%;text-align:center' } Cantidad Total en Almacen
-              %th{ 'style' => 'width: 15%;text-align:center' } Seleccionar
+              %th{ 'style' => 'width: 7%;text-align:center;display:none' } Seleccionar
+              %th{ 'style' => 'width: 7%;text-align:center' } Eliminar
           %tbody#partial_table_per_warehouse
         
   #step3.step-pane
@@ -58,65 +59,49 @@
       .row
         .col-md-1
         .col-md-2
-          .form-group
-            %label.control-label Formato
-            .input-group
-              %select.form-control#format-select{:name =>"stock_input[format_id]"}
-                - @formats.each do |x|
-                  %option{:value => "#{x.id}"}
-                    = x.name
-              %span.input-group-addon
-                %i.fa.fa-gears
-        .col-md-1
+          %label.control-label Formato
+          .input-group
+            %select.form-control#format-select{:name =>"stock_input[format_id]"}
+              - @formats.each do |x|
+                %option{:value => "#{x.id}"}
+                  = x.name
+            %span.input-group-addon
+              %i.fa.fa-gears
+
         .col-md-2
-          .form-group
-            %label.control-label Periodo
-            .input-group
-              %select(name='stock_input[period]' class = 'select2 form-control' id = 'period-select' style='width:100%;padding: 0;border: none;')
-                - @periods.select(:year).uniq.each do |x|
-                  %optgroup{:label => "#{x.year.to_i}"}
-                    - @periods.where("year = ?", x.year).each do |y|
-                      %option(value = "#{y.year.to_s}#{y.month.to_s.rjust(2, "0")}")
-                        = y.year.to_s + " - " + y.month.to_s.rjust(2, "0")
-        .col-md-1
-        .col-md-3
-          .form-group
-            %label.control-label N° Documento
-            .input-group
-              = text_field(:stock_input, :document, placeholder: "N° Documento", class: "form-control")
-              %span.input-group-addon
-                %i.fa.fa-file
-      
+          %label.control-label N° Documento
+          .input-group
+            = text_field(:stock_input, :document, placeholder: "N° Documento", class: "form-control", :required => true, :title=>"(*)")
+            %span.input-group-addon
+              %i.fa.fa-file
+
+        .col-md-4
+          %label.control-label Grupo de Trabajo
+          .input-group
+            %select(name='stock_input[working_group_id]' class = 'select2 form-control' id = 'working_group-select' style='width:100%;padding: 0;border: none;')
+              - @working_groups.each do |x|
+                %option(value = "#{x.id}")
+                  = x.name
+
+        .col-md-2
+          %label.control-label Fecha
+          .input-group
+            = f.input :issue_date, placeholder: "Fecha", as: :string, :required => true, :input_html => {:class => 'form-control', type: "date"}, label: false
+            %span.input-group-addon
+              %i.fa.fa-calendar
       .row
         .col-md-1
-        .col-md-4
-          .form-group
-            %label.control-label Grupo de Trabajo
-            .input-group
-              %select(name='stock_input[working_group_id]' class = 'select2 form-control' id = 'working_group-select' style='width:100%;padding: 0;border: none;')
-                - @working_groups.each do |x|
-                  %option(value = "#{x.id}")
-                    = x.name
-        .col-md-1
-        .col-md-4
-          .form-group
-            %label.control-label Fecha
-            .input-group
-              = f.input :issue_date, placeholder: "Fecha", as: :string, :input_html => {:class => 'form-control', type: "date", :required => true}, label: false
-              %span.input-group-addon
-                %i.fa.fa-calendar
-      .row
-        .col-md-1
-        .col-md-9
-          .form-group
-            %label.control-label Glosa
-            .input-group
-              = text_area(:stock_input, :description, placeholder: "Glosa", class: "form-control")
-              %span.input-group-addon
-                %i.fa.fa-align-justify
-      
+        .col-md-10
+          %label.control-label Glosa
+          .input-group
+            = text_area(:stock_input, :description, placeholder: "Glosa", class: "form-control")
+            %span.input-group-addon
+              %i.fa.fa-align-justify
+    
+    %br
+
     %fieldset
-      %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-pod" aria-describedby="data-table_info")
+      %table(class="table table-condensed table-bordered table-striped table-hover smart-form" style="font-size: 12px;" id="summary-pod" aria-describedby="data-table_info")
         %thead
           %tr
             %th{'style' => 'width: 13%;'}
@@ -150,7 +135,7 @@
     %br/
     %br/
     %br/
-
+    %input#ids{:style=>"display:none"}
 #modalPurchaseOrderItems.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalDeliveryItemsLabel", role: "dialog", tabindex: "-1"}
   .modal-dialog
     .modal-content
@@ -166,6 +151,6 @@
   $("#btn-add-article").click(function(){
     var article_id = $("#article-select").val();
     str_item = {authenticity_token: "#{form_authenticity_token}", article_id: $("#article-select").val(), amount: $("#article-amount").val()};
-
     append_url_ajax('#{add_stock_input_item_field_logistics_stock_outputs_path}', 'summary-pod', str_item, 0, 'POST');
   });
+

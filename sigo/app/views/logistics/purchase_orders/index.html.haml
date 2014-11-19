@@ -39,11 +39,6 @@
         = render :partial => 'table'
 
 :javascript
-
-  $(document).ready(function(){
-    $('[data-toggle="confirmation"]').confirmation();
-  });
-
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();
   
@@ -80,37 +75,42 @@
 
   }
 
+  $('#summary-purchase-orders_wrapper').removeClass("dataTables_wrapper");
+  
   function runDataTables() {
-
-    /*
-     * BASIC
-     */
     $('#summary-purchase-orders').dataTable({
-      "sPaginationType" : "bootstrap_full"
+      bDestroy: true,
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      sAjaxSource  : "#{display_orders_logistics_purchase_orders_path}",
+      fnDrawCallback : function(oSettings, json) {
+        oSettings.fnDrawCallback = $('a.btn').tooltip('hide');
+      },
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
+        aoData.push( {"name": "state", "value": $('#state').val()} );
+      },
+      sPaginationType : 'bootstrap_full'
     });
 
-    /* END BASIC */
-
-    $('#summary-purchase-orders_wrapper').removeClass("dataTables_wrapper");
-
-    /* Add the events etc before DataTables hides a column */
-    $("#summary-purchase-orders thead input").keyup(function() {
+    $("#dt_basic_filter div input").keyup(function() {
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
     });
+  }  
 
-    $("#summary-purchase-orders thead input").each(function(i) {
-      this.initVal = this.value;
-    });
-    $("#summary-purchase-orders thead input").focus(function() {
-      if (this.className == "search_init") {
-        this.className = "";
-        this.value = "";
+  function filtro(state) {
+    $('#state').val(state);
+    var as=$('#li-estado').children().find('a');
+    as.each(function(){
+      var id = $(this).attr('id');
+      if(id==state){
+        $(this).attr('style', 'background-color: #57889c; color: white; ');
+      }else{
+        $(this).attr('style', 'background-color: white; color: black; ');
       }
-    });
-    $("#summary-purchase-orders thead input").blur(function(i) {
-      if (this.value == "") {
-        this.className = "search_init";
-        this.value = this.initVal;
-      }
-    });
+    });    
+    runDataTables();
+    $('#summary-purchase-orders_wrapper').removeClass("dataTables_wrapper");
   }

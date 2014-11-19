@@ -5,6 +5,21 @@
     %h2 Trabajadores
   .widget-body
     = simple_form_for([:production, @worker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      = f.hidden_field :lock_version
+      - f.fields_for :worker_center_of_studies do |del|
+        = del.hidden_field :lock_version
+      - f.fields_for :worker_contracts do |del|
+        = del.hidden_field :lock_version        
+      - f.fields_for :worker_details do |del|
+        = del.hidden_field :lock_version
+      - f.fields_for :worker_experiences do |del|
+        = del.hidden_field :lock_version        
+      - f.fields_for :worker_familiars do |del|
+        = del.hidden_field :lock_version     
+      - f.fields_for :worker_healths do |del|
+        = del.hidden_field :lock_version  
+      - f.fields_for :worker_otherstudies do |del|
+        = del.hidden_field :lock_version        
       %fieldset
         %legend{style: "font-weight: 600;"} DATOS LABORALES
         .row
@@ -16,83 +31,83 @@
                 -if @action == 'edit'
                   -if @worker.typeofworker=="empleado"
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", checked: ""}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", checked: "", :disabled=> true}
                       %span Empleado
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero",:disabled=> true}
                       %span Obrero
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", :disabled=> true}
                       %span Pensionista
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", :disabled=> true}
                       %span Personal en Formación
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", :disabled=> true}
                       %span Externo
                   -elsif @worker.typeofworker=="obrero"
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", :disabled=> true}
                       %span Empleado
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: ""}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: "", :disabled=> true}
                       %span Obrero
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", :disabled=> true}
                       %span Pensionista
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", :disabled=> true}
                       %span Personal en Formación
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", :disabled=> true}
                       %span Externo
                   -elsif @worker.typeofworker=="pensionista"
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", :disabled=> true}
                       %span Empleado
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: ""}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: "", :disabled=> true}
                       %span Obrero
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", checked: ""}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", checked: "", :disabled=> true}
                       %span Pensionista
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", :disabled=> true}
                       %span Personal en Formación
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", :disabled=> true}
                       %span Externo
                   -elsif @worker.typeofworker=="formacion"
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", :disabled=> true}
                       %span Empleado
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: ""}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: "", :disabled=> true}
                       %span Obrero
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", :disabled=> true}
                       %span Pensionista
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", checked: ""}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", checked: "", :disabled=> true}
                       %span Personal en Formación
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", :disabled=> true}
                       %span Externo
                   -elsif @worker.typeofworker=="externo"
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", :disabled=> true}
                       %span Empleado
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", :disabled=> true}
                       %span Obrero
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", :disabled=> true}
                       %span Pensionista
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion"}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", :disabled=> true}
                       %span Personal en Formación
                     %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo",checked: ""}
+                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo",checked: "", :disabled=> true}
                       %span Externo
                 -else
                   %label.radio-inline
@@ -118,54 +133,60 @@
           %section.col.col-8
             %label.label Entidad Trabajador
             %label.input{for: "entity_id"}
-              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ' ' + @entity.name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
-          %section.col.col-4
-            %label.label Cargo del Trabajador
+              = text_field_tag 'worker[paternal_surname]', @entity.paternal_surname.to_s + ' ' + @entity.maternal_surname.to_s + ', ' + @entity.name.to_s + ' ' + @entity.second_name.to_s, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
+          %section.col.col-4#categoria{ 'style' => 'display:none' }
+            %label.label Categoría del Obrero
             %label.input{for: "category_of_worker_id"}
               %select.form-control{:name =>"worker[position_worker_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @positionWorkers.each do |positionWorker|
-                  - if @worker.position_worker_id == positionWorker.id
-                    %option{:value => "#{positionWorker.id}", :selected => true}
+                  -if @action=="edit"
+                    - if @worker.position_worker_id == positionWorker.id
+                      %option{:value => "#{positionWorker.id}", :selected => true}
+                        = positionWorker.name
+                    - else
+                      %option{:value => "#{positionWorker.id}"}
+                        = positionWorker.name
+
+                  -else
+                    %option{:value => "#{positionWorker.id}", :selected => positionWorker.name=="EMPLEADO"}
                       = positionWorker.name
-                  - else
-                    %option{:value => "#{positionWorker.id}"}
-                      = positionWorker.name
+
         .row
           %section.col.col-4
             %label Fecha de Nacimiento
-            %input#familiar-dayofbirth.string.optional.form-control{'name'=>'date_of_birth', type: "date", :value => "#{@entity.date_of_birth}", disabled: "disabled", style: "background-color: gainsboro;"}
+            %input#familiar-dayofbirth.string.optional.form-control{'name'=>'date_of_birth', type: "date", :value => "#{@entity.date_of_birth}", disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;"}
           %section.col.col-4
             %label.label DNI
             %label.input{for: "dni"}
-              = text_field_tag 'worker[dni]', @entity.dni, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[dni]', @entity.dni, class: 'form-control', placeholder: 'Apellido Paterno', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;"
           %section.col.col-4
-            %label.label Carnet de Extranjeria
+            %label.label Nacionalidad
             %label.input{for: "alienslicense"}
-              = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Carnet de Extranjeria', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[alienslicense]', @entity.alienslicense, class: 'form-control', placeholder: 'Nacionalidad', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
         %label.label Lugar de Nacimiento
         .row
           %section.col.col-4
             %label.label Ciudad
             %label.input{for: "city"}
-              = text_field_tag 'worker[city]', @entity.city, class: 'form-control', placeholder: 'Ciudad', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[city]', @entity.city, class: 'form-control', placeholder: 'Ciudad', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
           %section.col.col-4
             %label.label Provincia
             %label.input{for: "province"}
-              = text_field_tag 'worker[province]', @entity.province, class: 'form-control', placeholder: 'Provincia', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[province]', @entity.province, class: 'form-control', placeholder: 'Provincia', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
           %section.col.col-4
             %label.label Departamento
             %label.input{for: "department"}
-              = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Departamento', disabled: "disabled", style: "background-color: gainsboro;"
+              = text_field_tag 'worker[department]', @entity.department, class: 'form-control', placeholder: 'Departamento', disabled: "disabled", style: "background-color: gainsboro; text-transform: uppercase;", :onchange => "makeUppercase(this);"
         .row#row1{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Email
             %label.input{for: "email"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :email, placeholder: "Email", input_html: { class: 'form-control' }, label: false, style: "background-color: gainsboro;"
+              = f.input :email, placeholder: "Email", input_html: { class: 'form-control', :onchange => "makeUppercase(this);" }, label: false, style: "background-color: gainsboro; text-transform: uppercase;"
           %section.col.col-4
             %label.label Teléfono
             %label.input{for: "phone"}
-              = f.input :phone, input_html: { class: 'form-control' }, label: false, style: "background-color: gainsboro;"
+              = f.input :phone, input_html: { class: 'form-control' }, label: false, style: "background-color: gainsboro; text-transform: uppercase;"
           %section.col.col-4
             %label.label Celular
             %label.input{for: "cellphone"}
@@ -175,30 +196,30 @@
           %section.col.col-8
             %label.label Dirección
             %label.input{for: "address"}
-              = f.input :address, placeholder: "Dirección", input_html: { class: 'form-control' }, label: false
+              = f.input :address, placeholder: "Dirección", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-4
             %label.label País
             %label.input{for: "pais"}
-              = f.input :pais, input_html: { class: 'form-control' }, label: false
+              = f.input :pais, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
         .row#row3{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Distrito
             %label.input{for: "district"}
-              = f.input :district, placeholder: "Distrito", input_html: { class: 'form-control' }, label: false
+              = f.input :district, placeholder: "Distrito", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-4
             %label.label Provincia
             %label.input{for: "province"}
-              = f.input :province, input_html: { class: 'form-control' }, label: false
+              = f.input :province, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-4
             %label.label Departamento
             %label.input{for: "department"}
-              = f.input :department, input_html: { class: 'form-control' }, label: false
+              = f.input :department, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
         .row#row4{ 'style' => 'display:none' }
           %section.col.col-4
             %label.label Licencia de Conducir
             %label.input{for: "driverlicense"}
               %i.icon-append.fa.fa-credit-card
-              = f.input :driverlicense, placeholder: "Licencia de Conducir", input_html: { class: 'form-control' }, label: false
+              = f.input :driverlicense, placeholder: "Licencia de Conducir", input_html: { class: 'form-control', style: 'text-transform: uppercase;' , :onchange => "makeUppercase(this);"}, label: false
           %section.col.col-4
             %label.control-label Estado Civil
             %br
@@ -210,17 +231,14 @@
                   %option{:value => "casado", :selected => "#{@worker.maritalstatus}"=="casado"} Casado
                   %option{:value => "divorciado", :selected => "#{@worker.maritalstatus}"=="divorciado"} Divorciado
                   %option{:value => "viudo", :selected => "#{@worker.maritalstatus}"=="viudo"} Viudo
+                  %option{:value => "conviviente", :selected => "#{@worker.maritalstatus}"=="conviviente"} Conviviente
                 -else
                   %option{:value => "0", :selected => 'selected'} Seleccione un estado
                   %option{:value => "soltero"} Soltero
                   %option{:value => "casado"} Casado
                   %option{:value => "divorciado"} Divorciado
                   %option{:value => "viudo"} Viudo
-          %section.col.col-4
-            %label.label CUSPP
-            %label.input{for: "afpnumber"}
-              %i.icon-append.fa.fa-credit-card
-              = f.input :afpnumber, placeholder: "CUSPP", input_html: { class: 'form-control' }, label: false
+                  %option{:value => "conviviente"} Conviviente
         .row#row7{ 'style' => 'display:none' }
           %section.col.col-12
             %label.label JORNADA LABORAL
@@ -256,6 +274,15 @@
                   %label.radio-inline
                     %input{:name =>'worker[disabled]', :type => 'radio', :value => "no", checked: ""}
                     %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[disabled]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[disabled]', :type => 'radio', :value => "no"}
+                    %span No
             -else
               .col-md-2
                 %label.radio-inline
@@ -284,6 +311,15 @@
                 .col-md-2
                   %label.radio-inline
                     %input{:name =>'worker[unionized]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[unionized]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[unionized]', :type => 'radio', :value => "no"}
                     %span No
             -else
               .col-md-2
@@ -320,6 +356,15 @@
                 .col-md-2
                   %label.radio-inline
                     %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+              -else
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si"}
+                    %span Si
+                %section.col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no"}
                     %span No
             -else
               %section.col-md-2
@@ -381,9 +426,9 @@
 
       %fieldset#fieldset7{ 'style' => 'display:none' }
         %legend{style: "font-weight: 600;"} DATOS DE SEGURIDAD SOCIAL
-        %legend Regimen de Salud
-        %br
-        .row
+        %legend{ 'style' => 'display:none' } Regimen de Salud
+        %br{ 'style' => 'display:none' }
+        .row{ 'style' => 'display:none' }
           %section.col.col-3
             %label Regimen de Salud
             %select#healthtype-select.select2.form-control{style: 'width:100%;padding: 0;border: none;', class: 'healthreg'}
@@ -397,13 +442,13 @@
               - @health.each do |health|
                 %option(value = "#{health.id}")
                   = health.enterprise
-        .row
+        .row{ 'style' => 'display:none' }
           %section.col.col-3
             %label Fecha de Inicio
-            %input#health-startdate.string.optional.form-control{'name'=>'healthstartdate', type: "date"}
+            %input#health-startdate.string.optional.form-control{'name'=>'healthstartdate', type: "date", style: 'text-transform: uppercase;'}
           %section.col.col-3
             %label Fecha de Fin
-            %input#health-enddate.string.optional.form-control{'name'=>'healthenddate', type: "date"}
+            %input#health-enddate.string.optional.form-control{'name'=>'healthenddate', type: "date", style: 'text-transform: uppercase;'}
           
           %br
           %section.col.col-2
@@ -411,7 +456,7 @@
               %a(href="javascript:add_health_center_item();" id="btn-add-health_center" class="btn btn-success" role="button")
                 Agregar Centro de Salud
 
-        .col-lg-12
+        .col-lg-12{ 'style' => 'display:none' }
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
@@ -446,46 +491,74 @@
                         = check_box 'worker[worker_healths_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
-        %br
+        %br{ 'style' => 'display:none' }
         %legend Regimen Pensionario
         %br
         .row
-          %section.col.col-2
-            %label.control-label(for="afp_id") AFP
+          %section.col-md-4
+            %label.label Elija un Régimen Pensionario
+          %section.col-md-12
+            .row
+              .col-md-1
+              %section.col-md-7
+                %label.radio-inline
+                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "Estoy"}
+                  %span Estoy afiliado al Sistema Privado de Pensiones
+            .row
+              .col-md-1
+              %section.col-md-7
+                %label.radio-inline
+                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "Deseo"}
+                  %span Deseo afiliarme al Sistema Privado de Pensiones
+            .row
+              .col-md-1
+              %section.col-md-7
+                %label.radio-inline
+                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "No"}
+                  %span No estoy afiliado a ninguna AFP y deseo inscribirme o permanecer en el Sistema Nacional de Pensiones
+        .row#afp4{ 'style' => 'display:none' }
+          %section.col.col-1
+            %br
+            %label.control-label(for="afp_id") Regimen Pensionario
 
-          %section.col.col-3
-            %select#afp-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
-              - @afp.each do |afp|
-                %option(value = "#{afp.id}")
-                  = afp.enterprise
+          %section.col.col-3#afplista{ 'style' => 'display:none' }
+            %label.label Lista de AFPs
+            %select#afp-select.select2.form-control(style='width:100%;padding: 0;border: none;')
 
-          %section.col.col-3
-            %select#afptype-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
-              %option(value = "") Tipo de comisión
-              %option(value = "mixto") Mixto
-              %option(value = "comision") Comisión
+          %section.col.col-3#afpcuspp{ 'style' => 'display:none' }
+            %label.label CUSPP
+            = text_field_tag 'afpnumber', nil, class: 'form-control', id: 'afp-afpnumber', placeholder: 'Numero de Cuenta'
+            %label Obtener CUSPP accediendo a
+            %a{:target =>'_blank', :href => 'http://www.sbs.gob.pe/app/spp/Reporte_sit_prev/afil_existe.asp'}>web de la SBS
 
-        .row
-          %section.col.col-3
-            %label Fecha de Inicio
+          %section.col.col-3#afpfechaafi{ 'style' => 'display:none' }
+            %label Fecha de Afiliación
             %input#afp-startdate.string.optional.form-control{'name'=>'afpstartdate', type: "date"}
-          %section.col.col-3
-            %label Fecha de Fin
-            %input#afp-enddate.string.optional.form-control{'name'=>'afpenddate', type: "date"}
           %br
           %section.col.col-2
             %div
               %a(href="javascript:add_afp_item();" id="btn-add-afp" class="btn btn-success" role="button")
                 Agregar AFP
 
+        .row#afp2{ 'style' => 'display:none' }
+          %section.col.col-3
+            %select#afptype-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
+              %option(value = "") Tipo de comisión
+              %option(value = "Comision por Flujo(sueldo)") Comision por Flujo(sueldo)
+              %option(value = "Comision mixta (saldo y sueldo)") Comision mixta (saldo y sueldo)
+          %section.col.col-3
+            %label Fecha de Fin
+            %input#afp-enddate.string.optional.form-control{'name'=>'afpenddate', type: "date"}
+
         .col-lg-12
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
                 %th.col-2 Nombre
-                %th.col-2 Tipo de AFP
+                %th.col-2{ 'style' => 'display:none' } Tipo de AFP
+                %th.col-2 CUSPP
                 %th.col-2 Fecha de Inicio
-                %th.col-2 Fecha de Fin
+                %th.col-2{ 'style' => 'display:none' } Fecha de Fin
                 %th Eliminar
             %tbody(id="afp_items_table")
               - if @action == 'edit'
@@ -495,11 +568,13 @@
                     %td.bank-id(style="display:none")
                       = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afp_id]', oos.afp.id
                     %td.col-2=oos.afp.enterprise
-                    %td.col-2.afptype
+                    %td.col-2.afptype{ 'style' => 'display:none' }
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afptype]', oos.afptype, class: "form-control afptype-item"
+                    %td.col-2.cuspp
+                      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afpnumber]', oos.afpnumber, class: "form-control afpnumber-item"
                     %td.col-2.start_date
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][start_date]', oos.start_date, class: "form-control start_date-item"
-                    %td.col-2.end_date
+                    %td.col-2.end_date{ 'style' => 'display:none' }
                       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][end_date]', oos.end_date, class: "form-control end_date-item"
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][id]', oos.id
@@ -523,29 +598,29 @@
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
-                %th.col-2 Apellido Paterno
-                %th.col-2 Apellido Materno
-                %th.col-2 Nombres
-                %th.col-2 Parentesco
-                %th.col-2 Fecha de Nacimiento
-                %th.col-2 DNI
-                %th Eliminar
+                %th{style: "width: 15%;"} Apellido Paterno
+                %th{style: "width: 15%;"} Apellido Materno
+                %th{style: "width: 25%;"} Nombres
+                %th{style: "width: 15%;"} Parentesco
+                %th{style: "width: 15%;"} Fecha de Nacimiento
+                %th{style: "width: 10%;"} DNI
+                %th{style: "width: 5%;"} Eliminar
             %tbody(id="familiar_items_table")
               - if @action == 'edit'
                 - puts @worker.worker_familiars
                 - @worker.worker_familiars.each do |oos|
                   %tr
-                    %td.col-2=oos.paternal_surname
-                    %td.col-2=oos.maternal_surname
-                    %td.col-2=oos.names
-                    %td.col-2=oos.relationship
-                    %td.col-2=oos.dayofbirth
-                    %td.col-2=oos.dni
+                    %td{style: "width: 15%;"}=oos.paternal_surname
+                    %td{style: "width: 15%;"}=oos.maternal_surname
+                    %td{style: "width: 25%;"}=oos.names
+                    %td{style: "width: 15%;"}=oos.relationship
+                    %td{style: "width: 15%;"}=oos.dayofbirth
+                    %td{style: "width: 10%;"}=oos.dni
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_familiars_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_familiars_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
-                    %td.delete-item
+                    %td.delete-item{style: "width: 5%;"}
                       %label.checkbox
                         = check_box 'worker[worker_familiars_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
@@ -553,96 +628,115 @@
       %fieldset#fieldset3{ 'style' => 'display:none' }
         %legend{style: "font-weight: 600;"} DATOS DE LA SITUACIÓN EDUCATIVA
         .row
-          %section.col.col-4
+          %section.col.col-3
             %label.control-label Situación Educativa
             %br
             .input-group
-              %select.col-sm-6.form-control#type{:name =>"worker[levelofinstruction]", :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px' }
+              %select.col-sm-6.form-control#educationtype{:name =>"worker[levelofinstruction]", 'style' => 'width:200px', class: 'educationtype' }
                 -if @action == 'edit'
-                  %option{:value => "0", :selected => 'selected'} Seleccione un nivel
-                  %option{:value => "sineduación", :selected => "#{@worker.levelofinstruction}"=="sineduación"} Sin Educación Formal
-                  %option{:value => "especiali", :selected => "#{@worker.levelofinstruction}"=="especiali"} Educación Especial Incompleta
-                  %option{:value => "especialc", :selected => "#{@worker.levelofinstruction}"=="especialc"} Educación Especial Completa
-                  %option{:value => "primariai", :selected => "#{@worker.levelofinstruction}"=="primariai"} Educación Primaria Incompleta
-                  %option{:value => "primariac", :selected => "#{@worker.levelofinstruction}"=="primariac"} Educación Primaria Completa
-                  %option{:value => "secundariai", :selected => "#{@worker.levelofinstruction}"=="secundariai"} Educación Secundaria Incompleta
-                  %option{:value => "secundariac", :selected => "#{@worker.levelofinstruction}"=="secundariac"} Educación Secundaria Completa
-                  %option{:value => "tecnicai", :selected => "#{@worker.levelofinstruction}"=="tecnicai"} Educación Técnica Incompleta
-                  %option{:value => "tecnicac", :selected => "#{@worker.levelofinstruction}"=="tecnicac"} Educación Técnica Completa
-                  %option{:value => "superiori", :selected => "#{@worker.levelofinstruction}"=="superiori"} Educación Superior (Instituto Superior, ETC) Incompleta
-                  %option{:value => "superiorc", :selected => "#{@worker.levelofinstruction}"=="superiorc"} Educación Superior (Instituto Superior, ETC) Completa
-                  %option{:value => "universitariai", :selected => "#{@worker.levelofinstruction}"=="universitariai"} Educación Universitaria Incompleta
-                  %option{:value => "universitariac", :selected => "#{@worker.levelofinstruction}"=="universitariac"} Educación Universitaria Completa
-                  %option{:value => "bachiller", :selected => "#{@worker.levelofinstruction}"=="bachiller"} Grado de Bachiller
-                  %option{:value => "titulado", :selected => "#{@worker.levelofinstruction}"=="titulado"} Titulado
-                  %option{:value => "maestriai", :selected => "#{@worker.levelofinstruction}"=="maestriai"} Estudios de Maestría Incompleta
-                  %option{:value => "maestriac", :selected => "#{@worker.levelofinstruction}"=="maestriac"} Estudios de Maestría Completa
-                  %option{:value => "maestria", :selected => "#{@worker.levelofinstruction}"=="maestria"} Grado de Maestría
-                  %option{:value => "doctoradoi", :selected => "#{@worker.levelofinstruction}"=="doctoradoi"} Estudios de Doctorado Incompleto
-                  %option{:value => "doctoradoc", :selected => "#{@worker.levelofinstruction}"=="doctoradoc"} Estudios de Doctorado Completo
-                  %option{:value => "doctorado", :selected => "#{@worker.levelofinstruction}"=="doctorado"} Grado de Doctor
+                  %option{:value => nil, :selected => 'selected', :disabled=>true} Seleccione un nivel
+                  %option{:value => "Sin Educación Formal", :selected => "#{@worker.levelofinstruction}"=="Sin Educación Formal"} Sin Educación Formal
+                  %option{:value => "Educación Especial Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Especial Incompleta"} Educación Especial Incompleta
+                  %option{:value => "Educación Especial Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Especial Completa"} Educación Especial Completa
+                  %option{:value => "Educación Primaria Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Primaria Incompleta"} Educación Primaria Incompleta
+                  %option{:value => "Educación Primaria Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Primaria Completa"} Educación Primaria Completa
+                  %option{:value => "Educación Secundaria Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Secundaria Incompleta"} Educación Secundaria Incompleta
+                  %option{:value => "Educación Secundaria Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Secundaria Completa"} Educación Secundaria Completa
+                  %option{:value => "Educación Técnica Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Técnica Incompleta"} Educación Técnica Incompleta
+                  %option{:value => "Educación Técnica Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Técnica Completa"} Educación Técnica Completa
+                  %option{:value => "Educación Superior (Instituto Superior, ETC) Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Superior (Instituto Superior, ETC) Incompleta"} Educación Superior (Instituto Superior, ETC) Incompleta
+                  %option{:value => "Educación Superior (Instituto Superior, ETC) Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Superior (Instituto Superior, ETC) Completa"} Educación Superior (Instituto Superior, ETC) Completa
+                  %option{:value => "Educación Universitaria Incompleta", :selected => "#{@worker.levelofinstruction}"=="Educación Universitaria Incompleta"} Educación Universitaria Incompleta
+                  %option{:value => "Educación Universitaria Completa", :selected => "#{@worker.levelofinstruction}"=="Educación Universitaria Completa"} Educación Universitaria Completa
+                  %option{:value => "Grado de Bachiller", :selected => "#{@worker.levelofinstruction}"=="Grado de Bachiller"} Grado de Bachiller
+                  %option{:value => "Titulado", :selected => "#{@worker.levelofinstruction}"=="Titulados"} Titulado
+                  %option{:value => "Estudios de Maestría Incompleta", :selected => "#{@worker.levelofinstruction}"=="Estudios de Maestría Incompleta"} Estudios de Maestría Incompleta
+                  %option{:value => "Estudios de Maestría Completa", :selected => "#{@worker.levelofinstruction}"=="Estudios de Maestría Completa"} Estudios de Maestría Completa
+                  %option{:value => "Grado de Maestría", :selected => "#{@worker.levelofinstruction}"=="Grado de Maestría"} Grado de Maestría
+                  %option{:value => "Estudios de Doctorado Incompleto", :selected => "#{@worker.levelofinstruction}"=="Estudios de Doctorado Incompleto"} Estudios de Doctorado Incompleto
+                  %option{:value => "Estudios de Doctorado Completo", :selected => "#{@worker.levelofinstruction}"=="Estudios de Doctorado Completo"} Estudios de Doctorado Completo
+                  %option{:value => "Grado de Doctor", :selected => "#{@worker.levelofinstruction}"=="Grado de Doctor"} Grado de Doctor
                 -else
                   %option{:value => "0", :selected => 'selected'} Seleccione un nivel
-                  %option{:value => "sineduación"} Sin Educación Formal
-                  %option{:value => "especiali"} Educación Especial Incompleta
-                  %option{:value => "especialc"} Educación Especial Completa
-                  %option{:value => "primariai"} Educación Primaria Incompleta
-                  %option{:value => "primariac"} Educación Primaria Completa
-                  %option{:value => "secundariai"} Educación Secundaria Incompleta
-                  %option{:value => "secundariac"} Educación Secundaria Completa
-                  %option{:value => "tecnicai"} Educación Técnica Incompleta
-                  %option{:value => "tecnicac"} Educación Técnica Completa
-                  %option{:value => "superiori"} Educación Superior (Instituto Superior, ETC) Incompleta
-                  %option{:value => "superiorc"} Educación Superior (Instituto Superior, ETC) Completa
-                  %option{:value => "universitariai"} Educación Universitaria Incompleta
-                  %option{:value => "universitariac"} Educación Universitaria Completa
-                  %option{:value => "bachiller"} Grado de Bachiller
-                  %option{:value => "titulado"} Titulado
-                  %option{:value => "maestriai"} Estudios de Maestría Incompleta
-                  %option{:value => "maestriac"} Estudios de Maestría Completa
-                  %option{:value => "maestria"} Grado de Maestría
-                  %option{:value => "doctoradoi"} Estudios de Doctorado Incompleto
-                  %option{:value => "doctoradoc"} Estudios de Doctorado Completo
-                  %option{:value => "doctorado"} Grado de Doctor
+                  %option{:value => "Sin Educación Formal"} Sin Educación Formal
+                  %option{:value => "Educación Especial Incompleta"} Educación Especial Incompleta
+                  %option{:value => "Educación Especial Completa"} Educación Especial Completa
+                  %option{:value => "Educación Primaria Incompleta"} Educación Primaria Incompleta
+                  %option{:value => "Educación Primaria Completa"} Educación Primaria Completa
+                  %option{:value => "Educación Secundaria Incompleta"} Educación Secundaria Incompleta
+                  %option{:value => "Educación Secundaria Completa"} Educación Secundaria Completa
+                  %option{:value => "Educación Técnica Incompleta"} Educación Técnica Incompleta
+                  %option{:value => "Educación Técnica Completa"} Educación Técnica Completa
+                  %option{:value => "Educación Superior (Instituto Superior, ETC) Incompleta"} Educación Superior (Instituto Superior, ETC) Incompleta
+                  %option{:value => "Educación Superior (Instituto Superior, ETC) Completa"} Educación Superior (Instituto Superior, ETC) Completa
+                  %option{:value => "Educación Universitaria Incompleta"} Educación Universitaria Incompleta
+                  %option{:value => "Educación Universitaria Completa"} Educación Universitaria Completa
+                  %option{:value => "Grado de Bachiller"} Grado de Bachiller
+                  %option{:value => "Titulado"} Titulado
+                  %option{:value => "Estudios de Maestría Incompleta"} Estudios de Maestría Incompleta
+                  %option{:value => "Estudios de Maestría Completa"} Estudios de Maestría Completa
+                  %option{:value => "Grado de Maestría"} Grado de Maestría
+                  %option{:value => "Estudios de Doctorado Incompleto"} Estudios de Doctorado Incompleto
+                  %option{:value => "Estudios de Doctorado Completo"} Estudios de Doctorado Completo
+                  %option{:value => "Grado de Doctor"} Grado de Doctor
+          %section.col.col-2#lastgrade{ 'style' => 'display:none' }
+            %label Último Ciclo/Grado/Año Cursado
+            = f.input :lastgrade, input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-5
             %label.label Colegio Primaria
             %label.input{for: "primaryschool"}
-              = f.input :primaryschool, placeholder: "Colegio", input_html: { class: 'form-control' }, label: false
+              = f.input :primaryschool, placeholder: "Colegio", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-3
             %label.label Lugar
             %label.input{for: "primarydistrict"}
-              = f.input :primarydistrict, input_html: { class: 'form-control' }, label: false
+              = f.input :primarydistrict, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-2
             %label.label Desde
             %label.input{for: "primarystartdate"}
-              = f.input :primarystartdate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+              %select.form-control{:name =>"worker[primarystartdate]", :style => 'width:100%;padding: 0;border: none;'}
+                -if !@years.nil?
+                  - @years.each do |years|
+                    %option{:value => "#{years}", :selected => @worker.primarystartdate==years}
+                      = years
           %section.col.col-2
             %label.label Hasta
             %label.input{for: "primaryenddate"}
-              = f.input :primaryenddate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+              %select.form-control{:name =>"worker[primaryenddate]", :style => 'width:100%;padding: 0;border: none;'}
+                -if !@years.nil?
+                  - @years.each do |years|
+                    %option{:value => "#{years}", :selected => @worker.primaryenddate==years}
+                      = years
         .row
           %section.col.col-5
             %label.label Colegio Secundaria
             %label.input{for: "highschool"}
-              = f.input :highschool, placeholder: "Colegio", input_html: { class: 'form-control' }, label: false
+              = f.input :highschool, placeholder: "Colegio", input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-3
             %label.label Lugar
             %label.input{for: "highschooldistrict"}
-              = f.input :highschooldistrict, input_html: { class: 'form-control' }, label: false
+              = f.input :highschooldistrict, input_html: { class: 'form-control', style: 'text-transform: uppercase;', :onchange => "makeUppercase(this);" }, label: false
           %section.col.col-2
             %label.label Desde
             %label.input{for: "highschoolstartdate"}
-              = f.input :highschoolstartdate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+              %select.form-control{:name =>"worker[highschoolstartdate]", :style => 'width:100%;padding: 0;border: none;'}
+                -if !@years.nil?
+                  - @years.each do |years|
+                    %option{:value => "#{years}", :selected => @worker.highschoolstartdate==years}
+                      = years
           %section.col.col-2
             %label.label Hasta
             %label.input{for: "highschoolenddate"}
-              = f.input :highschoolenddate, as: :string, input_html: { class: 'form-control', :type => "date"}, label: false
+              %select.form-control{:name =>"worker[highschoolenddate]", :style => 'width:100%;padding: 0;border: none;'}
+                -if !@years.nil?
+                  - @years.each do |years|
+                    %option{:value => "#{years}", :selected => @worker.highschoolenddate==years}
+                      = years
         .row
           %section.col.col-2
             %div
               %a(href="javascript:add_centerofstudy_item();" id="btn-add-centerofstudy" class="btn btn-success" role="button")
-                Agregar Centro de Estudios
+                Agregar Estudios Superiores
 
         .col-lg-13
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
@@ -664,15 +758,17 @@
                     %td.col-2=oos.profession
                     %td.col-2=oos.title
                     %td.col-2=oos.numberoftuition
-                    %td.col-2=oos.start_date
-                    %td.col-2=oos.end_date
+                    %td.col-2
+                      = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][start_date]', oos.start_date , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', as: :string, :type => "date"
+                    %td.col-2
+                      = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][end_date]', oos.end_date, class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', as: :string, :type => "date"
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_center_of_studies][' + @reg_n.to_s + '][id]', oos.id
+                      = hidden_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_center_of_studies][' + @reg_n.to_s + '][worker_id]', @worker.id
+                      = hidden_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
                     %td.delete-item
                       %label.checkbox
-                        = check_box 'worker[worker_center_of_studies]', '[' + @reg_n.to_s + '][_destroy]'
+                        = check_box 'worker[worker_center_of_studies_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
         %br
@@ -686,23 +782,23 @@
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
-                %th.col-4 Otros Estudios
-                %th.col-4 Nivel
-                %th Eliminar
+                %th{style: "width: 50%;"} Otros Estudios
+                %th{style: "width: 40%;"} Nivel
+                %th{style: "width: 10%;"} Eliminar
             %tbody(id="otherstudy_items_table")
               - if @action == 'edit'
                 - puts @worker.worker_otherstudies
                 - @worker.worker_otherstudies.each do |oos|
                   %tr
-                    %td.col-2=oos.study
-                    %td.col-2=oos.level
+                    %td{style: "width: 50%;"}=oos.study
+                    %td{style: "width: 40%;"}=oos.level
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_otherstudies][' + @reg_n.to_s + '][id]', oos.id
+                      = hidden_field_tag 'worker[worker_otherstudies_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_otherstudies][' + @reg_n.to_s + '][worker_id]', @worker.id
-                    %td.delete-item
+                      = hidden_field_tag 'worker[worker_otherstudies_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
+                    %td.delete-item{style: "width: 10%;"}
                       %label.checkbox
-                        = check_box 'worker[worker_otherstudies]', '[' + @reg_n.to_s + '][_destroy]'
+                        = check_box 'worker[worker_otherstudies_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
         %br
@@ -735,6 +831,15 @@
                   %label.radio-inline
                     %input{:name =>'worker[quality]', :type => 'radio', :value => "no", checked: ""}
                     %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[quality]', :type => 'radio', :value => "no"}
+                    %span No
             -else
               .col-md-2
                 %label.radio-inline
@@ -763,6 +868,15 @@
                 .col-md-2
                   %label.radio-inline
                     %input{:name =>'worker[security]', :type => 'radio', :value => "no", checked: ""}
+                    %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[security]', :type => 'radio', :value => "no"}
                     %span No
             -else
               .col-md-2
@@ -801,6 +915,15 @@
                   %label.radio-inline
                     %input{:name =>'worker[enviroment]', :type => 'radio', :value => "no", checked: ""}
                     %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[enviroment]', :type => 'radio', :value => "no"}
+                    %span No
             -else
               .col-md-2
                 %label.radio-inline
@@ -830,6 +953,15 @@
                   %label.radio-inline
                     %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no", checked: ""}
                     %span No
+              -else
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "si"}
+                    %span Si
+                .col-md-2
+                  %label.radio-inline
+                    %input{:name =>'worker[labor_legislation]', :type => 'radio', :value => "no"}
+                    %span No
             -else
               .col-md-2
                 %label.radio-inline
@@ -851,55 +983,44 @@
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
             %thead
               %tr
-                %th.col-2 Empresa
-                %th.col-2 Dirección
-                %th.col-2 Cargo
-                %th.col-2 Salario
-                %th.col-2 Jefe inmediato
-                %th.col-2 Motivo de Salida
-                %th.col-2 Fecha de Inicio
-                %th.col-2 Fecha de Fin
-                %th Eliminar
+                %th{style: "width: 20%;"} Empresa
+                %th{style: "width: 20%;"} Cargo
+                %th{style: "width: 5%;"} Salario
+                %th{style: "width: 15%;"} Jefe inmediato
+                %th{style: "width: 15%;"} Motivo de Salida
+                %th{style: "width: 10%;"} Inicio
+                %th{style: "width: 10%;"} Fin
+                %th{style: "width: 5%;"} Eliminar
             %tbody(id="experience_items_table")
               - if @action == 'edit'
                 - puts @worker.worker_experiences
                 - @worker.worker_experiences.each do |oos|
                   %tr
-                    %td.col-2=oos.businessname
-                    %td.col-2=oos.businessaddress
-                    %td.col-2=oos.title
-                    %td.col-2=oos.salary
-                    %td.col-2=oos.bossincharge
-                    %td.col-2=oos.exitreason
-                    %td.col-2=oos.start_date
-                    %td.col-2=oos.end_date
+                    %td{style: "width: 20%;"}=oos.businessname
+                    %td{style: "width: 20%;"}=oos.title
+                    %td{style: "width: 5%;"}=oos.salary
+                    %td{style: "width: 15%;"}=oos.bossincharge
+                    %td{style: "width: 15%;"}=oos.exitreason
+                    %td{style: "width: 10%;"}=oos.start_date
+                    %td{style: "width: 10%;"}=oos.end_date
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_experiences][' + @reg_n.to_s + '][id]', oos.id
+                      = hidden_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")
-                      = hidden_field_tag 'worker[worker_experiences][' + @reg_n.to_s + '][worker_id]', @worker.id
-                    %td.delete-item
+                      = hidden_field_tag 'worker[worker_experiences_attributes][' + @reg_n.to_s + '][worker_id]', @worker.id
+                    %td.delete-item{style: "width: 5%;"}
                       %label.checkbox
-                        = check_box 'worker[worker_experiences]', '[' + @reg_n.to_s + '][_destroy]'
+                        = check_box 'worker[worker_experiences_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
         %br
         .row
           .section.col.col-md-12
             .section.col.col-md-2
-              %label.control-label Tiene hijos?
+              %label.control-label Tiene hijos en etapa escolar?
             .section.col.col-md-3
               .form-group
               -if @action == 'edit'
-                -if @worker.numberofchilds!=""
-                  .col-md-3
-                    %label.radio-inline
-                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "si", checked: ""}
-                      %span Si
-                  .col-md-1
-                    %label.radio-inline
-                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "no"}
-                      %span No
-                -elsif @worker.numberofchilds==""
+                -if @worker.numberofchilds.nil?
                   .col-md-3
                     %label.radio-inline
                       %input{:name =>'numberofchilds2', :type => 'radio', :value => "si"}
@@ -907,6 +1028,15 @@
                   .col-md-1
                     %label.radio-inline
                       %input{:name =>'numberofchilds2', :type => 'radio', :value => "no", checked: ""}
+                      %span No
+                -else
+                  .col-md-3
+                    %label.radio-inline
+                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "si", checked: ""}
+                      %span Si
+                  .col-md-1
+                    %label.radio-inline
+                      %input{:name =>'numberofchilds2', :type => 'radio', :value => "no"}
                       %span No
               -else
                 .col-md-3
@@ -918,6 +1048,7 @@
                     %input{:name =>'numberofchilds2', :type => 'radio', :value => "no"}
                     %span No
             %section.col.col-2#numberofchildren{ 'style' => 'display:none' }
+              %label Cuántos?
               = f.input :numberofchilds, placeholder: "Número de hijos", input_html: { class: 'form-control' }, label: false
       %fieldset#fieldset5{ 'style' => 'display:none' }
         %legend{style: "font-weight: 600;"} Documentación Adjunta
@@ -980,7 +1111,7 @@
         .row
           %section.col.col-md-12
             .col-md-5
-              %label.label Declaración Jurada
+              %label.label Declaración Jurada de Renta de 5ta
             .col-md-7
               = f.input :affidavit, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block
@@ -992,7 +1123,7 @@
         .row#partidamatrimonio{ 'style' => 'display:none' }
           %section.col.col-md-12
             .col-md-5
-              %label.label Certificado de Convivencia / Partida de Matrimonio
+              %label.label Certificado de Convivencia de Matrimonio/ Partida de Matrimonio
             .col-md-7
               = f.input :marriage_certificate, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
               %p.help-block.col-md-
@@ -1037,9 +1168,14 @@
                 - else
                   Subir el archivo correspondiente
       %footer
-        %button.btn.btn-primary{type: "submit"}
-          %i.fa.fa-save 
-          Guardar
+        -if @register=='yes'
+          %button.btn.btn-primary{type: "submit"}
+            %i.fa.fa-save 
+            Registrar
+        -else
+          %button.btn.btn-primary{type: "submit"}
+            %i.fa.fa-save 
+            Guardar
 
 :javascript
   $(document).ready(function () {
@@ -1061,13 +1197,19 @@
       $("#fieldset6").css("display", "");
       $("#fieldset7").css("display", "");
     }
+    if('#{@worker.typeofworker}'=="obrero"){
+      $("#categoria").css("display", "");
+    }
     if('#{@worker.numberofchilds}'!=0){
       $("#numberofchildren").css("display", "");
       $("#partidanacihijos").css("display", "");
       $("#dnihijoesposa").css("display", "");
       $("#constanciamatricula").css("display", "");
     }
-    if('#{@worker.maritalstatus}'=='maritalstatus'){
+    if('#{@worker.maritalstatus}'=='casado'){
+      $("#partidamatrimonio").css("display", "");
+    }
+    if(('#{@worker.levelofinstruction}'=='especiali')||('#{@worker.levelofinstruction}'=='primariai')||('#{@worker.levelofinstruction}'=='secundariai')||('#{@worker.levelofinstruction}'=='tecnicai')||('#{@worker.levelofinstruction}'=='superiori')||('#{@worker.levelofinstruction}'=='universitariai')||('#{@worker.levelofinstruction}'=='maestriai')||('#{@worker.levelofinstruction}'=='doctoradoi')){
       $("#partidamatrimonio").css("display", "");
     }
     if($('form[id^="edit_"]').length > 0) {
@@ -1111,6 +1253,74 @@
       $("#fieldset7").css("display", "none");
     }
   });
+  $("input.radiobox").change(function() {
+    if($(this).prop('value') == "obrero"){
+      $("#categoria").css("display", "");
+    }
+    else {
+      $("#categoria").css("display", "none");
+    }
+  });
+  $("input[type=radio][name=regimenpensionario]").change(function() {
+    if($(this).prop('value') == "Estoy"){
+
+      $.ajax({
+        type: "POST",
+        url: "#{display_afps_production_workers_path}",
+        async: false,
+        data: { type_of_afp: "SPP", authenticity_token: "#{form_authenticity_token}"}
+      }).done(function( data ) {
+        $('#afp-select').empty();
+        $('#afp-select').append( data.hash )
+      });
+
+      $("#afp4").css("display", "");
+      $("#afpcuspp").css("display", "");
+      $("#afpfechaafi").css("display", "");
+      $("#afplista").css("display", "");
+    }
+    else if($(this).prop('value') == "Deseo"){
+
+      $.ajax({
+        type: "POST",
+        url: "#{display_afps_production_workers_path}",
+        async: false,
+        data: { type_of_afp: "SPP", authenticity_token: "#{form_authenticity_token}"}
+      }).done(function( data ) {
+        $('#afp-select').empty();
+        $('#afp-select').append( data.hash )
+      });
+
+      $("#afp4").css("display", "");
+      $("#afpcuspp").css("display", "none");
+      $("#afpfechaafi").css("display", "none");
+      $("#afplista").css("display", "");
+    }
+    else if($(this).prop('value') == "No"){
+
+      $.ajax({
+        type: "POST",
+        url: "#{display_afps_production_workers_path}",
+        async: false,
+        data: { type_of_afp: "SNP", authenticity_token: "#{form_authenticity_token}"}
+      }).done(function( data ) {
+        $('#afp-select').empty();
+        $('#afp-select').append( data.hash )
+      });
+
+      $("#afp4").css("display", "");
+      $("#afpcuspp").css("display", "none");
+      $("#afpfechaafi").css("display", "none");
+      $("#afplista").css("display", "");
+    }
+    else{
+      $("#afp4").css("display", "none");
+      $("#afpcuspp").css("display", "none");
+      $("#afpfechaafi").css("display", "none");
+      $("#afplista").css("display", "none");
+    }
+  });
+
   $("input[type=radio][name=numberofchilds2]").change(function() {
     if($(this).prop('value') == "si"){
       $("#numberofchildren").css("display", "");
@@ -1135,6 +1345,15 @@
     }
   });
 
+  $(".educationtype").change(function() {
+    if(($(this).prop('value') == "especiali")||($(this).prop('value') == "primariai")||($(this).prop('value') == "secundariai")||($(this).prop('value') == "tecnicai")||($(this).prop('value') == "superiori")||($(this).prop('value') == "universitariai")||($(this).prop('value') == "maestriai")||($(this).prop('value') == "doctoradoi")){
+      $("#lastgrade").css("display", "");
+    }
+    else {
+      $("#lastgrade").css("display", "none");
+    }
+  });
+
   $(".healthreg").change(function() {
     if($(this).prop('value') == "ESSALUD REGULAR Y EPS / SERV PROPIOS"){
       $("#centrosalud").css("display", "");
@@ -1144,7 +1363,7 @@
     }
   });
 
-  function submit_validate(form){    
+  function submit_validate(form){
     loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
     $('#bank-select').select2();
     $(form['selector']).ajaxForm({
@@ -1195,14 +1414,24 @@
         });
         // Remove all Help-inLine
         $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
         // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        
         return $(form['selector']).valid();
       },
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }
@@ -1224,7 +1453,7 @@
   }
 
   function add_afp_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", afp_id: $("#afp-select").val(), afpnumber: $("#afp-afpnumber").val(), afptype: $("#afptype-select").val(), start_date: $("#afp-startdate").val(), end_date: $("#afp-enddate").val()};
+    str_item = {authenticity_token: "#{form_authenticity_token}", afp_id: $("#afp-select").val(), afpnumber: $("#afp-afpnumber").val(), afptype: $("#afptype-select").val(), start_date: $("#afp-startdate").val(), end_date: $("#afp-enddate").val(), afpnumber: $("#afp-afpnumber").val()};
 
     append_url_ajax('#{add_afp_item_field_production_workers_path}', 'afp_items_table', str_item, 0, 'POST');
   }
@@ -1262,3 +1491,7 @@
   function delete_item(code){
     $("#tr" + code).remove();
   }
+  
+  function makeUppercase(element) {
+    $(element).val($(element).val().toUpperCase());
+  }  

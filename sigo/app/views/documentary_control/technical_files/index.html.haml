@@ -3,7 +3,7 @@
     .col-xs-12.col-sm-7.col-md-7.col-lg-4
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw
-        Expedientes Técnicos
+        De la Licitación
     - if flash[:notice] !=nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"} ×
@@ -17,17 +17,22 @@
         %strong Error!
         = flash[:error]
   .row
-    .col-sm-4
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_technical_file_path}', 'content', null, null, 'GET')"}
-        Agregar Expedientes Técnicos
-    .col-md-3
-      = text_field_tag 'wordtosearch', nil, class: 'form-control', id: 'wordtosearch', placeholder: 'Escriba aqui su búsqueda'
-    .col-md-3
-      %button.btn.btn-primary.btn-default#show-table{href: 'javascript:void(0);', :onclick => 'search();'}
-        %i.fa.fa-search
-        Buscar
-    %br
-    #tech.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+    -if @type_tech.count != 0
+      .col-sm-4
+        %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_documentary_control_technical_file_path}', 'content', null, null, 'GET')"}
+          Agregar
+      .col-md-3
+        = text_field_tag 'wordtosearch', nil, class: 'form-control', id: 'wordtosearch', placeholder: 'Escriba aqui su búsqueda'
+      .col-md-3
+        %button.btn.btn-primary.btn-default#show-table{href: 'javascript:void(0);', :onclick => 'search();'}
+          %i.fa.fa-search
+          Buscar
+      %br
+      #tech.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+    -else
+      .alert.alert-danger.fade.in
+        %i.fa-fw.fa.fa-check
+        %strong{"style"=> "font-size: 12px"} Error! Asegurese de tener creado por lo menos un tipo
   %br
   .row
   #widget-grid

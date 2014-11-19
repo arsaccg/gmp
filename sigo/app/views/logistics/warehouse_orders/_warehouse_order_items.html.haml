@@ -1,0 +1,36 @@
+%tr(class="order_delivery_item"){id: "tr" + @reg_n.to_s}
+  %td.article-id(style="display:none")
+    = hidden_field_tag 'warehouse_order[warehouse_order_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article.to_i
+
+  %td
+    = @code_article
+  %td
+    = @name_article
+  %td
+    = @unitOfMeasurement
+  %td.col-md-1.smart-form{:style => "width:5%; text-align: center;"}
+    =@stockamount.to_i.to_s + ' unidad(es)'
+  %td.col-md-1.smart-form{:style => "width:5%"}
+    %div
+      = text_field_tag 'warehouse_order[warehouse_order_details_attributes][' + @reg_n.to_s + '][quantity]', @quantity.to_i , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{@stockamount})"
+      %code= "En stock: #{@stockamount}"
+      %code= "Pedidos: #{@order_quantity}"
+  %td.sector.col-md-2.smart-form
+    %div
+      %select.form-control{:name =>"warehouse_order[warehouse_order_details_attributes][#{@reg_n.to_s}][sector_id]", :required => true, title:'No puede dejar este campo vacio'}
+        %option{:value => nil, :selected => true, :disabled => true} Seleccionar Sector
+        - @sectors.each do |sector|
+          %optgroup{:label => "#{sector.name}"}
+            -Sector.getSubSectors(sector.code).each do |subsector|
+              %option{:value => "#{subsector.id}"}
+                = subsector.name  
+  %td.smart-form
+    %div
+      %select.form-control{:name =>"warehouse_order[warehouse_order_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
+        %option{:value => nil, :selected => true, :disabled => true} Seleccionar Fase
+        - @phases.each do |phase|
+          %option{:value => "#{phase.id}"}
+            = phase.code + " " + phase.name
+
+  %td{:style => "width: 1%;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

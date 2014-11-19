@@ -41,6 +41,17 @@ $(document).ready(function(){
   }
 });
 
+function empty_modal(modal_id, type){
+  modal = ''
+  if(type == 'btn'){
+    modal = '#' + $(modal_id).parent().parent().parent().parent().parent().attr('id')
+  } else {
+    modal = '#' + $(modal_id).parent().parent().parent().parent().attr('id')
+  }
+  $(modal).modal('hide');
+  $(modal).empty();
+}
+
 function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, semana6, semana7, semana8, semana9, semana10, theoretical_value, valor1, valor2, valor3, valor4, valor5, valor6, valor7, valor8, valor9, valor10){
   theoretical_value = parseFloat(theoretical_value)
   valor1 = parseFloat(valor1)
@@ -96,6 +107,11 @@ function load_graphic(div_id, semana1, semana2, semana3, semana4, semana5, seman
 }
 
 function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,week6,week7,week8,week9,week10,title,series2,unit){
+  if (unit=="Cantidad de Horas Hombre") {
+    var val= ' hh'
+  }else{
+    var val= ' trab.'
+  };
   $('#'+div_id).highcharts({
     chart: {
         type: 'area'
@@ -119,13 +135,13 @@ function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,wee
         },
         labels: {
             formatter: function() {
-                return this.value / 1000;
+                return this.value + val;
             }
         }
     },
     tooltip: {
         shared: true,
-        valueSuffix: ' millions'
+        valueSuffix: val
     },
     plotOptions: {
         area: {
@@ -142,6 +158,12 @@ function load_graphic_for_weekly_report(div_id,week1,week2,week3,week4,week5,wee
   });
 }
 
+function part_block() {
+  $('#modalLoadingLabelading').modal({
+    backdrop: 'static',
+    keyboard: false
+  });
+}
 function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1, serie2, serie3, data_serie1, data_serie2, data_serie3){
   $('#'+div_id).highcharts({
     chart: {
@@ -271,7 +293,53 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
   });
 }
 
+function load_modal_ajax(url, div_id_new, div_id_previous, parameters, loader_flag, render_type){
+  var url_str = url;
+  var div_name_new = div_id_new; 
+  var type_call = render_type;
+  var div_name_old = div_id_previous; 
+  //title = current_element.attr('title');
+  //document.title = (title || document.title);
+  $.ajax({
+    type: type_call,
+    url: url_str,
+    async: false,
+    data: parameters,
+    dataType : 'html',
+    beforeSend : function() {
+      $("#" + div_name_new).html('<h1><i class="fa fa-cog fa-spin"></i> Cargando...</h1>');
+    },
+    success: function(data) {
+      $("#" + div_name_old).modal('hide');
+      $("#" + div_name_new).modal('toggle');
+      $("#" + div_name_new).html(data);
+    },
+    error : function(xhr, ajaxOptions, thrownError) {
+      container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+    }
+  });
+}
 
+function load_file_ajax(dom_element, url, type_call, parameters, div_name){
+  
+  $(dom_element).fileupload({
+    url: url,
+    method: type_call,
+    formData: parameters,
+    onSuccess:function(files,data,xhr) {
+      $("#" + div_name).css({
+        opacity : '0.0'
+      }).html(data).delay(50).animate({
+        opacity : '1.0'
+      }, 300);
+    },
+    onError: function(files,status,errMsg)
+    {
+      console.log(files);
+      console.log(errMsg);
+    }
+  });
+}
 
 function delete_to_url(url, div_name, url_index){ /* Method DELETE */
   var url_str = url;
@@ -284,6 +352,25 @@ function delete_to_url(url, div_name, url_index){ /* Method DELETE */
     context: document.body,
     success: function(data){
       load_url_ajax(url_index,'content', null, null, 'GET')
+      //$("#" + div_name).html(data);
+    }
+  });
+  return false;
+}
+
+/******************** PRUEBA ****************/
+
+function delete_to_url_on_div(url, div_name, url_index, url_index_verb){ /* Method DELETE */
+  var url_str = url;
+  var div_name = div_name;
+
+  $.ajax({
+    url: url_str,
+    type: 'DELETE',
+    async: false,
+    context: document.body,
+    success: function(data){
+      load_url_ajax(url_index, div_name , null, null, url_index_verb)
       //$("#" + div_name).html(data);
     }
   });
@@ -328,7 +415,9 @@ function load_items_delivery_order_ajax(url, div_id, parameters){
       $('#'+div_name).html(data);
     },
     error : function(xhr, ajaxOptions, thrownError) {
-      container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+      console.log(xhr);
+      console.log(ajaxOptions);
+      console.log(thrownError);
     }
   });
 }
@@ -368,7 +457,6 @@ function show_report_inventory(url, parameters, wurl, wname, wparameters){
 
 function bar_graph_category(div, categoria, series2, title_c, tipo, abrev, suffix){
   var arreglo = categoria.split(',')
-  console.log(suffix);
 
   $('#'+div).highcharts({
     chart: {
@@ -440,4 +528,141 @@ function bar_graph_category(div, categoria, series2, title_c, tipo, abrev, suffi
     },
     series: series2
   });
+}
+
+
+
+/*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~ METODOS DE TOBI *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*/
+function load_url_ondiv(url, div_name){ /*  usar este owo  */
+  var url_str = url;
+  var div_name = div_name;
+
+  $("." + div_name).html("<br/><br/><br/><center>Cargando <img src='/assets/ajax-loader3.gif'/></center>");
+
+  $.ajax({
+    url: url_str,
+  }).done(function( data ) {
+    $("." + div_name).html(data);
+  });
+
+  $(".side-panel").height($(document).height()-80);
+  
+  return false
+
+}
+
+function post_to_url(url, form_id, response_div){
+  var url_str = url;
+  var form_id_str = form_id;
+  var div_name = response_div;
+
+  $("#" + form_id).ajaxForm(function(){
+       alert($(this));
+       console.log($(this));
+    });
+
+  var str_data = $("#" + form_id).serialize();
+  console.log(str_data);
+
+  $("." + div_name).html("<br/><br/><br/><center><img src='/assets/ajax-loader.gif' /></center>")
+
+  $.ajax({
+    type: "POST",
+    url: url_str,
+    data: str_data
+  }).done(function( msg ) {
+    $("." + div_name).html(msg);
+  });
+}
+
+function post_to_url_class(url, form_id, response_div){
+  var url_str = url;
+  var form_id_str = form_id;
+  var div_name = response_div;
+
+  $("." + form_id).ajaxForm(function(){
+       alert($(this));
+       console.log($(this));
+    });
+
+  var str_data = $("." + form_id).serialize();
+  console.log(str_data);
+
+  $("." + div_name).html("<br/><br/><br/><center><img src='/assets/ajax-loader.gif' /></center>")
+
+  $.ajax({
+    type: "POST",
+    url: url_str,
+    data: str_data
+  }).done(function( msg ) {
+    $("." + div_name).html(msg);
+  });
+}
+
+
+function delete_to_url_into_div(url, div_name)
+{
+  var url_str = url;
+  var div_name = div_name;
+
+  $("." + div_name).html("<br/><br/><br/><center><img src='/assets/ajax-loader.gif' /></center>")
+
+  $.ajax({
+    url: url_str,
+    type: 'DELETE'
+  }).done(function( data ) {
+    $("." + div_name).html(data);
+  });
+  return false
+}
+
+
+// Funcion que dibuja el WBS desde una entrada de datos preformateado en JSON
+
+function draw_wbs(url_data, id_response){
+    var url_str = url_data;
+    var dataTable;
+
+
+    //Get the json data
+    $.ajax({
+      type: "GET",
+      url: url_str
+    }).done(function(json) {
+       var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Name');
+          data.addColumn('string', 'Manager');
+          data.addColumn('string', 'ToolTip');
+          data.addRows(json);
+      var chart = new google.visualization.OrgChart(document.getElementById(id_response));
+        chart.draw(data, {allowHtml:true, title: 'WBS', nodeClass: 'node-style'});
+    });
+  }
+
+function post_response_json(url_request, params){
+  var url_str = url_request;
+  var obj_response;
+
+  $.ajax({
+    type: "POST",
+      url: url_str,
+    data: params
+  }).done(function(json){
+    obj_response = json;
+  });
+
+  return obj_response;
+}
+
+Number.prototype.format_currency = function() {
+    return this.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+};
+
+function replaceAll(find, replace, str) {
+  str = str.toString();
+  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }

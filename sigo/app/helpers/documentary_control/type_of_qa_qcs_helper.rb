@@ -1,0 +1,2 @@
+module DocumentaryControl::TypeOfQaQcsHelper
+end

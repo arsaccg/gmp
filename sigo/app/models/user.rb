@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   has_many :state_per_order_purchases
   has_many :order_of_services
   has_many :state_per_order_of_services
+  has_many :warehouse_orders
+  has_many :state_per_warehouse_order
 
   # Access
   has_and_belongs_to_many :cost_centers
@@ -19,8 +21,7 @@ class User < ActiveRecord::Base
   validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
   
   include RoleModel
-  roles :director, :approver, :reviser, :issuer, :canceller
-
+  roles :director, :approver, :reviser, :issuer, :canceller, :maintainer, :control_documentary, :technical_library, :orders_and_buy, :stores, :execution, :administration, :overheads, :payroll, :bidding, :report, :dashboard, :companies, :users, :inbox, :entities, :planning
   # Director = Can create CIA and Users
   # Anuler = Can cancel orders
   # Approver = Can approve orders (Aprobado)

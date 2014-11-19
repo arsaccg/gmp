@@ -23,13 +23,14 @@
           - @type_book.each do |type_book|
             - if type_book.id == 1
               .tab-pane.active{:id => "tab-#{type_book.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Nombres
                         %th Descripción
-                        %th Documentos
+                        %th.col-md-1 Fecha
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_book.book_works.each do |lawre|
@@ -38,6 +39,9 @@
                             = lawre.name.to_s
                           %td
                             = lawre.description.to_s
+                          %td= lawre.date
+                          %td
+                            =lawre.date
                           %td
                             - if lawre.document.exists?
                               %a.btn.btn-info.btn-xs{:href =>"#{lawre.document.url}", :target => "_blank"}
@@ -51,13 +55,14 @@
                               Eliminar
             - else
               .tab-pane{:id => "tab-#{type_book.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Nombres
                         %th Descripción
-                        %th Documentos
+                        %th.col-md-1 Fecha
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_book.book_works.each do |lawre|
@@ -66,6 +71,9 @@
                             = lawre.name.to_s
                           %td
                             = lawre.description.to_s
+                          %td= lawre.date
+                          %td
+                            =lawre.date
                           %td
                             - if lawre.document.exists?
                               %a.btn.btn-info.btn-xs{:href =>"#{lawre.document.url}", :target => "_blank"}

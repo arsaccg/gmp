@@ -3,7 +3,7 @@
     .col-xs-12.col-sm-7.col-md-7.col-lg-12
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-eye
-        = "Orden de Servicio " + @orderOfService.id.to_s.rjust(5, '0')
+        = "Orden de Servicio " + @orderOfService.code.to_s.rjust(5, '0')
         %strong= "C.C " + @orderOfService.cost_center.name
   %section#widget-grid
     .row
@@ -13,7 +13,7 @@
             %span.widget-icon
               %i.fa.fa-table
             %h2 
-            = 'Orden de Compra N° ' + @orderOfService.id.to_s.rjust(5, '0')
+            = 'Orden de Compra N° ' + @orderOfService.code.to_s.rjust(5, '0')
           %div
             .jarviswidget-editbox
               / This area used as dropdown edit box
@@ -120,7 +120,7 @@
               %span.widget-icon
                 %i.fa.fa-table
               %h2 
-              = 'Historial de Estado de la Orden de Servicio N° ' + @orderOfService.id.to_s.rjust(5, '0')
+              = 'Historial de Estado de la Orden de Servicio N° ' + @orderOfService.code.to_s.rjust(5, '0')
             %div
               .jarviswidget-editbox
                 / This area used as dropdown edit box

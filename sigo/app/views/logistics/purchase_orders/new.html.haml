@@ -2,39 +2,14 @@
   %section#widget-grid
     .row
       %article.col-sm-12.col-md-12.col-lg-12
-        #wid-id-2.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-collapsed" => "false", "data-widget-fullscreenbutton" => "false"}
-          %header
+        #wid-id-10.jarviswidget{:role => 'widget'}
+          %header{:role => 'heading'}
             %span.widget-icon
-              %i.fa.fa-pencil-square-o.fa-fw 
-            %h2
-              %strong Generar Órdenes de Compra - Paso a Paso
-          %div
-            .jarviswidget-editbox
-
-            .widget-body.fuelux
-              .wizard
-                %ul.steps
-                  %li{"data-target" => "#step2"}
-                    %span.badge> 1
-                    Seleccionar los Items de Ordenes de Suministro
-                    %span.chevron
-                  %li{"data-target" => "#step3"}
-                    %span.badge> 2
-                    Llenar información de la Órden de Compra
-                    %span.chevron
-                  %li{"data-target" => "#step4"}
-                    %span.badge> 3
-                    Guardar Información
-                    %span.chevron
-                .actions
-                  %button.btn.btn-sm.btn-primary.btn-prev{type: "button"}
-                    %i.fa.fa-arrow-left>
-                    Anterior
-                  %button.btn.btn-sm.btn-success.btn-next{"data-last" => "Finalizar", type: "button"}
-                    Siguiente
-                    %i.fa.fa-arrow-right
-              .step-content
-                = render :partial => 'form_new_order'
+              %i.fa.fa-cloud-upload
+            %h2="Crear Orden de Compra N° "+@numbercode
+          %div{:role => 'content'}
+            .widget-body
+              = render :partial => 'form_new_order'
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
   %i.fa.fa-arrow-left>
@@ -50,7 +25,33 @@
   pageSetUp();
 
   $(document).ready(function(){
+  
+    $('#proveedor-select').select2({
+      placeholder: "Buscar proveedor...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_proveedor_logistics_purchase_orders_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name +'</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
+
     get_exchange_rate();
+
     $('#btn-add-more-items-do').click(function(){
       var ids_delivery_order = new Array();
 
@@ -127,21 +128,13 @@
 
   // PAGE RELATED SCRIPTS
   function calculatePriceWithourIgv(element){
-    var amount = parseInt($(element).parent().siblings('.amount').find('input').val());
-
-    var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
-
-    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
-    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+    var reg = $(element).attr('id').split("_")[6];
+    calcularcondescuentos(reg);
   }
 
   function calculatePrice(element){
-    var amount = parseInt($(element).val());
-
-    var price_without_igv = parseFloat($(element).parent().siblings('.unit-price').find('input').val() * amount).toFixed(2);
-
-    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
-    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
+    var reg = $(element).attr('id').split("_")[6];
+    calcularcondescuentos(reg);
   }
 
   function isNumber(evt) {
@@ -164,12 +157,26 @@
   function add_more_items(){
     var data_delivery_order = new Array();
     status = false;
+    var ids = new Array();
+    var idst = document.getElementsByClassName('pod-di-id');
     var index = 0;
+    if(idst.length > 0){
+      $.each(idst, function(){
+        ids[index] = $(this).val();
+        index++;
+      });
+    }
+    index = 0;
+    var flag = 0;
     $('#modal-more-items tbody tr td .checkbox .order_check').each(function(){
       if( $(this).is(':checked') ){
-        status = true
-        data_delivery_order[index] = $(this).val();
-        index++;
+        if(ids.indexOf($(this).val())==-1){
+          data_delivery_order[index] = $(this).val();
+          status = true;
+          index++;
+        }else{
+          flag = 1;
+        }
       }
     });
 
@@ -179,6 +186,17 @@
       append_url_ajax('#{add_modal_extra_operations_logistics_purchase_orders_path}', 'new_purchase_order', data, 0, 'POST');
     }
 
+    if(flag == 1){
+      $.smallBox({
+        title : "Aviso",
+        content : "Algunas de las ordenes seleccionadas ya han sido agregadas", 
+        color: "#c46a69",
+        timeout: 8000,
+        icon : "fa fa-bell"
+      });
+    }
+
+    $('#cont').val(0);
     $('#modalDeliveryItems').modal('hide');
   };
 
@@ -197,166 +215,79 @@
   */
 
   function enableFieldsForIgv(element){
-    if($(element).is(":checked")){
-      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*parseFloat("#{@igv}")).toFixed(2));
-      $(element).parent().parent().siblings('.discount-igv').find('input').val(parseFloat(price_without_igv * (1 - parseFloat("#{@igv}"))));
-    } else {
-      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
-      $(element).parent().parent().siblings('.discount-igv').find('input').val(0);
-    }
+    var reg = $(element).attr('id').split("_")[6];
+    calcularcondescuentos(reg);
   }
-
-  loadScript("#{ asset_path 'plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js', type: :javascript }", runBootstrapWizard);
   
   //Bootstrap Wizard Validations
 
-  function runBootstrapWizard() {
-
-    var $validator = $("#new_purchase_order").validate({
-
-      rules: {
-        'purchase_order[supplier_id]': {
-          required: true
+  $("#new_purchase_order").ajaxForm({
+    beforeSubmit: function(arr, $form, options) {
+      $form.validate({
+        // Rules for form validation
+        rules: {
+          'purchase_order[supplier_id]': {
+            required: true
+          },
+          'purchase_order[money_id]': {
+            required: true
+          },
+          'purchase_order[entity_id]': {
+            required: true
+          },
+          'purchase_order[method_of_payment_id]': {
+            required: true
+          },
+          'purchase_order[date_of_issue]': {
+            required: true
+          },
+          'purchase_order[expiration_date]': {
+            required: true,
+            greaterThan: "#purchase_order_delivery_date"
+          },
+          'purchase_order[delivery_date]': {
+            required: true,
+            greaterThan: "#purchase_order_date_of_issue"
+          }
         },
-        'purchase_order[money_id]': {
-          required: true
+        
+        messages: {
+          'purchase_order[supplier_id]': "Porfavor, especifica el proveedor.",
+          'purchase_order[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
+          'purchase_order[method_of_payment_id]': "Porfavor, especifica el método de págo.",
+          'purchase_order[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
+          'purchase_order[entity_id]':"Escoja un proveedor",
+          'purchase_order[expiration_date]': {
+            required: "Porfavor, especifica la fecha de expiración.",
+            greaterThan: "La fecha de vencimiento debe ser mayor a la fecha de entrega."
+          },
+          'purchase_order[delivery_date]': { 
+            required: "Porfavor, especifica la fecha de entrega.",
+            greaterThan: "La fecha de entrega debe ser mayor a la fecha de emisión."
+          }
         },
-        'purchase_order[method_of_payment_id]': {
-          required: true
+        
+        highlight: function (element) {
+          $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
         },
-        'purchase_order[date_of_issue]': {
-          required: true
+        unhighlight: function (element) {
+          $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
         },
-        'purchase_order[expiration_date]': {
-          required: true,
-          greaterThan: "#purchase_order_delivery_date"
-        },
-        'purchase_order[delivery_date]': {
-          required: true,
-          greaterThan: "#purchase_order_date_of_issue"
-        }
-      },
-      
-      messages: {
-        'purchase_order[supplier_id]': "Porfavor, especifica el proveedor.",
-        'purchase_order[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
-        'purchase_order[method_of_payment_id]': "Porfavor, especifica el método de págo.",
-        'purchase_order[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
-        'purchase_order[expiration_date]': {
-          required: "Porfavor, especifica la fecha de expiración.",
-          greaterThan: "La fecha de vencimiento debe ser mayor a la fecha de entrega."
-        },
-        'purchase_order[delivery_date]': { 
-          required: "Porfavor, especifica la fecha de entrega.",
-          greaterThan: "La fecha de entrega debe ser mayor a la fecha de emisión."
-        }
-      },
-      
-      highlight: function (element) {
-        $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-      },
-      unhighlight: function (element) {
-        $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
-      },
-      errorElement: 'span',
-      errorClass: 'help-block',
-      errorPlacement: function (error, element) {
-        if (element.parent('.input-group').length) {
-          error.insertAfter(element.parent());
-        } else {
-          error.insertAfter(element);
-        }
-      }
-    });
-
-  }
-
-  loadScript("#{ asset_path 'plugin/fuelux/wizard/wizard.js', type: :javascript }", fueluxWizard);
-  
-  function fueluxWizard() {
-    
-    var wizard = $('.wizard').wizard();
-    
-    wizard.on('finished', function (e, data) {
-    
-      $.ajax({
-        type: 'POST',
-        url: "/logistics/purchase_orders",
-        async: false,
-        data: $('#new_purchase_order').serialize(),
-        dataType : 'html',
-        success: function(data) {
-          $('#modalLoading').modal('hide');
-          $('#content').html(data);
-        },
-        error : function(xhr, ajaxOptions, thrownError) {
-          container.html('<h4 style="margin-top:10px; display:block; text-align:left"><i class="fa fa-warning txt-color-orangeDark"></i> Error 404! Page not found.</h4>');
+        errorElement: 'span',
+        errorClass: 'help-block',
+        errorPlacement: function (error, element) {
+          if (element.parent('.input-group').length) {
+            error.insertAfter(element.parent());
+          } else {
+            error.insertAfter(element);
+          }
         }
       });
 
-    });
-
-    wizard.on('change', function(e, data){
-
-      var status = false;
-      var data_delivery_order = new Array();
-
-      if(data.step == 1 && data.direction == 'next'){
-        var index = 0;
-        $('#items-delivery-orders #dt_basic tbody tr td .checkbox .order_check').each(function(){
-          if( $(this).is(':checked') ){
-            status = true
-            data_delivery_order[index] = $(this).val();
-            index++;
-          }
-        });
-
-        if(status){
-          data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
-          load_items_delivery_order_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'order_delivery_items_table', data);
-
-          if($('#new_purchase_order').length > 0){
-            append_url_ajax('#{add_modal_extra_operations_logistics_purchase_orders_path}', 'new_purchase_order', data, 0, 'POST');
-          }
-
-          $.smallBox({
-            title: "Ahora completa la información de la Orden de compra.",
-            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-            color: "#5F895F",
-            iconSmall: "fa fa-check bounce animated",
-            timeout: 4000
-          });
-
-        } else {
-
-          e.preventDefault();
-          $.smallBox({
-            title: "Antes de continuar debes de haber seleccionado Items de alguna Orden de Suministro.",
-            content: "<i class='fa fa-clock-o'></i> <i>1 seconds ago...</i>",
-            color: "#c46a69",
-            iconSmall: "fa fa-times bounce animated",
-            timeout: 4000
-          });
-        }
-      }
-
-      if(data.step == 2 && data.direction == 'next') {
-        var $valid = $("#new_purchase_order").valid();
-        if (!$valid) {
-          e.preventDefault();
-        }        
-        
-      }
-
-      if(data.step == 3 && data.direction == 'next') {
-
-      }
-
-    });
-
-  }
+      return $form.valid();
+    },
+    target: '#content'
+  });
 
   function add_extra_operation(obj){
 
@@ -389,16 +320,6 @@
     path_jquery_discount_after = '#tr-' + $(reg_n).val() + ' td.discount-after input';
     path_jquery_discount_igv = '#tr-' + $(reg_n).val() + ' td.discount-igv input';
 
-    console.log('first')
-    console.log(path_jquery_before)
-    console.log(path_jquery_after)
-    console.log(path_jquery_igv)
-    console.log('second')
-    console.log(path_jquery_discount_before)
-    console.log(path_jquery_discount_after)
-    console.log(path_jquery_discount_igv)
-
-
     if($(path_jquery_before).val() != ''){
 
       ancient_value_before = parseFloat($(path_jquery_before).val());
@@ -418,11 +339,9 @@
           if( $(type).val() == 'soles' ){
             value_before = $(path_jquery_discount_before).val() - parseFloat($(value).val());
             $(path_jquery_discount_before).val(value_before);
-            console.log($(path_jquery_discount_before).val());
           } else {
             value_before = $(path_jquery_discount_before).val() - parseFloat((amount_bruto*($(value).val()/100)));
             $(path_jquery_discount_before).val(value_before);
-            console.log($(path_jquery_discount_before).val());
           }
         }
 
@@ -473,4 +392,69 @@
     id_modal_target = $(obj).attr('data-target');
     $id_generated = $current_tr_parent.split('-')[1];
     $(id_modal_target + '-hidden').val($id_generated);
+  }
+
+  function calcularcondescuentos(reg){
+    var dib = $('#'+reg+'b').children();
+    var dia = $('#'+reg+'a').children();
+    var price = parseFloat($('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price').val());
+    var amount = parseFloat($('#purchase_order_purchase_order_details_attributes_'+reg+'_amount').val());
+    var igv = $('#purchase_order_purchase_order_details_attributes_'+reg+'_igv').is(':checked');
+
+    var db_m = 0;
+    var da_m = 0;
+    var a_igv_c_d = 0;
+    var d_igv_c_d = 0;
+
+    if($('#'+reg+'b > input').length > 0){
+      dib.each(function(){
+        if(Math.abs($(this).attr('value')) < 1.0){
+          db_m = parseFloat(db_m)+parseFloat(parseFloat($(this).attr('value'))*price*amount);
+        }else{
+          db_m =parseFloat(db_m)+parseFloat($(this).attr('value'));
+        }
+      });
+    }
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_before').val(Math.abs(toFixed(db_m,2)));
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_before_igv').val(toFixed(parseFloat(price*amount-db_m),2));
+
+    var total = 0;
+    if(igv){
+      if($('#'+reg+'a > input').length > 0){
+        dia.each(function(){
+          if(Math.abs($(this).attr('value')) < 1.0){
+            da_m = parseFloat(da_m)+parseFloat(parseFloat($(this).attr('value'))*price*amount*1.18);
+          }else{
+            da_m =parseFloat(da_m)+parseFloat($(this).attr('value'));
+          }
+        });  
+      }
+      total=toFixed((parseFloat(price*amount-db_m)*1.18-da_m),2);
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val(toFixed(parseFloat(price*amount-db_m)*0.18,2));
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val(toFixed(parseFloat(price*amount-db_m)*1.18,2));
+    }else{
+      if($('#'+reg+'a > input').length > 0){
+        dia.each(function(){
+          if(Math.abs($(this).attr('value')) < 1.0){
+            da_m = parseFloat(da_m)+parseFloat(parseFloat($(this).attr('value'))*price*amount);
+          }else{
+            da_m =parseFloat(da_m)+parseFloat($(this).attr('value'));
+          }
+        });    
+      }
+      total=toFixed(parseFloat(price*amount-db_m)-da_m,2);
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val('0');
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val(toFixed(parseFloat(price*amount-db_m),2));
+    }
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_after').val(Math.abs(toFixed(da_m,2)));
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_igv').val(total);
+  }
+
+
+  function toFixed(num,dec){
+    dec= dec || 0;
+    var s = String(num);
+    console.log(num%1);
+    if(num%1)s= s.replace(/5$/, '6');
+    return Number((+s).toFixed(dec));
   }

@@ -4,7 +4,7 @@
       %i.fa.fa-eye
     %h2 Conceptos
   .widget-body
-    = simple_form_for([:payrolls, @con], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    = simple_form_for([:payrolls, @con], html: {class: 'smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-10
@@ -12,10 +12,32 @@
             %label.input
               %i.icon-append.fa.fa-credit-card
               = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          
+          %section.col.col-2
+            %label.label Valorizaciones
+            %label.input
+              %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization()' }
+                %i.fa.fa-superscript
+                Definir
+
           %section.col.col-4
             %label.label Código
             %label.input
-              = f.input :code, placeholder: "Código", input_html: { class: 'form-control' }, label: false
+              = f.input :code, placeholder: "Código", input_html: { class: 'form-control'}, label: false              
+          %section.col.col-4
+            %label.label Tipo
+            %label.input
+              %select#tipo.form-control{"style"=>'width:100%;padding: 0;border: none;',:name=>"tipo"}
+                -if @action=="edit"
+                  %option{:value => nil,:disabled=>true} Seleccione
+                  %option{:value => "1",:selected=>@con.code[0,1]=='1'} Ganancia
+                  %option{:value => "2",:selected=>@con.code[0,1]=='2'} Descuento
+                  %option{:value => "3",:selected=>@con.code[0,1]=='3'} Aportación
+                -else
+                  %option{:value => nil,:disabled=>true,:selected=>true} Seleccione
+                  %option{:value => "1"} Ganancia
+                  %option{:value => "2"} Descuento
+                  %option{:value => "3"} Aportación
           %section.col.col-4
             %label.label Porcentaje
             %label.input
@@ -24,6 +46,17 @@
             %label.label Monto
             %label.input
               = f.input :amount, placeholder: "Monto", input_html: { class: 'form-control' }, label: false
+          .section.col.col-md-6
+            %label.label Concepto Obrero
+            .form-group.in-line
+              .col-md-1
+              .col-md-10
+                .col-md-5
+                  = f.radio_button :type_obrero,  "Fijo", :selected=>@con.type_obrero=="Fijo"
+                  %label Fijo
+                .col-md-5
+                  = f.radio_button :type_obrero, "Variable", :selected=>@con.type_obrero=="Variable"
+                  %label Variable              
 
         .row
           %section.col.col-4
@@ -31,35 +64,21 @@
             %label.input
               = f.input :top, placeholder: "Tope", input_html: { class: 'form-control' }, label: false      
           .section.col.col-md-6
-            %label.label Tipo de Concepto
+            %label.label Concepto Empleado
             .form-group.in-line
               .col-md-1
               .col-md-10
                 .col-md-5
-                  = f.radio_button :type_concept,  "Fijo", :selected=>@con.type_concept=="Fijo"
+                  = f.radio_button :type_empleado,  "Fijo", :selected=>@con.type_empleado=="Fijo"
                   %label Fijo
                 .col-md-5
-                  = f.radio_button :type_concept, "Variable", :selected=>@con.type_concept=="Fijo"
+                  = f.radio_button :type_empleado, "Variable", :selected=>@con.type_empleado=="Variable"
                   %label Variable
                       
                     
 
-      %fieldset
-        %legend Aportaciones a las que afecta
-        .row
-          %section.col.col-2
-            %label.control-label Detalle
-          %section.col.col-6
-            %select#conde.select2.form-control{"style"=>'width:100%;padding: 0;border: none;'}
-              %option{:value => "0"} Seleccione
-              - @conde.each do |con|
-                %option{:value => "#{con.id}"}
-                  = con.name
-          %section.col.col-4
-            %div
-              %a(href="javascript:add_concept();" id="btn-add-con" class="btn btn-success" role="button")
-                Agregar concepto
-
+      %fieldset#afecto{:style=>"display:none"}
+        %legend Aportaciones a las que está afecto
         .row
           .section.col.col-md-8
             .form-group.in-line
@@ -71,12 +90,38 @@
                 %label.radio-inline
                   %input.radiobox#e{:name=>"but",:type => 'radio', :value => "Empresa"}
                     %span Empresa
+        %br
+        .row
+          %section.col.col-2
+            %label.control-label Detalle
+          %section.col.col-6#condeDef
+            %select#conde.select2.form-control{"style"=>'width:100%;padding: 0;border: none;'}
+              %option{:value => "0"} Seleccione
+          %section.col.col-6#condeTrab{"style"=>"display:none"}
+            %select#conde1.select2.form-control{"style"=>'width:100%;padding: 0;border: none;'}
+              %option{:value => "0"} Seleccione
+              -if !@condeTrab.nil?
+                - @condeTrab.each do |con|
+                  %option{:value => "#{con.id}"}
+                    = con.name
+          %section.col.col-6#condeEmp{"style"=>"display:none"}
+            %select#conde2.select2.form-control{"style"=>'width:100%;padding: 0;border: none;'}
+              %option{:value => "0"} Seleccione
+              -if !@condeEmp.nil?
+                - @condeEmp.each do |con|
+                  %option{:value => "#{con.id}"}
+                    = con.name
+
+          %section.col.col-4
+            %div
+              %a{ :href => "javascript:add_concept();", :id => "btn-add-con", :class => "btn btn-success", :role => "button", :style => 'padding: 7px;'}
+                Agregar concepto
 
         %br  
         %br
 
         .col-lg-12
-          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+          %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox
             %thead
               %tr
                 %th.col-2 Nombre
@@ -98,7 +143,7 @@
                     %td= oos.category
                     %td.delete-item
                       %label.checkbox
-                        = check_box 'concept[concept_details_attributes]', '[' + @reg_n.to_s + '][status]'
+                        = check_box 'concept[concept_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
                         %i
                     - @reg_n += 1
 
@@ -107,8 +152,95 @@
           %i.fa.fa-save 
           Guardar
 
+      #modal_valorization.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "modalValorizationLabel", role: "dialog" }
+        .modal-dialog{ :style => 'margin: 0 auto;' }
+          .modal-content
+            .modal-body{ :style => 'overflow: hidden; padding: 2em;' }
+              
+              .alert.alert-block.alert-warning
+                %a.close{"data-dismiss" => "alert", :href => "#"} ×
+                %h4.alert-heading
+                  %i.fa.fa-check-square-o
+                  Revisa la Fórmula
+                %p
+                  Si modificas el nombre de los Tokens generados puede que haya errores en los calculos de los montos.
+
+              %section.col-md-9
+                %label{ :style => 'font-size: 13px;' } Buscar Conceptos:
+                =#%label.input
+                %input#concepts_list.form-control{ "name" => "concept_item", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;' }
+              %section.col-md-3
+                %a.btn.btn-sm.btn-info{ :href => 'javascript:void(0)', :onclick => 'javascript:add_concept_valorization()', :style => 'margin-top: 19px; margin-left: 19px;' }
+                  Añadir Concepto
+              
+              %br
+
+              %section.col-md-12{ :style => 'margin-top: 20px;' }
+                #modalValorizationItemsContent
+
+                  %table#summary_valorization.table.table-striped.table-bordered.table-hover.smart-form
+                    %thead
+                      %tr
+                        %th Fórmula
+                    %tbody#summary_valorization_items
+                      - if @action == 'edit'
+                        %tr
+                          - if !@con.concept_valorization.nil?
+                            %td{ :style => "display:none" }
+                              = hidden_field_tag 'concept[concept_valorization_attributes][id]', @con.concept_valorization.id
+                              = hidden_field_tag 'concept[concept_valorization_attributes][concept_id]', @con.id
+                              = hidden_field_tag 'concept[concept_valorization_attributes[date_week]', @con.concept_valorization.date_week
+                              = hidden_field_tag 'concept[concept_valorization_attributes][cost_center_id]', @con.concept_valorization.cost_center_id
+                            %td
+                              = text_field_tag 'concept[concept_valorization_attributes][formula]', @con.concept_valorization.formula, class: 'form-control formula', id: 'formula_field_concept'
+                          - else
+                            %td{ :style => "display:none" }
+                              = hidden_field_tag 'concept[concept_valorization_attributes][date_week]', @date_week
+                              = hidden_field_tag 'concept[concept_valorization_attributes][cost_center_id]', @cost_center
+                            %td
+                              = text_field_tag 'concept[concept_valorization_attributes][formula]', nil, class: 'form-control formula', id: 'formula_field_concept'
+                      - else
+                        %tr
+                          %td{ :style => "display:none" }
+                            = hidden_field_tag 'concept[concept_valorization_attributes][date_week]', @date_week
+                            = hidden_field_tag 'concept[concept_valorization_attributes][cost_center_id]', @cost_center
+                          %td
+                            = text_field_tag 'concept[concept_valorization_attributes][formula]', nil, class: 'form-control formula', id: 'formula_field_concept'
+                  
+              %br
+
+            .modal-footer{ :style => 'padding: 2em;' }
+              %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Guardar
+
 :javascript
   $(document).ready(function () {
+
+    $('input[type="radio"]').click(function(){
+        if($(this).attr("value")=="Trabajador"){
+            $("#condeEmp").hide();
+            $("#condeDef").hide();
+            $("#condeTrab").show();
+        }
+        if($(this).attr("value")=="Empresa"){
+            $("#condeTrab").hide();
+            $("#condeDef").hide();
+            $("#condeEmp").show();
+        }
+    });
+    $("#tipo").change(function() {
+        // foo is the id of the other select box 
+        if ($(this).val() == "1") {
+            $("#afecto").show();
+        }else{
+            $("#afecto").hide();
+        } 
+    });
+
+    if ($(tipo).val() == "1") {
+        $("#afecto").show();
+    }else{
+        $("#afecto").hide();
+    } 
     $('select').select2();
 
     if($('form[id^="edit_"]').length > 0) {
@@ -119,7 +251,7 @@
 
   });
   
-  function submit_validate(form){    
+  function submit_validate(form){  
     loadScript("#{ asset_path 'plugin/select2/select2.min.js', type: :javascript }");
     $(form['selector']).ajaxForm({
       beforeSubmit: function() {
@@ -134,6 +266,9 @@
             },
             'concept[type_concept]' : {
               required : true
+            },
+            'tipo' : {
+              required : true
             }
           },
 
@@ -147,6 +282,9 @@
             },
             'concept[type_concept]' : {
               required : 'Seleccione el tipo de concepto'
+            },
+            'tipo' : {
+              required : 'Seleccione el tipo'
             }
           },
 
@@ -173,15 +311,15 @@
     var cat = ""
     if(document.getElementById('t').checked){
       cat = $("#t").val()
+      sub = $("#conde1").val()
     }
     if(document.getElementById('e').checked){
       cat = $("#e").val()
+      sub = $("#conde2").val()
     }
-    console.log($("#conde").val());
-    console.log(cat);
-    console.log(cat.length);
-    if($("#conde").val() != 0 && cat.length > 1){
-      str_item = {authenticity_token: "#{form_authenticity_token}", subconcept: $("#conde").val(), category: cat};
+
+    if($("#conde1").val() != 0 || $("#conde2").val()!=0 || $("#conde").val() != 0 && cat.length > 1){
+      str_item = {authenticity_token: "#{form_authenticity_token}", subconcept: sub, category: cat, status: 0};
       append_url_ajax('#{add_subconcept_payrolls_concepts_path}', 'concept_items_table', str_item, 0, 'POST');
     }else{
       alert("Escoja un concepto a usar y de que tipo es");
@@ -190,4 +328,60 @@
 
   function delete_item(code){
     $("#tr" + code).remove();
+  }
+
+  function show_me_the_valorization(){
+    $('#modal_valorization').modal({
+      backdrop : 'static',
+      keyword : false
+    });
+  }
+
+  $('#concepts_list').select2({
+    placeholder: "Buscar Concepto...",
+    minimumInputLength: 3,
+    ajax: {
+      url: "#{display_concepts_payrolls_concepts_path}",
+      dataType: 'json',
+      type: 'POST',
+      quietMillis: 100,
+      data: function(term, page){
+        return {
+          q: term,
+          page: page,
+          authenticity_token: "#{form_authenticity_token}"
+        };
+      },
+      results: function(data, page){
+        return {results: data.concepts};
+      }
+    },
+    formatResult: function(node){ return '<div>' + node.name + '</div>' },
+    formatSelection: function(node){ return node.name },
+    escapeMarkup: function (m) { return m; }
+  });
+
+  function add_concept_valorization(){
+    var concept_id = 0
+    var concept_name = ''
+
+    data_selected = $('#concepts_list').select2('data');
+    concept_token = data_selected.id
+    concept_name = data_selected.name
+
+    reg_n = (new Date).getTime();
+
+    old_formula = $('#formula_field_concept').val();
+
+    if (old_formula != '')
+      new_formula = old_formula + '+' + concept_token;
+    else
+      new_formula = concept_token;
+
+    $('#formula_field_concept').val(new_formula);
+
+  }
+
+  function delete_item(code){
+    $("#tr-" + code).remove();
   }

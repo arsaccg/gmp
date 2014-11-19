@@ -1,0 +1,17 @@
+%h3 Articulos faltantes en la base de datos.
+
+%table.table.table-hover
+  %thead
+    %tr
+      %th
+        Codigo del articulo 
+      %th
+        Descripcion
+  %tbody
+    -@res.each do |r|
+      %tr
+        %td
+          =r[0][0] rescue ''
+        %td
+          =r[0][1] rescue ''
+

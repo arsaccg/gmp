@@ -37,5 +37,15 @@
   $('#show-table').click(function(){
     var start_date = $('#start-date-input').val();
     var parameters = {start_date: start_date, authenticity_token: "#{form_authenticity_token}" };
-    load_items_delivery_order_ajax("#{graph_week_production_daily_works_weekly_workers_path}", 'table-information-result', parameters);
+    if(start_date != "0"){
+      load_items_delivery_order_ajax("#{graph_week_production_daily_works_weekly_workers_path}", 'table-information-result', parameters);
+    }else{
+      $.smallBox({
+        title : "Aviso",
+        content : "<i class='fa fa-clock-o'></i> <i>Escoja una fecha inicial para poder proceder con la consulta</i>",
+        color : "#C46A69",
+        iconSmall : "fa fa-times fa-2x fadeInRight animated",
+        timeout : 4000
+      });
+    }
   });

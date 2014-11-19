@@ -80,25 +80,20 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
   def update
     @sum_contract_amount = 0
     subcontract = SubcontractEquipmentDetail.find(params[:id])
-    if subcontract.update_attributes(partequi_parameters)
-
-      subcontract_equipment = SubcontractEquipment.find(subcontract.subcontract_equipment_id)
-      subcontract_equipment.subcontract_equipment_details.each do |subcontract_detail|
-        @sum_contract_amount += subcontract_detail.price_no_igv
-      end
-
-      if subcontract_equipment.update_attributes(:contract_amount => @sum_contract_amount)
-        flash[:notice] = "Se ha actualizado correctamente los datos."
-        redirect_to :action => :index, company_id: params[:company_id], subcontract: params[:subcontract]
-      end
-    else
-      subcontract.errors.messages.each do |attribute, error|
-        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
-      end
-      # Load new()
-      @subcontract = subcontract
-      render :edit, layout: false
+    subcontract.update_attributes(partequi_parameters)
+    subcontract_equipment = SubcontractEquipment.find(subcontract.subcontract_equipment_id)
+    subcontract_equipment.subcontract_equipment_details.each do |subcontract_detail|
+      @sum_contract_amount += subcontract_detail.price_no_igv
     end
+
+    if subcontract_equipment.update_attributes(:contract_amount => @sum_contract_amount)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index, company_id: params[:company_id], subcontract: params[:subcontract]
+    end
+  rescue ActiveRecord::StaleObjectError
+    subcontract.reload
+    flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+    redirect_to :action => :index, company_id: params[:company_id], subcontract: params[:subcontract]
   end
 
   def destroy
@@ -120,6 +115,6 @@ class Production::SubcontractEquipmentDetailsController < ApplicationController
 
   private
   def partequi_parameters
-    params.require(:subcontract_equipment_detail).permit(:article_id, :description,:brand, :series, :model, :date_in, :year, :price_no_igv, :rental_type_id, :minimum_hours, :amount_hours, :contracted_amount, :subcontract_equipment_id, :code)
+    params.require(:subcontract_equipment_detail).permit(:article_id, :description,:brand, :series, :model, :date_in, :year, :price_no_igv, :lock_version, :rental_type_id, :minimum_hours, :amount_hours, :contracted_amount, :subcontract_equipment_id, :code,:state)
   end
 end

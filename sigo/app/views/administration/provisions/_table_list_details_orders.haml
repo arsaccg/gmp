@@ -1,5 +1,5 @@
 - if @data_orders.count > 0
-  = hidden_field_tag "type_of_order_name", @type_order, id: 'type_of_order_name'
+  %h2 Detallado de las Ordenes Pre-Seleccionadas
   %table#list-orders-details.table.table-striped.table-bordered.table-hover.smart-form
     %thead
       %tr
@@ -7,31 +7,41 @@
         %th Nombre del Insumo
         %th Cantidad
         %th Por atender
-        %th Precio sin IGV con Cálculos antes de IGV
-        %th Precio con IGV con Cálculos después de IGV
-        %th Descripción
+        %th Precio
+        %th Parcial
+        %th IGV
+        %th Parcial con IGV
         %th Seleccionar
     - @data_orders.each do |order|
       %tr
         %td
-          = order[0]
+          = order[0].to_s
         %td
-          = order[1]
+          = order[1].to_s
         %td
-          = order[2]
+          = order[2].to_f
         %td
           %code
-            = order[7]
+            = order[7].to_s
         %td
-          = number_to_currency((order[4]), unit: 'S/. ', precision: 2)
+          = number_to_currency((order[4].to_f), unit: order[8].to_s, precision: 4)
         %td
-          = number_to_currency(order[3], unit: 'S/. ', precision: 2)
+          = number_to_currency order[11].to_f, unit: order[8].to_s, precision: 2
         %td
-          = order[5]
+          = number_to_currency order[10].to_f, unit: order[8].to_s, precision: 2
+        %td
+          = number_to_currency((order[11].to_f+order[10].to_f), unit: order[8].to_s, precision: 2)
         %td.orders-checked
           %label.checkbox
-            = check_box("order_selected", "selected", { class: 'order_check' }, order[6])
+            = check_box("order_selected", "selected", { class: 'order_check' }, (order[6].to_s + '-' + order[9].to_s))
             %i
 -  else
   %h3{:style => 'text-align:center;'}
     = "Esta Orden no tiene detalle para Seleccionar. Por favor intentar con otra Orden"
+
+%br
+
+%button.btn.btn-info{ :type => 'button', :onclick => 'put_the_details();' }
+  Agregar items Seleccionados
+%button.btn.btn-danger{ :type => 'button', 'data-dismiss' => "modal" }
+  Cerrar 

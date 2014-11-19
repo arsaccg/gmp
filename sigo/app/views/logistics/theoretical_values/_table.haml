@@ -24,10 +24,12 @@
               %td
                 = TheoreticalValue.find_by_article_id(unit.id).theoretical_value rescue ''
               %td
-                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{new_logistics_theoretical_value_path}', 'content', {id: '#{unit.id}'}, null, 'GET')"}
-                  Agregar Valor Teórico
-                %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_theoretical_value_path(unit.id)}', 'content', null, null, 'GET')"}
-                  Editar
+                - if TheoreticalValue.find_by_article_id(unit.id).nil?
+                  %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{new_logistics_theoretical_value_path}', 'content', {id: '#{unit.id}'}, null, 'GET')"}
+                    Agregar Valor Teórico
+                - else
+                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_theoretical_value_path(unit.id)}', 'content', null, null, 'GET')"}
+                    Editar
                 %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_theoretical_value_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_theoretical_values_path}?company_id=#{@company}')"}}
                   Eliminar
 

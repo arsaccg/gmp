@@ -1,0 +1,31 @@
+#content-inside
+  .row
+    .col-xs-9.col-sm-7.col-md-7.col-lg-9
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Reporte de Stock de Almacen
+  .row
+    .col-xs-4.col-sm-7.col-md-7.col-lg-2
+      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{excel_stock_logistics_report_stocks_path}', 'content', null, null, 'POST')"}
+        Generar Excel
+    .col-xs-4.col-sm-7.col-md-7.col-lg-2
+      %a.btn.btn-primary.btn-mini{href: "logistics/report_stocks/1/report_stock_pdf.pdf", target: "_blank"}
+        Generar PDF
+    .row
+    - if flash[:notice] != nil
+      .alert.alert-success.fade.in{"style" => "clear:buttonoth"}
+        %button.close{"data-dismiss" => "alert"} ×
+        %i.fa-fw.fa.fa-check
+        %strong Éxito
+        = flash[:notice]
+    - if flash[:error] != nil
+      .alert.alert-danger.fade.in
+        %button.close{"data-dismiss" => "alert"} ×
+        %i.fa-fw.fa.fa-times
+        %strong Error!
+        = flash[:error]
+  %br
+  .row
+    #widget-grid 
+      %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+        = render :partial => 'table'

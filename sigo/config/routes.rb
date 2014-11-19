@@ -1,6 +1,7 @@
 ArsacLogistica::Application.routes.draw do
-
-  devise_for :users, :controllers => {:registrations => "users/registrations"}
+  devise_for :users, :controllers => {:registrations => "users/registrations"}, :path_names => { 
+    :sign_up => 'arsac_register'
+  }
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -13,7 +14,11 @@ ArsacLogistica::Application.routes.draw do
   get 'display_table_messages_os' => 'main#display_table_messages_os', as: :display_table_messages_os
   get 'display_table_messages_oc' => 'main#display_table_messages_oc', as: :display_table_messages_oc
   get 'display_table_messages_ose' => 'main#display_table_messages_ose', as: :display_table_messages_ose
+  get 'display_worker_pending' => 'main#display_worker_pending', as: :display_worker_pending
   get 'management_dashboard' => 'main#management_dashboard', as: :management_dashboard
+  post 'projecting_operating_results' => 'main#projecting_operating_results', as: :projecting_operating_results
+  get 'full_project_operating_results' => 'main#full_project_operating_results', as: :full_project_operating_results
+  post 'show_phases' => 'main#show_phases', as: :show_phases
   get 'home' => 'main#home'
   post 'home' => 'main#home'
   
@@ -62,11 +67,38 @@ ArsacLogistica::Application.routes.draw do
   # Example resource route within a namespace:,
 
   namespace :logistics do
+    resources :warehouse_orders do
+      collection do
+        post 'display_articles'
+        post 'add_order_item'
+      end
+      member do
+        get 'change_state'
+      end
+    end
+    resources :cost_center_details do
+      collection do
+        post 'add_contractor_field'
+      end
+    end
+    resources :report_stocks do
+      collection do
+        post 'show_articles'
+        post 'excel_stock'
+      end
+      member do
+        post 'report_stock_pdf'
+        get 'report_stock_pdf'
+      end
+    end
     resources :unit_of_measurements
     resources :persons do
       collection do
+        
         post 'getCostCentersPerCompany'
         post 'update_profile'
+
+
       end
     end
     resources :theoretical_values do
@@ -95,6 +127,7 @@ ArsacLogistica::Application.routes.draw do
         post 'import'
         get 'import'
         post 'display_articles_specific'
+        post 'get_group'
       end
     end
     resources :sectors
@@ -115,17 +148,34 @@ ArsacLogistica::Application.routes.draw do
       member do
         get 'update_timeline'
         get 'select_warehouses'
+        get 'show_thw'
+      end
+      collection do
+        get 'index_thw'
+        post 'display_thw'
+        get 'new_thw'
+        post 'create_thw'
       end
     end
     resources :type_entities
     resources :type_of_articles
-    resources :entities
+    resources :entities do
+      collection do
+        post 'show_entities'
+        post 'accounts'
+        post 'add_account'
+      end
+      member do
+        patch 'update_bank_account'
+      end
+    end
     resources :delivery_orders do
       collection do
         post 'add_delivery_order_item_field'
         post 'display_articles'
         post 'show_rows_delivery_orders'
         get 'show_tracking_orders'
+        post 'display_orders'
       end
       member do
         get 'gorevise'
@@ -145,6 +195,9 @@ ArsacLogistica::Application.routes.draw do
         post 'get_exchange_rate_per_date'
         post 'add_modal_extra_operations'
         post 'add_more_row_form_extra_op'
+        post 'display_orders'
+        post 'display_proveedor'
+        post 'showing_delivery_orders_table_result'
       end
       member do
         put 'show_delivery_order_item_field'
@@ -164,6 +217,7 @@ ArsacLogistica::Application.routes.draw do
         post 'display_articles'
         post 'add_modal_extra_operations'
         post 'add_more_row_form_extra_op'
+        post 'display_orders'
       end
       member do
         get 'gorevise'
@@ -185,6 +239,9 @@ ArsacLogistica::Application.routes.draw do
         post 'get_subcategory_form_category'
         post 'get_specific_from_subcategory'
       end
+      member do
+        post 'display_category'
+      end
     end    
     resources :suppliers
     resources :method_of_payments
@@ -203,9 +260,11 @@ ArsacLogistica::Application.routes.draw do
         post 'show_rows_stock_inputs'
         post 'add_items_from_pod'
         post 'more_items_from_pod'
+        post 'display_supplier'
       end
       member do
         put 'show_purchase_order_item_field'
+        put 'show_purchase_orders'
       end
     end
     resources :stock_outputs do
@@ -215,6 +274,7 @@ ArsacLogistica::Application.routes.draw do
         post 'add_items_from_pod'
         post 'partial_select_per_warehouse'
         post 'partial_table_per_warehouse'
+        post 'display_articles_per_warehouse'
       end
     end
     resources :working_groups
@@ -274,9 +334,26 @@ ArsacLogistica::Application.routes.draw do
         post 'add_otherstudy_item_field'
         post 'add_experience_item_field'
         post 'show_workers'
+        post 'show_workers_empleados'
+        post 'part_worker'
+        post 'part_contract'
+        post 'display_afps'   
+        post 'list'
+        get 'list_pdf' 
+      end
+      member do
+        get 'register'
+        get 'approve'
+        patch 'cancel'
+        get 'worker_pdf'
+        post 'worker_pdf'
       end
     end
-    resources :worker_contracts
+    resources :worker_contracts do
+      collection do
+        post 'display_articles_personal'
+      end
+    end
     resources :analysis_of_valuations do
       collection do
         post 'get_report'
@@ -286,6 +363,9 @@ ArsacLogistica::Application.routes.draw do
     end
     resources :sc_valuations do
       collection do
+        get 'report_pdf'
+        get 'part_work_pdf'
+        get 'part_equipment_pdf'
         post 'get_report'
         post 'part_work'
         post 'part_people'
@@ -309,16 +389,20 @@ ArsacLogistica::Application.routes.draw do
     resources :weekly_reports do
       collection do
         post 'get_report'
+        post 'tablas_totales'
       end
     end
     resources :valuation_of_equipments do
       collection do
+        get 'report_of_equipment_pdf'
+        get 'part_equipment_pdf'
         post 'get_report'
         post 'part_equipment'
         post 'report_of_equipment'
       end
       member do
         get 'approve'
+        get 'report_pdf'
       end
     end
     resources :part_works do
@@ -336,11 +420,13 @@ ArsacLogistica::Application.routes.draw do
     resources :category_of_workers
     resources :part_of_equipments do
       collection do
+
         post 'get_equipment_form_subcontract'
         post 'get_unit'
         post 'add_more_register'
         post 'display_fuel_articles'
         post 'show_part_of_equipments'
+        post 'display_operator'
       end
     end
     resources :working_groups
@@ -354,13 +440,16 @@ ArsacLogistica::Application.routes.draw do
     resources :subcontract_equipments do
       collection do
         post 'add_more_advance'
+        get 'get_report'
       end
     end
     resources :subcontracts do
       collection do
+        get 'report_pdf'
         post 'add_more_article'
         post 'add_more_advance'
         post 'display_articles'
+        post 'getsc_prebudgets'
       end
     end
     namespace :daily_works do
@@ -368,6 +457,12 @@ ArsacLogistica::Application.routes.draw do
         collection do
           post 'search_daily_work'
           post 'search_weekly_work'
+        end
+      end
+      
+      resources :schedule_of_workers do
+        collection do
+          post 'search_schedule_work'
         end
       end
 
@@ -461,9 +556,38 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :flowcharts
+    resources :valorization_docs do
+      collection do
+        post 'valorization'
+      end
+    end
+    resources :type_of_valorization_docs
+    resources :modification_files do
+      collection do
+        post 'technical_files'
+      end
+    end
+    resources :type_of_modification_files
+    resources :folders
+    resources :land_deliveries
+    resources :type_of_land_deliveries
+    resources :qa_qcs
+    resources :type_of_qa_qcs
+    resources :type_of_qa_qc_suppliers
+    resources :archeologies
+    resources :securities
+    resources :environments
   end
 
   namespace :administration do
+    resources :payment_orders do
+      collection do
+        post 'get_info_from_provision'
+      end
+      member do
+        get 'generate_payslip'
+      end
+    end
     resources :document_provisions
     resources :provisions do
       collection do
@@ -473,13 +597,29 @@ ArsacLogistica::Application.routes.draw do
         post 'get_suppliers_by_type_order'
       end
     end
+    resources :part_workers do
+      collection do
+        post 'show_part_workers'
+      end
+    end
     resources :health_centers
     resources :contract_types
-
+    resources :provision_articles do
+      collection do
+        post 'puts_details_in_provision'
+        post 'add_modal_extra_operations'
+        post 'add_more_row_form_extra_op'
+        post 'display_articles'
+        post 'display_proveedor'
+        post 'account3l'
+        post 'phases3l'
+      end
+    end
     resources :account_accountants do
       collection do
         get 'import'
         post 'do_import'
+        post 'display'
       end
     end
 
@@ -489,12 +629,33 @@ ArsacLogistica::Application.routes.draw do
         post 'do_import'
       end
     end
+
+    
+    # Todo lo de abajo pertenece a TOBI
+    resources :invoices
+    resources :charges
+    resources :advances
+    resources :managers
+    resources :inputcategories do
+      collection do
+        get 'feo_of_work'
+        get 'feo_of_work_wbs'
+        get 'feo_pdf'
+        get 'get_input_detail'
+        get 'get_input_wbs_detail'
+      end
+    end    
+    # HASTA AQUI!
   end
 
   namespace :payrolls do
     resources :concepts do
       collection do
         post 'add_subconcept'
+        post 'display_concepts'
+      end
+      member do
+        get 'activate'
       end
     end
     resources :afps
@@ -511,6 +672,7 @@ ArsacLogistica::Application.routes.draw do
       collection do
         post 'get_cc'
         post 'get_sem'
+        post 'generate_payroll'
       end
     end
   end
@@ -521,8 +683,158 @@ ArsacLogistica::Application.routes.draw do
         post 'display_articles'
         post 'add_concept'
         post 'show_details'
+        get 'report'
+        get 'report_pdf'
       end
     end
-  end
-end
+    resources :diverse_expenses_of_managements do
+      collection do
+        post 'add_deliveries'
+        post 'create_expense'
+        patch 'update_expense'
+      end
+      member do
+        post 'show_summary_table'
+      end
+    end
 
+    resources :loans do
+      collection do
+        post 'create_loan'
+        post 'display_workers'
+        post 'show_details'
+      end
+    end
+
+  end
+
+  #TOBI...
+  namespace :management do
+    get 'dashboard' => 'dashboard#index'
+    post 'dashboard' => 'dashboard#index'
+    resources :cost_centers
+    resources :extensionscontrols do
+      collection do
+        post 'approve'
+        post 'disprove'
+      end
+    end
+    
+    resources :distributions do
+      collection do
+        get 'import_distributions'
+        post 'import_distributions'
+        get 'do_import'
+        post 'do_import'
+      end
+      member do
+        get 'show_form'
+      end
+    end
+    
+    resources :wbsitems do
+      collection do
+        get 'get_json_data'
+        get 'add_items_to_wbs'
+        get 'get_items_by_wbs_code'
+        get 'get_items_by_budget'
+        get 'get_credit'
+        get 'get_items_from_project'
+        get 'get_child'
+        get 'get_items_json'
+        get 'set_gantt'
+        get 'graph_gantt'
+        post 'save_gantt'
+        get 'showbymonth_gantt'
+        get 'showperitem_gantt'
+        get 'show_measured'
+        post 'add_phases_to_item'
+        get 'add_phases_to_item'
+      end
+    end
+    resources :budgets do 
+      collection do 
+        get 'load_elements'
+        post 'load_elements'
+        post 'load_elements_without'
+        get 'get_cookies'
+        get 'get_budget_by_project'
+        get 'administrate_budget'
+        get 'get_budgets'
+        post 'get_budgets'
+        get 'display_articles'
+        post 'display_articles'
+      end
+      member do
+        delete 'destroy_admin'
+        get 'resume'
+      end
+    end
+    resources :items
+    resources :itembybudgets do 
+      collection do
+        get 'filter_by_budget'
+      end
+    end
+
+    resources :sectors do
+      collection do
+        get 'set_sectors_by_cost_center'
+        post 'set_sectors_by_cost_center'
+      end
+    end
+
+    resources :measured_by_sector do
+      member do
+        get 'update_sector'
+        post 'update_sector'
+      end 
+    end
+
+
+    resources :inputbybudgetanditems do
+      collection do
+        get 'filter_by_budget_and_item'
+        get 'add'
+        get 'update_input'
+        post 'update_input'
+        get 'update_input_group'
+      end
+    end
+
+    resources :itembywbses do
+      collection do 
+        get 'save_data'
+        post 'save_data'
+        get 'get_wbsitem_assigned'
+        get 'add_data_item'
+      end
+    end
+
+    resources :valorizations do
+      member do 
+        get 'newvalorization'
+        get 'changevalorization'
+        get 'finalize'
+        get 'show_data'
+        get 'change_data_ge'
+        get 'change_data_u'
+        get 'change_data_r'
+        get 'change_data_rnd'
+        get 'change_data_rnm'
+        get 'change_data_da'
+        get 'change_data_aom'
+        get 'report'
+      end
+    end
+
+    resources :valorizationitems do 
+      collection do 
+        get 'update_valorization_item'
+      end
+    end
+
+    resources :managers
+  end
+  #...TOBI
+end

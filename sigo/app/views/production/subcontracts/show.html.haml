@@ -1,2 +1,85 @@
-%h1 Production::Subcontracts#show
-%p Find me in app/views/production/subcontracts/show.html.haml
+%header
+  %br
+  %div
+    .widget-body
+      %table.panel.panel-primary{ style: "height: 150px; width: 950px;margin: 0 auto" }
+        %thead.panel-heading
+          %tr
+            %th{'colspan' => 4, "style"=>"text-align:center;font-size: large"}="SUBCONTRATO - "+@subcontract.entity.name.to_s
+
+        %tbody{:style=>"font-size:small;"}
+          %tr{"bgcolor"=>"#ECF3F8"}
+            %th{"style"=>"color:#5f5f5f;text-align:center;"} Valorizaciones:
+            %th{'colspan' => 3, "style"=>"font-weight: normal;color:#5f5f5f;"}= @subcontract.valorization.to_s
+          %tr
+            %th{"style"=>"color:#5f5f5f;text-align:center;"} Condiciones de Pago:
+            %th{'colspan' => 3, "style"=>"font-weight: normal;color:#5f5f5f;"}= @subcontract.terms_of_payment.to_s
+          %tr{"bgcolor"=>"#ECF3F8"}
+            %th{"style"=>"color:#5f5f5f;text-align:center;"} Monto Contratado:
+            %th{'colspan' => 3, "style"=>"font-weight: normal;color:#5f5f5f;"}= number_to_currency(@subcontract.contract_amount.to_s, unit: 'S/. ', precision: 2)
+          %tr{"bgcolor"=>"#3276B1"}
+            %th{"style"=>"color:white;text-align:center;width: 15%"} Amortización Inicial (nro.)
+            %th{"style"=>"color:white;text-align:center"} Amortización Inicial (%)
+            %th{"style"=>"color:white;text-align:center"} Fondo de Garantía
+            %th{"style"=>"color:white;text-align:center"} Detracción
+          %th{"style"=>"color:#5f5f5f;text-align:center"}
+            - if !@subcontract.initial_amortization_number.nil?
+              = number_to_currency(@subcontract.initial_amortization_number, unit: 'S/. ', precision: 2)
+            - else
+              =""
+          %th{"style"=>"color:#5f5f5f;text-align:center"}= @subcontract.initial_amortization_percent.to_s
+          %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontract.guarantee_fund.to_s, unit: 'S/. ', precision: 2)
+          %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@subcontract.detraction.to_s, unit: 'S/. ', precision: 2)
+      %br
+      %h2.page-title.txt-color-blueDark{"style"=>"margin-left: 7%;font-weight: bold;margin-bottom: 5px;"} Partidas / Insumos
+
+      %table.panel.panel-primary.table-bordered{ style: "height: 90px; width: 950px;margin: 0 auto;" }
+        %thead.panel-heading
+          %tr{"bgcolor"=>"#3276B1"}
+            %th{"style"=>"color:white;text-align:center"}Partida
+            %th{"style"=>"color:white;text-align:center"}Insumo
+            %th{"style"=>"color:white;text-align:center;padding-left:10px;padding-right:10px;"}Cantidad
+            %th{"style"=>"color:white;text-align:center"}Precio Unitario
+            %th{"style"=>"color:white;text-align:center"}Parcial
+        %tbody
+          - @subcontract.subcontract_details.each do |sub|
+            %tr{"style"=>"height:50px;"}
+              %th{"style"=>"font-weight:normal;"}= (sub.itembybudget.order.to_s + ' - ' + sub.itembybudget.subbudgetdetail.to_s) rescue "No se ha definido una Partida."
+              %th{"style"=>"font-weight:normal;text-align:center;vertical-align: middle;"}
+                - if !sub.article_id.nil?
+                  - Article.find_article_in_specific(sub.article_id, @cc).each do |ar|
+                    = ar[1].to_s
+                - else
+                  = "No se ha definido un Insumo."
+              %th{"style"=>"font-weight:normal;text-align:center;vertical-align: middle;"}=sub.amount
+              %th{"style"=>"font-weight:normal;text-align:center;vertical-align: middle;"}=sub.unit_price
+              %th{"style"=>"font-weight:normal;text-align:center;vertical-align: middle;"}=sub.partial
+      %br
+      %h2.page-title.txt-color-blueDark{"style"=>"margin-left: 7%;font-weight: bold;margin-bottom: 5px;"}  Adelantos
+      %table.panel.panel-primary.table-bordered{ style: "height: 90px; width: 950px;margin: 0 auto;" }
+        %thead.panel-heading
+          %tr{"bgcolor"=>"#3276B1"}
+            %th{"style"=>"color:white;text-align:center"} Adelanto
+            %th{"style"=>"color:white;text-align:center"} Fecha
+        %tbody(id="advance_items_table")
+          - @subcontract.subcontract_advances.each do |sa|
+            %tr
+              %td.advance{"style"=>"font-weight:normal;text-align:center;vertical-align: middle;"}
+                =sa.advance
+              %td.date_of_issue{"style"=>"font-weight:normal;text-align:center;vertical-align: middle;"}
+                =sa.date_of_issue
+%br
+%a.btn.btn-sm.btn-success.btn-prev{:href => "#{report_pdf_production_subcontracts_path}.pdf?id=#{@id}", :target => '_blank', :style=>"float: right;margin-right:9%;"}
+  Ver PDF
+%button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de subcontratos
+
+
+
+
+:javascript
+
+  $('#backlist').click(function(){
+      load_url_ajax("#{production_subcontracts_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+  });

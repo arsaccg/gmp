@@ -61,7 +61,7 @@ class DocumentaryControl::IssuedLettersController < ApplicationController
   end
 
   def last_code
-    issu = IssuedLetter.where("year LIKE ? AND cost_center_id = ? AND type_of_doc LIKE ?", params[:year], get_company_cost_center('cost_center'), params[:type]).last
+    issu = IssuedLetter.where("year LIKE "+params[:year].to_s+" AND cost_center_id = "+get_company_cost_center('cost_center').to_s+" AND type_of_doc LIKE '"+params[:typedoc].to_s+"' AND type_of_issued_letter_id = "+ params[:type].to_s).last
     if issu==nil
       issu = 0.to_s.rjust(3, '0')
     else
@@ -85,6 +85,6 @@ class DocumentaryControl::IssuedLettersController < ApplicationController
 
   private
   def issu_parameters
-    params.require(:issued_letter).permit(:name, :description, :type_of_doc, :year, :code, :document, :type_of_issued_letter_id)
+    params.require(:issued_letter).permit(:name, :description, :type_of_doc, :year, :code, :document, :type_of_issued_letter_id, :date)
   end
 end

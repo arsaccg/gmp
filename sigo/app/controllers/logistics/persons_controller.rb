@@ -24,6 +24,7 @@ class Logistics::PersonsController < ApplicationController
     end
   end
 
+
   # Función show solo para que vea su perfil.
   def show
   	@person = current_user
@@ -36,7 +37,29 @@ class Logistics::PersonsController < ApplicationController
     @costCenter = Array.new
     @allCostCenter = Array.new
     @user = User.find(params[:id])
-    @all_roles = { 'issuer' => 'Emite las ordenes de suministro', 'approver' => 'Aprueba ordenes de Suministro', 'reviser' => 'Dar visto bueno a las ordenes de suministro', 'canceller' => 'Anular ordenes suministro' }
+    @all_roles = { 
+      'issuer' => 'Emite las ordenes de suministro', 
+      'approver' => 'Aprueba ordenes de Suministro', 
+      'reviser' => 'Dar visto bueno a las ordenes de suministro', 
+      'canceller' => 'Anular ordenes suministro',
+      'dashboard' => 'Acceso al Dashboard',
+      'companies' => 'Acceso al listado de Compañias',
+      'users' => 'Acceso a la lista de Usuarios',
+      'inbox' => 'Acceso al INBOX de la aplicacion',
+      'entities' => 'Acceso a las Entidades y Tipo de Entidades',
+      'maintainer' => 'Acceso a los Mantenimientos Globales, Especificos y de Sistema', 
+      'control_documentary' => 'Acceso al Control de Documentarios',
+      'technical_library' => 'Acceso a la Biblioteca Técnica', 
+      'orders_and_buy' => 'Acceso de los Pedidos y Compras', 
+      'stores' => 'Acceso a los Almacenes', 
+      'execution' => 'Acceso a Ejecución', 
+      'administration' => 'Acceso a Administracion', 
+      'planning' => 'Acceso a Planeamiento',
+      'overheads' => 'Acceso a los Gastos Generales', 
+      'payroll' => 'Acceso a Planillas', 
+      'bidding' => 'Acceso a Licitaciones', 
+      'report' => 'Acceso a los Reportes'
+    }
     @roles = @user.role_symbols
 
     @user.companies.each do |company|
@@ -65,7 +88,8 @@ class Logistics::PersonsController < ApplicationController
 
   def update_profile
     @person = User.find(current_user.id)
-    @person.update_attributes(user_params)
+    @person.update(user_params)
+    sign_in(@person, :bypass=>true)
     flash[:notice] = "Se ha actualizado correctamente al usuario #{@person.first_name + ' ' + @person.last_name}."
     redirect_to :layout => false
   end
@@ -83,7 +107,7 @@ class Logistics::PersonsController < ApplicationController
     end
     respond_to do |format|
       format.json { 
-        data = ActiveRecord::Base.connection.execute("SELECT id,name FROM `cost_centers` WHERE `company_id` IN (#{cost_centers})")
+        data = ActiveRecord::Base.connection.execute("SELECT id,name FROM `cost_centers` WHERE `company_id` IN (#{cost_centers}) AND status LIKE 'A'")
         render :json => data
       }
     end
@@ -91,6 +115,6 @@ class Logistics::PersonsController < ApplicationController
 
   private
     def user_params
-    	params.require(:user).permit(:first_name, :last_name, :surname, :email, :date_of_birth, :avatar, :password, {:company_ids => []}, {:cost_center_ids => []})
+    	params.require(:user).permit(:first_name, :last_name, :surname, :email, :date_of_birth, :avatar, :password,:password_confirmation,:reset_password_token, {:company_ids => []}, {:cost_center_ids => []})
     end
 end

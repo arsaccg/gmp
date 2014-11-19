@@ -1,0 +1,71 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-7
+      %h2.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Valorizaciones
+.row
+  .col-md-12
+    - @budgets.each do |item|
+      %blockquote
+        = item.description
+      %table(class="white-table table-bordered table table-condensed" width="100%")
+        %tbody
+          - item.valorizations.each do |val|  
+            %tr
+              %td
+                - month = val.valorization_date.to_date.strftime("%-m").to_i
+                - year = val.valorization_date.to_date.strftime("%Y").to_i 
+                %strong
+                  Valorizacion:
+                  = t("date.month_names")[month]
+                  = year
+              %td
+                .btn-group
+                  -if val.charged? == false
+                    %a.btn-xs{:href=>"javascript:load_edit_valorization('"+show_data_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-info")
+                      %i(class="fa fa-search")
+                    %a.btn-xs{:href=>"javascript:load_edit_valorization('"+changevalorization_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini btn-default")
+                      %i(class="fa fa-pencil")                   
+                  
+                  %a.btn-xs{:href=>"javascript:load_url_ondiv('#{administration_invoices_path}?budget_id=#{item.id}', 'right-area')"}(class="btn btn-mini")
+                    %i(class="fa fa-book")
+                    Cobros
+
+                  %a.btn-xs{:href=>"javascript:load_resume('"+report_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini")
+                    %i(class="fa fa-file")
+                    Reporte
+
+                  -if val.pending? == false && val.charged? == false
+                    %a.btn-xs{:href=>"javascript:load_edit_valorization('"+finalize_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini")
+                      %i(class="fa fa-ban")
+                      Bloquear
+                      
+                    %a.btn-xs{:href=>"javascript:delete_to_url_into_div('"+management_valorization_path(val).to_s+"?authenticity_token="+form_authenticity_token+"&redir=0', 'right-area')", data: {confirm: "¿Esta seguro de eliminar esta valorizacion?"}}(class="btn btn-mini btn-danger")
+                      %i(class="fa fa-trash-o")
+
+:javascript 
+  $('.right-area').ready( function(){
+    if ("#{@redir}" == "1"){
+      load_url_ondiv('#{administrate_budget_management_budgets_path}', 'right-area');
+    }
+  });
+
+  function load_edit(url){
+    load_url_ondiv(url, 'right-area');
+  }
+  function load_resume(url){
+    load_url_ondiv(url, 'right-area');
+  }
+  function load_update_valorization(url){
+    load_url_ondiv(url, 'right-area');
+  }
+  function load_edit_valorization(url){
+    load_url_ondiv(url, 'right-area');
+  }
+  function load_resume(url){
+    load_url_ondiv(url, 'right-area');
+  }
+  function load_delete(url){
+    delete_to_url_into_div(url+"?authenticity_token=#{form_authenticity_token}", 'right-area');
+  }

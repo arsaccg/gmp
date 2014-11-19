@@ -13,10 +13,8 @@
             %span.widget-icon
               %i.fa.fa-table
             %h2 
-            = 'Orden de Compra N° ' + @purchaseOrder.id.to_s.rjust(5, '0')
+              = 'Orden de Compra N° ' + @purchaseOrder.code.to_s.rjust(5, '0')
           %div
-            .jarviswidget-editbox
-              / This area used as dropdown edit box
             .widget-body.no-padding
               %table.table.table-hover
                 %thead
@@ -33,7 +31,8 @@
                 %tbody(id="article_items_table")
                   %tr
                     %td
-                      = @purchaseOrder.id.to_s.rjust(5, '0')
+                      = @purchaseOrder.code.to_s.rjust(5, '0')
+
                     %td
                       = translate_purchase_order_state(@purchaseOrder.state)
                     %td
@@ -119,7 +118,7 @@
               %span.widget-icon
                 %i.fa.fa-table
               %h2 
-              = 'Historial de Estado de la Orden de Compra N° ' + @purchaseOrder.id.to_s.rjust(5, '0')
+              = 'Historial de Estado de la Orden de Compra N° ' + @purchaseOrder.code.to_s.rjust(5, '0')
             %div
               .jarviswidget-editbox
                 / This area used as dropdown edit box
@@ -153,12 +152,17 @@
                 %thead
                   %tr
                     %th Codigo
+                    %th Orden de Suministro
                     %th Insumo
                     %th Cantidad
                     %th Unidad de Medida
                     %th Precio Unitario
+                    %th Descuentos antes de IGV
                     %th Total antes de IGV
+                    %th IGV
                     %th Total después de IGV
+                    %th O.P. Ad. Des. IGV
+                    %th Neto a Pagar
                     %th Glosa
                 %tbody(id="purchase_detail_items_table")
                   - @purchaseOrderDetails.each do |purchasedetail|
@@ -166,23 +170,67 @@
                       %td
                         = purchasedetail.delivery_order_detail.article.code
                       %td
+                        = purchasedetail.delivery_order_detail.delivery_order.id.to_s.rjust(5, '0')
+                      %td
                         = purchasedetail.delivery_order_detail.article.name
                       %td
-                        = purchasedetail.amount
+                        = purchasedetail.amount.round(4).to_f
                       %td
                         - if purchasedetail.delivery_order_detail.unit_of_measurement != nil
                           = purchasedetail.delivery_order_detail.unit_of_measurement.name
                         - else
                           = "No tiene Unidad de Medida"
                       %td
-                        = number_to_currency(purchasedetail.unit_price.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                        = number_to_currency(purchasedetail.unit_price.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 4)
                       %td
-                        = number_to_currency((purchasedetail.amount.to_i * purchasedetail.unit_price.to_f).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                        = number_to_currency((purchasedetail.discount_before.to_f.round(3).round(2)).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
                       %td
-                        = number_to_currency(purchasedetail.unit_price_igv.to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                        = number_to_currency(purchasedetail.unit_price_before_igv.to_f.round(3).round(2).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2)
+                      %td
+                        = number_to_currency purchasedetail.quantity_igv.to_f.round(3).round(2).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                      %td              
+                        = number_to_currency ((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f-purchasedetail.discount_before.to_f.round(3).round(2).to_f)+purchasedetail.quantity_igv.to_f.round(3).round(2).to_f), unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                      %td
+                        - sum = 0
+                        - purchasedetail.purchase_order_extra_calculations.where(:apply => 'after').each do |poec|
+                          - if poec.type == 'percent'
+                            - sum += (poec.value/100)*((purchasedetail.amount.to_f * purchasedetail.unit_price.to_f-purchasedetail.discount_before.to_f.round(3).round(2).to_f)+purchasedetail.quantity_igv.to_f.round(3).round(2).to_f)
+                          - elsif poec.type == 'soles'
+                            - sum += poec.value
+                        = number_to_currency sum.round(3).round(2).to_f, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                      %td
+                        = number_to_currency (purchasedetail.unit_price_igv.to_f.round(3).round(2).to_f), unit: "#{@purchaseOrder.money.symbol}", precision: 2
                       %td
                         = purchasedetail.description
-                        
+                    - @parcial_without_igv += purchasedetail.unit_price_before_igv.to_f.round(3).round(2).to_f
+                    - @igv += purchasedetail.quantity_igv.to_f.round(7).round(6).round(5).round(4).round(3).round(2).to_f
+                  - @parcial_with_igv += @parcial_without_igv + @igv
+
+
+      %article.col-sm-12.col-md-12.col-lg-4
+        #wid-id-3.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+              = 'Totales'
+          %div
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Parcial sin IGV
+                    %th IGV
+                    %th Parcial con IGV
+                %tbody
+                  %tr
+                    %td
+                      = number_to_currency @parcial_without_igv, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
+                      = number_to_currency @igv, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
+                      = number_to_currency @parcial_with_igv, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+
 - if @type_of_order.nil?
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
     %i.fa.fa-arrow-left>

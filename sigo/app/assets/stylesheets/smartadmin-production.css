@@ -12129,7 +12129,7 @@ input.ui-button {
             font-weight: 400;
             line-height: 22px;
             margin-top: 15px;
-            width: 270px
+            text-align: justify;
         }
 
         #login h5.about-heading {
@@ -12671,8 +12671,12 @@ input.ui-button {
         }
 
         tr.highlight td, tr.unread.highlight td {
-            background: #ffc !important;
+            background: #57889c !important;
             color: #333
+        }
+
+        .seleccionado td {
+            background-color: #57889c;
         }
 
         .inbox-checkbox-triggered {

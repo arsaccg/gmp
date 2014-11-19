@@ -7,7 +7,16 @@ class Production::ScValuationsController < ApplicationController
 	end
 
   def show
+    @boton1="<a class='btn btn-xs btn-danger' data-original-title='Metrado de Avance' data-placement='top' href='javascript:void(0);' onclick='part_work();'></a>"
+    @boton2='<a class="btn btn-xs btn-danger" data-original-title="Detalle de Descuento de Personal" data-placement="top" href="javascript:void(0);" onclick="part_people();"><i class="fa fa-list-ol" style="color:white"></i></a>'
+    @boton3='<a class="btn btn-xs btn-danger" data-original-title="Detalle del Descuento de Equipos" data-placement="top" href="javascript:void(0);" onclick="part_equipment();"><i class="fa fa-list-ol" style="color:white"></i></a>'
+    @cc = get_company_cost_center('cost_center')
     @scvaluation=ScValuation.find_by_id(params[:id])
+    @start_date = @scvaluation.start_date.to_s
+    @end_date = @scvaluation.end_date.to_s
+    @inicio = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+@cc.to_s+" WHERE start_date <= '"+@start_date+"' AND end_date >= '"+@start_date.to_s+"'").first
+    @fin = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+@cc.to_s+" WHERE start_date <= '"+@end_date+"' AND end_date >= '"+@end_date.to_s+"'").first
+    @id = params[:id]
     @valorizacionsinigv = 0
     @amortizaciondeadelanto = 0
     @totalfacturar = 0
@@ -43,8 +52,55 @@ class Production::ScValuationsController < ApplicationController
     render layout: false
   end
 
+  def report_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @cc = get_company_cost_center('cost_center')
+        @company = Company.find(get_company_cost_center('company'))
+        @id = params[:id] 
+        @scvaluation=ScValuation.find_by_id(params[:id])
+        @valorizacionsinigv = 0
+        @amortizaciondeadelanto = 0
+        @totalfacturar = 0
+        @totalfacigv = 0
+        @totalincluidoigv = 0
+        @retenciones = 0
+        @detraccion = 0
+        @fondogarantia1 = 0
+        @fondogarantia2 = 0
+        @descuentoequipos = 0
+        @otrosdescuentos = 0
+        @netoapagar = 0
+        @code = 0
+        @code = @scvaluation.code.to_i - 1
+        @code = @code.to_s.rjust(3,'0')
+        @valuationgroup = getsc_valuation2(@scvaluation.start_date, @scvaluation.end_date, @scvaluation.name, @code)
+        if @valuationgroup.count > 0
+          @valuationgroup.each do |workerDetail|
+            @valorizacionsinigv = workerDetail[0]
+            @amortizaciondeadelanto = workerDetail[1]
+            @totalfacturar = workerDetail[2]
+            @totalfacigv = workerDetail[3]
+            @totalincluidoigv = workerDetail[4]
+            @retenciones = workerDetail[5]
+            @detraccion = workerDetail[6]
+            @fondogarantia1 = workerDetail[7]
+            @fondogarantia2 = workerDetail[8]
+            @descuentoequipos = workerDetail[9]
+            @otrosdescuentos = workerDetail[10]
+            @netoapagar = workerDetail[11]
+          end
+        end
+        render :pdf => "resumen_valorizaciones_sc_#{@scvaluation.name}-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'production/sc_valuations/report_pdf.pdf.haml',
+               :page_size => 'A4'
+      end
+    end
+  end
+
 	def new
-    @executors = Subcontract.all
+    @executors = Subcontract.where("entity_id NOT LIKE 0")
     last=ScValuation.last
     if !last.nil?
       @start = last.start_date
@@ -55,7 +111,6 @@ class Production::ScValuationsController < ApplicationController
 
 	def get_report
     name = Entity.find_by_id(params[:executor]).name
-
     if Subcontract.find_by_entity_id(params[:executor])!=nil
       if ScValuation.count > 0
         last = ScValuation.where("name LIKE ? ", name).last
@@ -78,7 +133,6 @@ class Production::ScValuationsController < ApplicationController
       @scValuation = ScValuation.new
       @totalprice = 0
       @totalprice2 = 0
-      @totalprice3 = 0
       @subadvances = 0
       @valorizacionsinigv = 0
       @amortizaciondeadelanto = 0
@@ -134,15 +188,49 @@ class Production::ScValuationsController < ApplicationController
       else
         @cad = '0'
       end
+
       @cc = get_company_cost_center('cost_center')
-      @workers_array = business_days_array(@start_date, @end_date, @cad, @cc)
+      @totalprice3 = 0
+      @workers_arrayE = business_days_array4(@start_date, @end_date, @cad,@cc)
+      @workers_arrayE.each do |workerDetail|
+        @totalprice3 += workerDetail[4]
+      end
+
+
+
+
+
+      @array5 = Array.new
+      @workers_array5 = business_days_array5(@start_date, @end_date, @cad,@cc)
+      @workers_array5.each do |worker|
+          @array5 << worker[3]   
+      end
+      @totalprice4=0
+      i=0
       @workers_array2 = business_days_array2(@start_date, @end_date, @cad, @cc)
+      entity = Entity.find_by_id(params[:executor])
+      @subcontract = Subcontract.find_by_entity_id(entity.id)
+      @workers_array2.each do |workerDetail|
+        @subcontract.subcontract_details.each do |sub|
+          if sub.itembybudget.order==workerDetail[2]
+            @totalprice4 += sub.unit_price*workerDetail[3]
+            i=i+1
+          end
+        end
+      end
+
+
+
+
+
+      @workers_array = business_days_array(@start_date, @end_date, @cad, @cc)
+
       @workers_array3 = business_days_array3(@start_date, @end_date, @cad, @cc)
       @workers_array.each do |workerDetail|
         @totalprice += workerDetail[7].to_f + workerDetail[8].to_f + workerDetail[9].to_f
       end
       @workers_array2.each do |workerDetail|
-        @totalprice2 += workerDetail[5]
+        @totalprice2 += workerDetail[3]*workerDetail[4]
       end
       @workers_array3.each do |workerDetail|
         @totalprice3 += workerDetail[4]
@@ -157,7 +245,7 @@ class Production::ScValuationsController < ApplicationController
       @totalbill= @totalprice2.to_f-@subcontract.initial_amortization_number.to_f
       @totalbilligv= (@totalprice2-@subcontract.initial_amortization_number.to_f)*@subcontract.igv
       @totalbillwigv= @totalbill+@totalbilligv
-      @retention=@subcontract.detraction.to_i+@subcontract.guarantee_fund.to_i+@totalprice+@totalprice3
+      @retention=@subcontract.detraction.to_i+(@subcontract.guarantee_fund.to_f/100)*@totalprice2+@totalprice+@totalprice3+@descuentomateriales+@otrosdescuentos
       @valuationgroup = getsc_valuation(@start_date, @end_date, @entity.name)
       if @valuationgroup.count > 0
         @valuationgroup.each do |workerDetail|
@@ -197,6 +285,10 @@ class Production::ScValuationsController < ApplicationController
     else
       @flag="no"
     end
+    @cc = get_company_cost_center('cost_center')
+    @inicio = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+@cc.to_s+" WHERE start_date <= '"+@start_date+"' AND end_date >= '"+@start_date.to_s+"'").first
+    @fin = ActiveRecord::Base.connection.execute("SELECT name FROM weeks_for_cost_center_"+@cc.to_s+" WHERE start_date <= '"+@end_date+"' AND end_date >= '"+@end_date.to_s+"'").first
+
     render(partial: 'report_table', :layout => false)
   end
 
@@ -214,16 +306,18 @@ class Production::ScValuationsController < ApplicationController
         cow.he_100_price*SUM( ppd.he_100 ),
         uom.name, 
         p.date_of_creation 
-      FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow, articles art
+      FROM part_people p, unit_of_measurements uom, part_person_details ppd, workers w, category_of_workers cow, articles art, worker_contracts wc 
       WHERE p.working_group_id IN(" + working_group_id.to_s + ")
       AND p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.id = ppd.part_person_id
       AND p.cost_center_id = '" + cost_center.to_s + "'
       AND w.cost_center_id = '" + cost_center.to_s + "'
-      AND w.article_id = art.id
+      AND w.id = wc.worker_id
+      AND wc.status = 1
+      AND wc.article_id = art.id
       AND ppd.worker_id = w.id
       AND p.block=0 
-      AND w.article_id = cow.article_id
+      AND wc.article_id = cow.article_id
       AND uom.id = art.unit_of_measurement_id
       GROUP BY art.name
     ")
@@ -232,23 +326,46 @@ class Production::ScValuationsController < ApplicationController
 
   def business_days_array2(start_date, end_date, working_group_id, cost_center)
     workers_array2 = ActiveRecord::Base.connection.execute("
-      SELECT  pwd.article_id, 
-        art.name, 
-        uom.name, 
-        SUM( pwd.bill_of_quantitties ), 
-        si.unit_price, 
-        si.unit_price*SUM( pwd.bill_of_quantitties ), 
+      SELECT 
+        pwd.itembybudget_id, 
+        ibb.subbudgetdetail, 
+        ibb.order, 
+        SUM(pwd.bill_of_quantitties) as bill_of_quantitties,
+        ibb.price as price,
+        ibb.budget_id as budget_id,
         p.date_of_creation 
-      FROM part_works p, part_work_details pwd, articles art, unit_of_measurements uom, subcontract_details si
+      FROM part_works p, part_work_details pwd, itembybudgets ibb
       WHERE p.date_of_creation BETWEEN '" + start_date + "' AND '" + end_date + "'
       AND p.working_group_id IN(" + working_group_id.to_s + ")
-      AND p.id = pwd.part_work_id
       AND p.cost_center_id = '" + cost_center.to_s + "'
-      AND pwd.article_id = art.id
-      AND pwd.article_id = si.article_id
+      AND p.id = pwd.part_work_id
       AND p.block=0 
-      AND uom.id = art.unit_of_measurement_id
-      GROUP BY art.name
+      AND pwd.itembybudget_id =  ibb.id
+      GROUP BY ibb.subbudgetdetail
+      ORDER BY ibb.order
+    ")
+    return workers_array2
+  end
+
+  def business_days_array5(start_date, end_date, working_group_id, cost_center)
+    workers_array2 = ActiveRecord::Base.connection.execute("
+      SELECT 
+        pwd.itembybudget_id, 
+        ibb.subbudgetdetail, 
+        ibb.order, 
+        SUM(pwd.bill_of_quantitties) as bill_of_quantitties,
+        ibb.price as price,
+        ibb.budget_id as budget_id,
+        p.date_of_creation 
+      FROM part_works p, part_work_details pwd, itembybudgets ibb
+      WHERE p.date_of_creation <'" + end_date + "'
+      AND p.working_group_id IN(" + working_group_id.to_s + ")
+      AND p.cost_center_id = '" + cost_center.to_s + "'
+      AND p.id = pwd.part_work_id
+      AND p.block=0 
+      AND pwd.itembybudget_id =  ibb.id
+      GROUP BY ibb.subbudgetdetail
+      ORDER BY ibb.order
     ")
     return workers_array2
   end
@@ -270,6 +387,28 @@ class Production::ScValuationsController < ApplicationController
       AND uom.id = art.unit_of_measurement_id
       AND poed.working_group_id IN(" + working_group_id.to_s + ")
       GROUP BY art.name
+    ")
+    return workers_array3
+  end
+
+  def business_days_array4(start_date, end_date, working_group_id, cost_center)
+    workers_array3 = ActiveRecord::Base.connection.execute("
+      SELECT  art.name, 
+      uom.name, 
+      SUM( poed.effective_hours ), 
+      si.price_no_igv, 
+      si.price_no_igv*SUM( poed.effective_hours), 
+      art.id,
+      si.code,
+      art.code
+      FROM part_of_equipments poe, part_of_equipment_details poed, articles_from_cost_center_"+get_company_cost_center('cost_center').to_s+" art, unit_of_measurements uom, subcontract_equipment_details si
+      WHERE poe.date BETWEEN '" + start_date + "' AND '" + end_date + "'
+      AND poe.id=poed.part_of_equipment_id
+      AND si.article_id=art.id
+      AND poe.equipment_id=si.id
+      AND uom.id = art.unit_of_measurement_id
+      AND poed.working_group_id IN(" + working_group_id + ")
+      GROUP BY si.code
     ")
     return workers_array3
   end
@@ -349,16 +488,55 @@ class Production::ScValuationsController < ApplicationController
   end
 
   def part_work
-    start_date = params[:start_date]
-    end_date = params[:end_date]
-    cad = params[:cad]
+    @array5 = Array.new
+    @name=params[:name]
+    entity = Entity.find_by_name(@name)
+    @subcontract = Subcontract.find_by_entity_id(entity.id)
+    @start_date = params[:start_date]
+    @end_date = params[:end_date]
+    @cad = params[:cad]
     @totalprice2 = 0
     cc = get_company_cost_center("cost_center")
-    @workers_array2 = business_days_array2(start_date, end_date, cad,cc)
+    @workers_array2 = business_days_array2(@start_date, @end_date, @cad,cc)
+
+    @workers_array5 = business_days_array5(@start_date, @end_date, @cad,cc)
+    @workers_array5.each do |worker|
+        @array5 << worker[3]   
+    end
     @workers_array2.each do |workerDetail|
       @totalprice2 += workerDetail[5]
     end
     render layout: false
+  end
+
+  def part_work_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @array5 = Array.new
+        entity = Entity.find_by_name(params[:name])
+        @subcontract = Subcontract.find_by_entity_id(entity.id)
+        start_date = params[:start_date]
+        end_date = params[:end_date]
+        cad = params[:cad]
+        @cc = get_company_cost_center('cost_center')
+        @company = Company.find(get_company_cost_center('company'))
+        @totalprice2 = 0
+        cc = get_company_cost_center("cost_center")
+        @workers_array2 = business_days_array2(start_date, end_date, cad,@cc)
+        @workers_array5 = business_days_array5(start_date, end_date, cad,cc)
+        @workers_array5.each do |worker|
+            @array5 << worker[3]   
+        end
+        @workers_array2.each do |workerDetail|
+          @totalprice2 += workerDetail[5]
+        end
+        render :pdf => "parte_obra_#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'production/sc_valuations/part_work_pdf.pdf.haml',
+               :page_size => 'A4'
+
+      end
+    end
   end
 
   def part_people
@@ -375,16 +553,89 @@ class Production::ScValuationsController < ApplicationController
   end
 
   def part_equipment
-    start_date = params[:start_date]
-    end_date = params[:end_date]
+    @cc = get_company_cost_center('cost_center')
+    @start_date = params[:start_date]
+    @end_date = params[:end_date]
     cost_center = get_company_cost_center('cost_center')
-    cad = params[:cad]
+    @cad = params[:cad]
+    @id = params[:id]
+    @scvaluation=ScValuation.find_by_id(params[:id])
     @totalprice3 = 0
-    @workers_array3 = business_days_array3(start_date, end_date, cad,cost_center)
+    @workers_array3 = business_days_array4(@start_date, @end_date, @cad,cost_center)
     @workers_array3.each do |workerDetail|
       @totalprice3 += workerDetail[4]
     end
+    @totalprice5=0
+    @prices= Array.new
+    @todo = Array.new
+    @abuelo = Array.new
+    @padre = Array.new
+    @hijo = Array.new
+    @workers_array3.each do |workers_array3|
+      @code = workers_array3[7].to_s
+      if !@abuelo.include?(@code[2,2])
+        @abuelo << @code[2,2]
+        @todo << [@code[2,2],nil,nil,nil,nil,nil,nil,nil]
+
+      end
+      if !@padre.include?(@code[2,4])
+        @padre << @code[2,4]
+        @todo << [@code[2,4],nil,nil,nil,nil,nil,nil,nil]
+
+      end
+      if !@hijo.include?(@code[2,6])
+        @hijo << @code[2,6]
+        @todo << [@code[2,6],nil,nil,nil,nil,nil,nil,nil]
+      end
+      
+      @todo << workers_array3
+    end
     render layout: false
+  end
+
+  def part_equipment_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @cc = get_company_cost_center('cost_center')
+        @company = Company.find(get_company_cost_center('company'))
+        @start_date = params[:start_date]
+        @end_date = params[:end_date]
+        cost_center = get_company_cost_center('cost_center')
+        @cad = params[:cad]
+        @id = params[:id]
+        @scvaluation=ScValuation.find_by_id(params[:id])
+        @totalprice3 = 0
+        @workers_array3 = business_days_array4(@start_date, @end_date, @cad,cost_center)
+        @workers_array3.each do |workerDetail|
+          @totalprice3 += workerDetail[4]
+        end
+        @todo = Array.new
+        @abuelo = Array.new
+        @padre = Array.new
+        @hijo = Array.new
+        @workers_array3.each do |workers_array3|
+          @code = workers_array3[7].to_s
+          if !@abuelo.include?(@code[2,2])
+            @abuelo << @code[2,2]
+            @todo << [@code[2,2],nil,nil,nil,nil,nil,nil,nil]
+          end
+          if !@padre.include?(@code[2,4])
+            @padre << @code[2,4]
+            @todo << [@code[2,4],nil,nil,nil,nil,nil,nil,nil]
+          end
+          if !@hijo.include?(@code[2,6])
+            @hijo << @code[2,6]
+            @todo << [@code[2,6],nil,nil,nil,nil,nil,nil,nil]
+          end
+          @todo << workers_array3
+          puts @todo
+        end
+        render :pdf => "parte_equipos_#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'production/sc_valuations/part_equipment_pdf.pdf.haml',
+               :page_size => 'A4'
+      end
+    end
   end
 
   def approve

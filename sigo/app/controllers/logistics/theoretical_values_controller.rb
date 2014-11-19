@@ -30,6 +30,10 @@ class Logistics::TheoreticalValuesController < ApplicationController
 
   def edit
     @theoretical_value = TheoreticalValue.find_by_article_id(params[:id])
+    if @theoretical_value.nil?
+      @theoretical_value = TheoreticalValue.new
+      @article = Article.find(params[:id])
+    end
     @action = 'edit'
     render layout: false
   end
@@ -57,7 +61,7 @@ class Logistics::TheoreticalValuesController < ApplicationController
 
   def new
     @theoretical_value = TheoreticalValue.new
-    @articles = Article.find(params[:id])
+    @article = Article.find(params[:id])
     render :new, layout: false
   end
 

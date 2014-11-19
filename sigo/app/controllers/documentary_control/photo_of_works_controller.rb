@@ -69,15 +69,11 @@ class DocumentaryControl::PhotoOfWorksController < ApplicationController
       @photo = @photo.paginate(:page => params[:page], :per_page => 35)
       @flag = 1
     end
-    
-    #respond_to do |format|
-     # format.html
-      #format.js
-    #end
     render layout: false
   end
 
   def new
+    @fa_id = params[:fa_id]
     @cost_center = get_company_cost_center('cost_center')
     @photo = PhotoOfWork.new
     render layout: false
@@ -89,7 +85,7 @@ class DocumentaryControl::PhotoOfWorksController < ApplicationController
     photo.cost_center_id = get_company_cost_center('cost_center')
     if photo.save
       flash[:notice] = "Se ha creado correctamente."
-      redirect_to :action => :index
+      redirect_to :action => :index, :controller => "folders", :fa_id=>photo.folder_id
     else
       photo.errors.messages.each do |attribute, error|
         puts flash[:error].to_s + error.to_s + "  "
@@ -101,6 +97,7 @@ class DocumentaryControl::PhotoOfWorksController < ApplicationController
 
   def edit
     @photo = PhotoOfWork.find(params[:id])
+    @fa_id = params[:fa_id]
     @cost_center = get_company_cost_center('cost_center')
     @action = 'edit'
     render layout: false
@@ -111,7 +108,7 @@ class DocumentaryControl::PhotoOfWorksController < ApplicationController
     photo.cost_center_id = get_company_cost_center('cost_center')
     if photo.update_attributes(photo_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index, company_id: params[:company_id]
+      redirect_to :action => :index, :controller => "folders", :fa_id=>photo.folder_id
     else
       photo.errors.messages.each do |attribute, error|
         flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
@@ -130,6 +127,6 @@ class DocumentaryControl::PhotoOfWorksController < ApplicationController
 
   private
   def photo_parameters
-    params.require(:photo_of_work).permit(:name, :description, :photo)
+    params.require(:photo_of_work).permit(:name, :description, :photo, :folder_id)
   end
 end

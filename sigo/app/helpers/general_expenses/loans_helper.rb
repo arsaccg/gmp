@@ -1,0 +1,2 @@
+module GeneralExpenses::LoansHelper
+end

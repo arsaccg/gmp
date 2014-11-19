@@ -1,0 +1,46 @@
+.control-group
+  %table(class="table-bordered table  table-condensed table-hover white-table small-font" width="100%")
+    %thead
+      %th Presupuesto
+      %th Orden
+      %th Descripcion
+      %th Metrado
+      %th Costo
+      %th Total
+      %th Acciones
+    %tbody(id="table_wbs")
+      - n= 0
+      - @wbsitems_arr.each do |itembywbs|
+        -n=n+1
+        %tr{:class=>"wbs_" + itembywbs.wbscode.to_s}
+          %td
+            = itembywbs.budget.description
+          %td 
+            = itembywbs.order_budget rescue ""
+          %td 
+            = itembywbs.subbudgetdetail rescue ""
+          %td 
+            - rand_code = Time.now.to_f.to_s + n.to_s
+            %input(type="text" class="input-small small-font"){:name=>"itemform[" + rand_code + "][measured]", :value=>itembywbs.measured.to_f.to_s, :id => "itemwbs_" + itembywbs.id.to_s, :onblur => "update_table('" + itembywbs.id.to_s + "', '" + itembywbs.price.to_s + "')" }
+            %input(type="hidden"){:name=>"itemform[" + rand_code + "][itembywbs_id]", :value=>itembywbs.id}
+            %input(type="hidden"){:name=>"itemform[" + rand_code + "][price]", :value=>itembywbs.price}
+            %input(type="hidden"){:name=>"itemform[" + rand_code + "][budget]", :value=>itembywbs.budget_id}
+            %input(type="hidden"){:name=>"itemform[" + rand_code + "][coditem]", :value=>itembywbs.coditem}
+            %input(type="hidden"){:name=>"itemform[" + rand_code + "][wbscode]", :value=>itembywbs.wbscode}   
+            =# itembywbs.measured rescue ""
+          %td 
+            = number_to_currency(number_with_precision(itembywbs.price , :precision => 2).to_s , :unit=>'S/. ') rescue ""
+          %td
+            %strong
+              %span{:id => "total_" + itembywbs.id.to_s}
+                = number_to_currency(number_with_precision((itembywbs.measured.to_f * itembywbs.price.to_f).to_s, :precision => 2).to_s , :unit=>'S/. ') rescue ""
+          %td
+            %a(class="btn btn-mini btn-danger"){:href=>"javascript:delete_ajax('#{management_itembywbs_path(itembywbs.id)}')"}
+              %strong x
+              /%i(class="icon-trash") 
+
+:javascript 
+  $("[class*='wbs_']").fadeOut('fast');
+
+
+  selectwbs('#{@wbs}');

@@ -51,10 +51,10 @@
                 .col.col-10
                   %label.input
                     %select.form-control{:name =>"operation", :id => "#{@id_modal}-select-operation"}
-                      %option{:value => "sum"}
-                        = '+'
                       %option{:value => "minius"}
                         = '-'
+                      %option{:value => "sum"}
+                        = '+'
 
             %fieldset
               %h3 Listado de Operaciones

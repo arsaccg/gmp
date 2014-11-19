@@ -17,8 +17,8 @@ development:
   pool: 5
   #username: postgres
   username: root
-  #password: r3dc0d3
   password: root
+  #password: r3dc0d3
   flags: CLIENTS_MULTI_RESULTS 
 
 wharehouses_development:
@@ -36,6 +36,7 @@ test:
   database: arsac_logistica_test
   username: root
   password: root
+  encoding: utf8
 
 poduction:
   adapter: mysql2

@@ -1,0 +1,164 @@
+= simple_form_for([:payrolls, @pay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+  %h3
+    %strong Paso 1
+    \- Seleccionar la información básica
+  %fieldset
+    .row
+      %section.col.col-md-4
+        .col-xs-1
+        .form-group.in-line
+          %label.label Tipo de Trabajador
+          .col-md-12
+            .col-md-1
+            %label.radio-inline
+              %input.radiobox#t{:name=>"tworker",:type => 'radio', :value => "empleado", :onchange => "checkWorker();"}
+              %span Empleado
+            %label.radio-inline
+              %input.radiobox#e{:name=>"tworker",:type => 'radio', :value => "obrero", :onchange => "checkWorker();"}
+                %span Obrero
+    
+      %section.col.col-md-3
+        %label.label Periodo
+        %label.input
+          %input#periodo.form-control
+          %label Ejemplo: 2014-01
+
+      %section.col.col-md-3
+        %label.label Mes
+        %label.input
+          %input#mes.form-control
+    .row
+      %section.col.col-4
+        %label.label Compañia: 
+        %label.input
+          %select.form-control#company
+            %option{:value=> 0} Seleccione una compañia
+            -@company.each do |cc|
+              %option{:value => "#{cc.id}"}= cc.name
+
+      %section.col.col-4
+        %label.label Centro de Costo
+        %label.input
+          %select.form-control#costcenter{:disabled=>"disabled"}
+            %option{:value=> 0} Seleccione un Centro de Costo
+
+      %section.col.col-4
+        %label.label Tipo
+        %label.input
+          %select.form-control#tipo
+            %option{:value=> 0} Seleccione un tipo
+            %option{:value=> "normal"} Normal
+            %option{:value=> "G"} Gratificación
+            %option{:value=> "Q"} Quincena
+            %option{:value=> "R"} Reintegro
+            %option{:value=> "U"} Utilidades
+            %option{:value=> "V"} Vacaciones
+      %br
+          
+    %fieldset
+      %legend Información adicional
+      .row
+        %section
+          %label.label{"style"=>"font-size:14px;"} Información de AFP
+          %br
+          .col.col-2
+            %label.label Nombre
+          .col.col-2
+            %label.label Aporte F. P.(%)
+          .col.col-2
+            %label.label Prima de Seguro(%)
+          .col.col-2
+            %label.label Tope de Seguro($)
+          .col.col-2
+            %label.label C. Variable (%)
+          .col.col-2
+            %label.label Mixta (%)
+          %br
+        %section
+          -@afp.each do |afp|
+            .form-group
+              .col.col-lg-12
+                .col.col-2
+                  %label.label=afp.enterprise.to_s
+                .col.col-2
+                  %label.label=afp.contribution_fp.to_s
+                .col.col-2
+                  %label.label= afp.insurance_premium.to_s
+                .col.col-2
+                  %label.label= afp.top.to_s
+                .col.col-2
+                  %label.label= afp.c_variable.to_s
+                .col.col-2
+                  %label.label= afp.mixed.to_s
+            %br
+      .row
+        %section#infoadd{"style"=>"display:none"}
+          .section.col.col-md-8
+            %label.label{"style"=>"font-size:14px;"} Datos Generales
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Día/Horas Base de Cálculo
+                .col.col-lg-6
+                  %input#dhbc.form-control{:value =>"48.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Horas de Trabajo por día
+                .col.col-lg-6
+                  %input#hxd.form-control{:value =>"8.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Días adelanto Quincena (15)
+                .col.col-lg-6
+                  %input#d15.form-control{:value =>"15.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Unidad Impositiva Tributaria
+                .col.col-lg-6
+                  %input#uit.form-control{:value =>"3700.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} # de deducciones(UIT) 5ta Cat.
+                .col.col-lg-6
+                  %input#duit.form-control{:value =>"7.00"}
+            .form-group
+              .col.col-lg-12
+                .col-md-1
+                %label.label.col.col-lg-4{"style"=>"align:right;"} Tipo de Cambio Planilla
+                .col.col-lg-6
+                  %input#tcp.form-control{:value =>"0.00"}
+        
+        %br
+
+
+:javascript
+  $('#periodo').change(function(){
+    var periodo = $(this).val();
+    var mes = periodo[-2,2];
+  });
+
+  function generar(){
+    var periodo = $('#periodo').val();
+    var mes = $('#mes').val();
+    var company = $('#company').val();
+    var costcenter = $('#costcenter').val();
+    var tipo = $('#tipo').val();
+    var dhbc = $('#dhbc').val();
+    var hxd = $('#hxd').val();
+    var d15 = $('#d15').val();
+    var uit = $('#uit').val();
+    var duit = $('#duit').val();
+    var tcp = $('#tcp').val();
+    var tworker = ""
+    if(document.getElementById('t').checked){
+      tworker = $('#t').val)();
+    }else{
+      tworker = $('#e').val)();
+    }  
+    str_item = {authenticity_token: "#{form_authenticity_token}", tworker: tworker, periodo: periodo, mes: mes, company: company, costcenter: costcenter, tipo:tipo, dhbc: dhbc, hxd: hxd, d15:d15, uit: uit, duit: duit, tcp: tcp};
+    append_url_ajax('#{add_concept_payrolls_payrolls_path}', 'desc_table', str_item, 0, 'POST');
+  }  

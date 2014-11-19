@@ -1,0 +1,187 @@
+
+.row
+  .col-md-12
+    .group-bar
+      = hidden_field_tag "cost_center_selected", @cost_center_selected, { :id => "cost_center_selected", "data-name" => @cost_center_selected.name, "data-id" => @cost_center_selected.id }
+      %strong(style="padding-left: 10px;")
+        WBS  (Work Breakdown Structure)
+      %div(class="btn-group" style="padding-left: 100px;")
+        %a(href="javascript:new_item();" class="btn btn-primary btn-mini")
+          %i(class="fa fa-md fa-fw fa-plus")
+          Nuevo 
+        %a{:href=>"javascript:get_items_for_project();"}(class="btn btn-primary btn-mini")
+          %i(class="fa fa-md fa-fw fa-eye")
+          Indice
+        %a{:href=>"javascript:load_budgets();"}(class="btn btn-primary btn-mini")
+          %i(class="fa fa-md fa-fw fa-sitemap")
+          Diagrama
+      %div(class="btn-group" style="padding-left: 10px;")  
+        %a(href="javascript:execute_items_wbs('0');" class="btn btn-primary btn-mini")
+          %i(class="fa fa-md fa-fw fa-pencil")
+          Asignar Partidas Meta
+        %a(href="javascript:execute_items_wbs('1');" class="btn btn-primary btn-mini")
+          %i(class="fa fa-md fa-fw fa-pencil")
+          Asignar Partidas Venta
+      %div(class="btn-group" style="padding-left: 10px;")  
+        %a(href="javascript:zoom_in();" class="btn btn btn-primary btn-mini")
+          %i(class="fa fa-md fa-fw fa-search-plus")
+        %a(href="javascript:zoom_out();" class="btn btn btn-primary btn-mini")
+          %i(class="fa fa-md fa-fw fa-search-minus")
+.row
+  .ol-md-12(class="graph-org")
+    %div(id="graph-org")
+
+:javascript 
+
+  $("#graph-org").height($(document).height()-200);
+
+  var data_text_wbs;
+  var contenedor = document.getElementById('graph-org');
+ 
+
+  var width_graph = $('#graph-org').width() - 80;
+  var height_graph = $('#graph-org').height()- 80;
+
+  var mesa = new Raphael(contenedor, width_graph+50, height_graph*2.5);
+
+  panZoom = mesa.panzoom({ initialZoom: 0, initialPosition: { x: 0, y: 0} });
+  panZoom.enable();
+
+ 
+  n_levels = ["#D45202", "#1B5796", "#0A3059"];
+
+  var rectangulo = mesa.rect(width_graph/2-90 , 20, 180, 30, 10);
+  rectangulo.attr({fill: "#bf2f2f", stroke: "#fff", "stroke-width": 3}) 
+        
+
+  var rct_xy = rectangulo.getBBox(false);
+
+  
+
+  t = mesa.text(width_graph/2 , 34, $('#cost_center_selected').data("name"));
+  t.attr({fill: "#fff", "font-weight": "bold",  "font-size": "12px"})
+
+  var json_data="";
+
+  function get_data(url_str){
+    $.ajax({
+      type: "GET",
+      url: url_str
+    }).done(function(json) {
+      data_text_wbs = json
+    });
+  }
+  
+  var sub_count =0;
+ 
+  function draw_to_div(url_str){ 
+
+    $.ajax({
+      type: "GET",
+      url: url_str
+    }).done(function(json) {
+
+      json_data = json;
+      var count = 0 ;
+      var acumulator = 0;
+
+      jQuery.each(json, function(i, val) { count++ });
+
+      jQuery.each(json, function(i, val) {
+
+        acumulator++
+
+        rectangulo_hijo = mesa.rect(acumulator*(width_graph/(count * 2))- 60, 90, 120, 30, 10)
+        rectangulo_hijo.attr({fill: "#4cbf2f", stroke: "#fff", "stroke-width": 1}) 
+        
+        acumulator++
+
+        rct_xy_child = rectangulo_hijo.getBBox(false)
+ 
+        c = mesa.path("M" + (rct_xy.x + rct_xy.width/2) + " " + (rct_xy.y + rct_xy.height/2 + 15) + "L" + (rct_xy.x + rct_xy.width/2) + " " + (rct_xy.y + rct_xy.height/2 + 40) + "L" + (rct_xy_child.x + rct_xy_child.width/2) + " " + (rct_xy_child.y + rct_xy_child.height/2 -30) + "L" + (rct_xy_child.x + rct_xy_child.width/2) + " " + (rct_xy_child.y + rct_xy_child.height/2 -15))
+
+        c.attr({stroke: "#ccc", "stroke-width": 2})
+
+        temp_text = ""
+
+        jQuery.grep(data_text_wbs, function(obj) {
+          if (obj.codewbs == i.substring(4, i.length)) { temp_text=obj.name }
+        })
+
+        t = mesa.text((rct_xy_child.x + rct_xy_child.width/2), (rct_xy_child.y + rct_xy_child.height/2), temp_text)
+        t.attr({fill: "#fff", "font-weight": "bold",  "font-size": "11px"})
+
+        if (val instanceof Object == true){
+          sub_count =0
+          draw_sub_item(rct_xy_child.x, rct_xy_child.y, rct_xy_child.x, rct_xy_child.y, val, 0)
+        }
+      });
+    });
+  }
+
+  function draw_sub_item(x1_reference, y1_reference, x1_parent, y1_parent, val, level){
+
+    count = 0;
+
+    acumulator = 1;
+
+    jQuery.each(val, function(i, val_item) { count++ });
+
+    jQuery.each(val, function(i, val_item) { 
+
+      sub_count = sub_count + 1
+      temp_text = ""
+       
+      jQuery.grep(data_text_wbs, function(obj) {
+        if (obj.codewbs == i.substring(4, i.length)) { temp_text=obj.name }
+      })
+
+      rectangulo_hijo = mesa.rect(x1_parent + 25, y1_reference  +  sub_count * 40 + 3, 10 +  temp_text.length * 4.775, 25, 5)
+      rectangulo_hijo.attr({fill: n_levels[level], stroke: "#fff", "stroke-width": 3})      
+
+      t=mesa.text((x1_parent + 30), y1_reference +  sub_count * 40  + 15,  temp_text  )
+      t.attr({fill: "#fff", "font-family": "Arial",  "font-size": "9px", 'text-anchor': 'start'}) 
+
+      rct_xy_child = rectangulo_hijo.getBBox(false)
+
+      c=mesa.path("M" + (x1_parent + 10 ) + " " + (y1_parent + 30) + "L" + (x1_parent  + 10) + " " +  (rct_xy_child.y + 15) + "L" + (rct_xy_child.x) + " " +  (rct_xy_child.y + 15) )
+      c.attr({stroke: "#ccc", "stroke-width": 2})
+
+      if (val_item instanceof Object == true){ 
+        draw_sub_item(x1_reference, y1_reference, rct_xy_child.x, rct_xy_child.y, val_item, level + 1) 
+      }
+
+      acumulator++ 
+
+    });
+  }
+  
+  get_data('#{management_wbsitems_path}.json');
+  draw_to_div('#{get_items_json_management_wbsitems_path}.json');
+  
+
+  function load_budgets(){
+    load_url_ajax("#{management_wbsitems_path.to_s}", 'content', '', '', 'get');
+  }
+  
+  function execute_items_wbs(type_budget){
+    load_url_ajax("#{add_items_to_wbs_management_wbsitems_path}?type_budget=" +  type_budget, 'content', '', '', 'get');
+  }
+
+  function new_item(){
+    load_url_ondiv("#{new_management_wbsitem_path.to_s}", 'graph-org');
+  }
+
+  function get_items_for_project(){
+    load_url_ondiv("#{get_items_from_project_management_wbsitems_path.to_s}", 'graph-org');
+  }
+  
+  
+  function zoom_out(){ 
+    
+        panZoom.zoomOut(1);
+  }
+
+  function zoom_in(){ 
+         panZoom.zoomIn(1);
+  }

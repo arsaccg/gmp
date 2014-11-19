@@ -6,7 +6,7 @@
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
-      %table#dt_basic.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
+      %table#modal-more-items.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
         %thead
           %tr
             %th O/Compra
@@ -18,31 +18,50 @@
             %th Sector
             %th Fase
             %th C/Atención
-            %th Seleccionar
-        %tbody
+            %th 
+              %button.btn-xs.btn-success{ :type => 'button', :onclick => 'check_all_checkboxes();' }
+                %i.fa.fa-hand-o-down               
+        %tbody#table-items
           - @tableItems.each do |x|
-            - x.purchase_order_details.where("received IS NULL").each do |y|
-              - @pending = y.amount.to_i - PurchaseOrderDetail.get_total_received(y.id).to_i
-              %tr
-                %td.col-md-1
-                  = x.id.to_s.rjust(5, '0')
-                %td.col-md-1
-                  = y.delivery_order_detail.article.code
-                %td.col-md-1
-                  = y.delivery_order_detail.article.name
-                %td.col-md-1
-                  = y.delivery_order_detail.article.unit_of_measurement.symbol
-                %td.col-md-1
-                  = y.amount
-                %td.col-md-1
-                  = @pending
-                %td.col-md-1
-                  = y.delivery_order_detail.sector.name
-                %td.col-md-1
-                  = y.delivery_order_detail.phase.name 
-                %td.col-md-1
-                  = y.delivery_order_detail.center_of_attention.name
-                %td
-                  %label.checkbox
-                    = check_box("order_delivery", "approved", { class: 'order_check' }, y.id)
-                    %i
+            %input#sname{:style=>"display:none",:value=> x.entity.ruc.to_s+"-"+x.entity.name}
+            - x.purchase_order_details.each do |y|
+              -del = StockInputDetail.where("purchase_order_detail_id = "+y.id.to_s)
+              -tot=0
+              -del.each do |del|
+                -tot+=del.amount.to_i
+              - @pending = y.amount.to_i - tot.to_i
+              //PurchaseOrderDetail.get_total_received(y.id).to_i
+              -if @pending > 0
+                %tr
+                  %td.col-md-1
+                    = x.id.to_s.rjust(5, '0')
+                  %td.col-md-1
+                    = y.delivery_order_detail.article.code
+                  %td.col-md-1
+                    = y.delivery_order_detail.article.name
+                  %td.col-md-1
+                    = y.delivery_order_detail.article.unit_of_measurement.symbol
+                  %td.col-md-1
+                    = y.amount
+                  %td.col-md-1
+                    = @pending
+                  %td.col-md-1
+                    = y.delivery_order_detail.sector.name
+                  %td.col-md-1
+                    = y.delivery_order_detail.phase.name 
+                  %td.col-md-1
+                    = y.delivery_order_detail.center_of_attention.name
+                  %td
+                    %label.checkbox
+                      = check_box("order_delivery", "approved", { class: 'order_check' }, y.id)
+                      %i
+
+%br
+
+%button.btn.btn-sm.btn-primary.btn-prev#add-purchase-order-items{"type" => "button", "onclick" => "javascript:add_more_items();"}
+  %i.fa.fa-plus
+  Agregar
+
+%button.btn.btn-sm.btn-primary.btn-prev{"type" => "button", "data-dismiss" => "modal"}
+  %i.fa.fa-times
+  Salir

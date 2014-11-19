@@ -8,8 +8,50 @@ class Inputbybudgetanditem < ActiveRecord::Base
 	belongs_to :item
 	belongs_to :budget
   belongs_to :article
+  
+  	def get_quantity_to_get(budget_id, item_id, order, owneritem, database)
+  		# TODO: Codigo para obtener el numero de registros a procesar
+  		
+  		#str_query  = "SELECT
 
-	def get_inputs(budget_id, item_id, order, owneritem, database)
+		#COUNT(PresupuestoPartidaDetalle.CodInsumo) 
+		
+		#From PresupuestoPartidaDetalle   
+		# LEFT JOIN Partida 
+
+		#ON partida.codpartida = PresupuestoPartidaDetalle.codpartida AND 
+		#partida.codpresupuesto = PresupuestoPartidaDetalle.codpresupuesto AND
+		#partida.Propiopartida = PresupuestoPartidaDetalle.Propiopartida
+		 
+		#LEFT JOIN Insumo
+		#ON Insumo.codInsumo = PresupuestoPartidaDetalle.codInsumo 
+
+		#LEFT JOIN Unidad
+		#ON Insumo.CodUnidad = Unidad.CodUnidad 
+
+		#LEFT JOIN SubpresupuestoDetalle ON
+		#PresupuestoPartidaDetalle.CodPresupuesto = SubpresupuestoDetalle.CodPresupuesto AND
+		#PresupuestoPartidaDetalle.CodSubpresupuesto = SubpresupuestoDetalle.CodSubpresupuesto
+		
+
+		#WHERE PresupuestoPartidaDetalle.codpresupuesto = '" + budget_id  + "'  AND
+
+		#	Partida.CodPartida = '" + item_id + "'  AND partida.Propiopartida <> '99' 
+
+		#	AND partida.Propiopartida = '" + owneritem.to_s + "'
+
+		#	AND SubpresupuestoDetalle.orden = '" +  order + "'
+
+		#	GROUP BY PresupuestoPartidaDetalle.CodPartida,   
+		#	PresupuestoPartidaDetalle.CodPresupuesto,   
+		#	PresupuestoPartidaDetalle.CodSubPresupuesto,   
+		#	PresupuestoPartidaDetalle.CodInsumo, 
+		#	SubpresupuestoDetalle.orden, 
+		#	Insumo.descripcion, 
+		#	Unidad.Simbolo"
+  	end
+
+	def get_inputs(budget_id, item_id, order, owneritem, database, start_v, end_v)
 
 		#0 PresupuestoPartidaDetalle.CodPartida,   
 		#1 PresupuestoPartidaDetalle.CodPresupuesto,
@@ -69,7 +111,7 @@ class Inputbybudgetanditem < ActiveRecord::Base
 			PresupuestoPartidaDetalle.CodInsumo, 
 			SubpresupuestoDetalle.orden, 
 			Insumo.descripcion, 
-			Unidad.Simbolo"
+			Unidad.Simbolo "
 
 		#arr_thread = []
 		#thread_count = 0;

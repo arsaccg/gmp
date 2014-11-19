@@ -10,41 +10,25 @@
     / end widget edit box
     / widget content
     .widget-body.no-padding
-      .widget-body-toolbar
       #dt_basic_wrapper.dataTables_wrapper.form-inline{:role => 'grid'}
-        .dt-top-row
-          #dt_basic_length.dataTables_length
-            %span.smart-form
-              %label.select{style: "width:60px"}
-                %select{"aria-controls" => "dt_basic", name: "dt_basic_length", size: "1"}
-                  %option{selected: "selected", value: "10"} 10
-                  %option{value: "25"} 25
-                  %option{value: "50"} 50
-                  %option{value: "100"} 100
-                %i
-          #dt_basic_filter.dataTables_filter
-            .input-group
-              %span.input-group-addon
-                %i.fa.fa-search
-              %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
         .dt-wrapper
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
-                %th Numero
+                %th Código
                 %th Fase
-                %th Cantidad de Conceptos
+                %th Total
                 %th Acciones
             %tbody
               - @gexp.each do |ged|
                 %tr
                   %td
-                    = ged.id.to_s
+                    = Phase.find(ged.phase_id).code.to_s
                   %td
                     %a{:href=>"javascript:show_details("+ged.id.to_s+");" }(class="small-font")
                       = Phase.find(ged.phase_id).name.to_s
                   %td
-                    = ged.general_expense_details.count
+                    = number_to_currency(ged.total.to_s, unit: 'S/. ', precision: 2)
                   %td
                     %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_general_expenses_general_expense_path(ged.id)}', 'content', null, null, 'GET')"}
                       Editar

@@ -1,0 +1,13 @@
+%tr.concept_item{id: "tr" + @reg_n.to_s}
+  %td{"style"=>"display:none"}
+    = hidden_field_tag 'payroll[payroll_details_attributes][' + @reg_n.to_s + '][concept_id]', @concept.to_i
+  %td{"style"=>"display:none"}
+    = hidden_field_tag 'payroll[payroll_details_attributes][' + @reg_n.to_s + '][amount]', @amount.to_s
+  %td{"style"=>"display:none"}
+    = hidden_field_tag 'payroll[payroll_details_attributes][' + @reg_n.to_s + '][type_con]', @type.to_s
+  %td.concept
+    = Concept.find(@concept.to_s).name
+  %td.amount
+    =@amount
+  %td{:style => "width: 1%; text-align: center;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

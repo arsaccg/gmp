@@ -9,7 +9,12 @@
     .widget-body 
       = simple_form_for([:logistics, @purchaseOrder], html: {class: 'form-horizontal', autocomplete: 'off' }) do |f|
         = hidden_field_tag "company_id", @company
+        - f.fields_for :purchase_order_details do |del|
+          = del.hidden_field :lock_version
+        = f.hidden_field :lock_version
+        %input#cont{:style=>"display:none;", :value=>0}
         .col-sm-12
+
           %fieldset
             %legend{'style' => 'border:none'}
             .row
@@ -81,17 +86,7 @@
                 .form-group
                   %label.col-md-3.control-label Proveedores
                   .col-md-9
-                    .input-group
-                      %select.form-control#category-select{:name =>"purchase_order[entity_id]"}
-                        - @suppliers.each do |supp|
-                          - if @purchaseOrder.entity_id == supp.id
-                            %option{:value => "#{supp.id}", :selected => true}
-                              = supp.name
-                          - else
-                            %option{:value => "#{supp.id}"}
-                              = supp.name
-                      %span.input-group-addon
-                        %i.fa.fa-truck
+                    %input#proveedor-select.form-control{"name" =>"purchase_order[entity_id]", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@purchaseOrder.entity_id}"}
               .col-md-4
                 .form-group
                   %label.col-md-2.control-label Estado
@@ -109,7 +104,14 @@
                       %span.input-group-addon
                         %i.fa.fa-male
             .row
-              .col-md-12
+              .col-md-4
+                %label.col-md-3.control-label N° O.C.
+                .col-md-9
+                  .input-group
+                    = f.input :code, placeholder: "N° O.C.", :input_html => {:class => 'form-control'}, label: false
+                    %span.input-group-addon
+                      %i.fa.fa-male
+              .col-md-8
                 .form-group
                   %label.col-md-2.control-label Glosa
                   .col-md-10
@@ -123,30 +125,35 @@
               .col-md-6
                 .actions
                   %button.btn.btn-sm.btn-success#btn-add-more-items-do{'type' => 'button'}
-                    Agregar más items de Ordenes de Suministro
+                    Agregar más items
                   %button.btn.btn-primary#btn-info-cost{'type' => 'button'}
-                    Calcular Total y Sub-Total de lo que tengo
+                    Calcular Total y Sub-Total
           %br
         .col-sm-12
           %fieldset
             %legend Detalle de Orden de Compra
             .form-group
               .col-lg-3
-              .col-lg-12
+              .col-lg-12#tablemodalsadd
                 %table#summary-delivery-orders.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
                   %thead
                     %tr
-                      %th Código de la orden de Suministro
+                      %th Código
                       %th Nombre del Artículo
-                      %th Unidad de Medida
+                      %th U.M.
                       %th Cantidad
                       %th Precio Unitario
+                      %th Otros antes IGV
                       %th Total antes de IGV
-                      %th ¿Aplica IGV?
+                      %th IGV?
                       %th Total después de IGV
-                      %th Operaciones Adicionales
+                      %th Otros después IGV
+                      %th Neto a Pagar
+                      %th Otros
                       %th Descripción
-                      %th Eliminar
+                      %th{:style => "text-align:center;"}
+                        %a.btn.btn-danger.btn-xs{ :href => 'javascript:void(0)' }
+                          %i.fa.fa-trash-o
                   %tbody#order_delivery_items_table
                     - array_values = Array.new
                     - j = 0
@@ -154,40 +161,72 @@
                       - array_values << @reg_n.to_s
                       %tr
                         %td(style="display:none" class="pod-di")
-                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][delivery_order_detail_id]', pod.delivery_order_detail.id.to_i
-                        %td=pod.delivery_order_detail.article.code
-                        %td=pod.delivery_order_detail.article.name
+                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][delivery_order_detail_id]', pod.delivery_order_detail.id.to_i rescue nil
+                        %td=pod.delivery_order_detail.article.code rescue '-'
+                        %td=pod.delivery_order_detail.article.name rescue '-'
                         %td.unit-of-measurement
-                          =pod.delivery_order_detail.unit_of_measurement.symbol
+                          =pod.delivery_order_detail.unit_of_measurement.symbol rescue '-'
+                        %td.discount-igv{ :style => "display:none"}
+                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][quantity_igv]', pod.quantity_igv, class: "form-control discount-igv"                        
                         %td.amount
-                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount, class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pod.delivery_order_detail.amount})"
-                          %code= "Por atender: #{pod.delivery_order_detail.amount}"
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][amount]', pod.amount, class: "form-control amount-item", onfocusout: "calculatePrice(this);", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 1, #{pod.delivery_order_detail.amount rescue 0})"
+                          %code= "Por atender: #{pod.delivery_order_detail.amount rescue 0}"
                         %td.unit-price
-                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', pod.unit_price, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);"
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price]', pod.unit_price.to_f, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);", :required => true, title:'*'
+                        %td.discount-before{:style => 'text-align: center'}
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_before]', pod.discount_before, class: "form-control discount-before", :readonly => true
+                          %div{:id => @reg_n.to_s+"b", :style => "display:none;"}
+                            -pod.purchase_order_extra_calculations.where("apply LIKE '%before%'").each do |pdec|
+                              -if pdec.type =="percent"
+                                -value = pdec.value.to_f/100
+                                -if pdec.operation == "sum"
+                                  -value = value *(-1)
+                                = hidden_field_tag 'discount_before', value, class: "discount_before-item-percent"
+                              -elsif pdec.type == "soles"
+                                -value = pdec.value.to_f
+                                -if pdec.operation == "sum"
+                                  -value = value *(-1)
+                                = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
+                              -value = 0                          
                         %td.price-without-igv
-                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', pod.unit_price_before_igv, class: "form-control unit-price-before-igv", :readonly => true
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_before_igv]', pod.unit_price_before_igv.to_f.round(2), class: "form-control unit-price-before-igv", :readonly => true
                         %td.check-igv
                           %label.checkbox
                             - if pod.igv != nil
-                              = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', ''
                               = check_box_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', nil, true, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
                               %i
                             - else
-                              = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', ''
                               = check_box_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][igv]', nil, nil, { class: 'order_purchase_igv', onchange: "enableFieldsForIgv(this);" }
                               %i
+                        %td.total_igv
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][total_igv]', (pod.unit_price_before_igv.to_f+pod.quantity_igv.to_f).round(2), class: "form-control unit-price-before-igv", :readonly => true
+                        %td.discount-after{:style => 'text-align: center'}
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][discount_after]', pod.discount_after, class: "form-control discount-after", :readonly => true
+                          %div{:id => @reg_n.to_s+"a", :style => "display:none;"}
+                            -pod.purchase_order_extra_calculations.where("apply LIKE '%after%'").each do |pdec|
+                              -if pdec.type =="percent"
+                                -value = pdec.value.to_f/100
+                                -if pdec.operation == "sum"
+                                  -value = value *(-1)
+                                = hidden_field_tag 'discount_before', value, class: "discount_before-item-percent"
+                              -elsif pdec.type == "soles"
+                                -value = pdec.value.to_f
+                                -if pdec.operation == "sum"
+                                  -value = value *(-1)
+                                = hidden_field_tag 'discount_before', value, class: "discount_before-item-soles"
+                              -value = 0                           
                         %td.price-with-igv
-                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv , class: "form-control unit-price-igv", :readonly => true
+                          = text_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][unit_price_igv]', pod.unit_price_igv.to_f.round(2) , class: "form-control unit-price-igv", :readonly => true
                         %td.aditional-operations{:style => 'text-align: center'}
-                          %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-purchase-#{pod.created_at.to_time.to_i + j}"}
+                          %a.btn.btn-info.btn-xs{'data-toggle' => 'modal', 'href' => "#", 'data-target' => "#modal-purchase-#{@reg_n.to_s}"}
                             %strong
                               %i.fa.fa-superscript
                         %td
-                          = text_area_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][description]', pod.description, class: "form-control description"
+                          = text_area_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][description]', pod.description.to_s, class: "form-control description"
                         %td(style="display:none")
-                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][id]', pod.id
+                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][id]', pod.id rescue nil
                         %td(style="display:none")
-                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][purchase_order_id]', @purchaseOrder.id
+                          = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + @reg_n.to_s + '][purchase_order_id]', @purchaseOrder.id rescue nil
                         %td.delete-item
                           %label.checkbox
                             = check_box 'purchase_order', '[purchase_order_details_attributes][' + @reg_n.to_s + '][_destroy]'
@@ -197,7 +236,7 @@
 
                 - i = 0
                 - @purchaseOrder.purchase_order_details.each do |pod|
-                  .modal.fade{"id" => "modal-purchase-#{pod.created_at.to_time.to_i + i}", "aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
+                  .modal.fade{"id" => "modal-purchase-#{array_values[i]}", "aria-hidden" => "true", "aria-labelledby" => "modalLoadingLabel", role: "dialog", tabindex: "-1"}
                     .modal-dialog
                       .modal-content
                         .modal-header
@@ -206,12 +245,12 @@
                         .modal-body
                           .smart-form
                             %fieldset
-                              = hidden_field_tag 'id_modal', '', id: "modal-purchase-#{pod.created_at.to_time.to_i + i}-hidden"
+                              = hidden_field_tag 'id_modal', "#{array_values[i]}", :id => "modal-purchase-#{array_values[i]}-hidden"
                               .row
                                 %label.label.col.col-2{for: "extra_calculation_id"} Concepto
                                 .col.col-10
                                   %label.input
-                                    %select.form-control{:name =>"extra_calculation_id", :id => "modal-purchase-#{pod.created_at.to_time.to_i + i}-select-calc"}
+                                    %select.form-control{:name =>"extra_calculation_id", :id => "modal-purchase-#{array_values[i]}-select-calc"}
                                       - @extra_calculations.each do |calculation|
                                         %option{:value => "#{calculation.id}"}
                                           = calculation.concept
@@ -220,7 +259,7 @@
                                 %label.label.col.col-2{for: "type"} Tipo
                                 .col.col-10
                                   %label.input
-                                    %select.form-control{:name =>"type", :id => "modal-purchase-#{pod.created_at.to_time.to_i + i}-select-type"}
+                                    %select.form-control{:name =>"type", :id => "modal-purchase-#{array_values[i]}-select-type"}
                                       %option{:value => "percent"}
                                         (%)
                                       %option{:value => "soles"}
@@ -231,13 +270,13 @@
                                 .col.col-10
                                   %label.input
                                     %i.icon-append.fa.fa-money
-                                    = text_field_tag 'value', nil, id: "modal-purchase-#{pod.created_at.to_time.to_i + i}-input-value"
+                                    = text_field_tag 'value', nil, id: "modal-purchase-#{array_values[i]}-input-value"
 
                               .row
                                 %label.label.col.col-2{for: "apply"} Aplicar
                                 .col.col-10
                                   %label.input
-                                    %select.form-control{:name =>"apply", :id => "modal-purchase-#{pod.created_at.to_time.to_i + i}-select-apply"}
+                                    %select.form-control{:name =>"apply", :id => "modal-purchase-#{array_values[i]}-select-apply"}
                                       %option{:value => "before"}
                                         Antes de IGV
                                       %option{:value => "after"}
@@ -247,44 +286,45 @@
                                 %label.label.col.col-2{for: "operation"} +/-
                                 .col.col-10
                                   %label.input
-                                    %select.form-control{:name =>"operation", :id => "modal-purchase-#{pod.created_at.to_time.to_i + i}-select-operation"}
-                                      %option{:value => "sum"}
-                                        = '+'
+                                    %select.form-control{:name =>"operation", :id => "modal-purchase-#{array_values[i]}-select-operation"}
                                       %option{:value => "minius"}
                                         = '-'
+                                      %option{:value => "sum"}
+                                        = '+'
 
                             %fieldset
                               %h3 Listado de Operaciones
                               %br
                               .row
-                                %section.col.col-md-12{'id' => "modal-purchase-#{pod.created_at.to_time.to_i + i}-section"}
+                                %section.col.col-md-12{'id' => "modal-purchase-#{array_values[i]}-section"}
                                   - pod.purchase_order_extra_calculations.each do |order_operation|
                                     - @reg_n_2 = ((Time.now.to_f)*100).to_i
                                     .col.col-md-12
                                       .col.col-md-1
                                         %i.fa.fa-check
                                       .col.col-md-3
-                                        = order_operation.extra_calculation.concept
-                                        = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][extra_calculation_id]', order_operation.extra_calculation_id
-                                      = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][type]', order_operation.type
+                                        = order_operation.extra_calculation.concept rescue 'Concepto errado'
+                                        = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][extra_calculation_id]', order_operation.extra_calculation_id rescue nil
+                                        = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][id]', order_operation.id
+                                      = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][type]', order_operation.type rescue nil
                                       .col.col-md-2
                                         - if order_operation.type == 'soles'
                                           = order_operation.value.to_s + '(S/.)'
                                         - elsif order_operation.type == 'percent'
                                           = order_operation.value.to_s + '(%)'
-                                        = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][value]', order_operation.value
+                                        = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][value]', order_operation.value rescue nil
                                       .col.col-md-3
                                         - if order_operation.apply == 'before'
                                           Antes de IGV
                                         - elsif order_operation.apply == 'after'
                                           Después de IGV
-                                        = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][apply]', order_operation.apply
+                                        = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][apply]', order_operation.apply rescue nil
                                       .col.col-md-3
                                         = check_box_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][_destroy]'
                                         %label Eliminar
-                                      = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][operation]', order_operation.operation
+                                      = hidden_field_tag 'purchase_order[purchase_order_details_attributes][' + array_values[i].to_s + '][purchase_order_extra_calculations_attributes][' + @reg_n_2.to_s + '][operation]', order_operation.operation rescue nil
                             %footer
-                              %button{:type => "button", :class => "btn btn-primary", :onclick => "add_extra_operation(this)", :rel => "modal-purchase-#{pod.created_at.to_time.to_i}"} Agregar Operación
+                              %button{:type => "button", :class => "btn btn-primary", :onclick => "add_extra_operation(this)", :rel => "modal-purchase-#{array_values[i]}"} Agregar Operación
                   - i += 1
 
         .form-actions{:style => "margin-top: 0;"}
@@ -298,157 +338,3 @@
   .modal-dialog
     .modal-content
       .modal-body#modalDeliveryItemsContent
-
-:javascript
-  
-  $(document).ready(function(){
-
-    $.cost_center = "#{@purchaseOrder.cost_center_id}";
-
-    $('#btn-add-more-items-do').click(function(){
-      var ids_delivery_order = new Array();
-
-      $('#summary-delivery-orders tbody tr td.pod-di input').each(function(index, element){
-        ids_delivery_order[index] = $(this).val();
-      });
-
-      data = { cost_center_id: $.cost_center, authenticity_token: "#{form_authenticity_token}", ids_delivery_order: ids_delivery_order };
-      load_items_delivery_order_ajax('#{more_items_from_delivery_orders_logistics_purchase_orders_path}', 'modalDeliveryItemsContent', data);
-      $('#modalDeliveryItems').modal('toggle', {
-        keyboard: false,
-        backdrop: 'static'
-      });
-    });
-
-    $('#btn-info-cost').click(function() {
-      var total_unit_price = 0;
-      $('#order_delivery_items_table tr td.price-without-igv input').each(function(k,v){
-        total_unit_price = total_unit_price + parseFloat($(this).val());
-      });
-
-      var total_unit_price_with_igv = 0;
-      $('#order_delivery_items_table tr td.price-with-igv input').each(function(k,v){
-        total_unit_price_with_igv = total_unit_price_with_igv + parseFloat($(this).val());
-      });
-
-      $.smallBox({
-        title : "Información de la Orden de Compra",
-        content : "El Sub Total es de: S/." + total_unit_price + ' ' + "El Total es de: S/." + total_unit_price_with_igv, 
-        color : "#5384AF",
-        //timeout: 8000,
-        icon : "fa fa-bell"
-      });
-    });
-
-    $('form[id^="edit_purchase_order"]').ajaxForm({
-      beforeSubmit: function(arr, $form, options) {
-        $form.validate({
-          // Rules for form validation
-          rules : {
-            'purchase_order[supplier_id]': {
-              required: true
-            },
-            'purchase_order[description]': {
-              required: true
-            },
-            'purchase_order[money_id]': {
-              required: true
-            },
-            'purchase_order[method_of_payment_id]': {
-              required: true
-            },
-            'purchase_order[date_of_issue]': {
-              required: true
-            },
-            'purchase_order[expiration_date]': {
-              required: true,
-              greaterThan: "#purchase_order_delivery_date",
-              greaterThan: "#purchase_order_date_of_issue"
-            },
-            'purchase_order[delivery_date]': {
-              required: true,
-              greaterThan: "#purchase_order_date_of_issue"
-            }
-          },
-
-          // Messages for form validation
-          messages : {
-            'purchase_order[supplier_id]': "Porfavor, especifica el proveedor.",
-            'purchase_order[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
-            'purchase_order[method_of_payment_id]': "Porfavor, especifica el método de págo.",
-            'purchase_order[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
-            'purchase_order[expiration_date]': {
-              required: "Porfavor, especifica la fecha de expiración.",
-              greaterThan: "La fecha de vencimiento debe ser mayor a la fecha de entrega.",
-              greaterThan: "La fecha de vencimiento debe ser mayor a la fecha de emisión."
-            },
-            'purchase_order[description]': {
-              required: "Porfavor, especifica la glosa."
-            },
-            'purchase_order[delivery_date]': { 
-              required: "Porfavor, especifica la fecha de entrega.",
-              greaterThan: "La fecha de entrega debe ser mayor a la fecha de emisión."
-            }
-          },
-          highlight: function (element) {
-            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-          },
-          unhighlight: function (element) {
-            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
-          },
-          errorElement: 'span',
-          errorClass: 'help-block',
-          errorPlacement: function (error, element) {
-            if (element.parent('.input-group').length) {
-              error.insertAfter(element.parent());
-            } else {
-              error.insertAfter(element);
-            }
-          }
-        });
-
-        return $form.valid();
-      },
-      target: '#content'
-    });
-
-  });
-
-  function calculatePriceWithourIgv(element){
-    var amount = parseInt($(element).parent().siblings('.amount').html());
-
-    var price_without_igv = parseFloat($(element).val() * amount).toFixed(2);
-
-    $(element).parent().siblings('.price-without-igv').find('input').val(price_without_igv);
-    $(element).parent().siblings('.price-with-igv').find('input').val(price_without_igv);
-  }
-
-  function enableFieldsForIgv(element){
-    if($(element).is(":checked")){
-      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(parseFloat(price_without_igv*#{@igv}).toFixed(2));
-    } else {
-      var price_without_igv = $(element).parent().parent().siblings('.price-without-igv').find('input').val();
-      $(element).parent().parent().siblings('.price-with-igv').find('input').val(price_without_igv);
-    }
-  }
-
-  function add_more_items(){
-    var data_delivery_order = new Array();
-    status = false;
-    var index = 0;
-    $('#modal-more-items tbody tr td .checkbox .order_check').each(function(){
-      if( $(this).is(':checked') ){
-        status = true
-        data_delivery_order[index] = $(this).val();
-        index++;
-      }
-    });
-
-    if(status){
-      data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
-      append_url_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'summary-delivery-orders', data, '', 'POST');
-    }
-
-    $('#modalDeliveryItems').modal('hide');
-  };

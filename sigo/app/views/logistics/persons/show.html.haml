@@ -1,5 +1,32 @@
 #content-inside
   #widget-grid
+    #contra.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "myModalLabel", :role => "dialog", :tabindex => "-1"}
+      .modal-dialog
+        .modal-content
+          .modal-header
+            %button.close{"data-dismiss" => "modal", :type => "button"}
+              %span{"aria-hidden" => "true"} ×
+              %span.sr-only Close
+            %h4#myModalLabel.modal-title Cambiar Contraseña
+          .modal-body
+            = simple_form_for([:logistics, @person], url: update_profile_logistics_persons_path, method: 'POST', html: {multipart: true,class: 'smart-form'}) do |f|
+              .row
+                = f.hidden_field :reset_password_token
+                %section.col.col-6
+                  %label.input{for: "password"}
+                    %i.icon-append.fa.fa-lock
+                    = f.input :password, placeholder: "Nueva Contraseña", html: { class: 'form-control', id: 'password_change' }, label: false                        
+                %section.col.col-6
+                  %label.input{for: "password_confirmation"}
+                    %i.icon-append.fa.fa-lock
+                    = f.input :password_confirmation, placeholder: "Confirmar Contraseña", html: { class: 'form-control' }, label: false
+              .row
+                %button.btn.btn-primary{type: "submit","style" => "margin-left:15px;padding:10px;"}
+                  %i.fa.fa-save
+                  Cambiar contraseña
+
+          .modal-footer
+            %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Cancelar
     .row
       - if flash[:notice] != nil
         .alert.alert-success.fade.in{"style" => "clear:both"}
@@ -44,6 +71,7 @@
                       %label.input{for: "last_name"}
                         %i.icon-append.fa.fa-user
                         = f.input :last_name, placeholder: "Segundo Nombre", html: { class: 'form-control' }, label: false
+
                   .row
                     %section.col.col-6
                       %label.input{for: "surname"}
@@ -53,6 +81,12 @@
                       %label.input{for: "email"}
                         %i.icon-append.fa.fa-envelope-o
                         = f.input :email, placeholder: "E-mail", html: { class: 'form-control' }, label: false
+                  //-----------------------password--------------------------------------------
+                  %button.btn.btn-success.btn-lg{"data-target" => "#contra", "data-toggle" => "modal"}
+                    Cambiar contraseña
+
+                  //-------------------------password-----------------------------------------
+
                 %fieldset
                   .row
                     %section.col.col-6
@@ -70,6 +104,7 @@
                   %button.btn.btn-primary{type: "submit"}
                     %i.fa.fa-save
                     Actualizar Datos
+
       %article.col-sm-12.col-md-12.col-lg-6
         #wid-id-2.jarviswidget{"data-widget-custombutton" => "false", "data-widget-editbutton" => "false"}
           %header
@@ -84,6 +119,8 @@
               / This area used as dropdown edit box
             / end widget edit box
             / widget content
+
+
             .widget-body.no-padding
               .smart-form
                 %fieldset{style: 'text-align:center'}
@@ -113,6 +150,13 @@
           'user[email]' : {
             required : true,
             email : true
+          },
+          'user[password]' : {
+            required: true,
+            minlength : 8
+          },
+          'user[password_confirmation]' : {
+            equalTo: "#user_password"
           }
         },
 
@@ -125,8 +169,16 @@
             required : 'Please enter your email address',
             email : 'Please enter a VALID email address'
           },
+          'user[password]' : {
+            required : 'Por favor ingresar una contraseña',
+            minlength : 'La contraseña debe tener como mínimo 8 caracteres'
+          },
+          'user[password_confirmation]' : {
+            equalTo: 'Las contraseñas deben ser iguales'
+          },
           password : {
-            required : 'Please enter your password'
+            required : 'Please enter your password',
+            minlength: 'Password muy pequeño'
           },
           passwordConfirm : {
             required : 'Please enter your password one more time',
@@ -153,8 +205,20 @@
       });
       return $("form[id^=edit_user]").valid();
     },
-    target: '#content'
+    target: '#content',
+    success: function (data){
+      $('#contra').modal('hide');
+      $('.modal-backdrop.fade.in').remove();
+      $.smallBox({
+      title : "Éxito",
+      content : "<i class='fa fa-clock-o'></i> <i>Se ha actualizado correctamente.</i>",
+      color : "#5F895F",
+      iconSmall : "fa fa-times fa-2x fadeInRight animated",
+      timeout : 4000
+      });
+    },
   });
+
 
   $('#dateBirth').click(function(){ $(this).datepicker() })
   // Load form valisation dependency 

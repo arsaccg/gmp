@@ -1,0 +1,111 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Qa/qc
+  .widget-body
+    = simple_form_for([:documentary_control, @qac], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %input{"style"=>"display:none", value: "#{@type}", :name =>"type"}
+      %fieldset
+        .row
+          %section.col.col-md-8
+            %label.label Nombre
+            %label.input{for: "name"}
+              %i.icon-append.fa.fa-user
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+        %br
+        .row
+          %section.col.col-md-12
+            %label.label Descripción 
+            %label.input
+              = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false, rows: 4
+
+        .row
+          %section.col.col-md-12
+            %label.label Tipo
+            %section.col.col-10
+              -if @type == "0"
+                -@type_qq.each do |tb|
+                  = f.radio_button :type_of_qa_qc_id, "#{tb.id}", required: true
+                  %label= tb.name
+                  %br
+              -if @type == "1"
+                -@type_qqs.each do |tb|
+                  = f.radio_button :type_of_qa_qc_supplier_id, "#{tb.id}", required: true
+                  %label= tb.name
+                  %br
+        .row
+          %section.col.col-md-12
+            %label.label Archivo:
+            - if @action == nil
+              = f.input :document, :input_html => { :class => 'btn btn-default', :style => 'padding: 9px;' }, label: false, as: "file", required: true
+            -else
+              = f.input :document, :input_html => { :class => 'btn btn-default', :style => 'padding: 9px;' }, label: false, as: "file"
+            %p.help-block
+              - if @action == 'edit' && @qac.document.exists?
+                = 'Archivo subido: ' + File.basename(@qac.document.path, File.extname(@qac.document.path))
+              - else
+                Subir el archivo correspondiente
+
+      %footer
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_qa_qc'));
+    }
+
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'qa_qc[name]' : {
+              required : true
+            },
+            'qa_qc[description]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'qa_qc[name]' : {
+              required : "Por favor, ingrese el nombre del documento"
+            },
+            'qa_qc[description]' : {
+              required : "Por favor, ingrese una descripción para el documento"
+            }
+          },
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      }
+    });
+  }

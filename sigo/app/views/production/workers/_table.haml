@@ -3,24 +3,120 @@
     %span.widget-icon
       %i.fa.fa-table
     %h2 Lista de Trabajadores
+    %ul.nav.nav-tabs.pull-right.in
+      %li.active
+        %a{"data-toggle" => "tab", href: "#hb1"}
+          %span.hidden-mobile.hidden-tablet Empleados
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = @empleados
+      %li
+        %a{"data-toggle" => "tab", href: "#hb2"}
+          %span.hidden-mobile.hidden-tablet Obreros
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = @obreros
+      %li
+        %a{"data-toggle" => "tab", href: "#hb3"}
+          %span.hidden-mobile.hidden-tablet Pensionistas
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = @pensionistas
+      %li
+        %a{"data-toggle" => "tab", href: "#hb4"}
+          %span.hidden-mobile.hidden-tablet Personal en Formación
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = @formaciones
+      %li
+        %a{"data-toggle" => "tab", href: "#hb5"}
+          %span.hidden-mobile.hidden-tablet Externos
+          %span.badge.bg-color-red.txt-color-white{style:"font-weight: bold;"}
+            = @externos
   %div
+    / widget edit box
     .jarviswidget-editbox
-    .widget-body.no-padding
-      .widget-body-toolbar
-      %table#dt_basic.table.table-striped.table-bordered.table-hover
-        %thead
-          %tr
-            %th N°
-            %th Primer Nombre
-            %th Apellido Paterno
-            %th Apellido Materno
-            %th Categoria
-            %th Email
-            %th Fecha de nacimiento
-            %th Dirección
-            %th Estado
-            %th Acciones
-        %tbody
+      / This area used as dropdown edit box
+    / end widget edit box
+    / widget content
+    .widget-body
+      .tab-content
+        #hb1.tab-pane.active
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th{style: "width: 5%;"} N°
+                        %th{style: "width: 10%;"} Estado
+                        %th{style: "width: 10%;"} DNI
+                        %th{style: "width: 30%;"} Nombre Completo
+                        %th{style: "width: 25%;"} Acciones
+                    %tbody
+        #hb2.tab-pane
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic2.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th{style: "width: 31.888888835906982px;"} N°
+                        %th{style: "width: 91.77777767181396px;"} Estado
+                        %th{style: "width: 91.77777767181396px;"} DNI
+                        %th{style: "width: 336.77777767181396px;"} Nombre Completo
+                        %th{style: "width: 274.888888835907px;"} Acciones
+                    %tbody
+        #hb3.tab-pane
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic3.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th{style: "width: 31.888888835906982px;"} N°
+                        %th{style: "width: 91.77777767181396px;"} Estado
+                        %th{style: "width: 91.77777767181396px;"} DNI
+                        %th{style: "width: 336.77777767181396px;"} Nombre Completo
+                        %th{style: "width: 274.888888835907px;"} Acciones
+                    %tbody
+        #hb4.tab-pane
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic4.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th{style: "width: 31.888888835906982px;"} N°
+                        %th{style: "width: 91.77777767181396px;"} Estado
+                        %th{style: "width: 91.77777767181396px;"} DNI
+                        %th{style: "width: 336.77777767181396px;"} Nombre Completo
+                        %th{style: "width: 274.888888835907px;"} Acciones
+                    %tbody
+        #hb5.tab-pane
+          .tabbable.tabs-below
+            .tab-content.padding-10
+              %div
+                .jarviswidget-editbox
+                .widget-body.no-padding
+                  .widget-body-toolbar
+                  %table#dt_basic5.table.table-striped.table-bordered.table-hover
+                    %thead
+                      %tr
+                        %th{style: "width: 31.888888835906982px;"} N°
+                        %th{style: "width: 91.77777767181396px;"} Estado
+                        %th{style: "width: 91.77777767181396px;"} DNI
+                        %th{style: "width: 336.77777767181396px;"} Nombre Completo
+                        %th{style: "width: 274.888888835907px;"} Acciones
+                    %tbody
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -70,9 +166,72 @@
       sProcessing  : true,
       bServerSide  : true,
       sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
+      sAjaxSource  : "#{show_workers_empleados_production_workers_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "empleado"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $('#dt_basic2').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
       sAjaxSource  : "#{show_workers_production_workers_path}",
       fnServerParams: function ( aoData ) {
-        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "obrero"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $('#dt_basic3').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
+      sAjaxSource  : "#{show_workers_production_workers_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "pensionista"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $('#dt_basic4').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
+      sAjaxSource  : "#{show_workers_production_workers_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "formacion"} );
+      },
+      sPaginationType : 'bootstrap_full'
+    });
+
+    $('#dt_basic5').dataTable({
+      bProcessing  : true,
+      sProcessing  : true,
+      bServerSide  : true,
+      sServerMethod: 'POST',
+      fnDrawCallback : function(oSettings, json) {                            
+        oSettings.fnDrawCallback = $('[data-toggle="confirmation"]').confirmation();
+      },
+      sAjaxSource  : "#{show_workers_production_workers_path}",
+      fnServerParams: function ( aoData ) {
+        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" , "name": "typeofworker", "value": "externo"} );
       },
       sPaginationType : 'bootstrap_full'
     });

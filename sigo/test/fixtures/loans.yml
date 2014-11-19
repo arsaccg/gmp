@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  entity_id: 1
+  beneficiary: MyString
+  loan_date: 2014-10-15
+  loan_type: MyString
+  amount: 1.5
+  description: MyString
+  refund_type: MyString
+  check_number: MyString
+  check_date: 2014-10-15
+  state: MyString
+  refund_date: 2014-10-15
+
+two:
+  entity_id: 1
+  beneficiary: MyString
+  loan_date: 2014-10-15
+  loan_type: MyString
+  amount: 1.5
+  description: MyString
+  refund_type: MyString
+  check_number: MyString
+  check_date: 2014-10-15
+  state: MyString
+  refund_date: 2014-10-15

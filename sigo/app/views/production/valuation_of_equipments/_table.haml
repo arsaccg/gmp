@@ -2,42 +2,52 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
+    %h2 Valorizaciones de Equipos
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
-      .widget-body-toolbar
-      %table#summary-purchase-orders.table.table-striped.table-bordered.table-hover
+      %table#summary-purchase-orders.table.table-bordered.table-hover
         %thead
           %tr
-            %th #id
+            %th N°
             %th Nombre
-            %th #Valorizacion
+            %th Valorizacion
             %th Fecha
             %th Estado
             %th Acciones
         %tbody
-          - @valuationofequipment.each do |unit|
-            %tr
-              %td= unit.id
-              %td= unit.name + ' ' + unit.code
-              %td= unit.valuation
-              %td= unit.start_date.to_s + " - " + unit.end_date.to_s
-              - case unit.state
-                - when 'disapproved'
-                  %td.label-status
-                    %span.label.label-warning
-                      = translate_valuations_state(unit.state)
-                - when 'approved'
-                  %td.label-status
-                    %span.label.label-success
-                      = translate_valuations_state(unit.state)
-              %td
-                %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_valuation_of_equipment_path(unit.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
-                  Ver información
-                - case unit.state
-                  - when 'disapproved'
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_valuation_of_equipment_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_valuation_of_equipments_path}?company_id=#{@company}')"}}
-                      Eliminar
+          - @subcontractEquipments.each do |subcontract_equipment|
+            - if subcontract_equipment.valuation_of_equipments.count > 0
+              - count = 1
+              %tr{ :style => 'background-color: #ecf3f8; font-weight:bold; color: #030350;' }
+                %td
+                %td{ :colspan => 6 }
+                  = subcontract_equipment.entity.name.to_s + ' ' + subcontract_equipment.entity.second_name.to_s + ' ' + subcontract_equipment.entity.paternal_surname.to_s + ' ' + subcontract_equipment.entity.maternal_surname.to_s + ' - ' + subcontract_equipment.contract_description
+              - subcontract_equipment.valuation_of_equipments.each do |unit|
+                %tr
+                  %td= count
+                  %td= unit.name + ' ' + unit.code
+                  %td= number_to_currency unit.valuation, unit: 'S/. ', precision: 2
+                  %td= unit.start_date.strftime('%d/%m/%Y') + " - " + unit.end_date.strftime('%d/%m/%Y')
+                  - case unit.state
+                    - when 'disapproved'
+                      %td.label-status
+                        %span.label.label-warning
+                          = translate_valuations_state(unit.state)
+                    - when 'approved'
+                      %td.label-status
+                        %span.label.label-success
+                          = translate_valuations_state(unit.state)
+                  %td
+                    %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{production_valuation_of_equipment_path(unit.id)}', 'content', {company_id: '#{@company}'}, null, 'GET')"}
+                      Ver información
+                    %a.btn.btn-primary.btn-xs{ :href => "#{report_pdf_production_valuation_of_equipment_path(unit.id)}.pdf", :target => '_blank' }
+                      Ver PDF
+                    - case unit.state
+                      - when 'disapproved'
+                        %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_valuation_of_equipment_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_valuation_of_equipments_path}?company_id=#{@company}')"}}
+                          Eliminar
+                  - count += 1
 
 
 :javascript

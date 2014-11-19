@@ -6,31 +6,38 @@ require 'csv'
 
 class Administration::InputcategoriesController < ApplicationController
 	before_filter :authorize_manager
-
+	# ESTO PERTENECE A TOBI!!!!
 
 	include SOCKET_CONNECTOR
 
 	def feo_of_work
-
 		project_id =  params[:project_id]
 
 		@budget_sale = Budget.find(params[:budget_sale]) rescue Budget.where(:cost_center_id => project_id).last
 		@budget_goal = Budget.find(params[:budget_goal]) rescue @budget_sale #Budget.where(:cost_center_id).last
 
+		p '~~~~~~~~~~~~~~~~~~~~~~~~@budget_sale~~~~~~~~~~~~~~~~~~~~~~~'
+		p @budget_sale.id
+		p '~~~~~~~~~~~~~~~~~~~~~~~~@budget_goal~~~~~~~~~~~~~~~~~~~~~~~'
+		p @budget_goal
+
 		@wbsitems = Wbsitem.where(cost_center_id: project_id).order(:codewbs)
 		@inputcategories = Inputcategory.all
 
 		@data_w = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s)
-    @data = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, 1)
+    	@data = Inputcategory.sum_partial_sales(@budget_sale.id.to_s, @budget_goal.id.to_s, 1)
 
+    p "~~~~~~~~~~p @data~~~~~~~~~~"
     p @data
+    p "~~~~~~~~~~p @data_w~~~~~~~~~~"
     p @data_w
 
     @data_excel = Array.new
+    csv = Array.new
 
     csv_string = CSV.generate do |csv|
       @data_w[0].each do |key, value|
-        csv << [value[0], value[1], value[2], @data_w[1][key][2]]
+        csv << [value[0], value[1], value[2], @data_w[1][key][2]] rescue [value[0], value[1], value[2], 0]
       end
     end
 
@@ -46,6 +53,21 @@ class Administration::InputcategoriesController < ApplicationController
 		@input_budget_item_sale = Inputcategory.get_inputs(budget_sale_id, category_id.to_s)
 		@input_budget_item_goal = Inputcategory.get_inputs(budget_goal_id, category_id.to_s)
 		render :partial => 'input_detail', :layout => false
+	end
+
+	def get_input_wbs_detail
+		order,coditem,cod_input,budget_id = params[:order].gsub("d","."),params[:coditem],params[:cod_input],params[:budget_id]
+
+		@input_sale = Inputbybudgetanditems.where("`order` like '01.01.02.01.01' and `coditem` like '010009223055' and `cod_input` like CONCAT('021802','%') and budget_id = 1;")
+		@input_goal = Inputbybudgetanditems.where("`order` like '01.01.02.01.01' and `coditem` like '010009223055' and `cod_input` like CONCAT('021802','%') and budget_id = 1;")
+
+		# select i.`cod_input`,i.`input`,i.`quantity`,i.`price` from inputbybudgetanditems as i 
+		# where i.`order` like '01.01.02.01.01' 
+		# and i.`coditem` like '010009223055' #and i.`coditem` like '010009223055' 
+		# and i.`cod_input` like CONCAT('021802','%')
+		# and i.budget_id = 1;
+
+		render :partial => 'input_detail_wbs', :layout => false
 	end
 
 	def get_input_budget_item(orderitem, budgetid, wbs = nil)

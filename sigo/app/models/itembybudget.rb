@@ -8,6 +8,7 @@ class Itembybudget < ActiveRecord::Base
 	belongs_to :item
 	belongs_to :budget
 	has_many :subcontract_details
+	has_many :part_work_details
 	has_many :itembywbses
 	has_many :measured_by_sectors
 
@@ -60,7 +61,7 @@ class Itembybudget < ActiveRecord::Base
 				ON SubpresupuestoDetalle.CodTitulo = Titulo.CodTitulo
 
 	        WHERE SubpresupuestoDetalle.codpresupuesto = '" + budget_id + "' 
-	        ORDER BY SubpresupuestoDetalle.orden ASC"
+	        ORDER BY SubpresupuestoDetalle.orden ASC" #+ "0403021" + "' ORDER BY SubpresupuestoDetalle.orden ASC"
 
 	    #queue_thread = SizedQueue.new(4)
 		#queue_counter = 0
@@ -98,7 +99,15 @@ class Itembybudget < ActiveRecord::Base
 
 		itembybudget_buffer.each do |item|
 			new_input = Inputbybudgetanditem.new
-			new_input.get_inputs(item.budget_code, item.item_code, item.order, item.owneritem, database)
+			
+			# TO-DO: Obtener el numero de registros a procesar y hacer bucle
+			
+			# new_input.get_quantity_to_get(item.budget_code, item.item_code, item.order, item.owneritem, database)
+			
+			 
+			inicio = 0
+			fin = 0
+			new_input.get_inputs(item.budget_code, item.item_code, item.order, item.owneritem, database, inicio, fin)
 		end
 
 
@@ -106,16 +115,16 @@ class Itembybudget < ActiveRecord::Base
 
 	end
 
-	def self.get_item_by_budget
+	def self.get_item_by_budget(word)
 	  mysql_result =  ActiveRecord::Base.connection.execute("
 	    SELECT ibb.order, ibb.id, ibb.subbudgetdetail 
 	    FROM itembybudgets ibb , budgets bg 
 	    WHERE bg.id = ibb.budget_id 
 	    AND bg.type_of_budget LIKE '0' 
 	    AND ibb.measured IS NOT NULL
+	    AND (ibb.subbudgetdetail LIKE  '%"+word.to_s+"%' OR ibb.order LIKE '%"+word.to_s+"%' )
 	    GROUP BY ibb.order
 	  ")
-
 	  return mysql_result
 	end
 end

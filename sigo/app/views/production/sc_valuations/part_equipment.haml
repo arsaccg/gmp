@@ -1,4 +1,4 @@
-.modal-dialog
+.modal-dialog{:style=>"width:1000px;"}
   .modal-content
     .modal-header
       %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"}
@@ -9,23 +9,50 @@
         %h1.page-title.txt-color-blueDark Parte de Equipos
         %table.table.table-bordered
           %thead
-            %tr
-              %th Descripcion
-              %th Cantidad
-              %th Unidad
-              %th P.U.
-              %th Parcial
-          %tbody
-          - @workers_array3.each do |workerDetail3|
-            %tr
-              %th= workerDetail3[0]
-              %th= sprintf('%.2f',workerDetail3[2])
-              %th= workerDetail3[1]
-              %th= workerDetail3[3]
-              %th= sprintf('%.2f',workerDetail3[4])
+            %tr{"style"=> "font-size:12px"}
+              %th{"style"=>"text-align:center"} Item
+              %th{"style"=>"text-align:center"} Código TOBI
+              %th{"style"=>"text-align:center"} Descripción
+              %th{"style"=>"text-align:center"} Cantidad
+              %th{"style"=>"text-align:center"} Unidad
+              %th{"style"=>"text-align:center"} P.U.
+              %th{"style"=>"text-align:center"} Parcial
+          %tbody{"style"=> "font-size:11px"}
+            -@i=1
+            -@todo.each do |to|
+              -if to[1].nil? && to[0].to_s.length == 2
+                %tr
+                  %th{"style"=>"color:white; text-align:left; background-color: #091E30; font-weight: bold; "}
+                  %th{"style"=>"color:white; text-align:left; background-color: #091E30; font-weight: bold; "}= to[0]
+                  %th{'colspan' => 8, "style"=>"color:white; text-align:left; background-color: #091E30; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+                -@i=1
+              -elsif to[1].nil? && to[0].to_s.length == 4
+                %tr
+                  %th{"style"=>"color:white;text-align:left; background-color: #3276B1; font-weight: bold; "}
+                  %th{"style"=>"color:white;text-align:left; background-color: #3276B1; font-weight: bold; "}= to[0]
+                  %th{'colspan' => 8, "style"=>"color:white;text-align:left; background-color: #3276B1; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+                -@i=1
+              -elsif to[1].nil? && to[0].to_s.length == 6
+                %tr
+                  %th{"style"=>"color:white;text-align:left; background-color: #7FA1B1; font-weight: bold; "}
+                  %th{"style"=>"color:white;text-align:left; background-color: #7FA1B1; font-weight: bold; "}= to[0]
+                  %th{'colspan' => 8,"style"=>"color:white;text-align:left; background-color: #7FA1B1; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+                -@i=1
+              -else
+                %tr
+                  %th{"style"=>"text-align:left; font-weight: normal; "}= @i
+                  %th{:style=>"font-weight:normal;"}= to[7].to_s
+                  %th{:style=>"font-weight:normal;"}= to[6].to_s+" "+to[0].to_s
+                  %th{:style=>"text-align:right;font-weight:normal;"}= sprintf('%.2f',to[2])
+                  %th{:style=>"text-align:right;font-weight:normal;"}= to[1]
+                  %th{:style=>"text-align:right;font-weight:normal;"}= to[3]
+                  %th{:style=>"text-align:right;font-weight:normal;"}= number_to_currency(to[4], unit: 'S/. ', precision: 2)
+                -@i+=1
       - else
         %h4.modal-title No hay datos.
         %br
       %footer
+        %a.btn.btn-sm.btn-success.btn-prev{ :href => "#{part_equipment_pdf_production_sc_valuations_path}.pdf?start_date=#{@start_date}&end_date=#{@end_date}&cad=#{@cad}&id=#{@id}", :target => '_blank', :style=>"float: right;"}
+          Ver PDF
         %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
           Salir

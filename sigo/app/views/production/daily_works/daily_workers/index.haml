@@ -8,17 +8,17 @@
   .row
     .well
       .input-group
-        .col-sm-6
+        .col-sm-4
           %label.input{for: "working_group_id"}
             %select#working-group-select.form-control{:name =>"working_group_id"}
               %option{:value => ''} Grupo de Trabajo
               - @workingGroups.each do |working_group|
                 %option{:value => "#{working_group.id}"}
                   = working_group.name
-        .col-sm-2
+        .col-sm-3
           %label.input{for: "start_date"}
             %input#start-date-input.string.optional.form-control{:name => "start_date", :type => "date"}
-        .col-sm-2
+        .col-sm-3
           %label.input{for: "end_date"}
             %input#end-date-input.string.optional.form-control{:name => "end_date", :type => "date"}
         .col-sm-2

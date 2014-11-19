@@ -10,9 +10,9 @@ class Management::WbsitemsController < ApplicationController
   def index
   	@wbsitems = Wbsitem.where("codewbs LIKE ?", params[:project_id].to_s + "%").order(:codewbs)  
     @result = get_child("1")
-
+    
     @fourth=0 
-
+    
     @result.each do |secundary_key_item, secunday_item|
       secunday_item_flag = secunday_item.count rescue nil
       if secunday_item_flag != nil

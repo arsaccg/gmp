@@ -12,27 +12,27 @@
             - @workers_array.each do |workerDetail|
               %tr
                 %th= workerDetail[0]
-                %th= workerDetail[4]
+                %th= number_to_currency(workerDetail[4], unit: '', precision: 2)
                 %th= workerDetail[10]
-                %th= workerDetail[1]
-                %th= workerDetail[7]
+                %th= number_to_currency(workerDetail[1], unit: '', precision: 2)
+                %th= number_to_currency(workerDetail[7], unit: 'S/. ', precision: 2)
               %tr
                 %th= workerDetail[0]+' HE 60%'
-                %th= workerDetail[5]
+                %th= number_to_currency(workerDetail[5], unit: '', precision: 2)
                 %th= workerDetail[10]
-                %th= workerDetail[2]
-                %th= workerDetail[8]
+                %th= number_to_currency(workerDetail[2], unit: '', precision: 2)
+                %th= number_to_currency(workerDetail[8], unit: 'S/. ', precision: 2)
               %tr
                 %th= workerDetail[0]+' HE 100%'
-                %th= workerDetail[6]
+                %th= number_to_currency(workerDetail[6], unit: '', precision: 2)
                 %th= workerDetail[10]
-                %th= workerDetail[3]
-                %th= workerDetail[9]
+                %th= number_to_currency(workerDetail[3], unit: '', precision: 2)
+                %th= number_to_currency(workerDetail[9], unit: 'S/. ', precision: 2)
             %tr
               %th{'colspan' => 4} Total
               %th
                 %span.label.label-danger{"style"=>"color:#fff"}
-                  = @totalprice
+                  = number_to_currency(@totalprice, unit: 'S/. ', precision: 2)
       - else
         %h4.modal-title No hay datos.
         %br

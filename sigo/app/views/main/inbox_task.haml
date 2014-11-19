@@ -19,6 +19,8 @@
       %li.divider
       %li
         %a#inbox-purchase-mobile{href: "javascript:void(0);"} Ordenes de Compra
+      %li
+        %a#inbox-worker-mobile{href: "javascript:void(0);"} Trabajadores por Aprobar
   .inbox-checkbox-triggered
     .btn-group
       %a.deletebutton.btn.btn-default{"data-original-title" => "Delete", "data-placement" => "bottom", href: "javascript:void(0);", rel: "tooltip", title: ""}
@@ -53,6 +55,8 @@
         %a#inbox-service{href: "javascript:void(0);"} Ordenes de Servicio
       %li
         %a#inbox-purchase{href: "javascript:void(0);"} Ordenes de Compra
+      %li
+        %a#inbox-worker{href: "javascript:void(0);"} Trabajadores por Aprobar
     
     .air.air-bottom.inbox-space
       
@@ -118,6 +122,12 @@
     loadInbox("#{display_table_messages_oc_path}");
   });
 
+  $('#inbox-worker').click(function(){
+    loadInbox("#{display_worker_pending_path}");
+  });
+
+  /* Mobile Links */
+
   $("#inbox-load-mobile").click(function() {
     loadInbox("#{display_general_table_messages_path}");
   });
@@ -132,6 +142,10 @@
 
   $("#inbox-purchase-mobile").click(function() {
     loadInbox("#{display_table_messages_oc_path}");
+  });
+
+  $('#inbox-worker-mobile').click(function() {
+    loadInbox("#{display_worker_pending_path}");
   });
 
   function loadInbox(path) {

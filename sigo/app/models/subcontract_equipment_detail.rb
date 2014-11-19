@@ -1,7 +1,15 @@
 class SubcontractEquipmentDetail < ActiveRecord::Base
 	has_one :rental_type
 	belongs_to :article
-	belongs_to :subcontract_equipment
+	belongs_to :subcontract_equipment, :touch => true
+
+  state_machine :state, :initial => :inactive do
+
+    event :activate do
+      transition :inactive => :active
+    end
+  end
+
 
 	def self.getOwnArticles(word, name)
     mysql_result = ActiveRecord::Base.connection.execute("

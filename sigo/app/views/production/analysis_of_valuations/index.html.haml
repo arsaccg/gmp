@@ -5,7 +5,7 @@
         %i.fa.fa-pencil-square-o.fa-fw 
         Análisis de Producción
   .row
-    - if @sector != nil && @subsectors.first != nil && @workingGroups != nil
+    - if @sector != nil && @subsectors != nil && @workingGroups != nil
       
       .row
         .col-md-1
@@ -28,7 +28,7 @@
               %option{:value => "0"} Seleccione un jefe de frente
               - @front_chiefs.each do |front_chief|
                 %option{:value => "#{front_chief.id}"}
-                  = front_chief.entity.name + ' ' + front_chief.entity.paternal_surname
+                  = front_chief.name.to_s + ' ' + front_chief.second_name.to_s + ' ' + front_chief.paternal_surname.to_s + ' ' + front_chief.maternal_surname.to_s
         .col-md-2
           %label Ejecutor
           %br
@@ -36,8 +36,8 @@
             %select.form-control#exe{:name =>"working_group[executor_id]", :style => 'width:100%;padding: 0;border: none;'}
               %option{:value => "0"} Seleccione un ejecutor
               - @executors.each do |ex|
-                %option{:value => "#{ex.entity_id}"}
-                  = Entity.find_by_id(ex.entity_id).name
+                %option{:value => "#{ex.id}"}
+                  = ex.name.to_s + ' ' + ex.second_name.to_s + ' ' + ex.paternal_surname.to_s + ' ' + ex.maternal_surname.to_s
         .col-md-2
           %label Capataz
           %br
@@ -46,7 +46,7 @@
               %option{:value => "0"} Seleccione un capataz
               - @master_builders.each do |master_builder|
                 %option{:value => "#{master_builder.id}"}
-                  = master_builder.entity.name + ' ' + master_builder.entity.paternal_surname
+                  = master_builder.name.to_s + ' ' + master_builder.second_name.to_s + ' ' + master_builder.paternal_surname.to_s + ' ' + master_builder.maternal_surname.to_s
       .row
         .col-md-1
         .col-md-3
@@ -65,9 +65,8 @@
       %br
       .row
       #widget-grid
-        .row
-          %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
-            #table-information-result
+        %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+          #table-information-result
     - else
       .col-xs-12.col-sm-7.col-md-7.col-lg-12
         .alert.alert-block.alert-danger
@@ -159,7 +158,6 @@
   }
 
   function executor(url, front_chief_id, executor_id, form_token, default_value){
-    console.log("entro a la funcion chief ");
     $.ajax({
         type: "POST",
         url: url,
@@ -171,11 +169,9 @@
         $.each(data.master, function(key, value){
           item = {};
           item['id'] = value.id;
-          item['first_name'] = value.first_name;
-          item['paternal_surname'] = value.paternal_name;
+          item['first_name'] = value.name;
+          item['paternal_surname'] = value.paternal_surname;
           item['maternal_surname'] = value.maternal_surname;
-          console.log(value.first_name+ ' '+value.maternal_surname+ ' '+value.maternal_surname);
-          console.log("id: "+value.id);
           newOptions.push(item);
         });
           
@@ -211,3 +207,59 @@
       alert('Por favor, especificar todos los datos necesarios.')
     }
   });
+
+  function show_modal_venta(){
+    $('#container-part-work').modal({
+      keyboard: false, 
+      backdrop: 'static'
+    });
+  }
+
+  function show_modal_part_people_meta(){
+    $('#container_part_people_meta').modal({
+      keyboard: false, 
+      backdrop: 'static'
+    });
+  }
+
+  function show_modal_part_people_real(){
+    $('#container_part_people_real').modal({
+      keyboard: false, 
+      backdrop: 'static'
+    });
+  }
+
+  function show_modal_stock_input_meta(){
+    $('#container_stock_input_meta').modal({
+      keyboard: false, 
+      backdrop: 'static'
+    });
+  }
+
+  function show_modal_stock_input_real(){
+    $('#container_stock_input_real').modal({
+      keyboard: false, 
+      backdrop: 'static'
+    });
+  }
+
+  function show_modal_part_equipment_meta(){
+    $('#container_part_equipment_meta').modal({
+      keyboard: false, 
+      backdrop: 'static'
+    });
+  }
+
+  function show_modal_part_equipment_real(){
+    $('#container_part_equipment_real').modal({
+      keyboard: false, 
+      backdrop: 'static'
+    });
+  }
+
+  function show_modal_part_subcontract_meta(){
+    $('#container_part_subcontract_meta').modal({
+      keyboard: false, 
+      backdrop: 'static'
+    });
+  }

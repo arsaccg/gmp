@@ -1,0 +1,97 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        Parte Persona
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-8
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = 'Parte Persona N° ' + @partperson.number_part.to_s
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Información Principal
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Número
+                    %th Jefe de Frente
+                    %th Ejecutor
+                    %th Capataz
+                    %th Fecha
+                %tbody(id="article_items_table")
+                  %tr
+                    %td
+                      = @partperson.number_part
+                    %td
+                      = Worker.find(@partperson.working_group.front_chief_id).entity.name.to_s + ' ' + Worker.find(@partperson.working_group.front_chief_id).entity.second_name.to_s + ' ' + Worker.find(@partperson.working_group.front_chief_id).entity.paternal_surname.to_s + ' ' + Worker.find(@partperson.working_group.front_chief_id).entity.maternal_surname.to_s
+                    %td
+                      = Entity.find(@partperson.working_group.executor_id).name
+                    %td
+                      = Worker.find(@partperson.working_group.master_builder_id).entity.name.to_s + ' ' + Worker.find(@partperson.working_group.master_builder_id).entity.second_name.to_s + ' ' + Worker.find(@partperson.working_group.master_builder_id).entity.paternal_surname.to_s + ' ' + Worker.find(@partperson.working_group.master_builder_id).entity.maternal_surname.to_s
+                    %td
+                      = @partperson.date_of_creation
+
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 Detalle de la Parte Persona
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %button.close{"data-dismiss" => "alert"}
+                  ×
+                %i.fa-fw.fa.fa-info
+                Detalle de los Insumos Asociados
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Trabajador
+                    %th Sector
+                    %th Fase
+                    %th Horas normales
+                    %th Horas Extras 60
+                    %th Horas Extras 100
+                    %th Total de Horas
+                %tbody
+                  - @partpersondetails.each do |partpersondetail|
+                    %tr
+                      %td
+                        = partpersondetail.worker.entity.name.to_s + ' ' + partpersondetail.worker.entity.second_name.to_s + ' ' + partpersondetail.worker.entity.paternal_surname.to_s + ' ' + partpersondetail.worker.entity.maternal_surname.to_s
+                      %td
+                        = partpersondetail.sector.name
+                      %td
+                        = partpersondetail.phase.code rescue 'No insertó fase' + ' - ' + partpersondetail.phase.name rescue ''
+                      %td
+                        = partpersondetail.normal_hours
+                      %td
+                        = partpersondetail.he_60
+                      %td
+                        = partpersondetail.he_100
+                      %td
+                        = partpersondetail.total_hours
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Parte de Personas
+
+:javascript
+  
+  $('#backlist-purchase-order').click(function(){
+    load_url_ajax("#{production_part_people_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
+  });

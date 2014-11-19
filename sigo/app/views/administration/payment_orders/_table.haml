@@ -1,0 +1,142 @@
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Lista de Ordenes de pago
+  / widget div
+  %div
+    / widget edit box
+    .jarviswidget-editbox
+      / This area used as dropdown edit box
+    / end widget edit box
+    / widget content
+    .widget-body.no-padding
+      .widget-body-toolbar
+      #dt_basic_wrapper.dataTables_wrapper.form-inline{:role => 'grid'}
+        .dt-top-row
+          #dt_basic_length.dataTables_length
+            %span.smart-form
+              %label.select{style: "width:60px"}
+                %select{"aria-controls" => "dt_basic", name: "dt_basic_length", size: "1"}
+                  %option{selected: "selected", value: "10"} 10
+                  %option{value: "25"} 25
+                  %option{value: "50"} 50
+                  %option{value: "100"} 100
+                %i
+          #dt_basic_filter.dataTables_filter
+            .input-group
+              %span.input-group-addon
+                %i.fa.fa-search
+              %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
+        .dt-wrapper
+          %table#dt_basic.table.table-striped.table-bordered.table-hover
+            %thead
+              %tr
+                %th Número de la Provisión
+                %th Proveedor
+                %th Cantidad a Pagar
+                %th Cantidad Pagada
+                %th Acciones
+            %tbody
+              - @paymentOrders.each do |payment_order|
+                %tr
+                  %td
+                    = payment_order.provision.number_document_provision.to_s rescue '-'
+                  %td
+                    = payment_order.provision.entity.name.to_s + ' ' + payment_order.provision.entity.paternal_surname.to_s + ' ' + payment_order.provision.entity.maternal_surname.to_s 
+                  %td
+                    - quantity = 0
+                    - if payment_order.provision.order_id != nil
+                      - payment_order.provision.provision_details.each do |detail|
+                        - quantity += detail.unit_price_igv.to_f
+                    - else
+                      - payment_order.provision.provision_direct_purchase_details.each do |detail|
+                        - quantity += detail.unit_price_igv.to_f
+                    = number_to_currency(quantity, :unit => 'S/.', :precision => 2)
+                  %td
+                    = number_to_currency(payment_order.net_pay, :unit => 'S/.', :precision => 2)
+                  %td
+                    %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{administration_payment_order_path(payment_order.id)}', 'content', null, null, 'GET')"}
+                      Ver Información
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_administration_payment_order_path(payment_order.id)}', 'content', null, null, 'GET')"}
+                      Editar
+                    %a.btn.btn-success.btn-xs{ :href => "javascript:show_pdf(#{payment_order.id});" }
+                      Ver PDF
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{payment_order.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{administration_payment_order_path(payment_order.id)}', 'content', '#{administration_payment_orders_path}')"}}
+                      Eliminar
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });
+
+  // PAGE RELATED SCRIPTS
+
+  loadDataTableScripts();
+  function loadDataTableScripts() {
+
+    loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
+
+    function dt_2() {
+      loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
+    }
+
+    function dt_3() {
+      loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
+    }
+
+    function dt_4() {
+      loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
+    }
+
+    function dt_5() {
+      loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
+    }
+
+    function dt_6() {
+      loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
+    }
+
+    function dt_7() {
+      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
+    }
+
+  }
+
+  function runDataTables() {
+
+    /*
+     * BASIC
+     */
+    $('#dt_basic').dataTable({
+      "sPaginationType" : "bootstrap_full"
+    });
+
+    /* END BASIC */
+
+    /* Add the events etc before DataTables hides a column */
+    $("#dt_basic thead input").keyup(function() {
+      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+    });
+    
+  }
+
+  function show_pdf(payment_id){
+    $.SmartMessageBox({
+      title : "Seleccionar al destinatario de la Orden de Pago",
+      content : "",
+      buttons : "[CANCELAR][ACEPTAR]",
+      input : "select",
+      options : "#{@workers}"
+    }, function(ButtonPress, Value) {
+      if (ButtonPress == 'ACEPTAR'){
+        var win = window.open('/administration/payment_orders/' + payment_id + '/generate_payslip.pdf?destinatary=' + Value, '_blank');
+        if(win)
+          win.focus();
+      }
+    });
+
+    e.preventDefault();
+  }

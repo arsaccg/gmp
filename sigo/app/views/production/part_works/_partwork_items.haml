@@ -1,10 +1,10 @@
 %tr(class="partwork_item"){id: "tr" + @reg_n.to_s}
   %td.article-id(style="display:none")
-    = hidden_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][article_id]', @id_article.to_i
+    = hidden_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][itembybudget_id]', @id_itembybudget.to_i
   %td.col-md-2
-    = @name_article
+    = @name_itembybudget
   %td.col-md-2
-    = @unitOfMeasurement
+    = @itembybudget_code
   %td.amount.col-md-1{:style => "width:5%"}
     %div
       = text_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][bill_of_quantitties]', nil , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'

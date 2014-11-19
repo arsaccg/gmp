@@ -5,6 +5,11 @@
     %h2 Subcontrato
   .widget-body
     = simple_form_for([:production, @subcontract], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      - f.fields_for :subcontract_advances do |del|
+        = del.hidden_field :lock_version
+      = f.hidden_field :lock_version
+      - f.fields_for :subcontract_details do |del|
+        = del.hidden_field :lock_version
       %fieldset
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company}", 'readonly' => true, 'style' => 'display:none' }
@@ -15,43 +20,43 @@
             %label.input{for: "entity_id"}
               %select.form-control{:name =>"subcontract[entity_id]", :style => 'width:100%;padding: 0;border: none;'}
                 - @suppliers.each do |supply|
-                  %option{:value => "#{supply.id}"}
-                    = supply.name
+                  %option{:value => "#{supply.id}", :selected => @subcontract.entity_id==supply.id}
+                    = supply.ruc + " - "+supply.name
 
           %section.col.col-4
             %label.label Valorizaciones
             %label.input{for: "valorization"}
               %select.form-control{:name =>"subcontract[valorization]", :style => 'width:100%;padding: 0;border: none;'}
-                %option{:value => "semanal"}
+                %option{:value => "semanal", :selected => @subcontract.valorization=="semanal"}
                   Semanales
-                %option{:value => "quincenal"}
+                %option{:value => "quincenal", :selected => @subcontract.valorization=="quincenal"}
                   Quincenales
-                %option{:value => "mensual"}
+                %option{:value => "mensual", :selected => @subcontract.valorization=="mensual"}
                   Mensuales
 
           %section.col.col-4
             %label.label Condiciones de Pago
             %label.input{for: "terms_of_payment"}
               %select.form-control{:name =>"subcontract[terms_of_payment]", :style => 'width:100%;padding: 0;border: none;'}
-                %option{:value => "contado"}
+                %option{:value => "contado", :selected => @subcontract.terms_of_payment=="contado"}
                   Al Contado
-                %option{:value => "quincenal"}
+                %option{:value => "3D", :selected => @subcontract.terms_of_payment=="3D"}
                   Crédito a 3 dias
-                %option{:value => "mensual"}
+                %option{:value => "5D", :selected => @subcontract.terms_of_payment=="5D"}
                   Crédito a 5 dias
-                %option{:value => "mensual"}
+                %option{:value => "7D", :selected => @subcontract.terms_of_payment=="7D"}
                   Crédito a 7 dias
-                %option{:value => "quincenal"}
+                %option{:value => "10D", :selected => @subcontract.terms_of_payment=="10D"}
                   Crédito a 10 dias
-                %option{:value => "mensual"}
+                %option{:value => "15D", :selected => @subcontract.terms_of_payment=="15D"}
                   Crédito a 15 dias
-                %option{:value => "mensual"}
+                %option{:value => "30D", :selected => @subcontract.terms_of_payment=="30D"}
                   Crédito a 30 dias
-                %option{:value => "quincenal"}
+                %option{:value => "40D", :selected => @subcontract.terms_of_payment=="40D"}
                   Crédito a 40 dias
-                %option{:value => "mensual"}
+                %option{:value => "50D", :selected => @subcontract.terms_of_payment=="50D"}
                   Crédito a 50 dias
-                %option{:value => "mensual"}
+                %option{:value => "60D", :selected => @subcontract.terms_of_payment=="60D"}
                   Crédito a 60 dias
         .row
           %section.col.col-4
@@ -108,16 +113,11 @@
             %label.control-label(for="itembybudget_id") Partidas
 
           %section.col.col-6
-            %select#itembybudget-id.form-control{:name =>"itembybudget_id", :style => 'width:100%;padding: 0;border: none;'}
-              %option{:value => "0", :selected => true, :disabled => true} Seleccionar Partida
-              - @prebudgets.each do |phase|
-                %option{:value => "#{phase[1]}"}
-                  = phase[2]
+            %input.select2.bigdrop.select2-offscreen.form-control{'name' => 'itembybudget_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'id' => "id_itembybudget_id"}
 
           %section.col.col-2
-            %div
-              %a{:href => "javascript:add_itembybudget_item();", :id => "btn-add-article", :class => "btn btn-success", :role => "button"}
-                Agregar Partida
+            %a.expand-button{:href => "javascript:add_itembybudget_item();", :id => "btn-add-article", :class => "btn btn-success", :role => "button"}
+              Agregar Partida
 
         .col-lg-12
           %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-articles" aria-describedby="data-table_info")
@@ -139,9 +139,13 @@
                     %td.article-id(style="display:none")
                       = sub.article_id
                     %td.col-md-2
-                      = sub.itembybudget.subbudgetdetail rescue " "
+                      = (sub.itembybudget.order.to_s + ' - ' + sub.itembybudget.subbudgetdetail.to_s) rescue "No se ha definido una Partida."
                     %td.col-md-2
-                      = sub.article.name rescue " "
+                      - if !sub.article_id.nil?
+                        - Article.find_article_in_specific(sub.article_id, @cc).each do |ar|
+                          = ar[1].to_s
+                      - else
+                        = "No se ha definido un Insumo."
                     %td.amount.col-md-1{:style => "width:5%"}
                       = text_field_tag 'subcontract[subcontract_details_attributes][' + @reg_n.to_s + '][amount]', sub.amount , class: "form-control quantity", id: 'subcontract-amount', onfocusout: "calculatePartialAmount(this);"
                     %td.unit-price.col-md-1
@@ -169,9 +173,8 @@
             %input#start-date-input.string.optional.form-control{'name'=>'date_of_issue', type: "date"}
 
           %section.col.col-2
-            %div
-              %a{:href => "javascript:add_advance_item();", :id => "btn-add-advance", :class => "btn btn-success", :role => "button"}
-                Agregar Adelanto
+            %a.expand-button{:href => "javascript:add_advance_item();", :id => "btn-add-advance", :class => "btn btn-success", :role => "button"}
+              Agregar Adelanto
 
         .col-lg-12
           %table#summary-advance.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
@@ -199,7 +202,7 @@
                     - @reg_n += 1         
               
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
@@ -207,6 +210,30 @@
   $(document).ready(function () {
 
     $('select').select2();
+
+    $("#id_itembybudget_id").select2({
+      placeholder: "Buscar Partidas...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{getsc_prebudgets_production_subcontracts_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.part};
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.order + ' - ' + node.name + '</div>' },
+      formatSelection: function(node){ return (node.order + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -260,9 +287,6 @@
             },
             'subcontract[detraction]' : {
               required : true
-            },
-            'subcontract[contract_amount]' : {
-              required : true
             }
           },
 
@@ -282,15 +306,14 @@
             },
             'subcontract[detraction]' : {
               required : 'Por favor, ingresar la detracción.'
-            },
-            'subcontract[contract_amount]' : {
-              required : 'Por favor, ingresar el monto contratado.'
             }
           },
 
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -301,14 +324,18 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }
 
   function add_itembybudget_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", itembybudget_id: $("#itembybudget-id").val(), itembybudget_name: $("#itembybudget-id").find(":selected").text()};
+    str_item = {authenticity_token: "#{form_authenticity_token}", itembybudget_id: $("#id_itembybudget_id").val()};
     append_url_ajax('#{add_more_article_production_subcontracts_path}', 'article_items_table', str_item, 0, 'POST');
   }
 

@@ -1,0 +1,133 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        = "Provisión N° " + @provision.id.to_s.rjust(5, '0')
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-8.col-lg-8
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = "Provisión N° " + @provision.id.to_s.rjust(5, '0')
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %i.fa-fw.fa.fa-info
+                Información Principal
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Tipo de Documento
+                    %th Numero de Documento
+                    %th Serie
+                    %th Fecha
+                    %th Glosa
+                %tbody
+                  %tr
+                    %td
+                      = @provision.document_provision.name.to_s
+                    %td
+                      = @provision.number_document_provision.to_s
+                    %td
+                      = @provision.series.to_s
+                    %td
+                      = @provision.accounting_date.strftime('%d/%m/%Y')
+                    %td
+                      = @provision.description.to_s
+
+      %article.col-sm-12.col-md-4.col-lg-4
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = "Totales de la Provisión N° " + @provision.id.to_s.rjust(5, '0')
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %i.fa-fw.fa.fa-info
+                Información Totalizada
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Total sin IGV
+                    %th IGV
+                    %th Total con IGV
+                %tbody
+                  %tr
+                    %td= number_to_currency @total_without_igv, unit: 'S/.', precision: 2
+                    %td= number_to_currency @igv, unit: 'S/.', precision: 2
+                    %td= number_to_currency @total_with_igv, unit: 'S/.', precision: 2
+
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = "Detalle de la Provisión N° " + @provision.id.to_s.rjust(5, '0')
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              .alert.alert-info.no-margin.fade.in
+                %i.fa-fw.fa.fa-info
+                Información Detallada
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Código
+                    %th Nombre del Artículo
+                    %th Cuenta Contable
+                    %th Unidad
+                    %th Cantidad a Atender
+                    %th Precio Unitario
+                    %th Descuento
+                    %th Parcial sin IGV
+                    %th IGV
+                    %th Parcial con IGV
+                    %th Parcial con IGV y Descuentos
+                %tbody
+                  - @provision.provision_direct_purchase_details.each do |provision_detail|
+                    %tr
+                      %td
+                        = provision_detail.article.code.to_s
+                      %td
+                        = provision_detail.article.name.to_s
+                      %td
+                        = provision_detail.account_accountant.name.to_s
+                      %td
+                        = provision_detail.article.unit_of_measurement.symbol.to_s
+                      %td
+                        = provision_detail.amount.to_f
+                      %td
+                        = number_to_currency provision_detail.price.to_f, unit: 'S/.', precision: 4
+                      %td
+                        = number_to_currency provision_detail.discount_before.to_f, unit: 'S/.', precision: 2
+                      %td
+                        = number_to_currency provision_detail.unit_price_before_igv.to_f, unit: 'S/.', precision: 2
+                      %td
+                        = number_to_currency provision_detail.quantity_igv.to_f, unit: 'S/.', precision: 2
+                      %td
+                        = number_to_currency (provision_detail.unit_price_before_igv.to_f+provision_detail.quantity_igv.to_f).to_f, unit: 'S/.', precision: 2
+                      %td
+                        = number_to_currency ((provision_detail.unit_price_before_igv.to_f+provision_detail.quantity_igv.to_f-provision_detail.discount_after.to_f).to_f), unit: 'S/.', precision: 2
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-provisions{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Provisiones
+
+:javascript
+  
+  $('#backlist-provisions').click(function(){
+    load_url_ajax("#{administration_provision_articles_path}", 'content', null, null, 'GET');
+  });

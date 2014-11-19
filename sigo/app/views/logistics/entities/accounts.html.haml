@@ -1,0 +1,152 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2="Cuentas Bancarias de " + @ent.name.to_s + " ("+ @ent.ruc.to_s+")"
+  .widget-body
+  
+    =form_for @ent, :url =>update_bank_account_logistics_entity_path(@ent.id), as: :patch, :html => { :id => "eab", class: "smart-form" } do |f|
+      %fieldset
+        .row
+          %section.col.col-6
+            %label.label Banco
+            %select#bank.select2.form-control
+              %option{:value => nil, :disabled=>true, :selected=>true} Seleccione un Banco
+              - @bank.each do |ph|
+                %option{:value => "#{ph.id}"}
+                  = ph.ruc.to_s + " - "+ ph.business_name
+          %section.col.col-3
+            %label.label Moneda
+            %select#money.select2.form-control{:name => "bank[money_id]"}
+              %option{:value => nil, :disabled=>true, :selected=>true} Seleccione una Moneda
+              - @money.each do |ph|
+                %option{:value => "#{ph.id}"}
+                  = ph.name+" ("+ph.symbol+")"
+          %section.col.col-3
+            %label.label Tipo de Cuenta
+            %label.input
+              %select#account_type.select2.form-control
+                %option{:value => nil, :disabled=>true, :selected=>true} Seleccione un Tipo de Cuenta
+                %option{:value => "Ahorros"} Ahorros
+                %option{:value => "Corriente"} Corriente
+                %option{:value => "Detraccion"} Detracción
+        .row
+          %section.col.col-4
+            %label.label Número de Cuenta
+            %label.input
+              %i.icon-append.fa.fa-superscript
+              %input#account_number.form-control{ placeholder: "Número de Cuenta", onkeypress: "return isNumber(event);"}
+          %section.col.col-4
+            %label.label CCI
+            %label.input
+              %i.icon-append.fa.fa-superscript
+              %input#cci.form-control{ placeholder: "CCI", onkeypress: "return isNumber(event);"}
+          %section.col.col-4
+            %a{:href => "javascript:add_account();", :id => "btn-add-account", :class => "btn btn-success", :role => "button", :style => "padding: 5px; margin-top: 2em;"}
+              Agregar Cuenta
+
+        %fieldset
+
+          %table#dt_basic.table.table-striped.table-bordered.table-hover.smart-form
+            %thead.panel-heading
+              %tr
+                %th Banco
+                %th Moneda
+                %th Tipo de Cuenta
+                %th Número de cuenta
+                %th CCI
+                %th Eliminar
+            %tbody#account-details
+              - @ent.entity_banks.each do |eb|
+                %tr
+                  %td
+                    = eb.bank.business_name.to_s
+                    = hidden_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][bank_id]', eb.bank_id
+                  %td
+                    = eb.money.name.to_s + " ("+ eb.money.symbol.to_s+")"
+                    = hidden_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][money_id]', eb.money_id
+                  %td
+                    = hidden_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][entity_id]', eb.entity_id
+                    = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][account_type]', eb.account_type.to_s , class: "form-control", :readonly => true
+                  %td
+                    = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][account_number]', eb.account_number.to_s , class: "form-control", :readonly => true
+                    = hidden_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][id]', eb.id
+                  %td
+                    = text_field_tag 'entity[entity_banks_attributes][' + @reg.to_s + '][cci]', eb.cci.to_s , class: "form-control", :readonly => true
+                  %td
+                    %label.checkbox
+                      = check_box 'entity', '[entity_banks_attributes][' + @reg.to_s + '][_destroy]'
+                      %i
+                  - @reg += 1                
+
+        %br            
+      %footer
+        %button#save.btn.btn-primary
+          %i.fa.fa-save
+            Guardar
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-service-order{type: "button"}
+  %i.fa.fa-arrow-left>
+  &nbspRetornar
+
+:javascript
+  
+  $('#backlist-service-order').click(function(){
+    load_url_ajax("#{logistics_entities_path}", 'content', null, null, 'GET');
+  });
+
+  $('#eab').ajaxForm({
+    beforeSubmit: function() {
+      $('#eab').validate({
+        // Rules for form validation
+        rules : {
+        },
+
+        // Messages for form validation
+        messages : {
+        },
+        // Do not change code below
+        errorPlacement : function(error, element) {
+          error.insertAfter(element.parent());
+        }
+      });
+      return $('#eab').valid();
+    },
+    target: '#content'
+  }); 
+
+   
+  function add_account(){
+    var bank=$("#bank").val();
+    var money= $("#money").val();
+    var type=$("#account_type").val();
+    var number=$("#account_number").val();
+    var detraction=$("#account_detraction").val();
+    var cci=$("#cci").val();
+
+    if(bank != "" && money != "" && type != "" && number != ""){
+      str_item = {authenticity_token: "#{form_authenticity_token}", bank: bank, money: money, type: type, number: number, detraction: detraction, cci: cci, ent:#{@ent.id}};
+      append_url_ajax('#{add_account_logistics_entities_path}', 'account-details', str_item, 0, 'POST');
+    }else{
+      $.smallBox({
+        title : "Aviso",
+        content : "<i class='fa fa-clock-o'></i> <i> Es necesario llenar todos los datos</i>",
+        color : "#C46A69",
+        iconSmall : "fa fa-times fa-2x fadeInRight animated",
+        timeout : 4000
+      });    
+    }
+
+  }
+
+  function delete_item(code){
+    $("#tr-" + code).remove();
+  }
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+  }  

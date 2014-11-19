@@ -31,6 +31,7 @@
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
+                %th Tipo
                 %th Empresa
                 %th Aporte F. P.
                 %th Prima de Seguro
@@ -41,6 +42,8 @@
             %tbody
               - @afp.each do |con|
                 %tr
+                  %td
+                    = con.type_of_afp.to_s
                   %td
                     = con.enterprise.to_s
                   %td

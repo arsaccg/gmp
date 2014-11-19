@@ -1,6 +1,7 @@
 class Logistics::DeliveryOrdersController < ApplicationController
+  include ApplicationHelper
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
-  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete], if: Proc.new { |c| c.request.format.json? }
   def index
     @article = Article.first
     @phase = Phase.first
@@ -23,10 +24,161 @@ class Logistics::DeliveryOrdersController < ApplicationController
     render json: {:articles => article_hash}
   end
 
+  def display_orders
+    @cc = get_company_cost_center('cost_center')
+    display_length = params[:iDisplayLength]
+    pager_number = params[:iDisplayStart]
+    @pagenumber = params[:iDisplayStart]
+    keyword = params[:sSearch]
+    state = params[:state]
+    array = Array.new
+        
+    if @pagenumber != 'NaN' && keyword != ''
+      if state == ""
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          AND do.description LIKE '%#{keyword}%'
+          ORDER BY do.id DESC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}"
+        )
+      else
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          AND do.description LIKE '%#{keyword}%'
+          AND do.state LIKE '"+state.to_s+"'
+          ORDER BY do.id DESC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}"
+        )        
+      end
+    elsif @pagenumber == 'NaN'
+      if state == ""
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          ORDER BY do.id DESC
+          LIMIT #{display_length}"
+        )
+      else
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          AND do.state LIKE '"+state.to_s+"'
+          ORDER BY do.id DESC
+          LIMIT #{display_length}"
+        )        
+      end
+    elsif keyword != ''
+      if state == ""
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          ORDER BY do.id DESC"
+        )
+      else
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          AND do.state LIKE '"+state.to_s+"'
+          ORDER BY do.id DESC"
+        )        
+      end
+    else
+      if state == ""
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          ORDER BY do.id DESC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}"
+        )
+      else
+        de_o = ActiveRecord::Base.connection.execute("
+          SELECT do.id, do.state, do.description, do.date_of_issue, do.scheduled,  CONCAT_WS(  ' ', u.first_name, u.last_name), do.code
+          FROM delivery_orders do, users u
+          WHERE do.cost_center_id = "+@cc.to_s+"
+          AND do.user_id = u.id
+          AND do.state LIKE '"+state.to_s+"'
+          ORDER BY do.id DESC
+          LIMIT #{display_length}
+          OFFSET #{pager_number}"
+        )        
+      end
+    end
+    de_o.each do |dos|
+      @state = ""
+      @action = ""
+      case dos[1]
+      when 'pre_issued'
+        @state = "<i class='fa fa-flag' style='visibility: hidden;margin-right: 15px;'></i><span class='label' style='color: #000;'>"+translate_delivery_order_state(dos[1])+"</span>"
+        if current_user.has_role? :canceller
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-warning btn-xs' data-original-title='Editar' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"/edit','content',{company_id:"+get_company_cost_center('company').to_s+"},null,'GET') rel='tooltip'><i class='fa fa-edit'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1].to_s)+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-danger btn-xs' data-original-title='Eliminar Orden' data-placement='top' onclick=javascript:delete_to_url('/logistics/delivery_orders/"+dos[0].to_s+"','content','/logistics/delivery_orders?company_id="+get_company_cost_center('company').to_s+"') rel='tooltip'><i class='fa fa-trash-o'></i></a>"
+        else
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-warning btn-xs' data-original-title='Editar' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"/edit','content',{company_id:"+get_company_cost_center('company').to_s+"},null,'GET') rel='tooltip'><i class='fa fa-edit'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1].to_s)+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>"
+        end
+
+      when 'issued'
+        @state = "<i class='fa fa-flag' style='color: #FF7A00;margin-right: 15px;'></i><span class='label label-warning' style='background-color: #FF7A00;'>"+translate_delivery_order_state(dos[1])+"</span>"
+        if current_user.has_role? :canceller
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_prev_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/delivery_orders/"+dos[0].to_s+"/delivery_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-danger btn-xs' data-original-title='Anular' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+", state_change:'canceled'},null,'GET') rel='tooltip'><i class='fa fa-times'></i></a>"
+        else
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_prev_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1])+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/delivery_orders/"+dos[0].to_s+"/delivery_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
+        end
+
+      when 'revised'
+        @state = "<i class='fa fa-flag' style='color: #c79121;margin-right: 15px;'></i><span class='label label-warning'>"+translate_delivery_order_state(dos[1])+"</span>"
+        if current_user.has_role? :canceller
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_prev_state(dos[1].to_s)+"'},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1].to_s)+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/delivery_orders/"+dos[0].to_s+"/delivery_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-danger btn-xs' data-original-title='Anular' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'canceled'},null,'GET') rel='tooltip'><i class='fa fa-times'></i></a>"
+        else
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_prev_state(dos[1].to_s)+"'},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_next_state(dos[1].to_s)+"'},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/delivery_orders/"+dos[0].to_s+"/delivery_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
+        end
+
+      when 'canceled'
+        @state = "<i class='fa fa-flag' style='color: #a90329;margin-right: 15px;'></i><span class='label label-danger'>"+translate_delivery_order_state(dos[1])+"</span>"
+        @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/delivery_orders/"+dos[0].to_s+"/delivery_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>"
+
+      when 'approved'
+        @state= "<i class='fa fa-flag' style='color: #25CA25;margin-right: 15px;'></i><span class='label label-success' style='background-color: #25CA25;'>"+translate_delivery_order_state(dos[1])+"</span>"
+        if current_user.has_role? :canceller
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'"+get_prev_state(dos[1].to_s)+"'},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:''},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/delivery_orders/"+dos[0].to_s+"/delivery_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-danger btn-xs' data-original-title='Anular' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:'canceled'},null,'GET') rel='tooltip'><i class='fa fa-times'></i></a>"
+        else
+          @action = "<a style='margin-right: 5px;' class='btn btn-view btn-xs' data-original-title='Ver Detalle' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',null,null,'GET') rel='tooltip'><i class='fa fa-eye'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-success btn-xs' data-original-title='Retroceder el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+", state_change:"+get_prev_state(dos[1].to_s)+"},null,'GET') rel='tooltip'><i class='fa fa-mail-reply'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-info btn-xs' data-original-title='Avanzar el estado' data-placement='top' onclick=javascript:load_url_ajax('/logistics/delivery_orders/"+dos[0].to_s+"','content',{company_id:"+get_company_cost_center('company').to_s+",state_change:''},null,'GET') rel='tooltip'><i class='fa fa-flag'></i></a>" + "<a style='margin-right: 5px;' class='btn btn-pdf btn-xs' data-original-title='Ver PDF' data-placement='top' href='/logistics/delivery_orders/"+dos[0].to_s+"/delivery_order_pdf.pdf?company_id="+get_company_cost_center('company').to_s+"' rel='tooltip' target='_blank'><i class='fa fa-file'></i></a>" 
+        end
+      end
+
+      array << [dos[6].to_s.rjust(5, '0'),@state,dos[2],dos[3].strftime("%d/%m/%Y").to_s,dos[4].strftime("%d/%m/%Y").to_s,dos[5], @action]
+    end
+    render json: { :aaData => array }
+  end
+
   def new
     @company = params[:company_id]
-    @cost_center = CostCenter.find(params[:cost_center_id])
+    @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @deliveryOrder = DeliveryOrder.new
+    @last = DeliveryOrder.find(:last,:conditions => [ "cost_center_id = ?", @cost_center.id])
+    if !@last.nil?
+      @numbercode = @last.code.to_i+1
+    else
+      @numbercode = 1
+    end
+    @numbercode = @numbercode.to_s.rjust(5,'0')
     render layout: false
   end
 
@@ -64,7 +216,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @sectors = Sector.all
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @centerOfAttentions = CenterOfAttention.all
-    @costcenters = Company.find(@company).cost_centers
+    @costcenter_id = @deliveryOrder.cost_center_id
     @action = 'edit'
     render layout: false
   end
@@ -74,6 +226,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
     deliveryOrder.update_attributes(delivery_order_parameters)
     flash[:notice] = "Se ha actualizado correctamente los datos."
     redirect_to :action => :index, company_id: params[:company_id]
+  rescue ActiveRecord::StaleObjectError
+      deliveryOrder.reload
+      flash[:error] = "Alguien más ha modificado los datos en este instante. Intente Nuevamente."
+      redirect_to :action => :index, company_id: params[:company_id]
   end
 
   def add_delivery_order_item_field
@@ -81,10 +237,10 @@ class Logistics::DeliveryOrdersController < ApplicationController
     data_article_unit = params[:article_id].split('-')
     @article = Article.find_article_in_specific(data_article_unit[0], get_company_cost_center('cost_center'))
     @sectors = Sector.where("code LIKE '__' ")
-    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center')).sort
-    @amount = params[:amount].to_f
-    @centerOfAttention = CenterOfAttention.all
-
+    @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
+    @quantity = params[:quantity].to_i
+    @amount = params[:amount]
+    @centerOfAttention= CenterOfAttention.all
     @article.each do |art|
       @code_article, @name_article, @id_article = art[3], art[1], art[2]
     end
@@ -190,6 +346,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def delivery_order_pdf
     @company = Company.find(params[:company_id])
     @deliveryOrder = DeliveryOrder.find(params[:id])
+    @cost_center_code = CostCenter.find(get_company_cost_center('cost_center')).code rescue 0000
     @deliveryOrderDetails = @deliveryOrder.delivery_order_details
 
     if @deliveryOrder.state == 'pre_issued'
@@ -240,6 +397,27 @@ class Logistics::DeliveryOrdersController < ApplicationController
 
   private
   def delivery_order_parameters
-    params.require(:delivery_order).permit(:date_of_issue, :scheduled, :description, :cost_center_id, delivery_order_details_attributes: [:id, :delivery_order_id, :article_id, :unit_of_measurement_id, :sector_id, :phase_id, :description, :amount, :scheduled_date, :center_of_attention_id, :_destroy])
+    params.require(:delivery_order).permit(
+      :code,
+      :date_of_issue, 
+      :scheduled, 
+      :description, 
+      :cost_center_id,
+      :lock_version,
+      delivery_order_details_attributes: [
+        :id, 
+        :delivery_order_id, 
+        :article_id, 
+        :unit_of_measurement_id, 
+        :sector_id, 
+        :phase_id, 
+        :description, 
+        :amount, 
+        :scheduled_date,
+        :lock_version, 
+        :center_of_attention_id, 
+        :_destroy
+      ]
+    )
   end
 end

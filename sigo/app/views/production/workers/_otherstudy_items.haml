@@ -1,9 +1,13 @@
 %tr(class="otherstudy_item"){id: "tr" + @reg_n.to_s}
-  %td.col-md-1.study{:style => "width:5%"}
+  %td.col-md-1.study{:style => "width:50%"}
     %div
       = text_field_tag 'worker[worker_otherstudies_attributes][' + @reg_n.to_s + '][study]', @study.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.col-md-1.level{:style => "width:5%"}
+  %td.col-md-1.level{:style => "width:40%"}
     %div
-      = text_field_tag 'worker[worker_otherstudies_attributes][' + @reg_n.to_s + '][level]', @level.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td{:style => "width: 1%;"}
+      %select.col-sm-6.form-control#relationship{:name =>'worker[worker_otherstudies_attributes][' + @reg_n.to_s + '][level]', :required => true, title:'No puede dejar este campo vacio', 'style' => 'width:200px', class: 'relationship' }
+        %option{:value => "0", :selected => 'selected'} Seleccione un nivel
+        %option{:value => "basico"} Básico
+        %option{:value => "intermedio"} Intermedio
+        %option{:value => "avanzado"} Avanzado
+  %td{:style => "width: 10%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

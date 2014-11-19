@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.3'
 
+# Thin
+gem 'thin'
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
@@ -10,8 +12,15 @@ gem 'sqlite3'
 # Use mysql2
 gem 'mysql2'
 
+#Use Spreadsheet
+gem 'spreadsheet', '~> 0.9.7'
+
 # Gem PrawnTo
 gem "prawnto_2", :require => "prawnto"
+
+# Gem Wicked PDF
+gem 'wicked_pdf'
+gem "wkhtmltopdf-binary"
 
 # use Bootstrap
 gem 'therubyracer', platforms: :ruby
@@ -61,6 +70,14 @@ gem 'coffee-rails', '~> 4.0.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+
+#*~TOBI~*#
+gem 'savon'
+gem 'json' 
+gem 'activerecord-import'
+
+gem 'capistrano'
+#gem 'capistrano-bundler'
 
 # Gem Haml
 gem 'haml-rails'

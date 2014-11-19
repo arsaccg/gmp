@@ -13,7 +13,10 @@ class Payrolls::ConceptsController < ApplicationController
 
   def new
     @con = Concept.new
-    @conde = Concept.where("code NOT LIKE '1%'")
+    @condeTrab = Concept.where("code LIKE '2%'")
+    @condeEmp = Concept.where("code LIKE '3%'")
+    @date_week = Time.now.strftime('%Y-%m-%d')
+    @cost_center = get_company_cost_center('cost_center')
     render layout: false
   end
 
@@ -21,9 +24,12 @@ class Payrolls::ConceptsController < ApplicationController
     flash[:error] = nil
     con = Concept.new(con_parameters)
     con.status = 1
-    con.concept_details.each do |ccd|
-      ccd.status = 0
-    end
+    con.company_id = get_company_cost_center('company')
+    #con.concept_details.each do |ccd|
+    #  ccd.status = 0
+    #end
+    con.code = params[:tipo].to_s + con.code.to_s
+    con.token = '[' + params[:concept]['name'].downcase.parameterize.to_s + ']'
     if con.save
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index
@@ -37,22 +43,34 @@ class Payrolls::ConceptsController < ApplicationController
   end
 
   def edit
+    @condeTrab = Concept.where("code LIKE '2%'")
+    @condeEmp = Concept.where("code LIKE '3%'")
+    @date_week = Time.now.strftime('%Y-%m-%d')
+    @cost_center = get_company_cost_center('cost_center')
+
     @con = Concept.find(params[:id])
     ids = Array.new
     @reg_n = ((Time.now.to_f)*100).to_i
     ids << @con.id
+    
     @con.concept_details.each do |co|
       ids << co.subconcept_id
     end
+    
     ids = ids.join(',')
     @coned=@con.concept_details.where("status = 0")
-    @conde = Concept.where("id NOT IN ("+ids+")")
+    @conde = Concept.where("id NOT IN (" + ids.to_s + ")")
+    
     @action = 'edit'
     render layout: false
   end
 
   def update
     con = Concept.find(params[:id])
+    con.code = params[:tipo].to_s + con.code.to_s
+    con.company_id = get_company_cost_center('company')
+    con.token = '[' + params[:concept]['name'].downcase.parameterize.to_s + ']'
+    
     if con.update_attributes(con_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
@@ -71,14 +89,40 @@ class Payrolls::ConceptsController < ApplicationController
     ActiveRecord::Base.connection.execute("
           UPDATE concepts SET
           status = 0
-          WHERE id = "+con.id.to_s+"
+          WHERE id = " + con.id.to_s + "
         ")
     ActiveRecord::Base.connection.execute("
           UPDATE concept_details SET
           status = 0
-          WHERE concept_id = "+con.id.to_s+" AND status = 1
+          WHERE concept_id = " + con.id.to_s + " AND status = 1
         ")
     render :json => con
+  end
+
+  def activate
+    con = Concept.find(params[:id])
+    ActiveRecord::Base.connection.execute("
+          UPDATE concepts SET
+          status = 1
+          WHERE id = " + con.id.to_s + "
+        ")
+    ActiveRecord::Base.connection.execute("
+          UPDATE concept_details SET
+          status = 1
+          WHERE concept_id = " + con.id.to_s + " AND status = 0
+        ")
+    redirect_to :action => :index
+  end
+    # CUSTOM METHODS
+
+  def display_concepts
+    word = params[:q]
+    concepts_hash = Array.new
+    concepts = Concept.where(:status => 1).where("code LIKE '1%' AND name LIKE '%#{word}%'")
+    concepts.each do |concept|
+      concepts_hash << { 'id' => concept.token, 'name' => '(' + concept.code.to_s + ') ' + concept.name }
+    end
+    render json: { :concepts => concepts_hash }
   end
 
   def add_subconcept
@@ -90,13 +134,23 @@ class Payrolls::ConceptsController < ApplicationController
 
   private
   def con_parameters
-    params.require(:concept).permit(:name, :percentage, :amount, :top, :code, :type_concept, 
+    params.require(:concept).permit(:name, :percentage, :amount, :top, :code, :type_obrero, :type_empleado, :company_id, 
       concept_details_attributes: [
         :id, 
         :concept_id, 
         :category, 
         :subconcept_id, 
-        :status
-      ])
+        :status,
+        :_destroy
+      ],
+      concept_valorization_attributes: [
+        :id,
+        :concept_id,
+        :date_week,
+        :cost_center_id,
+        :formula,
+        :_destroy
+      ]
+    )
   end
 end

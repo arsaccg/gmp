@@ -1,0 +1,79 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Carpeta
+  .widget-body
+    = simple_form_for([:documentary_control, @folder], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      = hidden_field_tag 'folder[folderfa_id]', @fa_id.to_s
+      %fieldset
+        .row
+          %section.col.col-md-8
+            %label.label Nombre
+            %label.input{for: "name"}
+              %i.icon-append.fa.fa-user
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+        %br
+        .row
+          %section.col.col-md-12
+            %label.label Descripción 
+            %label.input
+              = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false, rows: 4
+
+      %footer
+        %button.btn.btn-primary#save{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    $('select').select2();
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_folder'));
+    }
+
+  });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'folder[name]' : {
+              required : true
+            },
+            'folder[description]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'folder[name]' : {
+              required : "Por favor, ingrese el nombre del documento"
+            },
+            'folder[description]' : {
+              required : "Por favor, ingrese una descripción para el documento"
+            }
+          },
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+      }
+    });
+  }

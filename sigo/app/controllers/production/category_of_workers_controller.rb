@@ -14,15 +14,34 @@ class Production::CategoryOfWorkersController < ApplicationController
   end
 
   def new
+    @categoryOfWorker = CategoryOfWorker.new
+    @subgroups = Category.distinct.select(:id).select(:code).select(:name).where("code LIKE '71__'")
+    @concept_earnings = Concept.where(:type_obrero => 'Fijo').where(:status => 1).where("code LIKE '1%'")
+    @concept_discounts = Concept.where(:type_obrero => 'Fijo').where(:status => 1).where("code LIKE '2%'")
+    @action = 'new'
     render layout: false
   end
 
   def create
+    @categoryOfWorker = CategoryOfWorker.new(category_worker_parameters)
+    if @categoryOfWorker.save
+      flash[:notice] = "Se ha creado correctamente la nueva orden de compra."
+      redirect_to :action => :index
+    else
+      flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
+      redirect_to :action => :index
+    end
   end
 
   def edit
     @categoryOfWorker = CategoryOfWorker.find(params[:id])
-    @company = params[:company_id]
+    @subgroups = Category.distinct.select(:id).select(:code).select(:name).where("code LIKE '71__'")
+
+    @concept_earnings = @categoryOfWorker.category_of_workers_concepts.where(:type_concept => 'Fijo').where("concept_code LIKE '1%'")
+    @concept_discounts = @categoryOfWorker.category_of_workers_concepts.where(:type_concept => 'Fijo').where("concept_code LIKE '2%'")
+
+    @action = 'edit'
+    @reg_n = ((Time.now.to_f)*100).to_i
     render layout: false
   end
 
@@ -46,6 +65,21 @@ class Production::CategoryOfWorkersController < ApplicationController
 
   private
   def category_worker_parameters
-    params.require(:category_of_worker).permit(:article_id, :normal_price, :he_60_price, :he_100_price)
+    params.require(:category_of_worker).permit(
+      :name, 
+      :category_id, 
+      :normal_price, 
+      :he_60_price, 
+      :he_100_price, 
+      category_of_workers_concepts_attributes: [
+        :id,
+        :category_of_worker_id,
+        :concept_id,
+        :type_concept,
+        :concept_code,
+        :amount,
+        :_destroy
+      ]
+    )
   end
 end

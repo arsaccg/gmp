@@ -1,0 +1,82 @@
+%table(class="table table-bordered table-hover white-table table-condensed" width="100%" style=" width: 92%;")
+  %thead
+    %th
+      Nombre
+    %th
+      Fases
+    %th
+      Acciones
+  %tbody
+    - @wbsitems.each do |wbsitem|
+      %tr{:id=>"wbsitem_" + wbsitem.codewbs.to_s}
+        %td
+          = "----" * wbsitem.codewbs.length
+          = wbsitem.codewbs          
+          %strong
+            = wbsitem.name
+        %td
+          %center
+            %strong
+              = wbsitem.fase
+            %div{id: wbsitem.id}
+        %td
+          .btn-group
+            %a(class="btn btn-success btn-mini"){href: "javascript:load_phases('" + wbsitem.id.to_s + "')"}
+              Asignar Fase
+            %a(class="btn btn-primary btn-mini"){:href=>"javascript:load_url_ondiv('" + edit_management_wbsitem_path(wbsitem.id).to_s + "', 'graph-org');"}
+              %i(class="icon-pencil")
+              Editar
+            %a(data-method ="delete" class="btn btn-mini btn-danger" href = "javascript:delete_to_url_into_div('#{management_wbsitem_path(wbsitem.id).to_s}?authenticity_token=#{form_authenticity_token}', 'graph-org')" )
+              %i(class="fa fa-md fa-fw fa-times")
+
+#myModalWbs2.modal.fade(tabindex="-1" role="dialog" aria-labelledby="myModalLabelWbs2")
+  .modal-dialog{ :style => 'width: 60%;' }
+    .modal-content
+      .modal-header{"style"=>"background-color:#296191;color:white;padding-top:8px;padding-bottom:8px"}
+        %button(class="close" data-dismiss="modal")
+          %span(aria-hidden="true" style="color:white;") &times;
+          %span{"class"=>"sr-only"} Close
+        %h4.modal-title#myModalLabelWbs2{"style"=>"font-weight:900;"}
+          Asignar Fases
+      .modal-body
+        %table(class="table-bordered table-hover white-table table-condensed table")
+          %thead
+            %th
+              Codigo
+            %th
+              Descripcion
+            %th
+              Accion
+          %tbody
+            - @data.each do |item|
+              %tr
+                %td
+                  = item.code
+                %td
+                  = item.name
+                %td
+                  %a{href: "javascript:selected_phase('" + item.code + " " + item.name + "', '" + item.code + "')"}
+                    Seleccionar
+
+:javascript
+
+  var item_selected_phase = "";
+
+  function load_phases(id){
+    item_selected_phase = id;
+    $("#myModalWbs2").modal('show');
+
+  }
+
+  function selected_phase(data, id){
+
+    $("#" + item_selected_phase).html("<center><strong>" + data + "</strong></center>");
+
+    $.ajax({
+      url: "#{add_phases_to_item_management_wbsitems_path}?wbsitem_id=" + item_selected_phase + "&phase_id=" + data
+    });
+
+    $("#myModalWbs2").modal('hide');
+
+  }
+

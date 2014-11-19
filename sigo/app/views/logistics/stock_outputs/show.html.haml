@@ -24,13 +24,11 @@
                 %tr
                   %th{"style"=>"text-align:center"} Almacen
                   %th{"style"=>"text-align:center"} Formato
-                  %th{"style"=>"text-align:center"} Periodo
                   %th{"style"=>"text-align:center"} N° Documento
                   %th{"style"=>"text-align:center"} Fecha
               %tbody
                 %th{"style"=>"text-align:center;font-weight: 300;"}= @head.warehouse.name
-                %th{"style"=>"text-align:center;font-weight: 300;"}= @head.format.name
-                %th{"style"=>"text-align:center;font-weight: 300;"}= @head.period.to_s[0,4] + ' - ' + @head.period.to_s[4,6]
+                %th{"style"=>"text-align:center;font-weight: 300;"}= @head.format.name rescue '-'
                 %th{"style"=>"text-align:center;font-weight: 300;"}= @head.document
                 %th{"style"=>"text-align:center;font-weight: 300;"}= @head.issue_date
                 %tr

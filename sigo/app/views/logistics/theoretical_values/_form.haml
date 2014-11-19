@@ -8,21 +8,24 @@
       %fieldset
         .row
           %section.col.col-10
-            %label.label Id Artículo
+            %label.label Artículo
             %label.input.form-control{for: "article_id"}
               -if @action == "edit"
-                = @theoretical_value.article.id.to_s +" "+@theoretical_value.article.name
-                = hidden_field_tag 'theoretical_value[article_id]', @articles.id, class: 'form-control', id: 'article_id'
+                = @theoretical_value.article.id.to_s rescue '-' + " " + @theoretical_value.article.name.to_s rescue ''
+                - if !@theoretical_value.article.nil?
+                  = hidden_field_tag 'theoretical_value[article_id]', @theoretical_value.article.id, class: 'form-control', id: 'article_id'
+                - else
+                  = hidden_field_tag 'theoretical_value[article_id]', nil, class: 'form-control', id: 'article_id'
               -else
-                = @articles.id.to_s +" "+@articles.name
-                = hidden_field_tag 'theoretical_value[article_id]', @articles.id, class: 'form-control', id: 'article_id'
+                = @article.id.to_s + " " + @article.name
+                = hidden_field_tag 'theoretical_value[article_id]', @article.id, class: 'form-control', id: 'article_id'
         .row
           %section.col.col-10
             %label.label Valor Teórico del rendimiento de consumo de Combustible
             %label.input{for: "theoretical_value"}
               = f.input :theoretical_value, placeholder: "Valor Teórico", input_html: { class: 'form-control' }, label: false          
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save
             Guardar
 
@@ -62,6 +65,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
@@ -72,8 +77,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }

@@ -1,0 +1,24 @@
+.col-md-4
+  .group-bar
+    %strong{style: "padding-left: 10px; font-size: 12px;"} Presupuestos Venta
+  .individual-panel
+    %table.table-bordered.table-hover.white-table.small-font{width: "100%"}
+      %tbody
+        - @budgets.each do |budget|
+          %tr
+            %td
+              %a.small-font{href: "javascript:void(0);"}
+                = budget.description
+            %td
+              %strong
+                = budget.cod_budget
+            %td
+            %td
+              %a{href: "javascript:load_url_ondiv('#{show_form_management_distribution_path(budget.id)}', 'content-load');"}
+                %i.fa.fa-lg.fa-fw.fa-download
+.col-md-8
+  .group-bar
+    %strong{style: "padding-left: 10px; font-size: 12px;"} Programado
+  .row
+    .col-md-12
+      .content-load

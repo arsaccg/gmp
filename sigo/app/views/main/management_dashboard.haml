@@ -1,6 +1,72 @@
 %section#widget-grid
   / row
   .row
+    %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+      / new widget
+      #wid-id-3.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
+        %header
+          %span.widget-icon
+            %i.fa.fa-map-marker
+          %h2 Centro de Costo
+          .widget-toolbar.hidden-mobile
+            %span.onoffswitch-title
+              %i.fa.fa-location-arrow
+              Realtime
+            %span.onoffswitch
+              %input#myonoffswitch.onoffswitch-checkbox{checked: "checked", name: "onoffswitch", type: "checkbox"}/
+              %label.onoffswitch-label{for: "myonoffswitch"}
+                %span.onoffswitch-inner{"data-swchoff-text" => "NO", "data-swchon-text" => "YES"}
+                %span.onoffswitch-switch
+        / widget div
+        %div
+          / widget edit box
+          .jarviswidget-editbox
+            %div
+              %label Title:
+              %input{type: "text"}/
+          / end widget edit box
+          .widget-body.no-padding
+            / content goes here
+            / #vector-map.vector-map
+            #heat-fill
+              %span.fill-a 0
+              %span.fill-b 5,000
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th N° de C.C.
+                  %th Centro de Costo
+                  %th G.D.G.
+                  %th Préstamos
+                  %th{"style"=>"width:30px;"} Resultados Operativos
+              %tbody
+                -if @cost_centers!=nil
+                  -@company.each do |cc|
+                    %tr
+                      %td{"colspan"=>5,"style"=>"background-color:#1E486E;color:white;font-weight:bold;text-align:center;"}= cc.name.to_s
+                    -costcenter=CostCenter.where("company_id like ?",cc.id)
+                    -costcenter.each do |cc1|
+                      %tr
+                        %td= cc1.code.to_s
+                        %td= cc1.name.to_s
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg('+cc1.id.to_s+');'}
+                              %i.fa.fa-folder-open
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc1.id.to_s+');'}
+                              %i.fa.fa-folder-open
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc1.id.to_s+');'}
+                              %i.fa.fa-usd
+
+                -else
+                  =""
+  /end cost center row
+  / row
+  .row
     %article.col-sm-12
       / new widget
       #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
@@ -223,226 +289,25 @@
           .widget-body.no-padding
             #map_canvas2.google_maps{:style => 'height: 500px;'}
 
-  / row
-  .row
-    %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
-      / new widget
-      #wid-id-3.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
-        %header
-          %span.widget-icon
-            %i.fa.fa-map-marker
-          %h2 Centro de Costo
-          .widget-toolbar.hidden-mobile
-            %span.onoffswitch-title
-              %i.fa.fa-location-arrow
-              Realtime
-            %span.onoffswitch
-              %input#myonoffswitch.onoffswitch-checkbox{checked: "checked", name: "onoffswitch", type: "checkbox"}/
-              %label.onoffswitch-label{for: "myonoffswitch"}
-                %span.onoffswitch-inner{"data-swchoff-text" => "NO", "data-swchon-text" => "YES"}
-                %span.onoffswitch-switch
-        / widget div
-        %div
-          / widget edit box
-          .jarviswidget-editbox
-            %div
-              %label Title:
-              %input{type: "text"}/
-          / end widget edit box
-          .widget-body.no-padding
-            / content goes here
-            / #vector-map.vector-map
-            #heat-fill
-              %span.fill-a 0
-              %span.fill-b 5,000
-            %table.table.table-striped.table-hover.table-condensed
-              %thead
-                %tr
-                  %th Centro de Costo
-                  %th N° de Centro de Costo
-                  %th.text-align-center Actividad
-                  %th.text-align-center Especialidad
-                  %th.text-align-center Ratios
-              %tbody
-                %tr
-                  %td
-                    %a{href: "javascript:void(0);"} C.C Arequipa - Aplao
-                  %td 7230
-                  %td.text-align-center
-                    .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
-                      2700, 3631, 2471, 1300, 1877, 2500, 2577, 2700, 3631, 2471, 2000, 2100, 3000
-                  %td.text-align-center Saneamiento
-                  %td.text-align-center
-                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
-                      17,83
-                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
-                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
-                        %i.fa.fa-cog.fa-lg
-                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
-                            = succeed "DF" do
-                              %u P
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
-                            = succeed "elete" do
-                              %u D
-                        %li.divider
-                        %li.text-align-center
-                          %a{href: "javascript:void(0);"} Cancel
-                %tr
-                  %td
-                    %a{href: "javascript:void(0);"} C.C Saldos Rioja
-                  %td 7232
-                  %td.text-align-center
-                    .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
-                      1000, 1100, 3030, 1300, -1877, -2500, -2577, -2700, 3631, 2471, 4700, 1631, 2471
-                  %td.text-align-center Saneamiento
-                  %td.text-align-center
-                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
-                      22,88
-                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
-                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
-                        %i.fa.fa-cog.fa-lg
-                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
-                            = succeed "DF" do
-                              %u P
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
-                            = succeed "elete" do
-                              %u D
-                        %li.divider
-                        %li.text-align-center
-                          %a{href: "javascript:void(0);"} Cancel
-                %tr
-                  %td
-                    %a{href: "javascript:void(0);"} C.C Bagua
-                  %td 7232
-                  %td.text-align-center
-                    .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
-                      3631, 1471, 2400, 3631, 471, 1300, 1177, 2500, 2577, 3000, 4100, 3000, 7700
-                  %td.text-align-center Saneamiento
-                  %td.text-align-center
-                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
-                      10,90
-                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
-                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
-                        %i.fa.fa-cog.fa-lg
-                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
-                            = succeed "DF" do
-                              %u P
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
-                            = succeed "elete" do
-                              %u D
-                        %li.divider
-                        %li.text-align-center
-                          %a{href: "javascript:void(0);"} Cancel
-                %tr
-                  %td
-                    %a{href: "javascript:void(0);"} C.C Huaraz
-                  %td 7232
-                  %td.text-align-center
-                    .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
-                      2700, 1877, 2500, 2577, 2000, 3631, 2471, -2700, -3631, 2471, 1300, 2100, 3000,
-                  %td.text-align-center Eletromecanico
-                  %td.text-align-center
-                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
-                      34,66
-                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
-                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
-                        %i.fa.fa-cog.fa-lg
-                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
-                            = succeed "DF" do
-                              %u P
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
-                            = succeed "elete" do
-                              %u D
-                        %li.divider
-                        %li.text-align-center
-                          %a{href: "javascript:void(0);"} Cancel
-                %tr
-                  %td
-                    %a{href: "javascript:void(0);"} C.C Huancavelica
-                  %td 7232
-                  %td.text-align-center
-                    .sparkline.txt-color-blue.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
-                      1300, 1877, 2500, 2577, 2000, 2100, 3000, -2471, -2700, -3631, -2471, 2700, 3631
-                  %td.text-align-center Eletromecanico
-                  %td.text-align-center
-                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
-                      75,25
-                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
-                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
-                        %i.fa.fa-cog.fa-lg
-                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
-                            = succeed "DF" do
-                              %u P
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
-                            = succeed "elete" do
-                              %u D
-                        %li.divider
-                        %li.text-align-center
-                          %a{href: "javascript:void(0);"} Cancel
-                %tr
-                  %td
-                    %a{href: "javascript:void(0);"} C.C Huancayo
-                  %td 146
-                  %td.text-align-center
-                    .sparkline.txt-color-orange.text-align-center{"data-sparkline-barwidth" => "2", "data-sparkline-height" => "22px", "data-sparkline-width" => "90px"}
-                      5, 34, 10, 1, 4, 6, -9, -1, 0, 0, 5, 6, 7
-                  %td.text-align-center Eletromecanico
-                  %td.text-align-center
-                    .sparkline.display-inline{"data-sparkline-offset" => "90", "data-sparkline-piecolor" => "[\"#E979BB\", \"#57889C\"]", "data-sparkline-piesize" => "23px", "data-sparkline-type" => "pie"}
-                      50,50
-                    .btn-group.display-inline.pull-right.text-align-left.hidden-tablet
-                      %button.btn.btn-xs.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
-                        %i.fa.fa-cog.fa-lg
-                      %ul.dropdown-menu.dropdown-menu-xs.pull-right
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-file.fa-lg.fa-fw.txt-color-greenLight
-                            = succeed "DF" do
-                              %u P
-                        %li
-                          %a{href: "javascript:void(0);"}
-                            %i.fa.fa-times.fa-lg.fa-fw.txt-color-red
-                            = succeed "elete" do
-                              %u D
-                        %li.divider
-                        %li.text-align-center
-                          %a{href: "javascript:void(0);"} Cancel
-              %tfoot
-                %tr
-                  %td{colspan: "5"}
-                    %ul.pagination.pagination-xs.no-margin
-                      %li.prev.disabled
-                        %a{href: "javascript:void(0);"} Previous
-                      %li.active
-                        %a{href: "javascript:void(0);"} 1
+
             / end content
         / end widget div
       / end widget
+
+#gdg.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgLabel", role: "dialog", tabindex: "-1"}
+
+#gdgn.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgnLabel", role: "dialog", tabindex: "-1"}
+#gdge.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgeLabel", role: "dialog", tabindex: "-1"}
+#gdgs.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgsLabel", role: "dialog", tabindex: "-1"}
+
+#loan.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
+#loan_new.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
+#loan_edit.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
+#loan_show.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
+
+#operating-result.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "operatingResultLabel", role: "dialog", tabindex: "-1"}
+
+#show-phase.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "90Label", role: "dialog", tabindex: "-1"}
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -918,4 +783,83 @@
     }
 
     generate_map_2();
+  }
+
+  function gdg(id) {
+    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
+    load_url_ajax('#{general_expenses_diverse_expenses_of_managements_path}', 'gdg', data, null, 'GET');
+    $('#gdg').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function gdg_new(id){
+    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
+    load_modal_ajax('#{new_general_expenses_diverse_expenses_of_management_path}', 'gdgn', 'gdg', data, null, 'GET');
+  }
+
+  function gdg_edit(id){
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    load_modal_ajax('/general_expenses/diverse_expenses_of_managements/'+id+'/edit', 'gdge', 'gdg', data, null, 'GET');
+  }
+
+  function gdg_show(id){
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    load_modal_ajax('/general_expenses/diverse_expenses_of_managements/'+id+'', 'gdgs', 'gdg', data, null, 'GET');
+  }  
+
+  function loan(id){
+    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
+      load_url_ajax('#{general_expenses_loans_path}', 'loan', data, null, 'GET');
+    $('#loan').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function loan_new(id){
+    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
+    load_modal_ajax('#{new_general_expenses_loan_path}', 'loan_new', 'loan', data, null, 'GET');
+  }
+  function loan_edit(id,cc1,cc2,cc3){
+    data = { authenticity_token: "#{form_authenticity_token}", cc1:cc1, cc2:cc2, cc3:cc3};
+    load_modal_ajax('/general_expenses/loans/'+id+'/edit', 'loan_edit', 'loan_show', data, null, 'GET');
+  }
+
+  function loan_show(cc1,cc2,cc3){
+    data = { authenticity_token: "#{form_authenticity_token}", cc1:cc1, cc2:cc2, cc3:cc3};
+    load_modal_ajax('#{general_expenses_loan_path("show")}', 'loan_show', 'loan', data, null, 'GET');
+  }    
+
+  function load_operating_result(cost_center_id){
+    data = { authenticity_token : "#{form_authenticity_token}", cost_center : cost_center_id }
+    load_url_ajax('#{projecting_operating_results_path}', 'operating-result', data, 'avoid-opacity', 'POST');
+    $('#operating-result').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function load_full_operating_result(cost_center_id){
+    $("#itemsModal").modal({
+      keyboard: false,
+      backdrop: false
+    });
+
+    load_url_ondiv("#{full_project_operating_results_path}?authenticity_token=#{form_authenticity_token}&cost_center=" + cost_center_id, "detail-inputs");
+  }
+
+  function get_input_detail(d_sale, b_goal, b_cat){
+    $("#itemsModal").modal();
+    load_url_ondiv("#{get_input_detail_administration_inputcategories_path}?category_id=0" + b_cat + "&budget_sale_id=" + d_sale + "&budget_goal_id=" + b_goal, "detail-inputs");
+  }
+
+  function show_phases(cost_center_id, code_phase){
+    data = { authenticity_token : "#{form_authenticity_token}", cost_center_id : cost_center_id, code_phase : code_phase }
+    load_url_ajax('#{show_phases_path}', 'show-phase', data, 'avoid-opacity', 'POST');
+    $('#show-phase').modal({
+      keyboard: false,
+      backdrop: false
+    });
   }

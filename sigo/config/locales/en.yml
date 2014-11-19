@@ -113,3 +113,4 @@ en:
             preffix:
               blank: "(*) requerido"
               taken: "El <b>%{attribute}</b> debe ser único."
+

@@ -3,14 +3,17 @@
     = hidden_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afp_id]', @id_afp.to_i
   %td.col-2
     = @enterprise.to_s
-  %td.col-2
+  %td.col-2{ 'style' => 'display:none' }
     %div
       = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afptype]', @afptype.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
   %td.col-2
     %div
-      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][start_date]', @start_date , class: "form-control quantity", :required => true
+      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][afpnumber]', @afpnumber.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
   %td.col-2
     %div
-      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][end_date]', @end_date , class: "form-control quantity", :required => true
+      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][start_date]', @start_date , class: "form-control quantity", :required => true
+  %td.col-2{ 'style' => 'display:none' }
+    %div
+      = text_field_tag 'worker[worker_afps_attributes][' + @reg_n.to_s + '][end_date]', @end_date , class: "form-control quantity"
   %td{:style => "width: 1%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

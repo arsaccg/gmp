@@ -1,10 +1,12 @@
 # encoding: utf-8
 class Phase < ActiveRecord::Base
-  has_many :deliver_orders
+  has_many :delivery_orders
+  has_many :warehouse_orders
   has_many :part_person_details
   has_many :part_of_equipment_details
   has_many :subcontract_details
   has_many :wbsitems
+  has_many :general_expenses
   
   #Validaciones
   include ActiveModel::Validations
@@ -17,7 +19,7 @@ class Phase < ActiveRecord::Base
   end
 
   def self.getSpecificPhases(cost_center_id)
-    mysql_result = Phase.find(:all, :select =>"DISTINCT p.id, p.name, p.code", :from => 'wbsitems w, phases p', :conditions => ["w.cost_center_id = ? AND w.phase_id = p.id", cost_center_id], :order => "p.code ASC")
+    mysql_result = Phase.find(:all, :select =>"DISTINCT p.id, p.name, p.code", :from => 'wbsitems w, phases p, general_expenses ge', :conditions => ["w.cost_center_id = ? AND w.phase_id = p.id OR ge.phase_id = p.id", cost_center_id], :order => "p.code ASC")
     return mysql_result
   end
 end

@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  article_id: 1
+  sector_id: 1
+  phase_id: 1
+  amount: 1
+  price: 1.5
+  unit_price_before_igv: 1.5
+  igv: false
+  quantity_igv: 1.5
+  discount_after: 1.5
+  discount_before: 1.5
+  description: MyText
+
+two:
+  article_id: 1
+  sector_id: 1
+  phase_id: 1
+  amount: 1
+  price: 1.5
+  unit_price_before_igv: 1.5
+  igv: false
+  quantity_igv: 1.5
+  discount_after: 1.5
+  discount_before: 1.5
+  description: MyText

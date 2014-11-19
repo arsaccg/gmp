@@ -23,13 +23,13 @@
           - @type_com.each do |type_com|
             - if type_com.id == 1
               .tab-pane.active{:id => "tab-#{type_com.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Nombres
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_com.of_companies.each do |lawre|
@@ -51,13 +51,13 @@
                               Eliminar
             - else
               .tab-pane{:id => "tab-#{type_com.id}"}
-                .col-md-8
+                .col-md-10
                   %table.table.table-condensed.table-bordered
                     %thead
                       %tr
                         %th Nombres
                         %th Descripción
-                        %th Documentos
+                        %th Doc
                         %th Acciones
                     %tbody
                       - type_com.of_companies.each do |lawre|
