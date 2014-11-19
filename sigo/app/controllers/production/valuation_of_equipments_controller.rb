@@ -138,7 +138,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             puts @descuentocombustible
             puts @otrosdescuentos
             puts @netoapagar
-            puts @descuentootros 
+            puts @descuentootros
 
           end
         end
