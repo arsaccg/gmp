@@ -317,7 +317,7 @@
       $('#input-totalretention').change(function(){
         var retention = parseFloat($(this).text());
         var total_igv = parseFloat($('#total-igv').text());
-        $('#net-pay').html(total_igv - retention)
+        $('#net-pay').html((total_igv - retention).toFixed(2))
 
       })
 
@@ -338,6 +338,7 @@
         $('#lastIgv').html(parseFloat($('#lastIgv').attr('original')));
         $('#lastTotal').html(parseFloat($('#lastTotal').attr('original')));
         $('#lastnetpay').html(parseFloat($('#lastnetpay').attr('original')));
+        $('#lasttr').html(parseFloat($('#lasttr').attr('original')));
         if($('#total').text()!= ""){
           //console.log('#total.text!=nil');
           $('#percent').text(' ');
@@ -347,7 +348,7 @@
           $('#amortAcum').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
           $('#amortAcum2').text((parseFloat($('#amortLast').text()) + parseFloat($('#number').val())).toFixed(2));
 
-
+          $(acumtr).text((parseFloat($('#totalretention').text())+parseFloat($('#lasttr').text())).toFixed(2));
 
           $('#saldo').text((#{@subadvances} - parseFloat($('#amortAcum2').text())).toFixed(2));
 
@@ -368,7 +369,7 @@
           $('#acumTotal').text((parseFloat($('#lastTotal').text()) + parseFloat($('#total-igv').text())).toFixed(2));
           $('#valuation_of_equipment_accumulated_totalbill').val((parseFloat($('#lastTotal').text()) + parseFloat($('#total-igv').text())).toFixed(2));
 
-          $('#net-pay').text($('#total-igv').text() - $('#totalretention').text());
+          $('#net-pay').text(($('#total-igv').text() - $('#totalretention').text()).toFixed(2));
 
           $('#valuation_of_equipment_net_payment').val($('#total-igv').text() - $('#totalretention').text());
           $('#acumnetpay').text((parseFloat($('#lastnetpay').text()) + parseFloat($('#net-pay').text())).toFixed(2));
