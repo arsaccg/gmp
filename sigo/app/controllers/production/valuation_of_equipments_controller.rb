@@ -10,6 +10,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     
   def show
     @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+    @detraccion = @valuationofequipment.detraction
     @start_date = @valuationofequipment.start_date
     @end_date = @valuationofequipment.end_date
     @ids=params[:id]
@@ -35,7 +36,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         @totalfacigv = workerDetail[3]
         @totalincluidoigv = workerDetail[4]
         @retenciones = workerDetail[5]
-        @detraccion = workerDetail[6]
         @descuentocombustible = workerDetail[7]
         @otrosdescuentos = workerDetail[8]
         @netoapagar = workerDetail[9]
@@ -123,11 +123,23 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             @totalfacigv = workerDetail[3]
             @totalincluidoigv = workerDetail[4]
             @retenciones = workerDetail[5]
-            @detraccion = workerDetail[6]
             @descuentocombustible = workerDetail[7]
             @otrosdescuentos = workerDetail[8]
             @netoapagar = workerDetail[9]
             @descuentootros = workerDetail[11]
+
+            puts @valorizacionsinigv
+            puts @amortizaciondeadelanto
+            puts @totalfacturar
+            puts @totalfacigv
+            puts @totalincluidoigv
+            puts @retenciones
+            puts @detraccion
+            puts @descuentocombustible
+            puts @otrosdescuentos
+            puts @netoapagar
+            puts @descuentootros 
+
           end
         end
       end

@@ -69,7 +69,9 @@
             %th{"style"=>"color:white"}
             %th{"style"=>"color:white;padding-left:8px;"} Total Incluido IGV
             %th{ 'colspan' => 2, "style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.bill+@valuationofequipment.bill*0.18, unit: 'S/. ', precision: 2) 
-            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@totalincluidoigv, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@totalincluidoigv.to_f, unit: 'S/. ', precision: 2)
+            -puts "-----------"
+            -puts @totalincluidoigv
             %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_totalbill, unit: 'S/. ', precision: 2)
           %tr{"bgcolor"=>"#ECF3F8"}
             %th{"style"=>"color:#5f5f5f;text-align:center"} 5.00
@@ -110,7 +112,7 @@
             %th{"style"=>"color:white;text-align:center"} 6.00
             %th{"style"=>"color:white;padding-left:8px;"} NETO A PAGAR: TOTAL (INCL. I.G.V.) - TOTAL RETEN.
             %th{ 'colspan' => 2, "style"=>"color:white;text-align:right;padding-right:5px;"}=number_to_currency(@valuationofequipment.net_payment.to_f, unit: 'S/. ', precision: 2)
-            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency("%.2f" % (@totalincluidoigv-@valuationofequipment.accumulated_detraction.to_f+@otrosdescuentos), unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency("%.2f" % (@totalincluidoigv.to_f-@valuationofequipment.accumulated_detraction.to_f+@otrosdescuentos), unit: 'S/. ', precision: 2)
             %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_net_payment.to_f, unit: 'S/. ', precision: 2)
       %br
       %br
