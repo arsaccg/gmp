@@ -35,6 +35,9 @@
                   %a.btn-xs{:href=>"javascript:load_resume('"+report_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini")
                     %i(class="fa fa-file")
                     Reporte
+                  %a.btn-xs{:href=>"javascript:load_resume('"+short_report_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini")
+                    %i(class="fa fa-file")
+                    Corto
 
                   -if val.pending? == false && val.charged? == false
                     %a.btn-xs{:href=>"javascript:load_edit_valorization('"+finalize_management_valorization_path(val.id).to_s+"')"}(class="btn btn-mini")
