@@ -115,13 +115,13 @@
             %td(style="text-align: right;")
               = si_prev[ibb.order][15].to_f == 0 ? '-' : number_to_currency( (si_prev[ibb.order][15].to_f), :unit=>'' )
             %td(style="text-align: right;")
-              =si_prev[ibb.order][16]
+              =si_prev[ibb.order][16].round(2) rescue 0
               = '%'
           -else
             %td(style="text-align: right;")
               = number_to_currency( ibb.price, :unit=>'')
             %td(style="text-align: right;")
-              = number_to_currency( ibb.price, :unit=>'')
+              = number_to_currency( ibb.measured, :unit=>'')
             %td(style="text-align: right;")
               = number_to_currency( (ibb.price * ibb.measured), :unit=>'')
             %td
@@ -136,16 +136,22 @@
         -else
           %td
           %td
+          %td(style="text-align: right;")
+            = number_to_currency( amount_contractual(ibb.order, @budget.id), :unit=>'' )
           %td
+          %td(style="text-align: right;")
+            = number_to_currency( amount_prev(ibb.order, @budget.id, @valorization.valorization_date), :unit=>'' )
           %td
+          %td(style="text-align: right;")
+            = number_to_currency( amount_actual(ibb.order, @budget.id, @valorization.id), :unit=>'' )
           %td
+          %td(style="text-align: right;")
+            = number_to_currency( amount_acumulated(ibb.order, @budget.id, @valorization.valorization_date, @valorization.id), :unit=>'' )
           %td
-          %td
-          %td
-          %td
-          %td
-          %td
-          %td
+          %td(style="text-align: right;")
+            = number_to_currency( amount_remainder(ibb.order, @budget.id, @valorization.valorization_date, @valorization.id), :unit=>'' )
+          %td(style="text-align: right;")
+            = "#{advance_percent(ibb.order, @budget.id, @valorization.valorization_date, @valorization.id).round(2)} %"
       -@last_result = ibb
     
   %tr
