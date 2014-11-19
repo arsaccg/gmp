@@ -97,7 +97,7 @@ class Payslip < ActiveRecord::Base
                 else
                   formula = formula.formula
                   amount = Formule.translate_formules(formula, rem_basic,row[0])
-                  total += amount
+                  total += amount.to_f
                 end
               end
             else

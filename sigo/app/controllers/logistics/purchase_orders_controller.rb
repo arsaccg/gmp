@@ -424,9 +424,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
       detail.update_attributes(
         :discount_before => discounts_before, 
         :discount_after => discounts_after, 
-        :quantity_igv => (((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f).round(2)*(igv.to_f)).round(2), 
-        :unit_price_before_igv => ((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f).round(2), 
-        :unit_price_igv => ( ((((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f) * (igv.to_f)) + ((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f)) + discounts_after.to_f).round(2)
+        :quantity_igv => (((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f).round(4).round(2)*(igv.to_f)).round(4).round(2), 
+        :unit_price_before_igv => ((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f).round(4).round(2), 
+        :unit_price_igv => ( ((((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f) * (igv.to_f)) + ((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f)) + discounts_after.to_f).round(4).round(2)
       )
     end
     flash[:notice] = "Se ha actualizado correctamente los datos."
