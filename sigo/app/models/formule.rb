@@ -25,7 +25,7 @@ class Formule < ActiveRecord::Base
           category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
           from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => concept.id).first
           if !from_category.nil?
-            if from_category.amount != 0.0 && !from_category.amount.nil?
+            if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
               amount = from_category.amount
             else
               formula = concept.concept_valorization.formula

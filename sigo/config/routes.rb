@@ -825,6 +825,7 @@ ArsacLogistica::Application.routes.draw do
         get 'change_data_da'
         get 'change_data_aom'
         get 'report'
+        get 'short_report'
       end
     end
 
