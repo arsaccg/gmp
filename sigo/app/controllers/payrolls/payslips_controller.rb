@@ -128,7 +128,7 @@ class Payrolls::PayslipsController < ApplicationController
     if !@max_hour.nil?
       @max_hour = @max_hour[0]
     else
-      @max_hour = 0
+      @max_hour = 48
     end
 
     worker = params[:worker]
@@ -141,7 +141,7 @@ class Payrolls::PayslipsController < ApplicationController
     elsif worker == "obrero"
 
       @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
-      @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], ing, @headers)
+      @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], ing, des, @headers)
 
     end
     render(partial: 'workers', :layout => false)

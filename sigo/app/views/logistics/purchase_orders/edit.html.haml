@@ -11,6 +11,185 @@
   Retornar al listado de Ordenes de Compra
 
 :javascript
+  $(document).ready(function(){
+    $('#proveedor-select').select2({
+      placeholder: "Buscar proveedor...",
+      minimumInputLength: 3,
+      ajax: {
+        url: "#{display_proveedor_logistics_purchase_orders_path}",
+        dataType: 'json',
+        type: 'POST',
+        quietMillis: 100,
+        data: function(term, page){
+          return {
+            q: term,
+            page: page,
+            authenticity_token: "#{form_authenticity_token}"
+          };
+        },
+        results: function(data, page){
+          return {results: data.articles};
+        }
+      },
+      initSelection: function(element, callback) {
+        var id=$(element).val();
+        if (id != "") {
+          $.ajax("#{display_proveedor_logistics_purchase_orders_path}", {
+            type: 'POST',
+            data: {
+              element: id,
+              authenticity_token: "#{form_authenticity_token}"
+            },
+            dataType: "json"
+          }).done(function(data) { 
+            callback(data.articles[0]);
+          });
+        }
+      },
+      formatResult: function(node){ return '<div>' + node.code + ' - ' + node.name +'</div>' },
+      formatSelection: function(node){ return (node.code + ' - ' + node.name ) },
+      escapeMarkup: function (m) { return m; }
+    });
+
+
+
+    $.cost_center = "#{@purchaseOrder.cost_center_id}";
+
+    $('#btn-add-more-items-do').click(function(){
+      var ids_delivery_order = new Array();
+
+      $('#summary-delivery-orders tbody tr td.pod-di input').each(function(index, element){
+        ids_delivery_order[index] = $(this).val();
+      });
+
+      data = { cost_center_id: $.cost_center, authenticity_token: "#{form_authenticity_token}", ids_delivery_order: ids_delivery_order };
+      load_items_delivery_order_ajax('#{more_items_from_delivery_orders_logistics_purchase_orders_path}', 'modalDeliveryItemsContent', data);
+      $('#modalDeliveryItems').modal('toggle', {
+        keyboard: false,
+        backdrop: 'static'
+      });
+    });
+
+    $('#btn-info-cost').click(function() {
+      var total_unit_price = 0;
+      $('#order_delivery_items_table tr td.price-without-igv input').each(function(k,v){
+        total_unit_price = total_unit_price + parseFloat($(this).val());
+      });
+
+      var total_unit_price_with_igv = 0;
+      $('#order_delivery_items_table tr td.price-with-igv input').each(function(k,v){
+        total_unit_price_with_igv = total_unit_price_with_igv + parseFloat($(this).val());
+      });
+
+      $.smallBox({
+        title : "Información de la Orden de Compra",
+        content : "El Sub Total es de: S/." + total_unit_price + ' ' + "El Total es de: S/." + total_unit_price_with_igv, 
+        color : "#5384AF",
+        //timeout: 8000,
+        icon : "fa fa-bell"
+      });
+    });
+
+    $('form[id^="edit_purchase_order"]').ajaxForm({
+      beforeSubmit: function(arr, $form, options) {
+        $form.validate({
+          // Rules for form validation
+          rules : {
+            'purchase_order[supplier_id]': {
+              required: true
+            },
+            'purchase_order[description]': {
+              required: true
+            },
+            'purchase_order[money_id]': {
+              required: true
+            },
+            'purchase_order[method_of_payment_id]': {
+              required: true
+            },
+            'purchase_order[date_of_issue]': {
+              required: true
+            },
+            'purchase_order[expiration_date]': {
+              required: true,
+              greaterThan: "#purchase_order_delivery_date",
+              greaterThan: "#purchase_order_date_of_issue"
+            },
+            'purchase_order[delivery_date]': {
+              required: true,
+              greaterThan: "#purchase_order_date_of_issue"
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'purchase_order[supplier_id]': "Porfavor, especifica el proveedor.",
+            'purchase_order[money_id]': "Porfavor, especifica el tipo de moneda con que se trabajará.",
+            'purchase_order[method_of_payment_id]': "Porfavor, especifica el método de págo.",
+            'purchase_order[date_of_issue]': "Porfavor, especifica la fecha de emisión.",
+            'purchase_order[expiration_date]': {
+              required: "Porfavor, especifica la fecha de expiración.",
+              greaterThan: "La fecha de vencimiento debe ser mayor a la fecha de entrega.",
+              greaterThan: "La fecha de vencimiento debe ser mayor a la fecha de emisión."
+            },
+            'purchase_order[description]': {
+              required: "Porfavor, especifica la glosa."
+            },
+            'purchase_order[delivery_date]': { 
+              required: "Porfavor, especifica la fecha de entrega.",
+              greaterThan: "La fecha de entrega debe ser mayor a la fecha de emisión."
+            }
+          },
+          highlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+          },
+          unhighlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+          },
+          errorElement: 'span',
+          errorClass: 'help-block',
+          errorPlacement: function (error, element) {
+            if (element.parent('.input-group').length) {
+              error.insertAfter(element.parent());
+            } else {
+              error.insertAfter(element);
+            }
+          }
+        });
+
+        return $form.valid();
+      },
+      target: '#content'
+    });
+
+  });
+
+
+  function enableFieldsForIgv(element){
+    var reg = $(element).attr('id').split("_")[6];
+    calcularcondescuentos(reg);
+  }
+
+  function add_more_items(){
+    var data_delivery_order = new Array();
+    status = false;
+    var index = 0;
+    $('#modal-more-items tbody tr td .checkbox .order_check').each(function(){
+      if( $(this).is(':checked') ){
+        status = true
+        data_delivery_order[index] = $(this).val();
+        index++;
+      }
+    });
+
+    if(status){
+      data = { ids_delivery_order: data_delivery_order, authenticity_token: "#{form_authenticity_token}" };
+      append_url_ajax('#{add_items_from_delivery_orders_logistics_purchase_orders_path}', 'summary-delivery-orders', data, '', 'POST');
+      append_url_ajax('#{add_modal_extra_operations_logistics_purchase_orders_path}', 'tablemodalsadd', data, 0, 'POST');
+    }
+
+    $('#modalDeliveryItems').modal('hide');
+  };
   
   /*
   if($('form[id^="edit_order_of_service"]').length > 0){
@@ -33,10 +212,70 @@
       return max; 
     else return value;
   }
+  
+  function calculatePriceWithourIgv(element){
+    var reg = $(element).attr('id').split("_")[6];
+    calcularcondescuentos(reg);
+  }
 
   function calculatePrice(element){
     var reg = $(element).attr('id').split("_")[6];
     calcularcondescuentos(reg);
+  }
+
+  function calcularcondescuentos(reg){
+    var dib = $('#'+reg+'b').children();
+    var dia = $('#'+reg+'a').children();
+    var price = parseFloat($('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price').val());
+    var amount = parseFloat($('#purchase_order_purchase_order_details_attributes_'+reg+'_amount').val());
+    var igv = $('#purchase_order_purchase_order_details_attributes_'+reg+'_igv').is(':checked');
+
+    var db_m = 0;
+    var da_m = 0;
+    var a_igv_c_d = 0;
+    var d_igv_c_d = 0;
+
+    if($('#'+reg+'b > input').length > 0){
+      dib.each(function(){
+        if(Math.abs($(this).attr('value')) < 1.0){
+          db_m = parseFloat(db_m)+parseFloat(parseFloat($(this).attr('value'))*price*amount);
+        }else{
+          db_m =parseFloat(db_m)+parseFloat($(this).attr('value'));
+        }
+      });
+    }
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_before').val(Math.abs(toFixed(toFixed(db_m,4),2)));
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_before_igv').val(toFixed(toFixed(parseFloat(price*amount-db_m),4),2));
+    var total = 0;
+    if(igv){
+      if($('#'+reg+'a > input').length > 0){
+        dia.each(function(){
+          if(Math.abs($(this).attr('value')) < 1.0){
+            da_m = parseFloat(da_m)+parseFloat(toFixed(toFixed(parseFloat($(this).attr('value'))*price*amount*0.18,4),2)+toFixed(toFixed(parseFloat($(this).attr('value'))*price*amount,4),2));
+          }else{
+            da_m =parseFloat(da_m)+parseFloat($(this).attr('value'));
+          }
+        });  
+      }
+      total = toFixed(toFixed(((parseFloat(price*amount-db_m)*1.18)-da_m),4),2);
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val(toFixed(toFixed((parseFloat(price*amount-db_m)*1.18),4),2));
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val(toFixed(toFixed((parseFloat(price*amount-db_m)*0.18),4),2));
+    }else{
+      if($('#'+reg+'a > input').length > 0){
+        dia.each(function(){
+          if(Math.abs($(this).attr('value')) < 1.0){
+            da_m = parseFloat(da_m)+parseFloat(parseFloat($(this).attr('value'))*price*amount);
+          }else{
+            da_m =parseFloat(da_m)+parseFloat($(this).attr('value'));
+          }
+        });    
+      }
+      total=toFixed(toFixed((parseFloat(price*amount-db_m)-da_m),4),2);
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val('0');
+      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val(toFixed(toFixed(parseFloat(price*amount-db_m),4),2));
+    }
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_igv').val(total);
+    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_after').val(Math.abs(toFixed(toFixed(da_m,4),2)));
   }
 
   function isNumber(evt) {
@@ -108,62 +347,6 @@
     $id_generated = $current_tr_parent.split('-')[1];
     $(id_modal_target + '-hidden').val($id_generated);
   }
-
-  function calcularcondescuentos(reg){
-    var dib = $('#'+reg+'b').children();
-    var dia = $('#'+reg+'a').children();
-    var price = parseFloat($('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price').val());
-    var amount = parseFloat($('#purchase_order_purchase_order_details_attributes_'+reg+'_amount').val());
-    var igv = $('#purchase_order_purchase_order_details_attributes_'+reg+'_igv').is(':checked');
-
-    var db_m = 0;
-    var da_m = 0;
-    var a_igv_c_d = 0;
-    var d_igv_c_d = 0;
-
-    if($('#'+reg+'b > input').length > 0){
-      dib.each(function(){
-        if(Math.abs($(this).attr('value')) < 1.0){
-          db_m = parseFloat(db_m)+parseFloat(parseFloat($(this).attr('value'))*price*amount);
-        }else{
-          db_m =parseFloat(db_m)+parseFloat($(this).attr('value'));
-        }
-      });
-    }
-    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_before').val(Math.abs(toFixed(toFixed(db_m,4),2)));
-    $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_before_igv').val(toFixed(toFixed(parseFloat(price*amount-db_m),4),2));
-    var total = 0;
-    if(igv){
-      if($('#'+reg+'a > input').length > 0){
-        dia.each(function(){
-          if(Math.abs($(this).attr('value')) < 1.0){
-            da_m = parseFloat(da_m)+parseFloat(toFixed(toFixed(parseFloat($(this).attr('value'))*price*amount*0.18,4),2)+toFixed(toFixed(parseFloat($(this).attr('value'))*price*amount,4),2));
-          }else{
-            da_m =parseFloat(da_m)+parseFloat($(this).attr('value'));
-          }
-        });  
-      }
-      total = toFixed(toFixed(((parseFloat(price*amount-db_m)*1.18)-da_m),4),2);
-      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val(toFixed(toFixed((parseFloat(price*amount-db_m)*1.18),4),2));
-      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val(toFixed(toFixed((parseFloat(price*amount-db_m)*0.18),4),2));
-    }else{
-      if($('#'+reg+'a > input').length > 0){
-        dia.each(function(){
-          if(Math.abs($(this).attr('value')) < 1.0){
-            da_m = parseFloat(da_m)+parseFloat(parseFloat($(this).attr('value'))*price*amount);
-          }else{
-            da_m =parseFloat(da_m)+parseFloat($(this).attr('value'));
-          }
-        });    
-      }
-      total=toFixed(toFixed((parseFloat(price*amount-db_m)-da_m),4),2);
-      $('#purchase_order_purchase_order_details_attributes_'+reg+'_quantity_igv').val('0');
-      $('#purchase_order_purchase_order_details_attributes_'+reg+'_total_igv').val(toFixed(toFixed(parseFloat(price*amount-db_m),4),2));
-    }
-    $('#purchase_order_purchase_order_details_attributes_'+reg+'_unit_price_igv').val(total);
-    $('#purchase_order_purchase_order_details_attributes_'+reg+'_discount_after').val(Math.abs(toFixed(toFixed(da_m,4),2)));
-  }  
-
 
   function toFixed(num,dec){
     dec= dec || 0;

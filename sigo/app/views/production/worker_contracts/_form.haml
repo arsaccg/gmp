@@ -86,7 +86,7 @@
             -arr=Array.new
             -if @workercontract.worker_contract_details.count>0
               -@workercontract.worker_contract_details.each do |wor|
-                -if Concept.find(wor.concept_id).status==1 && Concept.find(wor.concept_id).type_obrero!=nil && Concept.find(wor.concept_id).type_empleado!=nil
+                -if Concept.find(wor.concept_id).status==1
                   .row
                     %section.col.col-md-12
                       .col-md-3
@@ -113,7 +113,7 @@
                       .col-md-3
                         %label.label=con.name
                       .col-md-7
-                      -top=100000000000
+                      -top=10000000000000
                       -if !con.top.nil?
                         -top=con.top
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
@@ -128,7 +128,7 @@
                     .col-md-3
                       %label.label=con.name
                     .col-md-7
-                      -top=100000000000
+                      -top=10000000000000
                       -if !con.top.nil?
                         -top=con.top
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
