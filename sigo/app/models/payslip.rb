@@ -8,6 +8,9 @@ class Payslip < ActiveRecord::Base
     @result[0] << "REMUNERACIÓN BÁSICA"
     @result[0] << "HORAS EXTRAS 60%"
     @result[0] << "HORAS EXTRAS 100%"
+    @result[0] << "ASIGNACIÓN ESCOLAR"
+    @result[0] << "MOVILIDAD"
+    @result[0] << "BUC"
     amount = 0
     ActiveRecord::Base.connection.execute("
       SELECT ppd.worker_id, e.dni, CONCAT_WS(' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname), ar.name, pp.date_of_creation, af.type_of_afp, w.numberofchilds, SUM( ppd.normal_hours ) , SUM( 1 ) AS Dias, SUM( ppd.he_60 ) , SUM( ppd.he_100 ) , SUM( ppd.total_hours ) 
@@ -35,10 +38,11 @@ class Payslip < ActiveRecord::Base
         if !from_contract.amount.nil?
           rem_basic = (from_contract.amount/48)*row[7]
           por_hora = from_contract.amount.to_f/48
+ 
         else
           article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
-          category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-          from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => 1).first
+          @category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
+          from_category = CategoryOfWorker.find_by_category_id(@category_id).category_of_workers_concepts.where(:concept_id => 1).first
           if from_category.amount != 0
             rem_basic = (from_category.amount.to_f/48)*row[7]
             por_hora = from_category.amount.to_f/48
@@ -46,16 +50,31 @@ class Payslip < ActiveRecord::Base
         end
       else
         article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
-        category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-        from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => 1).first
+        @category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
+        from_category = CategoryOfWorker.find_by_category_id(@category_id).category_of_workers_concepts.where(:concept_id => 1).first
         if from_category.amount != 0
           rem_basic = (from_category.amount.to_f/48)*row[7]
           por_hora = from_category.amount.to_f/48
         end
       end
-      @result[@i] << rem_basic # Remuneracion Basica calculada
-      @result[@i] << row[9]*por_hora*1.6 # Horas E. 60% calculado
-      @result[@i] << row[10]*por_hora*2 # Horas E. 100% calculado
+      asig = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => 15).first
+      mov = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => 17).first
+      buc = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => 24).first
+      if asig.nil?
+        asig = CategoryOfWorker.find_by_category_id(@category_id).category_of_workers_concepts.where(:concept_id => 15).first
+      end
+      if mov.nil?
+        mov = CategoryOfWorker.find_by_category_id(@category_id).category_of_workers_concepts.where(:concept_id => 17).first   
+      end
+      if buc.nil?
+        buc = CategoryOfWorker.find_by_category_id(@category_id).category_of_workers_concepts.where(:concept_id => 24).first
+      end
+      @result[@i] << rem_basic
+      @result[@i] << row[9]*por_hora*1.6
+      @result[@i] << row[10]*por_hora*2
+      @result[@i] << asig.amount.to_f * row[6].to_f
+      @result[@i] << mov.amount.to_f * row[8].to_f
+      @result[@i] << buc.amount.to_f * row[8].to_f
       
       total += rem_basic + row[9]*por_hora*1.6 + row[10]*por_hora*2
 
@@ -64,8 +83,14 @@ class Payslip < ActiveRecord::Base
       puts '-----------------------------'
 
       ing.each do |ing|
+        con = nil
+        formu = nil
         con = Concept.find(ing)
-        if con.id != 1 && con.id != 4 && con.id != 5 # Conceptos que NO deben calcularse xq ya lo estan
+
+        if con.id != 1 && con.id != 4 && con.id != 5 && con.id != 15 && con.id != 17 && con.id != 24
+          formu = con.concept_valorization
+          puts con.inspect
+          puts formu.inspect
           if !@result[0].include?(con.name)
             @result[0] << con.name.to_s
           end
@@ -76,15 +101,11 @@ class Payslip < ActiveRecord::Base
               amount = contract.amount.to_f
               total += amount
             else
-              puts '------------1er IF-----------------'
-              puts 'Rem Basic: ' + rem_basic.to_s
-              
-              concept_formula = con.concept_valorization
-              if concept_formula.nil?
+              if formu.nil? && con.amount.to_f != 0.0
                 amount = con.amount.to_f
                 total += amount
               else
-                amount = Formule.translate_formules(concept_formula.formula, rem_basic,row[0])
+                amount = Formule.translate_formules(formu.formula, rem_basic,row[0])
                 total += amount.to_f
                 puts 'Formula: ' + concept_formula.formula.to_s
                 puts '-----------------------------'
@@ -99,12 +120,7 @@ class Payslip < ActiveRecord::Base
                 amount = from_category.amount
                 total += amount.to_f
               else
-                puts '------------2do IF-----------------'
-                puts 'Rem Basic: ' + rem_basic.to_s
-                puts 'OBJETO DB: ' + con.concept_valorization.inspect.to_s
-                concept_formula = con.concept_valorization
-                puts 'Formula en DB: ' + concept_formula.formula.to_s
-                if concept_formula.nil?
+                if formu.nil? && con.amount.to_f != 0.0
                   amount = con.amount.to_f
                   total += amount
                 else
@@ -116,14 +132,11 @@ class Payslip < ActiveRecord::Base
                 end
               end
             else
-              puts '------------3er IF-----------------'
-              puts 'Rem Basic: ' + rem_basic.to_s
-              concept_formula = con.concept_valorization
-              if concept_formula.nil?
+              if formu.nil? && con.amount.to_f != 0.0
                 amount = con.amount.to_f
                 total += amount
               else
-                amount = Formule.translate_formules(concept_formula.formula, rem_basic,row[0])
+                amount = Formule.translate_formules(formu.formula , rem_basic,row[0])
                 total += amount
                 puts 'Formula: ' + concept_formula.formula.to_s
                 puts '-----------------------------'
