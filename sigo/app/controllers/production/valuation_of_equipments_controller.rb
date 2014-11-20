@@ -10,6 +10,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     
   def show
     @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+    @detraccion = @valuationofequipment.detraction
     @start_date = @valuationofequipment.start_date
     @end_date = @valuationofequipment.end_date
     @ids=params[:id]
@@ -35,7 +36,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         @totalfacigv = workerDetail[3]
         @totalincluidoigv = workerDetail[4]
         @retenciones = workerDetail[5]
-        @detraccion = workerDetail[6]
         @descuentocombustible = workerDetail[7]
         @otrosdescuentos = workerDetail[8]
         @netoapagar = workerDetail[9]
@@ -123,11 +123,23 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             @totalfacigv = workerDetail[3]
             @totalincluidoigv = workerDetail[4]
             @retenciones = workerDetail[5]
-            @detraccion = workerDetail[6]
             @descuentocombustible = workerDetail[7]
             @otrosdescuentos = workerDetail[8]
             @netoapagar = workerDetail[9]
             @descuentootros = workerDetail[11]
+
+            puts @valorizacionsinigv
+            puts @amortizaciondeadelanto
+            puts @totalfacturar
+            puts @totalfacigv
+            puts @totalincluidoigv
+            puts @retenciones
+            puts @detraccion
+            puts @descuentocombustible
+            puts @otrosdescuentos
+            puts @netoapagar
+            puts @descuentootros
+
           end
         end
       end
@@ -460,9 +472,10 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       format.pdf do
         @company = Company.find(get_company_cost_center('company'))
         @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+        @detraccion = @valuationofequipment.detraction
         @start_date = @valuationofequipment.start_date
         @end_date = @valuationofequipment.end_date
-
+        @ids=params[:id]
         @valorizacionsinigv = 0
         @amortizaciondeadelanto = 0
         @totalfacturar = 0
@@ -477,7 +490,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         @code = @valuationofequipment.code.to_i - 1
         @code = @code.to_s.rjust(3,'0')
         @valuationofequipment2 = getsc_valuation2(@valuationofequipment.start_date, @valuationofequipment.end_date, @valuationofequipment.name, @code)
-        
         if @valuationofequipment2.count > 0
           @valuationofequipment2.each do |workerDetail|
             @valorizacionsinigv = workerDetail[0]
@@ -486,7 +498,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             @totalfacigv = workerDetail[3]
             @totalincluidoigv = workerDetail[4]
             @retenciones = workerDetail[5]
-            @detraccion = workerDetail[6]
             @descuentocombustible = workerDetail[7]
             @otrosdescuentos = workerDetail[8]
             @netoapagar = workerDetail[9]

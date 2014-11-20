@@ -192,6 +192,23 @@ class Management::ValorizationsController < ApplicationController
     render :report, layout: false
   end
 
+  def short_report
+    @valorization = Valorization.find(params[:id])
+    @itembybudgets = Itembybudget.where('CHAR_LENGTH(`order`) > 3 AND budget_id = ?', @valorization.budget_id)
+    @budget = Budget.where(:id => @valorization.budget_id).first
+
+    @valorizationitem = Valorizationitem.where(:valorization_id => @valorization.id)
+
+    @project = CostCenter.find(@budget.cost_center_id)
+
+    @itembybudgets_main = Itembybudget.select('id, `title`, `subbudgetdetail`, `order`, CHAR_LENGTH(`order`)').where('CHAR_LENGTH(`order`) < 3 AND budget_id = ?', @valorization.budget_id)
+    
+    @month = @valorization.valorization_date.to_date.strftime("%-m").to_i
+    @year = @valorization.valorization_date.to_date.strftime("%Y").to_i 
+
+    render :short_report, layout: false
+  end
+
   private
   def valorization_parameters
     params.require(:valorization).permit(:month, :name, :status, :budget_id, :valorization_date)

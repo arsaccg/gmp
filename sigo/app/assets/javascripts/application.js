@@ -176,7 +176,7 @@ function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1,
       text: subtitle
     },
     xAxis: {
-      categories: ['ENE.12', 'FEB.12', 'MAR.12', 'ABR.12', 'MAY.12', 'JUN.12', 'JUL.12', 'AGO.12', 'SET.12', 'OCT.12', 'NOV.12', 'DIC.12', 'ENE.13', 'FEB.13', 'MAR.13', 'ABR.13', 'MAY.13', 'JUN.13', 'JUL.13', 'AGOS.13', 'SET.13', 'OCT.13', 'NOV.13', 'DIC.13', 'ENE.14']
+      categories: ['NOV.14', 'DIC.14', 'ENE.15', 'FEB.15', 'MAR.15', 'ABR.15', 'MAY.15', 'JUN.15']
     },
     yAxis: {
       title: { text: 'Costo (S/.)' }
