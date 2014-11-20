@@ -24,6 +24,8 @@
               %th Accion
           %tbody
           - index = 1
+          - puts "---codigo----"
+          - puts @code
           - @array.each do |workerDetail3|
             %tr
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= index
@@ -32,16 +34,22 @@
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[3], unit: 'S/. ', precision: 2)
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[5].to_f)
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
-                - @workers_array5.each do |workers|
-                  -if workers[1]==workerDetail3[1]
-                    = number_to_currency((workers[4].to_f-workerDetail3[4].to_f), unit: 'S/. ', precision: 2)
+                -if @code!="001"
+                  - @workers_array5.each do |workers|
+                    -if workers[1]==workerDetail3[1]
+                      = number_to_currency((workers[4].to_f-workerDetail3[4].to_f), unit: 'S/. ', precision: 2)
+                -else
+                  =0
               %th{ 'style' => 'text-align:center;vertical-align: middle' }= sprintf('%.2f', workerDetail3[2].to_s)
               %th{ 'style' => 'text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[4].to_s, unit: 'S/. ', precision: 2)
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',(workerDetail3[5].to_f+workerDetail3[2]).to_s)
               %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
-                - @workers_array5.each do |workers|
-                  -if workers[1]==workerDetail3[1]
-                    = number_to_currency((workers[4].to_f), unit: 'S/. ', precision: 2)
+                -if @code!="001"
+                  - @workers_array5.each do |workers|
+                    -if workers[1]==workerDetail3[1]
+                      = number_to_currency((workers[4].to_f), unit: 'S/. ', precision: 2)
+                -else
+                  = number_to_currency(workerDetail3[4].to_s, unit: 'S/. ', precision: 2)
               %th
                 %span{"style"=>"width=20px"}
                   %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "report_of_equipment(#{workerDetail3[0]})"}
