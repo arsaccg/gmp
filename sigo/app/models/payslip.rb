@@ -53,14 +53,19 @@ class Payslip < ActiveRecord::Base
           por_hora = from_category.amount.to_f/48
         end
       end
-      @result[@i] << rem_basic
-      @result[@i] << row[9]*por_hora*1.6
-      @result[@i] << row[10]*por_hora*2
+      @result[@i] << rem_basic # Remuneracion Basica calculada
+      @result[@i] << row[9]*por_hora*1.6 # Horas E. 60% calculado
+      @result[@i] << row[10]*por_hora*2 # Horas E. 100% calculado
       
       total += rem_basic + row[9]*por_hora*1.6 + row[10]*por_hora*2
+
+      puts '------------REM BASICA Calculada-----------------'
+      puts rem_basic
+      puts '-----------------------------'
+
       ing.each do |ing|
         con = Concept.find(ing)
-        if con.id != 1 && con.id != 4 && con.id != 5
+        if con.id != 1 && con.id != 4 && con.id != 5 # Conceptos que NO deben calcularse xq ya lo estan
           if !@result[0].include?(con.name)
             @result[0] << con.name.to_s
           end
@@ -71,14 +76,18 @@ class Payslip < ActiveRecord::Base
               amount = contract.amount.to_f
               total += amount
             else
-              formula = con.concept_valorization
-              if formula.nil?
+              puts '------------1er IF-----------------'
+              puts 'Rem Basic: ' + rem_basic.to_s
+              
+              concept_formula = con.concept_valorization
+              if concept_formula.nil?
                 amount = con.amount.to_f
                 total += amount
               else
-                formula = formula.formula
-                amount = Formule.translate_formules(formula, rem_basic,row[0])
+                amount = Formule.translate_formules(concept_formula.formula, rem_basic,row[0])
                 total += amount.to_f
+                puts 'Formula: ' + concept_formula.formula.to_s
+                puts '-----------------------------'
               end
             end
           else
@@ -90,31 +99,41 @@ class Payslip < ActiveRecord::Base
                 amount = from_category.amount
                 total += amount.to_f
               else
-                formula = con.concept_valorization
-                if formula.nil?
+                puts '------------2do IF-----------------'
+                puts 'Rem Basic: ' + rem_basic.to_s
+                puts 'OBJETO DB: ' + con.concept_valorization.inspect.to_s
+                concept_formula = con.concept_valorization
+                puts 'Formula en DB: ' + concept_formula.formula.to_s
+                if concept_formula.nil?
                   amount = con.amount.to_f
                   total += amount
                 else
-                  formula = formula.formula
-                  amount = Formule.translate_formules(formula, rem_basic,row[0])
+                  amount = Formule.translate_formules(concept_formula.formula, rem_basic,row[0])
                   total += amount.to_f
+                  puts 'Formula: ' + concept_formula.formula.to_s
+                  puts 'OBJETO DB: ' + con.concept_valorization.inspect.to_s
+                  puts '-----------------------------'
                 end
               end
             else
-              formula = con.concept_valorization
-              if formula.nil?
+              puts '------------3er IF-----------------'
+              puts 'Rem Basic: ' + rem_basic.to_s
+              concept_formula = con.concept_valorization
+              if concept_formula.nil?
                 amount = con.amount.to_f
                 total += amount
               else
-                formula = formula.formula 
-                amount = Formule.translate_formules(formula, rem_basic,row[0])
+                amount = Formule.translate_formules(concept_formula.formula, rem_basic,row[0])
                 total += amount
+                puts 'Formula: ' + concept_formula.formula.to_s
+                puts '-----------------------------'
               end
             end
           end
           @result[@i] << amount
         end
       end
+
       @result[@i] << total
 
       @i+=1

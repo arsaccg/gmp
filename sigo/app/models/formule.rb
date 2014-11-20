@@ -1,7 +1,7 @@
 class Formule < ActiveRecord::Base
 
   def self.translate_formules(formula,basico,worker_id)
-    str_sentence = formula
+
     const_variables = formula.scan(/\[.*?\]/)
     const_variables.each do |c|
       concept = Concept.find_by_token(c)
@@ -12,12 +12,11 @@ class Formule < ActiveRecord::Base
           if contract.amount != 0 && !contract.amount.nil?
             amount = contract.amount.to_f
           else
-            formula = concept.concept_valorization
-            if formula.nil?
+            concept_formula = concept.concept_valorization
+            if concept_formula.nil?
               amount = concept.amount.to_f
             else
-              formula = formula.formula 
-              amount = Formule.translate_formules(formula, basico,worker_id)
+              amount = Formule.translate_formules(concept_formula.formula, basico,worker_id)
             end
           end
         else
@@ -28,25 +27,23 @@ class Formule < ActiveRecord::Base
             if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
               amount = from_category.amount
             else
-              formula = concept.concept_valorization.formula
-              amount = Formule.translate_formules(formula, basico,worker_id)
+              amount = Formule.translate_formules(concept.concept_valorization.formula, basico,worker_id)
             end
           else
-            formula = concept.concept_valorization
-            if formula.nil?
+            concept_formula = concept.concept_valorization
+            if concept_formula.nil?
               amount = concept.amount.to_f
             else
-              formula = formula.formula 
-              amount = Formule.translate_formules(formula, basico,worker_id)
+              amount = Formule.translate_formules(concept_formula.formula, basico,worker_id)
             end
           end
         end
-        str_sentence.gsub! c, amount.to_s
+        formula.gsub! c, amount.to_s
       else
-        str_sentence.gsub! c, basico.to_s
+        formula.gsub! c, basico.to_s
       end
     end
-    return eval(str_sentence.to_s)
+    return eval(formula.to_s)
   end
 
 end
