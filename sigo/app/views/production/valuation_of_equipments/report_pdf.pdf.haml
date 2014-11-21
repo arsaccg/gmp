@@ -3,7 +3,7 @@
     %meta{charset: "utf-8"}
     = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
   %body
-    = image_tag @company.avatar.url, alt: "#{@company.name}"
+    = wicked_pdf_image_tag "#{@company.avatar.url}"
     %br
     %br
     #main
@@ -52,11 +52,7 @@
               %tbody
                 %tr{"bgcolor"=>"#ECF3F8"}
                   %th{"style"=>"color:#5f5f5f;text-align:center"} 1.00
-                  %th{"style"=>"color:#5f5f5f;padding-left:8px;"}
-                    ="Valorización sin IGV"
-                    %span{"style"=>"width=20px;float:right;padding-right:11px;"}
-                      %a#boton1.btn.btn-xs.btn-danger{href: 'javascript:void(0);', :onclick => 'part_equipment();',"data-toggle" => "tooltip", :title => "Detalle de Equipos"}
-                        %i.fa.fa-list-ol{"style"=>"color:white"}            
+                  %th{"style"=>"color:#5f5f5f;padding-left:8px;"}="Valorización sin IGV"      
                   %th{'colspan'=>2,"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;;vertical-align: middle"}= number_to_currency(@valuationofequipment.valuation, unit: 'S/. ', precision: 2)
                   %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;;vertical-align: middle"}= number_to_currency(@valorizacionsinigv, unit: 'S/. ', precision: 2)
                   %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;;vertical-align: middle"}= number_to_currency(@valuationofequipment.accumulated_valuation, unit: 'S/. ', precision: 2)
