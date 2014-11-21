@@ -34,9 +34,9 @@
       %div
         .jarviswidget-editbox
         .widget-body
-          %table.panel.panel-primary.table-bordered{ style: "height: 530px;width: 850px;margin: 0 auto" }
+          %table.panel.panel-primary.table-bordered{ style: "height: 430px;width: 850px;margin: 0 auto" }
             %thead.panel-heading
-              %tr{"bgcolor"=>"#3276B1",style: "height: 45px;"}
+              %tr{"bgcolor"=>"#3276B1",style: "height: 30px;"}
                 %th{"style"=>"color:#white;text-align:center"} Item
                 %th{"style"=>"color:#white;text-align:center"} Descripcion
                 %th{"style"=>"color:#white;text-align:center"} Actual
@@ -56,10 +56,12 @@
               %tr
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle; text-align:center;"} 02
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle"} 
-                  Amortización de Adelanto (SIN. I.G.V.)
-                  %br
-                  %input#flag{:type =>"checkbox", :onchange => 'check();'} Usar Porcentaje
-                  %input.form-control#percent.percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 30%;margin: 0 auto;text-align:center;margin-left:65%;", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
+                  %div{"style"=>"display:inline;"}
+                    %div{"style"=>"display:inline;"}
+                      Amortización de Adelanto (SIN. I.G.V.)
+                    %div{"style"=>"display:inline;"}
+                      %input.form-control#percent.percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 60px;margin: 0 auto;margin-left:2%;text-align:center;display:inline;", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
+                      %input#flag{:type =>"checkbox", :onchange => 'check();'} Usar Porcentaje
                 %th{"style"=>"color:#5f5f5f;text-align:center"}
                   %input.form-control#number.number{:value => "#{@subcontractequipment.initial_amortization_number}", "style"=> "width: 50%;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
                 %th#amortLast{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center", 'original' =>"#{@amortizaciondeadelanto.to_f}"}= number_to_currency(@amortizaciondeadelanto.to_f, unit: 'S/. ', precision: 2)
@@ -91,10 +93,6 @@
                 %th#detractionPercent{"style"=>"display:none;"}=@subcontractequipment.detraction.to_f/100
                 %th#totalDetraction.totalDetraction{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil, unit: 'S/. ', precision: 2)
                 %th#acumDetraction{"style"=>"color:#5f5f5f;text-align:center",'original'=>"#{((@totalincluidoigv.to_f)*@detraccion.to_f/100).ceil}"}= number_to_currency(((@totalincluidoigv.to_f)*@detraccion.to_f/100).ceil, unit: 'S/. ', precision: 2)
-                -puts "------------------------"
-                -puts @totalincluidoigv.to_f
-                -puts @detraccion.to_f/100
-                -puts @totalincluidoigv.to_f*@detraccion.to_f/100
                 %th#sumDetraction{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil)+(@totalincluidoigv.to_f*@detraccion.to_f/100).ceil, unit: 'S/. ', precision: 2)
               %tr
                 %th{"style"=>"color:#5f5f5f; text-align:center;padding-left:15px;"} 05.02
@@ -106,7 +104,7 @@
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle; text-align:center;padding-left:15px;"} 05.03
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle;padding-left:18px;"} Descuento de Otros (Incl. I.G.V.)
                 %th{"style"=>"color:#5f5f5f;width:20%;margin:0 auto;"}                            
-                  = text_field_tag 'valuation_of_equipment[other_discount]', nil, id: "otherdiscounts", class: "form-control amount-item"
+                  = text_field_tag 'valuation_of_equipment[other_discount]', nil, id: "otherdiscounts", class: "form-control amount-item", :onkeypress => "return isNumber(event);"
                 %th#other-discounts{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center", 'original' =>"#{@descuentootros}"}= number_to_currency(@descuentootros.to_f, unit: 'S/. ', precision: 2)
                 %th#total-other-discounts{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center"}= number_to_currency(@descuentootros.to_f, unit: 'S/. ', precision: 2)
               %tr
@@ -114,7 +112,7 @@
                 %th{"style"=>"color:#5f5f5f;padding-left:18px;"} TOTAL RETENCIONES
                 %th#totalretention{"style"=>"color:#5f5f5f;text-align:center", 'original' => "#{((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil+@fuel_discount.to_f}"}= number_to_currency(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil+@fuel_discount.to_f, unit: 'S/. ', precision: 2)
                 %th#lasttr{"style"=>"color:#5f5f5f;text-align:center", 'original' =>"#{((@totalincluidoigv.to_f*@detraccion.to_f/100)+(@descuentootros.to_f)).round(2)}"}= number_to_currency((@totalincluidoigv.to_f*@detraccion.to_f/100).ceil+(@descuentootros.to_f), unit: 'S/. ', precision: 2)
-                %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil)+(@totalincluidoigv.to_f*@detraccion.to_f/100).ceil+@fuel_discount.to_f+@totalretenciones.to_f, unit: 'S/. ', precision: 2)
+                %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil)+(@totalincluidoigv.to_f*@detraccion.to_f/100).ceil+@descuentootros.to_f, unit: 'S/. ', precision: 2)
               %tr{"bgcolor"=>"#3276B1"}
                 %th{"style"=>"color:white; text-align:center;"} 06
                 %th{"style"=>"color:white"} NETO A PAGAR
@@ -140,7 +138,7 @@
         = hidden_field_tag 'valuation_of_equipment[initial_amortization_percentage]', @initial_amortization_percent
         = hidden_field_tag 'valuation_of_equipment[bill]', @bill
         = hidden_field_tag 'valuation_of_equipment[billigv]', @billigv.round(2)
-        = hidden_field_tag 'valuation_of_equipment[totalbill]', @bill+@billigv
+        = hidden_field_tag 'valuation_of_equipment[totalbill]', (@bill+@billigv).round(2)
         = hidden_field_tag 'valuation_of_equipment[retention]', ((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil+@fuel_discount.to_f
         = hidden_field_tag 'valuation_of_equipment[detraction]', @subcontractequipment.detraction
         = hidden_field_tag 'valuation_of_equipment[fuel_discount]', @fuel_discount
@@ -153,11 +151,11 @@
         = hidden_field_tag 'valuation_of_equipment[accumulated_initial_amortization_number]', @subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f
         = hidden_field_tag 'valuation_of_equipment[accumulated_bill]', @bill+@totalfacturar
         = hidden_field_tag 'valuation_of_equipment[accumulated_billigv]', @billigv+@totalfacigv
-        = hidden_field_tag 'valuation_of_equipment[accumulated_totalbill]', @bill.to_f+@billigv.to_f+@totalincluidoigv.to_f
+        = hidden_field_tag 'valuation_of_equipment[accumulated_totalbill]', (@bill.to_f+@billigv.to_f+@totalincluidoigv.to_f).round(2)
         = hidden_field_tag 'valuation_of_equipment[accumulated_retention]', @totalincluidoigv.to_f*@detraccion.to_f/100+@descuentootros.to_f
         = hidden_field_tag 'valuation_of_equipment[accumulated_detraction]', @totalincluidoigv.to_f*@detraccion.to_f/100
         = hidden_field_tag 'valuation_of_equipment[accumulated_fuel_discount]', @fuel_discount+@descuentocombustible
-        = hidden_field_tag 'valuation_of_equipment[accumulated_other_discount]', 0
+        = hidden_field_tag 'valuation_of_equipment[accumulated_other_discount]', @descuentootros.to_f
         = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]',((@bill+@billigv)-(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil+@fuel_discount.to_f))+(@totalincluidoigv.to_f-((@totalincluidoigv.to_f*@detraccion.to_f/100).ceil+(@descuentootros.to_f)).round(2))
         = hidden_field_tag 'valuation_of_equipment[subcontract_equipment_id]', @subcontract_equipment_id
 
@@ -180,7 +178,8 @@
 
 
 
-          $(document).on('DOMSubtreeModified','.totalretention', function(event){
+          $(document).on('DOMSubtreeModified','#totalretention', function(event){
+            console.log('totalretention');
             var c=parseFloat($('#lasttr').text());
             $(acumtr).text((parseFloat($('#totalretention').text())+Math.ceil(c)).toFixed(2));
           });
@@ -268,7 +267,7 @@
         var other_discount = $('#other-discounts').attr('original');
 
         if(otherdiscount=='' || otherdiscount==0){
-
+          $('#totalretention').attr("original",$('#totalDetraction').text());
           $('#totalretention').html($('#totalretention').attr('original'));
           if($('#trig2').text()==0){
             $('#total-igv').html((parseFloat($('#total-igv').attr('original'))).toFixed(2));            
@@ -283,7 +282,7 @@
           }
           $('#total-other-discounts').html(parseFloat(b));
           console.log("1");
-          $(acumtr).text($('#sumDetraction').text().toFixed(2));
+          $(acumtr).text($('#sumDetraction').text()+$(total-other-discounts).text());
           $('#valuation_of_equipment_accumulated_retention').val(parseFloat($('#totalretention').text())+parseFloat($('#lasttr').text()));
           $('#net-pay').text(($('#total-igv').text() - $('#totalretention').text()).toFixed(2));
 
@@ -306,6 +305,7 @@
           }
           $('#lastnetpay').html(parseFloat($('#lastnetpay').attr('original')));
           var a=parseFloat($('#lasttr').attr('original'));
+          console.log("a: "+a);
           $('#lasttr').html(Math.ceil(a));
           $('#input-totalretention').val(parseFloat(otherdiscount)+parseFloat($('#totalretention').attr('original')));
           $('#valuation_of_equipment_retention').val(parseFloat(otherdiscount)+parseFloat($('#totalretention').attr('original')));
@@ -316,7 +316,7 @@
           //console.log(parseFloat(otherdiscount));
           console.log("2");
           $(acumtr).text((parseFloat($('#totalretention').text())+parseFloat($('#lasttr').text())).toFixed(2));
-          $('#valuation_of_equipment_accumulated_retention').val(parseFloat($('#totalretention').text())+parseFloat($('#lasttr').text()));
+          $('#valuation_of_equipment_accumulated_retention').val(parseFloat($('#lasttr').text()));
           $('#valuation_of_equipment_other_discount').val($('#otherdiscounts').val());
           $('#valuation_of_equipment_accumulated_other_discount').val(parseFloat($('#total-other-discounts').text()));
           $('#net-pay').text(($('#total-igv').text() - $('#totalretention').text()).toFixed(2));

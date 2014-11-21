@@ -1,7 +1,7 @@
 class Formule < ActiveRecord::Base
 
   def self.translate_formules(formula,basico,worker_id)
-    str_sentence = formula
+
     const_variables = formula.scan(/\[.*?\]/)
     const_variables.each do |c|
       concept = Concept.find_by_token(c)
@@ -41,12 +41,12 @@ class Formule < ActiveRecord::Base
             end
           end
         end
-        str_sentence.gsub! c, amount.to_s
+        formula.gsub! c, amount.to_s
       else
-        str_sentence.gsub! c, basico.to_s
+        formula.gsub! c, basico.to_s
       end
     end
-    return eval(str_sentence.to_s)
+    return eval(formula.to_s)
   end
 
 end

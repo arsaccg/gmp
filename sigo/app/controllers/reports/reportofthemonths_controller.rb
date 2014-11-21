@@ -36,6 +36,28 @@ class Reports::ReportofthemonthsController < ApplicationController
     @partpeople8 = 0
     @orderofservice8 = 0
 
+    # => FECHAS PARA LOS GRAFICOS
+    
+    @months_linear_char = Array.new
+    @months_bar_char = Array.new
+    current_month = Time.now
+
+    @months_linear_char << current_month.strftime('%^b.%Y')
+    @months_bar_char << current_month.strftime('%^b.%Y')
+
+    7.times do |j|
+      @months_linear_char << ( current_month - (j+1).month ).strftime('%^b.%Y')
+    end
+
+    5.times do |j|
+      @months_bar_char << ( current_month - (j+1).month ).strftime('%^b.%Y')
+    end
+
+    @months_linear_char = @months_linear_char.reverse
+    @months_bar_char = @months_bar_char.reverse
+
+    # => TERMINA FECHAS PARA LOS GRAFICOS
+
     #@part_work = part_work(@dia, @dia2, @cost_center)
     #@part_work.each do |workerDetail|
       #@partwork = workerDetail[0]
@@ -256,8 +278,11 @@ class Reports::ReportofthemonthsController < ApplicationController
 
     @values_y_axis = [*0..target].sample(11).sort
 
-    # VALORIZACIONES
-    @data_total_valorization = Array.new
+    # =>  VALORIZACIONES
+
+    @data_total_valorization_linear_char = Array.new(@months_linear_char.count)
+    @data_total_valorization_bar_char = Array.new(@months_bar_char.count)
+
     Valorization.all.each do |valorization|
       total_valorization = 0
       Valorizationitem.where(:valorization_id => valorization.id).each do |valorization_item|
@@ -265,8 +290,17 @@ class Reports::ReportofthemonthsController < ApplicationController
         price = Itembybudget.where(:id => valorization_item.itembybudget_id).first.price.to_f rescue 0
         total_valorization += (measure.to_f * price.to_f)
       end
-      @data_total_valorization << total_valorization
+      
+      pos_linear = @months_linear_char.index(valorization.valorization_date.to_date.strftime('%^b.%Y').to_s)
+      pos_bar = @months_bar_char.index(valorization.valorization_date.to_date.strftime('%^b.%Y').to_s)
+      @data_total_valorization_linear_char[pos_linear] =  total_valorization
+      @data_total_valorization_bar_char[pos_bar] = total_valorization
     end
+
+    @data_total_valorization_linear_char.map! { |v| v.nil? ? 0 : v }
+    @data_total_valorization_bar_char.map! { |v| v.nil? ? 0 : v }
+
+    # => VALORIZACIONES
 
 		render layout: false
   end
