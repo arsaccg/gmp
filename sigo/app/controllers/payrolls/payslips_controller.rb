@@ -24,14 +24,18 @@ class Payrolls::PayslipsController < ApplicationController
   end
 
   def new
-    @pay = Payslip.new 
+     
     @ingo = Array.new
     @deso = Array.new
     @inge = Array.new
     @dese = Array.new
+    @apo = Array.new
+    @ape = Array.new
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
     @ingresos = Concept.where("code LIKE '1%' AND status = 1")
     @descuentos = Concept.where("code LIKE '2%' AND status = 1")
+    @aportacion = Concept.where("code LIKE '3%' AND status = 1")
+
     @afp = Afp.all
     @semanas = ActiveRecord::Base.connection.execute("
       SELECT *
@@ -52,13 +56,26 @@ class Payrolls::PayslipsController < ApplicationController
         @dese << des.id.to_s
       end
     end
+
+    @aportacion.each do |des|
+      if des.type_obrero == "Fijo"
+        @apo << des.id.to_s
+      elsif des.type_empleado == "Fijo"
+        @ape << des.id.to_s
+      end
+    end    
     render layout: false
   end
 
   def create
     flash[:error] = nil
+    puts "--.--------------------------------------------------------------------------------------------------------"
+    puts params[:conceptos]
+    puts "-----------------------------------------------------------------------------------------------------------"
+    oiasnvoabnvbosavboa = 
     pay = Payroll.new(pay_parameters)
-    pay.status = 1
+    code = Payslip.all.last.code.to_i
+    pay.code = (code+1)
     if pay.save
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index
@@ -106,10 +123,12 @@ class Payrolls::PayslipsController < ApplicationController
   end
 
   def generate_payroll
+    @pay = Payslip.new
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
     company_id = get_company_cost_center('company')
     ing = params[:arregloin]
     des = params[:arreglodes]
+    apor = params[:arregloapor]
     @reg_n = (Time.now.to_f*1000).to_i
 
     semana = ActiveRecord::Base.connection.execute("
@@ -139,34 +158,32 @@ class Payrolls::PayslipsController < ApplicationController
       # Future...
       
     elsif worker == "obrero"
-
+      tareo = WeeklyWorker.where("start_date = '"+semana[2].to_s+"' AND end_date = '"+semana[3].to_s+"' AND state = 'approved'").first
+      if !tareo.nil?
+        wg = tareo.working_group.gsub(" ", ",")
+      else
+        wg = 0
+      end
+          
       @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
-      @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], ing, des, @headers)
-
+      if wg != 0
+        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers)
+        @mensaje = "exito"
+      else
+        @mensaje = "fuentes"
+      end
     end
     render(partial: 'workers', :layout => false)
   end
 
   def destroy
     pay = Payroll.find(params[:id])
-    ActiveRecord::Base.connection.execute("
-          UPDATE payrolls SET
-          status = 0
-          WHERE id = "+pay.id.to_s+"
-        ")
+    pay.destroy
     render :json => pay
   end
 
   private
   def pay_parameters
-    params.require(:payroll).permit(:worker_id, 
-      payroll_details_attributes: [
-        :id, 
-        :payroll_id, 
-        :concept_id, 
-        :amount, 
-        :type_con,
-        :_destroy
-      ] )
+    params.require(:payroll).permit(:worker_id, :cost_center_id, :start_date, :end_date, :days, :normal_hours, :subsidized_day, :subsidized_hour, :last_worked_day, :he_60, :code, :he_100, :concepts_and_amounts, :month)
   end
 end

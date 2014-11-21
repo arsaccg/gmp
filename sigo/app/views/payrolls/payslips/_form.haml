@@ -1,4 +1,4 @@
-= simple_form_for([:payrolls, @pay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+.form-horizontal.smart-form
   %h3
     %strong Paso 1
     \- Seleccionar la información básica
@@ -121,11 +121,15 @@
 
 
   %footer
-    %button.btn.btn-primary{:onclick=>"generar();", :type => "button"}
-      %i.fa.fa-save 
-      Generar        
+    %button.btn.btn-info{:onclick=>"generar();", :type => "button"}
+      Generar
 
 :javascript
+
+  $(document).ready(function(){
+
+  });
+
   function checkWorker(){
     if(document.getElementById('t').checked){
       $('#infoadd').css("display", "block");
@@ -139,23 +143,23 @@
     var cost_center = #{@cc.id};
     var semana = $('#semana').val();
     var tipo = $('#tipo').val();
-    var ing = [];
-    var desc = [];
 
     if(document.getElementById('t').checked){
       var ingresos = #{@inge};
       var descuentos = #{@dese};
+      var aportacion = #{@ape};
       worker_id = "empleado";
     }
 
     if(document.getElementById('e').checked){
       var ingresos = #{@ingo};
       var descuentos = #{@deso};
+      var aportacion = #{@apo};
       worker_id = "obrero";
     }
 
     if(worker_id != null && semana != '' && tipo != ''){
-      str_item = {authenticity_token: "#{form_authenticity_token}", arregloin: ingresos, cost_center: cost_center, arreglodes:descuentos, semana: semana, tipo:tipo, worker: worker_id};
+      str_item = {authenticity_token: "#{form_authenticity_token}", arregloin: ingresos, cost_center: cost_center, arreglodes:descuentos, arregloapor: aportacion, semana: semana, tipo:tipo, worker: worker_id};
       $('#example').empty();
       append_url_ajax('#{generate_payroll_payrolls_payslips_path}', 'example', str_item, 0, 'POST');
     }else{
