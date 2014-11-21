@@ -91,10 +91,6 @@
                 %th#detractionPercent{"style"=>"display:none;"}=@subcontractequipment.detraction.to_f/100
                 %th#totalDetraction.totalDetraction{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil, unit: 'S/. ', precision: 2)
                 %th#acumDetraction{"style"=>"color:#5f5f5f;text-align:center",'original'=>"#{((@totalincluidoigv.to_f)*@detraccion.to_f/100).ceil}"}= number_to_currency(((@totalincluidoigv.to_f)*@detraccion.to_f/100).ceil, unit: 'S/. ', precision: 2)
-                -puts "------------------------"
-                -puts @totalincluidoigv.to_f
-                -puts @detraccion.to_f/100
-                -puts @totalincluidoigv.to_f*@detraccion.to_f/100
                 %th#sumDetraction{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil)+(@totalincluidoigv.to_f*@detraccion.to_f/100).ceil, unit: 'S/. ', precision: 2)
               %tr
                 %th{"style"=>"color:#5f5f5f; text-align:center;padding-left:15px;"} 05.02
@@ -114,7 +110,7 @@
                 %th{"style"=>"color:#5f5f5f;padding-left:18px;"} TOTAL RETENCIONES
                 %th#totalretention{"style"=>"color:#5f5f5f;text-align:center", 'original' => "#{((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil+@fuel_discount.to_f}"}= number_to_currency(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil+@fuel_discount.to_f, unit: 'S/. ', precision: 2)
                 %th#lasttr{"style"=>"color:#5f5f5f;text-align:center", 'original' =>"#{((@totalincluidoigv.to_f*@detraccion.to_f/100)+(@descuentootros.to_f)).round(2)}"}= number_to_currency((@totalincluidoigv.to_f*@detraccion.to_f/100).ceil+(@descuentootros.to_f), unit: 'S/. ', precision: 2)
-                %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil)+(@totalincluidoigv.to_f*@detraccion.to_f/100).ceil+@fuel_discount.to_f+@totalretenciones.to_f, unit: 'S/. ', precision: 2)
+                %th#acumtr{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency((((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil)+(@totalincluidoigv.to_f*@detraccion.to_f/100).ceil+@descuentootros.to_f, unit: 'S/. ', precision: 2)
               %tr{"bgcolor"=>"#3276B1"}
                 %th{"style"=>"color:white; text-align:center;"} 06
                 %th{"style"=>"color:white"} NETO A PAGAR
@@ -140,7 +136,7 @@
         = hidden_field_tag 'valuation_of_equipment[initial_amortization_percentage]', @initial_amortization_percent
         = hidden_field_tag 'valuation_of_equipment[bill]', @bill
         = hidden_field_tag 'valuation_of_equipment[billigv]', @billigv.round(2)
-        = hidden_field_tag 'valuation_of_equipment[totalbill]', @bill+@billigv
+        = hidden_field_tag 'valuation_of_equipment[totalbill]', (@bill+@billigv).round(2)
         = hidden_field_tag 'valuation_of_equipment[retention]', ((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil+@fuel_discount.to_f
         = hidden_field_tag 'valuation_of_equipment[detraction]', @subcontractequipment.detraction
         = hidden_field_tag 'valuation_of_equipment[fuel_discount]', @fuel_discount
@@ -153,11 +149,11 @@
         = hidden_field_tag 'valuation_of_equipment[accumulated_initial_amortization_number]', @subcontractequipment.initial_amortization_number.to_f+@amortizaciondeadelanto.to_f
         = hidden_field_tag 'valuation_of_equipment[accumulated_bill]', @bill+@totalfacturar
         = hidden_field_tag 'valuation_of_equipment[accumulated_billigv]', @billigv+@totalfacigv
-        = hidden_field_tag 'valuation_of_equipment[accumulated_totalbill]', @bill.to_f+@billigv.to_f+@totalincluidoigv.to_f
+        = hidden_field_tag 'valuation_of_equipment[accumulated_totalbill]', (@bill.to_f+@billigv.to_f+@totalincluidoigv.to_f).round(2)
         = hidden_field_tag 'valuation_of_equipment[accumulated_retention]', @totalincluidoigv.to_f*@detraccion.to_f/100+@descuentootros.to_f
         = hidden_field_tag 'valuation_of_equipment[accumulated_detraction]', @totalincluidoigv.to_f*@detraccion.to_f/100
         = hidden_field_tag 'valuation_of_equipment[accumulated_fuel_discount]', @fuel_discount+@descuentocombustible
-        = hidden_field_tag 'valuation_of_equipment[accumulated_other_discount]', 0
+        = hidden_field_tag 'valuation_of_equipment[accumulated_other_discount]', @descuentootros.to_f
         = hidden_field_tag 'valuation_of_equipment[accumulated_net_payment]',((@bill+@billigv)-(((@bill.to_f+@billigv.to_f)*(@subcontractequipment.detraction.to_f/100)).ceil+@fuel_discount.to_f))+(@totalincluidoigv.to_f-((@totalincluidoigv.to_f*@detraccion.to_f/100).ceil+(@descuentootros.to_f)).round(2))
         = hidden_field_tag 'valuation_of_equipment[subcontract_equipment_id]', @subcontract_equipment_id
 
@@ -284,7 +280,7 @@
           }
           $('#total-other-discounts').html(parseFloat(b));
           console.log("1");
-          $(acumtr).text($('#sumDetraction').text());
+          $(acumtr).text($('#sumDetraction').text()+$(total-other-discounts).text());
           $('#valuation_of_equipment_accumulated_retention').val(parseFloat($('#totalretention').text())+parseFloat($('#lasttr').text()));
           $('#net-pay').text(($('#total-igv').text() - $('#totalretention').text()).toFixed(2));
 
