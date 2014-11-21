@@ -73,8 +73,8 @@ class Payslip < ActiveRecord::Base
       @result[@i] << row[9]*por_hora*1.6
       @result[@i] << row[10]*por_hora*2
       @result[@i] << asig.amount.to_f * row[6].to_f
-      @result[@i] << mov.amount.to_f * row[8].to_f
-      @result[@i] << buc.amount.to_f * row[8].to_f
+      @result[@i] << (mov.amount.to_f rescue 0) * row[8].to_f
+      @result[@i] << (buc.amount.to_f rescue 0) * row[8].to_f
       
       total += rem_basic + row[9]*por_hora*1.6 + row[10]*por_hora*2
 
