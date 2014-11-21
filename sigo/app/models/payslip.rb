@@ -73,14 +73,20 @@ class Payslip < ActiveRecord::Base
       @result[@i] << row[9]*por_hora*1.6
       @result[@i] << row[10]*por_hora*2
       @result[@i] << asig.amount.to_f * row[6].to_f
-      @result[@i] << mov.amount.to_f * row[8].to_f
-      @result[@i] << buc.amount.to_f * row[8].to_f
+      @result[@i] << (mov.amount.to_f rescue 0) * row[8].to_f
+      @result[@i] << (buc.amount.to_f rescue 0) * row[8].to_f
       
       total += rem_basic + row[9]*por_hora*1.6 + row[10]*por_hora*2
+
+      puts '------------REM BASICA Calculada-----------------'
+      puts rem_basic
+      puts '-----------------------------'
+
       ing.each do |ing|
         con = nil
         formu = nil
         con = Concept.find(ing)
+
         if con.id != 1 && con.id != 4 && con.id != 5 && con.id != 15 && con.id != 17 && con.id != 24
           formu = con.concept_valorization
           puts con.inspect
@@ -101,6 +107,8 @@ class Payslip < ActiveRecord::Base
               else
                 amount = Formule.translate_formules(formu.formula, rem_basic,row[0])
                 total += amount.to_f
+                puts 'Formula: ' + concept_formula.formula.to_s
+                puts '-----------------------------'
               end
             end
           else
@@ -116,9 +124,11 @@ class Payslip < ActiveRecord::Base
                   amount = con.amount.to_f
                   total += amount
                 else
-                  formula = formula.formula
-                  amount = Formule.translate_formules(formula, rem_basic,row[0])
+                  amount = Formule.translate_formules(concept_formula.formula, rem_basic,row[0])
                   total += amount.to_f
+                  puts 'Formula: ' + concept_formula.formula.to_s
+                  puts 'OBJETO DB: ' + con.concept_valorization.inspect.to_s
+                  puts '-----------------------------'
                 end
               end
             else
@@ -128,12 +138,15 @@ class Payslip < ActiveRecord::Base
               else
                 amount = Formule.translate_formules(formu.formula , rem_basic,row[0])
                 total += amount
+                puts 'Formula: ' + concept_formula.formula.to_s
+                puts '-----------------------------'
               end
             end
           end
           @result[@i] << amount
         end
       end
+
       @result[@i] << total
 
       @i+=1
