@@ -94,11 +94,8 @@ ArsacLogistica::Application.routes.draw do
     resources :unit_of_measurements
     resources :persons do
       collection do
-        
         post 'getCostCentersPerCompany'
         post 'update_profile'
-
-
       end
     end
     resources :theoretical_values do
@@ -248,7 +245,6 @@ ArsacLogistica::Application.routes.draw do
     resources :money do
       collection do
         get 'add_exchange_of_rate'
-        
       end
     end
     resources :exchange_of_rates
@@ -826,6 +822,7 @@ ArsacLogistica::Application.routes.draw do
         get 'change_data_aom'
         get 'report'
         get 'short_report'
+        get 'generate_report'
       end
     end
 

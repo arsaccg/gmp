@@ -671,9 +671,17 @@ select {
 table.report_valorization td:nth-child(2), table.report_valorization td:nth-child(4), table.report_valorization td:nth-child(6), table.report_valorization td:nth-child(8), table.report_valorization td:nth-child(10), table.report_valorization td:nth-child(12){
   border-right: solid #ddd 3px;
 }
+table.report_valorization td:nth-child(2), table.report_valorization td:nth-child(3), table.report_valorization td:nth-child(4), table.report_valorization td:nth-child(5), table.report_valorization td:nth-child(6), table.report_valorization td:nth-child(7), table.report_valorization td:nth-child(8), table.report_valorization td:nth-child(9), table.report_valorization td:nth-child(10), table.report_valorization td:nth-child(11), table.report_valorization td:nth-child(12){
+  text-align: right;
+}
+
 
 #t_extensions{
   box-shadow: 10px 10px 5px #888888;
   border: solid #ddd 4px;
   font-size: 14px;
+}
+
+.bold{
+  font-weight: bold;
 }

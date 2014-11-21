@@ -449,4 +449,13 @@ module ApplicationHelper
     end
   end
 
+  def is_strong(measured)
+    if measured != nil
+      return 'bold'
+    else
+      return ''
+    end
+  end
+
+
 end
