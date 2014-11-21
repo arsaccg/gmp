@@ -34,9 +34,9 @@
       %div
         .jarviswidget-editbox
         .widget-body
-          %table.panel.panel-primary.table-bordered{ style: "height: 530px;width: 850px;margin: 0 auto" }
+          %table.panel.panel-primary.table-bordered{ style: "height: 430px;width: 850px;margin: 0 auto" }
             %thead.panel-heading
-              %tr{"bgcolor"=>"#3276B1",style: "height: 45px;"}
+              %tr{"bgcolor"=>"#3276B1",style: "height: 30px;"}
                 %th{"style"=>"color:#white;text-align:center"} Item
                 %th{"style"=>"color:#white;text-align:center"} Descripcion
                 %th{"style"=>"color:#white;text-align:center"} Actual
@@ -56,10 +56,12 @@
               %tr
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle; text-align:center;"} 02
                 %th{"style"=>"color:#5f5f5f;vertical-align: middle"} 
-                  Amortización de Adelanto (SIN. I.G.V.)
-                  %br
-                  %input#flag{:type =>"checkbox", :onchange => 'check();'} Usar Porcentaje
-                  %input.form-control#percent.percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 30%;margin: 0 auto;text-align:center;margin-left:65%;", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
+                  %div{"style"=>"display:inline;"}
+                    %div{"style"=>"display:inline;"}
+                      Amortización de Adelanto (SIN. I.G.V.)
+                    %div{"style"=>"display:inline;"}
+                      %input.form-control#percent.percent{:value => "#{@initial_amortization_percent}", :readonly => true, "style"=> "width: 60px;margin: 0 auto;margin-left:2%;text-align:center;display:inline;", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
+                      %input#flag{:type =>"checkbox", :onchange => 'check();'} Usar Porcentaje
                 %th{"style"=>"color:#5f5f5f;text-align:center"}
                   %input.form-control#number.number{:value => "#{@subcontractequipment.initial_amortization_number}", "style"=> "width: 50%;margin: 0 auto;text-align:center", :onkeypress => "return isNumber(event);",  onchange: "this.value = minmax(this.value, 1, 100)"}
                 %th#amortLast{"style"=>"color:#5f5f5f;vertical-align: middle;text-align:center", 'original' =>"#{@amortizaciondeadelanto.to_f}"}= number_to_currency(@amortizaciondeadelanto.to_f, unit: 'S/. ', precision: 2)

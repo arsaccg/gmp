@@ -59,8 +59,9 @@
         %h4.modal-title No hay datos.
         %br
       %footer
-        %a.btn.btn-sm.btn-success.btn-prev{ :href => "#{part_equipment_pdf_production_valuation_of_equipments_path}.pdf?name=#{@name}&code=#{@code}&start_date=#{@start_date}&end_date=#{@end_date}&cad=#{@cad}&ids=#{@ids}", :target => '_blank', :style=>"float: right;"}
-          Ver PDF
+        -if @action=="show"
+          %a.btn.btn-sm.btn-success.btn-prev{ :href => "#{part_equipment_pdf_production_valuation_of_equipments_path}.pdf?name=#{@name}&code=#{@code}&start_date=#{@start_date}&end_date=#{@end_date}&cad=#{@cad}&ids=#{@ids}", :target => '_blank', :style=>"float: right;"}
+            Ver PDF
         %button.btn.btn-info{"data-dismiss" => "modal", type: "button"}
           Salir
     %br
