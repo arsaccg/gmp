@@ -58,7 +58,17 @@ class MainController < ApplicationController
   def management_dashboard
     @company= Company.all
     @cost_centers = CostCenter.all
-    puts @cost_centers
+
+    @axis_x = Array.new
+    @axis_y = Array.new
+    i = 1
+
+    @weeklyworker = WeeklyWorker.all.limit(12).each do |wworker|
+      @axis_x << [i, WeeklyWorker.get_name_week_by_dates(wworker.start_date, wworker.end_date, @cost_centers.first.id)]
+      @axis_y << [i, wworker.number_workers]
+      i += 1
+    end
+
     render layout: false
   end
 
