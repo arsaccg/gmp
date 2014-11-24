@@ -8,8 +8,8 @@
         %table.table.table-bordered
           %thead
             %tr
-              %th{'colspan' => 10, "style"=>"text-align:center;font-size: large;"}= "LISTADO DE EQUIPOS - ARSAC - " + @cc.code.to_s + " - " + @cc.name.to_s
-            %tr{"style"=> "font-size:14px"}
+              %th{'colspan' => 10, "style"=>"text-align:center;font-size: 12px;"}= "LISTADO DE EQUIPOS - ARSAC - " + @cc.code.to_s + " - " + @cc.name.to_s
+            %tr{"style"=> "font-size:8px"}
               %th{"style"=>"text-align:center"} Item
               %th{"style"=>"text-align:center"} Código TOBI
               %th{"style"=>"text-align:center"} Descripción
@@ -24,31 +24,31 @@
             -@todo.each do |to|
               -if to[1].nil? && to[0].to_s.length == 2
                 %tr
-                  %th{"style"=>"text-align:left; background-color: #727272; font-weight: bold; "}
-                  %th{"style"=>"text-align:left; background-color: #727272; font-weight: bold; "}= to[0]
-                  %th{'colspan' => 8, "style"=>"text-align:left; background-color: #727272; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+                  %th{"style"=>"text-align:left; background-color: #1E486E;color:white; font-weight: bold;font-size:8px "}
+                  %th{"style"=>"text-align:left; background-color: #1E486E;color:white; font-weight: bold;font-size:8px "}= to[0]
+                  %th{'colspan' => 8, "style"=>"text-align:left; background-color: #1E486E;color:white; font-weight: bold;font-size:8px "}= Category.find_by_code(to[0].to_s).name
                 -@i=1
               -elsif to[1].nil? && to[0].to_s.length == 4
                 %tr
-                  %th{"style"=>"text-align:left; background-color: #A5A5A5; font-weight: bold; "}
-                  %th{"style"=>"text-align:left; background-color: #A5A5A5; font-weight: bold; "}= to[0]
-                  %th{'colspan' => 8, "style"=>"text-align:left; background-color: #A5A5A5; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+                  %th{"style"=>"text-align:left; background-color: #296191;color:white; font-weight: bold;font-size:8px"}
+                  %th{"style"=>"text-align:left; background-color: #296191;color:white; font-weight: bold;font-size:8px"}= to[0]
+                  %th{'colspan' => 8, "style"=>"text-align:left; background-color: #296191;color:white; font-weight: bold;font-size:8px"}= Category.find_by_code(to[0].to_s).name
                 -@i=1
               -elsif to[1].nil? && to[0].to_s.length == 6
                 %tr
-                  %th{"style"=>"text-align:left; background-color: #BFBFBF; font-weight: bold; "}
-                  %th{"style"=>"text-align:left; background-color: #BFBFBF; font-weight: bold; "}= to[0]
-                  %th{'colspan' => 8,"style"=>"text-align:left; background-color: #BFBFBF; font-weight: bold; "}= Category.find_by_code(to[0].to_s).name
+                  %th{"style"=>"text-align:left; background-color: #3593BB;color:white; font-weight: bold;font-size:8px "}
+                  %th{"style"=>"text-align:left; background-color: #3593BB;color:white; font-weight: bold;font-size:8px "}= to[0]
+                  %th{'colspan' => 8,"style"=>"text-align:left; background-color: #3593BB;color:white; font-weight: bold;font-size:8px "}= Category.find_by_code(to[0].to_s).name
                 -@i=1
               -else
                 %tr
-                  %th{"style"=>"text-align:left; font-weight: normal; "}= @i
-                  %th{"style"=>"text-align:left; font-weight: normal; "}= to[0].to_s
-                  %th{"style"=>"text-align:left; font-weight: normal; "}= to[1].to_s
-                  %th{"style"=>"text-align:left; font-weight: normal; "}= to[2].to_s
-                  %th{"style"=>"text-align:left; font-weight: normal; "}= to[3].to_s
-                  %th{"style"=>"text-align:left; font-weight: normal; "}= to[4].to_s
-                  %th{"style"=>"text-align:left; font-weight: normal; "}= to[5].to_date.strftime("%d/%m/%y").to_s
-                  %th{"style"=>"text-align:left; font-weight: normal; "}= number_to_currency(to[6].to_s, unit: 'S/. ', precision: 2) 
-                  %th{"style"=>"text-align:left; font-weight: normal; "}= to[7].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= @i
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[0].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[1].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[2].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[3].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[4].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[5].to_date.strftime("%d/%m/%y").to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= number_to_currency(to[6].to_s, unit: 'S/. ', precision: 2) 
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[7].to_s
                 -@i+=1

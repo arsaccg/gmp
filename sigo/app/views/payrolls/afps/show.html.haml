@@ -1,2 +1,45 @@
-%h1 Payrolls::Afps#show
-%p Find me in app/views/payrolls/afps/show.html.haml
+.row
+  .col-xs-12.col-sm-7.col-md-7.col-lg-4
+    %h1.page-title.txt-color-blueDark
+      %i.fa.fa-pencil-square-o.fa-fw 
+      = "Historial de: " + @afp.enterprise.to_s
+
+%div
+  .widget-body{"style"=>" overflow-x: scroll; "}
+    %table.table.table-striped.table-bordered.table-hover.dataTable
+      %thead
+        %tr
+          %th Item
+          %th Fecha
+          %th Aporte
+          %th Prima de Seguro
+          %th Comisión Variable
+          %th Comisión Fija
+          %th Tope por Seguro
+          %th Acciones
+      %tbody
+        - item = 1
+        - @afp.afp_details.each do |afp|
+          %tr
+            %td= item
+            %td= afp.date_entry.strftime("%d/%m/%y").to_s
+            %td= afp.contribution_fp.to_s + "%"
+            %td= afp.insurance_premium.to_s + "%"
+            %td= afp.c_variable.to_s + "%"
+            %td= afp.mixed.to_s + "%"
+            %td= number_to_currency afp.top, :precision =>2
+            %td
+              %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_payrolls_afp_detail_path(afp.id)}', 'content', null, null, 'GET')"}
+                Editar            
+          - item += 1
+
+      
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-sector{type: "button"}
+  %i.fa.fa-arrow-left>
+    Retornar al listado
+
+:javascript
+
+  $('#backlist-sector').click(function(){
+      load_url_ajax("#{payrolls_afps_path}", 'content', null, null, 'GET');
+  });

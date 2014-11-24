@@ -8,8 +8,8 @@
         %table.table.table-bordered
           %thead
             %tr
-              %th{'colspan' => 6, "style"=>"text-align:center;font-size: large;"}= "LISTADO DE TRABAJADORES - ARSAC - " + @cc.code.to_s + " - " + @cc.name.to_s
-            %tr{"style"=> "font-size:14px"}
+              %th{'colspan' => 6, "style"=>"text-align:center;font-size: 12px;"}= "LISTADO DE TRABAJADORES - ARSAC - " + @cc.code.to_s + " - " + @cc.name.to_s
+            %tr{"style"=> "font-size:12px;"}
               %th{"style"=>"text-align:center"} Item
               %th{"style"=>"text-align:center"} Código TOBI
               %th{"style"=>"text-align:center"} Puesto
@@ -31,17 +31,17 @@
                   -@i=1
                 -elsif to[0].nil? && to[5]==0
                   %tr
-                    %th{"style"=>"text-align:left;font-weight: bold; "}
+                    %th{"style"=>"text-align:left;font-weight: bold;font-size:8px "}
                     %th{'colspan' => 5, "style"=>"text-align:left; font-weight: bold; "}= to[1].to_s
                   -@i=1
                 -else
                   %tr
-                    %th{"style"=>"text-align:left; font-weight: normal; "}= @i
-                    %th{"style"=>"text-align:left; font-weight: normal; "}= to[0].to_s
-                    %th{"style"=>"text-align:left; font-weight: normal; "}= to[1].to_s
-                    %th{"style"=>"text-align:left; font-weight: normal; "}= to[2].to_s
-                    %th{"style"=>"text-align:left; font-weight: normal; "}= to[3].to_s
-                    %th{"style"=>"text-align:left; font-weight: normal; "}= to[4].to_s + " "+ to[5].to_s
+                    %th{"style"=>"text-align:left; font-weight: normal;font-size:8px; "}= @i
+                    %th{"style"=>"text-align:left; font-weight: normal;font-size:8px; "}= to[0].to_s
+                    %th{"style"=>"text-align:left; font-weight: normal;font-size:8px; "}= to[1].to_s
+                    %th{"style"=>"text-align:left; font-weight: normal;font-size:8px; "}= to[2].to_s
+                    %th{"style"=>"text-align:left; font-weight: normal;font-size:8px; "}= to[3].to_s
+                    %th{"style"=>"text-align:left; font-weight: normal;font-size:8px; "}= to[4].to_s + " "+ to[5].to_s
                   -@i+=1
             -else
               %th{'colspan' => 6, "style"=>"text-align:center;font-size: large;"} No se encontraron trabajadores registrados con los datos especificados
