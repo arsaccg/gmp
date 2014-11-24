@@ -4,6 +4,7 @@ class Payslip < ActiveRecord::Base
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)
     @i = 1
+    uit = FinancialVariable.find_by_name("UIT").value * 7
     @result[0] = headers
     @result[0] << "REMUNERACIÓN BÁSICA"
     amount = 0
@@ -192,7 +193,10 @@ class Payslip < ActiveRecord::Base
             end
           end
         end
-        afp = Afp.find(row[12])
+        afp = Afp.find(row[12]).afp_details.where("date_entry BETWEEN '"+week_start.to_s+"' AND '"+ week_end.to_s+"'").first
+        if afp.nil?
+          afp = Afp.find(row[12])
+        end
         if  de.to_i == 28
           total = total - amount.to_f
           amount = amount.to_f * afp.contribution_fp.to_f/100
@@ -228,7 +232,6 @@ class Payslip < ActiveRecord::Base
         if de.to_i == 26
           total -=amount
           bruta = amount*14*4
-          uit = 7*3800
           if bruta > uit
             amount = (bruta - uit)*0.15/12/4
           else
