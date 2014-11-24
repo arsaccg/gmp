@@ -4,6 +4,7 @@ class Payslip < ActiveRecord::Base
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)
     @i = 1
+    uit = FinancialVariable.find_by_name("UIT").value * 7
     @result[0] = headers
     @result[0] << "REMUNERACIÓN BÁSICA"
     amount = 0
@@ -71,11 +72,11 @@ class Payslip < ActiveRecord::Base
         if !contract.nil?
           if contract.amount != 0 && !contract.amount.nil?
             amount = contract.amount.to_f
-            total += amount
+            total += amount.to_f
           else
             if con.concept_valorization.nil? && con.amount.to_f != 0.0
               amount = con.amount.to_f
-              total += amount
+              total += amount.to_f
             else
               amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic,row[0])
               total += amount.to_f
@@ -92,7 +93,7 @@ class Payslip < ActiveRecord::Base
             else
               if con.concept_valorization.nil? && con.amount.to_f != 0.0
                 amount = con.amount.to_f
-                total += amount
+                total += amount.to_f
               else
                 amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic,row[0])
                 total += amount.to_f
@@ -101,10 +102,10 @@ class Payslip < ActiveRecord::Base
           else
             if con.concept_valorization.nil? && con.amount.to_f != 0.0
               amount = con.amount.to_f
-              total += amount
+              total += amount.to_f
             else
               amount = Formule.translate_formules(con.concept_valorization.formula , rem_basic,row[0])
-              total += amount
+              total += amount.to_f
             end
           end
         end
@@ -146,17 +147,17 @@ class Payslip < ActiveRecord::Base
         if !contract.nil?
           if contract.amount != 0 && !contract.amount.nil?
             amount = contract.amount.to_f
-            total += amount
+            total += amount.to_f
           else
             if con.concept_valorization.nil? && con.amount.to_f != 0.0
               amount = con.amount.to_f
-              total += amount
+              total += amount.to_f
             else
               amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic,row[0])
               if amount.to_f > con.top.to_f && de.to_i != 28 && de.to_i != 29 && de.to_i != 30 && de.to_i!=31
                 amount = con.top.to_f
               end              
-              total += amount
+              total += amount.to_f
             end
           end
         else
@@ -188,11 +189,14 @@ class Payslip < ActiveRecord::Base
               if amount.to_f > con.top.to_f && de.to_i != 28 && de.to_i != 29 && de.to_i != 30 && de.to_i!=31
                 amount = con.top.to_f
               end              
-              total += amount
+              total += amount.to_f
             end
           end
         end
-        afp = Afp.find(row[12])
+        afp = Afp.find(row[12]).afp_details.where("date_entry BETWEEN '"+week_start.to_s+"' AND '"+ week_end.to_s+"'").first
+        if afp.nil?
+          afp = Afp.find(row[12])
+        end
         if  de.to_i == 28
           total = total - amount.to_f
           amount = amount.to_f * afp.contribution_fp.to_f/100
@@ -228,7 +232,6 @@ class Payslip < ActiveRecord::Base
         if de.to_i == 26
           total -=amount
           bruta = amount*14*4
-          uit = 7*3800
           if bruta > uit
             amount = (bruta - uit)*0.15/12/4
           else
@@ -260,7 +263,7 @@ class Payslip < ActiveRecord::Base
           @result[@i] << amount
         else
           amount = Formule.translate_formules(con.concept_valorization.formula , rem_basic,row[0])
-          total += amount
+          total += amount.to_f
           @result[@i] << amount
         end
       end
