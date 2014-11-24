@@ -79,8 +79,8 @@
                 %span.hidden-mobile.hidden-tablet Avance Físico
             %li
               %a{"data-toggle" => "tab", href: "#s2"}
-                %i.fa.fa-facebook
-                %span.hidden-mobile.hidden-tablet Ratio de Tiempo
+                %i.fa.fa-wrench
+                %span.hidden-mobile.hidden-tablet N° de Trabajadores
             %li
               %a{"data-toggle" => "tab", href: "#s3"}
                 %i.fa.fa-dollar
@@ -110,15 +110,15 @@
                       .col-xs-6.col-sm-6.col-md-12.col-lg-12
                         %span.text
                           Avance Físico
-                          %span.pull-right 130/200
+                          %span.pull-right= @ratio_avanze_fisico
                         .progress
-                          .progress-bar.bg-color-blueDark{style: "width: 65%;"}
+                          .progress-bar.bg-color-blueDark{style: "width: #{@ratio_avanze_fisico};"}
                       .col-xs-6.col-sm-6.col-md-12.col-lg-12
                         %span.text
                           Ratio de Tiempo
-                          %span.pull-right 440 GB
+                          %span.pull-right= @ratio_de_tiempo
                         .progress
-                          .progress-bar.bg-color-blue{style: "width: 34%;"}
+                          .progress-bar.bg-color-blue{style: "width: #{@ratio_de_tiempo};"}
                       .col-xs-6.col-sm-6.col-md-12.col-lg-12
                         %span.text
                           Pago a Proveedores
@@ -128,9 +128,9 @@
                       .col-xs-6.col-sm-6.col-md-12.col-lg-12
                         %span.text
                           Cantidad de Trabajadores
-                          %span.pull-right 7 Days
+                          %span.pull-right= @cant_trabajadores
                         .progress
-                          .progress-bar.bg-color-greenLight{style: "width: 84%;"}
+                          .progress-bar.bg-color-greenLight{style: "width: 54%;"}
                       %span.show-stat-buttons
                         %span.col-xs-12.col-sm-6.col-md-6.col-lg-6
                           %a.btn.btn-default.btn-block.hidden-xs{href: "javascript:void(0);"} Generate PDF
@@ -492,13 +492,15 @@
               colors: ["#568A89"],
               tooltip: true,
               tooltipOpts: {
-                content : "Value <span>$y</span>",
+                defaultTheme: false
               },
               xaxis: {
                 ticks: #{@axis_x}
               },
               yaxes: {
-  
+                tickFormatter: function (val, axis) {
+                  return val;
+                }
               }
           };
   
