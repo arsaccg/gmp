@@ -101,6 +101,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @accumulated_amortizaciondeadelanto = 0
       @totalprice = 0
       @bill = 0
+      @totalbill = 0
       @valorizacionsinigv = 0
       @amortizaciondeadelanto = 0
       @totalfacturar = 0
@@ -109,10 +110,12 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @detracciontotal = 0
       @descuentocombustible = 0
       @descuentootros = 0
+      @accumulated_detraction = 0
       @accumulated_descuentootros = 0
       @totalretenciones = 0
       @netoapagar = 0
       @code = 0
+      @detraction1 =0
       if !@lastvaluation.nil?
         @code = @lastvaluation.code.to_i      
         @code = @code.to_s.rjust(3,'0')
@@ -129,7 +132,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             @otrosdescuentos = workerDetail[8]
             @netoapagar = workerDetail[9]
             @descuentootros = workerDetail[11]
-
+            @accumulated_detraction = workerDetail[6]
+            @totalbill = workerDetail[13]
+            @detraction1 = workerDetail[14]
             puts @valorizacionsinigv
             puts @amortizaciondeadelanto
             puts @totalfacturar
@@ -256,7 +261,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       accumulated_net_payment, 
       code,
       other_discount,
-      accumulated_other_discount
+      accumulated_other_discount,
+      totalbill,
+      detraction
       FROM valuation_of_equipments 
       WHERE name LIKE '" + entityname.to_s + "' 
       AND code LIKE '" + code.to_s + "'
