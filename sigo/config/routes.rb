@@ -1,4 +1,5 @@
 ArsacLogistica::Application.routes.draw do
+
   devise_for :users, :controllers => {:registrations => "users/registrations"}, :path_names => { 
     :sign_up => 'arsac_register'
   }
@@ -655,6 +656,7 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :afps
+    resources :afp_details
     resources :payrolls do 
       collection do
         post 'display_worker'

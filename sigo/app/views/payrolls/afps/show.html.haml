@@ -2,12 +2,11 @@
   .col-xs-12.col-sm-7.col-md-7.col-lg-4
     %h1.page-title.txt-color-blueDark
       %i.fa.fa-pencil-square-o.fa-fw 
-      = "AFP: " + @afp.enterprise.to_s
+      = "Historial de: " + @afp.enterprise.to_s
 
 %div
-  .jarviswidget-editbox
   .widget-body{"style"=>" overflow-x: scroll; "}
-    %table.table.table-bordered
+    %table.table.table-striped.table-bordered.table-hover.dataTable
       %thead
         %tr
           %th Item
@@ -30,14 +29,14 @@
             %td= afp.mixed.to_s + "%"
             %td= number_to_currency afp.top, :precision =>2
             %td
-              %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_payrolls_afp_path(afp.id)}', 'content', null, null, 'GET')"}
+              %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_payrolls_afp_detail_path(afp.id)}', 'content', null, null, 'GET')"}
                 Editar            
           - item += 1
 
       
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-sector{type: "button"}
   %i.fa.fa-arrow-left>
-    Retornar al listado de Tareos
+    Retornar al listado
 
 :javascript
 
