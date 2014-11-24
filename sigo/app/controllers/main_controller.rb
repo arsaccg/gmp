@@ -58,16 +58,40 @@ class MainController < ApplicationController
   def management_dashboard
     @company= Company.all
     @cost_centers = CostCenter.all
+    current_cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+    @direct_cost_acc = 0
+    @direct_cost_cont = 0
 
+    # => Valores para el Gráfico Lineal de Trabajadores (2do Gráfico)
     @axis_x = Array.new
     @axis_y = Array.new
     i = 1
 
     @weeklyworker = WeeklyWorker.all.limit(12).each do |wworker|
-      @axis_x << [i, WeeklyWorker.get_name_week_by_dates(wworker.start_date, wworker.end_date, @cost_centers.first.id)]
-      @axis_y << [i, wworker.number_workers]
+      @axis_x << [i, WeeklyWorker.get_name_week_by_dates(wworker.start_date, wworker.end_date, current_cost_center.id)]
+      @axis_y << [i, wworker.number_workers.to_i]
       i += 1
     end
+
+    # => Valores para los ratios del 1er gráfico
+    valorization = Valorization.last
+    budget = Budget.where(:id => valorization.budget_id).first
+    itembybudgets_main = Itembybudget.select('id, `title`, `subbudgetdetail`, `order`, CHAR_LENGTH(`order`)').where('CHAR_LENGTH(`order`) < 3 AND budget_id = ?', budget.id)
+    itembybudgets_main.each do |ib|
+      c_amount_contractual = amount_contractual(ib.order, budget.id)
+      @direct_cost_cont = @direct_cost_cont + c_amount_contractual
+      c_amount_acc = amount_acumulated(ib.order, budget.id, valorization.valorization_date, valorization.id)
+      @direct_cost_acc = @direct_cost_acc + c_amount_acc
+    end
+
+    accumulated = @direct_cost_acc + (@direct_cost_acc * budget.general_expenses.to_f) + (@direct_cost_acc * budget.utility.to_f)
+    contractual =@direct_cost_cont + (@direct_cost_cont * budget.general_expenses.to_f) + (@direct_cost_cont * budget.utility.to_f)
+    @ratio_avanze_fisico = ((accumulated/contractual)*100).round(2).to_s + '%'
+
+    @ratio_de_tiempo = (((Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date).to_f/current_cost_center.cost_center_detail.execution_term.to_f)*100).round(2).to_s + '%'
+
+    # => Cantd. Trabajadores
+    @cant_trabajadores = Worker.where(:typeofworker => 'empleado').count
 
     render layout: false
   end
@@ -227,6 +251,31 @@ class MainController < ApplicationController
   def show_phases
     @all_gg = GeneralExpense.where('code_phase = ? AND cost_center_id = ?', params[:code_phase], params[:cost_center_id])
     render(:partial => 'all_gg', :layout => false)
+  end
+
+  # => SOME METHODS FROM Application Helper duplicate : get_total_cost, get_amount
+  
+  def get_total_cost(str_order, cost_center_id)
+    items=ActiveRecord::Base.connection.execute("SELECT get_total_cost('#{str_order}', '#{cost_center_id}')")
+    items.each do |item|
+      return item[0]
+    end
+  end
+
+  def amount_contractual(orderitem, budgetid)
+    orderi = orderitem+'%'
+    amount = Itembybudget.where('`order` LIKE (?) AND budget_id = (?) AND measured > 0', orderi, budgetid).sum('measured * price')
+    return amount
+
+    get_total_cost
+  end
+
+  def amount_acumulated(orderitem, budget_id, current_created_at, valorizationid)
+    str_date = current_created_at.strftime("%Y-%m-%d  %T")
+      items=ActiveRecord::Base.connection.execute("SELECT get_amount_acumulated('#{orderitem}', '#{budget_id}', '#{str_date}', '#{valorizationid}')")
+    items.each do |item|
+      return item[0]
+    end
   end
 
 end
