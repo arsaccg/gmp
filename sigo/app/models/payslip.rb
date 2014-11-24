@@ -71,11 +71,11 @@ class Payslip < ActiveRecord::Base
         if !contract.nil?
           if contract.amount != 0 && !contract.amount.nil?
             amount = contract.amount.to_f
-            total += amount
+            total += amount.to_f
           else
             if con.concept_valorization.nil? && con.amount.to_f != 0.0
               amount = con.amount.to_f
-              total += amount
+              total += amount.to_f
             else
               amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic,row[0])
               total += amount.to_f
@@ -92,7 +92,7 @@ class Payslip < ActiveRecord::Base
             else
               if con.concept_valorization.nil? && con.amount.to_f != 0.0
                 amount = con.amount.to_f
-                total += amount
+                total += amount.to_f
               else
                 amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic,row[0])
                 total += amount.to_f
@@ -101,10 +101,10 @@ class Payslip < ActiveRecord::Base
           else
             if con.concept_valorization.nil? && con.amount.to_f != 0.0
               amount = con.amount.to_f
-              total += amount
+              total += amount.to_f
             else
               amount = Formule.translate_formules(con.concept_valorization.formula , rem_basic,row[0])
-              total += amount
+              total += amount.to_f
             end
           end
         end
@@ -146,17 +146,17 @@ class Payslip < ActiveRecord::Base
         if !contract.nil?
           if contract.amount != 0 && !contract.amount.nil?
             amount = contract.amount.to_f
-            total += amount
+            total += amount.to_f
           else
             if con.concept_valorization.nil? && con.amount.to_f != 0.0
               amount = con.amount.to_f
-              total += amount
+              total += amount.to_f
             else
               amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic,row[0])
               if amount.to_f > con.top.to_f && de.to_i != 28 && de.to_i != 29 && de.to_i != 30 && de.to_i!=31
                 amount = con.top.to_f
               end              
-              total += amount
+              total += amount.to_f
             end
           end
         else
@@ -188,7 +188,7 @@ class Payslip < ActiveRecord::Base
               if amount.to_f > con.top.to_f && de.to_i != 28 && de.to_i != 29 && de.to_i != 30 && de.to_i!=31
                 amount = con.top.to_f
               end              
-              total += amount
+              total += amount.to_f
             end
           end
         end
@@ -260,7 +260,7 @@ class Payslip < ActiveRecord::Base
           @result[@i] << amount
         else
           amount = Formule.translate_formules(con.concept_valorization.formula , rem_basic,row[0])
-          total += amount
+          total += amount.to_f
           @result[@i] << amount
         end
       end
