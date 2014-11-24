@@ -9,6 +9,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
     
   def show
+    @action = "show"
     @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
     @detraccion = @valuationofequipment.detraction
     @start_date = @valuationofequipment.start_date
@@ -48,6 +49,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
 
   def new
+    @action="new"
     @costCenter = CostCenter.new
     @executors = SubcontractEquipment.all
     last=ValuationOfEquipment.last
@@ -292,6 +294,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
 
   def part_equipment
+    @action= params[:ac]
     @ids= params[:ids]
     @id = params[:id]
     @name = params[:name]

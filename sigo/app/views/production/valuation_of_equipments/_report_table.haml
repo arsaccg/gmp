@@ -421,7 +421,7 @@
       }
 
       function part_equipment() {
-        data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}", name: "#{@subcontractequipment.entity.name}", code: "#{@numbercode}", ids: "#{@cad}" };
+        data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}", name: "#{@subcontractequipment.entity.name}", code: "#{@numbercode}", ids: "#{@cad}", action: "#{@action}"};
         load_url_ajax('#{part_equipment_production_valuation_of_equipments_path}', 'part-equipment', data, '', 'POST');
         $('#part-equipment').modal({
           keyboard: false,
