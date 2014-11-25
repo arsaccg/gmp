@@ -9,7 +9,7 @@
           %thead
             %tr
               %th{'colspan' => 10, "style"=>"text-align:center;font-size: 12px;"}= "LISTADO DE EQUIPOS - ARSAC - " + @cc.code.to_s + " - " + @cc.name.to_s
-            %tr{"style"=> "font-size:8px"}
+            %tr{"style"=> "font-size:8px;"}
               %th{"style"=>"text-align:center"} Item
               %th{"style"=>"text-align:center"} Código TOBI
               %th{"style"=>"text-align:center"} Descripción
@@ -42,13 +42,13 @@
                 -@i=1
               -else
                 %tr
-                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= @i
-                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[0].to_s
-                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[1].to_s
-                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[2].to_s
-                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[3].to_s
-                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[4].to_s
-                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[5].to_date.strftime("%d/%m/%y").to_s
-                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= number_to_currency(to[6].to_s, unit: 'S/. ', precision: 2) 
-                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px "}= to[7].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px;margin:0px auto;margin:0px;padding:5px; "}= @i
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px;margin:0px auto;margin:0px;padding:5px; "}= to[0].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px;margin:0px auto;margin:0px;padding:5px; "}= to[1].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px;margin:0px auto;margin:0px;padding:5px; "}= to[2].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px;margin:0px auto;margin:0px;padding:5px; "}= to[3].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px;margin:0px auto;margin:0px;padding:5px; "}= to[4].to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px;margin:0px auto;margin:0px;padding:5px; "}= to[5].to_date.strftime("%d/%m/%y").to_s
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px;margin:0px;padding:5px; "}= number_to_currency(to[6].to_s, unit: 'S/. ', precision: 2) 
+                  %th{"style"=>"text-align:left; font-weight: normal;font-size:8px;margin:0px;padding:5px; "}= to[7].to_s
                 -@i+=1
