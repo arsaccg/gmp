@@ -95,8 +95,8 @@ AND   `order` LIKE '" + orderi + "' AND valorizations.id = '" + valorization_id 
 
 
   def self.advance_percent(orderitem, budgetid, current_created_at, valorizationid)
-        amount = 0 
-      amount = amount_acumulated(orderitem, budgetid, current_created_at, valorizationid) / amount_contractual(orderitem, budgetid) * 100 rescue 0
+      amount = 0 
+      amount = amount_acumulated(orderitem, budgetid, current_created_at, valorizationid) / amount_contractual(orderitem, budgetid) * 100
       return amount
   end
 
