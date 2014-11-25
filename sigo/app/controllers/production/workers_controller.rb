@@ -348,6 +348,12 @@ class Production::WorkersController < ApplicationController
     @typeofworker = Array.new
     @active = Array.new
     @cesado = Array.new
+    @abuelo = Array.new
+    @padre = Array.new
+    @hijo = Array.new
+    @abuelo1 = Array.new
+    @padre1 = Array.new
+    @hijo1 = Array.new
     if params[:state1]!='null'
       @type.each do |ty|
         active = ActiveRecord::Base.connection.execute("
@@ -359,7 +365,7 @@ class Production::WorkersController < ApplicationController
           AND w.entity_id = e.id
           AND w.id = wc.worker_id
           AND wc.article_id = ar.id
-          GROUP BY w.id
+          ORDER BY ar.code
         ")
         if active.count > 0
           if @active.count==0
@@ -370,6 +376,19 @@ class Production::WorkersController < ApplicationController
             if !@typeofworker.include?(ty.to_s)
               @typeofworker << ty.to_s
               @todo << [nil,ty.to_s.capitalize,nil,nil,nil,0]
+            end
+            @code = a[0].to_s
+            if !@abuelo.include?(@code[2,2])
+              @abuelo << @code[2,2]
+              @todo << [@code[2,2],nil,nil,nil,nil,nil]
+            end
+            if !@padre.include?(@code[2,4])
+              @padre << @code[2,4]
+              @todo << [@code[2,4],nil,nil,nil,nil,nil]
+            end
+            if !@hijo.include?(@code[2,6])
+              @hijo << @code[2,6]
+              @todo << [@code[2,6],nil,nil,nil,nil,nil]
             end
             @todo << a
           end
@@ -400,6 +419,19 @@ class Production::WorkersController < ApplicationController
             if !@typeofworker.include?(ty.to_s)
               @typeofworker << ty.to_s
               @todo << [nil,ty.to_s.capitalize,nil,nil,nil,0]
+            end
+            @code = a[0].to_s
+            if !@abuelo1.include?(@code[2,2])
+              @abuelo1 << @code[2,2]
+              @todo << [@code[2,2],nil,nil,nil,nil,nil]
+            end
+            if !@padre1.include?(@code[2,4])
+              @padre1 << @code[2,4]
+              @todo << [@code[2,4],nil,nil,nil,nil,nil]
+            end
+            if !@hijo1.include?(@code[2,6])
+              @hijo1 << @code[2,6]
+              @todo << [@code[2,6],nil,nil,nil,nil,nil]
             end
             @todo << c
           end
