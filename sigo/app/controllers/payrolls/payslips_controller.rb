@@ -69,13 +69,18 @@ class Payrolls::PayslipsController < ApplicationController
 
   def create
     flash[:error] = nil
-    puts "--.--------------------------------------------------------------------------------------------------------"
+    puts "-----------------------------------------------------------------------------------"
     puts params[:conceptos]
-    puts "-----------------------------------------------------------------------------------------------------------"
-    oiasnvoabnvbosavboa = 
-    pay = Payroll.new(pay_parameters)
-    code = Payslip.all.last.code.to_i
-    pay.code = (code+1)
+    puts "-----------------------------------------------------------------------------------"
+    pay = Payslip.new(pay_parameters)
+    pay.map {|pay_parameters| Payslip.new(pay_parameters) } 
+    lacode = Payslip.all.last
+    if lacode.nil?
+      lacode = 0
+    else
+      lacode = lacode.code.to_i
+    end
+    pay.code = (lacode+1).to_s
     if pay.save
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index
@@ -130,6 +135,7 @@ class Payrolls::PayslipsController < ApplicationController
     des = params[:arreglodes]
     apor = params[:arregloapor]
     @reg_n = (Time.now.to_f*1000).to_i
+    @reg_n2 = (Time.now.to_f*4212).to_i
 
     semana = ActiveRecord::Base.connection.execute("
       SELECT *
@@ -184,6 +190,6 @@ class Payrolls::PayslipsController < ApplicationController
 
   private
   def pay_parameters
-    params.require(:payroll).permit(:worker_id, :cost_center_id, :start_date, :end_date, :days, :normal_hours, :subsidized_day, :subsidized_hour, :last_worked_day, :he_60, :code, :he_100, :concepts_and_amounts, :month)
+    params.require(:payslip).permit(:worker_id, :cost_center_id, :start_date, :end_date, :days, :normal_hours, :subsidized_day, :subsidized_hour, :last_worked_day, :he_60, :code, :he_100, :concepts_and_amounts, :month)
   end
 end
