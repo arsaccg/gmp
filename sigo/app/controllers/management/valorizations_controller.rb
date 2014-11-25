@@ -317,7 +317,7 @@ class Management::ValorizationsController < ApplicationController
           rep.act_amount = Valorization.amount_actual(ibb.order, @budget.id, @valorization.id)
           rep.acc_amount = Valorization.amount_acumulated(ibb.order, @budget.id, @valorization.valorization_date, @valorization.id)
           rep.rem_amount = Valorization.amount_remainder(ibb.order, @budget.id, @valorization.valorization_date, @valorization.id)
-          "Reporte~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+          "Reporte~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
           p ibb.order
           p @budget.id
           p @valorization.valorization_date
