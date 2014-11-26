@@ -671,6 +671,9 @@ ArsacLogistica::Application.routes.draw do
         post 'get_cc'
         post 'get_sem'
         post 'generate_payroll'
+        post 'complete_select'
+        post 'complete_select2'
+        post 'add_extra_info'
       end
     end
   end
