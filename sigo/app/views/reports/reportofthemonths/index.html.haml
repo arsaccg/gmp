@@ -5,12 +5,12 @@
         %i.fa.fa-pencil-square-o.fa-fw
         = "CUADRO DE ESTADO - " + Time.now.strftime("%B %Y")
     .col-xs-12.col-sm-12.col-md-4.col-lg-2
-      %a.btn.btn-labeled.btn-success{:href => 'http://localhost:3000/costo_de_obra.pdf', :target => "_blank"}
+      %a.btn.btn-labeled.btn-success{:href => "#{request.domain}:3000/costo_de_obra.pdf", :target => "_blank"}
         %span.btn-label
           %i.fa.fa-cloud-download
         Descargar Report.1
     .col-xs-12.col-sm-12.col-md-4.col-lg-2
-      %a.btn.btn-labeled.btn-success{:href => 'http://localhost:3000/cost_obra_per_fase.pdf', :target => "_blank"}
+      %a.btn.btn-labeled.btn-success{:href => "#{request.domain}:3000/cost_obra_per_fase.pdf", :target => "_blank"}
         %span.btn-label
           %i.fa.fa-cloud-download
         Descargar Report.2
