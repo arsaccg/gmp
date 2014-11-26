@@ -69,42 +69,23 @@ class Payrolls::PayslipsController < ApplicationController
 
   def create
     flash[:error] = nil
-    regs = params[:regs].split(' ')
-    lacode = Payslip.all.last
-    if lacode.nil?
-      lacode = 0
+    puts "--.--------------------------------------------------------------------------------------------------------"
+    puts params[:conceptos]
+    puts "-----------------------------------------------------------------------------------------------------------"
+    oiasnvoabnvbosavboa = 
+    pay = Payroll.new(pay_parameters)
+    code = Payslip.all.last.code.to_i
+    pay.code = (code+1)
+    if pay.save
+      flash[:notice] = "Se ha creado correctamente."
+      redirect_to :action => :index
     else
-      lacode = lacode.code.to_i
-    end
-    flag = false
-    regs.each do |pay|
-      params2 = params[:payslip][""+pay.to_s+""]
-      pay = Payslip.new()
-      pay.worker_id = params2['worker_id'].to_s
-      pay.cost_center_id = params2['cost_center_id'].to_s
-      pay.start_date = params2['start_date'].to_s
-      pay.end_date = params2['end_date'].to_s
-      pay.days = params2['days'].to_s
-      pay.normal_hours = params2['normal_hours'].to_s
-      pay.subsidized_day = params2['subsidized_day'].to_s
-      pay.subsidized_hour = params2['subsidized_hour'].to_s
-      pay.last_worked_day = params2['last_worked_day'].to_s
-      pay.he_60 = params2['he_60'].to_s
-      pay.code = params2['code'].to_s
-      pay.he_100 = params2['he_100'].to_s
-      pay.concepts_and_amounts = params2['concepts_and_amounts'].to_s      
-      pay.code = (lacode+1).to_s
-      if pay.save
-        flag = true
-      else
-        pay.errors.messages.each do |attribute, error|
-          puts flash[:error].to_s + error.to_s + "  "
-        end
-        @pay = pay
-        render :new, layout: false 
+      pay.errors.messages.each do |attribute, error|
+        puts flash[:error].to_s + error.to_s + "  "
       end
+      @pay = pay
+      render :new, layout: false 
     end
-    redirect_to :action => :index
   end
 
   def edit
@@ -149,7 +130,6 @@ class Payrolls::PayslipsController < ApplicationController
     des = params[:arreglodes]
     apor = params[:arregloapor]
     @reg_n = (Time.now.to_f*1000).to_i
-    @reg_n2 = (Time.now.to_f*4212).to_i
 
     semana = ActiveRecord::Base.connection.execute("
       SELECT *
@@ -157,8 +137,7 @@ class Payrolls::PayslipsController < ApplicationController
       WHERE wc.id = " + params[:semana].to_s).first
 
     tipo = params[:tipo]
-    @start_date = semana[2].to_s
-    @end_date = semana[3].to_s
+
     @max_hour = ActiveRecord::Base.connection.execute("
       SELECT total
       FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + "
@@ -205,6 +184,6 @@ class Payrolls::PayslipsController < ApplicationController
 
   private
   def pay_parameters
-    params.require(:payslip).permit(:worker_id, :cost_center_id, :start_date, :end_date, :days, :normal_hours, :subsidized_day, :subsidized_hour, :last_worked_day, :he_60, :code, :he_100, :concepts_and_amounts, :month)
+    params.require(:payroll).permit(:worker_id, :cost_center_id, :start_date, :end_date, :days, :normal_hours, :subsidized_day, :subsidized_hour, :last_worked_day, :he_60, :code, :he_100, :concepts_and_amounts, :month)
   end
 end
