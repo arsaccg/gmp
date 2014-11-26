@@ -127,6 +127,7 @@ class Production::WorkersController < ApplicationController
   end
 
   def edit
+    @years2 = getyears()
     @worker = Worker.find(params[:id])
     @banks = Bank.all
     @afp = Afp.all
@@ -208,6 +209,7 @@ class Production::WorkersController < ApplicationController
     @start_date = params[:start_date]
     @end_date = params[:end_date]
     @years = getyears()
+    @years2 = getyears()
     render(partial: 'centerofstudy_items', :layout => false)
   end
 
