@@ -51,7 +51,11 @@ class GeneralExpenses::LoansController < ApplicationController
   end
 
   def display_workers
-    word = params[:q]
+    if params[:element].nil?
+      word = params[:q]
+    else
+      word = params[:element]
+    end
     workers_hash = Array.new
     workers = Loan.getWorkers(word)
     workers.each do |art|
