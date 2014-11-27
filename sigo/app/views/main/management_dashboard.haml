@@ -46,7 +46,10 @@
                     %tr
                       %td= cc.code.to_s
                       %td= cc.company.short_name.to_s
-                      %td= cc.name.to_s
+                      %td
+                        %a{"style"=>"display:inline;margin-right:5px;",href: 'javascript:void(0);', :onclick => 'detail('+cc.id.to_s+');', title: "Datos generales del centro de costo"}
+                          %i.fa.fa-info-circle
+                        %div{"style"=>"display:inline;margin-right:5px;"}= cc.name.to_s
                       %td
                         %span
                           %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
@@ -293,7 +296,7 @@
       / end widget
 
 #gdg.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgLabel", role: "dialog", tabindex: "-1"}
-
+#detail.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "detailLabel", role: "dialog", tabindex: "-1"}
 #gdgn.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgnLabel", role: "dialog", tabindex: "-1"}
 #gdge.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgeLabel", role: "dialog", tabindex: "-1"}
 #gdgs.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgsLabel", role: "dialog", tabindex: "-1"}
@@ -727,6 +730,15 @@
     data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
     load_url_ajax('#{general_expenses_diverse_expenses_of_managements_path}', 'gdg', data, null, 'GET');
     $('#gdg').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function detail(id) {
+    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
+    load_url_ajax('/logistics/cost_center_details/'+id+'', 'detail', data, null, 'GET');
+    $('#detail').modal({
       keyboard: false,
       backdrop: 'static'
     });

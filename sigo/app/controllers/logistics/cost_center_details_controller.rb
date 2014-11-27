@@ -7,7 +7,10 @@ class Logistics::CostCenterDetailsController < ApplicationController
   end
 
   def show
-    @cost_center_detail = CostCenterDetail.find(params[:id])
+    @cost_center_detail = CostCenterDetail.find_by_cost_center_id(params[:id])
+    if !@cost_center_detail.nil?
+      @company= Company.find(@cost_center_detail.cost_center.company.id)
+    end
     render layout: false
   end
 
