@@ -1,8 +1,7 @@
 class Formule < ActiveRecord::Base
 
-  def self.translate_formules(formula,basico,worker_id, calculator, hash_formulas)
-
-    hash_formulas[] = formula.tr('][', '')
+  def self.translate_formules(formula,basico,worker_id, calculator, hash_formulas, main_concept)
+    hash_formulas[main_concept.tr('][', '').gsub('-','_')] = formula.tr('][', '').gsub('-','_')
 
     const_variables = formula.scan(/\[.*?\]/)
     const_variables.each do |c|
@@ -43,12 +42,10 @@ class Formule < ActiveRecord::Base
             end
           end
         end
-        formula.gsub! c, amount.to_s
-      else
-        formula.gsub! c, basico.to_s
+        calculator.store(concept.token.tr('][', '').gsub('-','_'): amount)
       end
     end
-    return eval(formula.to_s)
+    return cal.solve(hash_formulas.first.to_s)
   end
 
 end

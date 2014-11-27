@@ -300,7 +300,6 @@ class Payslip < ActiveRecord::Base
     # => DES - Descuentos
     # => APO - Aportaciones
     
-    calculator = Dentaku::Calculator.new
 
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)
@@ -327,6 +326,7 @@ class Payslip < ActiveRecord::Base
       AND wc.article_id = ar.id
       GROUP BY ppd.worker_id
     ").each do |row|
+      calculator = Dentaku::Calculator.new
 
       @result << [ row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10] ]
 
@@ -360,6 +360,7 @@ class Payslip < ActiveRecord::Base
         end
       end
 
+      calculator.store(remuneracion_basica: rem_basic)
       @result[@i] << rem_basic # => Remuneracion basica
       @result[@i] << row[9]*por_hora*1.6 # => Horas 60%
       @result[@i] << row[10]*por_hora*2 # => Horas 100%
@@ -395,7 +396,7 @@ class Payslip < ActiveRecord::Base
             amount = concept.amount.to_f
             total += amount.to_f
           else
-            amount = Formule.translate_formules(concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas)
+            amount = Formule.translate_formules(concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, concept.token)
             total += amount.to_f
           end
 
@@ -403,7 +404,7 @@ class Payslip < ActiveRecord::Base
 
           article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
           category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-          from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => ing).first
+          from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => concept.token).first
           
           if !from_category.nil?
             if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
@@ -413,7 +414,7 @@ class Payslip < ActiveRecord::Base
               amount = concept.amount.to_f
               total += amount.to_f
             else
-              amount = Formule.translate_formules(concept_valorization.formula, rem_basic,row[0], calculator)
+              amount = Formule.translate_formules(concept_valorization.formula, rem_basic,row[0], calculator, hash_formulas ,concept.token)
               total += amount.to_f
             end
           else
@@ -421,7 +422,7 @@ class Payslip < ActiveRecord::Base
               amount = concept.amount.to_f
               total += amount.to_f
             else
-              amount = Formule.translate_formules(concept_valorization.formula, rem_basic,row[0], calculator)
+              amount = Formule.translate_formules(concept_valorization.formula, rem_basic,row[0], calculator, hash_formulas, concept.token)
               total += amount.to_f
             end
           end

@@ -89,7 +89,7 @@ class MainController < ApplicationController
     @ratio_avanze_fisico = ((accumulated/contractual)*100).round(2).to_s + '%'
 
     @ratio_de_tiempo = (((Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date).to_f/current_cost_center.cost_center_detail.execution_term.to_f)*100).round(2).to_s + '%'
-
+    @ratio_de_tiempo_fraccion = (Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date).to_i.to_s + '/' + current_cost_center.cost_center_detail.execution_term.to_i.to_s
     # => Cantd. Trabajadores
     @cant_trabajadores = Worker.where(:typeofworker => 'empleado').count
 
