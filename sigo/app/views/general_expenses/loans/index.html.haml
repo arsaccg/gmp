@@ -5,7 +5,8 @@
         %h2
           %span.widget-icon
             %i.fa.fa-pencil-square-o.fa-fw 
-          %strong Lista de Préstamos
+          %strong{"style"=>"font-size:18px;"}Lista de Prestamos -
+          %strong{"style"=>"font-size:18px;color:#1E486E"}=@cc.name
     .modal-body
       %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:450px;height:100px;margin-left:23%;"}
         %thead.panel-heading{"style"=>"background-color:#1E486E;"}
@@ -16,13 +17,13 @@
             -suma1=0
             -@ledeben.each do |presto|
               -suma1+=presto[1].to_f
-            %td{"style"=>"font-weight:bold;color:green;font-size:13px;padding-left:5px;"} PRESTO S/. (PENDIENTE)
+            %td{"style"=>"font-weight:bold;color:green;font-size:13px;padding-left:5px;"} OTORGADOS S/. (PENDIENTE)
             %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;width:150px;padding-right:5px;"}=number_to_currency(suma1.to_f, unit: 'S/. ', precision: 2)
           %tr
             -suma2=0
             -@debe.each do |prestaron|
               -suma2+=prestaron[1].to_f
-            %td{"style"=>"font-weight:bold;color:red;font-size:13px;padding-left:5px;"} LE PRESTARON S/. (PENDIENTE)
+            %td{"style"=>"font-weight:bold;color:#C31717;font-size:13px;padding-left:5px;"} RECIBIDOS S/. (PENDIENTE)
             %td{"style"=>"text-align:right;font-size:11px;font-weight:bold;padding-right:5px;"}=number_to_currency(suma2.to_f, unit: 'S/. ', precision: 2)
           %tr
             %td{"style"=>"font-weight:bold;font-size:13px;padding-left:5px;"} RESULTADO
@@ -30,7 +31,7 @@
               %td#res{"style"=>"text-align:right;font-size:11px;font-weight:bold;padding-right:5px;color:red"}=number_to_currency(suma1.to_f-suma2.to_f, unit: 'S/. ', precision: 2)
             -else
               %td#res{"style"=>"text-align:right;font-size:11px;font-weight:bold;padding-right:5px;color:blue"}=number_to_currency(suma1.to_f-suma2.to_f, unit: 'S/. ', precision: 2)
-      %h2{"style"=>"font-weight:bold;color:green;"} PRESTO
+      %h2{"style"=>"font-weight:bold;color:green;font-size:15px;"} OTORGADOS
       %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:98%;height:90px;"}
         %thead.panel-heading{"style"=>"background-color:#1E486E;"}
           %tr{"style"=>"height:25px;text"}
@@ -50,7 +51,7 @@
                 %a.btn.btn-success.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_show('+"#{@cc.id.to_s}"+','+"#{presto[0]}"+','+"#{@cc.id.to_s}"+');'}
                   %i.fa.fa-usd              
       %br
-      %h2{"style"=>"font-weight:bold;color:red;"} LE PRESTARON
+      %h2{"style"=>"font-weight:bold;color:#C31717;font-size:15px;"} RECIBIDOS
       %table.panel.panel-primary.table-bordered.table-hover{"style"=>"width:98%;height:90px;"}
         %thead.panel-heading{"style"=>"background-color:#1E486E;"}
           %tr{"style"=>"height:25px"}
