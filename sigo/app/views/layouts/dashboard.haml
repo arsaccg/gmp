@@ -348,7 +348,7 @@
                           %span.menu-item-parent
                             Reporte Mensual
                     %li
-                      %a{href: "", title: "Reporte Valorizaciones"}
+                      %a{href: "#{management_valorizations_path}", title: "Reporte Valorizaciones"}
                         %i.fa.fa-lg.fa-fw.fa-money
                         Valorizaciones
                 - if (current_user.has_role? :director) || (current_user.has_role? :overheads)
