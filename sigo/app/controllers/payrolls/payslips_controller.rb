@@ -260,7 +260,7 @@ class Payrolls::PayslipsController < ApplicationController
           
       @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
       if wg != 0
-        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers)
+        @partes = Payslip.generate_payroll_workers_testing(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers)
         @mensaje = "exito"
       else
         @mensaje = "fuentes"
