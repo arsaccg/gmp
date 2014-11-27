@@ -167,7 +167,7 @@ function part_block() {
 function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1, serie2, serie3, data_serie1, data_serie2, data_serie3, categories){
   $('#'+div_id).highcharts({
     chart: {
-      type: 'line'
+      type: 'spline'
     },
     title: {
       text: title
@@ -179,7 +179,14 @@ function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1,
       categories: categories
     },
     yAxis: {
-      title: { text: 'Costo (S/.)' }
+      title: { 
+        text: 'Costo (S/.)' 
+      }
+    },
+    tooltip: {
+        crosshairs: true,
+        shared: true,
+        valuePrefix: "S/. "
     },
     plotOptions: {
       line: {
