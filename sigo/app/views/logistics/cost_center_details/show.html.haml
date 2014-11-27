@@ -1,3 +1,185 @@
-#cost_center_general_data-inside
-  %h1 
-    =@cost_center_detail.name
+.modal-dialog{"style"=>"width:70%;margin-top:0px;"}
+  .modal-content
+    .modal-header{"style"=>"background-color:#296191;color:white;padding-top:8px;padding-bottom:8px"}
+      %button{"class"=>"close", "data-dismiss"=>"modal"}
+        %span{"aria-hidden"=>"true","style"=>"color:white;"} &times;
+        %span{"class"=>"sr-only"} Close
+      %h4{"class"=>"modal-title", "id"=>"cost_center_general_data","style"=>"margin-left:35%;font-weight:900;"} Datos Generales del Proyecto
+    .modal-body{"style"=>"background-color:#E6E6E6;font-size: 115%;"}
+      - if !@cost_center_detail.nil?
+        %table{"style"=>"margin-left:30px;margin-right:30px;height:auto;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Nombre de la obra:
+            %td{"style"=>"font-weight:900;padding-left:130px;"}=@cost_center_detail.name
+          %tr{"style"=>"height:10px;"}
+
+        %table{"style"=>"margin-left:30px;margin-right:30px;height:auto;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Ubicación:
+            %td=@cost_center_detail.district.to_s+" - "+@cost_center_detail.province.to_s+" - "+@cost_center_detail.department.to_s
+          %tr{"style"=>"height:15px;"}
+
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Entidad Contratante:
+            %td
+              -if !Entity.find_by_id(@cost_center_detail.entity_id).nil?
+                =Entity.find_by_id(@cost_center_detail.entity_id).name
+              -else
+                =""
+          %tr{"style"=>"height:15px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Nombre del Contratista:
+            %td=@company.name
+
+            %td{"style"=>"font-size:100%;"}
+              %strong Dirección:
+            %td=@company.address
+          %tr{"style"=>"height:10px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Ruc:
+            %td{"style"=>"width:35%;"}=@company.ruc
+
+            %td{"style"=>"font-size:100%;"}
+              %strong Condición Tributaria Amazónica: 
+            %td=@cost_center_detail.amazon_tax_condition
+          %tr{"style"=>"height:10px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Consorciados y Participación: 
+            %td
+              %div{"style"=>"display:inline;"}
+                -EntityCostCenterDetail.where("cost_center_detail_id ="+ @cost_center_detail.id.to_s).each do |c|
+                  -if !c.entity_id.nil? && c.entity_id!=0
+                    %div{"style"=>"margin-bottom:3px;"}=Entity.find(c.entity_id.to_s).name + " ( "+c.participation.to_s+"% )"
+                  -else
+                    =""
+            %td{"style"=>"font-size:100%;"}
+              %strong Fecha de Convocatoria:
+            %td=@cost_center_detail.call_date.strftime("%d - %m - %Y").to_s
+          %tr{"style"=>"height:10px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Número de Proceso:
+            %td=@cost_center_detail.process_number
+            %td{"style"=>"font-size:100%;"}
+              %strong Código Snip: 
+            %td=@cost_center_detail.snip_code
+          %tr{"style"=>"height:14px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Fecha de Buena Pro:
+            %td=@cost_center_detail.good_pro_date.strftime("%d - %m - %Y").to_s
+
+            %td{"style"=>"font-size:100%;"}
+              %strong Valor Referencial: 
+            %td= number_to_currency(@cost_center_detail.referential_value.to_s, unit: 'S/. ', precision: 2)
+          %tr{"style"=>"height:14px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Valor Ganado:
+            %td= number_to_currency(@cost_center_detail.earned_value.to_s, unit: 'S/. ', precision: 2)
+
+            %td{"style"=>"font-size:100%;"}
+              %strong Costo Directo:
+            %td= number_to_currency(@cost_center_detail.direct_cost.to_s, unit: 'S/. ', precision: 2)
+          %tr{"style"=>"height:16px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Gastos Generales: 
+            %td= number_to_currency(@cost_center_detail.general_cost.to_s, unit: 'S/. ', precision: 2)
+
+            %td{"style"=>"font-size:100%;"}
+              %strong Utilidad:
+            %td= number_to_currency(@cost_center_detail.utility.to_s, unit: 'S/. ', precision: 2)
+          %tr{"style"=>"height:16px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Igv: 
+            %td= number_to_currency(@cost_center_detail.IGV, unit: 'S/. ', precision: 2)
+
+            %td{"style"=>"font-size:100%;"}
+              %strong Fecha Firma del Contrato:
+            %td=@cost_center_detail.contract_sign_date.strftime("%d - %m - %Y").to_s
+          %tr{"style"=>"height:15px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Número del Contrato:
+            %td=@cost_center_detail.contract_number
+
+            %td{"style"=>"font-size:100%;"}
+              %strong Fecha Entrega del Terreno: 
+            %td
+              -if !@cost_center_detail.land_delivery_date.nil?
+                =@cost_center_detail.land_delivery_date.strftime("%d - %m - %Y").to_s
+              -else
+                =""
+          %tr{"style"=>"height:14px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Fecha de Solicitud del Adelanto Directo:
+            %td
+              -if !@cost_center_detail.direct_advanced_form_date.nil?
+                =@cost_center_detail.direct_advanced_form_date.strftime("%d - %m - %Y").to_s
+              -else
+                =""
+            
+
+            %td{"style"=>"font-size:100%;"}
+              %strong Fecha de Pago del Adelanto Directo: 
+            %td
+              -if !@cost_center_detail.direct_advanced_payment_date.nil?
+                =@cost_center_detail.direct_advanced_payment_date.strftime("%d - %m - %Y").to_s
+              -else
+                =""
+            
+          %tr{"style"=>"height:14px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Fecha de Inicio de Obra:
+            %td
+              -if !@cost_center_detail.start_date_of_work.nil?
+                =@cost_center_detail.start_date_of_work.strftime("%d - %m - %Y").to_s
+              -else
+                =""
+            
+
+            %td{"style"=>"font-size:100%;"}
+              %strong Sistema de Contratación:
+            %td
+              -if @cost_center_detail.procurement_system=="unit_price"
+                ="Precio Unitario"
+              -if @cost_center_detail.procurement_system=="advance_sum"
+                ="Suma Alzada"
+              -if @cost_center_detail.procurement_system=="mixto"
+                ="Mixto"
+          %tr{"style"=>"height:12px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Plazo de Ejecución (Dias Calendario): 
+            %td=@cost_center_detail.execution_term
+
+            %td{"style"=>"font-size:100%;"}
+              %strong Supervisión / Inspector:
+            %td
+              -if !@cost_center_detail.supervision.nil?
+                =@cost_center_detail.supervision
+              -else
+                =""
+          %tr{"style"=>"height:12px;"}
+          %tr
+            %td{"style"=>"font-size:100%;"}
+              %strong Fecha de Pago de Adelanto de Materiales: 
+            %td
+              -if !@cost_center_detail.material_advanced_payment_date.nil?
+                =@cost_center_detail.material_advanced_payment_date.strftime("%d - %m - %Y").to_s  
+              -else
+                =""
+          
+      - else
+        %h2 Datos no encontrados.         
+    .modal-footer{"style"=>"margin-top:0px;background-color:#296191"}

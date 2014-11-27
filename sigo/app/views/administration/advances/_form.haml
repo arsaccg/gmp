@@ -1,8 +1,11 @@
 = simple_form_for [:administration, @advance], :role=>"form", :html => {:class => 'form-horizontal', :multipart => true} do |f| 
   .fieldset
-     
     .form-group
-      = f.label "Numero de Documento : ", :class=>"col-lg-2 control-label"
+      = f.label "Tipo de Adelanto: ", :class=>"col-lg-2 control-label"
+      .col-lg-10
+        = f.input :advance_type, :label => false, input_html: {class: "form-control"}, collection: [ "Directo", "Materiales"], :selected => "Directo"
+    .form-group
+      = f.label "Numero de Adelanto : ", :class=>"col-lg-2 control-label"
       .col-lg-10
         = f.input :advance_number, :label => false, input_html: {class: "form-control"}
     .form-group
@@ -13,6 +16,11 @@
       = f.label "Monto : ", :class=>"col-lg-2 control-label"
       .col-lg-10
         = f.input :amount, :label => false, input_html: {class: "form-control"}
+    .form-group
+      = f.label "Fecha de Pago : ", :class=>"col-lg-2 control-label"
+      .col-lg-10
+        = f.input :payment_date, :label => false, input_html: {class: "form-control"}
+
   .form-actions
     %br
     %div(class="col-lg-offset-2 col-lg-10")
