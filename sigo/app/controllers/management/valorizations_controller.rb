@@ -107,8 +107,8 @@ class Management::ValorizationsController < ApplicationController
     @month = @valorization.valorization_date.to_date.strftime("%-m").to_i
     @year = @valorization.valorization_date.to_date.strftime("%Y").to_i 
 
-    @direct_advances = Advance.where("advance_type = ? AND payment_date < ?" , "Directo", @valorization.valorization_date)
-    @dadvances_of_materials = Advance.where(advance_type: "Materiales")
+    @direct_advances = Advance.where("advance_type LIKE 'Directo' AND payment_date < ?", @valorization.valorization_date)
+    @advances_of_materials = Advance.where(advance_type: "Materiales")
 
     render :show_data, layout: false
   end

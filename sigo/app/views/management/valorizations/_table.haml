@@ -89,6 +89,15 @@
         %td(style="text-align: right;")
           %span{:id=>"item_direct_advance"}
             =0
+      -@direct_advances.each do |d|
+        %tr
+          %td
+            %span(style="padding-left: 20px;")
+              %strong  
+                2.01 Adelanto Directo
+          %td(style="text-align: right;")
+            %span{:id=>"item_direct_advance_"}
+              =d
           /%input{:type=>"text", :class=>"input-mini", :id => "item_direct_advance", :name => "direct_advance", :onblur => "update_data('#{igv}')", :onchange=>"change_data_da('item_direct_advance')", :value => @valorization.direct_advance, :style=>"text-align: right;"}
       %tr
         %td
