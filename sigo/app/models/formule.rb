@@ -1,6 +1,8 @@
 class Formule < ActiveRecord::Base
 
-  def self.translate_formules(formula,basico,worker_id)
+  def self.translate_formules(formula,basico,worker_id, calculator, hash_formulas)
+
+    hash_formulas[] = formula.tr('][', '')
 
     const_variables = formula.scan(/\[.*?\]/)
     const_variables.each do |c|
@@ -16,7 +18,7 @@ class Formule < ActiveRecord::Base
             if formu.nil? && concept.amount.to_f != 0.0
               amount = concept.amount.to_f
             else
-              amount = Formule.translate_formules(formu.formula, basico,worker_id)
+              amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas)
             end
           end
         else
@@ -30,14 +32,14 @@ class Formule < ActiveRecord::Base
               if formu.nil? && concept.amount.to_f != 0.0
                 amount = concept.amount.to_f
               else
-                amount = Formule.translate_formules(formu.formula, basico,worker_id)
+                amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas)
               end
             end
           else
             if formu.nil? && concept.amount.to_f != 0.0
               amount = concept.amount.to_f
             else
-              amount = Formule.translate_formules(formu.formula, basico,worker_id)
+              amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas)
             end
           end
         end

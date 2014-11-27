@@ -694,29 +694,55 @@
   }
 
   function initialize() {
-  
-    $this = $("#map_canvas");
-    $zoom_level = ($this.data("gmap-zoom") || 5);
-    $data_lat = ($this.data("gmap-lat") || 29.895883);
-    $data_lng = ($this.data("gmap-lng") || -80.650635);
-    $xml_src = ($this.data("gmap-src") || "js/test.xml");
 
     var colorfulStyleMap = new google.maps.StyledMapType(colorful_style, {
-            name: "Colorful"
-        });
+      name: "Colorful"
+    });
 
     // colorful
     function generate_map_2() {
 
-        var mapOptions = {
-            center: new google.maps.LatLng(-9.6295248, -77.1746293),
-            zoom: 12,
-        };
-        map = new google.maps.Map(document.getElementById('map_canvas2'), mapOptions);
+      var mapOptions = {
+        center: new google.maps.LatLng(-9.1951786, -74.9904165),
+        zoom: 12
+      };
+      
+      var marker;
+      
+      map = new google.maps.Map(document.getElementById('map_canvas2'), mapOptions);
+      
+      var infowindow = new google.maps.InfoWindow({
+        maxWidth: 160
+      });
 
-        // Setup skin for the map
-        map.mapTypes.set('colorful_style', colorfulStyleMap);
-        map.setMapTypeId('colorful_style');
+      // Setup skin for the map
+      map.mapTypes.set('colorful_style', colorfulStyleMap);
+      map.setMapTypeId('colorful_style');
+
+      var locations = [
+        ['<h4>Aplao - Arequipa</h4>', -10.1251376, -71.670256],
+        ['<h4>Bagua - Amazonas, Perú</h4>', -5.0980849, -78.3821297],
+        ['<h4>Saposoa - Perú</h4>', -6.9349658, -76.7728913],
+        ['<h4>Rioja Paquete 1</h4>', -6.0526172, -77.1599013],
+        ['<h4>Rioja Paquete 3</h4>', -6.0594871, -77.1636401],
+        ['<h4>Rioja</h4>', -6.0569995, -77.1685508]
+      ];
+
+      for (var i = 0; i < locations.length; i++) {  
+        marker = new google.maps.Marker({
+          position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+          map: map
+        });
+
+        markers.push(marker);
+
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+          return function() {
+            infowindow.setContent(locations[i][0]);
+            infowindow.open(map, marker);
+          }
+        })(marker, i));
+      }
 
     }
 
