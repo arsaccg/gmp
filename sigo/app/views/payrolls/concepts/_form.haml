@@ -157,13 +157,19 @@
           .modal-content
             .modal-body{ :style => 'overflow: hidden; padding: 2em;' }
               
+              .alert.alert-block.alert-danger
+                %h4.alert-heading
+                  %i.fa.fa-check-square-o
+                  Tenga en cuenta estos tokens, los cuales deberá ingresarlos a mano:
+                %p
+                  [horas-simples], [horas-dobles], [precio-por-hora]
               .alert.alert-block.alert-warning
-                %a.close{"data-dismiss" => "alert", :href => "#"} ×
                 %h4.alert-heading
                   %i.fa.fa-check-square-o
                   Revisa la Fórmula
                 %p
                   Si modificas el nombre de los Tokens generados puede que haya errores en los calculos de los montos.
+
 
               %section.col-md-9
                 %label{ :style => 'font-size: 13px;' } Buscar Conceptos:
