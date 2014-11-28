@@ -2,24 +2,12 @@ class Payrolls::PayslipsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @pay = Payroll.all
-    @ids = Array.new
-    contracts = WorkerContract.where("start_date < '"+Time.now.strftime("%YYYY-%mm-%dd").to_s+"' AND end_date > '"+Time.now.strftime("%YYYY-%mm-%dd").to_s+"'")
-    contracts.each do |con|
-      @ids << con.worker_id
-    end
-    @ids = @ids.join(',')
+    @pay = ActiveRecord::Base.connection.execute("SELECT code, week, month FROM payslips GROUP BY code")
     render layout: false
   end
 
   def show
-    @pay = Payroll.find_by_worker_id(params[:id])
-    @type = params[:type]
-    if !@pay.nil?
-      @payroll_details = @pay.payroll_details
-    end
-    @worker = Worker.find(params[:id])
-    @entity =Entity.find(@worker.entity_id)
+    @pay = Payslip.where("code = ?",params[:id])
     render layout: false
   end
 
@@ -79,15 +67,14 @@ class Payrolls::PayslipsController < ApplicationController
       pay = Payslip.new
       pay.worker_id = params[:payslip][''+reg.to_s+'']['worker_id']
       pay.cost_center_id = params[:payslip][''+reg.to_s+'']['cost_center_id']
-      pay.start_date = params[:payslip][''+reg.to_s+'']['start_date']
-      pay.end_date = params[:payslip][''+reg.to_s+'']['end_date']
+      pay.week = params[:payslip][''+reg.to_s+'']['week']
       pay.days = params[:payslip][''+reg.to_s+'']['days']
       pay.normal_hours = params[:payslip][''+reg.to_s+'']['normal_hours']
       pay.subsidized_day = params[:payslip][''+reg.to_s+'']['subsidized_day']
       pay.subsidized_hour = params[:payslip][''+reg.to_s+'']['subsidized_hour']
       pay.last_worked_day = params[:payslip][''+reg.to_s+'']['last_worked_day']
       pay.he_60 = params[:payslip][''+reg.to_s+'']['he_60']
-      pay.code
+      pay.code = last_code
       pay.he_100 = params[:payslip][''+reg.to_s+'']['he_100']
       pay.ing_and_amounts = params[:payslip][''+reg.to_s+'']['ing_and_amounts'].to_json
       pay.month = params[:payslip][''+reg.to_s+'']['month']
@@ -212,7 +199,7 @@ class Payrolls::PayslipsController < ApplicationController
       WHERE wc.id = " + params[:semana].to_s).first
 
     tipo = params[:tipo]
-
+    @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
     @max_hour = ActiveRecord::Base.connection.execute("
       SELECT total
       FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + "
