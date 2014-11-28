@@ -14,8 +14,7 @@
               %td
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][worker_id]', pars[0]
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][cost_center_id]', @cc.id.to_s
-                = hidden_field_tag 'payslip['+@reg_n.to_s+'][start_date]', @start_date.to_s
-                = hidden_field_tag 'payslip['+@reg_n.to_s+'][end_date]', @end_date.to_s
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][week]', @week.to_s
                 = pars[1].to_s
               %td
                 = pars[2].to_s
@@ -64,7 +63,7 @@
             -@reg_n+=1
     =hidden_field_tag 'regs', @regsAr
     %footer
-      %button.btn.btn-primary#save{:type => "submit"}
+      %button.btn.btn-primary#save{:type => "submit", :onclick=>"part_block()"}
         %i.fa.fa-save 
         Guardar
     :javascript
@@ -125,6 +124,10 @@
             $('#modalLoadingLabelading').modal('hide');
             $('.modal-backdrop.fade.in').remove();
           },
+          error: function(xhr, status, error) {
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();      
+          }
         });
       });
 -else

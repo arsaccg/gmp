@@ -13,8 +13,6 @@ class Payslip < ActiveRecord::Base
     uit = FinancialVariable.find_by_name("UIT").value * 7
     @result[0] = headers
     @result[0] << "REMUNERACIÓN BÁSICA"
-    @result[0] << "HORAS EXTRAS 60%"
-    @result[0] << "HORAS EXTRAS 100%" 
     amount = 0
     apoNa = Array.new
     ActiveRecord::Base.connection.execute("
@@ -64,15 +62,15 @@ class Payslip < ActiveRecord::Base
         end
       end
       calculator.store(remuneracion_basica: rem_basic)
+      calculator.store(precio_por_hora: por_hora)
+      calculator.store(horas_simples: row[9])
+      calculator.store(horas_dobles: row[10])
       @result[@i] << rem_basic
-      @result[@i] << row[9]*por_hora*1.6
-      @result[@i] << row[10]*por_hora*2
       
-      total += rem_basic + row[9]*por_hora*1.6 + row[10]*por_hora*2
+      total += rem_basic
 
       ing.delete("1")
-      ing.delete("4")
-      ing.delete("5")
+
       ing.each do |ing|
         con = nil
         hash_formulas = Hash.new
