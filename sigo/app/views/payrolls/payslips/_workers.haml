@@ -8,6 +8,7 @@
             %th= head
       %tbody
         - @partes.each do |pars|
+          -@flag=0
           -if pars[0]!="DNI"
             %tr
               %td
@@ -48,8 +49,17 @@
                 -j=i+11
                 -p=j+1
                 %td{ :style => 'text-align: right' }
-                  = hidden_field_tag 'payslip['+@reg_n.to_s+'][concepts_and_amounts]['+@partes[0][p].to_s.downcase.parameterize.gsub("-","_").to_s+']', pars[j]
+                  -if @flag == 0
+                    = hidden_field_tag 'payslip['+@reg_n.to_s+'][ing_and_amounts]['+@partes[0][p].to_s.downcase.parameterize.gsub("-","_").to_s+']', pars[j].round(4).round(2)
+                  -elsif @flag == 1
+                    = hidden_field_tag 'payslip['+@reg_n.to_s+'][des_and_amounts]['+@partes[0][p].to_s.downcase.parameterize.gsub("-","_").to_s+']', pars[j].round(4).round(2)
+                  -elsif @flag == 2
+                    = hidden_field_tag 'payslip['+@reg_n.to_s+'][aport_and_amounts]['+@partes[0][p].to_s.downcase.parameterize.gsub("-","_").to_s+']', pars[j].round(4).round(2)
                   = pars[j].to_f.round(4).round(2)
+                  -if @partes[0][p].to_s.downcase.parameterize.gsub("-","_") == "ingresos_totales"
+                    -@flag+=1
+                  -elsif @partes[0][p].to_s.downcase.parameterize.gsub("-","_") == "descuentos_totales"
+                    -@flag += 1
               -@regsAr<< @reg_n
             -@reg_n+=1
     =hidden_field_tag 'regs', @regsAr

@@ -1,8 +1,9 @@
 class Formule < ActiveRecord::Base
 
   def self.translate_formules(formula,basico,worker_id, calculator, hash_formulas, main_concept)
-    hash_formulas[main_concept.tr('][', '').gsub('-','_')] = formula.tr('][', '').gsub('-','_')
+    main = main_concept.tr('][', '').gsub('-','_')
 
+    hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
     const_variables = formula.scan(/\[.*?\]/)
     const_variables.each do |c|
       concept = Concept.find_by_token(c)
@@ -17,7 +18,7 @@ class Formule < ActiveRecord::Base
             if formu.nil? && concept.amount.to_f != 0.0
               amount = concept.amount.to_f
             else
-              amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas)
+              amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
             end
           end
         else
@@ -31,21 +32,22 @@ class Formule < ActiveRecord::Base
               if formu.nil? && concept.amount.to_f != 0.0
                 amount = concept.amount.to_f
               else
-                amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas)
+                amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
               end
             end
           else
             if formu.nil? && concept.amount.to_f != 0.0
               amount = concept.amount.to_f
             else
-              amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas)
+              amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
             end
           end
         end
-        calculator.store(concept.token.tr('][', '').gsub('-','_'): amount)
+        var = concept.token.tr('][', '').gsub('-','_')
+        calculator.store(var: amount)
       end
     end
-    return cal.solve(hash_formulas.first.to_s)
+    return calculator.solve!(hash_formulas).first[1]
   end
 
 end

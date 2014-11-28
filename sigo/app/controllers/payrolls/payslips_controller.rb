@@ -69,23 +69,41 @@ class Payrolls::PayslipsController < ApplicationController
 
   def create
     flash[:error] = nil
-    puts "--.--------------------------------------------------------------------------------------------------------"
-    puts params[:conceptos]
-    puts "-----------------------------------------------------------------------------------------------------------"
-    oiasnvoabnvbosavboa = 
-    pay = Payroll.new(pay_parameters)
-    code = Payslip.all.last.code.to_i
-    pay.code = (code+1)
-    if pay.save
-      flash[:notice] = "Se ha creado correctamente."
-      redirect_to :action => :index
-    else
-      pay.errors.messages.each do |attribute, error|
-        puts flash[:error].to_s + error.to_s + "  "
-      end
-      @pay = pay
-      render :new, layout: false 
+    a = Payslip.all.last
+    last_code = 1
+    if !a.nil?
+      last_code = a.code.to_i + 1 
     end
+    regs = params[:regs].split(' ')
+    regs.each do |reg|
+      pay = Payslip.new
+      pay.worker_id = params[:payslip][''+reg.to_s+'']['worker_id']
+      pay.cost_center_id = params[:payslip][''+reg.to_s+'']['cost_center_id']
+      pay.start_date = params[:payslip][''+reg.to_s+'']['start_date']
+      pay.end_date = params[:payslip][''+reg.to_s+'']['end_date']
+      pay.days = params[:payslip][''+reg.to_s+'']['days']
+      pay.normal_hours = params[:payslip][''+reg.to_s+'']['normal_hours']
+      pay.subsidized_day = params[:payslip][''+reg.to_s+'']['subsidized_day']
+      pay.subsidized_hour = params[:payslip][''+reg.to_s+'']['subsidized_hour']
+      pay.last_worked_day = params[:payslip][''+reg.to_s+'']['last_worked_day']
+      pay.he_60 = params[:payslip][''+reg.to_s+'']['he_60']
+      pay.code
+      pay.he_100 = params[:payslip][''+reg.to_s+'']['he_100']
+      pay.ing_and_amounts = params[:payslip][''+reg.to_s+'']['ing_and_amounts'].to_json
+      pay.month = params[:payslip][''+reg.to_s+'']['month']
+      pay.des_and_amounts = params[:payslip][''+reg.to_s+'']['des_and_amounts'].to_json
+      pay.aport_and_amounts = params[:payslip][''+reg.to_s+'']['aport_and_amounts'].to_json
+      if pay.save
+        flash[:notice] = "Se ha creado correctamente."
+      else
+        pay.errors.messages.each do |attribute, error|
+          puts flash[:error].to_s + error.to_s + "  "
+        end
+        @pay = pay
+        render :new, layout: false 
+      end
+    end
+    redirect_to :action => :index
   end
 
   def edit
@@ -120,42 +138,6 @@ class Payrolls::PayslipsController < ApplicationController
       @pay = pay
       render :edit, layout: false
     end
-  end
-
-
-  def complete_select
-    @cc = CostCenter.find(get_company_cost_center('cost_center'))
-    semana = ActiveRecord::Base.connection.execute("
-      SELECT *
-      FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
-      WHERE wc.id = " + params[:semana].to_s).first
-
-    tareo = WeeklyWorker.where("start_date = '"+semana[2].to_s+"' AND end_date = '"+semana[3].to_s+"' AND state = 'approved'").first
-    if !tareo.nil?
-      wg = tareo.working_group.gsub(" ", ",")
-    else
-      wg = 0
-    end
-    workers = Array.new
-    wo = ActiveRecord::Base.connection.execute("
-      SELECT ppd.worker_id, e.dni, CONCAT_WS(' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname)
-      FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
-      WHERE pp.cost_center_id = " + @cc.id.to_s + "
-      AND ppd.part_person_id = pp.id
-      AND pp.date_of_creation BETWEEN '" + semana[2].to_s + "' AND  '" + semana[3].to_s + "'
-      AND ppd.worker_id = w.id
-      AND pp.working_group_id IN ("+wg.to_s+")
-      AND w.entity_id = e.id
-      AND wa.worker_id = w.id
-      AND af.id = wa.afp_id
-      AND wc.worker_id = w.id
-      AND wc.article_id = ar.id
-      GROUP BY ppd.worker_id
-    ")
-    wo.each do |wo|
-      workers << {'id' => wo[0].to_s, 'name' => wo[1]+"-"+wo[2]}
-    end
-    render json: {:workers => workers}
   end
 
   def complete_select
@@ -260,7 +242,7 @@ class Payrolls::PayslipsController < ApplicationController
           
       @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
       if wg != 0
-        @partes = Payslip.generate_payroll_workers_testing(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers)
+        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers)
         @mensaje = "exito"
       else
         @mensaje = "fuentes"
@@ -277,6 +259,6 @@ class Payrolls::PayslipsController < ApplicationController
 
   private
   def pay_parameters
-    params.require(:payroll).permit(:worker_id, :cost_center_id, :start_date, :end_date, :days, :normal_hours, :subsidized_day, :subsidized_hour, :last_worked_day, :he_60, :code, :he_100, :concepts_and_amounts, :month)
+    params.require(:payslip).permit(:worker_id, :cost_center_id, :start_date, :end_date, :days, :normal_hours, :subsidized_day, :subsidized_hour, :last_worked_day, :he_60, :code, :he_100, :ing_and_amounts, :des_and_amounts, :aport_and_amounts, :month)
   end
 end
