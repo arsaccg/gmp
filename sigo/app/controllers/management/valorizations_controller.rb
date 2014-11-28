@@ -107,6 +107,12 @@ class Management::ValorizationsController < ApplicationController
     @month = @valorization.valorization_date.to_date.strftime("%-m").to_i
     @year = @valorization.valorization_date.to_date.strftime("%Y").to_i 
 
+    @direct_advances = Advance.where("advance_type LIKE 'Directo' AND MONTH(payment_date) <= MONTH(?)", @valorization.valorization_date).order(:payment_date)
+    @advances_of_materials = Advance.where("advance_type LIKE 'Materiales' AND MONTH(payment_date) <= MONTH(?)", @valorization.valorization_date).order(:payment_date)
+
+    @direct_advances_sum = @direct_advances.sum(:amount)
+    @advances_of_materials_sum = @advances_of_materials.sum(:amount)
+
     render :show_data, layout: false
   end
 
