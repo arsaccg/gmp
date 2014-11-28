@@ -33,7 +33,7 @@ class Payslip < ActiveRecord::Base
       GROUP BY ppd.worker_id
     ").each do |row|
       @result << [ row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10] ]
-
+      calculator = Dentaku::Calculator.new
       amount = 0
       # Remuneracion Básica
       rem_basic = 0
@@ -63,7 +63,7 @@ class Payslip < ActiveRecord::Base
           por_hora = from_category.amount.to_f/48
         end
       end
-
+      calculator.store(remuneracion_basica: rem_basic)
       @result[@i] << rem_basic
       @result[@i] << row[9]*por_hora*1.6
       @result[@i] << row[10]*por_hora*2
@@ -75,6 +75,7 @@ class Payslip < ActiveRecord::Base
       ing.delete("5")
       ing.each do |ing|
         con = nil
+        hash_formulas = Hash.new
         formu = nil
         con = Concept.find(ing)
         formu = con.concept_valorization
@@ -92,7 +93,7 @@ class Payslip < ActiveRecord::Base
               amount = con.amount.to_f
               total += amount.to_f
             else
-              amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic,row[0])
+              amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
               total += amount.to_f
             end
           end
@@ -109,7 +110,7 @@ class Payslip < ActiveRecord::Base
                 amount = con.amount.to_f
                 total += amount.to_f
               else
-                amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic,row[0])
+                amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
                 total += amount.to_f
               end
             end
@@ -118,7 +119,7 @@ class Payslip < ActiveRecord::Base
               amount = con.amount.to_f
               total += amount.to_f
             else
-              amount = Formule.translate_formules(con.concept_valorization.formula , rem_basic,row[0])
+              amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
               total += amount.to_f
             end
           end
@@ -150,6 +151,7 @@ class Payslip < ActiveRecord::Base
 
       des.each do |de|
         con = nil
+        hash_formulas = Hash.new
         con = Concept.find(de)
         
         if !@result[0].include?(con.name)
@@ -167,7 +169,7 @@ class Payslip < ActiveRecord::Base
               amount = con.amount.to_f
               total += amount.to_f
             else
-              amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic,row[0])
+              amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
               if amount.to_f > con.top.to_f && de.to_i != 28 && de.to_i != 29 && de.to_i != 30 && de.to_i!=31
                 amount = con.top.to_f
               end              
@@ -187,7 +189,7 @@ class Payslip < ActiveRecord::Base
                 amount = con.amount.to_f
                 total += amount
               else
-                amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0])
+                amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
                 if amount.to_f > con.top.to_f && de.to_i != 28 && de.to_i != 29 && de.to_i != 30 && de.to_i!=31
                   amount = con.top.to_f
                 end
@@ -199,7 +201,7 @@ class Payslip < ActiveRecord::Base
               amount = con.amount.to_f
               total += amount
             else
-              amount = Formule.translate_formules(con.concept_valorization.formula , rem_basic,  row[0])
+              amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
               if amount.to_f > con.top.to_f && de.to_i != 28 && de.to_i != 29 && de.to_i != 30 && de.to_i!=31
                 amount = con.top.to_f
               end              
@@ -265,6 +267,7 @@ class Payslip < ActiveRecord::Base
 
       apo.each do |ap|
         con = nil
+        hash_formulas = Hash.new
         formu = nil
         con = Concept.find(ap)
         if !apoNa.include?(con.name)
@@ -276,7 +279,7 @@ class Payslip < ActiveRecord::Base
           total += amount
           @result[@i] << amount
         else
-          amount = Formule.translate_formules(con.concept_valorization.formula , rem_basic,row[0])
+          amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
           total += amount.to_f
           @result[@i] << amount
         end
@@ -300,7 +303,6 @@ class Payslip < ActiveRecord::Base
     # => DES - Descuentos
     # => APO - Aportaciones
     
-
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)
     @i = 1
