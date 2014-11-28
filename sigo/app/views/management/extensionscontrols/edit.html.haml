@@ -59,7 +59,7 @@
                   %section.col.col-10
                     %label.label Subir Archivos
                     %label.input{for: "files"}
-                      = f.input :files, input_html: { class: 'form-control' }, label: false
+                      = f.file_field :files, input_html: { class: 'form-control' }, label: false
               %footer
                 %a{:href=>"javascript:post_to_url('#{management_extensionscontrol_path(@extensionscontrol)}?authenticity_token=#{form_authenticity_token}', 'edit_extension', 'right-area');", :class=>"btn btn-success"}
                   %i.fa.fa-save
