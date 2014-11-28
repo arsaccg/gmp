@@ -48,7 +48,7 @@
                       %td= cc.company.short_name.to_s
                       %td
                         %a{"style"=>"display:inline;margin-right:5px;",href: 'javascript:void(0);', :onclick => 'detail('+cc.id.to_s+');', title: "Datos generales del centro de costo"}
-                          %i.fa.fa-info-circle
+                          %i.fa.fa-info-circle6
                         %div{"style"=>"display:inline;margin-right:5px;"}= cc.name.to_s
                       %td
                         %span
@@ -142,7 +142,7 @@
                 .show-stat-microcharts
                   .col-xs-12.col-sm-3.col-md-3.col-lg-3
                     .easy-pie-chart.txt-color-orangeDark{"data-percent" => "33", "data-pie-size" => "50"}
-                      %span.percent.percent-sign 35
+                      %span.percent= @ratio_avanze_fisico
                     %span.easy-pie-title
                       Avance Físico
                       %i.fa.fa-caret-up.icon-color-bad
@@ -159,7 +159,7 @@
                       130, 187, 250, 257, 200, 210, 300, 270, 363, 247, 270, 363, 247
                   .col-xs-12.col-sm-3.col-md-3.col-lg-3
                     .easy-pie-chart.txt-color-greenLight{"data-percent" => "78.9", "data-pie-size" => "50"}
-                      %span.percent.percent-sign 78.9
+                      %span.percent= @ratio_de_tiempo
                     %span.easy-pie-title
                       Ratio de Tiempo
                       %i.fa.fa-caret-down.icon-color-good
@@ -171,18 +171,18 @@
                       %li
                         %span.label.bg-color-blue
                           %i.fa.fa-caret-down
-                          3%
+                          20%
                     .sparkline.txt-color-blue.hidden-sm.hidden-md.pull-right{"data-fill-color" => "transparent", "data-sparkline-height" => "33px", "data-sparkline-type" => "line", "data-sparkline-width" => "70px"}
                       257, 200, 210, 300, 270, 363, 130, 187, 250, 247, 270, 363, 247
                   .col-xs-12.col-sm-3.col-md-3.col-lg-3
                     .easy-pie-chart.txt-color-blue{"data-percent" => "23", "data-pie-size" => "50"}
-                      %span.percent.percent-sign 23
+                      %span.percent.percent-sign 77
                     %span.easy-pie-title
                       Pago a Proveedores
                       %i.fa.fa-caret-up.icon-color-good
                     %ul.smaller-stat.hidden-sm.pull-right
                       %li
-                        %span.label.bg-color-darken 10GB
+                        %span.label.bg-color-darken 80%
                       %li
                         %span.label.bg-color-blueDark
                           %i.fa.fa-caret-up
@@ -191,8 +191,8 @@
                       200, 210, 363, 247, 300, 270, 130, 187, 250, 257, 363, 247, 270
                   .col-xs-12.col-sm-3.col-md-3.col-lg-3
                     .easy-pie-chart.txt-color-darken{"data-percent" => "36", "data-pie-size" => "50"}
-                      %span.percent.degree-sign
-                        36
+                      %span.percent
+                        = @cant_trabajadores
                         %i.fa.fa-caret-up
                     %span.easy-pie-title
                       Cantidad de Trabajadores
@@ -201,11 +201,11 @@
                       %li
                         %span.label.bg-color-red
                           %i.fa.fa-caret-up
-                          124
+                          60
                       %li
                         %span.label.bg-color-blue
                           %i.fa.fa-caret-down
-                          40 F
+                          20
                     .sparkline.txt-color-red.hidden-sm.hidden-md.pull-right{"data-fill-color" => "transparent", "data-sparkline-height" => "33px", "data-sparkline-type" => "line", "data-sparkline-width" => "70px"}
                       2700, 3631, 2471, 2700, 3631, 2471, 1300, 1877, 2500, 2577, 2000, 2100, 3000
               / end s1 tab pane
@@ -757,11 +757,7 @@
 
   function detail(id) {
     data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
-    load_url_ajax('/logistics/cost_center_details/'+id+'', 'detail', data, null, 'GET');
-    $('#detail').modal({
-      keyboard: false,
-      backdrop: 'static'
-    });
+    load_modal_ajax('/logistics/cost_center_details/'+id+'', 'detail', data, null, 'GET');
   }
 
   function gdg_new(id){

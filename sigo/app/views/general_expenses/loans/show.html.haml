@@ -34,18 +34,18 @@
               %th{"style"=>"font-size:12px;text-align:center;"} Acciones
           %tbody
             - @loan.each do |loan|
-              %tr
-                %td{"style"=>"font-size:12px;"}
+              %tr{"style"=>"padding:0px;margin:0px;"}
+                %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}
                   %a.link_detail{:href=>"javascript:show_details("+loan.id.to_s+");" }="Prestamo N° "+ loan.id.to_s
-                %td{"style"=>"font-size:12px;"}=loan.loan_date.strftime("%d-%m-%Y").to_s
-                %td{"style"=>"font-size:12px;"}= number_to_currency(loan.amount.to_f, unit: 'S/. ', precision: 2)
-                %td{"style"=>"font-size:12px;"}
+                %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}=loan.loan_date.strftime("%d-%m-%Y").to_s
+                %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}= number_to_currency(loan.amount.to_f, unit: 'S/. ', precision: 2)
+                %td{"style"=>"font-size:12px;padding:0px;margin:0px;height:10px;"}
                   -if loan.state == "1"
-                    %span.label.label-success{"style"=>"background-color: #25CA25;color:white;text-align:center;width:100px;font-weight:bold;"} Pendiente
+                    %span.label.label-success{"style"=>"background-color: #25CA25;color:white;text-align:center;width:100px;font-weight:bold;margin-left:9px;margin-top:3px;"} Pendiente
                   -else
-                    %span.label.label-success{"style"=>"background-color: #3276B1;color:white;text-align:center;width:100px;font-weight:bold;"} Devuelto
-                %td{"style"=>"text-align:center;"}
-                  %a#edit.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_edit('+"#{loan.id.to_s}"+','+"#{@cost_center1.id}"+','+"#{@cost_center2.id}"+','+"#{@cc}"+');', "style"=>" color: white;font-size:11px; "}
+                    %span.label.label-success{"style"=>"background-color: #3276B1;color:white;text-align:center;width:100px;font-weight:bold;margin-left:9px;margin-top:3px;"} Devuelto
+                %td{"style"=>"text-align:center;padding:0px;margin:0px;height:10px;"}
+                  %a#edit.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_edit('+"#{loan.id.to_s}"+','+"#{@cost_center1.id}"+','+"#{@cost_center2.id}"+','+"#{@cc}"+');', "style"=>" color: white;font-size:11px;margin-top:2px;"}
                     Editar
       %br
       .row{"style"=>"height: 40%; overflow-y: scroll;"}

@@ -4,7 +4,7 @@ class Administration::AdvancesController < ApplicationController
   	protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 	# ESTO PERTENECE A TOBI!!!!
 	def index
-		@advances = Advance.where(:cost_center_id => get_company_cost_center('cost_center')).order("payment_date DESC")
+		@advances = Advance.where(:cost_center_id => get_company_cost_center('cost_center')).order(:advance_type, :payment_date) #.order("payment_date DESC")
 		render :index, :layout => false
 	end
 
