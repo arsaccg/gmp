@@ -57,7 +57,23 @@ class GeneralExpenses::LoansController < ApplicationController
       word = params[:element]
     end
     workers_hash = Array.new
-    workers = Loan.getWorkers(word)
+    if params[:element].nil?
+      workers = ActiveRecord::Base.connection.execute("
+        SELECT w.id,  e.name, e.paternal_surname, e.maternal_surname, e.dni
+        FROM workers w, entities e
+        WHERE ( e.name LIKE '%#{word}%' || e.paternal_surname LIKE '%#{word}%' || e.maternal_surname LIKE '%#{word}%' || e.dni LIKE '%#{word}%')
+        AND w.entity_id = e.id
+        GROUP BY e.id"
+          )      
+    else
+      workers = ActiveRecord::Base.connection.execute("
+        SELECT w.id,  e.name, e.paternal_surname, e.maternal_surname, e.dni
+        FROM workers w, entities e
+        WHERE w.entity_id = e.id
+        AND w.id = #{word}
+        GROUP BY e.id"
+          )
+    end
     workers.each do |art|
       workers_hash << {'name' => art[1],"paternal_surname"=> art[2],"maternal_surname"=> art[3],"id"=> art[0],"dni"=> art[4]}
     end
