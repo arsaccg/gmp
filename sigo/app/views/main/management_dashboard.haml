@@ -47,8 +47,10 @@
                       %td= cc.code.to_s
                       %td= cc.company.short_name.to_s
                       %td
+                        %a{href: 'javascript:void(0);', :onclick => 'goCoordinatesGMap(' + cc.latitude.to_s + ', ' + cc.longitude.to_s + ');', title: "Geolocalizacion"}
+                          %i.fa.fa-adn
                         %a{"style"=>"display:inline;margin-right:5px;",href: 'javascript:void(0);', :onclick => 'detail('+cc.id.to_s+');', title: "Datos generales del centro de costo"}
-                          %i.fa.fa-info-circle6
+                          %i.fa.fa-info-circle
                         %div{"style"=>"display:inline;margin-right:5px;"}= cc.name.to_s
                       %td
                         %span
@@ -828,4 +830,50 @@
       keyboard: false,
       backdrop: false
     });
+  }
+
+  function goCoordinatesGMap(latitud, longitud){
+    if(latitud != '' && longitud != ''){
+      gMap = new google.maps.Map(document.getElementById('map_canvas2')); 
+      gMap.setZoom(16);
+      gMap.setCenter(new google.maps.LatLng(latitud, longitud));
+      gMap.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+
+      var marker;
+      var markers = new Array();
+
+      var locations = [
+        ['<h4>Aplao - Arequipa</h4>', -16.0718144, -72.4853897],
+        ['<h4>Bagua - Amazonas, Perú</h4>', -5.0980849, -78.3821297],
+        ['<h4>Saposoa - Perú</h4>', -6.9349658, -76.7728913],
+        ['<h4>Rioja Paquete 1</h4>', -6.0526172, -77.1599013],
+        ['<h4>Rioja Paquete 3</h4>', -6.0594871, -77.1636401],
+        ['<h4>Rioja</h4>', -6.0569995, -77.1685508]
+      ];
+
+      var infowindow = new google.maps.InfoWindow({
+        maxWidth: 160
+      });
+
+      for (var i = 0; i < locations.length; i++) {  
+        marker = new google.maps.Marker({
+          position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+          map: gMap
+        });
+
+        markers.push(marker);
+
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+          return function() {
+            infowindow.setContent(locations[i][0]);
+            infowindow.open(gMap, marker);
+          }
+        })(marker, i));
+      }
+
+      window.scrollTo(0,document.body.scrollHeight);
+
+    } else {
+      alert('Faltan datos para mostrar la ubicación de esta obra.')
+    }
   }
