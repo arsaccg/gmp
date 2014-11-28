@@ -685,3 +685,8 @@ table.report_valorization td:nth-child(2), table.report_valorization td:nth-chil
 .bold{
   font-weight: bold;
 }
+
+.black_measured{
+  font-weight: normal !important;  
+  color: black !important;
+}

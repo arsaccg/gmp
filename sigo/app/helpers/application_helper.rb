@@ -451,7 +451,7 @@ module ApplicationHelper
 
   def is_strong(measured)
     if measured != nil
-      return 'bold'
+      return 'black_measured'
     else
       return ''
     end

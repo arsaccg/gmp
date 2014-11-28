@@ -34,7 +34,7 @@
           %strong
             = "#{rr.advance.round(2)} %"
       -else
-        %td(class="#{get_color_by_order(rr.order)}")
+        %td{class: "#{get_color_by_order(rr.order)} #{is_strong(rr.con_measured)}"}
           %span(style="color:transparent;")
             ='_'*(rr.order.length-2)
           %a{:href => "javascript:toogle_three('#{get_clasification_by_order(rr.order+'.00')}', '#{rr.order}');", class: "#{is_strong(rr.con_measured)}"}
