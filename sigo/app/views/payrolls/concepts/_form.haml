@@ -153,22 +153,32 @@
           Guardar
 
       #modal_valorization.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "modalValorizationLabel", role: "dialog" }
-        .modal-dialog{ :style => 'margin: 0 auto;' }
+        .modal-dialog{ :style => 'margin: 0 auto; width: 50%;' }
           .modal-content
             .modal-body{ :style => 'overflow: hidden; padding: 2em;' }
-              
-              .alert.alert-block.alert-danger
-                %h4.alert-heading
-                  %i.fa.fa-check-square-o
-                  Tenga en cuenta estos tokens, los cuales deberá ingresarlos a mano:
-                %p
-                  [horas-simples], [horas-dobles], [precio-por-hora]
-              .alert.alert-block.alert-warning
-                %h4.alert-heading
-                  %i.fa.fa-check-square-o
-                  Revisa la Fórmula
-                %p
-                  Si modificas el nombre de los Tokens generados puede que haya errores en los calculos de los montos.
+              .row
+                .col-md-6
+                  .alert.alert-block.alert-danger
+                    %h4.alert-heading
+                      %i.fa.fa-warning
+                      Tenga en cuenta estos tokens, los cuales deberá ingresarlos a mano:
+                    %p
+                      [horas-simples], [horas-dobles], [precio-por-hora]
+                .col-md-6
+                  .alert.alert-block.alert-warning
+                    %h4.alert-heading
+                      %i.fa.fa-check-square-o
+                      Revisa la Fórmula antes de Guardar:
+                    %p{ :style => 'margin-top: 2px;' }
+                      Si modificas el nombre de los Tokens generados puede que haya errores en los calculos de los montos.
+              .row
+                .col-md-6
+                  .alert.alert-block.alert-info
+                    %h4.alert-heading
+                      %i.fa.fa-bullseye
+                      Simbolo de operaciones aritméticas a usar:
+                    %p
+                      Suma (+), Resta (-), Multiplicación (*), División (/) y Paréntesis
 
 
               %section.col-md-9
@@ -216,7 +226,8 @@
               %br
 
             .modal-footer{ :style => 'padding: 2em;' }
-              %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Guardar
+              %button.btn.btn-success{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Guardar
+              %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Salir
 
 :javascript
   $(document).ready(function () {
