@@ -39,7 +39,7 @@ class MainController < ApplicationController
       end
       render :show_panel, layout: 'dashboard'
     else
-      redirect_to :controller => "errors", :action => "error_500"
+      redirect_to :controller => "main", :action => "index", :flag => 1
     end
   end
 
