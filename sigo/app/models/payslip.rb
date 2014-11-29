@@ -61,10 +61,16 @@ class Payslip < ActiveRecord::Base
           por_hora = from_category.amount.to_f/48
         end
       end
+      
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
       calculator.store(horas_simples: row[9])
       calculator.store(horas_dobles: row[10])
+      / UN HARDCODE! ESTE CONCEPTO ES EL PROBLEMA!!/
+      / POR ALGUNA RAZON EN EL EACH DE LAS CONSTANTES DE FORMULE.RB NO LO ESTA CONSIDERANDO /
+      / SALE ERROR PORQUE EN EL HASH DE FORMULAS NO ESTA EL DE HORAS EXTRAS 100. /
+      calculator.store(horas_extras_100: 0)
+
       @result[@i] << rem_basic
       
       total += rem_basic
@@ -90,8 +96,11 @@ class Payslip < ActiveRecord::Base
             if con.concept_valorization.nil? && con.amount.to_f != 0.0
               amount = con.amount.to_f
               total += amount.to_f
-            else
+            elsif con.concept_valorization.formula != ''
               amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+              total += amount.to_f
+            else
+              amount = 0
               total += amount.to_f
             end
           end
@@ -107,8 +116,11 @@ class Payslip < ActiveRecord::Base
               if con.concept_valorization.nil? && con.amount.to_f != 0.0
                 amount = con.amount.to_f
                 total += amount.to_f
-              else
+              elsif con.concept_valorization.formula != ''
                 amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+                total += amount.to_f
+              else
+                amount = 0
                 total += amount.to_f
               end
             end
@@ -116,33 +128,42 @@ class Payslip < ActiveRecord::Base
             if con.concept_valorization.nil? && con.amount.to_f != 0.0
               amount = con.amount.to_f
               total += amount.to_f
-            else
+            elsif con.concept_valorization.formula != ''
               amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+              total += amount.to_f
+            else
+              amount = 0
               total += amount.to_f
             end
           end
         end
+
         if  ing.to_i == 15
           total = total - amount.to_f
           amount = amount.to_f * row[6].to_f
           total+=amount.to_f
         end
+
         if  ing.to_i == 17
           total = total - amount.to_f
           amount = amount.to_f * row[8].to_f
           total += amount.to_f
         end
+
         if  ing.to_i == 24
           total = total - amount.to_f
           amount = amount.to_f * row[8].to_f
           total += amount.to_f
         end
+
         @result[@i] << amount
       end
+
       @result[@i] << total
       total1 = total
       total = 0
       amount = 0
+
       if !@result[0].include?("Ingresos Totales")
         @result[0] << "Ingresos Totales"
       end

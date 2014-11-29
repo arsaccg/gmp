@@ -5,6 +5,12 @@ class Formule < ActiveRecord::Base
 
     hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
     const_variables = formula.scan(/\[.*?\]/)
+
+    p '-----------'
+    p const_variables
+    p const_variables.count
+    p '-----------'
+
     const_variables.each do |c|
       concept = Concept.find_by_token(c)
       if !concept.nil?
@@ -12,13 +18,19 @@ class Formule < ActiveRecord::Base
         if concept.id != 1 
           contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
           amount = 0
+          p '.................'
+          p formula
+          p concept.name
+          p concept.id
+          p contract
+          p '.................'
           if !contract.nil?
             if contract.amount != 0 && !contract.amount.nil?
               amount = contract.amount.to_f
             else
               if formu.nil? && concept.amount.to_f != 0.0
                 amount = concept.amount.to_f
-              else
+              elsif formu.formula != ''
                 amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
               end
             end
@@ -32,14 +44,14 @@ class Formule < ActiveRecord::Base
               else
                 if formu.nil? && concept.amount.to_f != 0.0
                   amount = concept.amount.to_f
-                else
+                elsif formu.formula != ''
                   amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
                 end
               end
             else
               if formu.nil? && concept.amount.to_f != 0.0
                 amount = concept.amount.to_f
-              else
+              elsif formu.formula != ''
                 amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
               end
             end
@@ -49,7 +61,8 @@ class Formule < ActiveRecord::Base
         end
       end
     end
-    return calculator.solve!(hash_formulas).first[1]
-  end
 
+    return calculator.solve!(hash_formulas).first[1]
+
+  end
 end
