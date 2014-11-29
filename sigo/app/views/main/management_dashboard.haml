@@ -758,8 +758,8 @@
   }
 
   function detail(id) {
-    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
-    load_modal_ajax('/logistics/cost_center_details/'+id+'', 'detail', data, null, 'GET');
+    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id }
+    load_modal_ajax('/logistics/cost_center_details/' + id, 'detail', 'previous', data, null, 'GET')
   }
 
   function gdg_new(id){
