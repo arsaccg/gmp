@@ -4,7 +4,7 @@
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-eye
         Orden de Compra #
-        = @purchaseOrder.id.to_s.rjust(5, '0')
+        = @purchaseOrder.code.to_s.rjust(5, '0')
   %section#widget-grid
     .row
       %article.col-sm-12.col-md-12.col-lg-8
