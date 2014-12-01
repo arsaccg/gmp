@@ -62,7 +62,7 @@ class Formule < ActiveRecord::Base
       end
     end
 
-    return calculator.solve!(hash_formulas).first[1]
+    return calculator.solve!(hash_formulas).to_a.last[1]
 
   end
 end

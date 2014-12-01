@@ -308,6 +308,7 @@ class Payslip < ActiveRecord::Base
       if !@result[0].include?("Aportaciones Totales")
         @result[0] << "Aportaciones Totales"
       end
+      break
       @i+=1
     end
 
