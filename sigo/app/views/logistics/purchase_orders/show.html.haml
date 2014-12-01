@@ -152,10 +152,10 @@
                 %thead
                   %tr
                     %th Codigo
-                    %th Orden de Suministro
+                    %th O.S
                     %th Insumo
                     %th Cantidad
-                    %th Unidad de Medida
+                    %th U.M
                     %th Precio Unitario
                     %th Descuentos antes de IGV
                     %th Total antes de IGV
@@ -207,7 +207,7 @@
                   - @parcial_with_igv += @parcial_without_igv + @igv
 
 
-      %article.col-sm-12.col-md-12.col-lg-4
+      %article.col-sm-12.col-md-12.col-lg-9
         #wid-id-3.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
           %header
             %span.widget-icon
@@ -220,16 +220,37 @@
                 %thead
                   %tr
                     %th Parcial sin IGV
+                    %th Descuentos
+                    %th Cargos
+                    %th Otros
                     %th IGV
                     %th Parcial con IGV
+                    %th Percepcion
+                    %th Cargos
+                    %th Otros
+                    %th Parcial con IGV y Operaciones
                 %tbody
                   %tr
                     %td
                       = number_to_currency @parcial_without_igv, unit: "#{@purchaseOrder.money.symbol}", precision: 2
                     %td
+                      = number_to_currency @discount_before, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
+                      = number_to_currency @charges_before, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
+                      = number_to_currency @others_before, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
                       = number_to_currency @igv, unit: "#{@purchaseOrder.money.symbol}", precision: 2
                     %td
                       = number_to_currency @parcial_with_igv, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
+                      = number_to_currency @perception_after, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
+                      = number_to_currency @charges_after, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
+                      = number_to_currency @others_after, unit: "#{@purchaseOrder.money.symbol}", precision: 2
+                    %td
+                      = number_to_currency (@parcial_with_igv + @discount_after + @perception_after + @charges_after + @others_after), unit: "#{@purchaseOrder.money.symbol}", precision: 2 
 
 - if @type_of_order.nil?
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
