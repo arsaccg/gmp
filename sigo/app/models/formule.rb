@@ -6,11 +6,6 @@ class Formule < ActiveRecord::Base
     hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
     const_variables = formula.scan(/\[.*?\]/)
 
-    p '-----------'
-    p const_variables
-    p const_variables.count
-    p '-----------'
-
     const_variables.each do |c|
       concept = Concept.find_by_token(c)
       if !concept.nil?
