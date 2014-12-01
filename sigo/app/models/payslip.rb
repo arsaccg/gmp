@@ -66,10 +66,6 @@ class Payslip < ActiveRecord::Base
       calculator.store(precio_por_hora: por_hora)
       calculator.store(horas_simples: row[9])
       calculator.store(horas_dobles: row[10])
-      / UN HARDCODE! ESTE CONCEPTO ES EL PROBLEMA!!/
-      / POR ALGUNA RAZON EN EL EACH DE LAS CONSTANTES DE FORMULE.RB NO LO ESTA CONSIDERANDO /
-      / SALE ERROR PORQUE EN EL HASH DE FORMULAS NO ESTA EL DE HORAS EXTRAS 100. /
-      calculator.store(horas_extras_100: 0)
 
       @result[@i] << rem_basic
       
@@ -167,6 +163,7 @@ class Payslip < ActiveRecord::Base
       if !@result[0].include?("Ingresos Totales")
         @result[0] << "Ingresos Totales"
       end
+
 
       des.each do |de|
         con = nil
