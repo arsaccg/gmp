@@ -40,7 +40,7 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
     @purchaseOrderDetails.each do |pod|
       pod.purchase_order_extra_calculations.where(:apply => 'before').each do |poec|
-        @discount_before += pod.discount_before.to_f.round(3).round(2)
+        @discount_before += (pod.discount_before.to_f.round(3).round(2)).abs
         if poec.operation == 'sum'
           if poec.type == 'percent'
             
