@@ -40,12 +40,13 @@ class Logistics::PurchaseOrdersController < ApplicationController
 
     @purchaseOrderDetails.each do |pod|
       pod.purchase_order_extra_calculations.where(:apply => 'before').each do |poec|
+        @discount_before += pod.discount_before.to_f.round(3).round(2)
         if poec.operation == 'sum'
           if poec.type == 'percent'
             
             case poec.extra_calculation_id
-            when 1
-              @discount_before += poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            #when 1
+              #@discount_before += poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
             #when 2
               #@perception_before += poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
             when 3
@@ -58,8 +59,8 @@ class Logistics::PurchaseOrdersController < ApplicationController
           elsif poec.type == 'soles'
             
             case poec.extra_calculation_id
-            when 1
-              @discount_before += poec.value
+            #when 1
+              #@discount_before += poec.value
             #when 2
               #@perception_before += poec.value
             when 3
@@ -75,8 +76,8 @@ class Logistics::PurchaseOrdersController < ApplicationController
           if poec.type == 'percent'
 
             case poec.extra_calculation_id
-            when 1
-              @discount_before -= poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            #when 1
+              #@discount_before -= poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
             #when 2
               #@perception_before -= poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
             when 3
@@ -89,8 +90,8 @@ class Logistics::PurchaseOrdersController < ApplicationController
           elsif poec.type == 'soles'
 
             case poec.extra_calculation_id
-            when 1
-              @discount_before -= poec.value
+            #when 1
+              #@discount_before -= poec.value
             #when 2
               #@perception_before -= poec.value
             when 3
