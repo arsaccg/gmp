@@ -13,12 +13,6 @@ class Formule < ActiveRecord::Base
         if concept.id != 1 
           contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
           amount = 0
-          p '.................'
-          p formula
-          p concept.name
-          p concept.id
-          p contract
-          p '.................'
           if !contract.nil?
             if contract.amount != 0 && !contract.amount.nil?
               amount = contract.amount.to_f
