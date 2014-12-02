@@ -64,9 +64,25 @@ class Payslip < ActiveRecord::Base
       
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
+      calculator.store(dias_trabajados: row[8])
       calculator.store(horas_simples: row[9])
       calculator.store(horas_dobles: row[10])
       calculator.store(horas_extras_100: 0)
+
+      # => Token para la Movilidad
+      amount_movilidad_from_contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => 19).first
+      if amount_movilidad_from_contract.nil?
+        mov_article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
+        @mov_category_id = Category.find_by_code(Article.find(mov_article_id).code[2..5]).id
+        amount_movilidad_from_category = CategoryOfWorker.find_by_category_id(@mov_category_id).category_of_workers_concepts.where(:concept_id => 19).first
+        if amount_movilidad_from_category.nil?
+          calculator.store(monto_movilidad: 0)
+        else
+          calculator.store(monto_movilidad: amount_movilidad_from_category.amount.to_f)
+        end
+      else
+        calculator.store(monto_movilidad: amount_movilidad_from_contract.amount.to_f)
+      end
 
       @result[@i] << rem_basic
       
@@ -84,30 +100,11 @@ class Payslip < ActiveRecord::Base
           @result[0] << con.name.to_s
         end
 
-        contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => ing).first
-        if !contract.nil?
-          if contract.amount != 0 && !contract.amount.nil?
-            amount = contract.amount.to_f
-            total += amount.to_f
-          else
-            if con.concept_valorization.nil? && con.amount.to_f != 0.0
-              amount = con.amount.to_f
-              total += amount.to_f
-            elsif con.concept_valorization.formula != ''
-              amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
-              total += amount.to_f
-            else
-              amount = 0
-              total += amount.to_f
-            end
-          end
-        else
-          article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
-          category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-          from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => ing).first
-          if !from_category.nil?
-            if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
-              amount = from_category.amount
+        if ing.to_i != 19 # => Only for Concept Movilidad.
+          contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => ing).first
+          if !contract.nil?
+            if contract.amount != 0 && !contract.amount.nil?
+              amount = contract.amount.to_f
               total += amount.to_f
             else
               if con.concept_valorization.nil? && con.amount.to_f != 0.0
@@ -122,17 +119,41 @@ class Payslip < ActiveRecord::Base
               end
             end
           else
-            if con.concept_valorization.nil? && con.amount.to_f != 0.0
-              amount = con.amount.to_f
-              total += amount.to_f
-            elsif con.concept_valorization.formula != ''
-              amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
-              total += amount.to_f
+            article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
+            category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
+            from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => ing).first
+            if !from_category.nil?
+              if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
+                amount = from_category.amount
+                total += amount.to_f
+              else
+                if con.concept_valorization.nil? && con.amount.to_f != 0.0
+                  amount = con.amount.to_f
+                  total += amount.to_f
+                elsif con.concept_valorization.formula != ''
+                  amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+                  total += amount.to_f
+                else
+                  amount = 0
+                  total += amount.to_f
+                end
+              end
             else
-              amount = 0
-              total += amount.to_f
+              if con.concept_valorization.nil? && con.amount.to_f != 0.0
+                amount = con.amount.to_f
+                total += amount.to_f
+              elsif con.concept_valorization.formula != ''
+                amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+                total += amount.to_f
+              else
+                amount = 0
+                total += amount.to_f
+              end
             end
           end
+        else
+          amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+          total += amount.to_f
         end
 
         if  ing.to_i == 15

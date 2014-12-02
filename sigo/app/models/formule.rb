@@ -10,7 +10,7 @@ class Formule < ActiveRecord::Base
       concept = Concept.find_by_token(c)
       if !concept.nil?
         formu = concept.concept_valorization
-        if concept.id != 1 
+        if concept.id != 1 && concept.id != 19 # => Only for concepts Remuneracion_Basica and Movilidad.
           contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
           amount = 0
           if !contract.nil?
@@ -50,6 +50,12 @@ class Formule < ActiveRecord::Base
         end
       end
     end
+
+    p '---------FORMULA-----------'
+    p hash_formulas
+    p calculator.inspect
+    p calculator.solve!(hash_formulas).to_a
+    p '----------------------'
 
     return calculator.solve!(hash_formulas).to_a.last[1]
 
