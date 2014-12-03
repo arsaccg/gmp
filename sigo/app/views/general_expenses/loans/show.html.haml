@@ -47,6 +47,8 @@
                 %td{"style"=>"text-align:center;padding:0px;margin:0px;height:10px;"}
                   %a#edit.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_edit('+"#{loan.id.to_s}"+','+"#{@cost_center1.id}"+','+"#{@cost_center2.id}"+','+"#{@cc}"+');', "style"=>" color: white;font-size:11px;margin-top:2px;"}
                     Editar
+                  %a#edit.btn.btn-danger.btn-xs{href: 'javascript:void(0);', :onclick => "loan_delete(#{loan.id.to_s});", "style"=>" color: white;font-size:11px;margin-top:2px;"}
+                    Eliminar
       %br
       .row{"style"=>"height: 40%; overflow-y: scroll;"}
         #detail
@@ -84,4 +86,8 @@
   function delete_item(code){
     $("#" + code).empty();
     $("#" + code).css("display","none");
-  }  
+  }
+
+  function loan_delete(id_loan){
+    delete_to_url_on_div('/general_expenses/loans/'+id_loan, 'loan_show', '/general_expenses/loans/'+id_loan, 'GET');
+  }
