@@ -161,25 +161,43 @@
                   .alert.alert-block.alert-danger
                     %h4.alert-heading
                       %i.fa.fa-warning
-                      Tenga en cuenta estos tokens, los cuales deberá ingresarlos a mano:
+                      Tenga en cuenta estos tokens. Si desea añadirlos a la formula, deberá hacerles click:
                     %p
-                      [horas-simples], [horas-dobles], [precio-por-hora], [monto-movilidad], [dias-trabajados]
+                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                        [horas-simples] 
+                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                        [horas-dobles]
+                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                        [precio-por-hora]
+                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                        [dias-trabajados]
                 .col-md-6
-                  .alert.alert-block.alert-warning
+                  .alert.alert-block.alert-success
                     %h4.alert-heading
-                      %i.fa.fa-check-square-o
-                      Revisa la Fórmula antes de Guardar:
-                    %p{ :style => 'margin-top: 5px;' }
-                      Si modificas el nombre de los Tokens generados puede que haya errores en los calculos de los montos.
+                      %i.fa.fa-exclamation
+                      Token Genérico:
+                    %p
+                      Este token coge el valor, del concepto actual, que figura en el contrato del trabajador o de su categoria correspondiente. En todo caso, su valor será 0.
+                    %p
+                      El nombre del Token es:
+                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: #296829;' }
+                        [monto-contrato-categoria]
+                
               .row
                 .col-md-6
                   .alert.alert-block.alert-info
                     %h4.alert-heading
                       %i.fa.fa-bullseye
-                      Simbolo de operaciones aritméticas a usar:
+                      Simbolos de operaciones aritméticas:
                     %p
-                      Suma (+), Resta (-), Multiplicación (*), División (/) y Paréntesis
-
+                      Suma (+), Resta (-), Multiplicación (*), División (/), Exponente (**) y Paréntesis
+                .col-md-6
+                  .alert.alert-block.alert-warning
+                    %h4.alert-heading
+                      %i.fa.fa-check-square-o
+                      Revisa la Fórmula antes de Guardar:
+                    %p
+                      Si modificas el nombre de los Tokens generados puede que haya errores en los calculos de los montos.
 
               %section.col-md-9
                 %label{ :style => 'font-size: 13px;' } Buscar Conceptos:
@@ -265,6 +283,18 @@
     }else{
       submit_validate($('#new_concept'));
     }
+
+    $('a.tokens').click(function(){
+      var token = $(this).html().trim();
+      old_formula = $('#formula_field_concept').val();
+
+      if (old_formula != '')
+        new_formula = old_formula + '+' + token;
+      else
+        new_formula = token;
+
+      $('#formula_field_concept').val(new_formula);
+    });
 
   });
   
