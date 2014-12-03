@@ -156,9 +156,9 @@
         .modal-dialog{ :style => 'margin: 0 auto; width: 50%;' }
           .modal-content
             .modal-body{ :style => 'overflow: hidden; padding: 2em;' }
-              .row
+              %section
                 .col-md-6
-                  .alert.alert-block.alert-danger
+                  .alert.alert-block.alert-danger{ :style => 'margin-bottom: 0' }
                     %h4.alert-heading
                       %i.fa.fa-warning
                       Tenga en cuenta estos tokens. Si desea añadirlos a la formula, deberá hacerles click:
@@ -183,7 +183,6 @@
                       %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: #296829;' }
                         [monto-contrato-categoria]
                 
-              .row
                 .col-md-6
                   .alert.alert-block.alert-info
                     %h4.alert-heading
