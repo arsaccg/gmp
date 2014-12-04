@@ -30,9 +30,12 @@ class Payslip < ActiveRecord::Base
       AND wc.article_id = ar.id
       GROUP BY ppd.worker_id
     ").each do |row|
-      @result << [ row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10] ]
+      worker_hours = calculate_number_days_worker(row[7].to_f, total_hour.to_f)
+      
+      @result << [ row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], worker_hours, row[9], row[10] ]
       calculator = Dentaku::Calculator.new
       amount = 0
+
       # Remuneracion Básica
       rem_basic = 0
       total = 0
@@ -40,16 +43,16 @@ class Payslip < ActiveRecord::Base
       from_contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => 1).first
       if !from_contract.nil?
         if !from_contract.amount.nil?
-          rem_basic = (from_contract.amount/48)*row[7]
-          por_hora = from_contract.amount.to_f/48
+          rem_basic = (from_contract.amount/total_hour.to_f)*row[7]
+          por_hora = from_contract.amount.to_f/total_hour.to_f
  
         else
           article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
           @category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
           from_category = CategoryOfWorker.find_by_category_id(@category_id).category_of_workers_concepts.where(:concept_id => 1).first
           if from_category.amount != 0
-            rem_basic = (from_category.amount.to_f/48)*row[7]
-            por_hora = from_category.amount.to_f/48
+            rem_basic = (from_category.amount.to_f/total_hour.to_f)*row[7]
+            por_hora = from_category.amount.to_f/total_hour.to_f
           end
         end
       else
@@ -57,8 +60,8 @@ class Payslip < ActiveRecord::Base
         @category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
         from_category = CategoryOfWorker.find_by_category_id(@category_id).category_of_workers_concepts.where(:concept_id => 1).first
         if from_category.amount != 0
-          rem_basic = (from_category.amount.to_f/48)*row[7]
-          por_hora = from_category.amount.to_f/48
+          rem_basic = (from_category.amount.to_f/total_hour.to_f)*row[7]
+          por_hora = from_category.amount.to_f/total_hour.to_f
         end
       end
       
@@ -66,7 +69,7 @@ class Payslip < ActiveRecord::Base
       calculator.store(precio_por_hora: por_hora)
       calculator.store(horas_trabajadas: row[7])
       calculator.store(horas_totales_semana: total_hour)
-      calculator.store(dias_trabajados: row[8])
+      calculator.store(dias_trabajados: worker_hours)
       calculator.store(horas_simples: row[9])
       calculator.store(horas_dobles: row[10])
       calculator.store(horas_extras_100: 0)
@@ -318,6 +321,14 @@ class Payslip < ActiveRecord::Base
     end
 
     return @result
+  end
+
+  def self.calculate_number_days_worker total_hours_worker, total_hour_week
+    if total_hours_worker >= total_hour_week
+      return 6
+    else
+      return (total_hours_worker*6/total_hour_week).round()
+    end
   end
 
 end
