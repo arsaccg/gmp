@@ -33,10 +33,11 @@
               %th{"style"=>"font-size:12px;width:100px;text-align:center;"} Estado
               %th{"style"=>"font-size:12px;text-align:center;"} Acciones
           %tbody
+            - count = 1
             - @loan.each do |loan|
               %tr{"style"=>"padding:0px;margin:0px;"}
                 %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}
-                  %a.link_detail{:href=>"javascript:show_details("+loan.id.to_s+");" }="Prestamo N° "+ loan.id.to_s
+                  %a.link_detail{:href=>"javascript:show_details("+loan.id.to_s+");" }="Prestamo N° "+ count.to_s
                 %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}=loan.loan_date.strftime("%d-%m-%Y").to_s
                 %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}= number_to_currency(loan.amount.to_f, unit: 'S/. ', precision: 2)
                 %td{"style"=>"font-size:12px;padding:0px;margin:0px;height:10px;"}
@@ -49,6 +50,7 @@
                     Editar
                   %a#edit.btn.btn-danger.btn-xs{href: 'javascript:void(0);', :onclick => "loan_delete(#{loan.id.to_s});", "style"=>" color: white;font-size:11px;margin-top:2px;"}
                     Eliminar
+              - count += 1
       %br
       .row{"style"=>"height: 40%; overflow-y: scroll;"}
         #detail
