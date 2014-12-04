@@ -2,23 +2,24 @@ class Payrolls::PayrollsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @pay = Payroll.all
+    @payslips = Payslip.select(:week).select(:id).group(:week)
+    /@pay = Payroll.all
     @ids = Array.new
     contracts = WorkerContract.where("start_date < '"+Time.now.strftime("%YYYY-%mm-%dd").to_s+"' AND end_date > '"+Time.now.strftime("%YYYY-%mm-%dd").to_s+"'")
     contracts.each do |con|
       @ids << con.worker_id
     end
-    @ids = @ids.join(',')
+    @ids = @ids.join(',')/
     render layout: false
   end
 
   def show_workers
-    display_length = params[:iDisplayLength]
+    array = Array.new
+    /display_length = params[:iDisplayLength]
     pager_number = params[:iDisplayStart]
     keyword = params[:sSearch]
-    array = Array.new
     cost_center = get_company_cost_center('cost_center')
-    array = Payroll.show_w(cost_center, display_length, pager_number, keyword)
+    array = Payroll.show_w(cost_center, display_length, pager_number, keyword)/
     render json: { :aaData => array }
   end
 
@@ -42,7 +43,7 @@ class Payrolls::PayrollsController < ApplicationController
   end
 
   def new
-    @pay = Payroll.new 
+    /@pay = Payroll.new 
     @ing = Array.new
     @des = Array.new
     @worker = Worker.find(params[:worker_id])
@@ -55,7 +56,7 @@ class Payrolls::PayrollsController < ApplicationController
     @descuentos.each do |des|
       @des << des.id.to_s
     end
-    render layout: false
+    render layout: false/
   end
 
   def display_worker
