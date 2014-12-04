@@ -206,9 +206,6 @@ class Logistics::CostCentersController < ApplicationController
       ActiveRecord::Base.connection.execute(sql)
       redirect_to :action => :index_thw  
     else
-      @error = "true"
-      puts "-------------------------------"
-      puts @error
       render :new_thw, layout: false
     end
   end
@@ -276,7 +273,7 @@ class Logistics::CostCentersController < ApplicationController
 
   private
   def cost_center_parameters
-    params.require(:cost_center).permit(:code, :name, :company_id)
+    params.require(:cost_center).permit(:code, :speciality, :name, :company_id)
   end
 
   def cost_center_parameters_timeline

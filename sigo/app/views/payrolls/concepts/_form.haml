@@ -164,15 +164,24 @@
                       Tenga en cuenta estos tokens. Si desea añadirlos a la formula, deberá hacerles click:
                     %p
                       %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [horas-simples] 
+                        [horas-trabajadas]
+                      ,
+                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                        [horas-simples]
+                      ,
                       %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
                         [horas-dobles]
+                      ,
                       %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
                         [precio-por-hora]
+                      ,
                       %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
                         [dias-trabajados]
+                      ,
+                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                        [horas-totales-semana]
                 .col-md-6
-                  .alert.alert-block.alert-success
+                  .alert.alert-block.alert-success{ :style => 'padding-bottom: 20px;' }
                     %h4.alert-heading
                       %i.fa.fa-exclamation
                       Token Genérico:

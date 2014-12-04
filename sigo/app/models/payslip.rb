@@ -64,6 +64,8 @@ class Payslip < ActiveRecord::Base
       
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
+      calculator.store(horas_trabajadas: row[7])
+      calculator.store(horas_totales_semana: total_hour)
       calculator.store(dias_trabajados: row[8])
       calculator.store(horas_simples: row[9])
       calculator.store(horas_dobles: row[10])
