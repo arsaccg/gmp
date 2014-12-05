@@ -1,4 +1,14 @@
 #content-inside
+
+  .row
+    .col-xs-12.col-sm-6.col-md-6.col-lg-6
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-group
+        = "Planilla de la " + @pay.first.week
+
+    .col-xs-12.col-sm-6.col-md-6.col-lg-6
+      %a.btn.btn-success{ href: "#{generate_payroll_excel_payrolls_payslip_path(@pay.first.code)}", target: '_blank'} Generar Excel de la Planilla
+
   %div{:style=>"width:100%; overflow-x:scroll"}
     %table.table.table-striped.table-bordered.table-hover
       %thead
@@ -45,8 +55,6 @@
               %td= key[1]
             -JSON.parse(pars.aport_and_amounts).each_with_index do |key,value|
               %td= key[1]
-
-
 
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-entity{type: "button"}
     %i.fa.fa-arrow-left>

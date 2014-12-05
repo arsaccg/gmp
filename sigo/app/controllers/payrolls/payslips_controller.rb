@@ -244,6 +244,37 @@ class Payrolls::PayslipsController < ApplicationController
     render :json => pay
   end
 
+  def generate_payroll_excel
+    @pay = Payslip.where("code = ?",params[:id])
+    Spreadsheet.client_encoding = 'UTF-8'
+
+    book = Spreadsheet::Workbook.new
+    sheet1 = book.create_worksheet :name => 'Planilla'
+
+    headers = ['DNI', 'Nombre', 'CAT', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
+    headers = headers + JSON.parse(@pay.first.ing_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
+    headers = headers + JSON.parse(@pay.first.des_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
+    headers = headers + JSON.parse(@pay.first.aport_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
+
+    sheet1.row(2).concat headers
+
+    i = 3
+    @pay.each do |pars|
+      selected = Array.new
+      wor = Worker.find(pars.worker_id)
+      selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.first.article.name, CostCenter.find(pars.cost_center_id).code, pars.last_worked_day.strftime('%d/%m/%y').to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.normal_hours.to_s, pars.days.to_s, pars.he_60.to_s, 0, pars.he_100.to_s]
+      selected = selected + JSON.parse(pars.ing_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
+      selected = selected + JSON.parse(pars.des_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
+      selected = selected + JSON.parse(pars.aport_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
+      sheet1.row(i).concat selected
+      i += 1
+    end
+
+    export_file_path = [Rails.root, "public", "payrolls", "planilla_#{ DateTime.now.to_s }.xls"].join("/")
+    book.write export_file_path
+    send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
+  end
+
   private
   def pay_parameters
     params.require(:payslip).permit(:worker_id, :cost_center_id, :start_date, :end_date, :days, :normal_hours, :subsidized_day, :subsidized_hour, :last_worked_day, :he_60, :code, :he_100, :ing_and_amounts, :des_and_amounts, :aport_and_amounts, :month)

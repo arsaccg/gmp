@@ -676,6 +676,9 @@ ArsacLogistica::Application.routes.draw do
         post 'complete_select2'
         post 'add_extra_info'
       end
+      member do
+        get 'generate_payroll_excel'
+      end
     end
   end
   
