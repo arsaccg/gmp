@@ -1,5 +1,7 @@
 class Payslip < ActiveRecord::Base
 
+  belongs_to :worker
+
   def self.generate_payroll_workers cost_center_id, week_id, week_start, week_end, wg, ing, des, apo, headers
     
     # => WG - Working Groups
