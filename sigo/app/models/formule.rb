@@ -1,8 +1,8 @@
 class Formule < ActiveRecord::Base
 
   def self.translate_formules(formula, basico, worker_id, calculator, hash_formulas, main_concept, concept_id = nil)
+    main = main_concept.tr('][', '').gsub('-','_')
     if !concept_id.nil? # => Esto Indica que el Token Generico existe
-      main = main_concept.tr('][', '').gsub('-','_')
       hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
       # => Token Generico
       amount_generic_from_contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept_id).first
@@ -60,7 +60,7 @@ class Formule < ActiveRecord::Base
               end
             end
             var = concept.token.tr('][', '').gsub('-','_')
-            calculator.store(var: amount)
+            calculator.store(var.to_sym => amount.to_f)
           end
         end
       end
@@ -109,11 +109,16 @@ class Formule < ActiveRecord::Base
               end
             end
             var = concept.token.tr('][', '').gsub('-','_')
-            calculator.store(var: amount)
+            calculator.store(var.to_sym => amount.to_f)
           end
         end
       end
     end
+    puts "----------------------------------------------------------------------------------------------------------------------------------"
+    puts main
+    puts "----------------------------------------------------------------------------------------------------------------------------------"
+    puts calculator.inspect
+    puts "----------------------------------------------------------------------------------------------------------------------------------"
     return calculator.solve!(hash_formulas).to_a.last[1]
   end
 end
