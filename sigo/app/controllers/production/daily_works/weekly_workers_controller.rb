@@ -380,6 +380,6 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
 
   private
   def weekly_table_parameters
-    params.require(:weekly_worker).permit(:start_date, :end_date, :working_group)
+    params.require(:weekly_worker).permit(:start_date, :end_date, :working_group, :number_workers)
   end
 end

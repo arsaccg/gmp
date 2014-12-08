@@ -1,0 +1,9 @@
+%tr
+  %td
+    = hidden_field_tag 'extra['+@reg_n.to_s+'][worker_id]', @worker.id.to_s
+    = hidden_field_tag 'extra['+@reg_n.to_s+'][concept]', @concept.id.to_s
+    = @worker.entity.name.to_s + " " + @worker.entity.second_name.to_s + " "+ @worker.entity.paternal_surname.to_s + " "+ @worker.entity.maternal_surname.to_s
+  %td
+    = @concept.name
+  %td
+    = text_field_tag 'extra['+@reg_n.to_s+'][amount]', @amount.to_s, :readonly =>true

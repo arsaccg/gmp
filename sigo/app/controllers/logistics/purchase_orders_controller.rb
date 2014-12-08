@@ -26,6 +26,154 @@ class Logistics::PurchaseOrdersController < ApplicationController
       @purchasePerState = @purchaseOrder.state_per_order_purchases
     end
     @purchaseOrderDetails = @purchaseOrder.purchase_order_details
+
+    # Details for Totalizing
+    @discount_before = 0
+    @perception_before = 0
+    @charges_before = 0
+    @others_before = 0
+
+    @discount_after = 0
+    @perception_after = 0
+    @charges_after = 0
+    @others_after = 0
+
+    @purchaseOrderDetails.each do |pod|
+      pod.purchase_order_extra_calculations.where(:apply => 'before').each do |poec|
+        @discount_before += (pod.discount_before.to_f.round(3).round(2)).abs
+        if poec.operation == 'sum'
+          if poec.type == 'percent'
+            
+            case poec.extra_calculation_id
+            #when 1
+              #@discount_before += poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            #when 2
+              #@perception_before += poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            when 3
+              @charges_before += poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            when 4
+              @others_before += poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            else
+            end
+                
+          elsif poec.type == 'soles'
+            
+            case poec.extra_calculation_id
+            #when 1
+              #@discount_before += poec.value
+            #when 2
+              #@perception_before += poec.value
+            when 3
+              @charges_before += poec.value
+            when 4
+              @others_before += poec.value
+            else
+
+            end
+
+          end
+        elsif poec.operation == 'minius'
+          if poec.type == 'percent'
+
+            case poec.extra_calculation_id
+            #when 1
+              #@discount_before -= poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            #when 2
+              #@perception_before -= poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            when 3
+              @charges_before -= poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            when 4
+              @others_before -= poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            else
+            end
+
+          elsif poec.type == 'soles'
+
+            case poec.extra_calculation_id
+            #when 1
+              #@discount_before -= poec.value
+            #when 2
+              #@perception_before -= poec.value
+            when 3
+              @charges_before -= poec.value
+            when 4
+              @others_before -= poec.value
+            else
+              
+            end
+
+          end
+        end
+      end
+    end
+
+    @purchaseOrderDetails.each do |pod|
+      pod.purchase_order_extra_calculations.where(:apply => 'after').each do |poec|
+        if poec.operation == 'sum'
+          if poec.type == 'percent'
+
+            case poec.extra_calculation_id
+            #when 1
+              #@discount_after += (poec.purchase_order_detail.unit_price_before_igv.to_f+poec.purchase_order_detail.quantity_igv.to_f)*(poec.value/100)
+            when 2
+              @perception_after += (poec.purchase_order_detail.unit_price_before_igv.to_f+poec.purchase_order_detail.quantity_igv.to_f)*(poec.value/100)
+            when 3
+              @charges_after += (poec.purchase_order_detail.unit_price_before_igv.to_f+poec.purchase_order_detail.quantity_igv.to_f)*(poec.value/100)
+            when 4
+              @others_after += (poec.purchase_order_detail.unit_price_before_igv.to_f+poec.purchase_order_detail.quantity_igv.to_f)*(poec.value/100)
+            else
+            end
+
+          elsif poec.type == 'soles'
+
+            case poec.extra_calculation_id
+            #when 1
+              #@discount_after += poec.value
+            when 2
+              @perception_after += poec.value
+            when 3
+              @charges_after += poec.value
+            when 4
+              @others_after += poec.value
+            else
+              
+            end
+
+          end
+        elsif poec.operation == 'minius'
+          if poec.type == 'percent'
+
+            case poec.extra_calculation_id
+            #when 1
+              #@discount_after -= poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            when 2
+              @perception_after -= poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            when 3
+              @charges_after -= poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            when 4
+              @others_after -= poec.purchase_order_detail.unit_price_before_igv.to_f*(poec.value/100)
+            else
+            end
+
+          elsif poec.type == 'soles'
+
+            case poec.extra_calculation_id
+            #when 1
+              #@discount_after -= poec.value
+            when 2
+              @perception_after -= poec.value
+            when 3
+              @charges_after -= poec.value
+            when 4
+              @others_after -= poec.value
+            else
+              
+            end
+
+          end
+        end
+      end     
+    end
     
     render layout: false
   end
@@ -424,9 +572,9 @@ class Logistics::PurchaseOrdersController < ApplicationController
       detail.update_attributes(
         :discount_before => discounts_before, 
         :discount_after => discounts_after, 
-        :quantity_igv => (((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f).round(2)*(igv.to_f)).round(2), 
-        :unit_price_before_igv => ((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f).round(2), 
-        :unit_price_igv => ( ((((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f) * (igv.to_f)) + ((po.amount.to_f*po.unit_price.to_f).round(2) + discounts_before.to_f)) + discounts_after.to_f).round(2)
+        :quantity_igv => (((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f).round(4).round(2)*(igv.to_f)).round(4).round(2), 
+        :unit_price_before_igv => ((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f).round(4).round(2), 
+        :unit_price_igv => ( ((((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f) * (igv.to_f)) + ((po.amount.to_f*po.unit_price.to_f).round(4).round(2) + discounts_before.to_f)) + discounts_after.to_f).round(4).round(2)
       )
     end
     flash[:notice] = "Se ha actualizado correctamente los datos."

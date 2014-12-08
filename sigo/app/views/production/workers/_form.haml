@@ -758,10 +758,18 @@
                     %td.col-2=oos.profession
                     %td.col-2=oos.title
                     %td.col-2=oos.numberoftuition
-                    %td.col-2
-                      = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][start_date]', oos.start_date , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', as: :string, :type => "date"
-                    %td.col-2
-                      = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][end_date]', oos.end_date, class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', as: :string, :type => "date"
+                    %td.start_date{:style => "width:10%"}
+                      %div
+                        %select.form-control{:name =>'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][start_date]', 'style' => 'width:100%'}
+                          - @years2.each do |years|
+                            %option{:value => "#{years}", :selected => "#{oos.start_date.to_s}"==years.to_s}
+                              = years
+                    %td.end_date{:style => "width:10%"}
+                      %div
+                        %select.form-control{:name =>'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][end_date]', 'style' => 'width:100%'}
+                          - @years2.each do |years|
+                            %option{:value => "#{years}", :selected => "#{oos.end_date.to_s}"==years.to_s}
+                              = years
                     %td(style="display:none")
                       = hidden_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][id]', oos.id
                     %td(style="display:none")

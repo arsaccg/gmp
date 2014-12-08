@@ -164,10 +164,10 @@ function part_block() {
     keyboard: false
   });
 }
-function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1, serie2, serie3, data_serie1, data_serie2, data_serie3){
+function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1, serie2, serie3, data_serie1, data_serie2, data_serie3, categories){
   $('#'+div_id).highcharts({
     chart: {
-      type: 'line'
+      type: 'spline'
     },
     title: {
       text: title
@@ -176,10 +176,17 @@ function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1,
       text: subtitle
     },
     xAxis: {
-      categories: ['ENE.12', 'FEB.12', 'MAR.12', 'ABR.12', 'MAY.12', 'JUN.12', 'JUL.12', 'AGO.12', 'SET.12', 'OCT.12', 'NOV.12', 'DIC.12', 'ENE.13', 'FEB.13', 'MAR.13', 'ABR.13', 'MAY.13', 'JUN.13', 'JUL.13', 'AGOS.13', 'SET.13', 'OCT.13', 'NOV.13', 'DIC.13', 'ENE.14']
+      categories: categories
     },
     yAxis: {
-      title: { text: 'Costo (S/.)' }
+      title: { 
+        text: 'Costo (S/.)' 
+      }
+    },
+    tooltip: {
+        crosshairs: true,
+        shared: true,
+        valuePrefix: "S/. "
     },
     plotOptions: {
       line: {
@@ -202,7 +209,7 @@ function load_lineal_graphic_for_general_report(div_id, title, subtitle, serie1,
   });
 }
 
-function load_bar_graphic_for_general_report(div_id, title, subtitle){
+function load_bar_graphic_for_general_report(div_id, title, subtitle, valorizado, categories){
   $('#'+div_id).highcharts({
     chart: {
       type: 'column'
@@ -214,9 +221,7 @@ function load_bar_graphic_for_general_report(div_id, title, subtitle){
       text: subtitle
     },
     xAxis: {
-      categories: [
-        'AGOS.13', 'SET.13', 'OCT.13', 'NOV.13', 'DIC.13', 'ENE.14'
-      ]
+      categories: categories
     },
     yAxis: {
       min: 0,
@@ -227,7 +232,7 @@ function load_bar_graphic_for_general_report(div_id, title, subtitle){
     tooltip: {
       headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-          '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+          '<td style="padding:0"><b>S/.{point.y:.1f}</b></td></tr>',
       footerFormat: '</table>',
       shared: true,
       useHTML: true
@@ -240,13 +245,13 @@ function load_bar_graphic_for_general_report(div_id, title, subtitle){
     },
     series: [{
       name: 'Programado',
-      data: [3874189.278, 4045632.531, 3586762.657, 2981715.844, 3078316.592, 2402520.912]
+      data: [3874189.278, 4045632.531, 3586762.657, 2981715.844]
     }, {
       name: 'Valorizado',
-      data: [1033305.21, 1658607.79, 1880477.29, 2149285.52, 1226151.00131, 1511088.597]
+      data: valorizado
     }, {
       name: 'Costo Real',
-      data: [764479, 952670.251, 858321.99, 1325361.336, 1330032.980, 1140183.798]
+      data: [764479, 952670.251, 858321.99, 1325361.336]
     }]
   });
 }

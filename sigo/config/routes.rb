@@ -1,4 +1,5 @@
 ArsacLogistica::Application.routes.draw do
+
   devise_for :users, :controllers => {:registrations => "users/registrations"}, :path_names => { 
     :sign_up => 'arsac_register'
   }
@@ -94,11 +95,8 @@ ArsacLogistica::Application.routes.draw do
     resources :unit_of_measurements
     resources :persons do
       collection do
-        
         post 'getCostCentersPerCompany'
         post 'update_profile'
-
-
       end
     end
     resources :theoretical_values do
@@ -248,7 +246,6 @@ ArsacLogistica::Application.routes.draw do
     resources :money do
       collection do
         get 'add_exchange_of_rate'
-        
       end
     end
     resources :exchange_of_rates
@@ -659,13 +656,15 @@ ArsacLogistica::Application.routes.draw do
       end
     end
     resources :afps
+    resources :afp_details
     resources :payrolls do 
       collection do
         post 'display_worker'
-        post 'get_info'
-        post 'generate_payroll'
         post 'show_workers'
         post 'add_concept'
+      end
+      member do
+        get 'generate_payroll'
       end
     end
     resources :payslips do
@@ -673,6 +672,12 @@ ArsacLogistica::Application.routes.draw do
         post 'get_cc'
         post 'get_sem'
         post 'generate_payroll'
+        post 'complete_select'
+        post 'complete_select2'
+        post 'add_extra_info'
+      end
+      member do
+        get 'generate_payroll_excel'
       end
     end
   end
@@ -825,6 +830,8 @@ ArsacLogistica::Application.routes.draw do
         get 'change_data_da'
         get 'change_data_aom'
         get 'report'
+        get 'short_report'
+        get 'generate_report'
       end
     end
 

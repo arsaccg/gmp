@@ -8,7 +8,7 @@ repeat :all do
     image_tag @company.avatar.path, :fit => [100, 50]
   end
   bounding_box [bounds.right - 650, bounds.bottom + 500], :width  => 500 do
-    text "ORDEN DE COMPRA - N° #{@cc.code.to_s}-#{@purchaseOrder.id.to_s.rjust(3, '0')}", :align => :center, :style => :bold
+    text "ORDEN DE COMPRA - N° #{@cc.code.to_s}-#{@purchaseOrder.code.to_s.rjust(5, '0')}", :align => :center, :style => :bold
   end
   move_down 10
 

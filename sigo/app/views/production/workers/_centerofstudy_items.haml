@@ -11,12 +11,18 @@
   %td.col-md-1.numberoftuition{:style => "width:5%"}
     %div
       = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][numberoftuition]', @numberoftuition.to_s , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td.col-md-1.start_date{:style => "width:5%"}
+  %td.start_date{:style => "width:10%"}
     %div
-      = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][start_date]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', as: :string, :type => "date"
-  %td.col-md-1.end_date{:style => "width:5%"}
+      %select.form-control{:name =>'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][start_date]', 'style' => 'width:100%'}
+        - @years2.each do |years|
+          %option{:value => "#{years}"}
+            = years
+  %td.end_date{:style => "width:10%"}
     %div
-      = text_field_tag 'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][end_date]', '' , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio', as: :string, :type => "date"
+      %select.form-control{:name =>'worker[worker_center_of_studies_attributes][' + @reg_n.to_s + '][end_date]', 'style' => 'width:100%'}
+        - @years2.each do |years|
+          %option{:value => "#{years}"}
+            = years
   %td{:style => "width: 1%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
 

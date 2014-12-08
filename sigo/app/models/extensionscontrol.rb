@@ -3,9 +3,10 @@ class Extensionscontrol < ActiveRecord::Base
 	has_attached_file :files
 
 	STATUS_HASH = {
-		"requested" => "Requerido",
+		"requested" => "Presentado",
 		"approved" => "Aprobado",
-		"disproved" => "Desaprobado"
+		"disproved" => "Denegado",
+		"approved_p" => "Aprobado Parcialmente"
 	}
 	
 	state_machine :status, :initial => :requested do

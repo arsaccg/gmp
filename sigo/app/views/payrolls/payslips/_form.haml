@@ -1,10 +1,10 @@
-= simple_form_for([:payrolls, @pay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+.form-horizontal.smart-form
   %h3
     %strong Paso 1
     \- Seleccionar la información básica
   %fieldset
     .row
-      %section.col.col-md-4
+      %section.col.col-md-2
         .col-xs-1
         .form-group.in-line
           %label.label Tipo de Trabajador
@@ -17,7 +17,7 @@
               %input.radiobox#e{:name=>"tworker",:type => 'radio', :value => "obrero", :onchange => "checkWorker();"}
                 %span Obrero
 
-      %section.col.col-md-3
+      %section.col.col-md-3#semanase{:style => "display:none"}
         %label.label Semana
         %select#semana.form-control.select2
           %option{:value=> nil, :selected => true, :disabled => true} Seleccione una Semana
@@ -25,7 +25,24 @@
             %option{:value => se[0]}
               =se[1] + ": "+ se[2].strftime("%d/%m/%Y").to_s+ " - "+ se[3].strftime("%d/%m/%Y").to_s
 
-      %section.col.col-4
+      %section.col.col-md-3#messe{:style => "display:none"}
+        %label.label Mes
+        %select#mes.form-control.select2
+          %option{:value=> nil, :selected => true, :disabled => true} Seleccione un Mes
+          %option{:value => "Enero"} Enero
+          %option{:value => "Febrero"} Febrero
+          %option{:value => "Marzo"} Marzo
+          %option{:value => "Abril"} Abril
+          %option{:value => "Mayo"} Mayo
+          %option{:value => "Junio"} Junio
+          %option{:value => "Julio"} Julio
+          %option{:value => "Agosto"} Agosto
+          %option{:value => "Setiembre"} Setiembre
+          %option{:value => "Octubre"} Octubre
+          %option{:value => "Noviembre"} Noviembre
+          %option{:value => "Diciembre"} Diciembre
+
+      %section.col.col-2
         %label.label Tipo
         %label.input
           %select.form-control#tipo
@@ -37,8 +54,35 @@
             %option{:value=> "U"} Utilidades
             %option{:value=> "V"} Vacaciones
       %br
+    .row
+      %section.col.col-md-3
+        %label.label Trabajador
+        %select#workers.form-control.select2
+          %option{:value=> nil, :selected => true, :disabled => true} Seleccione un trabajador
+    
+      %section.col.col-md-3
+        %label.label Conceptos
+        %select#conceptos.form-control.select2
+          %option{:value=> nil, :selected => true, :disabled => true} Seleccione un concepto
+
+      %section.col.col-md-2
+        %label.label Cantidad
+        %input#amount.form-control
+
+      %section.col.col-md-2
+        %button.btn.btn-sm.btn-success#agrego{'type' => 'button', :style => " margin-top: 24px; "}
+          Agregar
+    .row
+      %table.table.table-striped.table-bordered.table-hover#more-info
+        %thead
+          %tr
+            %th Trabajador
+            %th Concepto
+            %th Cantidad   
+        %tbody
+ 
           
-    %fieldset
+    %fieldset{:style => "display:none"}
       %legend Información adicional
       .row
         %section
@@ -115,50 +159,177 @@
                 .col.col-lg-6
                   %input#dhbc.form-control{:value =>"0.00"}
         
-        %br
-        %div#example{:style => "overflow-x: scroll; width: 1300px;"}
+    %br
+    %div#example{:style => "overflow-x: scroll; width: 1300px;"}
           
 
 
   %footer
-    %button.btn.btn-primary{:onclick=>"generar();", :type => "button"}
-      %i.fa.fa-save 
-      Generar        
+    %button.btn.btn-info{:onclick=>"generar();", :type => "button"}
+      Generar
 
 :javascript
+
+  $(document).ready(function(){
+    $('#semana').change(function(){
+      var flag = true;
+      if(document.getElementById('e').checked){
+        var semana = $(this).val();
+        worker = "obrero";
+        complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
+        complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
+        flag = false;
+      }
+
+      if(flag){
+        $.smallBox({
+          title : "Aviso",
+          content : "Escoja un tipo de trabajador", 
+          color : "#c46a69",
+          timeout: 4000
+        });
+      }
+    });
+
+    $('#mes').change(function(){
+      var flag = true;
+      if(document.getElementById('t').checked){
+        var semana = $(this).val();
+        worker = "empleado";
+        complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
+        complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
+        flag = false;
+      }
+
+      if(flag){
+        $.smallBox({
+          title : "Aviso",
+          content : "Escoja un tipo de trabajador", 
+          color : "#c46a69",
+          timeout: 4000
+        });
+      }
+    });
+
+    $('#agrego').click(function(){
+      var worker = $('#workers').val();
+      var concept = $('#conceptos').val();
+      var amount = $('#amount').val();
+
+      if (worker != " " && concept != " " && amount != " "){
+        str_item = {authenticity_token: "#{form_authenticity_token}", worker: worker, concept: concept, amount:amount};
+        append_url_ajax('#{add_extra_info_payrolls_payslips_path}', 'more-info', str_item, 0, 'POST');
+      }else{
+        $.smallBox({
+          title : "Aviso",
+          content : "Escoja un tipo de trabajador, un concepto y llene el monto", 
+          color : "#c46a69",
+          timeout: 4000
+        });
+      }
+
+    });
+  });
+
   function checkWorker(){
     if(document.getElementById('t').checked){
-      $('#infoadd').css("display", "block");
+      $('#messe').fadeIn('fast');
+      $('#semanase').fadeOut('fast');
+      if($('#mes').val() != null){
+        var semana = $('#mes').val();
+        worker = "empleado";
+        complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
+        complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
+      }
     }else{
-      $('#infoadd').css("display", "none");
+      $('#messe').fadeOut('fast');
+      $('#semanase').fadeIn('fast');
+      if($('#semana').val() != null){
+        var semana = $('#semana').val();
+        worker = "obrero";
+        complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
+        complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
+      }
     }
   }
+
+  function complete_infow(url, semana, form_token){
+    $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { semana: semana, authenticity_token: form_token}
+    }).done(function( data ){
+      newOptions = [];
+      $.each(data.workers, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#workers').empty();
+      $('#workers').append(
+        $("<option></option>").attr("value", null).text("Seleccione un trabajador").attr("selected", "selected").attr("disabled", true)
+      )
+      $.each(newOptions, function(key,value){
+        $('#workers').append(
+          $("<option></option>").attr("value", value.id).text(value.name)
+        )
+      });
+    });
+  }
+
+  function complete_infoc(url, form_token, worker){
+    $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { authenticity_token: form_token, worker: worker}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.concepts, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#conceptos').empty();
+      $('#conceptos').append(
+        $("<option></option>").attr("value", null).text("Seleccione un concepto").attr("selected", "selected").attr("disabled", true)
+      )
+      $.each(newOptions, function(key,value){
+        $('#conceptos').append(
+          $("<option></option>").attr("value", value.id).text(value.name)
+        )
+      });
+    });
+  } 
 
   function generar(){
     var worker_id = null;
     var cost_center = #{@cc.id};
     var semana = $('#semana').val();
     var tipo = $('#tipo').val();
-    var ing = [];
-    var desc = [];
 
     if(document.getElementById('t').checked){
       var ingresos = #{@inge};
       var descuentos = #{@dese};
+      var aportacion = #{@ape};
       worker_id = "empleado";
     }
 
     if(document.getElementById('e').checked){
       var ingresos = #{@ingo};
       var descuentos = #{@deso};
+      var aportacion = #{@apo};
       worker_id = "obrero";
     }
 
     if(worker_id != null && semana != '' && tipo != ''){
-      str_item = {authenticity_token: "#{form_authenticity_token}", arregloin: ingresos, cost_center: cost_center, arreglodes:descuentos, semana: semana, tipo:tipo, worker: worker_id};
+      str_item = {authenticity_token: "#{form_authenticity_token}", arregloin: ingresos, cost_center: cost_center, arreglodes:descuentos, arregloapor: aportacion, semana: semana, tipo:tipo, worker: worker_id};
       $('#example').empty();
       append_url_ajax('#{generate_payroll_payrolls_payslips_path}', 'example', str_item, 0, 'POST');
     }else{
       alert("Escoja a un trabajador");
     }
-  }  
+  }

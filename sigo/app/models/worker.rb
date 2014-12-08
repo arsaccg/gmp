@@ -10,6 +10,8 @@ class Worker < ActiveRecord::Base
   has_many :worker_afps
   has_many :worker_healths
   has_many :type_workdays_workers
+  has_many :payslips
+  has_many :payrolls
   belongs_to :entity
   belongs_to :cost_center
   belongs_to :position_worker

@@ -1,0 +1,2 @@
+module Payrolls::AfpDetailsHelper
+end

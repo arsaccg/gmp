@@ -59,7 +59,7 @@ class Logistics::CompaniesController < ApplicationController
 
   private
   def company_parameters
-    params.require(:company).permit(:name, :ruc, :address, :avatar)
+    params.require(:company).permit(:name, :ruc, :address, :avatar, :short_name)
   end
   def entity_parameters
     params.require(:company).permit(:name, :ruc, :address)

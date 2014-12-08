@@ -8,4 +8,8 @@ class WeeksPerCostCenter < ActiveRecord::Base
       return 48
     end
   end
+
+  def self.get_current_week_by_id cost_center_id
+  	return ActiveRecord::Base.connection.execute("SELECT id, name FROM weeks_for_cost_center_1 WHERE start_date >= #{Time.now.strftime('%Y-%m-%d')} AND #{Time.now.strftime('%Y-%m-%d')}  <= end_date AND end_date >= CURRENT_TIMESTAMP LIMIT 1").to_a.first[0]
+  end
 end

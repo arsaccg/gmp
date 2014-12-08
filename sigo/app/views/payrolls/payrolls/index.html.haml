@@ -1,9 +1,9 @@
 #content-inside
   .row
     .col-xs-12.col-sm-7.col-md-7.col-lg-4
-      %h2.page-title.txt-color-blueDark
+      %h2.page-title.txt-color-blueDark{ :style => 'margin-bottom: 0;' }
         %i.fa.fa-pencil-square-o.fa-fw 
-        Lista de Boletas de Pago
+        Boletas de Pago
       - if flash[:notice] !=nil
         .alert.alert-success.fade.in{"style" => "clear:both"}
           %button.close{"data-dismiss" => "alert"}
@@ -19,6 +19,17 @@
           %strong Error!
           = flash[:error]
 
+  %br
+  .row
+    %section.col.col-md-6
+      %label{ :style => 'font-size: 12px;' } Selecciona la Planilla la cual desea generar las boletas de pago de los trabajadores.
+      %select#payslips.select2
+        %option{:value=> nil, :selected => true, :disabled => true} Seleccione una Planilla
+        - @payslips.each do |payslip|
+          %option{:value=> "#{payslip.code}"}= payslip.week
+    %section.col.col-md-6
+      %a.btn.btn-success{ :href => 'javascript:void(0)', :style => 'margin-top: 1.5em;', :onclick => 'RefreshTable()' }
+        Ver Trabajadores
   %br
   .row
     #widget-grid 

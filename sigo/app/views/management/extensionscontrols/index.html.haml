@@ -36,7 +36,7 @@
                       = l @cost_center_detail.start_date_of_work + @cost_center_detail.execution_term, format: :medium #@project.date_max
                       
                     %td
-                      = l @cost_center_detail.start_date_of_work + @cost_center_detail.execution_term + @aditional_term, format: :medium #@project.date_max + (@extensionscontrol.sum(:approved_deadline).to_i).days rescue ' '
+                      = l @cost_center_detail.start_date_of_work + @cost_center_detail.execution_term + @aditional_term - 1.days, format: :medium #@project.date_max + (@extensionscontrol.sum(:approved_deadline).to_i).days rescue ' '
 
         %a(class="btn btn-danger"){:href => "javascript:load_url_ondiv('#{new_management_extensionscontrol_path}', 'right-area')"}
           Registrar Ampliación
@@ -78,13 +78,13 @@
                 %td
                   = t ext.status
                 %td
-                  = ext.requested_deadline
+                  = number_to_currency(ext.requested_deadline, unit: '')
                 %td
-                  = ext.approved_deadline
+                  = number_to_currency(ext.approved_deadline, unit: '')
                 %td
-                  = ext.requested_mgg
+                  = number_to_currency(ext.requested_mgg, unit: '')
                 %td
-                  = ext.approved_mgg
+                  = number_to_currency(ext.approved_mgg, unit: '')
                 %td
                   = ext.resolution
                 %td

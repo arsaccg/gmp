@@ -9,7 +9,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
     
   def show
+    @action = "show"
     @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+    @detraccion = @valuationofequipment.detraction
     @start_date = @valuationofequipment.start_date
     @end_date = @valuationofequipment.end_date
     @ids=params[:id]
@@ -35,7 +37,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         @totalfacigv = workerDetail[3]
         @totalincluidoigv = workerDetail[4]
         @retenciones = workerDetail[5]
-        @detraccion = workerDetail[6]
         @descuentocombustible = workerDetail[7]
         @otrosdescuentos = workerDetail[8]
         @netoapagar = workerDetail[9]
@@ -48,6 +49,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
 
   def new
+    @action="new"
     @costCenter = CostCenter.new
     @executors = SubcontractEquipment.all
     last=ValuationOfEquipment.last
@@ -99,6 +101,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @accumulated_amortizaciondeadelanto = 0
       @totalprice = 0
       @bill = 0
+      @totalbill = 0
       @valorizacionsinigv = 0
       @amortizaciondeadelanto = 0
       @totalfacturar = 0
@@ -107,10 +110,12 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @detracciontotal = 0
       @descuentocombustible = 0
       @descuentootros = 0
+      @accumulated_detraction = 0
       @accumulated_descuentootros = 0
       @totalretenciones = 0
       @netoapagar = 0
       @code = 0
+      @detraction1 =0
       if !@lastvaluation.nil?
         @code = @lastvaluation.code.to_i      
         @code = @code.to_s.rjust(3,'0')
@@ -123,11 +128,25 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             @totalfacigv = workerDetail[3]
             @totalincluidoigv = workerDetail[4]
             @retenciones = workerDetail[5]
-            @detraccion = workerDetail[6]
             @descuentocombustible = workerDetail[7]
             @otrosdescuentos = workerDetail[8]
             @netoapagar = workerDetail[9]
             @descuentootros = workerDetail[11]
+            @accumulated_detraction = workerDetail[6]
+            @totalbill = workerDetail[13]
+            @detraction1 = workerDetail[14]
+            puts @valorizacionsinigv
+            puts @amortizaciondeadelanto
+            puts @totalfacturar
+            puts @totalfacigv
+            puts @totalincluidoigv
+            puts @retenciones
+            puts @detraccion
+            puts @descuentocombustible
+            puts @otrosdescuentos
+            puts @netoapagar
+            puts @descuentootros
+
           end
         end
       end
@@ -186,7 +205,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     workers_array3 = ActiveRecord::Base.connection.execute("
       SELECT poe.equipment_id, sed.code, SUM(poed.effective_hours), sed.price_no_igv, SUM(poed.effective_hours)*sed.price_no_igv
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
-      WHERE poe.date < '" + end_date + "'
+      WHERE poe.date <= '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.cost_center_id = '" + cost_center.to_s + "'
       AND poe.equipment_id=sed.id
@@ -242,7 +261,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       accumulated_net_payment, 
       code,
       other_discount,
-      accumulated_other_discount
+      accumulated_other_discount,
+      totalbill,
+      detraction
       FROM valuation_of_equipments 
       WHERE name LIKE '" + entityname.to_s + "' 
       AND code LIKE '" + code.to_s + "'
@@ -280,6 +301,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
 
   def part_equipment
+    @action= params[:ac]
     @ids= params[:ids]
     @id = params[:id]
     @name = params[:name]
@@ -304,41 +326,40 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
     @val1=ActiveRecord::Base.connection.execute("SELECT start_date,end_date FROM valuation_of_equipments WHERE name LIKE '" + @name + "' AND start_date < '" + @start_date + "'")
 
-
-    puts "-------1--------"
+    #puts "-------1--------"
     if params[:id]==nil
-    puts "-------params id--------"
+    #puts "-------params id--------"
       if @val1.count!=0
         @workers_array6 = business_days_array6(@val1.to_a.first[0].to_s, @val1.to_a.last[1].to_s, @cad,@cc)
-        puts "--------workers_array6----"
-        puts @workers_array6.to_a
-        puts "------if-val.count--------"
+        #puts "--------workers_array6----"
+        #puts @workers_array6.to_a
+        #puts "------if-val.count--------"
         @thelast = @val1.to_a.last
-        puts "----thelast----"
-        puts @thelast
-        puts "---------------"
+        #puts "----thelast----"
+        #puts @thelast
+        #puts "---------------"
         @last_end = @start_date
         @cc = get_company_cost_center('cost_center')
         @last = last(@thelast[0].to_s,@thelast[1].to_s, @cad, @art, @cc)
-        puts "------@last count--"
-        puts @last.to_a
-        puts "------@last count end--"
+        #puts "------@last count--"
+        #puts @last.to_a
+        #puts "------@last count end--"
         @try = "last"
 
       else
-        puts "------else------"
+        #puts "------else------"
         @last = Array.new
         @workers_array3.each do |wa3|
           @last << [[0,0,0]]
         end
-        puts "------@last else ceros--"
-        puts @last.to_a
+        #puts "------@last else ceros--"
+        #puts @last.to_a
       end
     else
       @cc = get_company_cost_center('cost_center')
       @last_end =ValuationOfEquipment.find(params[:id]).start_date
       @last = last(@last_end, @cad, @art, @cc)
-      puts @last.count
+      #puts @last.count
       if @last.count==0
         @last=nil
         @last = Array.new
@@ -366,31 +387,31 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       cont=0
       @past.each do |past|
         if pres[0]==past[0]
-        puts "------entra if pres[0]-----"
+        #puts "------entra if pres[0]-----"
           cont+=1
           past[2]
           acumul=9
           @workers_array6.each do |acum|
-            puts"---acum--"
-            puts acum
-            puts "----pres[0]"
-            puts pres[0]
-            puts "----acum[0]---"
-            puts acum[0]
-            puts "----acum[1]--"
-            puts acum[1]
+            #puts"---acum--"
+            #puts acum
+            #puts "----pres[0]"
+            #puts pres[0]
+            #puts "----acum[0]---"
+            #puts acum[0]
+            #puts "----acum[1]--"
+            #puts acum[1]
             if acum[0]==pres[0]
-              puts "----cumplio la igualdad--"
+              #puts "----cumplio la igualdad--"
               acumul=acum[1]
             end
           end
           @match << (pres + [acumul]).to_a
-          puts "------@match-----"
-          puts @match
+          #puts "------@match-----"
+          #puts @match
         end
       end
       if cont==0
-        puts "------entra else cont =0-----"
+        #puts "------entra else cont =0-----"
         @notmatch << (pres + [0]).to_a
       end
     end
@@ -460,9 +481,10 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       format.pdf do
         @company = Company.find(get_company_cost_center('company'))
         @valuationofequipment=ValuationOfEquipment.find_by_id(params[:id])
+        @detraccion = @valuationofequipment.detraction
         @start_date = @valuationofequipment.start_date
         @end_date = @valuationofequipment.end_date
-
+        @ids=params[:id]
         @valorizacionsinigv = 0
         @amortizaciondeadelanto = 0
         @totalfacturar = 0
@@ -477,7 +499,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
         @code = @valuationofequipment.code.to_i - 1
         @code = @code.to_s.rjust(3,'0')
         @valuationofequipment2 = getsc_valuation2(@valuationofequipment.start_date, @valuationofequipment.end_date, @valuationofequipment.name, @code)
-        
         if @valuationofequipment2.count > 0
           @valuationofequipment2.each do |workerDetail|
             @valorizacionsinigv = workerDetail[0]
@@ -486,7 +507,6 @@ class Production::ValuationOfEquipmentsController < ApplicationController
             @totalfacigv = workerDetail[3]
             @totalincluidoigv = workerDetail[4]
             @retenciones = workerDetail[5]
-            @detraccion = workerDetail[6]
             @descuentocombustible = workerDetail[7]
             @otrosdescuentos = workerDetail[8]
             @netoapagar = workerDetail[9]

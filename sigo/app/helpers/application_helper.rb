@@ -449,4 +449,16 @@ module ApplicationHelper
     end
   end
 
+  def is_strong(measured)
+    if measured != nil
+      return 'black_measured'
+    else
+      return ''
+    end
+  end
+
+
+  def add_zero_to_order(new_code)
+    return new_code.length >= 2 ? new_code : '0' + new_code #'01'
+  end
 end

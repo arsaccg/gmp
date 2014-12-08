@@ -347,6 +347,10 @@
                           %i.fa.fa-lg.fa-fw.fa-clipboard
                           %span.menu-item-parent
                             Reporte Mensual
+                    %li
+                      %a{href: "#{management_valorizations_path}", title: "Reporte Valorizaciones"}
+                        %i.fa.fa-lg.fa-fw.fa-money
+                        Valorizaciones
                 - if (current_user.has_role? :director) || (current_user.has_role? :overheads)
                   %li
                     %a{href: "#", title: "Gastos Generales"}

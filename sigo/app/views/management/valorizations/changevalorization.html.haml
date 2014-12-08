@@ -77,6 +77,9 @@
         -@last_result = row
 
 %br
+%a{href: "javascript: load_url_ondiv('#{generate_report_management_valorization_path}?val_id=#{@valorization.id}' , 'right-area');", class: "btn btn-success"} Generar Reporte
+%br
+%br
 %a{:href=>"javascript:load_url_ondiv('#{management_valorizations_path}', 'right-area')"}(class="btn btn-primary btn-xs")
   %i.fa.fa-arrow-left
   Retornar al listado de valorizaciones

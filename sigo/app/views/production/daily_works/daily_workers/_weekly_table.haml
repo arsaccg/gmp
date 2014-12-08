@@ -72,6 +72,7 @@
             %button.btn.btn-primary{type: "submit"}
               %i.fa.fa-save 
                 Guardar
+      = hidden_field_tag 'weekly_worker[number_workers]', trabajadores_array.count
   - else
     %h4 No existen Registros para esos Datos.
 

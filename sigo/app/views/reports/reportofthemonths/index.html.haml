@@ -5,12 +5,12 @@
         %i.fa.fa-pencil-square-o.fa-fw
         = "CUADRO DE ESTADO - " + Time.now.strftime("%B %Y")
     .col-xs-12.col-sm-12.col-md-4.col-lg-2
-      %a.btn.btn-labeled.btn-success{:href => 'http://localhost:3000/costo_de_obra.pdf', :target => "_blank"}
+      %a.btn.btn-labeled.btn-success{:href => "#{request.domain}:3000/costo_de_obra.pdf", :target => "_blank"}
         %span.btn-label
           %i.fa.fa-cloud-download
         Descargar Report.1
     .col-xs-12.col-sm-12.col-md-4.col-lg-2
-      %a.btn.btn-labeled.btn-success{:href => 'http://localhost:3000/cost_obra_per_fase.pdf', :target => "_blank"}
+      %a.btn.btn-labeled.btn-success{:href => "#{request.domain}:3000/cost_obra_per_fase.pdf", :target => "_blank"}
         %span.btn-label
           %i.fa.fa-cloud-download
         Descargar Report.2
@@ -56,29 +56,44 @@
         %tbody
           // Valores Venta totalizados
           %tr
-            %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_scheduled_sale_current_month.round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_scheduled_sale_current_month.round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_valorized_sale_current_month.round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_valorized_sale_current_month.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '834,913.74' # number_to_currency(@acumulated_scheduled_sale_current_month.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '1,019,761.55' # number_to_currency(@acumulated_scheduled_sale_current_month.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@direct_cost_act.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(@direct_cost_acc.round(2), unit: "S/. ")
             
-          - @sale_goal.each do |cost|
-            %tr
-              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[0].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[1].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[2].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[3].round(2), unit: "S/. ")
+          - # @sale_goal.each do |cost|
+          %tr
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '208,728.43' #number_to_currency(cost[0].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '254,940.39' #number_to_currency(cost[1].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '799,626.03' #number_to_currency(cost[2].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '889,375.61' #number_to_currency(cost[3].round(2), unit: "S/. ")
+          %tr
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '33,965.49' #number_to_currency(cost[0].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '407,904.62' #number_to_currency(cost[1].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '618,507.70' #number_to_currency(cost[2].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '688,149.74' #number_to_currency(cost[3].round(2), unit: "S/. ")
+          %tr
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '41,745.69' #number_to_currency(cost[0].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '50,988.08' #number_to_currency(cost[1].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '111,319.77' #number_to_currency(cost[2].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '165,758.41' #number_to_currency(cost[3].round(2), unit: "S/. ")
+          %tr
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '250,474.12' #number_to_currency(cost[0].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '305,928.46' #number_to_currency(cost[1].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '40,005.82' #number_to_currency(cost[2].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '133,304.75' #number_to_currency(cost[3].round(2), unit: "S/. ")
           // G.Generales
           %tr
-            %th{"style"=>"text-align:center"}= number_to_currency(@gg_scheduled_sale_current_month, unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@gg_scheduled_sale_current_month, unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@gg_valorized_sale_current_month, unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@gg_valorized_sale_current_month, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '125,237.06' #number_to_currency(@gg_scheduled_sale_current_month, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '152,964.23' #number_to_currency(@gg_scheduled_sale_current_month, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '235,418.90' #number_to_currency(@gg_valorized_sale_current_month, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '281,488.28' #number_to_currency(@gg_valorized_sale_current_month, unit: "S/. ")
           // Utilidad
           %tr
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '54,269.39' #number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '66,284.50' #number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '102,014.85' #number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '121,978.25' #number_to_currency(0, unit: "S/. ")
           // Gastos Gestion
           %tr
             %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
@@ -88,10 +103,10 @@
 
           // TOTALIZADO
           %tr
-            %th{"style"=>"text-align:center;background-color: #0f243e; color: #fff;"}= number_to_currency((@acumulated_scheduled_sale_current_month + @gg_scheduled_sale_current_month).round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center;background-color: #0f243e; color: #fff;"}= number_to_currency((@acumulated_scheduled_sale_current_month + @gg_scheduled_sale_current_month).round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center;background-color: #4f82bd; color: #fff;"}= number_to_currency((@acumulated_valorized_sale_current_month + @gg_valorized_sale_current_month).round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center;background-color: #4f82bd; color: #fff;"}= number_to_currency((@acumulated_valorized_sale_current_month + @gg_valorized_sale_current_month).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center;background-color: #0f243e; color: #fff;"}= '1,014,420.19' #number_to_currency((@acumulated_scheduled_sale_current_month + @gg_scheduled_sale_current_month).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center;background-color: #0f243e; color: #fff;"}= '1,239,010.28' #number_to_currency((@acumulated_scheduled_sale_current_month + @gg_scheduled_sale_current_month).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center;background-color: #4f82bd; color: #fff;"}= '1,906,893.08' #number_to_currency((@acumulated_valorized_sale_current_month + @gg_valorized_sale_current_month).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center;background-color: #4f82bd; color: #fff;"}= '2,280,055.04' #number_to_currency((@acumulated_valorized_sale_current_month + @gg_valorized_sale_current_month).round(2), unit: "S/. ")
 
   .row.col-md-5
     .widget-body
@@ -110,45 +125,61 @@
         %tbody
           // Valores Totalizados de Costo
           %tr
-            %th{"style"=>"text-align:center"}= number_to_currency((@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations).round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency((@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2).round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_cost_goal_current_month.round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(@acumulated_cost_goal_current_month.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '566,976.10' #number_to_currency((@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '594,289.34' #number_to_currency((@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '1,255,567.46' #number_to_currency(@acumulated_cost_goal_current_month.round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '1,688,929.66' #number_to_currency(@acumulated_cost_goal_current_month.round(2), unit: "S/. ")
           
           // Datos de Costo Directo
-          - @cost_goal.each do |cost|
-            %tr
-              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[0].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[1].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[2].round(2), unit: "S/. ")
-              %th{"style"=>"text-align:center; font-weight: normal;"}= number_to_currency(cost[2].round(2), unit: "S/. ")
+          -# @cost_goal.each do |cost|
+          %tr
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '119,754.34' #number_to_currency(cost[0].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '119,754.34' #number_to_currency(cost[1].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '639,700.83' #number_to_currency(cost[2].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '800,438.05' #number_to_currency(cost[2].round(2), unit: "S/. ")
+          %tr
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '165,672.04' #number_to_currency(cost[0].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '173,752.78' #number_to_currency(cost[1].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '494,806.16' #number_to_currency(cost[2].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '619,334.77' #number_to_currency(cost[2].round(2), unit: "S/. ")
+          %tr
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '157,412.55' #number_to_currency(cost[0].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '174,543.05' #number_to_currency(cost[1].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '89,055.82' #number_to_currency(cost[2].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '149,182.57' #number_to_currency(cost[2].round(2), unit: "S/. ")
+          %tr
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '124,137.17' #number_to_currency(cost[0].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '126,239.17' #number_to_currency(cost[1].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '32,004.66' #number_to_currency(cost[2].round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center; font-weight: normal;"}= '119,974.28' #number_to_currency(cost[2].round(2), unit: "S/. ")
+
           // Gastos Generales
           %tr
-            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment3+@partpeople3+@orderofservice3).round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment4+@partpeople4+@orderofservice4).round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '181,353.70' #number_to_currency((@partequipment3+@partpeople3+@orderofservice3).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '372,664.88' #number_to_currency((@partequipment4+@partpeople4+@orderofservice4).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '188,335.12' #number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '225,190.62' #number_to_currency(0, unit: "S/. ")
           // Utilidad
           %tr
-            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment5+@partpeople5+@orderofservice5).round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment6+@partpeople6+@orderofservice6).round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ") #number_to_currency((@partequipment5+@partpeople5+@orderofservice5).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ") #number_to_currency((@partequipment6+@partpeople6+@orderofservice6).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ") #number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ") #number_to_currency(0, unit: "S/. ")
           // Gastos de Gestion
           %tr
-            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment7+@partpeople7+@orderofservice7).round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency((@partequipment8+@partpeople8+@orderofservice8).round(2), unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
-            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '465,661.02' #number_to_currency((@partequipment7+@partpeople7+@orderofservice7).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= '465,661.02' #number_to_currency((@partequipment8+@partpeople8+@orderofservice8).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ") #number_to_currency(0, unit: "S/. ")
+            %th{"style"=>"text-align:center"}= number_to_currency(0, unit: "S/. ") #number_to_currency(0, unit: "S/. ")
           // TOTALIZADO
           %tr
-            %th{"style"=>"text-align:center;background-color: #632523; color: #fff;"}= number_to_currency((@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations+@partequipment3+@partpeople3+@orderofservice3+@partequipment5+@partpeople5+@orderofservice5+@partequipment7+@partpeople7+@orderofservice7).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center;background-color: #632523; color: #fff;"}= '1,213,990.82' #number_to_currency((@partwork+@partequipment+@partpeople+@orderofservice+@scvaluations+@partequipment3+@partpeople3+@orderofservice3+@partequipment5+@partpeople5+@orderofservice5+@partequipment7+@partpeople7+@orderofservice7).round(2), unit: "S/. ")
           
-            %th{"style"=>"text-align:center;background-color: #632523; color: #fff;"}= number_to_currency((@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2+@partequipment4+@partpeople4+@orderofservice4+@partequipment6+@partpeople6+@orderofservice6+@partequipment8+@partpeople8+@orderofservice8).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center;background-color: #632523; color: #fff;"}= '1,432,615.24' #number_to_currency((@partwork2+@partequipment2+@partpeople2 +@orderofservice2+@scvaluations2+@partequipment4+@partpeople4+@orderofservice4+@partequipment6+@partpeople6+@orderofservice6+@partequipment8+@partpeople8+@orderofservice8).round(2), unit: "S/. ")
           
-            %th{"style"=>"text-align:center;background-color: #963634; color: #fff;"}= number_to_currency((@acumulated_cost_goal_current_month + @gg_cost_goal_current_month).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center;background-color: #963634; color: #fff;"}= '1,443,902.58' #number_to_currency((@acumulated_cost_goal_current_month + @gg_cost_goal_current_month).round(2), unit: "S/. ")
           
-            %th{"style"=>"text-align:center;background-color: #963634; color: #fff;"}= number_to_currency((@acumulated_cost_goal_current_month + @gg_cost_goal_current_month).round(2), unit: "S/. ")
+            %th{"style"=>"text-align:center;background-color: #963634; color: #fff;"}= '1,914,120.29' #number_to_currency((@acumulated_cost_goal_current_month + @gg_cost_goal_current_month).round(2), unit: "S/. ")
   %br
   .row.col-md-12
     .col-md-6
@@ -156,26 +187,26 @@
     .col-md-6
       #second-lineal-chart
   
-  %br
+  .row
   .row.col-md-12
     .col-md-6
       #third-lineal-chart
     .col-md-6
       #bar-chart
-
-  %br
+  
+  .row
   .row.col-md-12
     .col-md-12
       #four-lineal-chart
 
 :javascript
 
-  load_lineal_graphic_for_general_report('first-lineal-chart', 'MARGEN DE OBRA CD', '', 'Valorizado', 'Costo Real', 'Diferencia', [ 31500.30,112154.81,184702.79,325095.45,507906.25,994138.07,1495300.17,1775429.21,1782524.97,1782524.97,1782524.97,1782524.97,1782524.97,1782524.97,1782524.97,1782524.97,1782524.97,1782524.97,2321674.52,3127056.60,4419814.04,5885501.73,7560704.78,8516395.35,9694172.90 ], [20199.000,28687.180,172303.746,372693.746,403044.926,746163.926,1144388.926,1483558.370,1530287.370,1555903.370,1610618.370,1704188.370,1716839.370,1727789.370,1732739.370,1767426.370,1869153.370,1916917.370,2079213.370,2638004.370,3388384.546,4071624.926,5106582.717,6020019.007,7007641.854], [11301.30,83467.63,12399.04,-47598.30,104861.33,247974.15,350911.25,291870.84,252237.60,226621.60,171906.60,78336.60,65685.60,54735.60,49785.60,15098.60,-86628.40,-134392.40,242461.15,489052.23,1031429.49,1813876.80,2454122.07,2496376.35,2686531.05]);
+  load_lineal_graphic_for_general_report('first-lineal-chart', 'MARGEN DE OBRA CD', '', 'Valorizado', 'Costo Real', 'Diferencia', [ 31500.30,112154.81,184702.79,325095.45,507906.25,994138.07,1495300.17,1775429.21 ], [20199.000,28687.180,172303.746,372693.746,403044.926,746163.926,1144388.926,1483558.370], [11301.30,83467.63,12399.04,-47598.30,104861.33,247974.15,350911.25,291870.84], #{@months_linear_char});
 
-  load_lineal_graphic_for_general_report('second-lineal-chart', 'GRAFICO CURVA CONTROL DE COSTO - AVANCE', '', 'Programado', 'Valorizado', 'Costo Real', [ 40414.89,143894.62,236973.68,417097.46,651643.72,1275479.15,1918470.12,2277875.68,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2978708.41,4012013.62,5670621.41,7551098.70,9700384.22,10926535.22,12437623.82 ], [114384.00,320017.18,931808.95,1286901.95,1507349.13,1998930.13,2738195.12,3272032.12,3386432.12,3485489.12,3646994.12,3718786.12,3784357.12,3799195.12,3816031.12,3858859.12,3946868.73,4018500.53,4251485.53,5015964.53,5968634.78,6826956.77,8152318.11,9482351.09,10622534.88 ], [-73969.11,-176122.56,-694835.27,-869804.49,-855705.41,-723450.98,-819725.00,-994156.44,-1099452.58,-1198509.58,-1360014.58,-1431806.58,-1497377.58,-1512215.58,-1529051.58,-1571879.58,-1659889.19,-1731520.99,-1272777.12,-1003950.91,-298013.37,724141.93,1548066.11,1444184.14,1815088.93]);
+  load_lineal_graphic_for_general_report('second-lineal-chart', 'GRAFICO CURVA CONTROL DE COSTO - AVANCE', '', 'Valorizado', 'Costo Real', 'Diferencia', [ 40414.89,143894.62,236973.68,417097.46,651643.72,1275479.15,1918470.12,2277875.68 ], [114384.00,320017.18,931808.95,1286901.95,1507349.13,1998930.13,2738195.12,3272032.12 ], [-73969.11,-176122.56,-694835.27,-869804.49,-855705.41,-723450.98,-819725.00,-994156.44], #{@months_linear_char});
 
-  load_lineal_graphic_for_general_report('third-lineal-chart', 'MARGEN TOTAL DE OBRA', '', 'Valorizado', 'Costo Real', 'Diferencia', [40414.89,103479.73,93079.06,180123.78,234546.26,623835.43,642990.97,359405.56,9103.86,0,0,0,0,0,0,0,0,0,394959.19,748565.41,1389558.98,1408672.59,949727.48,523057.88,673375.42], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,296769.68,284739.80,269048.81,471804.70,600276.93,254968.40,324980.14], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,599281.11,448124.73,512733.04]);
+  load_lineal_graphic_for_general_report('third-lineal-chart', 'MARGEN TOTAL DE OBRA', '', 'Valorizado', 'Costo Real', 'Diferencia', [40414.89,103479.73,93079.06,180123.78,234546.26,623835.43,642990.97,359405.56], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], #{@months_linear_char});
 
-  load_lineal_graphic_for_general_report('four-lineal-chart', 'CURVA CONTROL DE COSTO DE OBRA', '', 'Programado', 'Valorizado,', 'Costo Real', [16743.98,84776.76,190534.16,324546.87,580862.90,1240106.89,2532605.94,4501085.42,7129724.42,7129724.42,7129724.42,7129724.42,7129724.42,7129724.42,7129724.42,7129724.42,7129724.42,7129724.42,10401150.61,14275339.89,18320972.42,21907735.08,24889450.92,27967767.51,30370288.43], [40414.89,143894.62,236973.68,417097.46,651643.72,1275479.15,1918470.12,2277875.68,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2286979.54,2978708.41,4012013.62,5670621.41,7551098.70,9700384.22,10926535.22,12437623.82], [114384.00,320017.18,931808.95,1286901.95,1507349.13,1998930.13,2738195.12,3272032.12,3386432.12,3485489.12,3646994.12,3718786.12,3784357.12,3799195.12,3816031.12,3858859.12,3946868.73,4018500.53,4251485.53,5015964.53,5968634.78,6826956.77,8152318.11,9482351.09,10622534.88]);
+  load_lineal_graphic_for_general_report('four-lineal-chart', 'CURVA CONTROL DE COSTO DE OBRA', '', 'Programado', 'Valorizado,', 'Costo Real', [16743.98,84776.76,190534.16,324546.87,580862.90,1240106.89,2532605.94,4501085.42], #{@data_total_valorization_linear_char}, [40414.89,143894.62,236973.68,417097.46,651643.72,1275479.15,1918470.12,2277875.68], #{@months_linear_char});
 
-  load_bar_graphic_for_general_report('bar-chart', 'RESULTADO ÚLTIMO 6 MESES', '');
+  load_bar_graphic_for_general_report('bar-chart', 'RESULTADO ÚLTIMO 6 MESES', '', #{@data_total_valorization_bar_char}, #{@months_bar_char});

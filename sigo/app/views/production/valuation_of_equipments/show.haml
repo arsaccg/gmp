@@ -18,16 +18,15 @@
           %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.advances, unit: 'S/. ', precision: 2)     
           %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_amortization, unit: 'S/. ', precision: 2)
           %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.balance, unit: 'S/. ', precision: 2)
-  %br
   %div
     .widget-body
-      %h1{"style"=>"font-size: large;color:#5f5f5f; font-weight:bold;text-align:center;"}
+      %h1{"style"=>"font-size: medium;color:#5f5f5f; font-weight:bold;text-align:center;"}
         = "SEMANA N° #{@inicio[0].split[1].to_s} - #{@fin[0].split[1].to_s} / DEL #{@start_date.to_date.strftime('%d-%m-%y')} AL #{@end_date.to_date.strftime('%d-%m-%y')}"
 
-      %table.panel.panel-primary.table-bordered{ style: "height: 530px;width: 850px;margin: 0 auto" }
+      %table.panel.panel-primary.table-bordered{ style: "height: 430px;width: 850px;margin: 0 auto" }
         %thead.panel-heading
 
-          %tr{"bgcolor"=>"#3276B1",style: "height: 45px;"}
+          %tr{"bgcolor"=>"#3276B1",style: "height: 30px;"}
             %th{"style"=>"color:white;text-align:center"} Item
             %th{"style"=>"color:white;text-align:center"} Descripcion
             %th{ 'colspan' => 2, "style"=>"color:white;text-align:center"} Actual
@@ -69,17 +68,21 @@
             %th{"style"=>"color:white"}
             %th{"style"=>"color:white;padding-left:8px;"} Total Incluido IGV
             %th{ 'colspan' => 2, "style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.bill+@valuationofequipment.bill*0.18, unit: 'S/. ', precision: 2) 
-            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@totalincluidoigv, unit: 'S/. ', precision: 2)
-            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_totalbill, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@totalincluidoigv.to_f, unit: 'S/. ', precision: 2)
+            -puts "-----------"
+            -puts @totalincluidoigv
+            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_totalbill.to_f, unit: 'S/. ', precision: 2)
           %tr{"bgcolor"=>"#ECF3F8"}
             %th{"style"=>"color:#5f5f5f;text-align:center"} 5.00
             %th{ 'colspan' => 5, "style"=>"color:#5f5f5f;padding-left:8px;"} Retenciones
           %tr
             %th{"style"=>"color:#5f5f5f;text-align:center;padding-left:15px;"} 5.01
             %th{"style"=>"color:#5f5f5f;padding-left:18px;"}= "Detracción del Total (Incl. I.G.V.) ("+@valuationofequipment.detraction.to_s+"%)"
-            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).ceil, unit: 'S/. ', precision: 2)
-            %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_detraction, unit: 'S/. ', precision: 2)
-            %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).ceil+@valuationofequipment.accumulated_detraction.to_f.round(2), unit: 'S/. ', precision: 2)
+            %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency((@valuationofequipment.totalbill.to_f.round(2)*@valuationofequipment.detraction.to_f/100).round, unit: 'S/. ', precision: 2)
+            -puts "------------bill------------"
+            -puts @valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100
+            %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_detraction.to_f.round, unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).round+@valuationofequipment.accumulated_detraction.to_f.round, unit: 'S/. ', precision: 2)
           %tr
             %th{"style"=>"color:#5f5f5f;text-align:center;padding-left:15px;"} 5.02
             %th{"style"=>"color:#5f5f5f;padding-left:18px;"} Descuento de Combustible (Incl. I.G.V.)
@@ -97,26 +100,26 @@
             %th{"style"=>"color:#5f5f5f;padding-left:18px;"} TOTAL RETENCIONES
             %th{ 'colspan' => 2, "style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}
               - if !@valuationofequipment.other_discount.nil?
-                = number_to_currency((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).ceil+@valuationofequipment.other_discount, unit: 'S/. ', precision: 2) 
+                = number_to_currency((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).round+@valuationofequipment.other_discount, unit: 'S/. ', precision: 2) 
               -else
-                = number_to_currency((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).ceil+0, unit: 'S/. ', precision: 2) 
-            %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_retention.to_f, unit: 'S/. ', precision: 2)
+                = number_to_currency((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).round+0, unit: 'S/. ', precision: 2) 
+            %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_retention.to_f.round, unit: 'S/. ', precision: 2)
             %th{"style"=>"color:#5f5f5f;text-align:right;padding-right:5px;"}
               - if !@valuationofequipment.other_discount.nil?
-                = number_to_currency((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).ceil+@valuationofequipment.other_discount+@valuationofequipment.accumulated_retention.to_f, unit: 'S/. ', precision: 2) 
+                = number_to_currency((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).round+@valuationofequipment.other_discount+@valuationofequipment.accumulated_retention.to_f, unit: 'S/. ', precision: 2) 
               -else
-                = number_to_currency((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).ceil+@valuationofequipment.accumulated_retention.to_f, unit: 'S/. ', precision: 2) 
+                = number_to_currency((@valuationofequipment.totalbill.to_f*@valuationofequipment.detraction.to_f/100).round+@valuationofequipment.accumulated_retention.to_f.round, unit: 'S/. ', precision: 2) 
           %tr{"bgcolor"=>"#3276B1"}
             %th{"style"=>"color:white;text-align:center"} 6.00
             %th{"style"=>"color:white;padding-left:8px;"} NETO A PAGAR: TOTAL (INCL. I.G.V.) - TOTAL RETEN.
             %th{ 'colspan' => 2, "style"=>"color:white;text-align:right;padding-right:5px;"}=number_to_currency(@valuationofequipment.net_payment.to_f, unit: 'S/. ', precision: 2)
-            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency("%.2f" % (@totalincluidoigv-@valuationofequipment.accumulated_detraction.to_f+@otrosdescuentos), unit: 'S/. ', precision: 2)
+            %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@totalincluidoigv.to_f-@valuationofequipment.accumulated_retention.to_f.round, unit: 'S/. ', precision: 2)
             %th{"style"=>"color:white;text-align:right;padding-right:5px;"}= number_to_currency(@valuationofequipment.accumulated_net_payment.to_f, unit: 'S/. ', precision: 2)
       %br
       %br
       - case @valuationofequipment.state
         - when 'disapproved'
-          %a.btn.btn-success.btn-xs#aprove{type: "button", style: "float:right;margin-right:11%;width:100px;"}
+          %a.btn.btn-success.btn-xs#aprove{type: "button", style: "float:right;margin-right:11%;width:100px;height:30px;text-align:center;padding:5px;"}
             %i.fa.fa-check>
               Aprobar
     %br
@@ -133,11 +136,11 @@
       load_url_ajax("#{production_valuation_of_equipments_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
   });
   $('#aprove').click(function(){
-      load_url_ajax('#{approve_production_sc_valuation_path(@valuationofequipment.id)}', 'content', {company_id: '#{@company}', start_date: '#{@valuationofequipment.start_date}', end_date: '#{@valuationofequipment.end_date}'}, null, 'GET');
+      load_url_ajax('#{approve_production_valuation_of_equipment_path(@valuationofequipment.id)}', 'content', {company_id: '#{@company}', start_date: '#{@valuationofequipment.start_date}', end_date: '#{@valuationofequipment.end_date}'}, null, 'GET');
   });
 
   function part_equipment(id) {
-    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@valuationofequipment.start_date}", end_date: "#{@valuationofequipment.end_date}", cad: "#{@valuationofequipment.working_group}", name: "#{@valuationofequipment.name}", code: "#{@valuationofequipment.code}", ids: "#{@valuationofequipment.id}" };
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@valuationofequipment.start_date}", end_date: "#{@valuationofequipment.end_date}", cad: "#{@valuationofequipment.working_group}", name: "#{@valuationofequipment.name}", code: "#{@valuationofequipment.code}", ids: "#{@valuationofequipment.id}", ac: "#{@action}"};
     load_url_ajax('#{part_equipment_production_valuation_of_equipments_path}', 'part-equipment', data, '', 'POST');
     $('#part-equipment').modal({
       keyboard: false,
