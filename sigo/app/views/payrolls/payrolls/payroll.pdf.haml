@@ -103,9 +103,10 @@
                 %th{ :colspan => 2, :style => ' text-align: center;' } Descuentos
             %tbody{ :style => 'font-size: 12px;' }
               - @discounts_and_amounts.each_with_index do |key,value|
-                %tr
-                  %td= key[0].gsub('_', ' ').upcase
-                  %td{ :style => 'text-align: right' }= key[1]
+                - if key[1].to_f != 0
+                  %tr
+                    %td= key[0].gsub('_', ' ').upcase
+                    %td{ :style => 'text-align: right' }= key[1]
 
         .contributions.col-md-4{ :style => 'padding:0; float: right;' }
           %table.table.table-bordered{ :style => 'border: none' }
@@ -114,7 +115,7 @@
                 %th{ :colspan => 2, :style => ' text-align: center;' } Empresa
             %tbody{ :style => 'font-size: 12px;' }
               - @contributions_and_amounts.each_with_index do |key,value|
-                - if key[0].to_s != 'neto'
+                - if key[0].to_s != 'neto' && key[1].to_f != 0
                   %tr
                     %td= key[0].gsub('_', ' ').upcase
                     %td{ :style => 'text-align: right' }= key[1]
