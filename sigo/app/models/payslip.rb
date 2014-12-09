@@ -178,8 +178,21 @@ class Payslip < ActiveRecord::Base
           @result[0] << "Ingresos Totales"
         end
       end
+      calculator = nil
+      calculator = Dentaku::Calculator.new
+      calculator.store(remuneracion_basica: rem_basic)
+      calculator.store(precio_por_hora: por_hora)
+      calculator.store(horas_trabajadas: row[7])
+      calculator.store(horas_totales_semana: total_hour)
+      calculator.store(dias_trabajados: worker_hours)
+      calculator.store(horas_simples: row[9])
+      calculator.store(horas_dobles: row[10])
+      calculator.store(horas_extras_60: 0)
+      calculator.store(horas_extras_100: 0)
 
-
+      puts "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+      puts "descuentos"
+      puts "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
       if !des.nil?
         des.each do |de|
           con = nil
@@ -297,6 +310,21 @@ class Payslip < ActiveRecord::Base
         @result[@i] << total1 - total
         total = 0
       end
+
+      calculator = nil
+      calculator = Dentaku::Calculator.new
+      calculator.store(remuneracion_basica: rem_basic)
+      calculator.store(precio_por_hora: por_hora)
+      calculator.store(horas_trabajadas: row[7])
+      calculator.store(horas_totales_semana: total_hour)
+      calculator.store(dias_trabajados: worker_hours)
+      calculator.store(horas_simples: row[9])
+      calculator.store(horas_dobles: row[10])
+      calculator.store(horas_extras_60: 0)
+      calculator.store(horas_extras_100: 0)
+      puts "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+      puts "Aportaciones"
+      puts "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
       if !apo.nil?
         apo.each do |ap|
           hash_formulas = Hash.new
@@ -321,9 +349,6 @@ class Payslip < ActiveRecord::Base
           @result[0] << "Aportaciones Totales"
         end
       end
-      puts "----------------------------------------------------------------------------------------------------------------------------------"
-      puts calculator.inspect
-      puts "----------------------------------------------------------------------------------------------------------------------------------"
       @i+=1
     end
 
