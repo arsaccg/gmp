@@ -2,7 +2,7 @@ class Libraries::DownloadSoftwaresController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @soft = DownloadSoftware.all
+    @soft = DownloadSoftware.where("type_of_cost_center LIKE '"+CostCenter.find(get_company_cost_center('cost_center')).speciality.to_s+"'")
     render layout: false
   end
 
@@ -60,6 +60,6 @@ class Libraries::DownloadSoftwaresController < ApplicationController
 
   private
   def soft_parameters
-    params.require(:download_software).permit(:name, :description, :file)
+    params.require(:download_software).permit(:name, :description, :file,:type_of_cost_center)
   end
 end

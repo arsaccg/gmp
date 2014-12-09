@@ -2,7 +2,7 @@ class Libraries::TechnicalStandardsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @standard = TechnicalStandard.all
+    @standard = TechnicalStandard.where("type_of_cost_center LIKE '"+CostCenter.find(get_company_cost_center('cost_center')).speciality.to_s+"'")
     render layout: false
   end
 
@@ -60,6 +60,6 @@ class Libraries::TechnicalStandardsController < ApplicationController
 
   private
   def tech_parameters
-    params.require(:technical_standard).permit(:name, :description, :document)
+    params.require(:technical_standard).permit(:name, :description, :document, :type_of_cost_center)
   end
 end
