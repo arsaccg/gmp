@@ -221,7 +221,7 @@ class Management::ValorizationsController < ApplicationController
 
   def generate_report
     val_id = params[:val_id]
-    ReportValorization.delete_all
+    # ReportValorization.delete_all
     @valorization = Valorization.find(val_id)
     @itembybudgets = Itembybudget.where('CHAR_LENGTH(`order`) > 3 AND budget_id = ?', @valorization.budget_id)
     @budget = Budget.where(:id => @valorization.budget_id).first
@@ -333,6 +333,14 @@ class Management::ValorizationsController < ApplicationController
           rep.save
         end
       end
+    end
+
+    ValorizationByCategory.destroy_all(valorization_id:val_id, budget_id:@valorization.budget_id)
+    @data = Inputcategory.sum_valorization_sales_total(@valorization.budget_id, val_id)
+    
+    @data.each_with_index do |k, i|
+      vbc = ValorizationByCategory.new(valorization_id:val_id, category_id:k[0], amount:k[1][2], budget_id:@valorization.budget_id)
+      vbc.save
     end
 
     redirect_to action: :index
