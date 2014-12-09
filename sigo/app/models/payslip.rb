@@ -332,7 +332,6 @@ class Payslip < ActiveRecord::Base
         end
       end
       @i+=1
-      break
     end
 
     return @result
