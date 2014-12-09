@@ -42,7 +42,7 @@ class Management::ExtensionscontrolsController < ApplicationController
       redirect_to :action => :index
     else
       extensionscontrol.errors.messages.each do |attribute, error|
-        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "#attribute " " + flash[:error].to_s + error.to_s + "  "
       end
       render :edit, layout: false
     end

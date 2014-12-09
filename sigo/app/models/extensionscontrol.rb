@@ -1,6 +1,16 @@
 class Extensionscontrol < ActiveRecord::Base
 	belongs_to :project
-	has_attached_file :files
+
+	validates :files, presence: true
+  	validates :files,
+    	attachment_content_type: { content_type: "application/pdf" },
+    	attachment_size: { less_than: 5.megabytes }
+
+	has_attached_file :files, styles: {
+	    thumb: '100x100>',
+	    square: '200x200#',
+	    medium: '300x300>'
+	}
 
 	STATUS_HASH = {
 		"requested" => "Presentado",
