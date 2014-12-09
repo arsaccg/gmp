@@ -2,24 +2,12 @@ class Payrolls::PayslipsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @pay = Payroll.all
-    @ids = Array.new
-    contracts = WorkerContract.where("start_date < '"+Time.now.strftime("%YYYY-%mm-%dd").to_s+"' AND end_date > '"+Time.now.strftime("%YYYY-%mm-%dd").to_s+"'")
-    contracts.each do |con|
-      @ids << con.worker_id
-    end
-    @ids = @ids.join(',')
+    @pay = ActiveRecord::Base.connection.execute("SELECT code, week, month FROM payslips GROUP BY code")
     render layout: false
   end
 
   def show
-    @pay = Payroll.find_by_worker_id(params[:id])
-    @type = params[:type]
-    if !@pay.nil?
-      @payroll_details = @pay.payroll_details
-    end
-    @worker = Worker.find(params[:id])
-    @entity =Entity.find(@worker.entity_id)
+    @pay = Payslip.where("code = ?",params[:id])
     render layout: false
   end
 
@@ -79,15 +67,14 @@ class Payrolls::PayslipsController < ApplicationController
       pay = Payslip.new
       pay.worker_id = params[:payslip][''+reg.to_s+'']['worker_id']
       pay.cost_center_id = params[:payslip][''+reg.to_s+'']['cost_center_id']
-      pay.start_date = params[:payslip][''+reg.to_s+'']['start_date']
-      pay.end_date = params[:payslip][''+reg.to_s+'']['end_date']
+      pay.week = params[:payslip][''+reg.to_s+'']['week']
       pay.days = params[:payslip][''+reg.to_s+'']['days']
       pay.normal_hours = params[:payslip][''+reg.to_s+'']['normal_hours']
       pay.subsidized_day = params[:payslip][''+reg.to_s+'']['subsidized_day']
       pay.subsidized_hour = params[:payslip][''+reg.to_s+'']['subsidized_hour']
       pay.last_worked_day = params[:payslip][''+reg.to_s+'']['last_worked_day']
       pay.he_60 = params[:payslip][''+reg.to_s+'']['he_60']
-      pay.code
+      pay.code = last_code
       pay.he_100 = params[:payslip][''+reg.to_s+'']['he_100']
       pay.ing_and_amounts = params[:payslip][''+reg.to_s+'']['ing_and_amounts'].to_json
       pay.month = params[:payslip][''+reg.to_s+'']['month']
@@ -212,7 +199,7 @@ class Payrolls::PayslipsController < ApplicationController
       WHERE wc.id = " + params[:semana].to_s).first
 
     tipo = params[:tipo]
-
+    @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
     @max_hour = ActiveRecord::Base.connection.execute("
       SELECT total
       FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + "
@@ -255,6 +242,37 @@ class Payrolls::PayslipsController < ApplicationController
     pay = Payroll.find(params[:id])
     pay.destroy
     render :json => pay
+  end
+
+  def generate_payroll_excel
+    @pay = Payslip.where("code = ?",params[:id])
+    Spreadsheet.client_encoding = 'UTF-8'
+
+    book = Spreadsheet::Workbook.new
+    sheet1 = book.create_worksheet :name => 'Planilla'
+
+    headers = ['DNI', 'Nombre', 'CAT', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
+    headers = headers + JSON.parse(@pay.first.ing_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
+    headers = headers + JSON.parse(@pay.first.des_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
+    headers = headers + JSON.parse(@pay.first.aport_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
+
+    sheet1.row(2).concat headers
+
+    i = 3
+    @pay.each do |pars|
+      selected = Array.new
+      wor = Worker.find(pars.worker_id)
+      selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.first.article.name, CostCenter.find(pars.cost_center_id).code, pars.last_worked_day.strftime('%d/%m/%y').to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.normal_hours.to_s, pars.days.to_s, pars.he_60.to_s, 0, pars.he_100.to_s]
+      selected = selected + JSON.parse(pars.ing_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
+      selected = selected + JSON.parse(pars.des_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
+      selected = selected + JSON.parse(pars.aport_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
+      sheet1.row(i).concat selected
+      i += 1
+    end
+
+    export_file_path = [Rails.root, "public", "payrolls", "planilla_#{ DateTime.now.to_s }.xls"].join("/")
+    book.write export_file_path
+    send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
   end
 
   private

@@ -660,10 +660,11 @@ ArsacLogistica::Application.routes.draw do
     resources :payrolls do 
       collection do
         post 'display_worker'
-        post 'get_info'
-        post 'generate_payroll'
         post 'show_workers'
         post 'add_concept'
+      end
+      member do
+        get 'generate_payroll'
       end
     end
     resources :payslips do
@@ -674,6 +675,9 @@ ArsacLogistica::Application.routes.draw do
         post 'complete_select'
         post 'complete_select2'
         post 'add_extra_info'
+      end
+      member do
+        get 'generate_payroll_excel'
       end
     end
   end

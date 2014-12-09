@@ -1,2 +1,66 @@
-%h1 Payrolls::Payslips#show
-%p Find me in app/views/payrolls/payslips/show.html.haml
+#content-inside
+
+  .row
+    .col-xs-12.col-sm-6.col-md-6.col-lg-6
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-group
+        = "Planilla de la " + @pay.first.week
+
+    .col-xs-12.col-sm-6.col-md-6.col-lg-6
+      %a.btn.btn-success{ href: "#{generate_payroll_excel_payrolls_payslip_path(@pay.first.code)}", target: '_blank'} Generar Excel de la Planilla
+
+  %div{:style=>"width:100%; overflow-x:scroll"}
+    %table.table.table-striped.table-bordered.table-hover
+      %thead
+        %tr
+          %th DNI
+          %th Nombre
+          %th CAT
+          %th C.C
+          %th ULT. DIA. TRABJ.
+          %th AFP
+          %th HIJ
+          %th HORAS
+          %th DIAS
+          %th H.E.S
+          %th H.FRDO
+          %th H.E.D
+          -JSON.parse(@pay.first.ing_and_amounts).each_with_index do |key,value|
+            %th= key[0].gsub('_', ' ').upcase
+          -JSON.parse(@pay.first.des_and_amounts).each_with_index do |key,value|
+            %th= key[0].gsub('_', ' ').upcase
+          -JSON.parse(@pay.first.aport_and_amounts).each_with_index do |key,value|
+            %th= key[0].gsub('_', ' ').upcase
+
+
+      %tbody
+        - @pay.each do |pars|
+          %tr
+            -wor = Worker.find(pars.worker_id)
+            %td= wor.entity.dni
+            %td= wor.entity.name.to_s + " "+ wor.entity.name.to_s + " "+ wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s
+            %td= wor.worker_contracts.first.article.name
+            %td= CostCenter.find(pars.cost_center_id).code
+            %td= pars.last_worked_day.strftime('%d/%m/%y').to_s
+            %td= wor.worker_afps.first.afp.enterprise.to_s
+            %td= wor.numberofchilds.to_i
+            %td= pars.normal_hours.to_s
+            %td= pars.days.to_s
+            %td= pars.he_60.to_s
+            %td= 0
+            %td= pars.he_100.to_s
+            -JSON.parse(pars.ing_and_amounts).each_with_index do |key,value|
+              %td= key[1]
+            -JSON.parse(pars.des_and_amounts).each_with_index do |key,value|
+              %td= key[1]
+            -JSON.parse(pars.aport_and_amounts).each_with_index do |key,value|
+              %td= key[1]
+
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-entity{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado
+
+:javascript
+  $('#backlist-entity').click(function(){
+    load_url_ajax("#{payrolls_payslips_path}", 'content', null, null, 'GET');
+  });

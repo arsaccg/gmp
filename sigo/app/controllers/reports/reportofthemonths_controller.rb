@@ -300,6 +300,19 @@ class Reports::ReportofthemonthsController < ApplicationController
     @data_total_valorization_linear_char.map! { |v| v.nil? ? 0 : v }
     @data_total_valorization_bar_char.map! { |v| v.nil? ? 0 : v }
 
+    # => Por ahora, solo cojo la ultima valorizacion
+    @valorization = Valorization.last
+    @direct_cost_act = 0
+    @direct_cost_acc = 0
+    Itembybudget.select('id, `title`, `subbudgetdetail`, `order`, CHAR_LENGTH(`order`)').where('CHAR_LENGTH(`order`) < 3 AND budget_id = ?', @valorization.budget_id).each do |ib|
+      @budget = Budget.where(:id => @valorization.budget_id).first
+      c_amount_act = amount_actual(ib.order, @budget.id, @valorization.id)
+      @direct_cost_act = @direct_cost_act + c_amount_act 
+   
+      c_amount_acc = amount_acumulated(ib.order, @budget.id, @valorization.valorization_date, @valorization.id)
+      @direct_cost_acc = @direct_cost_acc + c_amount_acc
+    end
+
     # => VALORIZACIONES
 
 		render layout: false
@@ -408,6 +421,23 @@ class Reports::ReportofthemonthsController < ApplicationController
       result = mysql[0]
     end
     return result
+  end
+
+  # => SOME METHODS FROM Application Helper duplicate : amount_acumulated, amount_actual
+  
+  def amount_actual(orderitem, budgetid, valorizationid)
+      items=ActiveRecord::Base.connection.execute("SELECT get_amount_actual('#{orderitem}', '#{budgetid}', '#{valorizationid}')")
+    items.each do |item|
+      return item[0]
+    end
+  end
+
+  def amount_acumulated(orderitem, budget_id, current_created_at, valorizationid)
+    str_date = current_created_at.strftime("%Y-%m-%d  %T")
+      items=ActiveRecord::Base.connection.execute("SELECT get_amount_acumulated('#{orderitem}', '#{budget_id}', '#{str_date}', '#{valorizationid}')")
+    items.each do |item|
+      return item[0]
+    end
   end
 
 end

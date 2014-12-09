@@ -1,0 +1,139 @@
+%html
+  %head
+    %meta{charset: "utf-8"}
+    = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
+  %body
+    #content
+      .row
+        .col-md-6
+          = @cost_center.company.name
+        .col-md-6
+      .row
+        .col-md-4{ :style => 'display:inline-block;' }
+          = 'RUC: ' + @cost_center.company.ruc.to_s
+          %br
+          = @cost_center.company.address
+        .col-md-7{ :style => 'display:inline-block;' }
+          = 'OBRA: (' + @cost_center.cost_center_detail.name.to_s + ' - ' + @cost_center.code.to_s + ')'
+      
+      %br
+
+      %h4{ :style => 'text-align: center;' }
+        = 'BOLETA DE PAGO ' + @payslip.week.to_s + ' PERIODO: ' +  Time.now.strftime('%b-%Y')
+
+      %br
+
+      %table.table.table-bordered
+        %tbody{ :style => 'font-size: 12px;' }
+          %tr
+            %th Apellidos
+            %td{ :colspan => 3 }= @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s
+            %th Nombres
+            %td= @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s
+            %th DNI
+            %td= @worker.entity.dni.to_s
+            %th F/NAC
+            %td= @worker.entity.date_of_birth.strftime('%d/%m/%Y')
+
+          %tr
+            %th F/Ingresos
+            %td
+              - if !@worker_contract.start_date.nil?
+                = @worker_contract.start_date.strftime('%d/%m/%Y')
+              - else
+                = '00/00/0000'
+            %th F/Cese
+            %td
+              - if !@worker_contract.end_date.nil?
+                = @worker_contract.end_date.strftime('%d/%m/%Y')
+              - else
+                = '00/00/0000'
+            %th Periocidad
+            %td Semanal
+            %th TPO/PAGO
+            %td{ :colspan => 3 } Efectivo
+          %tr
+            %th TIPO TRABAJADOR
+            %td{ :colspan => 3 }= @type_worker.name
+            %th Categoria
+            %td= @category_worker.name
+            %th Especialidad
+            %td{ :colspan => 3 }= @category_worker.name
+          %tr
+            %th REG. PENSIONARIO
+            %td{ :colspan => 3 }= @worker.worker_afps.first.afp.enterprise
+            %th CUSPP N°
+            %td= @worker.worker_afps.first.afpnumber
+            %th Carnet Essalud
+            %td{ :colspan => 3 }
+          %tr
+            %th CÓDIGO SUNAT
+            %td{ :colspan => 3 }
+
+      %table.table.table-bordered{ :style => 'margin-bottom: 0;' }
+        %tbody{ :style => 'font-size: 12px;' }
+          %tr
+            %th D/H Trabajados
+            %td{ :style => 'text-align: right' }= @number_hours_normal.to_f
+            %td{ :style => 'text-align: right' }= @payslip.normal_hours.to_f
+            %th D/H Subsidiados
+            %td{ :style => 'text-align: right' }= @payslip.subsidized_day.to_f
+            %td{ :style => 'text-align: right' }= @payslip.subsidized_hour.to_f
+            %th D/H Faltas
+            %td{ :style => 'text-align: right' }= 0.0
+            %td{ :style => 'text-align: right' }= 0.0
+
+      .concepts
+        .income.col-md-4{ :style => 'padding:0; float: left;' }
+          %table.table.table-bordered{ :style => 'border: none' }
+            %thead{ :style => 'font-size: 12px;' }
+              %tr
+                %th{ :colspan => 2, :style => ' text-align: center;' } Remuneración
+            %tbody{ :style => 'font-size: 12px;' }
+              - @incomes_and_amounts.each_with_index do |key,value|
+                - if key[1].to_f != 0
+                  %tr
+                    %td= key[0].gsub('_', ' ').upcase
+                    %td{ :style => 'text-align: right' }= key[1]
+
+        .discounts.col-md-4{ :style => 'padding:0; float: left;' }
+          %table.table.table-bordered{ :style => 'border: none' }
+            %thead{ :style => 'font-size: 12px;' }
+              %tr
+                %th{ :colspan => 2, :style => ' text-align: center;' } Descuentos
+            %tbody{ :style => 'font-size: 12px;' }
+              - @discounts_and_amounts.each_with_index do |key,value|
+                - if key[1].to_f != 0
+                  %tr
+                    %td= key[0].gsub('_', ' ').upcase
+                    %td{ :style => 'text-align: right' }= key[1]
+
+        .contributions.col-md-4{ :style => 'padding:0; float: right;' }
+          %table.table.table-bordered{ :style => 'border: none' }
+            %thead{ :style => 'font-size: 12px;' }
+              %tr
+                %th{ :colspan => 2, :style => ' text-align: center;' } Empresa
+            %tbody{ :style => 'font-size: 12px;' }
+              - @contributions_and_amounts.each_with_index do |key,value|
+                - if key[0].to_s != 'neto' && key[1].to_f != 0
+                  %tr
+                    %td= key[0].gsub('_', ' ').upcase
+                    %td{ :style => 'text-align: right' }= key[1]
+
+      .concepts_totals
+        - sum = 0
+        %table.table.table-bordered{ :style => 'margin-bottom: 0; border: none' }
+          %thead{ :style => 'font-size: 12px;border: none' }
+            %tr
+              - @total_concepts.each_with_index do |key,value|
+                - sum += key[1].to_f
+                %th{ :style => 'border: none' }= key[0].gsub('_', ' ').upcase
+                %th{ :colspan => 2, :style => ' text-align: right; border: none' }= key[1]
+
+      .total_net
+        %table.table.table-bordered{ :style => 'margin-bottom: 0; border: none' }
+          %thead{ :style => 'font-size: 14px;border: none' }
+            %tr
+              %th{ :style => 'text-align: right; border: none' }
+                Neto a Recibir:
+                = number_to_currency sum, unit: 'S/.', precision: 2

@@ -43,6 +43,20 @@
             %section.col.col-10
               %label Fecha de Inicio
               %input#startdate2.string.optional.form-control{'name'=>"startdate2", type: "date"}
+
+        .row
+          %section.col.col-10
+            %label Tipo de Centro de Costo
+            %select.form-control#speciality_select{:name =>"cost_center[speciality]", :style => "width:100%;padding: 0;border: none;"}
+              %option{:value => nil} Seleccione una especialidad
+              %option{:value => "saneamiento", :selected => "#{@costCenter.speciality}"=="saneamiento"}
+                Saneamiento
+              %option{:value => "electrico", :selected => "#{@costCenter.speciality}"=="electrico"}
+                Eléctrico
+              %option{:value => "civil", :selected => "#{@costCenter.speciality}"=="civil"}
+                Civil
+              %option{:value => "administracion", :selected => "#{@costCenter.speciality}"=="administracion"}
+                Administración
           
       %footer
         -if @action !="edit"

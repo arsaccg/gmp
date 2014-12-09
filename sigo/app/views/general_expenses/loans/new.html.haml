@@ -118,6 +118,13 @@
 
     $('#loan_new').attr("tabindex","");
 
+    $('#refund_type').change(function(){
+      if($(this).val() == 2)
+        $('#devdate').fadeIn('fast');
+      else
+        $('#devdate').fadeOut('fast');
+    });
+
     $('#worker-select').select2({
       placeholder: "Buscar Trabajadores...",
       minimumInputLength: 3,

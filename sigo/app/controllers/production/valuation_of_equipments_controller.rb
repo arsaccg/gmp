@@ -205,7 +205,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     workers_array3 = ActiveRecord::Base.connection.execute("
       SELECT poe.equipment_id, sed.code, SUM(poed.effective_hours), sed.price_no_igv, SUM(poed.effective_hours)*sed.price_no_igv
       FROM part_of_equipments poe, part_of_equipment_details poed, subcontract_equipment_details sed
-      WHERE poe.date < '" + end_date + "'
+      WHERE poe.date <= '" + end_date + "'
       AND poe.id=poed.part_of_equipment_id
       AND poe.cost_center_id = '" + cost_center.to_s + "'
       AND poe.equipment_id=sed.id
@@ -326,41 +326,40 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
     @val1=ActiveRecord::Base.connection.execute("SELECT start_date,end_date FROM valuation_of_equipments WHERE name LIKE '" + @name + "' AND start_date < '" + @start_date + "'")
 
-
-    puts "-------1--------"
+    #puts "-------1--------"
     if params[:id]==nil
-    puts "-------params id--------"
+    #puts "-------params id--------"
       if @val1.count!=0
         @workers_array6 = business_days_array6(@val1.to_a.first[0].to_s, @val1.to_a.last[1].to_s, @cad,@cc)
-        puts "--------workers_array6----"
-        puts @workers_array6.to_a
-        puts "------if-val.count--------"
+        #puts "--------workers_array6----"
+        #puts @workers_array6.to_a
+        #puts "------if-val.count--------"
         @thelast = @val1.to_a.last
-        puts "----thelast----"
-        puts @thelast
-        puts "---------------"
+        #puts "----thelast----"
+        #puts @thelast
+        #puts "---------------"
         @last_end = @start_date
         @cc = get_company_cost_center('cost_center')
         @last = last(@thelast[0].to_s,@thelast[1].to_s, @cad, @art, @cc)
-        puts "------@last count--"
-        puts @last.to_a
-        puts "------@last count end--"
+        #puts "------@last count--"
+        #puts @last.to_a
+        #puts "------@last count end--"
         @try = "last"
 
       else
-        puts "------else------"
+        #puts "------else------"
         @last = Array.new
         @workers_array3.each do |wa3|
           @last << [[0,0,0]]
         end
-        puts "------@last else ceros--"
-        puts @last.to_a
+        #puts "------@last else ceros--"
+        #puts @last.to_a
       end
     else
       @cc = get_company_cost_center('cost_center')
       @last_end =ValuationOfEquipment.find(params[:id]).start_date
       @last = last(@last_end, @cad, @art, @cc)
-      puts @last.count
+      #puts @last.count
       if @last.count==0
         @last=nil
         @last = Array.new
@@ -388,31 +387,31 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       cont=0
       @past.each do |past|
         if pres[0]==past[0]
-        puts "------entra if pres[0]-----"
+        #puts "------entra if pres[0]-----"
           cont+=1
           past[2]
           acumul=9
           @workers_array6.each do |acum|
-            puts"---acum--"
-            puts acum
-            puts "----pres[0]"
-            puts pres[0]
-            puts "----acum[0]---"
-            puts acum[0]
-            puts "----acum[1]--"
-            puts acum[1]
+            #puts"---acum--"
+            #puts acum
+            #puts "----pres[0]"
+            #puts pres[0]
+            #puts "----acum[0]---"
+            #puts acum[0]
+            #puts "----acum[1]--"
+            #puts acum[1]
             if acum[0]==pres[0]
-              puts "----cumplio la igualdad--"
+              #puts "----cumplio la igualdad--"
               acumul=acum[1]
             end
           end
           @match << (pres + [acumul]).to_a
-          puts "------@match-----"
-          puts @match
+          #puts "------@match-----"
+          #puts @match
         end
       end
       if cont==0
-        puts "------entra else cont =0-----"
+        #puts "------entra else cont =0-----"
         @notmatch << (pres + [0]).to_a
       end
     end

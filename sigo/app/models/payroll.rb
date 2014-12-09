@@ -1,5 +1,6 @@
 class Payroll < ActiveRecord::Base
   has_many :payroll_details
+  belongs_to :worker
   accepts_nested_attributes_for :payroll_details, :allow_destroy => true
 
 	def self.getWorker(word, name)

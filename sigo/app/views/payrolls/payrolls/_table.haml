@@ -11,7 +11,8 @@
         %thead
           %tr
             %th N°
-            %th Primer Nombre
+            %th DNI
+            %th Nombres
             %th Apellido Paterno
             %th Apellido Materno
             %th Acciones
@@ -61,18 +62,28 @@
   function runDataTables() {
 
     $('#dt_basic').dataTable({
-      bProcessing  : true,
-      sProcessing  : true,
-      bServerSide  : true,
-      sServerMethod: 'POST',
-      sAjaxSource  : "#{show_workers_payrolls_payrolls_path}",
-      fnServerParams: function ( aoData ) {
-        aoData.push( {"name": "authenticity_token", "value": "#{form_authenticity_token}" } );
-      },
       sPaginationType : 'bootstrap_full'
     });
 
     $("#dt_basic_filter div input").keyup(function() {
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+    });
+  }
+
+  function RefreshTable() {
+    var week_id = $('#payslips').val();
+    $.post("#{show_workers_payrolls_payrolls_path}", { w: week_id, authenticity_token: "#{form_authenticity_token}" }, function( json ) {
+      table = $('#dt_basic').dataTable();
+      oSettings = table.fnSettings();
+
+      table.fnClearTable(this);
+
+      for (var i=0; i<json.aaData.length; i++)
+      {
+        table.oApi._fnAddData(oSettings, json.aaData[i]);
+      }
+
+      oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+      table.fnDraw();
     });
   }
