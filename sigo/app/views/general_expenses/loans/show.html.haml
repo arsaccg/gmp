@@ -48,7 +48,7 @@
                 %td{"style"=>"text-align:center;padding:0px;margin:0px;height:10px;"}
                   %a#edit.btn.btn-warning.btn-xs{href: 'javascript:void(0);', :onclick => 'loan_edit('+"#{loan.id.to_s}"+','+"#{@cost_center1.id}"+','+"#{@cost_center2.id}"+','+"#{@cc}"+');', "style"=>" color: white;font-size:11px;margin-top:2px;"}
                     Editar
-                  %a#edit.btn.btn-danger.btn-xs{href: 'javascript:void(0);', :onclick => "loan_delete(#{loan.id.to_s});", "style"=>" color: white;font-size:11px;margin-top:2px;"}
+                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item?', :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url_on_div('#{general_expenses_loan_path(loan.id)}', 'loan_show', '#{general_expenses_loan_path}' + '?cc1=#{@cost_center1.id}&cc2=#{@cost_center2.id}&cc3=#{@cc}', 'GET')"}}
                     Eliminar
               - count += 1
       %br
@@ -64,7 +64,12 @@
 :javascript
 
   $(document).ready(function () {
-
+    $('[data-toggle="confirmation"]').confirmation();
+    $('.popover-title').css('margin','6px');
+    $('.popover-content text-center').css('margin','6px');
+    $('.btn-group').css('width','50px');
+    $('.btn btn-small btn-primary').css('width','25px');
+    $('.btn btn-small').css('width','25px');
     $(".link_detail").click(function() {
       console.log("1");
       $('table#dt_basic tr').removeClass("seleccionado");
