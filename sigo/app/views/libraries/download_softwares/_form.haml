@@ -31,6 +31,20 @@
                 = 'Archivo subido: ' + File.basename(@soft.file.path, File.extname(@soft.file.path))
               - else
                 Subir el archivo correspondiente
+        %br
+        .row
+          %section.col.col-md-12
+            %label Tipo de Centro de Costo       
+            %select.select2.form-control#speciality_select{:name =>"download_software[type_of_cost_center]"}
+              %option{:value => nil, :disabled=>true, :selected => true} Seleccione una especialidad
+              %option{:value => "saneamiento", :selected => "#{@soft.type_of_cost_center}"=="saneamiento"}
+                Saneamiento
+              %option{:value => "electrico", :selected => "#{@soft.type_of_cost_center}"=="electrico"}
+                Eléctrico
+              %option{:value => "civil", :selected => "#{@soft.type_of_cost_center}"=="civil"}
+                Civil
+              %option{:value => "administracion", :selected => "#{@soft.type_of_cost_center}"=="administracion"}
+                Administración                         
 
       %footer
         %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}

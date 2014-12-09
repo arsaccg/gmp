@@ -32,7 +32,7 @@
                         %th Documentos
                         %th Acciones
                     %tbody
-                      - type_laws.law_and_regulations.each do |lawre|
+                      - type_laws.law_and_regulations.where("type_of_cost_center LIKE '"+@cc+"'").each do |lawre|
                         %tr
                           %td
                             = lawre.name.to_s
@@ -60,7 +60,7 @@
                         %th Documentos
                         %th Acciones
                     %tbody
-                      - type_laws.law_and_regulations.each do |lawre|
+                      - type_laws.law_and_regulations.where("type_of_cost_center LIKE '"+@cc+"'").each do |lawre|
                         %tr
                           %td
                             = lawre.name.to_s
