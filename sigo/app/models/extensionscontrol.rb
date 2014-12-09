@@ -1,16 +1,13 @@
 class Extensionscontrol < ActiveRecord::Base
 	belongs_to :project
 
-	validates :files, presence: true
-  	validates :files,
-    	attachment_content_type: { content_type: "application/pdf" },
-    	attachment_size: { less_than: 5.megabytes }
+	has_attached_file :files,
+                    :url  => "/assets/products/:id/:style/:basename.:extension",
+                    :path => ":rails_root/public/assets/products/:id/:style/:basename.:extension"
 
-	has_attached_file :files, styles: {
-	    thumb: '100x100>',
-	    square: '200x200#',
-	    medium: '300x300>'
-	}
+  	#validates_attachment_content_type :pdf,
+    #  :content_type => [ 'application/pdf' ],
+    #  :message => "only pdf files are allowed"
 
 	STATUS_HASH = {
 		"requested" => "Presentado",
