@@ -2,6 +2,10 @@ class Formule < ActiveRecord::Base
 
   def self.translate_formules(formula, basico, worker_id, calculator, hash_formulas, main_concept, concept_id = nil)
     main = main_concept.tr('][', '').gsub('-','_')
+    #p ' FORMULA INGRESADA '
+    #p formula
+    #p ' FORMULA INGRESADA '
+    const_variables = formula.scan(/\[.*?\]/).delete_if {|i| i == "[remuneracion-basica]" }
     if !concept_id.nil? # => Esto Indica que el Token Generico existe
       hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
       # => Token Generico
@@ -19,12 +23,12 @@ class Formule < ActiveRecord::Base
         calculator.store(monto_contrato_categoria: amount_generic_from_contract.amount.to_f)
       end
 
-      const_variables = formula.scan(/\[.*?\]/).delete_if {|i| i == "[monto-contrato-categoria]" }
+      const_variables = formula.scan(/\[.*?\]/).delete_if {|i| i == "[monto-contrato-categoria]" }.delete_if {|i| i == "[remuneracion-basica]" }
       const_variables.each do |c|
         concept = Concept.find_by_token(c)
-        if !concept.nil?
-          formu = concept.concept_valorization
-          if concept.id != 1 && concept.id != 19 # => Only for concepts Remuneracion_Basica and Movilidad.
+        if !calculator.instance_variable_get(:@memory).include? (main.to_sym)
+          if !concept.nil?
+            formu = concept.concept_valorization
             contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
             amount = 0
             if !contract.nil?
@@ -34,7 +38,8 @@ class Formule < ActiveRecord::Base
                 if formu.nil? && concept.amount.to_f != 0.0
                   amount = concept.amount.to_f
                 elsif formu.formula != ''
-                  amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
+                  f_final = formu.formula # => Formula del concepto /c/
+                  formula = formula.gsub(c, f_final)
                 end
               end
             else
@@ -48,14 +53,16 @@ class Formule < ActiveRecord::Base
                   if formu.nil? && concept.amount.to_f != 0.0
                     amount = concept.amount.to_f
                   elsif formu.formula != ''
-                    amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
+                    f_final = formu.formula # => Formula del concepto /c/
+                    formula = formula.gsub(c, f_final)
                   end
                 end
               else
                 if formu.nil? && concept.amount.to_f != 0.0
                   amount = concept.amount.to_f
                 elsif formu.formula != ''
-                  amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
+                  f_final = formu.formula # => Formula del concepto /c/
+                  formula = formula.gsub(c, f_final)
                 end
               end
             end
@@ -65,60 +72,62 @@ class Formule < ActiveRecord::Base
         end
       end
     else
-      main = main_concept.tr('][', '').gsub('-','_')
-      hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
-      const_variables = formula.scan(/\[.*?\]/)
-
       const_variables.each do |c|
         concept = Concept.find_by_token(c)
         if !concept.nil?
           formu = concept.concept_valorization
-          if concept.id != 1 && concept.id != 19 # => Only for concepts Remuneracion_Basica and Movilidad.
-            contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
-            amount = 0
-            if !contract.nil?
-              if contract.amount != 0 && !contract.amount.nil?
-                amount = contract.amount.to_f
+          contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
+          amount = 0
+          if !contract.nil?
+            if contract.amount != 0 && !contract.amount.nil?
+              amount = contract.amount.to_f
+            else
+              if formu.nil? && concept.amount.to_f != 0.0
+                amount = concept.amount.to_f
+              elsif formu.formula != ''
+                f_final = formu.formula # => Formula del concepto /c/
+                formula = formula.gsub(c, f_final)
+              end
+            end
+          else
+            article_id = Worker.find(worker_id).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
+            category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
+            from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => concept.id).first
+            if !from_category.nil?
+              if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
+                amount = from_category.amount
               else
                 if formu.nil? && concept.amount.to_f != 0.0
                   amount = concept.amount.to_f
                 elsif formu.formula != ''
-                  amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
+                  f_final = formu.formula # => Formula del concepto /c/
+                  formula = formula.gsub(c, f_final)
                 end
               end
             else
-              article_id = Worker.find(worker_id).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
-              category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-              from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => concept.id).first
-              if !from_category.nil?
-                if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
-                  amount = from_category.amount
-                else
-                  if formu.nil? && concept.amount.to_f != 0.0
-                    amount = concept.amount.to_f
-                  elsif formu.formula != ''
-                    amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
-                  end
-                end
-              else
-                if formu.nil? && concept.amount.to_f != 0.0
-                  amount = concept.amount.to_f
-                elsif formu.formula != ''
-                  amount = Formule.translate_formules(formu.formula, basico, worker_id, calculator, hash_formulas, concept.token)
-                end
+              if formu.nil? && concept.amount.to_f != 0.0
+                amount = concept.amount.to_f
+              elsif formu.formula != ''
+                f_final = formu.formula # => Formula del concepto /c/
+                formula = formula.gsub(c, f_final)
               end
             end
-            var = concept.token.tr('][', '').gsub('-','_')
-            calculator.store(var.to_sym => amount.to_f)
           end
+          var = concept.token.tr('][', '').gsub('-','_')
+          calculator.store(var.to_sym => amount.to_f)
         end
       end
     end
-    puts "----------------------------------------------------------------------------------------------------------------------------------"
-    puts main
-    puts "----------------------------------------------------------------------------------------------------------------------------------"
-    puts calculator.inspect
-    puts "----------------------------------------------------------------------------------------------------------------------------------"
-    return calculator.solve!(hash_formulas).to_a.last[1]
+
+    hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
+    
+    #p ' FORMULA!!! '
+    #p calculator.inspect
+    #p main_concept
+    #p formula
+    #p calculator.solve!(hash_formulas).values[0].to_f
+    #p ' FORMULA!!! '
+    
+    return calculator.solve!(hash_formulas).values[0].to_f
   end
 end
