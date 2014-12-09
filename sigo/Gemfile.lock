@@ -64,6 +64,7 @@ GEM
     colorize (0.7.3)
     commonjs (0.2.7)
     daemons (1.1.9)
+    dentaku (1.2.1)
     devise (3.2.3)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
@@ -266,6 +267,7 @@ DEPENDENCIES
   cancan
   capistrano
   coffee-rails (~> 4.0.0)
+  dentaku
   devise
   erb2haml
   haml-rails
