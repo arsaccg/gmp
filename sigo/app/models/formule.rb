@@ -7,7 +7,7 @@ class Formule < ActiveRecord::Base
     #p ' FORMULA INGRESADA '
     const_variables = formula.scan(/\[.*?\]/).delete_if {|i| i == "[remuneracion-basica]" }
     if !concept_id.nil? # => Esto Indica que el Token Generico existe
-      hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
+      # hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
       # => Token Generico
       amount_generic_from_contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept_id).first
       if amount_generic_from_contract.nil?
@@ -26,14 +26,28 @@ class Formule < ActiveRecord::Base
       const_variables = formula.scan(/\[.*?\]/).delete_if {|i| i == "[monto-contrato-categoria]" }.delete_if {|i| i == "[remuneracion-basica]" }
       const_variables.each do |c|
         concept = Concept.find_by_token(c)
-        if !calculator.instance_variable_get(:@memory).include? (main.to_sym)
-          if !concept.nil?
-            formu = concept.concept_valorization
-            contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
-            amount = 0
-            if !contract.nil?
-              if contract.amount != 0 && !contract.amount.nil?
-                amount = contract.amount.to_f
+        if !concept.nil?
+          formu = concept.concept_valorization
+          contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
+          amount = 0
+          if !contract.nil?
+            if contract.amount != 0 && !contract.amount.nil?
+              amount = contract.amount.to_f
+            else
+              if formu.nil? && concept.amount.to_f != 0.0
+                amount = concept.amount.to_f
+              elsif formu.formula != ''
+                f_final = formu.formula # => Formula del concepto /c/
+                formula = formula.gsub(c, f_final)
+              end
+            end
+          else
+            article_id = Worker.find(worker_id).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
+            category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
+            from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => concept.id).first
+            if !from_category.nil?
+              if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
+                amount = from_category.amount
               else
                 if formu.nil? && concept.amount.to_f != 0.0
                   amount = concept.amount.to_f
@@ -43,32 +57,16 @@ class Formule < ActiveRecord::Base
                 end
               end
             else
-              article_id = Worker.find(worker_id).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
-              category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-              from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => concept.id).first
-              if !from_category.nil?
-                if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
-                  amount = from_category.amount
-                else
-                  if formu.nil? && concept.amount.to_f != 0.0
-                    amount = concept.amount.to_f
-                  elsif formu.formula != ''
-                    f_final = formu.formula # => Formula del concepto /c/
-                    formula = formula.gsub(c, f_final)
-                  end
-                end
-              else
-                if formu.nil? && concept.amount.to_f != 0.0
-                  amount = concept.amount.to_f
-                elsif formu.formula != ''
-                  f_final = formu.formula # => Formula del concepto /c/
-                  formula = formula.gsub(c, f_final)
-                end
+              if formu.nil? && concept.amount.to_f != 0.0
+                amount = concept.amount.to_f
+              elsif formu.formula != ''
+                f_final = formu.formula # => Formula del concepto /c/
+                formula = formula.gsub(c, f_final)
               end
             end
-            var = concept.token.tr('][', '').gsub('-','_')
-            calculator.store(var.to_sym => amount.to_f)
           end
+          var = concept.token.tr('][', '').gsub('-','_')
+          calculator.store(var.to_sym => amount.to_f)
         end
       end
     else
