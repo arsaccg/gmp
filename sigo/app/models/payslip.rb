@@ -149,23 +149,23 @@ class Payslip < ActiveRecord::Base
             total += amount.to_f
           end
 
-          if  ing.to_i == 15
-            total = total - amount.to_f
-            amount = amount.to_f * row[6].to_f
-            total+=amount.to_f
-          end
+          #if  ing.to_i == 15
+            #total = total - amount.to_f
+            #amount = amount.to_f * row[6].to_f
+            #total+=amount.to_f
+          #end
 
-          if  ing.to_i == 17
-            total = total - amount.to_f
-            amount = amount.to_f * row[8].to_f
-            total += amount.to_f
-          end
+          #if  ing.to_i == 17
+            #total = total - amount.to_f
+            #amount = amount.to_f * row[8].to_f
+            #total += amount.to_f
+          #end
 
-          if  ing.to_i == 24
-            total = total - amount.to_f
-            amount = amount.to_f * row[8].to_f
-            total += amount.to_f
-          end
+          #if  ing.to_i == 24
+            #total = total - amount.to_f
+            #amount = amount.to_f * row[8].to_f
+            #total += amount.to_f
+          #end
 
           @result[@i] << amount
         end
