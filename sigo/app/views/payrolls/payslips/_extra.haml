@@ -1,9 +1,26 @@
-%tr
+%tr{id:  "tr-"+"#{@reg_n}"}
+  %td{:style => "display:none", id: "-"+"#{@reg_n}"}
+    = text_field_tag 'extra['+@reg_n.to_s+'][worker_id]', @worker.id.to_s, class: "extra-info-form-payroll"
+    = text_field_tag 'extra['+@reg_n.to_s+'][amount]', @amount.to_s, class: "extra-info-form-payroll"
+    = text_field_tag 'extra['+@reg_n.to_s+'][concept]', @concept.id.to_s, class: "extra-info-form-payroll"
   %td
-    = hidden_field_tag 'extra['+@reg_n.to_s+'][worker_id]', @worker.id.to_s
-    = hidden_field_tag 'extra['+@reg_n.to_s+'][concept]', @concept.id.to_s
     = @worker.entity.name.to_s + " " + @worker.entity.second_name.to_s + " "+ @worker.entity.paternal_surname.to_s + " "+ @worker.entity.maternal_surname.to_s
   %td
     = @concept.name
   %td
-    = text_field_tag 'extra['+@reg_n.to_s+'][amount]', @amount.to_s, :readonly =>true
+    =@amount.to_s
+  %td{:style => "width: 1%;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+
+:javascript
+  $(document).ready(function(){
+    var reg = "#{@reg_n}";
+    var worker_id = "#{@wo}";
+    var concept = "#{@co}";
+    var amount = "#{@amount}";
+
+    var hash_wca = [worker_id, concept, amount];
+    $('#array-extra').val($('#array-extra').val()+";"+hash_wca);
+    $('#array-wo').val($('#array-wo').val()+","+worker_id);
+    
+  });

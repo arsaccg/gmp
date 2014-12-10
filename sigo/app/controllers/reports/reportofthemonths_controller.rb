@@ -298,6 +298,12 @@ class Reports::ReportofthemonthsController < ApplicationController
     end
 
     @data_total_valorization_linear_char.map! { |v| v.nil? ? 0 : v }
+    if @data_total_valorization_linear_char.last == 0
+      @data_total_valorization_linear_char.pop
+      if @data_total_valorization_linear_char.last == 0
+        @data_total_valorization_linear_char.pop
+      end
+    end
     @data_total_valorization_bar_char.map! { |v| v.nil? ? 0 : v }
 
     # => Por ahora, solo cojo la ultima valorizacion

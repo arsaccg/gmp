@@ -5,68 +5,175 @@
       / new widget
       #wid-id-3.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false", "data-widget-fullscreenbutton" => "false", "data-widget-togglebutton" => "false"}
         %header
-          %span.widget-icon
-            %i.fa.fa-map-marker
-          %h2 Centro de Costo
-          .widget-toolbar.hidden-mobile
-            %span.onoffswitch-title
-              %i.fa.fa-location-arrow
-              Realtime
-            %span.onoffswitch
-              %input#myonoffswitch.onoffswitch-checkbox{checked: "checked", name: "onoffswitch", type: "checkbox"}/
-              %label.onoffswitch-label{for: "myonoffswitch"}
-                %span.onoffswitch-inner{"data-swchoff-text" => "NO", "data-swchon-text" => "YES"}
-                %span.onoffswitch-switch
+          %h2 Lista de Centro de costos
+          %ul#myTab.nav.nav-tabs.pull-right.in
+            %li.active
+              %a{"data-toggle" => "tab", :href => "#c1"}
+                %span.hidden-mobile.hidden-tablet Saneamiento
+            %li
+              %a{"data-toggle" => "tab", :href => "#c2"}
+                %span.hidden-mobile.hidden-tablet Eléctrico
+            %li
+              %a{"data-toggle" => "tab", :href => "#c3"}
+                %span.hidden-mobile.hidden-tablet Civil   
+            %li
+              %a{"data-toggle" => "tab", :href => "#c4"}
+                %span.hidden-mobile.hidden-tablet Administración                    
         / widget div
-        %div
-          / widget edit box
-          .jarviswidget-editbox
-            %div
-              %label Title:
-              %input{type: "text"}/
-          / end widget edit box
-          .widget-body.no-padding
-            / content goes here
-            / #vector-map.vector-map
-            #heat-fill
-              %span.fill-a 0
-              %span.fill-b 5,000
-            %table.table.table-striped.table-hover.table-condensed
-              %thead
-                %tr
-                  %th N° de C.C.
-                  %th Compañia
-                  %th Centro de Costo
-                  %th G.D.G.
-                  %th Préstamos
-                  %th{"style"=>"width:30px;"} Resultados Operativos
-              %tbody
-                -if @cost_centers!=nil
-                  - @cost_centers.each do |cc|
-                    %tr
-                      %td= cc.code.to_s
-                      %td= cc.company.short_name.to_s
-                      %td
-                        %a{href: 'javascript:void(0);', :onclick => 'goCoordinatesGMap(' + cc.latitude.to_s + ', ' + cc.longitude.to_s + ');', title: "Geolocalizacion"}
-                          %i.fa.fa-adn
-                        %a{"style"=>"display:inline;margin-right:5px;",href: 'javascript:void(0);', :onclick => 'detail('+cc.id.to_s+');', title: "Datos generales del centro de costo"}
-                          %i.fa.fa-info-circle
-                        %div{"style"=>"display:inline;margin-right:5px;"}= cc.name.to_s
-                      %td
-                        %span
-                          %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
-                            %i.fa.fa-folder-open
-                      %td
-                        %span
-                          %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc.id.to_s+');'}
-                            %i.fa.fa-folder-open
-                      %td
-                        %span
-                          %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
-                            %i.fa.fa-usd
+        .widget-body
+          #myTabContent.tab-content
+            #c1.tab-pane.fade.active.in
+              %table.table.table-striped.table-hover.table-condensed
+                %thead
+                  %tr
+                    %th N° de C.C.
+                    %th Compañia
+                    %th Centro de Costo
+                    %th G.D.G.
+                    %th Movimientos
+                    %th{"style"=>"width:30px;"} Resultados Operativos
+                %tbody
+                  -if @saneamiento!=nil
+                    - @saneamiento.each do |cc|
+                      %tr
+                        %td= cc.code.to_s
+                        %td= cc.company.short_name.to_s
+                        %td
+                          %a{href: 'javascript:void(0);', :onclick => 'goCoordinatesGMap(' + cc.latitude.to_s + ', ' + cc.longitude.to_s + ');', title: "Geolocalizacion"}
+                            %i.fa.fa-adn
+                          %a{"style"=>"display:inline;margin-right:5px;",href: 'javascript:void(0);', :onclick => 'detail('+cc.id.to_s+');', title: "Datos generales del centro de costo"}
+                            %i.fa.fa-info-circle
+                          %div{"style"=>"display:inline;margin-right:5px;"}= cc.name.to_s
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
+                              %i.fa.fa-folder-open
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc.id.to_s+');'}
+                              %i.fa.fa-folder-open
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
+                              %i.fa.fa-usd
 
-                - else
-                  = ""
+                  - else
+                    = ""
+
+            #c2.tab-pane.fade
+              %table.table.table-striped.table-hover.table-condensed
+                %thead
+                  %tr
+                    %th N° de C.C.
+                    %th Compañia
+                    %th Centro de Costo
+                    %th G.D.G.
+                    %th Movimientos
+                    %th{"style"=>"width:30px;"} Resultados Operativos
+                %tbody
+                  -if @electrico!=nil
+                    - @electrico.each do |cc|
+                      %tr
+                        %td= cc.code.to_s
+                        %td= cc.company.short_name.to_s
+                        %td
+                          %a{href: 'javascript:void(0);', :onclick => 'goCoordinatesGMap(' + cc.latitude.to_s + ', ' + cc.longitude.to_s + ');', title: "Geolocalizacion"}
+                            %i.fa.fa-adn
+                          %a{"style"=>"display:inline;margin-right:5px;",href: 'javascript:void(0);', :onclick => 'detail('+cc.id.to_s+');', title: "Datos generales del centro de costo"}
+                            %i.fa.fa-info-circle
+                          %div{"style"=>"display:inline;margin-right:5px;"}= cc.name.to_s
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
+                              %i.fa.fa-folder-open
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc.id.to_s+');'}
+                              %i.fa.fa-folder-open
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
+                              %i.fa.fa-usd
+
+                  - else
+                    = ""
+            / end s2 tab pane
+            #c3.tab-pane.fade
+              %table.table.table-striped.table-hover.table-condensed
+                %thead
+                  %tr
+                    %th N° de C.C.
+                    %th Compañia
+                    %th Centro de Costo
+                    %th G.D.G.
+                    %th Movimientos
+                    %th{"style"=>"width:30px;"} Resultados Operativos
+                %tbody
+                  -if @cost_centers!=nil
+                    - @civil.each do |cc|
+                      %tr
+                        %td= cc.code.to_s
+                        %td= cc.company.short_name.to_s
+                        %td
+                          %a{href: 'javascript:void(0);', :onclick => 'goCoordinatesGMap(' + cc.latitude.to_s + ', ' + cc.longitude.to_s + ');', title: "Geolocalizacion"}
+                            %i.fa.fa-adn
+                          %a{"style"=>"display:inline;margin-right:5px;",href: 'javascript:void(0);', :onclick => 'detail('+cc.id.to_s+');', title: "Datos generales del centro de costo"}
+                            %i.fa.fa-info-circle
+                          %div{"style"=>"display:inline;margin-right:5px;"}= cc.name.to_s
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
+                              %i.fa.fa-folder-open
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc.id.to_s+');'}
+                              %i.fa.fa-folder-open
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
+                              %i.fa.fa-usd
+
+                  - else
+                    = ""
+            #c4.tab-pane.fade
+              %table.table.table-striped.table-hover.table-condensed
+                %thead
+                  %tr
+                    %th N° de C.C.
+                    %th Compañia
+                    %th Centro de Costo
+                    %th G.D.G.
+                    %th Movimientos
+                    %th{"style"=>"width:30px;"} Resultados Operativos
+                %tbody
+                  -if @administracion!=nil
+                    - @administracion.each do |cc|
+                      %tr
+                        %td= cc.code.to_s
+                        %td= cc.company.short_name.to_s
+                        %td
+                          %a{href: 'javascript:void(0);', :onclick => 'goCoordinatesGMap(' + cc.latitude.to_s + ', ' + cc.longitude.to_s + ');', title: "Geolocalizacion"}
+                            %i.fa.fa-adn
+                          %a{"style"=>"display:inline;margin-right:5px;",href: 'javascript:void(0);', :onclick => 'detail('+cc.id.to_s+');', title: "Datos generales del centro de costo"}
+                            %i.fa.fa-info-circle
+                          %div{"style"=>"display:inline;margin-right:5px;"}= cc.name.to_s
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
+                              %i.fa.fa-folder-open
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc.id.to_s+');'}
+                              %i.fa.fa-folder-open
+                        %td
+                          %span
+                            %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
+                              %i.fa.fa-usd
+
+                  - else
+                    = ""
+            / end s3 tab pane
+          / end content        
   /end cost center row
   / row
   .row

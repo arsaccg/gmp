@@ -2,12 +2,19 @@ class Payslip < ActiveRecord::Base
 
   belongs_to :worker
 
-  def self.generate_payroll_workers cost_center_id, week_id, week_start, week_end, wg, ing, des, apo, headers
+  def self.generate_payroll_workers cost_center_id, week_id, week_start, week_end, wg, ing, des, apo, headers, array_extra_info, array_worker
     
     # => WG - Working Groups
     # => ING - Ingresos
     # => DES - Descuentos
     # => APO - Aportaciones
+    array_worker = array_worker.split(',').uniq
+    array_extra_info = array_extra_info.split(';')
+    i = 0
+    array_extra_info.each do |ar|
+      array_extra_info[i] = ar.split(',')
+      i+=1
+    end
 
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)
@@ -37,7 +44,10 @@ class Payslip < ActiveRecord::Base
       @result << [ row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], worker_hours, row[9], row[10] ]
       calculator = Dentaku::Calculator.new
       amount = 0
-
+      flag_extra = false
+      if array_worker.include?(row[0].to_s)
+        flag_extra = true
+      end
       # Remuneracion Básica
       rem_basic = 0
       total = 0
@@ -66,7 +76,13 @@ class Payslip < ActiveRecord::Base
           por_hora = from_category.amount.to_f/total_hour.to_f
         end
       end
-      
+      if flag_extra
+        array_extra_info.each do |ar|
+          if ar[1].to_i == 1
+            rem_basic = rem_basic.to_f + ar[2].to_f
+          end
+        end
+      end
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
       calculator.store(horas_trabajadas: row[7])
@@ -149,24 +165,32 @@ class Payslip < ActiveRecord::Base
             total += amount.to_f
           end
 
-          if  ing.to_i == 15
-            total = total - amount.to_f
-            amount = amount.to_f * row[6].to_f
-            total+=amount.to_f
-          end
+          #if  ing.to_i == 15
+            #total = total - amount.to_f
+            #amount = amount.to_f * row[6].to_f
+            #total+=amount.to_f
+          #end
 
-          if  ing.to_i == 17
-            total = total - amount.to_f
-            amount = amount.to_f * row[8].to_f
-            total += amount.to_f
-          end
+          #if  ing.to_i == 17
+            #total = total - amount.to_f
+            #amount = amount.to_f * row[8].to_f
+            #total += amount.to_f
+          #end
 
-          if  ing.to_i == 24
-            total = total - amount.to_f
-            amount = amount.to_f * row[8].to_f
-            total += amount.to_f
+          #if  ing.to_i == 24
+            #total = total - amount.to_f
+            #amount = amount.to_f * row[8].to_f
+            #total += amount.to_f
+          #end
+          if flag_extra
+            array_extra_info.each do |ar|
+              if ar[1].to_i == ing.to_i
+                total-=amount
+                amount = amount.to_f + ar[2].to_f
+                total += amount
+              end
+            end
           end
-
           @result[@i] << amount
         end
         @result[@i] << total
@@ -295,7 +319,15 @@ class Payslip < ActiveRecord::Base
               end                
             end            
           end
-
+          if flag_extra
+            array_extra_info.each do |ar|
+              if ar[1].to_i == de.to_i
+                total -= amount
+                amount = amount.to_f + ar[2].to_f
+                total += amount
+              end
+            end
+          end
           @result[@i] << amount        
         end
         @result[@i] << total
@@ -320,12 +352,21 @@ class Payslip < ActiveRecord::Base
           if con.concept_valorization.nil? && con.amount.to_f != 0.0
             amount = con.amount.to_f
             total += amount
-            @result[@i] << amount
+            
           else
             amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
             total += amount.to_f
-            @result[@i] << amount
           end
+          if flag_extra
+            array_extra_info.each do |ar|
+              if ar[1].to_i == ap.to_i
+                total -= amount
+                amount = amount.to_f + ar[2].to_f
+                total += amount
+              end
+            end
+          end 
+          @result[@i] << amount         
         end
         @result[@i] << total
 
