@@ -90,9 +90,10 @@
                 %td
                   = ext.observation
                 %td
-                  = image_tag ext.files.url
+                  %a.btn.btn-info.btn-xs{:href =>"#{ext.document.url}", :target => "_blank"}
+                    %i.fa.fa-clipboard
                 %td
-                  %a.btn.btn-success.btn-xs{href: "javascript:load_url_ondiv('#{edit_management_extensionscontrol_path(ext)}', 'right-area')"}
+                  %a.btn.btn-primary.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_management_extensionscontrol_path(ext)}', 'content', null, null, 'GET')"}
                     %i.fa.fa-pencil
                   /%a(href="javascript:post_to_url('#{approve_management_extensionscontrols_path}?extension_id=#{ext.id}','new_extensionscontrol', 'right-area')" class="btn btn-success")
                   /  Aprobar

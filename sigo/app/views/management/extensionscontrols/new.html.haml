@@ -53,12 +53,12 @@
                 .row.form-inline
                   %section.col.col-10
                     %label.label Subir Archivos
-                    %label.input{for: "files"}
-                      = f.file_field :files, input_html: { class: 'form-control' }, label: false
+                    %label.input{for: "document"}
+                      = f.input :document, input_html: { class: 'form-control' }, label: false
               %footer
-                %a{href: "javascript:post_to_url('#{management_extensionscontrols_path}?authenticity_token=#{form_authenticity_token}','new_extensionscontrol', 'right-area')"}(class="btn btn-success")
-                  %i.fa.fa-save
-                  Guardar Valorizacion
+                %button.btn.btn-primary{type: "submit"}
+                  %i.fa.fa-save 
+                  Guardar
                 
 %a.btn.btn-sm.btn-primary.btn-prev{href: "javascript:load_url_ondiv('#{management_extensionscontrols_path}', 'right-area');"}
   %i.fa.fa-arrow-left
