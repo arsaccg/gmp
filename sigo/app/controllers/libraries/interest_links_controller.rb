@@ -2,7 +2,7 @@ class Libraries::InterestLinksController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @linkOfIn = InterestLink.all
+    @linkOfIn = InterestLink.where("type_of_cost_center LIKE '"+CostCenter.find(get_company_cost_center('cost_center')).speciality.to_s+"'")
     render layout: false
   end
 
@@ -60,6 +60,6 @@ class Libraries::InterestLinksController < ApplicationController
 
   private
   def links_parameters
-    params.require(:interest_link).permit(:name, :description, :url)
+    params.require(:interest_link).permit(:name, :description, :url, :type_of_cost_center)
   end
 end

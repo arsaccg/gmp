@@ -26,6 +26,20 @@
             %label.label Descripción 
             %label.input
               = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false, rows: 4
+        %br
+        .row
+          %section.col.col-md-12        
+            %label Tipo de Centro de Costo
+            %select.select2.form-control#speciality_select{:name =>"interest_link[type_of_cost_center]"}
+              %option{:value => nil, :disabled=>true, :selected => true} Seleccione una especialidad
+              %option{:value => "saneamiento", :selected => "#{@linkOfIn.type_of_cost_center}"=="saneamiento"}
+                Saneamiento
+              %option{:value => "electrico", :selected => "#{@linkOfIn.type_of_cost_center}"=="electrico"}
+                Eléctrico
+              %option{:value => "civil", :selected => "#{@linkOfIn.type_of_cost_center}"=="civil"}
+                Civil
+              %option{:value => "administracion", :selected => "#{@linkOfIn.type_of_cost_center}"=="administracion"}
+                Administración              
 
       %footer
         %button.btn.btn-primary{type: "submit"}

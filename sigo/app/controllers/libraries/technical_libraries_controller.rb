@@ -3,6 +3,7 @@ class Libraries::TechnicalLibrariesController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
     @type_lib = TypeOfTechnicalLibrary.all
+    @cc = CostCenter.find(get_company_cost_center('cost_center')).speciality.to_s
     render layout: false
   end
 
@@ -61,6 +62,6 @@ class Libraries::TechnicalLibrariesController < ApplicationController
 
   private
   def lib_parameters
-    params.require(:technical_library).permit(:name, :description, :document, {:type_of_technical_library_ids => []})
+    params.require(:technical_library).permit(:name, :description, :document, {:type_of_technical_library_ids => []}, :type_of_cost_center)
   end
 end

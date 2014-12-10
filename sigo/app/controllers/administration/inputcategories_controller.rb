@@ -15,7 +15,7 @@ class Administration::InputcategoriesController < ApplicationController
     project_id =  get_company_cost_center('cost_center')
 
     @budget_sale = Budget.where("`type_of_budget` = 0 AND `subbudget_code` IS NOT NULL AND `cost_center_id` = (?)", project_id).first rescue nil
-      @budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", project_id).first rescue @budget_sale
+    @budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", project_id).first rescue @budget_sale
 
     @wbsitems = Wbsitem.where(cost_center_id: project_id).order(:codewbs)
     @inputcategories = Inputcategory.all
@@ -143,46 +143,46 @@ class Administration::InputcategoriesController < ApplicationController
 
 
   def feo_pdf
-      @budget_sale = Budget.find(params[:budget_sale])
+    @budget_sale = Budget.find(params[:budget_sale])
     @budget_goal = Budget.find(params[:budget_goal])
     @inputcategories = Inputcategory.all
 
-      @pdf_table_array = Array.new
-      @pdf_table_array << ["Codigo", "FEO DE OBRA", "PRESUPUESTO VENTA", "PRESUPUESTO META"]
-      @pdf_table_array << ["", "", "Parcial", "Parcial"]
+    @pdf_table_array = Array.new
+    @pdf_table_array << ["Codigo", "FEO DE OBRA", "PRESUPUESTO VENTA", "PRESUPUESTO META"]
+    @pdf_table_array << ["", "", "Parcial", "Parcial"]
 
-      direct_cost_sale = 0
-      direct_cost_goal = 0
-      @inputcategories.each do |input|
-          if input.level_n == 0 || input.level_n == 1
-              #parcial
-              partial_v = Inputcategory.sum_partial_sales(input.category_id.to_s, @budget_sale.id)
-              direct_cost_sale = direct_cost_sale + partial_v
+    direct_cost_sale = 0
+    direct_cost_goal = 0
+    @inputcategories.each do |input|
+        if input.level_n == 0 || input.level_n == 1
+            #parcial
+            partial_v = Inputcategory.sum_partial_sales(input.category_id.to_s, @budget_sale.id)
+            direct_cost_sale = direct_cost_sale + partial_v
 
-              #parcial
-              partial_m = Inputcategory.sum_partial_sales(input.category_id.to_s, @budget_goal.id)
-              direct_cost_goal = direct_cost_goal + partial_m
+            #parcial
+            partial_m = Inputcategory.sum_partial_sales(input.category_id.to_s, @budget_goal.id)
+            direct_cost_goal = direct_cost_goal + partial_m
 
-              if input.level_n == 0
-              @pdf_table_array << ["", input.description, partial_v.round(4), partial_m.round(4)]
-            else
-              @pdf_table_array << ["", " . . "+input.description, partial_v.round(4), partial_m.round(4)]
-            end
+            if input.level_n == 0
+            @pdf_table_array << ["", input.description, partial_v.round(4), partial_m.round(4)]
           else
-              #parcial
-              partial_v = Inputcategory.sum_partial_sales(input.category_id.to_s, @budget_sale.id)
-              #parcial
-              partial_m = Inputcategory.sum_partial_sales(input.category_id.to_s, @budget_goal.id)
-            
-            @pdf_table_array << ["", " . . . . "+input.description, partial_v.round(4), partial_m.round(4)]
-        end
+            @pdf_table_array << ["", " . . "+input.description, partial_v.round(4), partial_m.round(4)]
+          end
+        else
+            #parcial
+            partial_v = Inputcategory.sum_partial_sales(input.category_id.to_s, @budget_sale.id)
+            #parcial
+            partial_m = Inputcategory.sum_partial_sales(input.category_id.to_s, @budget_goal.id)
+          
+          @pdf_table_array << ["", " . . . . "+input.description, partial_v.round(4), partial_m.round(4)]
       end
-        @pdf_table_array << ["", "COSTO DIRECTO", direct_cost_sale, direct_cost_goal]
-
-      puts "TABLE ARRAY"
-      p @pdf_table_array
-
-      render :feo_pdf, :layout => false
     end
+      @pdf_table_array << ["", "COSTO DIRECTO", direct_cost_sale, direct_cost_goal]
 
+    puts "TABLE ARRAY"
+    p @pdf_table_array
+
+    render :feo_pdf, :layout => false
+  end
+  
 end

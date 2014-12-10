@@ -1,7 +1,31 @@
 class Wbsitem < ActiveRecord::Base
 	belongs_to :cost_center
-  belongs_to :phase
+	belongs_to :phase
 	has_many :itembywbses
+
+	after_create :update_wbs
+
+	def update_wbs
+        p "~~~~~~~~~~~~~~~~~~~~~~~~~~~+update_wbs"
+        str=self.codewbs
+        if predecessors != nil
+            l = predecessors.length
+            new_code = str[l..-1]
+            final_str = predecessors
+            final_str += generate_order(new_code)
+        else
+            final_str = cost_center_id >= 10 ? str : '0' + str
+        end
+        self.codewbs = final_str
+        save
+    end
+
+    def generate_order(new_code)
+		return new_code.length >= 2 ? new_code : '0' + new_code #'01'
+	end
+	def self.generate_order(new_code)
+		return new_code.length >= 2 ? new_code : '0' + new_code #'01'
+	end
 
 	def self.get_color(amount)
 		@color = "#E2EB7F"

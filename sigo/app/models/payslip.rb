@@ -179,17 +179,19 @@ class Payslip < ActiveRecord::Base
         end
       end
 
-
       if !des.nil?
         des.each do |de|
-          con = nil
-          hash_formulas = Hash.new
+          flag_afp = true
+          hash_formulas =   Hash.new
           con = Concept.find(de)
           
           if !@result[0].include?(con.name)
             @result[0] << con.name.to_s
           end
 
+          if con.name == 'APORTE FONDO PENSIONES' || con.name == 'PRIMA DE SEGURO' || con.name == 'COMISION FIJA AFP' || con.name == 'AFP SEGURO RIESGO' || con.name == '%5ta CAT%' || con.name == 'ORG. NAC. DE PENSIONES'
+            flag_afp = false
+          end
           contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => de).first
 
           if !contract.nil?
@@ -202,9 +204,11 @@ class Payslip < ActiveRecord::Base
                 total += amount.to_f
               else
                 amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
-                if amount.to_f > con.top.to_f && de.to_i != 28 && de.to_i != 29 && de.to_i != 30 && de.to_i!=31
-                  amount = con.top.to_f
-                end              
+                if !con.top.nil?
+                  if amount.to_f > con.top.to_f && flag_afp
+                    amount = con.top.to_f
+                  end
+                end
                 total += amount.to_f
               end
             end
@@ -222,8 +226,11 @@ class Payslip < ActiveRecord::Base
                   total += amount
                 else
                   amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
-                  if amount.to_f > con.top.to_f && de.to_i != 28 && de.to_i != 29 && de.to_i != 30 && de.to_i!=31
-                    amount = con.top.to_f
+
+                  if !con.top.nil?
+                    if amount.to_f > con.top.to_f && flag_afp
+                      amount = con.top.to_f
+                    end
                   end
                   total += amount.to_f
                 end
@@ -234,9 +241,11 @@ class Payslip < ActiveRecord::Base
                 total += amount
               else
                 amount = Formule.translate_formules(con.concept_valorization.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
-                if amount.to_f > con.top.to_f && de.to_i != 28 && de.to_i != 29 && de.to_i != 30 && de.to_i!=31
-                  amount = con.top.to_f
-                end              
+                if !con.top.nil?
+                  if amount.to_f > con.top.to_f && flag_afp
+                    amount = con.top.to_f
+                  end
+                end
                 total += amount.to_f
               end
             end
@@ -245,47 +254,48 @@ class Payslip < ActiveRecord::Base
           if afp.nil?
             afp = Afp.find(row[12])
           end
-          if  de.to_i == 28
-            total = total - amount.to_f
-            amount = amount.to_f * afp.contribution_fp.to_f/100
-            if amount > afp.top
-              amount = afp.top
-            end
-            total += amount.to_f
+
+          if !con.nil?
+            if con.name == 'APORTE FONDO PENSIONES'
+              total = total - amount.to_f
+              amount = rem_basic * afp.contribution_fp.to_f/100
+              if amount > afp.top
+                amount = afp.top
+              end
+              total += amount.to_f              
+            elsif con.name == 'PRIMA DE SEGURO'
+              total = total - amount.to_f
+              amount = rem_basic * afp.insurance_premium.to_f/100
+              if amount > afp.top
+                amount = afp.top
+              end          
+              total += amount.to_f
+            elsif con.name == 'COMISION FIJA AFP'
+              total = total - amount.to_f
+              amount = rem_basic * afp.mixed.to_f/100
+              if amount > afp.top
+                amount = afp.top
+              end          
+              total += amount.to_f              
+            elsif con.name == 'AFP SEGURO RIESGO'
+              total = total - amount.to_f
+              amount = rem_basic * afp.c_variable.to_f/100
+              if amount > afp.top
+                amount = afp.top
+              end          
+              total += amount.to_f
+
+            elsif con.name == '%5ta CAT%'
+              total -=amount
+              bruta = amount*14*4
+              if bruta > uit
+                amount = (bruta - uit)*0.15/12/4
+              else
+                amount = 0
+              end                
+            end            
           end
-          if  de.to_i == 29
-            total = total - amount.to_f
-            amount = amount.to_f * afp.insurance_premium.to_f/100
-            if amount > afp.top
-              amount = afp.top
-            end          
-            total += amount.to_f
-          end
-          if  de.to_i == 30
-            total = total - amount.to_f
-            amount = amount.to_f * afp.mixed.to_f/100
-            if amount > afp.top
-              amount = afp.top
-            end          
-            total +=amount.to_f
-          end
-          if de.to_i == 31
-            total = total - amount.to_f
-            amount = amount.to_f * afp.c_variable.to_f/100
-            if amount > afp.top
-              amount = afp.top
-            end          
-            total += amount.to_f
-          end
-          if de.to_i == 26
-            total -=amount
-            bruta = amount*14*4
-            if bruta > uit
-              amount = (bruta - uit)*0.15/12/4
-            else
-              amount = 0
-            end
-          end
+
           @result[@i] << amount        
         end
         @result[@i] << total
@@ -296,7 +306,9 @@ class Payslip < ActiveRecord::Base
 
         @result[@i] << total1 - total
         total = 0
+
       end
+
       if !apo.nil?
         apo.each do |ap|
           hash_formulas = Hash.new
@@ -321,9 +333,6 @@ class Payslip < ActiveRecord::Base
           @result[0] << "Aportaciones Totales"
         end
       end
-      puts "----------------------------------------------------------------------------------------------------------------------------------"
-      puts calculator.inspect
-      puts "----------------------------------------------------------------------------------------------------------------------------------"
       @i+=1
     end
 

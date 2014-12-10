@@ -11,86 +11,86 @@
 / %h4 
 /   REPORTE
 
--cache do
-  %h5
-    %strong
-      = "#{@budget.description}: #{@valorization.name rescue " "} DEL MES DE #{t("date.month_names")[@month].upcase rescue " "} #{@year rescue " "}"
+-#cache do
+%h5
+  %strong
+    = "#{@budget.description}: #{@valorization.name rescue " "} DEL MES DE #{t("date.month_names")[@month].upcase rescue " "} #{@year rescue " "}"
 
-  %select#level_r(onchange="openLevel()")
-    %option(value="")= 'Seleccionar Nivel'
-    %option(value="second")= 'Primero'
-    %option(value="third")= '--Segundo'
-    %option(value="fourth")= '----Tercero'
-    %option(value="fifth")= '------Cuarto'
-    %option(value="sixth")= '--------Quinto'
+%select#level_r(onchange="openLevel()")
+  %option(value="")= 'Seleccionar Nivel'
+  %option(value="second")= 'Primero'
+  %option(value="third")= '--Segundo'
+  %option(value="fourth")= '----Tercero'
+  %option(value="fifth")= '------Cuarto'
+  %option(value="sixth")= '--------Quinto'
 
-  %br
-  .row-fuild
-    .span12
-      %table(id="scroll-table" class="report_valorization table-hover white-table small-font table-light"  width="100%")
-        %thead
-          %tr
-            %th.t-center(rowspan="2")
-              %strong
-                DESCRIPCION
-            / %th(rowspan="2")
-            /   %strong
-            /     UND.
-            %th.t-center(rowspan="2")
-              %strong
-                PRECIO UNITARIO
-            %th.t-center(colspan="2")
-              %strong
-                PRESUPUESTO CONTRACTUAL
-            %th.t-center(colspan="2")
-              %strong
-                ACUMULADO ANTERIOR
-            %th.t-center(colspan="2")
-              %strong
-                VALORIZACION ACTUAL
-            %th.t-center(colspan="2")
-              %strong
-                ACUMULADO ACTUAL
-            %th.t-center(colspan="2")
-              %strong
-                SALDO POR VALORIZAR
-            %th.t-center(rowspan="2")
-              %strong
-                AVANCE
-          %tr 
-            %th.t-center  
-              %strong
-                METRADO
-            %th.t-center  
-              %strong
-                MONTO S/.
-            %th.t-center  
-              %strong
-                METRADO
-            %th.t-center  
-              %strong
-                MONTO S/.
-            %th.t-center  
-              %strong
-                METRADO
-            %th.t-center
-              %strong
-                MONTO S/.
-            %th.t-center
-              %strong
-                METRADO
-            %th.t-center
-              %strong
-                MONTO S/.
-            %th.t-center
-              %strong
-                METRADO
-            %th.t-center
-              %strong
-                MONTO S/.
-        = render :partial => "tablereport"
+%br
+.row-fuild
+  .span12
+    %table(id="scroll-table" class="report_valorization table-hover white-table small-font table-light"  width="100%")
+      %thead
+        %tr
+          %th.t-center(rowspan="2")
+            %strong
+              DESCRIPCION
+          / %th(rowspan="2")
+          /   %strong
+          /     UND.
+          %th.t-center(rowspan="2")
+            %strong
+              PRECIO UNITARIO
+          %th.t-center(colspan="2")
+            %strong
+              PRESUPUESTO CONTRACTUAL
+          %th.t-center(colspan="2")
+            %strong
+              ACUMULADO ANTERIOR
+          %th.t-center(colspan="2")
+            %strong
+              VALORIZACION ACTUAL
+          %th.t-center(colspan="2")
+            %strong
+              ACUMULADO ACTUAL
+          %th.t-center(colspan="2")
+            %strong
+              SALDO POR VALORIZAR
+          %th.t-center(rowspan="2")
+            %strong
+              AVANCE
+        %tr 
+          %th.t-center  
+            %strong
+              METRADO
+          %th.t-center  
+            %strong
+              MONTO S/.
+          %th.t-center  
+            %strong
+              METRADO
+          %th.t-center  
+            %strong
+              MONTO S/.
+          %th.t-center  
+            %strong
+              METRADO
+          %th.t-center
+            %strong
+              MONTO S/.
+          %th.t-center
+            %strong
+              METRADO
+          %th.t-center
+            %strong
+              MONTO S/.
+          %th.t-center
+            %strong
+              METRADO
+          %th.t-center
+            %strong
+              MONTO S/.
+      = render :partial => "tablereport"
 
-  %br
-  %a{:href=>"javascript:load_url_ondiv('#{management_valorizations_path}', 'right-area')"}(class="btn btn-primary btn-xs")
-    %i.fa.fa-arrow-left
-    Retornar al listado de valorizaciones
+%br
+%a{:href=>"javascript:load_url_ondiv('#{management_valorizations_path}', 'right-area')"}(class="btn btn-primary btn-xs")
+  %i.fa.fa-arrow-left
+  Retornar al listado de valorizaciones
