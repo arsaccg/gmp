@@ -73,16 +73,19 @@
         %button.btn.btn-sm.btn-success#agrego{'type' => 'button', :style => " margin-top: 24px; "}
           Agregar
     .row
-      %table.table.table-striped.table-bordered.table-hover#more-info
+      %table.table.table-striped.table-bordered.table-hover#more-info{:style =>" width: 90%;"}
         %thead
           %tr
-            %th Trabajador
-            %th Concepto
-            %th Cantidad   
-        %tbody
+            %th{:style =>" width: 33%;"} Trabajador
+            %th{:style =>" width: 33%;"} Concepto
+            %th{:style =>" width: 33%;"} Cantidad   
+            %th{:style =>" width: 1%;"} Eliminar
+        %tbody#twbody
  
           
     %fieldset{:style => "display:none"}
+      %input#array-extra{:style => "display:none"}
+      %input#array-wo{:style => "display:none"}
       %legend Información adicional
       .row
         %section
@@ -173,6 +176,9 @@
   $(document).ready(function(){
     $('#semana').change(function(){
       var flag = true;
+      $('#twbody').empty();
+      $('#array-extra').empty();
+      $('#array-wo').empty();
       if(document.getElementById('e').checked){
         var semana = $(this).val();
         worker = "obrero";
@@ -193,6 +199,9 @@
 
     $('#mes').change(function(){
       var flag = true;
+      $('#twbody').empty();
+      $('#array-extra').empty();
+      $('#array-wo').empty();
       if(document.getElementById('t').checked){
         var semana = $(this).val();
         worker = "empleado";
@@ -216,7 +225,7 @@
       var concept = $('#conceptos').val();
       var amount = $('#amount').val();
 
-      if (worker != " " && concept != " " && amount != " "){
+      if (worker != "" && concept != "" && amount != ""){
         str_item = {authenticity_token: "#{form_authenticity_token}", worker: worker, concept: concept, amount:amount};
         append_url_ajax('#{add_extra_info_payrolls_payslips_path}', 'more-info', str_item, 0, 'POST');
       }else{
@@ -310,6 +319,8 @@
     var cost_center = #{@cc.id};
     var semana = $('#semana').val();
     var tipo = $('#tipo').val();
+    var extra_info = $('#array-extra').val();
+    var wor_arr = $('#array-wo').val();
 
     if(document.getElementById('t').checked){
       var ingresos = #{@inge};
@@ -324,12 +335,15 @@
       var aportacion = #{@apo};
       worker_id = "obrero";
     }
-
     if(worker_id != null && semana != '' && tipo != ''){
-      str_item = {authenticity_token: "#{form_authenticity_token}", arregloin: ingresos, cost_center: cost_center, arreglodes:descuentos, arregloapor: aportacion, semana: semana, tipo:tipo, worker: worker_id};
+      str_item = {authenticity_token: "#{form_authenticity_token}", arregloin: ingresos, cost_center: cost_center, arreglodes:descuentos, arregloapor: aportacion, semana: semana, tipo:tipo, worker: worker_id, extra:extra_info, ar_wo: wor_arr};
       $('#example').empty();
       append_url_ajax('#{generate_payroll_payrolls_payslips_path}', 'example', str_item, 0, 'POST');
     }else{
       alert("Escoja a un trabajador");
     }
   }
+
+  function delete_item(code){
+    $("#tr-" + code).remove();
+  }  
