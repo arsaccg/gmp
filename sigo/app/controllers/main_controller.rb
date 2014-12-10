@@ -27,6 +27,7 @@ class MainController < ApplicationController
     if get_company_cost_center('company').present? && get_company_cost_center('cost_center').present?
       @calidad = nil
       @supplier = nil
+      @all_cost_center = CostCenter.all
       @company = Company.find(get_company_cost_center('company')) rescue nil
       @cost_center_detail = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center')) rescue nil
       @cost_center = CostCenter.find(get_company_cost_center('cost_center')) rescue nil

@@ -90,8 +90,13 @@
         /cost center details button
         .btn-header.pull-right#general-data-cost-center
           %span
+            %a{"href"=> "#", "data-toggle"=>"modal", "data-target"=>"#all_cost_centers", title: "Información de todos los centros de costos"}
+              %i.fa.fa-building
+
+        .btn-header.pull-right#general-data-cost-center              
+          %span
             %a{"href"=> "#", "data-toggle"=>"modal", "data-target"=>"#cost_center_general_data", title: "Datos generales del centro de costo"}
-              %i.fa.fa-info-circle
+              %i.fa.fa-info-circle          
         /end cost center details button
 
         / input: search field
@@ -1080,7 +1085,52 @@
             - else
               %h2 Datos no encontrados.         
           .modal-footer{"style"=>"margin-top:0px;background-color:#296191"}
-            
+    
+    #all_cost_centers.modal.fade{"aria-hidden" => "true", role: "dialog", tabindex: "-1"}
+      .modal-dialog{"style"=>"width:70%;margin-top:0px;"}
+        .modal-content
+          .modal-header{"style"=>"background-color:#296191;color:white;padding-top:8px;padding-bottom:8px"}
+            %button{"class"=>"close", "data-dismiss"=>"modal"}
+              %span{"aria-hidden"=>"true","style"=>"color:white;"} &times;
+              %span{"class"=>"sr-only"} Close
+            %h4{"class"=>"modal-title", "id"=>"cost_center_general_data","style"=>"margin-left:35%;font-weight:900;"} Datos Generales del Proyecto
+          .modal-body{"style"=>"background-color:#E6E6E6;font-size: 115%;"}
+            %table.table.table-striped.table-hover.table-condensed
+              %thead
+                %tr
+                  %th N° de C.C.
+                  %th Compañia
+                  %th Centro de Costo
+                  %th G.D.G.
+                  %th Movimientos
+                  %th{"style"=>"width:30px;"} Resultados Operativos
+              %tbody
+                -if @all_cost_center!=nil
+                  - @all_cost_center.each do |cc|
+                    %tr
+                      %td= cc.code.to_s
+                      %td= cc.company.short_name.to_s
+                      %td
+                        %a{href: 'javascript:void(0);', :onclick => 'goCoordinatesGMap(' + cc.latitude.to_s + ', ' + cc.longitude.to_s + ');', title: "Geolocalizacion"}
+                          %i.fa.fa-adn
+                        %a{"style"=>"display:inline;margin-right:5px;",href: 'javascript:void(0);', :onclick => 'detail('+cc.id.to_s+');', title: "Datos generales del centro de costo"}
+                          %i.fa.fa-info-circle
+                        %div{"style"=>"display:inline;margin-right:5px;"}= cc.name.to_s
+                      %td
+                        %span
+                          %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'gdg('+cc.id.to_s+');'}
+                            %i.fa.fa-folder-open
+                      %td
+                        %span
+                          %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'loan('+cc.id.to_s+');'}
+                            %i.fa.fa-folder-open
+                      %td
+                        %span
+                          %a.btn.btn-default.btn-xs{href: 'javascript:void(0);', :onclick => 'load_operating_result('+cc.id.to_s+');'}
+                            %i.fa.fa-usd       
+          .modal-footer{"style"=>"margin-top:0px;background-color:#296191"}
+    
+
     #part-contract-inbox.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partContractsLabel", role: "dialog"}
 
     / END SHORTCUT AREA
