@@ -58,10 +58,10 @@ class MainController < ApplicationController
   def management_dashboard
     @company= Company.all
     @cost_centers = CostCenter.all
-    @saneamiento = CostCenter.where("speciality = 'saneamiento'")
-    @civil = CostCenter.where("speciality = 'civil'") 
-    @electrico = CostCenter.where("speciality = 'electrico'")
-    @administracion = CostCenter.where("speciality = 'administracion'")
+    @saneamiento = CostCenter.where("speciality = 'saneamiento' and active = 1")
+    @civil = CostCenter.where("speciality = 'civil' and active = 1") 
+    @electrico = CostCenter.where("speciality = 'electrico' and active = 1")
+    @administracion = CostCenter.where("speciality = 'administracion' and active = 1")
 
     current_cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @direct_cost_acc = 0
