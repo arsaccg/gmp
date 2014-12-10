@@ -8,21 +8,21 @@
           %h2 Lista de Centro de costos
           %ul#myTab.nav.nav-tabs.pull-right.in
             %li.active
-              %a{"data-toggle" => "tab", :href => "#s1"}
+              %a{"data-toggle" => "tab", :href => "#c1"}
                 %span.hidden-mobile.hidden-tablet Saneamiento
             %li
-              %a{"data-toggle" => "tab", :href => "#s2"}
+              %a{"data-toggle" => "tab", :href => "#c2"}
                 %span.hidden-mobile.hidden-tablet Eléctrico
             %li
-              %a{"data-toggle" => "tab", :href => "#s3"}
+              %a{"data-toggle" => "tab", :href => "#c3"}
                 %span.hidden-mobile.hidden-tablet Civil   
             %li
-              %a{"data-toggle" => "tab", :href => "#s4"}
+              %a{"data-toggle" => "tab", :href => "#c4"}
                 %span.hidden-mobile.hidden-tablet Administración                    
         / widget div
         .widget-body
           #myTabContent.tab-content
-            #s1.tab-pane.fade.active.in
+            #c1.tab-pane.fade.active.in
               %table.table.table-striped.table-hover.table-condensed
                 %thead
                   %tr
@@ -60,7 +60,7 @@
                   - else
                     = ""
 
-            #s2.tab-pane.fade
+            #c2.tab-pane.fade
               %table.table.table-striped.table-hover.table-condensed
                 %thead
                   %tr
@@ -98,7 +98,7 @@
                   - else
                     = ""
             / end s2 tab pane
-            #s3.tab-pane.fade
+            #c3.tab-pane.fade
               %table.table.table-striped.table-hover.table-condensed
                 %thead
                   %tr
@@ -135,7 +135,7 @@
 
                   - else
                     = ""
-            #s4.tab-pane.fade
+            #c4.tab-pane.fade
               %table.table.table-striped.table-hover.table-condensed
                 %thead
                   %tr
