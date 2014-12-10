@@ -28,6 +28,7 @@ class Management::ExtensionscontrolsController < ApplicationController
     extensionscontrol.cost_center_id = get_company_cost_center('cost_center')
     extensionscontrol.save
     redirect_to :action => :index, :layout => false
+    # redirect_to "/home#/management/extensionscontrols"
   end
 
   def edit
@@ -39,7 +40,8 @@ class Management::ExtensionscontrolsController < ApplicationController
     extensionscontrol = Extensionscontrol.find(params[:id])
     if extensionscontrol.update_attributes(extensions_parameters)
       flash[:notice] = "Se ha actualizado correctamente la ampliación."
-      redirect_to :action => :index
+      redirect_to :action => :index, :layout => false
+      #redirect_to "/home#/management/extensionscontrols"
     else
       extensionscontrol.errors.messages.each do |attribute, error|
         flash[:error] =  flash[:error].to_s + error.to_s + "  "#attribute " " + flash[:error].to_s + error.to_s + "  "
@@ -73,7 +75,7 @@ class Management::ExtensionscontrolsController < ApplicationController
 
   private
   def extensions_parameters
-    params.require(:extensionscontrol).permit(:motive, :status, :requested_deadline, :approved_deadline, :requested_mgg, :approved_mgg, :resolution, :observation, :files, :cost_center_id)
+    params.require(:extensionscontrol).permit(:motive, :status, :requested_deadline, :approved_deadline, :requested_mgg, :approved_mgg, :resolution, :observation, :document, :cost_center_id)
   end
 
 end
