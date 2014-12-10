@@ -345,5 +345,8 @@
   }
 
   function delete_item(code){
+    var bor = $("#extra_" + code+"_worker_id").val()+","+$("#extra_" + code+"_concept").val()+","+$("#extra_" + code+"_amount").val();
+    $('#array-extra').val($('#array-extra').val().replace(bor,""));
+    $('#array-wo').val($('#array-wo').val().replace($("#extra_" + code+"_worker_id").val(),""));
     $("#tr-" + code).remove();
   }  

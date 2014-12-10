@@ -1,5 +1,5 @@
 %tr{id:  "tr-"+"#{@reg_n}"}
-  %td{:style => "display:none"}
+  %td{:style => "display:none", id: "-"+"#{@reg_n}"}
     = text_field_tag 'extra['+@reg_n.to_s+'][worker_id]', @worker.id.to_s, class: "extra-info-form-payroll"
     = text_field_tag 'extra['+@reg_n.to_s+'][amount]', @amount.to_s, class: "extra-info-form-payroll"
     = text_field_tag 'extra['+@reg_n.to_s+'][concept]', @concept.id.to_s, class: "extra-info-form-payroll"
@@ -15,17 +15,12 @@
 :javascript
   $(document).ready(function(){
     var reg = "#{@reg_n}";
-    console.log(reg)
     var worker_id = "#{@wo}";
-    console.log(worker_id)
     var concept = "#{@co}";
-    console.log(concept)
     var amount = "#{@amount}";
-    console.log(amount)
 
     var hash_wca = [worker_id, concept, amount];
     $('#array-extra').val($('#array-extra').val()+";"+hash_wca);
     $('#array-wo').val($('#array-wo').val()+","+worker_id);
-    console.log(hash_wca)
     
   });
