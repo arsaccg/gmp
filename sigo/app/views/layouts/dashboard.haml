@@ -1111,8 +1111,6 @@
                       %td= cc.code.to_s
                       %td= cc.company.short_name.to_s
                       %td
-                        %a{href: 'javascript:void(0);', :onclick => 'goCoordinatesGMap(' + cc.latitude.to_s + ', ' + cc.longitude.to_s + ');', title: "Geolocalizacion"}
-                          %i.fa.fa-adn
                         %a{"style"=>"display:inline;margin-right:5px;",href: 'javascript:void(0);', :onclick => 'detail('+cc.id.to_s+');', title: "Datos generales del centro de costo"}
                           %i.fa.fa-info-circle
                         %div{"style"=>"display:inline;margin-right:5px;"}= cc.name.to_s
@@ -1132,6 +1130,18 @@
     
 
     #part-contract-inbox.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partContractsLabel", role: "dialog"}
+    #gdg.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgLabel", role: "dialog", tabindex: "-1"}
+    #detail.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "detailLabel", role: "dialog", tabindex: "-1"}
+    #gdgn.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgnLabel", role: "dialog", tabindex: "-1"}
+    #gdge.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgeLabel", role: "dialog", tabindex: "-1"}
+    #gdgs.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "gdgsLabel", role: "dialog", tabindex: "-1"}
+
+    #loan.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
+    #loan_new.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
+    #loan_edit.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
+    #loan_show.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "loanLabel", role: "dialog", tabindex: "-1"}
+    #operating-result.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "operatingResultLabel", role: "dialog", tabindex: "-1"}
+    #show-phase.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "90Label", role: "dialog", tabindex: "-1"}
 
     / END SHORTCUT AREA
     / ==================================================
@@ -1181,3 +1191,91 @@
     / MAIN APP JS FILE
     = javascript_include_tag 'app'
     / Your GOOGLE ANALYTICS CODE Below
+:javascript
+  function gdg(id) {
+    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
+    load_modal_ajax('#{general_expenses_diverse_expenses_of_managements_path}', 'gdg', 'all_cost_centers', data, null, 'GET');
+    //load_url_ajax('#{general_expenses_diverse_expenses_of_managements_path}', 'gdg', data, null, 'GET');
+    $('#gdg').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function detail(id) {
+    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id }
+    load_modal_ajax('/logistics/cost_center_details/' + id, 'detail', 'all_cost_centers', data, null, 'GET')
+  }
+
+  function gdg_new(id){
+    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
+    load_modal_ajax('#{new_general_expenses_diverse_expenses_of_management_path}', 'gdgn', 'gdg', data, null, 'GET');
+  }
+
+  function gdg_edit(id){
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    load_modal_ajax('/general_expenses/diverse_expenses_of_managements/'+id+'/edit', 'gdge', 'gdg', data, null, 'GET');
+  }
+
+  function gdg_show(id){
+    data = { authenticity_token: "#{form_authenticity_token}"};
+    load_modal_ajax('/general_expenses/diverse_expenses_of_managements/'+id+'', 'gdgs', 'gdg', data, null, 'GET');
+  }  
+
+  function loan(id){
+    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
+    load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'all_cost_centers', data, null, 'GET');
+    //load_url_ajax('#{general_expenses_loans_path}', 'loan', data, null, 'GET');
+    $('#loan').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function loan_new(id){
+    data = { authenticity_token: "#{form_authenticity_token}", cc_id: id};
+    load_modal_ajax('#{new_general_expenses_loan_path}', 'loan_new', 'loan', data, null, 'GET');
+  }
+  function loan_edit(id,cc1,cc2,cc3){
+    data = { authenticity_token: "#{form_authenticity_token}", cc1:cc1, cc2:cc2, cc3:cc3};
+    load_modal_ajax('/general_expenses/loans/'+id+'/edit', 'loan_edit', 'loan_show', data, null, 'GET');
+  }
+
+  function loan_show(cc1,cc2,cc3){
+    data = { authenticity_token: "#{form_authenticity_token}", cc1:cc1, cc2:cc2, cc3:cc3};
+    load_modal_ajax('#{general_expenses_loan_path("show")}', 'loan_show', 'loan', data, null, 'GET');
+  }    
+
+  function load_operating_result(cost_center_id){
+    data = { authenticity_token : "#{form_authenticity_token}", cost_center : cost_center_id }
+    load_modal_ajax('#{projecting_operating_results_path}', 'operating-result', 'all_cost_centers', data, 'avoid-opacity', 'POST');
+    //load_url_ajax('#{projecting_operating_results_path}', 'operating-result', data, 'avoid-opacity', 'POST');
+    $('#operating-result').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }
+
+  function load_full_operating_result(cost_center_id){
+    $("#itemsModal").modal({
+      keyboard: false,
+      backdrop: false
+    });
+
+    load_url_ondiv("#{full_project_operating_results_path}?authenticity_token=#{form_authenticity_token}&cost_center=" + cost_center_id, "detail-inputs");
+  }
+
+  function get_input_detail(d_sale, b_goal, b_cat){
+    $("#itemsModal").modal();
+    load_url_ondiv("#{get_input_detail_administration_inputcategories_path}?category_id=0" + b_cat + "&budget_sale_id=" + d_sale + "&budget_goal_id=" + b_goal, "detail-inputs");
+  }
+
+  function show_phases(cost_center_id, code_phase){
+    data = { authenticity_token : "#{form_authenticity_token}", cost_center_id : cost_center_id, code_phase : code_phase }
+    load_modal_ajax('#{show_phases_path}', 'show-phase', 'all_cost_centers', data, 'avoid-opacity', 'POST');
+    //load_url_ajax('#{show_phases_path}', 'show-phase', data, 'avoid-opacity', 'POST');
+    $('#show-phase').modal({
+      keyboard: false,
+      backdrop: false
+    });
+  }

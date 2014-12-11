@@ -58,11 +58,13 @@ class Payrolls::PayslipsController < ApplicationController
   def create
     flash[:error] = nil
     a = Payslip.all.last
+    
     last_code = 1
     if !a.nil?
       last_code = a.code.to_i + 1 
     end
     regs = params[:regs].split(' ')
+    regsEx = params[:regsEx].split(' ')
     regs.each do |reg|
       pay = Payslip.new
       pay.worker_id = params[:payslip][''+reg.to_s+'']['worker_id']
@@ -87,6 +89,23 @@ class Payrolls::PayslipsController < ApplicationController
           puts flash[:error].to_s + error.to_s + "  "
         end
         @pay = pay
+        render :new, layout: false 
+      end
+    end
+
+    regsEx.each do |reg|
+      extra = ExtraInformationForPayslip.new
+      extra.worker_id = params[:extra_information_for_payslip][''+reg.to_s+'']['worker_id']
+      extra.concept_id = params[:extra_information_for_payslip][''+reg.to_s+'']['concept_id']
+      extra.week = params[:extra_information_for_payslip][''+reg.to_s+'']['week']
+      extra.amount = params[:extra_information_for_payslip][''+reg.to_s+'']['amount']
+      if extra.save
+        flash[:notice] = "Se ha creado correctamente."
+      else
+        extra.errors.messages.each do |attribute, error|
+          puts flash[:error].to_s + error.to_s + "  "
+        end
+        @extra = extra
         render :new, layout: false 
       end
     end
@@ -169,6 +188,10 @@ class Payrolls::PayslipsController < ApplicationController
     @co = @concept.id
     @amount = params[:amount]
     @reg_n = (Time.now.to_f*1000).to_i
+    @week = ActiveRecord::Base.connection.execute("
+      SELECT CONCAT(name, ': ', DATE_FORMAT(start_date, '%d/%m/%Y'), ' - ', DATE_FORMAT(end_date, '%d/%m/%Y')) 
+      FROM  weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" 
+      WHERE id = " + params[:semana].to_s).first
     render(partial: 'extra', :layout => false)
   end
 
@@ -213,7 +236,14 @@ class Payrolls::PayslipsController < ApplicationController
     else
       @max_hour = 48
     end
+    @extra_info = params[:extra]
 
+    @extra_info = @extra_info.split(';')
+    i = 0
+    @extra_info.each do |ar|
+      @extra_info[i] = ar.split(',')
+      i+=1
+    end
     worker = params[:worker]
     @partes = Array.new
 
@@ -231,12 +261,15 @@ class Payrolls::PayslipsController < ApplicationController
           
       @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
       if wg != 0
-        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, params[:extra], params[:ar_wo])
+        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo])
         @mensaje = "exito"
       else
-        @mensaje = "fuentes"
+        @mensaje = "fail"
       end
     end
+    puts "--------------------------------------------------------------------------------------------------------------------------------------------------------------"
+    puts @extra_info.inspect
+    puts "--------------------------------------------------------------------------------------------------------------------------------------------------------------"
     render(partial: 'workers', :layout => false)
   end
 
@@ -279,6 +312,27 @@ class Payrolls::PayslipsController < ApplicationController
 
   private
   def pay_parameters
-    params.require(:payslip).permit(:worker_id, :cost_center_id, :start_date, :end_date, :days, :normal_hours, :subsidized_day, :subsidized_hour, :last_worked_day, :he_60, :code, :he_100, :ing_and_amounts, :des_and_amounts, :aport_and_amounts, :month)
+    params.require(:payslip).permit(
+      :worker_id, 
+      :cost_center_id, 
+      :start_date, 
+      :end_date, 
+      :days, 
+      :normal_hours, 
+      :subsidized_day, 
+      :subsidized_hour, 
+      :last_worked_day, 
+      :he_60, 
+      :code, 
+      :he_100, 
+      :ing_and_amounts, 
+      :des_and_amounts, 
+      :aport_and_amounts, 
+      :month)
   end
+
+  private
+  def extra_parameters
+    params.require(:extra_information_for_payslip).permit(:worker_id, :concept_id, :amount, :week)
+  end  
 end

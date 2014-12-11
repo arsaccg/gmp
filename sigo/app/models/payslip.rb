@@ -9,12 +9,7 @@ class Payslip < ActiveRecord::Base
     # => DES - Descuentos
     # => APO - Aportaciones
     array_worker = array_worker.split(',').uniq
-    array_extra_info = array_extra_info.split(';')
-    i = 0
-    array_extra_info.each do |ar|
-      array_extra_info[i] = ar.split(',')
-      i+=1
-    end
+
 
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)

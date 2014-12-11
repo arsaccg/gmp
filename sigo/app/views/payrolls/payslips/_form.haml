@@ -184,6 +184,7 @@
         worker = "obrero";
         complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
+        complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         flag = false;
       }
 
@@ -207,6 +208,7 @@
         worker = "empleado";
         complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
+        complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         flag = false;
       }
 
@@ -226,7 +228,7 @@
       var amount = $('#amount').val();
 
       if (worker != "" && concept != "" && amount != ""){
-        str_item = {authenticity_token: "#{form_authenticity_token}", worker: worker, concept: concept, amount:amount};
+        str_item = {authenticity_token: "#{form_authenticity_token}", worker: worker, concept: concept, amount:amount, semana:$('#semana').val()};
         append_url_ajax('#{add_extra_info_payrolls_payslips_path}', 'more-info', str_item, 0, 'POST');
       }else{
         $.smallBox({
@@ -314,6 +316,31 @@
     });
   } 
 
+  function complete_info_tabla(url, semana, form_token){
+    $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { semana: semana, authenticity_token: form_token}
+    }).done(function( data ){
+      newOptions = [];
+      $.each(data.workers, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#workers').empty();
+      $('#workers').append(
+        $("<option></option>").attr("value", null).text("Seleccione un trabajador").attr("selected", "selected").attr("disabled", true)
+      )
+      $.each(newOptions, function(key,value){
+        $('#workers').append(
+          $("<option></option>").attr("value", value.id).text(value.name)
+        )
+      });
+    });
+  }
   function generar(){
     var worker_id = null;
     var cost_center = #{@cc.id};
