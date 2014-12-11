@@ -17,6 +17,7 @@
               %input.radiobox#e{:name=>"tworker",:type => 'radio', :value => "obrero", :onchange => "checkWorker();"}
                 %span Obrero
 
+      - actual = Time.now.strftime('%Y').to_i - 4
       %section.col.col-md-3#semanase{:style => "display:none"}
         %label.label Semana
         %select#semana.form-control.select2
@@ -25,22 +26,31 @@
             %option{:value => se[0]}
               =se[1] + ": "+ se[2].strftime("%d/%m/%Y").to_s+ " - "+ se[3].strftime("%d/%m/%Y").to_s
 
+      %section.col.col-md-2#years{:style => "display:none"}
+        %label.label Año
+        %select#year.form-control.select2
+          %option{:value=> nil, :selected => true, :disabled => true} Seleccione un año
+          -(1..10).each do |a|
+            %option{:value => "#{actual}"}= actual
+            -actual += 1
+
+
       %section.col.col-md-3#messe{:style => "display:none"}
         %label.label Mes
         %select#mes.form-control.select2
           %option{:value=> nil, :selected => true, :disabled => true} Seleccione un Mes
-          %option{:value => "Enero"} Enero
-          %option{:value => "Febrero"} Febrero
-          %option{:value => "Marzo"} Marzo
-          %option{:value => "Abril"} Abril
-          %option{:value => "Mayo"} Mayo
-          %option{:value => "Junio"} Junio
-          %option{:value => "Julio"} Julio
-          %option{:value => "Agosto"} Agosto
-          %option{:value => "Setiembre"} Setiembre
-          %option{:value => "Octubre"} Octubre
-          %option{:value => "Noviembre"} Noviembre
-          %option{:value => "Diciembre"} Diciembre
+          %option{:value => "01"} Enero
+          %option{:value => "02"} Febrero
+          %option{:value => "03"} Marzo
+          %option{:value => "04"} Abril
+          %option{:value => "05"} Mayo
+          %option{:value => "06"} Junio
+          %option{:value => "07"} Julio
+          %option{:value => "08"} Agosto
+          %option{:value => "09"} Setiembre
+          %option{:value => "10"} Octubre
+          %option{:value => "11"} Noviembre
+          %option{:value => "12"} Diciembre
 
       %section.col.col-2
         %label.label Tipo
@@ -245,6 +255,7 @@
   function checkWorker(){
     if(document.getElementById('t').checked){
       $('#messe').fadeIn('fast');
+      $('#years').fadeIn('fast');
       $('#semanase').fadeOut('fast');
       if($('#mes').val() != null){
         var semana = $('#mes').val();
@@ -254,6 +265,7 @@
       }
     }else{
       $('#messe').fadeOut('fast');
+      $('#years').fadeOut('fast');
       $('#semanase').fadeIn('fast');
       if($('#semana').val() != null){
         var semana = $('#semana').val();
@@ -370,6 +382,7 @@
       var descuentos = #{@dese};
       var aportacion = #{@ape};
       worker_id = "empleado";
+      semana = $('#year').val()+","+$('#mes').val();
     }
 
     if(document.getElementById('e').checked){

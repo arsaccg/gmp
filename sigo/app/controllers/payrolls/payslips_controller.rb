@@ -32,7 +32,8 @@ class Payrolls::PayslipsController < ApplicationController
     @ingresos.each do |ing|
       if ing.type_obrero == "Fijo"
         @ingo << ing.id.to_s
-      elsif ing.type_empleado == "Fijo"
+      end
+      if ing.type_empleado == "Fijo"
         @inge << ing.id.to_s
       end
     end
@@ -40,7 +41,8 @@ class Payrolls::PayslipsController < ApplicationController
     @descuentos.each do |des|
       if des.type_obrero == "Fijo"
         @deso << des.id.to_s
-      elsif des.type_empleado == "Fijo"
+      end
+      if des.type_empleado == "Fijo"
         @dese << des.id.to_s
       end
     end
@@ -48,7 +50,8 @@ class Payrolls::PayslipsController < ApplicationController
     @aportacion.each do |des|
       if des.type_obrero == "Fijo"
         @apo << des.id.to_s
-      elsif des.type_empleado == "Fijo"
+      end
+      if des.type_empleado == "Fijo"
         @ape << des.id.to_s
       end
     end    
@@ -234,53 +237,54 @@ class Payrolls::PayslipsController < ApplicationController
     apor = params[:arregloapor]
     @reg_n = (Time.now.to_f*1000).to_i
 
-    semana = ActiveRecord::Base.connection.execute("
-      SELECT *
-      FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
-      WHERE wc.id = " + params[:semana].to_s).first
-
-    tipo = params[:tipo]
-    @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
-    @max_hour = ActiveRecord::Base.connection.execute("
-      SELECT total
-      FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + "
-      WHERE status = 1
-      AND week_id = " + semana[0].to_s).first
-
-    if !@max_hour.nil?
-      @max_hour = @max_hour[0]
-    else
-      @max_hour = 48
-    end
     @extra_info = params[:extra]
-
     @extra_info = @extra_info.split(';')
     i = 0
     @extra_info.each do |ar|
       @extra_info[i] = ar.split(',')
       i+=1
     end
-    worker = params[:worker]
     @partes = Array.new
+    @mensaje = "fail"
 
-    if worker == "empleado"
-
-      # Future...
+    if params[:worker] == "empleado"
+      fecha = params[:semana].split(',')
+      inicio = fecha[0]+"-"+fecha[1]+"-01"
+      d = Date.new(fecha[0].to_i,fecha[1].to_i)
+      d +=42
+      d = (Date.new(d.year, d.month) - 1).strftime('%Y-%m-%d')
       
-    elsif worker == "obrero"
+      @partes = Payslip.generate_payroll_empleados(company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo])
+      @mensaje = "empleado"
+    elsif params[:worker] == "obrero"
+      semana = ActiveRecord::Base.connection.execute("
+        SELECT *
+        FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
+        WHERE wc.id = " + params[:semana].to_s).first
+
+      tipo = params[:tipo]
+      @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
+      @max_hour = ActiveRecord::Base.connection.execute("
+        SELECT total
+        FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + "
+        WHERE status = 1
+        AND week_id = " + semana[0].to_s).first
+
+      if !@max_hour.nil?
+        @max_hour = @max_hour[0]
+      else
+        @max_hour = 48
+      end      
       tareo = WeeklyWorker.where("start_date = '"+semana[2].to_s+"' AND end_date = '"+semana[3].to_s+"' AND state = 'approved'").first
       if !tareo.nil?
         wg = tareo.working_group.gsub(" ", ",")
       else
         wg = 0
       end
-          
-      @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
       if wg != 0
+        @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
         @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo])
-        @mensaje = "exito"
-      else
-        @mensaje = "fail"
+        @mensaje = "obrero"
       end
     end
     render(partial: 'workers', :layout => false)
