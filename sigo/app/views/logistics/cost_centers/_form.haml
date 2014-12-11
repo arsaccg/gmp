@@ -57,6 +57,10 @@
                 Civil
               %option{:value => "administracion", :selected => "#{@costCenter.speciality}"=="administracion"}
                 Administración
+        .row
+          %section.col.col-10
+            %label Activo
+            =f.input :active, :type => "checkbox", :label => false
           
       %footer
         -if @action !="edit"
@@ -69,6 +73,7 @@
 :javascript
   $(document).ready(function () {
     $("select").select2();
+    $("#cost_center_active").css("position","relative").css("left","0");
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));

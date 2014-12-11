@@ -674,6 +674,7 @@ ArsacLogistica::Application.routes.draw do
         post 'generate_payroll'
         post 'complete_select'
         post 'complete_select2'
+        post 'complete_select_extra'
         post 'add_extra_info'
       end
       member do

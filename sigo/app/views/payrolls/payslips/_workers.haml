@@ -1,5 +1,6 @@
--if @mensaje == "exito"
+-if @mensaje == "obrero"
   -@regsAr = Array.new
+  -@regsArEx = Array.new
   = simple_form_for([:payrolls, @pay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
     %table.table.table-striped.table-bordered.table-hover
       %thead
@@ -62,6 +63,16 @@
               -@regsAr<< @reg_n
             -@reg_n+=1
     =hidden_field_tag 'regs', @regsAr
+    -@reg_n+=1
+    -@extra_info.each do |ex|
+      -if ex.length != 0
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][worker_id]', ex[0].to_s, class: "extra-info-form-payroll"
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][concept_id]', ex[1].to_s, class: "extra-info-form-payroll"
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][amount]', ex[2].to_s, class: "extra-info-form-payroll"
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][week]', @week.to_s
+        -@regsArEx<< @reg_n
+        -@reg_n+=1
+    =hidden_field_tag 'regsEx', @regsArEx
     %footer
       %button.btn.btn-primary#save{:type => "submit", :onclick=>"part_block()"}
         %i.fa.fa-save 

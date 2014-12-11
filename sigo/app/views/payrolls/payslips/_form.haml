@@ -17,6 +17,7 @@
               %input.radiobox#e{:name=>"tworker",:type => 'radio', :value => "obrero", :onchange => "checkWorker();"}
                 %span Obrero
 
+      - actual = Time.now.strftime('%Y').to_i - 4
       %section.col.col-md-3#semanase{:style => "display:none"}
         %label.label Semana
         %select#semana.form-control.select2
@@ -25,22 +26,31 @@
             %option{:value => se[0]}
               =se[1] + ": "+ se[2].strftime("%d/%m/%Y").to_s+ " - "+ se[3].strftime("%d/%m/%Y").to_s
 
+      %section.col.col-md-2#years{:style => "display:none"}
+        %label.label Año
+        %select#year.form-control.select2
+          %option{:value=> nil, :selected => true, :disabled => true} Seleccione un año
+          -(1..10).each do |a|
+            %option{:value => "#{actual}"}= actual
+            -actual += 1
+
+
       %section.col.col-md-3#messe{:style => "display:none"}
         %label.label Mes
         %select#mes.form-control.select2
           %option{:value=> nil, :selected => true, :disabled => true} Seleccione un Mes
-          %option{:value => "Enero"} Enero
-          %option{:value => "Febrero"} Febrero
-          %option{:value => "Marzo"} Marzo
-          %option{:value => "Abril"} Abril
-          %option{:value => "Mayo"} Mayo
-          %option{:value => "Junio"} Junio
-          %option{:value => "Julio"} Julio
-          %option{:value => "Agosto"} Agosto
-          %option{:value => "Setiembre"} Setiembre
-          %option{:value => "Octubre"} Octubre
-          %option{:value => "Noviembre"} Noviembre
-          %option{:value => "Diciembre"} Diciembre
+          %option{:value => "01"} Enero
+          %option{:value => "02"} Febrero
+          %option{:value => "03"} Marzo
+          %option{:value => "04"} Abril
+          %option{:value => "05"} Mayo
+          %option{:value => "06"} Junio
+          %option{:value => "07"} Julio
+          %option{:value => "08"} Agosto
+          %option{:value => "09"} Setiembre
+          %option{:value => "10"} Octubre
+          %option{:value => "11"} Noviembre
+          %option{:value => "12"} Diciembre
 
       %section.col.col-2
         %label.label Tipo
@@ -184,6 +194,7 @@
         worker = "obrero";
         complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
+        complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         flag = false;
       }
 
@@ -207,6 +218,7 @@
         worker = "empleado";
         complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
+        complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         flag = false;
       }
 
@@ -226,7 +238,7 @@
       var amount = $('#amount').val();
 
       if (worker != "" && concept != "" && amount != ""){
-        str_item = {authenticity_token: "#{form_authenticity_token}", worker: worker, concept: concept, amount:amount};
+        str_item = {authenticity_token: "#{form_authenticity_token}", worker: worker, concept: concept, amount:amount, semana:$('#semana').val()};
         append_url_ajax('#{add_extra_info_payrolls_payslips_path}', 'more-info', str_item, 0, 'POST');
       }else{
         $.smallBox({
@@ -243,6 +255,7 @@
   function checkWorker(){
     if(document.getElementById('t').checked){
       $('#messe').fadeIn('fast');
+      $('#years').fadeIn('fast');
       $('#semanase').fadeOut('fast');
       if($('#mes').val() != null){
         var semana = $('#mes').val();
@@ -252,6 +265,7 @@
       }
     }else{
       $('#messe').fadeOut('fast');
+      $('#years').fadeOut('fast');
       $('#semanase').fadeIn('fast');
       if($('#semana').val() != null){
         var semana = $('#semana').val();
@@ -314,6 +328,47 @@
     });
   } 
 
+  function complete_info_tabla(url, semana, form_token){
+    $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { semana: semana, authenticity_token: form_token}
+    }).done(function( data ){
+      newOptions = [];
+      $.each(data.extra, function(key, value){
+        item = {};
+        item['worker_id'] = value.worker_id;
+        item['wo_name'] = value.wo_name;
+        item['concept_id'] = value.concept_id;
+        item['concept_name'] = value.concept_name;
+        item['amount'] = value.amount;
+        item['reg'] = value.reg;
+        newOptions.push(item);
+      });
+      $('#twbody').empty();
+      $.each(newOptions, function(key,value){
+        $('#twbody').append(
+          $("<tr></tr>").attr('id','tr-'+value.reg).append(
+            $("<td></td>").attr('style','display:none').append(
+              $('<input></input').attr('id','extra_'+value.reg+'_worker_id').attr('name','extra['+value.reg+'][worker_id]').val(value.worker_id),
+              $('<input></input').attr('id','extra_'+value.reg+'_concept').attr('name','extra['+value.reg+'][concept_id]').val(value.concept_id),
+              $('<input></input').attr('id','extra_'+value.reg+'_amount').attr('name','extra['+value.reg+'][amount]').val(value.amount)
+            ),
+            $("<td></td>").text(value.wo_name),
+            $("<td></td>").text(value.concept_name),
+            $("<td></td>").text(value.amount),
+            $("<td></td>").append(
+              $("<a></a>").text("X").attr("href","javascript:delete_item("+value.reg+")")
+            )
+          )
+        );
+        var hash_wca = [value.worker_id, value.concept_id, value.amount];
+        $('#array-extra').val($('#array-extra').val()+";"+hash_wca);
+        $('#array-wo').val($('#array-wo').val()+","+value.worker_id);
+      });
+    });
+  }
   function generar(){
     var worker_id = null;
     var cost_center = #{@cc.id};
@@ -327,6 +382,7 @@
       var descuentos = #{@dese};
       var aportacion = #{@ape};
       worker_id = "empleado";
+      semana = $('#year').val()+","+$('#mes').val();
     }
 
     if(document.getElementById('e').checked){
@@ -346,6 +402,7 @@
 
   function delete_item(code){
     var bor = $("#extra_" + code+"_worker_id").val()+","+$("#extra_" + code+"_concept").val()+","+$("#extra_" + code+"_amount").val();
+    console.log(bor)
     $('#array-extra').val($('#array-extra').val().replace(bor,""));
     $('#array-wo').val($('#array-wo').val().replace($("#extra_" + code+"_worker_id").val(),""));
     $("#tr-" + code).remove();

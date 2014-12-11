@@ -32,7 +32,8 @@ class Payrolls::PayslipsController < ApplicationController
     @ingresos.each do |ing|
       if ing.type_obrero == "Fijo"
         @ingo << ing.id.to_s
-      elsif ing.type_empleado == "Fijo"
+      end
+      if ing.type_empleado == "Fijo"
         @inge << ing.id.to_s
       end
     end
@@ -40,7 +41,8 @@ class Payrolls::PayslipsController < ApplicationController
     @descuentos.each do |des|
       if des.type_obrero == "Fijo"
         @deso << des.id.to_s
-      elsif des.type_empleado == "Fijo"
+      end
+      if des.type_empleado == "Fijo"
         @dese << des.id.to_s
       end
     end
@@ -48,7 +50,8 @@ class Payrolls::PayslipsController < ApplicationController
     @aportacion.each do |des|
       if des.type_obrero == "Fijo"
         @apo << des.id.to_s
-      elsif des.type_empleado == "Fijo"
+      end
+      if des.type_empleado == "Fijo"
         @ape << des.id.to_s
       end
     end    
@@ -58,11 +61,13 @@ class Payrolls::PayslipsController < ApplicationController
   def create
     flash[:error] = nil
     a = Payslip.all.last
+    
     last_code = 1
     if !a.nil?
       last_code = a.code.to_i + 1 
     end
     regs = params[:regs].split(' ')
+    regsEx = params[:regsEx].split(' ')
     regs.each do |reg|
       pay = Payslip.new
       pay.worker_id = params[:payslip][''+reg.to_s+'']['worker_id']
@@ -87,6 +92,23 @@ class Payrolls::PayslipsController < ApplicationController
           puts flash[:error].to_s + error.to_s + "  "
         end
         @pay = pay
+        render :new, layout: false 
+      end
+    end
+
+    regsEx.each do |reg|
+      extra = ExtraInformationForPayslip.new
+      extra.worker_id = params[:extra_information_for_payslip][''+reg.to_s+'']['worker_id']
+      extra.concept_id = params[:extra_information_for_payslip][''+reg.to_s+'']['concept_id']
+      extra.week = params[:extra_information_for_payslip][''+reg.to_s+'']['week']
+      extra.amount = params[:extra_information_for_payslip][''+reg.to_s+'']['amount']
+      if extra.save
+        flash[:notice] = "Se ha creado correctamente."
+      else
+        extra.errors.messages.each do |attribute, error|
+          puts flash[:error].to_s + error.to_s + "  "
+        end
+        @extra = extra
         render :new, layout: false 
       end
     end
@@ -169,6 +191,10 @@ class Payrolls::PayslipsController < ApplicationController
     @co = @concept.id
     @amount = params[:amount]
     @reg_n = (Time.now.to_f*1000).to_i
+    @week = ActiveRecord::Base.connection.execute("
+      SELECT CONCAT(name, ': ', DATE_FORMAT(start_date, '%d/%m/%Y'), ' - ', DATE_FORMAT(end_date, '%d/%m/%Y')) 
+      FROM  weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" 
+      WHERE id = " + params[:semana].to_s).first
     render(partial: 'extra', :layout => false)
   end
 
@@ -184,7 +210,23 @@ class Payrolls::PayslipsController < ApplicationController
       concepts << {'id' => wo.id.to_s, 'name' => wo.code+" - "+wo.name}
     end     
     render json: {:concepts => concepts} 
-  end  
+  end
+
+  def complete_select_extra
+    extra = Array.new
+    semana = ActiveRecord::Base.connection.execute("
+      SELECT *
+      FROM weeks_for_cost_center_" + get_company_cost_center('cost_center').to_s + " wc
+      WHERE wc.id = " + params[:semana].to_s).first
+    @reg_n = (Time.now.to_f*1000).to_i
+    @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
+    extra_info = ExtraInformationForPayslip.where("week = '"+@week.to_s+"'")
+    extra_info.each do |ei|
+      extra << {'worker_id' => ei.worker_id.to_s, 'wo_name' => ei.worker.entity.name.to_s+" "+ei.worker.entity.second_name.to_s+" "+ei.worker.entity.paternal_surname.to_s+" "+ei.worker.entity.maternal_surname.to_s, 'concept_id'=> ei.concept_id.to_s, 'concept_name'=> ei.concept.name.to_s, 'amount'=> ei.amount.to_s, 'reg'=>@reg_n}
+      @reg_n+=1
+    end
+    render json: {:extra => extra} 
+  end    
 
   def generate_payroll
     @pay = Payslip.new
@@ -195,46 +237,54 @@ class Payrolls::PayslipsController < ApplicationController
     apor = params[:arregloapor]
     @reg_n = (Time.now.to_f*1000).to_i
 
-    semana = ActiveRecord::Base.connection.execute("
-      SELECT *
-      FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
-      WHERE wc.id = " + params[:semana].to_s).first
-
-    tipo = params[:tipo]
-    @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
-    @max_hour = ActiveRecord::Base.connection.execute("
-      SELECT total
-      FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + "
-      WHERE status = 1
-      AND week_id = " + semana[0].to_s).first
-
-    if !@max_hour.nil?
-      @max_hour = @max_hour[0]
-    else
-      @max_hour = 48
+    @extra_info = params[:extra]
+    @extra_info = @extra_info.split(';')
+    i = 0
+    @extra_info.each do |ar|
+      @extra_info[i] = ar.split(',')
+      i+=1
     end
-
-    worker = params[:worker]
     @partes = Array.new
+    @mensaje = "fail"
 
-    if worker == "empleado"
-
-      # Future...
+    if params[:worker] == "empleado"
+      fecha = params[:semana].split(',')
+      inicio = fecha[0]+"-"+fecha[1]+"-01"
+      d = Date.new(fecha[0].to_i,fecha[1].to_i)
+      d +=42
+      d = (Date.new(d.year, d.month) - 1).strftime('%Y-%m-%d')
       
-    elsif worker == "obrero"
+      @partes = Payslip.generate_payroll_empleados(company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo])
+      @mensaje = "empleado"
+    elsif params[:worker] == "obrero"
+      semana = ActiveRecord::Base.connection.execute("
+        SELECT *
+        FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
+        WHERE wc.id = " + params[:semana].to_s).first
+
+      tipo = params[:tipo]
+      @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
+      @max_hour = ActiveRecord::Base.connection.execute("
+        SELECT total
+        FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + "
+        WHERE status = 1
+        AND week_id = " + semana[0].to_s).first
+
+      if !@max_hour.nil?
+        @max_hour = @max_hour[0]
+      else
+        @max_hour = 48
+      end      
       tareo = WeeklyWorker.where("start_date = '"+semana[2].to_s+"' AND end_date = '"+semana[3].to_s+"' AND state = 'approved'").first
       if !tareo.nil?
         wg = tareo.working_group.gsub(" ", ",")
       else
         wg = 0
       end
-          
-      @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
       if wg != 0
-        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, params[:extra], params[:ar_wo])
-        @mensaje = "exito"
-      else
-        @mensaje = "fuentes"
+        @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
+        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo])
+        @mensaje = "obrero"
       end
     end
     render(partial: 'workers', :layout => false)
@@ -279,6 +329,27 @@ class Payrolls::PayslipsController < ApplicationController
 
   private
   def pay_parameters
-    params.require(:payslip).permit(:worker_id, :cost_center_id, :start_date, :end_date, :days, :normal_hours, :subsidized_day, :subsidized_hour, :last_worked_day, :he_60, :code, :he_100, :ing_and_amounts, :des_and_amounts, :aport_and_amounts, :month)
+    params.require(:payslip).permit(
+      :worker_id, 
+      :cost_center_id, 
+      :start_date, 
+      :end_date, 
+      :days, 
+      :normal_hours, 
+      :subsidized_day, 
+      :subsidized_hour, 
+      :last_worked_day, 
+      :he_60, 
+      :code, 
+      :he_100, 
+      :ing_and_amounts, 
+      :des_and_amounts, 
+      :aport_and_amounts, 
+      :month)
   end
+
+  private
+  def extra_parameters
+    params.require(:extra_information_for_payslip).permit(:worker_id, :concept_id, :amount, :week)
+  end  
 end

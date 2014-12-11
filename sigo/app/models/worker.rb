@@ -16,6 +16,7 @@ class Worker < ActiveRecord::Base
   belongs_to :cost_center
   belongs_to :position_worker
   has_and_belongs_to_many :type_workdays
+  has_many :extra_information_for_payslips
 
   state_machine :state, :initial => :working do
 

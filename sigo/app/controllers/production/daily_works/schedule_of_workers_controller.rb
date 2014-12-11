@@ -58,9 +58,11 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
     totaltotal = 0
     @dias_habiles.each do |dh|
       perday = PartWorker.find_by_date_of_creation(dh)
-      day = PartWorkerDetail.where("part_worker_id = ? AND assistance LIKE 'si'", perday.id)
-      @totalperday << day.count.to_s
-      totaltotal = totaltotal + day.count
+      if !perday.nil?
+        day = PartWorkerDetail.where("part_worker_id = ? AND assistance LIKE 'si'", perday.id)
+        @totalperday << day.count.to_s
+        totaltotal = totaltotal + day.count
+      end
     end
     @totalperday << totaltotal
     render(partial: 'schedule_table', :layout => false)
