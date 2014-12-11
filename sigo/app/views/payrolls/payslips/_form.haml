@@ -324,20 +324,36 @@
       data: { semana: semana, authenticity_token: form_token}
     }).done(function( data ){
       newOptions = [];
-      $.each(data.workers, function(key, value){
+      $.each(data.extra, function(key, value){
         item = {};
-        item['name'] = value.name;
-        item['id'] = value.id;
+        item['worker_id'] = value.worker_id;
+        item['wo_name'] = value.wo_name;
+        item['concept_id'] = value.concept_id;
+        item['concept_name'] = value.concept_name;
+        item['amount'] = value.amount;
+        item['reg'] = value.reg;
         newOptions.push(item);
       });
-      $('#workers').empty();
-      $('#workers').append(
-        $("<option></option>").attr("value", null).text("Seleccione un trabajador").attr("selected", "selected").attr("disabled", true)
-      )
+      $('#twbody').empty();
       $.each(newOptions, function(key,value){
-        $('#workers').append(
-          $("<option></option>").attr("value", value.id).text(value.name)
-        )
+        $('#twbody').append(
+          $("<tr></tr>").attr('id','tr-'+value.reg).append(
+            $("<td></td>").attr('style','display:none').append(
+              $('<input></input').attr('id','extra_'+value.reg+'_worker_id').attr('name','extra['+value.reg+'][worker_id]').val(value.worker_id),
+              $('<input></input').attr('id','extra_'+value.reg+'_concept').attr('name','extra['+value.reg+'][concept_id]').val(value.concept_id),
+              $('<input></input').attr('id','extra_'+value.reg+'_amount').attr('name','extra['+value.reg+'][amount]').val(value.amount)
+            ),
+            $("<td></td>").text(value.wo_name),
+            $("<td></td>").text(value.concept_name),
+            $("<td></td>").text(value.amount),
+            $("<td></td>").append(
+              $("<a></a>").text("X").attr("href","javascript:delete_item("+value.reg+")")
+            )
+          )
+        );
+        var hash_wca = [value.worker_id, value.concept_id, value.amount];
+        $('#array-extra').val($('#array-extra').val()+";"+hash_wca);
+        $('#array-wo').val($('#array-wo').val()+","+value.worker_id);
       });
     });
   }
@@ -373,6 +389,7 @@
 
   function delete_item(code){
     var bor = $("#extra_" + code+"_worker_id").val()+","+$("#extra_" + code+"_concept").val()+","+$("#extra_" + code+"_amount").val();
+    console.log(bor)
     $('#array-extra').val($('#array-extra').val().replace(bor,""));
     $('#array-wo').val($('#array-wo').val().replace($("#extra_" + code+"_worker_id").val(),""));
     $("#tr-" + code).remove();

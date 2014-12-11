@@ -1,9 +1,9 @@
 %tr{id:  "tr-"+"#{@reg_n}"}
   %td{:style => "display:none", id: "-"+"#{@reg_n}"}
-    = text_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][worker_id]', @worker.id.to_s, class: "extra-info-form-payroll"
-    = text_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][amount]', @amount.to_s, class: "extra-info-form-payroll"
-    = text_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][concept_id]', @concept.id.to_s, class: "extra-info-form-payroll"
-    = text_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][week]', @week.to_s
+    = text_field_tag 'extra['+@reg_n.to_s+'][worker_id]', @worker.id.to_s, class: "extra-info-form-payroll"
+    = text_field_tag 'extra['+@reg_n.to_s+'][amount]', @amount.to_s, class: "extra-info-form-payroll"
+    = text_field_tag 'extra['+@reg_n.to_s+'][concept_id]', @concept.id.to_s, class: "extra-info-form-payroll"
+    = text_field_tag 'extra['+@reg_n.to_s+'][week]', @week.to_s
   %td
     = @worker.entity.name.to_s + " " + @worker.entity.second_name.to_s + " "+ @worker.entity.paternal_surname.to_s + " "+ @worker.entity.maternal_surname.to_s
   %td

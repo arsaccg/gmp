@@ -207,7 +207,23 @@ class Payrolls::PayslipsController < ApplicationController
       concepts << {'id' => wo.id.to_s, 'name' => wo.code+" - "+wo.name}
     end     
     render json: {:concepts => concepts} 
-  end  
+  end
+
+  def complete_select_extra
+    extra = Array.new
+    semana = ActiveRecord::Base.connection.execute("
+      SELECT *
+      FROM weeks_for_cost_center_" + get_company_cost_center('cost_center').to_s + " wc
+      WHERE wc.id = " + params[:semana].to_s).first
+    @reg_n = (Time.now.to_f*1000).to_i
+    @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
+    extra_info = ExtraInformationForPayslip.where("week = '"+@week.to_s+"'")
+    extra_info.each do |ei|
+      extra << {'worker_id' => ei.worker_id.to_s, 'wo_name' => ei.worker.entity.name.to_s+" "+ei.worker.entity.second_name.to_s+" "+ei.worker.entity.paternal_surname.to_s+" "+ei.worker.entity.maternal_surname.to_s, 'concept_id'=> ei.concept_id.to_s, 'concept_name'=> ei.concept.name.to_s, 'amount'=> ei.amount.to_s, 'reg'=>@reg_n}
+      @reg_n+=1
+    end
+    render json: {:extra => extra} 
+  end    
 
   def generate_payroll
     @pay = Payslip.new
@@ -267,9 +283,6 @@ class Payrolls::PayslipsController < ApplicationController
         @mensaje = "fail"
       end
     end
-    puts "--------------------------------------------------------------------------------------------------------------------------------------------------------------"
-    puts @extra_info.inspect
-    puts "--------------------------------------------------------------------------------------------------------------------------------------------------------------"
     render(partial: 'workers', :layout => false)
   end
 
