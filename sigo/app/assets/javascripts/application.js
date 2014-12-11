@@ -537,7 +537,7 @@ function bar_graph_category(div, categoria, series2, title_c, tipo, abrev, suffi
 
 
 
-/*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~ METODOS DE TOBI *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*/
+/*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~ METODOS DE TOBI *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*/
 function load_url_ondiv(url, div_name){ /*  usar este owo  */
   var url_str = url;
   var div_name = div_name;

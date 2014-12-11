@@ -2,7 +2,7 @@ class Management::ValorizationsController < ApplicationController
   #before_filter :authorize_manager
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update, :newvalorization, :changevalorization, :finalize, :show_data, :change_data_ge, :change_data_u, :change_data_r, :change_data_rnd, :change_data_rnm, :change_data_da, :change_data_aom, :report ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
-    
+
   def index
     @redir = params[:redir]
     p @redir
@@ -163,12 +163,16 @@ class Management::ValorizationsController < ApplicationController
   end
 
   def change_data_da
-    @valorization = Valorization.find(params[:id])
+    valorization_id = params[:id]
     new_value = params[:new_value]
+    index = params[:index]
 
-    @valorization.direct_advance = new_value
-    @valorization.save
-    render :show_data, layout: false
+    @requested = AmortizationByValorization.where(code: index.to_i, kind: "direct_advance", valorization_id: valorization_id)
+
+    @amortization_by_valorization = @requested.count == 0 ? AmortizationByValorization.new(code: index, kind: "direct_advance", valorization_id: valorization_id) : @requested.last
+    @amortization_by_valorization.amount = new_value
+    @amortization_by_valorization.save
+    render nothing: true
   end
 
   def change_data_aom
@@ -336,7 +340,7 @@ class Management::ValorizationsController < ApplicationController
     end
 
     ValorizationByCategory.destroy_all(valorization_id:val_id, budget_id:@valorization.budget_id)
-    @data = Inputcategory.sum_valorization_sales_total(@valorization.budget_id, val_id)
+    @data = ValorizationByCategory.sum_valorization_sales_total(@valorization.budget_id, val_id)
     
     @data.each_with_index do |k, i|
       vbc = ValorizationByCategory.new(valorization_id:val_id, category_id:k[0], amount:k[1][2], budget_id:@valorization.budget_id)
