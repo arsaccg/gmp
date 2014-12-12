@@ -408,7 +408,7 @@ class Payslip < ActiveRecord::Base
     ActiveRecord::Base.connection.execute("
       SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname ) , ar.name, af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id
       FROM part_workers pp, part_worker_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
-      WHERE pp.company_id = 1
+      WHERE pp.company_id = "+company.to_s+"
       AND ppd.part_worker_id = pp.id
       AND ppd.assistance =  'si'
       AND pp.date_of_creation BETWEEN '" + week_start.to_s + "' AND  '" + week_end.to_s + "'
