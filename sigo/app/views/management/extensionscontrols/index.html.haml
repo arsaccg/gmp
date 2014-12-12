@@ -33,7 +33,7 @@
                       = @cost_center_detail.execution_term + @aditional_term #(@project.date_max - @project.date_min + @extensionscontrol.sum(:approved_deadline).to_i).to_i rescue ' '
                       días
                     %td
-                      = l @cost_center_detail.start_date_of_work + @cost_center_detail.execution_term, format: :medium #@project.date_max
+                      = l @cost_center_detail.start_date_of_work + @cost_center_detail.execution_term - 1.days, format: :medium #@project.date_max
                       
                     %td
                       = l @cost_center_detail.start_date_of_work + @cost_center_detail.execution_term + @aditional_term - 1.days, format: :medium #@project.date_max + (@extensionscontrol.sum(:approved_deadline).to_i).days rescue ' '
@@ -90,8 +90,9 @@
                 %td
                   = ext.observation
                 %td
-                  %a.btn.btn-info.btn-xs{:href =>"#{ext.document.url}", :target => "_blank"}
-                    %i.fa.fa-clipboard
+                  - if ext.document.exists?
+                    %a.btn.btn-info.btn-xs{:href =>"#{ext.document.url}", :target => "_blank"}
+                      %i.fa.fa-clipboard
                 %td
                   %a.btn.btn-primary.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_management_extensionscontrol_path(ext)}', 'content', null, null, 'GET')"}
                     %i.fa.fa-pencil

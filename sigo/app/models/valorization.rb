@@ -79,9 +79,9 @@ class Valorization < ActiveRecord::Base
         IFNULL((measured - valorizationitems.accumulated_measured) * price, (price * measured)) AS 'saldo_costo',
         IFNULL((IFNULL(valorizationitems.accumulated_measured, 0) / measured) * 100, 100) AS 'avance'
         FROM     `itembybudgets`, `valorizationitems`, `valorizations`
-WHERE valorizationitems.itembybudget_id = itembybudgets.id
-AND valorizationitems.valorization_id = valorizations.id
-AND   `order` LIKE '" + orderi + "' AND valorizations.id = '" + valorization_id + "'"
+        WHERE valorizationitems.itembybudget_id = itembybudgets.id
+        AND valorizationitems.valorization_id = valorizations.id
+        AND   `order` LIKE '" + orderi + "' AND valorizations.id = '" + valorization_id + "'"
     
     #ActiveRecord::Base.connection.reconnect!
     #subitem = ActiveRecord::Base.connection.select_all("call test_proc('01%', '2');")

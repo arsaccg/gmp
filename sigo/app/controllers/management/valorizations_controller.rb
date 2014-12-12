@@ -110,8 +110,22 @@ class Management::ValorizationsController < ApplicationController
     @direct_advances = Advance.where("advance_type LIKE 'Directo' AND MONTH(payment_date) <= MONTH(?)", @valorization.valorization_date).order(:payment_date)
     @advances_of_materials = Advance.where("advance_type LIKE 'Materiales' AND MONTH(payment_date) <= MONTH(?)", @valorization.valorization_date).order(:payment_date)
 
-    @direct_advances_sum = @direct_advances.sum(:amount)
-    @advances_of_materials_sum = @advances_of_materials.sum(:amount)
+    @direct_advances_sum = AmortizationByValorization.where(kind: 'direct_advance', valorization_id: @valorization.id).sum(:amount)
+    @advances_of_materials_sum = AmortizationByValorization.where(kind: 'advance_of_materials', valorization_id: @valorization.id).sum(:amount)
+    p "@advances_of_materials_sum"
+    p AmortizationByValorization.where(kind: 'advance_of_materials', valorization_id: @valorization.id)
+    p @advances_of_materials_sum
+
+    @sum_direct_advances = ActiveRecord::Base.connection.execute("SELECT av.`code`, SUM(av.amount)
+      FROM amortization_by_valorizations av, valorizations v
+      WHERE av.`kind` LIKE 'direct_advance'
+      AND av.valorization_id = v.id
+      AND  MONTH(v.valorization_date) < MONTH('"+@valorization.valorization_date.to_s+"')")
+    @sum_advance_of_materials = ActiveRecord::Base.connection.execute("SELECT av.`code`, SUM(av.amount)
+      FROM amortization_by_valorizations av, valorizations v
+      WHERE av.`kind` LIKE 'advance_of_materials'
+      AND av.valorization_id = v.id
+      AND  MONTH(v.valorization_date) < MONTH('"+@valorization.valorization_date.to_s+"')")
 
     render :show_data, layout: false
   end
@@ -176,12 +190,16 @@ class Management::ValorizationsController < ApplicationController
   end
 
   def change_data_aom
-    @valorization = Valorization.find(params[:id])
+    valorization_id = params[:id]
     new_value = params[:new_value]
+    index = params[:index]
 
-    @valorization.advance_of_materials = new_value
-    @valorization.save
-    render :show_data, layout: false
+    @requested = AmortizationByValorization.where(code: index.to_i, kind: "advance_of_materials", valorization_id: valorization_id)
+
+    @amortization_by_valorization = @requested.count == 0 ? AmortizationByValorization.new(code: index, kind: "advance_of_materials", valorization_id: valorization_id) : @requested.last
+    @amortization_by_valorization.amount = new_value
+    @amortization_by_valorization.save
+    render nothing: true
   end
   ###~###
 

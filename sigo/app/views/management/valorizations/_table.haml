@@ -92,8 +92,13 @@
           %span{:id=>"item_direct_advance"}
             =@direct_advances_sum rescue 0
       -@direct_advances.each_with_index do |d, index|
-        - abv = AmortizationByValorization.where(code: d.id, kind: "direct_advance", valorization_id: @valorization.id)
-        - remainder = d.amount #- suma amortizaciones de valorizaciones anteriores
+        - abv_amount = AmortizationByValorization.where(code: d.id, kind: "direct_advance", valorization_id: @valorization.id).last.amount rescue 0.0
+        - sum_direct_advances = 0
+        - @sum_direct_advances.each do |s|
+          - if s[0] == d.id
+            - sum_direct_advances = s[1].to_f
+            - break
+        - remainder = d.amount - sum_direct_advances #- suma amortizaciones de valorizaciones anteriores
         %tr
           %td
             %span(style="padding-left: 40px;")
@@ -101,7 +106,7 @@
           %td(style="text-align: right;")
             =number_to_currency(remainder, unit: "")
           %td(style="text-align: right;")
-            %input{:type=>"text", :class=>"input-mini", :id => "item_direct_advance_#{d.id}", :name => "direct_advance_#{d.id}", :onblur => "update_data('#{igv}')", :onchange=>"change_data_da('item_direct_advance_#{d.id}', '#{remainder}')", :value => 0, :style=>"text-align: right;"}
+            %input{:type=>"text", :class=>"input-mini", :id => "item_direct_advance_#{d.id}", :name => "direct_advance_#{d.id}", :onblur => "update_data('#{igv}')", :onchange=>"change_data_da('item_direct_advance_#{d.id}', '#{remainder}')", :value => "#{abv_amount}", :style=>"text-align: right;"}
           /%input{:type=>"text", :class=>"input-mini", :id => "item_direct_advance", :name => "direct_advance", :onblur => "update_data('#{igv}')", :onchange=>"change_data_da('item_direct_advance')", :value => @valorization.direct_advance, :style=>"text-align: right;"}
       %tr
         %td(colspan="2")
@@ -113,12 +118,21 @@
             =@advances_of_materials_sum rescue 0
           /%input{:type=>"text", :class=>"input-mini", :id => "item_advance_of_materials", :name => "advance_of_materials", :onblur => "update_data('#{igv}')", :onchange=>"change_data_aom('item_advance_of_materials')", :value => @valorization.advance_of_materials, :style=>"text-align: right;"}
       -@advances_of_materials.each_with_index do |d, index|
+        - abv_amount = AmortizationByValorization.where(code: d.id, kind: "advance_of_materials", valorization_id: @valorization.id).last.amount rescue 0.0
+        - sum_advance_of_materials = 0
+        - @sum_advance_of_materials.each do |s|
+          - if s[0] == d.id
+            - sum_advance_of_materials = s[1].to_f
+            - break
+        - remainder = d.amount - sum_advance_of_materials #- suma amortizaciones de valorizaciones anteriores
         %tr
-          %td(colspan="2")
+          %td
             %span(style="padding-left: 40px;")
               ="Adelanto de Materiales #{add_zero_to_order((index+1).to_s)}"
           %td(style="text-align: right;")
-            =number_to_currency(d.amount, unit: "")
+            =number_to_currency(remainder, unit: "")
+          %td
+            %input{:type=>"text", :class=>"input-mini", :id => "item_advance_of_materials_#{d.id}", :name => "direct_advance_of_materials_#{d.id}", :onblur => "update_data('#{igv}')", :onchange=>"change_data_aom('item_advance_of_materials_#{d.id}', '#{remainder}')", :value => "#{abv_amount}", :style=>"text-align: right;"}
       %tr
         %td(colspan="2")
           %strong  
@@ -176,6 +190,7 @@
     igv = parseFloat(val_igv);
 
     set_direct_advance();
+    set_advance_of_materials();
 
     direct_cost = parseFloat($("#direct_cost").text().replace(/,/g,''));
     item_generale = parseFloat($("#item_generale").val());
@@ -244,7 +259,7 @@
     if( new_value <= max ){
       load_url_ondiv("#{change_data_da_management_valorization_path.to_s}?id=#{@valorization.id}&index=" + index + "&new_value=" + new_value, "item");
       $('#'+input_id).animate({
-        "border-color": "#ccc",
+        "border-color": "green",
       }, "fast");
     }else{
       $('#'+input_id).animate({
@@ -253,18 +268,41 @@
     }
   }
 
-  function change_data_aom(input_id){
+  function change_data_aom(input_id, num_max){
     new_value=document.getElementById(input_id).value;
-    load_url_ondiv("#{change_data_aom_management_valorization_path.to_s}?id=#{@valorization.id}&new_value=" + new_value, "item");
+    max = parseFloat(num_max);
+
+    arr = input_id.split("_");
+    index = arr[arr.length - 1];
+
+    if( new_value <= max ){
+      load_url_ondiv("#{change_data_aom_management_valorization_path.to_s}?id=#{@valorization.id}&index=" + index + "&new_value=" + new_value, "item");
+      $('#'+input_id).animate({
+        "border-color": "green",
+      }, "fast");
+    }else{
+      $('#'+input_id).animate({
+        "border-color": "red",
+      }, "fast");
+    }
   }
 
 
 
   function set_direct_advance(){
-    $("[id^='item_direct_advance_']");
-    $("#item_direct_advance");
+    sum = 0;
+    $("[id^='item_direct_advance_']").each(function(i) {
+      sum += parseFloat($( this ).val());
+    });
+    $("#item_direct_advance").text(sum + '');
   }
-
+  function set_advance_of_materials(){
+    sum = 0;
+    $("[id^='item_advance_of_materials_']").each(function(i) {
+      sum += parseFloat($( this ).val());
+    });
+    $("#item_advance_of_materials").text(sum + '');
+  }
 
 
 
