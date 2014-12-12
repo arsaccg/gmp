@@ -187,8 +187,8 @@
     $('#semana').change(function(){
       var flag = true;
       $('#twbody').empty();
-      $('#array-extra').empty();
-      $('#array-wo').empty();
+      $('#array-extra').val('');
+      $('#array-wo').val('');
       if(document.getElementById('e').checked){
         var semana = $(this).val();
         worker = "obrero";
@@ -211,8 +211,8 @@
     $('#mes').change(function(){
       var flag = true;
       $('#twbody').empty();
-      $('#array-extra').empty();
-      $('#array-wo').empty();
+      $('#array-extra').val('');
+      $('#array-wo').val('');
       if(document.getElementById('t').checked){
         var semana = $(this).val();
         worker = "empleado";

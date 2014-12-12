@@ -252,7 +252,34 @@ class Payrolls::PayslipsController < ApplicationController
       inicio = fecha[0]+"-"+fecha[1]+"-01"
       d = Date.new(fecha[0].to_i,fecha[1].to_i)
       d +=42
-      d = (Date.new(d.year, d.month) - 1).strftime('%Y-%m-%d')
+      d = (Date.new(d.year, d.month) - 1)
+      case d.strftime("%m")
+      when 1
+        @month = "Enero - " + d.strftime("%Y").to_s
+      when 2
+        @month = "Febrero - " + d.strftime("%Y").to_s
+      when 3
+        @month = "Marzo - " + d.strftime("%Y").to_s
+      when 4
+        @month = "Abril - " + d.strftime("%Y").to_s
+      when 5
+        @month = "Mayo - " + d.strftime("%Y").to_s
+      when 6
+        @month = "Junio - " + d.strftime("%Y").to_s
+      when 7
+        @month = "Julio - " + d.strftime("%Y").to_s
+      when 8
+        @month = "Agosto - " + d.strftime("%Y").to_s
+      when 9
+        @month = "Setiembre - " + d.strftime("%Y").to_s
+      when 10
+        @month = "Octubre - " + d.strftime("%Y").to_s
+      when 11
+        @month = "Noviembre - " + d.strftime("%Y").to_s
+      else
+        @month = "Diciembre - " + d.strftime("%Y").to_s
+      end
+      d = d.strftime('%Y-%m-%d')
       
       @partes = Payslip.generate_payroll_empleados(company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo])
       @mensaje = "empleado"
