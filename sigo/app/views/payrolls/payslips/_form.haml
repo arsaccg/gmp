@@ -187,14 +187,14 @@
     $('#semana').change(function(){
       var flag = true;
       $('#twbody').empty();
-      $('#array-extra').empty();
-      $('#array-wo').empty();
+      $('#array-extra').val('');
+      $('#array-wo').val('');
       if(document.getElementById('e').checked){
         var semana = $(this).val();
         worker = "obrero";
-        complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
+        complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}",worker);
         complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
-        complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
+        complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}", worker);
         flag = false;
       }
 
@@ -211,14 +211,14 @@
     $('#mes').change(function(){
       var flag = true;
       $('#twbody').empty();
-      $('#array-extra').empty();
-      $('#array-wo').empty();
+      $('#array-extra').val('');
+      $('#array-wo').val('');
       if(document.getElementById('t').checked){
-        var semana = $(this).val();
+        var semana = $(this).val()+"-"+$('#year').val();
         worker = "empleado";
-        complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
+        complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}", worker);
         complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
-        complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
+        complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}",worker);
         flag = false;
       }
 
@@ -236,9 +236,16 @@
       var worker = $('#workers').val();
       var concept = $('#conceptos').val();
       var amount = $('#amount').val();
+      if(document.getElementById('t').checked){
+        var semana = $('#mes').val()+'-'+$('#year').val();
+        console.log(semana)
+      }else{
+        var semana = $('#semana').val();
+        console.log(semana)
+      }
 
       if (worker != "" && concept != "" && amount != ""){
-        str_item = {authenticity_token: "#{form_authenticity_token}", worker: worker, concept: concept, amount:amount, semana:$('#semana').val()};
+        str_item = {authenticity_token: "#{form_authenticity_token}", worker: worker, concept: concept, amount:amount, semana: semana};
         append_url_ajax('#{add_extra_info_payrolls_payslips_path}', 'more-info', str_item, 0, 'POST');
       }else{
         $.smallBox({
@@ -258,10 +265,11 @@
       $('#years').fadeIn('fast');
       $('#semanase').fadeOut('fast');
       if($('#mes').val() != null){
-        var semana = $('#mes').val();
+        var semana = $('#mes').val()+"-"+$('#year').val();
         worker = "empleado";
         complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
+        complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}",worker);
       }
     }else{
       $('#messe').fadeOut('fast');
@@ -272,16 +280,17 @@
         worker = "obrero";
         complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
+        complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}",worker);
       }
     }
   }
 
-  function complete_infow(url, semana, form_token){
+  function complete_infow(url, semana, form_token, worker){
     $.ajax({
       type: "POST",
       url: url,
       async: false,
-      data: { semana: semana, authenticity_token: form_token}
+      data: { semana: semana, authenticity_token: form_token, worker: worker}
     }).done(function( data ){
       newOptions = [];
       $.each(data.workers, function(key, value){
@@ -328,12 +337,12 @@
     });
   } 
 
-  function complete_info_tabla(url, semana, form_token){
+  function complete_info_tabla(url, semana, form_token,worker){
     $.ajax({
       type: "POST",
       url: url,
       async: false,
-      data: { semana: semana, authenticity_token: form_token}
+      data: { semana: semana, authenticity_token: form_token, worker: worker}
     }).done(function( data ){
       newOptions = [];
       $.each(data.extra, function(key, value){
@@ -369,6 +378,7 @@
       });
     });
   }
+
   function generar(){
     var worker_id = null;
     var cost_center = #{@cc.id};
@@ -401,7 +411,7 @@
   }
 
   function delete_item(code){
-    var bor = $("#extra_" + code+"_worker_id").val()+","+$("#extra_" + code+"_concept").val()+","+$("#extra_" + code+"_amount").val();
+    var bor = $("#extra_" + code+"_worker_id").val()+","+$("#extra_" + code+"_concept_id").val()+","+$("#extra_" + code+"_amount").val();
     console.log(bor)
     $('#array-extra').val($('#array-extra').val().replace(bor,""));
     $('#array-wo').val($('#array-wo').val().replace($("#extra_" + code+"_worker_id").val(),""));

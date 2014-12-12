@@ -27,7 +27,7 @@ class Formule < ActiveRecord::Base
       const_variables.each do |c|
         concept = Concept.find_by_token(c)
         if !concept.nil?
-          formu = concept.concept_valorization
+          formu = concept.concept_valorizations
           contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
           amount = 0
           if !contract.nil?
@@ -49,7 +49,7 @@ class Formule < ActiveRecord::Base
               if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
                 amount = from_category.amount
               else
-                if formu.nil? && concept.amount.to_f != 0.0
+                if !formu.nil? && concept.amount.to_f != 0.0
                   amount = concept.amount.to_f
                 elsif formu.formula != ''
                   f_final = formu.formula # => Formula del concepto /c/
@@ -57,7 +57,7 @@ class Formule < ActiveRecord::Base
                 end
               end
             else
-              if formu.nil? && concept.amount.to_f != 0.0
+              if !formu.nil? && concept.amount.to_f != 0.0
                 amount = concept.amount.to_f
               elsif formu.formula != ''
                 f_final = formu.formula # => Formula del concepto /c/
@@ -73,7 +73,7 @@ class Formule < ActiveRecord::Base
       const_variables.each do |c|
         concept = Concept.find_by_token(c)
         if !concept.nil?
-          formu = concept.concept_valorization
+          formu = concept.concept_valorizations.where("type_worker = 'worker'").first
           contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
           amount = 0
           if !contract.nil?
@@ -95,7 +95,7 @@ class Formule < ActiveRecord::Base
               if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
                 amount = from_category.amount
               else
-                if formu.nil? && concept.amount.to_f != 0.0
+                if !formu.nil? && concept.amount.to_f != 0.0
                   amount = concept.amount.to_f
                 elsif formu.formula != ''
                   f_final = formu.formula # => Formula del concepto /c/
@@ -103,7 +103,7 @@ class Formule < ActiveRecord::Base
                 end
               end
             else
-              if formu.nil? && concept.amount.to_f != 0.0
+              if !formu.nil? && concept.amount.to_f != 0.0
                 amount = concept.amount.to_f
               elsif formu.formula != ''
                 f_final = formu.formula # => Formula del concepto /c/
@@ -119,6 +119,39 @@ class Formule < ActiveRecord::Base
 
     hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
     
+    #p ' FORMULA!!! '
+    #p calculator.inspect
+    #p main_concept
+    #p formula
+    #p calculator.solve!(hash_formulas).values[0].to_f
+    #p ' FORMULA!!! '
+    return calculator.solve!(hash_formulas).values[0].to_f
+  end
+
+  def self.translate_formules_of_employee(formula, basico, worker_id, calculator, hash_formulas, main_concept)
+    main = main_concept.tr('][', '').gsub('-','_')
+    #p ' FORMULA INGRESADA '
+    #p formula
+    #p ' FORMULA INGRESADA '
+    const_variables = formula.scan(/\[.*?\]/).delete_if {|i| i == "[remuneracion-basica]" }
+
+    const_variables.each do |c|
+      concept = Concept.find_by_token(c)
+      if !concept.nil?
+        formu = concept.concept_valorizations.where("type_worker = 'employee'").first
+        if formu.nil? && concept.amount.to_f != 0.0
+          amount = concept.amount.to_f
+        elsif formu.formula != ''
+          f_final = formu.formula # => Formula del concepto /c/
+          formula = formula.gsub(c, f_final)
+        end
+        var = concept.token.tr('][', '').gsub('-','_')
+        calculator.store(var.to_sym => amount.to_f)
+      end
+    end
+
+    hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
+
     #p ' FORMULA!!! '
     #p calculator.inspect
     #p main_concept

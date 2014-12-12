@@ -150,51 +150,108 @@ class Payrolls::PayslipsController < ApplicationController
   end
 
   def complete_select
-    @cc = CostCenter.find(get_company_cost_center('cost_center'))
-    semana = ActiveRecord::Base.connection.execute("
-      SELECT *
-      FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
-      WHERE wc.id = " + params[:semana].to_s).first
-
-    tareo = WeeklyWorker.where("start_date = '"+semana[2].to_s+"' AND end_date = '"+semana[3].to_s+"' AND state = 'approved'").first
-    if !tareo.nil?
-      wg = tareo.working_group.gsub(" ", ",")
-    else
-      wg = 0
-    end
     workers = Array.new
-    wo = ActiveRecord::Base.connection.execute("
-      SELECT ppd.worker_id, e.dni, CONCAT_WS(' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname)
-      FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
-      WHERE pp.cost_center_id = " + @cc.id.to_s + "
-      AND ppd.part_person_id = pp.id
-      AND pp.date_of_creation BETWEEN '" + semana[2].to_s + "' AND  '" + semana[3].to_s + "'
-      AND ppd.worker_id = w.id
-      AND pp.working_group_id IN ("+wg.to_s+")
-      AND w.entity_id = e.id
-      AND wa.worker_id = w.id
-      AND af.id = wa.afp_id
-      AND wc.worker_id = w.id
-      AND wc.article_id = ar.id
-      GROUP BY ppd.worker_id
-    ")
-    wo.each do |wo|
-      workers << {'id' => wo[0].to_s, 'name' => wo[1]+" - "+wo[2]}
+    if params[:worker] == "empleado"
+      fecha = params[:semana].split('-')
+      inicio = fecha[1]+"-"+fecha[0]+"-01"
+      d = Date.new(fecha[1].to_i,fecha[0].to_i)
+      d +=42
+      d = (Date.new(d.year, d.month) - 1).strftime('%Y-%m-%d')
+      wo = ActiveRecord::Base.connection.execute("
+        SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname )
+        FROM part_workers pp, part_worker_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
+        WHERE pp.company_id = "+get_company_cost_center('company').to_s+"
+        AND ppd.part_worker_id = pp.id
+        AND ppd.assistance =  'si'
+        AND pp.date_of_creation BETWEEN '" + inicio.to_s + "' AND  '" + d.to_s + "'
+        AND ppd.worker_id = w.id
+        AND w.entity_id = e.id
+        AND wa.worker_id = w.id
+        AND af.id = wa.afp_id
+        AND wc.worker_id = w.id
+        AND wc.article_id = ar.id
+        AND wc.status = 1
+        GROUP BY w.id"
+      )
+      wo.each do |wo|
+        workers << {'id' => wo[0].to_s, 'name' => wo[1]+" - "+wo[2]}
+      end
+    else
+      @cc = CostCenter.find(get_company_cost_center('cost_center'))
+      semana = ActiveRecord::Base.connection.execute("
+        SELECT *
+        FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
+        WHERE wc.id = " + params[:semana].to_s).first
+
+      tareo = WeeklyWorker.where("start_date = '"+semana[2].to_s+"' AND end_date = '"+semana[3].to_s+"' AND state = 'approved'").first
+      if !tareo.nil?
+        wg = tareo.working_group.gsub(" ", ",")
+      else
+        wg = 0
+      end
+      wo = ActiveRecord::Base.connection.execute("
+        SELECT ppd.worker_id, e.dni, CONCAT_WS(' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname)
+        FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
+        WHERE pp.cost_center_id = " + @cc.id.to_s + "
+        AND ppd.part_person_id = pp.id
+        AND pp.date_of_creation BETWEEN '" + semana[2].to_s + "' AND  '" + semana[3].to_s + "'
+        AND ppd.worker_id = w.id
+        AND pp.working_group_id IN ("+wg.to_s+")
+        AND w.entity_id = e.id
+        AND wa.worker_id = w.id
+        AND af.id = wa.afp_id
+        AND wc.worker_id = w.id
+        AND wc.article_id = ar.id
+        GROUP BY ppd.worker_id
+      ")
+      wo.each do |wo|
+        workers << {'id' => wo[0].to_s, 'name' => wo[1]+" - "+wo[2]}
+      end
     end
     render json: {:workers => workers}
   end
 
   def add_extra_info
+    fecha = params[:semana].split('-')
+    if fecha.length == 2
+      case fecha[0].to_i
+      when 1
+        @week = "Enero - " + fecha[1].to_s
+      when 2
+        @week = "Febrero - " + fecha[1].to_s
+      when 3
+        @week = "Marzo - " + fecha[1].to_s
+      when 4
+        @week = "Abril - " + fecha[1].to_s
+      when 5
+        @week = "Mayo - " + fecha[1].to_s
+      when 6
+        @week = "Junio - " + fecha[1].to_s
+      when 7
+        @week = "Julio - " + fecha[1].to_s
+      when 8
+        @week = "Agosto - " + fecha[1].to_s
+      when 9
+        @week = "Setiembre - " + fecha[1].to_s
+      when 10
+        @week = "Octubre - " + fecha[1].to_s
+      when 11
+        @week = "Noviembre - " + fecha[1].to_s
+      else
+        @week = "Diciembre - " + fecha[1].to_s
+      end
+    else  
+      @week = ActiveRecord::Base.connection.execute("
+        SELECT CONCAT(name, ': ', DATE_FORMAT(start_date, '%d/%m/%Y'), ' - ', DATE_FORMAT(end_date, '%d/%m/%Y')) 
+        FROM  weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" 
+        WHERE id = " + params[:semana].to_s).first
+    end
     @worker = Worker.find(params[:worker])
     @wo = @worker.id
     @concept = Concept.find(params[:concept])
     @co = @concept.id
     @amount = params[:amount]
     @reg_n = (Time.now.to_f*1000).to_i
-    @week = ActiveRecord::Base.connection.execute("
-      SELECT CONCAT(name, ': ', DATE_FORMAT(start_date, '%d/%m/%Y'), ' - ', DATE_FORMAT(end_date, '%d/%m/%Y')) 
-      FROM  weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" 
-      WHERE id = " + params[:semana].to_s).first
     render(partial: 'extra', :layout => false)
   end
 
@@ -214,16 +271,20 @@ class Payrolls::PayslipsController < ApplicationController
 
   def complete_select_extra
     extra = Array.new
-    semana = ActiveRecord::Base.connection.execute("
-      SELECT *
-      FROM weeks_for_cost_center_" + get_company_cost_center('cost_center').to_s + " wc
-      WHERE wc.id = " + params[:semana].to_s).first
-    @reg_n = (Time.now.to_f*1000).to_i
-    @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
-    extra_info = ExtraInformationForPayslip.where("week = '"+@week.to_s+"'")
-    extra_info.each do |ei|
-      extra << {'worker_id' => ei.worker_id.to_s, 'wo_name' => ei.worker.entity.name.to_s+" "+ei.worker.entity.second_name.to_s+" "+ei.worker.entity.paternal_surname.to_s+" "+ei.worker.entity.maternal_surname.to_s, 'concept_id'=> ei.concept_id.to_s, 'concept_name'=> ei.concept.name.to_s, 'amount'=> ei.amount.to_s, 'reg'=>@reg_n}
-      @reg_n+=1
+    if params[:worker] == "empleado"
+
+    else
+      semana = ActiveRecord::Base.connection.execute("
+        SELECT *
+        FROM weeks_for_cost_center_" + get_company_cost_center('cost_center').to_s + " wc
+        WHERE wc.id = " + params[:semana].to_s).first
+      @reg_n = (Time.now.to_f*1000).to_i
+      @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
+      extra_info = ExtraInformationForPayslip.where("week = '"+@week.to_s+"'")
+      extra_info.each do |ei|
+        extra << {'worker_id' => ei.worker_id.to_s, 'wo_name' => ei.worker.entity.name.to_s+" "+ei.worker.entity.second_name.to_s+" "+ei.worker.entity.paternal_surname.to_s+" "+ei.worker.entity.maternal_surname.to_s, 'concept_id'=> ei.concept_id.to_s, 'concept_name'=> ei.concept.name.to_s, 'amount'=> ei.amount.to_s, 'reg'=>@reg_n}
+        @reg_n+=1
+      end
     end
     render json: {:extra => extra} 
   end    
@@ -252,7 +313,34 @@ class Payrolls::PayslipsController < ApplicationController
       inicio = fecha[0]+"-"+fecha[1]+"-01"
       d = Date.new(fecha[0].to_i,fecha[1].to_i)
       d +=42
-      d = (Date.new(d.year, d.month) - 1).strftime('%Y-%m-%d')
+      d = (Date.new(d.year, d.month) - 1)
+      case d.strftime("%m")
+      when 1
+        @month = "Enero - " + d.strftime("%Y").to_s
+      when 2
+        @month = "Febrero - " + d.strftime("%Y").to_s
+      when 3
+        @month = "Marzo - " + d.strftime("%Y").to_s
+      when 4
+        @month = "Abril - " + d.strftime("%Y").to_s
+      when 5
+        @month = "Mayo - " + d.strftime("%Y").to_s
+      when 6
+        @month = "Junio - " + d.strftime("%Y").to_s
+      when 7
+        @month = "Julio - " + d.strftime("%Y").to_s
+      when 8
+        @month = "Agosto - " + d.strftime("%Y").to_s
+      when 9
+        @month = "Setiembre - " + d.strftime("%Y").to_s
+      when 10
+        @month = "Octubre - " + d.strftime("%Y").to_s
+      when 11
+        @month = "Noviembre - " + d.strftime("%Y").to_s
+      else
+        @month = "Diciembre - " + d.strftime("%Y").to_s
+      end
+      d = d.strftime('%Y-%m-%d')
       
       @partes = Payslip.generate_payroll_empleados(company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo])
       @mensaje = "empleado"

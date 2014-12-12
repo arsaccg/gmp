@@ -13,6 +13,7 @@ class Payrolls::ConceptsController < ApplicationController
 
   def new
     @con = Concept.new
+    @reg_n = ((Time.now.to_f)*100).to_i
     @condeTrab = Concept.where("code LIKE '2%'")
     @condeEmp = Concept.where("code LIKE '3%'")
     @date_week = Time.now.strftime('%Y-%m-%d')
@@ -149,6 +150,7 @@ class Payrolls::ConceptsController < ApplicationController
         :date_week,
         :cost_center_id,
         :formula,
+        :type_worker,
         :_destroy
       ]
     )
