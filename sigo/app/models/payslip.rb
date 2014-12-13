@@ -269,13 +269,14 @@ class Payslip < ActiveRecord::Base
               end
             end
           end
-          afp = Afp.find(row[12]).afp_details.where("date_entry BETWEEN '"+week_start.to_s+"' AND '"+ week_end.to_s+"'").first
+          afp_d = Afp.find(row[12])
+          afp = afp_d.afp_details.where("date_entry BETWEEN '"+week_start.to_s+"' AND '"+ week_end.to_s+"'").first
           if afp.nil?
             afp = Afp.find(row[12])
           end
 
           if !con.nil?
-            if afp.type_of_afp == "SNP"
+            if afp_d.type_of_afp == "SNP"
               if con.name == 'ORG. NAC. DE PENSIONES'
                 total = total - amount.to_f
                 amount = rem_basic * afp.contribution_fp.to_f/100
@@ -402,7 +403,7 @@ class Payslip < ActiveRecord::Base
     @comp_name = Company.find(company).short_name
     uit = FinancialVariable.find_by_name("UIT").value * 7
     @result[0] = headers
-    @result[0] << "REMUNERACIÓN BÁSICA"
+    @result[0] << "SUELDO BÁSICO"
     amount = 0
     apoNa = Array.new
     ActiveRecord::Base.connection.execute("
