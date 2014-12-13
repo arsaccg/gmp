@@ -112,9 +112,6 @@ class Management::ValorizationsController < ApplicationController
 
     @direct_advances_sum = AmortizationByValorization.where(kind: 'direct_advance', valorization_id: @valorization.id).sum(:amount)
     @advances_of_materials_sum = AmortizationByValorization.where(kind: 'advance_of_materials', valorization_id: @valorization.id).sum(:amount)
-    p "@advances_of_materials_sum"
-    p AmortizationByValorization.where(kind: 'advance_of_materials', valorization_id: @valorization.id)
-    p @advances_of_materials_sum
 
     @sum_direct_advances = ActiveRecord::Base.connection.execute("SELECT av.`code`, SUM(av.amount)
       FROM amortization_by_valorizations av, valorizations v
@@ -243,7 +240,7 @@ class Management::ValorizationsController < ApplicationController
 
   def generate_report
     val_id = params[:val_id]
-    # ReportValorization.delete_all
+    ReportValorization.destroy_all(valorization_id: val_id)
     @valorization = Valorization.find(val_id)
     @itembybudgets = Itembybudget.where('CHAR_LENGTH(`order`) > 3 AND budget_id = ?', @valorization.budget_id)
     @budget = Budget.where(:id => @valorization.budget_id).first

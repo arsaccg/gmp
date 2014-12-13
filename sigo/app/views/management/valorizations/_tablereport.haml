@@ -37,9 +37,13 @@
         %td{class: "#{get_color_by_order(rr.order)} #{is_strong(rr.con_measured)}"}
           %span(style="color:transparent;")
             ='_'*(rr.order.length-2)
-          %a{:href => "javascript:toogle_three('#{get_clasification_by_order(rr.order+'.00')}', '#{rr.order}');", class: "#{is_strong(rr.con_measured)}"}
+          - if rr.con_measured != nil && rr.con_measured > 0
             = rr.order
             = rr.description
+          - else
+            %a{:href => "javascript:toogle_three('#{get_clasification_by_order(rr.order+'.00')}', '#{rr.order}');", class: "#{is_strong(rr.con_measured)}"}
+              = rr.order
+              = rr.description
         %td{class: "#{is_strong(rr.con_measured)}"}
           = rr.price == 0 ? '-' : number_to_currency( rr.price, :unit=>'' )
         %td{class: "#{is_strong(rr.con_measured)}"}
