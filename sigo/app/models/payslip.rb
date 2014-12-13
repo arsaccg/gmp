@@ -531,13 +531,15 @@ class Payslip < ActiveRecord::Base
             end
           end
           total += amount.to_f
-          afp = Afp.find(row[7]).afp_details.where("date_entry BETWEEN '"+week_start.to_s+"' AND '"+ week_end.to_s+"'").first
+
+          afp_d = Afp.find(row[7])
+          afp = afp_d.afp_details.where("date_entry BETWEEN '"+week_start.to_s+"' AND '"+ week_end.to_s+"'").first
           if afp.nil?
             afp = Afp.find(row[7])
           end
 
           if !con.nil?
-            if afp.type_of_afp == "SNP"
+            if afp_d.type_of_afp == "SNP"
               if con.name == 'ORG. NAC. DE PENSIONES'
                 total = total - amount.to_f
                 amount = rem_basic * afp.contribution_fp.to_f/100
