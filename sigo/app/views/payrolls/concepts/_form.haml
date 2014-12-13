@@ -257,7 +257,7 @@
                     %tbody#summary_valorization_items
                       - if @action == 'edit'
                         %tr
-                          - if !@con.concept_valorizations.where('type_worker = "employee"').nil?
+                          - if !@con.concept_valorizations.where('type_worker = "employee"').first.nil?
                             %td{ :style => "display:none" }
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][id]', @con.concept_valorizations.where('type_worker = "employee"').first.id
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][concept_id]', @con.id

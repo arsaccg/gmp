@@ -33,9 +33,9 @@
               %tr
                 %th Nombre
                 %th Código
-                %th Porcentaje
-                %th Monto
                 %th Tope
+                %th Con. Obrero
+                %th Con. Empleado
                 %th Estado
                 %th Acciones
             %tbody
@@ -47,20 +47,14 @@
                     =# con.code[1,con.code.length].to_s
                     = con.code.to_s
                   %td
-                    - if con.percentage != nil
-                      = con.percentage.to_s + "%"
-                    -else
-                      ="--"
-                  %td
-                    - if con.amount != nil
-                      = con.amount.to_s
-                    -else
-                      ="--"
-                  %td
                     - if con.top != nil
                       = con.top.to_s
                     -else
                       ="--"
+                  %td
+                    = con.type_obrero.to_s
+                  %td
+                    = con.type_empleado.to_s
                   %td
                     - if con.status==1
                       %span.label.label-success{"style"=>"background-color: #25CA25;color:white;text-align:center;width:100px;font-weight:bold;"} Activo

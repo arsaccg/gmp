@@ -144,7 +144,7 @@ class Payrolls::ConceptsController < ApplicationController
         :status,
         :_destroy
       ],
-      concept_valorization_attributes: [
+      concept_valorizations_attributes: [
         :id,
         :concept_id,
         :date_week,
