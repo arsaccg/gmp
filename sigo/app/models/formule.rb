@@ -117,7 +117,13 @@ class Formule < ActiveRecord::Base
       end
     end
 
-    hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
+    f_s= formula
+    formula.scan(/\[.*?\]/).each do |a|
+      c = a.tr('][', '').gsub('-','_')
+      f_s = f_s.to_s.gsub(a,c)
+    end
+
+    hash_formulas[main.to_sym] = f_s
     
     #p ' FORMULA!!! '
     #p calculator.inspect
@@ -149,16 +155,20 @@ class Formule < ActiveRecord::Base
         calculator.store(var.to_sym => amount.to_f)
       end
     end
+    f_s= formula
+    formula.scan(/\[.*?\]/).each do |a|
+      c = a.tr('][', '').gsub('-','_')
+      f_s = f_s.to_s.gsub(a,c)
+    end
 
-    hash_formulas[main.to_sym] = formula.tr('][', '').gsub('-','_')
+    hash_formulas[main.to_sym] = f_s
 
-    p ' FORMULA!!! '
-    p hash_formulas
-    p calculator.inspect
-    p main_concept
-    p formula
-    p calculator.solve!(hash_formulas).values
-    p ' FORMULA!!! '
+    #p ' FORMULA!!! '
+    #p calculator.inspect
+    #p main_concept
+    #p formula
+    #p calculator.solve!(hash_formulas).values[0].to_f
+    #p ' FORMULA!!! '
     return calculator.solve!(hash_formulas).values[0].to_f
   end
 end
