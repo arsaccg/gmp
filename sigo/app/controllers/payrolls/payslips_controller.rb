@@ -72,8 +72,10 @@ class Payrolls::PayslipsController < ApplicationController
       pay = Payslip.new
       pay.worker_id = params[:payslip][''+reg.to_s+'']['worker_id']
       pay.cost_center_id = params[:payslip][''+reg.to_s+'']['cost_center_id']
+      pay.company_id = params[:payslip][''+reg.to_s+'']['company_id']
       pay.week = params[:payslip][''+reg.to_s+'']['week']
       pay.days = params[:payslip][''+reg.to_s+'']['days']
+      pay.month = params[:payslip][''+reg.to_s+'']['month']
       pay.normal_hours = params[:payslip][''+reg.to_s+'']['normal_hours']
       pay.subsidized_day = params[:payslip][''+reg.to_s+'']['subsidized_day']
       pay.subsidized_hour = params[:payslip][''+reg.to_s+'']['subsidized_hour']
@@ -272,19 +274,45 @@ class Payrolls::PayslipsController < ApplicationController
   def complete_select_extra
     extra = Array.new
     if params[:worker] == "empleado"
-
+      fecha = params[:semana].split("-")
+      case fecha[0].to_i
+      when 1
+        @week = "Enero - " + fecha[1].to_s
+      when 2
+        @week = "Febrero - " + fecha[1].to_s
+      when 3
+        @week = "Marzo - " + fecha[1].to_s
+      when 4
+        @week = "Abril - " + fecha[1].to_s
+      when 5
+        @week = "Mayo - " + fecha[1].to_s
+      when 6
+        @week = "Junio - " + fecha[1].to_s
+      when 7
+        @week = "Julio - " + fecha[1].to_s
+      when 8
+        @week = "Agosto - " + fecha[1].to_s
+      when 9
+        @week = "Setiembre - " + fecha[1].to_s
+      when 10
+        @week = "Octubre - " + fecha[1].to_s
+      when 11
+        @week = "Noviembre - " + fecha[1].to_s
+      else
+        @week = "Diciembre - " + fecha[1].to_s
+      end
     else
       semana = ActiveRecord::Base.connection.execute("
         SELECT *
         FROM weeks_for_cost_center_" + get_company_cost_center('cost_center').to_s + " wc
         WHERE wc.id = " + params[:semana].to_s).first
-      @reg_n = (Time.now.to_f*1000).to_i
       @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
-      extra_info = ExtraInformationForPayslip.where("week = '"+@week.to_s+"'")
-      extra_info.each do |ei|
-        extra << {'worker_id' => ei.worker_id.to_s, 'wo_name' => ei.worker.entity.name.to_s+" "+ei.worker.entity.second_name.to_s+" "+ei.worker.entity.paternal_surname.to_s+" "+ei.worker.entity.maternal_surname.to_s, 'concept_id'=> ei.concept_id.to_s, 'concept_name'=> ei.concept.name.to_s, 'amount'=> ei.amount.to_s, 'reg'=>@reg_n}
-        @reg_n+=1
-      end
+    end
+    @reg_n = (Time.now.to_f*1000).to_i
+    extra_info = ExtraInformationForPayslip.where("week = '"+@week.to_s+"'")
+    extra_info.each do |ei|
+      extra << {'worker_id' => ei.worker_id.to_s, 'wo_name' => ei.worker.entity.name.to_s+" "+ei.worker.entity.second_name.to_s+" "+ei.worker.entity.paternal_surname.to_s+" "+ei.worker.entity.maternal_surname.to_s, 'concept_id'=> ei.concept_id.to_s, 'concept_name'=> ei.concept.name.to_s, 'amount'=> ei.amount.to_s, 'reg'=>@reg_n}
+      @reg_n+=1
     end
     render json: {:extra => extra} 
   end    
@@ -292,7 +320,7 @@ class Payrolls::PayslipsController < ApplicationController
   def generate_payroll
     @pay = Payslip.new
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
-    company_id = get_company_cost_center('company')
+    @company_id = get_company_cost_center('company')
     ing = params[:arregloin]
     des = params[:arreglodes]
     apor = params[:arregloapor]
@@ -342,7 +370,7 @@ class Payrolls::PayslipsController < ApplicationController
       end
       d = d.strftime('%Y-%m-%d')
       
-      @partes = Payslip.generate_payroll_empleados(company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo])
+      @partes = Payslip.generate_payroll_empleados(@company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo])
       @mensaje = "empleado"
     elsif params[:worker] == "obrero"
       semana = ActiveRecord::Base.connection.execute("

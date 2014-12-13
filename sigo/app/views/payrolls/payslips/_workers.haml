@@ -157,7 +157,7 @@
             %tr
               %td
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][worker_id]', pars[0]
-                = hidden_field_tag 'payslip['+@reg_n.to_s+'][cost_center_id]', @cc.id.to_s
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][company_id]', @company_id.to_s
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][month]', @month.to_s
                 = pars[1].to_s
               %td
@@ -177,7 +177,7 @@
                 = pars[8].to_i
               -(0..pars.count-10).each do |i|
                 -j=i+9
-                -p=j+1
+                -p=j-1
                 %td{ :style => 'text-align: right' }
                   -if @flag == 0
                     = hidden_field_tag 'payslip['+@reg_n.to_s+'][ing_and_amounts]['+@partes[0][p].to_s.downcase.parameterize.gsub("-","_").to_s+']', pars[j].to_f.round(4).round(2)
@@ -199,7 +199,7 @@
         = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][worker_id]', ex[0].to_s, class: "extra-info-form-payroll"
         = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][concept_id]', ex[1].to_s, class: "extra-info-form-payroll"
         = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][amount]', ex[2].to_s, class: "extra-info-form-payroll"
-        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][week]', @week.to_s
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][week]', @month.to_s
         -@regsArEx<< @reg_n
         -@reg_n+=1
     =hidden_field_tag 'regsEx', @regsArEx
