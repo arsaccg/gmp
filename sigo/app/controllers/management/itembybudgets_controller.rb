@@ -8,7 +8,7 @@ class Management::ItembybudgetsController < ApplicationController
   def filter_by_budget 
     #@total_budget = Itembybudget.where(:budget_id => params[:budget_id]).sum()
     @budget_id = params[:budget_id]
-  	@itembybudgets = Itembybudget.where(:budget_id=>params[:budget_id]).order(:order)
+  	@itembybudgets = Itembybudget.where(:budget_id=>@budget_id).order(:order)
   	render :index, :layout => false
   end
 
@@ -36,6 +36,27 @@ class Management::ItembybudgetsController < ApplicationController
   end
 
   def show
+  end
+
+  def edit
+    @itembybudget = Itembybudget.find(params[:id])
+    budget = Budget.find(@itembybudget.budget_id)
+    @cod_budget = budget.cod_budget[0..6]
+
+    @items = Item.where("item_code LIKE '____________'").group(:item_code).order(:item_code) + Item.where("id = ?", @itembybudget.item_id) #167858
+    #@item = Item.find(@itembybudget.item_id)
+    
+    #@item_id = @item.description == "REGISTRO RESTRINGIDO" ? Item.where(description: "REGISTRO RESTRINGIDO", cost_center_id: get_company_cost_center('cost_center')).first.id : @item.id
+    #p "@item_id+~~~~~~~~~~~~~~~~~~~~+"
+    #p @item_id
+    render :edit, layout: false
+  end
+
+  def update
+    @itembybudget = Itembybudget.find(params[:id])  
+    @itembybudget.update_attributes(itembybudget_parameters)
+    #render :administrate_budget, layout: false
+    redirect_to :controller=>'budgets', :action => 'get_budget_by_project'
   end
 
   private

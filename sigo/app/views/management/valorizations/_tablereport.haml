@@ -13,23 +13,23 @@
         %td
         %td
           %strong
-            =rr.con_amount
+            =number_to_currency( rr.con_amount, :unit=>'' )
         %td
         %td
           %strong
-            =rr.pre_amount
+            =number_to_currency( rr.pre_amount, :unit=>'' )
         %td
         %td
           %strong
-            =rr.act_amount
+            =number_to_currency( rr.act_amount, :unit=>'' )
         %td
         %td
           %strong
-            =rr.acc_amount
+            =number_to_currency( rr.acc_amount, :unit=>'' )
         %td
         %td
           %strong
-            =rr.rem_amount
+            =number_to_currency( rr.rem_amount, :unit=>'' )
         %td
           %strong
             = "#{rr.advance.round(2)} %"

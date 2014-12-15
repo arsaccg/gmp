@@ -23,6 +23,8 @@
             %a.red{:href=>"javascript:filter_by_budget_and_item('#{itembudget.order.gsub('.','d')}', '" + filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s + "?budget_id=" + @budget_id + "&item_id=" + itembudget.item_id.to_s + "&order=" + order_str + "');"}
               %strong
                 = get_title_or_description(itembudget)
+            %a{href: "javascript:load_url_ondiv('#{edit_management_itembybudget_path(itembudget)}', 'right-area')"}
+              %i.fa.fa-pencil
           %td(colspan="3" style="text-align: right;")
             - if itembudget.measured.to_i == 0 
               %strong.red
@@ -40,6 +42,8 @@
               - measured = itembudget.measured
             %a{:href=>"javascript:filter_by_budget_and_item('#{itembudget.order.gsub('.','d')}', '" + filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s + "?budget_id=" + @budget_id + "&item_id=" + itembudget.item_id.to_s + "&order=" + order_str + "&measured=" + measured.to_s + "');", class: measured == 0 ? "green" : ""}
               = get_title_or_description(itembudget)
+            %a{href: "javascript:load_url_ondiv('#{edit_management_itembybudget_path(itembudget)}', 'right-area')"}
+              %i.fa.fa-pencil
           - if itembudget.measured.to_f == 0
             - @var_cost = number_with_precision(get_total_cost(itembudget.order, itembudget.budget_id).to_f, :precision => 2).to_s
             %td(colspan="3" style="text-align: right;") 

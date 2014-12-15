@@ -40,7 +40,7 @@
                     %td=worker.entity.paternal_surname.to_s + ' ' + worker.entity.maternal_surname.to_s + ', ' + worker.entity.name.to_s + ' ' + worker.entity.second_name.to_s
                     %td.assistance
                       %label.radio-inline
-                        %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][assistance]', :type => 'radio', :value => "si", onchange: 'activatereasonlack(this);'}
+                        %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][assistance]', :type => 'radio', :value => "si", onchange: 'activatereasonlack(this);', :checked => true}
                         %span Si
                       %label.radio-inline
                         %input.radiobox{:name =>'part_worker[part_worker_details_attributes][' + worker.id.to_s + '][assistance]', :type => 'radio', :value => "no", onchange: 'activatereasonlack(this);'}
