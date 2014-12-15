@@ -95,7 +95,7 @@ class Payslip < ActiveRecord::Base
       total += rem_basic
 
       if !ing.nil?
-        ing.delete("1") # => Removiendo la Remuneracion Basica de todos los Ingresos.
+        ing.delete(1) # => Removiendo la Remuneracion Basica de todos los Ingresos.
         ing.each do |ing|
           con = nil
           hash_formulas = Hash.new
@@ -199,7 +199,6 @@ class Payslip < ActiveRecord::Base
           @result[0] << "Ingresos Totales"
         end
       end
-
       if !des.nil?
         des.each do |de|
           flag_afp = true
@@ -210,7 +209,7 @@ class Payslip < ActiveRecord::Base
             @result[0] << con.name.to_s
           end
 
-          if con.name == 'APORTE FONDO PENSIONES' || con.name == 'PRIMA DE SEGURO' || con.name == 'COMISION FIJA AFP' || con.name == 'AFP SEGURO RIESGO' || con.name == '%5ta CAT%' || con.name == 'ORG. NAC. DE PENSIONES'
+          if con.name == 'APORTE FONDO PENSIONES' || con.name == 'PRIMA DE SEGURO' || con.name == 'COMISION FIJA AFP' || con.name == 'AFP SEGURO RIESGO' || con.name == 'IMPTO. RENT. 5ta CAT.' || con.name == 'ORG. NAC. DE PENSIONES'
             flag_afp = false
           end
           contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => de).first
@@ -319,14 +318,20 @@ class Payslip < ActiveRecord::Base
               end          
               total += amount.to_f
 
-            elsif con.name == '%5ta CAT%'
+            elsif con.name == 'IMPTO. RENT. 5ta CAT.'
               total -= amount
               bruto = total1*14*4
               if bruto > uit7 && bruto < uit27
-                amount = (bruto - uit)*0.15/12/4
-
-                amount = 0
-              end                
+                amount = (bruto - uit7)*0.15/12/4
+              elsif bruto > uit27 && bruto < uit54
+                dif = bruto - uit7
+                amount = uit7*0.15/12/4
+                amount += (bruto - uit7)*0.21/12/4
+              elsif bruto > uit54
+                amount = uit7*0.15/12/4
+                amount = (uit27-uit7)*0.21/12/4
+                amount += (bruto - uit27 - uit7)*0.3/12/4
+              end
             end            
           end
           if flag_extra
@@ -386,6 +391,7 @@ class Payslip < ActiveRecord::Base
       end
       array_worker.delete(row[0])
       @i+=1
+
     end
 
     return @result
@@ -404,7 +410,9 @@ class Payslip < ActiveRecord::Base
     total_days = 30
     @i = 1
     @comp_name = Company.find(company).short_name
-    uit = FinancialVariable.find_by_name("UIT").value * 7
+    uit7 = FinancialVariable.find_by_name("UIT").value * 7
+    uit27 = FinancialVariable.find_by_name("UIT").value * 27
+    uit54 = FinancialVariable.find_by_name("UIT").value * 54
     @result[0] = headers
     @result[0] << "SUELDO BÁSICO"
     amount = 0
@@ -444,7 +452,7 @@ class Payslip < ActiveRecord::Base
       end
       if flag_extra
         array_extra_info.each do |ar|
-          if ar[1].to_i == 1
+          if ar[1].to_i == 1 && ar[0].to_i == row[0].to_i
             rem_basic = rem_basic.to_f + ar[2].to_f
           end
         end
@@ -462,7 +470,7 @@ class Payslip < ActiveRecord::Base
       total += rem_basic
 
       if !ing.nil?
-        ing.delete("1") # => Removiendo la Remuneracion Basica de todos los Ingresos.
+        ing.delete(1) # => Removiendo la Remuneracion Basica de todos los Ingresos.
         ing.each do |ing|
           con = nil
           hash_formulas = Hash.new
@@ -495,7 +503,7 @@ class Payslip < ActiveRecord::Base
           #end
           if flag_extra
             array_extra_info.each do |ar|
-              if ar[1].to_i == ing.to_i
+              if ar[1].to_i == ing.to_i && ar[0].to_i == row[0].to_i
                 total-=amount
                 amount = amount.to_f + ar[2].to_f
                 total += amount
@@ -513,7 +521,6 @@ class Payslip < ActiveRecord::Base
           @result[0] << "Ingresos Totales"
         end
       end
-
       if !des.nil?
         des.each do |de|
           flag_afp = true
@@ -524,7 +531,7 @@ class Payslip < ActiveRecord::Base
             @result[0] << con.name.to_s
           end
 
-          if con.name == 'APORTE FONDO PENSIONES' || con.name == 'PRIMA DE SEGURO' || con.name == 'COMISION FIJA AFP' || con.name == 'AFP SEGURO RIESGO' || con.name == '%5ta CAT%' || con.name == 'ORG. NAC. DE PENSIONES'
+          if con.name == 'APORTE FONDO PENSIONES' || con.name == 'PRIMA DE SEGURO' || con.name == 'COMISION FIJA AFP' || con.name == 'AFP SEGURO RIESGO' || con.name == 'IMPTO. RENT. 5ta CAT.' || con.name == 'ORG. NAC. DE PENSIONES'
             flag_afp = false
           end
           amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = 'employee'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
@@ -584,14 +591,19 @@ class Payslip < ActiveRecord::Base
               end          
               total += amount.to_f
 
-            elsif con.name == '%5ta CAT%'
-              total -=amount
-              bruta = amount*14
-              if bruta > uit
-                amount = (bruta - uit)*0.15/12
-              else
-                amount = 0
-              end                
+            elsif con.name == 'IMPTO. RENT. 5ta CAT.'
+              total -= amount
+              bruto = total1*14*4
+              if bruto > uit7 && bruto < uit27
+                amount = (bruto - uit7)*0.15/12/4
+              elsif bruto > uit27 && bruto < uit54
+                dif = bruto - uit7
+                amount = uit7*0.15/12/4
+                amount += (bruto - uit7)*0.21/12/4
+              elsif bruto > uit54
+                amount = uit27*0.21/12/4
+                amount += (bruto - uit27)*0.3/12/4
+              end              
             end            
           end
           if flag_extra
@@ -630,7 +642,7 @@ class Payslip < ActiveRecord::Base
 
           if flag_extra
             array_extra_info.each do |ar|
-              if ar[1].to_i == ap.to_i
+              if ar[1].to_i == ap.to_i && ar[0].to_i == row[0].to_i
                 total -= amount
                 amount = amount.to_f + ar[2].to_f
                 total += amount
@@ -645,6 +657,8 @@ class Payslip < ActiveRecord::Base
           @result[0] << "Aportaciones Totales"
         end
       end
+
+      array_worker.delete(row[0])
       @i+=1
     end
 

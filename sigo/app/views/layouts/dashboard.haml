@@ -781,9 +781,14 @@
                     %i.fa.fa-lg.fa-fw.fa-list-alt
                     Boleta de Pago
                 %li
-                  %a{href: "#{payrolls_payslips_path}", title: "Boleta de Pago"}
+                  %a{href: "#{payrolls_type_of_payslips_path}", title: "Tipo de Planillas"}
+                    %i.fa.fa-lg.fa-fw.fa-list-alt
+                    Tipo de Planillas                    
+                %li
+                  %a{href: "#{payrolls_payslips_path}", title: "Planillas"}
                     %i.fa.fa-lg.fa-fw.fa-list-alt
                     Planillas
+                    
           - if (current_user.has_role? :director) || (current_user.has_role? :bidding)
             %li
               %a{href: "#", title: "Licitaciones"}

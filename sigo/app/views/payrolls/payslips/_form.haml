@@ -57,12 +57,9 @@
         %label.input
           %select.form-control#tipo
             %option{:value=> nil, :selected => true, :disabled => true} Seleccione un tipo
-            %option{:value=> "normal"} Normal
-            %option{:value=> "G"} Gratificación
-            %option{:value=> "Q"} Quincena
-            %option{:value=> "R"} Reintegro
-            %option{:value=> "U"} Utilidades
-            %option{:value=> "V"} Vacaciones
+            -@tpay.each do |tpay|
+              %option{:value=> "#{tpay.id}"}
+                = tpay.name
       %br
     .row
       %section.col.col-md-3
@@ -388,25 +385,24 @@
     var wor_arr = $('#array-wo').val();
 
     if(document.getElementById('t').checked){
-      var ingresos = #{@inge};
-      var descuentos = #{@dese};
-      var aportacion = #{@ape};
       worker_id = "empleado";
       semana = $('#year').val()+","+$('#mes').val();
     }
 
     if(document.getElementById('e').checked){
-      var ingresos = #{@ingo};
-      var descuentos = #{@deso};
-      var aportacion = #{@apo};
       worker_id = "obrero";
     }
-    if(worker_id != null && semana != '' && tipo != ''){
-      str_item = {authenticity_token: "#{form_authenticity_token}", arregloin: ingresos, cost_center: cost_center, arreglodes:descuentos, arregloapor: aportacion, semana: semana, tipo:tipo, worker: worker_id, extra:extra_info, ar_wo: wor_arr};
+    if(worker_id != null && semana != ' ' && tipo != null){
+      str_item = {authenticity_token: "#{form_authenticity_token}", cost_center: cost_center, semana: semana, tipo:tipo, worker: worker_id, extra:extra_info, ar_wo: wor_arr};
       $('#example').empty();
       append_url_ajax('#{generate_payroll_payrolls_payslips_path}', 'example', str_item, 0, 'POST');
     }else{
-      alert("Escoja a un trabajador");
+      $.smallBox({
+        title : "Aviso",
+        content : "Escoja un tipo de trabajador, un tipo de planilla y llene el periodo", 
+        color : "#c46a69",
+        timeout: 4000
+      });
     }
   }
 

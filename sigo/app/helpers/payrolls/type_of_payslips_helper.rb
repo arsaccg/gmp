@@ -1,0 +1,2 @@
+module Payrolls::TypeOfPayslipsHelper
+end

@@ -667,6 +667,7 @@ ArsacLogistica::Application.routes.draw do
         get 'generate_payroll'
       end
     end
+    resources :type_of_payslips
     resources :payslips do
       collection do
         post 'get_cc'

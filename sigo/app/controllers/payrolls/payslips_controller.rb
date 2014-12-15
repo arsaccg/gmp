@@ -17,49 +17,12 @@ class Payrolls::PayslipsController < ApplicationController
   end
 
   def new
-     
-    @ingo = Array.new
-    @deso = Array.new
-    @inge = Array.new
-    @dese = Array.new
-    @apo = Array.new
-    @ape = Array.new
+    @tpay = TypeOfPayslip.all
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
-    @ingresos = Concept.where("code LIKE '1%' AND status = 1")
-    @descuentos = Concept.where("code LIKE '2%' AND status = 1")
-    @aportacion = Concept.where("code LIKE '3%' AND status = 1")
-
     @afp = Afp.all
     @semanas = ActiveRecord::Base.connection.execute("
       SELECT *
       FROM weeks_for_cost_center_" + @cc.id.to_s)
-
-    @ingresos.each do |ing|
-      if ing.type_obrero == "Fijo"
-        @ingo << ing.id.to_s
-      end
-      if ing.type_empleado == "Fijo"
-        @inge << ing.id.to_s
-      end
-    end
-
-    @descuentos.each do |des|
-      if des.type_obrero == "Fijo"
-        @deso << des.id.to_s
-      end
-      if des.type_empleado == "Fijo"
-        @dese << des.id.to_s
-      end
-    end
-
-    @aportacion.each do |des|
-      if des.type_obrero == "Fijo"
-        @apo << des.id.to_s
-      end
-      if des.type_empleado == "Fijo"
-        @ape << des.id.to_s
-      end
-    end    
     render layout: false
   end
 
@@ -327,9 +290,19 @@ class Payrolls::PayslipsController < ApplicationController
     @pay = Payslip.new
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
     @company_id = get_company_cost_center('company')
-    ing = params[:arregloin]
-    des = params[:arreglodes]
-    apor = params[:arregloapor]
+    puts 
+    ing = Array.new
+    des = Array.new
+    apor = Array.new
+    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '1%' AND type_"+params[:worker].to_s+" = 'Fijo'").each do |tpc|
+      ing << tpc.id
+    end
+    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '2%' AND type_"+params[:worker].to_s+" = 'Fijo'").each do |tpc|
+      des << tpc.id
+    end
+    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '3%' AND type_"+params[:worker].to_s+" = 'Fijo'").each do |tpc|
+      apor << tpc.id
+    end
     @reg_n = (Time.now.to_f*1000).to_i
 
     @extra_info = params[:extra]
