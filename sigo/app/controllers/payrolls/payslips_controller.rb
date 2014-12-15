@@ -8,6 +8,11 @@ class Payrolls::PayslipsController < ApplicationController
 
   def show
     @pay = Payslip.where("code = ?",params[:id])
+    if @pay.first.week.nil?
+      @type = "month"
+    else
+      @type = "week"
+    end
     render layout: false
   end
 
@@ -418,8 +423,11 @@ class Payrolls::PayslipsController < ApplicationController
 
     book = Spreadsheet::Workbook.new
     sheet1 = book.create_worksheet :name => 'Planilla'
-
-    headers = ['DNI', 'Nombre', 'CAT', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
+    if params[:type] == "month"
+      headers = ['DNI', 'Nombre', 'CAT', 'COMP.', 'AFP', 'HIJ', 'DIAS ASISTIDOS', 'DIAS FALTA']
+    else
+      headers = ['DNI', 'Nombre', 'CAT', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
+    end
     headers = headers + JSON.parse(@pay.first.ing_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
     headers = headers + JSON.parse(@pay.first.des_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
     headers = headers + JSON.parse(@pay.first.aport_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
@@ -430,7 +438,11 @@ class Payrolls::PayslipsController < ApplicationController
     @pay.each do |pars|
       selected = Array.new
       wor = Worker.find(pars.worker_id)
-      selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.first.article.name, CostCenter.find(pars.cost_center_id).code, pars.last_worked_day.strftime('%d/%m/%y').to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.normal_hours.to_s, pars.days.to_s, pars.he_60.to_s, 0, pars.he_100.to_s]
+      if params[:type].to_s == "month"
+        selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.second_name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.where("status = 1").first.article.name, Company.find(pars.company_id).short_name.to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.days.to_s, 30-pars.days.to_i]
+      elsif params[:type].to_s == "week"
+        selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.second_name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.first.article.name, CostCenter.find(pars.cost_center_id).code, pars.last_worked_day.strftime('%d/%m/%y').to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.normal_hours.to_s, pars.days.to_s, pars.he_60.to_s, 0, pars.he_100.to_s]
+      end
       selected = selected + JSON.parse(pars.ing_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
       selected = selected + JSON.parse(pars.des_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
       selected = selected + JSON.parse(pars.aport_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
