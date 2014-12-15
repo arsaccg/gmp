@@ -103,6 +103,7 @@ class Payrolls::PayslipsController < ApplicationController
       end
     end
 
+    ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE week = '"+params[:extra_information_for_payslip][''+regsEx.first.to_s+'']['week'].to_s+"'" )
     regsEx.each do |reg|
       extra = ExtraInformationForPayslip.new
       extra.worker_id = params[:extra_information_for_payslip][''+reg.to_s+'']['worker_id']

@@ -14,7 +14,9 @@ class Payslip < ActiveRecord::Base
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)
     @i = 1
-    uit = FinancialVariable.find_by_name("UIT").value * 7
+    uit7 = FinancialVariable.find_by_name("UIT").value * 7
+    uit27 = FinancialVariable.find_by_name("UIT").value * 27
+    uit54 = FinancialVariable.find_by_name("UIT").value * 54
     @result[0] = headers
     @result[0] << "REMUNERACIÓN BÁSICA"
     amount = 0
@@ -73,7 +75,7 @@ class Payslip < ActiveRecord::Base
       end
       if flag_extra
         array_extra_info.each do |ar|
-          if ar[1].to_i == 1
+          if ar[1].to_i == 1 && ar[0].to_i == row[0].to_i
             rem_basic = rem_basic.to_f + ar[2].to_f
           end
         end
@@ -179,7 +181,7 @@ class Payslip < ActiveRecord::Base
           #end
           if flag_extra
             array_extra_info.each do |ar|
-              if ar[1].to_i == ing.to_i
+              if ar[1].to_i == ing.to_i && ar[0].to_i == row[0].to_i
                 total-=amount
                 amount = amount.to_f + ar[2].to_f
                 total += amount
@@ -318,18 +320,18 @@ class Payslip < ActiveRecord::Base
               total += amount.to_f
 
             elsif con.name == '%5ta CAT%'
-              total -=amount
-              bruta = amount*14*4
-              if bruta > uit
-                amount = (bruta - uit)*0.15/12/4
-              else
+              total -= amount
+              bruto = total1*14*4
+              if bruto > uit7 && bruto < uit27
+                amount = (bruto - uit)*0.15/12/4
+
                 amount = 0
               end                
             end            
           end
           if flag_extra
             array_extra_info.each do |ar|
-              if ar[1].to_i == de.to_i
+              if ar[1].to_i == de.to_i && ar[0].to_i == row[0].to_i
                 total -= amount
                 amount = amount.to_f + ar[2].to_f
                 total += amount
@@ -367,7 +369,7 @@ class Payslip < ActiveRecord::Base
           end
           if flag_extra
             array_extra_info.each do |ar|
-              if ar[1].to_i == ap.to_i
+              if ar[1].to_i == ap.to_i && ar[0].to_i == row[0].to_i
                 total -= amount
                 amount = amount.to_f + ar[2].to_f
                 total += amount
@@ -382,6 +384,7 @@ class Payslip < ActiveRecord::Base
           @result[0] << "Aportaciones Totales"
         end
       end
+      array_worker.delete(row[0])
       @i+=1
     end
 
@@ -583,9 +586,9 @@ class Payslip < ActiveRecord::Base
 
             elsif con.name == '%5ta CAT%'
               total -=amount
-              bruta = amount*14*4
+              bruta = amount*14
               if bruta > uit
-                amount = (bruta - uit)*0.15/12/4
+                amount = (bruta - uit)*0.15/12
               else
                 amount = 0
               end                
