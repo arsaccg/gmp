@@ -1,0 +1,64 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-12.col-md-12.col-lg-7
+      %h2.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw  
+        Editar Partida
+  #widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-6
+        #wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-eye
+            %h2 Partida
+          .widget-body
+            =simple_form_for [:management, @itembybudget], html: {class: "form-horizontal smart-form", autocomplete: 'off', :id => "ibb_form"} do |f|
+              %fieldset
+                .row
+                  %section.col.col-10
+                    %label.label Orden
+                    %label.input{for: "order"}
+                      %i.icon-append.fa.fa-user
+                      = f.input :order, placeholder: "Orden", input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Item
+                    %label.input{for: "item_id"}
+                      = f.collection_select :item_id, @items, :id, :code_with_name, {:prompt => 'Seleccionar Item ...'}, { class: 'form-control' }
+
+
+                      /f.collection_select :item_id, Item.where("id IN (SELECT ibb.id FROM itembybudgets ibb WHERE ibb.item_code LIKE '____________' GROUP BY ibb.item_code ORDER BY ibb.item_code) OR id IN (SELECT ibb.id FROM itembybudgets ibb WHERE id = ?)", @itembybudget.item_id).group(:item_code).order(:item_code), :id, :code_with_name, {:prompt => 'Seleccionar Item ...'}, { class: 'form-control' }
+                      /= f.association :item, Item.where( "item_code like ?", '____________' ).group(:item_code).order(:item_code), :id, :code_with_name, {:prompt => 'Seleccionar Item ...'}, { class: 'form-control' }
+                      /= f.association :item, label_method: :code_with_name, value_method: :id, :selected => @restricted_id, input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Titulo
+                    %label.input{for: "subbudgetdetail"}
+                      %i.icon-append.fa.fa-user
+                      = f.input :subbudgetdetail, placeholder: "Titulo", input_html: { class: 'form-control' }, label: false
+                .row
+                  %section.col.col-10
+                    %label.label Metrado
+                    %label.input{for: "measured"}
+                      %i.icon-append.fa.fa-superscript
+                      = f.input :measured, placeholder: "Vacio si es de nivel superior", input_html: { class: 'form-control' }, label: false
+              %footer
+                %a{:href=>"javascript:post_to_url('" + management_itembybudgets_path.to_s + "', 'ibb_form', 'right-area');", :class=>"btn btn-success"}
+                  %i.fa.fa-save
+                  Guardar Partida
+
+  %a.btn.btn-sm.btn-primary#backlist-companies{:href=>"javascript: load_url_ondiv('"+get_budget_by_project_management_budgets_path().to_s+"', 'right-area');"}
+    %i.fa.fa-arrow-left
+    Retornar al listado de partidas
+
+:javascript
+  $('#itembybudget_item_id').change(function() {
+    $( "select option:selected" ).each(function() {
+      str = $( this ).text();
+      l = str.length
+      item_name = str.substring(0, str.length - 13);
+    });
+
+    $('#itembybudget_subbudgetdetail').val(item_name);
+  });

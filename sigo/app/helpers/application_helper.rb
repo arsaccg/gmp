@@ -428,6 +428,8 @@ module ApplicationHelper
       return "green"
     elsif order.length < 9
       return "blue"
+    elsif order.length < 12
+      return "orange"
     else
       return "black" 
     end

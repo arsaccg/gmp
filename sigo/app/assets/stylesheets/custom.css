@@ -618,6 +618,9 @@ table.inputbybandi-table th:nth-child(2), table.inputbybandi-table td:nth-child(
 .blue{
   color:#3276b1;
 }
+.orange{
+  color:#F08713;
+}
 .black{
   color:#333;
 }
@@ -630,6 +633,9 @@ table.inputbybandi-table th:nth-child(2), table.inputbybandi-table td:nth-child(
 }
 .blue a{
   color:#3276b1;
+}
+.orange a{
+  color:#F08713;
 }
 .black a{
   color:#333;
