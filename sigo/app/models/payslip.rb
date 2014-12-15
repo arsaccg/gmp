@@ -92,8 +92,8 @@ class Payslip < ActiveRecord::Base
       
       total += rem_basic
 
-      ing.delete("1") # => Removiendo la Remuneracion Basica de todos los Ingresos.
       if !ing.nil?
+        ing.delete("1") # => Removiendo la Remuneracion Basica de todos los Ingresos.
         ing.each do |ing|
           con = nil
           hash_formulas = Hash.new
@@ -458,8 +458,8 @@ class Payslip < ActiveRecord::Base
       
       total += rem_basic
 
-      ing.delete("1") # => Removiendo la Remuneracion Basica de todos los Ingresos.
       if !ing.nil?
+        ing.delete("1") # => Removiendo la Remuneracion Basica de todos los Ingresos.
         ing.each do |ing|
           con = nil
           hash_formulas = Hash.new
