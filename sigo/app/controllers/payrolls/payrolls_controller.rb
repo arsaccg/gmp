@@ -69,7 +69,7 @@ class Payrolls::PayrollsController < ApplicationController
     worker_id = params[:id]
     @total_concepts = Array.new
     @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-    @payslip = Payslip.find_by_worker_id(worker_id)
+    @payslip = Payslip.where(:worker_id => worker_id).last
     @worker = Worker.find(worker_id)
     @worker_contract = @worker.worker_contracts.where(:status => 1).first
     @type_worker = Article.select(:name).select(:code).find(@worker_contract.article_id)
