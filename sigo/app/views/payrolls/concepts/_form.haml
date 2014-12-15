@@ -166,6 +166,7 @@
                             %td{ :style => "display:none" }
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
+                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', 'worker'
                             %td
                               = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept'
                       - else
@@ -173,6 +174,7 @@
                           %td{ :style => "display:none" }
                             = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
                             = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
+                            = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', 'worker'
                           %td
                             = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept'
                   
@@ -270,6 +272,7 @@
                             %td{ :style => "display:none" }
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
+                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', 'employee'
                             %td
                               = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_employee'
                       - else
@@ -277,6 +280,7 @@
                           %td{ :style => "display:none" }
                             = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
                             = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
+                            = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', 'employee'
                           %td
                             = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_employee'
                   

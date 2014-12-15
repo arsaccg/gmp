@@ -9,7 +9,7 @@
           = "Planilla de la " + @pay.first.month
 
     .col-xs-12.col-sm-6.col-md-6.col-lg-6
-      %a.btn.btn-success{ href: "#{generate_payroll_excel_payrolls_payslip_path(@pay.first.code)}", target: '_blank'} Generar Excel de la Planilla
+      %a.btn.btn-success{ href: "#{generate_payroll_excel_payrolls_payslip_path(@pay.first.code)}?type=#{@type}", target: '_blank'} Generar Excel de la Planilla
 
   %div{:style=>"width:100%; overflow-x:scroll"}
     %table.table.table-striped.table-bordered.table-hover

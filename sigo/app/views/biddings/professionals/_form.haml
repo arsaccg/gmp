@@ -192,7 +192,7 @@
                             .row{'class'=>'3'} 
                               .col-sm-4
                                 %label Cantidad de días trabajados
-                                %input.form-control{'class'=>'worked-day', name: "professional[certificates_attributes][" + @reg.to_s + "][num_days]", :disabled=>"disabled", :value=> "#{cert.num_days}"}
+                                %input.form-control{'class'=>'worked-day', name: "professional[certificates_attributes][" + @reg.to_s + "][num_days]", :readonly=>"true", :value=> "#{cert.num_days}"}
                             
                             %br
                             .row
