@@ -65,10 +65,6 @@ class Payrolls::PayslipsController < ApplicationController
         render :new, layout: false 
       end
     end
-    puts "---------------------------------------------------------------------------------------------------------------------------------------------------------"
-    puts regsEx.inspect
-    puts regsEx.length
-    puts "---------------------------------------------------------------------------------------------------------------------------------------------------------"
     if regsEx.count != 0
       ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE week = '"+params[:extra_information_for_payslip][''+regsEx.first.to_s+'']['week'].to_s+"'" )
     end

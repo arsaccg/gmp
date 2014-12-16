@@ -53,7 +53,7 @@
               - count += 1
       %br
       .row{"style"=>"height: 40%; overflow-y: scroll;"}
-        #detail
+        #detail_show_loan
       %br
       
 
@@ -84,10 +84,11 @@
   });
 
   function show_details(id){
-    $("#detail").empty();
-    $("#detail").css("display","block");
+    $("#detail_show_loan").empty();
+    $("#detail_show_loan").css("display","block");
     str_item = {authenticity_token: "#{form_authenticity_token}", id: id};
-    append_url_ajax('#{show_details_general_expenses_loans_path}', 'detail', str_item, 0, 'POST');
+    append_url_ajax('#{show_details_general_expenses_loans_path}', 'detail_show_loan', str_item, 0, 'POST');
+    console.log("salio de todo")
   }
 
   function delete_item(code){
