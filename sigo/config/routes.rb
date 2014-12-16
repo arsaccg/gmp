@@ -710,6 +710,7 @@ ArsacLogistica::Application.routes.draw do
         post 'create_loan'
         post 'display_workers'
         post 'show_details'
+        get 'report_pdf'
       end
     end
 

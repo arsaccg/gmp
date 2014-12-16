@@ -1,0 +1,48 @@
+%html
+  %head
+    %meta{charset: "utf-8"}
+    = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
+  %body
+    #main
+      #content
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th{'colspan' => 4, "style"=>"text-align:center;font-size: 13px;"} CONSOLIDADOS DE MOVIMIENTOS
+            %tr
+              %th{"style"=>"text-align:center;font-size: 13px;"} CENTRO DE COSTO
+              %th{"style"=>"text-align:center;font-size: 13px;"} RESULTADO
+              %th{"style"=>"text-align:center;font-size: 13px;"} OTORGADO PENDIENTE
+              %th{"style"=>"text-align:center;font-size: 13px;"} RECIBIDO PENDIENTE
+          %tbody
+            -@todo.each do |rpt|
+              -if rpt[4] == "main"
+                %tr
+                  %td{"style"=>"text-align:center;font-size: 12px;background-color:#222222;border-color: #222222;color:white;"}= rpt[0].to_s
+                  %td{"style"=>"text-align:center;font-size: 12px;background-color:#222222;border-color: #222222;color:white;"}=number_to_currency(rpt[1], unit: 'S/. ', precision: 2)
+                  %td{"style"=>"text-align:center;font-size: 12px;background-color:#222222;border-color: #222222;color:white;"}=number_to_currency(rpt[2].to_f, unit: 'S/. ', precision: 2)
+                  %td{"style"=>"text-align:center;font-size: 12px;background-color:#222222;border-color: #222222;color:white;"}=number_to_currency(rpt[3].to_f, unit: 'S/. ', precision: 2)
+              -elsif rpt[4] == "lender_detail_header" 
+                %tr
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;"}= rpt[0].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;"}= rpt[1].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;"}=rpt[2].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;"}=rpt[3].to_s
+              -elsif rpt[4] == "beneficiary_detail_header"
+                %tr
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;"}= rpt[0].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;"}= rpt[1].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;"}=rpt[2].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;"}=rpt[3].to_s
+              -elsif rpt[4] == "lender_detail" || rpt[4] == "beneficiary_detail"
+                %tr
+                  %td{"style"=>"text-align:left;font-size: 9px;"}= rpt[0].to_s
+                  %td{"style"=>"text-align:left;font-size: 9px;"}=number_to_currency(rpt[1], unit: 'S/. ', precision: 2)
+                  %td{"style"=>"text-align:left;font-size: 9px;"}=number_to_currency(rpt[2].to_f, unit: 'S/. ', precision: 2)
+                  %td{"style"=>"text-align:left;font-size: 9px;"}=number_to_currency(rpt[3].to_f, unit: 'S/. ', precision: 2)
+              -elsif rpt[4]== "blank"
+                %tr              
+                  %td{'colspan' => 4}= rpt[0]
+              -elsif rpt[4]== "blank2"
+                %tr              
+                  %td{'colspan' => 4, "style"=>"text-align:center;font-size: 9px;"}= rpt[0]              

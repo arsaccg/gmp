@@ -30,7 +30,11 @@
                     %th Compañia
                     %th Centro de Costo
                     %th G.D.G.
-                    %th Movimientos
+                    %th 
+                      Movimientos
+                      %span
+                        %a.btn.btn-default.btn-xs{:href => "#{report_pdf_general_expenses_loans_path}.pdf", :target => "_blank"}
+                          %i.fa.fa-book
                     %th{"style"=>"width:30px;"} Resultados Operativos
                 %tbody
                   -if @saneamiento!=nil
@@ -68,7 +72,11 @@
                     %th Compañia
                     %th Centro de Costo
                     %th G.D.G.
-                    %th Movimientos
+                    %th 
+                      Movimientos
+                      %span
+                        %a.btn.btn-default.btn-xs{:href => "#{report_pdf_general_expenses_loans_path}.pdf", :target => "_blank"}
+                          %i.fa.fa-book
                     %th{"style"=>"width:30px;"} Resultados Operativos
                 %tbody
                   -if @electrico!=nil
@@ -106,7 +114,11 @@
                     %th Compañia
                     %th Centro de Costo
                     %th G.D.G.
-                    %th Movimientos
+                    %th 
+                      Movimientos
+                      %span
+                        %a.btn.btn-default.btn-xs{:href => "#{report_pdf_general_expenses_loans_path}.pdf", :target => "_blank"}
+                          %i.fa.fa-book
                     %th{"style"=>"width:30px;"} Resultados Operativos
                 %tbody
                   -if @cost_centers!=nil
@@ -143,7 +155,11 @@
                     %th Compañia
                     %th Centro de Costo
                     %th G.D.G.
-                    %th Movimientos
+                    %th 
+                      Movimientos
+                      %span
+                        %a.btn.btn-default.btn-xs{:href => "#{report_pdf_general_expenses_loans_path}.pdf", :target => "_blank"}
+                          %i.fa.fa-book
                     %th{"style"=>"width:30px;"} Resultados Operativos
                 %tbody
                   -if @administracion!=nil
@@ -973,4 +989,13 @@
     } else {
       alert('Faltan datos para mostrar la ubicación de esta obra.')
     }
+  }
+
+  function show_phases(cost_center_id, code_phase){
+    data = { authenticity_token : "#{form_authenticity_token}", cost_center_id : cost_center_id, code_phase : code_phase }
+    load_url_ajax('#{show_phases_path}', 'show-phase', data, 'avoid-opacity', 'POST');
+    $('#show-phase').modal({
+      keyboard: false,
+      backdrop: false
+    });
   }

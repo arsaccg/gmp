@@ -193,6 +193,104 @@ class GeneralExpenses::LoansController < ApplicationController
     render(partial: 'show_detail', :layout => false)
   end  
 
+  def report_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @todo = Array.new
+        @ccs = CostCenter.where("active = 1")
+        @ccs.each do |cc|
+          flag1 =true
+          flag2 =true
+          @array_le_deben = Array.new
+          @array_debe = Array.new
+          suma_total = 0
+          suma_total_le_deben = 0
+          suma_total_debe = 0
+          lender = ActiveRecord::Base.connection.execute("
+            SELECT cc.id, CONCAT(cc.code, ' - ', cc.name), SUM(l.amount)
+            FROM loans l, cost_centers cc
+            WHERE cost_center_lender_id ="+cc.id.to_s+"
+            AND cost_center_beneficiary_id = cc.id
+            GROUP BY cost_center_beneficiary_id
+          ")
+          lender.each do |l|
+            suma_devuelto = 0
+            suma_pendiente = 0
+            suma_total += l[2].to_f
+            montos = ActiveRecord::Base.connection.execute("            
+              SELECT SUM(l.amount), l.state
+              FROM loans l
+              WHERE cost_center_lender_id = "+cc.id.to_s+"
+              AND cost_center_beneficiary_id = "+l[0].to_s+"
+              GROUP BY l.state
+            ")
+            montos.each do |m|
+              if m[1].to_i == 0
+                suma_devuelto+=m[0].to_f
+              elsif m[1].to_i == 1
+                suma_total_le_deben += m[0].to_f
+                suma_pendiente += m[0].to_f
+              end
+            end
+            @array_le_deben << [l[1].to_s, l[2].to_f, suma_devuelto.to_f, suma_pendiente.to_f, "lender_detail"]
+          end
+          
+          beneficiary = ActiveRecord::Base.connection.execute("
+            SELECT cc.id, CONCAT(cc.code, ' - ', cc.name), SUM(l.amount)
+            FROM loans l, cost_centers cc
+            WHERE cost_center_lender_id = cc.id
+            AND cost_center_beneficiary_id = "+cc.id.to_s+"
+            GROUP BY cost_center_lender_id
+          ")          
+          beneficiary.each do |b|
+            suma_devuelto = 0
+            suma_pendiente = 0
+            suma_total -= b[2].to_f
+            montos = ActiveRecord::Base.connection.execute("            
+              SELECT SUM(l.amount), l.state
+              FROM loans l
+              WHERE cost_center_lender_id = "+b[0].to_s+"
+              AND cost_center_beneficiary_id = "+cc.id.to_s+"
+              GROUP BY l.state
+            ")
+            montos.each do |m|
+              if m[1].to_i == 0
+                suma_devuelto+=m[0].to_f
+              elsif m[1].to_i == 1
+                suma_total_debe += m[0].to_f
+                suma_pendiente += m[0].to_f
+              end
+            end
+            @array_debe << [b[1].to_s, b[2].to_f, suma_devuelto.to_f, suma_pendiente.to_f, "beneficiary_detail"]
+          end          
+
+          @todo << [cc.code+" - "+cc.name, suma_total, suma_total_le_deben, suma_total_debe, "main"]
+          if lender.count != 0
+            @todo << ["Centro de Costo Beneficiaro", "Total", "Devuelto", "Pendiente","lender_detail_header"]
+            @todo += @array_le_deben
+            flag1 = false
+          end
+          if beneficiary.count != 0
+            @todo << ["Centro de Costo al que se debe", "Total", "Devuelto", "Pendiente","beneficiary_detail_header"]
+            @todo += @array_debe
+            flag2 = false
+          end
+          if flag1 && flag2
+            @todo << ["NO SE REGISTRARON MOVIMIENTOS DE ESTE CENTRO DE COSTO "," "," "," ","blank2"]
+          end
+          @todo << [" "," "," "," ","blank"]
+        end
+        @todo.delete_at(@todo.length-1)
+
+        render :pdf => "reporte_movimientos-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'general_expenses/loans/report_pdf.pdf.haml',
+               :orientation => 'Landscape',
+               :page_size => 'A4'
+      end
+    end
+  end
+
 
   private
   def loan_params
