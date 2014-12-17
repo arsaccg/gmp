@@ -1,6 +1,7 @@
 class Payslip < ActiveRecord::Base
 
   belongs_to :worker
+  has_one :type_of_payslip
 
   def self.generate_payroll_workers cost_center_id, week_id, week_start, week_end, wg, ing, des, apo, headers, array_extra_info, array_worker
     

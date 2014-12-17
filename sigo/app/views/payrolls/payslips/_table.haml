@@ -12,15 +12,17 @@
           %tr
             %th N°
             %th Semana/Mes
+            %th Tipo de Planilla
             %th Acciones
         %tbody
           -@pay.each do |pay|
             %tr
               %td= pay[0]
-              -if pay[1].to_s != ""
-                %td= pay[1]
-              -else
-                %td= pay[2]
+              - if pay[1].to_s != ""
+                %td= pay[1].to_s
+              - else
+                %td= pay[2].to_s
+              %td= pay[3].to_s
               %td
                 %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{payrolls_payslip_path(pay[0])}', 'content', null, null, 'GET')"}
                   Listado
