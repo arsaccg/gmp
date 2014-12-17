@@ -7,7 +7,7 @@ module SOCKET_CONNECTOR
 
 		arr_resp = Array.new
 
-		s = TCPSocket.new '192.168.2.60', 8090
+		s = TCPSocket.new '10.10.10.20', 8090
 		 
 		s.send("query",0)
 		s.send(query,0)

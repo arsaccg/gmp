@@ -23,7 +23,7 @@ class Connector:
 
 	def do_query(query, ds):
 		query=query
-		conect_string = 'DRIVER={SQL Server};SERVER="192.168.1.90";DATABASE="bagua";UID="sa";PWD=' + password
+		conect_string = 'DRIVER={SQL Server};SERVER="10.10.10.20";DATABASE="bagua";UID="sa";PWD=' + password
 		print (conect_string)
 		cnxn = pyodbc.connect(conect_string)
 		cursor = cnxn.cursor()
@@ -46,7 +46,7 @@ class socket_server:
 		recibido = sc.recv(1024)  
 		if busy == 1:
 			connector = Connector()
-			connector.set_parameters('192.168.1.90', 'bagua', 'sa', 'password')
+			connector.set_parameters('10.10.10.20', 'bagua', 'sa', 'password')
 			result = connector.do_query(str(recibido).replace("\n", ""))
 			sc.send(result)  
 			busy = 0
