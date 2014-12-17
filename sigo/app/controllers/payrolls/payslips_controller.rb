@@ -329,7 +329,7 @@ class Payrolls::PayslipsController < ApplicationController
       d = Date.new(fecha[0].to_i,fecha[1].to_i)
       d +=42
       d = (Date.new(d.year, d.month) - 1)
-      case d.strftime("%m")
+      case d.strftime("%m").to_i
       when 1
         @month = "Enero - " + d.strftime("%Y").to_s
       when 2
@@ -358,7 +358,9 @@ class Payrolls::PayslipsController < ApplicationController
       d = d.strftime('%Y-%m-%d')
       
       @partes = Payslip.generate_payroll_empleados(@company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo])
-      @mensaje = "empleado"
+      if @partes.count > 1
+        @mensaje = "empleado"
+      end
     elsif params[:worker] == "obrero"
       semana = ActiveRecord::Base.connection.execute("
         SELECT *
