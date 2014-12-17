@@ -2,7 +2,8 @@ class Payrolls::PayrollsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @payslips = Payslip.select(:week).select(:code).select(:id).group(:week)
+    @payslips = Payslip.select(:week).select(:code).select(:id).where(month: nil).group(:week)
+    @month = Payslip.select(:month).select(:code).select(:id).where(week: nil).group(:month)
     render layout: false
   end
 

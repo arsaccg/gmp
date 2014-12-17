@@ -27,6 +27,8 @@
         %option{:value=> nil, :selected => true, :disabled => true} Seleccione una Planilla
         - @payslips.each do |payslip|
           %option{:value=> "#{payslip.code}"}= payslip.week
+        - @month.each do |payslip|
+          %option{:value=> "#{payslip.code}"}= payslip.month          
     %section.col.col-md-6
       %a.btn.btn-success{ :href => 'javascript:void(0)', :style => 'margin-top: 1.5em;', :onclick => 'RefreshTable()' }
         Ver Trabajadores
