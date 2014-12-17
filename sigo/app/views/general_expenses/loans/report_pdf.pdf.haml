@@ -24,22 +24,22 @@
                   %td{"style"=>"text-align:center;font-size: 12px;background-color:#222222;border-color: #222222;color:white;"}=number_to_currency(rpt[3].to_f, unit: 'S/. ', precision: 2)
               -elsif rpt[4] == "lender_detail_header" 
                 %tr
-                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;"}= rpt[0].to_s
-                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;"}= rpt[1].to_s
-                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;"}=rpt[2].to_s
-                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;"}=rpt[3].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;font-weight: normal;padding:7px;"}= rpt[0].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;font-weight: normal;padding:7px;"}= rpt[1].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;font-weight: normal;padding:7px;"}=rpt[2].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#296191;border-color: #296191;color:white;font-weight: normal;padding:7px;"}=rpt[3].to_s
               -elsif rpt[4] == "beneficiary_detail_header"
                 %tr
-                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;"}= rpt[0].to_s
-                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;"}= rpt[1].to_s
-                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;"}=rpt[2].to_s
-                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;"}=rpt[3].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;font-weight: normal;padding:7px;"}= rpt[0].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;font-weight: normal;padding:7px;"}= rpt[1].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;font-weight: normal;padding:7px;"}=rpt[2].to_s
+                  %td{"style"=>"text-align:center;font-size: 11px;background-color:#3593BB;border-color: #3593BB;color:white;font-weight: normal;padding:7px;"}=rpt[3].to_s
               -elsif rpt[4] == "lender_detail" || rpt[4] == "beneficiary_detail"
                 %tr
-                  %td{"style"=>"text-align:left;font-size: 9px;"}= rpt[0].to_s
-                  %td{"style"=>"text-align:left;font-size: 9px;"}=number_to_currency(rpt[1], unit: 'S/. ', precision: 2)
-                  %td{"style"=>"text-align:left;font-size: 9px;"}=number_to_currency(rpt[2].to_f, unit: 'S/. ', precision: 2)
-                  %td{"style"=>"text-align:left;font-size: 9px;"}=number_to_currency(rpt[3].to_f, unit: 'S/. ', precision: 2)
+                  %td{"style"=>"text-align:left;font-size: 9px;margin:0px;font-weight: normal;padding:3px;"}= rpt[0].to_s
+                  %td{"style"=>"text-align:left;font-size: 9px;margin:0px;font-weight: normal;padding:3px;"}=number_to_currency(rpt[1], unit: 'S/. ', precision: 2)
+                  %td{"style"=>"text-align:left;font-size: 9px;margin:0px;font-weight: normal;padding:3px;"}=number_to_currency(rpt[2].to_f, unit: 'S/. ', precision: 2)
+                  %td{"style"=>"text-align:left;font-size: 9px;margin:0px;font-weight: normal;padding:3px;"}=number_to_currency(rpt[3].to_f, unit: 'S/. ', precision: 2)
               -elsif rpt[4]== "blank"
                 %tr              
                   %td{'colspan' => 4}= rpt[0]
