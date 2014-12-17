@@ -2,7 +2,7 @@ class Payrolls::PayslipsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @pay = ActiveRecord::Base.connection.execute("SELECT code, week, month FROM payslips GROUP BY code")
+    @pay = ActiveRecord::Base.connection.execute("SELECT p.code, p.week, p.month, top.name FROM payslips p, type_of_payslips top WHERE p.type_of_payslip_id = top.id GROUP BY p.code")
     render layout: false
   end
 
