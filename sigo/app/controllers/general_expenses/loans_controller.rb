@@ -291,7 +291,65 @@ class GeneralExpenses::LoansController < ApplicationController
     end
   end
 
-
+  def bidimensional_report_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @todo = Array.new
+        @ccs = CostCenter.all.order(:id)
+        @todo << ["CUADRO COMPARATIVO"]
+        i = 1
+        @ccs.each do |ccr|
+          @todo << [ccr.name]
+          @ccs.each do |ccc|
+            if ccr.id == ccc.id
+              @todo[i] << "es el mismo"
+              if !@todo[0].include?(ccc.name)
+                @todo[0] << ccc.name.to_s
+              end
+            else
+              lender_am = 0
+              bene_am = 0
+              if !@todo[0].include?(ccc.name)
+                @todo[0] << ccc.name.to_s
+              end
+              lender = ActiveRecord::Base.connection.execute("
+                SELECT SUM(l.amount)
+                FROM loans l
+                WHERE cost_center_lender_id ="+ccr.id.to_s+"
+                AND cost_center_beneficiary_id = "+ccc.id.to_s+"
+                GROUP BY cost_center_beneficiary_id
+              ")
+              if lender.count == 0
+                lender_am = 0
+              else
+                lender_am = lender.first[0].to_f
+              end
+              beneficiary = ActiveRecord::Base.connection.execute("
+                SELECT SUM(l.amount)
+                FROM loans l
+                WHERE cost_center_lender_id = "+ccc.id.to_s+"
+                AND cost_center_beneficiary_id = "+ccr.id.to_s+"
+                GROUP BY cost_center_beneficiary_id
+              ")
+              if beneficiary.count == 0
+                bene_am = 0
+              else
+                bene_am = beneficiary.first[0]
+              end
+              diferencia = lender_am - bene_am
+              @todo[i] << [lender_am.to_s , bene_am.to_s, diferencia.to_s]
+            end
+          end
+          i+=1
+        end   
+        render :pdf => "reporte_movimientos-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'general_expenses/loans/bidimensional_report_pdf.pdf.haml',
+               :orientation => 'Landscape',
+               :page_size => 'A4'
+      end
+    end
+  end
   private
   def loan_params
     params.require(:loan).permit(:person,:loan_date,:loan_type,:amount,:description,:refund_type,:check_number,:check_date,:state,:refund_date,:cost_center_beneficiary_id,:cost_center_lender_id)

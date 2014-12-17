@@ -711,6 +711,7 @@ ArsacLogistica::Application.routes.draw do
         post 'display_workers'
         post 'show_details'
         get 'report_pdf'
+        get 'bidimensional_report_pdf'
       end
     end
 
