@@ -365,6 +365,7 @@ class Production::WorkersController < ApplicationController
           AND w.state LIKE '"+params[:state1].to_s+"'
           AND w.typeofworker = '"+ty.to_s+"'
           AND w.entity_id = e.id
+          AND wc.status = 1
           AND w.id = wc.worker_id
           AND wc.article_id = ar.id
           ORDER BY ar.code
