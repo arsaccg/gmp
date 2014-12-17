@@ -769,6 +769,10 @@
                 Planillas
               %ul
                 %li
+                  %a{href: "#{payrolls_type_of_payslips_path}", title: "Tipo de Planillas"}
+                    %i.fa.fa-lg.fa-fw.fa-list-alt
+                    Tipo de Planillas                    
+                %li
                   %a{href: "#{payrolls_concepts_path}", title: "Conceptos de Planilla"}
                     %i.fa.fa-lg.fa-fw.fa-list-alt
                     Conceptos de Planilla
@@ -777,17 +781,13 @@
                     %i.fa.fa-lg.fa-fw.fa-list-alt
                     AFP's
                 %li
+                  %a{href: "#{payrolls_payslips_path}", title: "Planillas"}
+                    %i.fa.fa-lg.fa-fw.fa-list-alt
+                    Generar Planillas
+                %li
                   %a{href: "#{payrolls_payrolls_path}", title: "Boleta de Pago"}
                     %i.fa.fa-lg.fa-fw.fa-list-alt
                     Boleta de Pago
-                %li
-                  %a{href: "#{payrolls_type_of_payslips_path}", title: "Tipo de Planillas"}
-                    %i.fa.fa-lg.fa-fw.fa-list-alt
-                    Tipo de Planillas                    
-                %li
-                  %a{href: "#{payrolls_payslips_path}", title: "Planillas"}
-                    %i.fa.fa-lg.fa-fw.fa-list-alt
-                    Planillas
                     
           - if (current_user.has_role? :director) || (current_user.has_role? :bidding)
             %li

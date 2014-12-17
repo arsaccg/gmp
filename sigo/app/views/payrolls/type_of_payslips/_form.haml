@@ -7,11 +7,22 @@
     = simple_form_for([:payrolls, @tpay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
-          %section.col.col-md-8
+          %section.col.col-md-5
             %label.label Nombre
             %label.input{for: "name"}
               %i.icon-append.fa.fa-user
               = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          %section.col.col-md-3
+            %label.label Para Obreros o Empleados?
+            %select.form-control{ :name => 'type_of_payslip[for_worker_employee]' }
+              - if @action != 'edit'
+                %option{:value => 0, :selected => true, :disabled => true} Seleccione
+                %option{:value => 1} Obreros
+                %option{:value => 2} Empleados
+              - else
+                %option{:value => 0, :disabled => true} Seleccione
+                %option{:value => 1} Obreros
+                %option{:value => 2} Empleados
         %br
         .row
           %section.col.col-md-8
