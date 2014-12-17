@@ -16,6 +16,7 @@
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][worker_id]', pars[0]
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][cost_center_id]', @cc.id.to_s
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][week]', @week.to_s
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][type_of_payslip_id]', @tipo.to_s
                 = pars[1].to_s
               %td
                 = pars[2].to_s
@@ -159,6 +160,7 @@
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][worker_id]', pars[0]
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][company_id]', @company_id.to_s
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][month]', @month.to_s
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][type_of_payslip_id]', @tipo.to_s
                 = pars[1].to_s
               %td
                 = pars[2].to_s

@@ -28,21 +28,23 @@ class Payrolls::PayslipsController < ApplicationController
 
   def create
     flash[:error] = nil
-    a = Payslip.all.last
+    regs = params[:regs].split(' ')
+    regsEx = params[:regsEx].split(' ')
+    #borrando planillas con el mismo periodo
+    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR month = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"')" )
+    #borrando extra info de planillas con el mismo periodo
+    ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR week = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"')" )
     
+    a = Payslip.all.last
     last_code = 1
     if !a.nil?
       last_code = a.code.to_i + 1 
     end
-    regs = params[:regs].split(' ')
-    regsEx = params[:regsEx].split(' ')
 
-    #borrando extras
-    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"'" )
-    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE month = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"'" )
 
     regs.each do |reg|
       pay = Payslip.new
+      pay.type_of_payslip_id = params[:payslip][''+reg.to_s+'']['type_of_payslip_id']
       pay.worker_id = params[:payslip][''+reg.to_s+'']['worker_id']
       pay.cost_center_id = params[:payslip][''+reg.to_s+'']['cost_center_id']
       pay.company_id = params[:payslip][''+reg.to_s+'']['company_id']
@@ -71,8 +73,6 @@ class Payrolls::PayslipsController < ApplicationController
       end
     end
     
-    ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"'" )
-    ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE month = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"'" )
 
     regsEx.each do |reg|
       extra = ExtraInformationForPayslip.new
@@ -321,6 +321,7 @@ class Payrolls::PayslipsController < ApplicationController
     end
     @partes = Array.new
     @mensaje = "fail"
+    @tipo = params[:tipo]
 
     if params[:worker] == "empleado"
       fecha = params[:semana].split(',')
@@ -364,7 +365,6 @@ class Payrolls::PayslipsController < ApplicationController
         FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
         WHERE wc.id = " + params[:semana].to_s).first
 
-      tipo = params[:tipo]
       @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
       @max_hour = ActiveRecord::Base.connection.execute("
         SELECT total
@@ -385,21 +385,6 @@ class Payrolls::PayslipsController < ApplicationController
       end
       if wg != 0
         @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
-        
-        p "params~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-        p @cc.id
-        p semana[0]
-        p semana[2]
-        p semana[3]
-        p wg
-        p ing
-        p des
-        p apor
-        p @headers
-        p @extra_info
-        p params[:ar_wo]
-
-
         @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo])
         @mensaje = "obrero"
       end
