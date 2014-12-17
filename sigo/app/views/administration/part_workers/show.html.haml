@@ -54,5 +54,5 @@
 :javascript
   
   $('#backlist-purchase-order').click(function(){
-    load_url_ajax("#{production_part_people_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
+    load_url_ajax("#{administration_part_workers_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
   });

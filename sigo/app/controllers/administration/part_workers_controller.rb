@@ -46,14 +46,14 @@ class Administration::PartWorkersController < ApplicationController
     partworker.company_id = session[:company]
     if partworker.save
       flash[:notice] = "Se ha creado correctamente la parte de obra."
-      redirect_to :action => :index, company_id: session[:company]
+      redirect_to :action => :index
     else
       partworker.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
       flash[:error] =  "Ha ocurrido un error en el sistema."
-      redirect_to :action => :index, company_id: session[:company]
+      redirect_to :action => :index
     end
   end
 
@@ -97,6 +97,6 @@ class Administration::PartWorkersController < ApplicationController
 
   private
   def part_worker_parameters
-    params.require(:part_worker).permit(:number_part, :date_of_creation, part_worker_details_attributes: [:id, :part_worker_id, :cost_center_id, :worker_id, :working_group_id, :reason_of_lack, :sector_id, :phase_id, :assistance, :_destroy])
+    params.require(:part_worker).permit(:number_part, :date_of_creation, part_worker_details_attributes: [:id, :part_worker_id, :cost_center_id, :worker_id, :working_group_id, :reason_of_lack, :sector_id, :phase_id, :assistance, :he_25, :he_35, :_destroy])
   end
 end
