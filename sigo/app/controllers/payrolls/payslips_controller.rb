@@ -36,6 +36,11 @@ class Payrolls::PayslipsController < ApplicationController
     end
     regs = params[:regs].split(' ')
     regsEx = params[:regsEx].split(' ')
+
+    #borrando extras
+    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"'" )
+    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE month = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"'" )
+
     regs.each do |reg|
       pay = Payslip.new
       pay.worker_id = params[:payslip][''+reg.to_s+'']['worker_id']
@@ -65,9 +70,10 @@ class Payrolls::PayslipsController < ApplicationController
         render :new, layout: false 
       end
     end
-    if regsEx.count != 0
-      ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE week = '"+params[:extra_information_for_payslip][''+regsEx.first.to_s+'']['week'].to_s+"'" )
-    end
+    
+    ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"'" )
+    ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE month = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"'" )
+
     regsEx.each do |reg|
       extra = ExtraInformationForPayslip.new
       extra.worker_id = params[:extra_information_for_payslip][''+reg.to_s+'']['worker_id']
@@ -379,6 +385,21 @@ class Payrolls::PayslipsController < ApplicationController
       end
       if wg != 0
         @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
+        
+        p "params~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        p @cc.id
+        p semana[0]
+        p semana[2]
+        p semana[3]
+        p wg
+        p ing
+        p des
+        p apor
+        p @headers
+        p @extra_info
+        p params[:ar_wo]
+
+
         @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo])
         @mensaje = "obrero"
       end
