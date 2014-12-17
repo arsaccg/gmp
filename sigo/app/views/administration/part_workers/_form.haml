@@ -28,9 +28,11 @@
                 %th{style: "width: 12%;"} Motivo de Falta
                 %th{style: "width: 12%;"} Sector
                 %th{style: "width: 12%;"} Fase
-                %th{style: "width: 12%;"} Grupo de Trabajo
-                %th{style: "width: 12%;"} Centro de Costo
-                %th{style: "width: 6%;"} Eliminar
+                %th{style: "width: 11%;"} Grupo de Trabajo
+                %th{style: "width: 11%;"} Centro de Costo
+                %th{style: "width: 2%;"} HE 25%
+                %th{style: "width: 2%;"} HE 35%                
+                %th{style: "width: 4%;"} Eliminar
             %tbody
               - if @action == 'new'
                 - @workers.each do |worker|                
@@ -58,7 +60,7 @@
                           %option{:value => "Subsidios por maternidad"} Subsidios por maternidad
                     %td.sector.smart-form
                       %div
-                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][sector_id]", :style => 'width:100%;padding: 0;border: none;'}
+                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][sector_id]", :style => 'width:100%;padding: 0;border: none;', :required=>true, :title=>"Seleccione un Sector"}
                           %option{:value => "", :selected => true, :disabled => true} Seleccionar Sector
                           - @sectors.each do |sector|
                             %optgroup{:label => "#{sector.name}"}
@@ -67,14 +69,14 @@
                                   = subsector.name
                     %td.phase.smart-form
                       %div
-                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][phase_id]", :style => 'width:100%;padding: 0;border: none;'}
+                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][phase_id]", :style => 'width:100%;padding: 0;border: none;', :required=>true, :title=>"Seleccione una Fase"}
                           %option{:value => "", :selected => true, :disabled => true} Seleccionar Fase
                           - @phases.each do |phase|
                             %option{:value => "#{phase.id}"}
                               = phase.code + ' - ' + phase.name
                     %td.working-group.smart-form
                       %div
-                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][working_group_id]", :style => 'width:100%;padding: 0;border: none;'}
+                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][working_group_id]", :style => 'width:100%;padding: 0;border: none;', :required=>true, :title=>"Seleccione un Grupo de Trabajo"}
                           %option{:value => ''} Seleccione Grupo de Trabajo
                           - @working_groups.each do |working_group|
                             - if @action == 'edit'
@@ -89,11 +91,17 @@
                                 = working_group.name
                     %td.costcenter
                       %div
-                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][cost_center_id]", :style => 'width:100%;padding: 0;border: none;'}
+                        %select.form-control{:name =>"part_worker[part_worker_details_attributes][#{worker.id.to_s}][cost_center_id]", :style => 'width:100%;padding: 0;border: none;', :required=>true, :title=>"Seleccione un Centro de Costo"}
                           %option{:value => "0", :selected => true, :disabled => true} Seleccionar Centro de Costo
                           - @costcenters.each do |costcenters|
                             %option{:value => "#{costcenters.id}"}
                               = costcenters.name
+                    %td.he-25
+                      %div
+                        %input{:name=>'part_worker[part_worker_details_attributes]['+worker.id.to_s+'][he_25]', :style => "width:50px"}
+                    %td.he-35
+                      %div
+                        %input{:name=>'part_worker[part_worker_details_attributes]['+worker.id.to_s+'][he_35]', :style => "width:50px"}
                     %td{:style => "width: 1%; text-align: center;"}
                       %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
               - if @action == 'edit'
@@ -166,6 +174,12 @@
                             - else
                               %option{:value => "#{costcenters.id}"}
                                 = costcenters.name
+                    %td.he-25
+                      %div
+                        %input{:name=>'part_worker[part_worker_details_attributes]['+worker.id.to_s+'][he_25]', :style => "width:50px"}= oos.he_25
+                    %td.he-35
+                      %div
+                        %input{:name=>'part_worker[part_worker_details_attributes]['+worker.id.to_s+'][he_35]', :style => "width:50px"}= oos.he_35                        
                     %td.delete-item
                       %label.checkbox
                         = check_box 'part_person[part_person_details_attributes]', '[' + @reg_n.to_s + '][_destroy]'
