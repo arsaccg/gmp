@@ -31,7 +31,7 @@ class Payrolls::PayslipsController < ApplicationController
     regs = params[:regs].split(' ')
     regsEx = params[:regsEx].split(' ')
     #borrando planillas con el mismo periodo
-    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR month = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"')" )
+    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR `month` = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"')" )
     #borrando extra info de planillas con el mismo periodo
     ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR week = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"')" )
     
