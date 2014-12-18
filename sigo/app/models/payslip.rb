@@ -162,24 +162,7 @@ class Payslip < ActiveRecord::Base
             amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = 'worker'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, con.id)
             total += amount.to_f
           end
-
-          #if  ing.to_i == 15
-            #total = total - amount.to_f
-            #amount = amount.to_f * row[6].to_f
-            #total+=amount.to_f
-          #end
-
-          #if  ing.to_i == 17
-            #total = total - amount.to_f
-            #amount = amount.to_f * row[8].to_f
-            #total += amount.to_f
-          #end
-
-          #if  ing.to_i == 24
-            #total = total - amount.to_f
-            #amount = amount.to_f * row[8].to_f
-            #total += amount.to_f
-          #end
+          
           if flag_extra
             array_extra_info.each do |ar|
               if ar[1].to_i == ing.to_i && ar[0].to_i == row[0].to_i
