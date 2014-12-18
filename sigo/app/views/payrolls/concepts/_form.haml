@@ -79,10 +79,11 @@
                   %label Variable
           %section.col.col-6
             %label.label Valorizaciones Empleado
-            %label.input
-              %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("employee")' }
-                %i.fa.fa-superscript
-                Definir
+            .form-group.in-line
+              %label.input
+                %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("employee")' }
+                  %i.fa.fa-superscript
+                  Definir
                       
       %footer
         %button.btn.btn-primary{type: "submit"}
@@ -521,6 +522,8 @@
       $('#cemp').fadeIn('fast');
     }else{
       $('#cemp').fadeOut('fast');
+      $('input#concept_type_obrero_fijo:radio').attr('checked',false);
+      $('input#concept_type_obrero_variable:radio').attr('checked',false);
     }
   }
 
@@ -529,5 +532,7 @@
       $('#cobr').fadeIn('fast');
     }else{
       $('#cobr').fadeOut('fast');
+      $('input#concept_type_obrero_fijo:radio').attr('checked',false);
+      $('input#concept_type_obrero_variable:radio').attr('checked',false);
     }
   }  
