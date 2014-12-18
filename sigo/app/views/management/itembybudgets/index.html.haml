@@ -40,7 +40,7 @@
             - measured = 0
             - if itembudget.measured.to_f != 0
               - measured = itembudget.measured
-            %a{:href=>"javascript:filter_by_budget_and_item('#{itembudget.order.gsub('.','d')}', '" + filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s + "?budget_id=" + @budget_id + "&item_id=" + itembudget.item_id.to_s + "&order=" + order_str + "&measured=" + measured.to_s + "');", class: measured == 0 ? "green" : ""}
+            %a{:href=>"javascript:filter_by_budget_and_item('#{itembudget.order.gsub('.','d')}', '" + filter_by_budget_and_item_management_inputbybudgetanditems_path.to_s + "?budget_id=" + @budget_id.to_s + "&item_id=" + itembudget.item_id.to_s + "&order=" + order_str + "&measured=" + measured.to_s + "');", class: measured == 0 ? "green" : ""}
               = get_title_or_description(itembudget)
             %a{href: "javascript:load_url_ondiv('#{edit_management_itembybudget_path(itembudget)}', 'right-area')"}
               %i.fa.fa-pencil
