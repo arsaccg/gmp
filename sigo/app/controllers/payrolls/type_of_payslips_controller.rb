@@ -39,7 +39,6 @@ before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :upda
 
   def update
     tpay = TypeOfPayslip.find(params[:id])
-    ActiveRecord::Base.connection.execute("DELETE FROM `concepts_type_of_payslips` WHERE `type_of_payslip_id` = "+tpay.id.to_s)
     if tpay.update_attributes(tpay_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
@@ -61,6 +60,6 @@ before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :upda
 
   private
   def tpay_parameters
-    params.require(:type_of_payslip).permit(:name, :description, :type_of_worker, {:concept_ids => []})
+    params.require(:type_of_payslip).permit(:name, :description, :for_worker_employee, {:concept_ids => []})
   end
 end

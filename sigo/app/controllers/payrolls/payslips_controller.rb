@@ -191,7 +191,7 @@ class Payrolls::PayslipsController < ApplicationController
 
   def complete_type_payslip
     tp = Array.new
-    type_of_payslips = TypeOfPayslip.where("type_of_worker = '"+params[:worker]+"'")
+    type_of_payslips = TypeOfPayslip.where("for_worker_employee = '"+params[:worker]+"'")
     type_of_payslips.each do |wo|
       tp << {'id' => wo.id.to_s, 'name' => wo.name.to_s}
     end

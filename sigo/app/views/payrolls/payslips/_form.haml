@@ -408,7 +408,11 @@
 
     if(document.getElementById('t').checked){
       worker_id = "empleado";
-      semana = $('#year').val()+","+$('#mes').val();
+      if($('#year').val()!= null){
+        semana = $('#year').val()+","+$('#mes').val();
+      }else{
+        semana = " ";
+      }
     }
 
     if(document.getElementById('e').checked){

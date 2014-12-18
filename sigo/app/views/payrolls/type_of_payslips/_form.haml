@@ -8,22 +8,16 @@
       %fieldset
         .row
           %section.col.col-md-8
-            .form-group.in-line
-              %label.label Tipo de Trabajador
-              .col-md-12
-                .col-md-1
-                %label.radio-inline
-                  %input.radiobox#e{:name=>"type_of_payslip[type_of_worker]",:type => 'radio', :value => "empleado", :onchange => "checkWorkerE('manual');", :checked => @tpay.type_of_worker=="empleado"}
-                  %span Empleado
-                %label.radio-inline
-                  %input.radiobox#o{:name=>"type_of_payslip[type_of_worker]",:type => 'radio', :value => "obrero", :onchange => "checkWorkerO('manual');", :checked => @tpay.type_of_worker=="obrero"}
-                    %span Obrero        
-        .row
-          %section.col.col-md-8
             %label.label Nombre
             %label.input{for: "name"}
               %i.icon-append.fa.fa-user
               = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          %section.col.col-md-3
+            %label.label Para Obreros o Empleados?
+            %select.form-control#tipo{ :name => 'type_of_payslip[for_worker_employee]', :onchange => 'checkWorker("manual");' }
+              %option{:value => nil, :selected => true, :disabled => true} Seleccione
+              %option{:value => "obrero", :selected => @tpay.for_worker_employee=="obrero"} Obreros
+              %option{:value => "empleado", :selected => @tpay.for_worker_employee=="empleado" } Empleados
         %br
         .row
           %section.col.col-md-8
@@ -64,8 +58,7 @@
 :javascript
   $(document).ready(function () {
     $('.check_boxes').attr("style"," position: relative; left: 0; ");
-    if(document.getElementById('e').checked){checkWorkerE('onload');}
-    if(document.getElementById('o').checked){checkWorkerO('onload');}
+    checkWorkerE('onload');
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -116,15 +109,19 @@
     });
   }
 
-  function checkWorkerE(status){
-    
-    if(status=='manual'){$('input:checkbox').attr('checked',false);}
-    $('#empleado').attr('disabled',false).fadeIn('fast');
-    $('#obrero').attr('disabled',true).fadeOut('fast');
-  }
+  function checkWorker(status){
+    if(status=='manual'){
+      $('input:checkbox').attr('checked',false);
+    }
+    var tipo = $('#tipo').val();
 
-  function checkWorkerO(status){
-    if(status=='manual'){$('input:checkbox').attr('checked',false);}
-    $('#empleado').attr('disabled',true).fadeOut('fast');
-    $('#obrero').attr('disabled',false).fadeIn('fast');
+    if( tipo=="empleado"){
+      $('#empleado').attr('disabled',false).fadeIn('fast');
+      $('#obrero').attr('disabled',true).fadeOut('fast');
+    }
+
+    if(tipo == "obrero"){
+      $('#empleado').attr('disabled',true).fadeOut('fast');
+      $('#obrero').attr('disabled',false).fadeIn('fast');
+    }
   }

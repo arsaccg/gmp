@@ -59,7 +59,7 @@
                   = f.radio_button :type_obrero, "Variable", :selected=>@con.type_obrero=="Variable"
                   %label Variable              
           %section.col.col-6
-            %label.label Valorizaciones Obrero
+            %label.label Valorizaciones para Obrero
             %label.input
               %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("worker")' }
                 %i.fa.fa-superscript
@@ -67,7 +67,7 @@
         %br
         %row#cemp{"style"=>"display:none"}
           %section.col.col-6
-            %label.label Concepto Empleado
+            %label.label Concepto para Empleados
             .form-group.in-line
               .col-md-1
               .col-md-10
@@ -307,6 +307,7 @@
     $('.check_boxes').attr("style"," position: relative; left: 0; ");
     if(document.getElementById('e').checked){checkWorkerE();}
     if(document.getElementById('o').checked){checkWorkerO();}
+
     $('input[type="radio"]').click(function(){
         if($(this).attr("value")=="Trabajador"){
             $("#condeEmp").hide();
