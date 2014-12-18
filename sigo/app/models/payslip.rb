@@ -332,7 +332,10 @@ class Payslip < ActiveRecord::Base
                 amount = uit7*0.15/12/4
                 amount = (uit27-uit7)*0.21/12/4
                 amount += (bruto - uit27 - uit7)*0.3/12/4
+              else
+                amount = 0
               end
+              total+= amount
             end            
           end
           if flag_extra
@@ -604,7 +607,10 @@ class Payslip < ActiveRecord::Base
               elsif bruto > uit54
                 amount = uit27*0.21/12/4 + (uit27-uit7)*0.15/12/4
                 amount += (bruto - uit54)*0.3/12/4
-              end              
+              else
+                amount = 0
+              end
+              total+= amount           
             end            
           end
           if flag_extra
