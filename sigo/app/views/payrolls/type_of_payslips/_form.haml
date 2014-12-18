@@ -8,6 +8,18 @@
       %fieldset
         .row
           %section.col.col-md-8
+            .form-group.in-line
+              %label.label Tipo de Trabajador
+              .col-md-12
+                .col-md-1
+                %label.radio-inline
+                  %input.radiobox#e{:name=>"type_of_payslip[type_of_worker]",:type => 'radio', :value => "empleado", :onchange => "checkWorkerE('manual');", :checked => @tpay.type_of_worker=="empleado"}
+                  %span Empleado
+                %label.radio-inline
+                  %input.radiobox#o{:name=>"type_of_payslip[type_of_worker]",:type => 'radio', :value => "obrero", :onchange => "checkWorkerO('manual');", :checked => @tpay.type_of_worker=="obrero"}
+                    %span Obrero        
+        .row
+          %section.col.col-md-8
             %label.label Nombre
             %label.input{for: "name"}
               %i.icon-append.fa.fa-user
@@ -22,15 +34,26 @@
         .row
           %section.col.col-md-12
             %label.label Conceptos a usar:
-            .col.col-4
-              %label.label Ingresos:
-              = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '1%'")
-            .col.col-4
-              %label.label Descuentos:
-              = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '2%'")
-            .col.col-4
-              %label.label Aportaciones:
-              = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '3%'")
+            %div#empleado{"style"=>"display:none", :disabled=>true}
+              .col.col-4
+                %label.label Ingresos:
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '1%' AND type_empleado IS NOT NULL")
+              .col.col-4
+                %label.label Descuentos:
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '2%' AND type_empleado IS NOT NULL")
+              .col.col-4
+                %label.label Aportaciones:
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '3%' AND type_empleado IS NOT NULL")
+            %div#obrero{"style"=>"display:none", :disabled=>true}
+              .col.col-4
+                %label.label Ingresos:            
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '1%' AND type_obrero IS NOT NULL")
+              .col.col-4
+                %label.label Descuentos:
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '2%' AND type_obrero IS NOT NULL")
+              .col.col-4
+                %label.label Aportaciones:
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '3%' AND type_obrero IS NOT NULL")
 
 
       %footer
@@ -41,6 +64,8 @@
 :javascript
   $(document).ready(function () {
     $('.check_boxes').attr("style"," position: relative; left: 0; ");
+    if(document.getElementById('e').checked){checkWorkerE('onload');}
+    if(document.getElementById('o').checked){checkWorkerO('onload');}
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
@@ -89,4 +114,17 @@
       error: function(xhr, status, error) {
       }
     });
+  }
+
+  function checkWorkerE(status){
+    
+    if(status=='manual'){$('input:checkbox').attr('checked',false);}
+    $('#empleado').attr('disabled',false).fadeIn('fast');
+    $('#obrero').attr('disabled',true).fadeOut('fast');
+  }
+
+  function checkWorkerO(status){
+    if(status=='manual'){$('input:checkbox').attr('checked',false);}
+    $('#empleado').attr('disabled',true).fadeOut('fast');
+    $('#obrero').attr('disabled',false).fadeIn('fast');
   }

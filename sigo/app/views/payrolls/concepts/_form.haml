@@ -12,7 +12,7 @@
             %label.input
               %i.icon-append.fa.fa-credit-card
               = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
-          
+        %row
           %section.col.col-4
             %label.label Código
             %label.input
@@ -34,8 +34,19 @@
           %section.col.col-4
             %label.label Tope
             %label.input
-              = f.input :top, placeholder: "Tope", input_html: { class: 'form-control' }, label: false      
-        %row
+              = f.input :top, placeholder: "Tope", input_html: { class: 'form-control' }, label: false 
+        %row  
+          %section.col.col-12{:style=>" width: 490px; "}
+            .form-group.in-line
+              %label.check-inline
+                %input.checkbox#e{:name=>"check_type_worker",:type => 'checkbox', :value => "empleado", :onchange => "checkWorkerE();", :checked => @con.type_empleado!=nil}
+                %span Aplica para Empleado?
+              %br
+              %label.check-inline
+                %input.checkbox#o{:name=>"check_type_worker",:type => 'checkbox', :value => "obrero", :onchange => "checkWorkerO();", :checked => @con.type_obrero!=nil}
+                %span  Aplica para Obrero?
+        %br
+        %row#cobr{"style"=>"display:none"}
           %section.col.col-6
             %label.label Concepto Obrero
             .form-group.in-line
@@ -47,14 +58,14 @@
                 .col-md-7
                   = f.radio_button :type_obrero, "Variable", :selected=>@con.type_obrero=="Variable"
                   %label Variable              
-          %section.col.col-2
-            %label.label Valorizaciones
+          %section.col.col-6
+            %label.label Valorizaciones Obrero
             %label.input
               %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("worker")' }
                 %i.fa.fa-superscript
                 Definir
         %br
-        %row
+        %row#cemp{"style"=>"display:none"}
           %section.col.col-6
             %label.label Concepto Empleado
             .form-group.in-line
@@ -66,8 +77,8 @@
                 .col-md-7
                   = f.radio_button :type_empleado, "Variable", :selected=>@con.type_empleado=="Variable"
                   %label Variable
-          %section.col.col-2
-            %label.label Valorizaciones
+          %section.col.col-6
+            %label.label Valorizaciones Empleado
             %label.input
               %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("employee")' }
                 %i.fa.fa-superscript
@@ -184,6 +195,7 @@
               %button.btn.btn-success{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Guardar
               %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Salir
       -@reg_n+=1
+
       #modal_valorization_employees.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "modalValorizationLabel", role: "dialog" }
         .modal-dialog{ :style => 'margin: 0 auto; width: 50%;' }
           .modal-content
@@ -292,7 +304,9 @@
 
 :javascript
   $(document).ready(function () {
-
+    $('.check_boxes').attr("style"," position: relative; left: 0; ");
+    if(document.getElementById('e').checked){checkWorkerE();}
+    if(document.getElementById('o').checked){checkWorkerO();}
     $('input[type="radio"]').click(function(){
         if($(this).attr("value")=="Trabajador"){
             $("#condeEmp").hide();
@@ -500,3 +514,19 @@
     $('#formula_field_concept_employee').val(new_formula);
 
   }
+
+  function checkWorkerE(){
+    if(document.getElementById('e').checked){
+      $('#cemp').fadeIn('fast');
+    }else{
+      $('#cemp').fadeOut('fast');
+    }
+  }
+
+  function checkWorkerO(){
+    if(document.getElementById('o').checked){
+      $('#cobr').fadeIn('fast');
+    }else{
+      $('#cobr').fadeOut('fast');
+    }
+  }  

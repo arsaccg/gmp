@@ -54,9 +54,6 @@
         %label.input
           %select.form-control#tipo
             %option{:value=> nil, :selected => true, :disabled => true} Seleccione un tipo
-            -@tpay.each do |tpay|
-              %option{:value=> "#{tpay.id}"}
-                = tpay.name
       %br
     .row
       %section.col.col-md-3
@@ -258,24 +255,26 @@
       $('#messe').fadeIn('fast');
       $('#years').fadeIn('fast');
       $('#semanase').fadeOut('fast');
+      var worker = "empleado";
       if($('#mes').val() != null){
         var semana = $('#mes').val()+"-"+$('#year').val();
-        worker = "empleado";
         complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
         complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}",worker);
       }
+      complete_info_type_payslip("#{complete_type_payslip_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
     }else{
       $('#messe').fadeOut('fast');
       $('#years').fadeOut('fast');
       $('#semanase').fadeIn('fast');
+      var worker = "obrero";
       if($('#semana').val() != null){
         var semana = $('#semana').val();
-        worker = "obrero";
         complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}");
         complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
         complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}",worker);
       }
+      complete_info_type_payslip("#{complete_type_payslip_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
     }
   }
 
@@ -299,6 +298,32 @@
       )
       $.each(newOptions, function(key,value){
         $('#workers').append(
+          $("<option></option>").attr("value", value.id).text(value.name)
+        )
+      });
+    });
+  }
+
+  function complete_info_type_payslip(url, form_token, worker){
+    $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { authenticity_token: form_token, worker: worker}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.type_payslip, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#tipo').empty();
+      $('#tipo').append(
+        $("<option></option>").attr("value", null).text("Seleccione un tipo").attr("selected", "selected").attr("disabled", true)
+      )
+      $.each(newOptions, function(key,value){
+        $('#tipo').append(
           $("<option></option>").attr("value", value.id).text(value.name)
         )
       });

@@ -189,6 +189,15 @@ class Payrolls::PayslipsController < ApplicationController
     render json: {:workers => workers}
   end
 
+  def complete_type_payslip
+    tp = Array.new
+    type_of_payslips = TypeOfPayslip.where("type_of_worker = '"+params[:worker]+"'")
+    type_of_payslips.each do |wo|
+      tp << {'id' => wo.id.to_s, 'name' => wo.name.to_s}
+    end
+    render json: {:type_payslip => tp}
+  end
+
   def add_extra_info
     fecha = params[:semana].split('-')
     if fecha.length == 2
@@ -297,17 +306,16 @@ class Payrolls::PayslipsController < ApplicationController
     @pay = Payslip.new
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
     @company_id = get_company_cost_center('company')
-    puts 
     ing = Array.new
     des = Array.new
     apor = Array.new
-    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '1%' AND type_"+params[:worker].to_s+" = 'Fijo'").each do |tpc|
+    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '1%'").each do |tpc|
       ing << tpc.id
     end
-    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '2%' AND type_"+params[:worker].to_s+" = 'Fijo'").each do |tpc|
+    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '2%'").each do |tpc|
       des << tpc.id
     end
-    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '3%' AND type_"+params[:worker].to_s+" = 'Fijo'").each do |tpc|
+    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '3%'").each do |tpc|
       apor << tpc.id
     end
     @reg_n = (Time.now.to_f*1000).to_i
