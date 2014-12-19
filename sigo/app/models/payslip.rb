@@ -10,11 +10,11 @@ class Payslip < ActiveRecord::Base
     # => DES - Descuentos
     # => APO - Aportaciones
     array_worker = array_worker.split(',').uniq
-      if ing.include?(1)
-        incluye = true
-      else
-        incluye = false
-      end
+    if ing.include?(1)
+      incluye = true
+    else
+      incluye = false
+    end
 
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)
@@ -396,7 +396,7 @@ class Payslip < ActiveRecord::Base
     # => DES - Descuentos
     # => APO - Aportaciones
     array_worker = array_worker.split(',').uniq
-    if ing.include?(50)
+    if ing.include?(1)
       incluye =true
     else
       incluye = false
@@ -467,7 +467,6 @@ class Payslip < ActiveRecord::Base
       end
 
       if !ing.nil?
-        ing.delete(50) # => Removiendo la Remuneracion Basica de todos los Ingresos.
         ing.delete(1) # => Removiendo la Remuneracion Basica de todos los Ingresos.
         ing.each do |ing|
           con = nil

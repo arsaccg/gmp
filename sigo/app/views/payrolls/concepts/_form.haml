@@ -39,11 +39,11 @@
           %section.col.col-12{:style=>" width: 490px; "}
             .form-group.in-line
               %label.check-inline
-                %input.checkbox#e{:name=>"check_type_worker",:type => 'checkbox', :value => "empleado", :onchange => "checkWorkerE();", :checked => @con.type_empleado!=nil}
+                %input.checkbox#e{:name=>"check_type_worker_employee",:type => 'checkbox', :value => "empleado", :onchange => "checkWorkerE();", :checked => @con.type_empleado!=nil}
                 %span Aplica para Empleado?
               %br
               %label.check-inline
-                %input.checkbox#o{:name=>"check_type_worker",:type => 'checkbox', :value => "obrero", :onchange => "checkWorkerO();", :checked => @con.type_obrero!=nil}
+                %input.checkbox#o{:name=>"check_type_worker_worker",:type => 'checkbox', :value => "obrero", :onchange => "checkWorkerO();", :checked => @con.type_obrero!=nil}
                 %span  Aplica para Obrero?
         %br
         %row#cobr{"style"=>"display:none"}
@@ -522,8 +522,8 @@
       $('#cemp').fadeIn('fast');
     }else{
       $('#cemp').fadeOut('fast');
-      $('input#concept_type_obrero_fijo:radio').attr('checked',false);
-      $('input#concept_type_obrero_variable:radio').attr('checked',false);
+      $('input#concept_type_empleado_fijo:radio').attr('checked',false);
+      $('input#concept_type_empleado_variable:radio').attr('checked',false);
     }
   }
 

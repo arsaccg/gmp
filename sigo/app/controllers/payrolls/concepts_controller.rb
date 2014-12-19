@@ -71,7 +71,12 @@ class Payrolls::ConceptsController < ApplicationController
     con.code = params[:tipo].to_s + con.code.to_s
     con.company_id = get_company_cost_center('company')
     con.token = '[' + params[:concept]['name'].downcase.parameterize.to_s + ']'
-    
+    if params[:check_type_worker_worker].nil?
+      con.type_obrero = nil
+    end
+    if params[:check_type_worker_employee].nil?
+      con.type_empleado = nil
+    end
     if con.update_attributes(con_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index

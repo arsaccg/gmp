@@ -80,6 +80,8 @@
         Guardar
     :javascript
       $(document).ready(function(){
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove(); 
         $('#new_payslip').ajaxForm({
           beforeSubmit: function() {
             $('#new_payslip').validate({
@@ -211,6 +213,8 @@
         Guardar
     :javascript
       $(document).ready(function(){
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove(); 
         $('#new_payslip').ajaxForm({
           beforeSubmit: function() {
             $('#new_payslip').validate({

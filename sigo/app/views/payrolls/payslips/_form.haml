@@ -421,6 +421,10 @@
     if(worker_id != null && semana != ' ' && tipo != null){
       str_item = {authenticity_token: "#{form_authenticity_token}", cost_center: cost_center, semana: semana, tipo:tipo, worker: worker_id, extra:extra_info, ar_wo: wor_arr};
       $('#example').empty();
+      $('#modalLoadingLabelading').modal({
+        backdrop: 'static',
+        keyboard: false
+      });
       append_url_ajax('#{generate_payroll_payrolls_payslips_path}', 'example', str_item, 0, 'POST');
     }else{
       $.smallBox({
