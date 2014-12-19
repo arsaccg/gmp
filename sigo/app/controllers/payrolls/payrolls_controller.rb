@@ -12,18 +12,18 @@ class Payrolls::PayrollsController < ApplicationController
     index = 1
     Payslip.where(:code => params[:w]).each do |payslip|
       entity = payslip.worker.entity
-      array << [index, entity.dni.to_s, entity.name.to_s + ' ' + entity.second_name.to_s, entity.paternal_surname.to_s, entity.maternal_surname.to_s, "<a class='btn btn-success btn-xs' href='/payrolls/payrolls/" + payslip.worker.id.to_s + "/generate_payroll.pdf' target='_blank'> Generar boleta de pago </a>"]
+      array << [index, entity.dni.to_s, entity.name.to_s + ' ' + entity.second_name.to_s, entity.paternal_surname.to_s, entity.maternal_surname.to_s, "<a class='btn btn-success btn-xs' href='/payrolls/payrolls/" + payslip.id.to_s + "/generate_payroll.pdf?q=" + payslip.worker.id.to_s + "' target='_blank'> Generar boleta de pago </a>"]
       index += 1
     end
     render json: { :aaData => array }
   end
 
   def add_concept
-    @concept = params[:concept]
+    /@concept = params[:concept]
     @amount = params[:amount]
     @type = params[:type]
     @reg_n = (Time.now.to_f*1000).to_i
-    render(partial: 'concept_items', :layout => false)
+    render(partial: 'concept_items', :layout => false)/
   end
 
   def show
@@ -67,22 +67,27 @@ class Payrolls::PayrollsController < ApplicationController
   end
 
   def generate_payroll
-    worker_id = params[:id]
+    worker_id = params[:q]
     @total_concepts = Array.new
     @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
-    @payslip = Payslip.where(:worker_id => worker_id).last
+    @payslip = Payslip.find(params[:id])
     @worker = Worker.find(worker_id)
     @worker_contract = @worker.worker_contracts.where(:status => 1).first
     @type_worker = Article.select(:name).select(:code).find(@worker_contract.article_id)
     @category_worker = Category.select(:name).find_by_code(@type_worker.code[2..5])
 
-    week_id = ActiveRecord::Base.connection.execute("SELECT id FROM weeks_for_cost_center_#{@cost_center.id} WHERE name LIKE '%#{@payslip.week.split(':')[0]}%'").first[0]
+    if !@payslip.week.nil? # => Significa que es Obrero
+      week_id = ActiveRecord::Base.connection.execute("SELECT id FROM weeks_for_cost_center_#{@cost_center.id} WHERE name LIKE '%#{@payslip.week.split(':')[0]}%'").first[0]
 
-    total_hour_week = WeeksPerCostCenter.get_total_hours_per_week(@cost_center.id, week_id)
-    if @payslip.normal_hours.to_f >= total_hour_week.to_f
+      total_hour_week = WeeksPerCostCenter.get_total_hours_per_week(@cost_center.id, week_id)
+      if @payslip.normal_hours.to_f >= total_hour_week.to_f
+        @number_hours_normal = 6
+      else
+        @number_hours_normal = (@payslip.days.to_f*6/total_hour_week).round()
+      end
+
+    else # => Significa que es Empleado
       @number_hours_normal = 6
-    else
-      @number_hours_normal = (@payslip.days.to_f*6/total_hour_week).round()
     end
 
     @incomes_and_amounts = JSON.parse(@payslip.ing_and_amounts).to_a
@@ -105,8 +110,8 @@ class Payrolls::PayrollsController < ApplicationController
   end
 
   def get_cc
-    @cc = Company.find(params[:company]).cost_centers
-    render json: {:cc=>@cc}  
+    /@cc = Company.find(params[:company]).cost_centers
+    render json: {:cc=>@cc}  /
   end
 
   def create
@@ -145,7 +150,7 @@ class Payrolls::PayrollsController < ApplicationController
   end
 
   def update
-    pay = Payroll.find(params[:id])
+    /pay = Payroll.find(params[:id])
     if pay.update_attributes(pay_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
@@ -156,7 +161,7 @@ class Payrolls::PayrollsController < ApplicationController
       # Load new()
       @pay = pay
       render :edit, layout: false
-    end
+    end/
   end
 
   def destroy

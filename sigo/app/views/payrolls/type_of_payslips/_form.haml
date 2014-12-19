@@ -118,10 +118,14 @@
     if( tipo=="empleado"){
       $('#empleado').attr('disabled',false).fadeIn('fast');
       $('#obrero').attr('disabled',true).fadeOut('fast');
+      $('div#empleado div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',false);
+      $('div#obrero div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',true);
     }
 
     if(tipo == "obrero"){
       $('#empleado').attr('disabled',true).fadeOut('fast');
       $('#obrero').attr('disabled',false).fadeIn('fast');
+      $('div#empleado div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',true)
+      $('div#obrero div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',false)
     }
   }

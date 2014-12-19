@@ -39,15 +39,17 @@
           %section.col.col-12{:style=>" width: 490px; "}
             .form-group.in-line
               %label.check-inline
-                %input.checkbox#e{:name=>"check_type_worker",:type => 'checkbox', :value => "empleado", :onchange => "checkWorkerE();", :checked => @con.type_empleado!=nil}
+                %input.checkbox#e{:name=>"check_type_worker_employee",:type => 'checkbox', :value => "empleado", :onchange => "checkWorkerE();", :checked => @con.type_empleado!=nil}
                 %span Aplica para Empleado?
               %br
               %label.check-inline
-                %input.checkbox#o{:name=>"check_type_worker",:type => 'checkbox', :value => "obrero", :onchange => "checkWorkerO();", :checked => @con.type_obrero!=nil}
+                %input.checkbox#o{:name=>"check_type_worker_worker",:type => 'checkbox', :value => "obrero", :onchange => "checkWorkerO();", :checked => @con.type_obrero!=nil}
                 %span  Aplica para Obrero?
         %br
         %row#cobr{"style"=>"display:none"}
-          %section.col.col-6
+          - if !@con.concept_valorizations.where('type_worker = "worker"').first.nil?
+            -foo = @con.concept_valorizations.where('type_worker = "worker"').first.formula          
+          %section.col.col-4
             %label.label Concepto Obrero
             .form-group.in-line
               .col-md-1
@@ -61,12 +63,17 @@
           %section.col.col-6
             %label.label Valorizaciones para Obrero
             %label.input
-              %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("worker")' }
-                %i.fa.fa-superscript
-                Definir
+              %div.col.col-3
+                %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("worker")' }
+                  %i.fa.fa-superscript
+                  Definir
+              %div.col.col-6
+                %input#formula-worker-form{:style=>"width:350px;font-size: 9px;", :value=> foo}
         %br
         %row#cemp{"style"=>"display:none"}
-          %section.col.col-6
+          - if !@con.concept_valorizations.where('type_worker = "employee"').first.nil?
+            -foe = @con.concept_valorizations.where('type_worker = "employee"').first.formula
+          %section.col.col-4
             %label.label Concepto para Empleados
             .form-group.in-line
               .col-md-1
@@ -79,10 +86,14 @@
                   %label Variable
           %section.col.col-6
             %label.label Valorizaciones Empleado
-            %label.input
-              %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("employee")' }
-                %i.fa.fa-superscript
-                Definir
+            .form-group.in-line
+              %label.input
+                %div.col.col-3
+                  %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("employee")' }
+                    %i.fa.fa-superscript
+                    Definir
+                %div.col.col-6
+                  %input#formula-employee-form{:style=>"width:350px;font-size: 9px;", :value=>foe}
                       
       %footer
         %button.btn.btn-primary{type: "submit"}
@@ -521,6 +532,8 @@
       $('#cemp').fadeIn('fast');
     }else{
       $('#cemp').fadeOut('fast');
+      $('input#concept_type_empleado_fijo:radio').attr('checked',false);
+      $('input#concept_type_empleado_variable:radio').attr('checked',false);
     }
   }
 
@@ -529,5 +542,16 @@
       $('#cobr').fadeIn('fast');
     }else{
       $('#cobr').fadeOut('fast');
+      $('input#concept_type_obrero_fijo:radio').attr('checked',false);
+      $('input#concept_type_obrero_variable:radio').attr('checked',false);
     }
   }  
+
+  $('#formula_field_concept').change(function(){
+    $('#formula-worker-form').val($('#formula_field_concept').val())
+  });
+
+  
+  $('#formula_field_concept_employee').change(function(){
+    $('#formula-employee-form').val($('#formula_field_concept').val())
+  });  

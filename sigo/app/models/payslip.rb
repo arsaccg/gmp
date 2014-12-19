@@ -10,7 +10,11 @@ class Payslip < ActiveRecord::Base
     # => DES - Descuentos
     # => APO - Aportaciones
     array_worker = array_worker.split(',').uniq
-
+    if ing.include?(1)
+      incluye = true
+    else
+      incluye = false
+    end
 
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)
@@ -92,8 +96,9 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_extras_100: 0)
 
       @result[@i] << rem_basic
-      
-      total += rem_basic
+      if incluye
+        total += rem_basic
+      end
 
       if !ing.nil?
         ing.delete(1) # => Removiendo la Remuneracion Basica de todos los Ingresos.
@@ -391,7 +396,11 @@ class Payslip < ActiveRecord::Base
     # => DES - Descuentos
     # => APO - Aportaciones
     array_worker = array_worker.split(',').uniq
-
+    if ing.include?(1)
+      incluye =true
+    else
+      incluye = false
+    end
     @result = Array.new
     headers = ['DNI', 'Nombre', 'CAT.', 'COMP.', 'AFP', 'HIJ', 'DIAS ASIST.', 'DIAS FALTA']
     total_days = 30
@@ -453,8 +462,9 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_extras_60: 0)
       calculator.store(horas_extras_100: 0)
 
-      
-      total += rem_basic
+      if incluye
+        total += rem_basic
+      end
 
       if !ing.nil?
         ing.delete(1) # => Removiendo la Remuneracion Basica de todos los Ingresos.

@@ -75,7 +75,7 @@
           %tr
             %th D/H Trabajados
             %td{ :style => 'text-align: right' }= @number_hours_normal.to_f
-            %td{ :style => 'text-align: right' }= @payslip.normal_hours.to_f
+            %td{ :style => 'text-align: right' }= @payslip.normal_hours.to_f != 0.0 ? @payslip.normal_hours.to_f : 48
             %th D/H Subsidiados
             %td{ :style => 'text-align: right' }= @payslip.subsidized_day.to_f
             %td{ :style => 'text-align: right' }= @payslip.subsidized_hour.to_f
