@@ -411,8 +411,8 @@ function append_url_ajax_payroll(url, div_id, parameters, loader_flag, render_ty
     async: false,
     data: parameters,
     beforeSend : function() {
-      console.log("befeoe send")
-      $('#modalLoadingLabelading').modal({
+      console.log("before send")
+      $('#modalLoading').modal('toggle', {
         backdrop: 'static',
         keyboard: false
       });
