@@ -342,13 +342,10 @@ class Management::ValorizationsController < ApplicationController
           rep.act_amount = Valorization.amount_actual(ibb.order, @budget.id, @valorization.id)
           rep.acc_amount = Valorization.amount_acumulated(ibb.order, @budget.id, @valorization.valorization_date, @valorization.id)
           rep.rem_amount = Valorization.amount_remainder(ibb.order, @budget.id, @valorization.valorization_date, @valorization.id)
-          "Reporte~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-          p ibb.order
-          p @budget.id
-          p @valorization.valorization_date
-          p @valorization.id
+          p "Valorization.advance_percent(ibb.order, @budget.id, @valorization.valorization_date.to_s, @valorization.id)"
+          p Valorization.advance_percent(ibb.order, @budget.id, @valorization.valorization_date.to_s, @valorization.id)
 
-          p rep.advance = Valorization.advance_percent(ibb.order, @budget.id, @valorization.valorization_date.to_s, @valorization.id) 
+          rep.advance = Valorization.advance_percent(ibb.order, @budget.id, @valorization.valorization_date.to_s, @valorization.id) rescue 0
           rep.save
         end
       end

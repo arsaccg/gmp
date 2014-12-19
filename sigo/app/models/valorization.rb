@@ -48,10 +48,10 @@ class Valorization < ActiveRecord::Base
         IFNULL(measured - (IFNULL(valorizationitems.accumulated_measured, 0)), measured) AS 'saldo_metrado', 
         IFNULL((measured - valorizationitems.accumulated_measured) * price, (price * measured)) AS 'saldo_costo',
         IFNULL((IFNULL(valorizationitems.accumulated_measured, 0) / measured) * 100, 100) AS 'avance'
-        FROM     `itembybudgets` LEFT JOIN
-        valorizationitems ON valorizationitems.itembybudget_id = itembybudgets.id LEFT JOIN 
-        valorizations ON valorizationitems.valorization_id = valorizations.id
-        WHERE   `order` LIKE '" + orderi + "' AND valorizations.id = '" + valorization_id + "'"
+        FROM `itembybudgets`, `valorizationitems`, `valorizations`
+        WHERE valorizationitems.itembybudget_id = itembybudgets.id
+        AND valorizationitems.valorization_id = valorizations.id
+        AND itembybudgets.`order` LIKE '" + orderi + "' AND valorizations.id = '" + valorization_id + "'"
     
     #ActiveRecord::Base.connection.reconnect!
     #subitem = ActiveRecord::Base.connection.select_all("call test_proc('01%', '2');")
@@ -94,12 +94,6 @@ class Valorization < ActiveRecord::Base
 
 
 
-  def self.advance_percent(orderitem, budgetid, current_created_at, valorizationid)
-      amount = 0 
-      amount = amount_acumulated(orderitem, budgetid, current_created_at, valorizationid) / amount_contractual(orderitem, budgetid) * 100
-      return amount
-  end
-
   def self.amount_contractual(orderitem, budgetid)
       orderi = orderitem+'%'
       amount = Itembybudget.where('`order` LIKE (?) AND budget_id = (?) AND measured > 0', orderi, budgetid).sum('measured * price')
@@ -137,9 +131,9 @@ class Valorization < ActiveRecord::Base
   end
 
   def self.advance_percent(orderitem, budgetid, current_created_at, valorizationid)
-      amount = 0 
-      amount = amount_acumulated(orderitem, budgetid, current_created_at, valorizationid) / amount_contractual(orderitem, budgetid) * 100 rescue 0
-      return amount
+      amount = (amount_acumulated(orderitem, budgetid, current_created_at.to_date, valorizationid) / amount_contractual(orderitem, budgetid) * 100) rescue 0
+      res = (amount.is_a?(Float) && amount.nan?) ? 0 : amount
+      return res
   end
 
 end
