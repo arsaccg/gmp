@@ -399,6 +399,34 @@ function append_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*
   return false;
 }
 
+function append_url_ajax_payroll(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
+
+  var url_str = url;
+  var div_name = div_id; 
+  var type_call = render_type;
+
+  $.ajax({
+    type: type_call,
+    url: url_str,
+    async: false,
+    data: parameters,
+    beforeSend : function() {
+      console.log("befeoe send")
+      $('#modalLoadingLabelading').modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      console.log("before send modal abierto")
+    }
+  }).done(function( msg ) {
+    $("#" + div_name).append(msg);
+    console.log("modal por cerrar")
+    $('#modalLoading').modal('hide');
+    console.log("modal cerrardo")
+  });
+  return false;
+}
+
 function load_items_delivery_order_ajax(url, div_id, parameters){
   var url_str = url;
   var div_name = div_id; 

@@ -21,8 +21,11 @@ class Payrolls::PayslipsController < ApplicationController
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
     @afp = Afp.all
     @semanas = ActiveRecord::Base.connection.execute("
-      SELECT *
-      FROM weeks_for_cost_center_" + @cc.id.to_s)
+      SELECT wc . * 
+      FROM  weekly_workers ww, weeks_for_cost_center_" + @cc.id.to_s+" wc
+      WHERE ww.state =  'approved'
+      AND ww.start_date = wc.start_date
+      AND ww.end_date = wc.end_date")
     render layout: false
   end
 
