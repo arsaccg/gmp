@@ -184,7 +184,6 @@
         var semana = $(this).val();
         worker = "obrero";
         complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}",worker);
-        complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
         complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}", worker);
         flag = false;
       }
@@ -208,7 +207,6 @@
         var semana = $(this).val()+"-"+$('#year').val();
         worker = "empleado";
         complete_infow("#{complete_select_payrolls_payslips_path}", semana, "#{form_authenticity_token}", worker);
-        complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", worker);
         complete_info_tabla("#{complete_select_extra_payrolls_payslips_path}", semana, "#{form_authenticity_token}",worker);
         flag = false;
       }
@@ -221,6 +219,10 @@
           timeout: 4000
         });
       }
+    });
+
+    $('#tipo').change(function(){
+      complete_infoc("#{complete_select2_payrolls_payslips_path}", "#{form_authenticity_token}", $('#tipo').val());
     });
 
     $('#agrego').click(function(){
@@ -330,12 +332,12 @@
     });
   }
 
-  function complete_infoc(url, form_token, worker){
+  function complete_infoc(url, form_token, tipo){
     $.ajax({
       type: "POST",
       url: url,
       async: false,
-      data: { authenticity_token: form_token, worker: worker}
+      data: { authenticity_token: form_token, tipo: tipo}
     }).done(function( data ) {
       newOptions = [];
       $.each(data.concepts, function(key, value){

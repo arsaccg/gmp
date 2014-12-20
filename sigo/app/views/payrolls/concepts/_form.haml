@@ -68,7 +68,7 @@
                   %i.fa.fa-superscript
                   Definir
               %div.col.col-6
-                %input#formula-worker-form{:style=>"width:350px;font-size: 9px;", :value=> foo}
+                %input#formula-worker-form{:style=>"width:350px;font-size: 9px;", :value=> foo, :readonly=>true}
         %br
         %row#cemp{"style"=>"display:none"}
           - if !@con.concept_valorizations.where('type_worker = "employee"').first.nil?
@@ -93,7 +93,7 @@
                     %i.fa.fa-superscript
                     Definir
                 %div.col.col-6
-                  %input#formula-employee-form{:style=>"width:350px;font-size: 9px;", :value=>foe}
+                  %input#formula-employee-form{:style=>"width:350px;font-size: 9px;", :value=>foe, :readonly=>true}
                       
       %footer
         %button.btn.btn-primary{type: "submit"}
@@ -553,5 +553,5 @@
 
   
   $('#formula_field_concept_employee').change(function(){
-    $('#formula-employee-form').val($('#formula_field_concept').val())
+    $('#formula-employee-form').val($('#formula_field_concept_employee').val())
   });  
