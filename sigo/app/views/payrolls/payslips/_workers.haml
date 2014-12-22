@@ -179,8 +179,12 @@
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][days]', pars[7]
               %td{ :style => 'text-align: center' }
                 = pars[8].to_i
-              -(0..pars.count-10).each do |i|
-                -j=i+9
+              %td{ :style => 'text-align: center' }
+                = pars[9].to_f
+              %td{ :style => 'text-align: center' }
+                = pars[10].to_f
+              -(0..pars.count-12).each do |i|
+                -j=i+11
                 -p=j-1
                 %td{ :style => 'text-align: right' }
                   -if @flag == 0

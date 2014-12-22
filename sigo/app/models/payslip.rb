@@ -90,8 +90,8 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_trabajadas: row[7])
       calculator.store(horas_totales_semana: total_hour)
       calculator.store(dias_trabajados: worker_hours)
-      calculator.store(horas_simples: row[9])
-      calculator.store(horas_dobles: row[10])
+      calculator.store(horas_simples: row[9].to_f)
+      calculator.store(horas_dobles: row[10].to_f)
       calculator.store(horas_extras_60: 0)
       calculator.store(horas_extras_100: 0)
 
@@ -396,25 +396,26 @@ class Payslip < ActiveRecord::Base
     # => DES - Descuentos
     # => APO - Aportaciones
     array_worker = array_worker.split(',').uniq
+    month = week_end.to_date.strftime('%m').to_i
+    rangos = FinancialVariable.where("name LIKE 'RANGO %'")
+    year = week_end.to_date.strftime('%YYYY').to_i
     if ing.include?(1)
       incluye =true
     else
       incluye = false
     end
     @result = Array.new
-    headers = ['DNI', 'Nombre', 'CAT.', 'COMP.', 'AFP', 'HIJ', 'DIAS ASIST.', 'DIAS FALTA']
+    headers = ['DNI', 'Nombre', 'CAT.', 'COMP.', 'AFP', 'HIJ', 'DIAS ASIST.', 'DIAS FALTA', 'HE 25%','HE 35%']
     total_days = 30
     @i = 1
     @comp_name = Company.find(company).short_name
-    uit7 = FinancialVariable.find_by_name("UIT").value * 7
-    uit27 = FinancialVariable.find_by_name("UIT").value * 27
-    uit54 = FinancialVariable.find_by_name("UIT").value * 54
+    uit = FinancialVariable.find_by_name("UIT").value
     @result[0] = headers
     @result[0] << "SUELDO BÁSICO"
     amount = 0
     apoNa = Array.new
     ActiveRecord::Base.connection.execute("
-      SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname ) , ar.name, af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id
+      SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname ) , ar.name, af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id, ppd.he_25, ppd.he_35
       FROM part_workers pp, part_worker_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
       WHERE pp.company_id = "+company.to_s+"
       AND ppd.part_worker_id = pp.id
@@ -430,7 +431,7 @@ class Payslip < ActiveRecord::Base
       GROUP BY w.id
     ").each do |row|
 
-      @result << [ row[0], row[1], row[2], row[3],@comp_name, row[4], row[5], row[6], total_days - row[6]]
+      @result << [ row[0], row[1], row[2], row[3],@comp_name, row[4], row[5], row[6], total_days - row[6], row[8], row[9]]
       calculator = Dentaku::Calculator.new
       amount = 0
       flag_extra = false
@@ -457,10 +458,11 @@ class Payslip < ActiveRecord::Base
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
       calculator.store(dias_trabajados: row[6])
-      calculator.store(horas_simples: 0)
+      calculator.store(horas_simples: row[8].to_f)
+      calculator.store(horas_dobles: row[9].to_f)
       calculator.store(horas_dobles: 0)
-      calculator.store(horas_extras_60: 0)
-      calculator.store(horas_extras_100: 0)
+      calculator.store(horas_extras_25: 0)
+      calculator.store(horas_extras_35: 0)
 
       if incluye
         total += rem_basic
@@ -518,10 +520,11 @@ class Payslip < ActiveRecord::Base
           @result[0] << "Ingresos Totales"
         end
       end
+
       if !des.nil?
         des.each do |de|
           flag_afp = true
-          hash_formulas =   Hash.new
+          hash_formulas = Hash.new
           con = Concept.find(de)
           
           if !@result[0].include?(con.name)
@@ -590,22 +593,68 @@ class Payslip < ActiveRecord::Base
 
             elsif con.name == 'IMPTO. RENT. 5ta CAT.'
               total -= amount
-              bruto = total1*14*4
-              if bruto > uit7 && bruto < uit27
-                amount = (bruto - uit7)*0.15/12/4
-              elsif bruto > uit27 && bruto < uit54
-                dif = bruto - uit7
-                amount = uit7*0.15/12/4
-                amount += (bruto - uit7)*0.21/12/4
-              elsif bruto > uit54
-                amount = uit27*0.21/12/4 + (uit27-uit7)*0.15/12/4
-                amount += (bruto - uit54)*0.3/12/4
-              else
-                amount = 0
+              suma_mes = amount
+              amount = 0
+              to_end_year = 13 - month.to_i
+              initial = 0
+              final = 0
+              value = 0
+              flag_inside_rank = true
+              array_rank_previous = Array.new
+              value_previous = 0
+              puts "------------------------------------------------------------------------------------------------------------------------------------"
+              p "[remuneracion-basica]+[horas-simples]*[precio-por-hora]+[horas-dobles]*[precio-por-hora]+[cts]+[gratificaciones]"
+              p calculator.inspect
+              puts suma_mes
+              p to_end_year
+              rangos.each do |ran|
+                p ran.inspect
+                if flag_inside_rank
+                  num = ran.name.scan(/\[.*?\]/).first.tr('][','')
+                  if to_end_year == 12
+                    anual_income = suma_mes*14
+                  else
+                    anual_income = suma_mes*to_end_year+2*suma_mes
+                  end
+                  p anual_income
+                  if num.split('-').count > 1
+                    initial = num.split('-')[0].to_i*uit
+                    p initial
+                    final = num.split('-')[1].to_i*uit
+                    p final
+                    value = ran.value
+                    p value
+                    if anual_income < final && anual_income > initial
+                      p '----------entro a anual income < final && anual_income > initial------------------------------------------------------------------'
+                      amount = ((anual_income-initial)*value + value_previous)/12
+                      p amount
+                      flag_inside_rank = false
+                    else
+                      if anual_income > initial
+                        p "----------------------- anual_income > initial ------------------------------------------------------------------------------"
+                        value_previous += (final-initial)*value
+                        p value_previous
+                      else
+                        p " ----------------------------------------------- falso?----------------------------------------------------------------------"
+                        p anual_income > initial
+                        flag_inside_rank = false
+                      end
+                    end
+                  elsif num.split('-').count == 1
+                    initial = num.gsub('+','').to_i*uit
+                    value = ran.value
+                    if anual_income > initial
+                      amount = ((anual_income-initial)*value + value_previous)/12
+                      flag_inside_rank = false
+                    end 
+                  end
+                end
               end
-              total+= amount           
+              total+= amount   
+              p amount        
             end            
           end
+
           if flag_extra
             array_extra_info.each do |ar|
               if ar[1].to_i == de.to_i
@@ -627,6 +676,8 @@ class Payslip < ActiveRecord::Base
         total = 0
 
       end
+
+      break
 
       if !apo.nil?
         apo.each do |ap|

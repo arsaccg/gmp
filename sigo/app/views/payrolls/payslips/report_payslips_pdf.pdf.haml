@@ -1,0 +1,85 @@
+%html
+  %head
+    %meta{charset: "utf-8"}
+    = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
+  %body
+    #main
+      #content
+        .row
+          .col-xs-12.col-sm-6.col-md-6.col-lg-6
+            %h1.page-title.txt-color-blueDark
+              %i.fa.fa-pencil-square-o.fa-group
+              -if !@pay.first.week.nil?
+                = "Planilla de la " + @pay.first.week
+              -else
+                = "Planilla de la " + @pay.first.month
+
+        %div{:style=>"width:100%"}
+          %table.table.table-striped.table-bordered.table-hover{:style=>"font-size:9px"}
+            %thead
+              %tr
+                -if !@pay.first.week.nil?
+                  %th DNI
+                  %th Nombre
+                  %th CAT
+                  %th C.C
+                  %th ULT. DIA. TRABJ.
+                  %th AFP
+                  %th HIJ
+                  %th HORAS
+                  %th DIAS
+                  %th H.E.S
+                  %th H.FRDO
+                  %th H.E.D
+                -else
+                  %th DNI
+                  %th Nombre
+                  %th CAT.
+                  %th COMP.
+                  %th AFP
+                  %th HIJ
+                  %th DIAS ASIST.
+                  %th DIAS FALTA
+                  %th HE 25%
+                  %th HE 35%
+                -JSON.parse(@pay.first.ing_and_amounts).each_with_index do |key,value|
+                  %th= key[0].gsub('_', ' ').upcase
+                -JSON.parse(@pay.first.des_and_amounts).each_with_index do |key,value|
+                  %th= key[0].gsub('_', ' ').upcase
+                -JSON.parse(@pay.first.aport_and_amounts).each_with_index do |key,value|
+                  %th= key[0].gsub('_', ' ').upcase
+
+
+            %tbody
+              - @pay.each do |pars|
+                %tr
+                  -wor = Worker.find(pars.worker_id)
+                  %td= wor.entity.dni
+                  %td= wor.entity.name.to_s + " "+ wor.entity.name.to_s + " "+ wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s
+                  -if !@pay.first.week.nil?
+                    %td= wor.worker_contracts.first.article.name
+                    %td= CostCenter.find(pars.cost_center_id).code
+                    %td= pars.last_worked_day.strftime('%d/%m/%y').to_s
+                    %td= wor.worker_afps.first.afp.enterprise.to_s
+                    %td= wor.numberofchilds.to_i
+                    %td= pars.normal_hours.to_s
+                    %td= pars.days.to_s
+                    %td= pars.he_60.to_s
+                    %td= 0
+                    %td= pars.he_100.to_s
+                  -else
+                    %td= wor.worker_contracts.where("status = 1").first.article.name
+                    %td= Company.find(pars.company_id).short_name.to_s
+                    %td= wor.worker_afps.first.afp.enterprise.to_s
+                    %td= wor.numberofchilds.to_i
+                    %th= pars.days.to_s
+                    %th= 30 - pars.days.to_i
+                    %td= pars.he_60.to_s
+                    %td= pars.he_100.to_s                    
+
+                  -JSON.parse(pars.ing_and_amounts).each_with_index do |key,value|
+                    %td= key[1]
+                  -JSON.parse(pars.des_and_amounts).each_with_index do |key,value|
+                    %td= key[1]
+                  -JSON.parse(pars.aport_and_amounts).each_with_index do |key,value|
+                    %td= key[1]

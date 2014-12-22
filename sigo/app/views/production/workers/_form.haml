@@ -338,43 +338,25 @@
             %label.label ¿Percibe rentas de 5ta exoneradas (Inc. e) Art. 19 de la LIR?
           %section.col-md-12
             .col-md-1
-            -if @action == 'edit'
-              -if @worker.income_fifth_category=="si"
-                .col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si", checked: ""}
-                    %span Si
-                .col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no"}
-                    %span No
-              -elsif @worker.income_fifth_category=="no"
-                .col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si"}
-                    %span Si
-                .col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no", checked: ""}
-                    %span No
-              -else
-                %section.col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si"}
-                    %span Si
-                %section.col-md-2
-                  %label.radio-inline
-                    %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no"}
-                    %span No
-            -else
-              %section.col-md-2
-                %label.radio-inline
-                  %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si"}
-                  %span Si
-              %section.col-md-2
-                %label.radio-inline
-                  %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no"}
-                  %span No
+            .col-md-2
+              %label.radio-inline
+                %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "si", :checked=> @worker.income_fifth_category=="si"}
+                %span Si
+            .col-md-2
+              %label.radio-inline
+                %input{:name =>'worker[income_fifth_category]', :type => 'radio', :value => "no", :checked=> @worker.income_fifth_category=="no"}
+                %span No
+          %section.col-md-12
+            .col.col-md-4
+              %label.label Sueldo Anterior
+              %input{:name =>'worker[worker_rent_fifth_category_attributes][previous_salary]'}
+            .col.col-md-4
+              %label.label Renta pagada
+              %input{:name =>'worker[worker_rent_fifth_category_attributes][rent]'}
+            .col.col-md-4
+              %label.label Último día pagado de renta
+              %input{:name =>'worker[worker_rent_fifth_category_attributes][date_last_rent]', as: :string, :type => "date"}
+
 
       %fieldset#fieldset1{ 'style' => 'display:none' }
         %legend{style: "font-weight: 600;"} Bancos

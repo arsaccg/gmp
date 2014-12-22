@@ -522,7 +522,9 @@ class Production::WorkersController < ApplicationController
       worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :lock_version, :names, :relationship, :dayofbirth, :dni, :_destroy],
       worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :lock_version, :numberoftuition, :start_date, :end_date, :_destroy],
       worker_otherstudies_attributes: [:id, :worker_id, :study, :lock_version, :level, :_destroy],
-      worker_experiences_attributes: [:id, :worker_id, :businessname, :lock_version, :title, :salary, :bossincharge, :exitreason, :start_date, :end_date, :_destroy])
+      worker_experiences_attributes: [:id, :worker_id, :businessname, :lock_version, :title, :salary, :bossincharge, :exitreason, :start_date, :end_date, :_destroy],
+      worker_rent_fifth_category_attributes: [:id, :worker_id, :previous_salary, :rent, :date_last_rent])
+
   end
 
   def worker_contract_file_param

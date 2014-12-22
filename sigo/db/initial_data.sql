@@ -85,6 +85,10 @@ INSERT INTO `entities_type_entities` (`entity_id`, `type_entity_id`, `created_at
 -- Data for Financial Variables
 INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('IGV', '0.18', NOW(), NOW());
 INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('IPC', '114.63', NOW(), NOW());
+INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('UIT', '3800', NOW(), NOW());
+INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('RANGO 1 [7-27]', '0.15', NOW(), NOW());
+INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('RANGO 2 [27-54]', '0.21', NOW(), NOW());
+INSERT INTO `financial_variables` (`name`, `value`, `created_at`, `updated_at`) VALUES ('RANGO 3 [54+]', '0.30', NOW(), NOW());
 
 INSERT INTO `working_groups` (`id`, `master_builder_id`, `front_chief_id`, `active`, `created_at`, `updated_at`, `executor_id`,  `name`, `cost_center_id`) 
 VALUES ('1', '1', '1', '1', NOW(), NOW(), '1', 'Defecto', '1');
