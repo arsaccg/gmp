@@ -26,6 +26,10 @@
               %td
                 %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{payrolls_payslip_path(pay[0])}', 'content', null, null, 'GET')"}
                   Listado
+                %a.btn.btn-danger.btn-xs{:href => "#{report_pdf_payrolls_payslips_path}.pdf?id="+pay[0], :target => "_blank"}
+                  Ver PDF
+
+                  
 
 
 :javascript

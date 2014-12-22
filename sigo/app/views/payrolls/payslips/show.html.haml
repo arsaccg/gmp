@@ -37,6 +37,8 @@
             %th HIJ
             %th DIAS ASIST.
             %th DIAS FALTA
+            %th HE 25%
+            %th HE 35%
           -JSON.parse(@pay.first.ing_and_amounts).each_with_index do |key,value|
             %th= key[0].gsub('_', ' ').upcase
           -JSON.parse(@pay.first.des_and_amounts).each_with_index do |key,value|
@@ -69,6 +71,8 @@
               %td= wor.numberofchilds.to_i
               %th= pars.days.to_s
               %th= 30 - pars.days.to_i
+              %td= pars.he_60.to_s
+              %td= pars.he_100.to_s              
 
             -JSON.parse(pars.ing_and_amounts).each_with_index do |key,value|
               %td= key[1]

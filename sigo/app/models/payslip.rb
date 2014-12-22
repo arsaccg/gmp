@@ -520,6 +520,7 @@ class Payslip < ActiveRecord::Base
           @result[0] << "Ingresos Totales"
         end
       end
+
       if !des.nil?
         des.each do |de|
           flag_afp = true
@@ -593,33 +594,49 @@ class Payslip < ActiveRecord::Base
             elsif con.name == 'IMPTO. RENT. 5ta CAT.'
               total -= amount
               suma_mes = amount
-              to_end_year = 13 - month
+              amount = 0
+              to_end_year = 13 - month.to_i
               initial = 0
               final = 0
               value = 0
               flag_inside_rank = true
               array_rank_previous = Array.new
               value_previous = 0
+              puts "------------------------------------------------------------------------------------------------------------------------------------"
+              p "[remuneracion-basica]+[horas-simples]*[precio-por-hora]+[horas-dobles]*[precio-por-hora]+[cts]+[gratificaciones]"
+              p calculator.inspect
+              puts suma_mes
+              p to_end_year
               rangos.each do |ran|
+                p ran.inspect
                 if flag_inside_rank
-                  puts "---------------------------------------RANGO --------------------------------------------------------------------------------"
                   num = ran.name.scan(/\[.*?\]/).first.tr('][','')
                   if to_end_year == 12
                     anual_income = suma_mes*14
                   else
                     anual_income = suma_mes*to_end_year+2*suma_mes
                   end
+                  p anual_income
                   if num.split('-').count > 1
                     initial = num.split('-')[0].to_i*uit
+                    p initial
                     final = num.split('-')[1].to_i*uit
+                    p final
                     value = ran.value
+                    p value
                     if anual_income < final && anual_income > initial
+                      p '----------entro a anual income < final && anual_income > initial------------------------------------------------------------------'
                       amount = ((anual_income-initial)*value + value_previous)/12
+                      p amount
                       flag_inside_rank = false
                     else
                       if anual_income > initial
+                        p "----------------------- anual_income > initial ------------------------------------------------------------------------------"
                         value_previous += (final-initial)*value
+                        p value_previous
                       else
+                        p " ----------------------------------------------- falso?----------------------------------------------------------------------"
+                        p anual_income > initial
                         flag_inside_rank = false
                       end
                     end
@@ -633,7 +650,8 @@ class Payslip < ActiveRecord::Base
                   end
                 end
               end
-              total+= amount           
+              total+= amount   
+              p amount        
             end            
           end
 
@@ -658,6 +676,8 @@ class Payslip < ActiveRecord::Base
         total = 0
 
       end
+
+      break
 
       if !apo.nil?
         apo.each do |ap|

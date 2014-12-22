@@ -444,6 +444,24 @@ class Payrolls::PayslipsController < ApplicationController
     send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
   end
 
+  def report_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @pay = Payslip.where("code = ?",params[:id])
+        if @pay.first.week.nil?
+          @type = "A2"
+        else
+          @type = "A0"
+        end
+        render :pdf => "reporte_planillas-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'payrolls/payslips/report_payslips_pdf.pdf.haml',
+               :orientation => 'Landscape',
+               :page_size => @type
+      end
+    end
+  end
+
   private
   def pay_parameters
     params.require(:payslip).permit(
