@@ -7,9 +7,9 @@
     %th
       Unidad
     %th
-      Presupuesto Meta
-    %th
       Presupuesto Venta
+    %th
+      Presupuesto Meta
   %tbody
     - @input_budget_item_sale.each do |key, item|
       %tr
@@ -20,7 +20,7 @@
         %td
           = item[2]
         %td(style="text-align: right;")
-          = item[3] rescue "---"
+          = number_to_currency(item[3], :unit=>'S/. ') rescue "---"
         %td(style="text-align: right;")
           = number_to_currency(@input_budget_item_goal[key][3], :unit=>'S/. ') rescue "---"
 

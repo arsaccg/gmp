@@ -455,7 +455,7 @@ module ApplicationHelper
     if measured != nil
       return 'black_measured'
     else
-      return ''
+      return 'bold'
     end
   end
 

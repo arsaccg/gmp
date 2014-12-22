@@ -13,8 +13,8 @@ class Inputcategory < ActiveRecord::Base
         else
             query_str_sale, query_str_goal = Inputcategory.build_query_phases(budgetid_sale), Inputcategory.build_query_phases(budgetid_goal)
             # query_str_sale, query_str_goal = Inputcategory.build_query_phases(wbs, budgetid_sale), Inputcategory.build_query_phases(wbs, budgetid_goal)
-            ActiveRecord::Base.connection.execute(query_str_sale).each { |item| hash_categories_sale[item[0].to_s + item[2].to_s] = item } #codigo + categoria
-            ActiveRecord::Base.connection.execute(query_str_goal).each { |item| hash_categories_goal[item[0].to_s + item[2].to_s] = item }
+            ActiveRecord::Base.connection.execute(query_str_sale).each { |item| hash_categories_sale[item[0].to_s + '_' + item[2].to_s] = item } #codigo + categoria
+            ActiveRecord::Base.connection.execute(query_str_goal).each { |item| hash_categories_goal[item[0].to_s + '_' + item[2].to_s] = item }
         end
 
         return hash_categories_sale, hash_categories_goal
