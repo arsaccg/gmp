@@ -449,15 +449,10 @@ class Payrolls::PayslipsController < ApplicationController
       format.html
       format.pdf do
         @pay = Payslip.where("code = ?",params[:id])
-        if @pay.first.week.nil?
-          @type = "A2"
-        else
-          @type = "A0"
-        end
         render :pdf => "reporte_planillas-#{Time.now.strftime('%d-%m-%Y')}", 
                :template => 'payrolls/payslips/report_payslips_pdf.pdf.haml',
                :orientation => 'Landscape',
-               :page_size => @type
+               :page_size => 'A0'
       end
     end
   end
