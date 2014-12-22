@@ -17,6 +17,11 @@
         %tbody
           -@pay.each do |pay|
             %tr
+              -if pay[1].nil?
+                -type = "month"
+              -else
+                -type = "week"
+    
               %td= pay[0]
               - if pay[1].to_s != ""
                 %td= pay[1].to_s
@@ -28,6 +33,7 @@
                   Listado
                 %a.btn.btn-danger.btn-xs{:href => "#{report_pdf_payrolls_payslips_path}.pdf?id="+pay[0], :target => "_blank"}
                   Ver PDF
+                %a.btn.btn-success.btn-xs{ href: "#{generate_payroll_excel_payrolls_payslip_path(pay[0])}?type=#{type}", target: '_blank'} Generar Excel de la Planilla                  
 
                   
 
