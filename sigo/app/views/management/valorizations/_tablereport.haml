@@ -1,40 +1,7 @@
 %tbody
   -@report_rows.each do |rr|
-    %tr(class="#{get_clasification_by_order(rr.order)}_#{rr.order}")
-      / -if rr.order.length < 3  
-      /   %td(class="#{get_color_by_order(rr.order)}")
-      /     %span(style="color:transparent;")
-      /       ='_'*(rr.order.length-2)
-      /     %strong
-      /       %a{href: "javascript:toogle_three('#{get_clasification_by_order(rr.order+'.00')}', '#{rr.order}');"}
-      /         =rr.order
-      /         =rr.description
-      /   %td
-      /   %td
-      /   %td
-      /     %strong
-      /       =number_to_currency( rr.con_amount, :unit=>'' )
-      /   %td
-      /   %td
-      /     %strong
-      /       =number_to_currency( rr.pre_amount, :unit=>'' )
-      /   %td
-      /   %td
-      /     %strong
-      /       =number_to_currency( rr.act_amount, :unit=>'' )
-      /   %td
-      /   %td
-      /     %strong
-      /       =number_to_currency( rr.acc_amount, :unit=>'' )
-      /   %td
-      /   %td
-      /     %strong
-      /       =number_to_currency( rr.rem_amount, :unit=>'' )
-      /   %td
-      /     %strong
-      /       = "#{rr.advance.round(2)} %"
-      / -else
-      %td{class: "#{get_color_by_order(rr.order)} #{is_strong(rr.con_measured)}"}
+    %tr(class="#{get_clasification_by_order(rr.order)}_#{rr.order} #{get_color_by_order(rr.order)} #{is_strong(rr.con_measured)}")
+      %td
         %span(style="color:transparent;")
           ='_'*(rr.order.length-2)
         - if rr.con_measured != nil && rr.con_measured > 0
@@ -44,29 +11,29 @@
           %a{:href => "javascript:toogle_three('#{get_clasification_by_order(rr.order+'.00')}', '#{rr.order}');", class: "#{is_strong(rr.con_measured)}"}
             = rr.order
             = rr.description
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = rr.price == 0 ? '-' : number_to_currency( rr.price, :unit=>'' )
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = rr.con_measured == 0 ? '-' : number_to_currency( rr.con_measured, :unit=>'' )
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = rr.con_amount == 0 ? '-' : number_to_currency( rr.con_amount, :unit=>'' )
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = rr.pre_measured == 0 ? '-' : number_to_currency( rr.pre_measured, :unit=>'' )
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = rr.pre_amount == 0 ? '-' : number_to_currency( rr.pre_amount, :unit=>'' )
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = rr.act_measured == 0 ? '-' : number_to_currency( rr.act_measured, :unit=>'' )
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = rr.act_amount == 0 ? '-' : number_to_currency( rr.act_amount, :unit=>'' )
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = rr.acc_measured == 0 ? '-' : number_to_currency( rr.acc_measured, :unit=>'' )
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = rr.acc_amount == 0 ? '-' : number_to_currency( rr.acc_amount, :unit=>'' )
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = rr.rem_measured == 0 ? '-' : number_to_currency( rr.rem_measured, :unit=>'' )
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = rr.rem_amount == 0 ? '-' : number_to_currency( rr.rem_amount, :unit=>'' )
-      %td{class: "#{is_strong(rr.con_measured)}"}
+      %td
         = "#{rr.advance.round(2)} %"
     
   %tr
