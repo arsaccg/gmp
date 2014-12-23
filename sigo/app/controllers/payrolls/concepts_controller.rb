@@ -18,6 +18,8 @@ class Payrolls::ConceptsController < ApplicationController
     @condeEmp = Concept.where("code LIKE '3%'")
     @date_week = Time.now.strftime('%Y-%m-%d')
     @cost_center = get_company_cost_center('cost_center')
+    @type_of_worker = TypeOfWorker.where("worker_type = 'obrero'")
+    @type_of_employee = TypeOfWorker.where("worker_type = 'empleado'")
     render layout: false
   end
 
@@ -54,7 +56,8 @@ class Payrolls::ConceptsController < ApplicationController
     @condeEmp = Concept.where("code LIKE '3%'")
     @date_week = Time.now.strftime('%Y-%m-%d')
     @cost_center = get_company_cost_center('cost_center')
-
+    @type_of_worker = TypeOfWorker.where("worker_type = 'obrero'")
+    @type_of_employee = TypeOfWorker.where("worker_type = 'empleado'")
     @con = Concept.find(params[:id])
     ids = Array.new
     @reg_n = ((Time.now.to_f)*100).to_i

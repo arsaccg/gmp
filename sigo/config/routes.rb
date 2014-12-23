@@ -334,7 +334,8 @@ ArsacLogistica::Application.routes.draw do
         post 'show_workers_empleados'
         post 'part_worker'
         post 'part_contract'
-        post 'display_afps'   
+        post 'display_afps'
+        post 'complete_sub_category_worker' 
         post 'list'
         get 'list_pdf' 
       end
@@ -577,6 +578,7 @@ ArsacLogistica::Application.routes.draw do
   end
 
   namespace :administration do
+    resources :type_of_workers
     resources :payment_orders do
       collection do
         post 'get_info_from_provision'

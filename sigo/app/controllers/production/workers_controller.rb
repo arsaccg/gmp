@@ -507,6 +507,15 @@ class Production::WorkersController < ApplicationController
     return years
   end
 
+  def complete_sub_category_worker
+    tp = Array.new
+    type = TypeOfWorker.where("worker_type = '"+params[:tipo]+"'")
+    type.each do |wo|
+      tp << {'id' => wo.id.to_s, 'name' => wo.name.to_s}
+    end
+    render json: {:sub_cat => tp}
+  end
+
   private
   def worker_parameters
     params.require(:worker).permit(

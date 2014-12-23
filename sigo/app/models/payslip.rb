@@ -27,7 +27,7 @@ class Payslip < ActiveRecord::Base
     amount = 0
     apoNa = Array.new
     ActiveRecord::Base.connection.execute("
-      SELECT ppd.worker_id, e.dni, CONCAT_WS(' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname), ar.name, pp.date_of_creation, af.type_of_afp, w.numberofchilds, SUM( ppd.normal_hours ) , SUM( 1 ) AS Dias, SUM( ppd.he_60 ) , SUM( ppd.he_100 ) , SUM( ppd.total_hours ), af.id
+      SELECT ppd.worker_id, e.dni,  CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name), ar.name, pp.date_of_creation, af.type_of_afp, w.numberofchilds, SUM( ppd.normal_hours ) , SUM( 1 ) AS Dias, SUM( ppd.he_60 ) , SUM( ppd.he_100 ) , SUM( ppd.total_hours ), af.id
       FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
       WHERE pp.cost_center_id = " + cost_center_id.to_s + "
       AND ppd.part_person_id = pp.id
@@ -40,6 +40,7 @@ class Payslip < ActiveRecord::Base
       AND wc.worker_id = w.id
       AND wc.article_id = ar.id
       GROUP BY ppd.worker_id
+      ORDER BY e.paternal_surname
     ").each do |row|
       worker_hours = calculate_number_days_worker(row[7].to_f, total_hour.to_f)
       
@@ -415,7 +416,7 @@ class Payslip < ActiveRecord::Base
     amount = 0
     apoNa = Array.new
     ActiveRecord::Base.connection.execute("
-      SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname ) , ar.name, af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id, ppd.he_25, ppd.he_35
+      SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name) , ar.name, af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id, ppd.he_25, ppd.he_35
       FROM part_workers pp, part_worker_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
       WHERE pp.company_id = "+company.to_s+"
       AND ppd.part_worker_id = pp.id
@@ -429,6 +430,7 @@ class Payslip < ActiveRecord::Base
       AND wc.article_id = ar.id
       AND wc.status = 1
       GROUP BY w.id
+      ORDER BY e.paternal_surname
     ").each do |row|
 
       @result << [ row[0], row[1], row[2], row[3],@comp_name, row[4], row[5], row[6], total_days - row[6], row[8], row[9]]
@@ -621,6 +623,9 @@ class Payslip < ActiveRecord::Base
                   j.each_with_index do |key,value| 
                     before_amount += key[1].to_f 
                   end
+                end
+                ActiveRecord::Base.connection.execute("SELECT `worker_rent_fifth_categories`.`rent` FROM `worker_rent_fifth_categories` WHERE (worker_id = "+row[0].to_s+" AND `date_last_rent` LIKE '%"+year.to_s+"%')").each do |rentp|
+                  before_amount += rentp.to_f
                 end
                 p before_amount
                 anual_income = suma_mes*to_end_year + 2*suma_mes + before_amount*(13 - to_end_year)/0.15

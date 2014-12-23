@@ -227,6 +227,12 @@
                         %a{href: "#{logistics_banks_path}", title: "Bancos"}
                           %i.fa.fa-lg.fa-fw.fa-tasks
                           Bancos
+                      %li
+                        %a{href: "#{administration_type_of_workers_path}", title: "Tipo de Trabajador"}
+                          %i.fa.fa-lg.fa-fw.fa-tasks
+                          Tipo de Trabajador
+
+
                     - if (current_user.has_role? :director) || (current_user.has_role? :companies)
                       %li
                         %a{href: "#{logistics_companies_path}", title: "Gestión de Compañias"}
