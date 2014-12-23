@@ -1,296 +1,297 @@
-%tbody
-  -@report_rows.each do |rr|
-    %tr(class="#{get_clasification_by_order(rr.order)}_#{rr.order} #{get_color_by_order(rr.order)} #{is_strong(rr.con_measured)}")
-      %td
-        %span(style="color:transparent;")
-          ='_'*(rr.order.length-2)
-        - if rr.con_measured != nil && rr.con_measured > 0
-          = rr.order
-          = rr.description
-        - else
-          %a{:href => "javascript:toogle_three('#{get_clasification_by_order(rr.order+'.00')}', '#{rr.order}');", class: "#{is_strong(rr.con_measured)}"}
+-cache do
+  %tbody
+    -@report_rows.each do |rr|
+      %tr(class="#{get_clasification_by_order(rr.order)}_#{rr.order} #{get_color_by_order(rr.order)} #{is_strong(rr.con_measured)}")
+        %td
+          %span(style="color:transparent;")
+            ='_'*(rr.order.length-2)
+          - if rr.con_measured != nil && rr.con_measured > 0
             = rr.order
             = rr.description
-      %td
-        = rr.price == 0 ? '-' : number_to_currency( rr.price, :unit=>'' )
-      %td
-        = rr.con_measured == 0 ? '-' : number_to_currency( rr.con_measured, :unit=>'' )
-      %td
-        = rr.con_amount == 0 ? '-' : number_to_currency( rr.con_amount, :unit=>'' )
-      %td
-        = rr.pre_measured == 0 ? '-' : number_to_currency( rr.pre_measured, :unit=>'' )
-      %td
-        = rr.pre_amount == 0 ? '-' : number_to_currency( rr.pre_amount, :unit=>'' )
-      %td
-        = rr.act_measured == 0 ? '-' : number_to_currency( rr.act_measured, :unit=>'' )
-      %td
-        = rr.act_amount == 0 ? '-' : number_to_currency( rr.act_amount, :unit=>'' )
-      %td
-        = rr.acc_measured == 0 ? '-' : number_to_currency( rr.acc_measured, :unit=>'' )
-      %td
-        = rr.acc_amount == 0 ? '-' : number_to_currency( rr.acc_amount, :unit=>'' )
-      %td
-        = rr.rem_measured == 0 ? '-' : number_to_currency( rr.rem_measured, :unit=>'' )
-      %td
-        = rr.rem_amount == 0 ? '-' : number_to_currency( rr.rem_amount, :unit=>'' )
-      %td
-        = "#{rr.advance.round(2)} %"
-    
-  %tr
-    %td(colspan="15")
-      - @direct_cost_cont = 0
-      - @direct_cost_prev = 0
-      - @direct_cost_act = 0
-      - @direct_cost_acc = 0
-      - @direct_cost_rem = 0
-      -@itembybudgets_main.each do |ib|
-     
-        - c_amount_contractual = amount_contractual(ib.order, @budget.id)
-     
-        - @direct_cost_cont = @direct_cost_cont + c_amount_contractual
+          - else
+            %a{:href => "javascript:toogle_three('#{get_clasification_by_order(rr.order+'.00')}', '#{rr.order}');", class: "#{is_strong(rr.con_measured)}"}
+              = rr.order
+              = rr.description
+        %td
+          = rr.price == 0 ? '-' : number_to_currency( rr.price, :unit=>'' )
+        %td
+          = rr.con_measured == 0 ? '-' : number_to_currency( rr.con_measured, :unit=>'' )
+        %td
+          = rr.con_amount == 0 ? '-' : number_to_currency( rr.con_amount, :unit=>'' )
+        %td
+          = rr.pre_measured == 0 ? '-' : number_to_currency( rr.pre_measured, :unit=>'' )
+        %td
+          = rr.pre_amount == 0 ? '-' : number_to_currency( rr.pre_amount, :unit=>'' )
+        %td
+          = rr.act_measured == 0 ? '-' : number_to_currency( rr.act_measured, :unit=>'' )
+        %td
+          = rr.act_amount == 0 ? '-' : number_to_currency( rr.act_amount, :unit=>'' )
+        %td
+          = rr.acc_measured == 0 ? '-' : number_to_currency( rr.acc_measured, :unit=>'' )
+        %td
+          = rr.acc_amount == 0 ? '-' : number_to_currency( rr.acc_amount, :unit=>'' )
+        %td
+          = rr.rem_measured == 0 ? '-' : number_to_currency( rr.rem_measured, :unit=>'' )
+        %td
+          = rr.rem_amount == 0 ? '-' : number_to_currency( rr.rem_amount, :unit=>'' )
+        %td
+          = "#{rr.advance.round(2)} %"
+      
+    %tr
+      %td(colspan="15")
+        - @direct_cost_cont = 0
+        - @direct_cost_prev = 0
+        - @direct_cost_act = 0
+        - @direct_cost_acc = 0
+        - @direct_cost_rem = 0
+        -@itembybudgets_main.each do |ib|
+       
+          - c_amount_contractual = amount_contractual(ib.order, @budget.id)
+       
+          - @direct_cost_cont = @direct_cost_cont + c_amount_contractual
 
-        - c_amount_prev = amount_prev(ib.order, @budget.id, @valorization.valorization_date)
+          - c_amount_prev = amount_prev(ib.order, @budget.id, @valorization.valorization_date)
+     
+          - @direct_cost_prev = @direct_cost_prev + c_amount_prev
    
-        - @direct_cost_prev = @direct_cost_prev + c_amount_prev
- 
-        - c_amount_act = amount_actual(ib.order, @budget.id, @valorization.id)
-    
-        - @direct_cost_act = @direct_cost_act + c_amount_act 
- 
-        - c_amount_acc = amount_acumulated(ib.order, @budget.id, @valorization.valorization_date, @valorization.id)
-        - @direct_cost_acc = @direct_cost_acc + c_amount_acc 
-        - c_amount_rem = amount_remainder(ib.order, @budget.id, @valorization.valorization_date, @valorization.id)
-     
-        - @direct_cost_rem = @direct_cost_rem + c_amount_rem 
- 
+          - c_amount_act = amount_actual(ib.order, @budget.id, @valorization.id)
+      
+          - @direct_cost_act = @direct_cost_act + c_amount_act 
+   
+          - c_amount_acc = amount_acumulated(ib.order, @budget.id, @valorization.valorization_date, @valorization.id)
+          - @direct_cost_acc = @direct_cost_acc + c_amount_acc 
+          - c_amount_rem = amount_remainder(ib.order, @budget.id, @valorization.valorization_date, @valorization.id)
+       
+          - @direct_cost_rem = @direct_cost_rem + c_amount_rem 
+   
 
-  %tr 
-    %td
-      %strong
-        COSTO DIRECTO
-    %td
-    %td
-    %td
-      %strong
-        -#MONTO contract
-        = number_to_currency( @direct_cost_cont, :unit=>'')
-    %td
-    %td
-      %strong
-        -#MONTO anterior
-        = number_to_currency( @direct_cost_prev, :unit=>'')
-    %td
-    %td
-      %strong
-        -#MONTO actual  
-        = number_to_currency( @direct_cost_act, :unit=>'')
-    %td
-    %td
-      %strong
-        -#MONTO acumulado
-        = number_to_currency( @direct_cost_acc, :unit=>'')
-    %td
-    %td
-      %strong
-        -#SALDO
-        = number_to_currency( @direct_cost_rem, :unit=>'')
-    %td
-      = (@direct_cost_acc / @direct_cost_cont * 100).round(2) rescue 0
-      ='%'
-  %tr 
-    %td
-      Gastos Generales
-    %td
-      = (@budget.general_expenses.to_f * 100).round(2).to_s + '%'
-    %td
-    %td
-      -#MONTO contract
-      - num = (@direct_cost_cont * @budget.general_expenses.to_f).round(2)
-      = number_to_currency( num, :unit=>'')
-    %td
-    %td
-      -#MONTO anterior
-      - num = (@direct_cost_prev * @budget.general_expenses.to_f).round(2)
-      = number_to_currency( num, :unit=>'')
-    %td
-    %td
-      -#MONTO actual  
-      - num = (@direct_cost_act * @budget.general_expenses.to_f).round(2) 
-      = number_to_currency( num, :unit=>'')
-    %td
-    %td
-      -#MONTO acumulado
-      - num = (@direct_cost_acc * @budget.general_expenses.to_f).round(2) 
-      = number_to_currency( num, :unit=>'')
-    %td
-    %td
-      -#SALDO
-      - num = (@direct_cost_rem * @budget.general_expenses.to_f).round(2)
-      = number_to_currency( num, :unit=>'')
-    %td
-      = ((@direct_cost_acc * @budget.general_expenses.to_f)/(@direct_cost_cont * @budget.general_expenses.to_f) * 100).round(2)
-      ='%'
-  %tr 
-    %td
-      %strong
-        Utilidad
-    %td
-      =(@budget.utility.to_f * 100).round(2).to_s + '%'
-    %td
-    %td
-      -#MONTO contract
-      - num = (@direct_cost_cont * @budget.utility.to_f).round(2)
-      = number_to_currency( num, :unit=>'')
-    %td
-    %td
-      -#MONTO anterior
-      - num = (@direct_cost_prev * @budget.utility.to_f).round(2)
-      = number_to_currency( num, :unit=>'')
-    %td
-    %td
-      -#MONTO actual  
-      - num = (@direct_cost_act * @budget.utility.to_f).round(2) 
-      = number_to_currency( num, :unit=>'')
-    %td
-    %td
-      -#MONTO acumulado
-      - num = (@direct_cost_acc * @budget.utility.to_f).round(2) 
-      = number_to_currency( num, :unit=>'')
-    %td
-    %td
-      -#SALDO
-      - num = (@direct_cost_rem * @budget.utility.to_f).round(2)
-      = number_to_currency( num, :unit=>'')
-    %td
-      = ((@direct_cost_acc * @budget.utility.to_f)/(@direct_cost_cont * @budget.utility.to_f) * 100).round(2)
-      ='%'
-  %tr 
-    %td(colspan="3")
-      %strong
-        COSTO DE OBRA
-    %td
-      %strong
-        =#MONTO contract
-        -contractual =@direct_cost_cont + (@direct_cost_cont * @budget.general_expenses.to_f) + (@direct_cost_cont * @budget.utility.to_f)
-        = number_to_currency( contractual, :unit=>'S/. ')
-    %td
-    %td
-      %strong
-        =#MONTO anterior
-        = number_to_currency( ((@direct_cost_prev + (@direct_cost_prev * @budget.general_expenses) + (@direct_cost_prev * @budget.utility)) rescue 0), :unit=>'S/. ')
-    %td
-    %td
-      %strong
-        =#MONTO actual  
-        = number_to_currency( ((@direct_cost_act + (@direct_cost_act * @budget.general_expenses) + (@direct_cost_act * @budget.utility)) rescue 0), :unit=>'S/. ')
-    %td
-    %td
-      %strong
-        =#MONTO acumulado
-        -accumulated = @direct_cost_acc + (@direct_cost_acc * @budget.general_expenses.to_f) + (@direct_cost_acc * @budget.utility.to_f)
-        = number_to_currency( accumulated, :unit=>'S/. ')
-    %td
-    %td
-      %strong
-        =#SALDO
-        = number_to_currency( ((@direct_cost_rem + (@direct_cost_rem * @budget.general_expenses) + (@direct_cost_rem * @budget.utility)) rescue 0), :unit=>'S/. ')
-    %td
-      %strong
-        =((accumulated/contractual)*100).round(2)
+    %tr 
+      %td
+        %strong
+          COSTO DIRECTO
+      %td
+      %td
+      %td
+        %strong
+          -#MONTO contract
+          = number_to_currency( @direct_cost_cont, :unit=>'')
+      %td
+      %td
+        %strong
+          -#MONTO anterior
+          = number_to_currency( @direct_cost_prev, :unit=>'')
+      %td
+      %td
+        %strong
+          -#MONTO actual  
+          = number_to_currency( @direct_cost_act, :unit=>'')
+      %td
+      %td
+        %strong
+          -#MONTO acumulado
+          = number_to_currency( @direct_cost_acc, :unit=>'')
+      %td
+      %td
+        %strong
+          -#SALDO
+          = number_to_currency( @direct_cost_rem, :unit=>'')
+      %td
+        = (@direct_cost_acc / @direct_cost_cont * 100).round(2) rescue 0
         ='%'
+    %tr 
+      %td
+        Gastos Generales
+      %td
+        = (@budget.general_expenses.to_f * 100).round(2).to_s + '%'
+      %td
+      %td
+        -#MONTO contract
+        - num = (@direct_cost_cont * @budget.general_expenses.to_f).round(2)
+        = number_to_currency( num, :unit=>'')
+      %td
+      %td
+        -#MONTO anterior
+        - num = (@direct_cost_prev * @budget.general_expenses.to_f).round(2)
+        = number_to_currency( num, :unit=>'')
+      %td
+      %td
+        -#MONTO actual  
+        - num = (@direct_cost_act * @budget.general_expenses.to_f).round(2) 
+        = number_to_currency( num, :unit=>'')
+      %td
+      %td
+        -#MONTO acumulado
+        - num = (@direct_cost_acc * @budget.general_expenses.to_f).round(2) 
+        = number_to_currency( num, :unit=>'')
+      %td
+      %td
+        -#SALDO
+        - num = (@direct_cost_rem * @budget.general_expenses.to_f).round(2)
+        = number_to_currency( num, :unit=>'')
+      %td
+        = ((@direct_cost_acc * @budget.general_expenses.to_f)/(@direct_cost_cont * @budget.general_expenses.to_f) * 100).round(2)
+        ='%'
+    %tr 
+      %td
+        %strong
+          Utilidad
+      %td
+        =(@budget.utility.to_f * 100).round(2).to_s + '%'
+      %td
+      %td
+        -#MONTO contract
+        - num = (@direct_cost_cont * @budget.utility.to_f).round(2)
+        = number_to_currency( num, :unit=>'')
+      %td
+      %td
+        -#MONTO anterior
+        - num = (@direct_cost_prev * @budget.utility.to_f).round(2)
+        = number_to_currency( num, :unit=>'')
+      %td
+      %td
+        -#MONTO actual  
+        - num = (@direct_cost_act * @budget.utility.to_f).round(2) 
+        = number_to_currency( num, :unit=>'')
+      %td
+      %td
+        -#MONTO acumulado
+        - num = (@direct_cost_acc * @budget.utility.to_f).round(2) 
+        = number_to_currency( num, :unit=>'')
+      %td
+      %td
+        -#SALDO
+        - num = (@direct_cost_rem * @budget.utility.to_f).round(2)
+        = number_to_currency( num, :unit=>'')
+      %td
+        = ((@direct_cost_acc * @budget.utility.to_f)/(@direct_cost_cont * @budget.utility.to_f) * 100).round(2)
+        ='%'
+    %tr 
+      %td(colspan="3")
+        %strong
+          COSTO DE OBRA
+      %td
+        %strong
+          =#MONTO contract
+          -contractual =@direct_cost_cont + (@direct_cost_cont * @budget.general_expenses.to_f) + (@direct_cost_cont * @budget.utility.to_f)
+          = number_to_currency( contractual, :unit=>'S/. ')
+      %td
+      %td
+        %strong
+          =#MONTO anterior
+          = number_to_currency( ((@direct_cost_prev + (@direct_cost_prev * @budget.general_expenses) + (@direct_cost_prev * @budget.utility)) rescue 0), :unit=>'S/. ')
+      %td
+      %td
+        %strong
+          =#MONTO actual  
+          = number_to_currency( ((@direct_cost_act + (@direct_cost_act * @budget.general_expenses) + (@direct_cost_act * @budget.utility)) rescue 0), :unit=>'S/. ')
+      %td
+      %td
+        %strong
+          =#MONTO acumulado
+          -accumulated = @direct_cost_acc + (@direct_cost_acc * @budget.general_expenses.to_f) + (@direct_cost_acc * @budget.utility.to_f)
+          = number_to_currency( accumulated, :unit=>'S/. ')
+      %td
+      %td
+        %strong
+          =#SALDO
+          = number_to_currency( ((@direct_cost_rem + (@direct_cost_rem * @budget.general_expenses) + (@direct_cost_rem * @budget.utility)) rescue 0), :unit=>'S/. ')
+      %td
+        %strong
+          =((accumulated/contractual)*100).round(2)
+          ='%'
 
-:javascript
-  $('.right-area').ready(function(){
-    hide_all();
-  });
+  :javascript
+    $('.right-area').ready(function(){
+      hide_all();
+    });
 
-  function hide_all(){
-    last_result = parseInt("#{@last_result.order}");
-    for (i = 1; i <= last_result; i++) { 
-      order_code = pad(i, 2);
-      console.log(order_code);
-      toogle_three('second', order_code);
+    function hide_all(){
+      last_result = parseInt("#{@last_result.order}");
+      for (i = 1; i <= last_result; i++) { 
+        order_code = pad(i, 2);
+        console.log(order_code);
+        toogle_three('second', order_code);
+      }
     }
-  }
 
-  function pad (str, max) {
-    str = str.toString();
-    return str.length < max ? pad("0" + str, max) : str;
-  }
-
-
-  function toogle_three(level, id){
-    tr_level = $("[class^='" + level + "_" +  id + "']");
-    tr_level.css("display") == 'table-row' ? tr_level.css("display","none") : tr_level.css("display","table-row");
-    
-    switch(level){
-      case "second":
-        $("[class^='third_" +  id + "']").each(function(){
-          if ($(this).css("display") == 'table-row'){ toogle_three('third', id); }
-        });
-        break;
-      case "third":
-        $("[class^='fourth_" +  id + "']").each(function(){
-          if ($(this).css("display") == 'table-row'){ toogle_three('fourth', id); }
-        });
-        break;
-      case "fourth":
-        $("[class^='fifth_" +  id + "']").each(function(){
-          if ($(this).css("display") == 'table-row'){ toogle_three('fifth', id); }
-        });
-        break;
-      case "fifth":
-        $("[class^='sixth_" +  id + "']").each(function(){
-          if ($(this).css("display") == 'table-row'){ toogle_three('sixth', id); }
-        });
-        break;
+    function pad (str, max) {
+      str = str.toString();
+      return str.length < max ? pad("0" + str, max) : str;
     }
-  }
 
-  function show_level(level){
-    toogle_three(level, '');
 
-    switch(level){
-      case "second":
-        $("[class^='first_']").each(function(){
-          if ($(this).css("display") == 'none'){ show_level('first'); }
-        });
-        break;
-      case "third":
-        $("[class^='second_']").each(function(){
-          if ($(this).css("display") == 'none'){ show_level('second'); }
-        });
-        break;
-      case "fourth":
-        $("[class^='third_']").each(function(){
-          if ($(this).css("display") == 'none'){ show_level('third'); }
-        });
-        break;
-      case "fifth":
-        $("[class^='fourth_']").each(function(){
-          if ($(this).css("display") == 'none'){ show_level('fourth'); }
-        });
-        break;
-      case "sixth":
-        $("[class^='fifth_']").each(function(){
-          if ($(this).css("display") == 'none'){ show_level('fifth'); }
-        });
-        break;
+    function toogle_three(level, id){
+      tr_level = $("[class^='" + level + "_" +  id + "']");
+      tr_level.css("display") == 'table-row' ? tr_level.css("display","none") : tr_level.css("display","table-row");
+      
+      switch(level){
+        case "second":
+          $("[class^='third_" +  id + "']").each(function(){
+            if ($(this).css("display") == 'table-row'){ toogle_three('third', id); }
+          });
+          break;
+        case "third":
+          $("[class^='fourth_" +  id + "']").each(function(){
+            if ($(this).css("display") == 'table-row'){ toogle_three('fourth', id); }
+          });
+          break;
+        case "fourth":
+          $("[class^='fifth_" +  id + "']").each(function(){
+            if ($(this).css("display") == 'table-row'){ toogle_three('fifth', id); }
+          });
+          break;
+        case "fifth":
+          $("[class^='sixth_" +  id + "']").each(function(){
+            if ($(this).css("display") == 'table-row'){ toogle_three('sixth', id); }
+          });
+          break;
+      }
     }
-  }
 
-  function openLevel(){
-    console.log('cambio');
-    var level = $('#level_r').val();
-    console.log(level);
-    show_level(level);
-  }
+    function show_level(level){
+      toogle_three(level, '');
 
-  function toogle_detail(id_str){
-    
-    if($(".detail_" + id_str).css("display") == 'table-row')
-      $(".detail_" + id_str).css("display","none");
-    else
-      $(".detail_" + id_str).css("display","table-row");
-    
-  }
+      switch(level){
+        case "second":
+          $("[class^='first_']").each(function(){
+            if ($(this).css("display") == 'none'){ show_level('first'); }
+          });
+          break;
+        case "third":
+          $("[class^='second_']").each(function(){
+            if ($(this).css("display") == 'none'){ show_level('second'); }
+          });
+          break;
+        case "fourth":
+          $("[class^='third_']").each(function(){
+            if ($(this).css("display") == 'none'){ show_level('third'); }
+          });
+          break;
+        case "fifth":
+          $("[class^='fourth_']").each(function(){
+            if ($(this).css("display") == 'none'){ show_level('fourth'); }
+          });
+          break;
+        case "sixth":
+          $("[class^='fifth_']").each(function(){
+            if ($(this).css("display") == 'none'){ show_level('fifth'); }
+          });
+          break;
+      }
+    }
+
+    function openLevel(){
+      console.log('cambio');
+      var level = $('#level_r').val();
+      console.log(level);
+      show_level(level);
+    }
+
+    function toogle_detail(id_str){
+      
+      if($(".detail_" + id_str).css("display") == 'table-row')
+        $(".detail_" + id_str).css("display","none");
+      else
+        $(".detail_" + id_str).css("display","table-row");
+      
+    }
