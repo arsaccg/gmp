@@ -428,13 +428,13 @@ class Payrolls::PayslipsController < ApplicationController
       selected = Array.new
       wor = Worker.find(pars.worker_id)
       if params[:type].to_s == "month"
-        selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.second_name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.where("status = 1").first.article.name, Company.find(pars.company_id).short_name.to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.days.to_s, 30-pars.days.to_i, pars.he_60.to_f, pars.he_100]
+        selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.second_name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.where("status = 1").first.article.name, Company.find(pars.company_id).short_name.to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.days.to_f, 30-pars.days.to_i, pars.he_60.to_f, pars.he_100.to_f]
       elsif params[:type].to_s == "week"
-        selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.second_name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.first.article.name, CostCenter.find(pars.cost_center_id).code, pars.last_worked_day.strftime('%d/%m/%y').to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.normal_hours.to_s, pars.days.to_s, pars.he_60.to_s, 0, pars.he_100.to_s]
+        selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.second_name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.first.article.name, CostCenter.find(pars.cost_center_id).code, pars.last_worked_day.strftime('%d/%m/%y').to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.normal_hours.to_f, pars.days.to_f, pars.he_60.to_f, 0, pars.he_100.to_f]
       end
-      selected = selected + JSON.parse(pars.ing_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
-      selected = selected + JSON.parse(pars.des_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
-      selected = selected + JSON.parse(pars.aport_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
+      selected = selected + JSON.parse(pars.ing_and_amounts).to_a.map(&:second).map{ |i| i.to_f.round(2) }
+      selected = selected + JSON.parse(pars.des_and_amounts).to_a.map(&:second).map{ |i| i.to_f.round(2) }
+      selected = selected + JSON.parse(pars.aport_and_amounts).to_a.map(&:second).map{ |i| i.to_f.round(2) }
       sheet1.row(i).concat selected
       i += 1
     end
@@ -449,9 +449,11 @@ class Payrolls::PayslipsController < ApplicationController
       @result = Array.new
       initial = Array.new
       amounts = Array.new
+      @count = 0
       format.html
       format.pdf do
         @pay = Payslip.where("code = ?",params[:id])
+        ji = 0
         @pay.each do |pars|
           if !@pay.first.week.nil?
             if initial.count > 0
@@ -459,39 +461,30 @@ class Payrolls::PayslipsController < ApplicationController
             else
               initial = [pars.normal_hours.to_f, pars.days.to_i, pars.he_60.to_f, 0, pars.he_100.to_f]
             end
+            @count += 1
           else
             if initial.count > 0
               initial = [initial, [pars.days.to_f, (30 - pars.days.to_f), pars.he_60.to_f, pars.he_100.to_f]].transpose.map{|a| a.sum}
             else
               initial = [pars.days.to_f, (30 - pars.days.to_f), pars.he_60.to_f, pars.he_100.to_f]
             end
+            @count += 1
           end
           ing_amount = JSON.parse(pars.ing_and_amounts).to_a
           ing_amount.map{|a| a.shift}
+          ing_amount = ing_amount.map(&:first).map{|a| a.to_f}
           des_amount = JSON.parse(pars.des_and_amounts).to_a
           des_amount.map{|a| a.shift}
+          des_amount = des_amount.map(&:first).map{|a| a.to_f}
           aport_amount = JSON.parse(pars.aport_and_amounts).to_a
           aport_amount.map{|a| a.shift}
+          aport_amount = aport_amount.map(&:first).map{|a| a.to_f}
           summarize = ing_amount + des_amount + aport_amount
-          p '-------------AMOUNTS------------'
-          p ing_amount
-          p des_amount
-          p aport_amount
-          p '-------------AMOUNTS------------'
-          p '-----------SUMM-------------'
-          p summarize
-          p '-----------SUMM-------------'
           if amounts.count > 0
             amounts = [amounts, summarize].transpose.map{|a| a.sum}
           else
             amounts = summarize
           end
-        end
-
-        if !@pay.first.week.nil?
-          initial = ['-', '-', '-', '-', '-', '-'] + initial
-        else
-          initial = ['-', '-', '-', '-'] + initial
         end
 
         @result = initial + amounts

@@ -32,14 +32,6 @@
                   %th H.E.S
                   %th H.FRDO
                   %th H.E.D
-                  -tipo = 'obrero'
-                  -sumas << 'TEXTO'
-                  -sumas << 'TEXTO' 
-                  -sumas << 'TEXTO'
-                  -sumas << 'TEXTO'
-                  -sumas << 'TEXTO'
-                  -sumas << 'TEXTO' 
-                  -sumas << 'TOTAL' 
                 -else
                   %th DNI
                   %th Nombre
@@ -50,13 +42,6 @@
                   %th DIAS ASIST.
                   %th HE 25%
                   %th HE 35%
-                  -tipo = 'empleado'
-                  -sumas << 'TEXTO' 
-                  -sumas << 'TEXTO'
-                  -sumas << 'TEXTO'
-                  -sumas << 'TEXTO'
-                  -sumas << 'TEXTO' 
-                  -sumas << 'TOTAL'
                 -JSON.parse(@pay.first.ing_and_amounts).each_with_index do |key,value|
                   %th= key[0].gsub('_', ' ').upcase
                 -JSON.parse(@pay.first.des_and_amounts).each_with_index do |key,value|
@@ -66,19 +51,12 @@
 
 
             %tbody
-              - count = 1
-              -i=0
-              -if tipo == "obrero"
-                -j=7
-              -else
-                -j=6
               - @pay.each do |pars|
                 %tr
                   -wor = Worker.find(pars.worker_id)
                   %td= wor.entity.dni
                   %td= wor.entity.name.to_s + " "+ wor.entity.name.to_s + " "+ wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s
                   -if !@pay.first.week.nil?
-                    - count += 1
                     %td= wor.worker_contracts.first.article.name
                     %td= CostCenter.find(pars.cost_center_id).code
                     %td= pars.last_worked_day.strftime('%d/%m/%y').to_s
@@ -89,20 +67,6 @@
                     %td= pars.he_60.to_s
                     %td= 0
                     %td= pars.he_100.to_s
-                    -if i==0
-                      -sumas<<pars.normal_hours.to_f
-                      -sumas<<pars.days.to_f
-                      -sumas<<pars.he_60.to_f
-                      -sumas<<0
-                      -sumas<<pars.he_100.to_f
-                    -else
-                      -sumas[j] = sumas[j].to_f + pars.normal_hours.to_f
-                      -j+=1
-                      -sumas[j] = sumas[j].to_f + pars.days.to_f
-                      -j+=1
-                      -sumas[j] = sumas[j].to_f + pars.he_60.to_f
-                      -j+=2
-                      -sumas[j] = sumas[j].to_f + pars.he_100.to_f
                   -else
                     %td= wor.worker_contracts.where("status = 1").first.article.name
                     %td= Company.find(pars.company_id).short_name.to_s
@@ -111,53 +75,25 @@
                     %th= pars.days.to_s
                     %td= pars.he_60.to_s
                     %td= pars.he_100.to_s
-                    -if i==0
-                      -sumas<<pars.days.to_f
-                      -sumas<<pars.he_60.to_f
-                      -sumas<<pars.he_100.to_f
-                    -else
-                      -sumas[j] = sumas[j].to_f +  pars.days.to_f
-                      -j+=1
-                      -sumas[j] = sumas[j].to_f +  pars.he_60.to_f
-                      -j+=1
-                      -sumas[j] = sumas[j].to_f +  pars.he_100.to_f
 
                   -JSON.parse(pars.ing_and_amounts).each_with_index do |key,value|
                     %td= key[1]
-                    -if i==0
-                      -sumas<<key[1]
-                    -else
-                      -j+=1
-                      -sumas[j] = sumas[j].to_f +  key[1].to_f
                   -JSON.parse(pars.des_and_amounts).each_with_index do |key,value|
                     %td= key[1]
-                    -if i==0
-                      -sumas<<key[1]
-                    -else
-                      -j+=1
-                      -sumas[j] = sumas[j].to_f +  key[1].to_f
                   -JSON.parse(pars.aport_and_amounts).each_with_index do |key,value|
                     %td= key[1]
-                    -if i==0
-                      -sumas<<key[1]
-                    -else
-                      -j+=1
-                      -sumas[j] = sumas[j].to_f +  key[1].to_f
-                  -i+=1
-                  -if tipo == "obrero"
-                    -j=7
-                  -else
-                    -j=6
 
               %tr
-                -sumas.each do |tot|
-                  -if tot!="TEXTO"
-                    -if tot == "TOTAL"
-                      %td{'colspan' => j, "style"=>"font-size: 13px; font-weight: bold;"}= tot
-                    -else
-                      %td= tot.to_f.round(2)
+                - colspan = 1
+                - if !@pay.first.week.nil?
+                  - colspan = 7
+                - else
+                  - colspan = 6
+                %th{'colspan' => colspan, "style"=>"font-size: 13px;"} TOTAL
+                - @result.each do |row|
+                  %th= row.to_f.round(2)
           %p
             - if !@pay.first.week.nil?
-              %strong= 'Numero de Obreros ' + count.to_s
+              %strong= 'Numero de Obreros ' + @count.to_s
             - else
-              %strong= 'Numero de Empleados ' + count.to_s
+              %strong= 'Numero de Empleados ' + @count.to_s
