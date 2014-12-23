@@ -518,7 +518,7 @@ class Production::WorkersController < ApplicationController
 
   private
   def worker_parameters
-    params.require(:worker).permit(
+    params.require(:worker).permit( :type_of_worker_id,
       :email, {:type_workday_ids => []}, :onpafp, :lock_version, :driverlicense, :income_fifth_category, :unionized, :disabled, 
       :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,
       :highschoolenddate,:levelofinstruction, :lastgrade, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,

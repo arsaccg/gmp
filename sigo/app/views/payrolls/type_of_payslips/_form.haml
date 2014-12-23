@@ -24,6 +24,10 @@
             %label.label Descripción 
             %label.input
               = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false, rows: 4
+          %section.col.col-md-3
+            %label.label Sub-categoría de Trabajador
+            %select.form-control#sub_tipo_cat{ :name => 'type_of_payslip[type_of_worker_id]'}
+              %option{:value => nil, :selected => true, :disabled => true} Seleccione
 
         .row
           %section.col.col-md-12
@@ -120,12 +124,46 @@
       $('#obrero').attr('disabled',true).fadeOut('fast');
       $('div#empleado div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',false);
       $('div#obrero div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',true);
+      complete_sub_categoria_worker("#{complete_sub_category_worker_production_workers_path}", "#{form_authenticity_token}", tipo);
     }
 
     if(tipo == "obrero"){
       $('#empleado').attr('disabled',true).fadeOut('fast');
       $('#obrero').attr('disabled',false).fadeIn('fast');
-      $('div#empleado div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',true)
-      $('div#obrero div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',false)
+      $('div#empleado div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',true);
+      $('div#obrero div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',false);
+      complete_sub_categoria_worker("#{complete_sub_category_worker_production_workers_path}", "#{form_authenticity_token}", tipo);
     }
+  }
+
+  function complete_sub_categoria_worker(url, form_token, tipo){
+    $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { authenticity_token: form_token, tipo: tipo}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.sub_cat, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#sub_tipo_cat').empty();
+      $('#sub_tipo_cat').append(
+        $("<option></option>").attr("value", null).text("Seleccione").attr("selected", "selected").attr("disabled", true)
+      )
+      $.each(newOptions, function(key,value){
+        if('#{@tpay.type_of_worker_id}'==value.id){
+          $('#sub_tipo_cat').append(
+            $("<option></option>").attr("value", value.id).text(value.name).attr("selected",true)
+          )
+        }else{
+          $('#sub_tipo_cat').append(
+            $("<option></option>").attr("value", value.id).text(value.name)
+          )
+        }
+      });
+    });
   }

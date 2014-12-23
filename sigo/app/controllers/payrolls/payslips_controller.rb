@@ -307,13 +307,17 @@ class Payrolls::PayslipsController < ApplicationController
     ing = Array.new
     des = Array.new
     apor = Array.new
-    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '1%'").each do |tpc|
+    tpay = TypeOfPayslip.find(params[:tipo])
+    puts "--------------------------------------------------------------------------------------------------------------------------------------------"
+    p tpay.inspect
+    puts "--------------------------------------------------------------------------------------------------------------------------------------------"
+    tpay.concepts.where("code LIKE '1%'").each do |tpc|
       ing << tpc.id
     end
-    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '2%'").each do |tpc|
+    tpay.concepts.where("code LIKE '2%'").each do |tpc|
       des << tpc.id
     end
-    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '3%'").each do |tpc|
+    tpay.concepts.where("code LIKE '3%'").each do |tpc|
       apor << tpc.id
     end
     @reg_n = (Time.now.to_f*1000).to_i
@@ -363,7 +367,7 @@ class Payrolls::PayslipsController < ApplicationController
       end
       d = d.strftime('%Y-%m-%d')
       
-      @partes = Payslip.generate_payroll_empleados(@company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo])
+      @partes = Payslip.generate_payroll_empleados(@company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo], tpay.type_of_worker_id)
       if @partes.count > 1
         @mensaje = "empleado"
       end
@@ -393,8 +397,10 @@ class Payrolls::PayslipsController < ApplicationController
       end
       if wg != 0
         @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
-        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo])
-        @mensaje = "obrero"
+        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo], tpay.type_of_worker_id)
+        if @partes.count > 1        
+          @mensaje = "obrero"
+        end
       end
     end
     render(partial: 'workers', :layout => false)

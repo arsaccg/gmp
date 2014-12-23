@@ -1438,9 +1438,15 @@
         $("<option></option>").attr("value", null).text("Seleccione").attr("selected", "selected").attr("disabled", true)
       )
       $.each(newOptions, function(key,value){
-        $('#sub-category-worker').append(
-          $("<option></option>").attr("value", value.id).text(value.name)
-        )
+        if('#{@worker.type_of_worker_id}'==value.id){
+          $('#sub-category-worker').append(
+            $("<option></option>").attr("value", value.id).text(value.name).attr("selected",true)
+          )
+        }else{
+          $('#sub-category-worker').append(
+            $("<option></option>").attr("value", value.id).text(value.name)
+          )
+        }
       });
     });
-  }   
+  }
