@@ -89,9 +89,9 @@
                   - colspan = 7
                 - else
                   - colspan = 6
-                %td{'colspan' => colspan, "style"=>"font-size: 13px; font-weight: bold;"} TOTAL
+                %th{'colspan' => colspan, "style"=>"font-size: 13px;"} TOTAL
                 - @result.each do |row|
-                  %td= row.to_f.round(2)
+                  %th= row.to_f.round(2)
           %p
             - if !@pay.first.week.nil?
               %strong= 'Numero de Obreros ' + @count.to_s
