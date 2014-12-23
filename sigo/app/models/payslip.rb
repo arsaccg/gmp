@@ -406,7 +406,7 @@ class Payslip < ActiveRecord::Base
     end
     @result = Array.new
     headers = ['DNI', 'Nombre', 'CAT.', 'COMP.', 'AFP', 'HIJ', 'DIAS ASIST.', 'DIAS FALTA', 'HE 25%','HE 35%']
-    total_days = 30
+    total_days = week_end.to_date.strftime('%d').to_i
     @i = 1
     @comp_name = Company.find(company).short_name
     uit = FinancialVariable.find_by_name("UIT").value
@@ -601,21 +601,35 @@ class Payslip < ActiveRecord::Base
               value = 0
               flag_inside_rank = true
               array_rank_previous = Array.new
+              rent_before = Array.new
               value_previous = 0
+              before_amount = 0
               puts "------------------------------------------------------------------------------------------------------------------------------------"
               p "[remuneracion-basica]+[horas-simples]*[precio-por-hora]+[horas-dobles]*[precio-por-hora]+[cts]+[gratificaciones]"
               p calculator.inspect
               puts suma_mes
               p to_end_year
+              p to_end_year == 12
+              if to_end_year == 12
+                anual_income = suma_mes*14
+              else
+                puts "-------------------entro antes del ActiveRecord-------------------------------------------------------------------------------------------------------------------"
+                ActiveRecord::Base.connection.execute("SELECT `payslips`.`des_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '%"+year.to_s+"%')").each do |b|  
+                  rent_before << JSON.parse(b[0]).select{|key, hash| key=='impto_rent_5ta_cat'} 
+                end
+                rent_before.each do |j| 
+                  j.each_with_index do |key,value| 
+                    before_amount += key[1].to_f 
+                  end
+                end
+                p before_amount
+                anual_income = suma_mes*to_end_year + 2*suma_mes + before_amount*(13 - to_end_year)/0.15
+                p anual_income
+              end
               rangos.each do |ran|
                 p ran.inspect
                 if flag_inside_rank
                   num = ran.name.scan(/\[.*?\]/).first.tr('][','')
-                  if to_end_year == 12
-                    anual_income = suma_mes*14
-                  else
-                    anual_income = suma_mes*to_end_year+2*suma_mes
-                  end
                   p anual_income
                   if num.split('-').count > 1
                     initial = num.split('-')[0].to_i*uit

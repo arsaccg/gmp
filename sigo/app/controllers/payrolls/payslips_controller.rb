@@ -446,9 +446,56 @@ class Payrolls::PayslipsController < ApplicationController
 
   def report_pdf
     respond_to do |format|
+      @result = Array.new
+      initial = Array.new
+      amounts = Array.new
       format.html
       format.pdf do
         @pay = Payslip.where("code = ?",params[:id])
+        @pay.each do |pars|
+          if !@pay.first.week.nil?
+            if initial.count > 0
+              initial = [initial, [pars.normal_hours.to_f, pars.days.to_i, pars.he_60.to_f, 0, pars.he_100.to_f]].transpose.map{|a| a.sum}
+            else
+              initial = [pars.normal_hours.to_f, pars.days.to_i, pars.he_60.to_f, 0, pars.he_100.to_f]
+            end
+          else
+            if initial.count > 0
+              initial = [initial, [pars.days.to_f, (30 - pars.days.to_f), pars.he_60.to_f, pars.he_100.to_f]].transpose.map{|a| a.sum}
+            else
+              initial = [pars.days.to_f, (30 - pars.days.to_f), pars.he_60.to_f, pars.he_100.to_f]
+            end
+          end
+          ing_amount = JSON.parse(pars.ing_and_amounts).to_a
+          ing_amount.map{|a| a.shift}
+          des_amount = JSON.parse(pars.des_and_amounts).to_a
+          des_amount.map{|a| a.shift}
+          aport_amount = JSON.parse(pars.aport_and_amounts).to_a
+          aport_amount.map{|a| a.shift}
+          summarize = ing_amount + des_amount + aport_amount
+          p '-------------AMOUNTS------------'
+          p ing_amount
+          p des_amount
+          p aport_amount
+          p '-------------AMOUNTS------------'
+          p '-----------SUMM-------------'
+          p summarize
+          p '-----------SUMM-------------'
+          if amounts.count > 0
+            amounts = [amounts, summarize].transpose.map{|a| a.sum}
+          else
+            amounts = summarize
+          end
+        end
+
+        if !@pay.first.week.nil?
+          initial = ['-', '-', '-', '-', '-', '-'] + initial
+        else
+          initial = ['-', '-', '-', '-'] + initial
+        end
+
+        @result = initial + amounts
+
         render :pdf => "reporte_planillas-#{Time.now.strftime('%d-%m-%Y')}", 
                :template => 'payrolls/payslips/report_payslips_pdf.pdf.haml',
                :orientation => 'Landscape',
