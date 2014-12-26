@@ -195,20 +195,20 @@
                       %tbody#summary_valorization_items
                         - if @action == 'edit'
                           %tr
-                            - if !@con.concept_valorizations.where('type_worker = "'+tow.name.to_s.gsub(" ","_").downcase+'"').first.nil?
+                            - if !@con.concept_valorizations.where('type_worker = '+tow.id.to_s).first.nil?
                               %td{ :style => "display:none" }
-                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][id]', @con.concept_valorizations.where('type_worker = "'+tow.name.to_s.gsub(" ","_").downcase+'"').first.id
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][id]', @con.concept_valorizations.where('type_worker = '+ tow.id.to_s).first.id
                                 = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][concept_id]', @con.id
-                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @con.concept_valorizations.where('type_worker = "'+tow.name.to_s.gsub(" ","_").downcase+'"').first.date_week
-                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @con.concept_valorizations.where('type_worker = "'+tow.name.to_s.gsub(" ","_").downcase+'"').first.cost_center_id
-                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_'+tow.name.to_s.gsub(" ","_").downcase+']', tow.name.to_s.gsub(" ","_").downcase
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @con.concept_valorizations.where('type_worker = '+tow.id.to_s).first.date_week
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @con.concept_valorizations.where('type_worker = '+tow.id.to_s).first.cost_center_id
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', tow.id
                               %td
-                                = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', @con.concept_valorizations.where('type_worker = "'+tow.name.to_s.gsub(" ","_").downcase+'"').first.formula, class: 'form-control formula', id: 'formula_field_concept_'+tow.name.to_s.gsub(" ","_").downcase
+                                = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', @con.concept_valorizations.where('type_worker = '+ tow.id.to_s).first.formula, class: 'form-control formula', id: 'formula_field_concept_'+tow.name.to_s.gsub(" ","_").downcase
                             - else
                               %td{ :style => "display:none" }
                                 = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
                                 = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
-                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', tow.name.to_s.gsub(" ","_").downcase
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', tow.id
                               %td
                                 = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_'+tow.name.to_s.gsub(" ","_").downcase
                         - else
@@ -216,7 +216,7 @@
                             %td{ :style => "display:none" }
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', tow.name.to_s.gsub(" ","_").downcase
+                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', tow.id
                             %td
                               = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_'+tow.name.to_s.gsub(" ","_").downcase
                     
@@ -288,7 +288,7 @@
                   =#%label.input
                   %input.form-control.select5{ "name" => "concept_item_employees", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', :id => "concepts_list_employees_"+toe.name.to_s.gsub(" ","_").downcase }
                 %section.col-md-3
-                  %a.btn.btn-sm.btn-info{ :href => 'javascript:void(0)', :onclick => 'javascript:add_concept_valorization_emplo('+toe.name.to_s.gsub(" ","_").downcase+')', :style => 'margin-top: 19px; margin-left: 19px;' }
+                  %a.btn.btn-sm.btn-info{ :href => 'javascript:void(0)', :onclick => 'javascript:add_concept_valorization_emplo("'+toe.name.to_s.gsub(" ","_").downcase+'")', :style => 'margin-top: 19px; margin-left: 19px;' }
                     Añadir Concepto
                 
                 %br
@@ -303,20 +303,20 @@
                       %tbody#summary_valorization_items
                         - if @action == 'edit'
                           %tr
-                            - if !@con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(" ","_").downcase+'"').first.nil?
+                            - if !@con.concept_valorizations.where('type_worker = '+toe.id.to_s).first.nil?
                               %td{ :style => "display:none" }
-                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][id]', @con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(" ","_").downcase+'"').first.id
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][id]', @con.concept_valorizations.where('type_worker = '+toe.id.to_s).first.id
                                 = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][concept_id]', @con.id
-                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(" ","_").downcase+'"').first.date_week
-                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(" ","_").downcase+'"').first.cost_center_id
-                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', toe.name.to_s.gsub(" ","_").downcase
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @con.concept_valorizations.where('type_worker = '+toe.id.to_s).first.date_week
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @con.concept_valorizations.where('type_worker = '+toe.id.to_s).first.cost_center_id
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', toe.id
                               %td
-                                = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', @con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(" ","_").downcase+'"').first.formula, class: 'form-control formula', id: 'formula_field_concept_employee_'+toe.name.to_s.gsub(" ","_").downcase
+                                = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', @con.concept_valorizations.where('type_worker = '+toe.id.to_s).first.formula, class: 'form-control formula', id: 'formula_field_concept_employee_'+toe.name.to_s.gsub(" ","_").downcase
                             - else
                               %td{ :style => "display:none" }
                                 = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
                                 = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
-                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', toe.name.to_s.gsub(" ","_").downcase
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', toe.id
                               %td
                                 = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_employee_'+toe.name.to_s.gsub(" ","_").downcase
                         - else
@@ -324,7 +324,7 @@
                             %td{ :style => "display:none" }
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', toe.name.to_s.gsub(" ","_").downcase
+                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', toe.id
                             %td
                               = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_employee_'+toe.name.to_s.gsub(" ","_").downcase
                     
