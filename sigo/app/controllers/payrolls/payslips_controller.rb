@@ -34,7 +34,7 @@ class Payrolls::PayslipsController < ApplicationController
     regs = params[:regs].split(' ')
     regsEx = params[:regsEx].split(' ')
     #borrando planillas con el mismo periodo
-    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR `month` = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"')" )
+    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR `month` = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"') AND type_of_payslip_id = "+params[:payslip][''+regs.first.to_s+'']['type_of_payslip_id'].to_s)
     #borrando extra info de planillas con el mismo periodo
     ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR week = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"')" )
     
@@ -307,13 +307,14 @@ class Payrolls::PayslipsController < ApplicationController
     ing = Array.new
     des = Array.new
     apor = Array.new
-    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '1%'").each do |tpc|
+    tpay = TypeOfPayslip.find(params[:tipo])
+    tpay.concepts.where("code LIKE '1%'").each do |tpc|
       ing << tpc.id
     end
-    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '2%'").each do |tpc|
+    tpay.concepts.where("code LIKE '2%'").each do |tpc|
       des << tpc.id
     end
-    TypeOfPayslip.find(params[:tipo]).concepts.where("code LIKE '3%'").each do |tpc|
+    tpay.concepts.where("code LIKE '3%'").each do |tpc|
       apor << tpc.id
     end
     @reg_n = (Time.now.to_f*1000).to_i
@@ -328,7 +329,7 @@ class Payrolls::PayslipsController < ApplicationController
     @partes = Array.new
     @mensaje = "fail"
     @tipo = params[:tipo]
-
+    @type_of_worker_id = tpay.type_of_worker_id
     if params[:worker] == "empleado"
       fecha = params[:semana].split(',')
       inicio = fecha[0]+"-"+fecha[1]+"-01"
@@ -363,7 +364,7 @@ class Payrolls::PayslipsController < ApplicationController
       end
       d = d.strftime('%Y-%m-%d')
       
-      @partes = Payslip.generate_payroll_empleados(@company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo])
+      @partes = Payslip.generate_payroll_empleados(@company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo], tpay.id, tpay.type_of_worker_id, @month)
       if @partes.count > 1
         @mensaje = "empleado"
       end
@@ -393,8 +394,10 @@ class Payrolls::PayslipsController < ApplicationController
       end
       if wg != 0
         @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
-        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo])
-        @mensaje = "obrero"
+        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo], tpay.type_of_worker_id)
+        if @partes.count > 1        
+          @mensaje = "obrero"
+        end
       end
     end
     render(partial: 'workers', :layout => false)
@@ -444,6 +447,17 @@ class Payrolls::PayslipsController < ApplicationController
     send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
   end
 
+  def show_formulas_information
+    @concepts_formulas = Array.new
+    @title = TypeOfPayslip.find(params[:type]).name.to_s
+    type_payslip = TypeOfPayslip.find(params[:type])
+    concepts = TypeOfPayslip.find(params[:type]).concepts
+    concepts.each do |concept|
+      @concepts_formulas << [concept.name.to_s, (concept.concept_valorizations.where( :type_worker => type_payslip.type_of_worker_id).first.formula.to_s rescue '-')]
+    end
+    render(:partial => 'table_formulas', :layout => false)
+  end
+
   def report_pdf
     respond_to do |format|
       @result = Array.new
@@ -464,9 +478,9 @@ class Payrolls::PayslipsController < ApplicationController
             @count += 1
           else
             if initial.count > 0
-              initial = [initial, [pars.days.to_f, (30 - pars.days.to_f), pars.he_60.to_f, pars.he_100.to_f]].transpose.map{|a| a.sum}
+              initial = [initial, [pars.days.to_f, pars.he_60.to_f, pars.he_100.to_f]].transpose.map{|a| a.sum}
             else
-              initial = [pars.days.to_f, (30 - pars.days.to_f), pars.he_60.to_f, pars.he_100.to_f]
+              initial = [pars.days.to_f, pars.he_60.to_f, pars.he_100.to_f]
             end
             @count += 1
           end

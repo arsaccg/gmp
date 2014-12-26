@@ -16,6 +16,7 @@ class Worker < ActiveRecord::Base
   belongs_to :entity
   belongs_to :cost_center
   belongs_to :position_worker
+  belongs_to :type_of_worker
   has_and_belongs_to_many :type_workdays
   has_many :extra_information_for_payslips
 

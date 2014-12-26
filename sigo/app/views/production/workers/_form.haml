@@ -28,103 +28,25 @@
           .section.col.col-md-8
             .form-group
               .col-md-12
-                -if @action == 'edit'
-                  -if @worker.typeofworker=="empleado"
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", checked: "", :disabled=> true}
-                      %span Empleado
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero",:disabled=> true}
-                      %span Obrero
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", :disabled=> true}
-                      %span Pensionista
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", :disabled=> true}
-                      %span Personal en Formación
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", :disabled=> true}
-                      %span Externo
-                  -elsif @worker.typeofworker=="obrero"
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", :disabled=> true}
-                      %span Empleado
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: "", :disabled=> true}
-                      %span Obrero
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", :disabled=> true}
-                      %span Pensionista
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", :disabled=> true}
-                      %span Personal en Formación
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", :disabled=> true}
-                      %span Externo
-                  -elsif @worker.typeofworker=="pensionista"
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", :disabled=> true}
-                      %span Empleado
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: "", :disabled=> true}
-                      %span Obrero
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", checked: "", :disabled=> true}
-                      %span Pensionista
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", :disabled=> true}
-                      %span Personal en Formación
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", :disabled=> true}
-                      %span Externo
-                  -elsif @worker.typeofworker=="formacion"
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", :disabled=> true}
-                      %span Empleado
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: "", :disabled=> true}
-                      %span Obrero
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", :disabled=> true}
-                      %span Pensionista
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", checked: "", :disabled=> true}
-                      %span Personal en Formación
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", :disabled=> true}
-                      %span Externo
-                  -elsif @worker.typeofworker=="externo"
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", :disabled=> true}
-                      %span Empleado
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", :disabled=> true}
-                      %span Obrero
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", :disabled=> true}
-                      %span Pensionista
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", :disabled=> true}
-                      %span Personal en Formación
-                    %label.radio-inline
-                      %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo",checked: "", :disabled=> true}
-                      %span Externo
-                -else
-                  %label.radio-inline
-                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado"}
-                    %span Empleado
-                  %label.radio-inline
-                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero"}
-                    %span Obrero
-                  %label.radio-inline
-                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista"}
-                    %span Pensionista
-                  %label.radio-inline
-                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion"}
-                    %span Personal en Formación
-                  %label.radio-inline
-                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo"}
-                    %span Externo
+                %label.radio-inline
+                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", checked: @worker.typeofworker=="empleado", :disabled=> true, :onchange => "type_of_worker('empleado');"}
+                  %span Empleado
+                %label.radio-inline
+                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: @worker.typeofworker=="obrero", :disabled=> true, :onchange => "type_of_worker('obrero');"}
+                  %span Obrero
+                %label.radio-inline
+                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", checked: @worker.typeofworker=="pensionista", :disabled=> true, :onchange => "type_of_worker('pensionista');"}
+                  %span Pensionista
+                %label.radio-inline
+                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", checked: @worker.typeofworker=="formacion", :disabled=> true, :onchange => "type_of_worker('formacion');"}
+                  %span Personal en Formación
+                %label.radio-inline
+                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", checked: @worker.typeofworker=="externo", :disabled=> true, :onchange => "type_of_worker('externo');"}
+                  %span Externo
+          .section.col.col-md-4#content-sub-cat{:style=>"display:none"}
+            %label.label Sub-tipo
+            %select.form-control#sub-category-worker{:name=>"worker[type_of_worker_id]"}
+              
         %br
         .row{ 'style' => 'display:none' }
           %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
@@ -1170,6 +1092,8 @@
 :javascript
   $(document).ready(function () {
     $('select').select2();
+    type_of_worker('#{@worker.typeofworker}');
+
     $('.checkbox .check_boxes').css('left', '0').css('position', 'relative');
     if(('#{@worker.typeofworker}'=="empleado")||('#{@worker.typeofworker}'=="obrero")){
       $("#row1").css("display", "");
@@ -1485,3 +1409,44 @@
   function makeUppercase(element) {
     $(element).val($(element).val().toUpperCase());
   }  
+
+  function type_of_worker(type){
+    if(type =="empleado" || type == "obrero"){
+      complete_sub_categoria_worker("#{complete_sub_category_worker_production_workers_path}", "#{form_authenticity_token}", type);
+      $('#content-sub-cat').attr("style","display:block");
+    }else{
+      $('#content-sub-cat').attr("style","display:none");
+    }
+  }
+
+  function complete_sub_categoria_worker(url, form_token, tipo){
+    $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { authenticity_token: form_token, tipo: tipo}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.sub_cat, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#sub-category-worker').empty();
+      $('#sub-category-worker').append(
+        $("<option></option>").attr("value", null).text("Seleccione").attr("selected", "selected").attr("disabled", true)
+      )
+      $.each(newOptions, function(key,value){
+        if('#{@worker.type_of_worker_id}'==value.id){
+          $('#sub-category-worker').append(
+            $("<option></option>").attr("value", value.id).text(value.name).attr("selected",true)
+          )
+        }else{
+          $('#sub-category-worker').append(
+            $("<option></option>").attr("value", value.id).text(value.name)
+          )
+        }
+      });
+    });
+  }

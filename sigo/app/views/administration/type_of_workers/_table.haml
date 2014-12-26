@@ -2,52 +2,32 @@
   %header
     %span.widget-icon
       %i.fa.fa-table
-    %h2 Lista de Conceptos
+    %h2 Lista de Tipo de Trabajadores
+  
   %div
     .widget-body.no-padding
       #dt_basic_wrapper.dataTables_wrapper.form-inline{:role => 'grid'}
         .dt-wrapper
-          %table#dt_basic.table.table-striped.table-bordered.table-hover
+          %table#summary-type-entities.table.table-striped.table-bordered.table-hover
             %thead
               %tr
+                %th N°
                 %th Nombre
-                %th Código
-                %th Tope
-                %th Con. Obrero
-                %th Con. Empleado
-                %th Estado
+                %th Prefijo
+                %th Tipo
                 %th Acciones
             %tbody
-              - @con.each do |con|
+              - @type_of_worker.each do |type|
                 %tr
+                  %td= type.id
+                  %td= type.name
+                  %td= type.prefix
+                  %td= type.worker_type.to_s.capitalize
                   %td
-                    = con.name.to_s
-                  %td
-                    =# con.code[1,con.code.length].to_s
-                    = con.code.to_s
-                  %td
-                    - if con.top != nil
-                      = con.top.to_s
-                    -else
-                      ="--"
-                  %td
-                    = con.type_obrero.to_s
-                  %td
-                    = con.type_empleado.to_s
-                  %td
-                    - if con.status==1
-                      %span.label.label-success{"style"=>"background-color: #25CA25;color:white;text-align:center;width:100px;font-weight:bold;"} Activo
-                    -else
-                      %span.label.label-success{"style"=>"background-color: #B50010;color:white;text-align:center;width:100px;font-weight:bold;"} Inactivo
-                  %td
-                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_payrolls_concept_path(con.id)}', 'content', null, null, 'GET')"}
+                    %button.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_administration_type_of_worker_path(type.id)}', 'content', null, null, 'GET')"}
                       Editar
-                    -if con.status ==0
-                      %a.btn.btn-success.btn-xs{:style=>"width:72px;", :data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de activar el item ' + "#{con.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:load_url_ajax('#{activate_payrolls_concept_path(con.id)}', 'content', null, null, 'GET')", "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Activar"}}
-                        Activar
-                    -else
-                      %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de desactivar el item ' + "#{con.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{payrolls_concept_path(con.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{payrolls_concepts_path}')"}}
-                        Desactivar
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{type.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{administration_type_of_worker_path(type.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{administration_type_of_workers_path}')"}}
+                      Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -56,7 +36,7 @@
   $(document).ready(function () {
     $('[data-toggle="confirmation"]').confirmation();
   });
-
+  
   // PAGE RELATED SCRIPTS
 
   loadDataTableScripts();
@@ -95,18 +75,18 @@
     /*
      * BASIC
      */
-    $('#dt_basic').dataTable({
+    $('#summary-type-entities').dataTable({
       "sPaginationType" : "bootstrap_full"
     });
 
     /* END BASIC */
 
     /* Add the events etc before DataTables hides a column */
-    $("#dt_basic thead input").keyup(function() {
+    $("#datatable_fixed_column thead input").keyup(function() {
       oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
     });
 
-    $("#dt_basic thead input").each(function(i) {
+    $("#datatable_fixed_column thead input").each(function(i) {
       this.initVal = this.value;
     });
     $("#datatable_fixed_column thead input").focus(function() {
@@ -115,7 +95,7 @@
         this.value = "";
       }
     });
-    $("#dt_basic thead input").blur(function(i) {
+    $("#datatable_fixed_column thead input").blur(function(i) {
       if (this.value == "") {
         this.className = "search_init";
         this.value = this.initVal;

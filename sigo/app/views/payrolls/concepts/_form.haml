@@ -41,295 +41,314 @@
               %label.check-inline
                 %input.checkbox#e{:name=>"check_type_worker_employee",:type => 'checkbox', :value => "empleado", :onchange => "checkWorkerE();", :checked => @con.type_empleado!=nil}
                 %span Aplica para Empleado?
-              %br
+                %br
+            %row#cemp{"style"=>"display:none"}
+              %section.col.col-md-12
+                %label.label Concepto para Empleados
+                .form-group.in-line
+                  .col-md-1
+                  .col-md-10
+                    .col-md-5
+                      = f.radio_button :type_empleado,  "Fijo", :selected=>@con.type_empleado=="Fijo"
+                      %label Fijo
+                    .col-md-7
+                      = f.radio_button :type_empleado, "Variable", :selected=>@con.type_empleado=="Variable"
+                      %label Variable
+              %section.col.col-md-12
+                -@type_of_employee.each do |toe|
+                  %section.col.col-md-12
+                    .form-group-in-line
+                      %label.check-inline
+                        %input.checkbox{:type => 'checkbox', :onchange => "checkSub('toe_"+toe.name.to_s.gsub(" ","_").downcase+"');", :checked => !@con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(" ","_").downcase+'"').first.nil?, :id =>"checkbox_toe_"+toe.name.to_s.gsub(" ","_").downcase, :onload => "checkSub('toe_"+toe.name.to_s.gsub(" ","_").downcase+"');"}
+                        %span=  "Aplica para "+toe.name.to_s+"?"  
+                  %section.col.col-12{:id => "toe_"+toe.name.to_s.gsub(" ","_").downcase, :style=>"display:none"}                
+                    - if !@con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(' ','_').downcase+'"').first.nil?
+                      -foe = @con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(' ','_').downcase+'"').first.formula
+                  
+                    %label.label= "Valorizaciones para "+ toe.name.to_s.gsub(' ','_').downcase
+                    %label.input
+                      %div.col.col-3
+                        %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("employees_'+toe.name.to_s.gsub(' ','_').downcase+'")' }
+                          %i.fa.fa-superscript
+                          Definir
+                      %div.col.col-6
+                        %input{:style=>"width:350px;font-size: 9px;", :value=>foe, :readonly=>true, :id => "formula-employee-form"+toe.name.to_s.gsub(" ","_").downcase}
+
+        %row
+          %section.col.col-12
+            .form-group.in-line
               %label.check-inline
                 %input.checkbox#o{:name=>"check_type_worker_worker",:type => 'checkbox', :value => "obrero", :onchange => "checkWorkerO();", :checked => @con.type_obrero!=nil}
                 %span  Aplica para Obrero?
+                %br
+            %row#cobr{"style"=>"display:none"}
+              %section.col.col-md-12
+                %label.label Concepto para Obrero
+                .form-group.in-line
+                  .col-md-1
+                  .col-md-10
+                    .col-md-5
+                      = f.radio_button :type_obrero,  "Fijo", :selected=>@con.type_obrero=="Fijo"
+                      %label Fijo
+                    .col-md-7
+                      = f.radio_button :type_obrero, "Variable", :selected=>@con.type_obrero=="Variable"
+                      %label Variable            
+              %section.col.col-md-12
+                -@type_of_worker.each do |tow|
+                  %section.col.col-md-12
+                    .form-group.in-line
+                      %label.check-inline
+                        %input.checkbox{:type => 'checkbox', :onchange => "checkSub('tow_"+tow.name.to_s.gsub(" ","_").downcase+"');", :checked => !@con.concept_valorizations.where('type_worker = "'+tow.name.to_s.gsub(" ","_").downcase+'"').first.nil?, :id =>"checkbox_tow_"+tow.name.to_s.gsub(" ","_").downcase, :onload => "checkSub('tow_"+tow.name.to_s.gsub(" ","_").downcase+"');"}
+                        %span=  "Aplica para "+tow.name.to_s+"?"
+                    %section.col.col-12{:id => "tow_"+tow.name.to_s.gsub(" ","_").downcase, :style=>"display:none"}
+                      - if !@con.concept_valorizations.where('type_worker = "'+tow.name.to_s.gsub(" ","_").downcase+'"').first.nil?
+                        -foo = @con.concept_valorizations.where('type_worker = "'+tow.name.to_s.gsub(" ","_").downcase+'"').first.formula          
+                      %label.label= "Valorizaciones para "+tow.name.to_s
+                      %label.input
+                        %div.col.col-3
+                          %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("'+tow.name.to_s.gsub(" ","_").downcase+'")' }
+                            %i.fa.fa-superscript
+                            Definir
+                        %div.col.col-6
+                          %input{:style=>"width:350px;font-size: 9px;", :value=> foo, :readonly=>true, :id => "formula-worker-form"+tow.name.to_s.gsub(" ","_").downcase}
+                  %br
+            
         %br
-        %row#cobr{"style"=>"display:none"}
-          - if !@con.concept_valorizations.where('type_worker = "worker"').first.nil?
-            -foo = @con.concept_valorizations.where('type_worker = "worker"').first.formula          
-          %section.col.col-4
-            %label.label Concepto Obrero
-            .form-group.in-line
-              .col-md-1
-              .col-md-10
-                .col-md-5
-                  = f.radio_button :type_obrero,  "Fijo", :selected=>@con.type_obrero=="Fijo"
-                  %label Fijo
-                .col-md-7
-                  = f.radio_button :type_obrero, "Variable", :selected=>@con.type_obrero=="Variable"
-                  %label Variable              
-          %section.col.col-6
-            %label.label Valorizaciones para Obrero
-            %label.input
-              %div.col.col-3
-                %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("worker")' }
-                  %i.fa.fa-superscript
-                  Definir
-              %div.col.col-6
-                %input#formula-worker-form{:style=>"width:350px;font-size: 9px;", :value=> foo, :readonly=>true}
-        %br
-        %row#cemp{"style"=>"display:none"}
-          - if !@con.concept_valorizations.where('type_worker = "employee"').first.nil?
-            -foe = @con.concept_valorizations.where('type_worker = "employee"').first.formula
-          %section.col.col-4
-            %label.label Concepto para Empleados
-            .form-group.in-line
-              .col-md-1
-              .col-md-10
-                .col-md-5
-                  = f.radio_button :type_empleado,  "Fijo", :selected=>@con.type_empleado=="Fijo"
-                  %label Fijo
-                .col-md-7
-                  = f.radio_button :type_empleado, "Variable", :selected=>@con.type_empleado=="Variable"
-                  %label Variable
-          %section.col.col-6
-            %label.label Valorizaciones Empleado
-            .form-group.in-line
-              %label.input
-                %div.col.col-3
-                  %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("employee")' }
-                    %i.fa.fa-superscript
-                    Definir
-                %div.col.col-6
-                  %input#formula-employee-form{:style=>"width:350px;font-size: 9px;", :value=>foe, :readonly=>true}
-                      
+        
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save 
           Guardar
+      -@type_of_worker.each do |tow|
+        .modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "modalValorizationLabel", role: "dialog", :id=>"modal_valorization_"+tow.name.to_s.gsub(" ","_").downcase}
+          .modal-dialog{ :style => 'margin: 0 auto; width: 50%;' }
+            .modal-content
+              .modal-body{ :style => 'overflow: hidden; padding: 2em;' }
+                %section
+                  .col-md-6
+                    .alert.alert-block.alert-danger{ :style => 'margin-bottom: 0' }
+                      %h4.alert-heading
+                        %i.fa.fa-warning
+                        Tenga en cuenta estos tokens. Si desea añadirlos a la formula, deberá hacerles click:
+                      %p
+                        %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [horas-trabajadas]
+                        ,
+                        %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [horas-simples]
+                        ,
+                        %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [horas-dobles]
+                        ,
+                        %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [precio-por-hora]
+                        ,
+                        %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [dias-trabajados]
+                        ,
+                        %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [horas-totales-semana]
+                  .col-md-6
+                    .alert.alert-block.alert-success{ :style => 'padding-bottom: 20px;' }
+                      %h4.alert-heading
+                        %i.fa.fa-exclamation
+                        Token Genérico:
+                      %p
+                        Este token coge el valor, del concepto actual, que figura en el contrato del trabajador o de su categoria correspondiente. En todo caso, su valor será 0.
+                      %p
+                        El nombre del Token es:
+                        %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: #296829;' }
+                          [monto-contrato-categoria]
+                  
+                  .col-md-6
+                    .alert.alert-block.alert-info
+                      %h4.alert-heading
+                        %i.fa.fa-bullseye
+                        Simbolos de operaciones aritméticas:
+                      %p
+                        Suma (+), Resta (-), Multiplicación (*), División (/), Exponente (**) y Paréntesis
+                  .col-md-6
+                    .alert.alert-block.alert-warning
+                      %h4.alert-heading
+                        %i.fa.fa-check-square-o
+                        Revisa la Fórmula antes de Guardar:
+                      %p
+                        Si modificas el nombre de los Tokens generados puede que haya errores en los calculos de los montos.
 
-      #modal_valorization.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "modalValorizationLabel", role: "dialog" }
-        .modal-dialog{ :style => 'margin: 0 auto; width: 50%;' }
-          .modal-content
-            .modal-body{ :style => 'overflow: hidden; padding: 2em;' }
-              %section
-                .col-md-6
-                  .alert.alert-block.alert-danger{ :style => 'margin-bottom: 0' }
-                    %h4.alert-heading
-                      %i.fa.fa-warning
-                      Tenga en cuenta estos tokens. Si desea añadirlos a la formula, deberá hacerles click:
-                    %p
-                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [horas-trabajadas]
-                      ,
-                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [horas-simples]
-                      ,
-                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [horas-dobles]
-                      ,
-                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [precio-por-hora]
-                      ,
-                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [dias-trabajados]
-                      ,
-                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [horas-totales-semana]
-                .col-md-6
-                  .alert.alert-block.alert-success{ :style => 'padding-bottom: 20px;' }
-                    %h4.alert-heading
-                      %i.fa.fa-exclamation
-                      Token Genérico:
-                    %p
-                      Este token coge el valor, del concepto actual, que figura en el contrato del trabajador o de su categoria correspondiente. En todo caso, su valor será 0.
-                    %p
-                      El nombre del Token es:
-                      %a.tokens{ :href=> 'javascript:void(0)', :style => 'color: #296829;' }
-                        [monto-contrato-categoria]
+                %section.col-md-9
+                  %label{ :style => 'font-size: 13px;' } Buscar Conceptos:
+                  =#%label.input
+                  %input.form-control.select5{ "name" => "concept_item", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', :id => "concepts_list_"+tow.name.to_s.gsub(" ","_").downcase }
+                %section.col-md-3
+                  %a.btn.btn-sm.btn-info{ :href => 'javascript:void(0)', :onclick => 'javascript:add_concept_valorization("'+tow.name.to_s.gsub(" ","_").downcase+'")', :style => 'margin-top: 19px; margin-left: 19px;' }
+                    Añadir Concepto
                 
-                .col-md-6
-                  .alert.alert-block.alert-info
-                    %h4.alert-heading
-                      %i.fa.fa-bullseye
-                      Simbolos de operaciones aritméticas:
-                    %p
-                      Suma (+), Resta (-), Multiplicación (*), División (/), Exponente (**) y Paréntesis
-                .col-md-6
-                  .alert.alert-block.alert-warning
-                    %h4.alert-heading
-                      %i.fa.fa-check-square-o
-                      Revisa la Fórmula antes de Guardar:
-                    %p
-                      Si modificas el nombre de los Tokens generados puede que haya errores en los calculos de los montos.
+                %br
 
-              %section.col-md-9
-                %label{ :style => 'font-size: 13px;' } Buscar Conceptos:
-                =#%label.input
-                %input#concepts_list.form-control{ "name" => "concept_item", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;' }
-              %section.col-md-3
-                %a.btn.btn-sm.btn-info{ :href => 'javascript:void(0)', :onclick => 'javascript:add_concept_valorization("")', :style => 'margin-top: 19px; margin-left: 19px;' }
-                  Añadir Concepto
-              
-              %br
+                %section.col-md-12{ :style => 'margin-top: 20px;' }
+                  #modalValorizationItemsContent
 
-              %section.col-md-12{ :style => 'margin-top: 20px;' }
-                #modalValorizationItemsContent
-
-                  %table#summary_valorization.table.table-striped.table-bordered.table-hover.smart-form
-                    %thead
-                      %tr
-                        %th Fórmula
-                    %tbody#summary_valorization_items
-                      - if @action == 'edit'
+                    %table#summary_valorization.table.table-striped.table-bordered.table-hover.smart-form
+                      %thead
                         %tr
-                          - if !@con.concept_valorizations.where('type_worker = "worker"').first.nil?
-                            %td{ :style => "display:none" }
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][id]', @con.concept_valorizations.where('type_worker = "worker"').first.id
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][concept_id]', @con.id
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @con.concept_valorizations.where('type_worker = "worker"').first.date_week
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @con.concept_valorizations.where('type_worker = "worker"').first.cost_center_id
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', 'worker'
-                            %td
-                              = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', @con.concept_valorizations.where('type_worker = "worker"').first.formula, class: 'form-control formula', id: 'formula_field_concept'
-                          - else
+                          %th Fórmula
+                      %tbody#summary_valorization_items
+                        - if @action == 'edit'
+                          %tr
+                            - if !@con.concept_valorizations.where('type_worker = '+tow.id.to_s).first.nil?
+                              %td{ :style => "display:none" }
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][id]', @con.concept_valorizations.where('type_worker = '+ tow.id.to_s).first.id
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][concept_id]', @con.id
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @con.concept_valorizations.where('type_worker = '+tow.id.to_s).first.date_week
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @con.concept_valorizations.where('type_worker = '+tow.id.to_s).first.cost_center_id
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', tow.id
+                              %td
+                                = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', @con.concept_valorizations.where('type_worker = '+ tow.id.to_s).first.formula, class: 'form-control formula', id: 'formula_field_concept_'+tow.name.to_s.gsub(" ","_").downcase
+                            - else
+                              %td{ :style => "display:none" }
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', tow.id
+                              %td
+                                = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_'+tow.name.to_s.gsub(" ","_").downcase
+                        - else
+                          %tr
                             %td{ :style => "display:none" }
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', 'worker'
+                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', tow.id
                             %td
-                              = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept'
-                      - else
-                        %tr
-                          %td{ :style => "display:none" }
-                            = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
-                            = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
-                            = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', 'worker'
-                          %td
-                            = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept'
+                              = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_'+tow.name.to_s.gsub(" ","_").downcase
+                    
+                %br
+
+              .modal-footer{ :style => 'padding: 2em;' }
+                %button.btn.btn-success{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Guardar
+                %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Salir
+        -@reg_n+=1
+
+      -@type_of_employee.each do |toe|
+        .modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "modalValorizationLabel", role: "dialog", :id =>"modal_valorization_employees_"+toe.name.to_s.gsub(" ","_").downcase}
+          .modal-dialog{ :style => 'margin: 0 auto; width: 50%;' }
+            .modal-content
+              .modal-body{ :style => 'overflow: hidden; padding: 2em;' }
+                %section
+                  .col-md-6
+                    .alert.alert-block.alert-danger{ :style => 'margin-bottom: 0' }
+                      %h4.alert-heading
+                        %i.fa.fa-warning
+                        Tenga en cuenta estos tokens. Si desea añadirlos a la formula, deberá hacerles click:
+                      %p
+                        %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [horas-trabajadas]
+                        ,
+                        %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [horas-simples]
+                        ,
+                        %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [horas-dobles]
+                        ,
+                        %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [precio-por-hora]
+                        ,
+                        %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [dias-trabajados]
+                        ,
+                        %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
+                          [horas-totales-semana]
+                  .col-md-6
+                    .alert.alert-block.alert-success{ :style => 'padding-bottom: 20px;' }
+                      %h4.alert-heading
+                        %i.fa.fa-exclamation
+                        Token Genérico:
+                      %p
+                        Este token coge el valor, del concepto actual, que figura en el contrato del trabajador o de su categoria correspondiente. En todo caso, su valor será 0.
+                      %p
+                        El nombre del Token es:
+                        %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: #296829;' }
+                          [monto-contrato-categoria]
                   
-              %br
+                  .col-md-6
+                    .alert.alert-block.alert-info
+                      %h4.alert-heading
+                        %i.fa.fa-bullseye
+                        Simbolos de operaciones aritméticas:
+                      %p
+                        Suma (+), Resta (-), Multiplicación (*), División (/), Exponente (**) y Paréntesis
+                  .col-md-6
+                    .alert.alert-block.alert-warning
+                      %h4.alert-heading
+                        %i.fa.fa-check-square-o
+                        Revisa la Fórmula antes de Guardar:
+                      %p
+                        Si modificas el nombre de los Tokens generados puede que haya errores en los calculos de los montos.
 
-            .modal-footer{ :style => 'padding: 2em;' }
-              %button.btn.btn-success{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Guardar
-              %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Salir
-      -@reg_n+=1
-
-      #modal_valorization_employees.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "modalValorizationLabel", role: "dialog" }
-        .modal-dialog{ :style => 'margin: 0 auto; width: 50%;' }
-          .modal-content
-            .modal-body{ :style => 'overflow: hidden; padding: 2em;' }
-              %section
-                .col-md-6
-                  .alert.alert-block.alert-danger{ :style => 'margin-bottom: 0' }
-                    %h4.alert-heading
-                      %i.fa.fa-warning
-                      Tenga en cuenta estos tokens. Si desea añadirlos a la formula, deberá hacerles click:
-                    %p
-                      %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [horas-trabajadas]
-                      ,
-                      %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [horas-simples]
-                      ,
-                      %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [horas-dobles]
-                      ,
-                      %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [precio-por-hora]
-                      ,
-                      %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [dias-trabajados]
-                      ,
-                      %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: white;' }
-                        [horas-totales-semana]
-                .col-md-6
-                  .alert.alert-block.alert-success{ :style => 'padding-bottom: 20px;' }
-                    %h4.alert-heading
-                      %i.fa.fa-exclamation
-                      Token Genérico:
-                    %p
-                      Este token coge el valor, del concepto actual, que figura en el contrato del trabajador o de su categoria correspondiente. En todo caso, su valor será 0.
-                    %p
-                      El nombre del Token es:
-                      %a.tokens-employee{ :href=> 'javascript:void(0)', :style => 'color: #296829;' }
-                        [monto-contrato-categoria]
+                %section.col-md-9
+                  %label{ :style => 'font-size: 13px;' } Buscar Conceptos:
+                  =#%label.input
+                  %input.form-control.select5{ "name" => "concept_item_employees", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', :id => "concepts_list_employees_"+toe.name.to_s.gsub(" ","_").downcase }
+                %section.col-md-3
+                  %a.btn.btn-sm.btn-info{ :href => 'javascript:void(0)', :onclick => 'javascript:add_concept_valorization_emplo("'+toe.name.to_s.gsub(" ","_").downcase+'")', :style => 'margin-top: 19px; margin-left: 19px;' }
+                    Añadir Concepto
                 
-                .col-md-6
-                  .alert.alert-block.alert-info
-                    %h4.alert-heading
-                      %i.fa.fa-bullseye
-                      Simbolos de operaciones aritméticas:
-                    %p
-                      Suma (+), Resta (-), Multiplicación (*), División (/), Exponente (**) y Paréntesis
-                .col-md-6
-                  .alert.alert-block.alert-warning
-                    %h4.alert-heading
-                      %i.fa.fa-check-square-o
-                      Revisa la Fórmula antes de Guardar:
-                    %p
-                      Si modificas el nombre de los Tokens generados puede que haya errores en los calculos de los montos.
+                %br
 
-              %section.col-md-9
-                %label{ :style => 'font-size: 13px;' } Buscar Conceptos:
-                =#%label.input
-                %input#concepts_list_employees.form-control{ "name" => "concept_item_employees", 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;' }
-              %section.col-md-3
-                %a.btn.btn-sm.btn-info{ :href => 'javascript:void(0)', :onclick => 'javascript:add_concept_valorization_emplo()', :style => 'margin-top: 19px; margin-left: 19px;' }
-                  Añadir Concepto
-              
-              %br
+                %section.col-md-12{ :style => 'margin-top: 20px;' }
+                  #modalValorizationItemsContent
 
-              %section.col-md-12{ :style => 'margin-top: 20px;' }
-                #modalValorizationItemsContent
-
-                  %table#summary_valorization.table.table-striped.table-bordered.table-hover.smart-form
-                    %thead
-                      %tr
-                        %th Fórmula
-                    %tbody#summary_valorization_items
-                      - if @action == 'edit'
+                    %table#summary_valorization.table.table-striped.table-bordered.table-hover.smart-form
+                      %thead
                         %tr
-                          - if !@con.concept_valorizations.where('type_worker = "employee"').first.nil?
-                            %td{ :style => "display:none" }
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][id]', @con.concept_valorizations.where('type_worker = "employee"').first.id
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][concept_id]', @con.id
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @con.concept_valorizations.where('type_worker = "employee"').first.date_week
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @con.concept_valorizations.where('type_worker = "employee"').first.cost_center_id
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', 'employee'
-                            %td
-                              = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', @con.concept_valorizations.where('type_worker = "employee"').first.formula, class: 'form-control formula', id: 'formula_field_concept_employee'
-                          - else
+                          %th Fórmula
+                      %tbody#summary_valorization_items
+                        - if @action == 'edit'
+                          %tr
+                            - if !@con.concept_valorizations.where('type_worker = '+toe.id.to_s).first.nil?
+                              %td{ :style => "display:none" }
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][id]', @con.concept_valorizations.where('type_worker = '+toe.id.to_s).first.id
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][concept_id]', @con.id
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @con.concept_valorizations.where('type_worker = '+toe.id.to_s).first.date_week
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @con.concept_valorizations.where('type_worker = '+toe.id.to_s).first.cost_center_id
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', toe.id
+                              %td
+                                = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', @con.concept_valorizations.where('type_worker = '+toe.id.to_s).first.formula, class: 'form-control formula', id: 'formula_field_concept_employee_'+toe.name.to_s.gsub(" ","_").downcase
+                            - else
+                              %td{ :style => "display:none" }
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
+                                = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', toe.id
+                              %td
+                                = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_employee_'+toe.name.to_s.gsub(" ","_").downcase
+                        - else
+                          %tr
                             %td{ :style => "display:none" }
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
                               = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
-                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', 'employee'
+                              = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', toe.id
                             %td
-                              = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_employee'
-                      - else
-                        %tr
-                          %td{ :style => "display:none" }
-                            = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][date_week]', @date_week
-                            = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][cost_center_id]', @cost_center
-                            = hidden_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][type_worker]', 'employee'
-                          %td
-                            = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_employee'
-                  
-              %br
+                              = text_field_tag 'concept[concept_valorizations_attributes]['+@reg_n.to_s+'][formula]', nil, class: 'form-control formula', id: 'formula_field_concept_employee_'+toe.name.to_s.gsub(" ","_").downcase
+                    
+                %br
 
-            .modal-footer{ :style => 'padding: 2em;' }
-              %button.btn.btn-success{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Guardar
-              %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Salir
+              .modal-footer{ :style => 'padding: 2em;' }
+                %button.btn.btn-success{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Guardar
+                %button.btn.btn-default{"data-dismiss" => "modal", :type => "button", :style => 'padding: 7px;'} Salir
+        -@reg_n+=1
 
 :javascript
   $(document).ready(function () {
     $('.check_boxes').attr("style"," position: relative; left: 0; ");
-    if(document.getElementById('e').checked){checkWorkerE();}
-    if(document.getElementById('o').checked){checkWorkerO();}
-
-    $('input[type="radio"]').click(function(){
-        if($(this).attr("value")=="Trabajador"){
-            $("#condeEmp").hide();
-            $("#condeDef").hide();
-            $("#condeTrab").show();
-        }
-        if($(this).attr("value")=="Empresa"){
-            $("#condeTrab").hide();
-            $("#condeDef").hide();
-            $("#condeEmp").show();
-        }
+    if(document.getElementById('e').checked){
+      checkWorkerE();
+    }
+    if(document.getElementById('o').checked){
+      checkWorkerO();
+    }
+    $(jQuery.parseJSON('#{@type_of_worker.to_json}')).each(function() {  
+      checkSub("tow_"+this.name.replace(/ /g,'_').toLowerCase());
+    });
+    $(jQuery.parseJSON('#{@type_of_employee.to_json}')).each(function() {  
+      checkSub("toe_"+this.name.replace(/ /g,'_').toLowerCase());
     });
 
     $('select').select2();
@@ -342,26 +361,28 @@
 
     $('a.tokens').click(function(){
       var token = $(this).html().trim();
-      old_formula = $('#formula_field_concept').val();
+      var id = $(this).parent().parent().parent().parent().parent().parent().parent().parent().attr('id').replace('modal_valorization_','');
+      old_formula = $('#formula_field_concept_'+id).val();
 
       if (old_formula != '')
         new_formula = old_formula + '+' + token;
       else
         new_formula = token;
 
-      $('#formula_field_concept').val(new_formula);
+      $('#formula_field_concept_'+id).val(new_formula);
     });
 
     $('a.tokens-employee').click(function(){
       var token = $(this).html().trim();
-      old_formula = $('#formula_field_concept_employee').val();
+      var id = $(this).parent().parent().parent().parent().parent().parent().parent().parent().attr('id').replace('modal_valorization_employees_','');
+      old_formula = $('#formula_field_concept_employee_'+id).val();
 
       if (old_formula != '')
         new_formula = old_formula + '+' + token;
       else
         new_formula = token;
 
-      $('#formula_field_concept_employee').val(new_formula);
+      $('#formula_field_concept_employee_'+id).val(new_formula);
     });    
 
   });
@@ -423,21 +444,13 @@
   }
 
   function show_me_the_valorization(type){
-    if(type == "worker"){
-      $('#modal_valorization').modal({
-        backdrop : 'static',
-        keyword : false
-      });
-    }else{
-      $('#modal_valorization_employees').modal({
-        backdrop : 'static',
-        keyword : false
-      });    
-    }
-
+    $('#modal_valorization_'+type).modal({
+      backdrop : 'static',
+      keyword : false
+    });
   }
 
-  $('#concepts_list').select2({
+  $('.select5').select2({
     placeholder: "Buscar Concepto...",
     minimumInputLength: 3,
     ajax: {
@@ -461,69 +474,45 @@
     escapeMarkup: function (m) { return m; }
   });
 
-  $('#concepts_list_employees').select2({
-    placeholder: "Buscar Concepto...",
-    minimumInputLength: 3,
-    ajax: {
-      url: "#{display_concepts_payrolls_concepts_path}",
-      dataType: 'json',
-      type: 'POST',
-      quietMillis: 100,
-      data: function(term, page){
-        return {
-          q: term,
-          page: page,
-          authenticity_token: "#{form_authenticity_token}"
-        };
-      },
-      results: function(data, page){
-        return {results: data.concepts};
-      }
-    },
-    formatResult: function(node){ return '<div>' + node.name + '</div>' },
-    formatSelection: function(node){ return node.name },
-    escapeMarkup: function (m) { return m; }
-  });
-
-  function add_concept_valorization(){
+  function add_concept_valorization(id){
     var concept_id = 0
     var concept_name = ''
 
-    data_selected = $('#concepts_list').select2('data');
+    data_selected = $('#concepts_list_'+id).select2('data');
     concept_token = data_selected.id
     concept_name = data_selected.name
 
     reg_n = (new Date).getTime();
 
-    old_formula = $('#formula_field_concept').val();
+    old_formula = $('#formula_field_concept_'+id).val();
 
     if (old_formula != '')
       new_formula = old_formula + '+' + concept_token;
     else
       new_formula = concept_token;
 
-    $('#formula_field_concept').val(new_formula);
+    $('#formula_field_concept_'+id).val(new_formula);
 
   }
 
-  function add_concept_valorization_emplo(){
+  function add_concept_valorization_emplo(id){
     var concept_id = 0
     var concept_name = ''
 
-    data_selected = $('#concepts_list_employees').select2('data');
+    data_selected = $('#concepts_list_employees_'+id).select2('data');
     concept_token = data_selected.id
     concept_name = data_selected.name
 
     reg_n = (new Date).getTime();
 
-    old_formula = $('#formula_field_concept_employee').val();
+    old_formula = $('#formula_field_concept_employee_'+id).val();
 
     if (old_formula != '')
       new_formula = old_formula + '+' + concept_token;
     else
       new_formula = concept_token;
 
-    $('#formula_field_concept_employee').val(new_formula);
+    $('#formula_field_concept_employee_'+id).val(new_formula);
 
   }
 
@@ -545,7 +534,15 @@
       $('input#concept_type_obrero_fijo:radio').attr('checked',false);
       $('input#concept_type_obrero_variable:radio').attr('checked',false);
     }
-  }  
+  }
+
+  function checkSub(id){
+    if(document.getElementById('checkbox_'+id).checked){
+      $('#'+id).fadeIn('fast');
+    }else{
+      $('#'+id).fadeOut('fast');
+    }
+  }   
 
   $('#formula_field_concept').change(function(){
     $('#formula-worker-form').val($('#formula_field_concept').val())
