@@ -455,7 +455,18 @@ class Payrolls::PayslipsController < ApplicationController
     concepts.each do |concept|
       @concepts_formulas << [concept.name.to_s, (concept.concept_valorizations.where( :type_worker => type_payslip.type_of_worker_id).first.formula.to_s rescue '-')]
     end
-    render(:partial => 'table_formulas', :layout => false)
+
+    respond_to do |format|
+      format.html do
+        @type = params[:type]
+        render(:partial => 'table_formulas', :layout => false)
+      end
+      format.pdf do
+        render :pdf => "Tabla_formulas-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'payrolls/payslips/table_formulas.pdf.haml',
+               :orientation => 'portrait'
+      end
+    end
   end
 
   def report_pdf

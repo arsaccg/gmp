@@ -269,7 +269,7 @@
     }
     
     if(type!= null && semana!=''){
-      load_url_ajax("#{show_formulas_information_payrolls_payslips_path}", 'table_formulas', {type: type, authenticity_token: "#{form_authenticity_token}"}, 'avoid-opacity', 'POST');
+      load_url_ajax("#{show_formulas_information_payrolls_payslips_path}", 'table_formulas', {type: type, authenticity_token: "#{form_authenticity_token}"}, 'avoid-opacity', 'GET');
       $('#show_formulas').modal({
         backdrop: 'static',
         keyboard: false
