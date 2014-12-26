@@ -62,6 +62,15 @@ before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :upda
 
   private
   def tpay_parameters
-    params.require(:type_of_payslip).permit(:name, :description, :for_worker_employee, :type_of_worker_id, {:concept_ids => []})
+    params.require(:type_of_payslip).permit(
+      :name, 
+      :description, 
+      :for_worker_employee, 
+      :type_of_worker_id, 
+      {:concept_ids => []},
+      :type_of_payslips_id,
+      :type_operation,
+      :name_operation
+    )
   end
 end

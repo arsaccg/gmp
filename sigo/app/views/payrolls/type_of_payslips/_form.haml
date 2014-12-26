@@ -68,9 +68,9 @@
             %label.label ¿Que desea obtener de la Planilla seleccionada?
             %select.form-control{ :name => 'type_of_payslip[type_operation]'}
               %option{:value => nil, :selected => true, :disabled => true} Seleccione
-              %option{:value => 'income'} Ingreso
-              %option{:value => 'discount'} Descuentos
-              %option{:value => 'contribution'} Aportaciones
+              %option{:value => 'ing_and_amounts'} Ingreso
+              %option{:value => 'des_and_amounts'} Descuentos
+              %option{:value => 'aport_and_amounts'} Aportaciones
 
           %section.col.col-md-3
             %label.label ¿Que nombre de columna quiere darle al(los) resultado(s)?
