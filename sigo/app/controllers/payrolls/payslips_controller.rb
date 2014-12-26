@@ -34,7 +34,7 @@ class Payrolls::PayslipsController < ApplicationController
     regs = params[:regs].split(' ')
     regsEx = params[:regsEx].split(' ')
     #borrando planillas con el mismo periodo
-    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR `month` = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"')" )
+    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR `month` = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"') AND type_of_payslip_id = "+params[:payslip][''+regs.first.to_s+'']['type_of_payslip_id'].to_s)
     #borrando extra info de planillas con el mismo periodo
     ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR week = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"')" )
     
@@ -364,7 +364,7 @@ class Payrolls::PayslipsController < ApplicationController
       end
       d = d.strftime('%Y-%m-%d')
       
-      @partes = Payslip.generate_payroll_empleados(@company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo], tpay.type_of_worker_id)
+      @partes = Payslip.generate_payroll_empleados(@company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo], tpay.id, tpay.type_of_worker_id, @month)
       if @partes.count > 1
         @mensaje = "empleado"
       end

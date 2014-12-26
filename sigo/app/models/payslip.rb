@@ -9,13 +9,7 @@ class Payslip < ActiveRecord::Base
     # => ING - Ingresos
     # => DES - Descuentos
     # => APO - Aportaciones
-    tpayname = tpay
-    array_worker = array_worker.split(',').uniq
-    if ing.include?(1)
-      incluye = true
-    else
-      incluye = false
-    end
+    twoid = tpay
 
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)
@@ -24,7 +18,12 @@ class Payslip < ActiveRecord::Base
     uit27 = FinancialVariable.find_by_name("UIT").value * 27
     uit54 = FinancialVariable.find_by_name("UIT").value * 54
     @result[0] = headers
-    @result[0] << "REMUNERACIÓN BÁSICA"
+    if ing.include?(1)
+      incluye = true
+      @result[0] << "REMUNERACIÓN BÁSICA"
+    else
+      incluye = false
+    end
     amount = 0
     apoNa = Array.new
     ActiveRecord::Base.connection.execute("
@@ -98,8 +97,8 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_extras_60: 0)
       calculator.store(horas_extras_100: 0)
 
-      @result[@i] << rem_basic
       if incluye
+        @result[@i] << rem_basic
         total += rem_basic
       end
 
@@ -110,23 +109,23 @@ class Payslip < ActiveRecord::Base
           hash_formulas = Hash.new
           formu = nil
           con = Concept.find(ing)
-          formu = con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first
+          formu = con.concept_valorizations.where("type_worker = '"+twoid.to_s+"'").first
           if !@result[0].include?(con.name)
             @result[0] << con.name.to_s
           end
           if con.concept_valorizations.count>0
-            if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula.include? '[monto-contrato-categoria]' # => Token Generico
+            if !con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula.include? '[monto-contrato-categoria]' # => Token Generico
               contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => ing).first
               if !contract.nil?
                 if contract.amount != 0 && !contract.amount.nil?
                   amount = contract.amount.to_f
                   total += amount.to_f
                 else
-                  if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
+                  if !con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil? && con.amount.to_f != 0.0
                     amount = con.amount.to_f
                     total += amount.to_f
-                  elsif con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula != ''
-                    amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+                  elsif con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula != ''
+                    amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
                     total += amount.to_f
                   else
                     amount = 0
@@ -142,11 +141,11 @@ class Payslip < ActiveRecord::Base
                     amount = from_category.amount
                     total += amount.to_f
                   else
-                    if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
+                    if !con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil? && con.amount.to_f != 0.0
                       amount = con.amount.to_f
                       total += amount.to_f
-                    elsif con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula != ''
-                      amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+                    elsif con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula != ''
+                      amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
                       total += amount.to_f
                     else
                       amount = 0
@@ -154,11 +153,11 @@ class Payslip < ActiveRecord::Base
                     end
                   end
                 else
-                  if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
+                  if !con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil? && con.amount.to_f != 0.0
                     amount = con.amount.to_f
                     total += amount.to_f
-                  elsif con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula != ''
-                    amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+                  elsif con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula != ''
+                    amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
                     total += amount.to_f
                   else
                     amount = 0
@@ -167,7 +166,7 @@ class Payslip < ActiveRecord::Base
                 end
               end
             else
-              amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname, con.id)
+              amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid, con.id)
               total += amount.to_f
             end
           end
@@ -182,11 +181,11 @@ class Payslip < ActiveRecord::Base
           end
           @result[@i] << amount
         end
+
         @result[@i] << total
         total1 = total
         total = 0
         amount = 0
-
         if !@result[0].include?("Ingresos Totales")
           @result[0] << "Ingresos Totales"
         end
@@ -212,11 +211,11 @@ class Payslip < ActiveRecord::Base
               amount = contract.amount.to_f
               total += amount.to_f
             else
-              if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
+              if !con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil? && con.amount.to_f != 0.0
                 amount = con.amount.to_f
                 total += amount.to_f
               else
-                amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+                amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
                 if !con.top.nil?
                   if amount.to_f > con.top.to_f && flag_afp
                     amount = con.top.to_f
@@ -234,11 +233,11 @@ class Payslip < ActiveRecord::Base
                 amount = from_category.amount
                 total += amount.to_f
               else
-                if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
+                if !con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil? && con.amount.to_f != 0.0
                   amount = con.amount.to_f
                   total += amount
                 else
-                  amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+                  amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
 
                   if !con.top.nil?
                     if amount.to_f > con.top.to_f && flag_afp
@@ -249,11 +248,11 @@ class Payslip < ActiveRecord::Base
                 end
               end
             else
-              if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
+              if !con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil? && con.amount.to_f != 0.0
                 amount = con.amount.to_f
                 total += amount
               else
-                amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+                amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
                 if !con.top.nil?
                   if amount.to_f > con.top.to_f && flag_afp
                     amount = con.top.to_f
@@ -360,12 +359,12 @@ class Payslip < ActiveRecord::Base
             @result[0] << con.name.to_s
             apoNa << con.name.to_s
           end
-          if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
+          if !con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil? && con.amount.to_f != 0.0
             amount = con.amount.to_f
             total += amount
             
           else
-            amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+            amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
             total += amount.to_f
           end
           if flag_extra
@@ -393,22 +392,40 @@ class Payslip < ActiveRecord::Base
     return @result
   end
 
-  def self.generate_payroll_empleados company, week_start, week_end, ing, des, apo, array_extra_info, array_worker, tpay
+  def self.generate_payroll_empleados company, week_start, week_end, ing, des, apo, array_extra_info, array_worker, tpayid, twoid, month_payslip
     
     # => WG - Working Groups
     # => ING - Ingresos
     # => DES - Descuentos
     # => APO - Aportaciones
-    tpayname = tpay
+    twoid = twoid
+
+    array_worker = array_worker.split(',').uniq
+    topay = TypeOfPayslip.find(tpayid)
+    ing_before = false
+    des_before = false
+    apor_before = false
+    apply_to = ""
+    if topay.type_operation == "ing_and_amounts"
+      ing_before =true
+    elsif topay.type_operation == "des_and_amounts"
+      des_before = true
+    elsif topay.type_operation == "aport_and_amounts"
+      apor_before = true
+    end
+
+    if topay.type_converted_operation == "ing_and_amounts"
+      apply_to = "ingresos"
+    elsif topay.type_converted_operation == "des_and_amounts"
+      apply_to =  "descuentos"
+    elsif topay.type_converted_operation == "aport_and_amounts"
+      apply_to =  "aportaciones"
+    end
+
     array_worker = array_worker.split(',').uniq
     month = week_end.to_date.strftime('%m').to_i
     rangos = FinancialVariable.where("name LIKE 'RANGO %'")
     year = week_end.to_date.strftime('%YYYY').to_i
-    if ing.include?(1)
-      incluye =true
-    else
-      incluye = false
-    end
     @result = Array.new
     headers = ['DNI', 'Nombre', 'CAT.', 'COMP.', 'AFP', 'HIJ', 'DIAS ASIST.', 'DIAS FALTA', 'HE 25%','HE 35%']
     total_days = week_end.to_date.strftime('%d').to_i
@@ -416,7 +433,12 @@ class Payslip < ActiveRecord::Base
     @comp_name = Company.find(company).short_name
     uit = FinancialVariable.find_by_name("UIT").value
     @result[0] = headers
-    @result[0] << "SUELDO BÁSICO"
+    if ing.include?(1)
+      incluye =true
+      @result[0] << "SUELDO BÁSICO"
+    else
+      incluye = false
+    end
     amount = 0
     apoNa = Array.new
     ActiveRecord::Base.connection.execute("
@@ -433,7 +455,7 @@ class Payslip < ActiveRecord::Base
       AND wc.worker_id = w.id
       AND wc.article_id = ar.id
       AND wc.status = 1
-      AND w.type_of_worker_id = #{tpay}
+      AND w.type_of_worker_id = #{twoid}
       GROUP BY w.id
       ORDER BY e.paternal_surname
     ").each do |row|
@@ -461,7 +483,7 @@ class Payslip < ActiveRecord::Base
           end
         end
       end
-      @result[@i] << rem_basic
+
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
       calculator.store(dias_trabajados: row[6])
@@ -472,6 +494,7 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_extras_35: 0)
 
       if incluye
+        @result[@i] << rem_basic      
         total += rem_basic
       end
 
@@ -488,7 +511,7 @@ class Payslip < ActiveRecord::Base
           end
 
           contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first
-          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
           total += amount.to_f
           #if  ing.to_i == 15
             #total = total - amount.to_f
@@ -518,6 +541,46 @@ class Payslip < ActiveRecord::Base
           end
           @result[@i] << amount
         end
+
+        array_other_payslip = Array.new
+        amount_other_payslip = 0
+        if apply_to == "ingresos"
+          if ing_before
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            end 
+            array_other_payslip.each do |j| 
+              j.each_with_index do |key,value| 
+                amount_other_payslip += key[1].to_f 
+              end
+            end
+          elsif des_before
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`des_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            end 
+            array_other_payslip.each do |j| 
+              j.each_with_index do |key,value| 
+                amount_other_payslip += key[1].to_f 
+              end
+            end            
+          elsif apor_before
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`aport_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            end 
+            array_other_payslip.each do |j| 
+              j.each_with_index do |key,value| 
+                amount_other_payslip += key[1].to_f 
+              end
+            end
+          end
+          if ing_before || des_before || apor_before
+            @result[@i] << amount_other_payslip
+            total += amount_other_payslip 
+            if !@result[0].include?(topay.name_operation)
+              @result[0] << topay.name_operation
+            end          
+          end
+        end        
         @result[@i] << total
         total1 = total
         total = 0
@@ -541,7 +604,7 @@ class Payslip < ActiveRecord::Base
           if con.name == 'APORTE FONDO PENSIONES' || con.name == 'PRIMA DE SEGURO' || con.name == 'COMISION FIJA AFP' || con.name == 'AFP SEGURO RIESGO' || con.name == 'IMPTO. RENT. 5ta CAT.' || con.name == 'ORG. NAC. DE PENSIONES'
             flag_afp = false
           end
-          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
           if !con.top.nil?
             if amount.to_f > con.top.to_f && flag_afp
               amount = con.top.to_f
@@ -621,8 +684,9 @@ class Payslip < ActiveRecord::Base
                 anual_income = suma_mes*14
               else
                 puts "-------------------entro antes del ActiveRecord-------------------------------------------------------------------------------------------------------------------"
-                ActiveRecord::Base.connection.execute("SELECT `payslips`.`des_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '%"+year.to_s+"%')").each do |b|  
-                  rent_before << JSON.parse(b[0]).select{|key, hash| key=='impto_rent_5ta_cat'} 
+                ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '%"+year.to_s+"%')").each do |b|  
+                  rent_before << JSON.parse(b[0]).select{|key, hash| key=='sueldo_basico'} 
+                  p rent_before
                 end
                 rent_before.each do |j| 
                   j.each_with_index do |key,value| 
@@ -633,7 +697,7 @@ class Payslip < ActiveRecord::Base
                   before_amount += rentp.to_f
                 end
                 p before_amount
-                anual_income = suma_mes*to_end_year + 2*suma_mes + before_amount*(13 - to_end_year)/0.15
+                anual_income = suma_mes*to_end_year + 2*suma_mes + before_amount
                 p anual_income
               end
               rangos.each do |ran|
@@ -690,6 +754,45 @@ class Payslip < ActiveRecord::Base
           end
           @result[@i] << amount        
         end
+        array_other_payslip = Array.new
+        amount_other_payslip = 0
+        if apply_to == "descuentos"
+          if ing_before
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            end 
+            array_other_payslip.each do |j| 
+              j.each_with_index do |key,value| 
+                amount_other_payslip += key[1].to_f 
+              end
+            end
+          elsif des_before
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`des_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            end 
+            array_other_payslip.each do |j| 
+              j.each_with_index do |key,value| 
+                amount_other_payslip += key[1].to_f 
+              end
+            end            
+          elsif apor_before
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`aport_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            end 
+            array_other_payslip.each do |j| 
+              j.each_with_index do |key,value| 
+                amount_other_payslip += key[1].to_f 
+              end
+            end
+          end
+          if ing_before || des_before || apor_before
+            @result[@i] << amount_other_payslip
+            total += amount_other_payslip 
+            if !@result[0].include?(topay.name_operation)
+              @result[0] << topay.name_operation
+            end          
+          end
+        end          
         @result[@i] << total
         if !@result[0].include?("Descuentos Totales")
           @result[0] << "Descuentos Totales"
@@ -701,6 +804,8 @@ class Payslip < ActiveRecord::Base
 
       end
 
+      break
+
       if !apo.nil?
         apo.each do |ap|
           hash_formulas = Hash.new
@@ -710,7 +815,7 @@ class Payslip < ActiveRecord::Base
             apoNa << con.name.to_s
           end
           
-          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
           total += amount.to_f
 
           if flag_extra
@@ -724,6 +829,45 @@ class Payslip < ActiveRecord::Base
           end 
           @result[@i] << amount         
         end
+        array_other_payslip = Array.new
+        amount_other_payslip = 0
+        if apply_to == "ingresos"
+          if ing_before
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            end 
+            array_other_payslip.each do |j| 
+              j.each_with_index do |key,value| 
+                amount_other_payslip += key[1].to_f 
+              end
+            end
+          elsif des_before
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`des_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            end 
+            array_other_payslip.each do |j| 
+              j.each_with_index do |key,value| 
+                amount_other_payslip += key[1].to_f 
+              end
+            end            
+          elsif apor_before
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`aport_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            end 
+            array_other_payslip.each do |j| 
+              j.each_with_index do |key,value| 
+                amount_other_payslip += key[1].to_f 
+              end
+            end
+          end
+          if ing_before || des_before || apor_before
+            @result[@i] << amount_other_payslip
+            total += amount_other_payslip 
+            if !@result[0].include?(topay.name_operation)
+              @result[0] << topay.name_operation
+            end          
+          end
+        end          
         @result[@i] << total
 
         if !@result[0].include?("Aportaciones Totales")
