@@ -1,6 +1,6 @@
 class Formule < ActiveRecord::Base
 
-  def self.translate_formules(formula, basico, worker_id, calculator, hash_formulas, main_concept, concept_id = nil)
+  def self.translate_formules(formula, basico, worker_id, calculator, hash_formulas, main_concept, twid, concept_id = nil)
     main = main_concept.tr('][', '').gsub('-','_')
     #p ' FORMULA INGRESADA '
     #p formula
@@ -73,7 +73,7 @@ class Formule < ActiveRecord::Base
       const_variables.each do |c|
         concept = Concept.find_by_token(c)
         if !concept.nil?
-          formu = concept.concept_valorizations.where("type_worker = 'worker'").first
+          formu = concept.concept_valorizations.where("type_worker = "+twid.to_s).first
           contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
           amount = 0
           if !contract.nil?
@@ -134,7 +134,7 @@ class Formule < ActiveRecord::Base
     return calculator.solve!(hash_formulas).values[0].to_f
   end
 
-  def self.translate_formules_of_employee(formula, basico, worker_id, calculator, hash_formulas, main_concept)
+  def self.translate_formules_of_employee(formula, basico, worker_id, calculator, hash_formulas, main_concept, twid)
     main = main_concept.tr('][', '').gsub('-','_')
     #p ' FORMULA INGRESADA '
     #p formula
@@ -144,7 +144,7 @@ class Formule < ActiveRecord::Base
     const_variables.each do |c|
       concept = Concept.find_by_token(c)
       if !concept.nil?
-        formu = concept.concept_valorizations.where("type_worker = 'employee'").first
+        formu = concept.concept_valorizations.where("type_worker = "+twid.to_s).first
         if formu.nil? && concept.amount.to_f != 0.0
           amount = concept.amount.to_f
         elsif formu.formula != ''

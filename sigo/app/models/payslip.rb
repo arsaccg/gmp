@@ -9,7 +9,7 @@ class Payslip < ActiveRecord::Base
     # => ING - Ingresos
     # => DES - Descuentos
     # => APO - Aportaciones
-    tpayname = TypeOfWorker.find(tpay).name.to_s.gsub(' ','_').downcase
+    tpayname = tpay
     array_worker = array_worker.split(',').uniq
     if ing.include?(1)
       incluye = true
@@ -114,39 +114,19 @@ class Payslip < ActiveRecord::Base
           if !@result[0].include?(con.name)
             @result[0] << con.name.to_s
           end
-
-          if !con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula.include? '[monto-contrato-categoria]' # => Token Generico
-            contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => ing).first
-            if !contract.nil?
-              if contract.amount != 0 && !contract.amount.nil?
-                amount = contract.amount.to_f
-                total += amount.to_f
-              else
-                if !con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.nil? && con.amount.to_f != 0.0
-                  amount = con.amount.to_f
-                  total += amount.to_f
-                elsif con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula != ''
-                  amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+          if con.concept_valorizations.count>0
+            if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula.include? '[monto-contrato-categoria]' # => Token Generico
+              contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => ing).first
+              if !contract.nil?
+                if contract.amount != 0 && !contract.amount.nil?
+                  amount = contract.amount.to_f
                   total += amount.to_f
                 else
-                  amount = 0
-                  total += amount.to_f
-                end
-              end
-            else
-              article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
-              category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-              from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => ing).first
-              if !from_category.nil?
-                if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
-                  amount = from_category.amount
-                  total += amount.to_f
-                else
-                  if !con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.nil? && con.amount.to_f != 0.0
+                  if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
                     amount = con.amount.to_f
                     total += amount.to_f
-                  elsif con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula != ''
-                    amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+                  elsif con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula != ''
+                    amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
                     total += amount.to_f
                   else
                     amount = 0
@@ -154,23 +134,43 @@ class Payslip < ActiveRecord::Base
                   end
                 end
               else
-                if !con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.nil? && con.amount.to_f != 0.0
-                  amount = con.amount.to_f
-                  total += amount.to_f
-                elsif con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula != ''
-                  amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
-                  total += amount.to_f
+                article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
+                category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
+                from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => ing).first
+                if !from_category.nil?
+                  if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
+                    amount = from_category.amount
+                    total += amount.to_f
+                  else
+                    if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
+                      amount = con.amount.to_f
+                      total += amount.to_f
+                    elsif con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula != ''
+                      amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+                      total += amount.to_f
+                    else
+                      amount = 0
+                      total += amount.to_f
+                    end
+                  end
                 else
-                  amount = 0
-                  total += amount.to_f
+                  if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
+                    amount = con.amount.to_f
+                    total += amount.to_f
+                  elsif con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula != ''
+                    amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
+                    total += amount.to_f
+                  else
+                    amount = 0
+                    total += amount.to_f
+                  end
                 end
               end
+            else
+              amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname, con.id)
+              total += amount.to_f
             end
-          else
-            amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, con.id)
-            total += amount.to_f
           end
-          
           if flag_extra
             array_extra_info.each do |ar|
               if ar[1].to_i == ing.to_i && ar[0].to_i == row[0].to_i
@@ -191,6 +191,7 @@ class Payslip < ActiveRecord::Base
           @result[0] << "Ingresos Totales"
         end
       end
+
       if !des.nil?
         des.each do |de|
           flag_afp = true
@@ -211,11 +212,11 @@ class Payslip < ActiveRecord::Base
               amount = contract.amount.to_f
               total += amount.to_f
             else
-              if !con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.nil? && con.amount.to_f != 0.0
+              if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
                 amount = con.amount.to_f
                 total += amount.to_f
               else
-                amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+                amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
                 if !con.top.nil?
                   if amount.to_f > con.top.to_f && flag_afp
                     amount = con.top.to_f
@@ -233,11 +234,11 @@ class Payslip < ActiveRecord::Base
                 amount = from_category.amount
                 total += amount.to_f
               else
-                if !con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.nil? && con.amount.to_f != 0.0
+                if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
                   amount = con.amount.to_f
                   total += amount
                 else
-                  amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+                  amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
 
                   if !con.top.nil?
                     if amount.to_f > con.top.to_f && flag_afp
@@ -248,11 +249,11 @@ class Payslip < ActiveRecord::Base
                 end
               end
             else
-              if !con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.nil? && con.amount.to_f != 0.0
+              if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
                 amount = con.amount.to_f
                 total += amount
               else
-                amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+                amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
                 if !con.top.nil?
                   if amount.to_f > con.top.to_f && flag_afp
                     amount = con.top.to_f
@@ -359,12 +360,12 @@ class Payslip < ActiveRecord::Base
             @result[0] << con.name.to_s
             apoNa << con.name.to_s
           end
-          if !con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.nil? && con.amount.to_f != 0.0
+          if !con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.nil? && con.amount.to_f != 0.0
             amount = con.amount.to_f
             total += amount
             
           else
-            amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+            amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
             total += amount.to_f
           end
           if flag_extra
@@ -398,7 +399,7 @@ class Payslip < ActiveRecord::Base
     # => ING - Ingresos
     # => DES - Descuentos
     # => APO - Aportaciones
-    tpayname = TypeOfWorker.find(tpay).name.to_s.gsub(' ','_').downcase
+    tpayname = tpay
     array_worker = array_worker.split(',').uniq
     month = week_end.to_date.strftime('%m').to_i
     rangos = FinancialVariable.where("name LIKE 'RANGO %'")
@@ -487,7 +488,7 @@ class Payslip < ActiveRecord::Base
           end
 
           contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first
-          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
           total += amount.to_f
           #if  ing.to_i == 15
             #total = total - amount.to_f
@@ -540,7 +541,7 @@ class Payslip < ActiveRecord::Base
           if con.name == 'APORTE FONDO PENSIONES' || con.name == 'PRIMA DE SEGURO' || con.name == 'COMISION FIJA AFP' || con.name == 'AFP SEGURO RIESGO' || con.name == 'IMPTO. RENT. 5ta CAT.' || con.name == 'ORG. NAC. DE PENSIONES'
             flag_afp = false
           end
-          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
           if !con.top.nil?
             if amount.to_f > con.top.to_f && flag_afp
               amount = con.top.to_f
@@ -700,8 +701,6 @@ class Payslip < ActiveRecord::Base
 
       end
 
-      break
-
       if !apo.nil?
         apo.each do |ap|
           hash_formulas = Hash.new
@@ -711,7 +710,7 @@ class Payslip < ActiveRecord::Base
             apoNa << con.name.to_s
           end
           
-          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = '"+tpayname.to_s+"'").first.formula, rem_basic, row[0], calculator, hash_formulas, con.token)
+          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+tpayname.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, tpayname)
           total += amount.to_f
 
           if flag_extra

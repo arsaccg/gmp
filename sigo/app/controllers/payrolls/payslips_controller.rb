@@ -308,9 +308,6 @@ class Payrolls::PayslipsController < ApplicationController
     des = Array.new
     apor = Array.new
     tpay = TypeOfPayslip.find(params[:tipo])
-    puts "--------------------------------------------------------------------------------------------------------------------------------------------"
-    p tpay.inspect
-    puts "--------------------------------------------------------------------------------------------------------------------------------------------"
     tpay.concepts.where("code LIKE '1%'").each do |tpc|
       ing << tpc.id
     end
@@ -332,7 +329,7 @@ class Payrolls::PayslipsController < ApplicationController
     @partes = Array.new
     @mensaje = "fail"
     @tipo = params[:tipo]
-
+    @type_of_worker_id = tpay.type_of_worker_id
     if params[:worker] == "empleado"
       fecha = params[:semana].split(',')
       inicio = fecha[0]+"-"+fecha[1]+"-01"
