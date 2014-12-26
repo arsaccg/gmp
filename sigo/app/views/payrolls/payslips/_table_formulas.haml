@@ -1,0 +1,12 @@
+%h3= 'Planilla: ' + @title
+%br
+%table.table.table-striped.table-bordered.table-hover
+  %thead
+    %tr
+      %th Concepto
+      %th Formula
+  %tbody
+    - @concepts_formulas.each do |row|
+      %tr
+        %td= row[0]
+        %td= row[1]

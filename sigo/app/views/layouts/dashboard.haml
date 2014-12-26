@@ -1154,6 +1154,16 @@
     #operating-result.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "operatingResultLabel", role: "dialog", tabindex: "-1"}
     #show-phase.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "90Label", role: "dialog", tabindex: "-1"}
 
+    #show_formulas.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "formulasLabel", role: "dialog", tabindex: "-1"}
+      .modal-dialog
+        .modal-content
+          .modal-header{"style"=>"background-color:#296191;color:white;"}
+            %h4.modal-title{"style"=>"font-weight:900;"} Datos Generales
+          .modal-body#table_formulas{"style"=>"background-color:#E6E6E6;"}
+          .modal-footer{"style"=>"background-color:#296191"}
+            %button.btn.btn-default{ :type => 'button', 'data-dismiss' => 'modal' } Cancelar
+            %button.btn.btn-success{ :type => 'button' } Generar
+
     / END SHORTCUT AREA
     / ==================================================
     /

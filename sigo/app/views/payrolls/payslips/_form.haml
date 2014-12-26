@@ -169,7 +169,7 @@
 
 
   %footer
-    %button.btn.btn-info{:onclick=>"generar();", :type => "button"}
+    %button.btn.btn-info{:onclick=>"show_me_formulas();", :type => "button"}
       Generar
 
 :javascript
@@ -251,6 +251,15 @@
 
     });
   });
+
+  function show_me_formulas(){
+    var type = $('#tipo').val();
+    load_url_ajax("#{show_formulas_information_payrolls_payslips_path}", 'table_formulas', {type: type, authenticity_token: "#{form_authenticity_token}"}, 'avoid-opacity', 'POST');
+    $('#show_formulas').modal({
+      backdrop: 'static',
+      keyboard: false
+    });
+  }
 
   function checkWorker(){
     if(document.getElementById('t').checked){

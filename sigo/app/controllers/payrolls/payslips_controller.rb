@@ -447,6 +447,17 @@ class Payrolls::PayslipsController < ApplicationController
     send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
   end
 
+  def show_formulas_information
+    @concepts_formulas = Array.new
+    @title = TypeOfPayslip.find(params[:type]).name.to_s
+    type_payslip = TypeOfPayslip.find(params[:type])
+    concepts = TypeOfPayslip.find(params[:type]).concepts
+    concepts.each do |concept|
+      @concepts_formulas << [concept.name.to_s, (concept.concept_valorizations.where( :type_worker => type_payslip.type_of_worker_id).first.formula.to_s rescue '-')]
+    end
+    render(:partial => 'table_formulas', :layout => false)
+  end
+
   def report_pdf
     respond_to do |format|
       @result = Array.new

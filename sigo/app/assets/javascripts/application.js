@@ -277,9 +277,7 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
     },
     success: function(data) {
       if( loader_flag == 'avoid-opacity'){
-        $("#" + div_name).html(data).delay(50).animate({
-          opacity : '1.0'
-        }, 300);
+        $("#" + div_name).html(data);
       }else{
         if( loader_flag == 'refresh-body'){
           $('body').html(data);

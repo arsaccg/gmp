@@ -680,6 +680,7 @@ ArsacLogistica::Application.routes.draw do
         post 'complete_select_extra'
         post 'complete_type_payslip'
         post 'add_extra_info'
+        post 'show_formulas_information'
         get 'report_pdf'
       end
       member do
