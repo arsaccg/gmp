@@ -6,6 +6,7 @@
   .widget-body
     = simple_form_for([:payrolls, @tpay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
+        %legend Información Principal
         .row
           %section.col.col-md-8
             %label.label Nombre
@@ -23,7 +24,7 @@
           %section.col.col-md-8
             %label.label Descripción 
             %label.input
-              = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false, rows: 4
+              = f.input :description, placeholder: "Descripción", input_html: { class: '', style: 'width: 100%;' }, label: false
           %section.col.col-md-3
             %label.label Sub-categoría de Trabajador
             %select.form-control#sub_tipo_cat{ :name => 'type_of_payslip[type_of_worker_id]'}
@@ -53,6 +54,28 @@
                 %label.label Aportaciones:
                 = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '3%' AND type_obrero IS NOT NULL")
 
+      %fieldset
+        %legend Definir dependencia entre Planillas
+        .row
+          %section.col.col-md-3
+            %label.label Otras Planillas
+            %select.form-control{ :name => 'type_of_payslip[type_of_payslips_id]'}
+              %option{:value => nil, :selected => true, :disabled => true} Seleccione
+              - @others_payslips.each do |other|
+                %option{:value => other.id}= other.name
+        
+          %section.col.col-md-3
+            %label.label ¿Que desea obtener de la Planilla seleccionada?
+            %select.form-control{ :name => 'type_of_payslip[type_operation]'}
+              %option{:value => nil, :selected => true, :disabled => true} Seleccione
+              %option{:value => 'income'} Ingreso
+              %option{:value => 'discount'} Descuentos
+              %option{:value => 'contribution'} Aportaciones
+
+          %section.col.col-md-3
+            %label.label ¿Que nombre de columna quiere darle al(los) resultado(s)?
+            %label.input
+              = text_field_tag 'type_of_payslip[name_operation]', nil, class: "form-control"
 
       %footer
         %button.btn.btn-primary{type: "submit"}

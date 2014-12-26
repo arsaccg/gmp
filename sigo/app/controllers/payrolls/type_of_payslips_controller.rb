@@ -13,6 +13,7 @@ before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :upda
 
   def new
     @tpay = TypeOfPayslip.new
+    @others_payslips = TypeOfPayslip.select(:name).select(:id)
     render layout: false
   end
 
@@ -33,6 +34,7 @@ before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :upda
 
   def edit
     @tpay = TypeOfPayslip.find(params[:id])
+    @others_payslips = TypeOfPayslip.select(:name).select(:id).where('id <> ?', @tpay.id)
     @action = 'edit'
     render layout: false
   end
