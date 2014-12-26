@@ -254,11 +254,34 @@
 
   function show_me_formulas(){
     var type = $('#tipo').val();
-    load_url_ajax("#{show_formulas_information_payrolls_payslips_path}", 'table_formulas', {type: type, authenticity_token: "#{form_authenticity_token}"}, 'avoid-opacity', 'POST');
-    $('#show_formulas').modal({
-      backdrop: 'static',
-      keyboard: false
-    });
+    var semana = "";
+    if(document.getElementById('t').checked){
+      worker_id = "empleado";
+      if($('#year').val()!= null){
+        semana = $('#year').val()+","+$('#mes').val();
+      }else{
+        semana = " ";
+      }
+    }
+
+    if(document.getElementById('e').checked){
+      semana =  $('#semana').val();
+    }
+    
+    if(type!= null && semana!=''){
+      load_url_ajax("#{show_formulas_information_payrolls_payslips_path}", 'table_formulas', {type: type, authenticity_token: "#{form_authenticity_token}"}, 'avoid-opacity', 'POST');
+      $('#show_formulas').modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+    }else{
+      $.smallBox({
+        title : "Aviso",
+        content : "Escoja un tipo de periodo y un tipo de planilla", 
+        color : "#c46a69",
+        timeout: 4000
+      });
+    }
   }
 
   function checkWorker(){
@@ -409,7 +432,7 @@
     });
   }
 
-  function generar(){
+  function generar_payslip(){
     var worker_id = null;
     var cost_center = #{@cc.id};
     var semana = $('#semana').val();
@@ -429,10 +452,13 @@
     if(document.getElementById('e').checked){
       worker_id = "obrero";
     }
+
     if(worker_id != null && semana != ' ' && tipo != null){
       str_item = {authenticity_token: "#{form_authenticity_token}", cost_center: cost_center, semana: semana, tipo:tipo, worker: worker_id, extra:extra_info, ar_wo: wor_arr};
       $('#example').empty();
       append_url_ajax_payroll('#{generate_payroll_payrolls_payslips_path}', 'example', str_item, 0, 'POST');
+      $('#show_formulas').modal('hide');
+      $('.modal-backdrop.fade.in').remove();
     }else{
       $.smallBox({
         title : "Aviso",
