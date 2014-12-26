@@ -93,7 +93,6 @@ class MainController < ApplicationController
     accumulated = @direct_cost_acc + (@direct_cost_acc * budget.general_expenses.to_f) + (@direct_cost_acc * budget.utility.to_f)
     contractual =@direct_cost_cont + (@direct_cost_cont * budget.general_expenses.to_f) + (@direct_cost_cont * budget.utility.to_f)
     @ratio_avanze_fisico = ((accumulated/contractual)*100).round(2).to_s + '%'
-
     @ratio_de_tiempo = (((Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date).to_f/current_cost_center.cost_center_detail.execution_term.to_f)*100).round(2).to_s + '%'
     @ratio_de_tiempo_fraccion = (Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date).to_i.to_s + '/' + current_cost_center.cost_center_detail.execution_term.to_i.to_s
     # => Cantd. Trabajadores
@@ -226,8 +225,8 @@ class MainController < ApplicationController
       end
     end
 
-    gastos_generales_sigo = GeneralExpense.where('code_phase = ?', 90).sum(:total)
-    gastos_gestion_sigo = GeneralExpense.where('code_phase = ?', 94).sum(:total)
+    gastos_generales_sigo = GeneralExpense.where('code_phase = ? AND cost_center_id = ?', 90, @project_id).sum(:total)
+    gastos_gestion_sigo = GeneralExpense.where('code_phase = ? AND cost_center_id = ?', 94, @project_id).sum(:total)
 
     @gastos_generales << [ @cost_center_detail.general_cost.to_f, gastos_generales_sigo.to_f, @cost_center_detail.general_cost.to_f-gastos_generales_sigo.to_f ] rescue nil
     @utility << [ @cost_center_detail.utility.to_f, 0, @cost_center_detail.utility.to_f-0 ] rescue nil
