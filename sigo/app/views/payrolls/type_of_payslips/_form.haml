@@ -60,30 +60,30 @@
           %section.col.col-md-3
             %label.label Otras Planillas
             %select.form-control{ :name => 'type_of_payslip[type_of_payslips_id]'}
-              %option{:value => nil, :selected => true, :disabled => true} Seleccione
+              %option{:value => nil, :disabled => true, :selected => true} Seleccione
               - @others_payslips.each do |other|
-                %option{:value => other.id}= other.name
+                %option{:value => other.id, :selected =>@tpay.type_of_payslips_id==other.id}= other.name
         
           %section.col.col-md-3
             %label.label ¿Qué deseas obtener?
             %select.form-control{ :name => 'type_of_payslip[type_operation]'}
-              %option{:value => nil, :selected => true, :disabled => true} Seleccione
-              %option{:value => 'ing_and_amounts'} Ingreso
-              %option{:value => 'des_and_amounts'} Descuentos
-              %option{:value => 'aport_and_amounts'} Aportaciones
+              %option{:value => nil, :disabled => true, :selected => true} Seleccione
+              %option{:value => 'ing_and_amounts', :selected =>@tpay.type_operation=='ing_and_amounts'} Ingreso
+              %option{:value => 'des_and_amounts', :selected =>@tpay.type_operation=='des_and_amounts'} Descuentos
+              %option{:value => 'aport_and_amounts', :selected =>@tpay.type_operation=='aport_and_amounts'} Aportaciones
 
           %section.col.col-md-3
             %label.label ¿A que afecta?
             %select.form-control{ :name => 'type_of_payslip[type_converted_operation]'}
-              %option{:value => nil, :selected => true, :disabled => true} Seleccione
-              %option{:value => 'ing_and_amounts'} Ingreso
-              %option{:value => 'des_and_amounts'} Descuentos
-              %option{:value => 'aport_and_amounts'} Aportaciones
+              %option{:value => nil, :disabled => true, :selected => true} Seleccione
+              %option{:value => 'ing_and_amounts', :selected =>@tpay.type_converted_operation=='ing_and_amounts'} Ingreso
+              %option{:value => 'des_and_amounts', :selected =>@tpay.type_converted_operation=='des_and_amounts'} Descuentos
+              %option{:value => 'aport_and_amounts', :selected =>@tpay.type_converted_operation=='aport_and_amounts'} Aportaciones
 
           %section.col.col-md-3
             %label.label ¿Que nombre de columna quiere darle al(los) resultado(s)?
             %label.input
-              = text_field_tag 'type_of_payslip[name_operation]', nil, class: "form-control"
+              = text_field_tag 'type_of_payslip[name_operation]', @tpay.name_operation, class: "form-control"
 
       %footer
         %button.btn.btn-primary{type: "submit"}
