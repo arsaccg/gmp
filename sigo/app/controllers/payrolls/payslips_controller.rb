@@ -467,9 +467,9 @@ class Payrolls::PayslipsController < ApplicationController
             @count += 1
           else
             if initial.count > 0
-              initial = [initial, [pars.days.to_f, (30 - pars.days.to_f), pars.he_60.to_f, pars.he_100.to_f]].transpose.map{|a| a.sum}
+              initial = [initial, [pars.days.to_f, pars.he_60.to_f, pars.he_100.to_f]].transpose.map{|a| a.sum}
             else
-              initial = [pars.days.to_f, (30 - pars.days.to_f), pars.he_60.to_f, pars.he_100.to_f]
+              initial = [pars.days.to_f, pars.he_60.to_f, pars.he_100.to_f]
             end
             @count += 1
           end
