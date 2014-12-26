@@ -19,8 +19,8 @@ module DBConnector
 
 		client = Savon.client(wsdl: @@url_webservice)
 		puts client
-		response = client.call(:execute_query, message: { query: query_str })
-		result = response.body[:execute_query_response][:execute_query_result]
+		response = client.call(:do_query, message: { query: query_str })
+		result = response.body[:do_query_response][:do_query_result]
 		json=JSON.parse(result)
 		return json
 	end
@@ -32,7 +32,7 @@ module DBConnector
 		#@@url_webservice = "http://192.168.1.123/Extractor.asmx?wsdl"
 		
 		@@url_webservice = params[:url] == nil ? "http://10.10.10.20/Extractor.asmx?wsdl" : "http://#{params[:url]}/Extractor.asmx?wsdl"
-		@@server = params[:server] == nil ? "SRV-S10\\S10" : params[:server]
+		@@server = params[:server] == nil ? "SRVBDS10\\S10" : params[:server]
 		@@db_name = params[:db_name] == nil ? "master" : params[:db_name]
 		@@user = params[:user] == nil ? "sa" : params[:user]
 		@@pass = params[:pass] == nil ? "" : params[:pass]	
