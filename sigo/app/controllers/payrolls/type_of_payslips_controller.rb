@@ -70,6 +70,7 @@ before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :upda
       {:concept_ids => []},
       :type_of_payslips_id,
       :type_operation,
+      :type_converted_operation,
       :name_operation
     )
   end
