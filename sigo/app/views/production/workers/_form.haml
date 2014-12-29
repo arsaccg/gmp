@@ -26,23 +26,42 @@
           .section.col.col-md-2
             %label.control-label Tipo de Trabajador
           .section.col.col-md-8
-            .form-group
-              .col-md-12
-                %label.radio-inline
-                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", checked: @worker.typeofworker=="empleado", :disabled=> true, :onchange => "type_of_worker('empleado');"}
-                  %span Empleado
-                %label.radio-inline
-                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: @worker.typeofworker=="obrero", :disabled=> true, :onchange => "type_of_worker('obrero');"}
-                  %span Obrero
-                %label.radio-inline
-                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", checked: @worker.typeofworker=="pensionista", :disabled=> true, :onchange => "type_of_worker('pensionista');"}
-                  %span Pensionista
-                %label.radio-inline
-                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", checked: @worker.typeofworker=="formacion", :disabled=> true, :onchange => "type_of_worker('formacion');"}
-                  %span Personal en Formación
-                %label.radio-inline
-                  %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", checked: @worker.typeofworker=="externo", :disabled=> true, :onchange => "type_of_worker('externo');"}
-                  %span Externo
+            -if @action == "edit"
+              .form-group
+                .col-md-12
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", checked: @worker.typeofworker=="empleado", :disabled=> true, :onchange => "type_of_worker('empleado');"}
+                    %span Empleado
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", checked: @worker.typeofworker=="obrero", :disabled=> true, :onchange => "type_of_worker('obrero');"}
+                    %span Obrero
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", checked: @worker.typeofworker=="pensionista", :disabled=> true, :onchange => "type_of_worker('pensionista');"}
+                    %span Pensionista
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", checked: @worker.typeofworker=="formacion", :disabled=> true, :onchange => "type_of_worker('formacion');"}
+                    %span Personal en Formación
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", checked: @worker.typeofworker=="externo", :disabled=> true, :onchange => "type_of_worker('externo');"}
+                    %span Externo
+            -else
+              .form-group
+                .col-md-12
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "empleado", :onchange => "type_of_worker('empleado');"}
+                    %span Empleado
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "obrero", :onchange => "type_of_worker('obrero');"}
+                    %span Obrero
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "pensionista", :onchange => "type_of_worker('pensionista');"}
+                    %span Pensionista
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "formacion", :onchange => "type_of_worker('formacion');"}
+                    %span Personal en Formación
+                  %label.radio-inline
+                    %input.radiobox{:name =>'worker[typeofworker]', :type => 'radio', :value => "externo", :onchange => "type_of_worker('externo');"}
+                    %span Externo                    
           .section.col.col-md-4#content-sub-cat{:style=>"display:none"}
             %label.label Sub-tipo
             %select.form-control#sub-category-worker{:name=>"worker[type_of_worker_id]"}
