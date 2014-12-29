@@ -2,6 +2,7 @@ class Production::WorkersController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   skip_before_filter  :verify_authenticity_token
+  
   def index
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
@@ -518,8 +519,8 @@ class Production::WorkersController < ApplicationController
 
   private
   def worker_parameters
-    params.require(:worker).permit( :type_of_worker_id,
-      :email, {:type_workday_ids => []}, :onpafp, :lock_version, :driverlicense, :income_fifth_category, :unionized, :disabled, 
+    params.require(:worker).permit( 
+      :type_of_worker_id, :email, {:type_workday_ids => []}, :onpafp, :lock_version, :driverlicense, :income_fifth_category, :unionized, :disabled, 
       :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,
       :highschoolenddate,:levelofinstruction, :lastgrade, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,
       :primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province,
