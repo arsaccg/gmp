@@ -308,6 +308,7 @@ class Payrolls::PayslipsController < ApplicationController
     des = Array.new
     apor = Array.new
     tpay = TypeOfPayslip.find(params[:tipo])
+
     tpay.concepts.where("code LIKE '1%'").each do |tpc|
       ing << tpc.id
     end
@@ -416,7 +417,7 @@ class Payrolls::PayslipsController < ApplicationController
     book = Spreadsheet::Workbook.new
     sheet1 = book.create_worksheet :name => 'Planilla'
     if params[:type] == "month"
-      headers = ['DNI', 'Nombre', 'CAT', 'COMP.', 'AFP', 'HIJ', 'DIAS ASISTIDOS', 'DIAS FALTA', 'HE 25%', 'HE 35%']
+      headers = ['DNI', 'Nombre', 'CAT', 'COMP.', 'AFP', 'HIJ', 'DIAS ASISTIDOS', 'HE 25%', 'HE 35%']
     else
       headers = ['DNI', 'Nombre', 'CAT', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
     end
@@ -431,7 +432,7 @@ class Payrolls::PayslipsController < ApplicationController
       selected = Array.new
       wor = Worker.find(pars.worker_id)
       if params[:type].to_s == "month"
-        selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.second_name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.where("status = 1").first.article.name, Company.find(pars.company_id).short_name.to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.days.to_f, 30-pars.days.to_i, pars.he_60.to_f, pars.he_100.to_f]
+        selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.second_name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.where("status = 1").first.article.name, Company.find(pars.company_id).short_name.to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.days.to_f, pars.he_60.to_f, pars.he_100.to_f]
       elsif params[:type].to_s == "week"
         selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.second_name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.first.article.name, CostCenter.find(pars.cost_center_id).code, pars.last_worked_day.strftime('%d/%m/%y').to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.normal_hours.to_f, pars.days.to_f, pars.he_60.to_f, 0, pars.he_100.to_f]
       end
@@ -455,7 +456,18 @@ class Payrolls::PayslipsController < ApplicationController
     concepts.each do |concept|
       @concepts_formulas << [concept.name.to_s, (concept.concept_valorizations.where( :type_worker => type_payslip.type_of_worker_id).first.formula.to_s rescue '-')]
     end
-    render(:partial => 'table_formulas', :layout => false)
+
+    respond_to do |format|
+      format.html do
+        @type = params[:type]
+        render(:partial => 'table_formulas', :layout => false)
+      end
+      format.pdf do
+        render :pdf => "Tabla_formulas-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'payrolls/payslips/table_formulas.pdf.haml',
+               :orientation => 'portrait'
+      end
+    end
   end
 
   def report_pdf

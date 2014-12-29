@@ -1,4 +1,7 @@
-%h3= 'Planilla: ' + @title
+.col-md-10
+  %h3{ :style => 'margin: 0;' }= 'Planilla: ' + @title
+.col-md-2
+  %a.btn.btn-default{ :href => "#{show_formulas_information_payrolls_payslips_path}.pdf?type=#{@type}", :target => '_blank', :style => 'margin-bottom: 0.5em' } Ver PDF
 %br
 %table.table.table-striped.table-bordered.table-hover
   %thead

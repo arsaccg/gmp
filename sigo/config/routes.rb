@@ -462,6 +462,9 @@ ArsacLogistica::Application.routes.draw do
         collection do
           post 'search_schedule_work'
         end
+        member do
+          get 'approve'
+        end        
       end
 
       resources :weekly_workers do
@@ -680,7 +683,7 @@ ArsacLogistica::Application.routes.draw do
         post 'complete_select_extra'
         post 'complete_type_payslip'
         post 'add_extra_info'
-        post 'show_formulas_information'
+        get 'show_formulas_information'
         get 'report_pdf'
       end
       member do

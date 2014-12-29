@@ -65,7 +65,7 @@
                     - if !@con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(' ','_').downcase+'"').first.nil?
                       -foe = @con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(' ','_').downcase+'"').first.formula
                   
-                    %label.label= "Valorizaciones para "+ toe.name.to_s.gsub(' ','_').downcase
+                    %label.label= "Valorizaciones para "+ toe.name.to_s
                     %label.input
                       %div.col.col-3
                         %a.btn.btn-sm.btn-info#valorization_concept{ :href => 'javascript:void(0)', :onclick => 'javascript:show_me_the_valorization("employees_'+toe.name.to_s.gsub(' ','_').downcase+'")' }

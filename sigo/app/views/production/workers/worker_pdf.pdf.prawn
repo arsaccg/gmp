@@ -67,7 +67,7 @@ table([ ["#{@worker.entity.dni.to_s}", "#{@worker.entity.alienslicense.to_s.upca
         style(columns(0..2), :valign => :center)
         style(columns(0..2), :size => 7)
       end
-table([ ["#{@nombre.to_s}", "CODIGO UNICO S.P.P", "N° DE CUENTA DE AHORROS", "BANCO"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [130,130,120,140]) do
+table([ ["REGIMEN PENSIONARIO", "CODIGO UNICO S.P.P", "N° DE CUENTA DE AHORROS", "BANCO"] ], :width => 520, :cell_style => {:height => 16}, :column_widths => [130,130,120,140]) do
         style(columns(0..3), :align => :center)
         style(columns(0..3), :valign => :center)
         style(columns(0..3), :size => 7)

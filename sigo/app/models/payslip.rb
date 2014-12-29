@@ -237,14 +237,18 @@ class Payslip < ActiveRecord::Base
                   amount = con.amount.to_f
                   total += amount
                 else
-                  amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
-
-                  if !con.top.nil?
-                    if amount.to_f > con.top.to_f && flag_afp
-                      amount = con.top.to_f
+                  if con.concept_valorizations.where("type_worker = "+twoid.to_s).first != nil
+                    amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
+                    if !con.top.nil?
+                      if amount.to_f > con.top.to_f && flag_afp
+                        amount = con.top.to_f
+                      end
                     end
+                    total += amount.to_f
+                  else
+                    amount = 0
+                    total += amount.to_f
                   end
-                  total += amount.to_f
                 end
               end
             else
@@ -252,13 +256,18 @@ class Payslip < ActiveRecord::Base
                 amount = con.amount.to_f
                 total += amount
               else
-                amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
-                if !con.top.nil?
-                  if amount.to_f > con.top.to_f && flag_afp
-                    amount = con.top.to_f
+                if con.concept_valorizations.where("type_worker = "+twoid.to_s).first != nil
+                  amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
+                  if !con.top.nil?
+                    if amount.to_f > con.top.to_f && flag_afp
+                      amount = con.top.to_f
+                    end
                   end
+                  total += amount.to_f
+                else
+                  amount = 0
+                  total += amount.to_f
                 end
-                total += amount.to_f
               end
             end
           end
@@ -359,10 +368,9 @@ class Payslip < ActiveRecord::Base
             @result[0] << con.name.to_s
             apoNa << con.name.to_s
           end
-          if !con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil? && con.amount.to_f != 0.0
-            amount = con.amount.to_f
+          if con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil?
+            amount = 0
             total += amount
-            
           else
             amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
             total += amount.to_f
@@ -398,8 +406,8 @@ class Payslip < ActiveRecord::Base
     # => ING - Ingresos
     # => DES - Descuentos
     # => APO - Aportaciones
+   
     twoid = twoid
-
     array_worker = array_worker.split(',').uniq
     topay = TypeOfPayslip.find(tpayid)
     ing_before = false
@@ -455,7 +463,8 @@ class Payslip < ActiveRecord::Base
       AND wc.worker_id = w.id
       AND wc.article_id = ar.id
       AND wc.status = 1
-      AND w.type_of_worker_id = #{twoid}
+      AND pp.blockpayslip = 1
+      AND w.type_of_worker_id = "+twoid.to_s+"
       GROUP BY w.id
       ORDER BY e.paternal_surname
     ").each do |row|
@@ -511,8 +520,13 @@ class Payslip < ActiveRecord::Base
           end
 
           contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first
-          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
-          total += amount.to_f
+          if con.concept_valorizations.where("type_worker = "+twoid.to_s).first != nil
+            amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
+            total += amount.to_f
+          else
+            amount = 0
+            total += amount.to_f
+          end
           #if  ing.to_i == 15
             #total = total - amount.to_f
             #amount = amount.to_f * row[6].to_f
@@ -604,13 +618,18 @@ class Payslip < ActiveRecord::Base
           if con.name == 'APORTE FONDO PENSIONES' || con.name == 'PRIMA DE SEGURO' || con.name == 'COMISION FIJA AFP' || con.name == 'AFP SEGURO RIESGO' || con.name == 'IMPTO. RENT. 5ta CAT.' || con.name == 'ORG. NAC. DE PENSIONES'
             flag_afp = false
           end
-          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
-          if !con.top.nil?
-            if amount.to_f > con.top.to_f && flag_afp
-              amount = con.top.to_f
+          if con.concept_valorizations.where("type_worker = "+twoid.to_s).first != nil
+            amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
+            if !con.top.nil?
+              if amount.to_f > con.top.to_f && flag_afp
+                amount = con.top.to_f
+              end
             end
+            total += amount.to_f
+          else
+            amount = 0
+            total += amount.to_f
           end
-          total += amount.to_f
 
           afp_d = Afp.find(row[7])
           afp = afp_d.afp_details.where("date_entry BETWEEN '"+week_start.to_s+"' AND '"+ week_end.to_s+"'").first
@@ -804,7 +823,6 @@ class Payslip < ActiveRecord::Base
 
       end
 
-      break
 
       if !apo.nil?
         apo.each do |ap|
@@ -814,9 +832,13 @@ class Payslip < ActiveRecord::Base
             @result[0] << con.name.to_s
             apoNa << con.name.to_s
           end
-          
-          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
-          total += amount.to_f
+          if con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil?
+            amount = 0
+            total += amount
+          else
+            amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
+            total += amount.to_f
+          end
 
           if flag_extra
             array_extra_info.each do |ar|
