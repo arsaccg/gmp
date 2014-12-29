@@ -308,6 +308,7 @@ class Payrolls::PayslipsController < ApplicationController
     des = Array.new
     apor = Array.new
     tpay = TypeOfPayslip.find(params[:tipo])
+
     tpay.concepts.where("code LIKE '1%'").each do |tpc|
       ing << tpc.id
     end
