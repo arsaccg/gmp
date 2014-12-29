@@ -239,7 +239,6 @@ class Payslip < ActiveRecord::Base
                 else
                   if con.concept_valorizations.where("type_worker = "+twoid.to_s).first != nil
                     amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
-
                     if !con.top.nil?
                       if amount.to_f > con.top.to_f && flag_afp
                         amount = con.top.to_f
@@ -369,10 +368,9 @@ class Payslip < ActiveRecord::Base
             @result[0] << con.name.to_s
             apoNa << con.name.to_s
           end
-          if !con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil? && con.amount.to_f != 0.0
-            amount = con.amount.to_f
+          if con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil?
+            amount = 0
             total += amount
-            
           else
             amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
             total += amount.to_f
@@ -824,7 +822,6 @@ class Payslip < ActiveRecord::Base
 
       end
 
-      break
 
       if !apo.nil?
         apo.each do |ap|
@@ -834,9 +831,13 @@ class Payslip < ActiveRecord::Base
             @result[0] << con.name.to_s
             apoNa << con.name.to_s
           end
-          
-          amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
-          total += amount.to_f
+          if con.concept_valorizations.where("type_worker = "+twoid.to_s).first.nil?
+            amount = 0
+            total += amount
+          else
+            amount = Formule.translate_formules_of_employee(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
+            total += amount.to_f
+          end
 
           if flag_extra
             array_extra_info.each do |ar|
