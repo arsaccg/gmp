@@ -226,7 +226,7 @@ class GeneralExpenses::LoansController < ApplicationController
               GROUP BY l.state
             ")
             montos.each do |m|
-              if m[1].to_i == 0
+              if m[1].to_i == 2
                 suma_devuelto+=m[0].to_f
               elsif m[1].to_i == 1
                 suma_total_le_deben += m[0].to_f
@@ -255,7 +255,7 @@ class GeneralExpenses::LoansController < ApplicationController
               GROUP BY l.state
             ")
             montos.each do |m|
-              if m[1].to_i == 0
+              if m[1].to_i == 2
                 suma_devuelto+=m[0].to_f
               elsif m[1].to_i == 1
                 suma_total_debe += m[0].to_f
@@ -318,6 +318,7 @@ class GeneralExpenses::LoansController < ApplicationController
                 FROM loans l
                 WHERE cost_center_lender_id ="+ccr.id.to_s+"
                 AND cost_center_beneficiary_id = "+ccc.id.to_s+"
+                AND state = 1
                 GROUP BY cost_center_beneficiary_id
               ")
               if lender.count == 0
@@ -330,6 +331,7 @@ class GeneralExpenses::LoansController < ApplicationController
                 FROM loans l
                 WHERE cost_center_lender_id = "+ccc.id.to_s+"
                 AND cost_center_beneficiary_id = "+ccr.id.to_s+"
+                AND state = 1
                 GROUP BY cost_center_beneficiary_id
               ")
               if beneficiary.count == 0
