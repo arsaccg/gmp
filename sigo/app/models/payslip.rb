@@ -463,6 +463,7 @@ class Payslip < ActiveRecord::Base
       AND wc.worker_id = w.id
       AND wc.article_id = ar.id
       AND wc.status = 1
+      AND pp.blockpayslip = 1
       AND w.type_of_worker_id = "+twoid.to_s+"
       GROUP BY w.id
       ORDER BY e.paternal_surname

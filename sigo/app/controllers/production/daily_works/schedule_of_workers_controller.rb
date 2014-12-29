@@ -103,6 +103,7 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
 
   def approve
     ScheduleOfWorker.find(params[:id]).update(:state=>"approved")
+    ActiveRecord::Base.connection.execute("UPDATE part_workers SET blockpayslip = 1 WHERE id IN ("+params[:parts].to_s+")")
     redirect_to :action => :index
   end
   # Functions for show Table Summarize

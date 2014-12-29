@@ -11,7 +11,7 @@
     %row
       .col-sm-4
         -if @type =="approved"
-          %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{approve_production_daily_works_schedule_of_worker_path}', 'content', null, null, 'GET')"}
+          %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{approve_production_daily_works_schedule_of_worker_path}', 'content', {parts:'#{@part_worker_to_block}'}, null, 'GET')"}
             Aprobar      
   %br
   .row
