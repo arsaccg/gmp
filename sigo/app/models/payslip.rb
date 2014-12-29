@@ -237,14 +237,19 @@ class Payslip < ActiveRecord::Base
                   amount = con.amount.to_f
                   total += amount
                 else
-                  amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
+                  if con.concept_valorizations.where("type_worker = "+twoid.to_s).first != nil
+                    amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
 
-                  if !con.top.nil?
-                    if amount.to_f > con.top.to_f && flag_afp
-                      amount = con.top.to_f
+                    if !con.top.nil?
+                      if amount.to_f > con.top.to_f && flag_afp
+                        amount = con.top.to_f
+                      end
                     end
+                    total += amount.to_f
+                  else
+                    amount = 0
+                    total += amount.to_f
                   end
-                  total += amount.to_f
                 end
               end
             else
@@ -252,13 +257,18 @@ class Payslip < ActiveRecord::Base
                 amount = con.amount.to_f
                 total += amount
               else
-                amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
-                if !con.top.nil?
-                  if amount.to_f > con.top.to_f && flag_afp
-                    amount = con.top.to_f
+                if con.concept_valorizations.where("type_worker = "+twoid.to_s).first != nil
+                  amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid)
+                  if !con.top.nil?
+                    if amount.to_f > con.top.to_f && flag_afp
+                      amount = con.top.to_f
+                    end
                   end
+                  total += amount.to_f
+                else
+                  amount = 0
+                  total += amount.to_f
                 end
-                total += amount.to_f
               end
             end
           end
