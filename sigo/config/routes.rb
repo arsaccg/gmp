@@ -462,6 +462,9 @@ ArsacLogistica::Application.routes.draw do
         collection do
           post 'search_schedule_work'
         end
+        member do
+          get 'approve'
+        end        
       end
 
       resources :weekly_workers do

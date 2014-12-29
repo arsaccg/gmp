@@ -7,7 +7,7 @@ class PartWorker < ActiveRecord::Base
   	result = Array.new
   	if keyword != '' && pager_number != 'NaN'
       part_workers = ActiveRecord::Base.connection.execute("
-        SELECT pp.id, pp.number_part, pp.date_of_creation
+        SELECT pp.id, pp.number_part, pp.date_of_creation, pp.blockweekly
         FROM part_workers pp
         WHERE pp.company_id = " + company_id.to_s + " 
         AND (pp.number_part LIKE '%" + keyword + "%' OR pp.date_of_creation LIKE '%" + keyword + "%') 
@@ -17,7 +17,7 @@ class PartWorker < ActiveRecord::Base
       )
   	elsif pager_number != 'NaN'
       part_workers = ActiveRecord::Base.connection.execute("
-        SELECT pp.id, pp.number_part, pp.date_of_creation
+        SELECT pp.id, pp.number_part, pp.date_of_creation, pp.blockweekly
         FROM part_workers pp
         WHERE pp.company_id = " + company_id.to_s + " 
         ORDER BY pp.number_part DESC 
@@ -26,7 +26,7 @@ class PartWorker < ActiveRecord::Base
       )
   	else
   	  part_workers = ActiveRecord::Base.connection.execute("
-        SELECT pp.id, pp.number_part, pp.date_of_creation
+        SELECT pp.id, pp.number_part, pp.date_of_creation, pp.blockweekly
         FROM part_workers pp
         WHERE pp.company_id = " + company_id.to_s + " 
         ORDER BY pp.number_part DESC 
@@ -38,7 +38,12 @@ class PartWorker < ActiveRecord::Base
   	  result << [
         part_worker[1], 
         part_worker[2], 
-        "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/administration/part_workers/" + part_worker[0].to_s + "','content',null,null,'GET')> Ver Información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/administration/part_workers/" + part_worker[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/administration/part_workers/" + part_worker[0].to_s + "','content','/administration/part_workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar la parte N°" + part_worker[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+        case part_worker[3].to_i
+        when 1
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/administration/part_workers/" + part_worker[0].to_s + "','content',null,null,'GET')> Ver Información </a> "
+        else
+          "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/administration/part_workers/" + part_worker[0].to_s + "','content',null,null,'GET')> Ver Información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/administration/part_workers/" + part_worker[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/administration/part_workers/" + part_worker[0].to_s + "','content','/administration/part_workers/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar la parte N°" + part_worker[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+        end
       ]
   	end
 

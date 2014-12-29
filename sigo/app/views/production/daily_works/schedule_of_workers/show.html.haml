@@ -3,18 +3,26 @@
     .col-md-12
       %h1{"style"=>"margin: 0"}
         = @company.name
+  %br
+  .row
+    .col-md-8
+      %h2{"style"=>"margin: 0;text-align:center"}
+        = 'TAREO DE EMPLEADOS del ' + @inicio.strftime("%d/%m/%Y").to_s + ' al ' + @fin.strftime("%d/%m/%Y").to_s
+    %row
+      .col-sm-4
+        -if @type =="approved"
+          %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{approve_production_daily_works_schedule_of_worker_path}', 'content', null, null, 'GET')"}
+            Aprobar      
+  %br
   .row
     .col-md-12
-      %h2{"style"=>"margin: 0;text-align:center"}
-        = 'TAREO DE EMPLEADOS del ' + @inicio + ' al ' + @fin
-    .col-md-12
-      %p{"style"=>"margin: 0"}
+      %p
         = 'Obra : ' + @cost_center.cost_center_detail.name.to_s rescue ''
-      %p{"style"=>"margin: 0"}
+      %p
         = 'Cliente : ' + @cost_center.cost_center_detail.entity.name.to_s rescue ''
-      %p{"style"=>"margin: 0"}
+      %p
         = 'Ubicación : ' + @cost_center.company.address.to_s rescue ''
-      %p{"style"=>"margin: 0"}
+      %p
         = 'C.C. : ' + @cost_center.name.to_s rescue ''
   .row
     #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
@@ -57,24 +65,13 @@
                 %td Total por dia:
                 - @totalperday.each do |totalperday|
                   %td=totalperday
-                        
-  .row
-    = simple_form_for([:production_daily_works, @schedule], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
-      =hidden_field_tag 'schedule_of_worker[start_date]', @inicio
-      =hidden_field_tag 'schedule_of_worker[end_date]', @fin
-      =hidden_field_tag 'schedule_of_worker[state]', 'disapproved'
-      =hidden_field_tag 'schedule_of_worker[number_workers]', @arraywo.count
-      =hidden_field_tag 'schedule_of_worker[cost_center_id]', @cost_center.id
-      =hidden_field_tag 'block_part', @part_worker_to_block
-      %footer
-        %button.btn.btn-primary{type: "submit"}
-          %i.fa.fa-save 
-            Guardar  
 
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado 
+    
 :javascript
 
-  $(document).ready(function(){
-    $('#new_schedule_of_worker').ajaxForm({
-      target: '#content'
-    });
-  });     
+  $('#backlist').click(function(){
+      load_url_ajax("#{production_daily_works_schedule_of_workers_path}", 'content', null, null, 'GET');
+  });                  
