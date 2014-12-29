@@ -398,8 +398,8 @@ class Payslip < ActiveRecord::Base
     # => ING - Ingresos
     # => DES - Descuentos
     # => APO - Aportaciones
+   
     twoid = twoid
-
     array_worker = array_worker.split(',').uniq
     topay = TypeOfPayslip.find(tpayid)
     ing_before = false
@@ -455,7 +455,7 @@ class Payslip < ActiveRecord::Base
       AND wc.worker_id = w.id
       AND wc.article_id = ar.id
       AND wc.status = 1
-      AND w.type_of_worker_id = #{twoid}
+      AND w.type_of_worker_id = "+twoid.to_s+"
       GROUP BY w.id
       ORDER BY e.paternal_surname
     ").each do |row|
