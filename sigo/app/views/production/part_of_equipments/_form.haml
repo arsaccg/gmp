@@ -91,7 +91,7 @@
               %section.col.col-5
                 %label.label Tipo de Combustible
                 %label.input
-                  %input#fuel.select2.bigdrop.select2-offscreen.form-control{'name' => 'part_of_equipment[subcategory_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
+                  %input#fuel.select2{'name' => 'part_of_equipment[subcategory_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
 
               %section.col.col-3
                 %label.label Cantidad de Combustible Total
@@ -285,6 +285,7 @@
       beforeSubmit: function() {
         $(form['selector']).validate({
           // Rules for form validation
+          ignore: '',
           rules : {
             'part_of_equipment[code]':{
               required : true
