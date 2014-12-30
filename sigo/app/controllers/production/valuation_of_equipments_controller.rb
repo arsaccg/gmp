@@ -64,9 +64,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     @action= "report"
     @name = Entity.find_by_id(params[:executor]).name
     @subcontract_equipment_id = params[:subcontract]
-    if SubcontractEquipment.find_by_entity_id(params[:executor])!=nil
+    if SubcontractEquipment.find(@subcontract_equipment_id)!=nil
       if ValuationOfEquipment.count > 0
-        last = ValuationOfEquipment.where("name LIKE ? ", @name).last
+        last = ValuationOfEquipment.where("name LIKE ? AND subcontract_equipment_id = "+@subcontract_equipment_id.to_s, @name).last
         if last!=nil 
           end_date = last.end_date
           if end_date.to_s < params[:start_date]
