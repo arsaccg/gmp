@@ -61,6 +61,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
 
   def get_report
+    @action= "report"
     @name = Entity.find_by_id(params[:executor]).name
     @subcontract_equipment_id = params[:subcontract]
     if SubcontractEquipment.find_by_entity_id(params[:executor])!=nil
@@ -422,6 +423,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
 
   def report_of_equipment
+    @action = params[:ac]
     @totaldif = 0
     @totaltotalhours = 0
     @totalfuel_amount = 0
