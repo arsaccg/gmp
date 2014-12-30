@@ -27,8 +27,14 @@
   .row
     %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
       #table-information-result
-
+%button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Valorizaciones de Equipo
 :javascript
+
+  $('#backlist').click(function(){
+      load_url_ajax("#{production_valuation_of_equipments_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+  });
   $(document).ready(function () {
     $('select').select2({width:'100%'});
   });

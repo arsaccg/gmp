@@ -3,7 +3,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   def index
     @company = get_company_cost_center('company')
     #@valuationofequipment = ValuationOfEquipment.all
-    @subcontractEquipments = SubcontractEquipment.all
+    @subcontractEquipments = SubcontractEquipment.where("cost_center_id = "+ get_company_cost_center('cost_center').to_s)
     #@subcontractequipmentdetail = SubcontractEquipmentDetail.all
     render layout: false
   end
@@ -661,7 +661,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       format.html
       format.pdf do
         @cc = get_company_cost_center('cost_center')
-        @valuationofequipment=ValuationOfEquipment.find(params[:ids])
+        @valuationofequipment = ValuationOfEquipment.find(params[:ids])
         @company = Company.find(get_company_cost_center('company'))
         @totaldif = 0
         @totaltotalhours = 0
