@@ -37,15 +37,17 @@
                       %td
                         = partworkerdetail.worker.entity.name.to_s + ' ' + partworkerdetail.worker.entity.second_name.to_s + ' ' + partworkerdetail.worker.entity.paternal_surname.to_s + ' ' + partworkerdetail.worker.entity.maternal_surname.to_s
                       %td
-                        = partworkerdetail.sector.name.to_s
+                        = partworkerdetail.sector.name.to_s  rescue 'No insertó sector'
                       %td
-                        = partworkerdetail.phase.code rescue 'No insertó fase' + ' - ' + partworkerdetail.phase.name rescue ''
+                        = (partworkerdetail.phase.code  + ' - ' + partworkerdetail.phase.name) rescue 'No insertó fase'
                       %td
                         = partworkerdetail.assistance.to_s
                       %td
                         = partworkerdetail.he_25.to_f
                       %td
                         = partworkerdetail.he_35.to_f
+                      %td
+                        = partworkerdetail.he_35.to_f +  partworkerdetail.he_25.to_f                       
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
   %i.fa.fa-arrow-left>

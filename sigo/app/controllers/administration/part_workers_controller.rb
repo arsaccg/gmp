@@ -44,7 +44,7 @@ class Administration::PartWorkersController < ApplicationController
   def create
     partworker = PartWorker.new(part_worker_parameters)
     partworker.company_id = session[:company]
-    previo = PartWorker.where("date = '"+params[:part_worker]['date'].to_s+"' AND company_id = "+get_company_cost_center('company').to_s)
+    previo = PartWorker.where("date_of_creation = '"+params[:part_worker]['date_of_creation'].to_s+"' AND company_id = "+get_company_cost_center('company').to_s)
     if previo.count == 0
       if partworker.save
         flash[:notice] = "Se ha creado correctamente la parte de obra."
