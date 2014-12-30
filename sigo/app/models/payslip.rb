@@ -95,6 +95,9 @@ class Payslip < ActiveRecord::Base
         dias_trabajados_quincena = dias_trabajados_quincena[0]
       end
 
+      worker_contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first
+      days_in_month = Time.days_in_month(week_start.to_date.strftime('%m').to_i, week_start.to_date.strftime('%Y').to_i)
+      
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
       calculator.store(horas_trabajadas: row[7])
@@ -105,6 +108,10 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_extras_60: 0)
       calculator.store(horas_extras_100: 0)
       calculator.store(dias_trabajados_quincena: 0)
+      calculator.store(salario_contractual: worker_contract.salary.to_f)
+      calculator.store(destaque_contractual: worker_contract.destaque.to_f)
+      calculator.store(viatico_contractual: worker_contract.viatical.to_f)
+      calculator.store(dias_totales_mes: days_in_month)
 
       if incluye
         @result[@i] << rem_basic
@@ -510,6 +517,8 @@ class Payslip < ActiveRecord::Base
         dias_trabajados_quincena = dias_trabajados_quincena[0]
       end
 
+      days_in_month = Time.days_in_month(week_start.to_date.strftime('%m').to_i, week_start.to_date.strftime('%Y').to_i)
+
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
       calculator.store(dias_trabajados: row[6])
@@ -519,6 +528,10 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_extras_25: 0)
       calculator.store(horas_extras_35: 0)
       calculator.store(dias_trabajados_quincena: dias_trabajados_quincena.to_f)
+      calculator.store(salario_contractual: from_contract.salary.to_f)
+      calculator.store(destaque_contractual: from_contract.destaque.to_f)
+      calculator.store(viatico_contractual: from_contract.viatical.to_f)
+      calculator.store(dias_totales_mes: days_in_month)
 
       if incluye
         @result[@i] << rem_basic      
