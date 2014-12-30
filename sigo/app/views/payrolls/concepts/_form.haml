@@ -59,11 +59,15 @@
                   %section.col.col-md-12
                     .form-group-in-line
                       %label.check-inline
-                        %input.checkbox{:type => 'checkbox', :onchange => "checkSub('toe_"+toe.name.to_s.gsub(" ","_").downcase+"');", :checked => !@con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(" ","_").downcase+'"').first.nil?, :id =>"checkbox_toe_"+toe.name.to_s.gsub(" ","_").downcase, :onload => "checkSub('toe_"+toe.name.to_s.gsub(" ","_").downcase+"');"}
+                        -flag_tipo_id = false
+                        - if !@con.concept_valorizations.where('type_worker = "'+toe.id.to_s+'"').first.nil?
+                          - if @con.concept_valorizations.where('type_worker = "'+toe.id.to_s+'"').first.formula != ""
+                            -flag_tipo_id = true
+                        %input.checkbox{:type => 'checkbox', :onchange => "checkSub('toe_"+toe.name.to_s.gsub(" ","_").downcase+"');", :checked => flag_tipo_id, :id =>"checkbox_toe_"+toe.name.to_s.gsub(" ","_").downcase, :onload => "checkSub('toe_"+toe.name.to_s.gsub(" ","_").downcase+"');"}
                         %span=  "Aplica para "+toe.name.to_s+"?"  
                   %section.col.col-12{:id => "toe_"+toe.name.to_s.gsub(" ","_").downcase, :style=>"display:none"}                
-                    - if !@con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(' ','_').downcase+'"').first.nil?
-                      -foe = @con.concept_valorizations.where('type_worker = "'+toe.name.to_s.gsub(' ','_').downcase+'"').first.formula
+                    - if !@con.concept_valorizations.where('type_worker = "'+toe.id.to_s+'"').first.nil?
+                      -foe = @con.concept_valorizations.where('type_worker = "'+toe.id.to_s+'"').first.formula
                   
                     %label.label= "Valorizaciones para "+ toe.name.to_s
                     %label.input
@@ -98,11 +102,15 @@
                   %section.col.col-md-12
                     .form-group.in-line
                       %label.check-inline
-                        %input.checkbox{:type => 'checkbox', :onchange => "checkSub('tow_"+tow.name.to_s.gsub(" ","_").downcase+"');", :checked => !@con.concept_valorizations.where('type_worker = "'+tow.name.to_s.gsub(" ","_").downcase+'"').first.nil?, :id =>"checkbox_tow_"+tow.name.to_s.gsub(" ","_").downcase, :onload => "checkSub('tow_"+tow.name.to_s.gsub(" ","_").downcase+"');"}
+                        -flag_tipo_id = false
+                        - if !@con.concept_valorizations.where('type_worker = "'+tow.id.to_s+'"').first.nil?
+                          - if @con.concept_valorizations.where('type_worker = "'+tow.id.to_s+'"').first.formula != ""
+                            -flag_tipo_id = true                      
+                        %input.checkbox{:type => 'checkbox', :onchange => "checkSub('tow_"+tow.name.to_s.gsub(" ","_").downcase+"');", :checked => flag_tipo_id, :id =>"checkbox_tow_"+tow.name.to_s.gsub(" ","_").downcase, :onload => "checkSub('tow_"+tow.name.to_s.gsub(" ","_").downcase+"');"}
                         %span=  "Aplica para "+tow.name.to_s+"?"
                     %section.col.col-12{:id => "tow_"+tow.name.to_s.gsub(" ","_").downcase, :style=>"display:none"}
-                      - if !@con.concept_valorizations.where('type_worker = "'+tow.name.to_s.gsub(" ","_").downcase+'"').first.nil?
-                        -foo = @con.concept_valorizations.where('type_worker = "'+tow.name.to_s.gsub(" ","_").downcase+'"').first.formula          
+                      - if !@con.concept_valorizations.where('type_worker = "'+tow.id.to_s+'"').first.nil?
+                        -foo = @con.concept_valorizations.where('type_worker = "'+tow.id.to_s+'"').first.formula          
                       %label.label= "Valorizaciones para "+tow.name.to_s
                       %label.input
                         %div.col.col-3
