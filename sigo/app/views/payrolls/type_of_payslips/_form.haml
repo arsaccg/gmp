@@ -36,23 +36,23 @@
             %div#empleado{"style"=>"display:none", :disabled=>true}
               .col.col-4
                 %label.label Ingresos:
-                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '1%' AND type_empleado IS NOT NULL")
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '1%' AND type_empleado IS NOT NULL AND status = 1")
               .col.col-4
                 %label.label Descuentos:
-                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '2%' AND type_empleado IS NOT NULL")
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '2%' AND type_empleado IS NOT NULL AND status = 1")
               .col.col-4
                 %label.label Aportaciones:
-                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '3%' AND type_empleado IS NOT NULL")
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '3%' AND type_empleado IS NOT NULL AND status = 1")
             %div#obrero{"style"=>"display:none", :disabled=>true}
               .col.col-4
                 %label.label Ingresos:            
-                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '1%' AND type_obrero IS NOT NULL")
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '1%' AND type_obrero IS NOT NULL AND status = 1")
               .col.col-4
                 %label.label Descuentos:
-                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '2%' AND type_obrero IS NOT NULL")
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '2%' AND type_obrero IS NOT NULL AND status = 1")
               .col.col-4
                 %label.label Aportaciones:
-                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '3%' AND type_obrero IS NOT NULL")
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '3%' AND type_obrero IS NOT NULL AND status = 1")
 
       %fieldset
         %legend Definir dependencia entre Planillas
