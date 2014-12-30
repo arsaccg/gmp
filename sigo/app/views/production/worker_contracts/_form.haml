@@ -88,9 +88,12 @@
             %table#concepts-worker.table.table-striped.table-bordered.table-hover
               %thead
                 %tr
-                  %th Concepto
+                  %th{:colspan => 2, :style => "text-align:center;"} Conceptos
+                  %th{:colspan => 2, :style => "text-align:center;"} Datos Contractuales
+                %tr
+                  %th Nombre
                   %th Monto
-                  %th Datos Contractuales
+                  %th Nombre
                   %th Monto
               %tbody
                 -if @workercontract.worker_contract_details.count>0
@@ -171,9 +174,12 @@
             %table#concepts-worker.table.table-striped.table-bordered.table-hover
               %thead
                 %tr
-                  %th Concepto
+                  %th{:colspan => 2, :style => "text-align:center;"} Conceptos
+                  %th{:colspan => 2, :style => "text-align:center;"} Datos Contractuales
+                %tr
+                  %th Nombre
                   %th Monto
-                  %th Datos Contractuales
+                  %th Nombre
                   %th Monto
               %tbody
                 -i=1
