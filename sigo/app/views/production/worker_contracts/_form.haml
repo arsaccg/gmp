@@ -75,23 +75,29 @@
                   %option{:value => '5 x 60'} 5 x 60
                   %option{:value => '4 x 120'} 4 x 120
                   %option{:value => 'ESPECIAL'} ESPECIAL
+
         -if Worker.find(@worker_id).typeofworker!="externo"
           -concepts=Array.new
           -if Worker.find(@worker_id).typeofworker=="empleado"
-            -concepts=@concepts_empleado
+            -concepts = @concepts_empleado
           -if Worker.find(@worker_id).typeofworker=="obrero"
             -concepts=@concepts_obrero
           -if @action=='edit'
             -i=1
             -arr=Array.new
-            -if @workercontract.worker_contract_details.count>0
-              -@workercontract.worker_contract_details.each do |wor|
-                -if Concept.find(wor.concept_id).status==1
-                  .row
-                    %section.col.col-md-12
-                      .col-md-3
-                        %label.label=Concept.find(wor.concept_id).name 
-                      .col-md-7
+            %table#concepts-worker.table.table-striped.table-bordered.table-hover
+              %thead
+                %tr
+                  %th Concepto
+                  %th Monto
+                  %th Datos Contractuales
+                  %th Monto
+              %tbody
+                -if @workercontract.worker_contract_details.count>0
+                  -@workercontract.worker_contract_details.each do |wor|
+                    %tr
+                      %td= Concept.find(wor.concept_id).name 
+                      %td
                         -top=100000000000
                         -if !Concept.find(wor.concept_id).top.nil?
                           -top=Concept.find(wor.concept_id).top
@@ -99,59 +105,105 @@
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][worker_contract_id]',wor.worker_contract_id
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][concept_id]',wor.concept_id
                         = text_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][amount]',wor.amount, onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
-                        -arr << wor.concept_id
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes][' + (wor.created_at.to_time.to_i + i).to_s + '][id]',wor.id
-                  -i+=1
-              -concepts.each do |con|
-                -cont=0
-                -arr.each do |arr|
-                  -if con.id == arr
-                    -cont=1
-                -if cont == 0
-                  .row
-                    %section.col.col-md-12
-                      .col-md-3
-                        %label.label=con.name
-                      .col-md-7
-                      -top=10000000000000
-                      -if !con.top.nil?
-                        -top=con.top
+                        -arr << wor.concept_id
+                      -if i == 1
+                        %td Sueldo Contractual
+                        %td= @workercontract.salary
+                      -elsif i == 2
+                        %td Destaque Contractual
+                        %td= @workercontract.destaque.to_f
+                      -elsif i == 3
+                        %td Viatico Contractual
+                        %td= @workercontract.viatical.to_f
+                      -else
+                        %td
+                        %td
+                    -i+=1
+                  -concepts.each do |con|
+                    -cont=0
+                    -arr.each do |arr|
+                      -if con.id == arr
+                        -cont=1
+                    -if cont == 0
+                      %tr
+                        %td= con.name
+                        %td
+                          -top=10000000000000
+                          -if !con.top.nil?
+                            -top=con.top
+                          = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
+                          = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
+                          = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
+                          = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
+
+                        %td
+                        %td
+                  -@reg_n+=1
+                -else
+                  -j=0
+                  -concepts.each do |con|
+                    %tr
+                      %td=con.name
+                      %td
+                        -top=10000000000000
+                        -if !con.top.nil?
+                          -top=con.top
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
                         = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
                         = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
-              -@reg_n+=1
-            -else
-              -concepts.each do |con|
-                .row
-                  %section.col.col-md-12
-                    .col-md-3
-                      %label.label=con.name
-                    .col-md-7
-                      -top=10000000000000
+                      -if j == 1-1
+                        %td Sueldo Contractual
+                        %td= @workercontract.salary
+                      -elsif j == 2-1
+                        %td Destaque Contractual
+                        %td= @workercontract.destaque.to_f
+                      -elsif j == 3-1
+                        %td Viatico Contractual
+                        %td= @workercontract.viatical.to_f
+                      -else
+                        %td
+                        %td
+                      -j+=1                    
+                    -@reg_n+=1
+          -else
+            %table#concepts-worker.table.table-striped.table-bordered.table-hover
+              %thead
+                %tr
+                  %th Concepto
+                  %th Monto
+                  %th Datos Contractuales
+                  %th Monto
+              %tbody
+                -i=1
+                -concepts.each do |con|
+                  %tr        
+                    %td= con.name
+                    %td
+                      -top=100000000000
                       -if !con.top.nil?
                         -top=con.top
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
                       = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
-                      = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
-                -@reg_n+=1
-          -else
-            -concepts.each do |con|
-              .row
-                %section.col.col-md-12
-                  .col-md-3
-                    %label.label=con.name
-                  .col-md-7
-                    -top=100000000000
-                    -if !con.top.nil?
-                      -top=con.top
-                    = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_id]',@worker_id
-                    = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][worker_contract_id]',@workercontract.id.to_i+1
-                    = hidden_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][concept_id]',con.id
 
-                    = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
-              -@reg_n+=1
+                      = text_field_tag 'worker_contract[worker_contract_details_attributes]['+@reg_n.to_s+'][amount]','', onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, "+top.to_s+")"
+                    -if i == 1
+                      %td Sueldo Contractual
+                      %td= @workercontract.salary
+                    -elsif i == 2
+                      %td Destaque Contractual
+                      %td= @workercontract.destaque.to_f
+                    -elsif i == 3
+                      %td Viatico Contractual
+                      %td= @workercontract.viatical.to_f
+                    -else
+                      %td
+                      %td
+                  -i+=1                      
+                  -@reg_n+=1
+        %br                  
         .row
           %section.col.col-2
             %label.label Dia de Inicio
