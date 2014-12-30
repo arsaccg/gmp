@@ -370,12 +370,15 @@
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
         $('#modalLoadingLabelading').modal('hide');
-        $('.modal-backdrop.fade.in').remove();
+        $('.modal-backdrop.fade.in').remove();     
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();  
       }
     });
   }
+
   function add_more_register(){
     data = { authenticity_token: "#{form_authenticity_token}"};
     append_url_ajax('#{add_more_register_production_part_of_equipments_path}', 'part_register_table', data, 0, 'POST');
@@ -408,8 +411,6 @@
     unit("#{get_unit_production_part_of_equipments_path}", article, "#{form_authenticity_token}", "0302");
     $("#fieldtable").fadeIn("fast");
   });
-
-  
 
   $('#ent').keyup(function(){
     var subcontract_id = $(this).val();
