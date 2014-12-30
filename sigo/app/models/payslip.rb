@@ -104,7 +104,7 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_dobles: row[10].to_f)
       calculator.store(horas_extras_60: 0)
       calculator.store(horas_extras_100: 0)
-      calculator.store(dias_trabajados_quincena: dias_trabajados_quincena.to_f)
+      calculator.store(dias_trabajados_quincena: 0)
 
       if incluye
         @result[@i] << rem_basic
@@ -502,7 +502,8 @@ class Payslip < ActiveRecord::Base
         end
       end
 
-      dias_trabajados_quincena = ActiveRecord::Base.connection.execute("SELECT SUM(1) FROM `part_worker_details` pwd, `part_workers` pw WHERE pwd.worker_id = #{row[0]} AND pwd.assistance LIKE 'si' AND pwd.part_worker_id = pw.id AND (pw.date_of_creation BETWEEN '#{Date.today.at_beginning_of_month.strftime}' AND '#{(Date.today.at_beginning_of_month + 14).strftime}') GROUP BY pwd.worker_id").first
+      # Date.today.at_beginning_of_month.strftime
+      dias_trabajados_quincena = ActiveRecord::Base.connection.execute("SELECT SUM(1) FROM `part_worker_details` pwd, `part_workers` pw WHERE pwd.worker_id = #{row[0]} AND pwd.assistance LIKE 'si' AND pwd.part_worker_id = pw.id AND (pw.date_of_creation BETWEEN '#{week_start}' AND '#{(week_start.to_date + 14.day).strftime}') GROUP BY pwd.worker_id").first
       if dias_trabajados_quincena.nil?
         dias_trabajados_quincena = 0
       else
