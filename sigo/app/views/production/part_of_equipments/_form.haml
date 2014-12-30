@@ -33,19 +33,11 @@
                 %label.label Proveedor
                 %label.input
                   %select.form-control#ent{:name =>"part_of_equipment[subcontract_equipment_id]", :style => 'width:400px;padding: 0;border: none;'}
-                    %option{:value => ''}
+                    %option{:value => nil, :selected => true, :disabled=>true}
                       = 'Seleccione Proveedor'
                     -@subcon.each do |subcon|
-                      -if @action =="edit"
-                        -if @partofequipment.subcontract_equipment_id == subcon.id
-                          %option{:value => "#{subcon.id}", :selected=>"selected"}
-                            = subcon.entity.name
-                        -else
-                          %option{:value => "#{subcon.id}"}
-                            = subcon.entity.name
-                      -else
-                        %option{:value => "#{subcon.id}"}
-                          = subcon.entity.name
+                      %option{:value => "#{subcon.id}", :selected=>@partofequipment.subcontract_equipment_id==subcon.id}
+                        = subcon.entity.name + " - "+subcon.contract_description
             .row
               %section.col.col-6
                 %label.label Equipos
