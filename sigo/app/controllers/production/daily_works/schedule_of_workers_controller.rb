@@ -67,7 +67,10 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
         day = PartWorkerDetail.where("part_worker_id = ? AND assistance LIKE 'si'", perday.id)
         @totalperday << day.count.to_s
         totaltotal = totaltotal + day.count
+      else
+        @totalperday << 0
       end
+
     end
     @totalperday << totaltotal
     @part_worker_to_block = @part_worker_to_block.uniq.join(',')
@@ -105,6 +108,83 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
     ScheduleOfWorker.find(params[:id]).update(:state=>"approved")
     ActiveRecord::Base.connection.execute("UPDATE part_workers SET blockpayslip = 1 WHERE id IN ("+params[:parts].to_s+")")
     redirect_to :action => :index
+  end
+
+  def report_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @schedule = ScheduleOfWorker.find(params[:id])
+        @inicio = @schedule.start_date
+        @fin = @schedule.end_date
+        @company = Company.find(get_company_cost_center('company'))
+        @cost_center = CostCenter.find(get_company_cost_center('cost_center'))
+        @dias_habiles =  range_business_days(@inicio,@fin)
+        workers = Array.new
+        @arraywo = Array.new
+        partworkers = PartWorker.where("date_of_creation BETWEEN ? AND ? AND blockweekly = 1",@inicio,@fin)
+        partworkers.each do |pw|
+          pw.part_worker_details.each do |pwd|
+            workers << pwd.worker_id
+          end
+        end
+
+        workers = workers.uniq
+        workers = workers.sort
+        index = 1
+        valor = 0
+
+        @part_worker_to_block = Array.new
+        workers.each do |wo|
+          totalworker = 0
+          wor = Worker.find(wo)
+          contract = WorkerContract.where("worker_id = ? AND status = 1",wo).first
+          cadenita = index.to_s + ';' + contract.article.code.to_s + ';' + contract.article.name.to_s + ';' + wor.entity.dni.to_s + ';' + wor.entity.paternal_surname.to_s + " " + wor.entity.maternal_surname.to_s + ', ' + wor.entity.name.to_s + ' ' + wor.entity.second_name.to_s
+          @dias_habiles.each do |dh|
+            answer = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 1").first
+            if answer.nil?
+              cadenita = cadenita + ';' + '0'
+            else
+              answer2 = PartWorkerDetail.where("part_worker_id = ? AND worker_id = ?", answer.id, wo)
+              if answer2.count == 0
+                cadenita = cadenita + ';' + '0'
+              end
+              answer2.each do |ans2|
+                if ans2.assistance == 'si'
+                  cadenita = cadenita + ';' + '1'
+                  totalworker +=1
+                  @part_worker_to_block << answer.id
+                else
+                  cadenita = cadenita + ';' + '0'
+                end
+              end
+            end
+          end
+          cadenita = cadenita + ';' + totalworker.to_s
+          @arraywo << cadenita.split(';')
+          index += 1
+        end
+        @totalperday = Array.new
+        totaltotal = 0
+        @dias_habiles.each do |dh|
+          perday = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 1").first
+          if !perday.nil?
+            day = PartWorkerDetail.where("part_worker_id = ? AND assistance LIKE 'si'", perday.id)
+            @totalperday << day.count.to_s
+            totaltotal = totaltotal + day.count
+          else
+            @totalperday << 0
+          end
+
+        end
+        @totalperday << totaltotal
+        @part_worker_to_block = @part_worker_to_block.uniq.join(',')
+        render :pdf => "reporte-#{Time.now.strftime('%d-%m-%Y')}", 
+         :template => 'production/daily_works/schedule_of_workers/report_pdf.pdf.haml',
+         :orientation => 'Landscape',
+         :page_size => 'A2'
+       end
+    end
   end
   # Functions for show Table Summarize
 
@@ -173,6 +253,8 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
         day = PartWorkerDetail.where("part_worker_id = ? AND assistance LIKE 'si'", perday.id)
         @totalperday << day.count.to_s
         totaltotal = totaltotal + day.count
+      else
+        @totalperday << 0        
       end
     end
     @totalperday << totaltotal

@@ -80,7 +80,8 @@
 
   $("#show").click(function() {
     data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
-    load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_show', data2, null, 'GET');
+    $('#loan').modal('show');
+    /*load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_show', data2, null, 'GET');*/
   });
 
   function show_details(id){

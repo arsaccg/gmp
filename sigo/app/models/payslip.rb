@@ -87,6 +87,17 @@ class Payslip < ActiveRecord::Base
           end
         end
       end
+
+      dias_trabajados_quincena = ActiveRecord::Base.connection.execute("SELECT SUM(1) FROM part_person_details ppd, part_people pp WHERE ppd.worker_id = #{row[0]} AND ppd.part_person_id = pp.id AND (pp.date_of_creation BETWEEN '#{Date.today.at_beginning_of_month.strftime}' AND '#{(Date.today.at_beginning_of_month + 14).strftime}') GROUP BY ppd.worker_id").first
+      if dias_trabajados_quincena.nil?
+        dias_trabajados_quincena = 0
+      else
+        dias_trabajados_quincena = dias_trabajados_quincena[0]
+      end
+
+      worker_contract = Worker.find(row[0]).worker_contracts.where(:status => 1).first
+      days_in_month = Time.days_in_month(week_start.to_date.strftime('%m').to_i, week_start.to_date.strftime('%Y').to_i)
+      
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
       calculator.store(horas_trabajadas: row[7])
@@ -96,6 +107,11 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_dobles: row[10].to_f)
       calculator.store(horas_extras_60: 0)
       calculator.store(horas_extras_100: 0)
+      calculator.store(dias_trabajados_quincena: 0)
+      calculator.store(salario_contractual: worker_contract.salary.to_f)
+      calculator.store(destaque_contractual: worker_contract.destaque.to_f)
+      calculator.store(viatico_contractual: worker_contract.viatical.to_f)
+      calculator.store(dias_totales_mes: days_in_month)
 
       if incluye
         @result[@i] << rem_basic
@@ -493,6 +509,16 @@ class Payslip < ActiveRecord::Base
         end
       end
 
+      # Date.today.at_beginning_of_month.strftime
+      dias_trabajados_quincena = ActiveRecord::Base.connection.execute("SELECT SUM(1) FROM `part_worker_details` pwd, `part_workers` pw WHERE pwd.worker_id = #{row[0]} AND pwd.assistance LIKE 'si' AND pwd.part_worker_id = pw.id AND (pw.date_of_creation BETWEEN '#{week_start}' AND '#{(week_start.to_date + 14.day).strftime}') GROUP BY pwd.worker_id").first
+      if dias_trabajados_quincena.nil?
+        dias_trabajados_quincena = 0
+      else
+        dias_trabajados_quincena = dias_trabajados_quincena[0]
+      end
+
+      days_in_month = Time.days_in_month(week_start.to_date.strftime('%m').to_i, week_start.to_date.strftime('%Y').to_i)
+
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
       calculator.store(dias_trabajados: row[6])
@@ -501,6 +527,11 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_dobles: 0)
       calculator.store(horas_extras_25: 0)
       calculator.store(horas_extras_35: 0)
+      calculator.store(dias_trabajados_quincena: dias_trabajados_quincena.to_f)
+      calculator.store(salario_contractual: from_contract.salary.to_f)
+      calculator.store(destaque_contractual: from_contract.destaque.to_f)
+      calculator.store(viatico_contractual: from_contract.viatical.to_f)
+      calculator.store(dias_totales_mes: days_in_month)
 
       if incluye
         @result[@i] << rem_basic      
@@ -527,23 +558,7 @@ class Payslip < ActiveRecord::Base
             amount = 0
             total += amount.to_f
           end
-          #if  ing.to_i == 15
-            #total = total - amount.to_f
-            #amount = amount.to_f * row[6].to_f
-            #total+=amount.to_f
-          #end
 
-          #if  ing.to_i == 17
-            #total = total - amount.to_f
-            #amount = amount.to_f * row[8].to_f
-            #total += amount.to_f
-          #end
-
-          #if  ing.to_i == 24
-            #total = total - amount.to_f
-            #amount = amount.to_f * row[8].to_f
-            #total += amount.to_f
-          #end
           if flag_extra
             array_extra_info.each do |ar|
               if ar[1].to_i == ing.to_i && ar[0].to_i == row[0].to_i
@@ -693,19 +708,11 @@ class Payslip < ActiveRecord::Base
               rent_before = Array.new
               value_previous = 0
               before_amount = 0
-              puts "------------------------------------------------------------------------------------------------------------------------------------"
-              p "[remuneracion-basica]+[horas-simples]*[precio-por-hora]+[horas-dobles]*[precio-por-hora]+[cts]+[gratificaciones]"
-              p calculator.inspect
-              puts suma_mes
-              p to_end_year
-              p to_end_year == 12
               if to_end_year == 12
                 anual_income = suma_mes*14
               else
-                puts "-------------------entro antes del ActiveRecord-------------------------------------------------------------------------------------------------------------------"
                 ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '%"+year.to_s+"%')").each do |b|  
                   rent_before << JSON.parse(b[0]).select{|key, hash| key=='sueldo_basico'} 
-                  p rent_before
                 end
                 rent_before.each do |j| 
                   j.each_with_index do |key,value| 
@@ -715,35 +722,24 @@ class Payslip < ActiveRecord::Base
                 ActiveRecord::Base.connection.execute("SELECT `worker_rent_fifth_categories`.`rent` FROM `worker_rent_fifth_categories` WHERE (worker_id = "+row[0].to_s+" AND `date_last_rent` LIKE '%"+year.to_s+"%')").each do |rentp|
                   before_amount += rentp.to_f
                 end
-                p before_amount
                 anual_income = suma_mes*to_end_year + 2*suma_mes + before_amount
-                p anual_income
               end
               rangos.each do |ran|
-                p ran.inspect
                 if flag_inside_rank
                   num = ran.name.scan(/\[.*?\]/).first.tr('][','')
-                  p anual_income
                   if num.split('-').count > 1
                     initial = num.split('-')[0].to_i*uit
-                    p initial
                     final = num.split('-')[1].to_i*uit
-                    p final
                     value = ran.value
-                    p value
                     if anual_income < final && anual_income > initial
-                      p '----------entro a anual income < final && anual_income > initial------------------------------------------------------------------'
                       amount = ((anual_income-initial)*value + value_previous)/12
                       p amount
                       flag_inside_rank = false
                     else
                       if anual_income > initial
-                        p "----------------------- anual_income > initial ------------------------------------------------------------------------------"
                         value_previous += (final-initial)*value
-                        p value_previous
                       else
-                        p " ----------------------------------------------- falso?----------------------------------------------------------------------"
-                        p anual_income > initial
+                        #p anual_income > initial
                         flag_inside_rank = false
                       end
                     end
@@ -758,7 +754,6 @@ class Payslip < ActiveRecord::Base
                 end
               end
               total+= amount   
-              p amount        
             end            
           end
 

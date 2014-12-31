@@ -66,7 +66,7 @@
         -if @action !="edit"
           %a#smart-mod-eg1.btn.btn-success{href: "#"} Guardar
         -else
-          %button.btn.btn-primary{type: "submit"}
+          %button.btn.btn-primary{type: "submit", :onclick=>"part_block();"}
             %i.fa.fa-save
               Guardar
 
@@ -117,6 +117,8 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();            
           }
         });
         // Remove all Help-inLine
@@ -127,8 +129,12 @@
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();        
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();      
       }
     });
   }
@@ -150,6 +156,7 @@
           iconSmall : "fa fa-check fa-2x fadeInRight animated",
           timeout : 4000
         });
+        part_block();
       }
       if (ButtonPressed === "No") {
         $.smallBox({

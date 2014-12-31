@@ -134,15 +134,27 @@ class Production::PartOfEquipmentsController < ApplicationController
     part = PartOfEquipment.new(part_of_equipment_parameters)
     part.cost_center_id = get_company_cost_center('cost_center')
     part.block = 0
-    if part.save
-      flash[:notice] = "Se ha creado correctamente el parte."
-      redirect_to :action => :index, company_id: params[:company_id]
+    previo = PartOfEquipment.where("date = '"+params[:part_of_equipment]['date'].to_s+"' AND equipment_id = "+ params[:part_of_equipment]['equipment_id'].to_s)
+    previo_val = ValuationOfEquipment.where("subcontract_equipment_id = "+ params[:part_of_equipment]['subcontract_equipment_id'].to_s).last
+
+    if previo.count == 0 && previo_val.end_date < params[:part_of_equipment]['date'].to_date
+      if part.save
+        flash[:notice] = "Se ha creado correctamente el parte."
+        redirect_to :action => :index, company_id: params[:company_id]
+      else
+        part.errors.messages.each do |attribute, error|
+          puts error.to_s
+          puts error
+        end
+        flash[:error] =  "Ha ocurrido un error en el sistema."
+        redirect_to :action => :index, company_id: params[:company_id]
+      end
     else
       part.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
-      flash[:error] =  "Ha ocurrido un error en el sistema."
+      flash[:error] =  "No se permiten guardar partes con fecha y equipo repetido, o con fecha menor a la ultima valorización."
       redirect_to :action => :index, company_id: params[:company_id]
     end
   end
