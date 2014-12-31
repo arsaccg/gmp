@@ -1,5 +1,15 @@
 class Management::BudgetsController < ApplicationController
   
+  require 'net/http'
+  require 'net/https'
+  def connect_to
+    uri = URI('http://google.com/')
+    params = { :str => '10.10.10.20:master:sa::select%20*%20from%20sysdatabases' }
+    uri.query = URI.encode_www_form(params)
+
+    res = Net::HTTP.get_response(uri)
+    render json: res.body if res.is_a?(Net::HTTPSuccess)
+  end
 
   def index
   	@budgets_goal = Budget.where(:type_of_budget => '0')
