@@ -2,7 +2,7 @@ class Payrolls::TypeOfPayslipsController < ApplicationController
 before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @tpay = TypeOfPayslip.all
+    @tpay = TypeOfPayslip.where("cost_center_id = "+ get_company_cost_center('cost_center').to_s)
     render layout: false
   end
 
@@ -20,6 +20,7 @@ before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :upda
   def create
     flash[:error] = nil
     tpay = TypeOfPayslip.new(tpay_parameters)
+    tpay.cost_center_id = get_company_cost_center('cost_center')
     if tpay.save
       flash[:notice] = "Se ha creado correctamente."
       redirect_to :action => :index

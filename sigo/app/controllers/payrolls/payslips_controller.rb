@@ -2,7 +2,8 @@ class Payrolls::PayslipsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @pay = ActiveRecord::Base.connection.execute("SELECT p.code, p.week, p.month, top.name FROM payslips p, type_of_payslips top WHERE p.type_of_payslip_id = top.id GROUP BY p.code")
+    cc= get_company_cost_center('cost_center')
+    @pay = ActiveRecord::Base.connection.execute("SELECT p.code, p.week, p.month, top.name FROM payslips p, type_of_payslips top WHERE p.type_of_payslip_id = top.id AND p.cost_center_id = #{cc} GROUP BY p.code")
     render layout: false
   end
 
@@ -194,7 +195,7 @@ class Payrolls::PayslipsController < ApplicationController
 
   def complete_type_payslip
     tp = Array.new
-    type_of_payslips = TypeOfPayslip.where("for_worker_employee = '"+params[:worker]+"'")
+    type_of_payslips = TypeOfPayslip.where("for_worker_employee = '"+params[:worker]+"' AND cost_center_id = "+get_company_cost_center("cost_center").to_s)
     type_of_payslips.each do |wo|
       tp << {'id' => wo.id.to_s, 'name' => wo.name.to_s}
     end
