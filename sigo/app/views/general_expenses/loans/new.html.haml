@@ -105,26 +105,21 @@
           Salir      
 
 :javascript
-
   $("#new2").click(function() {
     data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
     load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_new', data2, null, 'GET');
   });
-
   function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
   $(document).ready(function (){
-
     $('#loan_new').attr("tabindex","");
-
     $('#refund_type').change(function(){
       if($(this).val() == 2)
         $('#devdate').fadeIn('fast');
       else
         $('#devdate').fadeOut('fast');
     });
-
     $('#worker-select').select2({
       placeholder: "Buscar Trabajadores...",
       minimumInputLength: 3,
@@ -149,7 +144,6 @@
       formatSelection: function(node){ return ('DNI° '+node.dni+' - '+node.name + ' ' + node.paternal_surname + ' ' + node.maternal_surname) },
       escapeMarkup: function (m) { return m; }
     });
-
       $("#refund_type").change(function() {
           // foo is the id of the other select box 
           if ($(this).val() == "1") {
@@ -206,7 +200,6 @@
           timeout : 4000
         });
       }
-
     }else{
       $.smallBox({
         title : "Aviso",
@@ -217,7 +210,6 @@
       });
     }
   });
-
   function minmax(value, min, max){
     if(parseInt(value) < min || isNaN(value)){ 
       return min; 
@@ -229,7 +221,6 @@
       }
     }
   }
-
   function isNumber(evt) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -238,4 +229,3 @@
     }
     return true;
   }
-
