@@ -9,33 +9,13 @@ class GeneralExpenses::LoansController < ApplicationController
   end
 
   def create
-    p "---------------------------------------------------------------------------------------------------------------------------------------------------"
-    p "entro al crete luego del submit"
-    p "---------------------------------------------------------------------------------------------------------------------------------------------------"
     render json: {:cc_id=>loan.cost_center_lender_id.to_s}
   end
 
   def create_loan
     flash[:error] = nil
+    loan = Loan.new(loan_params)
 
-    p "---------------------------------------------------------------------------------------------------------------------------------------------------"
-    p "entro al crete luego del submit"
-    p "---------------------------------------------------------------------------------------------------------------------------------------------------"
-    loan = Loan.new
-    loan.person = params[:person]
-    loan.loan_date = params[:loan_date]
-    loan.loan_type = params[:loan_type]
-    loan.amount = params[:amount]
-    loan.description = params[:description]
-    loan.refund_type = params[:refund_type]
-    loan.check_number = params[:check_number]
-    loan.check_date = params[:check_date]
-    loan.state = params[:state]
-    loan.refund_date = params[:refund_date]
-    loan.cost_center_beneficiary_id = params[:cost_center_beneficiary_id]
-    loan.cost_center_lender_id = params[:cost_center_lender_id]
-    loan.loan_doc = params[:loan_doc]
-    loan.refund_doc = params[:refund_doc]
     if loan.save
       loan.errors.messages.each do |attribute, error|
         flash[:error] =  flash[:error].to_s + error.to_s + "  "
