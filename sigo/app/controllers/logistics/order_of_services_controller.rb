@@ -242,7 +242,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @reg_n = ((Time.now.to_f)*100).to_i
     data_article_unit = params[:article_id].split('-')
     @article = Article.find_article_in_specific(data_article_unit[0], get_company_cost_center('cost_center'))
-    @sectors = Sector.where("code LIKE '__'")
+    @sectors = Sector.where("code LIKE '__'AND cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @phases = @phases.sort! { |a,b| a.code <=> b.code }
     @amount = params[:amount].to_f
@@ -289,7 +289,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     # Set default value
     @igv = 0.18+1
     @orderOfService = OrderOfService.find(params[:id])
-    @sectors = Sector.all
+    @sectors = Sector.where("cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @costcenters = Company.find(@company).cost_centers
     @methodOfPayments = MethodOfPayment.all

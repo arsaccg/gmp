@@ -3,7 +3,7 @@ class Administration::ProvisionArticlesController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 
   def index
-    @provision = Provision.where('order_id IS NULL')
+    @provision = Provision.where('order_id IS NULL AND cost_center_id = ?', get_company_cost_center('cost_center'))
     @documentProvision = DocumentProvision.first
     render layout: false
   end

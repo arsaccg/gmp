@@ -213,7 +213,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def edit
     @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.find(params[:id])
-    @sectors = Sector.all
+    @sectors = Sector.where("cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @centerOfAttentions = CenterOfAttention.all
     @costcenter_id = @deliveryOrder.cost_center_id
@@ -236,7 +236,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @reg_n = ((Time.now.to_f)*100).to_i
     data_article_unit = params[:article_id].split('-')
     @article = Article.find_article_in_specific(data_article_unit[0], get_company_cost_center('cost_center'))
-    @sectors = Sector.where("code LIKE '__' ")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @quantity = params[:quantity].to_i
     @amount = params[:amount]

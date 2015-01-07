@@ -1,8 +1,9 @@
 class Production::WeeklyReportsController < ApplicationController
 	def index
     @company = get_company_cost_center('company')
-    @workingGroups = WorkingGroup.all
-    @week = CostCenter.getWeek5(get_company_cost_center('cost_center'),Time.now.to_date.to_s)
+    @cc = get_company_cost_center('cost_center')
+    @workingGroups = WorkingGroup.where("cost_center_id ="+@cc.to_s)
+    @week = CostCenter.getWeek5(@cc,Time.now.to_date.to_s)
     render layout: false
   end
 

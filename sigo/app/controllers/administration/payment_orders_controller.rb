@@ -3,7 +3,7 @@ class Administration::PaymentOrdersController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 
   def index
-    @paymentOrders = PaymentOrder.all
+    @paymentOrders = PaymentOrder.where("cost_center_id ="+get_company_cost_center('cost_center').to_s)
     @workers = ""
     TypeEntity.find_by_preffix('T').entities.each do |entity|
       @workers += '[' + entity.name.to_s + ' ' + entity.second_name.to_s + ' ' + entity.paternal_surname.to_s + ' ' + entity.maternal_surname.to_s + ']'
@@ -34,7 +34,7 @@ class Administration::PaymentOrdersController < ApplicationController
 
   def new
     @paymentOrder = PaymentOrder.new
-    @provisions = Provision.all
+    @provisions = Provision..where("cost_center_id ="+get_company_cost_center('cost_center').to_s)
     render layout: false
   end
 
@@ -60,7 +60,7 @@ class Administration::PaymentOrdersController < ApplicationController
 
   def edit
     @paymentOrder = PaymentOrder.find(params[:id])
-    @provisions = Provision.all
+    @provisions = Provision.where("cost_center_id ="+get_company_cost_center('cost_center').to_s)
     @action = 'edit'
     render layout: false
   end

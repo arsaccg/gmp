@@ -4,7 +4,7 @@ class Production::PartPeopleController < ApplicationController
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
     #@part_people = PartPerson.where("cost_center_id = ?", cost_center)
-    @workinggroup = WorkingGroup.first
+    @workinggroup = WorkingGroup.where("cost_center_id ="+cost_center.to_s).first
     render layout: false
   end
 
@@ -28,11 +28,12 @@ class Production::PartPeopleController < ApplicationController
 
   def new
     @partpersonlast = PartPerson.count
+    cost_center = get_company_cost_center('cost_center')
     @numbercode = @partpersonlast+1
     @numbercode = @numbercode.to_s.rjust(5,'0')
     @partperson = PartPerson.new
-    @working_groups = WorkingGroup.all
-    workers = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active'")
+    @working_groups = WorkingGroup.where("cost_center_id ="+cost_center.to_s)
+    workers = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s)
     @workers = Array.new
     workers.each do |wor|
       if wor.worker_contracts.count != 0

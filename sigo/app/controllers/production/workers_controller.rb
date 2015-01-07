@@ -10,11 +10,11 @@ class Production::WorkersController < ApplicationController
     @bank = Bank.first
     @workers = Worker.where("cost_center_id = ?", cost_center)
     @entity = TypeEntity.find_by_name('Trabajadores').entities.first
-    @empleados = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active'").count
-    @obreros = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active'").count
-    @pensionistas = Worker.where("typeofworker LIKE 'pensionista' AND state LIKE 'active'").count
-    @formaciones = Worker.where("typeofworker LIKE 'formacion' AND state LIKE 'active'").count
-    @externos = Worker.where("typeofworker LIKE 'externo' AND state LIKE 'active'").count
+    @empleados = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s).count
+    @obreros = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s).count
+    @pensionistas = Worker.where("typeofworker LIKE 'pensionista' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s).count
+    @formaciones = Worker.where("typeofworker LIKE 'formacion' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s).count
+    @externos = Worker.where("typeofworker LIKE 'externo' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s).count
     render layout: false
   end
 

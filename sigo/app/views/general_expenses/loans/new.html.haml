@@ -29,7 +29,7 @@
               %input#loan_cost_center_lender_id.form-control{'name' => 'loan[person]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
           .row
             %section.col-md-5
-              %label{"style"=>"font-size:14px;"} Fecha
+              %label{"style"=>"font-size:14px;"} Fecha de Entrega
             %section.col-md-6
               %input#loan_date.form-control{as: :string,type: "date", :name => "loan[loan_date]"}
                 
@@ -172,7 +172,7 @@
   });
 
   $("#smart-mod-eg1").click(function(e) {
-    if($('#beneficiary').val()!='' && $('#person').val()!= '' && $('#loan_date').val()!= '' && $('#loan_type').val()!=''  && $('#amount').val()!='' && !isNaN($('#amount').val())  && $('#description').val()!=''&& $('#refund_type').val()!='' && $('#state').val()!=''){
+    if($('#beneficiary').val()!='' && $('#loan_date').val()!= '' && $('#loan_type').val()!=''  && $('#amount').val()!='' && !isNaN($('#amount').val())  && $('#description').val()!=''&& $('#refund_type').val()!='' && $('#state').val()!=''){
       if($('#refund_type').val()==2 ){
         if($('#refund_date').val()!='' ){
           data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};

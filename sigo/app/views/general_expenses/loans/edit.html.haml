@@ -28,7 +28,7 @@
                 %input#worker-select.form-control{'name' => 'loan[person]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;','value'=>"#{@loan.person}"}
           .row{"style"=>"margin-bottom:1%;"}
             .col-md-5
-              %label{"style"=>"font-size:14px;"} Fecha
+              %label{"style"=>"font-size:14px;"} Fecha de Entrega
             .col-md-6
               = text_field_tag 'loan[loan_date]', "#{@loan.loan_date}" , class: "form-control quantity", :required => true,as: :string,:type=>"date"
           .row{"style"=>"margin-bottom:1%;"}
