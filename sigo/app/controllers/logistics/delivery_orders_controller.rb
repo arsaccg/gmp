@@ -9,7 +9,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
     @deliveryOrders = DeliveryOrder.where("cost_center_id = ?",@cost_center)
-    @centerOfAttention = CenterOfAttention.all.first
+    @centerOfAttention = CenterOfAttention.where("cost_center_id = ?",@cost_center).first
     render layout: false
   end
 
@@ -215,7 +215,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @deliveryOrder = DeliveryOrder.find(params[:id])
     @sectors = Sector.where("cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
-    @centerOfAttentions = CenterOfAttention.all
+    @centerOfAttentions = CenterOfAttention.where("cost_center_id = ?",@cost_center)
     @costcenter_id = @deliveryOrder.cost_center_id
     @action = 'edit'
     render layout: false
@@ -240,7 +240,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @quantity = params[:quantity].to_i
     @amount = params[:amount]
-    @centerOfAttention= CenterOfAttention.all
+    @centerOfAttention= CenterOfAttention.where("cost_center_id = ?",@cost_center)
     @article.each do |art|
       @code_article, @name_article, @id_article = art[3], art[1], art[2]
     end
