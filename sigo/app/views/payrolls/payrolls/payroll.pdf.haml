@@ -138,10 +138,15 @@
         %table.table.table-bordered{ :style => 'margin-bottom: 0; border: none' }
           %thead{ :style => 'font-size: 12px;border: none' }
             %tr
+              -i=0
               - @total_concepts.each_with_index do |key,value|
-                - sum += key[1].to_f
+                -if i ==0
+                  - sum += key[1].to_f
+                -elsif i == 1
+                  - sum -= key[1].to_f
                 %th{ :style => 'border: none' }= key[0].gsub('_', ' ').upcase
                 %th{ :colspan => 2, :style => ' text-align: right; border: none' }= key[1]
+                -i+=1
 
       .total_net
         %table.table.table-bordered{ :style => 'margin-bottom: 0; border: none' }

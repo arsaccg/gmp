@@ -7,102 +7,103 @@
             %i.fa.fa-pencil-square-o.fa-fw 
           %strong Formulario del Préstamo
     .modal-body
-      %fieldset
-        %input#cc{ :value => "#{@cc.id.to_i.to_s}", "style"=>"display:none"}
-        .row{"style"=>"margin-bottom:1%;"}
-          %section.col-md-5
-            %label{"style"=>"font-size:14px;"} Beneficiario
-          %section.col-md-6
-            %select#beneficiary.select2.form-control
-              %option{:value => nil} Seleccione un Beneficiario
-              - @costcenters.each do |ph|
-                %option{:value => "#{ph.id}"}
-                  = ph.name
-        .row{"style"=>"margin-bottom:1%;"}
-          %section.col-md-5
-            %label{"style"=>"font-size:14px;"} Entregado a
-          %section.col-md-6
-            %input#worker-select.form-control{'name' => 'worker_id', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
-        .row{"style"=>"margin-bottom:1%;"}
-          %section.col-md-5
-            %label{"style"=>"font-size:14px;"} Fecha
-          %section.col-md-6
-            .input-group
-              %input#loan_date.form-control{as: :string,type: "date"}
-              %span.input-group-addon
-                %i.icon-append.fa.fa-calendar
-        .row{"style"=>"margin-bottom:1%;"}
-          %section.col-md-5
-            %label{"style"=>"font-size:14px;"} Forma de Préstamo
-          %section.col-md-6
-            %select#loan_type.select2.form-control
-              %option{:value => nil} Seleccione una Forma
-              %option{:value => "1"} Cheque
-              %option{:value => "2"} Transferencia
-              %option{:value => "3"} Efectivo
-        .row{"style"=>"margin-bottom:1%;"}
-          %section.col-md-5
-            %label{"style"=>"font-size:14px;"} Monto
-          %section.col-md-6
-            .input-group
-              %input#amount.form-control{placeholder: ""}
-              %span.input-group-addon
-                %i.icon-append.fa.fa-plus-circle
-        .row{"style"=>"margin-bottom:1%;"}
-          %section.col-md-5
-            %label{"style"=>"font-size:14px;"} Motivo
-          %section.col-md-6
-            .input-group
-              %textarea#description.form-control{placeholder: ""}
-              %span.input-group-addon
-                %i.icon-append.fa.fa-list-alt
-        .row{"style"=>"margin-bottom:1%;"}
-          %section.col-md-5
-            %label{"style"=>"font-size:14px;"} Forma de Devolución
-          %section.col-md-6
-            %select#refund_type.select2.form-control
-              %option{:value => nil} Seleccione una Forma
-              %option{:value => "1"} Cheque
-              %option{:value => "2"} Transferencia
-              %option{:value => "3"} Efectivo
-        .row#checkn{"style"=>"margin-bottom:1%;display:none;"}
-          %section.col-md-5
-            %label{"style"=>"font-size:14px;"} N° Cheque
-          %section.col-md-6
-            .input-group
-              %input#check_number.form-control
-              %span.input-group-addon
-                %i.icon-append.fa.fa-bar-chart
-        .row#checkd{"style"=>"margin-bottom:1%;display:none;"}
-          %section.col-md-5
-            %label{"style"=>"font-size:14px;"} Fecha de Cheque
-          %section.col-md-6
-            .input-group
-              %input#check_date.form-control{as: :string,type: "date"}
-              %span.input-group-addon
-                %i.icon-append.fa.fa-calendar
-        .row{"style"=>"margin-bottom:1%;"}
-          %section.col-md-5
-            %label{"style"=>"font-size:14px;"} Estado
-          %section.col-md-6
-            %select#state.select2.form-control
-              %option{:value => "1"} Pendiente
-              %option{:value => "2"} Devuelto
+    
+      = form_for @loan, url: create_loan_general_expenses_loans_path, as: :post, html: { class: "smart-form", id: "create_loan" } do |f|    
 
-        .row#devdate{"style"=>"margin-bottom:1%;display:none;"}
-          %section.col-md-5
-            %label{"style"=>"font-size:14px;"} Fecha de Devolución
-          %section.col-md-6
-            .input-group
-              %input#refund_date.form-control{{as: :string,type: "date"}}
-              %span.input-group-addon
-                %i.icon-append.fa.fa-calendar
-      %footer
-        %button.btn.btn-primary#smart-mod-eg1{type: "button", "style"=>"float:right;"}
-          %i.fa.fa-save
-            Guardar
-        %button.btn.btn-danger#new2{"data-dismiss" => "modal", type: "button"}
-          Salir      
+        %fieldset
+          %input#cc{ :value => "#{@cc.id.to_i.to_s}", "style"=>"display:none"}
+          %input{:name=> 'loan[cost_center_lender_id]', :value => "#{@cc.id.to_i.to_s}", "style"=>"display:none"}
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Beneficiario
+            %section.col-md-6
+              %select#beneficiary.select2.form-control{:name => "loan[cost_center_beneficiary_id]"}
+                %option{:value => nil} Seleccione un Beneficiario
+                - @costcenters.each do |ph|
+                  %option{:value => "#{ph.id}"}
+                    = ph.name
+          .row{"style"=>"margin-bottom:1%;"}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Entregado a
+            %section.col-md-6
+              %input#loan_cost_center_lender_id.form-control{'name' => 'loan[person]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;'}
+          .row
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Fecha de Entrega
+            %section.col-md-6
+              %input#loan_date.form-control{as: :string,type: "date", :name => "loan[loan_date]"}
+                
+          .row{"style"=>""}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Forma de Préstamo
+            %section.col-md-6
+              %select#loan_type.select2.form-control{:name => "loan[loan_type]"}
+                %option{:value => nil} Seleccione una Forma
+                %option{:value => "1"} Cheque
+                %option{:value => "2"} Transferencia
+                %option{:value => "3"} Efectivo
+          .row
+            %section.col-md-5
+            %section.col-md-5
+              = file_field_tag 'loan[loan_doc]', class: 'btn btn-default'
+
+          .row{"style"=>""}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Monto
+            %section.col-md-6
+              %input#amount.form-control{placeholder: "", :name => "loan[amount]"}
+                
+          .row{"style"=>""}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Motivo
+            %section.col-md-6
+              %textarea#description.form-control{placeholder: "", :name => 'loan[description]'}
+                
+          .row{"style"=>""}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Forma de Devolución
+            %section.col-md-6
+              %select#refund_type.select2.form-control{:name => "loan[refund_type]"}
+                %option{:value => nil} Seleccione una Forma
+                %option{:value => "1"} Cheque
+                %option{:value => "2"} Transferencia
+                %option{:value => "3"} Efectivo
+          .row
+            %section.col-md-5
+            %section.col-md-5
+              = file_field_tag 'loan[refund_doc]', class: 'btn btn-default'
+          .row#checkn{"style"=>"margin-bottom:1%;display:none;"}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} N° Cheque
+            %section.col-md-6
+              %input#check_number.form-control{:name => "loan[check_number]"}
+                
+          .row#checkd{"style"=>"display:none;"}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Fecha de Cheque
+            %section.col-md-6
+              %input#check_date.form-control{as: :string,type: "date", :name => 'loan[check_date]'}
+                
+          .row{"style"=>""}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Estado
+            %section.col-md-6
+              %select#state.select2.form-control{:name => 'loan[state]'}
+                %option{:value => "1"} Pendiente
+                %option{:value => "2"} Devuelto
+
+          .row#devdate{"style"=>"display:none;"}
+            %section.col-md-5
+              %label{"style"=>"font-size:14px;"} Fecha de Devolución
+            %section.col-md-6
+              %input#refund_date.form-control{as: :string,type: "date", :name =>"loan[refund_date]"}
+                
+        %footer
+          %button.btn.btn-primary#smart-mod-eg1{type: "button", "style"=>"float:right;"}
+            %i.fa.fa-save
+              Guardar
+          %button.btn.btn-danger#new2{"data-dismiss" => "modal", type: "button"}
+            Salir
 
 :javascript
 
@@ -111,9 +112,6 @@
     load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_new', data2, null, 'GET');
   });
 
-  function isNumber(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-  }
   $(document).ready(function (){
 
     $('#loan_new').attr("tabindex","");
@@ -125,7 +123,7 @@
         $('#devdate').fadeOut('fast');
     });
 
-    $('#worker-select').select2({
+    $('#loan_cost_center_lender_id').select2({
       placeholder: "Buscar Trabajadores...",
       minimumInputLength: 3,
       id: function(data) { return data.id; },
@@ -150,32 +148,36 @@
       escapeMarkup: function (m) { return m; }
     });
 
-      $("#refund_type").change(function() {
-          // foo is the id of the other select box 
-          if ($(this).val() == "1") {
-              $("#checkn").show();
-              $("#checkd").show();
-          }else{
-              $("#checkn").hide();
-              $("#checkd").hide();
-          } 
-      });
-      $("#state").change(function() {
-          // foo is the id of the other select box 
-          if ($(this).val() == "2") {
-              $("#devdate").show();
-          }else{
-              $("#devdate").hide();
-          } 
-      });
+    $("#refund_type").change(function() {
+        // foo is the id of the other select box 
+        if ($(this).val() == "1") {
+            $("#checkn").show();
+            $("#checkd").show();
+        }else{
+            $("#checkn").hide();
+            $("#checkd").hide();
+        } 
+    });
+
+    $("#state").change(function() {
+        // foo is the id of the other select box 
+        if ($(this).val() == "2") {
+            $("#devdate").show();
+        }else{
+            $("#devdate").hide();
+        } 
+    });
+
+    submit_form($('form#create_loan'))
   });
+
   $("#smart-mod-eg1").click(function(e) {
-    if($('#beneficiary').val()!='' && $('#person').val()!= '' && $('#loan_date').val()!= '' && $('#loan_type').val()!=''  && $('#amount').val()!='' && !isNaN($('#amount').val())  && $('#description').val()!=''&& $('#refund_type').val()!='' && $('#state').val()!=''){
+    if($('#beneficiary').val()!='' && $('#loan_date').val()!= '' && $('#loan_type').val()!=''  && $('#amount').val()!='' && !isNaN($('#amount').val())  && $('#description').val()!=''&& $('#refund_type').val()!='' && $('#state').val()!=''){
       if($('#refund_type').val()==2 ){
         if($('#refund_date').val()!='' ){
-          data = { authenticity_token: "#{form_authenticity_token}", cost_center_beneficiary_id: $('#beneficiary').val(), person: $('#worker-select').val(), amount: $('#amount').val(), loan_date: $('#loan_date').val(), loan_type: $('#loan_type').val(), cost_center_lender_id: $('#cc').val(), description: $('#description').val(), refund_type: $('#refund_type').val(), check_number: $('#check_number').val(), check_date: $('#check_date').val(), state: $('#state').val(), refund_date: $('#refund_date').val()};
           data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
-          load_url_ajax('#{create_loan_general_expenses_loans_path}', 'loan_new', data, null, 'POST');
+
+          $('form#create_loan').submit();
           load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_new', data2, null, 'GET');
           $.smallBox({
             title : "Exito",
@@ -194,9 +196,8 @@
           });
         }
       }else{
-        data = { authenticity_token: "#{form_authenticity_token}", cost_center_beneficiary_id: $('#beneficiary').val(), person: $('#worker-select').val(), amount: $('#amount').val(), loan_date: $('#loan_date').val(), loan_type: $('#loan_type').val(), cost_center_lender_id: $('#cc').val(), description: $('#description').val(), refund_type: $('#refund_type').val(), check_number: $('#check_number').val(), check_date: $('#check_date').val(), state: $('#state').val(), refund_date: $('#refund_date').val()};
         data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
-        load_url_ajax('#{create_loan_general_expenses_loans_path}', 'loan_new', data, null, 'POST');
+        $('form#create_loan').submit();
         load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_new', data2, null, 'GET');
         $.smallBox({
           title : "Exito",
@@ -239,3 +240,65 @@
     return true;
   }
 
+  function submit_form(form_element){
+    form_element.ajaxForm({
+      beforeSubmit: function() {
+        form_element.validate({
+          // Rules for form validation
+          ignore: '',
+          rules : {
+            'loan[cost_center_beneficiary_id]' : {
+              required : true,
+            },
+            'loan[cost_center_lender_id]' : {
+              required : true,
+            },
+            'loan[loan_date]' : {
+              required : true,
+            },
+            'loan[loan_type]' : {
+              required : true,
+            },
+            'loan[amount]' : {
+              required : true,
+            }
+
+          },
+
+          // Messages for form validation
+          messages : {
+            'loan[cost_center_beneficiary_id]' : {
+              required : "(*)",
+            },
+            'loan[cost_center_lender_id]' : {
+              required : "(*)",
+            },
+            'loan[loan_date]' : {
+              required : "(*)",
+            },
+            'loan[loan_type]' : {
+              required :  "(*)",
+            },
+            'loan[amount]' : {
+              required :  "(*)",
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return form_element.valid();
+      },
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+      },
+      error: function(xhr, status, error) {
+        console.log(error);
+      }
+    })
+  }

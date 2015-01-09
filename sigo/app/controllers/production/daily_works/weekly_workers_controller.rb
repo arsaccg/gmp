@@ -4,8 +4,8 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   
   def index
     @workingGroups = WorkingGroup.all
-    @weeklyworker = WeeklyWorker.all
     @cost_center = get_company_cost_center('cost_center')
+    @weeklyworker = WeeklyWorker.where("cost_center_id = "+@cost_center.to_s)
     render layout: false
   end
 

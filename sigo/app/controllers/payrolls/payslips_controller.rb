@@ -45,12 +45,12 @@ class Payrolls::PayslipsController < ApplicationController
       last_code = a.code.to_i + 1 
     end
 
-
+    cc = get_company_cost_center('cost_center')
     regs.each do |reg|
       pay = Payslip.new
       pay.type_of_payslip_id = params[:payslip][''+reg.to_s+'']['type_of_payslip_id']
       pay.worker_id = params[:payslip][''+reg.to_s+'']['worker_id']
-      pay.cost_center_id = params[:payslip][''+reg.to_s+'']['cost_center_id']
+      pay.cost_center_id = cc
       pay.company_id = params[:payslip][''+reg.to_s+'']['company_id']
       pay.week = params[:payslip][''+reg.to_s+'']['week']
       pay.days = params[:payslip][''+reg.to_s+'']['days']

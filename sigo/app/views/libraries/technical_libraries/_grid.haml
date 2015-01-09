@@ -11,13 +11,13 @@
               %li.active
                 %a{"data-toggle" => "tab", href: "#tab-#{type_lib.id}"}
                   %span.badge.bg-color-blue.txt-color-white
-                    = type_lib.technical_libraries.count
+                    = type_lib.technical_libraries.where("type_of_cost_center LIKE '"+@cc+"'").count
                   = type_lib.name
             - else
               %li
                 %a{"data-toggle" => "tab", href: "#tab-#{type_lib.id}"}
                   %span.badge.bg-color-blue.txt-color-white
-                    = type_lib.technical_libraries.count
+                    = type_lib.technical_libraries.where("type_of_cost_center LIKE '"+@cc+"'").count
                   = type_lib.name
         .tab-content
           - @type_lib.each do |type_lib|

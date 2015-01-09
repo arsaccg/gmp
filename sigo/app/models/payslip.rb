@@ -422,10 +422,10 @@ class Payslip < ActiveRecord::Base
     # => ING - Ingresos
     # => DES - Descuentos
     # => APO - Aportaciones
-   
     twoid = twoid
     array_worker = array_worker.split(',').uniq
     topay = TypeOfPayslip.find(tpayid)
+    id_quincena = topay.type_of_payslips_id
     ing_before = false
     des_before = false
     apor_before = false
@@ -575,7 +575,7 @@ class Payslip < ActiveRecord::Base
         amount_other_payslip = 0
         if apply_to == "ingresos"
           if ing_before
-            ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"' AND type_of_payslip_id= "+id_quincena.to_s+")").each do |b|  
               array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
             end 
             array_other_payslip.each do |j| 
@@ -584,8 +584,8 @@ class Payslip < ActiveRecord::Base
               end
             end
           elsif des_before
-            ActiveRecord::Base.connection.execute("SELECT `payslips`.`des_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
-              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`des_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"' AND type_of_payslip_id= "+id_quincena.to_s+")").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='descuentos_totales'} 
             end 
             array_other_payslip.each do |j| 
               j.each_with_index do |key,value| 
@@ -593,8 +593,8 @@ class Payslip < ActiveRecord::Base
               end
             end            
           elsif apor_before
-            ActiveRecord::Base.connection.execute("SELECT `payslips`.`aport_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
-              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`aport_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"' AND type_of_payslip_id= "+id_quincena.to_s+")").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='aportaciones_totales'} 
             end 
             array_other_payslip.each do |j| 
               j.each_with_index do |key,value| 
@@ -772,7 +772,7 @@ class Payslip < ActiveRecord::Base
         amount_other_payslip = 0
         if apply_to == "descuentos"
           if ing_before
-            ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"' AND type_of_payslip_id= "+id_quincena.to_s+")").each do |b|  
               array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
             end 
             array_other_payslip.each do |j| 
@@ -781,8 +781,8 @@ class Payslip < ActiveRecord::Base
               end
             end
           elsif des_before
-            ActiveRecord::Base.connection.execute("SELECT `payslips`.`des_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
-              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`des_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"' AND type_of_payslip_id= "+id_quincena.to_s+")").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='descuentos_totales'} 
             end 
             array_other_payslip.each do |j| 
               j.each_with_index do |key,value| 
@@ -790,8 +790,8 @@ class Payslip < ActiveRecord::Base
               end
             end            
           elsif apor_before
-            ActiveRecord::Base.connection.execute("SELECT `payslips`.`aport_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
-              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`aport_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"' AND type_of_payslip_id= "+id_quincena.to_s+")").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='aportaciones_totales'} 
             end 
             array_other_payslip.each do |j| 
               j.each_with_index do |key,value| 
@@ -850,7 +850,7 @@ class Payslip < ActiveRecord::Base
         amount_other_payslip = 0
         if apply_to == "ingresos"
           if ing_before
-            ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"' AND type_of_payslip_id= "+id_quincena.to_s+")").each do |b|  
               array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
             end 
             array_other_payslip.each do |j| 
@@ -859,8 +859,8 @@ class Payslip < ActiveRecord::Base
               end
             end
           elsif des_before
-            ActiveRecord::Base.connection.execute("SELECT `payslips`.`des_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
-              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`des_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"' AND type_of_payslip_id= "+id_quincena.to_s+")").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='descuentos_totales'} 
             end 
             array_other_payslip.each do |j| 
               j.each_with_index do |key,value| 
@@ -868,8 +868,8 @@ class Payslip < ActiveRecord::Base
               end
             end            
           elsif apor_before
-            ActiveRecord::Base.connection.execute("SELECT `payslips`.`aport_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"')").each do |b|  
-              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='ingresos_totales'} 
+            ActiveRecord::Base.connection.execute("SELECT `payslips`.`aport_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '"+month_payslip.to_s+"' AND type_of_payslip_id= "+id_quincena.to_s+")").each do |b|  
+              array_other_payslip << JSON.parse(b[0]).select{|key, hash| key=='aportaciones_totales'} 
             end 
             array_other_payslip.each do |j| 
               j.each_with_index do |key,value| 
@@ -891,7 +891,6 @@ class Payslip < ActiveRecord::Base
           @result[0] << "Aportaciones Totales"
         end
       end
-
       array_worker.delete(row[0])
       @i+=1
     end

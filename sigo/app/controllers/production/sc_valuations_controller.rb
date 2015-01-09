@@ -2,7 +2,8 @@ class Production::ScValuationsController < ApplicationController
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
 	def index
 		@company = get_company_cost_center('company')
-    @scvaluation = ScValuation.all
+    @cc = get_company_cost_center('cost_center')
+    @scvaluation = ScValuation.where("cost_center_id ="+@cc.to_s)
 		render layout: false
 	end
 
@@ -100,7 +101,8 @@ class Production::ScValuationsController < ApplicationController
   end
 
 	def new
-    @executors = Subcontract.where("entity_id NOT LIKE 0")
+    @cc = get_company_cost_center('cost_center')
+    @executors = Subcontract.where("entity_id NOT LIKE 0 AND cost_center_id = "+@cc.to_s)
     last=ScValuation.last
     if !last.nil?
       @start = last.start_date

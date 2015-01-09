@@ -2,31 +2,20 @@ class GeneralExpenses::LoansController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def new
-    @costcenters = CostCenter.where('id not in (?)', params[:cc_id])
+    @costcenters = CostCenter.where('id not in ('+ params[:cc_id]+')')
     @cc = CostCenter.find(params[:cc_id]) rescue nil
     @loan = Loan.new
     render layout: false
   end
 
   def create
-
+    render json: {:cc_id=>loan.cost_center_lender_id.to_s}
   end
 
   def create_loan
     flash[:error] = nil
-    loan = Loan.new
-    loan.person = params[:person]
-    loan.loan_date = params[:loan_date]
-    loan.loan_type = params[:loan_type]
-    loan.amount = params[:amount]
-    loan.description = params[:description]
-    loan.refund_type = params[:refund_type]
-    loan.check_number = params[:check_number]
-    loan.check_date = params[:check_date]
-    loan.state = params[:state]
-    loan.refund_date = params[:refund_date]
-    loan.cost_center_beneficiary_id = params[:cost_center_beneficiary_id]
-    loan.cost_center_lender_id = params[:cost_center_lender_id]
+    loan = Loan.new(loan_params)
+
     if loan.save
       loan.errors.messages.each do |attribute, error|
         flash[:error] =  flash[:error].to_s + error.to_s + "  "
@@ -354,6 +343,6 @@ class GeneralExpenses::LoansController < ApplicationController
   end
   private
   def loan_params
-    params.require(:loan).permit(:person,:loan_date,:loan_type,:amount,:description,:refund_type,:check_number,:check_date,:state,:refund_date,:cost_center_beneficiary_id,:cost_center_lender_id)
+    params.require(:loan).permit(:person,:loan_date,:loan_type, :loan_doc, :refund_doc, :amount,:description,:refund_type,:check_number,:check_date,:state,:refund_date,:cost_center_beneficiary_id,:cost_center_lender_id)
   end
 end
