@@ -40,11 +40,12 @@ class Budget < ActiveRecord::Base
     # FROM          Presupuesto 
     # ORDER BY    Presupuesto.CodPresupuesto
     str_query = "SELECT Presupuesto.CodPresupuesto, Presupuesto.Descripcion FROM  Presupuesto ORDER BY Presupuesto.CodPresupuesto"
+    p " dentro de load_bugdets_from_remote"
     budgets = do_query(str_query, {db_name: database})
     budgets.each do |item|
       item_budget = Hash.new
-      item_budget[:budget_code] = item[0]
-      item_budget[:budget_name] = item[1]
+      item_budget[:budget_code] = item['CodPresupuesto']
+      item_budget[:budget_name] = item['Descripcion']
       budget_array << item_budget
     end
     return budget_array
