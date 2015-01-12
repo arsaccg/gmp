@@ -91,7 +91,9 @@ class Budget < ActiveRecord::Base
       # ORDER BY      Presupuesto.CodPresupuesto
       # WHERE         Presupuesto.CodPresupuesto LIKE '#ID#%'
       array_budgets = do_query("SELECT Presupuesto.CodPresupuesto, Presupuesto.Descripcion FROM  Presupuesto WHERE CodPresupuesto LIKE '" +  budget_id.to_s + "%'  AND Presupuesto.CodPresupuesto <> '9999999' ORDER BY Presupuesto.CodPresupuesto ", {db_name: database})
+
       count_items = array_budgets.count
+
       #data_thread = Thread.new do
       array_budgets.each do |budget| 
         # CREAR REGISTRO DE PRESUPUESTO 
@@ -107,7 +109,10 @@ class Budget < ActiveRecord::Base
           #new_budget.cod_budget = budget[0]  
           #new_budget.description = budget[1]  #Presupuesto.Descripcion
           #new_budget.save
-        array_sub_budgets = do_query("SELECT CodPresupuesto, CodSubpresupuesto, Descripcion FROM  Subpresupuesto WHERE CodPresupuesto = '" + budget[0]  + "' AND CodPresupuesto <> '9999999' AND CodSubpresupuesto <> '999'", {db_name: database})
+        array_sub_budgets = do_query("SELECT CodPresupuesto, CodSubpresupuesto, Descripcion FROM  Subpresupuesto WHERE CodPresupuesto = '" + budget['CodPresupuesto']  + "' AND CodPresupuesto <> '9999999' AND CodSubpresupuesto <> '999'", {db_name: database})
+        p '---------------------------'
+        p array_sub_budgets
+        p '---------------------------'
         array_sub_budgets.each do |subbudget|
           if Budget.where("cod_budget = ? AND type_of_budget=?",  subbudget[0].to_s + subbudget[1].to_s, type_of_budget ).first == nil
             new_subbudget=Budget.new
