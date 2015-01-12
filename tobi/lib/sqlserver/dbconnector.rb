@@ -27,8 +27,12 @@ module DBConnector
 	    uri.query = URI.encode_www_form(params)
 
 	    json = Net::HTTP.get_response(uri)
+	    
+	    if json.code == "301"
+	      json = Net::HTTP.get_response(URI.parse(json.header['location']))
+	    end
 
-		return json
+		return JSON.parse(json.body)
 	end
 
 	def load_params(params)

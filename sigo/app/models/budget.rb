@@ -18,16 +18,12 @@ class Budget < ActiveRecord::Base
   def load_dbs
     db_array = Array.new
 
-    str_query = "SELECT name FROM  sysdatabases"
+    str_query = "SELECT name FROM sysdatabases"
 
     sysdatabases = do_query(str_query, {db_name: "master"})
-
     sysdatabases.each do |sysdatabase|
-      p '-----------'
-      p sysdatabase
-      p '-----------'
       item_sys = Hash.new
-      item_sys[:name] = sysdatabase[0] 
+      item_sys[:name] = sysdatabase['name'] 
       db_array << item_sys
     end
 
