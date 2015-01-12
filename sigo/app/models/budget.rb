@@ -22,13 +22,16 @@ class Budget < ActiveRecord::Base
 
     sysdatabases = do_query(str_query, {db_name: "master"})
 
-        sysdatabases.each do |sysdatabase|
-          item_sys = Hash.new
-          item_sys[:name] = sysdatabase[0] 
-          db_array << item_sys
-        end
+    sysdatabases.each do |sysdatabase|
+      p '-----------'
+      p sysdatabase
+      p '-----------'
+      item_sys = Hash.new
+      item_sys[:name] = sysdatabase[0] 
+      db_array << item_sys
+    end
 
-        return db_array
+    return db_array
   end
 
   def load_bugdets_from_remote(database)

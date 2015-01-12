@@ -26,9 +26,8 @@ module DBConnector
 	    params = { :str => query_str }
 	    uri.query = URI.encode_www_form(params)
 
-	    result = Net::HTTP.get_response(uri)
+	    json = Net::HTTP.get_response(uri)
 
-		json=JSON.parse(result)
 		return json
 	end
 
@@ -39,7 +38,7 @@ module DBConnector
 		#@@url_webservice = "http://192.168.1.123/Extractor.asmx?wsdl"
 		
 		@@url_webservice = params[:url] == nil ? "http://10.10.10.220/webservice?str" : "http://#{params[:url]}/webservice?str"
-		@@server = params[:server] == nil ? "SRVBDS10\\S10" : params[:server]
+		@@server = params[:server] == nil ? "10.10.10.20" : params[:server]
 		@@db_name = params[:db_name] == nil ? "master" : params[:db_name]
 		@@user = params[:user] == nil ? "sa" : params[:user]
 		@@pass = params[:pass] == nil ? "" : params[:pass]	
