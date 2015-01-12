@@ -3,31 +3,31 @@
     %span.widget-icon
       %i.fa.fa-eye
     %h2
-      = t('activerecord.modelsdescription.bill_of') + t('activerecord.modelsdescription.format')
+      Formulario de Formato
   .widget-body
     = simple_form_for([:logistics, @format], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
       %fieldset
         .row
           %section.col.col-6
             %label.label
-              = t('activerecord.attributes.format.name')
+              Nombre
             %label.input{for: "name"}
               %i.icon-append.fa.fa-superscript
-              = f.input :name, placeholder: t('activerecord.attributes.format.name'), input_html: { class: 'form-control' }, label: false
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-10
             %label.label
-              = t('activerecord.attributes.format.description')
+              Descripción
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-user
-              = f.input :description, placeholder: t('activerecord.attributes.format.description'), input_html: { class: 'form-control' }, label: false
+              = f.input :description, placeholder: "Descripcion", input_html: { class: 'form-control' }, label: false
         = hidden_field_tag "cost_center[company_id]"
           
         
       %footer
         %button.btn.btn-primary{type: "submit"}
           %i.fa.fa-save
-            = t('activerecord.actions.save')
+            Guardar
 
 :javascript
   $(document).ready(function () {

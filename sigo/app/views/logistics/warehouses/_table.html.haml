@@ -3,7 +3,7 @@
     %span.widget-icon
       %i.fa.fa-table
     %h2
-      = t('activerecord.modelsdescription.warehouse')
+      Almacen
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
@@ -12,13 +12,13 @@
         %thead
           %tr
             %th
-              = t('activerecord.attributes.warehouse.cost_center')
+              Centro de Costo
             %th
-              = t('activerecord.attributes.warehouse.name')
+              Nombre
             %th
-              = t('activerecord.attributes.warehouse.location')
+              Ubicacion
             %th
-              = t('activerecord.actions.name')
+              Acciones
         %tbody
           - @items.each do |unit|
             %tr
@@ -30,9 +30,9 @@
                 = unit.location
               %td
                 %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_warehouse_path(unit.id)}', 'content', null, null, 'GET')"}
-                  = t('activerecord.actions.edit')
+                  Editar
                 %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => t('activerecord.actions.deletem') + "#{unit.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_warehouse_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}' + '&current_user_id=#{current_user.id}', 'content', '#{logistics_warehouses_path}')"}}
-                  = t('activerecord.actions.delete')
+                  Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
