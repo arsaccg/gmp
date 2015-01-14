@@ -291,10 +291,10 @@ class Reports::ReportofthemonthsController < ApplicationController
         total_valorization += (measure.to_f * price.to_f)
       end
       
-      pos_linear = @months_linear_char.index(valorization.valorization_date.to_date.strftime('%^b.%Y').to_s)
-      pos_bar = @months_bar_char.index(valorization.valorization_date.to_date.strftime('%^b.%Y').to_s)
-      @data_total_valorization_linear_char[pos_linear] =  total_valorization
-      @data_total_valorization_bar_char[pos_bar] = total_valorization
+      pos_linear = @months_linear_char.index(valorization.valorization_date.to_date.strftime('%^b.%Y').to_s).to_i
+      pos_bar = @months_bar_char.index(valorization.valorization_date.to_date.strftime('%^b.%Y').to_s).to_i
+      @data_total_valorization_linear_char[pos_linear] =  total_valorization.to_f
+      @data_total_valorization_bar_char[pos_bar] = total_valorization.to_f
     end
 
     @data_total_valorization_linear_char.map! { |v| v.nil? ? 0 : v }

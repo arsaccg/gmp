@@ -110,9 +110,7 @@ class Budget < ActiveRecord::Base
           #new_budget.description = budget[1]  #Presupuesto.Descripcion
           #new_budget.save
         array_sub_budgets = do_query("SELECT CodPresupuesto, CodSubpresupuesto, Descripcion FROM  Subpresupuesto WHERE CodPresupuesto = '" + budget['CodPresupuesto']  + "' AND CodPresupuesto <> '9999999' AND CodSubpresupuesto <> '999'", {db_name: database})
-        p '---------------------------'
-        p array_sub_budgets
-        p '---------------------------'
+
         array_sub_budgets.each do |subbudget|
           if Budget.where("cod_budget = ? AND type_of_budget=?",  subbudget[0].to_s + subbudget[1].to_s, type_of_budget ).first == nil
             new_subbudget=Budget.new
