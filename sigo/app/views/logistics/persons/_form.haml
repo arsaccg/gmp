@@ -74,7 +74,7 @@
             %label.select
               %select.collection_select.optional.select2#user_cost_center_ids{'multiple'=>'multiple','name'=>'user[cost_center_ids][]'}
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 

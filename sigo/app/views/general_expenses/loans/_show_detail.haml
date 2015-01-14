@@ -4,7 +4,7 @@
   %table.table.table-striped.table-bordered.table-hover.smart-form
     %thead
       %tr
-        %th{'colspan' => 4, "style"=>"text-align:center;"}= "PRESTAMO N° "+ @loan.id.to_s
+        %th{'colspan' => 4, "style"=>"text-align:center;"}= "PRESTAMO N° "+ @num.to_s
     %tbody
       %tr
         -e=Entity.find(Worker.find(@loan.person).entity_id)

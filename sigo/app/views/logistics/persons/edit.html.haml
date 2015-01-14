@@ -82,14 +82,9 @@
                     %label.select
                       =select_tag "user_cost_center_ids",options_from_collection_for_select(@allCostCenter, 'id', 'name', @costCenter), label: 'false', multiple: 'true', class: 'collection_select optional select2', name: 'user[cost_center_ids][]'
               %footer
-                %button.btn.btn-primary{type: "submit"}
+                %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
                   %i.fa.fa-save
                   Guardar
-
-
-= javascript_include_tag 'plugin/flot/jquery.flot.cust'
-= javascript_include_tag 'plugin/flot/jquery.flot.resize'
-= javascript_include_tag 'plugin/datatables/DT_bootstrap'
 
 :javascript
   $(document).ready(function () {
@@ -102,7 +97,6 @@
     }else{
       submit_validate($('#new_user'));
     }
-
     $('#user_company_ids').change(function(){
       $("#user_cost_center_ids").select2("val", "");
       if($(this).val() != null){
@@ -129,9 +123,7 @@
         $('#user_cost_center_ids').find('option').remove();
       }
     });
-
   });
-
   function submit_validate(form){
     $(form['selector']).ajaxForm({
       beforeSubmit: function() {
@@ -159,7 +151,6 @@
               required : true
             }
           },
-
           // Messages for form validation
           messages : {
             'user[first_name]' : {
@@ -183,23 +174,13 @@
               required : 'Por favor, defina el rol de usuario.'
             }
           },
-
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
             $('#modalLoadingLabelading').modal('hide');
-            $('.modal-backdrop.fade.in').remove();
+            $('.modal-backdrop.fade.in').remove();            
           }
         });
-        // Remove all Help-inLine
-        $(".help-inline").remove();
-        $('#modalLoadingLabelading').modal('hide');
-        $('.modal-backdrop.fade.in').remove();
-        // Client Valid
-        if( $(form['selector']).valid() ){
-          $('#modalLoadingLabelading').modal();
-        }
-        // Client Valid
         return $(form['selector']).valid();
       },
       target: '#content',
@@ -211,6 +192,6 @@
       error: function(xhr, status, error) {
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
-      }
+      }      
     });
   }
