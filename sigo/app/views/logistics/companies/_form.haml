@@ -1,124 +1,171 @@
-#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
   %header
     %span.widget-icon
-      %i.fa.fa-eye
-    %h2 Compañia
-  .widget-body
-    = simple_form_for([:logistics, @company], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
-      %fieldset
-        .row
-          %section.col.col-6
-            %label.label RUC
-            %label.input{for: "ruc"}
-              %i.icon-append.fa.fa-superscript
-              = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-5
-            %label.label Nombre
-            %label.input{for: "name"}
-              %i.icon-append.fa.fa-user
-              = f.input :name, placeholder: "Nombre de la compañia", input_html: { class: 'form-control' }, label: false
-          %section.col.col-5
-            %label.label Nombre Abreviado
-            %label.input{for: "name"}
-              %i.icon-append.fa.fa-user
-              = f.input :short_name, placeholder: "Nombre abreviado", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
-            %label.label Dirección
-            %label.input{for: "address"}
-              %i.icon-append.fa.fa-user
-              = f.input :address, placeholder: "Dirección del Grupo", input_html: { class: 'form-control' }, label: false
-        .row
-          %section.col.col-10
-            %label.label Logo
-            %label.input.input-file{for: "avatar"}
-            = f.input :avatar, :input_html => { :class => 'btn btn-default' }, label: false, as: "file"
-            %p.help-block
-              - if @action == 'edit' && @company.avatar.exists?
-                = 'Archivo subido: ' + File.basename(@company.avatar.path, File.extname(@company.avatar.path))
-              - else
-                Subir el archivo correspondiente
-      %footer
-        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
-          %i.fa.fa-save
-            Guardar
+      %i.fa.fa-table
+    %h2 Lista de Compañias
+  / widget div
+  %div
+    / widget edit box
+    .jarviswidget-editbox
+      / This area used as dropdown edit box
+    / end widget edit box
+    / widget content
+    .widget-body.no-padding
+      .widget-body-toolbar
+      #dt_basic_wrapper.dataTables_wrapper.form-inline{:role => 'grid'}
+        .dt-top-row
+          #dt_basic_length.dataTables_length
+            %span.smart-form
+              %label.select{style: "width:60px"}
+                %select{"aria-controls" => "dt_basic", name: "dt_basic_length", size: "1"}
+                  %option{selected: "selected", value: "10"} 10
+                  %option{value: "25"} 25
+                  %option{value: "50"} 50
+                  %option{value: "100"} 100
+                %i
+          #dt_basic_filter.dataTables_filter
+            .input-group
+              %span.input-group-addon
+                %i.fa.fa-search
+              %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
+        .dt-wrapper
+          %table#dt_basic.table.table-striped.table-bordered.table-hover
+            %thead
+              %tr
+                %th Nombre
+                %th RUC
+                %th Acciones
+            %tbody
+              - @companies.each do |company|
+                %tr
+                  %td
+                    = company.name
+                  %TD
+                    = company.ruc
+                  %td
+                    %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{logistics_cost_centers_path}', 'content', {company_id: '#{company.id}'}, null, 'GET')"}
+                      Centros de Costo
+                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_company_path(company.id)}', 'content', null, null, 'GET')"}
+                      Editar
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{company.name}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_company_path(company.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_companies_path}')"}}
+                      Eliminar
 
 :javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
   $(document).ready(function () {
-    $("#category_code").focus();
-
-    if($('form[id^="edit_"]').length > 0) {
-      submit_validate($('form[id^="edit_"]'));
-    }
-    else{
-      submit_validate($('#new_company'));
-    }
+    $('[data-toggle="confirmation"]').confirmation();
   });
-  
-  function submit_validate(form){
-    $(form['selector']).ajaxForm({
-      beforeSubmit: function() {
-        $(form['selector']).validate({
-          // Rules for form validation
-          rules : {
-            'company[ruc]' : {
-              required : true,
-              digits: true,
-              minlength : 11,
-              maxlength : 11
-            },
-            'company[name]' : {
-              required : true,
-            },
-            'company[address]' : {
-              required : true,
-            }
-          },
 
-          // Messages for form validation
-          messages : {
-            'company[ruc]' : {
-              required : 'Porfavor, ingresar el RUC de la Compania',
-              digits: 'Solo se aceptan números',
-              minlength : "Como mínimo debe tener 11 dígitos.",
-              maxlength : "Como máximo debe tener 11 dígitos."
-            },
-            'company[name]' : {
-              required : 'Porfavor, ingresar el nombre de la CIA.'
-            },
-            'company[address]' : {
-              required : 'Porfavor, ingresar la dirección de la CIA.'
-            }
-          },
+  // PAGE RELATED SCRIPTS
 
-          // Do not change code below
-          errorPlacement : function(error, element) {
-            error.insertAfter(element.parent());
-            $('#modalLoadingLabelading').modal('hide');
-            $('.modal-backdrop.fade.in').remove();
-          }
-        });
-        // Remove all Help-inLine
-        $(".help-inline").remove();
-        $('#modalLoadingLabelading').modal('hide');
-        $('.modal-backdrop.fade.in').remove();
-        // Client Valid
-        if( $(form['selector']).valid() ){
-          $('#modalLoadingLabelading').modal();
-        }
-        // Client Valid
-        return $(form['selector']).valid();
-      },
-      target: '#content',
-      success: function (data){
-        $(".help-inline").parent().addClass("state-error");
-        $('#modalLoadingLabelading').modal('hide');
-        $('.modal-backdrop.fade.in').remove();
-      },
-      error: function(xhr, status, error) {
-        $('#modalLoadingLabelading').modal('hide');
-        $('.modal-backdrop.fade.in').remove();
+  loadDataTableScripts();
+  function loadDataTableScripts() {
+
+    loadScript("#{ asset_path 'plugin/datatables/jquery.dataTables-cust.min', type: :javascript }", dt_2);
+
+    function dt_2() {
+      loadScript("#{ asset_path 'plugin/datatables/ColReorder.min', type: :javascript }", dt_3);
+    }
+
+    function dt_3() {
+      loadScript("#{ asset_path 'plugin/datatables/FixedColumns.min.js', type: :javascript }", dt_4);
+    }
+
+    function dt_4() {
+      loadScript("#{ asset_path 'plugin/datatables/ColVis.min', type: :javascript }", dt_5);
+    }
+
+    function dt_5() {
+      loadScript("#{ asset_path 'plugin/datatables/ZeroClipboard', type: :javascript }", dt_6);
+    }
+
+    function dt_6() {
+      loadScript("#{ asset_path 'plugin/datatables/media/js/TableTools.min', type: :javascript }", dt_7);
+    }
+
+    function dt_7() {
+      loadScript("#{ asset_path 'plugin/datatables/DT_bootstrap', type: :javascript }", runDataTables);
+    }
+
+  }
+
+  function runDataTables() {
+
+    /*
+     * BASIC
+     */
+    $('#dt_basic').dataTable({
+      "sPaginationType" : "bootstrap_full"
+    });
+
+    /* END BASIC */
+
+    /* Add the events etc before DataTables hides a column */
+    $("#dt_basic thead input").keyup(function() {
+      oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+    });
+
+    $("#dt_basic thead input").each(function(i) {
+      this.initVal = this.value;
+    });
+    $("#datatable_fixed_column thead input").focus(function() {
+      if (this.className == "search_init") {
+        this.className = "";
+        this.value = "";
       }
     });
+    $("#dt_basic thead input").blur(function(i) {
+      if (this.value == "") {
+        this.className = "search_init";
+        this.value = this.initVal;
+      }
+    });   
+    
+
+    var oTable = $('#datatable_fixed_column').dataTable({
+      "sDom" : "<'dt-top-row'><'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+      //"sDom" : "t<'row dt-wrapper'<'col-sm-6'i><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'>>",
+      "oLanguage" : {
+        "sSearch" : "Search all columns:"
+      },
+      "bSortCellsTop" : true
+    });   
+    
+
+
+    /*
+     * COL ORDER
+     */
+    $('#datatable_col_reorder').dataTable({
+      "sPaginationType" : "bootstrap",
+      "sDom" : "R<'dt-top-row'Clf>r<'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+      "fnInitComplete" : function(oSettings, json) {
+        $('.ColVis_Button').addClass('btn btn-default btn-sm').html('Columns <i class="icon-arrow-down"></i>');
+      }
+    });
+    
+    /* END COL ORDER */
+
+    /* TABLE TOOLS */
+    $('#datatable_tabletools').dataTable({
+      "sDom" : "<'dt-top-row'Tlf>r<'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+      "oTableTools" : {
+        "aButtons" : ["copy", "print", {
+          "sExtends" : "collection",
+          "sButtonText" : 'Save <span class="caret" />',
+          "aButtons" : ["csv", "xls", "pdf"]
+        }],
+        "sSwfPath" : "#{ asset_path 'javascript/plugin/datatables/media/swf/copy_csv_xls_pdf.swf'}"
+      },
+      "fnInitComplete" : function(oSettings, json) {
+        $(this).closest('#dt_table_tools_wrapper').find('.DTTT.btn-group').addClass('table_tools_group').children('a.btn').each(function() {
+          $(this).addClass('btn-sm btn-default');
+        });
+      }
+    });
+    
+    /* END TABLE TOOLS */
+
   }
