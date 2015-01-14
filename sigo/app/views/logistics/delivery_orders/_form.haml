@@ -239,11 +239,24 @@
           }
         });
 
-        return $('#new_delivery_order').valid();
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $('#new_delivery_order').valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        // Client Valid
+        return $('#new_delivery_order').valid();  
       },
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
       }

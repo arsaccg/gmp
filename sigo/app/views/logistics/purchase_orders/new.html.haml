@@ -286,7 +286,16 @@
 
       return $form.valid();
     },
-    target: '#content'
+    target: '#content',
+    success: function (data){
+      $(".help-inline").parent().addClass("state-error");
+      $('#modalLoadingLabelading').modal('hide');
+      $('.modal-backdrop.fade.in').remove();
+    },
+    error: function(xhr, status, error) {
+      $('#modalLoadingLabelading').modal('hide');
+      $('.modal-backdrop.fade.in').remove();
+    }
   });
 
   function add_extra_operation(obj){
