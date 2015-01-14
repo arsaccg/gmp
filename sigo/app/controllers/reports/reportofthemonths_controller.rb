@@ -5,7 +5,7 @@ class Reports::ReportofthemonthsController < ApplicationController
   	@d = Date.today-1.month
   	@dia = @d.at_beginning_of_month.strftime
   	@dia2 = @d.at_end_of_month.strftime
-    @cost_center = get_company_cost_center('cost_center')
+    @cost_center = session[:cost_center]
 
     @partwork = 0 
     @partequipment = 0
