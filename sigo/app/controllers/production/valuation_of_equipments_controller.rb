@@ -423,6 +423,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
 
   def report_of_equipment
+    @code = params[:code]
     @action = params[:ac]
     @totaldif = 0
     @totaltotalhours = 0

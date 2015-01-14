@@ -97,7 +97,6 @@
     }else{
       submit_validate($('#new_user'));
     }
-
     $('#user_company_ids').change(function(){
       $("#user_cost_center_ids").select2("val", "");
       if($(this).val() != null){
@@ -124,9 +123,7 @@
         $('#user_cost_center_ids').find('option').remove();
       }
     });
-
   });
-
   function submit_validate(form){
     $(form['selector']).ajaxForm({
       beforeSubmit: function() {
@@ -154,7 +151,6 @@
               required : true
             }
           },
-
           // Messages for form validation
           messages : {
             'user[first_name]' : {
@@ -178,7 +174,6 @@
               required : 'Por favor, defina el rol de usuario.'
             }
           },
-
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
