@@ -1,286 +1,349 @@
-class GeneralExpenses::GeneralExpensesController < ApplicationController
+class GeneralExpenses::LoansController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
+  def new
+    @costcenters = CostCenter.where('id not in ('+ params[:cc_id]+')')
+    @cc = CostCenter.find(params[:cc_id]) rescue nil
+    @loan = Loan.new
+    render layout: false
+  end
+
+  def create
+    render json: {:cc_id=>loan.cost_center_lender_id.to_s}
+  end
+
+  def create_loan
+    flash[:error] = nil
+    loan = Loan.new(loan_params)
+
+    if loan.save
+      loan.errors.messages.each do |attribute, error|
+        flash[:error] =  flash[:error].to_s + error.to_s + "  "
+      end
+    end
+    render json: {:cc_id=>loan.cost_center_lender_id.to_s}
+  end
+
+  def update
+    loan = Loan.find(params[:id])
+    if loan.update_attributes(loan_params)
+      flash[:notice] = "Se ha actualizado correctamente los datos."
+      redirect_to :action => :index, :controller => "loans"
+    else
+      con.errors.messages.each do |attribute, error|
+        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
+      end
+      # Load new()
+      @loan = loan
+      render :edit, layout: false
+    end
+  end
+
+  def display_workers
+    if params[:element].nil?
+      word = params[:q]
+    else
+      word = params[:element]
+    end
+    workers_hash = Array.new
+    if params[:element].nil?
+      workers = ActiveRecord::Base.connection.execute("
+        SELECT w.id,  e.name, e.paternal_surname, e.maternal_surname, e.dni
+        FROM workers w, entities e
+        WHERE ( e.name LIKE '%#{word}%' || e.paternal_surname LIKE '%#{word}%' || e.maternal_surname LIKE '%#{word}%' || e.dni LIKE '%#{word}%')
+        AND w.entity_id = e.id
+        GROUP BY e.id"
+          )      
+    else
+      workers = ActiveRecord::Base.connection.execute("
+        SELECT w.id,  e.name, e.paternal_surname, e.maternal_surname, e.dni
+        FROM workers w, entities e
+        WHERE w.entity_id = e.id
+        AND w.id = #{word}
+        GROUP BY e.id"
+          )
+    end
+    workers.each do |art|
+      workers_hash << {'name' => art[1],"paternal_surname"=> art[2],"maternal_surname"=> art[3],"id"=> art[0],"dni"=> art[4]}
+    end
+    render json: {:workers => workers_hash}
+  end
+
+  def edit
+    @cc1 = params[:cc1]
+    @cc2 = params[:cc2]
+    @cc3 = params[:cc3]
+
+    @costcenters = CostCenter.all
+    @loan = Loan.find(params[:id])
+
+    @action = 'edit'
+    render layout: false
+  end
+
+  def destroy
+    loan = Loan.destroy(params[:id])
+    flash[:notice] = "Se ha eliminado correctamente el pedido seleccionado."
+    render :json => loan
+  end
+
   def index
-    @gexp = GeneralExpense.where("cost_center_id = "+get_company_cost_center('cost_center').to_s)
+    @cc = CostCenter.find(params[:cc_id])
+    @presto = Loan.where('cost_center_lender_id=?', @cc.id)
+    @prestaron = Loan.where('cost_center_beneficiary_id=?', @cc.id)
+    @ledeben = Array.new
+    @debe = Array.new
+    ledeben = ActiveRecord::Base.connection.execute("
+      SELECT cost_center_beneficiary_id
+      FROM  loans
+      WHERE  cost_center_lender_id ="+@cc.id.to_s+"
+      GROUP BY cost_center_beneficiary_id
+    ")
+    ledeben.each do |ld|
+      aldp=0
+      aldd=0
+      ldp = ActiveRecord::Base.connection.execute("
+        SELECT Sum(amount)
+        FROM  loans
+        WHERE  cost_center_lender_id ="+@cc.id.to_s+"
+        AND cost_center_beneficiary_id = "+ld[0].to_s+"
+        AND state = 1
+      ")
+      ldp.each do |ldp|
+        aldp=ldp[0]
+      end
+      ldd = ActiveRecord::Base.connection.execute("
+        SELECT Sum(amount)
+        FROM  loans
+        WHERE  cost_center_lender_id ="+@cc.id.to_s+"
+        AND cost_center_beneficiary_id = "+ld[0].to_s+"
+        AND state = 2
+      ")
+      ldd.each do |ldp|
+        aldd=ldp[0]
+      end
+      @ledeben << [ld[0].to_s,aldp,aldd]
+    end
+
+    debe = ActiveRecord::Base.connection.execute("
+      SELECT cost_center_lender_id
+      FROM  loans
+      WHERE  cost_center_beneficiary_id ="+@cc.id.to_s+"
+      GROUP BY cost_center_lender_id
+    ")
+
+    debe.each do |ld|
+      aldp=0
+      aldd=0
+      ldp = ActiveRecord::Base.connection.execute("
+        SELECT Sum(amount)
+        FROM  loans
+        WHERE  cost_center_beneficiary_id ="+@cc.id.to_s+"
+        AND cost_center_lender_id = "+ld[0].to_s+"
+        AND state = 1
+      ")
+      ldp.each do |ldp|
+        aldp=ldp[0]
+      end
+      ldd = ActiveRecord::Base.connection.execute("
+        SELECT Sum(amount)
+        FROM  loans
+        WHERE  cost_center_beneficiary_id ="+@cc.id.to_s+"
+        AND cost_center_lender_id = "+ld[0].to_s+"
+        AND state = 2
+      ")
+      ldd.each do |ldp|
+        aldd=ldp[0]
+      end
+      @debe << [ld[0].to_s,aldp,aldd]
+    end    
     render layout: false
   end
 
   def show
+    @type = params[:type]
+    @cost_center1 = CostCenter.find(params[:cc1])
+    @cost_center2 = CostCenter.find(params[:cc2])
+    @cc = params[:cc3]
+    @loan = Loan.where("cost_center_lender_id = ? AND cost_center_beneficiary_id = ?",@cost_center1.id, @cost_center2.id)
+    @total = 0
+    @devuelto = 0
+    @loan.each do |loan|
+      @total+= loan.amount
+      if loan.state == "2"
+        @devuelto += loan.amount
+      end
+    end
     render layout: false
   end
 
-  def get_report
-    @phases = ActiveRecord::Base.connection.execute(" SELECT code_phase, SUM(total) FROM  general_expenses WHERE cost_center_id = "+get_company_cost_center('cost_center').to_s+" GROUP BY code_phase")
-    @ccd = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center').to_s)
-    @cc = get_company_cost_center('cost_center').to_s
-    @ge = GeneralExpense.where('cost_center_id = '+get_company_cost_center('cost_center').to_s)
-    @ids = Array.new
-    @t = Array.new
-    @ge.each do |g|
-      @ids << g.id
-    end
-    @ids=@ids.join(',')
-    t=ActiveRecord::Base.connection.execute("
-      SELECT SUM(ged.parcial) 
-      FROM  general_expense_details ged
-      WHERE ged.general_expense_id IN ("+@ids.to_s+")
-    ")
-    t.each do |t|
-      @t = t[0]
-    end
-    render layout: false
-  end
-  
-  def report
-    @ccd = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center').to_s)
-    @cc = get_company_cost_center('cost_center').to_s
-    @poe =ActiveRecord::Base.connection.execute("
-      SELECT ge.code_phase, p.code, p.name, ge.total, ar.code, ar.name, u.name, ged.people, ged.participation, ged.time, ged.parcial, ged.amount, ged.cost
-      FROM general_expense_details ged, general_expenses ge, articles ar, phases p, unit_of_measurements u
-      WHERE ge.cost_center_id = "+@cc.to_s+"
-      AND ge.id=ged.general_expense_id
-      AND ar.id = ged.article_id
-      AND p.id = ge.phase_id
-      AND ar.unit_of_measurement_id = u.id
-      ORDER BY p.code ASC 
-    ")
-    total = ActiveRecord::Base.connection.execute("
-      SELECT SUM(total)
-      FROM general_expenses
-      WHERE cost_center_id = "+@cc.to_s+"
-    ")
-    @todo = Array.new
-    @abuelo = Array.new
-    @padre = Array.new
-    @poe.each do |poe|
-      if !@abuelo.include?(poe[0])
-        suma = ActiveRecord::Base.connection.execute("
-            SELECT SUM(total)
-            FROM general_expenses
-            WHERE cost_center_id = "+@cc.to_s+"
-            AND code_phase = "+poe[0].to_s+"
-          ")
-        suma.each do |s|
-          @sum=s[0]
-        end
-        @abuelo << poe[0]
-        @todo << [poe[0],nil,Phase.find_by_code(poe[0].to_s).name.to_s,@sum.to_f,nil,nil,nil,nil,nil,nil,nil,nil,nil]
-      end
-      if !@padre.include?(poe[1])
-        @padre << poe[1]
-        @todo << [nil, poe[1],poe[2].to_s,poe[3],nil,nil,nil,nil,nil,nil,nil,nil,nil]
-      end
-      @todo << poe
-    end
-    total.each do |t|
-      @total = t[0]
-    end
-    render :layout => false
-  end
+  def show_details 
+    @loan= Loan.find(params[:id])
+    @num = params[:num]
+    render(partial: 'show_detail', :layout => false)
+  end  
 
   def report_pdf
     respond_to do |format|
       format.html
       format.pdf do
-        @ccd = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center').to_s)
-        @cc = get_company_cost_center('cost_center').to_s
-        @poe =ActiveRecord::Base.connection.execute("
-          SELECT ge.code_phase, p.code, p.name, ge.total, ar.code, ar.name, u.name, ged.people, ged.participation, ged.time, ged.parcial, ged.amount, ged.cost
-          FROM general_expense_details ged, general_expenses ge, articles ar, phases p, unit_of_measurements u
-          WHERE ge.cost_center_id = "+@cc.to_s+"
-          AND ge.id=ged.general_expense_id
-          AND ar.id = ged.article_id
-          AND p.id = ge.phase_id
-          AND ar.unit_of_measurement_id = u.id
-          ORDER BY p.code ASC 
-        ")
-        total = ActiveRecord::Base.connection.execute("
-          SELECT SUM(total)
-          FROM general_expenses
-          WHERE cost_center_id = "+@cc.to_s+"
-        ")
         @todo = Array.new
-        @abuelo = Array.new
-        @padre = Array.new
-        @poe.each do |poe|
-          if !@abuelo.include?(poe[0])
-            suma = ActiveRecord::Base.connection.execute("
-                SELECT SUM(total)
-                FROM general_expenses
-                WHERE cost_center_id = "+@cc.to_s+"
-                AND code_phase = "+poe[0].to_s+"
-              ")
-            suma.each do |s|
-              @sum=s[0]
+        @ccs = CostCenter.where("active = 1")
+        @ccs.each do |cc|
+          flag1 =true
+          flag2 =true
+          @array_le_deben = Array.new
+          @array_debe = Array.new
+          suma_total = 0
+          suma_total_le_deben = 0
+          suma_total_debe = 0
+          lender = ActiveRecord::Base.connection.execute("
+            SELECT cc.id, CONCAT(cc.code, ' - ', cc.name), SUM(l.amount)
+            FROM loans l, cost_centers cc
+            WHERE cost_center_lender_id ="+cc.id.to_s+"
+            AND cost_center_beneficiary_id = cc.id
+            GROUP BY cost_center_beneficiary_id
+          ")
+          lender.each do |l|
+            suma_devuelto = 0
+            suma_pendiente = 0
+            suma_total += l[2].to_f
+            montos = ActiveRecord::Base.connection.execute("            
+              SELECT SUM(l.amount), l.state
+              FROM loans l
+              WHERE cost_center_lender_id = "+cc.id.to_s+"
+              AND cost_center_beneficiary_id = "+l[0].to_s+"
+              GROUP BY l.state
+            ")
+            montos.each do |m|
+              if m[1].to_i == 2
+                suma_devuelto+=m[0].to_f
+              elsif m[1].to_i == 1
+                suma_total_le_deben += m[0].to_f
+                suma_pendiente += m[0].to_f
+              end
             end
-            @abuelo << poe[0]
-            @todo << [poe[0],nil,Phase.find_by_code(poe[0].to_s).name.to_s,@sum.to_f,nil,nil,nil,nil,nil,nil,nil,nil,nil]
+            @array_le_deben << [l[1].to_s, l[2].to_f, suma_devuelto.to_f, suma_pendiente.to_f, "lender_detail"]
           end
-          if !@padre.include?(poe[1])
-            @padre << poe[1]
-            @todo << [nil, poe[1],poe[2].to_s,poe[3],nil,nil,nil,nil,nil,nil,nil,nil,nil]
+          
+          beneficiary = ActiveRecord::Base.connection.execute("
+            SELECT cc.id, CONCAT(cc.code, ' - ', cc.name), SUM(l.amount)
+            FROM loans l, cost_centers cc
+            WHERE cost_center_lender_id = cc.id
+            AND cost_center_beneficiary_id = "+cc.id.to_s+"
+            GROUP BY cost_center_lender_id
+          ")          
+          beneficiary.each do |b|
+            suma_devuelto = 0
+            suma_pendiente = 0
+            suma_total -= b[2].to_f
+            montos = ActiveRecord::Base.connection.execute("            
+              SELECT SUM(l.amount), l.state
+              FROM loans l
+              WHERE cost_center_lender_id = "+b[0].to_s+"
+              AND cost_center_beneficiary_id = "+cc.id.to_s+"
+              GROUP BY l.state
+            ")
+            montos.each do |m|
+              if m[1].to_i == 2
+                suma_devuelto+=m[0].to_f
+              elsif m[1].to_i == 1
+                suma_total_debe += m[0].to_f
+                suma_pendiente += m[0].to_f
+              end
+            end
+            @array_debe << [b[1].to_s, b[2].to_f, suma_devuelto.to_f, suma_pendiente.to_f, "beneficiary_detail"]
+          end          
+
+          @todo << [cc.code+" - "+cc.name, suma_total, suma_total_le_deben, suma_total_debe, "main"]
+          if lender.count != 0
+            @todo << ["Centro de Costo Beneficiaro", "Total", "Devuelto", "Pendiente","lender_detail_header"]
+            @todo += @array_le_deben
+            flag1 = false
           end
-          @todo << poe
+          if beneficiary.count != 0
+            @todo << ["Centro de Costo al que se debe", "Total", "Devuelto", "Pendiente","beneficiary_detail_header"]
+            @todo += @array_debe
+            flag2 = false
+          end
+          if flag1 && flag2
+            @todo << ["NO SE REGISTRARON MOVIMIENTOS DE ESTE CENTRO DE COSTO "," "," "," ","blank2"]
+          end
+          @todo << [" "," "," "," ","blank"]
         end
-        total.each do |t|
-          @total = t[0]
-        end
-        render :pdf => "reporte_gastos_generales-#{Time.now.strftime('%d-%m-%Y')}", 
-               :template => 'general_expenses/general_expenses/report_pdf.pdf.haml',
+        @todo.delete_at(@todo.length-1)
+
+        render :pdf => "reporte_movimientos-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'general_expenses/loans/report_pdf.pdf.haml',
                :orientation => 'Landscape',
-               :page_size => 'Letter'
+               :page_size => 'A4'
       end
     end
   end
 
-
-  def new
-    @gexp = GeneralExpense.new
-    @phase = Phase.where("code LIKE '____' AND code > '8999'").order(:code)
-    @action = 'new'
-    render layout: false
-  end
-
-  def display_articles
-    word = params[:q]
-    article_hash = Array.new
-    articles = GeneralExpense.getOwnArticles(word)
-    articles.each do |art|
-      article_hash << {'id' => art[0].to_s+'-'+art[3].to_s+'-'+art[1].to_s, 'code' => art[1], 'name' => art[2], 'symbol' => art[4]}
-    end
-    render json: {:articles => article_hash}
-  end
-
-  def show_details 
-    @type_01 = Array.new
-    @t1 = 0
-    @type_02 = Array.new
-    @t2 = 0
-    @type_03 = Array.new
-    @t3 = 0
-    @type_04 = Array.new
-    @t4 = 0
-    @type_05 = Array.new
-    @t5 = 0
-    @ge = GeneralExpense.find(params[:id])
-    @ge.general_expense_details.each do |ged|
-      if ged.type_article == "01"
-        @type_01 << ged
-        @t1 = @t1.to_f + ged.parcial.to_f
-      elsif ged.type_article == "02"
-        @type_02 << ged
-        @t2 = @t2.to_f + ged.parcial.to_f
-      elsif ged.type_article == "03"
-        @type_03 << ged
-        @t3 = @t3.to_f + ged.parcial.to_f
-      elsif ged.type_article == "04"
-        @type_04 << ged
-        @t4 = @t4.to_f + ged.parcial.to_f
-      else
-        @type_05 << ged
-        @t5 = @t5.to_f + ged.parcial.to_f
+  def bidimensional_report_pdf
+    respond_to do |format|
+      format.html
+      format.pdf do
+        @todo = Array.new
+        @ccs = CostCenter.all.order(:id)
+        @todo << ["CUADRO COMPARATIVO"]
+        i = 1
+        @ccs.each do |ccr|
+          @todo << [ccr.name]
+          @ccs.each do |ccc|
+            if ccr.id == ccc.id
+              @todo[i] << "es el mismo"
+              if !@todo[0].include?(ccc.name)
+                @todo[0] << ccc.name.to_s
+              end
+            else
+              lender_am = 0
+              bene_am = 0
+              if !@todo[0].include?(ccc.name)
+                @todo[0] << ccc.name.to_s
+              end
+              lender = ActiveRecord::Base.connection.execute("
+                SELECT SUM(l.amount)
+                FROM loans l
+                WHERE cost_center_lender_id ="+ccr.id.to_s+"
+                AND cost_center_beneficiary_id = "+ccc.id.to_s+"
+                AND state = 1
+                GROUP BY cost_center_beneficiary_id
+              ")
+              if lender.count == 0
+                lender_am = 0
+              else
+                lender_am = lender.first[0].to_f
+              end
+              beneficiary = ActiveRecord::Base.connection.execute("
+                SELECT SUM(l.amount)
+                FROM loans l
+                WHERE cost_center_lender_id = "+ccc.id.to_s+"
+                AND cost_center_beneficiary_id = "+ccr.id.to_s+"
+                AND state = 1
+                GROUP BY cost_center_beneficiary_id
+              ")
+              if beneficiary.count == 0
+                bene_am = 0
+              else
+                bene_am = beneficiary.first[0]
+              end
+              diferencia = lender_am - bene_am
+              @todo[i] << [lender_am.to_s , bene_am.to_s, diferencia.to_s]
+            end
+          end
+          i+=1
+        end   
+        render :pdf => "reporte_movimientos-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'general_expenses/loans/bidimensional_report_pdf.pdf.haml',
+               :orientation => 'Landscape',
+               :page_size => 'A4'
       end
     end
-    render(partial: 'show_detail', :layout => false)
   end
-
-  def create
-    flash[:error] = nil
-    gexp = GeneralExpense.new(gexp_parameters)
-    gexp.code_phase = Phase.find(gexp.phase_id).code[0,2]
-    gexp.cost_center_id = get_company_cost_center('cost_center').to_s
-    if gexp.save
-      @t=0
-      t=ActiveRecord::Base.connection.execute("
-        SELECT SUM(ged.parcial) 
-        FROM  general_expense_details ged
-        where ged.general_expense_id ="+gexp.id.to_s+"
-      ")
-      t.each do |t|
-        @t = t[0]
-      end
-      ActiveRecord::Base.connection.execute("UPDATE general_expenses SET total='"+@t.to_s+"' WHERE id="+gexp.id.to_s)
-
-      flash[:notice] = "Se ha creado correctamente."
-      redirect_to :action => :index
-    else
-      gexp.errors.messages.each do |attribute, error|
-        puts flash[:error].to_s + error.to_s + "  "
-      end
-      @gexp = gexp
-      render :new, layout: false 
-    end
-  end
-
-  def edit
-    @gexp = GeneralExpense.find(params[:id])
-    @phase = Phase.where("code LIKE '____'")
-    @reg_n = ((Time.now.to_f)*100).to_i
-    @action = 'edit'
-    render layout: false
-  end
-
-  def update
-    gexp = GeneralExpense.find(params[:id])
-    gexp.code_phase = Phase.find(gexp.phase_id).code[0,2]
-    if gexp.update_attributes(gexp_parameters)
-      @t=0
-      t=ActiveRecord::Base.connection.execute("
-        SELECT SUM(ged.parcial) 
-        FROM  general_expense_details ged
-        where ged.general_expense_id ="+gexp.id.to_s+"
-      ")
-      t.each do |t|
-        @t = t[0]
-      end
-      ActiveRecord::Base.connection.execute("UPDATE general_expenses SET total='"+@t.to_s+"' WHERE id="+gexp.id.to_s)      
-      flash[:notice] = "Se ha actualizado correctamente los datos."
-      redirect_to :action => :index
-    else
-      gexp.errors.messages.each do |attribute, error|
-        flash[:error] =  attribute " " + flash[:error].to_s + error.to_s + "  "
-      end
-      # Load new()
-      @gexp = gexp
-      render :edit, layout: false
-    end
-  end
-
-  def destroy
-    gexp = GeneralExpense.find(params[:id])
-    gexp.general_expense_details.destroy_all
-    gexp.destroy
-    render :json => gexp
-  end
-
-  def add_concept
-    @reg_n = ((Time.now.to_f)*100).to_i
-    article = params[:article_id].split('-')
-    @article = Article.find(article[0])
-    @type = params[:type]
-    render(partial: 'concepts', :layout => false)
-  end
-
   private
-  def gexp_parameters
-    params.require(:general_expense).permit(:phase_id, :cost_center_id, 
-      general_expense_details_attributes: [
-        :id, 
-        :general_expense_id, 
-        :type_article,
-        :article_id,
-        :people,
-        :participation,
-        :time,
-        :salary,
-        :parcial,
-        :amount,
-        :cost,
-        :depreciation,
-        :useful_life,
-        :price,
-        :_destroy
-      ])
+  def loan_params
+    params.require(:loan).permit(:person,:loan_date,:loan_type, :loan_doc, :refund_doc, :amount,:description,:refund_type,:check_number,:check_date,:state,:refund_date,:cost_center_beneficiary_id,:cost_center_lender_id)
   end
 end
