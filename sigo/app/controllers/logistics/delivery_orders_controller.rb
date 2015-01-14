@@ -240,7 +240,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @quantity = params[:quantity].to_i
     @amount = params[:amount]
-    @centerOfAttention= CenterOfAttention.where("cost_center_id = ?",@cost_center)
+    @centerOfAttention= CenterOfAttention.where("cost_center_id = ?",get_company_cost_center('cost_center'))
     @article.each do |art|
       @code_article, @name_article, @id_article = art[3], art[1], art[2]
     end
