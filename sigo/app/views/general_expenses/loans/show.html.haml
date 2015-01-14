@@ -37,7 +37,7 @@
             - @loan.each do |loan|
               %tr{"style"=>"padding:0px;margin:0px;"}
                 %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}
-                  %a.link_detail{:href=>"javascript:show_details("+loan.id.to_s+");" }="Prestamo N° "+ count.to_s
+                  %a.link_detail{:href=>"javascript:show_details("+loan.id.to_s+","+count.to_s+");" }="Prestamo N° "+ count.to_s
                 %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}=loan.loan_date.strftime("%d-%m-%Y").to_s
                 %td{"style"=>"font-size:12px;padding:0px;padding-top:5px;padding-left:5px;margin:0px;height:10px;"}= number_to_currency(loan.amount.to_f, unit: 'S/. ', precision: 2)
                 %td{"style"=>"font-size:12px;padding:0px;margin:0px;height:10px;"}
@@ -84,10 +84,10 @@
     /*load_modal_ajax('#{general_expenses_loans_path}', 'loan', 'loan_show', data2, null, 'GET');*/
   });
 
-  function show_details(id){
+  function show_details(id,num){
     $("#detail_show_loan").empty();
     $("#detail_show_loan").css("display","block");
-    str_item = {authenticity_token: "#{form_authenticity_token}", id: id};
+    str_item = {authenticity_token: "#{form_authenticity_token}", id: id, num:num};
     append_url_ajax('#{show_details_general_expenses_loans_path}', 'detail_show_loan', str_item, 0, 'POST');
     console.log("salio de todo")
   }

@@ -179,6 +179,7 @@ class GeneralExpenses::LoansController < ApplicationController
 
   def show_details 
     @loan= Loan.find(params[:id])
+    @num = params[:num]
     render(partial: 'show_detail', :layout => false)
   end  
 

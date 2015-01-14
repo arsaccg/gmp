@@ -82,14 +82,9 @@
                     %label.select
                       =select_tag "user_cost_center_ids",options_from_collection_for_select(@allCostCenter, 'id', 'name', @costCenter), label: 'false', multiple: 'true', class: 'collection_select optional select2', name: 'user[cost_center_ids][]'
               %footer
-                %button.btn.btn-primary{type: "submit"}
+                %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
                   %i.fa.fa-save
                   Guardar
-
-
-= javascript_include_tag 'plugin/flot/jquery.flot.cust'
-= javascript_include_tag 'plugin/flot/jquery.flot.resize'
-= javascript_include_tag 'plugin/datatables/DT_bootstrap'
 
 :javascript
   $(document).ready(function () {
@@ -187,10 +182,21 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();            
           }
         });
         return $(form['selector']).valid();
       },
-      target: '#content'
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      }      
     });
   }

@@ -1017,7 +1017,7 @@
 
                   %td{"style"=>"font-size:100%;"}
                     %strong Fecha Firma del Contrato:
-                  %td=@cost_center_detail.contract_sign_date.strftime("%d - %m - %Y").to_s
+                  %td=@cost_center_detail.contract_sign_date.strftime("%d - %m - %Y").to_s rescue "-"
                 %tr{"style"=>"height:15px;"}
                 %tr
                   %td{"style"=>"font-size:100%;"}
