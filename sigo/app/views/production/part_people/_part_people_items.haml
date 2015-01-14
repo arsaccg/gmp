@@ -6,18 +6,20 @@
   %td.name-worker.col-md-2
     = @name_worker
   %td.sector
-    %select.form-control{:name =>"part_person[part_person_details_attributes][#{@reg_n.to_s}][sector_id]", :style => 'width:100%;padding: 0;border: none;'}
-      - @sectors.each do |sector|
-        %optgroup{:label => "#{sector.name}"}
-          - Sector.getSubSectors(sector.code).each do |subsector|
-            %option{:value => "#{subsector.id}"}
-              = subsector.name
+    %div
+      %select.form-control{:name =>"part_person[part_person_details_attributes][#{@reg_n.to_s}][sector_id]", :style => 'width:100%;padding: 0;border: none;',:required => true, title:'No puede dejar este campo vacio'}
+        - @sectors.each do |sector|
+          %optgroup{:label => "#{sector.name}"}
+            - Sector.getSubSectors(sector.code).each do |subsector|
+              %option{:value => "#{subsector.id}"}
+                = subsector.name
   %td.phase.col-md-2
-    %select.form-control{:name =>"part_person[part_person_details_attributes][#{@reg_n.to_s}][phase_id]", :style => 'width:100%;padding: 0;border: none;'}
-      %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
-      - @phases.each do |phase|
-        %option{:value => "#{phase.id}"}
-          = phase.code + ' - ' + phase.name
+    %div
+      %select.form-control{:name =>"part_person[part_person_details_attributes][#{@reg_n.to_s}][phase_id]", :style => 'width:100%;padding: 0;border: none;',:required => true, title:'No puede dejar este campo vacio'}
+        %option{:value => "0", :selected => true, :disabled => true} Seleccionar Fase
+        - @phases.each do |phase|
+          %option{:value => "#{phase.id}"}
+            = phase.code + ' - ' + phase.name
   %td.normal-hours
     %div
       = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][normal_hours]', 0 , class: "form-control normal-hours", onfocusout: "calculateHours(this, 'normal');", onchange: "this.value = minmax(this.value, 0, 24)", :required => true, title:'No puede dejar este campo vacio'
