@@ -74,6 +74,7 @@ class Production::WorkersController < ApplicationController
 
   def new
     @entity = Entity.find_by_dni(params[:dni])
+    @afp = Afp.all
     @action = "new"
     if @entity.nil?
       @reg_n = Time.now.to_i
@@ -273,9 +274,13 @@ class Production::WorkersController < ApplicationController
 
   def register
     worker = Worker.find(params[:id])
-    worker.register
-    num = Worker.where("position_worker_id = "+worker.position_worker_id.to_s+" AND number_position IS NOT NULL AND cost_center_id = "+ get_company_cost_center('cost_center').to_s).last
-    worker.update_attributes(:number_position => num.number_position.to_i+1)
+    if worker.worker_afps.count > 0
+      worker.register
+      num = Worker.where("position_worker_id = "+worker.position_worker_id.to_s+" AND number_position IS NOT NULL AND cost_center_id = "+ get_company_cost_center('cost_center').to_s).last.number_position rescue 0
+      worker.update_attributes(:number_position => num.to_i+1)
+    else
+      flash[:error] = "Asegurese que el trabajador tenga una AFP registrada."
+    end
     redirect_to :action => :index
   end
 

@@ -65,7 +65,7 @@ class Payslip < ActiveRecord::Base
         else
           article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
           @category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-          from_category = CategoryOfWorker.find_by_category_id(@category_id).category_of_workers_concepts.where(:concept_id => 1).first
+          from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and week_id = "+week_id.to_s+).first.category_of_workers_concepts.where(:concept_id => 1).first
           if from_category.amount != 0
             rem_basic = (from_category.amount.to_f/total_hour.to_f)*row[7]
             por_hora = from_category.amount.to_f/total_hour.to_f
@@ -74,7 +74,7 @@ class Payslip < ActiveRecord::Base
       else
         article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
         @category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-        from_category = CategoryOfWorker.find_by_category_id(@category_id).category_of_workers_concepts.where(:concept_id => 1).first
+        from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and week_id = "+week_id.to_s+).first.category_of_workers_concepts.where(:concept_id => 1).first
         if from_category.amount != 0
           rem_basic = (from_category.amount.to_f/total_hour.to_f)*row[7]
           por_hora = from_category.amount.to_f/total_hour.to_f
@@ -151,7 +151,7 @@ class Payslip < ActiveRecord::Base
               else
                 article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
                 category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-                from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => ing).first
+                from_category = CategoryOfWorker.where("category_id = "+category_id.to_s+" and week_id = "+week_id.to_s+).first.category_of_workers_concepts.where(:concept_id => ing).first
                 if !from_category.nil?
                   if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
                     amount = from_category.amount
@@ -243,7 +243,7 @@ class Payslip < ActiveRecord::Base
           else
             article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
             category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-            from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => de).first
+            from_category = CategoryOfWorker.where("category_id = "+category_id.to_s+" and week_id = "+week_id.to_s+).first.category_of_workers_concepts.where(:concept_id => de).first
             if !from_category.nil?
               if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
                 amount = from_category.amount
@@ -696,10 +696,11 @@ class Payslip < ActiveRecord::Base
               total += amount.to_f
 
             elsif con.name == 'IMPTO. RENT. 5ta CAT.'
+              fpod = con.concept_valorizations.formula
               total -= amount
               suma_mes = amount
               amount = 0
-              to_end_year = 13 - month.to_i
+              to_end_year = 12 - month.to_i
               initial = 0
               final = 0
               value = 0
@@ -708,9 +709,10 @@ class Payslip < ActiveRecord::Base
               rent_before = Array.new
               value_previous = 0
               before_amount = 0
-              if to_end_year == 12
+              if to_end_year == 11
                 anual_income = suma_mes*14
               else
+                #toma rem_basica, hh 25%, hh 35%, vacaciones. viaticosadelanto de quincena adelanto vacaciones reintegros gratificaciones destaque asignacion escolar
                 ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '%"+year.to_s+"%')").each do |b|  
                   rent_before << JSON.parse(b[0]).select{|key, hash| key=='sueldo_basico'} 
                 end

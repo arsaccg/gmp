@@ -315,11 +315,11 @@
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
         // Client Valid
-        if( $(form['selector']).valid() ){
+        if( $('form[id^="edit_"]').valid() ){
           $('#modalLoadingLabelading').modal();
         }
         // Client Valid
-        return $(form['selector']).valid();
+        return $('form[id^="edit_"]').valid();
       },
       target: '#content',
       success: function (data){

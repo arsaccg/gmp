@@ -114,6 +114,7 @@ ArsacLogistica::Application.routes.draw do
         delete 'delete_specific'
         get 'edit_specific'
         post 'update_specific'
+        get 'show_article_specific'
       end
       collection do
         post 'display_articles'
@@ -415,7 +416,12 @@ ArsacLogistica::Application.routes.draw do
         post 'show_part_people'
       end
     end
-    resources :category_of_workers
+    resources :category_of_workers do
+      collection do
+        post 'get_info_per_week'
+      end
+    end
+
     resources :part_of_equipments do
       collection do
 

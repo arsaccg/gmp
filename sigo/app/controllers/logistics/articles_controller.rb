@@ -166,7 +166,7 @@ class Logistics::ArticlesController < ApplicationController
     array = Array.new
     articles = Article.find_articles_in_specific_table(get_company_cost_center('cost_center'), display_length, pager_number, keyword)
     articles.each do |article|
-      array << [article[1],article[2],article[3],article[4],article[5],"<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/edit_specific','content',null,null,'GET')>Editar</a>"]
+      array << [article[1],article[2],article[3],article[4],article[5], "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/articles/" + article[0].to_s + "/show_article_specific','content',null,null,'GET')>Ver Detalle</a>"]
     end
     render json: { :aaData => array }
   end
@@ -278,6 +278,11 @@ class Logistics::ArticlesController < ApplicationController
     render :show, layout: false
   end
 
+  def show_article_specific
+    @article = ActiveRecord::Base.connection.execute("SELECT name, code, description, type_of_article_id, category_id, unit_of_measurement_id FROM articles_from_cost_center_"+get_company_cost_center('cost_center').to_s+" WHERE id = "+params[:id].to_s).first
+    render :show_specific, layout: false
+  end  
+
   def create
     flash[:error] = nil
     article = Article.new(article_parameters)
@@ -325,11 +330,14 @@ class Logistics::ArticlesController < ApplicationController
     article.code = params[:extrafield]['first_code'].to_s + params[:article]['code'].to_s
     article.name = params[:article]['name']
     article.description = params[:article]['description']
-    article.category_id = params[:article]['category']
+    article.category_id = params[:article]['category_id']
     article.type_of_article_id = params[:article]['type_of_article_id']
     article.unit_of_measurement_id = params[:article]['unit_of_measurement_id']
     if article.save
       flash[:notice] = "Se ha actualizado correctamente los datos."
+      CostCenter.all.each do |cc|
+        ActiveRecord::Base.connection.execute("UPDATE articles_from_cost_center_"+cc.id.to_s+" SET  code = '"+article.code.to_s+"', type_of_article_id ="+article.type_of_article_id.to_s+" , category_id = "+article.category_id.to_s+", name= '"+article.name.to_s+"' , description= '"+article.description.to_s+"', unit_of_measurement_id="+article.unit_of_measurement_id.to_s+" WHERE id ="+article.id.to_s)
+      end
       redirect_to :action => :index
     else
       article.errors.messages.each do |attribute, error|

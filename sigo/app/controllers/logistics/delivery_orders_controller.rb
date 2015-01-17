@@ -174,9 +174,9 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @deliveryOrder = DeliveryOrder.new
     @last = DeliveryOrder.find(:last,:conditions => [ "cost_center_id = ?", @cost_center.id])
     if !@last.nil?
-      @numbercode = @last.code.to_i+1
+      @deliveryOrder.code = @last.code.to_i+1
     else
-      @numbercode = 1
+      @deliveryOrder.code = 1
     end
     @numbercode = @numbercode.to_s.rjust(5,'0')
     render layout: false
