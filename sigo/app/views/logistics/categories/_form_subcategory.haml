@@ -103,6 +103,12 @@
         // Remove all Help-inLine
         $(".help-inline").remove();
         // Client Valid
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        // Client Valid
         return $(form['selector']).valid();
       },
       target: '#content',

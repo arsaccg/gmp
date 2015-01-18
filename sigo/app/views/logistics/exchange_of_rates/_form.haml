@@ -8,8 +8,7 @@
       %fieldset
         .row
           %section.col.col-sm-5
-            %label.label
-              = t('activerecord.attributes.exchange_of_rate.day')
+            %label.label Fecha
             %label.input{for: "day"}
               %i
               = f.input :day, as: :string, input_html: { class: 'form-control', value: @today, type: 'text' }, label: false, readonly: true
@@ -24,13 +23,12 @@
                     = money.name
         .row
           %section.col.col-sm-5
-            %label.label
-              = t('activerecord.attributes.exchange_of_rate.value')
+            %label.label Valor
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-money
-              = f.input :value, placeholder: t('activerecord.attributes.exchange_of_rate.value'), input_html: { class: 'form-control' }, label: false
+              = f.input :value, placeholder: 'Valor', input_html: { class: 'form-control' }, label: false
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 
