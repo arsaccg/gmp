@@ -33,3 +33,9 @@
     = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][total_hours]', 0 , class: "form-control total-hours", onchange: "this.value = minmax(this.value, 0, 24)", readonly: true
   %td{:style => "width: 1%; text-align: center;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+
+:javascript
+
+  $(document).ready(function(){
+    $('#cant').val(parseInt($('#cant').val())+1);
+  });
