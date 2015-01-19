@@ -11,7 +11,7 @@
         - @sectors.each do |sector|
           %optgroup{:label => "#{sector.name}"}
             - Sector.getSubSectors(sector.code).each do |subsector|
-              %option{:value => "#{subsector.id}"}
+              %option{:value => "#{subsector.id}", :selected => subsector.id.to_i==@sec.to_i}
                 = subsector.name
   %td.phase.col-md-2
     %div

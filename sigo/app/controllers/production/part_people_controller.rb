@@ -32,6 +32,7 @@ class Production::PartPeopleController < ApplicationController
     @numbercode = @partpersonlast+1
     @numbercode = @numbercode.to_s.rjust(5,'0')
     @partperson = PartPerson.new
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = "+get_company_cost_center('cost_center').to_s)    
     @working_groups = WorkingGroup.where("cost_center_id ="+cost_center.to_s)
     workers = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s)
     @workers = Array.new
@@ -64,11 +65,12 @@ class Production::PartPeopleController < ApplicationController
 
   def add_more_worker
     @reg_n = ((Time.now.to_f)*100).to_i
-    @sectors = Sector.where("code LIKE '__'")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = "+get_company_cost_center('cost_center').to_s) 
+    @sec = params[:sector]
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @worker = Worker.find(params[:worker_id])
     @id_worker = @worker.id
-    @name_worker = @worker.entity.dni.to_s + " - "+ @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s+ ", "+ @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s + ' ' + 
+    @name_worker = @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s+ ", "+ @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s + ' ' + 
     if WorkerContract.where("worker_id = ?",@worker.id).count>0
       if WorkerContract.where("worker_id = ?",@worker.id).last.article.nil?
         @category_worker = "No tiene"
@@ -86,7 +88,7 @@ class Production::PartPeopleController < ApplicationController
     @reg_n = Time.now.to_i
     @numbercode = @partperson.number_part
     @working_groups = WorkingGroup.all
-    @sectors = Sector.where("code LIKE '__'")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @action = 'edit'
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
