@@ -184,19 +184,19 @@
                     - @workers_array.each do |workerDetail|
                       %tr
                         %th= workerDetail[0]
-                        %td= workerDetail[4]
+                        %td= workerDetail[4].round(2)
                         %td{ :style => 'text-align:right;' }= workerDetail[10]
                         %td{ :style => 'text-align:right;' }= number_to_currency workerDetail[1], unit: 'S/.', precision: 2
                         %td{ :style => 'text-align:right;' }= number_to_currency workerDetail[7], unit: 'S/.', precision: 2
                       %tr
                         %th= workerDetail[0]+' HE 60%'
-                        %td= workerDetail[5]
+                        %td= workerDetail[5].round(2)
                         %td{ :style => 'text-align:right;' }= workerDetail[10]
                         %td{ :style => 'text-align:right;' }= number_to_currency workerDetail[2], unit: 'S/.', precision: 2
                         %td{ :style => 'text-align:right;' }= number_to_currency workerDetail[8], unit: 'S/.', precision: 2
                       %tr
                         %th= workerDetail[0]+' HE 100%'
-                        %td= workerDetail[6]
+                        %td= workerDetail[6].round(2)
                         %td{ :style => 'text-align:right;' }= workerDetail[10]
                         %td{ :style => 'text-align:right;' }= number_to_currency workerDetail[3], unit: 'S/.', precision: 2
                         %td{ :style => 'text-align:right;' }= number_to_currency workerDetail[9], unit: 'S/.', precision: 2

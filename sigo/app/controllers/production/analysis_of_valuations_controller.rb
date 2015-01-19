@@ -7,13 +7,13 @@ class Production::AnalysisOfValuationsController < ApplicationController
     @subsectors = Sector.where("code LIKE '____' AND cost_center_id = ?", @cc).first
 
     front_chief_ids = WorkingGroup.distinct.select(:front_chief_id).where("cost_center_id ="+@cc.to_s).map(&:front_chief_id)
-    @front_chiefs = Entity.where(:id => front_chief_ids) # Jefes de Frentes
+    @front_chiefs = Worker.distinct.where(:id => front_chief_ids) # Jefes de Frentes
     # PositionWorker.find(1).workers
     master_builder_ids = WorkingGroup.distinct.select(:master_builder_id).where("cost_center_id ="+@cc.to_s).map(&:master_builder_id)
-    @master_builders = Entity.where(:id => master_builder_ids) # Capatazes o Maestros de Obra
+    @master_builders = Worker.distinct.where(:id => master_builder_ids) # Capatazes o Maestros de Obra
     # PositionWorker.find(2).workers
     executor_ids = Subcontract.distinct.select(:entity_id).where('entity_id <> 0').where("cost_center_id ="+@cc.to_s).map(&:entity_id)
-    @executors = Entity.where(:id => executor_ids) # Exclude the Subcontract Default
+    @executors = Worker.distinct.where(:id => executor_ids) # Exclude the Subcontract Default
     render layout: false
   end
 
