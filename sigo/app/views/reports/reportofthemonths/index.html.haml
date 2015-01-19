@@ -3,7 +3,7 @@
     .col-xs-12.col-sm-12.col-md-8.col-lg-8{:style => 'text-align: center;'}
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw
-        = "CUADRO DE ESTADO - " + Time.now.strftime("%B %Y")
+        = "CUADRO DE ESTADO - " + ((Time.now.strftime("%B %Y")).gsub 'January', 'Enero')
     .col-xs-12.col-sm-12.col-md-4.col-lg-2
       %a.btn.btn-labeled.btn-success{:href => "#{request.domain}:3000/costo_de_obra.pdf", :target => "_blank"}
         %span.btn-label
