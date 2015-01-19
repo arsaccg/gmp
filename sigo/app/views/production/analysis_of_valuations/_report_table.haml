@@ -384,14 +384,14 @@
                       -if m_equip[1].round(2).to_f-@cant.to_f < 0
                         %td{ :style => 'text-align:right;color:red;' }
                           %span.label.label{"style"=>"color: red;text-align:right;font-size: 11px;background-color: yellow;"}
-                            = m_equip[1].round(2).to_f - @cant.to_f
+                            = (m_equip[1].round(2).to_f - @cant.to_f).round(2)
                       -else
-                        %td{ :style => 'text-align:right;' }= m_equip[1].round(2).to_f - @cant.to_f
-                      -@dife_c+= m_equip[1].round(4).to_f - @cant.to_f
+                        %td{ :style => 'text-align:right;' }= (m_equip[1].round(2).to_f - @cant.to_f).round(2)
+                      - @dife_c += m_equip[1].round(4).to_f - @cant.to_f
                       -if (m_equip[2]*m_equip[1]).to_f - @price.to_f < 0
                         %td{ :style => 'text-align:right;color:red;' }
                           %span.label.label{"style"=>"color: red;text-align:right;font-size: 11px;background-color: yellow;"}
-                            = number_to_currency ((m_equip[2]*m_equip[1]).to_f - @price.to_f), unit: 'S/.', precision: 2
+                            = number_to_currency ((m_equip[2].to_f*m_equip[1].to_f) - @price.to_f), unit: 'S/.', precision: 2
                       -else
                         %td{ :style => 'text-align:right;' }= number_to_currency ((m_equip[2]*m_equip[1]).to_f - @price.to_f), unit: 'S/.', precision: 2
                       -@dife_p+=(m_equip[2]*m_equip[1]).to_f - @price.to_f                        
