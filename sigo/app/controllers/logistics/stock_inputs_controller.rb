@@ -198,9 +198,9 @@ class Logistics::StockInputsController < ApplicationController
   def show_purchase_orders
     str_option = ""
     supplier_id = params[:id]
-    PurchaseOrder.select(:id).select(:description).where("entity_id = ? AND state LIKE 'approved'", supplier_id).each do |purchaseOrder|
+    PurchaseOrder.select(:id).select(:code).select(:description).where("entity_id = ? AND state LIKE 'approved'", supplier_id).each do |purchaseOrder|
       if purchaseOrder.purchase_order_details.where("received IS NULL").count > 0 
-        str_option += "<option value=" + purchaseOrder.id.to_s + ">" + purchaseOrder.id.to_s.rjust(5, '0') + ' - ' + purchaseOrder.description.to_s + "</option>"
+        str_option += "<option value=" + purchaseOrder.id.to_s + ">" + purchaseOrder.code.to_s.rjust(5, '0') + ' - ' + purchaseOrder.description.to_s + "</option>"
       end
     end
     render :json => str_option

@@ -71,10 +71,18 @@
               - if @action == 'edit'
                 - @partperson.part_person_details.each do |oos|
                   %tr
+
+                    -if oos.worker.worker_contracts.count>0
+                      -if oos.worker.worker_contracts.last.article.nil?
+                        -@category_worker = "No tiene"
+                      -else
+                        -@category_worker = oos.worker.worker_contracts.last.article.name
+                    -else
+                      -@category_worker = "No tiene"
                     %td.bank-id(style="display:none")
                       = hidden_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][worker_id]', oos.worker.id
-                    %td.col-2=oos.worker.entity.dni
-                    %td.col-2=oos.worker.entity.name
+                    %td.col-2= @category_worker
+                    %td.col-2=oos.worker.entity.dni + " - "+ oos.worker.entity.paternal_surname.to_s + " " + oos.worker.entity.maternal_surname.to_s + ", "+  oos.worker.entity.name + " " + oos.worker.entity.second_name.to_s
                     %td.col-2=oos.sector.name
                     -if oos.phase_id == nil || oos.phase_id == 0
                       %td.col-2 No se selecciono fase

@@ -18,7 +18,7 @@
               %label{"style"=>"font-size:14px;"} Beneficiario
             %section.col-md-6
               %select#beneficiary.select2.form-control{:name => "loan[cost_center_beneficiary_id]"}
-                %option{:value => nil} Seleccione un Beneficiario
+                %option{:value => nil, :disabled => true, :selected => true} Seleccione un Beneficiario
                 - @costcenters.each do |ph|
                   %option{:value => "#{ph.id}"}
                     = ph.name
@@ -38,7 +38,7 @@
               %label{"style"=>"font-size:14px;"} Forma de Préstamo
             %section.col-md-6
               %select#loan_type.select2.form-control{:name => "loan[loan_type]"}
-                %option{:value => nil} Seleccione una Forma
+                %option{:value => nil, :disabled => true, :selected => true} Seleccione una Forma
                 %option{:value => "1"} Cheque
                 %option{:value => "2"} Transferencia
                 %option{:value => "3"} Efectivo
@@ -51,7 +51,7 @@
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} Monto
             %section.col-md-6
-              %input#amount.form-control{placeholder: "", :name => "loan[amount]"}
+              %input#amount.form-control{placeholder: "", :name => "loan[amount]", onkeypress: "return isNumber(event);"}
                 
           .row{"style"=>""}
             %section.col-md-5
@@ -64,7 +64,7 @@
               %label{"style"=>"font-size:14px;"} Forma de Devolución
             %section.col-md-6
               %select#refund_type.select2.form-control{:name => "loan[refund_type]"}
-                %option{:value => nil} Seleccione una Forma
+                %option{:value => nil, :disabled => true, :selected => true} Seleccione una Forma
                 %option{:value => "1"} Cheque
                 %option{:value => "2"} Transferencia
                 %option{:value => "3"} Efectivo
@@ -116,13 +116,6 @@
 
     $('#loan_new').attr("tabindex","");
 
-    $('#refund_type').change(function(){
-      if($(this).val() == 2)
-        $('#devdate').fadeIn('fast');
-      else
-        $('#devdate').fadeOut('fast');
-    });
-
     $('#loan_cost_center_lender_id').select2({
       placeholder: "Buscar Trabajadores...",
       minimumInputLength: 3,
@@ -172,8 +165,9 @@
   });
 
   $("#smart-mod-eg1").click(function(e) {
-    if($('#beneficiary').val()!='' && $('#loan_date').val()!= '' && $('#loan_type').val()!=''  && $('#amount').val()!='' && !isNaN($('#amount').val())  && $('#description').val()!=''&& $('#refund_type').val()!='' && $('#state').val()!=''){
-      if($('#refund_type').val()==2 ){
+
+    if($('#beneficiary').val()!=null && $('#loan_date').val()!= '' && $('#loan_type').val()!=''  && $('#amount').val()!='' && $('#description').val()!=''&& $('#refund_type').val()!=null && $('#state').val()!=''){
+      if($('#state').val()==2 ){
         if($('#refund_date').val()!='' ){
           data2 = { authenticity_token: "#{form_authenticity_token}", cc_id: $('#cc').val()};
 

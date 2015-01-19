@@ -94,8 +94,8 @@ AND ccu.cost_center_id = cc.id AND ccu.user_id = " + current_user.id.to_s)
     accumulated = @direct_cost_acc + (@direct_cost_acc * budget.general_expenses.to_f) + (@direct_cost_acc * budget.utility.to_f)
     contractual =@direct_cost_cont + (@direct_cost_cont * budget.general_expenses.to_f) + (@direct_cost_cont * budget.utility.to_f)
     @ratio_avanze_fisico = ((accumulated/contractual)*100).round(2).to_s + '%'
-    @ratio_de_tiempo = (((Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date).to_f/current_cost_center.cost_center_detail.execution_term.to_f)*100).round(2).to_s + '%'
-    @ratio_de_tiempo_fraccion = (Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date).to_i.to_s + '/' + current_cost_center.cost_center_detail.execution_term.to_i.to_s
+    @ratio_de_tiempo = (((Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date rescue 0).to_f/current_cost_center.cost_center_detail.execution_term.to_f rescue 1)*100).round(2).to_s + '%'
+    @ratio_de_tiempo_fraccion = (Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date rescue 0).to_i.to_s + '/' + current_cost_center.cost_center_detail.execution_term.to_i.to_s rescue 0
     # => Cantd. Trabajadores
     @cant_trabajadores = Worker.where(:typeofworker => 'empleado').count
 
