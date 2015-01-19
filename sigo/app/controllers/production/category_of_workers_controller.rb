@@ -4,7 +4,7 @@ class Production::CategoryOfWorkersController < ApplicationController
   def index
     @article = TypeOfArticle.find_by_code('01').articles.first
     @company = get_company_cost_center('cost_center')
-    @categoryOfWorker = CategoryOfWorker.where(:cost_center_id => @company).order(' category_of_workers.id  DESC').group(:category_id)
+    @categoryOfWorker = CategoryOfWorker.order(' category_of_workers.id  DESC').group(:category_id)
     render layout: false
   end
 
