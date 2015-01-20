@@ -9,9 +9,19 @@
       %br
       %fieldset
         .row{ 'style' => 'display:none' }
-          %input{ 'name' => 'company_id', 'value' => "#{@company_id}", 'readonly' => true, 'style' => 'display:none' }
-
+          %input{ 'name' => 'cost_center_id', 'value' => "#{@cc}", 'readonly' => true, 'style' => 'display:none' }
+          %input{ 'id' => 'id', 'value' => @categoryOfWorker.id, 'readonly' => true, 'style' => 'display:none' }
+          = f.input :id, label: false
         .row
+          %section.col.col-4
+            %label.label Semana
+            %label.input{for: "week_id"}
+              %select.form-control#weeks{:name =>"category_of_worker[week_id]", :style => 'width:100%;padding: 0;border: none;', :onchange => "weeks_for_data();"}          
+                %option{:value => nil} Seleccione una Semana
+                -@semanas.each do |sem|
+                  %option{:value => sem[0], :selected => @today>=sem[2].strftime('%Y-%m-%d') && @today<=sem[3].strftime('%Y-%m-%d')}
+                    = sem[1] + ": del " + sem[2].strftime('%d-%m-%Y').to_s + " al " + sem[3].strftime('%d-%m-%Y').to_s
+
           %section.col.col-4
             %label.label Nombre Categoria
             %label.input{for: "name"}
@@ -36,13 +46,13 @@
                     %option{:value => "#{subgroup.id}"}
                       = '(' + subgroup.code + ') ' + subgroup.name
 
+
+        .row
           %section.col.col-4
             %label.label Precio Normal
             %label.input{for: "normal_price"}
               %i.icon-append.fa.fa-credit-card
               = f.input :normal_price, placeholder: "Precio Normal", input_html: { class: 'form-control' }, label: false
-
-        .row
           %section.col.col-4
             %label.label Precio HE 60
             %label.input{for: "he_60_price"}
@@ -61,56 +71,58 @@
           %section.col.col-6
             %header{ :style => 'margin-left: 0;' } Ganancias Fijas
             %br
-            - if @action == 'new'
-              - @concept_earnings.each do |concept|
-                .row
-                  %section.col.col-10
-                    %label.label= concept.name.to_s
-                    %label.input{for: "#{concept.code}"}
-                      %i.icon-append.fa.fa-credit-card
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_id]", concept.id
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][type_concept]", concept.type_obrero
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_code]", concept.code
-                      = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", 0.00, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
-                - @reg_n += 1
-            - else
-              - @concept_earnings.each do |cowc|
-                .row
-                  %section.col.col-10
-                    %label.label= cowc.concept.name.to_s
-                    %label.input{for: "#{cowc.concept.code}"}
-                      %i.icon-append.fa.fa-credit-card
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][id]", cowc.id
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][category_of_worker_id]", @categoryOfWorker.id
-                      = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", cowc.amount.to_f, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
-                - @reg_n += 1
+            %div#ingresos            
+              - if @action == 'new'
+                - @concept_earnings.each do |concept|
+                  .row
+                    %section.col.col-10
+                      %label.label= concept.name.to_s
+                      %label.input{for: "#{concept.code}"}
+                        %i.icon-append.fa.fa-credit-card
+                        = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_id]", concept.id
+                        = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][type_concept]", concept.type_obrero
+                        = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_code]", concept.code
+                        = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", 0.00, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
+                  - @reg_n += 1
+              - else
+                - @concept_earnings.each do |cowc|
+                  .row
+                    %section.col.col-10
+                      %label.label= cowc.concept.name.to_s
+                      %label.input{for: "#{cowc.concept.code}"}
+                        %i.icon-append.fa.fa-credit-card
+                        = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][id]", cowc.id
+                        = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][category_of_worker_id]", @categoryOfWorker.id
+                        = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", cowc.amount.to_f, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
+                  - @reg_n += 1
 
           %section.col.col-6
             %header{ :style => 'margin-left: 0;' } Descuentos Fijos
             %br
-            - if @action == 'new'
-              - @concept_discounts.each do |concept|
-                .row
-                  %section.col.col-10
-                    %label.label= concept.name.to_s
-                    %label.input{for: "#{concept.code}"}
-                      %i.icon-append.fa.fa-credit-card
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_id]", concept.id
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][type_concept]", concept.type_obrero
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_code]", concept.code
-                      = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", 0.00, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
-                - @reg_n += 1
-            - else
-              - @concept_discounts.each do |cowc|
-                .row
-                  %section.col.col-10
-                    %label.label= cowc.concept.name.to_s
-                    %label.input{for: "#{cowc.concept.code}"}
-                      %i.icon-append.fa.fa-credit-card
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][id]", cowc.id
-                      = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][category_of_worker_id]", @categoryOfWorker.id
-                      = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", cowc.amount.to_f, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
-                - @reg_n += 1
+            %div#descuentos
+              - if @action == 'new'
+                - @concept_discounts.each do |concept|
+                  .row
+                    %section.col.col-10
+                      %label.label= concept.name.to_s
+                      %label.input{for: "#{concept.code}"}
+                        %i.icon-append.fa.fa-credit-card
+                        = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_id]", concept.id
+                        = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][type_concept]", concept.type_obrero
+                        = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][concept_code]", concept.code
+                        = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", 0.00, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
+                  - @reg_n += 1
+              - else
+                - @concept_discounts.each do |cowc|
+                  .row
+                    %section.col.col-10
+                      %label.label= cowc.concept.name.to_s
+                      %label.input{for: "#{cowc.concept.code}"}
+                        %i.icon-append.fa.fa-credit-card
+                        = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][id]", cowc.id
+                        = hidden_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][category_of_worker_id]", @categoryOfWorker.id
+                        = text_field_tag "category_of_worker[category_of_workers_concepts_attributes][" + @reg_n.to_s + "][amount]", cowc.amount.to_f, class: "form-control", onkeypress: "return isNumber(event);", onchange: "this.value = minmax(this.value, 0, 99999999)"
+                  - @reg_n += 1
 
       %footer
         %button.btn.btn-primary{type: "submit"}
@@ -119,15 +131,13 @@
 
 :javascript
   $(document).ready(function () {
-
     $('select').select2();
-
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
     }else{
       submit_validate($('#new_category_of_worker'));
     }
-
+    weeks_for_data();
   });
   
   function submit_validate(form){
@@ -175,18 +185,30 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
         $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
         // Client Valid
         return $(form['selector']).valid();
       },
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }
@@ -207,4 +229,96 @@
     else if(parseFloat(value) > max) 
       return max; 
     else return value;
+  }
+
+  function weeks_for_data(){
+    if(#{@action=="edit"}){
+      var week_id = $('#weeks').val();
+      var cat_id = #{@categoryOfWorker.category_id}
+      complete_info("#{get_info_per_week_production_category_of_workers_path}", week_id, cat_id, "#{form_authenticity_token}");
+    }
+  }
+
+
+  function complete_info(url, week, cat, form_token){
+    $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { week: week, authenticity_token: form_token, cat: cat}
+    }).done(function( data ){
+      newOptions = [];
+      $('#id').val(data.category['id']);
+      $('#category_of_worker_id').val(data.category['id']);
+      $('#category_of_worker_id').attr('value',data.category['id']);
+      $('#category_of_worker_normal_price').val(data.category['normal_price']);
+      $('#category_of_worker_he_60_price').val(data.category['he_60_price']);
+      $('#category_of_worker_he_100_price').val(data.category['he_100_price']);
+
+
+      newOptions = [];
+      $.each(data.ingresos, function(key, value){
+        item = {};
+        item['id'] = value.id;
+        item['name'] = value.name;
+        item['category_of_worker_id'] = value.category_of_worker_id;
+        item['concept_id'] = value.concept_id;
+        item['amount'] = value.amount;
+        item['type_concept'] = value.type_concept;
+        item['concept_code'] = value.concept_code;
+        item['reg'] = value.reg;
+        newOptions.push(item);
+      });
+
+      $('#ingresos').empty();
+      $.each(newOptions, function(key,value){
+        $('#ingresos').append(
+          $('<div></div').attr('class','row').append(
+            $('<section></section').attr('class','col col-10').append(
+              $('<label></label').attr('class','label').text(value.name),
+              $('<label></label').attr('class','input').append(
+                $('<i></i>').attr('icon-append fa fa-credit-card'),
+                $('<input></input').attr('id','category_of_worker_category_of_workers_concepts_attributes_'+value.reg+'_concept_id').attr('name', 'category_of_worker[category_of_workers_concepts_attributes]['+value.reg+'][id]').attr('type','hidden').attr('value',value.id),
+                $('<input></input').attr('id','category_of_worker_category_of_workers_concepts_attributes_'+value.reg+'_concept_id').attr('name', 'category_of_worker[category_of_workers_concepts_attributes]['+value.reg+'][concept_id]').attr('type','hidden').attr('value',value.concept_id),                
+                $('<input></input').attr('id','category_of_worker_category_of_workers_concepts_attributes_'+value.reg+'_type_concept').attr('name', 'category_of_worker[category_of_workers_concepts_attributes]['+value.reg+'][type_concept]').attr('type','hidden').attr('value',value.type_concept),
+                $('<input></input').attr('id','category_of_worker_category_of_workers_concepts_attributes_'+value.reg+'_concept_code').attr('name', 'category_of_worker[category_of_workers_concepts_attributes]['+value.reg+'][concept_code]').attr('type','hidden').attr('value',value.concept_code),
+                $('<input></input').attr('class','form-control').attr('id','category_of_worker_category_of_workers_concepts_attributes_'+value.reg+'_amount').attr('name', 'category_of_worker[category_of_workers_concepts_attributes]['+value.reg+'][amount]').attr('onchange','this.value = minmax(this.value, 0, 99999999)').attr('value',value.amount).attr('onkeypress','return isNumber(event);').attr('type','text')
+              )
+            )
+          )
+        );
+      });  
+
+      newOptions = [];
+      $.each(data.descuentos, function(key, value){
+        item = {};
+        item['id'] = value.id;
+        item['name'] = value.name;
+        item['category_of_worker_id'] = value.category_of_worker_id;
+        item['concept_id'] = value.concept_id;
+        item['amount'] = value.amount;
+        item['type_concept'] = value.type_concept;
+        item['concept_code'] = value.concept_code;
+        item['reg'] = value.reg;
+        newOptions.push(item);
+      });
+      $('#descuentos').empty();
+      $.each(newOptions, function(key,value){
+        $('#descuentos').append(
+          $('<div></div').attr('class','row').append(
+            $('<section></section').attr('class','col col-10').append(
+              $('<label></label').attr('class','label').text(value.name),
+              $('<label></label').attr('class','input').append(
+                $('<i></i').attr('icon-append fa fa-credit-card'),
+                $('<input></input').attr('id','category_of_worker_category_of_workers_concepts_attributes_'+value.reg+'_concept_id').attr('name', 'category_of_worker[category_of_workers_concepts_attributes]['+value.reg+'][id]').attr('type','hidden').attr('value',value.id),
+                $('<input></input').attr('id','category_of_worker_category_of_workers_concepts_attributes_'+value.reg+'_concept_id').attr('name', 'category_of_worker[category_of_workers_concepts_attributes]['+value.reg+'][concept_id]').attr('type','hidden').attr('value',value.concept_id),                
+                $('<input></input').attr('id','category_of_worker_category_of_workers_concepts_attributes_'+value.reg+'_type_concept').attr('name', 'category_of_worker[category_of_workers_concepts_attributes]['+value.reg+'][type_concept]').attr('type','hidden').attr('value',value.type_concept),
+                $('<input></input').attr('id','category_of_worker_category_of_workers_concepts_attributes_'+value.reg+'_concept_code').attr('name', 'category_of_worker[category_of_workers_concepts_attributes]['+value.reg+'][concept_code]').attr('type','hidden').attr('value',value.concept_code),
+                $('<input></input').attr('class','form-control').attr('id','category_of_worker_category_of_workers_concepts_attributes_'+value.reg+'_amount').attr('name', 'category_of_worker[category_of_workers_concepts_attributes]['+value.reg+'][amount]').attr('onchange','this.value = minmax(this.value, 0, 99999999)').attr('value',value.amount).attr('onkeypress','return isNumber(event);').attr('type','text')
+              )
+            )
+          )
+        );
+      });      
+    });
   }

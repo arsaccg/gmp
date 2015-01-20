@@ -7,6 +7,7 @@ class Worker < ActiveRecord::Base
   has_many :worker_experiences
   has_many :part_of_equipments
   has_many :worker_contracts
+  has_one :worker_rent_fifth_category
   has_many :worker_afps
   has_many :worker_healths
   has_many :type_workdays_workers
@@ -15,7 +16,9 @@ class Worker < ActiveRecord::Base
   belongs_to :entity
   belongs_to :cost_center
   belongs_to :position_worker
+  belongs_to :type_of_worker
   has_and_belongs_to_many :type_workdays
+  has_many :extra_information_for_payslips
 
   state_machine :state, :initial => :working do
 
@@ -31,6 +34,7 @@ class Worker < ActiveRecord::Base
 
   end
 
+  accepts_nested_attributes_for :worker_rent_fifth_category, :allow_destroy => true
   accepts_nested_attributes_for :worker_details, :allow_destroy => true
   accepts_nested_attributes_for :worker_afps, :allow_destroy => true
   accepts_nested_attributes_for :worker_healths, :allow_destroy => true

@@ -11,13 +11,13 @@
               %li.active
                 %a{"data-toggle" => "tab", href: "#tab-#{type_laws.id}"}
                   %span.badge.bg-color-blue.txt-color-white
-                    = type_laws.law_and_regulations.count
+                    = type_laws.law_and_regulations.where("type_of_cost_center LIKE '"+@cc+"'").count
                   = type_laws.name
             - else
               %li
                 %a{"data-toggle" => "tab", href: "#tab-#{type_laws.id}"}
                   %span.badge.bg-color-blue.txt-color-white
-                    = type_laws.law_and_regulations.count
+                    = type_laws.law_and_regulations.where("type_of_cost_center LIKE '"+@cc+"'").count
                   = type_laws.name
         .tab-content
           - @type_laws.each do |type_laws|

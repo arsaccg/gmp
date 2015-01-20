@@ -2,7 +2,7 @@ class Management::ValorizationsController < ApplicationController
   #before_filter :authorize_manager
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update, :newvalorization, :changevalorization, :finalize, :show_data, :change_data_ge, :change_data_u, :change_data_r, :change_data_rnd, :change_data_rnm, :change_data_da, :change_data_aom, :report ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
-    
+
   def index
     @redir = params[:redir]
     p @redir
@@ -110,8 +110,19 @@ class Management::ValorizationsController < ApplicationController
     @direct_advances = Advance.where("advance_type LIKE 'Directo' AND MONTH(payment_date) <= MONTH(?)", @valorization.valorization_date).order(:payment_date)
     @advances_of_materials = Advance.where("advance_type LIKE 'Materiales' AND MONTH(payment_date) <= MONTH(?)", @valorization.valorization_date).order(:payment_date)
 
-    @direct_advances_sum = @direct_advances.sum(:amount)
-    @advances_of_materials_sum = @advances_of_materials.sum(:amount)
+    @direct_advances_sum = AmortizationByValorization.where(kind: 'direct_advance', valorization_id: @valorization.id).sum(:amount)
+    @advances_of_materials_sum = AmortizationByValorization.where(kind: 'advance_of_materials', valorization_id: @valorization.id).sum(:amount)
+
+    @sum_direct_advances = ActiveRecord::Base.connection.execute("SELECT av.`code`, SUM(av.amount)
+      FROM amortization_by_valorizations av, valorizations v
+      WHERE av.`kind` LIKE 'direct_advance'
+      AND av.valorization_id = v.id
+      AND  MONTH(v.valorization_date) < MONTH('"+@valorization.valorization_date.to_s+"')")
+    @sum_advance_of_materials = ActiveRecord::Base.connection.execute("SELECT av.`code`, SUM(av.amount)
+      FROM amortization_by_valorizations av, valorizations v
+      WHERE av.`kind` LIKE 'advance_of_materials'
+      AND av.valorization_id = v.id
+      AND  MONTH(v.valorization_date) < MONTH('"+@valorization.valorization_date.to_s+"')")
 
     render :show_data, layout: false
   end
@@ -163,21 +174,29 @@ class Management::ValorizationsController < ApplicationController
   end
 
   def change_data_da
-    @valorization = Valorization.find(params[:id])
+    valorization_id = params[:id]
     new_value = params[:new_value]
+    index = params[:index]
 
-    @valorization.direct_advance = new_value
-    @valorization.save
-    render :show_data, layout: false
+    @requested = AmortizationByValorization.where(code: index.to_i, kind: "direct_advance", valorization_id: valorization_id)
+
+    @amortization_by_valorization = @requested.count == 0 ? AmortizationByValorization.new(code: index, kind: "direct_advance", valorization_id: valorization_id) : @requested.last
+    @amortization_by_valorization.amount = new_value
+    @amortization_by_valorization.save
+    render nothing: true
   end
 
   def change_data_aom
-    @valorization = Valorization.find(params[:id])
+    valorization_id = params[:id]
     new_value = params[:new_value]
+    index = params[:index]
 
-    @valorization.advance_of_materials = new_value
-    @valorization.save
-    render :show_data, layout: false
+    @requested = AmortizationByValorization.where(code: index.to_i, kind: "advance_of_materials", valorization_id: valorization_id)
+
+    @amortization_by_valorization = @requested.count == 0 ? AmortizationByValorization.new(code: index, kind: "advance_of_materials", valorization_id: valorization_id) : @requested.last
+    @amortization_by_valorization.amount = new_value
+    @amortization_by_valorization.save
+    render nothing: true
   end
   ###~###
 
@@ -221,7 +240,7 @@ class Management::ValorizationsController < ApplicationController
 
   def generate_report
     val_id = params[:val_id]
-    # ReportValorization.delete_all
+    ReportValorization.destroy_all(valorization_id: val_id)
     @valorization = Valorization.find(val_id)
     @itembybudgets = Itembybudget.where('CHAR_LENGTH(`order`) > 3 AND budget_id = ?', @valorization.budget_id)
     @budget = Budget.where(:id => @valorization.budget_id).first
@@ -323,20 +342,17 @@ class Management::ValorizationsController < ApplicationController
           rep.act_amount = Valorization.amount_actual(ibb.order, @budget.id, @valorization.id)
           rep.acc_amount = Valorization.amount_acumulated(ibb.order, @budget.id, @valorization.valorization_date, @valorization.id)
           rep.rem_amount = Valorization.amount_remainder(ibb.order, @budget.id, @valorization.valorization_date, @valorization.id)
-          "Reporte~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-          p ibb.order
-          p @budget.id
-          p @valorization.valorization_date
-          p @valorization.id
+          p "Valorization.advance_percent(ibb.order, @budget.id, @valorization.valorization_date.to_s, @valorization.id)"
+          p Valorization.advance_percent(ibb.order, @budget.id, @valorization.valorization_date.to_s, @valorization.id)
 
-          p rep.advance = Valorization.advance_percent(ibb.order, @budget.id, @valorization.valorization_date.to_s, @valorization.id) 
+          rep.advance = Valorization.advance_percent(ibb.order, @budget.id, @valorization.valorization_date.to_s, @valorization.id) rescue 0
           rep.save
         end
       end
     end
 
     ValorizationByCategory.destroy_all(valorization_id:val_id, budget_id:@valorization.budget_id)
-    @data = Inputcategory.sum_valorization_sales_total(@valorization.budget_id, val_id)
+    @data = ValorizationByCategory.sum_valorization_sales_total(@valorization.budget_id, val_id)
     
     @data.each_with_index do |k, i|
       vbc = ValorizationByCategory.new(valorization_id:val_id, category_id:k[0], amount:k[1][2], budget_id:@valorization.budget_id)

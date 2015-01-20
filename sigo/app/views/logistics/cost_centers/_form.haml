@@ -57,18 +57,23 @@
                 Civil
               %option{:value => "administracion", :selected => "#{@costCenter.speciality}"=="administracion"}
                 Administración
+        .row
+          %section.col.col-10
+            %label Activo
+            =f.input :active, :type => "checkbox", :label => false
           
       %footer
         -if @action !="edit"
           %a#smart-mod-eg1.btn.btn-success{href: "#"} Guardar
         -else
-          %button.btn.btn-primary{type: "submit"}
+          %button.btn.btn-primary{type: "submit", :onclick=>"part_block();"}
             %i.fa.fa-save
               Guardar
 
 :javascript
   $(document).ready(function () {
     $("select").select2();
+    $("#cost_center_active").css("position","relative").css("left","0");
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));
@@ -112,18 +117,30 @@
           // Do not change code below
           errorPlacement : function(error, element) {
             error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
         // Remove all Help-inLine
         $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
         // Client Valid
         return $(form['selector']).valid();
       },
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }
@@ -145,6 +162,7 @@
           iconSmall : "fa fa-check fa-2x fadeInRight animated",
           timeout : 4000
         });
+        part_block();
       }
       if (ButtonPressed === "No") {
         $.smallBox({

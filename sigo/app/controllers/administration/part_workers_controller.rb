@@ -32,7 +32,7 @@ class Administration::PartWorkersController < ApplicationController
     @numbercode = @numbercode.to_s.rjust(5,'0')
     @partworker = PartWorker.new
     @working_groups = WorkingGroup.all
-    @workers = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active'")
+    @workers = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active' and cost_center_id = "+ get_company_cost_center('cost_center').to_s )
     @company = session[:company]
     @reg_n = ((Time.now.to_f)*100).to_i
     @sectors = Sector.where("code LIKE '__'")
@@ -44,16 +44,26 @@ class Administration::PartWorkersController < ApplicationController
   def create
     partworker = PartWorker.new(part_worker_parameters)
     partworker.company_id = session[:company]
-    if partworker.save
-      flash[:notice] = "Se ha creado correctamente la parte de obra."
-      redirect_to :action => :index, company_id: session[:company]
+    previo = PartWorker.where("date_of_creation = '"+params[:part_worker]['date_of_creation'].to_s+"' AND company_id = "+get_company_cost_center('company').to_s)
+    if previo.count == 0
+      if partworker.save
+        flash[:notice] = "Se ha creado correctamente la parte de obra."
+        redirect_to :action => :index
+      else
+        partworker.errors.messages.each do |attribute, error|
+          puts error.to_s
+          puts error
+        end
+        flash[:error] =  "Ha ocurrido un error en el sistema."
+        redirect_to :action => :index
+      end
     else
       partworker.errors.messages.each do |attribute, error|
         puts error.to_s
         puts error
       end
-      flash[:error] =  "Ha ocurrido un error en el sistema."
-      redirect_to :action => :index, company_id: session[:company]
+      flash[:error] =  "Ya hay un parte registrado con el mismo día"
+      redirect_to :action => :index
     end
   end
 
@@ -97,6 +107,6 @@ class Administration::PartWorkersController < ApplicationController
 
   private
   def part_worker_parameters
-    params.require(:part_worker).permit(:number_part, :date_of_creation, part_worker_details_attributes: [:id, :part_worker_id, :cost_center_id, :worker_id, :working_group_id, :reason_of_lack, :sector_id, :phase_id, :assistance, :_destroy])
+    params.require(:part_worker).permit(:number_part, :date_of_creation, part_worker_details_attributes: [:id, :part_worker_id, :cost_center_id, :worker_id, :working_group_id, :reason_of_lack, :sector_id, :phase_id, :assistance, :he_25, :he_35, :_destroy])
   end
 end

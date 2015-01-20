@@ -29,8 +29,8 @@ class Production::PartWorksController < ApplicationController
   def new
     cost_center_id = get_company_cost_center('cost_center')
     @partwork = PartWork.new
-    @working_groups = WorkingGroup.all
-    @sectors = Sector.where("code LIKE '__'")
+    @working_groups = WorkingGroup.where("cost_center_id = ?", cost_center_id)
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center_id)
     #@articles = PartWork.getOwnArticles(cost_center_id)
     itembybudget_ids = SubcontractDetail.distinct.select(:itembybudget_id).map(&:itembybudget_id)
     @itembybudgets = Itembybudget.select(:id).select(:order).select(:item_code).select(:subbudgetdetail).where(:id => itembybudget_ids)
@@ -70,11 +70,11 @@ class Production::PartWorksController < ApplicationController
     cost_center_id = get_company_cost_center('cost_center')
     itembybudget_ids = SubcontractDetail.distinct.select(:itembybudget_id).map(&:itembybudget_id)
     @partwork = PartWork.find(params[:id])
-    @working_groups = WorkingGroup.all
+    @working_groups = WorkingGroup.where("cost_center_id = ?", cost_center_id)
     @partworkde = @partwork.part_work_details
     @itembybudgets = Itembybudget.select(:id).select(:order).select(:item_code).select(:subbudgetdetail).where(:id => itembybudget_ids)
     @unit = UnitOfMeasurement.all
-    @sectors = Sector.where("code LIKE '__'")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = ?", cost_center_id)
     @action = 'edit'
     @reg_n = Time.now.to_i
     @company = params[:company_id]

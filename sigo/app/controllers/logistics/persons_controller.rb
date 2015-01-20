@@ -82,7 +82,7 @@ class Logistics::PersonsController < ApplicationController
     if current_user.has_role? :director
       redirect_to :action => 'index'
     else
-      redirect_to :action => 'show'
+      redirect_to :action => 'index'
     end
   end
 

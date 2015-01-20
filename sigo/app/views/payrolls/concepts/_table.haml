@@ -4,38 +4,17 @@
       %i.fa.fa-table
     %h2 Lista de Conceptos
   %div
-    / widget edit box
-    .jarviswidget-editbox
-      / This area used as dropdown edit box
-    / end widget edit box
-    / widget content
     .widget-body.no-padding
-      .widget-body-toolbar
       #dt_basic_wrapper.dataTables_wrapper.form-inline{:role => 'grid'}
-        .dt-top-row
-          #dt_basic_length.dataTables_length
-            %span.smart-form
-              %label.select{style: "width:60px"}
-                %select{"aria-controls" => "dt_basic", name: "dt_basic_length", size: "1"}
-                  %option{selected: "selected", value: "10"} 10
-                  %option{value: "25"} 25
-                  %option{value: "50"} 50
-                  %option{value: "100"} 100
-                %i
-          #dt_basic_filter.dataTables_filter
-            .input-group
-              %span.input-group-addon
-                %i.fa.fa-search
-              %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
         .dt-wrapper
           %table#dt_basic.table.table-striped.table-bordered.table-hover
             %thead
               %tr
                 %th Nombre
                 %th Código
-                %th Porcentaje
-                %th Monto
                 %th Tope
+                %th Con. Obrero
+                %th Con. Empleado
                 %th Estado
                 %th Acciones
             %tbody
@@ -47,20 +26,14 @@
                     =# con.code[1,con.code.length].to_s
                     = con.code.to_s
                   %td
-                    - if con.percentage != nil
-                      = con.percentage.to_s + "%"
-                    -else
-                      ="--"
-                  %td
-                    - if con.amount != nil
-                      = con.amount.to_s
-                    -else
-                      ="--"
-                  %td
                     - if con.top != nil
                       = con.top.to_s
                     -else
                       ="--"
+                  %td
+                    = con.type_obrero.to_s
+                  %td
+                    = con.type_empleado.to_s
                   %td
                     - if con.status==1
                       %span.label.label-success{"style"=>"background-color: #25CA25;color:white;text-align:center;width:100px;font-weight:bold;"} Activo

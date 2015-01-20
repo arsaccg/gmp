@@ -27,12 +27,14 @@ class MainController < ApplicationController
     if get_company_cost_center('company').present? && get_company_cost_center('cost_center').present?
       @calidad = nil
       @supplier = nil
+      @all_cost_center = CostCenter.all
       @company = Company.find(get_company_cost_center('company')) rescue nil
       @cost_center_detail = CostCenterDetail.find_by_cost_center_id(get_company_cost_center('cost_center')) rescue nil
       @cost_center = CostCenter.find(get_company_cost_center('cost_center')) rescue nil
       @cost_center_name = CostCenter.find(get_company_cost_center('cost_center')).name rescue nil
       if !@company.nil? && !@cost_center_name.nil?
-        @others_cost_centers = @company.cost_centers.where('id != ?', get_company_cost_center('cost_center'))
+        @others_cost_centers = ActiveRecord::Base.connection.execute("SELECT cc. id, cc.name FROM cost_centers_users ccu, companies com, cost_centers cc WHERE cc.company_id = com.id
+AND ccu.cost_center_id = cc.id AND ccu.user_id = " + current_user.id.to_s)
         @total_pending = OrderOfService.where(" state LIKE 'issued' ").count + PurchaseOrder.where(" state LIKE 'issued' ").count + DeliveryOrder.where(" state LIKE 'issued' ").count + OrderOfService.where(" state LIKE 'revised' ").count + PurchaseOrder.where(" state LIKE 'revised' ").count + DeliveryOrder.where(" state LIKE 'revised' ").count
         @calidad = TypeOfQaQc.where("cost_center_id = "+ get_company_cost_center('cost_center').to_s)
         @supplier = TypeOfQaQcSupplier.where("cost_center_id = "+get_company_cost_center('cost_center').to_s)
@@ -58,6 +60,11 @@ class MainController < ApplicationController
   def management_dashboard
     @company= Company.all
     @cost_centers = CostCenter.all
+    @saneamiento = CostCenter.where("speciality = 'saneamiento' and active = 1")
+    @civil = CostCenter.where("speciality = 'civil' and active = 1") 
+    @electrico = CostCenter.where("speciality = 'electrico' and active = 1")
+    @administracion = CostCenter.where("speciality = 'administracion' and active = 1")
+
     current_cost_center = CostCenter.find(get_company_cost_center('cost_center'))
     @direct_cost_acc = 0
     @direct_cost_cont = 0
@@ -87,9 +94,8 @@ class MainController < ApplicationController
     accumulated = @direct_cost_acc + (@direct_cost_acc * budget.general_expenses.to_f) + (@direct_cost_acc * budget.utility.to_f)
     contractual =@direct_cost_cont + (@direct_cost_cont * budget.general_expenses.to_f) + (@direct_cost_cont * budget.utility.to_f)
     @ratio_avanze_fisico = ((accumulated/contractual)*100).round(2).to_s + '%'
-
-    @ratio_de_tiempo = (((Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date).to_f/current_cost_center.cost_center_detail.execution_term.to_f)*100).round(2).to_s + '%'
-    @ratio_de_tiempo_fraccion = (Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date).to_i.to_s + '/' + current_cost_center.cost_center_detail.execution_term.to_i.to_s
+    @ratio_de_tiempo = (((Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date rescue 0).to_f/current_cost_center.cost_center_detail.execution_term.to_f rescue 1)*100).round(2).to_s + '%'
+    @ratio_de_tiempo_fraccion = (Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date rescue 0).to_i.to_s + '/' + current_cost_center.cost_center_detail.execution_term.to_i.to_s rescue 0
     # => Cantd. Trabajadores
     @cant_trabajadores = Worker.where(:typeofworker => 'empleado').count
 
@@ -98,14 +104,14 @@ class MainController < ApplicationController
 
   def display_general_table_messages
     @user = current_user
+    cost_center = @user.cost_centers.map(&:id)
+    @order_services_issued = OrderOfService.where(" state LIKE 'issued' ").where(:id => cost_center )
+    @purchase_orders_issued = PurchaseOrder.where(" state LIKE 'issued' ").where(:id => cost_center )
+    @delivery_orders_issued = DeliveryOrder.where(" state LIKE 'issued' ").where(:id => cost_center )
 
-    @order_services_issued = OrderOfService.where(" state LIKE 'issued' ")
-    @purchase_orders_issued = PurchaseOrder.where(" state LIKE 'issued' ")
-    @delivery_orders_issued = DeliveryOrder.where(" state LIKE 'issued' ")
-
-    @order_services_revised = OrderOfService.where(" state LIKE 'revised' ")
-    @purchase_orders_revised = PurchaseOrder.where(" state LIKE 'revised' ")
-    @delivery_orders_revised = DeliveryOrder.where(" state LIKE 'revised' ")
+    @order_services_revised = OrderOfService.where(" state LIKE 'revised' ").where(:id => cost_center )
+    @purchase_orders_revised = PurchaseOrder.where(" state LIKE 'revised' ").where(:id => cost_center )
+    @delivery_orders_revised = DeliveryOrder.where(" state LIKE 'revised' ").where(:id => cost_center )
     
     @workers = Worker.where("state LIKE 'registered'")
 
@@ -114,22 +120,25 @@ class MainController < ApplicationController
 
   def display_table_messages_os
     @user = current_user
-    @delivery_orders_issued = DeliveryOrder.where(" state LIKE 'issued' ")
-    @delivery_orders_revised = DeliveryOrder.where(" state LIKE 'revised' ")
+    cost_center = @user.cost_centers.map(&:id)
+    @delivery_orders_issued = DeliveryOrder.where(" state LIKE 'issued' ").where(:id => cost_center )
+    @delivery_orders_revised = DeliveryOrder.where(" state LIKE 'revised' ").where(:id => cost_center )
     render(partial: 'table_messages_os', :layout => false)
   end
 
   def display_table_messages_oc
     @user = current_user
-    @purchase_orders_issued = PurchaseOrder.where(" state LIKE 'issued' ")
-    @purchase_orders_revised = PurchaseOrder.where(" state LIKE 'revised' ")
+    cost_center = @user.cost_centers.map(&:id)
+    @purchase_orders_issued = PurchaseOrder.where(" state LIKE 'issued' ").where(:id => cost_center )
+    @purchase_orders_revised = PurchaseOrder.where(" state LIKE 'revised' ").where(:id => cost_center )
     render(partial: 'table_messages_oc', :layout => false)
   end
 
   def display_table_messages_ose
     @user = current_user
-    @order_services_issued = OrderOfService.where(" state LIKE 'issued' ")
-    @order_services_revised = OrderOfService.where(" state LIKE 'revised' ")
+    cost_center = @user.cost_centers.map(&:id)
+    @order_services_issued = OrderOfService.where(" state LIKE 'issued' ").where(:id => cost_center )
+    @order_services_revised = OrderOfService.where(" state LIKE 'revised' ").where(:id => cost_center )
     render(partial: 'table_messages_ose', :layout => false)
   end
 
@@ -220,8 +229,8 @@ class MainController < ApplicationController
       end
     end
 
-    gastos_generales_sigo = GeneralExpense.where('code_phase = ?', 90).sum(:total)
-    gastos_gestion_sigo = GeneralExpense.where('code_phase = ?', 94).sum(:total)
+    gastos_generales_sigo = GeneralExpense.where('code_phase = ? AND cost_center_id = ?', 90, @project_id).sum(:total)
+    gastos_gestion_sigo = GeneralExpense.where('code_phase = ? AND cost_center_id = ?', 94, @project_id).sum(:total)
 
     @gastos_generales << [ @cost_center_detail.general_cost.to_f, gastos_generales_sigo.to_f, @cost_center_detail.general_cost.to_f-gastos_generales_sigo.to_f ] rescue nil
     @utility << [ @cost_center_detail.utility.to_f, 0, @cost_center_detail.utility.to_f-0 ] rescue nil

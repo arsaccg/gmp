@@ -1,0 +1,103 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Tipo de Trabajadores
+  .widget-body
+    = simple_form_for([:administration, @type_of_worker], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        .row
+          %section.col.col-6
+            %label.label Nombre
+            %label.input{for: "name"}
+              %i.icon-append.fa.fa-user
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          %section.col.col-3
+            %label.label Prefijo
+            %label.input{for: "prefix"}
+              %i.icon-append.fa.fa-terminal
+              = f.input :prefix, placeholder: "Prefijo", input_html: { class: 'form-control' }, label: false
+          %section.col.col-3
+            %label.label Categoría
+            %select.form-control{:name => "type_of_worker[worker_type]"}
+              %option{:value=> nil, :selected=>true, :disabled=>true} Seleccione
+              %option{:value=> "empleado", :selected=>@type_of_worker.worker_type=="empleado"} Empleado
+              %option{:value=> "obrero", :selected=>@type_of_worker.worker_type=="obrero"} Obrero
+        .row
+          %section.col.col-6
+            %label.label Descripción
+            %label.input{for: "name"}
+              = f.input :description, placeholder: "Descripción", input_html: { class: 'form-control' }, label: false
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }
+    else{
+      submit_validate($('#new_type_of_worker'));
+    }
+  });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'type_of_worker[name]' : {
+              required : true
+            },
+            'type_of_worker[prefix]' : {
+              required : true,
+            },
+            'type_of_worker[worker_type]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'type_of_worker[name]' : {
+              required : 'Por favor, ingresar el Nombre'
+            },
+            'type_of_worker[prefix]' : {
+              required : 'Por favor, ingresar el prefijo para poder identificar.'
+            },
+            'type_of_worker[worker_type]' : {
+              required : 'Por favor, ingresar el tipo de trabajador para poder identificar.'
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      }
+    });
+  }

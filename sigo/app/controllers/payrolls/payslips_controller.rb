@@ -2,73 +2,59 @@ class Payrolls::PayslipsController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   def index
-    @pay = ActiveRecord::Base.connection.execute("SELECT code, week, month FROM payslips GROUP BY code")
+    cc= get_company_cost_center('cost_center')
+    @pay = ActiveRecord::Base.connection.execute("SELECT p.code, p.week, p.month, top.name FROM payslips p, type_of_payslips top WHERE p.type_of_payslip_id = top.id AND p.cost_center_id = #{cc} GROUP BY p.code")
     render layout: false
   end
 
   def show
     @pay = Payslip.where("code = ?",params[:id])
+    if @pay.first.week.nil?
+      @type = "month"
+    else
+      @type = "week"
+    end
     render layout: false
   end
 
   def new
-     
-    @ingo = Array.new
-    @deso = Array.new
-    @inge = Array.new
-    @dese = Array.new
-    @apo = Array.new
-    @ape = Array.new
+    @tpay = TypeOfPayslip.all
     @cc = CostCenter.find(get_company_cost_center('cost_center'))
-    @ingresos = Concept.where("code LIKE '1%' AND status = 1")
-    @descuentos = Concept.where("code LIKE '2%' AND status = 1")
-    @aportacion = Concept.where("code LIKE '3%' AND status = 1")
-
     @afp = Afp.all
     @semanas = ActiveRecord::Base.connection.execute("
-      SELECT *
-      FROM weeks_for_cost_center_" + @cc.id.to_s)
-
-    @ingresos.each do |ing|
-      if ing.type_obrero == "Fijo"
-        @ingo << ing.id.to_s
-      elsif ing.type_empleado == "Fijo"
-        @inge << ing.id.to_s
-      end
-    end
-
-    @descuentos.each do |des|
-      if des.type_obrero == "Fijo"
-        @deso << des.id.to_s
-      elsif des.type_empleado == "Fijo"
-        @dese << des.id.to_s
-      end
-    end
-
-    @aportacion.each do |des|
-      if des.type_obrero == "Fijo"
-        @apo << des.id.to_s
-      elsif des.type_empleado == "Fijo"
-        @ape << des.id.to_s
-      end
-    end    
+      SELECT wc . * 
+      FROM  weekly_workers ww, weeks_for_cost_center_" + @cc.id.to_s+" wc
+      WHERE ww.state =  'approved'
+      AND ww.start_date = wc.start_date
+      AND ww.end_date = wc.end_date")
     render layout: false
   end
 
   def create
     flash[:error] = nil
+    regs = params[:regs].split(' ')
+    regsEx = params[:regsEx].split(' ')
+    #borrando planillas con el mismo periodo
+    ActiveRecord::Base.connection.execute("DELETE FROM payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR `month` = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"') AND type_of_payslip_id = "+params[:payslip][''+regs.first.to_s+'']['type_of_payslip_id'].to_s)
+    #borrando extra info de planillas con el mismo periodo
+    ActiveRecord::Base.connection.execute("DELETE FROM extra_information_for_payslips WHERE (week = '"+params[:payslip][''+regs.first.to_s+'']['week'].to_s+"' OR week = '"+params[:payslip][''+regs.first.to_s+'']['month'].to_s+"')" )
+    
     a = Payslip.all.last
     last_code = 1
     if !a.nil?
       last_code = a.code.to_i + 1 
     end
-    regs = params[:regs].split(' ')
+
+    cc = get_company_cost_center('cost_center')
     regs.each do |reg|
       pay = Payslip.new
+      pay.type_of_payslip_id = params[:payslip][''+reg.to_s+'']['type_of_payslip_id']
       pay.worker_id = params[:payslip][''+reg.to_s+'']['worker_id']
-      pay.cost_center_id = params[:payslip][''+reg.to_s+'']['cost_center_id']
+      pay.cost_center_id = cc
+      pay.company_id = params[:payslip][''+reg.to_s+'']['company_id']
       pay.week = params[:payslip][''+reg.to_s+'']['week']
       pay.days = params[:payslip][''+reg.to_s+'']['days']
+      pay.month = params[:payslip][''+reg.to_s+'']['month']
       pay.normal_hours = params[:payslip][''+reg.to_s+'']['normal_hours']
       pay.subsidized_day = params[:payslip][''+reg.to_s+'']['subsidized_day']
       pay.subsidized_hour = params[:payslip][''+reg.to_s+'']['subsidized_hour']
@@ -87,6 +73,24 @@ class Payrolls::PayslipsController < ApplicationController
           puts flash[:error].to_s + error.to_s + "  "
         end
         @pay = pay
+        render :new, layout: false 
+      end
+    end
+    
+
+    regsEx.each do |reg|
+      extra = ExtraInformationForPayslip.new
+      extra.worker_id = params[:extra_information_for_payslip][''+reg.to_s+'']['worker_id']
+      extra.concept_id = params[:extra_information_for_payslip][''+reg.to_s+'']['concept_id']
+      extra.week = params[:extra_information_for_payslip][''+reg.to_s+'']['week']
+      extra.amount = params[:extra_information_for_payslip][''+reg.to_s+'']['amount']
+      if extra.save
+        flash[:notice] = "Se ha creado correctamente."
+      else
+        extra.errors.messages.each do |attribute, error|
+          puts flash[:error].to_s + error.to_s + "  "
+        end
+        @extra = extra
         render :new, layout: false 
       end
     end
@@ -128,111 +132,274 @@ class Payrolls::PayslipsController < ApplicationController
   end
 
   def complete_select
-    @cc = CostCenter.find(get_company_cost_center('cost_center'))
-    semana = ActiveRecord::Base.connection.execute("
-      SELECT *
-      FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
-      WHERE wc.id = " + params[:semana].to_s).first
-
-    tareo = WeeklyWorker.where("start_date = '"+semana[2].to_s+"' AND end_date = '"+semana[3].to_s+"' AND state = 'approved'").first
-    if !tareo.nil?
-      wg = tareo.working_group.gsub(" ", ",")
-    else
-      wg = 0
-    end
     workers = Array.new
-    wo = ActiveRecord::Base.connection.execute("
-      SELECT ppd.worker_id, e.dni, CONCAT_WS(' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname)
-      FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
-      WHERE pp.cost_center_id = " + @cc.id.to_s + "
-      AND ppd.part_person_id = pp.id
-      AND pp.date_of_creation BETWEEN '" + semana[2].to_s + "' AND  '" + semana[3].to_s + "'
-      AND ppd.worker_id = w.id
-      AND pp.working_group_id IN ("+wg.to_s+")
-      AND w.entity_id = e.id
-      AND wa.worker_id = w.id
-      AND af.id = wa.afp_id
-      AND wc.worker_id = w.id
-      AND wc.article_id = ar.id
-      GROUP BY ppd.worker_id
-    ")
-    wo.each do |wo|
-      workers << {'id' => wo[0].to_s, 'name' => wo[1]+" - "+wo[2]}
-    end
-    render json: {:workers => workers}
-  end
-
-  def add_extra_info
-    @worker = Worker.find(params[:worker])
-    @concept = Concept.find(params[:concept])
-    @amount = params[:amount]
-    @reg_n = (Time.now.to_f*1000).to_i
-    render(partial: 'extra', :layout => false)
-  end
-
-  def complete_select2
-    t_wor = params[:worker]
-    concepts = Array.new
-    if t_wor == "empleado"
-      con = Concept.where("status = 1 AND type_empleado = 'Fijo'")
+    if params[:worker] == "empleado"
+      fecha = params[:semana].split('-')
+      inicio = fecha[1]+"-"+fecha[0]+"-01"
+      d = Date.new(fecha[1].to_i,fecha[0].to_i)
+      d +=42
+      d = (Date.new(d.year, d.month) - 1).strftime('%Y-%m-%d')
+      wo = ActiveRecord::Base.connection.execute("
+        SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname )
+        FROM part_workers pp, part_worker_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
+        WHERE pp.company_id = "+get_company_cost_center('company').to_s+"
+        AND ppd.part_worker_id = pp.id
+        AND ppd.assistance =  'si'
+        AND pp.date_of_creation BETWEEN '" + inicio.to_s + "' AND  '" + d.to_s + "'
+        AND ppd.worker_id = w.id
+        AND w.entity_id = e.id
+        AND wa.worker_id = w.id
+        AND af.id = wa.afp_id
+        AND wc.worker_id = w.id
+        AND wc.article_id = ar.id
+        AND wc.status = 1
+        GROUP BY w.id"
+      )
+      wo.each do |wo|
+        workers << {'id' => wo[0].to_s, 'name' => wo[1]+" - "+wo[2]}
+      end
     else
-      con = Concept.where("status = 1 AND type_obrero = 'Fijo'")
-    end
-    con.each do |wo|
-      concepts << {'id' => wo.id.to_s, 'name' => wo.code+" - "+wo.name}
-    end     
-    render json: {:concepts => concepts} 
-  end  
+      @cc = CostCenter.find(get_company_cost_center('cost_center'))
+      semana = ActiveRecord::Base.connection.execute("
+        SELECT *
+        FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
+        WHERE wc.id = " + params[:semana].to_s).first
 
-  def generate_payroll
-    @pay = Payslip.new
-    @cc = CostCenter.find(get_company_cost_center('cost_center'))
-    company_id = get_company_cost_center('company')
-    ing = params[:arregloin]
-    des = params[:arreglodes]
-    apor = params[:arregloapor]
-    @reg_n = (Time.now.to_f*1000).to_i
-
-    semana = ActiveRecord::Base.connection.execute("
-      SELECT *
-      FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
-      WHERE wc.id = " + params[:semana].to_s).first
-
-    tipo = params[:tipo]
-    @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
-    @max_hour = ActiveRecord::Base.connection.execute("
-      SELECT total
-      FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + "
-      WHERE status = 1
-      AND week_id = " + semana[0].to_s).first
-
-    if !@max_hour.nil?
-      @max_hour = @max_hour[0]
-    else
-      @max_hour = 48
-    end
-
-    worker = params[:worker]
-    @partes = Array.new
-
-    if worker == "empleado"
-
-      # Future...
-      
-    elsif worker == "obrero"
       tareo = WeeklyWorker.where("start_date = '"+semana[2].to_s+"' AND end_date = '"+semana[3].to_s+"' AND state = 'approved'").first
       if !tareo.nil?
         wg = tareo.working_group.gsub(" ", ",")
       else
         wg = 0
       end
-          
-      @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
-      if wg != 0
-        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers)
-        @mensaje = "exito"
+      wo = ActiveRecord::Base.connection.execute("
+        SELECT ppd.worker_id, e.dni, CONCAT_WS(' ', e.name, e.second_name, e.paternal_surname, e.maternal_surname)
+        FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
+        WHERE pp.cost_center_id = " + @cc.id.to_s + "
+        AND ppd.part_person_id = pp.id
+        AND pp.date_of_creation BETWEEN '" + semana[2].to_s + "' AND  '" + semana[3].to_s + "'
+        AND ppd.worker_id = w.id
+        AND pp.working_group_id IN ("+wg.to_s+")
+        AND w.entity_id = e.id
+        AND wa.worker_id = w.id
+        AND af.id = wa.afp_id
+        AND wc.worker_id = w.id
+        AND wc.article_id = ar.id
+        GROUP BY ppd.worker_id
+      ")
+      wo.each do |wo|
+        workers << {'id' => wo[0].to_s, 'name' => wo[1]+" - "+wo[2]}
+      end
+    end
+    render json: {:workers => workers}
+  end
+
+  def complete_type_payslip
+    tp = Array.new
+    type_of_payslips = TypeOfPayslip.where("for_worker_employee = '"+params[:worker]+"' AND cost_center_id = "+get_company_cost_center("cost_center").to_s)
+    type_of_payslips.each do |wo|
+      tp << {'id' => wo.id.to_s, 'name' => wo.name.to_s}
+    end
+    render json: {:type_payslip => tp}
+  end
+
+  def add_extra_info
+    fecha = params[:semana].split('-')
+    if fecha.length == 2
+      case fecha[0].to_i
+      when 1
+        @week = "Enero - " + fecha[1].to_s
+      when 2
+        @week = "Febrero - " + fecha[1].to_s
+      when 3
+        @week = "Marzo - " + fecha[1].to_s
+      when 4
+        @week = "Abril - " + fecha[1].to_s
+      when 5
+        @week = "Mayo - " + fecha[1].to_s
+      when 6
+        @week = "Junio - " + fecha[1].to_s
+      when 7
+        @week = "Julio - " + fecha[1].to_s
+      when 8
+        @week = "Agosto - " + fecha[1].to_s
+      when 9
+        @week = "Setiembre - " + fecha[1].to_s
+      when 10
+        @week = "Octubre - " + fecha[1].to_s
+      when 11
+        @week = "Noviembre - " + fecha[1].to_s
       else
-        @mensaje = "fuentes"
+        @week = "Diciembre - " + fecha[1].to_s
+      end
+    else  
+      @week = ActiveRecord::Base.connection.execute("
+        SELECT CONCAT(name, ': ', DATE_FORMAT(start_date, '%d/%m/%Y'), ' - ', DATE_FORMAT(end_date, '%d/%m/%Y')) 
+        FROM  weeks_for_cost_center_"+get_company_cost_center('cost_center').to_s+" 
+        WHERE id = " + params[:semana].to_s).first
+    end
+    @worker = Worker.find(params[:worker])
+    @wo = @worker.id
+    @concept = Concept.find(params[:concept])
+    @co = @concept.id
+    @amount = params[:amount]
+    @reg_n = (Time.now.to_f*1000).to_i
+    render(partial: 'extra', :layout => false)
+  end
+
+  def complete_select2
+    con = TypeOfPayslip.find(params[:tipo]).concepts
+    concepts = Array.new
+    con.each do |wo|
+      concepts << {'id' => wo.id.to_s, 'name' => wo.code+" - "+wo.name}
+    end     
+    render json: {:concepts => concepts} 
+  end
+
+  def complete_select_extra
+    extra = Array.new
+    if params[:worker] == "empleado"
+      fecha = params[:semana].split("-")
+      case fecha[0].to_i
+      when 1
+        @week = "Enero - " + fecha[1].to_s
+      when 2
+        @week = "Febrero - " + fecha[1].to_s
+      when 3
+        @week = "Marzo - " + fecha[1].to_s
+      when 4
+        @week = "Abril - " + fecha[1].to_s
+      when 5
+        @week = "Mayo - " + fecha[1].to_s
+      when 6
+        @week = "Junio - " + fecha[1].to_s
+      when 7
+        @week = "Julio - " + fecha[1].to_s
+      when 8
+        @week = "Agosto - " + fecha[1].to_s
+      when 9
+        @week = "Setiembre - " + fecha[1].to_s
+      when 10
+        @week = "Octubre - " + fecha[1].to_s
+      when 11
+        @week = "Noviembre - " + fecha[1].to_s
+      else
+        @week = "Diciembre - " + fecha[1].to_s
+      end
+    else
+      semana = ActiveRecord::Base.connection.execute("
+        SELECT *
+        FROM weeks_for_cost_center_" + get_company_cost_center('cost_center').to_s + " wc
+        WHERE wc.id = " + params[:semana].to_s).first
+      @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
+    end
+    @reg_n = (Time.now.to_f*1000).to_i
+    extra_info = ExtraInformationForPayslip.where("week = '"+@week.to_s+"'")
+    extra_info.each do |ei|
+      extra << {'worker_id' => ei.worker_id.to_s, 'wo_name' => ei.worker.entity.name.to_s+" "+ei.worker.entity.second_name.to_s+" "+ei.worker.entity.paternal_surname.to_s+" "+ei.worker.entity.maternal_surname.to_s, 'concept_id'=> ei.concept_id.to_s, 'concept_name'=> ei.concept.name.to_s, 'amount'=> ei.amount.to_s, 'reg'=>@reg_n}
+      @reg_n+=1
+    end
+    render json: {:extra => extra} 
+  end    
+
+  def generate_payroll
+    @pay = Payslip.new
+    @cc = CostCenter.find(get_company_cost_center('cost_center'))
+    @company_id = get_company_cost_center('company')
+    ing = Array.new
+    des = Array.new
+    apor = Array.new
+    tpay = TypeOfPayslip.find(params[:tipo])
+
+    tpay.concepts.where("code LIKE '1%'").each do |tpc|
+      ing << tpc.id
+    end
+    tpay.concepts.where("code LIKE '2%'").each do |tpc|
+      des << tpc.id
+    end
+    tpay.concepts.where("code LIKE '3%'").each do |tpc|
+      apor << tpc.id
+    end
+    @reg_n = (Time.now.to_f*1000).to_i
+
+    @extra_info = params[:extra]
+    @extra_info = @extra_info.split(';')
+    i = 0
+    @extra_info.each do |ar|
+      @extra_info[i] = ar.split(',')
+      i+=1
+    end
+    @partes = Array.new
+    @mensaje = "fail"
+    @tipo = params[:tipo]
+    @type_of_worker_id = tpay.type_of_worker_id
+    if params[:worker] == "empleado"
+      fecha = params[:semana].split(',')
+      inicio = fecha[0]+"-"+fecha[1]+"-01"
+      d = Date.new(fecha[0].to_i,fecha[1].to_i)
+      d +=42
+      d = (Date.new(d.year, d.month) - 1)
+      case d.strftime("%m").to_i
+      when 1
+        @month = "Enero - " + d.strftime("%Y").to_s
+      when 2
+        @month = "Febrero - " + d.strftime("%Y").to_s
+      when 3
+        @month = "Marzo - " + d.strftime("%Y").to_s
+      when 4
+        @month = "Abril - " + d.strftime("%Y").to_s
+      when 5
+        @month = "Mayo - " + d.strftime("%Y").to_s
+      when 6
+        @month = "Junio - " + d.strftime("%Y").to_s
+      when 7
+        @month = "Julio - " + d.strftime("%Y").to_s
+      when 8
+        @month = "Agosto - " + d.strftime("%Y").to_s
+      when 9
+        @month = "Setiembre - " + d.strftime("%Y").to_s
+      when 10
+        @month = "Octubre - " + d.strftime("%Y").to_s
+      when 11
+        @month = "Noviembre - " + d.strftime("%Y").to_s
+      else
+        @month = "Diciembre - " + d.strftime("%Y").to_s
+      end
+      d = d.strftime('%Y-%m-%d')
+      
+      @partes = Payslip.generate_payroll_empleados(@company_id, inicio, d, ing, des, apor, @extra_info, params[:ar_wo], tpay.id, tpay.type_of_worker_id, @month)
+      if @partes.count > 1
+        @mensaje = "empleado"
+      end
+    elsif params[:worker] == "obrero"
+      semana = ActiveRecord::Base.connection.execute("
+        SELECT *
+        FROM weeks_for_cost_center_" + @cc.id.to_s + " wc
+        WHERE wc.id = " + params[:semana].to_s).first
+
+      @week = semana[1].to_s+ ": del "+ semana[2].strftime('%d/%m/%y') + " al " +semana[3].strftime('%d/%m/%y') 
+      @max_hour = ActiveRecord::Base.connection.execute("
+        SELECT total
+        FROM total_hours_per_week_per_cost_center_" + @cc.id.to_s + "
+        WHERE status = 1
+        AND week_id = " + semana[0].to_s).first
+
+      if !@max_hour.nil?
+        @max_hour = @max_hour[0]
+      else
+        @max_hour = 48
+      end      
+      tareo = WeeklyWorker.where("start_date = '"+semana[2].to_s+"' AND end_date = '"+semana[3].to_s+"' AND state = 'approved'").first
+      if !tareo.nil?
+        wg = tareo.working_group.gsub(" ", ",")
+      else
+        wg = 0
+      end
+      if wg != 0
+        @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
+        @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo], tpay.type_of_worker_id)
+        if @partes.count > 1        
+          @mensaje = "obrero"
+        end
       end
     end
     render(partial: 'workers', :layout => false)
@@ -250,8 +417,11 @@ class Payrolls::PayslipsController < ApplicationController
 
     book = Spreadsheet::Workbook.new
     sheet1 = book.create_worksheet :name => 'Planilla'
-
-    headers = ['DNI', 'Nombre', 'CAT', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
+    if params[:type] == "month"
+      headers = ['DNI', 'Nombre', 'CAT', 'COMP.', 'AFP', 'HIJ', 'DIAS ASISTIDOS', 'HE 25%', 'HE 35%']
+    else
+      headers = ['DNI', 'Nombre', 'CAT', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
+    end
     headers = headers + JSON.parse(@pay.first.ing_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
     headers = headers + JSON.parse(@pay.first.des_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
     headers = headers + JSON.parse(@pay.first.aport_and_amounts).to_a.map(&:first).map{ |i| i.gsub('_', ' ').upcase }
@@ -262,10 +432,14 @@ class Payrolls::PayslipsController < ApplicationController
     @pay.each do |pars|
       selected = Array.new
       wor = Worker.find(pars.worker_id)
-      selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.first.article.name, CostCenter.find(pars.cost_center_id).code, pars.last_worked_day.strftime('%d/%m/%y').to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.normal_hours.to_s, pars.days.to_s, pars.he_60.to_s, 0, pars.he_100.to_s]
-      selected = selected + JSON.parse(pars.ing_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
-      selected = selected + JSON.parse(pars.des_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
-      selected = selected + JSON.parse(pars.aport_and_amounts).to_a.map(&:second).map{ |i| i.gsub('_', ' ').upcase }
+      if params[:type].to_s == "month"
+        selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.second_name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.where("status = 1").first.article.name, Company.find(pars.company_id).short_name.to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.days.to_f, pars.he_60.to_f, pars.he_100.to_f]
+      elsif params[:type].to_s == "week"
+        selected = [wor.entity.dni, wor.entity.name.to_s + " " + wor.entity.second_name.to_s + " " + wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s, wor.worker_contracts.first.article.name, CostCenter.find(pars.cost_center_id).code, pars.last_worked_day.strftime('%d/%m/%y').to_s, wor.worker_afps.first.afp.enterprise.to_s, wor.numberofchilds.to_i, pars.normal_hours.to_f, pars.days.to_f, pars.he_60.to_f, 0, pars.he_100.to_f]
+      end
+      selected = selected + JSON.parse(pars.ing_and_amounts).to_a.map(&:second).map{ |i| i.to_f.round(2) }
+      selected = selected + JSON.parse(pars.des_and_amounts).to_a.map(&:second).map{ |i| i.to_f.round(2) }
+      selected = selected + JSON.parse(pars.aport_and_amounts).to_a.map(&:second).map{ |i| i.to_f.round(2) }
       sheet1.row(i).concat selected
       i += 1
     end
@@ -275,8 +449,104 @@ class Payrolls::PayslipsController < ApplicationController
     send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
   end
 
+  def show_formulas_information
+    @concepts_formulas = Array.new
+    @title = TypeOfPayslip.find(params[:type]).name.to_s
+    type_payslip = TypeOfPayslip.find(params[:type])
+    concepts = TypeOfPayslip.find(params[:type]).concepts
+    concepts.each do |concept|
+      @concepts_formulas << [concept.name.to_s, (concept.concept_valorizations.where( :type_worker => type_payslip.type_of_worker_id).first.formula.to_s rescue '-')]
+    end
+
+    respond_to do |format|
+      format.html do
+        @type = params[:type]
+        render(:partial => 'table_formulas', :layout => false)
+      end
+      format.pdf do
+        render :pdf => "Tabla_formulas-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'payrolls/payslips/table_formulas.pdf.haml',
+               :orientation => 'portrait'
+      end
+    end
+  end
+
+  def report_pdf
+    respond_to do |format|
+      @result = Array.new
+      initial = Array.new
+      amounts = Array.new
+      @count = 0
+      format.html
+      format.pdf do
+        @pay = Payslip.where("code = ?",params[:id])
+        ji = 0
+        @pay.each do |pars|
+          if !@pay.first.week.nil?
+            if initial.count > 0
+              initial = [initial, [pars.normal_hours.to_f, pars.days.to_i, pars.he_60.to_f, 0, pars.he_100.to_f]].transpose.map{|a| a.sum}
+            else
+              initial = [pars.normal_hours.to_f, pars.days.to_i, pars.he_60.to_f, 0, pars.he_100.to_f]
+            end
+            @count += 1
+          else
+            if initial.count > 0
+              initial = [initial, [pars.days.to_f, pars.he_60.to_f, pars.he_100.to_f]].transpose.map{|a| a.sum}
+            else
+              initial = [pars.days.to_f, pars.he_60.to_f, pars.he_100.to_f]
+            end
+            @count += 1
+          end
+          ing_amount = JSON.parse(pars.ing_and_amounts).to_a
+          ing_amount.map{|a| a.shift}
+          ing_amount = ing_amount.map(&:first).map{|a| a.to_f}
+          des_amount = JSON.parse(pars.des_and_amounts).to_a
+          des_amount.map{|a| a.shift}
+          des_amount = des_amount.map(&:first).map{|a| a.to_f}
+          aport_amount = JSON.parse(pars.aport_and_amounts).to_a
+          aport_amount.map{|a| a.shift}
+          aport_amount = aport_amount.map(&:first).map{|a| a.to_f}
+          summarize = ing_amount + des_amount + aport_amount
+          if amounts.count > 0
+            amounts = [amounts, summarize].transpose.map{|a| a.sum}
+          else
+            amounts = summarize
+          end
+        end
+
+        @result = initial + amounts
+
+        render :pdf => "reporte_planillas-#{Time.now.strftime('%d-%m-%Y')}", 
+               :template => 'payrolls/payslips/report_payslips_pdf.pdf.haml',
+               :orientation => 'Landscape',
+               :page_size => 'A0'
+      end
+    end
+  end
+
   private
   def pay_parameters
-    params.require(:payslip).permit(:worker_id, :cost_center_id, :start_date, :end_date, :days, :normal_hours, :subsidized_day, :subsidized_hour, :last_worked_day, :he_60, :code, :he_100, :ing_and_amounts, :des_and_amounts, :aport_and_amounts, :month)
+    params.require(:payslip).permit(
+      :worker_id, 
+      :cost_center_id, 
+      :start_date, 
+      :end_date, 
+      :days, 
+      :normal_hours, 
+      :subsidized_day, 
+      :subsidized_hour, 
+      :last_worked_day, 
+      :he_60, 
+      :code, 
+      :he_100, 
+      :ing_and_amounts, 
+      :des_and_amounts, 
+      :aport_and_amounts, 
+      :month)
   end
+
+  private
+  def extra_parameters
+    params.require(:extra_information_for_payslip).permit(:worker_id, :concept_id, :amount, :week)
+  end  
 end

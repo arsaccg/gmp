@@ -39,11 +39,12 @@ class Administration::InputcategoriesController < ApplicationController
   end
 
   def feo_of_work_wbs
-    @project_id =  get_company_cost_center('cost_center')
+    @project_id =  get_company_cost_center('cost_center') #1
+    project_code = Wbsitem.generate_order(@project_id.to_s)  #01
 
     #@budget_goal = Budget.find(params[:budget_goal]) rescue @budget_sale #Budget.where(:cost_center_id).last
     @budget_sale = Budget.where("`type_of_budget` = 0 AND `subbudget_code` IS NOT NULL AND `cost_center_id` = (?)", @project_id).first rescue nil
-      @budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", @project_id).first rescue @budget_sale
+    @budget_goal = Budget.where("`type_of_budget` = 1 AND `cost_center_id` = (?)", @project_id).first rescue @budget_sale
 
     @wbsitems = Wbsitem.where(cost_center_id: @project_id).order(:codewbs)
     @inputcategories = Inputcategory.all
@@ -53,15 +54,17 @@ class Administration::InputcategoriesController < ApplicationController
 
     @arr_sum0, @arr_sum1 = Hash.new, Hash.new
     @direct_cost_sale, @direct_cost_goal = 0, 0
-    mini, maxi = @project_id.to_i*10+1, @project_id.to_i*10+9
+    mini, maxi = 1, Wbsitem.where("codewbs like ?", project_code + "__").count #@project_id.to_i*10+1, @project_id.to_i*10+9 #1 1 .. 1 9
+    
     for i in mini..maxi
+      code = project_code + Wbsitem.generate_order(i.to_s) #01 01 .. 01 09
       amount0, amount1 = 0, 0
-      @wbsitems.where('codewbs LIKE ?', i.to_s+'_' ).each do |wbs| 
+      @wbsitems.where('codewbs LIKE ?', code+'__' ).each do |wbs| 
         sum0, sum1 = 0, 0
         @inputcategories.each do |input|
-          if (wbs.codewbs != @project_id.to_s) && (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"] != nil) && (@data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][2]) >= 10
-            sum0 += @data[0]["#{wbs.codewbs.to_s}#{input.category_id}"][4].to_f rescue 0
-            sum1 += @data[1]["#{wbs.codewbs.to_s}#{input.category_id}"][4].to_f rescue 0
+          if (wbs.codewbs != project_code) && (@data[0]["#{wbs.codewbs.to_s}_#{input.category_id}"] != nil) && (@data[0]["#{wbs.codewbs.to_s}_#{input.category_id}"][2]) >= 10
+            sum0 += @data[0]["#{wbs.codewbs.to_s}_#{input.category_id}"][4].to_f rescue 0
+            sum1 += @data[1]["#{wbs.codewbs.to_s}_#{input.category_id}"][4].to_f rescue 0
           end
         end
         @arr_sum0["#{wbs.codewbs}_#{wbs.codewbs}"] = sum0
@@ -69,11 +72,14 @@ class Administration::InputcategoriesController < ApplicationController
         amount0 += sum0
         amount1 += sum1
       end
-      @arr_sum0["#{i}_#{i}"] = amount0
-      @arr_sum1["#{i}_#{i}"] = amount1
+      @arr_sum0["#{project_code + Wbsitem.generate_order(i.to_s)}_#{project_code + Wbsitem.generate_order(i.to_s)}"] = amount0
+      @arr_sum1["#{project_code + Wbsitem.generate_order(i.to_s)}_#{project_code + Wbsitem.generate_order(i.to_s)}"] = amount1
       @direct_cost_sale += amount0
       @direct_cost_goal += amount1
     end
+
+    p "@arr_sum0~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    p @arr_sum0
 
     render :feo_of_work_wbs, :layout => false
   end

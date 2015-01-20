@@ -3,7 +3,7 @@
     .col-xs-12.col-sm-12.col-md-8.col-lg-8{:style => 'text-align: center;'}
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw
-        = "CUADRO DE ESTADO - " + Time.now.strftime("%B %Y")
+        = "CUADRO DE ESTADO - " + ((Time.now.strftime("%B %Y")).gsub 'January', 'Enero')
     .col-xs-12.col-sm-12.col-md-4.col-lg-2
       %a.btn.btn-labeled.btn-success{:href => "#{request.domain}:3000/costo_de_obra.pdf", :target => "_blank"}
         %span.btn-label
@@ -207,6 +207,6 @@
 
   load_lineal_graphic_for_general_report('third-lineal-chart', 'MARGEN TOTAL DE OBRA', '', 'Valorizado', 'Costo Real', 'Diferencia', [0, 13062.88, 957438.77, 3982256.86, 6866140.09, 8775421.89, 10424618.18], [5642.50, 19594.32, 986161.93, 3902611.72, 6522833.09, 8161142.36, 9486402.54], [-5642.50, -6531.44, 28723.16, 79645.14, 343307.00, 614279.53, 938215.64], #{@months_linear_char});
 
-  load_lineal_graphic_for_general_report('four-lineal-chart', 'CURVA CONTROL DE COSTO DE OBRA', '', 'Programado', 'Valorizado,', 'Costo Real', [16743.98,84776.76,190534.16,324546.87,580862.90,1240106.89,2532605.94,4501085.42], #{@data_total_valorization_linear_char}, [40414.89,143894.62,236973.68,417097.46,651643.72,1275479.15,1918470.12,2277875.68], #{@months_linear_char});
+  load_lineal_graphic_for_general_report('four-lineal-chart', 'CURVA CONTROL DE COSTO DE OBRA', '', 'Programado', 'Valorizado,', 'Costo Real', [16743.98,84776.76,190534.16,324546.87,580862.90,1240106.89,2532605.94,4501085.42], #{@data_total_valorization_linear_char}, [40414.89,143894.62,436973.68,717097.46,951643.72,4275479.15], #{@months_linear_char});
 
   load_bar_graphic_for_general_report('bar-chart', 'RESULTADO ÚLTIMO 6 MESES', '', #{@data_total_valorization_bar_char}, #{@months_bar_char});

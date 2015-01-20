@@ -81,7 +81,21 @@
           %th
           %th{'style' => 'text-align:center;vertical-align: middle'}= sprintf('%.2f',@totalfuel_amount)
     .modal-footer
-      %a.btn.btn-sm.btn-success.btn-prev{ :href => "#{report_of_equipment_pdf_production_valuation_of_equipments_path}.pdf?subcontractequipment=#{@subcontractequipmentarticle}&name=#{@entityname}&start_date=#{@start_date}&end_date=#{@end_date}&cad=#{@cad}&ids=#{@ids}", :target => '_blank', :style=>"float: right;"}
-        Ver PDF
-      %button.btn.btn-info{"data-dismiss" => "modal", type: "button",:style=>"float: left;"}
+      -if @action=="show"
+        %a.btn.btn-sm.btn-success.btn-prev{ :href => "#{report_of_equipment_pdf_production_valuation_of_equipments_path}.pdf?subcontractequipment=#{@subcontractequipmentarticle}&name=#{@entityname}&start_date=#{@start_date}&end_date=#{@end_date}&cad=#{@cad}&ids=#{@ids}", :target => '_blank', :style=>"float: right;"}
+          Ver PDF
+      %button.btn.btn-info#part-equipment2{"data-dismiss" => "modal", type: "button",:style=>"float: left;"}
         Salir
+
+:javascript
+
+  $("#part-equipment2").click(function(e) {
+    console.log("oli2");
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}", name: "#{@entityname}", code: "#{@code}", ids: "#{@ids}", action: "#{@action}"};
+    load_url_ajax('#{part_equipment_production_valuation_of_equipments_path}', 'part-equipment', data, '', 'POST');
+    $('#report-equipment').modal('hide');
+    $('#part-equipment').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  });

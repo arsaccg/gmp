@@ -6,7 +6,7 @@
     %select#exe{:name =>"valuation_of_equipment[subcontract_equipment_id]", :style => 'width:100%;padding: 0;border: none;'}
       %option{:value => "0"} Seleccione un Contrato
       - @executors.each do |ex|
-        %option{:value => "#{ex.entity_id}", :rel => "#{ex.id}"}
+        %option{:value => "#{ex.id}", :rel => "#{ex.entity_id}"}
           = ex.entity.name.to_s + ' - ' + ex.contract_description.to_s
   .col-md-2
     %label Fecha de inicio
@@ -27,8 +27,14 @@
   .row
     %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
       #table-information-result
-
+%button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado de Valorizaciones de Equipo
 :javascript
+
+  $('#backlist').click(function(){
+      load_url_ajax("#{production_valuation_of_equipments_path}", 'content', {company_id: '#{@company}'}, null, 'GET');
+  });
   $(document).ready(function () {
     $('select').select2({width:'100%'});
   });
@@ -36,8 +42,8 @@
   $('#show-table').click(function(){
     var start_date = $('#start-date-input').val();
     var end_date = $('#end-date-input').val();
-    var exe = $('#exe').val();
-    var subcontract = $('option:selected', $('#exe')).attr('rel');
+    var exe =$('option:selected', $('#exe')).attr('rel');
+    var subcontract =  $('#exe').val();
 
     if(start_date != null && end_date != null && exe!=0) {
       if(new Date(start_date) < new Date(end_date)) {

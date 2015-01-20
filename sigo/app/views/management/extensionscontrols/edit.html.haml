@@ -58,13 +58,61 @@
                 .row
                   %section.col.col-10
                     %label.label Subir Archivos
-                    %label.input{for: "files"}
-                      = f.file_field :files, input_html: { class: 'form-control' }, label: false
+                    %label.input{for: "document"}
+                      = f.input :document, input_html: { class: 'form-control' }, label: false, as: "file"
               %footer
-                %a{:href=>"javascript:post_to_url('#{management_extensionscontrol_path(@extensionscontrol)}?authenticity_token=#{form_authenticity_token}', 'edit_extension', 'right-area');", :class=>"btn btn-success"}
-                  %i.fa.fa-save
-                  Guardar Valorizacion
+                %button.btn.btn-primary{type: "submit"}
+                  %i.fa.fa-save 
+                  Guardar
 
   %a.btn.btn-sm.btn-primary.btn-prev#backlist-companies{:href=>"javascript: load_url_ondiv('"+administrate_budget_management_budgets_path.to_s+"', 'right-area');"}
     %i.fa.fa-arrow-left
     Retornar al listado de compañias
+
+:javascript
+  $(document).ready(function () {
+    submit_validate($('form[id^="edit_"]'));
+  });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'extensionscontrol[approved_deadline]' : {
+              required : true
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'extensionscontrol[approved_deadline]' : {
+              required : "Por favor, ingrese plazo aprobado"
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();      
+      }
+    });
+  }

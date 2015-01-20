@@ -277,9 +277,7 @@ function load_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*  
     },
     success: function(data) {
       if( loader_flag == 'avoid-opacity'){
-        $("#" + div_name).html(data).delay(50).animate({
-          opacity : '1.0'
-        }, 300);
+        $("#" + div_name).html(data);
       }else{
         if( loader_flag == 'refresh-body'){
           $('body').html(data);
@@ -395,6 +393,34 @@ function append_url_ajax(url, div_id, parameters, loader_flag, render_type){  /*
     data: parameters
   }).done(function( msg ) {
     $("#" + div_name).append(msg);
+  });
+  return false;
+}
+
+function append_url_ajax_payroll(url, div_id, parameters, loader_flag, render_type){  /*  usar este owo  */
+
+  var url_str = url;
+  var div_name = div_id; 
+  var type_call = render_type;
+
+  $.ajax({
+    type: type_call,
+    url: url_str,
+    async: false,
+    data: parameters,
+    beforeSend : function() {
+      console.log("before send")
+      $('#modalLoading').modal('toggle', {
+        backdrop: 'static',
+        keyboard: false
+      });
+      console.log("before send modal abierto")
+    }
+  }).done(function( msg ) {
+    $("#" + div_name).append(msg);
+    console.log("modal por cerrar")
+    $('#modalLoading').modal('hide');
+    console.log("modal cerrardo")
   });
   return false;
 }
@@ -537,7 +563,7 @@ function bar_graph_category(div, categoria, series2, title_c, tipo, abrev, suffi
 
 
 
-/*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~ METODOS DE TOBI *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*/
+/*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~ METODOS DE TOBI *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*/
 function load_url_ondiv(url, div_name){ /*  usar este owo  */
   var url_str = url;
   var div_name = div_name;

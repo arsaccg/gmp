@@ -4,6 +4,7 @@
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Lista de Parte de Equipos
+  .row
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"}

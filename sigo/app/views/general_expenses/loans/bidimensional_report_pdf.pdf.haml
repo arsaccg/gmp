@@ -1,0 +1,32 @@
+%html
+  %head
+    %meta{charset: "utf-8"}
+    = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
+  %body
+    #main
+      #content
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th{'colspan' => "#{@todo[0].count}", "style"=>"text-align:center;font-size: 13px;"} CONSOLIDADO DE MOVIMIENTOS
+          %tbody
+            -@todo.each do |rpt|
+              -flag_header = false
+              %tr
+                -(0..rpt.count-1).each do |cc|
+                  -if rpt[cc] == "CUADRO COMPARATIVO"
+                    -flag_header = true
+                  -if flag_header
+                    %th{"style"=>"text-align:center;font-size: 8.5px;background-color:#222222;color:white;"}= rpt[cc].to_s
+                  -elsif cc == 0
+                    %th{"style"=>"text-align:center;font-size: 8.5px;background-color:#222222;color:white;"}= rpt[cc].to_s
+                  -elsif rpt[cc] == "es el mismo"
+                    %th{"style"=>"background-color:#222222;"}
+                  -else
+                    %td{"style"=>"text-align:center;font-size: 8.5px;"}
+                      =number_to_currency(rpt[cc][0].to_s, unit: 'S/. ', precision: 2)
+                      %br
+                      =number_to_currency(rpt[cc][1].to_s, unit: 'S/. ', precision: 2)
+                      %br
+                      =number_to_currency(rpt[cc][2].to_s, unit: 'S/. ', precision: 2)
+              -flag_header = false

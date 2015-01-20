@@ -1,0 +1,212 @@
+#wid-id-0.jarviswidget{"data-widget-colorbutton" => "false", "data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-eye
+    %h2 Tipos de Planilla
+  .widget-body
+    = simple_form_for([:payrolls, @tpay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      %fieldset
+        %legend Información Principal
+        .row
+          %section.col.col-md-8
+            %label.label Nombre
+            %label.input{for: "name"}
+              %i.icon-append.fa.fa-user
+              = f.input :name, placeholder: "Nombre", input_html: { class: 'form-control' }, label: false
+          %section.col.col-md-3
+            %label.label Para Obreros o Empleados?
+            %select.form-control#tipo{ :name => 'type_of_payslip[for_worker_employee]', :onchange => 'checkWorker("manual");' }
+              %option{:value => nil, :selected => true, :disabled => true} Seleccione
+              %option{:value => "obrero", :selected => @tpay.for_worker_employee=="obrero"} Obreros
+              %option{:value => "empleado", :selected => @tpay.for_worker_employee=="empleado" } Empleados
+        %br
+        .row
+          %section.col.col-md-8
+            %label.label Descripción 
+            %label.input
+              = f.input :description, placeholder: "Descripción", input_html: { class: '', style: 'width: 100%;' }, label: false
+          %section.col.col-md-3
+            %label.label Sub-categoría de Trabajador
+            %select.form-control#sub_tipo_cat{ :name => 'type_of_payslip[type_of_worker_id]'}
+              %option{:value => nil, :selected => true, :disabled => true} Seleccione
+
+        .row
+          %section.col.col-md-12
+            %label.label Conceptos a usar:
+            %div#empleado{"style"=>"display:none", :disabled=>true}
+              .col.col-4
+                %label.label Ingresos:
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '1%' AND type_empleado IS NOT NULL AND status = 1")
+              .col.col-4
+                %label.label Descuentos:
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '2%' AND type_empleado IS NOT NULL AND status = 1")
+              .col.col-4
+                %label.label Aportaciones:
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '3%' AND type_empleado IS NOT NULL AND status = 1")
+            %div#obrero{"style"=>"display:none", :disabled=>true}
+              .col.col-4
+                %label.label Ingresos:            
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '1%' AND type_obrero IS NOT NULL AND status = 1")
+              .col.col-4
+                %label.label Descuentos:
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '2%' AND type_obrero IS NOT NULL AND status = 1")
+              .col.col-4
+                %label.label Aportaciones:
+                = f.association :concepts, as: :check_boxes, :label => false, collection: Concept.where("code LIKE '3%' AND type_obrero IS NOT NULL AND status = 1")
+
+      %fieldset
+        %legend Definir dependencia entre Planillas
+        .row
+          %section.col.col-md-3
+            %label.label Otras Planillas
+            %select.form-control{ :name => 'type_of_payslip[type_of_payslips_id]'}
+              %option{:value => nil, :disabled => true, :selected => true} Seleccione
+              - @others_payslips.each do |other|
+                %option{:value => other.id, :selected =>@tpay.type_of_payslips_id==other.id}= other.name
+        
+          %section.col.col-md-3
+            %label.label ¿Qué deseas obtener?
+            %select.form-control{ :name => 'type_of_payslip[type_operation]'}
+              %option{:value => nil, :disabled => true, :selected => true} Seleccione
+              %option{:value => 'ing_and_amounts', :selected =>@tpay.type_operation=='ing_and_amounts'} Ingreso
+              %option{:value => 'des_and_amounts', :selected =>@tpay.type_operation=='des_and_amounts'} Descuentos
+              %option{:value => 'aport_and_amounts', :selected =>@tpay.type_operation=='aport_and_amounts'} Aportaciones
+
+          %section.col.col-md-3
+            %label.label ¿A que afecta?
+            %select.form-control{ :name => 'type_of_payslip[type_converted_operation]'}
+              %option{:value => nil, :disabled => true, :selected => true} Seleccione
+              %option{:value => 'ing_and_amounts', :selected =>@tpay.type_converted_operation=='ing_and_amounts'} Ingreso
+              %option{:value => 'des_and_amounts', :selected =>@tpay.type_converted_operation=='des_and_amounts'} Descuentos
+              %option{:value => 'aport_and_amounts', :selected =>@tpay.type_converted_operation=='aport_and_amounts'} Aportaciones
+
+          %section.col.col-md-3
+            %label.label ¿Que nombre de columna quiere darle al(los) resultado(s)?
+            %label.input
+              = text_field_tag 'type_of_payslip[name_operation]', @tpay.name_operation, class: "form-control"
+
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+          Guardar
+
+:javascript
+  $(document).ready(function () {
+    $('.check_boxes').attr("style"," position: relative; left: 0; ");
+    checkWorker('onload');
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }else{
+      submit_validate($('#new_type_of_payslip'));
+    }
+
+  });
+  
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'type_of_payslip[name]' : {
+              required : true
+            },
+            'type_of_payslip[description]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'type_of_payslip[name]' : {
+              required : "Por favor, ingrese el nombre del documento"
+            },
+            'type_of_payslip[description]' : {
+              required : "Por favor, ingrese una descripción para el documento"
+            }
+          },
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      }
+    });
+  }
+
+  function checkWorker(status){
+    if(status=='manual'){
+      $('input:checkbox').attr('checked',false);
+    }
+    var tipo = $('#tipo').val();
+
+    if( tipo=="empleado"){
+      $('#empleado').attr('disabled',false).fadeIn('fast');
+      $('#obrero').attr('disabled',true).fadeOut('fast');
+      $('div#empleado div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',false);
+      $('div#obrero div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',true);
+      complete_sub_categoria_worker("#{complete_sub_category_worker_production_workers_path}", "#{form_authenticity_token}", tipo);
+    }
+
+    if(tipo == "obrero"){
+      $('#empleado').attr('disabled',true).fadeOut('fast');
+      $('#obrero').attr('disabled',false).fadeIn('fast');
+      $('div#empleado div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',true);
+      $('div#obrero div.col.col-4 div.control-group.check_boxes.optional.type_of_payslip_concepts div.controls label.checkbox input.check_boxes.optional').attr('disabled',false);
+      complete_sub_categoria_worker("#{complete_sub_category_worker_production_workers_path}", "#{form_authenticity_token}", tipo);
+    }
+  }
+
+  function complete_sub_categoria_worker(url, form_token, tipo){
+    $.ajax({
+      type: "POST",
+      url: url,
+      async: false,
+      data: { authenticity_token: form_token, tipo: tipo}
+    }).done(function( data ) {
+      newOptions = [];
+      $.each(data.sub_cat, function(key, value){
+        item = {};
+        item['name'] = value.name;
+        item['id'] = value.id;
+        newOptions.push(item);
+      });
+      $('#sub_tipo_cat').empty();
+      $('#sub_tipo_cat').append(
+        $("<option></option>").attr("value", null).text("Seleccione").attr("selected", "selected").attr("disabled", true)
+      )
+      $.each(newOptions, function(key,value){
+        if('#{@tpay.type_of_worker_id}'==value.id){
+          $('#sub_tipo_cat').append(
+            $("<option></option>").attr("value", value.id).text(value.name).attr("selected",true)
+          )
+        }else{
+          $('#sub_tipo_cat').append(
+            $("<option></option>").attr("value", value.id).text(value.name)
+          )
+        }
+      });
+    });
+  }

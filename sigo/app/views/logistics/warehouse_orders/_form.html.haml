@@ -143,87 +143,77 @@
     });
 
 
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }
+    else{
+      submit_validate($('#new_warehouse_order'));
+    }    
 
-    $('#new_warehouse_order').ajaxForm({
-      beforeSubmit: function() {
-        $('#new_delivery_order').validate({
-          // Rules for form validation
-          rules : {
-            'warehouse_order[code]' : {
-              required : true
-            },
-            'warehouse_order[working_group_id]' : {
-              required : true,
-            },
-            'warehouse_order[date]' : {
-              required : true,
-            }
-          },
-
-          // Messages for form validation
-          messages : {
-            'warehouse_order[code]' : {
-              required : "Por favor ingresar un código correcto"
-            },
-            'warehouse_order[working_group_id]' : {
-              required : "Por favor ingresar un grupo de trabajadores"
-            },
-            'warehouse_order[date]' : {
-              required : "Por favor ingresar una fecha correcta"
-            }
-          },
-
-          // Do not change code below
-          errorPlacement : function(error, element) {
-            error.insertAfter(element.parent());
-          }
-        });
-
-        return $('#new_warehouse_order').valid();
-      },
-      target: '#content'
-    });
-
-    $('form[id^="edit_"]').ajaxForm({
-      beforeSubmit: function() {
-        $('form[id^="edit_"]').validate({
-          // Rules for form validation
-          rules : {
-            'warehouse_order[code]' : {
-              required : true
-            },
-            'warehouse_order[working_group_id]' : {
-              required : true,
-            },
-            'warehouse_order[date]' : {
-              required : true,
-            }
-          },
-
-          // Messages for form validation
-          messages : {
-            'warehouse_order[code]' : {
-              required : "Por favor ingresar un código correcto"
-            },
-            'warehouse_order[working_group_id]' : {
-              required : "Por favor ingresar un grupo de trabajadores"
-            },
-            'warehouse_order[date]' : {
-              required : "Por favor ingresar una fecha correcta"
-            }
-          },
-
-          // Do not change code below
-          errorPlacement : function(error, element) {
-            error.insertAfter(element.parent());
-          }
-        });
-
-        return $('form[id^="edit_"]').valid();
-      },
-      target: '#content'
-    });
   });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
+      beforeSubmit: function() {
+        $(form['selector']).validate({
+          // Rules for form validation
+          rules : {
+            'warehouse_order[code]' : {
+              required : true
+            },
+            'warehouse_order[working_group_id]' : {
+              required : true,
+            },
+            'warehouse_order[date]' : {
+              required : true,
+            }
+          },
+
+          // Messages for form validation
+          messages : {
+            'warehouse_order[code]' : {
+              required : "Por favor ingresar un código correcto"
+            },
+            'warehouse_order[working_group_id]' : {
+              required : "Por favor ingresar un grupo de trabajadores"
+            },
+            'warehouse_order[date]' : {
+              required : "Por favor ingresar una fecha correcta"
+            }
+          },
+
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
+          }
+        });
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        // Client Valid
+        return $(form['selector']).valid();
+      },
+      target: '#content',
+      success: function (data){
+        $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      }
+    });
+  }
+
+
 
   function isNumber(evt) {
     evt = (evt) ? evt : window.event;

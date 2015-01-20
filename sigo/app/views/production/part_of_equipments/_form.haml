@@ -33,19 +33,11 @@
                 %label.label Proveedor
                 %label.input
                   %select.form-control#ent{:name =>"part_of_equipment[subcontract_equipment_id]", :style => 'width:400px;padding: 0;border: none;'}
-                    %option{:value => ''}
+                    %option{:value => nil, :selected => true, :disabled=>true}
                       = 'Seleccione Proveedor'
                     -@subcon.each do |subcon|
-                      -if @action =="edit"
-                        -if @partofequipment.subcontract_equipment_id == subcon.id
-                          %option{:value => "#{subcon.id}", :selected=>"selected"}
-                            = subcon.entity.name
-                        -else
-                          %option{:value => "#{subcon.id}"}
-                            = subcon.entity.name
-                      -else
-                        %option{:value => "#{subcon.id}"}
-                          = subcon.entity.name
+                      %option{:value => "#{subcon.id}", :selected=>@partofequipment.subcontract_equipment_id==subcon.id}
+                        = subcon.entity.name + " - "+subcon.contract_description
             .row
               %section.col.col-6
                 %label.label Equipos
@@ -91,7 +83,7 @@
               %section.col.col-5
                 %label.label Tipo de Combustible
                 %label.input
-                  %input#fuel.select2.bigdrop.select2-offscreen.form-control{'name' => 'part_of_equipment[subcategory_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
+                  %input#fuel.select2{'name' => 'part_of_equipment[subcategory_id]', 'type' => 'hidden', 'style' => 'width:100%;padding: 0;border: none;', 'value' => "#{@partofequipment.subcategory_id}"}
 
               %section.col.col-3
                 %label.label Cantidad de Combustible Total
@@ -285,6 +277,7 @@
       beforeSubmit: function() {
         $(form['selector']).validate({
           // Rules for form validation
+          ignore: '',
           rules : {
             'part_of_equipment[code]':{
               required : true
@@ -362,6 +355,12 @@
         });
         // Remove all Help-inLine
         $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
         // Client Valid
         return $(form['selector']).valid();
       },
@@ -372,9 +371,12 @@
         $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }
+
   function add_more_register(){
     data = { authenticity_token: "#{form_authenticity_token}"};
     append_url_ajax('#{add_more_register_production_part_of_equipments_path}', 'part_register_table', data, 0, 'POST');
@@ -407,8 +409,6 @@
     unit("#{get_unit_production_part_of_equipments_path}", article, "#{form_authenticity_token}", "0302");
     $("#fieldtable").fadeIn("fast");
   });
-
-  
 
   $('#ent').keyup(function(){
     var subcontract_id = $(this).val();

@@ -160,6 +160,11 @@
         });
         // Remove all Help-inLine
         $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
         // Client Valid
         return $(form['selector']).valid();
       },

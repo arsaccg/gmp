@@ -34,12 +34,12 @@ class Production::WorkingGroupsController < ApplicationController
     TypeEntity.find_by_preffix("P").entities.each do |executor|
       @executors << executor
     end
-    PositionWorker.find_by_name("Jefe de Frente").workers.each do |front_chief|
+    PositionWorker.find_by_name("Jefe de Frente").workers.where("cost_center_id = "+ get_company_cost_center('cost_center').to_s).each do |front_chief|
       @front_chiefs << front_chief
     end
     @front_chiefs = @front_chiefs + @workers
     @front_chiefs = @front_chiefs.uniq
-    PositionWorker.find_by_name("Capataz").workers.each do |master_builder|
+    PositionWorker.find_by_name("Capataz").workers.where("cost_center_id = "+ get_company_cost_center('cost_center').to_s).each do |master_builder|
       @master_builders << master_builder
     end
     @master_builders = @master_builders + @workers
@@ -91,7 +91,7 @@ class Production::WorkingGroupsController < ApplicationController
     PositionWorker.find_by_name("Jefe de Frente").workers.each do |front_chief|
       @front_chiefs << front_chief
     end
-    Worker.where("position_wg_id = "+PositionWorker.find_by_name("Jefe de Frente").id.to_s).each do |wo|
+    Worker.where("position_wg_id = "+PositionWorker.find_by_name("Jefe de Frente").id.to_s+" AND cost_center_id=" + get_company_cost_center('cost_center').to_s).each do |wo|
       @front_chiefs << wo
     end
     @front_chiefs = @front_chiefs + @workers
@@ -99,7 +99,7 @@ class Production::WorkingGroupsController < ApplicationController
     PositionWorker.find_by_name("Capataz").workers.each do |master_builder|
       @master_builders << master_builder
     end
-    Worker.where("position_wg_id = "+PositionWorker.find_by_name("Capataz").id.to_s).each do |wo|
+    Worker.where("position_wg_id = "+PositionWorker.find_by_name("Capataz").id.to_s+" AND cost_center_id=" + get_company_cost_center('cost_center').to_s).each do |wo|
       @master_builders << wo
     end
     @master_builders = @master_builders + @workers

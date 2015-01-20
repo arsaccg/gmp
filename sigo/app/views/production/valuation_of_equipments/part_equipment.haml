@@ -69,7 +69,7 @@
 :javascript
 
   function report_of_equipment(subcontract) {
-    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}", subcontractequipment: subcontract, name: "#{@name}", ids:"#{@ids}" };
+    data = { authenticity_token: "#{form_authenticity_token}", start_date: "#{@start_date}", end_date: "#{@end_date}", cad: "#{@cad}", subcontractequipment: subcontract, name: "#{@name}", ids:"#{@ids}", ac: "#{@action}", code: "#{@code}" };
     load_url_ajax('#{report_of_equipment_production_valuation_of_equipments_path}', 'report-equipment', data, '', 'POST');
     $('#part-equipment').modal('hide');
     $('#report-equipment').modal({

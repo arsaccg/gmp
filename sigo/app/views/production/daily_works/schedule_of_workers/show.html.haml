@@ -1,0 +1,76 @@
+#content-inside
+  .row
+    .col-md-12
+      %h1{"style"=>"margin: 0"}
+        = @company.name
+  %br
+  .row
+    .col-md-8
+      %h2{"style"=>"margin: 0;text-align:center"}
+        = 'TAREO DE EMPLEADOS del ' + @inicio.strftime("%d/%m/%Y").to_s + ' al ' + @fin.strftime("%d/%m/%Y").to_s
+    %row
+      .col-sm-4
+        -if @type =="approved"
+          %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{approve_production_daily_works_schedule_of_worker_path}', 'content', {parts:'#{@part_worker_to_block}'}, null, 'GET')"}
+            Aprobar      
+  %br
+  .row
+    .col-md-12
+      %p
+        = 'Obra : ' + @cost_center.cost_center_detail.name.to_s rescue ''
+      %p
+        = 'Cliente : ' + @cost_center.cost_center_detail.entity.name.to_s rescue ''
+      %p
+        = 'Ubicación : ' + @cost_center.company.address.to_s rescue ''
+      %p
+        = 'C.C. : ' + @cost_center.name.to_s rescue ''
+  #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+    %header
+      %span.widget-icon
+        %i.fa.fa-table
+      %h2 Resultado
+    %div{"style"=>"overflow-x: scroll;"}
+      .jarviswidget-editbox
+      .widget-body
+        %table.table.table-bordered
+          %thead
+            %tr
+              %th Item
+              %th Codigo TOBI
+              %th Cargo
+              %th DNI
+              %th Nombre
+              - @dias_habiles.each do |date|
+                %th= date.to_time.strftime("%d/%m/%y")
+              %th Total Dias
+          %tbody
+            -@arraywo.each do |arr|
+              %tr
+                -index = 5
+                %td=arr[0]
+                %td=arr[1]
+                %td=arr[2]
+                %td=arr[3]
+                %td=arr[4]
+                - @dias_habiles.each do |date|
+                  %td=arr[index]
+                  -index +=1
+                %td=arr[index]
+            %tr
+              %td
+              %td
+              %td
+              %td
+              %td Total por dia:
+              - @totalperday.each do |totalperday|
+                %td=totalperday
+
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado 
+    
+:javascript
+
+  $('#backlist').click(function(){
+      load_url_ajax("#{production_daily_works_schedule_of_workers_path}", 'content', null, null, 'GET');
+  });                  

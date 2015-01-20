@@ -3,7 +3,7 @@
     %span.widget-icon
       %i.fa.fa-table
     %h2
-      = t('activerecord.modelsdescription.format')
+      Formatos
   %div
     .jarviswidget-editbox
     .widget-body.no-padding
@@ -12,11 +12,11 @@
         %thead
           %tr
             %th
-              = t('activerecord.attributes.format.name')
+              Nombre
             %th
-              = t('activerecord.attributes.format.description')
+              Descripcion
             %th
-              = t('activerecord.actions.name')
+              Acciones
         %tbody
           - @items.each do |unit|
             %tr

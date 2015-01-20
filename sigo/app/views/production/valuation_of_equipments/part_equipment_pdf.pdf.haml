@@ -1,80 +1,80 @@
 %html
-	%head
-		%meta{charset: "utf-8"}
-		= wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
-	%body
-		= image_tag @company.avatar.url, alt: "#{@company.name}"
-		%br
-		%br
-		#main
-			#content
-				%div
-					.widget-body
-						%table.panel.panel-primary{ style: "height: 150px; width: 950px;margin: 0 auto" }
-							%thead.panel-heading
-								%tr
-									%th{'colspan' => 4, "style"=>"text-align:center;font-size: 100%"}=@valuationofequipment.name.to_s+" - VALORIZACIÓN N°"+ ' ' + @valuationofequipment.code
+  %head
+    %meta{charset: "utf-8"}
+    = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
+  %body
+    = image_tag @company.avatar.url, alt: "#{@company.name}"
+    %br
+    %br
+    #main
+      #content
+        %div
+          .widget-body
+            %table.panel.panel-primary{ style: "height: 150px; width: 950px;margin: 0 auto" }
+              %thead.panel-heading
+                %tr
+                  %th{'colspan' => 4, "style"=>"text-align:center;font-size: 100%"}=@valuationofequipment.name.to_s+" - VALORIZACIÓN N°"+ ' ' + @valuationofequipment.code
 
-							%tbody{:style=>"font-size:60%;"}
-								%tr{"bgcolor"=>"#ECF3F8"}
-									%th{"style"=>"color:#5f5f5f;text-align:center;"} OBRA:
-									%th{'colspan' => 3, "style"=>"color:#5f5f5f;"}= CostCenterDetail.find_by_cost_center_id(@cc).name.to_s
-								%tr
-									%th{"style"=>"color:#5f5f5f;text-align:center;"} Razón Social:
-									%th{'colspan' => 3, "style"=>"font-weight: normal;color:#5f5f5f;"}= @valuationofequipment.name.to_s
-								%tr{"bgcolor"=>"#ECF3F8"}
-									%th{"style"=>"color:#5f5f5f;text-align:center;"} RUC:
-									%th{'colspan' => 3, "style"=>"font-weight: normal;color:#5f5f5f;"}= Entity.find_by_name(@valuationofequipment.name).ruc.to_s
-								%tr{"bgcolor"=>"#3276B1"}
-									%th{"style"=>"color:white;text-align:center;width: 15%"} Monto contratado
-									%th{"style"=>"color:white;text-align:center"} Adelanto
-									%th{"style"=>"color:white;text-align:center"} Amortización Acumulada
-									%th{"style"=>"color:white;text-align:center"} Saldo
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.hired_amount, unit: 'S/. ', precision: 2)
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.advances, unit: 'S/. ', precision: 2)     
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_amortization, unit: 'S/. ', precision: 2)
-								%th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.balance, unit: 'S/. ', precision: 2)
-				%br
-				-if @workers_array3.count>0
-					%a.page-title.txt-color-blueDark{"style"=>"margin-left:35px;font-size:160%;color:black;"} Parte de Equipos
-					%br
-					%br
-					%table.panel.panel-primary.table-bordered{ style: "height: 3000px; width: 950px;margin-left:40px;" }
-						%thead.panel-heading
-							%tr{"style" =>"font-size:60%;"}
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} #
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Equipo
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Und
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Precio U.
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Metrado Anterior
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Monto Anterior
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Metrado Actual
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Monto Actual
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Metrado Acumulado
-								%th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Monto Acumulado
+              %tbody{:style=>"font-size:60%;"}
+                %tr{"bgcolor"=>"#ECF3F8"}
+                  %th{"style"=>"color:#5f5f5f;text-align:center;"} OBRA:
+                  %th{'colspan' => 3, "style"=>"color:#5f5f5f;"}= CostCenterDetail.find_by_cost_center_id(@cc).name.to_s
+                %tr
+                  %th{"style"=>"color:#5f5f5f;text-align:center;"} Razón Social:
+                  %th{'colspan' => 3, "style"=>"font-weight: normal;color:#5f5f5f;"}= @valuationofequipment.name.to_s
+                %tr{"bgcolor"=>"#ECF3F8"}
+                  %th{"style"=>"color:#5f5f5f;text-align:center;"} RUC:
+                  %th{'colspan' => 3, "style"=>"font-weight: normal;color:#5f5f5f;"}= Entity.find_by_name(@valuationofequipment.name).ruc.to_s
+                %tr{"bgcolor"=>"#3276B1"}
+                  %th{"style"=>"color:white;text-align:center;width: 15%"} Monto contratado
+                  %th{"style"=>"color:white;text-align:center"} Adelanto
+                  %th{"style"=>"color:white;text-align:center"} Amortización Acumulada
+                  %th{"style"=>"color:white;text-align:center"} Saldo
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.hired_amount, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.advances, unit: 'S/. ', precision: 2)     
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.accumulated_amortization, unit: 'S/. ', precision: 2)
+                %th{"style"=>"color:#5f5f5f;text-align:center"}= number_to_currency(@valuationofequipment.balance, unit: 'S/. ', precision: 2)
+        %br
+        -if @workers_array3.count>0
+          %a.page-title.txt-color-blueDark{"style"=>"margin-left:35px;font-size:160%;color:black;"} Parte de Equipos
+          %br
+          %br
+          %table.panel.panel-primary.table-bordered{ style: "height: 3000px; width: 950px;margin-left:40px;" }
+            %thead.panel-heading
+              %tr{"style" =>"font-size:60%;"}
+                %th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} #
+                %th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Equipo
+                %th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Und
+                %th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Precio U.
+                %th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Metrado Anterior
+                %th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Monto Anterior
+                %th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Metrado Actual
+                %th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Monto Actual
+                %th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Metrado Acumulado
+                %th{style: "padding-left: 6px;padding-right: 6px;padding-top: 5px; padding-bottom: 5px;text-align:center;vertical-align: middle;"} Monto Acumulado
 
-						%tbody
-						- index = 1
-						- @array.each do |workerDetail3|
-							%tr{"style" =>"font-size:60%;"}
-								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle;height:45px;' }= index
-								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= workerDetail3[1] + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])
-								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= Article.find_by_id(Article.find_article_by_global_article2(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])).unit_of_measurement.name
-								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[3], unit: 'S/. ', precision: 2)
-								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[5].to_f)
-								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
-									- @workers_array5.each do |workers|
-										-if workers[1]==workerDetail3[1]
-											= number_to_currency((workers[4].to_f-workerDetail3[4].to_f), unit: 'S/. ', precision: 2)
-								%th{ 'style' => 'text-align:center;vertical-align: middle' }= sprintf('%.2f', workerDetail3[2].to_s)
-								%th{ 'style' => 'text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[4].to_s, unit: 'S/. ', precision: 2)
-								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',(workerDetail3[5].to_f+workerDetail3[2]).to_s)
-								%th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
-									- @workers_array5.each do |workers|
-										-if workers[1]==workerDetail3[1]
-											= number_to_currency((workers[4].to_f), unit: 'S/. ', precision: 2)
+            %tbody
+            - index = 1
+            - @array.each do |workerDetail3|
+              %tr{"style" =>"font-size:60%;"}
+                %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle;height:45px;' }= index
+                %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= workerDetail3[1] + ' ' + Article.find_article_by_global_article(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])
+                %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= Article.find_by_id(Article.find_article_by_global_article2(SubcontractEquipmentDetail.find_by_code(workerDetail3[1]).article_id ,session[:cost_center])).unit_of_measurement.name
+                %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[3], unit: 'S/. ', precision: 2)
+                %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',workerDetail3[5].to_f)
+                %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
+                  - @workers_array5.each do |workers|
+                    -if workers[1]==workerDetail3[1]
+                      = number_to_currency((workers[4].to_f-workerDetail3[4].to_f), unit: 'S/. ', precision: 2)
+                %th{ 'style' => 'text-align:center;vertical-align: middle' }= sprintf('%.2f', workerDetail3[2].to_s)
+                %th{ 'style' => 'text-align:center;vertical-align: middle' }= number_to_currency(workerDetail3[4].to_s, unit: 'S/. ', precision: 2)
+                %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }= sprintf('%.2f',(workerDetail3[5].to_f+workerDetail3[2]).to_s)
+                %th{ 'style' => 'font-weight: normal;text-align:center;vertical-align: middle' }
+                  - @workers_array5.each do |workers|
+                    -if workers[1]==workerDetail3[1]
+                      = number_to_currency((workers[4].to_f), unit: 'S/. ', precision: 2)
 
-							- index += 1
-				-else
-					%h4.modal-title No hay datos.
-					%br
+              - index += 1
+        -else
+          %h4.modal-title No hay datos.
+          %br

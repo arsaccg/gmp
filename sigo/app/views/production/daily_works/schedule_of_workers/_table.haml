@@ -1,0 +1,63 @@
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Tareo de Obreros Semanal
+  %div
+    .widget-body.no-padding
+      %table#summary-purchase-orders.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th N°
+            %th Fechas
+            %th Estado
+            %th Acciones
+        %tbody
+          - @schedule.each do |unit|
+            %tr
+              %td
+                = unit.id
+              %td
+                = unit.start_date.strftime('%d-%m-%Y').to_s + " al " + unit.end_date.strftime('%d-%m-%Y').to_s
+              - case unit.state
+                - when 'disapproved'
+                  %td.label-status
+                    %span.label.label-warning
+                      = translate_valuations_state(unit.state)
+                - when 'approved'
+                  %td.label-status
+                    %span.label.label-success
+                      = translate_valuations_state(unit.state)
+              %td
+                - case unit.state
+                  - when 'approved'
+                    %span{"style"=>"width=20px"}
+                      %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "javascript:load_url_ajax('#{production_daily_works_schedule_of_worker_path(unit.id)}', 'content', {type:'see'}, null, 'GET')"}
+                        %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}
+                    %span
+                      %a.btn.btn-danger{:href => "#{report_pdf_production_daily_works_schedule_of_workers_path}.pdf?id="+unit.id.to_s, :target => "_blank"}
+                        %i.fa.fa-ellipsis-vertical                      
+                        PDF
+                  - when 'disapproved'
+                    %a.btn.btn-success.btn-xs{:onclick => "javascript:load_url_ajax('#{production_daily_works_schedule_of_worker_path(unit.id)}', 'content', {type:'approved'}, null, 'GET')"}
+                      Aprobar
+                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit.id}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{production_daily_works_schedule_of_worker_path(unit.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{production_daily_works_schedule_of_workers_path}')"}}
+                      Eliminar
+      %br
+      %br
+      #schedule-table.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "partPeopleLabel", role: "dialog", tabindex: "-1"}
+
+:javascript
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });
+
+  function weekly_table(id,blockweekly) {
+    data = { authenticity_token: "#{form_authenticity_token}", id: id, blockweekly: blockweekly};
+    load_url_ajax('#{weekly_table_production_daily_works_weekly_workers_path}', 'schedule-table', data, '', 'POST');
+    $('#schedule-table').modal({
+      keyboard: false,
+      backdrop: 'static'
+    });
+  }

@@ -1,18 +1,19 @@
 class Production::AnalysisOfValuationsController < ApplicationController
   def index
   	@company = get_company_cost_center('company')
-  	@workingGroups = WorkingGroup.all
-    @sector = Sector.where("code LIKE '__'")
-    @subsectors = Sector.where("code LIKE '____'").first
+    @cc = get_company_cost_center('cost_center')
+  	@workingGroups = WorkingGroup.where("cost_center_id = ?", @cc)
+    @sector = Sector.where("code LIKE '__' AND cost_center_id = ?", @cc)
+    @subsectors = Sector.where("code LIKE '____' AND cost_center_id = ?", @cc).first
 
-    front_chief_ids = WorkingGroup.distinct.select(:front_chief_id).map(&:front_chief_id)
-    @front_chiefs = Entity.where(:id => front_chief_ids) # Jefes de Frentes
+    front_chief_ids = WorkingGroup.distinct.select(:front_chief_id).where("cost_center_id ="+@cc.to_s).map(&:front_chief_id)
+    @front_chiefs = Worker.distinct.where(:id => front_chief_ids) # Jefes de Frentes
     # PositionWorker.find(1).workers
-    master_builder_ids = WorkingGroup.distinct.select(:master_builder_id).map(&:master_builder_id)
-    @master_builders = Entity.where(:id => master_builder_ids) # Capatazes o Maestros de Obra
+    master_builder_ids = WorkingGroup.distinct.select(:master_builder_id).where("cost_center_id ="+@cc.to_s).map(&:master_builder_id)
+    @master_builders = Worker.distinct.where(:id => master_builder_ids) # Capatazes o Maestros de Obra
     # PositionWorker.find(2).workers
-    executor_ids = Subcontract.distinct.select(:entity_id).where('entity_id <> 0').map(&:entity_id)
-    @executors = Entity.where(:id => executor_ids) # Exclude the Subcontract Default
+    executor_ids = Subcontract.distinct.select(:entity_id).where('entity_id <> 0').where("cost_center_id ="+@cc.to_s).map(&:entity_id)
+    @executors = Worker.distinct.where(:id => executor_ids) # Exclude the Subcontract Default
     render layout: false
   end
 

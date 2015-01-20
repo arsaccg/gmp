@@ -114,6 +114,7 @@ ArsacLogistica::Application.routes.draw do
         delete 'delete_specific'
         get 'edit_specific'
         post 'update_specific'
+        get 'show_article_specific'
       end
       collection do
         post 'display_articles'
@@ -334,7 +335,8 @@ ArsacLogistica::Application.routes.draw do
         post 'show_workers_empleados'
         post 'part_worker'
         post 'part_contract'
-        post 'display_afps'   
+        post 'display_afps'
+        post 'complete_sub_category_worker' 
         post 'list'
         get 'list_pdf' 
       end
@@ -414,7 +416,12 @@ ArsacLogistica::Application.routes.draw do
         post 'show_part_people'
       end
     end
-    resources :category_of_workers
+    resources :category_of_workers do
+      collection do
+        post 'get_info_per_week'
+      end
+    end
+
     resources :part_of_equipments do
       collection do
 
@@ -460,7 +467,11 @@ ArsacLogistica::Application.routes.draw do
       resources :schedule_of_workers do
         collection do
           post 'search_schedule_work'
+          get 'report_pdf'
         end
+        member do
+          get 'approve'
+        end        
       end
 
       resources :weekly_workers do
@@ -577,6 +588,7 @@ ArsacLogistica::Application.routes.draw do
   end
 
   namespace :administration do
+    resources :type_of_workers
     resources :payment_orders do
       collection do
         post 'get_info_from_provision'
@@ -667,6 +679,7 @@ ArsacLogistica::Application.routes.draw do
         get 'generate_payroll'
       end
     end
+    resources :type_of_payslips
     resources :payslips do
       collection do
         post 'get_cc'
@@ -674,7 +687,11 @@ ArsacLogistica::Application.routes.draw do
         post 'generate_payroll'
         post 'complete_select'
         post 'complete_select2'
+        post 'complete_select_extra'
+        post 'complete_type_payslip'
         post 'add_extra_info'
+        get 'show_formulas_information'
+        get 'report_pdf'
       end
       member do
         get 'generate_payroll_excel'
@@ -708,6 +725,8 @@ ArsacLogistica::Application.routes.draw do
         post 'create_loan'
         post 'display_workers'
         post 'show_details'
+        get 'report_pdf'
+        get 'bidimensional_report_pdf'
       end
     end
 

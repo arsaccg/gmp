@@ -428,6 +428,8 @@ module ApplicationHelper
       return "green"
     elsif order.length < 9
       return "blue"
+    elsif order.length < 12
+      return "orange"
     else
       return "black" 
     end
@@ -453,7 +455,7 @@ module ApplicationHelper
     if measured != nil
       return 'black_measured'
     else
-      return ''
+      return 'bold'
     end
   end
 

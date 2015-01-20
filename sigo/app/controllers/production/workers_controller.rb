@@ -2,6 +2,7 @@ class Production::WorkersController < ApplicationController
   before_filter :authenticate_user!, :only => [:index, :new, :create, :edit, :update ]
   protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   skip_before_filter  :verify_authenticity_token
+  
   def index
     @company = get_company_cost_center('company')
     cost_center = get_company_cost_center('cost_center')
@@ -9,11 +10,11 @@ class Production::WorkersController < ApplicationController
     @bank = Bank.first
     @workers = Worker.where("cost_center_id = ?", cost_center)
     @entity = TypeEntity.find_by_name('Trabajadores').entities.first
-    @empleados = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active'").count
-    @obreros = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active'").count
-    @pensionistas = Worker.where("typeofworker LIKE 'pensionista' AND state LIKE 'active'").count
-    @formaciones = Worker.where("typeofworker LIKE 'formacion' AND state LIKE 'active'").count
-    @externos = Worker.where("typeofworker LIKE 'externo' AND state LIKE 'active'").count
+    @empleados = Worker.where("typeofworker LIKE 'empleado' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s).count
+    @obreros = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s).count
+    @pensionistas = Worker.where("typeofworker LIKE 'pensionista' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s).count
+    @formaciones = Worker.where("typeofworker LIKE 'formacion' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s).count
+    @externos = Worker.where("typeofworker LIKE 'externo' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s).count
     render layout: false
   end
 
@@ -73,6 +74,7 @@ class Production::WorkersController < ApplicationController
 
   def new
     @entity = Entity.find_by_dni(params[:dni])
+    @afp = Afp.all
     @action = "new"
     if @entity.nil?
       @reg_n = Time.now.to_i
@@ -272,9 +274,13 @@ class Production::WorkersController < ApplicationController
 
   def register
     worker = Worker.find(params[:id])
-    worker.register
-    num = Worker.where("position_worker_id = "+worker.position_worker_id.to_s+" AND number_position IS NOT NULL").last
-    worker.update_attributes(:number_position => num.number_position.to_i+1)
+    if worker.worker_afps.count > 0
+      worker.register
+      num = Worker.where("position_worker_id = "+worker.position_worker_id.to_s+" AND number_position IS NOT NULL AND cost_center_id = "+ get_company_cost_center('cost_center').to_s).last.number_position rescue 0
+      worker.update_attributes(:number_position => num.to_i+1)
+    else
+      flash[:error] = "Asegurese que el trabajador tenga una AFP registrada."
+    end
     redirect_to :action => :index
   end
 
@@ -325,10 +331,10 @@ class Production::WorkersController < ApplicationController
 
   def part_contract
     cost_center_obj = CostCenter.find(session[:cost_center])
-    if WorkerContract.all.order('id ASC').first.nil?
+    if WorkerContract.joins(:worker).where(workers: {cost_center_id: cost_center_obj.id.to_s}).order('id ASC').first.nil?
       @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + 1.to_s.rjust(4, '0')
     else
-      @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + (WorkerContract.all.order('id ASC').last.id + 1).to_s.rjust(4, '0')
+      @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + (WorkerContract.joins(:worker).where(workers: {cost_center_id: cost_center_obj.id.to_s}).order('id ASC').last.id + 1).to_s.rjust(4, '0')
     end
     @typeofcontract = params[:typeofcontract]
     @articles = TypeOfArticle.find_by_code('01').articles
@@ -365,6 +371,7 @@ class Production::WorkersController < ApplicationController
           AND w.state LIKE '"+params[:state1].to_s+"'
           AND w.typeofworker = '"+ty.to_s+"'
           AND w.entity_id = e.id
+          AND wc.status = 1
           AND w.id = wc.worker_id
           AND wc.article_id = ar.id
           ORDER BY ar.code
@@ -506,10 +513,19 @@ class Production::WorkersController < ApplicationController
     return years
   end
 
+  def complete_sub_category_worker
+    tp = Array.new
+    type = TypeOfWorker.where("worker_type = '"+params[:tipo]+"'")
+    type.each do |wo|
+      tp << {'id' => wo.id.to_s, 'name' => wo.name.to_s}
+    end
+    render json: {:sub_cat => tp}
+  end
+
   private
   def worker_parameters
-    params.require(:worker).permit(
-      :email, {:type_workday_ids => []}, :onpafp, :lock_version, :driverlicense, :income_fifth_category, :unionized, :disabled, 
+    params.require(:worker).permit( 
+      :type_of_worker_id, :email, {:type_workday_ids => []}, :onpafp, :lock_version, :driverlicense, :income_fifth_category, :unionized, :disabled, 
       :workday, :numberofchilds, :typeofworker, :maritalstatus,:primarystartdate,:primaryenddate,:highschoolstartdate,
       :highschoolenddate,:levelofinstruction, :lastgrade, :phone, :pais, :address,:cellphone, :quality, :primaryschool, :highschool,
       :primarydistrict, :highschooldistrict,:security, :enviroment,:labor_legislation, :district, :position_worker_id,:province,
@@ -521,7 +537,9 @@ class Production::WorkersController < ApplicationController
       worker_familiars_attributes: [:id, :worker_id, :paternal_surname, :maternal_surname, :lock_version, :names, :relationship, :dayofbirth, :dni, :_destroy],
       worker_center_of_studies_attributes: [:id, :worker_id, :name, :profession, :title, :lock_version, :numberoftuition, :start_date, :end_date, :_destroy],
       worker_otherstudies_attributes: [:id, :worker_id, :study, :lock_version, :level, :_destroy],
-      worker_experiences_attributes: [:id, :worker_id, :businessname, :lock_version, :title, :salary, :bossincharge, :exitreason, :start_date, :end_date, :_destroy])
+      worker_experiences_attributes: [:id, :worker_id, :businessname, :lock_version, :title, :salary, :bossincharge, :exitreason, :start_date, :end_date, :_destroy],
+      worker_rent_fifth_category_attributes: [:id, :worker_id, :previous_salary, :rent, :date_last_rent])
+
   end
 
   def worker_contract_file_param

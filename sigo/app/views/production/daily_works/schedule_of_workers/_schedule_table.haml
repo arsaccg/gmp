@@ -1,4 +1,4 @@
-#content-inside
+.col-md-12
   .row
     .col-md-12
       %h1{"style"=>"margin: 0"}
@@ -16,53 +16,67 @@
         = 'Ubicación : ' + @cost_center.company.address.to_s rescue ''
       %p{"style"=>"margin: 0"}
         = 'C.C. : ' + @cost_center.name.to_s rescue ''
+  %br
   .row
-    #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
-      %header
-        %span.widget-icon
-          %i.fa.fa-table
-        %h2 Resultado
-      %div{"style"=>"overflow-x: scroll;"}
-        .jarviswidget-editbox
-        .widget-body
-          %table.table.table-bordered
-            %thead
-              %tr
-                %th Item
-                %th Codigo TOBI
-                %th Cargo
-                %th DNI
-                %th Apellido Paterno
-                %th Apellido Materno
-                %th Primer Nombre
-                %th Segundo Nombre
-                - @dias_habiles.each do |date|
-                  %th= date.to_time.strftime("%d/%m/%y")
-                %th Total Dias
-            %tbody
-              -@arraywo.each do |arr|
+    .col-md-12
+      #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", "data-widget-deletebutton" => "false"}
+        %header
+          %span.widget-icon
+            %i.fa.fa-table
+          %h2 Resultado
+        %div{"style"=>"overflow-x: scroll;"}
+          .jarviswidget-editbox
+          .widget-body
+            %table.table.table-bordered
+              %thead
                 %tr
-                  -index = 8
-                  %td=arr[0]
-                  %td=arr[1]
-                  %td=arr[2]
-                  %td=arr[3]
-                  %td=arr[4]
-                  %td=arr[5]
-                  %td=arr[6]
-                  %td=arr[7]
+                  %th Item
+                  %th Codigo TOBI
+                  %th Cargo
+                  %th DNI
+                  %th Nombre
                   - @dias_habiles.each do |date|
+                    %th= date.to_time.strftime("%d/%m/%y")
+                  %th Total Dias
+              %tbody
+                -@arraywo.each do |arr|
+                  %tr
+                    -index = 5
+                    %td=arr[0]
+                    %td=arr[1]
+                    %td=arr[2]
+                    %td=arr[3]
+                    %td=arr[4]
+                    - @dias_habiles.each do |date|
+                      %td=arr[index]
+                      -index +=1
                     %td=arr[index]
-                    -index +=1
-                  %td=arr[index]
-              %tr
-                %td
-                %td
-                %td
-                %td
-                %td
-                %td
-                %td
-                %td Total por dia:
-                - @totalperday.each do |totalperday|
-                  %td=totalperday
+                %tr
+                  %td
+                  %td
+                  %td
+                  %td
+                  %td Total por dia:
+                  - @totalperday.each do |totalperday|
+                    %td=totalperday
+                        
+  .row
+    = simple_form_for([:production_daily_works, @schedule], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+      =hidden_field_tag 'schedule_of_worker[start_date]', @inicio
+      =hidden_field_tag 'schedule_of_worker[end_date]', @fin
+      =hidden_field_tag 'schedule_of_worker[state]', 'disapproved'
+      =hidden_field_tag 'schedule_of_worker[number_workers]', @arraywo.count
+      =hidden_field_tag 'schedule_of_worker[cost_center_id]', @cost_center.id
+      =hidden_field_tag 'block_part', @part_worker_to_block
+      %footer
+        %button.btn.btn-primary{type: "submit"}
+          %i.fa.fa-save 
+            Guardar  
+
+:javascript
+
+  $(document).ready(function(){
+    $('#new_schedule_of_worker').ajaxForm({
+      target: '#content'
+    });
+  });     

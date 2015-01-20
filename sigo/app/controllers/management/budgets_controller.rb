@@ -1,5 +1,7 @@
 class Management::BudgetsController < ApplicationController
   
+  require 'net/http'
+  require 'net/https'
 
   def index
   	@budgets_goal = Budget.where(:type_of_budget => '0')

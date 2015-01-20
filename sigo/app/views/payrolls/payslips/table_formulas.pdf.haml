@@ -1,0 +1,17 @@
+%html
+  %head
+    %meta{charset: "utf-8"}
+    = wicked_pdf_stylesheet_link_tag "bootstrap.min", media: "screen", rel: "stylesheet", type: "text/css"
+  %body
+    %h3= 'Planilla: ' + @title
+    %br
+    %table.table.table-striped.table-bordered
+      %thead
+        %tr
+          %th Concepto
+          %th Formula
+      %tbody
+        - @concepts_formulas.each do |row|
+          %tr
+            %td= row[0]
+            %td= row[1]

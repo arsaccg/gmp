@@ -41,14 +41,14 @@
         $(form['selector']).validate({
           // Rules for form validation
           rules : {
-            'contracttype[description]' : {
+            'contract_type[description]' : {
               required : true
             }
           },
 
           // Messages for form validation
           messages : {
-            'contracttype[description]' : {
+            'contract_type[description]' : {
               required : 'Por favor, ingresar la descripcion del tipo de contrato.'
              }
           },
@@ -60,14 +60,24 @@
         });
         // Remove all Help-inLine
         $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
         // Client Valid
         return $(form['selector']).valid();
       },
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       },
       error: function(xhr, status, error) {
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   }

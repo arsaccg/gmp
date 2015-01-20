@@ -18,17 +18,16 @@ class Budget < ActiveRecord::Base
   def load_dbs
     db_array = Array.new
 
-    str_query = "SELECT name FROM  sysdatabases"
+    str_query = "SELECT name FROM sysdatabases"
 
     sysdatabases = do_query(str_query, {db_name: "master"})
+    sysdatabases.each do |sysdatabase|
+      item_sys = Hash.new
+      item_sys[:name] = sysdatabase['name'] 
+      db_array << item_sys
+    end
 
-        sysdatabases.each do |sysdatabase|
-          item_sys = Hash.new
-          item_sys[:name] = sysdatabase[0] 
-          db_array << item_sys
-        end
-
-        return db_array
+    return db_array
   end
 
   def load_bugdets_from_remote(database)
@@ -41,11 +40,12 @@ class Budget < ActiveRecord::Base
     # FROM          Presupuesto 
     # ORDER BY    Presupuesto.CodPresupuesto
     str_query = "SELECT Presupuesto.CodPresupuesto, Presupuesto.Descripcion FROM  Presupuesto ORDER BY Presupuesto.CodPresupuesto"
+    p " dentro de load_bugdets_from_remote"
     budgets = do_query(str_query, {db_name: database})
     budgets.each do |item|
       item_budget = Hash.new
-      item_budget[:budget_code] = item[0]
-      item_budget[:budget_name] = item[1]
+      item_budget[:budget_code] = item['CodPresupuesto']
+      item_budget[:budget_name] = item['Descripcion']
       budget_array << item_budget
     end
     return budget_array
@@ -91,7 +91,9 @@ class Budget < ActiveRecord::Base
       # ORDER BY      Presupuesto.CodPresupuesto
       # WHERE         Presupuesto.CodPresupuesto LIKE '#ID#%'
       array_budgets = do_query("SELECT Presupuesto.CodPresupuesto, Presupuesto.Descripcion FROM  Presupuesto WHERE CodPresupuesto LIKE '" +  budget_id.to_s + "%'  AND Presupuesto.CodPresupuesto <> '9999999' ORDER BY Presupuesto.CodPresupuesto ", {db_name: database})
+
       count_items = array_budgets.count
+
       #data_thread = Thread.new do
       array_budgets.each do |budget| 
         # CREAR REGISTRO DE PRESUPUESTO 
@@ -107,7 +109,8 @@ class Budget < ActiveRecord::Base
           #new_budget.cod_budget = budget[0]  
           #new_budget.description = budget[1]  #Presupuesto.Descripcion
           #new_budget.save
-        array_sub_budgets = do_query("SELECT CodPresupuesto, CodSubpresupuesto, Descripcion FROM  Subpresupuesto WHERE CodPresupuesto = '" + budget[0]  + "' AND CodPresupuesto <> '9999999' AND CodSubpresupuesto <> '999'", {db_name: database})
+        array_sub_budgets = do_query("SELECT CodPresupuesto, CodSubpresupuesto, Descripcion FROM  Subpresupuesto WHERE CodPresupuesto = '" + budget['CodPresupuesto']  + "' AND CodPresupuesto <> '9999999' AND CodSubpresupuesto <> '999'", {db_name: database})
+
         array_sub_budgets.each do |subbudget|
           if Budget.where("cod_budget = ? AND type_of_budget=?",  subbudget[0].to_s + subbudget[1].to_s, type_of_budget ).first == nil
             new_subbudget=Budget.new

@@ -13,10 +13,13 @@ class Payrolls::ConceptsController < ApplicationController
 
   def new
     @con = Concept.new
+    @reg_n = ((Time.now.to_f)*100).to_i
     @condeTrab = Concept.where("code LIKE '2%'")
     @condeEmp = Concept.where("code LIKE '3%'")
     @date_week = Time.now.strftime('%Y-%m-%d')
     @cost_center = get_company_cost_center('cost_center')
+    @type_of_worker = TypeOfWorker.where("worker_type = 'obrero'")
+    @type_of_employee = TypeOfWorker.where("worker_type = 'empleado'")
     render layout: false
   end
 
@@ -28,6 +31,12 @@ class Payrolls::ConceptsController < ApplicationController
     #con.concept_details.each do |ccd|
     #  ccd.status = 0
     #end
+    if params[:check_type_worker_worker].nil?
+      con.type_obrero = nil
+    end
+    if params[:check_type_worker_employee].nil?
+      con.type_empleado = nil
+    end    
     con.code = params[:tipo].to_s + con.code.to_s
     con.token = '[' + params[:concept]['name'].downcase.parameterize.to_s + ']'
     if con.save
@@ -47,7 +56,8 @@ class Payrolls::ConceptsController < ApplicationController
     @condeEmp = Concept.where("code LIKE '3%'")
     @date_week = Time.now.strftime('%Y-%m-%d')
     @cost_center = get_company_cost_center('cost_center')
-
+    @type_of_worker = TypeOfWorker.where("worker_type = 'obrero'")
+    @type_of_employee = TypeOfWorker.where("worker_type = 'empleado'")
     @con = Concept.find(params[:id])
     ids = Array.new
     @reg_n = ((Time.now.to_f)*100).to_i
@@ -70,7 +80,12 @@ class Payrolls::ConceptsController < ApplicationController
     con.code = params[:tipo].to_s + con.code.to_s
     con.company_id = get_company_cost_center('company')
     con.token = '[' + params[:concept]['name'].downcase.parameterize.to_s + ']'
-    
+    if params[:check_type_worker_worker].nil?
+      con.type_obrero = nil
+    end
+    if params[:check_type_worker_employee].nil?
+      con.type_empleado = nil
+    end
     if con.update_attributes(con_parameters)
       flash[:notice] = "Se ha actualizado correctamente los datos."
       redirect_to :action => :index
@@ -143,12 +158,13 @@ class Payrolls::ConceptsController < ApplicationController
         :status,
         :_destroy
       ],
-      concept_valorization_attributes: [
+      concept_valorizations_attributes: [
         :id,
         :concept_id,
         :date_week,
         :cost_center_id,
         :formula,
+        :type_worker,
         :_destroy
       ]
     )

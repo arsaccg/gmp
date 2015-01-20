@@ -1,5 +1,6 @@
--if @mensaje == "exito"
+-if @mensaje == "obrero"
   -@regsAr = Array.new
+  -@regsArEx = Array.new
   = simple_form_for([:payrolls, @pay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
     %table.table.table-striped.table-bordered.table-hover
       %thead
@@ -15,6 +16,7 @@
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][worker_id]', pars[0]
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][cost_center_id]', @cc.id.to_s
                 = hidden_field_tag 'payslip['+@reg_n.to_s+'][week]', @week.to_s
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][type_of_payslip_id]', @tipo.to_s
                 = pars[1].to_s
               %td
                 = pars[2].to_s
@@ -62,12 +64,161 @@
               -@regsAr<< @reg_n
             -@reg_n+=1
     =hidden_field_tag 'regs', @regsAr
+    -@reg_n+=1
+    -@extra_info.each do |ex|
+      -if ex.length != 0
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][worker_id]', ex[0].to_s, class: "extra-info-form-payroll"
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][concept_id]', ex[1].to_s, class: "extra-info-form-payroll"
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][amount]', ex[2].to_s, class: "extra-info-form-payroll"
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][week]', @week.to_s
+        -@regsArEx<< @reg_n
+        -@reg_n+=1
+    =hidden_field_tag 'regsEx', @regsArEx
     %footer
       %button.btn.btn-primary#save{:type => "submit", :onclick=>"part_block()"}
         %i.fa.fa-save 
         Guardar
     :javascript
       $(document).ready(function(){
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove(); 
+        $('#new_payslip').ajaxForm({
+          beforeSubmit: function() {
+            $('#new_payslip').validate({
+              // Rules for form validation
+              rules : {
+              },
+
+              // Messages for form validation
+              messages : {
+              },
+
+              // Do not change code below
+              errorPlacement : function(error, element) {
+                error.insertAfter(element.parent());
+                $('#modalLoadingLabelading').modal('hide');
+                $('.modal-backdrop.fade.in').remove();
+              }
+            });
+
+            return $('#new_payslip').valid();
+          },
+          target: '#content',
+          success: function (data){
+            $(".help-inline").parent().addClass("state-error");
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
+          }
+        });
+
+        $('form[id^="edit_"]').ajaxForm({
+          beforeSubmit: function() {
+            $('form[id^="edit_"]').validate({
+              // Rules for form validation
+              rules : {
+              },
+
+              // Messages for form validation
+              messages : {
+              },
+
+              // Do not change code below
+              errorPlacement : function(error, element) {
+                error.insertAfter(element.parent());
+                $('#modalLoadingLabelading').modal('hide');
+                $('.modal-backdrop.fade.in').remove();
+              }
+            });
+
+            return $('form[id^="edit_"]').valid();
+          },
+          target: '#content',
+          success: function (data){
+            $(".help-inline").parent().addClass("state-error");
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
+          },
+          error: function(xhr, status, error) {
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();      
+          }
+        });
+      });
+-elsif @mensaje == "empleado"
+  -@regsAr = Array.new
+  -@regsArEx = Array.new
+  = simple_form_for([:payrolls, @pay], html: {class: 'form-horizontal smart-form', autocomplete: 'off' }) do |f|
+    %table.table.table-striped.table-bordered.table-hover
+      %thead
+        %tr
+          - @partes[0].each do |head|
+            %th= head
+      %tbody
+        - @partes.each do |pars|
+          -@flag=0
+          -if pars[0]!="DNI"
+            %tr
+              %td
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][worker_id]', pars[0]
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][company_id]', @company_id.to_s
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][month]', @month.to_s
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][type_of_payslip_id]', @tipo.to_s
+                = pars[1].to_s
+              %td
+                = pars[2].to_s
+              %td
+                = pars[3].to_s
+              %td
+                =pars[4].to_s
+              %td{ :style => 'text-align: center' }
+                = pars[5].to_s
+              %td{ :style => 'text-align: center' }
+                = pars[6].to_i
+              %td{ :style => 'text-align: center' }
+                = pars[7].to_i
+                = hidden_field_tag 'payslip['+@reg_n.to_s+'][days]', pars[7]
+              %td{ :style => 'text-align: center' }
+                = pars[8].to_i
+              %td{ :style => 'text-align: center' }
+                = pars[9].to_f
+              %td{ :style => 'text-align: center' }
+                = pars[10].to_f
+              -(0..pars.count-12).each do |i|
+                -j=i+11
+                -p=j-1
+                %td{ :style => 'text-align: right' }
+                  -if @flag == 0
+                    = hidden_field_tag 'payslip['+@reg_n.to_s+'][ing_and_amounts]['+@partes[0][p].to_s.downcase.parameterize.gsub("-","_").to_s+']', pars[j].to_f.round(4).round(2)
+                  -elsif @flag == 1
+                    = hidden_field_tag 'payslip['+@reg_n.to_s+'][des_and_amounts]['+@partes[0][p].to_s.downcase.parameterize.gsub("-","_").to_s+']', pars[j].to_f.round(4).round(2)
+                  -elsif @flag == 2
+                    = hidden_field_tag 'payslip['+@reg_n.to_s+'][aport_and_amounts]['+@partes[0][p].to_s.downcase.parameterize.gsub("-","_").to_s+']', pars[j].to_f.round(4).round(2)
+                  = pars[j].to_f.round(4).round(2)
+                  -if @partes[0][p].to_s.downcase.parameterize.gsub("-","_") == "ingresos_totales"
+                    -@flag+=1
+                  -elsif @partes[0][p].to_s.downcase.parameterize.gsub("-","_") == "descuentos_totales"
+                    -@flag += 1
+              -@regsAr<< @reg_n
+            -@reg_n+=1
+    =hidden_field_tag 'regs', @regsAr
+    -@reg_n+=1
+    -@extra_info.each do |ex|
+      -if ex.length != 0
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][worker_id]', ex[0].to_s, class: "extra-info-form-payroll"
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][concept_id]', ex[1].to_s, class: "extra-info-form-payroll"
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][amount]', ex[2].to_s, class: "extra-info-form-payroll"
+        = hidden_field_tag 'extra_information_for_payslip['+@reg_n.to_s+'][week]', @month.to_s
+        -@regsArEx<< @reg_n
+        -@reg_n+=1
+    =hidden_field_tag 'regsEx', @regsArEx
+    %footer
+      %button.btn.btn-primary#save{:type => "submit", :onclick=>"part_block()"}
+        %i.fa.fa-save 
+        Guardar
+    :javascript
+      $(document).ready(function(){
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove(); 
         $('#new_payslip').ajaxForm({
           beforeSubmit: function() {
             $('#new_payslip').validate({

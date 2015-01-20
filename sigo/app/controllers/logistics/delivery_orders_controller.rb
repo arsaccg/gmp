@@ -9,7 +9,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @company = get_company_cost_center('company')
     @cost_center = get_company_cost_center('cost_center')
     @deliveryOrders = DeliveryOrder.where("cost_center_id = ?",@cost_center)
-    @centerOfAttention = CenterOfAttention.all.first
+    @centerOfAttention = CenterOfAttention.where("cost_center_id = ?",@cost_center).first
     render layout: false
   end
 
@@ -174,9 +174,9 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @deliveryOrder = DeliveryOrder.new
     @last = DeliveryOrder.find(:last,:conditions => [ "cost_center_id = ?", @cost_center.id])
     if !@last.nil?
-      @numbercode = @last.code.to_i+1
+      @deliveryOrder.code = @last.code.to_i+1
     else
-      @numbercode = 1
+      @deliveryOrder.code = 1
     end
     @numbercode = @numbercode.to_s.rjust(5,'0')
     render layout: false
@@ -213,9 +213,9 @@ class Logistics::DeliveryOrdersController < ApplicationController
   def edit
     @company = params[:company_id]
     @deliveryOrder = DeliveryOrder.find(params[:id])
-    @sectors = Sector.all
+    @sectors = Sector.where("cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
-    @centerOfAttentions = CenterOfAttention.all
+    @centerOfAttentions = CenterOfAttention.where("cost_center_id = ?",get_company_cost_center('cost_center'))
     @costcenter_id = @deliveryOrder.cost_center_id
     @action = 'edit'
     render layout: false
@@ -236,11 +236,11 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @reg_n = ((Time.now.to_f)*100).to_i
     data_article_unit = params[:article_id].split('-')
     @article = Article.find_article_in_specific(data_article_unit[0], get_company_cost_center('cost_center'))
-    @sectors = Sector.where("code LIKE '__' ")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @quantity = params[:quantity].to_i
     @amount = params[:amount]
-    @centerOfAttention= CenterOfAttention.all
+    @centerOfAttention= CenterOfAttention.where("cost_center_id = ?",get_company_cost_center('cost_center'))
     @article.each do |art|
       @code_article, @name_article, @id_article = art[3], art[1], art[2]
     end

@@ -12,18 +12,30 @@
           %tr
             %th N°
             %th Semana/Mes
+            %th Tipo de Planilla
             %th Acciones
         %tbody
           -@pay.each do |pay|
             %tr
-              %td= pay[0]
-              -if pay[1].to_s != ""
-                %td= pay[1]
+              -if pay[1].nil?
+                -type = "month"
               -else
-                %td= pay[2]
+                -type = "week"
+    
+              %td= pay[0]
+              - if pay[1].to_s != ""
+                %td= pay[1].to_s
+              - else
+                %td= pay[2].to_s
+              %td= pay[3].to_s
               %td
                 %a.btn.btn-info.btn-xs{:onclick => "javascript:load_url_ajax('#{payrolls_payslip_path(pay[0])}', 'content', null, null, 'GET')"}
                   Listado
+                %a.btn.btn-danger.btn-xs{:href => "#{report_pdf_payrolls_payslips_path}.pdf?id="+pay[0], :target => "_blank"}
+                  Ver PDF
+                %a.btn.btn-success.btn-xs{ href: "#{generate_payroll_excel_payrolls_payslip_path(pay[0])}?type=#{type}", target: '_blank'} Generar Excel de la Planilla                  
+
+                  
 
 
 :javascript

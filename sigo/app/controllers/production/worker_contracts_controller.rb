@@ -18,7 +18,6 @@ class Production::WorkerContractsController < ApplicationController
 
   def new
     @reg_n = ((Time.now.to_f)*100).to_i
-    @concepts=Concept.where("type_concept like 'Fijo' AND status like '1'")
     @concepts_obrero=Concept.where("type_obrero like 'Fijo' AND status like '1'")
     @concepts_empleado=Concept.where("type_empleado like 'Fijo' AND status like '1'")
     @typeofcontract = params[:typeofcontract]

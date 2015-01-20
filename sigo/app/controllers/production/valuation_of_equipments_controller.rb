@@ -3,7 +3,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   def index
     @company = get_company_cost_center('company')
     #@valuationofequipment = ValuationOfEquipment.all
-    @subcontractEquipments = SubcontractEquipment.all
+    @subcontractEquipments = SubcontractEquipment.where("cost_center_id = "+ get_company_cost_center('cost_center').to_s)
     #@subcontractequipmentdetail = SubcontractEquipmentDetail.all
     render layout: false
   end
@@ -61,11 +61,12 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
 
   def get_report
+    @action= "report"
     @name = Entity.find_by_id(params[:executor]).name
     @subcontract_equipment_id = params[:subcontract]
-    if SubcontractEquipment.find_by_entity_id(params[:executor])!=nil
+    if SubcontractEquipment.find(@subcontract_equipment_id)!=nil
       if ValuationOfEquipment.count > 0
-        last = ValuationOfEquipment.where("name LIKE ? ", @name).last
+        last = ValuationOfEquipment.where("name LIKE ? AND subcontract_equipment_id = "+@subcontract_equipment_id.to_s, @name).last
         if last!=nil 
           end_date = last.end_date
           if end_date.to_s < params[:start_date]
@@ -422,6 +423,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
   end
 
   def report_of_equipment
+    @code = params[:code]
+    @action = params[:ac]
     @totaldif = 0
     @totaltotalhours = 0
     @totalfuel_amount = 0
@@ -661,7 +664,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       format.html
       format.pdf do
         @cc = get_company_cost_center('cost_center')
-        @valuationofequipment=ValuationOfEquipment.find(params[:ids])
+        @valuationofequipment = ValuationOfEquipment.find(params[:ids])
         @company = Company.find(get_company_cost_center('company'))
         @totaldif = 0
         @totaltotalhours = 0

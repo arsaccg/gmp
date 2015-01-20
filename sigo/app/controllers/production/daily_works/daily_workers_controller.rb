@@ -1,6 +1,6 @@
 class Production::DailyWorks::DailyWorkersController < ApplicationController
   def index
-    @workingGroups = WorkingGroup.all
+    @workingGroups = WorkingGroup.where("cost_center_id ="+get_company_cost_center('cost_center').to_s)
     render layout: false
   end
 
