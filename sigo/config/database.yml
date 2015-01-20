@@ -12,9 +12,10 @@
 
 development:
   adapter: mysql2
-  database: arsac_logistica_develop
+  database: system_sigo_dev
   username: root
-  password: root
+  password: abc@123*
+  encoding: utf8
   host: localhost
 
 # Warning: The database defined as "test" will be erased and
