@@ -46,6 +46,8 @@
             %section.col-md-5
             %section.col-md-5
               = file_field_tag 'loan[loan_doc]', class: 'btn btn-default'
+              %p{"style"=>"color:red;font-weight:bold;"} Solo se admiten archivos tipo pdf e imagen. 
+              %p{"style"=>"color:red;font-weight:bold;"} Si ingresa otro tipo el préstamo no se guardará
 
           .row{"style"=>""}
             %section.col-md-5
@@ -72,6 +74,8 @@
             %section.col-md-5
             %section.col-md-5
               = file_field_tag 'loan[refund_doc]', class: 'btn btn-default'
+              %p{"style"=>"color:red;font-weight:bold;"} Solo se admiten archivos tipo pdf e imagen. 
+              %p{"style"=>"color:red;font-weight:bold;"} Si ingresa otro tipo el préstamo no se guardará              
           .row#checkn{"style"=>"margin-bottom:1%;display:none;"}
             %section.col-md-5
               %label{"style"=>"font-size:14px;"} N° Cheque

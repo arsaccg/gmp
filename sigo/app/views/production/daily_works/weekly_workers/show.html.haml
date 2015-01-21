@@ -10,6 +10,10 @@
         %a.btn.btn-success.btn-xs#aprove{type: "button"}
           %i.fa.fa-check>
             Aprobar
+      - when 'approved'
+        %a.btn.btn-danger.btn-xs#disaprove{type: "button"}
+          %i.fa.fa-check>
+            Desaprobar            
 
 
   - indice_title = 0
@@ -89,3 +93,7 @@
   $('#aprove').click(function(){
       load_url_ajax('#{approve_production_daily_works_weekly_worker_path(@weekly_work.id)}', 'content', {company_id: '#{@company}', start_date: '#{@weekly_work.start_date}', end_date: '#{@weekly_work.end_date}'}, null, 'GET');
   });
+
+  $('#disaprove').click(function(){
+      load_url_ajax('#{disapprove_production_daily_works_weekly_worker_path(@weekly_work.id)}', 'content', {company_id: '#{@company}', start_date: '#{@weekly_work.start_date}', end_date: '#{@weekly_work.end_date}'}, null, 'GET');
+  });  

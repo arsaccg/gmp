@@ -12,6 +12,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   def create
     weekly_worker = WeeklyWorker.new(weekly_table_parameters)
     weekly_worker.state
+    weekly_worker.cost_center_id = get_company_cost_center('cost_center')
     if weekly_worker.save
       redirect_to :action => :index, company_id: params[:company_id]
     else
@@ -32,6 +33,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   def show
     @weekly_work=WeeklyWorker.find_by_id(params[:id])
     @blockweekly = params[:blockweekly]
+    @type = params[:type]
     @inicio = @weekly_work.start_date
     @fin = @weekly_work.end_date
     @cad = @weekly_work.working_group.split(" ")
@@ -71,6 +73,15 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
     updateParts(start_date,end_date)
     weekly_worker = WeeklyWorker.find(params[:id])
     weekly_worker.approve
+    redirect_to :action => :index
+  end
+
+  def disapprove
+    start_date = params[:start_date].inspect
+    end_date = params[:end_date].inspect
+    rollbackParts(start_date,end_date)
+    weekly_worker = WeeklyWorker.find(params[:id])
+    weekly_worker.disapprove
     redirect_to :action => :index
   end
 
@@ -167,6 +178,12 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   def updateParts(start_date, end_date)
     ActiveRecord::Base.connection.execute("
       Update part_people set blockweekly = 1 where date_of_creation BETWEEN " + start_date + " AND " + end_date + "
+    ")
+  end
+
+  def rollbackParts(start_date, end_date)
+    ActiveRecord::Base.connection.execute("
+      Update part_people set blockweekly = 0 where date_of_creation BETWEEN " + start_date + " AND " + end_date + " AND blockweekly = 1
     ")
   end
 

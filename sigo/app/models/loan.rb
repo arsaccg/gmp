@@ -10,7 +10,7 @@ class Loan < ActiveRecord::Base
     return mysql_result
   end
   has_attached_file :loan_doc
-  validates_attachment_content_type :loan_doc, :content_type => ['application/pdf']
+  validates_attachment_content_type :loan_doc, :content_type => ['application/pdf', /\Aimage\/.*\Z/]
   has_attached_file :refund_doc
-  validates_attachment_content_type :refund_doc, :content_type => ['application/pdf']
+  validates_attachment_content_type :refund_doc, :content_type => ['application/pdf', /\Aimage\/.*\Z/]
 end

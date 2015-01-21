@@ -5,6 +5,10 @@ class WeeklyWorker < ActiveRecord::Base
       transition :disapproved => :approved
     end
 
+    event :disapprove do
+      transition :approved => :disapproved
+    end    
+
   end
 
   def self.get_name_week_by_dates(first_date, end_date, cost_center_id)
