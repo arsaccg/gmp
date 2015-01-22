@@ -143,6 +143,7 @@ class Payslip < ActiveRecord::Base
       calculator.store(destaque_contractual: worker_contract.destaque.to_f)
       calculator.store(viatico_contractual: worker_contract.viatical.to_f)
       calculator.store(dias_totales_mes: days_in_month)
+      calculator.store(dominical: 0)
 
       if incluye
         @result[@i] << rem_basic

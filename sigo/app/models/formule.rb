@@ -161,13 +161,12 @@ class Formule < ActiveRecord::Base
 
     hash_formulas[main.to_sym] = f_s
     
-    p ' FORMULA!!! '
-    p calculator.inspect
-    p main_concept
-    p formula
-    p hash_formulas
-    p calculator.solve!(hash_formulas).values[0].to_f
-    p ' FORMULA!!! '
+    #p ' FORMULA!!! '
+    #p calculator.inspect
+    #p main_concept
+    #p formula
+    #p calculator.solve!(hash_formulas).values[0].to_f
+    #p ' FORMULA!!! '
     return calculator.solve!(hash_formulas).values[0].to_f
   end
 
