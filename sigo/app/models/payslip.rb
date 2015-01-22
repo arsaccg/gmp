@@ -108,6 +108,7 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_extras_60: 0)
       calculator.store(horas_extras_100: 0)
       calculator.store(dias_trabajados_quincena: 0)
+      calculator.store(numero_de_hijos: row[6])
       calculator.store(salario_contractual: worker_contract.salary.to_f)
       calculator.store(destaque_contractual: worker_contract.destaque.to_f)
       calculator.store(viatico_contractual: worker_contract.viatical.to_f)
@@ -182,7 +183,7 @@ class Payslip < ActiveRecord::Base
                 end
               end
             else
-              amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid, con.id)
+              amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid, con.id, week_id)
               total += amount.to_f
             end
           end
@@ -532,6 +533,7 @@ class Payslip < ActiveRecord::Base
       calculator.store(destaque_contractual: from_contract.destaque.to_f)
       calculator.store(viatico_contractual: from_contract.viatical.to_f)
       calculator.store(dias_totales_mes: days_in_month)
+      calculator.store(numero_de_hijos: row[6])
 
       if incluye
         @result[@i] << rem_basic      

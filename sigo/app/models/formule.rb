@@ -1,6 +1,6 @@
 class Formule < ActiveRecord::Base
 
-  def self.translate_formules(formula, basico, worker_id, calculator, hash_formulas, main_concept, twid, concept_id = nil)
+  def self.translate_formules(formula, basico, worker_id, calculator, hash_formulas, main_concept, twid, concept_id = nil, week_id = nil)
     main = main_concept.tr('][', '').gsub('-','_')
     #p ' FORMULA INGRESADA '
     #p formula
@@ -13,7 +13,7 @@ class Formule < ActiveRecord::Base
       if amount_generic_from_contract.nil?
         mov_article_id = Worker.find(worker_id).worker_contracts.where(:status => 1).first.article_id
         @mov_category_id = Category.find_by_code(Article.find(mov_article_id).code[2..5]).id
-        amount_generic_from_category = CategoryOfWorker.find_by_category_id(@mov_category_id).category_of_workers_concepts.where(:concept_id => concept_id).first
+        amount_generic_from_category = CategoryOfWorker.where("category_id = "+@mov_category_id.to_s+" and week_id = "+week_id.to_s).first.category_of_workers_concepts.where(:concept_id => concept_id).first
         if amount_generic_from_category.nil?
           calculator.store(monto_contrato_categoria: 0)
         else

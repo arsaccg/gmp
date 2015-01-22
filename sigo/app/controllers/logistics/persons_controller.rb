@@ -28,6 +28,7 @@ class Logistics::PersonsController < ApplicationController
   # Función show solo para que vea su perfil.
   def show
   	@person = current_user
+    @raw, @enc =  Devise.token_generator.generate(User, :reset_password_token)
   	render layout: false
   end
 
@@ -79,11 +80,7 @@ class Logistics::PersonsController < ApplicationController
     @person.roles = [params[:role]]
     @person.update_attributes(user_params)
     flash[:notice] = "Se ha actualizado correctamente al usuario #{@person.first_name + ' ' + @person.last_name}."
-    if current_user.has_role? :director
-      redirect_to :action => 'index'
-    else
-      redirect_to :action => 'index'
-    end
+    redirect_to :action => 'index'
   end
 
   def update_profile

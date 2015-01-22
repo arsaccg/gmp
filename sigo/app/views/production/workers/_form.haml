@@ -928,7 +928,7 @@
                         %i
                     - @reg_n += 1
         %br
-        .row
+        .row#hijos{:style => "display:none;"}
           .section.col.col-md-12
             .section.col.col-md-2
               %label.control-label Tiene hijos en etapa escolar?
@@ -1114,9 +1114,11 @@
       $("#fieldset5").css("display", "");
       $("#fieldset6").css("display", "");
       $("#fieldset7").css("display", "");
+      $("#hijos").css("display", "none");
     }
     if('#{@worker.typeofworker}'=="obrero"){
       $("#categoria").css("display", "");
+      $("#hijos").css("display", "");
     }
     if('#{@worker.numberofchilds}'!=0){
       $("#numberofchildren").css("display", "");
@@ -1153,6 +1155,11 @@
       $("#fieldset5").css("display", "");
       $("#fieldset6").css("display", "");
       $("#fieldset7").css("display", "");
+      if($(this).prop('value') == "obrero"){
+        $("#hijos").css("display", "");
+      }else{
+        $("#hijos").css("display", "none");
+      }
     }
     else {
       $("#row1").css("display", "none");

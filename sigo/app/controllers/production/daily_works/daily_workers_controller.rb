@@ -11,7 +11,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
     @inicio             = params[:start_date]      
     @fin                = params[:end_date]
 
-    if @gruposdetrabajo_id.present? && @inicio.present? && @fin.present?
+    if @gruposdetrabajo_id.present? && @inicio.present? && @fin.present? &&  @gruposdetrabajo_id!='todo'
       @dias_habiles =  range_business_days(@inicio,@fin)
       @trabajadores_array = business_days_array(@inicio,@fin,@gruposdetrabajo_id,@dias_habiles)
       gruposdetrabajo = WorkingGroup.find_by_id(@gruposdetrabajo_id)
@@ -48,6 +48,20 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
         @pase = 2
         render(partial: 'daily_table', :layout => false)
       end
+    elsif @gruposdetrabajo_id == "todo" && @inicio.present? && @fin.present?
+      @gruposdetrabajo_id = Array.new
+      WorkingGroup.where("cost_center_id = "+ get_company_cost_center('cost_center').to_s).each do |wg|
+        @gruposdetrabajo_id << wg.id
+      end
+      @dias_habiles =  range_business_days(@inicio,@fin)
+      @tareos_total_arrays = business_days_array(@inicio,@fin,@gruposdetrabajo_id.join(','),@dias_habiles)
+      if @tareos_total_arrays.count!=0
+        @pase = 5
+      else
+        @pase = 2
+        
+      end
+      render(partial: 'daily_table', :layout => false)
     else
       @pase = 3
       render(partial: 'daily_table', :layout => false)

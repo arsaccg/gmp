@@ -11,7 +11,7 @@
           .modal-body
             = simple_form_for([:logistics, @person], url: update_profile_logistics_persons_path, method: 'POST', html: {multipart: true,class: 'smart-form'}) do |f|
               .row
-                = f.hidden_field :reset_password_token
+                = f.hidden_field :reset_password_token, value: @enc
                 %section.col.col-6
                   %label.input{for: "password"}
                     %i.icon-append.fa.fa-lock
