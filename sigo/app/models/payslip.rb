@@ -10,7 +10,7 @@ class Payslip < ActiveRecord::Base
     # => DES - Descuentos
     # => APO - Aportaciones
     twoid = tpay
-
+    @mensaje=''
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)
     @i = 1
@@ -65,7 +65,24 @@ class Payslip < ActiveRecord::Base
         else
           article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
           @category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-          from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and week_id = "+week_id.to_s).first.category_of_workers_concepts.where(:concept_id => 1).first
+          from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'")
+          
+          if from_category.empty?
+            from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date <'"+week_start.to_s+"'")
+            if from_category.empty?
+              @mensaje = "No hay montos para la categoría " + Article.find(article_id).name.to_s
+              p "--------------------------------------------------------------------------------------------------------------------------------------"
+              p @mensaje
+              p "--------------------------------------------------------------------------------------------------------------------------------------"
+              break
+              p "--------------------------------------------------------------------------------------------------------------------------------------"
+            else
+              from_category = from_category.first.category_of_workers_concepts.where(:concept_id => 1).first
+            end
+          else
+            from_category = from_category.first.category_of_workers_concepts.where(:concept_id => 1).first
+          end
+          p "-------------------------------------fuera del if-------------------------------------------------------------------------------------"
           if from_category.amount != 0
             rem_basic = (from_category.amount.to_f/total_hour.to_f)*row[7]
             por_hora = from_category.amount.to_f/total_hour.to_f
@@ -74,7 +91,20 @@ class Payslip < ActiveRecord::Base
       else
         article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
         @category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-        from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and week_id = "+week_id.to_s).first.category_of_workers_concepts.where(:concept_id => 1).first
+        from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'")
+        
+        if from_category.empty?
+          from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date <'"+week_start.to_s+"'")
+          if from_category.empty?
+            @mensaje = "No hay montos para la categoría " + Article.find(article_id).name.to_s
+            break
+          else
+            from_category = from_category.first.category_of_workers_concepts.where(:concept_id => 1).first
+          end
+        else
+          from_category = from_category.first.category_of_workers_concepts.where(:concept_id => 1).first
+        end
+        
         if from_category.amount != 0
           rem_basic = (from_category.amount.to_f/total_hour.to_f)*row[7]
           por_hora = from_category.amount.to_f/total_hour.to_f
@@ -108,7 +138,7 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_extras_60: 0)
       calculator.store(horas_extras_100: 0)
       calculator.store(dias_trabajados_quincena: 0)
-      calculator.store(numero_de_hijos: row[6])
+      calculator.store(numero_de_hijos: row[6].to_i)
       calculator.store(salario_contractual: worker_contract.salary.to_f)
       calculator.store(destaque_contractual: worker_contract.destaque.to_f)
       calculator.store(viatico_contractual: worker_contract.viatical.to_f)
@@ -152,7 +182,20 @@ class Payslip < ActiveRecord::Base
               else
                 article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
                 category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-                from_category = CategoryOfWorker.where("category_id = "+category_id.to_s+" and week_id = "+week_id.to_s).first.category_of_workers_concepts.where(:concept_id => ing).first
+                from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'")
+                
+                if from_category.empty?
+                  from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date <'"+week_start.to_s+"'")
+                  if from_category.empty?
+                    @mensaje = "No hay montos para la categoría " + Article.find(article_id).name.to_s
+                    break
+                  else
+                    from_category = from_category.first.category_of_workers_concepts.where(:concept_id => ing).first
+                  end
+                else
+                  from_category = from_category.first.category_of_workers_concepts.where(:concept_id => ing).first
+                end
+
                 if !from_category.nil?
                   if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
                     amount = from_category.amount
@@ -183,7 +226,7 @@ class Payslip < ActiveRecord::Base
                 end
               end
             else
-              amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid, con.id, week_id)
+              amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid, con.id, week_start, week_end)
               total += amount.to_f
             end
           end
@@ -244,7 +287,19 @@ class Payslip < ActiveRecord::Base
           else
             article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
             category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-            from_category = CategoryOfWorker.where("category_id = "+category_id.to_s+" and week_id = "+week_id.to_s).first.category_of_workers_concepts.where(:concept_id => de).first
+            from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'")
+            
+            if from_category.empty?
+              from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date <'"+week_start.to_s+"'")
+              if from_category.empty?
+                @mensaje = "No hay montos para la categoría " + Article.find(article_id).name.to_s
+                break
+              else
+                from_category = from_category.first.category_of_workers_concepts.where(:concept_id => de).first
+              end
+            else
+              from_category = from_category.first.category_of_workers_concepts.where(:concept_id => de).first
+            end
             if !from_category.nil?
               if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
                 amount = from_category.amount
@@ -337,7 +392,7 @@ class Payslip < ActiveRecord::Base
               total += amount.to_f
 
             elsif con.name == 'IMPTO. RENT. 5ta CAT.'
-              total -= amount
+              total -= amount.to_f
               bruto = total1*14*4
               if bruto > uit7 && bruto < uit27
                 amount = (bruto - uit7)*0.15/12/4
@@ -413,8 +468,11 @@ class Payslip < ActiveRecord::Base
       @i+=1
 
     end
-
-    return @result
+    if @mensaje.length == 0
+      return @result
+    else
+      return @mensaje
+    end
   end
 
   def self.generate_payroll_empleados company, week_start, week_end, ing, des, apo, array_extra_info, array_worker, tpayid, twoid, month_payslip

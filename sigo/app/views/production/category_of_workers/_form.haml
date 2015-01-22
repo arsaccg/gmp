@@ -14,14 +14,10 @@
           = f.input :id, label: false
         .row
           %section.col.col-4
-            %label.label Semana
+            %label.label Fecha
             %label.input{for: "week_id"}
-              %select.form-control#weeks{:name =>"category_of_worker[week_id]", :style => 'width:100%;padding: 0;border: none;', :onchange => "weeks_for_data();"}          
-                %option{:value => nil} Seleccione una Semana
-                -@semanas.each do |sem|
-                  %option{:value => sem[0], :selected => @today>=sem[2].strftime('%Y-%m-%d') && @today<=sem[3].strftime('%Y-%m-%d')}
-                    = sem[1] + ": del " + sem[2].strftime('%d-%m-%Y').to_s + " al " + sem[3].strftime('%d-%m-%Y').to_s
-
+            = f.input :change_date, label: false, as: :string,  input_html: { class: 'form-control', :value => @fecha, :type => "date", :id => "weeks", :onchange => "weeks_for_data();"}
+              
           %section.col.col-4
             %label.label Nombre Categoria
             %label.input{for: "name"}

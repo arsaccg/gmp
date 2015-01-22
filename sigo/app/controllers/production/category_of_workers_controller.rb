@@ -22,14 +22,12 @@ class Production::CategoryOfWorkersController < ApplicationController
     @concept_discounts = Concept.where(:type_obrero => 'Fijo').where(:status => 1).where("code LIKE '2%'")
     @cc = get_company_cost_center('cost_center')
     @action = 'new'
-    @semanas = ActiveRecord::Base.connection.execute("
-      SELECT wc . * 
-      FROM weeks_for_cost_center_" + get_company_cost_center('cost_center').to_s+" wc")
+    @fecha = Time.now.to_date
     render layout: false
   end
 
   def get_info_per_week
-    categoryOfWorker = CategoryOfWorker.where("week_id = "+params[:week].to_s+" AND category_id = "+params[:cat].to_s+ " AND cost_center_id = "+ get_company_cost_center('cost_center').to_s).first
+    categoryOfWorker = CategoryOfWorker.where("change_date = '"+params[:week].to_s+"' AND category_id = "+params[:cat].to_s+ " AND cost_center_id = "+ get_company_cost_center('cost_center').to_s).first
     ingresos = Array.new
     descuentos = Array.new
     reg = ((Time.now.to_f)*100).to_i
@@ -73,9 +71,7 @@ class Production::CategoryOfWorkersController < ApplicationController
     @categoryOfWorker = CategoryOfWorker.find(params[:id])
     @today = Time.now.to_date.strftime('%Y-%m-%d')
     @subgroups = Category.distinct.select(:id).select(:code).select(:name).where("code LIKE '71__'")
-    @semanas = ActiveRecord::Base.connection.execute("
-      SELECT wc . * 
-      FROM weeks_for_cost_center_" + get_company_cost_center('cost_center').to_s+" wc")
+    @fecha = Time.now.to_date.strftime('%Y-%m-%d').to_s
     @concept_earnings = @categoryOfWorker.category_of_workers_concepts.where(:type_concept => 'Fijo').where("concept_code LIKE '1%'")
     @concept_discounts = @categoryOfWorker.category_of_workers_concepts.where(:type_concept => 'Fijo').where("concept_code LIKE '2%'")
     @cc = get_company_cost_center('cost_center')
@@ -115,7 +111,7 @@ class Production::CategoryOfWorkersController < ApplicationController
   def category_worker_parameters
     params.require(:category_of_worker).permit(
       :id,
-      :week_id,
+      :change_date,
       :name, 
       :category_id, 
       :normal_price, 
