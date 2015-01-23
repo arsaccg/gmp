@@ -57,7 +57,7 @@ class Production::PartPeopleController < ApplicationController
       flag = false
       cad_error = "Ya hay creado un parte con ese grupo de trabajo y esa fecha. "
     end
-    ww_app = WeeklyWorker.where("working_group LIKE '%"+partperson.working_group_id.to_s+"%' AND state = 'approved' AND end_date > '"+partperson.date_of_creation.to_s+"'").last
+    ww_app = WeeklyWorker.where("state = 'approved' AND end_date > '"+partperson.date_of_creation.to_s+"' AND cost_center_id = "+get_company_cost_center('cost_center').to_s).last
     if !ww_app.nil?
       flag = false
       cad_error = cad_error + "La fecha ingresada es menor a la fecha del último tareo aprobado. "

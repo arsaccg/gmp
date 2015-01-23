@@ -51,7 +51,7 @@
           %tr
             -wor = Worker.find(pars.worker_id)
             %td= wor.entity.dni
-            %td= wor.entity.name.to_s + " "+ wor.entity.name.to_s + " "+ wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s
+            %td=  wor.entity.paternal_surname.to_s + " "+ wor.entity.maternal_surname.to_s + ", " +wor.entity.name.to_s + " "+ wor.entity.second_name.to_s
             -if !@pay.first.week.nil?
               %td= wor.worker_contracts.first.article.name
               %td= CostCenter.find(pars.cost_center_id).code

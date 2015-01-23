@@ -15,7 +15,7 @@
               - @workingGroups.each do |working_group|
                 %option{:value => "#{working_group.id}"}
                   = working_group.name
-              %option{:value => 'todo'} Conglomerado
+              %option{:value => 'todo'} Consolidado
         .col-sm-3
           %label.input{for: "start_date"}
             %input#start-date-input.string.optional.form-control{:name => "start_date", :type => "date"}
