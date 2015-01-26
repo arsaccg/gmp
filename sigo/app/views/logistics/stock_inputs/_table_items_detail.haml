@@ -1,5 +1,5 @@
 - @arrItems.each do |x|
-  - @pending = x.amount.to_i - PurchaseOrderDetail.get_total_received(x.id).to_i
+  - @pending = x.amount.to_f - PurchaseOrderDetail.get_total_received(x.id).to_f
   - @article = x.delivery_order_detail.article
   %tr{id: "tr" + @reg_n.to_s}
     %td(style="display:none" class="pod-di")
