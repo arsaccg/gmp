@@ -11,7 +11,7 @@
     -@res.each do |r|
       %tr
         %td
-          =r[0][0] rescue ''
+          = r.first['codInsumo'] rescue ''
         %td
-          =r[0][1] rescue ''
+          = r.first['descripcion'] rescue ''
 

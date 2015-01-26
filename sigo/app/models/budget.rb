@@ -53,18 +53,26 @@ class Budget < ActiveRecord::Base
 
   def load_elements(budget_id, cost_center_id, type_of_budget, database, company)
     # ~~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ (aprox 7 secs)#
+    qry_arr = Array.new
     sql = "SELECT DISTINCT SUBSTRING(PresupuestoPartidaDetalle.codInsumo, 3, 9) From PresupuestoPartidaDetalle WHERE PresupuestoPartidaDetalle.codpresupuesto = " + budget_id.to_s #@type.cod_budget[0..6] #+ "0403021"
-    qry_arr = do_query(sql,{db_name: database}) #{db_name: "AREQUIPA_BD2014"})
+    do_query(sql,{db_name: database}).each do |row|
+      qry_arr << [row[""]]  #{db_name: "AREQUIPA_BD2014"})
+    end
 
     res_arr = Array.new
     sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["SELECT DISTINCT SUBSTRING(a.code, -8) cod FROM articles a"]) #"1 a"])
     result = ActiveRecord::Base.connection.execute(sql)
-    result.each(:as => :hash) do |row| 
+    result.each(:as => :hash) do |row|
       res_arr << [row["cod"]] #"..."
     end
 
     #intersection = qry_arr & res_arr
+
     rest = qry_arr - res_arr
+
+    p ' INTERSECCION '
+    p rest
+    p ' INTERSECCION '
 
     # ~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ #
     if !rest.empty?
