@@ -13,7 +13,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     @master_builders = Worker.distinct.where(:id => master_builder_ids) # Capatazes o Maestros de Obra
     # PositionWorker.find(2).workers
     executor_ids = Subcontract.distinct.select(:entity_id).where('entity_id <> 0').where("cost_center_id ="+@cc.to_s).map(&:entity_id)
-    @executors = Worker.distinct.where(:id => executor_ids) # Exclude the Subcontract Default
+    @executors = Entity.distinct.where(:id => executor_ids) # Exclude the Subcontract Default
     render layout: false
   end
 

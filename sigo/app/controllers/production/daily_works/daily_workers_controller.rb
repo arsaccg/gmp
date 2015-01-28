@@ -127,6 +127,12 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
 
   def business_days_array(start_date, end_date, working_group_id, business_days)
 
+    p 'PARAMS'
+    p start_date
+    p end_date
+    p working_group_id
+    p business_days
+
     personals_array = []
     trabajadores_array = []
     partediariodepersonals = PartPerson.where("working_group_id IN ("+working_group_id.to_s+") and blockweekly = 0 and date_of_creation BETWEEN ? AND ?", start_date,end_date)
