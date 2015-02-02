@@ -26,6 +26,8 @@ class Payslip < ActiveRecord::Base
     end
     amount = 0
     apoNa = Array.new
+    holidays = Holiday.where("date_holiday BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'").count
+
     ActiveRecord::Base.connection.execute("
       SELECT ppd.worker_id, e.dni,  CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name), ar.name, pp.date_of_creation, af.type_of_afp, w.numberofchilds, SUM( ppd.normal_hours ) , SUM( 1 ) AS Dias, SUM( ppd.he_60 ) , SUM( ppd.he_100 ) , SUM( ppd.total_hours ), af.id
       FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
@@ -138,6 +140,7 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_extras_60: 0)
       calculator.store(horas_extras_100: 0)
       calculator.store(dias_trabajados_quincena: 0)
+      calculator.store(dias_feriados: holidays)
       calculator.store(numero_de_hijos: row[6].to_i)
       calculator.store(salario_contractual: worker_contract.salary.to_f)
       calculator.store(destaque_contractual: worker_contract.destaque.to_f)
@@ -524,6 +527,8 @@ class Payslip < ActiveRecord::Base
       incluye = false
     end
     amount = 0
+    days_in_month = Time.days_in_month(week_start.to_date.strftime('%m').to_i, week_start.to_date.strftime('%Y').to_i)
+    holidays = Holiday.where("date_holiday BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'").count    
     apoNa = Array.new
     ActiveRecord::Base.connection.execute("
       SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name) , ar.name, af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id, ppd.he_25, ppd.he_35
@@ -545,7 +550,7 @@ class Payslip < ActiveRecord::Base
       ORDER BY e.paternal_surname
     ").each do |row|
 
-      @result << [ row[0], row[1], row[2], row[3],@comp_name, row[4], row[5], row[6], total_days - row[6], row[8], row[9]]
+      @result << [ row[0], row[1], row[2], row[3],@comp_name, row[4], row[5], row[6], total_days - row[6]+holidays, row[8], row[9]]
       calculator = Dentaku::Calculator.new
       amount = 0
       flag_extra = false
@@ -577,11 +582,12 @@ class Payslip < ActiveRecord::Base
         dias_trabajados_quincena = dias_trabajados_quincena[0]
       end
 
-      days_in_month = Time.days_in_month(week_start.to_date.strftime('%m').to_i, week_start.to_date.strftime('%Y').to_i)
+
 
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
       calculator.store(dias_trabajados: row[6])
+      calculator.store(dias_feriados: holidays)
       calculator.store(horas_simples: row[8].to_f)
       calculator.store(horas_dobles: row[9].to_f)
       calculator.store(horas_dobles: 0)
@@ -757,7 +763,7 @@ class Payslip < ActiveRecord::Base
               total += amount.to_f
 
             elsif con.name == 'IMPTO. RENT. 5ta CAT.'
-              fpod = con.concept_valorizations.formula
+              fpod = con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula
               total -= amount
               suma_mes = amount
               amount = 0
