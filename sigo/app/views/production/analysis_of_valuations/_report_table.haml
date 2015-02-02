@@ -276,7 +276,7 @@
                       -if (m_stock_input[2].to_f*m_stock_input[3].to_f).to_f - @price.to_f < 0
                         %td{ :style => 'text-align:right;color:red;' }
                           %span.label.label{"style"=>"color: red;text-align:right;font-size: 11px;background-color: yellow;"}
-                            = number_to_currency ((m_stock_input[2]*m_stock_input[3]).to_f - @price.to_f), unit: 'S/.', precision: 2
+                            = number_to_currency ((m_stock_input[2].to_f*m_stock_input[3].to_f).to_f - @price.to_f), unit: 'S/.', precision: 2
                       -else
                         %td{ :style => 'text-align:right;' }= number_to_currency ((m_stock_input[2].to_f*m_stock_input[3].to_f).to_f - @price.to_f), unit: 'S/.', precision: 2
                       -@dif_p+=(m_stock_input[2].to_f*m_stock_input[3].to_f).to_f - @price.to_f
