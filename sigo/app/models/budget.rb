@@ -199,8 +199,9 @@ class Budget < ActiveRecord::Base
       #Ultimo paso
 
       #no importar si ya existe articles from cost_center_1
-    
-      Itembybudget.connection.execute('UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO" AND subbudgetdetail = "";')
+      
+      # ESTO LE QUE QUITADO DE ESTE UPDATE: AND subbudgetdetail = ""
+      Itembybudget.connection.execute('UPDATE itembybudgets SET subbudgetdetail = (SELECT description FROM items WHERE item_code = itembybudgets.item_code LIMIT 1)  WHERE title="REGISTRO RESTRINGIDO";')
     
       return true
     end
