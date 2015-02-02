@@ -269,6 +269,7 @@ ArsacLogistica::Application.routes.draw do
     resources :stock_outputs do
       collection do
         post 'show_rows_stock_inputs'
+        post 'show_stock_outputs'
         post 'add_stock_input_item_field'
         post 'add_items_from_pod'
         post 'partial_select_per_warehouse'

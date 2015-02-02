@@ -51,7 +51,7 @@ class Budget < ActiveRecord::Base
     return budget_array
   end
 
-  def load_elements(budget_id, cost_center_id, type_of_budget, database, company)
+  def load_elements(budget_id, cost_center_id_out, type_of_budget, database, company)
     # ~~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ (aprox 7 secs)#
     qry_arr = Array.new
     sql = "SELECT DISTINCT SUBSTRING(PresupuestoPartidaDetalle.codInsumo, 3, 9) From PresupuestoPartidaDetalle WHERE PresupuestoPartidaDetalle.codpresupuesto = " + budget_id.to_s #@type.cod_budget[0..6] #+ "0403021"
@@ -69,10 +69,6 @@ class Budget < ActiveRecord::Base
     #intersection = qry_arr & res_arr
 
     rest = qry_arr - res_arr
-
-    p ' INTERSECCION '
-    p rest
-    p ' INTERSECCION '
 
     # ~~Verificar si los INSUMOS EXISTEN previamente en la base de datos antes de cargarlos~~ #
     if !rest.empty?
@@ -120,19 +116,19 @@ class Budget < ActiveRecord::Base
         array_sub_budgets = do_query("SELECT CodPresupuesto, CodSubpresupuesto, Descripcion FROM  Subpresupuesto WHERE CodPresupuesto = '" + budget['CodPresupuesto']  + "' AND CodPresupuesto <> '9999999' AND CodSubpresupuesto <> '999'", {db_name: database})
 
         array_sub_budgets.each do |subbudget|
-          if Budget.where("cod_budget = ? AND type_of_budget=?",  subbudget[0].to_s + subbudget[1].to_s, type_of_budget ).first == nil
+          if Budget.where("cod_budget = ? AND type_of_budget= ?",  subbudget['CodPresupuesto'].to_s + subbudget['CodSubpresupuesto'].to_s, type_of_budget ).first == nil
             new_subbudget=Budget.new
-            new_subbudget.cost_center_id = cost_center_id
-            new_subbudget.cod_budget = subbudget[0].to_s + subbudget[1].to_s
-            @cod = subbudget[0].to_s + subbudget[1].to_s
-            new_subbudget.description = subbudget[2].to_s
-            new_subbudget.subbudget_code = subbudget[1].to_s
+            new_subbudget.cost_center_id = cost_center_id_out
+            new_subbudget.cod_budget = subbudget['CodPresupuesto'].to_s + subbudget['CodSubpresupuesto'].to_s
+            @cod = subbudget['CodPresupuesto'].to_s + subbudget['CodSubpresupuesto'].to_s
+            new_subbudget.description = subbudget['Descripcion'].to_s
+            new_subbudget.subbudget_code = subbudget['CodSubpresupuesto'].to_s
             new_subbudget.type_of_budget = type_of_budget
             new_subbudget.save
             new_item = Item.new                           # Cargar Partidas
-            new_item.load_items(cost_center_id, subbudget[0], database)
+            new_item.load_items(cost_center_id_out, subbudget['CodPresupuesto'], database)
             new_item_by_budget = Itembybudget.new         #Cargar Generico
-            new_item_by_budget.set_data(subbudget[0], database)
+            new_item_by_budget.set_data(subbudget['CodPresupuesto'], database)
           end
         end
         #}
@@ -154,7 +150,7 @@ class Budget < ActiveRecord::Base
                   FROM inputbybudgetanditems ibi, budgets b, articles a, unit_of_measurements u, type_of_articles toa, categories c
                   WHERE b.id = ibi.budget_id
                   AND b.type_of_budget = 0
-                  AND b.cost_center_id = #{cost_center_id}
+                  AND b.cost_center_id = #{cost_center_id_out}
                   AND ibi.article_id = a.id
                   AND a.unit_of_measurement_id = u.id
                   AND a.category_id = c.id 
@@ -173,8 +169,12 @@ class Budget < ActiveRecord::Base
           	  @type_id = type.id
           	end
 
-            sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO articles_from_cost_center_" + cost_center.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id, input_by_budget_and_items_id, budget_id) VALUES (?,?,?,?,?,?,?,?,?,?)", art[0].to_i, art[1].to_s, art[2].to_i, art[3].to_i, art[4].to_s, desc.to_s, art[6].to_i, cost_center.to_i, art[7].to_i, @type_id.to_i])
-          	result = ActiveRecord::Base.connection.execute(sql)
+            exists_article = ActiveRecord::Base.connection.execute("SELECT article_id FROM articles_from_cost_center_" + cost_center.to_s + "WHERE code LIKE " + art[1].to_s).first
+
+            if !exists_article
+              sql = ActiveRecord::Base.send(:sanitize_sql_array,  ["INSERT INTO articles_from_cost_center_" + cost_center.to_s + " (article_id, code, type_of_article_id, category_id, name, description, unit_of_measurement_id, cost_center_id, input_by_budget_and_items_id, budget_id) VALUES (?,?,?,?,?,?,?,?,?,?)", art[0].to_i, art[1].to_s, art[2].to_i, art[3].to_i, art[4].to_s, desc.to_s, art[6].to_i, cost_center.to_i, art[7].to_i, @type_id.to_i])
+            	result = ActiveRecord::Base.connection.execute(sql)
+            end
           end
 
           com_art= Article.where("code LIKE  '__58______' OR code LIKE '__76______'")
