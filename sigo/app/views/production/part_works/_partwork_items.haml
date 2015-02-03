@@ -2,9 +2,9 @@
   %td.article-id(style="display:none")
     = hidden_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][itembybudget_id]', @id_itembybudget.to_i
   %td.col-md-2
-    = @name_itembybudget
-  %td.col-md-2
     = @itembybudget_code
+  %td.col-md-2
+    = @name_itembybudget
   %td.amount.col-md-1{:style => "width:5%"}
     %div
       = text_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][bill_of_quantitties]', nil , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'

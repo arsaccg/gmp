@@ -78,6 +78,7 @@
               %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-pod" aria-describedby="data-table_info")
                 %thead
                   %tr
+                    %th N° Orden
                     %th Codigo
                     %th Descripción
                     %th{'style' => 'width: 4%;'}
@@ -196,11 +197,11 @@
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
         // Client Valid
-        if( $(form['selector']).valid() ){
+        if( $('form[id^="edit_stock_input"]').valid() ){
           $('#modalLoadingLabelading').modal();
         }
         // Client Valid
-        return $(form['selector']).valid();
+        return $('form[id^="edit_stock_input"]').valid();
       },
       target: '#content',
       success: function (data){

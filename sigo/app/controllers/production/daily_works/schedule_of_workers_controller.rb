@@ -139,6 +139,11 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
           totalworker = 0
           wor = Worker.find(wo)
           contract = WorkerContract.where("worker_id = ? AND status = 1",wo).first
+          puts "------------------------------------------------------------------------------------------------------------------------------------------------"
+          p wo.inspect
+          puts "------------------------------------------------------------------------------------------------------------------------------------------------"
+          p contract.inspect
+          puts "------------------------------------------------------------------------------------------------------------------------------------------------"          
           cadenita = index.to_s + ';' + contract.article.code.to_s + ';' + contract.article.name.to_s + ';' + wor.entity.dni.to_s + ';' + wor.entity.paternal_surname.to_s + " " + wor.entity.maternal_surname.to_s + ', ' + wor.entity.name.to_s + ' ' + wor.entity.second_name.to_s
           @dias_habiles.each do |dh|
             answer = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 1").first
@@ -220,6 +225,11 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
       totalworker = 0
       wor = Worker.find(wo)
       contract = WorkerContract.where("worker_id = ? AND status = 1",wo).first
+      puts "------------------------------------------------------------------------------------------------------------------------------------------------"
+      p wo.inspect
+      puts "------------------------------------------------------------------------------------------------------------------------------------------------"
+      p contract.inspect
+      puts "------------------------------------------------------------------------------------------------------------------------------------------------"
       cadenita = index.to_s + ';' + contract.article.code.to_s + ';' + contract.article.name.to_s + ';' + wor.entity.dni.to_s + ';' + wor.entity.paternal_surname.to_s + " " + wor.entity.maternal_surname.to_s + ', ' + wor.entity.name.to_s + ' ' + wor.entity.second_name.to_s
       @dias_habiles.each do |dh|
         answer = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 0").first

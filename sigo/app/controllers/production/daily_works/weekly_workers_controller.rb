@@ -5,7 +5,7 @@ class Production::DailyWorks::WeeklyWorkersController < ApplicationController
   def index
     @workingGroups = WorkingGroup.all
     @cost_center = get_company_cost_center('cost_center')
-    @weeklyworker = WeeklyWorker.where("cost_center_id = "+@cost_center.to_s)
+    @weeklyworker = WeeklyWorker.where("cost_center_id = "+@cost_center.to_s).order(:start_date)
     render layout: false
   end
 
