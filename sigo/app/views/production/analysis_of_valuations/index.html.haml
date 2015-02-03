@@ -37,7 +37,7 @@
               %option{:value => "0"} Seleccione un ejecutor
               - @executors.each do |ex|
                 %option{:value => "#{ex.id}"}
-                  = ex.entity.name.to_s + ' ' + ex.entity.second_name.to_s + ' ' + ex.entity.paternal_surname.to_s + ' ' + ex.entity.maternal_surname.to_s
+                  = ex.name.to_s + ' ' + ex.second_name.to_s + ' ' + ex.paternal_surname.to_s + ' ' + ex.maternal_surname.to_s
         .col-md-2
           %label Capataz
           %br

@@ -80,13 +80,13 @@ class Itembybudget < ActiveRecord::Base
 			 	#queue_thread <<  queue_counter
 
 
-				budget_temp = Budget.where(:cod_budget => item[0].to_s + item[1].to_s).last
-				item_temp = Item.where(:item_code => item[9]).last
+				budget_temp = Budget.where(:cod_budget => item['CodPresupuesto'].to_s + item['CodSubpresupuesto'].to_s).last
+				item_temp = Item.where(:item_code => item['codpartida']).last
 
 				b_code = budget_temp.id rescue ""
 				i_code = item_temp.id rescue ""
 
-			 	itembybudget_buffer << Itembybudget.new(item_code: item[9], order: item[2], measured: item[6], price: item[4].to_f, owneritem: item[5].to_s, subbudget_code: item[1], budget_code: item[0], title: item[8], subbudgetdetail: item[3], budget_id: b_code.to_i, item_id: i_code.to_i )
+			 	itembybudget_buffer << Itembybudget.new(item_code: item['codpartida'], order: item['Orden'], measured: item['Metrado'], price: item['Precio1'].to_f, owneritem: item['PropioPartida'].to_s, subbudget_code: item['CodSubpresupuesto'], budget_code: item['CodPresupuesto'], title: item['Expr2'], subbudgetdetail: item['Descripcion'], budget_id: b_code.to_i, item_id: i_code.to_i )
 
 				#if new_item.save
 				#	queue_thread.pop

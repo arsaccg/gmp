@@ -262,6 +262,19 @@ AND ccu.cost_center_id = cc.id AND ccu.user_id = " + current_user.id.to_s)
     render(:partial => 'all_gg', :layout => false)
   end
 
+  def show_holidays
+    @hash_holidays = Array.new
+    holidays = Holiday.select(:title).select(:date_holiday).where("date_holiday BETWEEN ? AND ?", Time.now.beginning_of_year.strftime('%Y-%m-%d'), Time.now.end_of_year.strftime('%Y-%m-%d'))
+
+    holidays.each do |holiday|
+      @hash_holidays << {:title => holiday.title, :start => holiday.date_holiday, :className => ["event", "bg-color-greenLight"], :icon => 'fa-check'}
+    end
+
+    @hash_holidays = @hash_holidays.to_json
+
+    render :holidays_table, :layout => false
+  end
+
   # => SOME METHODS FROM Application Helper duplicate : get_total_cost, get_amount
   
   def get_total_cost(str_order, cost_center_id)

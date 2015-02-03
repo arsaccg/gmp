@@ -24,7 +24,7 @@ class Entity < ActiveRecord::Base
     return Entity.find(executor_id).name
   end
 
-    def self.get_entities(type_ent, comp, display_length, pager_number, keyword)
+  def self.get_entities(type_ent, comp, display_length, pager_number, keyword)
     result = Array.new
     @type  = TypeEntity.find(type_ent.to_s)
     if keyword != '' && pager_number != 'NaN'

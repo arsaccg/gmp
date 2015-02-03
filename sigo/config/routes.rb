@@ -17,6 +17,7 @@ ArsacLogistica::Application.routes.draw do
   get 'display_table_messages_ose' => 'main#display_table_messages_ose', as: :display_table_messages_ose
   get 'display_worker_pending' => 'main#display_worker_pending', as: :display_worker_pending
   get 'management_dashboard' => 'main#management_dashboard', as: :management_dashboard
+  get 'show_holidays' => 'main#show_holidays', as: :show_holidays
   post 'projecting_operating_results' => 'main#projecting_operating_results', as: :projecting_operating_results
   get 'full_project_operating_results' => 'main#full_project_operating_results', as: :full_project_operating_results
   post 'show_phases' => 'main#show_phases', as: :show_phases
@@ -268,6 +269,7 @@ ArsacLogistica::Application.routes.draw do
     resources :stock_outputs do
       collection do
         post 'show_rows_stock_inputs'
+        post 'show_stock_outputs'
         post 'add_stock_input_item_field'
         post 'add_items_from_pod'
         post 'partial_select_per_warehouse'

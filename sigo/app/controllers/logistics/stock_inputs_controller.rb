@@ -154,6 +154,10 @@ class Logistics::StockInputsController < ApplicationController
     render(partial: 'rows_stock_inputs', :layout => false)
   end
 
+  def show_stock_inputs
+
+  end
+
   def show_purchase_order_item_field
     @company = get_company_cost_center('cost_center')
     #@tableItems = PurchaseOrder.get_approved_by_company_and_supplier(@company, params[:id], params[:order])

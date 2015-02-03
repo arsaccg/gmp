@@ -13,7 +13,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     @master_builders = Worker.distinct.where(:id => master_builder_ids) # Capatazes o Maestros de Obra
     # PositionWorker.find(2).workers
     executor_ids = Subcontract.distinct.select(:entity_id).where('entity_id <> 0').where("cost_center_id ="+@cc.to_s).map(&:entity_id)
-    @executors = Worker.distinct.where(:id => executor_ids) # Exclude the Subcontract Default
+    @executors = Entity.distinct.where(:id => executor_ids) # Exclude the Subcontract Default
     render layout: false
   end
 
@@ -224,20 +224,20 @@ class Production::AnalysisOfValuationsController < ApplicationController
           @real_materiales << [ao[0], Article.find(ao[0]).code, Article.find(ao[0]).name, Article.find(ao[0]).unit_of_measurement.symbol, 0, ao[1], 0]
         elsif articles_in_purchase.count == 1
           articles_in_purchase.each do |aip|
-            @real_materiales << [aip[0], aip[1],aip[2],aip[3],aip[4],ao[1], aip[4]*ao[1]]
-            @total_stock_input_real += aip[4]*ao[1]
+            @real_materiales << [aip[0], aip[1],aip[2],aip[3],aip[4],ao[1], aip[4].to_f*ao[1].to_f]
+            @total_stock_input_real += aip[4].to_f*ao[1].to_f
           end
         else
           #art.id, art.code, art.name, u.symbol, pod.unit_price, pod.amount
           articles_in_purchase.each do |aip|
             prom_pon_amount = aip[5].to_f/ao[1].to_f
-            prom_pon_price += aip[4]*prom_pon_amount
+            prom_pon_price += aip[4].to_f*prom_pon_amount.to_f
             @id = aip[0]
             @code = aip[1]
             @name = aip[2]
             @unit_sym = aip[3]
           end
-          @real_materiales << [@id, @code, @name, @unit_sym, prom_pon_price, ao[1], prom_pon_price*ao[1]]
+          @real_materiales << [@id, @code, @name, @unit_sym, prom_pon_price, ao[1], prom_pon_price.to_f*ao[1].to_f]
           @total_stock_input_real += prom_pon_price.to_f*ao[1].to_f
         end
       end

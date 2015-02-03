@@ -274,7 +274,7 @@ class Production::WorkersController < ApplicationController
 
   def register
     worker = Worker.find(params[:id])
-    if worker.worker_afps.count > 0
+    if worker.worker_afps.count > 0 || worker.typeofworker=="externo"
       worker.register
       num = Worker.where("position_worker_id = "+worker.position_worker_id.to_s+" AND number_position IS NOT NULL AND cost_center_id = "+ get_company_cost_center('cost_center').to_s).last.number_position rescue 0
       worker.update_attributes(:number_position => num.to_i+1)

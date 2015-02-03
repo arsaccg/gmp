@@ -183,9 +183,11 @@ class Logistics::DeliveryOrdersController < ApplicationController
   end
 
   def create
+    deliveryOrder_ancester = (DeliveryOrder.where(:cost_center_id => get_company_cost_center('cost_center')).last.code.to_i rescue 0)
     deliveryOrder = DeliveryOrder.new(delivery_order_parameters)
     deliveryOrder.state
     deliveryOrder.user_id = current_user.id
+    deliveryOrder.code = deliveryOrder_ancester + 1
     if deliveryOrder.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -398,7 +400,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   private
   def delivery_order_parameters
     params.require(:delivery_order).permit(
-      :code,
+      #:code,
       :date_of_issue, 
       :scheduled, 
       :description, 

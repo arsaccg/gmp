@@ -1,5 +1,5 @@
 class Management::BudgetsController < ApplicationController
-  
+  protect_from_forgery with: :null_session, :only => [:destroy, :delete]
   require 'net/http'
   require 'net/https'
 
@@ -102,13 +102,13 @@ class Management::BudgetsController < ApplicationController
 
   def load_elements
   	budget_id = params[:budget_id]
-  	project_id = get_company_cost_center('cost_center')
+  	cost_center_id = get_company_cost_center('cost_center')
   	type_of_budget  = params[:type_of_budget]
     database = params[:database]
 
   	budget = Budget.new(budget_parameters)
-    company = CostCenter.find(project_id).company
-    @res = budget.load_elements(budget_id, project_id, type_of_budget, database, company)
+    company = CostCenter.find(cost_center_id).company
+    @res = budget.load_elements(budget_id, cost_center_id, type_of_budget, database, company)
   	if @res == true
       p '~~~~~~~~~~~~~~budget_id~~~~~~~~~~~~~~~'
       p budget_id

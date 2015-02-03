@@ -71,6 +71,28 @@ class Logistics::StockOutputsController < ApplicationController
     render json: {:articles => article_hash}
   end
 
+  def show_stock_outputs
+    display_length = params[:iDisplayLength]
+    pager_number = params[:iDisplayStart]
+    keyword = params[:sSearch]
+    array = Array.new
+    cost_center = get_company_cost_center('cost_center')
+
+    outputs = StockInput.get_output(cost_center, display_length, pager_number, keyword)
+    # si.id, CONCAT(wa.name, ' - ', wa.location), si.issue_date, si.document, w.id , fo.name
+    outputs.each do |output|
+      array << [
+        output[1],
+        output[2].strftime("%d/%m/%Y").to_s,
+        output[3],
+        output[4],
+        output[5],
+        "<a class='btn btn-info btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_outputs/" + output[0].to_s + "','content',null,null,'GET')> Ver información </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/logistics/stock_outputs/" + output[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/logistics/stock_outputs/" + output[0].to_s + "','content','/logistics/stock_outputs') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar el item?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
+      ]
+    end
+    render json: { :aaData => array }
+  end
+
   def partial_table_per_warehouse
     article_warehouse = params[:data]
     @warehouse = params[:warehouse]
