@@ -14,7 +14,7 @@ class Phase < ActiveRecord::Base
   validates :code, :uniqueness => { :message => "El código debe ser único."}
 
   def self.get_subphases(phase_code)
-    subphase = Phase.where("code LIKE ? AND category = ?","#{phase_code}%","subphase")
+    subphase = Phase.where("code LIKE ? AND category = ?","#{phase_code}%","subphase").order(:code)
     return subphase
   end
 

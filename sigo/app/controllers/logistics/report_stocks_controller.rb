@@ -18,6 +18,7 @@ class Logistics::ReportStocksController < ApplicationController
   end
 
   def excel_stock
+    Spreadsheet.client_encoding = 'UTF-8'
     book = Spreadsheet::Workbook.new
     sheet1 = book.create_worksheet :name => 'Reporte de Stock'
     @articleresult = get_report()
@@ -26,14 +27,18 @@ class Logistics::ReportStocksController < ApplicationController
     sheet1.column(0).width = 13
     sheet1.column(1).width = 35
     sheet1.column(2).width = 11
-    sheet1.row(0).replace [ 'Código', 'Nombre', 'Cantidad' ]
+    sheet1.row(0).replace [ 'Código', 'Nombre', 'Cantidad', 'UND' ]
     @row = 1
     @articleresult.each do |artr|
-      sheet1.row(@row).replace [ artr[0], artr[1], artr[2] ]
+      sheet1.row(@row).replace [ artr[0], artr[1], artr[2], artr[3] ]
       @row += 1
     end
     book.write 'excelfile.xls'
     redirect_to :action => :index, company_id: session[:company]
+    #export_file_path = [Rails.root, "public", "reporte_de_stock_#{ DateTime.now.to_s }.xls"].join("/")
+    #book.write export_file_path
+    #send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'    
+
   end
 
   def report_stock_pdf
@@ -61,6 +66,7 @@ class Logistics::ReportStocksController < ApplicationController
     article.each do |art|
       name = Article.find(art).name
       code = Article.find(art).code
+      unit = Article.find(art).unit_of_measurement.symbol
       sisum = StockInput.where("input = 1 and cost_center_id = ?", session[:cost_center])
       sisum.each do |sis|
         sis.stock_input_details.each do |sisd|
@@ -80,7 +86,7 @@ class Logistics::ReportStocksController < ApplicationController
       result = sum - rest
       sum = 0
       rest = 0
-      articleresult << [code,name,result]
+      articleresult << [code,name,result,unit]
     end
     return articleresult
   end

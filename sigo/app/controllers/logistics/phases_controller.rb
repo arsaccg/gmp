@@ -55,7 +55,7 @@ class Logistics::PhasesController < ApplicationController
   def editsub
     @phase = Phase.find(params[:id])
     @phase.category = "subphase"
-    @phases = Phase.all.where(category: 'phase')
+    @phases = Phase.all.where(category: 'phase').order(:code)
     render :partial => 'editsub', layout: false
   end
 
@@ -96,7 +96,7 @@ class Logistics::PhasesController < ApplicationController
   def addsub
     @phase = Phase.new
     @phase.category = "subphase"
-    @phases = Phase.all.where(category: 'phase')
+    @phases = Phase.all.where(category: 'phase').order(:code)
     render :partial => 'addsub', layout: false
   end
 

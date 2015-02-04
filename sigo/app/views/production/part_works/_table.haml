@@ -12,6 +12,7 @@
           %tr
             %th N°
             %th Grupo de Trabajo
+            %th Sector
             %th Fecha
             %th Acciones
         %tbody
@@ -21,6 +22,8 @@
                 = partwork.number_working_group
               %td
                 = partwork.working_group.name
+              %td
+                = partwork.sector.name
               %td 
                 = partwork.date_of_creation.strftime('%d/%m/%Y')
               %td

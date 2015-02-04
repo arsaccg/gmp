@@ -21,6 +21,8 @@
             %label.input{for: "surname"}
               %i.icon-append.fa.fa-credit-card
               = f.input :ruc, placeholder: "RUC", input_html: { class: 'form-control' }, label: false
+              %p
+                %a{href: "http://www.sunat.gob.pe/cl-ti-itmrconsruc/jcrS00Alias", target: "_blank()"} Consultar RUC
         .row
           %section.col.col-10
             %label.label Dirección

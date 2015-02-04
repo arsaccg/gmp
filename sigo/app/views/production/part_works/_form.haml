@@ -57,11 +57,11 @@
           %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-articles" aria-describedby="data-table_info")
             %thead
               %tr
-                %th Partida
-                %th Código
-                %th Metrado
-                %th Observación
-                %th Eliminar
+                %th{:style => "width:10%;"} Código
+                %th{:style => "width:50%;"} Partida
+                %th{:style => "width:10%;"} Metrado
+                %th{:style => "width:15%;"} Observación
+                %th{:style => "width:10%;"} Eliminar
             %tbody#itembybudgets_table
               -if @action == "edit"
                 - @partworkde.each do |part|
@@ -73,9 +73,9 @@
                     %td.article-id{"style"=>"display:none"}
                       = hidden_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][itembybudget_id]', part.itembybudget_id
                     %td.col-md-2
-                      = part.itembybudget.subbudgetdetail
-                    %td.col-md-2
                       = part.itembybudget.order
+                    %td.col-md-2
+                      = part.itembybudget.subbudgetdetail
                     %td.bill-of-quantitties.col-md-1{:style => "width:5%"}
                       = text_field_tag 'part_work[part_work_details_attributes][' + @reg_n.to_s + '][bill_of_quantitties]', part.bill_of_quantitties , class: "form-control bill-of-quantitties", :required => true, title:'No puede dejar este campo vacio'
                     %td.description

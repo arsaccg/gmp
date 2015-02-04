@@ -11,7 +11,7 @@ repeat :all do
     text @company.ruc, :size => 9
   end
   bounding_box [bounds.right - 530, bounds.bottom + 680], :width  => 500 do
-    text "ORDEN DE SUMINISTRO - N° #{@cost_center_code + '-' + @deliveryOrder.id.to_s.rjust(5, '0')}", :align => :center, :style => :bold
+    text "ORDEN DE SUMINISTRO - N° #{@cost_center_code + '-' + @deliveryOrder.code.to_s.rjust(5, '0')}", :align => :center, :style => :bold
   end
   move_down 30
 
