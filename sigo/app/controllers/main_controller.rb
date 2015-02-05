@@ -275,6 +275,30 @@ AND ccu.cost_center_id = cc.id AND ccu.user_id = " + current_user.id.to_s)
     render :holidays_table, :layout => false
   end
 
+  def add_holiday
+    
+    date_holiday = params[:date_holiday].to_date.strftime('%Y-%m-%d')
+
+    if Holiday.find_by_date_holiday(date_holiday).nil? && Holiday.find_by_title(params[:title]).nil?
+      holiday = Holiday.new(title: params[:title], date_holiday: params[:date_holiday])
+      if holiday.save
+        render :json => true
+      else
+        render :json => false
+      end
+    elsif !Holiday.find_by_title(params[:title]).nil?
+      Holiday.find_by_title(params[:title]).destroy
+      holiday = Holiday.new(title: params[:title], date_holiday: params[:date_holiday])
+      if holiday.save
+        render :json => true
+      else
+        render :json => false
+      end
+    else
+      render :json => false
+    end
+  end
+
   # => SOME METHODS FROM Application Helper duplicate : get_total_cost, get_amount
   
   def get_total_cost(str_order, cost_center_id)

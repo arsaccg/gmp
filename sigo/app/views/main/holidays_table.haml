@@ -253,7 +253,8 @@
   
           events: #{@hash_holidays},
   
-          eventRender: function (event, element, icon) {
+          eventRender: function (event, element, icon) {  
+
               if (!event.description == "") {
                   element.find('.fc-event-title').append("<br/><span class='ultra-light'>" + event.description +
                       "</span>");
@@ -262,8 +263,17 @@
                   element.find('.fc-event-title').append("<i class='air air-top-right fa " + event.icon +
                       " '></i>");
               }
+
+              $.ajax({
+                type: "POST",
+                url: "#{add_holiday_path}",
+                data: { title: event.title, date_holiday: event.start, authenticity_token: "#{form_authenticity_token}" }
+              }).done(function(json){
+                console.log(json);
+              });
+
           },
-  
+
           windowResize: function (event, ui) {
               $('#calendar').fullCalendar('render');
           }

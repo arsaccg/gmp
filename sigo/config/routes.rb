@@ -18,6 +18,7 @@ ArsacLogistica::Application.routes.draw do
   get 'display_worker_pending' => 'main#display_worker_pending', as: :display_worker_pending
   get 'management_dashboard' => 'main#management_dashboard', as: :management_dashboard
   get 'show_holidays' => 'main#show_holidays', as: :show_holidays
+  post 'add_holiday' => 'main#add_holiday', as: :add_holiday
   post 'projecting_operating_results' => 'main#projecting_operating_results', as: :projecting_operating_results
   get 'full_project_operating_results' => 'main#full_project_operating_results', as: :full_project_operating_results
   post 'show_phases' => 'main#show_phases', as: :show_phases
