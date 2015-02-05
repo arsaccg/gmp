@@ -185,7 +185,7 @@ class Article < ActiveRecord::Base
       SELECT af.name, af.article_id, u.name, af.code
       FROM articles_from_cost_center_" + cost_center_id.to_s + " af, unit_of_measurements u
       WHERE af.unit_of_measurement_id = u.id
-      AND af.id =" + specific_article_id.to_s + " 
+      AND af.article_id =" + specific_article_id.to_s + " 
       LIMIT 1
     ")
 
