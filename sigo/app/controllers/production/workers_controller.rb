@@ -84,7 +84,7 @@ class Production::WorkersController < ApplicationController
       @costCenter = Company.find(params[:company_id]).cost_centers
       redirect_to url_for(:controller => "logistics/entities", :action => :new, :company_id => @company_id, :type => 'worker')
     else
-      @workerexist = Worker.find_by_entity_id(@entity.id)
+      @workerexist = Worker.where("entity_id = " +@entity.id.to_s + " AND cost_center_id = "+ get_company_cost_center('cost_center').to_s).first
       if @workerexist.nil? || (@workerexist.state=="ceased")
         @worker = Worker.new
         @company = params[:company_id]
