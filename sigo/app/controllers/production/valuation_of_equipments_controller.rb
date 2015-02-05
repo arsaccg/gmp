@@ -87,7 +87,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       @cad = Array.new
       @start_date = params[:start_date]
       @end_date = params[:end_date]
-      @subcontractequipment = SubcontractEquipment.find_by_entity_id(params[:executor])
+      @subcontractequipment = SubcontractEquipment.find(@subcontract_equipment_id)
       @cad = @subcontractequipment.id
       @lastvaluation = ValuationOfEquipment.find(:last,:conditions => [ "subcontract_equipment_id = ?", @subcontractequipment.id])
       if !@lastvaluation.nil?
