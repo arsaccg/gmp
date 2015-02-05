@@ -276,8 +276,12 @@ class Production::WorkersController < ApplicationController
     worker = Worker.find(params[:id])
     if worker.worker_afps.count > 0 || worker.typeofworker=="externo"
       worker.register
-      num = Worker.where("position_worker_id = "+worker.position_worker_id.to_s+" AND number_position IS NOT NULL AND cost_center_id = "+ get_company_cost_center('cost_center').to_s).last.number_position rescue 0
-      worker.update_attributes(:number_position => num.to_i+1)
+      num = Worker.where("typeofworker = '"+worker.typeofworker.to_s+"' AND number_position IS NOT NULL AND cost_center_id = "+ get_company_cost_center('cost_center').to_s).last
+      if  !num.nil?
+        worker.update_attributes(:number_position => num.number_position.to_i+1)
+      else
+        worker.update_attributes(:number_position => 1)
+      end
     else
       flash[:error] = "Asegurese que el trabajador tenga una AFP registrada."
     end
@@ -334,7 +338,7 @@ class Production::WorkersController < ApplicationController
     if WorkerContract.joins(:worker).where(workers: {cost_center_id: cost_center_obj.id.to_s}).order('id ASC').first.nil?
       @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + 1.to_s.rjust(4, '0')
     else
-      @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + (WorkerContract.joins(:worker).where(workers: {cost_center_id: cost_center_obj.id.to_s}).order('id ASC').last.id + 1).to_s.rjust(4, '0')
+      @worker_contract_correlative = cost_center_obj.code.to_s + ' - ' + (WorkerContract.joins(:worker).where(workers: {cost_center_id: cost_center_obj.id.to_s}).order('id ASC').count + 1).to_s.rjust(4, '0')
     end
     @typeofcontract = params[:typeofcontract]
     @articles = TypeOfArticle.find_by_code('01').articles

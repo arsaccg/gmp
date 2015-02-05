@@ -473,6 +473,7 @@ ArsacLogistica::Application.routes.draw do
         end
         member do
           get 'approve'
+          get 'disapprove'
         end        
       end
 

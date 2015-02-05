@@ -9,7 +9,12 @@ class Administration::PartWorkersController < ApplicationController
 
   def show
     @partworker = PartWorker.find(params[:id])
-    @partworkerdetails = @partworker.part_worker_details
+    @partworkerdetails = ActiveRecord::Base.connection.execute("SELECT pwd.id, CONCAT( e.paternal_surname,  ' ', e.maternal_surname,  ', ', e.name ) AS name
+      FROM part_worker_details pwd, entities e, workers w
+      WHERE pwd.part_worker_id =" + @partworker.id.to_s+ "
+      AND pwd.worker_id = w.id
+      AND e.id = w.entity_id
+      ORDER BY name")
     @company = get_company_cost_center('company')
     render layout: false
   end
