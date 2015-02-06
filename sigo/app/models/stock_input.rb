@@ -72,6 +72,7 @@ class StockInput < ActiveRecord::Base
         FROM stock_inputs si, warehouses wa, working_groups w, formats fo
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 0
+        AND si.status = 'A'
         AND si.working_group_id = w.id 
         AND w.cost_center_id = "+ cost_center_id.to_s + "
         AND wa.id = si.warehouse_id
@@ -87,6 +88,7 @@ class StockInput < ActiveRecord::Base
         FROM stock_inputs si, warehouses wa, working_groups w, formats fo
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 0
+        AND si.status = 'A'
         AND si.working_group_id = w.id 
         AND w.cost_center_id = "+ cost_center_id.to_s + "
         AND wa.id = si.warehouse_id
@@ -101,6 +103,7 @@ class StockInput < ActiveRecord::Base
         FROM stock_inputs si, warehouses wa, working_groups w, formats fo
         WHERE si.cost_center_id = " + cost_center_id.to_s + "
         AND si.input = 0
+        AND si.status = 'A'
         AND si.working_group_id = w.id 
         AND w.cost_center_id = "+ cost_center_id.to_s + "
         AND wa.id = si.warehouse_id
