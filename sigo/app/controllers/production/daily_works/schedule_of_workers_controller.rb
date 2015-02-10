@@ -64,7 +64,7 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
     @totalperday = Array.new
     totaltotal = 0
     @dias_habiles.each do |dh|
-      perday = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 1 AND cost_center_id " + @cost_center.id.to_s ).first
+      perday = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 1 AND cost_center_id = " + @cost_center.id.to_s ).first
       if !perday.nil?
         day = PartWorkerDetail.where("part_worker_id = ? AND assistance LIKE 'si'", perday.id)
         @totalperday << day.count.to_s
