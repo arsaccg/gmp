@@ -215,11 +215,6 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
       end
     end
 
-    puts "................................................................................................................................................"
-    p partworkers.inspect
-    p workers.inspect
-    puts "................................................................................................................................................"
-
     workers = workers.uniq
     workers = workers.sort
     index = 1
@@ -237,7 +232,7 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
           if answer.nil?
             cadenita = cadenita + ';' + '0'
           else
-            answer2 = PartWorkerDetail.where("part_worker_id = ? AND worker_id = ? AND cost_center_id = ?", answer.id, wo, @cost_center.id)
+            answer2 = PartWorkerDetail.where("part_worker_id = ? AND worker_id = ?", answer.id, wo)
             if answer2.count == 0
               cadenita = cadenita + ';' + '0'
             end
