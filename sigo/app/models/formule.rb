@@ -94,8 +94,14 @@ class Formule < ActiveRecord::Base
         end
       end
     else
+      #p '------------------'
+      #p const_variables
+      #p '------------------'
       const_variables.each do |c|
         concept = Concept.find_by_token(c)
+        #p 'CONCEPTO'
+        #p concept.inspect
+        #p 'CONCEPTO'
         if !concept.nil?
           formu = concept.concept_valorizations.where("type_worker = "+twid.to_s).first
           contract = Worker.find(worker_id).worker_contracts.where(:status => 1).first.worker_contract_details.where(:concept_id => concept.id).first
@@ -120,13 +126,14 @@ class Formule < ActiveRecord::Base
               from_category = CategoryOfWorker.where("category_id = "+category_id.to_s+" and change_date <'"+week_start.to_s+"'")
               if from_category.empty?
                 @mensaje = "No hay montos para la categoría " + Article.find(article_id).name.to_s
-                break
+                #break
               else
                 from_category = from_category.first.category_of_workers_concepts.where(:concept_id => concept_id).first
               end
             else
               from_category = from_category.first.category_of_workers_concepts.where(:concept_id => concept_id).first
             end
+
             if !from_category.nil?
               if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
                 amount = from_category.amount
@@ -147,7 +154,13 @@ class Formule < ActiveRecord::Base
               end
             end
           end
+          #p ' ENRTROOOOO!! '
+          #p concept.token.tr('][', '').gsub('-','_')
           var = concept.token.tr('][', '').gsub('-','_')
+          #p 'PARAMS STORED!'
+          #p var
+          #p amount
+          #p 'PARAMS STORED!'
           calculator.store(var.to_sym => amount.to_f)
         end
       end
@@ -165,6 +178,7 @@ class Formule < ActiveRecord::Base
     #p calculator.inspect
     #p main_concept
     #p formula
+    #p hash_formulas
     #p calculator.solve!(hash_formulas).values[0].to_f
     #p ' FORMULA!!! '
     return calculator.solve!(hash_formulas).values[0].to_f
