@@ -42,7 +42,7 @@ class PartPerson < ActiveRecord::Base
   	  result << [
         part_person[1], 
         part_person[2], 
-        part_person[3],
+        part_person[3].strftime("%d/%m/%Y"),
         "<a class='btn btn-success btn-xs' onclick=javascript:load_url_ajax('/production/part_people/" + part_person[0].to_s + "','content',null,null,'GET')> Ver Informacion </a> " + "<a class='btn btn-warning btn-xs' onclick=javascript:load_url_ajax('/production/part_people/" + part_person[0].to_s + "/edit','content',null,null,'GET')> Editar </a> " + "<a class='btn btn-danger btn-xs' data-onclick=javascript:delete_to_url('/production/part_people/" + part_person[0].to_s + "','content','/production/part_people/') data-placement='left' data-popout='true' data-singleton='true' data-title='Esta seguro de eliminar la parte #" + part_person[0].to_s + "?' data-toggle='confirmation' data-original-title='' title=''> Eliminar </a>"
       ]
   	end

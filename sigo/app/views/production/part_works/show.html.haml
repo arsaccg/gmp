@@ -6,13 +6,13 @@
         Parte de Obra
   %section#widget-grid
     .row
-      %article.col-sm-12.col-md-12.col-lg-8
+      %article.col-sm-12.col-md-12.col-lg-12
         #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
           %header
             %span.widget-icon
               %i.fa.fa-table
             %h2 
-            = 'Parte Obra N° ' + @partwork.number_working_group.to_s
+              = 'Parte Obra N° ' + @partwork.number_working_group.to_s
           %div
             .jarviswidget-editbox
               / This area used as dropdown edit box
@@ -25,6 +25,7 @@
               %table.table.table-hover
                 %thead
                   %tr
+                    %th Sector
                     %th Número
                     %th Grupo de Trabajo
                     %th Jefe de Frente
@@ -33,6 +34,8 @@
                     %th Fecha
                 %tbody(id="article_items_table")
                   %tr
+                    %td
+                      = @partwork.sector.name
                     %td
                       = @partwork.number_working_group
                     %td
@@ -44,7 +47,7 @@
                     %td
                       = Worker.find(@partwork.working_group.master_builder_id).entity.name + ' ' + Worker.find(@partwork.working_group.master_builder_id).entity.second_name + ' ' + Worker.find(@partwork.working_group.master_builder_id).entity.paternal_surname + ' ' + Worker.find(@partwork.working_group.master_builder_id).entity.maternal_surname
                     %td
-                      = @partwork.date_of_creation
+                      = @partwork.date_of_creation.strftime("%d/%m/%Y")
 
       %article.col-sm-12.col-md-12.col-lg-12
         #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}

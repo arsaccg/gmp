@@ -78,6 +78,7 @@
               %table(class="table table-condensed table-bordered table-striped table-hover has-tickbox smart-form" style="font-size: 12px;" id="summary-pod" aria-describedby="data-table_info")
                 %thead
                   %tr
+                    %th N° Orden
                     %th Codigo
                     %th Descripción
                     %th{'style' => 'width: 4%;'}
@@ -184,28 +185,23 @@
             'stock_input[issue_date]': "(*)",
             'stock_input[description]': "(*)"
           },
-          highlight: function (element) {
-            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-          },
-          unhighlight: function (element) {
-            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
-          },
-          errorElement: 'span',
-          errorClass: 'help-block',
-          errorPlacement: function (error, element) {
-            if (element.parent('.input-group').length) {
-              error.insertAfter(element.parent());
-              $('#modalLoadingLabelading').modal('hide');
-              $('.modal-backdrop.fade.in').remove();
-            } else {
-              error.insertAfter(element);
-              $('#modalLoadingLabelading').modal('hide');
-              $('.modal-backdrop.fade.in').remove();
-            }
+          // Do not change code below
+          errorPlacement : function(error, element) {
+            error.insertAfter(element.parent());
+            $('#modalLoadingLabelading').modal('hide');
+            $('.modal-backdrop.fade.in').remove();
           }
         });
-
-        return $form.valid();
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $('form[id^="edit_stock_input"]').valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        // Client Valid
+        return $('form[id^="edit_stock_input"]').valid();
       },
       target: '#content',
       success: function (data){
@@ -215,7 +211,7 @@
       },
       error: function(xhr, status, error) {
         $('#modalLoadingLabelading').modal('hide');
-        $('.modal-backdrop.fade.in').remove();      
+        $('.modal-backdrop.fade.in').remove();
       }
     });
   });

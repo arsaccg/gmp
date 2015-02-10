@@ -16,7 +16,7 @@
             %label.input{for: "number_part"}
               = f.input :number_part, placeholder: "Numero", input_html: {:value => "#{@numbercode}", class: 'form-control' }, label: false
 
-          %section.col.col-8
+          %section.col.col-6
             %label.input{for: "working_group_id"}
               %select.form-control{:name =>"part_person[working_group_id]", :style => 'width:100%;padding: 0;border: none;'}
                 %option{:value => ''}
@@ -36,6 +36,15 @@
           %section.col.col-2
             %label.input{for: "date_of_creation"}
               = f.input :date_of_creation, as: :string, input_html: { class: 'form-control', :type => "date" }, label: false
+
+          %section.col.col-2
+            %label.input{for: "working_group_id"}
+            %select.form-control#sector{:style => 'width:100%;padding: 0;border: none;'}
+              - @sectors.each do |sector|
+                %optgroup{:label => "#{sector.name}"}
+                  - Sector.getSubSectors(sector.code).each do |subsector|
+                    %option{:value => "#{subsector.id}"}
+                      = subsector.name           
             
       %fieldset
         %legend Registro de Partidas
@@ -47,12 +56,18 @@
             %select#worker-select.select2.form-control(name='worker_id' style='width:100%;padding: 0;border: none;')
               - @workers.each do |worker|
                 %option(value = "#{worker.id}")
-                  = worker.entity.dni.to_s + ' - ' + worker.entity.name.to_s + ' ' + worker.entity.second_name.to_s + ' ' + worker.entity.paternal_surname.to_s + ' ' + worker.entity.maternal_surname.to_s
+                  = worker.entity.dni.to_s + ' - '+ worker.entity.paternal_surname.to_s + ' ' + worker.entity.maternal_surname.to_s + ', ' + worker.entity.name.to_s + ' ' + worker.entity.second_name.to_s  
 
           %section.col.col-2
             %div
               %a(href="javascript:add_worker_item();" id="btn-add-worker" class="btn btn-success" role="button")
                 Agregar Trabajador
+          %section.col.col-2
+            .col.col-6
+              %label.label Cant. Trab:
+            .col.col-6
+              %input#cant{ :readonly => true, :value => 0, :style=>"width: 40px;"}
+
 
         .col-lg-12
           %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
@@ -71,10 +86,18 @@
               - if @action == 'edit'
                 - @partperson.part_person_details.each do |oos|
                   %tr
+
+                    -if oos.worker.worker_contracts.count>0
+                      -if oos.worker.worker_contracts.last.article.nil?
+                        -@category_worker = "No tiene"
+                      -else
+                        -@category_worker = oos.worker.worker_contracts.last.article.name
+                    -else
+                      -@category_worker = "No tiene"
                     %td.bank-id(style="display:none")
                       = hidden_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][worker_id]', oos.worker.id
-                    %td.col-2=oos.worker.entity.dni
-                    %td.col-2=oos.worker.entity.name
+                    %td.col-2= @category_worker
+                    %td.col-2= oos.worker.entity.paternal_surname.to_s + " " + oos.worker.entity.maternal_surname.to_s + ", "+  oos.worker.entity.name + " " + oos.worker.entity.second_name.to_s
                     %td.col-2=oos.sector.name
                     -if oos.phase_id == nil || oos.phase_id == 0
                       %td.col-2 No se selecciono fase
@@ -178,7 +201,7 @@
   }
 
   function add_worker_item(){
-    str_item = {authenticity_token: "#{form_authenticity_token}", worker_id: $("#worker-select").val(), amount: $("#article-amount").val()};
+    str_item = {authenticity_token: "#{form_authenticity_token}", worker_id: $("#worker-select").val(), sector: $("#sector").val()};
     append_url_ajax('#{add_more_worker_production_part_people_path}', 'worker_items_table', str_item, 0, 'POST');
     var workertodelete = $('#worker-select').get(0).selectedIndex;
     console.log(workertodelete)
@@ -293,4 +316,5 @@
 
   function delete_item(code){
     $("#tr" + code).remove();
+    $('#cant').val(parseInt($('#cant').val())-1);
   }

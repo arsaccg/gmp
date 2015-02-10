@@ -1,0 +1,300 @@
+.row
+  .col-xs-12.col-sm-7.col-md-7.col-lg-4
+    %h1.page-title.txt-color-blueDark
+      %i.fa.fa-calendar.fa-fw
+      Calendario
+      %span
+        \>
+        Feriados
+  
+/ row
+.row
+  .col-sm-12.col-md-12.col-lg-3
+    / new widget
+    .jarviswidget.jarviswidget-color-blueDark
+      %header
+        %h2 Añadir Feriado
+      / widget div
+      %div
+        .widget-body
+          / content goes here
+          %form#add-event-form
+            %fieldset
+              .form-group
+                %label Seleccionar Icono del Feriado
+                .btn-group.btn-group-sm.btn-group-justified{"data-toggle" => "buttons"}
+                  %label.btn.btn-default.active
+                    %input#icon-1{:checked => "checked", :name => "iconselect", :type => "radio", :value => "fa-info"}/
+                    %i.fa.fa-info.text-muted
+                  %label.btn.btn-default
+                    %input#icon-2{:name => "iconselect", :type => "radio", :value => "fa-warning"}/
+                    %i.fa.fa-warning.text-muted
+                  %label.btn.btn-default
+                    %input#icon-3{:name => "iconselect", :type => "radio", :value => "fa-check"}/
+                    %i.fa.fa-check.text-muted
+                  %label.btn.btn-default
+                    %input#icon-4{:name => "iconselect", :type => "radio", :value => "fa-user"}/
+                    %i.fa.fa-user.text-muted
+                  %label.btn.btn-default
+                    %input#icon-5{:name => "iconselect", :type => "radio", :value => "fa-lock"}/
+                    %i.fa.fa-lock.text-muted
+                  %label.btn.btn-default
+                    %input#icon-6{:name => "iconselect", :type => "radio", :value => "fa-clock-o"}/
+                    %i.fa.fa-clock-o.text-muted
+              .form-group
+                %label Titulo del Feriado
+                %input#title.form-control{:maxlength => "40", :name => "title", :placeholder => "Titulo Feriado", :type => "text"}/
+              .form-group
+                %label Descripción del Feriado
+                %textarea#description.form-control{:maxlength => "100", :placeholder => "Porfavor sea breve", :rows => "3"}
+                %p.note Maximo tamaño del titulo es de 100 caracteres
+              .form-group
+                %label Seleccionar Color del Feriado
+                .btn-group.btn-group-justified.btn-select-tick{"data-toggle" => "buttons"}
+                  %label.btn.bg-color-darken.active
+                    %input#option1{:checked => "checked", :name => "priority", :type => "radio", :value => "bg-color-darken txt-color-white"}/
+                    %i.fa.fa-check.txt-color-white
+                  %label.btn.bg-color-blue
+                    %input#option2{:name => "priority", :type => "radio", :value => "bg-color-blue txt-color-white"}/
+                    %i.fa.fa-check.txt-color-white
+                  %label.btn.bg-color-orange
+                    %input#option3{:name => "priority", :type => "radio", :value => "bg-color-orange txt-color-white"}/
+                    %i.fa.fa-check.txt-color-white
+                  %label.btn.bg-color-greenLight
+                    %input#option4{:name => "priority", :type => "radio", :value => "bg-color-greenLight txt-color-white"}/
+                    %i.fa.fa-check.txt-color-white
+                  %label.btn.bg-color-blueLight
+                    %input#option5{:name => "priority", :type => "radio", :value => "bg-color-blueLight txt-color-white"}/
+                    %i.fa.fa-check.txt-color-white
+                  %label.btn.bg-color-red
+                    %input#option6{:name => "priority", :type => "radio", :value => "bg-color-red txt-color-white"}/
+                    %i.fa.fa-check.txt-color-white
+            .form-actions
+              .row
+                .col-md-12
+                  %button#add-event.btn.btn-default{:type => "button"}
+                    Añadir Feriado
+          / end content
+      / end widget div
+    / end widget
+    #event-container.well.well-sm
+      %form
+        %legend
+          Feriados Creados
+        %ul#external-events.list-unstyled
+
+        .checkbox
+          %label
+            %input#drop-remove.checkbox.style-0{:checked => "checked", :type => "checkbox"}/
+            %span Remover Feriado después de poner en el Calendario
+  .col-sm-12.col-md-12.col-lg-9
+    / new widget
+    .jarviswidget.jarviswidget-color-blueDark
+      /
+        widget options:
+        usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+        
+        data-widget-colorbutton="false"
+        data-widget-editbutton="false"
+        data-widget-togglebutton="false"
+        data-widget-deletebutton="false"
+        data-widget-fullscreenbutton="false"
+        data-widget-custombutton="false"
+        data-widget-collapsed="true"
+        data-widget-sortable="false"
+      %header
+        %span.widget-icon
+          %i.fa.fa-calendar
+        %h2 Mis Feriados
+        
+      / widget div
+      %div
+        .widget-body.no-padding
+          / content goes here
+          .widget-body-toolbar
+            #calendar-buttons
+              .btn-group
+                %a#btn-prev.btn.btn-default.btn-xs{:href => "javascript:void(0)"}
+                  %i.fa.fa-chevron-left
+                %a#btn-next.btn.btn-default.btn-xs{:href => "javascript:void(0)"}
+                  %i.fa.fa-chevron-right
+          #calendar
+          / end content
+      / end widget div
+    / end widget
+/ end row
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+  
+  // PAGE RELATED SCRIPTS
+  
+  /*
+   * FULL CALENDAR JS
+   */
+  loadScript("#{ asset_path 'plugin/fullcalendar/jquery.fullcalendar.min.js', type: :javascript }", iniCalendar);
+  
+  function iniCalendar() {
+      "use strict";
+  
+      var date = new Date();
+      var d = date.getDate();
+      var m = date.getMonth();
+      var y = date.getFullYear();
+  
+      var hdr = {
+          left: 'title',
+          center: 'month,agendaWeek,agendaDay',
+          right: 'prev,today,next'
+      };
+  
+      var initDrag = function (e) {
+          // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+          // it doesn't need to have a start or end
+  
+          var eventObject = {
+              title: $.trim(e.children().text()), // use the element's text as the event title
+              description: $.trim(e.children('span').attr('data-description')),
+              icon: $.trim(e.children('span').attr('data-icon')),
+              className: $.trim(e.children('span').attr('class')) // use the element's children as the event class
+          };
+          // store the Event Object in the DOM element so we can get to it later
+          e.data('eventObject', eventObject);
+  
+          // make the event draggable using jQuery UI
+          e.draggable({
+              zIndex: 999,
+              revert: true, // will cause the event to go back to its
+              revertDuration: 0 //  original position after the drag
+          });
+      };
+  
+      var addEvent = function (title, priority, description, icon) {
+          title = title.length === 0 ? "Untitled Event" : title;
+          description = description.length === 0 ? "No Description" : description;
+          icon = icon.length === 0 ? " " : icon;
+          priority = priority.length === 0 ? "label label-default" : priority;
+  
+          var html = $('<li><span class="' + priority + '" data-description="' + description + '" data-icon="' +
+              icon + '">' + title + '</span></li>').prependTo('ul#external-events').hide().fadeIn();
+  
+          $("#event-container").effect("highlight", 800);
+  
+          initDrag(html);
+      };
+  
+      /* initialize the external events
+  	 -----------------------------------------------------------------*/
+  
+      $('#external-events > li').each(function () {
+          initDrag($(this));
+      });
+  
+      $('#add-event').click(function () {
+          var title = $('#title').val(),
+              priority = $('input:radio[name=priority]:checked').val(),
+              description = $('#description').val(),
+              icon = $('input:radio[name=iconselect]:checked').val();
+  
+          addEvent(title, priority, description, icon);
+      });
+  
+      /* initialize the calendar
+  	 -----------------------------------------------------------------*/
+  
+      $('#calendar').fullCalendar({
+  
+          header: hdr,
+          buttonText: {
+              prev: '<i class="fa fa-chevron-left"></i>',
+              next: '<i class="fa fa-chevron-right"></i>'
+          },
+  
+          editable: true,
+          droppable: true, // this allows things to be dropped onto the calendar !!!
+  
+          drop: function (date, allDay) { // this function is called when something is dropped
+  
+              // retrieve the dropped element's stored Event Object
+              var originalEventObject = $(this).data('eventObject');
+  
+              // we need to copy it, so that multiple events don't have a reference to the same object
+              var copiedEventObject = $.extend({}, originalEventObject);
+  
+              // assign it the date that was reported
+              copiedEventObject.start = date;
+              copiedEventObject.allDay = allDay;
+  
+              // render the event on the calendar
+              // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+              $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+  
+              // is the "remove after drop" checkbox checked?
+              if ($('#drop-remove').is(':checked')) {
+                  // if so, remove the element from the "Draggable Events" list
+                  $(this).remove();
+              }
+  
+          },
+  
+          select: function (start, end, allDay) {
+              var title = prompt('Event Title:');
+              if (title) {
+                  calendar.fullCalendar('renderEvent', {
+                          title: title,
+                          start: start,
+                          end: end,
+                          allDay: allDay
+                      }, true // make the event "stick"
+                  );
+              }
+              calendar.fullCalendar('unselect');
+          },
+  
+          events: #{@hash_holidays},
+  
+          eventRender: function (event, element, icon) {  
+
+              if (!event.description == "") {
+                  element.find('.fc-event-title').append("<br/><span class='ultra-light'>" + event.description +
+                      "</span>");
+              }
+              if (!event.icon == "") {
+                  element.find('.fc-event-title').append("<i class='air air-top-right fa " + event.icon +
+                      " '></i>");
+              }
+
+              $.ajax({
+                type: "POST",
+                url: "#{add_holiday_path}",
+                data: { title: event.title, date_holiday: event.start, authenticity_token: "#{form_authenticity_token}" }
+              }).done(function(json){
+                console.log(json);
+              });
+
+          },
+
+          windowResize: function (event, ui) {
+              $('#calendar').fullCalendar('render');
+          }
+      });
+  
+      /* hide default buttons */
+      $('.fc-header-right, .fc-header-center').hide();
+  }
+  
+  
+  $('#calendar-buttons #btn-prev').click(function () {
+      $('.fc-button-prev').click();
+      return false;
+  });
+  
+  $('#calendar-buttons #btn-next').click(function () {
+      $('.fc-button-next').click();
+      return false;
+  });
+  
+  $('#calendar-buttons #btn-today').click(function () {
+      $('.fc-button-today').click();
+      return false;
+  });

@@ -18,7 +18,7 @@
                 - f.fields_for :delivery_order_details do |del|
                   = del.hidden_field :lock_version
                 = f.hidden_field :lock_version
-                = f.input :id, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.id.to_s.rjust(5, '0')}, label: false, readonly: true
+                = f.input :code, placeholder: "Código", :input_html => {:class => 'form-control', :value => @deliveryOrder.code.to_s.rjust(5, '0')}, label: false, readonly: true
           - if @action == 'edit'
             = hidden_field_tag "delivery_order[cost_center_id]", @costcenter_id
             %section.col.col-2
@@ -105,11 +105,11 @@
                         %td.measurement-id(style="display:none")
                           = hidden_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][unit_of_measurement_id]', dod.unit_of_measurement_id.to_i
                         %td
-                          = dod.article.code
+                          = Article.find_idarticle_global_by_specific_idarticle(dod.article_id, @costcenter_id)[3]
                         %td
-                          = dod.article.name
+                          = Article.find_idarticle_global_by_specific_idarticle(dod.article_id, @costcenter_id)[0]
                         %td
-                          = dod.unit_of_measurement.symbol
+                          = Article.find_idarticle_global_by_specific_idarticle(dod.article_id, @costcenter_id)[2]
                         %td.col-md-1
                           .col-md-9
                             = text_field_tag 'delivery_order[delivery_order_details_attributes][' + (dod.created_at.to_time.to_i + i).to_s + '][amount]', dod.amount.to_f , class: "form-control quantity", id: 'article-amount'
@@ -239,11 +239,24 @@
           }
         });
 
-        return $('#new_delivery_order').valid();
+        // Remove all Help-inLine
+        $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+        // Client Valid
+        if( $('#new_delivery_order').valid() ){
+          $('#modalLoadingLabelading').modal();
+        }
+        // Client Valid
+        return $('#new_delivery_order').valid();  
       },
       target: '#content',
       success: function (data){
         $(".help-inline").parent().addClass("state-error");
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
+      },
+      error: function(xhr, status, error) {
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
       }
@@ -302,11 +315,11 @@
         $('#modalLoadingLabelading').modal('hide');
         $('.modal-backdrop.fade.in').remove();
         // Client Valid
-        if( $(form['selector']).valid() ){
+        if( $('form[id^="edit_"]').valid() ){
           $('#modalLoadingLabelading').modal();
         }
         // Client Valid
-        return $(form['selector']).valid();
+        return $('form[id^="edit_"]').valid();
       },
       target: '#content',
       success: function (data){

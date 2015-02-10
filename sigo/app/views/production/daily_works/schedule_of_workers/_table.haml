@@ -31,6 +31,8 @@
               %td
                 - case unit.state
                   - when 'approved'
+                    %a.btn.btn-danger.btn-xs{:onclick => "javascript:load_url_ajax('#{production_daily_works_schedule_of_worker_path(unit.id)}', 'content', {type:'disapproved'}, null, 'GET')"}
+                      Desaprobar
                     %span{"style"=>"width=20px"}
                       %a.btn.bg-color-blueDark{href: 'javascript:void(0);', :onclick => "javascript:load_url_ajax('#{production_daily_works_schedule_of_worker_path(unit.id)}', 'content', {type:'see'}, null, 'GET')"}
                         %i.fa.fa-list-alt.fa-md.fa-fw{"style"=>"color:white"}

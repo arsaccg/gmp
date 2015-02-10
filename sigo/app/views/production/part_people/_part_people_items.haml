@@ -11,7 +11,7 @@
         - @sectors.each do |sector|
           %optgroup{:label => "#{sector.name}"}
             - Sector.getSubSectors(sector.code).each do |subsector|
-              %option{:value => "#{subsector.id}"}
+              %option{:value => "#{subsector.id}", :selected => subsector.id.to_i==@sec.to_i}
                 = subsector.name
   %td.phase.col-md-2
     %div
@@ -33,3 +33,9 @@
     = text_field_tag 'part_person[part_person_details_attributes][' + @reg_n.to_s + '][total_hours]', 0 , class: "form-control total-hours", onchange: "this.value = minmax(this.value, 0, 24)", readonly: true
   %td{:style => "width: 1%; text-align: center;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
+
+:javascript
+
+  $(document).ready(function(){
+    $('#cant').val(parseInt($('#cant').val())+1);
+  });

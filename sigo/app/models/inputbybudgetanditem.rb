@@ -73,8 +73,8 @@ class Inputbybudgetanditem < ActiveRecord::Base
 		PresupuestoPartidaDetalle.CodSubPresupuesto,
 		PresupuestoPartidaDetalle.CodPartida,   
 		PresupuestoPartidaDetalle.CodInsumo,   
-		SUM(PresupuestoPartidaDetalle.Cantidad),   
-		AVG(PresupuestoPartidaDetalle.Precio1),   
+		SUM(PresupuestoPartidaDetalle.Cantidad) as Cantidad,   
+		AVG(PresupuestoPartidaDetalle.Precio1) as Precio1,   
 		SubpresupuestoDetalle.orden,
 		Insumo.descripcion,
 		Unidad.Simbolo
@@ -127,23 +127,23 @@ class Inputbybudgetanditem < ActiveRecord::Base
 			#arr_thread[thread_count] = Thread.new {
 				#queue_counter = queue_counter + 1
 			 	#queue_thread <<  queue_counter
-				budget_temp = Budget.where(:cod_budget => item[1].to_s + item[2].to_s).last
-				item_temp = Item.where(:item_code => item[0]).last
+				budget_temp = Budget.where(:cod_budget => item['CodPresupuesto'].to_s + item['CodSubPresupuesto'].to_s).last
+				item_temp = Item.where(:item_code => item['CodPartida']).last
 
 				item_temp_id =  item_temp.id rescue ""
 				budget_temp_id =  budget_temp.id rescue ""
 
 			 	 	input_new =Inputbybudgetanditem.new
-					input_new.coditem = item[0]  
-					input_new.cod_input = item[4] 
-					input_new.quantity = item[5] 
-					input_new.price = item[6]  
-					input_new.subbudget_code =item[2]   
-					input_new.input = item[8] 
-					input_new.order = item[7] 
-					input_new.unit = item[9]
+					input_new.coditem = item['CodPartida']  
+					input_new.cod_input = item['CodInsumo'] 
+					input_new.quantity = item['Cantidad'] 
+					input_new.price = item['Precio1']  
+					input_new.subbudget_code =item['CodSubPresupuesto']   
+					input_new.input = item['descripcion'] 
+					input_new.order = item['orden'] 
+					input_new.unit = item['Simbolo']
 					input_new.budget_id = budget_temp.id rescue nil
-          a = Article.where(code: item[4]).first
+          a = Article.where(code: item['CodInsumo']).first
           
 					input_new.article_id = a.id rescue nil
 					input_new.item_id = item_temp.id rescue nil

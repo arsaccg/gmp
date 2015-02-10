@@ -57,7 +57,7 @@ class Administration::ContractTypesController < ApplicationController
   def destroy
     contracttype = ContractType.destroy(params[:id])
     flash[:notice] = "Se ha eliminado correctamente el centro de salud seleccionado."
-    render :json => healthcenter
+    render :json => contracttype
   end
 
   private

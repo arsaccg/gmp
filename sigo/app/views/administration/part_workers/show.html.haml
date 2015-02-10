@@ -34,20 +34,21 @@
                 %tbody
                   - @partworkerdetails.each do |partworkerdetail|
                     %tr
+                      - partworker_detail = PartWorkerDetail.find(partworkerdetail[0])
                       %td
-                        = partworkerdetail.worker.entity.name.to_s + ' ' + partworkerdetail.worker.entity.second_name.to_s + ' ' + partworkerdetail.worker.entity.paternal_surname.to_s + ' ' + partworkerdetail.worker.entity.maternal_surname.to_s
+                        = partworkerdetail[1] + ' ' + partworker_detail.worker.entity.second_name.to_s
                       %td
-                        = partworkerdetail.sector.name.to_s  rescue 'No insertó sector'
+                        = partworker_detail.sector.name.to_s  rescue 'No insertó sector'
                       %td
-                        = (partworkerdetail.phase.code  + ' - ' + partworkerdetail.phase.name) rescue 'No insertó fase'
+                        = (partworker_detail.phase.code  + ' - ' + partworker_detail.phase.name) rescue 'No insertó fase'
                       %td
-                        = partworkerdetail.assistance.to_s
+                        = partworker_detail.assistance.to_s
                       %td
-                        = partworkerdetail.he_25.to_f
+                        = partworker_detail.he_25.to_f
                       %td
-                        = partworkerdetail.he_35.to_f
+                        = partworker_detail.he_35.to_f
                       %td
-                        = partworkerdetail.he_35.to_f +  partworkerdetail.he_25.to_f                       
+                        = partworker_detail.he_35.to_f +  partworker_detail.he_25.to_f                       
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
   %i.fa.fa-arrow-left>

@@ -34,7 +34,7 @@ class Administration::PaymentOrdersController < ApplicationController
 
   def new
     @paymentOrder = PaymentOrder.new
-    @provisions = Provision..where("cost_center_id ="+get_company_cost_center('cost_center').to_s)
+    @provisions = Provision.where("cost_center_id ="+get_company_cost_center('cost_center').to_s)
     render layout: false
   end
 

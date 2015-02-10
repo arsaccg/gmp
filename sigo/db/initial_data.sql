@@ -29,6 +29,18 @@ INSERT INTO `position_workers` (`name`, `id`, `created_at`, `updated_at`) VALUES
 ('Jefe de Frente', '1', NOW(), NOW()), 
 ('Capataz', '2', NOW(), NOW());
 
+-- Data for Holidays
+INSERT INTO `holidays` (`date_holiday`, `title`, `created_at`, `updated_at`) VALUES 
+(CONCAT(YEAR(CURDATE()),'-01-01'), 'Año Nuevo', NOW(), NOW()), 
+(CONCAT(YEAR(CURDATE()),'-05-01'), 'Dia del Trabajador', NOW(), NOW()),
+(CONCAT(YEAR(CURDATE()),'-07-28'), 'Fiestas Patrias', NOW(), NOW()), 
+(CONCAT(YEAR(CURDATE()),'-07-29'), 'Fiestas Patrias', NOW(), NOW()), 
+(CONCAT(YEAR(CURDATE()),'-08-30'), 'Santa Rosa', NOW(), NOW()), 
+(CONCAT(YEAR(CURDATE()),'-10-08'), 'Combate de Angamos', NOW(), NOW()), 
+(CONCAT(YEAR(CURDATE()),'-11-01'), 'Dia de los Muertos', NOW(), NOW()), 
+(CONCAT(YEAR(CURDATE()),'-12-08'), 'Dia de la Virgen Santisima', NOW(), NOW()), 
+(CONCAT(YEAR(CURDATE()),'-12-25'), 'Navidad', NOW(), NOW());
+
 -- Data for Type of Workday
 INSERT INTO `type_workdays` (`id`, `name`, `created_at`, `updated_at`) VALUES 
 ('1', 'Jornada de Trabajo Máxima', NOW(), NOW()), 

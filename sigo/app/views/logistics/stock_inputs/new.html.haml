@@ -144,12 +144,14 @@
         });
         // Remove all Help-inLine
         $(".help-inline").remove();
+        $('#modalLoadingLabelading').modal('hide');
+        $('.modal-backdrop.fade.in').remove();
         // Client Valid
-        if ( ( $('#summary-pod tbody tr').size() > 0 ) && ( $(form['selector']).valid() ) ) {
-          return true;
-        } else {
-          return false;
+        if( $(form['selector']).valid() ){
+          $('#modalLoadingLabelading').modal();
         }
+        // Client Valid
+        return $(form['selector']).valid();
       },
       target: '#content',
       success: function (data){
@@ -181,6 +183,7 @@
       append_url_ajax('#{add_items_from_pod_logistics_stock_inputs_path}', 'body_summary_pod', data, '', 'POST');
       $('#modalPurchaseOrderItems').modal('hide');
       $('#modalPodContent').empty();
+      $('#cont').val('0');
     }else{
       $.smallBox({
         title : "Aviso",

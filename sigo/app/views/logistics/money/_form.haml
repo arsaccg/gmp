@@ -8,20 +8,18 @@
       %fieldset
         .row
           %section.col.col-sm-12
-            %label.label
-              = t('activerecord.attributes.money.name')
+            %label.label Nombre
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-home
-              = f.input :name, placeholder: t('activerecord.attributes.money.name'), input_html: { class: 'form-control' }, label: false
+              = f.input :name, placeholder: 'Nombre', input_html: { class: 'form-control' }, label: false
         .row
           %section.col.col-sm-5
-            %label.label
-              = t('activerecord.attributes.money.symbol')
+            %label.label Símbolo
             %label.input{for: "text-field"}
               %i.icon-append.fa.fa-sort-alpha-asc
-              = f.input :symbol, placeholder: t('activerecord.attributes.money.symbol'), input_html: { class: 'form-control' }, label: false
+              = f.input :symbol, placeholder: 'Símbolo', input_html: { class: 'form-control' }, label: false
       %footer
-        %button.btn.btn-primary{type: "submit"}
+        %button.btn.btn-primary{type: "submit", :onclick => "part_block();"}
           %i.fa.fa-save 
           Guardar
 

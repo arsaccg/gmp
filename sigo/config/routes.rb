@@ -17,6 +17,8 @@ ArsacLogistica::Application.routes.draw do
   get 'display_table_messages_ose' => 'main#display_table_messages_ose', as: :display_table_messages_ose
   get 'display_worker_pending' => 'main#display_worker_pending', as: :display_worker_pending
   get 'management_dashboard' => 'main#management_dashboard', as: :management_dashboard
+  get 'show_holidays' => 'main#show_holidays', as: :show_holidays
+  post 'add_holiday' => 'main#add_holiday', as: :add_holiday
   post 'projecting_operating_results' => 'main#projecting_operating_results', as: :projecting_operating_results
   get 'full_project_operating_results' => 'main#full_project_operating_results', as: :full_project_operating_results
   post 'show_phases' => 'main#show_phases', as: :show_phases
@@ -114,6 +116,7 @@ ArsacLogistica::Application.routes.draw do
         delete 'delete_specific'
         get 'edit_specific'
         post 'update_specific'
+        get 'show_article_specific'
       end
       collection do
         post 'display_articles'
@@ -267,6 +270,7 @@ ArsacLogistica::Application.routes.draw do
     resources :stock_outputs do
       collection do
         post 'show_rows_stock_inputs'
+        post 'show_stock_outputs'
         post 'add_stock_input_item_field'
         post 'add_items_from_pod'
         post 'partial_select_per_warehouse'
@@ -415,7 +419,12 @@ ArsacLogistica::Application.routes.draw do
         post 'show_part_people'
       end
     end
-    resources :category_of_workers
+    resources :category_of_workers do
+      collection do
+        post 'get_info_per_week'
+      end
+    end
+
     resources :part_of_equipments do
       collection do
 
@@ -465,6 +474,7 @@ ArsacLogistica::Application.routes.draw do
         end
         member do
           get 'approve'
+          get 'disapprove'
         end        
       end
 
@@ -477,6 +487,7 @@ ArsacLogistica::Application.routes.draw do
         end
         member do
           get 'approve'
+          get 'disapprove'
         end
       end
     end

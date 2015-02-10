@@ -10,7 +10,7 @@
     %select.select2#selected_deliv_orders{:name =>"delivery_orders[]", :style => 'width:100%;padding: 0;border: none;', :multiple => true}
       - @deliveryOrders.each do |delivery_order|
         %option{ :value => "#{delivery_order.id}" }
-          = delivery_order.id.to_s.rjust(5, '0') + ' - ' + delivery_order.description.to_s
+          = delivery_order.code.to_s.rjust(5, '0') + ' - ' + delivery_order.description.to_s
   .col-md-6
     %label{ :style => 'height: 7px; width:100%;'}
     %button.btn.btn-sm.btn-primary#search_deliv_orders{type: "button"}

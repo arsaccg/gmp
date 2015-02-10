@@ -5,7 +5,7 @@ class Reports::ReportofthemonthsController < ApplicationController
   	@d = Date.today-1.month
   	@dia = @d.at_beginning_of_month.strftime
   	@dia2 = @d.at_end_of_month.strftime
-    @cost_center = get_company_cost_center('cost_center')
+    @cost_center = session[:cost_center]
 
     @partwork = 0 
     @partequipment = 0
@@ -42,147 +42,21 @@ class Reports::ReportofthemonthsController < ApplicationController
     @months_bar_char = Array.new
     current_month = Time.now
 
-    @months_linear_char << current_month.strftime('%^b.%Y')
-    @months_bar_char << current_month.strftime('%^b.%Y')
+    @months_linear_char << ((current_month.strftime('%^b.%Y')).gsub 'JAN', 'ENE')
+    @months_bar_char << ((current_month.strftime('%^b.%Y')).gsub 'JAN', 'ENE')
 
     7.times do |j|
-      @months_linear_char << ( current_month - (j+1).month ).strftime('%^b.%Y')
+      @months_linear_char << ((( current_month - (j+1).month ).strftime('%^b.%Y')).gsub 'JAN', 'ENE')
     end
 
     5.times do |j|
-      @months_bar_char << ( current_month - (j+1).month ).strftime('%^b.%Y')
+      @months_bar_char << ((( current_month - (j+1).month ).strftime('%^b.%Y')).gsub 'JAN', 'ENE')
     end
 
     @months_linear_char = @months_linear_char.reverse
     @months_bar_char = @months_bar_char.reverse
 
     # => TERMINA FECHAS PARA LOS GRAFICOS
-
-    #@part_work = part_work(@dia, @dia2, @cost_center)
-    #@part_work.each do |workerDetail|
-      #@partwork = workerDetail[0]
-    #end
-    #@part_work2 = part_work2(@dia2, @cost_center)
-    #@part_work2.each do |workerDetail|
-      #@partwork2 = workerDetail[0]
-    #end
-
-    #@part_equipment = part_equipment(@dia, @dia2, @cost_center, '1', '8999')
-    #@part_equipment.each do |workerDetail|
-      #@partequipment = workerDetail[0]
-    #end
-    #@part_equipment2 = part_equipment2(@dia2, @cost_center, '1', '8999')
-    #@part_equipment2.each do |workerDetail|
-      #@partequipment2 = workerDetail[0]
-    #end
-
-    #@part_people = part_people(@dia, @dia2, @cost_center, '1', '8999')
-    #@part_people.each do |workerDetail|
-      #@partpeople = workerDetail[0]
-    #end
-    #@part_people2 = part_people2(@dia2, @cost_center, '1', '8999')
-    #@part_people2.each do |workerDetail|
-      #@partpeople2 = workerDetail[0]
-    #end
-
-    #@order_of_service = order_of_service(@dia, @dia2, @cost_center, '1', '8999')
-    #@order_of_service.each do |workerDetail|
-      #@orderofservice = workerDetail[0]
-    #end
-    #@order_of_service2 = order_of_service2(@dia2, @cost_center, '1', '8999')
-    #@order_of_service2.each do |workerDetail|
-      #@orderofservice2 = workerDetail[0]
-    #end
-
-    #@sc_valuations = sc_valuations(@dia, @dia2, @cost_center)
-    #@sc_valuations.each do |workerDetail|
-      #@scvaluations = workerDetail[0]
-    #end
-    #@sc_valuations2 = sc_valuations2(@dia2, @cost_center)
-    #@sc_valuations2.each do |workerDetail|
-      #@scvaluations2 = workerDetail[0]
-    #end
-   
-    #@part_equipment3 = part_equipment(@dia, @dia2, @cost_center, '9000', '9299')
-    #@part_equipment3.each do |workerDetail|
-      #@partequipment3 = workerDetail[0]
-    #end
-    #@part_equipment4 = part_equipment2(@dia2, @cost_center, '9000', '9299')
-    #@part_equipment4.each do |workerDetail|
-      #@partequipment4 = workerDetail[0]
-    #end
-
-    #@part_people3 = part_people(@dia, @dia2, @cost_center, '9000', '9299')
-    #@part_people3.each do |workerDetail|
-      #@partpeople3 = workerDetail[0]
-    #end
-    #@part_people4 = part_people2(@dia2, @cost_center, '9000', '9299')
-    #@part_people4.each do |workerDetail|
-      #@partpeople4 = workerDetail[0]
-    #end
-
-    #@order_of_service3 = order_of_service(@dia, @dia2, @cost_center, '9000', '9299')
-    #@order_of_service3.each do |workerDetail|
-      #@orderofservice3 = workerDetail[0]
-    #end
-    #@order_of_service4 = order_of_service2(@dia2, @cost_center, '9000', '9299')
-    #@order_of_service4.each do |workerDetail|
-      #@orderofservice4 = workerDetail[0]
-    #end
-
-    #@part_equipment5 = part_equipment(@dia, @dia2, @cost_center, '9410', '9410')
-    #@part_equipment5.each do |workerDetail|
-      #@partequipment5 = workerDetail[0]
-    #end
-    #@part_equipment6 = part_equipment2(@dia2, @cost_center, '9410', '9410')
-    #@part_equipment6.each do |workerDetail|
-      #@partequipment6 = workerDetail[0]
-    #end
-
-    #@part_people5 = part_people(@dia, @dia2, @cost_center, '9410', '9410')
-    #@part_people5.each do |workerDetail|
-      #@partpeople5 = workerDetail[0]
-    #end
-    #@part_people6 = part_people2(@dia2, @cost_center, '9410', '9410')
-    #@part_people6.each do |workerDetail|
-      #@partpeople6 = workerDetail[0]
-    #end
-
-    #@order_of_service5 = order_of_service(@dia, @dia2, @cost_center, '9410', '9410')
-    #@order_of_service5.each do |workerDetail|
-      #@orderofservice5 = workerDetail[0]
-    #end
-    #@order_of_service6 = order_of_service2(@dia2, @cost_center, '9410', '9410')
-    #@order_of_service6.each do |workerDetail|
-      #@orderofservice6 = workerDetail[0]
-    #end
-
-    #@part_equipment7 = part_equipment(@dia, @dia2, @cost_center, '9420', '9420')
-    #@part_equipment7.each do |workerDetail|
-      #@partequipment7 = workerDetail[0]
-    #end
-    #@part_equipment8 = part_equipment2(@dia2, @cost_center, '9420', '9420')
-    #@part_equipment8.each do |workerDetail|
-      #@partequipment8 = workerDetail[0]
-    #end
-
-    #@part_people7 = part_people(@dia, @dia2, @cost_center, '9420', '9420')
-    #@part_people7.each do |workerDetail|
-      #@partpeople7 = workerDetail[0]
-    #end
-    #@part_people8 = part_people2(@dia2, @cost_center, '9420', '9420')
-    #@part_people8.each do |workerDetail|
-      #@partpeople8 = workerDetail[0]
-    #end
-
-    #@order_of_service7 = order_of_service(@dia, @dia2, @cost_center, '9420', '9420')
-    #@order_of_service7.each do |workerDetail|
-      #@orderofservice7 = workerDetail[0]
-    #end
-    #@order_of_service8 = order_of_service2(@dia2, @cost_center, '9420', '9420')
-    #@order_of_service8.each do |workerDetail|
-      #@orderofservice8 = workerDetail[0]
-    #end
 
     # Venta Valorizada y Venta Programado
     @acumulated_valorized_sale_current_month = 0
@@ -193,52 +67,12 @@ class Reports::ReportofthemonthsController < ApplicationController
 
     @sale_goal = Array.new
 
-    #4.times do |i|
-      #i += 1
-      # Valorizado
-      #current_valorized = get_valorized_sale(i, @cost_center) rescue 0
-      # Programado
-      #current_scheduled = get_planned_sale(i, @cost_center) rescue 0
-      
-      # Acumulado Valorizado
-      #@acumulated_valorized_sale_current_month += current_valorized
-      # Acumulado Programado
-      #@acumulated_scheduled_sale_current_month += current_scheduled
-
-      # Arreglo total del VENTA
-      # 0 => Venta Programado de la fecha
-      # 1 => Venta Programado acumulado hasta la fecha
-      # 2 => Venta Valorizado de la fecha
-      # 3 => Venta Valorizado acumulado hasta la fecha
-      #@sale_goal << [current_scheduled, current_scheduled, current_valorized, current_valorized]
-    #end
-
     # Costo Meta (Con la valorizacion de los presupuestos Meta) y el Costo Real
     @acumulated_cost_goal_current_month = 0
     @gg_cost_goal_current_month = 0
     @cost_goal_current_month = 0
     @cost_goal = Array.new
     # Cost_Goal Have
-    # [1] => Costo Directo Actual
-    # [2] => Costo Directo Acumulado
-    # [3] => Costo Meta Actual
-    # [4] => Costo Meta Acummulado
-    # Each row is differente by MO, MAT, EQ, SC y SERV.
-
-    #4.times do |j|
-      #j += 1
-      #current_cost = get_cost_goal(j, @cost_center)
-      #if j == 1
-        #@cost_goal << [@partpeople, @partpeople2, current_cost]
-      #elsif j == 2
-        #@cost_goal << [@partwork, @partwork2, current_cost]
-      #elsif j == 3
-        #@cost_goal << [@partequipment, @partequipment2, current_cost]
-      #elsif j == 4
-        #@cost_goal << [@orderofservice + @scvaluations, @orderofservice2 + @scvaluations, current_cost]
-      #end
-      #@acumulated_cost_goal_current_month += current_cost
-    #end
 
     # Gastos Generales ¿percent o calculated?
     overhead_percentage = CostCenter.find(@cost_center).overhead_percentage rescue nil
@@ -285,11 +119,20 @@ class Reports::ReportofthemonthsController < ApplicationController
 
     Valorization.all.each do |valorization|
       total_valorization = 0
-      Valorizationitem.where(:valorization_id => valorization.id).each do |valorization_item|
-        measure = valorization_item.actual_measured.to_f
-        price = Itembybudget.where(:id => valorization_item.itembybudget_id).first.price.to_f rescue 0
-        total_valorization += (measure.to_f * price.to_f)
+      @direct_cost_acc = 0
+      @budget = Budget.where(:id => valorization.budget_id).first
+      @itembybudgets_main = Itembybudget.select('id, `title`, `subbudgetdetail`, `order`, CHAR_LENGTH(`order`)').where('CHAR_LENGTH(`order`) < 3 AND budget_id = ?', valorization.budget_id)
+      #Valorizationitem.where(:valorization_id => valorization.id).each do |valorization_item|
+        #measure = valorization_item.actual_measured.to_f
+        #price = Itembybudget.where(:id => valorization_item.itembybudget_id).first.price.to_f rescue 0
+        #total_valorization += (measure.to_f * price.to_f)
+      
+      @itembybudgets_main.each do |ib|        
+        c_amount_acc = amount_acumulated(ib.order, @budget.id, valorization.valorization_date, valorization.id)
+        @direct_cost_acc = @direct_cost_acc + c_amount_acc 
       end
+
+      total_valorization = (@direct_cost_acc + (@direct_cost_acc * @budget.general_expenses.to_f) + (@direct_cost_acc * @budget.utility.to_f)).round(2)
       
       pos_linear = @months_linear_char.index(valorization.valorization_date.to_date.strftime('%^b.%Y').to_s).to_i
       pos_bar = @months_bar_char.index(valorization.valorization_date.to_date.strftime('%^b.%Y').to_s).to_i

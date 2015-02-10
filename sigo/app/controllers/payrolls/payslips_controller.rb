@@ -397,8 +397,12 @@ class Payrolls::PayslipsController < ApplicationController
       if wg != 0
         @headers = ['DNI', 'Nombre', 'CAT.', 'C.C', 'ULT. DIA. TRABJ.', 'AFP', 'HIJ', 'HORAS', 'DIAS', 'H.E.S', 'H.FRDO', 'H.E.D']
         @partes = Payslip.generate_payroll_workers(@cc.id, semana[0], semana[2], semana[3], wg, ing, des, apor, @headers, @extra_info, params[:ar_wo], tpay.type_of_worker_id)
-        if @partes.count > 1        
-          @mensaje = "obrero"
+        if @partes.class == Array
+          if @partes.count > 1      
+            @mensaje = "obrero"
+          end
+        else
+          @mensaje = @partes
         end
       end
     end

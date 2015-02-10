@@ -49,6 +49,8 @@
                   = 'Archivo subido: ' + File.basename(@loan.loan_doc.path, File.extname(@loan.loan_doc.path))
                 - else
                   Subir el archivo correspondiente              
+              %p{"style"=>"color:red;font-weight:bold;"} Solo se admiten archivos tipo pdf e imagen. 
+              %p{"style"=>"color:red;font-weight:bold;"} Si ingresa otro tipo el préstamo no se guardará
           .row{"style"=>"margin-bottom:1%;"}
             .col-md-5
               %label{"style"=>"font-size:14px;"} Monto

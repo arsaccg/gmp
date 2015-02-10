@@ -9,7 +9,12 @@ class Administration::PartWorkersController < ApplicationController
 
   def show
     @partworker = PartWorker.find(params[:id])
-    @partworkerdetails = @partworker.part_worker_details
+    @partworkerdetails = ActiveRecord::Base.connection.execute("SELECT pwd.id, CONCAT( e.paternal_surname,  ' ', e.maternal_surname,  ', ', e.name ) AS name
+      FROM part_worker_details pwd, entities e, workers w
+      WHERE pwd.part_worker_id =" + @partworker.id.to_s+ "
+      AND pwd.worker_id = w.id
+      AND e.id = w.entity_id
+      ORDER BY name")
     @company = get_company_cost_center('company')
     render layout: false
   end
@@ -19,9 +24,9 @@ class Administration::PartWorkersController < ApplicationController
     pager_number = params[:iDisplayStart]
     keyword = params[:sSearch]
     array = Array.new
-    company = get_company_cost_center('company')
+    cost_center = get_company_cost_center('cost_center')
 
-    array = PartWorker.get_part_workers(company, display_length, pager_number, keyword)
+    array = PartWorker.get_part_workers(cost_center, display_length, pager_number, keyword)
     render json: { :aaData => array }
   end
 
@@ -43,8 +48,8 @@ class Administration::PartWorkersController < ApplicationController
 
   def create
     partworker = PartWorker.new(part_worker_parameters)
-    partworker.company_id = session[:company]
-    previo = PartWorker.where("date_of_creation = '"+params[:part_worker]['date_of_creation'].to_s+"' AND company_id = "+get_company_cost_center('company').to_s)
+    partworker.cost_center_id = get_company_cost_center('cost_center')
+    previo = PartWorker.where("date_of_creation = '"+params[:part_worker]['date_of_creation'].to_s+"' AND cost_center_id = "+get_company_cost_center('cost_center').to_s)
     if previo.count == 0
       if partworker.save
         flash[:notice] = "Se ha creado correctamente la parte de obra."

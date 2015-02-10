@@ -276,6 +276,7 @@ DEPENDENCIES
   jquery-rails
   json
   less-rails
+  libv8 (= 3.16.14.3)
   mysql2
   nested_form
   number_to_words!
@@ -288,7 +289,6 @@ DEPENDENCIES
   savon
   sdoc
   simple_form
-  spreadsheet (~> 0.9.7)
   sqlite3
   squeel
   state_machine

@@ -3,13 +3,13 @@ class PartWorker < ActiveRecord::Base
   belongs_to :company
   accepts_nested_attributes_for :part_worker_details, :allow_destroy => true
 
-  def self.get_part_workers(company_id, display_length, pager_number, keyword = '')
+  def self.get_part_workers(cost_center, display_length, pager_number, keyword = '')
   	result = Array.new
   	if keyword != '' && pager_number != 'NaN'
       part_workers = ActiveRecord::Base.connection.execute("
         SELECT pp.id, pp.number_part, pp.date_of_creation, pp.blockweekly
         FROM part_workers pp
-        WHERE pp.company_id = " + company_id.to_s + " 
+        WHERE pp.cost_center_id = " + cost_center.to_s + " 
         AND (pp.number_part LIKE '%" + keyword + "%' OR pp.date_of_creation LIKE '%" + keyword + "%') 
         ORDER BY pp.number_part DESC 
         LIMIT " + display_length + " 
@@ -19,7 +19,7 @@ class PartWorker < ActiveRecord::Base
       part_workers = ActiveRecord::Base.connection.execute("
         SELECT pp.id, pp.number_part, pp.date_of_creation, pp.blockweekly
         FROM part_workers pp
-        WHERE pp.company_id = " + company_id.to_s + " 
+        WHERE pp.cost_center_id = " + cost_center.to_s + " 
         ORDER BY pp.number_part DESC 
         LIMIT " + display_length + " 
         OFFSET " + pager_number
@@ -28,7 +28,7 @@ class PartWorker < ActiveRecord::Base
   	  part_workers = ActiveRecord::Base.connection.execute("
         SELECT pp.id, pp.number_part, pp.date_of_creation, pp.blockweekly
         FROM part_workers pp
-        WHERE pp.company_id = " + company_id.to_s + " 
+        WHERE pp.cost_center_id = " + cost_center.to_s + " 
         ORDER BY pp.number_part DESC 
         LIMIT " + display_length
       )

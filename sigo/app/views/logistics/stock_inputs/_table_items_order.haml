@@ -28,8 +28,8 @@
               -del = StockInputDetail.where("purchase_order_detail_id = "+y.id.to_s)
               -tot=0
               -del.each do |del|
-                -tot+=del.amount.to_i
-              - @pending = y.amount.to_i - tot.to_i
+                -tot+=del.amount.to_f
+              - @pending = y.amount.to_f - tot.to_f
               //PurchaseOrderDetail.get_total_received(y.id).to_i
               -if @pending > 0
                 %tr

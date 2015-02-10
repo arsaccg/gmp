@@ -143,50 +143,19 @@
     });
 
 
+    if($('form[id^="edit_"]').length > 0) {
+      submit_validate($('form[id^="edit_"]'));
+    }
+    else{
+      submit_validate($('#new_warehouse_order'));
+    }    
 
-    $('#new_warehouse_order').ajaxForm({
+  });
+
+  function submit_validate(form){
+    $(form['selector']).ajaxForm({
       beforeSubmit: function() {
-        $('#new_delivery_order').validate({
-          // Rules for form validation
-          rules : {
-            'warehouse_order[code]' : {
-              required : true
-            },
-            'warehouse_order[working_group_id]' : {
-              required : true,
-            },
-            'warehouse_order[date]' : {
-              required : true,
-            }
-          },
-
-          // Messages for form validation
-          messages : {
-            'warehouse_order[code]' : {
-              required : "Por favor ingresar un código correcto"
-            },
-            'warehouse_order[working_group_id]' : {
-              required : "Por favor ingresar un grupo de trabajadores"
-            },
-            'warehouse_order[date]' : {
-              required : "Por favor ingresar una fecha correcta"
-            }
-          },
-
-          // Do not change code below
-          errorPlacement : function(error, element) {
-            error.insertAfter(element.parent());
-          }
-        });
-
-        return $('#new_warehouse_order').valid();
-      },
-      target: '#content'
-    });
-
-    $('form[id^="edit_"]').ajaxForm({
-      beforeSubmit: function() {
-        $('form[id^="edit_"]').validate({
+        $(form['selector']).validate({
           // Rules for form validation
           rules : {
             'warehouse_order[code]' : {
@@ -242,7 +211,9 @@
         $('.modal-backdrop.fade.in').remove();
       }
     });
-  });
+  }
+
+
 
   function isNumber(evt) {
     evt = (evt) ? evt : window.event;

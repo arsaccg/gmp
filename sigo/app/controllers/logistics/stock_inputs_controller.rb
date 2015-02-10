@@ -154,6 +154,10 @@ class Logistics::StockInputsController < ApplicationController
     render(partial: 'rows_stock_inputs', :layout => false)
   end
 
+  def show_stock_inputs
+
+  end
+
   def show_purchase_order_item_field
     @company = get_company_cost_center('cost_center')
     #@tableItems = PurchaseOrder.get_approved_by_company_and_supplier(@company, params[:id], params[:order])
@@ -198,9 +202,9 @@ class Logistics::StockInputsController < ApplicationController
   def show_purchase_orders
     str_option = ""
     supplier_id = params[:id]
-    PurchaseOrder.select(:id).select(:description).where("entity_id = ? AND state LIKE 'approved'", supplier_id).each do |purchaseOrder|
+    PurchaseOrder.select(:id).select(:code).select(:description).where("entity_id = ? AND state LIKE 'approved'", supplier_id).each do |purchaseOrder|
       if purchaseOrder.purchase_order_details.where("received IS NULL").count > 0 
-        str_option += "<option value=" + purchaseOrder.id.to_s + ">" + purchaseOrder.id.to_s.rjust(5, '0') + ' - ' + purchaseOrder.description.to_s + "</option>"
+        str_option += "<option value=" + purchaseOrder.id.to_s + ">" + purchaseOrder.code.to_s.rjust(5, '0') + ' - ' + purchaseOrder.description.to_s + "</option>"
       end
     end
     render :json => str_option

@@ -10,7 +10,7 @@ class PurchaseOrderDetail < ActiveRecord::Base
   def self.get_total_received(id)
     @received = ActiveRecord::Base.connection.execute("SELECT SUM(amount) FROM `stock_input_details` WHERE `purchase_order_detail_id` = #{id}")
     if @received != nil
-      return @received.first.at(0).to_i
+      return @received.first.at(0).to_f
     else
       return 0
     end

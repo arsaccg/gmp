@@ -10,7 +10,7 @@ class Payslip < ActiveRecord::Base
     # => DES - Descuentos
     # => APO - Aportaciones
     twoid = tpay
-
+    @mensaje=''
     @result = Array.new
     total_hour = WeeksPerCostCenter.get_total_hours_per_week(cost_center_id, week_id)
     @i = 1
@@ -26,6 +26,8 @@ class Payslip < ActiveRecord::Base
     end
     amount = 0
     apoNa = Array.new
+    holidays = Holiday.where("date_holiday BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'").count
+
     ActiveRecord::Base.connection.execute("
       SELECT ppd.worker_id, e.dni,  CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name), ar.name, pp.date_of_creation, af.type_of_afp, w.numberofchilds, SUM( ppd.normal_hours ) , SUM( 1 ) AS Dias, SUM( ppd.he_60 ) , SUM( ppd.he_100 ) , SUM( ppd.total_hours ), af.id
       FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
@@ -65,7 +67,24 @@ class Payslip < ActiveRecord::Base
         else
           article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
           @category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-          from_category = CategoryOfWorker.find_by_category_id(@category_id).category_of_workers_concepts.where(:concept_id => 1).first
+          from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'")
+          
+          if from_category.empty?
+            from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date <'"+week_start.to_s+"'")
+            if from_category.empty?
+              @mensaje = "No hay montos para la categoría " + Article.find(article_id).name.to_s
+              p "--------------------------------------------------------------------------------------------------------------------------------------"
+              p @mensaje
+              p "--------------------------------------------------------------------------------------------------------------------------------------"
+              break
+              p "--------------------------------------------------------------------------------------------------------------------------------------"
+            else
+              from_category = from_category.first.category_of_workers_concepts.where(:concept_id => 1).first
+            end
+          else
+            from_category = from_category.first.category_of_workers_concepts.where(:concept_id => 1).first
+          end
+          p "-------------------------------------fuera del if-------------------------------------------------------------------------------------"
           if from_category.amount != 0
             rem_basic = (from_category.amount.to_f/total_hour.to_f)*row[7]
             por_hora = from_category.amount.to_f/total_hour.to_f
@@ -74,7 +93,20 @@ class Payslip < ActiveRecord::Base
       else
         article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).first.article_id
         @category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-        from_category = CategoryOfWorker.find_by_category_id(@category_id).category_of_workers_concepts.where(:concept_id => 1).first
+        from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'")
+        
+        if from_category.empty?
+          from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date <'"+week_start.to_s+"'")
+          if from_category.empty?
+            @mensaje = "No hay montos para la categoría " + Article.find(article_id).name.to_s
+            break
+          else
+            from_category = from_category.first.category_of_workers_concepts.where(:concept_id => 1).first
+          end
+        else
+          from_category = from_category.first.category_of_workers_concepts.where(:concept_id => 1).first
+        end
+        
         if from_category.amount != 0
           rem_basic = (from_category.amount.to_f/total_hour.to_f)*row[7]
           por_hora = from_category.amount.to_f/total_hour.to_f
@@ -108,10 +140,13 @@ class Payslip < ActiveRecord::Base
       calculator.store(horas_extras_60: 0)
       calculator.store(horas_extras_100: 0)
       calculator.store(dias_trabajados_quincena: 0)
+      calculator.store(dias_feriados: holidays)
+      calculator.store(numero_de_hijos: row[6].to_i)
       calculator.store(salario_contractual: worker_contract.salary.to_f)
       calculator.store(destaque_contractual: worker_contract.destaque.to_f)
       calculator.store(viatico_contractual: worker_contract.viatical.to_f)
       calculator.store(dias_totales_mes: days_in_month)
+      calculator.store(dominical: 0)
 
       if incluye
         @result[@i] << rem_basic
@@ -151,7 +186,20 @@ class Payslip < ActiveRecord::Base
               else
                 article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
                 category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-                from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => ing).first
+                from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'")
+                
+                if from_category.empty?
+                  from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date <'"+week_start.to_s+"'")
+                  if from_category.empty?
+                    @mensaje = "No hay montos para la categoría " + Article.find(article_id).name.to_s
+                    break
+                  else
+                    from_category = from_category.first.category_of_workers_concepts.where(:concept_id => ing).first
+                  end
+                else
+                  from_category = from_category.first.category_of_workers_concepts.where(:concept_id => ing).first
+                end
+
                 if !from_category.nil?
                   if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
                     amount = from_category.amount
@@ -182,7 +230,7 @@ class Payslip < ActiveRecord::Base
                 end
               end
             else
-              amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid, con.id)
+              amount = Formule.translate_formules(con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula, rem_basic, row[0], calculator, hash_formulas, con.token, twoid, con.id, week_start, week_end)
               total += amount.to_f
             end
           end
@@ -243,7 +291,19 @@ class Payslip < ActiveRecord::Base
           else
             article_id = Worker.find(row[0]).worker_contracts.where(:status => 1).where(:status => 1).first.article_id
             category_id = Category.find_by_code(Article.find(article_id).code[2..5]).id
-            from_category = CategoryOfWorker.find_by_category_id(category_id).category_of_workers_concepts.where(:concept_id => de).first
+            from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'")
+            
+            if from_category.empty?
+              from_category = CategoryOfWorker.where("category_id = "+@category_id.to_s+" and change_date <'"+week_start.to_s+"'")
+              if from_category.empty?
+                @mensaje = "No hay montos para la categoría " + Article.find(article_id).name.to_s
+                break
+              else
+                from_category = from_category.first.category_of_workers_concepts.where(:concept_id => de).first
+              end
+            else
+              from_category = from_category.first.category_of_workers_concepts.where(:concept_id => de).first
+            end
             if !from_category.nil?
               if from_category.amount.to_f != 0.0 && !from_category.amount.nil?
                 amount = from_category.amount
@@ -336,7 +396,7 @@ class Payslip < ActiveRecord::Base
               total += amount.to_f
 
             elsif con.name == 'IMPTO. RENT. 5ta CAT.'
-              total -= amount
+              total -= amount.to_f
               bruto = total1*14*4
               if bruto > uit7 && bruto < uit27
                 amount = (bruto - uit7)*0.15/12/4
@@ -412,8 +472,11 @@ class Payslip < ActiveRecord::Base
       @i+=1
 
     end
-
-    return @result
+    if @mensaje.length == 0
+      return @result
+    else
+      return @mensaje
+    end
   end
 
   def self.generate_payroll_empleados company, week_start, week_end, ing, des, apo, array_extra_info, array_worker, tpayid, twoid, month_payslip
@@ -464,6 +527,8 @@ class Payslip < ActiveRecord::Base
       incluye = false
     end
     amount = 0
+    days_in_month = Time.days_in_month(week_start.to_date.strftime('%m').to_i, week_start.to_date.strftime('%Y').to_i)
+    holidays = Holiday.where("date_holiday BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'").count    
     apoNa = Array.new
     ActiveRecord::Base.connection.execute("
       SELECT ppd.worker_id, e.dni, CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name) , ar.name, af.type_of_afp, w.numberofchilds, count(1) AS Dias, af.id, ppd.he_25, ppd.he_35
@@ -485,7 +550,7 @@ class Payslip < ActiveRecord::Base
       ORDER BY e.paternal_surname
     ").each do |row|
 
-      @result << [ row[0], row[1], row[2], row[3],@comp_name, row[4], row[5], row[6], total_days - row[6], row[8], row[9]]
+      @result << [ row[0], row[1], row[2], row[3],@comp_name, row[4], row[5], row[6], total_days - row[6]+holidays, row[8], row[9]]
       calculator = Dentaku::Calculator.new
       amount = 0
       flag_extra = false
@@ -517,11 +582,12 @@ class Payslip < ActiveRecord::Base
         dias_trabajados_quincena = dias_trabajados_quincena[0]
       end
 
-      days_in_month = Time.days_in_month(week_start.to_date.strftime('%m').to_i, week_start.to_date.strftime('%Y').to_i)
+
 
       calculator.store(remuneracion_basica: rem_basic)
       calculator.store(precio_por_hora: por_hora)
       calculator.store(dias_trabajados: row[6])
+      calculator.store(dias_feriados: holidays)
       calculator.store(horas_simples: row[8].to_f)
       calculator.store(horas_dobles: row[9].to_f)
       calculator.store(horas_dobles: 0)
@@ -532,6 +598,7 @@ class Payslip < ActiveRecord::Base
       calculator.store(destaque_contractual: from_contract.destaque.to_f)
       calculator.store(viatico_contractual: from_contract.viatical.to_f)
       calculator.store(dias_totales_mes: days_in_month)
+      calculator.store(numero_de_hijos: row[6])
 
       if incluye
         @result[@i] << rem_basic      
@@ -696,10 +763,11 @@ class Payslip < ActiveRecord::Base
               total += amount.to_f
 
             elsif con.name == 'IMPTO. RENT. 5ta CAT.'
+              fpod = con.concept_valorizations.where("type_worker = "+twoid.to_s).first.formula
               total -= amount
               suma_mes = amount
               amount = 0
-              to_end_year = 13 - month.to_i
+              to_end_year = 12 - month.to_i
               initial = 0
               final = 0
               value = 0
@@ -708,9 +776,10 @@ class Payslip < ActiveRecord::Base
               rent_before = Array.new
               value_previous = 0
               before_amount = 0
-              if to_end_year == 12
+              if to_end_year == 11
                 anual_income = suma_mes*14
               else
+                #toma rem_basica, hh 25%, hh 35%, vacaciones. viaticosadelanto de quincena adelanto vacaciones reintegros gratificaciones destaque asignacion escolar
                 ActiveRecord::Base.connection.execute("SELECT `payslips`.`ing_and_amounts` FROM `payslips` WHERE (worker_id = "+row[0].to_s+" AND `month` LIKE '%"+year.to_s+"%')").each do |b|  
                   rent_before << JSON.parse(b[0]).select{|key, hash| key=='sueldo_basico'} 
                 end

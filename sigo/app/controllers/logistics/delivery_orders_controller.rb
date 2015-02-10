@@ -174,18 +174,20 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @deliveryOrder = DeliveryOrder.new
     @last = DeliveryOrder.find(:last,:conditions => [ "cost_center_id = ?", @cost_center.id])
     if !@last.nil?
-      @numbercode = @last.code.to_i+1
+      @deliveryOrder.code = @last.code.to_i+1
     else
-      @numbercode = 1
+      @deliveryOrder.code = 1
     end
     @numbercode = @numbercode.to_s.rjust(5,'0')
     render layout: false
   end
 
   def create
+    deliveryOrder_ancester = (DeliveryOrder.where(:cost_center_id => get_company_cost_center('cost_center')).last.code.to_i rescue 0)
     deliveryOrder = DeliveryOrder.new(delivery_order_parameters)
     deliveryOrder.state
     deliveryOrder.user_id = current_user.id
+    deliveryOrder.code = deliveryOrder_ancester + 1
     if deliveryOrder.save
       flash[:notice] = "Se ha creado correctamente la nueva orden de suministro."
       redirect_to :action => :index, company_id: params[:company_id]
@@ -215,7 +217,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
     @deliveryOrder = DeliveryOrder.find(params[:id])
     @sectors = Sector.where("cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
-    @centerOfAttentions = CenterOfAttention.where("cost_center_id = ?",@cost_center)
+    @centerOfAttentions = CenterOfAttention.where("cost_center_id = ?",get_company_cost_center('cost_center'))
     @costcenter_id = @deliveryOrder.cost_center_id
     @action = 'edit'
     render layout: false
@@ -398,7 +400,7 @@ class Logistics::DeliveryOrdersController < ApplicationController
   private
   def delivery_order_parameters
     params.require(:delivery_order).permit(
-      :code,
+      #:code,
       :date_of_issue, 
       :scheduled, 
       :description, 

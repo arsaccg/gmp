@@ -94,8 +94,8 @@ AND ccu.cost_center_id = cc.id AND ccu.user_id = " + current_user.id.to_s)
     accumulated = @direct_cost_acc + (@direct_cost_acc * budget.general_expenses.to_f) + (@direct_cost_acc * budget.utility.to_f)
     contractual =@direct_cost_cont + (@direct_cost_cont * budget.general_expenses.to_f) + (@direct_cost_cont * budget.utility.to_f)
     @ratio_avanze_fisico = ((accumulated/contractual)*100).round(2).to_s + '%'
-    @ratio_de_tiempo = (((Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date).to_f/current_cost_center.cost_center_detail.execution_term.to_f)*100).round(2).to_s + '%'
-    @ratio_de_tiempo_fraccion = (Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date).to_i.to_s + '/' + current_cost_center.cost_center_detail.execution_term.to_i.to_s
+    @ratio_de_tiempo = (((Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date rescue 0).to_f/current_cost_center.cost_center_detail.execution_term.to_f rescue 1)*100).round(2).to_s + '%'
+    @ratio_de_tiempo_fraccion = (Time.now.to_date - current_cost_center.cost_center_detail.start_date_of_work.to_date rescue 0).to_i.to_s + '/' + current_cost_center.cost_center_detail.execution_term.to_i.to_s rescue 0
     # => Cantd. Trabajadores
     @cant_trabajadores = Worker.where(:typeofworker => 'empleado').count
 
@@ -260,6 +260,43 @@ AND ccu.cost_center_id = cc.id AND ccu.user_id = " + current_user.id.to_s)
   def show_phases
     @all_gg = GeneralExpense.where('code_phase = ? AND cost_center_id = ?', params[:code_phase], params[:cost_center_id])
     render(:partial => 'all_gg', :layout => false)
+  end
+
+  def show_holidays
+    @hash_holidays = Array.new
+    holidays = Holiday.select(:title).select(:date_holiday).where("date_holiday BETWEEN ? AND ?", Time.now.beginning_of_year.strftime('%Y-%m-%d'), Time.now.end_of_year.strftime('%Y-%m-%d'))
+
+    holidays.each do |holiday|
+      @hash_holidays << {:title => holiday.title, :start => holiday.date_holiday, :className => ["event", "bg-color-greenLight"], :icon => 'fa-check'}
+    end
+
+    @hash_holidays = @hash_holidays.to_json
+
+    render :holidays_table, :layout => false
+  end
+
+  def add_holiday
+    
+    date_holiday = params[:date_holiday].to_date.strftime('%Y-%m-%d')
+
+    if Holiday.find_by_date_holiday(date_holiday).nil? && Holiday.find_by_title(params[:title]).nil?
+      holiday = Holiday.new(title: params[:title], date_holiday: params[:date_holiday])
+      if holiday.save
+        render :json => true
+      else
+        render :json => false
+      end
+    elsif !Holiday.find_by_title(params[:title]).nil?
+      Holiday.find_by_title(params[:title]).destroy
+      holiday = Holiday.new(title: params[:title], date_holiday: params[:date_holiday])
+      if holiday.save
+        render :json => true
+      else
+        render :json => false
+      end
+    else
+      render :json => false
+    end
   end
 
   # => SOME METHODS FROM Application Helper duplicate : get_total_cost, get_amount

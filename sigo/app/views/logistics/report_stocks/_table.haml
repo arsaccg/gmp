@@ -13,6 +13,7 @@
             %th Código
             %th Nombre
             %th Cantidad
+            %th UND
         %tbody
           - @articleresult.each do |re|
             %tr
@@ -22,6 +23,8 @@
                 = re[1]
               %td
                 = re[2]
+              %td
+                = re[3]             
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();

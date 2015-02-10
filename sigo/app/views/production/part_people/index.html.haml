@@ -18,6 +18,7 @@
               No puedes crear Parte de Personal!
           %p
             Verifica si tienes, por lo menos, 1 Grupo de Trabajo
+  .row
     - if flash[:notice] != nil
       .alert.alert-success.fade.in{"style" => "clear:both"}
         %button.close{"data-dismiss" => "alert"}
@@ -34,7 +35,7 @@
         = flash[:error]
   %br
   .row
-  #widget-grid
-    .row
-      %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
-        = render :partial => 'table'
+    #widget-grid
+      .row
+        %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
+          = render :partial => 'table'

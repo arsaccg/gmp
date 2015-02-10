@@ -11,7 +11,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
     @inicio             = params[:start_date]      
     @fin                = params[:end_date]
 
-    if @gruposdetrabajo_id.present? && @inicio.present? && @fin.present?
+    if @gruposdetrabajo_id.present? && @inicio.present? && @fin.present? &&  @gruposdetrabajo_id!='todo'
       @dias_habiles =  range_business_days(@inicio,@fin)
       @trabajadores_array = business_days_array(@inicio,@fin,@gruposdetrabajo_id,@dias_habiles)
       gruposdetrabajo = WorkingGroup.find_by_id(@gruposdetrabajo_id)
@@ -28,7 +28,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
 
     elsif @gruposdetrabajo_id.blank? && @inicio.present? && @fin.present?
       @dias_habiles =  range_business_days(@inicio,@fin)
-      gruposdetrabajos = WorkingGroup.all
+      gruposdetrabajos = WorkingGroup.where("cost_center_id = "+get_company_cost_center('cost_center').to_s)
       @tareos_total_arrays = []
       @subcontratista_arrays = []
       gruposdetrabajos.each do |gruposdetrabajo|
@@ -48,6 +48,23 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
         @pase = 2
         render(partial: 'daily_table', :layout => false)
       end
+    elsif @gruposdetrabajo_id == "todo" && @inicio.present? && @fin.present?
+      @gruposdetrabajo_id = Array.new
+      WorkingGroup.where("cost_center_id = "+ get_company_cost_center('cost_center').to_s).each do |wg|
+        @gruposdetrabajo_id << wg.id
+      end
+      p "------------------------------------------------------------------------------------------------------------------------------------"
+      p @gruposdetrabajo_id.inspect
+      p "------------------------------------------------------------------------------------------------------------------------------------"
+      @dias_habiles =  range_business_days(@inicio,@fin)
+      @tareos_total_arrays = business_days_array(@inicio,@fin,@gruposdetrabajo_id.join(','),@dias_habiles)
+      if @tareos_total_arrays.count!=0
+        @pase = 5
+      else
+        @pase = 2
+        
+      end
+      render(partial: 'daily_table', :layout => false)
     else
       @pase = 3
       render(partial: 'daily_table', :layout => false)
@@ -62,7 +79,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
     @cad = Array.new
     if @inicio.present? && @fin.present?        
       @dias_habiles =  range_business_days(@inicio,@fin)
-      @gruposdetrabajos = WorkingGroup.all
+      @gruposdetrabajos = WorkingGroup.where("cost_center_id = "+ get_company_cost_center('cost_center').to_s)
       @gruposdetrabajos.each do |wg|
         @cad << wg.id
       end
@@ -70,7 +87,7 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
       @subcontratista_arrays = []
       @gruposdetrabajos.each do |gruposdetrabajo|
         temp_tareo = []
-        temp_tareo = business_days_array(@inicio,@fin,@cad,@dias_habiles)          
+        temp_tareo = business_days_array(@inicio,@fin,@cad.join(','),@dias_habiles)          
         if temp_tareo.length != 0 
           @tareos_total_arrays << temp_tareo
           subcontratista_nombre = "#{gruposdetrabajo.name} - #{Entity.find(Worker.find(gruposdetrabajo.front_chief_id).entity_id).name} - #{Entity.find_name_executor(gruposdetrabajo.executor_id)} - #{Entity.find(Worker.find(gruposdetrabajo.master_builder_id).entity_id).name}"
@@ -110,9 +127,15 @@ class Production::DailyWorks::DailyWorkersController < ApplicationController
 
   def business_days_array(start_date, end_date, working_group_id, business_days)
 
+    p 'PARAMS'
+    p start_date
+    p end_date
+    p working_group_id
+    p business_days
+
     personals_array = []
     trabajadores_array = []
-    partediariodepersonals = PartPerson.where("working_group_id IN (?) and blockweekly = 0 and date_of_creation BETWEEN ? AND ?", working_group_id,start_date,end_date)
+    partediariodepersonals = PartPerson.where("working_group_id IN ("+working_group_id.to_s+") and blockweekly = 0 and date_of_creation BETWEEN ? AND ?", start_date,end_date)
     partediariodepersonals.each do |partediariodepersonal|
       partediariodepersonal.part_person_details.each do |trabajador_detalle|
         trabajadore = trabajador_detalle.worker

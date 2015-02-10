@@ -4,9 +4,6 @@
       %h2.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         = "Horas Totales por Semana del Centro de Costo " + @cc.code
-    .col-xs-4.col-sm-4.col-md-4.col-lg-4{ "style" => "margin-top: 10px;" }
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_thw_logistics_cost_centers_path}', 'content', {cc: #{@cc.id}}, null, 'GET')"}
-        Agregar Total Horas
   - if flash[:notice] != nil
     .alert.alert-success.fade.in{"style" => "clear:buttonoth"}
       %button.close{"data-dismiss" => "alert"} ×

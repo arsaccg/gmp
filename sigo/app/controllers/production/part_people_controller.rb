@@ -10,7 +10,12 @@ class Production::PartPeopleController < ApplicationController
 
   def show
     @partperson = PartPerson.find(params[:id])
-    @partpersondetails = @partperson.part_person_details
+    @partpersondetails = ActiveRecord::Base.connection.execute("SELECT pwd.id, CONCAT( e.paternal_surname,  ' ', e.maternal_surname,  ', ', e.name ) AS name
+      FROM part_person_details pwd, entities e, workers w
+      WHERE pwd.part_person_id =" + @partperson.id.to_s+ "
+      AND pwd.worker_id = w.id
+      AND e.id = w.entity_id
+      ORDER BY name")    
     @company = get_company_cost_center('company')
     render layout: false
   end
@@ -32,6 +37,7 @@ class Production::PartPeopleController < ApplicationController
     @numbercode = @partpersonlast+1
     @numbercode = @numbercode.to_s.rjust(5,'0')
     @partperson = PartPerson.new
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = "+get_company_cost_center('cost_center').to_s)    
     @working_groups = WorkingGroup.where("cost_center_id ="+cost_center.to_s)
     workers = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s)
     @workers = Array.new
@@ -49,26 +55,50 @@ class Production::PartPeopleController < ApplicationController
     partperson.cost_center_id = get_company_cost_center('cost_center')
     partperson.block = 0
     partperson.blockweekly = 0
-    if partperson.save
-      flash[:notice] = "Se ha creado correctamente la parte de obra."
-      redirect_to :action => :index, company_id: params[:company_id]
-    else
-      partperson.errors.messages.each do |attribute, error|
-        puts error.to_s
-        puts error
+    flag = true
+    last = PartPerson.where("working_group_id = "+ partperson.working_group_id.to_s + " AND date_of_creation = '"+partperson.date_of_creation.to_s+"'")
+    cad_error = ""
+    if !last.empty?
+      flag = false
+      cad_error = "Ya hay creado un parte con ese grupo de trabajo y esa fecha. "
+    end
+    ww_app = WeeklyWorker.where("state = 'approved' AND end_date > '"+partperson.date_of_creation.to_s+"' AND cost_center_id = "+get_company_cost_center('cost_center').to_s).last
+    if !ww_app.nil?
+      flag = false
+      cad_error = cad_error + "La fecha ingresada es menor a la fecha del último tareo aprobado. "
+    end
+    today_date = Time.now.to_date.strftime('%Y-%m-%d').to_s
+    if today_date < partperson.date_of_creation.to_s
+      flag = false
+      cad_error = cad_error + "La fecha ingresada es mayor a la actual."
+    end
+
+    if flag
+      if partperson.save
+        flash[:notice] = "Se ha creado correctamente la parte de obra."
+        redirect_to :action => :index, company_id: params[:company_id]
+      else
+        partperson.errors.messages.each do |attribute, error|
+          puts error.to_s
+          puts error
+        end
+        flash[:error] =  "Ha ocurrido un error en el sistema."
+        redirect_to :action => :index, company_id: params[:company_id]
       end
-      flash[:error] =  "Ha ocurrido un error en el sistema."
+    else
+      flash[:error] = cad_error
       redirect_to :action => :index, company_id: params[:company_id]
     end
   end
 
   def add_more_worker
     @reg_n = ((Time.now.to_f)*100).to_i
-    @sectors = Sector.where("code LIKE '__'")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = "+get_company_cost_center('cost_center').to_s) 
+    @sec = params[:sector]
     @phases = Phase.getSpecificPhases(get_company_cost_center('cost_center'))
     @worker = Worker.find(params[:worker_id])
     @id_worker = @worker.id
-    @name_worker = @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s + ' ' + @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s
+    @name_worker = @worker.entity.paternal_surname.to_s + ' ' + @worker.entity.maternal_surname.to_s+ ", "+ @worker.entity.name.to_s + ' ' + @worker.entity.second_name.to_s
     if WorkerContract.where("worker_id = ?",@worker.id).count>0
       if WorkerContract.where("worker_id = ?",@worker.id).last.article.nil?
         @category_worker = "No tiene"
@@ -86,10 +116,17 @@ class Production::PartPeopleController < ApplicationController
     @reg_n = Time.now.to_i
     @numbercode = @partperson.number_part
     @working_groups = WorkingGroup.all
-    @sectors = Sector.where("code LIKE '__'")
+    @sectors = Sector.where("code LIKE '__' AND cost_center_id = "+get_company_cost_center('cost_center').to_s)
     @action = 'edit'
     @company = get_company_cost_center('company')
-    @workers = Worker.all
+    cost_center = get_company_cost_center('cost_center')
+    workers = Worker.where("typeofworker LIKE 'obrero' AND state LIKE 'active' AND cost_center_id ="+cost_center.to_s)
+    @workers = Array.new
+    workers.each do |wor|
+      if wor.worker_contracts.count != 0
+        @workers << wor
+      end
+    end
     render layout: false
   end
 

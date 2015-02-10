@@ -41,7 +41,7 @@
                     %td
                       = Worker.find(@partperson.working_group.master_builder_id).entity.name.to_s + ' ' + Worker.find(@partperson.working_group.master_builder_id).entity.second_name.to_s + ' ' + Worker.find(@partperson.working_group.master_builder_id).entity.paternal_surname.to_s + ' ' + Worker.find(@partperson.working_group.master_builder_id).entity.maternal_surname.to_s
                     %td
-                      = @partperson.date_of_creation
+                      = @partperson.date_of_creation.strftime('%d/%m/%Y')
 
       %article.col-sm-12.col-md-12.col-lg-12
         #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
@@ -71,38 +71,26 @@
                 %tbody
                   - @partpersondetails.each do |partpersondetail|
                     %tr
+                      -partperson_detail = PartPersonDetail.find(partpersondetail[0])
                       %td
-                        = partpersondetail.worker.entity.name.to_s + ' ' + partpersondetail.worker.entity.second_name.to_s + ' ' + partpersondetail.worker.entity.paternal_surname.to_s + ' ' + partpersondetail.worker.entity.maternal_surname.to_s
+                        = partpersondetail[1] + ' ' + partperson_detail.worker.entity.second_name.to_s
                       %td
-                        = partpersondetail.sector.name
+                        = partperson_detail.sector.name
                       %td
-                        = partpersondetail.phase.code rescue 'No insertó fase' + ' - ' + partpersondetail.phase.name rescue ''
+                        = partperson_detail.phase.code rescue 'No insertó fase' + ' - ' + partperson_detail.phase.name rescue ''
                       %td
-                        = partpersondetail.normal_hours
+                        = partperson_detail.normal_hours
                       %td
-                        = partpersondetail.he_60
+                        = partperson_detail.he_60
                       %td
-                        = partpersondetail.he_100
+                        = partperson_detail.he_100
                       %td
-                        = partpersondetail.total_hours
+                        = partperson_detail.total_hours
 
 %button.btn.btn-sm.btn-primary.btn-prev#backlist-purchase-order{type: "button"}
   %i.fa.fa-arrow-left>
   Retornar al listado de Parte de Personas
 
-= javascript_include_tag 'plugin/flot/jquery.flot.cust'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-1.2.2.min'
-= javascript_include_tag 'plugin/fullcalendar/jquery.fullcalendar.min'
-= javascript_include_tag 'plugin/vectormap/jquery-jvectormap-world-mill-en'
-= javascript_include_tag 'plugin/flot/jquery.flot.resize'
-= javascript_include_tag 'plugin/flot/jquery.flot.tooltip'
-= javascript_include_tag 'plugin/datatables/jquery.dataTables-cust.min'
-= javascript_include_tag 'plugin/datatables/ColReorder.min'
-= javascript_include_tag 'plugin/datatables/FixedColumns.min'
-= javascript_include_tag 'plugin/datatables/ColVis.min'
-= javascript_include_tag 'plugin/datatables/ZeroClipboard'
-= javascript_include_tag 'plugin/datatables/media/js/TableTools.min'
-= javascript_include_tag 'plugin/datatables/DT_bootstrap'
 
 :javascript
   

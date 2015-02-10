@@ -430,44 +430,25 @@
         %br{ 'style' => 'display:none' }
         %legend Regimen Pensionario
         %br
-        .row
-          %section.col-md-4
-            %label.label Elija un Régimen Pensionario
-          %section.col-md-12
-            .row
-              .col-md-1
-              %section.col-md-7
-                %label.radio-inline
-                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "Estoy"}
-                  %span Estoy afiliado al Sistema Privado de Pensiones
-            .row
-              .col-md-1
-              %section.col-md-7
-                %label.radio-inline
-                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "Deseo"}
-                  %span Deseo afiliarme al Sistema Privado de Pensiones
-            .row
-              .col-md-1
-              %section.col-md-7
-                %label.radio-inline
-                  %input{:name =>'regimenpensionario', :type => 'radio', :value => "No"}
-                  %span No estoy afiliado a ninguna AFP y deseo inscribirme o permanecer en el Sistema Nacional de Pensiones
-        .row#afp4{ 'style' => 'display:none' }
+        .row#afp4
           %section.col.col-1
             %br
             %label.control-label(for="afp_id") Regimen Pensionario
 
-          %section.col.col-3#afplista{ 'style' => 'display:none' }
+          %section.col.col-3#afplista
             %label.label Lista de AFPs
             %select#afp-select.select2.form-control(style='width:100%;padding: 0;border: none;')
+              %option{:value => nil, :selected => true, :disabled=>true} Seleccione una AFP
+              -@afp.each do |afp|
+                %option{:value => afp.id}= afp.enterprise
 
-          %section.col.col-3#afpcuspp{ 'style' => 'display:none' }
+          %section.col.col-3#afpcuspp
             %label.label CUSPP
             = text_field_tag 'afpnumber', nil, class: 'form-control', id: 'afp-afpnumber', placeholder: 'Numero de Cuenta'
             %label Obtener CUSPP accediendo a
             %a{:target =>'_blank', :href => 'http://www.sbs.gob.pe/app/spp/Reporte_sit_prev/afil_existe.asp'}>web de la SBS
 
-          %section.col.col-3#afpfechaafi{ 'style' => 'display:none' }
+          %section.col.col-3#afpfechaafi
             %label Fecha de Afiliación
             %input#afp-startdate.string.optional.form-control{'name'=>'afpstartdate', type: "date"}
           %br
@@ -475,16 +456,6 @@
             %div
               %a(href="javascript:add_afp_item();" id="btn-add-afp" class="btn btn-success" role="button")
                 Agregar AFP
-
-        .row#afp2{ 'style' => 'display:none' }
-          %section.col.col-3
-            %select#afptype-select.select2.form-control(style='width:100%;padding: 0;border: none;') 
-              %option(value = "") Tipo de comisión
-              %option(value = "Comision por Flujo(sueldo)") Comision por Flujo(sueldo)
-              %option(value = "Comision mixta (saldo y sueldo)") Comision mixta (saldo y sueldo)
-          %section.col.col-3
-            %label Fecha de Fin
-            %input#afp-enddate.string.optional.form-control{'name'=>'afpenddate', type: "date"}
 
         .col-lg-12
           %table#summary-workers.table.table-striped.table-bordered.table-hover.has-tickbox.smart-form
@@ -957,7 +928,7 @@
                         %i
                     - @reg_n += 1
         %br
-        .row
+        .row#hijos{:style => "display:none;"}
           .section.col.col-md-12
             .section.col.col-md-2
               %label.control-label Tiene hijos en etapa escolar?
@@ -1143,9 +1114,11 @@
       $("#fieldset5").css("display", "");
       $("#fieldset6").css("display", "");
       $("#fieldset7").css("display", "");
+      $("#hijos").css("display", "none");
     }
     if('#{@worker.typeofworker}'=="obrero"){
       $("#categoria").css("display", "");
+      $("#hijos").css("display", "");
     }
     if('#{@worker.numberofchilds}'!=0){
       $("#numberofchildren").css("display", "");
@@ -1182,6 +1155,11 @@
       $("#fieldset5").css("display", "");
       $("#fieldset6").css("display", "");
       $("#fieldset7").css("display", "");
+      if($(this).prop('value') == "obrero"){
+        $("#hijos").css("display", "");
+      }else{
+        $("#hijos").css("display", "none");
+      }
     }
     else {
       $("#row1").css("display", "none");
@@ -1208,6 +1186,7 @@
       $("#categoria").css("display", "none");
     }
   });
+
   $("input[type=radio][name=regimenpensionario]").change(function() {
     if($(this).prop('value') == "Estoy"){
 

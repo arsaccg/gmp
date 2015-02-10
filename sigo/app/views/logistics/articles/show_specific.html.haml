@@ -1,0 +1,49 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-8
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        = "Insumo " + @article[0].to_s + " con código " + @article[1].to_s
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %div
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Codigo
+                    %th Tipo
+                    %th Categoria
+                    %th Unidad de Medida
+                    %th Simbolo
+                    %th Descripción
+                %tbody(id="unit_measurement_table")
+                  %tr
+                    %td
+                      = @article[1].to_s
+                    %td
+                      = TypeOfArticle.find(@article[3]).name
+                    %td
+                      = Category.find(@article[4]).name.to_s
+                    %td
+                      - unit = UnitOfMeasurement.find(@article[5])
+                      = unit.name.to_s
+                    %td
+                      - if unit.symbol != nil
+                        = unit.symbol
+                      - else
+                        No tiene simbolo
+                    %td
+                      = @article[2]
+
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-articles{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado de artículos
+
+:javascript
+
+  $('#backlist-articles').click(function(){
+    load_url_ajax("#{specifics_articles_logistics_articles_path}", 'content', null, null, 'GET');
+  });
