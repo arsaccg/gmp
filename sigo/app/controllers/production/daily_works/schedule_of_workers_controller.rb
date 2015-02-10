@@ -130,7 +130,7 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
         @dias_habiles =  range_business_days(@inicio,@fin)
         workers = Array.new
         @arraywo = Array.new
-        partworkers = PartWorker.where("date_of_creation BETWEEN ? AND ? AND blockweekly = 1",@inicio,@fin)
+        partworkers = PartWorker.where("date_of_creation BETWEEN ? AND ? AND blockweekly = 1 AND cost_center_id = ?",@inicio,@fin,@cost_center.id)
         partworkers.each do |pw|
           pw.part_worker_details.each do |pwd|
             workers << pwd.worker_id
@@ -150,11 +150,11 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
           if !contract.nil?
             cadenita = index.to_s + ';' + contract.article.code.to_s + ';' + contract.article.name.to_s + ';' + wor.entity.dni.to_s + ';' + wor.entity.paternal_surname.to_s + " " + wor.entity.maternal_surname.to_s + ', ' + wor.entity.name.to_s + ' ' + wor.entity.second_name.to_s
             @dias_habiles.each do |dh|
-              answer = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 1").first
+              answer = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 1 AND cost_center_id = "+@cost_center.id.to_s).first
               if answer.nil?
                 cadenita = cadenita + ';' + '0'
               else
-                answer2 = PartWorkerDetail.where("part_worker_id = ? AND worker_id = ?", answer.id, wo)
+                answer2 = PartWorkerDetail.where("part_worker_id = ? AND worker_id = ? AND cost_center_id = ?", answer.id, wo, @cost_center.id.to_s)
                 if answer2.count == 0
                   cadenita = cadenita + ';' + '0'
                 end
@@ -177,7 +177,7 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
         @totalperday = Array.new
         totaltotal = 0
         @dias_habiles.each do |dh|
-          perday = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 1").first
+          perday = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 1 AND cost_center_id =" + @cost_center.id.to_s).first
           if !perday.nil?
             day = PartWorkerDetail.where("part_worker_id = ? AND assistance LIKE 'si'", perday.id)
             @totalperday << day.count.to_s
@@ -208,7 +208,7 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
     @dias_habiles =  range_business_days(@inicio,@fin)
     workers = Array.new
     @arraywo = Array.new
-    partworkers = PartWorker.where("date_of_creation BETWEEN ? AND ? AND blockweekly = 0",@inicio,@fin)
+    partworkers = PartWorker.where("date_of_creation BETWEEN ? AND ? AND blockweekly = 0 AND cost_center_id = ?",@inicio,@fin, @cost_center.id)
     partworkers.each do |pw|
       pw.part_worker_details.each do |pwd|
         workers << pwd.worker_id
@@ -233,11 +233,11 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
       if !contract.nil?
         cadenita = index.to_s + ';' + contract.article.code.to_s + ';' + contract.article.name.to_s + ';' + wor.entity.dni.to_s + ';' + wor.entity.paternal_surname.to_s + " " + wor.entity.maternal_surname.to_s + ', ' + wor.entity.name.to_s + ' ' + wor.entity.second_name.to_s
         @dias_habiles.each do |dh|
-          answer = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 0").first
+          answer = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 0 AND cost_center_id = "+ @cost_center.id.to_s).first
           if answer.nil?
             cadenita = cadenita + ';' + '0'
           else
-            answer2 = PartWorkerDetail.where("part_worker_id = ? AND worker_id = ?", answer.id, wo)
+            answer2 = PartWorkerDetail.where("part_worker_id = ? AND worker_id = ? AND cost_center_id = ?", answer.id, wo, @cost_center.id)
             if answer2.count == 0
               cadenita = cadenita + ';' + '0'
             end
@@ -260,7 +260,7 @@ class Production::DailyWorks::ScheduleOfWorkersController < ApplicationControlle
     @totalperday = Array.new
     totaltotal = 0
     @dias_habiles.each do |dh|
-      perday = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 0").first
+      perday = PartWorker.where("date_of_creation = '"+dh.to_s+"' and blockweekly = 0 AND cost_center_id = " +  @cost_center.id.to_s).first
       if !perday.nil?
         day = PartWorkerDetail.where("part_worker_id = ? AND assistance LIKE 'si'", perday.id)
         @totalperday << day.count.to_s
