@@ -26,7 +26,8 @@ class Payrolls::PayslipsController < ApplicationController
       FROM  weekly_workers ww, weeks_for_cost_center_" + @cc.id.to_s+" wc
       WHERE ww.state =  'approved'
       AND ww.start_date = wc.start_date
-      AND ww.end_date = wc.end_date")
+      AND ww.end_date = wc.end_date
+      AND ww.cost_center_id = "+ @cc.id.to_s)
     render layout: false
   end
 
@@ -388,7 +389,7 @@ class Payrolls::PayslipsController < ApplicationController
       else
         @max_hour = 48
       end      
-      tareo = WeeklyWorker.where("start_date = '"+semana[2].to_s+"' AND end_date = '"+semana[3].to_s+"' AND state = 'approved'").first
+      tareo = WeeklyWorker.where("start_date = '"+semana[2].to_s+"' AND end_date = '"+semana[3].to_s+"' AND state = 'approved' AND cost_center_id = "+ @cc.id.to_s).first
       if !tareo.nil?
         wg = tareo.working_group.gsub(" ", ",")
       else
