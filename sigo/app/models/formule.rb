@@ -125,10 +125,7 @@ class Formule < ActiveRecord::Base
             if from_category.empty?
               from_category = CategoryOfWorker.where("category_id = "+category_id.to_s+" and change_date <'"+week_start.to_s+"'")
               if from_category.empty?
-                @mensaje = "No hay montos para la categoría " + Article.find(article_id).name.to_s
-                #break
-              else
-                from_category = from_category.first.category_of_workers_concepts.where(:concept_id => concept_id).first
+                from_category = nil
               end
             else
               from_category = from_category.first.category_of_workers_concepts.where(:concept_id => concept_id).first
