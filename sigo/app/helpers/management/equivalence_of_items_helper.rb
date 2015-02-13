@@ -1,0 +1,2 @@
+module Management::EquivalenceOfItemsHelper
+end

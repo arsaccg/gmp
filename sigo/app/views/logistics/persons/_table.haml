@@ -3,59 +3,37 @@
     %span.widget-icon
       %i.fa.fa-table
     %h2 Lista de Usuarios
-  / widget div
   %div
-    / widget edit box
     .jarviswidget-editbox
-      / This area used as dropdown edit box
-    / end widget edit box
-    / widget content
     .widget-body.no-padding
       .widget-body-toolbar
-      #dt_basic_wrapper.dataTables_wrapper.form-inline{:role => 'grid'}
-        .dt-top-row
-          #dt_basic_length.dataTables_length
-            %span.smart-form
-              %label.select{style: "width:60px"}
-                %select{"aria-controls" => "dt_basic", name: "dt_basic_length", size: "1"}
-                  %option{selected: "selected", value: "10"} 10
-                  %option{value: "25"} 25
-                  %option{value: "50"} 50
-                  %option{value: "100"} 100
-                %i
-          #dt_basic_filter.dataTables_filter
-            .input-group
-              %span.input-group-addon
-                %i.fa.fa-search
-              %input.form-control{"aria-controls" => "dt_basic", placeholder: "Filter", type: "text"}
-        .dt-wrapper
-          %table#dt_basic.table.table-striped.table-bordered.table-hover
-            %thead
+      %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th Primero Nombre
+            %th Segundo Nombre
+            %th Apellidos
+            %th Email
+            %th Rol del Usuario
+            %th Acciones
+          %tbody
+            - @persons.each do |person|
               %tr
-                %th Primero Nombre
-                %th Segundo Nombre
-                %th Apellidos
-                %th Email
-                %th Rol del Usuario
-                %th Acciones
-            %tbody
-              - @persons.each do |person|
-                %tr
-                  %td
-                    = person.first_name
-                  %td
-                    = person.last_name
-                  %td
-                    = person.surname
-                  %td
-                    = person.email
-                  %td
-                    = person.role_symbols
-                  %td
-                    %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_person_path(person.id)}', 'content', null, null, 'GET')"}
-                      Editar
-                    %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el usuario ' + "#{person.first_name rescue ' ' + ' ' + person.surname rescue ' '}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_person_path(person.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_persons_path}')"}}
-                      Eliminar
+                %td
+                  = person.first_name
+                %td
+                  = person.last_name
+                %td
+                  = person.surname
+                %td
+                  = person.email
+                %td
+                  = person.role_symbols
+                %td
+                  %a.btn.btn-warning.btn-xs{:onclick => "javascript:load_url_ajax('#{edit_logistics_person_path(person.id)}', 'content', null, null, 'GET')"}
+                    Editar
+                  %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el usuario ' + "#{person.first_name rescue ' ' + ' ' + person.surname rescue ' '}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{logistics_person_path(person.id)}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{logistics_persons_path}')"}}
+                    Eliminar
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();

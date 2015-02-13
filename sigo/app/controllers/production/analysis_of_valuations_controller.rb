@@ -83,11 +83,11 @@ class Production::AnalysisOfValuationsController < ApplicationController
       end
       @cad2 = @cad2.join(',')
     end
-
+    budgetidcostcenter = Budget.where("cost_center_id = " + get_company_cost_center('cost_center') + " AND type_of_budget = 0").first.id
     # PARTIDAS
     @meta_part_work = Array.new
     budgetanditems_list = Array.new
-    @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2)
+    @workers_array2 = business_days_array2(start_date, end_date, @cad, @cad2, budgetidcostcenter)
 
     @workers_array2.each do |workerDetail|
       # Get quantity of itembybudgetanditems
@@ -219,6 +219,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       prom_pon_amount = 0
       articles_output = get_articles_outputs(start_date, end_date, @cad, @cad2, get_company_cost_center('cost_center'))
       articles_output.each do |ao|
+        # art.id, SUM(sid.amount)
         articles_in_purchase = get_articles_purchase_orders(start_date, end_date, @cad2, get_company_cost_center('cost_center'), ao[0])
         if articles_in_purchase.count <1
           @real_materiales << [ao[0], Article.find(ao[0]).code, Article.find(ao[0]).name, Article.find(ao[0]).unit_of_measurement.symbol, 0, ao[1], 0]
@@ -296,7 +297,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
     return workers_array
   end
 
-  def business_days_array2(start_date, end_date, working_group_id,sector_id)
+  def business_days_array2(start_date, end_date, working_group_id,sector_id, budget_id)
     workers_array2 = ActiveRecord::Base.connection.execute(
       "SELECT
         pwd.itembybudget_id, 
@@ -312,7 +313,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       AND p.working_group_id IN (" + working_group_id + ")
       AND p.id = pwd.part_work_id
       AND pwd.itembybudget_id =  ibb.id
-      AND ibb.budget_id =  4
+      AND ibb.budget_id =  " + budget_id.to_s + "
       GROUP BY ibb.subbudgetdetail"
     )
 
@@ -392,7 +393,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
 
   def get_articles_purchase_orders(start_date, end_date, sector, cc, article_id)
     articles = ActiveRecord::Base.connection.execute("
-      SELECT art.id, art.code, art.name, u.symbol, pod.unit_price
+      SELECT art.id, art.code, art.name, u.symbol, pod.unit_price, pod.amount
       FROM purchase_orders po, purchase_order_details pod, delivery_order_details dod, articles art, unit_of_measurements u
       WHERE po.id = pod.purchase_order_id
       AND po.state =  'approved'

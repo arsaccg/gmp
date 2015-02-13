@@ -1,0 +1,46 @@
+#wid-id-0.jarviswidget.jarviswidget-color-darken{"data-widget-editbutton" => "false"}
+  %header
+    %span.widget-icon
+      %i.fa.fa-table
+    %h2 Relacion de Partidas
+  %div
+    .jarviswidget-editbox
+    .widget-body.no-padding
+      .widget-body-toolbar
+      %table#dt_basic.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th{"style" => "width:10%"} Codigo Venta
+            %th{"style" => "width:31%"} Partida Venta
+            %th{"style" => "width:10%"} Codigo Meta
+            %th{"style" => "width:32%"} Partida Meta
+            %th{"style" => "width:7%"} Porcentaje
+            %th{"style" => "width:10%"} Acciones
+        %tbody
+          - @equivalences.each do |unit|
+            %tr
+              %td{"style" => "width:10%"}
+                = unit.sale_item_by_budget_id
+              %td{"style" => "width:31%"}
+                = Itembybudget.find(unit.sale_item_by_budget_id).subbudgetdetail.to_s
+              %th{'colspan' => 2,"style" => "width:42%"}
+                %table
+                  %tbody
+                    %tr
+                      %td{"style" => "width:24%"}
+                        = unit.target_item_by_budget_id
+                      %td{"style" => "width:76%"}
+                        = Itembybudget.find(unit.target_item_by_budget_id).subbudgetdetail.to_s
+              %td{"style" => "width:7%"}
+                = unit.percentage
+              %td{"style" => "width:10%"}
+                %a.btn.btn-warning.btn-xs Editar
+                %a.btn.btn-danger.btn-xs Eliminar
+
+:javascript
+  // DO NOT REMOVE : GLOBAL FUNCTIONS!
+  pageSetUp();
+
+  $(document).ready(function () {
+    $('[data-toggle="confirmation"]').confirmation();
+  });

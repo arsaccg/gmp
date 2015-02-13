@@ -742,6 +742,7 @@ ArsacLogistica::Application.routes.draw do
     get 'dashboard' => 'dashboard#index'
     post 'dashboard' => 'dashboard#index'
     resources :cost_centers
+    resources :equivalence_of_items
     resources :extensionscontrols do
       collection do
         post 'approve'
