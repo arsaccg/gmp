@@ -752,8 +752,8 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
       if order_service_detail.save
         @valuationofequipment.update_attribute(:locked, true)
-        flash[:notice] = "Se ha creado correctamente una nueva orden de servicio."
-        redirect_to url_for(:controller => 'logistics/order_of_service', :action => :index)
+        flash[:notice] = "Se ha creado correctamente una nueva orden de servicio desde la Valorización " + @valuationofequipment.name.to_s + ' ' + @valuationofequipment.code.to_s
+        redirect_to :action => :index
       end
     end
   end
