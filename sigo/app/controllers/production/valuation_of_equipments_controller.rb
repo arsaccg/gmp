@@ -712,7 +712,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     # Creacion
     code_str = (OrderOfService.last.code.to_i + 1).to_s.rjust(5, '0') # next_code
     order_of_service = OrderOfService.new(
-      state: 'pre_issued', 
+      state: 'approved', 
       date_of_issue: Time.now.strftime('%Y-%m-%d'), 
       description: description_serv,
       method_of_payment_id: 1,
@@ -751,6 +751,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
       )
 
       if order_service_detail.save
+        @valuationofequipment.update_attribute(:locked, true)
         flash[:notice] = "Se ha creado correctamente una nueva orden de servicio."
         redirect_to url_for(:controller => 'logistics/order_of_service', :action => :index)
       end
