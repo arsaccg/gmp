@@ -689,6 +689,74 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     end
   end
 
+  def generate_order_service
+    @valuationofequipment = ValuationOfEquipment.find(params[:id])
+    @subcontract_equip = @valuationofequipment.subcontract_equipment
+    @subcontract_equip_details = @subcontract_equip.subcontract_equipment_details
+    cost_center_id = get_company_cost_center('cost_center')
+    # Informacion Primaria
+    description_serv = @subcontract_equip.contract_description
+    working_group = @valuationofequipment.working_group
+    article_id = @subcontract_equip_details.map(&:article_id).first rescue nil
+    price_no_igv = @subcontract_equip_details.map(&:price_no_igv).first rescue 1
+    # Montos sin IGV
+    total_facturar_sin_igv = @valuationofequipment.valuation.to_f
+    amortizacion_adelanto_sin_igv = @valuationofequipment.initial_amortization_number.to_f
+    # IGV
+    igv_total_facturar = @valuationofequipment.billigv.to_f
+    # Montos con IGV
+    detraccion_total = (@valuationofequipment.totalbill.to_f.round(2)*@valuationofequipment.detraction.to_f/100).round(2)
+    descuento_combustible = @valuationofequipment.fuel_discount.to_f
+    descuento_otros = @valuationofequipment.other_discount.to_f
+
+    # Creacion
+    code_str = (OrderOfService.last.code.to_i + 1).to_s.rjust(5, '0') # next_code
+    order_of_service = OrderOfService.new(
+      state: 'pre_issued', 
+      date_of_issue: Time.now.strftime('%Y-%m-%d'), 
+      description: description_serv,
+      method_of_payment_id: 1,
+      entity_id: @subcontract_equip.entity_id,
+      user_id: current_user.id,
+      cost_center_id: cost_center_id,
+      created_at: Time.now,
+      updated_at: Time.now,
+      money_id: 1,
+      exchange_of_rate: nil,
+      date_of_service: Time.now.strftime('%Y-%m-%d'), 
+      code: code_str
+    )
+
+    if order_of_service.save
+      info_article = Article.find_idarticle_global_by_specific_idarticle(article_id, cost_center_id)
+      order_service_detail = OrderOfServiceDetail.new(
+        article_id: article_id,
+        sector_id: nil, # HardCode
+        phase_id: nil, # HardCode
+        unit_of_measurement_id: info_article[4],
+        amount: 1,
+        unit_price: price_no_igv,
+        igv: 1,
+        unit_price_igv: (total_facturar_sin_igv - amortizacion_adelanto_sin_igv + igv_total_facturar),
+        description: description_serv,
+        created_at: Time.now,
+        updated_at: Time.now,
+        order_of_service_id: order_of_service.id,
+        received: nil,
+        unit_price_before_igv: total_facturar_sin_igv,
+        discount_before: 0,
+        discount_after: 0,
+        quantity_igv: igv_total_facturar,
+        working_group_id: working_group
+      )
+
+      if order_service_detail.save
+        flash[:notice] = "Se ha creado correctamente una nueva orden de servicio."
+        redirect_to url_for(:controller => 'logistics/order_of_service', :action => :index)
+      end
+    end
+  end
+
   private
   def valuation_of_equipment_parameters
     params.require(:valuation_of_equipment).permit(

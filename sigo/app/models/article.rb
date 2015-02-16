@@ -182,7 +182,7 @@ class Article < ActiveRecord::Base
   def self.find_idarticle_global_by_specific_idarticle(specific_article_id, cost_center_id)
     article_data = Array.new
     mysql_result = ActiveRecord::Base.connection.execute("
-      SELECT af.name, af.article_id, u.name, af.code
+      SELECT af.name, af.article_id, u.name, af.code, u.unit_of_measurement_id
       FROM articles_from_cost_center_" + cost_center_id.to_s + " af, unit_of_measurements u
       WHERE af.unit_of_measurement_id = u.id
       AND af.article_id =" + specific_article_id.to_s + " 
@@ -190,7 +190,7 @@ class Article < ActiveRecord::Base
     ")
 
     mysql_result.each do |data|
-      article_data = [data[0], data[1], data[2], data[3]]
+      article_data = [data[0], data[1], data[2], data[3], data[4]]
     end
 
     return article_data

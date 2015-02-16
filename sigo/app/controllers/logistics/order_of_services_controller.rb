@@ -230,7 +230,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @orderOfService.state = 'pre_issued'
     @orderOfService.user_id = current_user.id
     if @orderOfService.save
-      flash[:notice] = "Se ha creado correctamente la nueva orden de compra."
+      flash[:notice] = "Se ha creado correctamente la nueva orden de servicio."
       redirect_to :action => :index, company_id: params[:company_id]
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
@@ -239,6 +239,7 @@ class Logistics::OrderOfServicesController < ApplicationController
   end
 
   def add_order_service_item_field
+    cost_center_id = get_company_cost_center('cost_center')
     @reg_n = ((Time.now.to_f)*100).to_i
     data_article_unit = params[:article_id].split('-')
     @article = Article.find_article_in_specific(data_article_unit[0], get_company_cost_center('cost_center'))
@@ -249,6 +250,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @centerOfAttention = CenterOfAttention.all
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
     @unitOfMeasurementId = data_article_unit[1]
+    @working_groups = WorkingGroup.select(:id).select(:name).where(:cost_center_id => cost_center_id)
     @article.each do |art|
       @code_article, @name_article, @id_article = art[3], art[1], art[2]
     end
@@ -294,6 +296,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @costcenters = Company.find(@company).cost_centers
     @methodOfPayments = MethodOfPayment.all
     @extra_calculations = ExtraCalculation.all
+    @working_groups = WorkingGroup.all
     @cost_center_id = @orderOfService.cost_center_id
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       if val != nil
@@ -395,7 +398,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @igv = 0
     @igv_neto = 0
     @orderServiceDetails.each do |osd|
-      @total += osd.amount*osd.unit_price
+      @total += osd.amount.to_f*osd.unit_price.to_f
     end
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       if val != nil
@@ -473,6 +476,7 @@ class Logistics::OrderOfServicesController < ApplicationController
         :unit_of_measurement_id, 
         :sector_id, 
         :phase_id, 
+        :working_group_id,
         :unit_price, 
         :igv, 
         :lock_version, 
