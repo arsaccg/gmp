@@ -404,6 +404,7 @@ ArsacLogistica::Application.routes.draw do
       end
       member do
         get 'approve'
+        get 'generate_order_service'
         get 'report_pdf'
       end
     end

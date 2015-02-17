@@ -30,6 +30,12 @@
         - @phases.each do |phase|
           %option{:value => "#{phase.id}"}
             = phase.code.to_s + ' ' + phase.name
+  %td.working_group
+    %select.form-control{:name =>"order_of_service[order_of_service_details_attributes][#{@reg_n.to_s}][phase_id]", :required => true, title:'No puede dejar este campo vacio'}
+      %option{:value => "0",:selected => true, :disabled => true} Seleccionar Fase
+      - @working_groups.each do |working_group|
+        %option{:value => "#{working_group.id}"}
+          = working_group.name.to_s
   %td.unit-price
     %div
       = text_field_tag 'order_of_service[order_of_service_details_attributes][' + @reg_n.to_s + '][unit_price]', nil, class: "form-control unit-price", onfocusout: "calculatePriceWithourIgv(this);", onkeypress: "return isNumber(event);", :required => true, title:'No puede dejar este campo vacio'

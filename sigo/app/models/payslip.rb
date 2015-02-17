@@ -29,13 +29,14 @@ class Payslip < ActiveRecord::Base
     holidays = Holiday.where("date_holiday BETWEEN '"+week_start.to_s+"' AND '"+week_end.to_s+"'").count
 
     ActiveRecord::Base.connection.execute("
-      SELECT ppd.worker_id, e.dni,  CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name), ar.name, pp.date_of_creation, af.type_of_afp, w.numberofchilds, SUM( ppd.normal_hours ) , SUM( 1 ) AS Dias, SUM( ppd.he_60 ) , SUM( ppd.he_100 ) , SUM( ppd.total_hours ), af.id
+      SELECT ppd.worker_id, e.dni,  CONCAT_WS(  ' ', e.paternal_surname, e.maternal_surname, e.name, e.second_name) AS Nombre, ar.name, pp.date_of_creation, af.type_of_afp, w.numberofchilds, SUM( ppd.normal_hours ) , SUM( 1 ) AS Dias, SUM( ppd.he_60 ) , SUM( ppd.he_100 ) , SUM( ppd.total_hours ), af.id
       FROM part_people pp, part_person_details ppd, entities e, workers w, worker_afps wa, afps af, worker_contracts wc, articles ar
       WHERE pp.cost_center_id = " + cost_center_id.to_s + "
-      AND ppd.part_person_id = pp.id
       AND pp.date_of_creation BETWEEN '" + week_start.to_s + "' AND  '" + week_end.to_s + "'
-      AND ppd.worker_id = w.id
       AND pp.working_group_id IN ("+wg.to_s+")
+      AND pp.blockweekly = 1
+      AND ppd.part_person_id = pp.id
+      AND ppd.worker_id = w.id
       AND w.entity_id = e.id
       AND wa.worker_id = w.id
       AND af.id = wa.afp_id
@@ -43,7 +44,7 @@ class Payslip < ActiveRecord::Base
       AND wc.article_id = ar.id
       AND w.type_of_worker_id = #{tpay}
       GROUP BY ppd.worker_id
-      ORDER BY e.paternal_surname
+      ORDER BY Nombre
     ").each do |row|
       worker_hours = calculate_number_days_worker(row[7].to_f, total_hour.to_f)
       
