@@ -18,8 +18,8 @@
           %i.fa-fw.fa.fa-check
           %strong Error!
           = flash[:error]
-    .col-md-7{ "style" => "margin-top: 10px;" }
-      %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_sc_valuation_path}', 'content', {company_id: #{@company}}, null, 'GET')"}
+    .col-sm-3
+      %button.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{link_budget_front_management_equivalence_of_items_path}', 'content', null, null, 'POST')"}
         Enlace Partidas
 
   %br
