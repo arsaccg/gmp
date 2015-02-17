@@ -283,9 +283,9 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     valuationofequipment.state
     start_date = params[:valuation_of_equipment]['start_date']
     end_date = params[:valuation_of_equipment]['end_date']
-    id =  Entity.find_by_name(params[:valuation_of_equipment]['name']).id
+    
     if valuationofequipment.save
-      updateParts(start_date,end_date,id)
+      updateParts(start_date,end_date,valuationofequipment.subcontract_equipment_id)
       redirect_to :action => :index, company_id: params[:company_id]
     else
       valuationofequipment.errors.messages.each do |attribute, error|
@@ -711,6 +711,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
     # Creacion
     code_str = (OrderOfService.last.code.to_i + 1).to_s.rjust(5, '0') # next_code
+
     order_of_service = OrderOfService.new(
       state: 'approved', 
       date_of_issue: Time.now.strftime('%Y-%m-%d'), 
@@ -729,10 +730,16 @@ class Production::ValuationOfEquipmentsController < ApplicationController
 
     if order_of_service.save
       info_article = Article.find_idarticle_global_by_specific_idarticle(article_id, cost_center_id)
+      ids_sec_phase = ActiveRecord::Base.connection.execute("SELECT ped.sector_id, ped.phase_id
+        FROM part_of_equipments pe, part_of_equipment_details ped
+        WHERE pe.id = ped.part_of_equipment_id
+        AND pe.subcontract_equipment_id = " + @subcontract_equip.id.to_s + "
+        GROUP BY ped.sector_id
+        LIMIT 1").first   
       order_service_detail = OrderOfServiceDetail.new(
-        article_id: article_id,
-        sector_id: nil, # HardCode
-        phase_id: nil, # HardCode
+        article_id: info_article[1],
+        sector_id: ids_sec_phase[0], # HardCode
+        phase_id: ids_sec_phase[1], # HardCode
         unit_of_measurement_id: info_article[4],
         amount: 1,
         unit_price: price_no_igv,
