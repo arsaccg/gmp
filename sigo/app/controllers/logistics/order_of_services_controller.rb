@@ -42,6 +42,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
           AND os.entity_id = e.id
+          AND os.status = 1
           AND os.description LIKE '%#{keyword}%'
           ORDER BY os.id ASC
           LIMIT #{display_length}
@@ -54,6 +55,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
           AND os.entity_id = e.id
+          AND os.status = 1
           AND os.description LIKE '%#{keyword}%'
           AND os.state LIKE '"+state.to_s+"'
           ORDER BY os.id ASC
@@ -69,6 +71,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
           AND os.entity_id = e.id
+          AND os.status = 1
           ORDER BY os.id ASC
           LIMIT #{display_length}"
         )
@@ -80,6 +83,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.entity_id = e.id
           AND os.state LIKE '"+state.to_s+"'
+          AND os.status = 1
           ORDER BY os.id ASC
           LIMIT #{display_length}"
         )        
@@ -92,6 +96,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
           AND os.entity_id = e.id
+          AND os.status = 1
           ORDER BY os.id ASC"
         )
       else
@@ -102,6 +107,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.state LIKE '"+state.to_s+"'
           AND os.entity_id = e.id
+          AND os.status = 1
           ORDER BY os.id ASC"
         )
       end 
@@ -113,6 +119,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
           AND os.entity_id = e.id
+          AND os.status = 1
           ORDER BY os.id ASC
           LIMIT #{display_length}
           OFFSET #{pager_number}
@@ -126,6 +133,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.entity_id = e.id
           AND os.state LIKE '"+state.to_s+"'
+          AND os.status = 1
           ORDER BY os.id ASC
           LIMIT #{display_length}
           OFFSET #{pager_number}
@@ -326,6 +334,7 @@ class Logistics::OrderOfServicesController < ApplicationController
   def destroy
     @OrderOfService = OrderOfService.find_by_id(params[:id])
     @OrderOfService.cancel
+    @OrderOfService.update_attributes(:status => 0, :user_id_historic => current_user, :date_of_elimination => Time.now)
     stateOrderDetail = StatePerOrderOfService.new
     stateOrderDetail.state = @OrderOfService.human_state_name
     stateOrderDetail.order_of_service_id = params[:id]

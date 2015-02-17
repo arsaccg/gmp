@@ -70,6 +70,7 @@ ArsacLogistica::Application.routes.draw do
   # Example resource route within a namespace:,
 
   namespace :logistics do
+    resources :historic_order_of_services
     resources :warehouse_orders do
       collection do
         post 'display_articles'

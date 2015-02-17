@@ -1,0 +1,154 @@
+#content-inside
+  .row
+    .col-xs-12.col-sm-7.col-md-7.col-lg-12
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-eye
+        = "Orden de Servicio " + @orderOfService.code.to_s.rjust(5, '0')
+        %strong= "C.C " + @orderOfService.cost_center.name
+  %section#widget-grid
+    .row
+      %article.col-sm-12.col-md-12.col-lg-8
+        #wid-id-0.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 
+            = 'Orden de Compra N° ' + @orderOfService.code.to_s.rjust(5, '0')
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Código
+                    %th Estado
+                    %th Proveedor
+                    %th Moneda
+                    %th Forma de pago
+                    %th Fecha de Emisión
+                    %th Fecha de Servicio
+                    %th Responsable
+                    %th Descripcion
+                %tbody(id="service_items_table")
+                  %tr
+                    %td
+                      = @orderOfService.id.to_s.rjust(5, '0')
+                    %td
+                      = translate_order_service_state(@orderOfService.state)
+                    %td
+                      - if @orderOfService.entity.present?
+                        = @orderOfService.entity.name.to_s + ' ' + @orderOfService.entity.paternal_surname.to_s
+                    %td
+                      = @orderOfService.money.name.to_s
+                    %td
+                      = @orderOfService.method_of_payment.name.to_s
+                    %td
+                      = @orderOfService.date_of_issue.strftime("%d/%m/%Y")
+                    %td
+                      = @orderOfService.date_of_service.strftime("%d/%m/%Y") rescue Time.now.strftime("%d/%m/%Y")
+                    %td
+                      = @orderOfService.user.first_name.to_s + ' ' + @orderOfService.user.last_name.to_s
+                    %td
+                      = @orderOfService.description.to_s
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 Detalle de la Orden de Servicio
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Codigo
+                    %th Insumo
+                    %th Cantidad
+                    %th Unidad de Medida
+                    %th Precio Unitario
+                    %th Total antes de IGV
+                    %th Total después de IGV
+                    %th Total Descuento después de IGV
+                    %th Total Neto
+                    %th Glosa
+                %tbody(id="service_detail_items_table")
+                  - @orderOfServiceDetails.each do |orderServiceDetail|
+                    %tr
+                      %td
+                        - if orderServiceDetail.article.present?
+                          = orderServiceDetail.article.code
+                      %td
+                        - if orderServiceDetail.article.present?
+                          = orderServiceDetail.article.name
+                      %td
+                        = orderServiceDetail.amount
+                      %td
+                        - if orderServiceDetail.unit_of_measurement != nil
+                          = orderServiceDetail.unit_of_measurement.symbol
+                        - else
+                          = "No tiene Unidad de Medida"
+                      %td
+                        = number_to_currency(orderServiceDetail.unit_price.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                      %td
+                        = number_to_currency(orderServiceDetail.unit_price_before_igv.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                      %td
+                        = number_to_currency(orderServiceDetail.unit_price_igv.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                      %td
+                        = number_to_currency(orderServiceDetail.discount_after.to_f, unit: "#{@orderOfService.money.symbol}", precision: 2)
+                      %td
+                        = number_to_currency((orderServiceDetail.unit_price_igv.to_f + orderServiceDetail.discount_after.to_f), unit: "#{@orderOfService.money.symbol}", precision: 2)
+                      %td
+                        = orderServiceDetail.description
+
+      %article.col-sm-12.col-md-12.col-lg-12
+        #wid-id-2.jarviswidget.jarviswidget-color-greenDark{"data-widget-collapsed" => "false", "data-widget-deletebutton" => "false", "data-widget-editbutton" => "false"}
+          %header
+            %span.widget-icon
+              %i.fa.fa-table
+            %h2 Operaciones extras de la Orden de Servicio
+          %div
+            .jarviswidget-editbox
+              / This area used as dropdown edit box
+            .widget-body.no-padding
+              %table.table.table-hover
+                %thead
+                  %tr
+                    %th Insumo
+                    %th Concepto
+                    %th Valor
+                    %th Aplica
+                %tbody(id="service_detail_items_table")
+                  - @orderOfServiceDetails.each do |orderServiceDetail|
+                    - orderServiceDetail.order_service_extra_calculations.each do |order_operation|
+                      %tr
+                        %td
+                          - if orderServiceDetail.article.present?
+                            = orderServiceDetail.article.name
+                        %td
+                          = order_operation.extra_calculation.concept
+                        %td
+                          - if order_operation.value != nil
+                            - if order_operation.type == 'soles'
+                              = 'S/.' + order_operation.value.to_s
+                            - elsif order_operation.type == 'percent'
+                              = order_operation.value.to_s + '%'
+                          - else
+                            = "No tiene valor alguno."
+                        %td
+                          - if order_operation.apply == 'before'
+                            = 'Antes de IGV'
+                          - elsif order_operation.apply == 'after'
+                            = 'Después de IGV'
+
+%button.btn.btn-sm.btn-primary.btn-prev#backlist-service-order{type: "button"}
+  %i.fa.fa-arrow-left>
+  Retornar al listado
+
+:javascript
+  
+  $('#backlist-service-order').click(function(){
+    load_url_ajax("#{logistics_historic_order_of_services_path}", 'content', {company_id: "#{@company}"}, null, 'GET');
+  });
