@@ -23,8 +23,11 @@
               %td
                 = unit.date_of_elimination.strftime("%d/%m/%Y").to_s
               %td
-                -person = User.find(unit.user_id_historic)
-                = person.first_name + " " + person.last_name + " " + person.surname
+                -if !unit.user_id_historic.nil?
+                  -person = User.find(unit.user_id_historic)
+                  = person.first_name + " " + person.last_name + " " + person.surname
+                -else
+                  = "-"
               %td
                 = unit.description
               %td

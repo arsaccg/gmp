@@ -334,7 +334,8 @@ class Logistics::OrderOfServicesController < ApplicationController
   def destroy
     @OrderOfService = OrderOfService.find_by_id(params[:id])
     @OrderOfService.cancel
-    @OrderOfService.update_attributes(:status => 0, :user_id_historic => current_user, :date_of_elimination => Time.now)
+    @OrderOfService.update(:status => 0, :date_of_elimination => Time.now)
+    @OrderOfService.update(:user_id_historic => current_user.id)
     stateOrderDetail = StatePerOrderOfService.new
     stateOrderDetail.state = @OrderOfService.human_state_name
     stateOrderDetail.order_of_service_id = params[:id]
