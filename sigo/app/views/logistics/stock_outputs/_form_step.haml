@@ -54,7 +54,7 @@
       %strong Paso 3
       \- Llenar información
     %fieldset
-      = hidden_field_tag "stock_input[company_id]"
+      = hidden_field_tag "stock_input[company_id]", session[:company]
       = hidden_field_tag "stock_input[input]", "0"
       .row
         .col-md-1
@@ -145,7 +145,7 @@
   $(document).ready(function(){
     //$('#stock_input_issue_date').datepicker.noConflict;
     $('select_table_per_warehouse').select2({width:'200px'});
-    $("#stock_input_company_id").val($.company_global_id);
+    //$("#stock_input_company_id").val($.company_global_id);
   });
 
   $("#btn-add-article").click(function(){

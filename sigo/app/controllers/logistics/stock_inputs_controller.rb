@@ -14,7 +14,9 @@ class Logistics::StockInputsController < ApplicationController
   def create
     @head = StockInput.new(stock_input_parameters)
     #@head.issue_date = stock_input_parameters['issue_date']
-    @head.year = @head.period.to_s[0,4]
+    @head.period = @head.issue_date.strftime("%Y%m")
+    @head.year = @head.issue_date.strftime("%Y")
+    #@head.year = @head.period.to_s[0,4]
     @head.user_inserts_id = current_user.id
     #@head.stock_input_details.user_inserts_id = current_user.id
     if @head.save
