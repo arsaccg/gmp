@@ -17,25 +17,26 @@
             %th{"style" => "width:7%"} Porcentaje
             %th{"style" => "width:10%"} Acciones
         %tbody
-          - @equivalences.each do |unit|
+          - @equiarray.each do |unit|
             %tr
               %td{"style" => "width:10%"}
-                = unit.sale_item_by_budget_id
+                = unit[0]
               %td{"style" => "width:31%"}
-                = Itembybudget.find(unit.sale_item_by_budget_id).subbudgetdetail.to_s
-              %th{'colspan' => 2,"style" => "width:42%"}
+                = Itembybudget.find(unit[0]).subbudgetdetail.to_s
+              %th{'colspan' => 3,"style" => "width:42%"}
                 %table
                   %tbody
-                    %tr
-                      %td{"style" => "width:24%"}
-                        = unit.target_item_by_budget_id
-                      %td{"style" => "width:76%"}
-                        = Itembybudget.find(unit.target_item_by_budget_id).subbudgetdetail.to_s
-              %td{"style" => "width:7%"}
-                = unit.percentage
+                    - EquivalenceOfItem.where("sale_item_by_budget_id = ?",unit[0]).each do |equi|
+                      %tr
+                        %td{"style" => "width:24%"}
+                          = equi.target_item_by_budget_id
+                        %td{"style" => "width:76%"}
+                          = Itembybudget.find(equi.target_item_by_budget_id).subbudgetdetail.to_s
+                        %td{"style" => "width:7%"}
+                          = equi.percentage
               %td{"style" => "width:10%"}
-                %a.btn.btn-warning.btn-xs Editar
-                %a.btn.btn-danger.btn-xs Eliminar
+                %a.btn.btn-danger.btn-xs{:data => {:toggle => 'confirmation', :placement => 'left', :title => 'Esta seguro de eliminar el item ' + "#{unit[0]}?", :singleton => 'true', :popout => 'true', :onclick => "javascript:delete_to_url('#{management_equivalence_of_item_path(unit[0])}' + '?authenticity_token=#{form_authenticity_token}', 'content', '#{management_equivalence_of_items_path}')"}}
+                  Eliminar
 
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!

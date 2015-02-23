@@ -3,6 +3,7 @@ class WorkingGroup < ActiveRecord::Base
 	has_many :stock_outputs
 	has_many :part_people
 	has_many :part_of_equipment_details
+	has_many :order_of_service_details
 	belongs_to :cost_center
 	belongs_to :sector
 	belongs_to :front_chief, :foreign_key => 'front_chief_id'

@@ -1,0 +1,131 @@
+#content-inside
+  .row
+    .col-md-12.col-sm-7.col-md-7.col-lg-4
+      %h1.page-title.txt-color-blueDark
+        %i.fa.fa-pencil-square-o.fa-fw 
+        Enlazar Presupuestos
+
+    %br
+    .row
+      .col-lg-12
+        %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
+          %thead
+            %tr
+              %th(colspan="2") Partida Venta Seleccionada
+              %th Total
+              %th Eliminar
+          %tbody(id="items_table")
+    .row
+      .col-lg-12
+        %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
+          %thead
+            %tr
+              %th(colspan="2") Partidas Meta Seleccionadas
+              %th Total
+              %th Porcentaje
+              %th Guardar
+              %th Eliminar
+          %tbody(id="items_table2")
+
+    %br
+      .row
+        #widget-grid{style: "width: 500px;"}
+          %article.col-xs-12.col-sm-12.col-md-12.col-lg-6
+            #content-inside
+              .row
+                #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", style: "margin-left:15%;float: left;width: 500px;"}
+                  %header
+                    %span.widget-icon
+                      %i.fa.fa-table
+                    %h2 Partidas de Presupuestos Venta
+                  %div
+                    .jarviswidget-editbox
+                    .widget-body
+                      %table(class="table table-hover white-table small-font table-light"  id="scroll-table" width="100%")
+                        %thead
+                          %tr
+                            %th(colspan="2") Partidas
+                            %th Total
+                            %th Relacionar
+                        %tbody
+                          - @saleitembybudgets.each do |unit|
+                            %tr
+                              %td 
+                                = unit.order
+                              %td 
+                                = unit.subbudgetdetail
+                              %td
+                                -if unit.price != nil
+                                  = (unit.measured*unit.price).round(2)
+                                -else
+                                  = unit.measured
+                              %td
+                                %a(href="javascript:add_item(#{unit.id});" id="btn-add-product" class="btn btn-success btn-default" role="button")
+                                  Agregar
+        #widget-grid{style: "width: 500px;"}
+          %article.col-xs-12.col-sm-12.col-md-12.col-lg-6
+            #content-inside
+              .row
+                #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", style: "margin-left:120%;float: left;width: 500px;"}
+                  %header
+                    %span.widget-icon
+                      %i.fa.fa-table
+                    %h2 Partidas de Presupuestos Meta
+                  %div
+                    .jarviswidget-editbox
+                    .widget-body
+                      %table(class="table table-hover white-table small-font table-light"  id="scroll-table" width="100%")
+                        %thead
+                          %tr
+                            %th(colspan="2") Partidas
+                            %th Total
+                            %th Relacionar
+                        %tbody
+                          - @goalitembybudgets.each do |unit|
+                            %tr
+                              %td 
+                                = unit.order
+                              %td 
+                                = unit.subbudgetdetail
+                              %td
+                                -if unit.price != nil
+                                  = (unit.measured*unit.price).round(2)
+                                -else
+                                  = unit.measured
+                              %td
+                                %a(href="javascript:add_item2(#{unit.id});" id="btn-add-product" class="btn btn-success btn-default" role="button")
+                                  Agregar
+
+
+  %button.btn.btn-sm.btn-primary.btn-prev#backlist-entity{type: "button"}
+    %i.fa.fa-arrow-left>
+    Retornar al listado
+
+  
+:javascript
+  $(document).ready(function (){
+    $('select').select2({width:'280px'});
+  });
+
+  function add_item(elemento){
+    str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
+
+    append_url_ajax('#{add_item_management_equivalence_of_items_path}', 'items_table', str_item, 0, 'POST');
+  }
+
+  function add_item2(elemento){
+    str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
+
+    append_url_ajax('#{add_item2_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
+  }
+
+  function add_item3(elemento,porcentaje){
+    percent = document.getElementById("equivalence_of_items_goalitembybudget_"+porcentaje+"_percentage").value;
+    str_item = {authenticity_token: "#{form_authenticity_token}", sale_id: elemento, target_id: $('#saleitembybudget_item').val(), percentage: percent};
+
+    append_url_ajax('#{link_budget_method_management_equivalence_of_items_path}', 'items_table2', str_item, 0, 'POST');
+  }
+
+  $('#backlist-entity').click(function(){
+    load_url_ajax("#{management_equivalence_of_items_path}", 'content', null, null, 'GET');
+  });

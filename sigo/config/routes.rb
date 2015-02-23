@@ -70,6 +70,7 @@ ArsacLogistica::Application.routes.draw do
   # Example resource route within a namespace:,
 
   namespace :logistics do
+    resources :historic_order_of_services
     resources :warehouse_orders do
       collection do
         post 'display_articles'
@@ -404,6 +405,7 @@ ArsacLogistica::Application.routes.draw do
       end
       member do
         get 'approve'
+        get 'generate_order_service'
         get 'report_pdf'
       end
     end
@@ -742,7 +744,14 @@ ArsacLogistica::Application.routes.draw do
     get 'dashboard' => 'dashboard#index'
     post 'dashboard' => 'dashboard#index'
     resources :cost_centers
-    resources :equivalence_of_items
+    resources :equivalence_of_items do
+      collection do
+        post 'link_budget_front'
+        post 'link_budget_method'
+        post 'add_item'
+        post 'add_item2'
+      end
+    end
     resources :extensionscontrols do
       collection do
         post 'approve'

@@ -1,0 +1,15 @@
+%tr(class="item"){id: "tr" + @reg_n.to_s}
+  %td{"style" => "display:none"}
+    %div
+      = text_field_tag 'saleitembybudget[item]', @saleitembybudget.id , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+  %td
+    = @saleitembybudget.order
+  %td
+    = @saleitembybudget.subbudgetdetail
+  %td
+    -if @saleitembybudget.price != nil
+      = (@saleitembybudget.measured*@saleitembybudget.price).round(2)
+    -else
+      = @saleitembybudget.measured
+  %td{:style => "width: 1%;"}
+    %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X

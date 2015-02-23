@@ -42,6 +42,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
           AND os.entity_id = e.id
+          AND os.status = 1
           AND os.description LIKE '%#{keyword}%'
           ORDER BY os.id ASC
           LIMIT #{display_length}
@@ -54,6 +55,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
           AND os.entity_id = e.id
+          AND os.status = 1
           AND os.description LIKE '%#{keyword}%'
           AND os.state LIKE '"+state.to_s+"'
           ORDER BY os.id ASC
@@ -69,6 +71,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
           AND os.entity_id = e.id
+          AND os.status = 1
           ORDER BY os.id ASC
           LIMIT #{display_length}"
         )
@@ -80,6 +83,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.entity_id = e.id
           AND os.state LIKE '"+state.to_s+"'
+          AND os.status = 1
           ORDER BY os.id ASC
           LIMIT #{display_length}"
         )        
@@ -92,6 +96,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
           AND os.entity_id = e.id
+          AND os.status = 1
           ORDER BY os.id ASC"
         )
       else
@@ -102,6 +107,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.state LIKE '"+state.to_s+"'
           AND os.entity_id = e.id
+          AND os.status = 1
           ORDER BY os.id ASC"
         )
       end 
@@ -113,6 +119,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           WHERE os.cost_center_id = "+@cc.to_s+"
           AND os.user_id = u.id
           AND os.entity_id = e.id
+          AND os.status = 1
           ORDER BY os.id ASC
           LIMIT #{display_length}
           OFFSET #{pager_number}
@@ -126,6 +133,7 @@ class Logistics::OrderOfServicesController < ApplicationController
           AND os.user_id = u.id
           AND os.entity_id = e.id
           AND os.state LIKE '"+state.to_s+"'
+          AND os.status = 1
           ORDER BY os.id ASC
           LIMIT #{display_length}
           OFFSET #{pager_number}
@@ -230,7 +238,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @orderOfService.state = 'pre_issued'
     @orderOfService.user_id = current_user.id
     if @orderOfService.save
-      flash[:notice] = "Se ha creado correctamente la nueva orden de compra."
+      flash[:notice] = "Se ha creado correctamente la nueva orden de servicio."
       redirect_to :action => :index, company_id: params[:company_id]
     else
       flash[:error] = "Ha ocurrido un problema. Porfavor, contactar con el administrador del sistema."
@@ -239,6 +247,7 @@ class Logistics::OrderOfServicesController < ApplicationController
   end
 
   def add_order_service_item_field
+    cost_center_id = get_company_cost_center('cost_center')
     @reg_n = ((Time.now.to_f)*100).to_i
     data_article_unit = params[:article_id].split('-')
     @article = Article.find_article_in_specific(data_article_unit[0], get_company_cost_center('cost_center'))
@@ -249,6 +258,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @centerOfAttention = CenterOfAttention.all
     @unitOfMeasurement = UnitOfMeasurement.find(data_article_unit[1]).symbol
     @unitOfMeasurementId = data_article_unit[1]
+    @working_groups = WorkingGroup.select(:id).select(:name).where(:cost_center_id => cost_center_id)
     @article.each do |art|
       @code_article, @name_article, @id_article = art[3], art[1], art[2]
     end
@@ -294,6 +304,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @costcenters = Company.find(@company).cost_centers
     @methodOfPayments = MethodOfPayment.all
     @extra_calculations = ExtraCalculation.all
+    @working_groups = WorkingGroup.all
     @cost_center_id = @orderOfService.cost_center_id
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       if val != nil
@@ -323,6 +334,8 @@ class Logistics::OrderOfServicesController < ApplicationController
   def destroy
     @OrderOfService = OrderOfService.find_by_id(params[:id])
     @OrderOfService.cancel
+    @OrderOfService.update(:status => 0, :date_of_elimination => Time.now)
+    @OrderOfService.update(:user_id_historic => current_user.id)
     stateOrderDetail = StatePerOrderOfService.new
     stateOrderDetail.state = @OrderOfService.human_state_name
     stateOrderDetail.order_of_service_id = params[:id]
@@ -395,7 +408,7 @@ class Logistics::OrderOfServicesController < ApplicationController
     @igv = 0
     @igv_neto = 0
     @orderServiceDetails.each do |osd|
-      @total += osd.amount*osd.unit_price
+      @total += osd.amount.to_f*osd.unit_price.to_f
     end
     FinancialVariable.where("name LIKE '%IGV%'").each do |val|
       if val != nil
@@ -473,6 +486,7 @@ class Logistics::OrderOfServicesController < ApplicationController
         :unit_of_measurement_id, 
         :sector_id, 
         :phase_id, 
+        :working_group_id,
         :unit_price, 
         :igv, 
         :lock_version, 

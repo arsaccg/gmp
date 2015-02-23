@@ -4,6 +4,20 @@
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Valorizaciones
+    - if flash[:notice] != nil
+      .alert.alert-success.fade.in{"style" => "clear:both"}
+        %button.close{"data-dismiss" => "alert"}
+          ×
+        %i.fa-fw.fa.fa-check
+        %strong Éxito
+        = flash[:notice]
+    - if flash[:error] != nil
+      .alert.alert-danger.fade.in
+        %button.close{"data-dismiss" => "alert"}
+          ×
+        %i.fa-fw.fa.fa-times
+        %strong Error!
+        = flash[:error]
     .col-md-7{ "style" => "margin-top: 10px;" }
       %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_production_valuation_of_equipment_path}', 'content', {company_id: #{@company}}, null, 'GET')"}
         Nuevo
