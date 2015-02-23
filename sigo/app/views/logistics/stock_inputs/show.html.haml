@@ -33,6 +33,8 @@
                 %th{"style"=>"text-align:center;font-weight: 300;"}= @head.series
                 %th{"style"=>"text-align:center;font-weight: 300;"}= @head.document
                 %th{"style"=>"text-align:center;font-weight: 300;"}= @head.issue_date
+                = @head.period.to_s
+                = @head.year.to_s
                 %tr
                   %th{"style"=>"text-align:center"} Descripción
                   %th{'colspan' => 5, "style"=>"font-weight: 300;"}= @head.description

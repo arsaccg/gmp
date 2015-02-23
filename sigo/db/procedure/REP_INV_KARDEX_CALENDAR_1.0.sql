@@ -96,9 +96,9 @@ si.`issue_date`,
 dod.`article_id` AS article_id,
 a.`code` AS article_code,
 a.`name` AS article_name,
-um.`symbol` AS article_symbol,
-sid.`amount`,
-sid.`unit_cost`
+um.symbol AS article_symbol,
+sid.amount,
+sid.unit_cost
 FROM `stock_input_details` sid
 INNER JOIN `stock_inputs` si ON sid.`stock_input_id` = si.`id` AND si.`status` = 'A'
 #INNER JOIN `warehouses` w ON w.`id` = si.`warehouse_id`
@@ -142,9 +142,9 @@ si.`issue_date`,
 sid.`article_id` AS article_id,
 a.`code` AS article_code,
 a.`name` AS article_name,
-um.`symbol` AS article_symbol,
-sid.`amount`,
-sid.`unit_cost`
+um.symbol AS article_symbol,
+sid.amount,
+sid.unit_cost
 FROM `stock_input_details` sid
 INNER JOIN `stock_inputs` si ON si.`id` = sid.`stock_input_id` AND si.`status` = 'A'
 #INNER JOIN `warehouses` w ON w.`id` = si.`warehouse_id`
