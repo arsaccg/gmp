@@ -46,7 +46,7 @@
               %tr
                 %td PRODUCCIÓN
                 %td{:style => 'text-align:right;'}
-                  = number_to_currency @total_price_meta, unit: 'S/.', precision: 2
+                  = number_to_currency @totalprice2, unit: 'S/.', precision: 2
                   %a.btn.btn-default.btn-xs{ :href => "javascript:show_modal_venta()"}
                     %i.fa.fa-search
               %tr
@@ -269,10 +269,10 @@
                       -if m_stock_input[2].round(2).to_f-@cant.to_f < 0
                         %td{ :style => 'text-align:right;color:red;' }
                           %span.label.label{"style"=>"color: red;text-align:right;font-size: 11px;background-color: yellow;"}
-                            = m_stock_input[2].round(2).to_f - @cant.to_f
+                            = (m_stock_input[2].to_f - @cant.to_f).round(2)
                       -else
-                        %td{ :style => 'text-align:right;' }= m_stock_input[2].round(2).to_f - @cant.to_f
-                      -@dif_c+= m_stock_input[2].round(4).to_f - @cant.to_f
+                        %td{ :style => 'text-align:right;' }= (m_stock_input[2].to_f - @cant.to_f).round(2)
+                      -@dif_c += m_stock_input[2].round(4).to_f - @cant.to_f
                       -if (m_stock_input[2].to_f*m_stock_input[3].to_f).to_f - @price.to_f < 0
                         %td{ :style => 'text-align:right;color:red;' }
                           %span.label.label{"style"=>"color: red;text-align:right;font-size: 11px;background-color: yellow;"}
@@ -295,8 +295,8 @@
                         %td{ :style => 'text-align:right;' }= number_to_currency rm[6], unit: 'S/.', precision: 2
                         %td{ :style => 'text-align:right;' }
                           %span.label.label{"style"=>"color: red;text-align:right;font-size: 11px;background-color: yellow;"}
-                            = 0 - rm[5].to_f
-                        -@dif_c+= 0 - rm[5].to_f
+                            = (0 - rm[5].to_f).round(2)
+                        -@dif_c += (0 - rm[5].to_f).round(2)
                         %td{ :style => 'text-align:right;color:red' }
                           %span.label.label{"style"=>"color: red;text-align:right;font-size: 11px;background-color: yellow;"}
                             =number_to_currency (0-rm[6]), unit: 'S/.', precision: 2
