@@ -49,7 +49,7 @@ class Management::EquivalenceOfItemsController < ApplicationController
     goalitembybudget = Itembybudget.find(params[:sale_id])
     goalitembybudget.percentage = 100
     goalitembybudget.save
-    render :layout => false
+    redirect_to :action => :index
   end
 
   def destroy
