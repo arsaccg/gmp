@@ -231,22 +231,23 @@ class Production::AnalysisOfValuationsController < ApplicationController
         else
           #art.id, art.code, art.name, u.symbol, pod.unit_price, pod.amount
           articles_in_purchase.each do |aip|
-            prom_pon_amount = aip[5].to_f/ao[1].to_f
-            prom_pon_price += aip[4].to_f*prom_pon_amount.to_f
+            prom_pon_amount += aip[5].to_f*aip[4].to_f
+            prom_pon_price += aip[5].to_f
             @id = aip[0]
             @code = aip[1]
             @name = aip[2]
             @unit_sym = aip[3]
           end
-          @real_materiales << [@id, @code, @name, @unit_sym, prom_pon_price, ao[1], prom_pon_price.to_f*ao[1].to_f]
-          @total_stock_input_real += prom_pon_price.to_f*ao[1].to_f
+          final = prom_pon_amount.to_f/prom_pon_price.to_f
+          @real_materiales << [@id, @code, @name, @unit_sym, final.to_f, ao[1], final.to_f*ao[1].to_f]
+          @total_stock_input_real += final.to_f*ao[1].to_f
         end
       end
 
       #################
-      p '-------------------'
-      p arr_stock_input
-      p '-------------------'
+      #p '-------------------'
+      #p arr_stock_input
+      #p '-------------------'
       #################
 
       # ORDER ARRAY META
