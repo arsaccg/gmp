@@ -12,10 +12,15 @@ class Management::EquivalenceOfItemsController < ApplicationController
   end
 
   def link_budget_front
-    budgets_goal = Budget.where("type_of_budget = ? AND cost_center_id = ?", '0', get_company_cost_center('cost_center')).first
-    @goalitembybudgets = Itembybudget.where("budget_id = ? AND measured != ''  AND percentage<100",budgets_goal.id).order(:order)
-    budgets_sale = Budget.where("type_of_budget = ? AND cost_center_id = ?", '1', get_company_cost_center('cost_center')).first
-    @saleitembybudgets = Itembybudget.where("budget_id = ? AND measured != ''  AND percentage<100",budgets_sale.id).order(:order)
+    budgets_goal = Budget.where("type_of_budget = ? AND cost_center_id = ?", '0', get_company_cost_center('cost_center')).first rescue nil
+    @message_error = ''
+    if !budgets_goal.nil?
+      @goalitembybudgets = Itembybudget.where("budget_id = ? AND measured != ''  AND percentage<100",budgets_goal.id).order(:order)
+      budgets_sale = Budget.where("type_of_budget = ? AND cost_center_id = ?", '1', get_company_cost_center('cost_center')).first
+      @saleitembybudgets = Itembybudget.where("budget_id = ? AND measured != ''  AND percentage<100",budgets_sale.id).order(:order)
+    else
+      @message_error = "Este centro de costo no tiene ningún Presupuesto Meta."
+    end
     render(partial: 'link_budget_front', :layout => false)
   end
 

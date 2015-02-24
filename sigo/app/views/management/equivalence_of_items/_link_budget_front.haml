@@ -4,7 +4,7 @@
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Enlazar Presupuestos
-
+  - if @message_error == ''
     %br
     .row
       .col-lg-12
@@ -28,73 +28,79 @@
           %tbody(id="items_table2")
 
     %br
-      .row
-        #widget-grid{style: "width: 500px;"}
-          %article.col-xs-12.col-sm-12.col-md-12.col-lg-6
-            #content-inside
-              .row
-                #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", style: "margin-left:15%;float: left;width: 500px;"}
-                  %header
-                    %span.widget-icon
-                      %i.fa.fa-table
-                    %h2 Partidas de Presupuestos Venta
-                  %div
-                    .jarviswidget-editbox
-                    .widget-body
-                      %table(class="table table-hover white-table small-font table-light"  id="scroll-table" width="100%")
-                        %thead
+    .row
+      #widget-grid-1{style: "width: 50%; overflow: hidden; float: left;"}
+        %article.col-xs-12.col-sm-12.col-md-12.col-lg-6
+          #content-inside
+            .row
+              #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", style: "width: 98%;"}
+                %header
+                  %span.widget-icon
+                    %i.fa.fa-table
+                  %h2 Partidas de Presupuestos Venta
+                %div
+                  .jarviswidget-editbox
+                  .widget-body
+                    %table(class="table table-hover white-table small-font table-light"  id="scroll-table" width="100%")
+                      %thead
+                        %tr
+                          %th(colspan="2") Partidas
+                          %th Total
+                          %th Relacionar
+                      %tbody
+                        - @saleitembybudgets.each do |unit|
                           %tr
-                            %th(colspan="2") Partidas
-                            %th Total
-                            %th Relacionar
-                        %tbody
-                          - @saleitembybudgets.each do |unit|
-                            %tr
-                              %td 
-                                = unit.order
-                              %td 
-                                = unit.subbudgetdetail
-                              %td
-                                -if unit.price != nil
-                                  = (unit.measured*unit.price).round(2)
-                                -else
-                                  = unit.measured
-                              %td
-                                %a(href="javascript:add_item(#{unit.id});" id="btn-add-product" class="btn btn-success btn-default" role="button")
-                                  Agregar
-        #widget-grid{style: "width: 500px;"}
-          %article.col-xs-12.col-sm-12.col-md-12.col-lg-6
-            #content-inside
-              .row
-                #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", style: "margin-left:120%;float: left;width: 500px;"}
-                  %header
-                    %span.widget-icon
-                      %i.fa.fa-table
-                    %h2 Partidas de Presupuestos Meta
-                  %div
-                    .jarviswidget-editbox
-                    .widget-body
-                      %table(class="table table-hover white-table small-font table-light"  id="scroll-table" width="100%")
-                        %thead
+                            %td 
+                              = unit.order
+                            %td 
+                              = unit.subbudgetdetail
+                            %td
+                              -if unit.price != nil
+                                = (unit.measured*unit.price).round(2)
+                              -else
+                                = unit.measured
+                            %td
+                              %a(href="javascript:add_item(#{unit.id});" id="btn-add-product" class="btn btn-success btn-default" role="button")
+                                Agregar
+      #widget-grid-2{style: "width: 50%; overflow: hidden; float: left;"}
+        %article.col-xs-12.col-sm-12.col-md-12.col-lg-6
+          #content-inside
+            .row
+              #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", style: "width: 98%;"}}
+                %header
+                  %span.widget-icon
+                    %i.fa.fa-table
+                  %h2 Partidas de Presupuestos Meta
+                %div
+                  .jarviswidget-editbox
+                  .widget-body
+                    %table(class="table table-hover white-table small-font table-light"  id="scroll-table" width="100%")
+                      %thead
+                        %tr
+                          %th(colspan="2") Partidas
+                          %th Total
+                          %th Relacionar
+                      %tbody
+                        - @goalitembybudgets.each do |unit|
                           %tr
-                            %th(colspan="2") Partidas
-                            %th Total
-                            %th Relacionar
-                        %tbody
-                          - @goalitembybudgets.each do |unit|
-                            %tr
-                              %td 
-                                = unit.order
-                              %td 
-                                = unit.subbudgetdetail
-                              %td
-                                -if unit.price != nil
-                                  = (unit.measured*unit.price).round(2)
-                                -else
-                                  = unit.measured
-                              %td
-                                %a(href="javascript:add_item2(#{unit.id});" id="btn-add-product" class="btn btn-success btn-default" role="button")
-                                  Agregar
+                            %td 
+                              = unit.order
+                            %td 
+                              = unit.subbudgetdetail
+                            %td
+                              -if unit.price != nil
+                                = (unit.measured*unit.price).round(2)
+                              -else
+                                = unit.measured
+                            %td
+                              %a(href="javascript:add_item2(#{unit.id});" id="btn-add-product" class="btn btn-success btn-default" role="button")
+                                Agregar
+  - else
+
+    .alert.alert-danger.fade.in
+      %i.fa-fw.fa.fa-times
+      %strong= @message_error
+      Asegurate en cargar algun presupuesto antes de continuar.
 
 
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-entity{type: "button"}
