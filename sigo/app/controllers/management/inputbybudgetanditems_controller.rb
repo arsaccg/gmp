@@ -122,6 +122,7 @@ class Management::InputbybudgetanditemsController < ApplicationController
     @item.input = params[:input].gsub('_', ' ')
     @item.budget_id = params[:budget_id]
     @item.subbudget_code = params[:subbudget_code]
+    @item.item_id = params[:item_id]
     @item.unit = params[:unit].gsub('_', '%')
 
     p "****************Inputbybudgetanditem*****************"

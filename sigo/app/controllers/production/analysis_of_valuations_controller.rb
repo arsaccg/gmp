@@ -243,12 +243,11 @@ class Production::AnalysisOfValuationsController < ApplicationController
         end
       end
 
-                                            
-
-
-
-
-
+      #################
+      p '-------------------'
+      p arr_stock_input
+      p '-------------------'
+      #################
 
       # ORDER ARRAY META
       @meta_stock_inputs = arr_stock_input.group_by { |a,b,_,d| [a,b,d] }.map { |(a,b,c),arr_stock_input| [a,b,arr_stock_input.reduce(0) { |t,(_,_,e,_)| t + e },c] }
