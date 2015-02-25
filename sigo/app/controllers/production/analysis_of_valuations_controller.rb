@@ -83,7 +83,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       end
       @cad2 = @cad2.join(',')
     end
-    budgetidcostcenter = Budget.where("cost_center_id = " + get_company_cost_center('cost_center') + " AND type_of_budget = 0").first.id
+    budgetidcostcenter = Budget.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND type_of_budget = 0").first.id
     # PARTIDAS
     @meta_part_work = Array.new
     budgetanditems_list = Array.new
@@ -241,6 +241,8 @@ class Production::AnalysisOfValuationsController < ApplicationController
           final = prom_pon_amount.to_f/prom_pon_price.to_f
           @real_materiales << [@id, @code, @name, @unit_sym, final.to_f, ao[1], final.to_f*ao[1].to_f]
           @total_stock_input_real += final.to_f*ao[1].to_f
+          prom_pon_price = 0
+          prom_pon_amount = 0
         end
       end
 
