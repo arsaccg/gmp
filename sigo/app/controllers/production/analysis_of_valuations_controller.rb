@@ -241,6 +241,8 @@ class Production::AnalysisOfValuationsController < ApplicationController
           final = prom_pon_amount.to_f/prom_pon_price.to_f
           @real_materiales << [@id, @code, @name, @unit_sym, final.to_f, ao[1], final.to_f*ao[1].to_f]
           @total_stock_input_real += final.to_f*ao[1].to_f
+          prom_pon_price = 0
+          prom_pon_amount = 0
         end
       end
 
