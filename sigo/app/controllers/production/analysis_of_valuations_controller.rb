@@ -83,7 +83,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       end
       @cad2 = @cad2.join(',')
     end
-    budgetidcostcenter = Budget.where("cost_center_id = " + get_company_cost_center('cost_center') + " AND type_of_budget = 0").first.id
+    budgetidcostcenter = Budget.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND type_of_budget = 0").first.id
     # PARTIDAS
     @meta_part_work = Array.new
     budgetanditems_list = Array.new
