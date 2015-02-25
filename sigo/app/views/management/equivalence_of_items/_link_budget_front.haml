@@ -16,7 +16,6 @@
                   %th Partidas Meta
                   %th Metrado
                   %th Precio
-                  %th Saldo
               %tbody
                 - result_credit = get_credit(@goalitembybudgets[0].budget_id)
                 - itemwbs = itemswbs_from_budget(@goalitembybudgets[0].budget_id)
@@ -46,15 +45,8 @@
                         = number_with_delimiter(number_with_precision itembudget.measured.to_f, :precision => 2)
                       %td(style="text-align: right;") 
                         = number_to_currency(number_with_precision(itembudget.price, :precision => 2).to_s , :unit=>'S/. ') rescue ""
-                      - if  itembudget.item_id != nil
-                        %td(class="credit")
-                          %strong
-                            = number_with_delimiter(number_with_precision(amount.to_f, :precision => 2))  rescue ""
-                      - else
-                        %td(style="text-align: center;"  class="credit")
-                          = "-"
                     -else
-                      %td(colspan="3")
+                      %td(colspan="2")
     %br
     .row
       .col-md-4
