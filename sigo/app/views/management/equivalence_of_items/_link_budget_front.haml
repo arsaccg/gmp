@@ -7,17 +7,80 @@
   - if @message_error == ''
     
     .row
-      .col-lg-12
-        %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
-          %thead
-            %tr
-              %th(colspan="2") Partida Venta Seleccionada
-              %th Total
-              %th Eliminar
-          %tbody(id="items_table")
-
+      .col-md-12
+        .content-load
+          .items-panel
+            %table(class=" table-bordered table-hover white-table small-font table-condensed " width="100%")
+              %thead
+                %tr
+                  %th Partidas Meta
+                  %th Metrado
+                  %th Precio
+              %tbody
+                - result_credit = get_credit(@goalitembybudgets[0].budget_id)
+                - itemwbs = itemswbs_from_budget(@goalitembybudgets[0].budget_id)
+                - @goalitembybudgets.each do |itembudget|
+                  - title = get_title_or_description(itembudget)
+                  - amount_str = ""
+                  - if  itembudget.item_id != nil
+                    - meas_i = number_with_precision(itembudget.measured.to_f, :precision => 2)
+                    - cred_i = number_with_precision(result_credit[itembudget.item_code + itembudget.order], :precision => 2)
+                    - amount = meas_i.to_f - cred_i.to_f
+                    - amount_str = get_color_class(amount.to_s, itemwbs[itembudget.id])
+                  - else 
+                    - amount_str = "color-title"
+                  %tr{:id=>"item_" + itembudget.id.to_s, :class=> amount_str}
+                    %td 
+                      = "---" * (itembudget.order.length/3).to_i
+                      = itembudget.order        
+                      -if itembudget.measured.to_f > 0
+                        -title_parsed = URI.escape(title.gsub('\'', '_'))
+                        %a{:href=>"javascript:add_item2('#{itembudget.id.to_s}')"}
+                          = title
+                      -else
+                        %strong
+                          = title
+                    -if itembudget.measured.to_f > 0
+                      %td(style="text-align: right;")
+                        = number_with_delimiter(number_with_precision itembudget.measured.to_f, :precision => 2)
+                      %td(style="text-align: right;") 
+                        = number_to_currency(number_with_precision(itembudget.price, :precision => 2).to_s , :unit=>'S/. ') rescue ""
+                    -else
+                      %td(colspan="2")
+    %br
     .row
-      .col-lg-12
+      .col-md-4
+        .content-load
+          .items-panel
+            %table(class=" table-bordered table-hover white-table small-font table-condensed " width="100%")
+              %thead
+                %tr
+                  %th Partidas Venta 
+              %tbody
+                - result_credit = get_credit(@saleitembybudgets[0].budget_id)
+                - itemwbs = itemswbs_from_budget(@saleitembybudgets[0].budget_id)
+                - @saleitembybudgets.each do |itembudget|
+                  - title = get_title_or_description(itembudget)
+                  - amount_str = ""
+                  - if  itembudget.item_id != nil
+                    - meas_i = number_with_precision(itembudget.measured.to_f, :precision => 2)
+                    - cred_i = number_with_precision(result_credit[itembudget.item_code + itembudget.order], :precision => 2)
+                    - amount = meas_i.to_f - cred_i.to_f
+                    - amount_str = get_color_class(amount.to_s, itemwbs[itembudget.id])
+                  - else 
+                    - amount_str = "color-title"
+                  %tr{:id=>"item_" + itembudget.id.to_s, :class=> amount_str}
+                    %td 
+                      = "---" * (itembudget.order.length/3).to_i
+                      = itembudget.order        
+                      -if itembudget.measured.to_f > 0
+                        -title_parsed = URI.escape(title.gsub('\'', '_'))
+                        %a{:href=>"javascript:selectitem('#{itembudget.id.to_s}');", :ondblclick=>"javascript:load_item(#{itembudget.to_json}, '#{title_parsed}');"}
+                          = title
+                      -else
+                        %strong
+                          = title
+      .col-md-8
         %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
           %thead
             %tr
@@ -28,82 +91,6 @@
               %th Eliminar
           %tbody(id="items_table2")
 
-    .row
-      #widget-grid-1{style: "width: 50%; overflow: hidden; float: left;"}
-        %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
-          #content-inside
-            .row
-              #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", style: "width: 98%;"}
-                %header
-                  %span.widget-icon
-                    %i.fa.fa-table
-                  %h2 Partidas de Presupuestos Venta
-                %div
-                  .jarviswidget-editbox
-                  .widget-body
-                    %table(class="table table-hover white-table small-font table-light"  id="scroll-table" width="100%")
-                      %thead
-                        %tr
-                          %th(colspan="2") Partidas
-                          %th Total
-                          %th Relacionar
-                      %tbody
-                        - @saleitembybudgets.each do |unit|
-                          %tr
-                            %td 
-                              = unit.order
-                            %td 
-                              = unit.subbudgetdetail
-                            %td
-                              -if unit.price != nil
-                                = (unit.measured*unit.price).round(2)
-                              -else
-                                = unit.measured
-                            %td
-                              %a(href="javascript:add_item(#{unit.id});" id="btn-add-product" class="btn btn-success btn-default" role="button")
-                                Agregar
-
-      #widget-grid-2{style: "width: 50%; overflow: hidden; float: left;"}
-        %article.col-xs-12.col-sm-12.col-md-12.col-lg-12
-          #content-inside
-            .row
-              #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", style: "width: 98%;"}
-                %header
-                  %span.widget-icon
-                    %i.fa.fa-table
-                  %h2 Partidas de Presupuestos Meta
-                %div
-                  .jarviswidget-editbox
-                  .widget-body
-                    %table(class="table table-hover white-table small-font table-light"  id="scroll-table" width="100%")
-                      %thead
-                        %tr
-                          %th(colspan="2") Partidas
-                          %th Total
-                          %th Relacionar
-                      %tbody
-                        - @goalitembybudgets.each do |unit|
-                          %tr
-                            %td 
-                              = unit.order
-                            %td 
-                              = unit.subbudgetdetail
-                            %td
-                              -if unit.price != nil
-                                = (unit.measured*unit.price).round(2)
-                              -else
-                                = unit.measured
-                            %td
-                              %a(href="javascript:add_item2(#{unit.id});" id="btn-add-product" class="btn btn-success btn-default" role="button")
-                                Agregar
-  
-  - else
-
-    .alert.alert-danger.fade.in
-      %i.fa-fw.fa.fa-times
-      %strong= @message_error
-      Asegurate en cargar algun presupuesto antes de continuar.
-
 
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-entity{type: "button"}
     %i.fa.fa-arrow-left>
@@ -111,6 +98,9 @@
 
   
 :javascript
+
+  $(".content-load").height($(document).height()-600);
+  $(".botom-load").height(200);
   $(document).ready(function (){
     $('select').select2({width:'280px'});
   });
