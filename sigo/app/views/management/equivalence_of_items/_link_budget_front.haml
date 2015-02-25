@@ -75,7 +75,7 @@
                       = itembudget.order        
                       -if itembudget.measured.to_f > 0
                         -title_parsed = URI.escape(title.gsub('\'', '_'))
-                        %a{:href=>"javascript:selectitem('#{itembudget.id.to_s}');", :ondblclick=>"javascript:load_item(#{itembudget.to_json}, '#{title_parsed}');"}
+                        %a{:href=>"javascript:add_item('#{itembudget.id.to_s}');"}
                           = title
                       -else
                         %strong
@@ -87,10 +87,21 @@
               %th(colspan="2") Partidas Meta Seleccionadas
               %th Total
               %th Porcentaje
-              %th Guardar
               %th Eliminar
           %tbody(id="items_table2")
 
+        %button.btn.btn-sm.btn-success.btn-prev#save{type: "button"}
+          Guardar
+    .row{style: "display: none"}
+      .col-lg-12
+        %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-sale" aria-describedby="data-table_info")
+          %thead
+            %tr
+              %th(colspan="2") Partida Venta Seleccionada
+              %th Total
+              %th Eliminar
+          %tbody(id="items_table")
+  %br
 
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-entity{type: "button"}
     %i.fa.fa-arrow-left>
@@ -98,7 +109,7 @@
 
   
 :javascript
-
+  var selected_item;
   $(".content-load").height($(document).height()-600);
   $(".botom-load").height(200);
   $(document).ready(function (){
@@ -106,6 +117,10 @@
   });
 
   function add_item(elemento){
+    $("#item_" + selected_item).removeClass("info");
+    selected_item = elemento;
+    $("#item_" + elemento).addClass("info");
+    $('#summary-sale').find("tr:gt(0)").remove();
     str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
 
     append_url_ajax('#{add_item_management_equivalence_of_items_path}', 'items_table', str_item, 0, 'POST');
@@ -125,5 +140,27 @@
   }
 
   $('#backlist-entity').click(function(){
+    load_url_ajax("#{management_equivalence_of_items_path}", 'content', null, null, 'GET');
+  });
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
+
+  $('#save').click(function(){
+    target_id =  $('#saleitembybudget_item').val();
+    var goaltargets = document.getElementsByClassName("form-control reg_n");
+    $.each(goaltargets, function(){
+      var percentage = document.getElementById("equivalence_of_items_goalitembybudget_"+Number($(this).val())+"_percentage").value;
+
+      var elemento = document.getElementById("equivalence_of_items_goalitembybudget_"+Number($(this).val())+"_id").value;
+
+      str_item = {authenticity_token: "#{form_authenticity_token}", sale_id: elemento, target_id: target_id, percentage: percentage};
+
+      append_url_ajax('#{link_budget_method_management_equivalence_of_items_path}', 'content', str_item, 0, 'POST');
+
+      $("#tr" + Number($(this).val())).remove();
+      console.log("listo");
+    });
     load_url_ajax("#{management_equivalence_of_items_path}", 'content', null, null, 'GET');
   });

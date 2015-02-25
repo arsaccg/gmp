@@ -1,7 +1,10 @@
 %tr(class="item"){id: "tr" + @reg_n.to_s}
   %td{"style" => "display:none"}
     %div
-      = text_field_tag 'equivalence_of_items[item]', @goalitembybudget.id , class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
+      = text_field_tag 'equivalence_of_items[goalitembybudget][' + @reg_n.to_s + '][id]', @goalitembybudget.id , class: "form-control id", :required => true, title:'No puede dejar este campo vacio'
+  %td{"style" => "display:none"}
+    %div
+      = text_field_tag 'equivalence_of_items[reg_n]', @reg_n.to_s , class: "form-control reg_n", :required => true, title:'No puede dejar este campo vacio'
   %td
     = @goalitembybudget.order
   %td
@@ -13,9 +16,6 @@
       = @goalitembybudget.measured
   %td
     %div
-      = text_field_tag 'equivalence_of_items[goalitembybudget][' + @reg_n.to_s + '][percentage]',  0, class: "form-control quantity", :required => true, title:'No puede dejar este campo vacio'
-  %td
-    %a(href="javascript:add_item3(#{@goalitembybudget.id},#{@reg_n.to_s});" id="btn-add-product" class="btn btn-success btn-default" role="button")
-      Guardar
+      = text_field_tag 'equivalence_of_items[goalitembybudget][' + @reg_n.to_s + '][percentage]',  0, class: "form-control goal", :required => true, title:'No puede dejar este campo vacio'
   %td{:style => "width: 1%;"}
     %a{href: "javascript:delete_item('"+@reg_n.to_s+"')"}(class="btn") X
