@@ -4,98 +4,113 @@
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw 
         Enlazar Presupuestos
-
+  - if @message_error == ''
+    
+    .row
+      .col-md-12
+        .content-load
+          .items-panel
+            %table(class=" table-bordered table-hover white-table small-font table-condensed " width="100%")
+              %thead
+                %tr
+                  %th Partidas Meta
+                  %th Metrado
+                  %th Precio
+              %tbody
+                - result_credit = get_credit(@goalitembybudgets[0].budget_id)
+                - itemwbs = itemswbs_from_budget(@goalitembybudgets[0].budget_id)
+                - @goalitembybudgets.each do |itembudget|
+                  - title = get_title_or_description(itembudget)
+                  - amount_str = ""
+                  - if  itembudget.item_id != nil
+                    - meas_i = number_with_precision(itembudget.measured.to_f, :precision => 2)
+                    - cred_i = number_with_precision(result_credit[itembudget.item_code + itembudget.order], :precision => 2)
+                    - amount = meas_i.to_f - cred_i.to_f
+                    - amount_str = get_color_class(amount.to_s, itemwbs[itembudget.id])
+                  - else 
+                    - amount_str = "color-title"
+                  %tr{:id=>"item_" + itembudget.id.to_s, :class=> amount_str}
+                    %td 
+                      = "---" * (itembudget.order.length/3).to_i
+                      = itembudget.order        
+                      -if itembudget.measured.to_f > 0
+                        -title_parsed = URI.escape(title.gsub('\'', '_'))
+                        %a{:href=>"javascript:add_item2('#{itembudget.id.to_s}')"}
+                          = title
+                      -else
+                        %strong
+                          = title
+                    -if itembudget.measured.to_f > 0
+                      %td(style="text-align: right;")
+                        = number_with_delimiter(number_with_precision itembudget.measured.to_f, :precision => 2)
+                      %td(style="text-align: right;") 
+                        = number_to_currency(number_with_precision(itembudget.price, :precision => 2).to_s , :unit=>'S/. ') rescue ""
+                    -else
+                      %td(colspan="2")
     %br
     .row
-      .col-lg-12
-        %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
-          %thead
-            %tr
-              %th(colspan="2") Partida Venta Seleccionada
-              %th Total
-              %th Eliminar
-          %tbody(id="items_table")
-    .row
-      .col-lg-12
+      .col-md-4
+        .content-load
+          .items-panel
+            %table(class=" table-bordered table-hover white-table small-font table-condensed " width="100%")
+              %thead
+                %tr
+                  %th Partidas Venta 
+              %tbody
+                - result_credit = get_credit(@saleitembybudgets[0].budget_id)
+                - itemwbs = itemswbs_from_budget(@saleitembybudgets[0].budget_id)
+                - @saleitembybudgets.each do |itembudget|
+                  - title = get_title_or_description(itembudget)
+                  - amount_str = ""
+                  - if  itembudget.item_id != nil
+                    - meas_i = number_with_precision(itembudget.measured.to_f, :precision => 2)
+                    - cred_i = number_with_precision(result_credit[itembudget.item_code + itembudget.order], :precision => 2)
+                    - amount = meas_i.to_f - cred_i.to_f
+                    - amount_str = get_color_class(amount.to_s, itemwbs[itembudget.id])
+                  - else 
+                    - amount_str = "color-title"
+                  %tr{:id=>"item_" + itembudget.id.to_s, :class=> amount_str}
+                    %td 
+                      = "---" * (itembudget.order.length/3).to_i
+                      = itembudget.order        
+                      -if itembudget.measured.to_f > 0
+                        -title_parsed = URI.escape(title.gsub('\'', '_'))
+                        %a{:href=>"javascript:add_item('#{itembudget.id.to_s}');"}
+                          = title
+                      -else
+                        %strong
+                          = title
+      .col-md-8
         %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
           %thead
             %tr
               %th(colspan="2") Partidas Meta Seleccionadas
               %th Total
               %th Porcentaje
-              %th Guardar
               %th Eliminar
           %tbody(id="items_table2")
 
-    %br
-      .row
-        #widget-grid{style: "width: 500px;"}
-          %article.col-xs-12.col-sm-12.col-md-12.col-lg-6
-            #content-inside
-              .row
-                #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", style: "margin-left:15%;float: left;width: 500px;"}
-                  %header
-                    %span.widget-icon
-                      %i.fa.fa-table
-                    %h2 Partidas de Presupuestos Venta
-                  %div
-                    .jarviswidget-editbox
-                    .widget-body
-                      %table(class="table table-hover white-table small-font table-light"  id="scroll-table" width="100%")
-                        %thead
-                          %tr
-                            %th(colspan="2") Partidas
-                            %th Total
-                            %th Relacionar
-                        %tbody
-                          - @saleitembybudgets.each do |unit|
-                            %tr
-                              %td 
-                                = unit.order
-                              %td 
-                                = unit.subbudgetdetail
-                              %td
-                                -if unit.price != nil
-                                  = (unit.measured*unit.price).round(2)
-                                -else
-                                  = unit.measured
-                              %td
-                                %a(href="javascript:add_item(#{unit.id});" id="btn-add-product" class="btn btn-success btn-default" role="button")
-                                  Agregar
-        #widget-grid{style: "width: 500px;"}
-          %article.col-xs-12.col-sm-12.col-md-12.col-lg-6
-            #content-inside
-              .row
-                #wid-id-0.jarviswidget.jarviswidget-color-blueDark{"data-widget-editbutton" => "false", style: "margin-left:120%;float: left;width: 500px;"}
-                  %header
-                    %span.widget-icon
-                      %i.fa.fa-table
-                    %h2 Partidas de Presupuestos Meta
-                  %div
-                    .jarviswidget-editbox
-                    .widget-body
-                      %table(class="table table-hover white-table small-font table-light"  id="scroll-table" width="100%")
-                        %thead
-                          %tr
-                            %th(colspan="2") Partidas
-                            %th Total
-                            %th Relacionar
-                        %tbody
-                          - @goalitembybudgets.each do |unit|
-                            %tr
-                              %td 
-                                = unit.order
-                              %td 
-                                = unit.subbudgetdetail
-                              %td
-                                -if unit.price != nil
-                                  = (unit.measured*unit.price).round(2)
-                                -else
-                                  = unit.measured
-                              %td
-                                %a(href="javascript:add_item2(#{unit.id});" id="btn-add-product" class="btn btn-success btn-default" role="button")
-                                  Agregar
-
+        %button.btn.btn-sm.btn-success.btn-prev#save{type: "button"}
+          Guardar
+    .row{style: "display: none"}
+      .col-lg-12
+        %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-sale" aria-describedby="data-table_info")
+          %thead
+            %tr
+              %th(colspan="2") Partida Venta Seleccionada
+              %th Total
+              %th Eliminar
+          %tbody(id="items_table")
+    .row{style: "display: none"}
+      .col-lg-12
+        %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-sale" aria-describedby="data-table_info")
+          %thead
+            %tr
+              %th(colspan="2") Partida Venta Seleccionada
+              %th Total
+              %th Eliminar
+          %tbody(id="items_table3")
+  %br
 
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-entity{type: "button"}
     %i.fa.fa-arrow-left>
@@ -103,11 +118,18 @@
 
   
 :javascript
+  var selected_item;
+  $(".content-load").height($(document).height()-600);
+  $(".botom-load").height(200);
   $(document).ready(function (){
     $('select').select2({width:'280px'});
   });
 
   function add_item(elemento){
+    $("#item_" + selected_item).removeClass("info");
+    selected_item = elemento;
+    $("#item_" + elemento).addClass("info");
+    $('#summary-sale').find("tr:gt(0)").remove();
     str_item = {authenticity_token: "#{form_authenticity_token}", item_id: elemento};
 
     append_url_ajax('#{add_item_management_equivalence_of_items_path}', 'items_table', str_item, 0, 'POST');
@@ -127,5 +149,26 @@
   }
 
   $('#backlist-entity').click(function(){
+    load_url_ajax("#{management_equivalence_of_items_path}", 'content', null, null, 'GET');
+  });
+
+  function delete_item(code){
+    $("#tr" + code).remove();
+  }
+
+  $('#save').click(function(){
+    target_id =  $('#saleitembybudget_item').val();
+    var goaltargets = document.getElementsByClassName("form-control reg_n");
+    $.each(goaltargets, function(){
+      var percentage = document.getElementById("equivalence_of_items_goalitembybudget_"+Number($(this).val())+"_percentage").value;
+
+      var elemento = document.getElementById("equivalence_of_items_goalitembybudget_"+Number($(this).val())+"_id").value;
+
+      str_item = {authenticity_token: "#{form_authenticity_token}", sale_id: elemento, target_id: target_id, percentage: percentage};
+
+      append_url_ajax('#{link_budget_method_management_equivalence_of_items_path}', 'items_table3', str_item, 0, 'POST');
+
+      console.log("listo");
+    });
     load_url_ajax("#{management_equivalence_of_items_path}", 'content', null, null, 'GET');
   });

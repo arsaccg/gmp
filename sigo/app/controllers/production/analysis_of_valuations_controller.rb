@@ -83,7 +83,7 @@ class Production::AnalysisOfValuationsController < ApplicationController
       end
       @cad2 = @cad2.join(',')
     end
-    budgetidcostcenter = Budget.where("cost_center_id = " + get_company_cost_center('cost_center') + " AND type_of_budget = 0").first.id
+    budgetidcostcenter = Budget.where("cost_center_id = " + get_company_cost_center('cost_center').to_s + " AND type_of_budget = 0").first.id
     # PARTIDAS
     @meta_part_work = Array.new
     budgetanditems_list = Array.new
@@ -231,24 +231,26 @@ class Production::AnalysisOfValuationsController < ApplicationController
         else
           #art.id, art.code, art.name, u.symbol, pod.unit_price, pod.amount
           articles_in_purchase.each do |aip|
-            prom_pon_amount = aip[5].to_f/ao[1].to_f
-            prom_pon_price += aip[4].to_f*prom_pon_amount.to_f
+            prom_pon_amount += aip[5].to_f*aip[4].to_f
+            prom_pon_price += aip[5].to_f
             @id = aip[0]
             @code = aip[1]
             @name = aip[2]
             @unit_sym = aip[3]
           end
-          @real_materiales << [@id, @code, @name, @unit_sym, prom_pon_price, ao[1], prom_pon_price.to_f*ao[1].to_f]
-          @total_stock_input_real += prom_pon_price.to_f*ao[1].to_f
+          final = prom_pon_amount.to_f/prom_pon_price.to_f
+          @real_materiales << [@id, @code, @name, @unit_sym, final.to_f, ao[1], final.to_f*ao[1].to_f]
+          @total_stock_input_real += final.to_f*ao[1].to_f
+          prom_pon_price = 0
+          prom_pon_amount = 0
         end
       end
 
-                                            
-
-
-
-
-
+      #################
+      #p '-------------------'
+      #p arr_stock_input
+      #p '-------------------'
+      #################
 
       # ORDER ARRAY META
       @meta_stock_inputs = arr_stock_input.group_by { |a,b,_,d| [a,b,d] }.map { |(a,b,c),arr_stock_input| [a,b,arr_stock_input.reduce(0) { |t,(_,_,e,_)| t + e },c] }
