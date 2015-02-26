@@ -10,6 +10,7 @@
       %table#dt_basic.table.table-striped.table-bordered.table-hover
         %thead
           %tr
+            %th Almacen
             %th Código
             %th Nombre
             %th Cantidad
@@ -18,13 +19,15 @@
           - @articleresult.each do |re|
             %tr
               %td
-                = re[0]
-              %td
                 = re[1]
               %td
-                = re[2]
+                = re[6]
               %td
-                = re[3]             
+                = re[7]
+              %td
+                = re[9] - re[12]
+              %td
+                = re[8]
 :javascript
   // DO NOT REMOVE : GLOBAL FUNCTIONS!
   pageSetUp();

@@ -24,15 +24,18 @@ end
 
 move_down 20
 
-table([ ["CÓDIGO", "NOMBRE", "CANTIDAD", "UND"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [100,280,140]) do
-        style(columns(0..2), :align => :center)
-        style(columns(0..2), :size => 8)
-        columns(0..2).font_style = :bold
+table([ ["CÓDIGO", "NOMBRE", "CANTIDAD", "UND"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,300,60,80]) do
+        style(columns(0..3), :align => :center)
+        style(columns(0..3), :size => 8)
+        columns(0..3).font_style = :bold
       end
 
 @articleresult.each do |result|
-	table([ ["#{result[0]}", "#{result[1]}", "#{result[2]}", "#{result[3]}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [100,280,140]) do
-        style(columns(0..2), :align => :center)
-        style(columns(0..2), :size => 8)
+  @stock = result[9] - result[12]
+	table([ ["#{result[6]}", "#{result[7]}", "#{@stock}", "#{result[8]}"] ], :width => 520, :cell_style => {:height => 18}, :column_widths => [80,300,60,80]) do
+        style(columns(0..0), :align => :center)
+        style(columns(2..2), :align => :right)
+        style(columns(3..3), :align => :center)
+        style(columns(0..3), :size => 8)
       end
 end

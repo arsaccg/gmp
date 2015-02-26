@@ -6,7 +6,7 @@ case @kardex_type
   #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   when "1"
 	
-	repeat :all do
+	#repeat :all do
 	  font_size 12
 
 	  text "Kárdex Anual", :align => :center
@@ -22,7 +22,7 @@ case @kardex_type
 		end
 
 	  move_down 3
-	end
+	#end
 
 	item = 0
 	@reportRows.each do |x|
@@ -49,7 +49,7 @@ case @kardex_type
   # Kardex Monthly
   #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   when "2"
-    repeat :all do
+    #repeat :all do
 	  font_size 12
 
 	  text "Kárdex Mensual", :align => :center
@@ -64,7 +64,7 @@ case @kardex_type
 	  end
 
 	  move_down 3
-	end
+	#end
 
 	item = 0
 	@reportRows.each do |x|
@@ -91,10 +91,10 @@ case @kardex_type
   # Kardex Daily
   #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   when "3"
-	repeat :all do
+	#repeat :all do
 	  font_size 12
 
-	  text "Kárdex Detallado", :align => :center
+	  text "Kárdex Diario", :align => :center
 
 	  font_size 8
 	  move_down 3
@@ -106,7 +106,7 @@ case @kardex_type
 	  end
 
 	  move_down 3
-	end
+	#end
 
 	item = 0
 	@reportRows.each do |x|
@@ -132,7 +132,7 @@ case @kardex_type
   # Kardex Resumen
   #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   when "4"
-	repeat :all do
+	#repeat :all do
 	  font_size 12
 
 	  text "Kárdex Detallado", :align => :center
@@ -147,7 +147,7 @@ case @kardex_type
 	  end
 
 	  move_down 3
-	end
+	#end
 
 	item = 0
 	@reportRows.each do |x|

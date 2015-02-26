@@ -1,5 +1,16 @@
 DELIMITER $$
 
+/*
+truncate table rep_inv_warehouses;
+truncate table rep_inv_suppliers;
+truncate table rep_inv_responsibles;
+truncate table rep_inv_years;
+truncate table rep_inv_periods;
+truncate table rep_inv_formats;
+truncate table rep_inv_articles;
+truncate table rep_inv_moneys;
+*/
+
 DROP PROCEDURE IF EXISTS `REP_INV_KARDEX_FILTER`$$
 
 CREATE PROCEDURE REP_INV_KARDEX_FILTER
@@ -136,6 +147,7 @@ ELSE
 END IF;
 
 /* 8: Moneys */
+/*
 DELETE FROM rep_inv_moneys WHERE user = p_user_id;
 
 IF  p_moneys = '' THEN
@@ -148,6 +160,7 @@ ELSE
 	FROM   money
 	WHERE  p_moneys LIKE CONCAT('%,', id, ',%');
 END IF;
+*/
 
 END $$
 DELIMITER ;

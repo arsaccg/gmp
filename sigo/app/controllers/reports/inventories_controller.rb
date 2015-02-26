@@ -11,8 +11,8 @@ class Reports::InventoriesController < ApplicationController
     end
     @periods = LinkTime.group(:year, :month).uniq
     @formats = Format.all
-    @articles = Article.get_article_per_type('02',session[:cost_center])
-    @moneys = Money.all
+    @articles = Article.get_article_per_type_distinct('02',session[:cost_center])
+    #@moneys = Money.all
     render layout: false
   end
 
@@ -185,6 +185,17 @@ class Reports::InventoriesController < ApplicationController
         cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 20.minutes)
         Rails.cache.write('since_date', @since_date)
         Rails.cache.write('to_date', @to_date)
+        Rails.cache.write('warehouses', @warehouses)
+        Rails.cache.write('suppliers', @suppliers)
+        Rails.cache.write('responsibles', @responsibles)
+        Rails.cache.write('years', @years)
+        Rails.cache.write('periods', @periods)
+        Rails.cache.write('formats', @formats)
+        Rails.cache.write('articles', @articles)
+        Rails.cache.write('moneys', @moneys)
+
+        logger.info "@periods: " + @periods
+
         render :json => nil
     end
     #elsif params[:report_type] == "4" # Stock
@@ -203,22 +214,32 @@ class Reports::InventoriesController < ApplicationController
     @kardex_type = params[:id][1,1]
     @date_type = params[:id][2,1]
 
-    @since_date = Rails.cache.read('since_date')#Date.strptime("01/01/1900", '%d/%m/%Y')
+    @since_date = Rails.cache.read('since_date') #Date.strptime("01/01/1900", '%d/%m/%Y')
     @to_date = Rails.cache.read('to_date')  #Date.strptime("31/12/2050", '%d/%m/%Y')
+    @warehouses = Rails.cache.read('warehouses')
+    @suppliers = Rails.cache.read('suppliers')
+    @responsibles = Rails.cache.read('responsibles')
+    @years = Rails.cache.read('years')
+    @periods = Rails.cache.read('periods')
+    @formats = Rails.cache.read('formats')
+    @articles = Rails.cache.read('articles')
+    @moneys = Rails.cache.read('moneys')
+
+    logger.info "@periods cache: " + Rails.cache.read('periods')
 
     case @kardex_type
       when "1"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_yearly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_yearly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
       when "2"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_monthly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_monthly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
       when "3"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_daily(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_daily(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
       when "4"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_summary(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_summary(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
     end    
 
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape, :margin => [10, 40, 50, 40] }
@@ -235,20 +256,30 @@ class Reports::InventoriesController < ApplicationController
 
     @since_date = Rails.cache.read('since_date') #Date.strptime("01/01/1900", '%d/%m/%Y')
     @to_date = Rails.cache.read('to_date') #Date.strptime("31/12/2050", '%d/%m/%Y')
+    @warehouses = Rails.cache.read('warehouses')
+    @suppliers = Rails.cache.read('suppliers')
+    @responsibles = Rails.cache.read('responsibles')
+    @years = Rails.cache.read('years')
+    @periods = Rails.cache.read('periods')
+    @formats = Rails.cache.read('formats')
+    @articles = Rails.cache.read('articles')
+    @moneys = Rails.cache.read('moneys')
 
+    logger.info "@periods cache: " + Rails.cache.read('periods')
+    
     case @kardex_type
       when "1"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_yearly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_yearly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
       when "2"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_monthly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_monthly(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
       when "3"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_daily(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_daily(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
       when "4"
         @rows_per_page = 23
-        @reportRows = StockInputDetail.get_kardex_summary(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, "", "", "", "", "", "", "", "")
+        @reportRows = StockInputDetail.get_kardex_summary(0, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, @warehouses, @suppliers, @responsibles, @years, @periods, @formats, @articles, @moneys)
     end    
     
     prawnto inline: true, :prawn => { :page_size => 'A4', :page_layout => :landscape, :margin => [10, 40, 50, 40] }

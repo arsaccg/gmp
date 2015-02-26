@@ -24,20 +24,23 @@ class Logistics::ReportStocksController < ApplicationController
     @articleresult = get_report()
     format = Spreadsheet::Format.new :weight => :bold, :size => 8, :align => :center
     sheet1.row(0).default_format = format
-    sheet1.column(0).width = 13
-    sheet1.column(1).width = 35
-    sheet1.column(2).width = 11
-    sheet1.row(0).replace [ 'Código', 'Nombre', 'Cantidad', 'UND' ]
+    sheet1.column(0).width = 60
+    sheet1.column(1).width = 13
+    sheet1.column(2).width = 35
+    sheet1.column(3).width = 11
+    sheet1.column(4).width = 11
+    sheet1.row(0).replace [ 'Almacen', 'Código', 'Nombre', 'Cantidad', 'UND' ]
     @row = 1
     @articleresult.each do |artr|
-      sheet1.row(@row).replace [ artr[0], artr[1], artr[2], artr[3] ]
+      @stock = artr[9] - artr[12]
+      sheet1.row(@row).replace [ artr[1], artr[6], artr[7], @stock, artr[8] ]
       @row += 1
     end
     book.write 'excelfile.xls'
     redirect_to :action => :index, company_id: session[:company]
     #export_file_path = [Rails.root, "public", "reporte_de_stock_#{ DateTime.now.to_s }.xls"].join("/")
     #book.write export_file_path
-    #send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'    
+    #send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
 
   end
 
@@ -50,7 +53,22 @@ class Logistics::ReportStocksController < ApplicationController
   end
 
   def get_report
+    
+    @company = get_company_cost_center('company')
+    @cost_center = get_company_cost_center('cost_center')
+    @user = current_user.id
+    @report_type = 4 #Normal
+    @date_type = "1" #Kárdex E/S
+    @since_date = Date.strptime("01/01/1900", '%d/%m/%Y')
+    @to_date = Date.strptime("31/12/2050", '%d/%m/%Y')
+
+    @articleresult = StockInputDetail.get_kardex_summary(1, @company, @cost_center, @user, @report_type, @date_type, @since_date, @to_date, '', '', '', '', '', '', '', '')
+    
+    return @articleresult
+
+/
     article = Array.new
+
     result = 0.0
     name = ""
     articleresult = Array.new
@@ -89,5 +107,8 @@ class Logistics::ReportStocksController < ApplicationController
       articleresult << [code,name,result,unit]
     end
     return articleresult
+
+/
   end
+
 end

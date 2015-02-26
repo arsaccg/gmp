@@ -206,6 +206,20 @@ class Article < ActiveRecord::Base
     return mysql_result
   end
 
+  def self.get_article_per_type_distinct(type_article, cost_center)
+    mysql_result = ActiveRecord::Base.connection.execute("
+      SELECT af.id, af.name, af.code, af.id as article_id, af.unit_of_measurement_id, u.name
+      FROM articles af
+      INNER JOIN unit_of_measurements u ON af.unit_of_measurement_id = u.id
+      INNER JOIN (
+        SELECT DISTINCT af.code
+        FROM articles_from_cost_center_" + cost_center.to_s + " af
+      ) x ON af.code = x.code
+      WHERE af.code LIKE '#{type_article}%'
+    ")
+    return mysql_result
+  end
+
   def self.get_article_todo_per_type(code, cost_center, type_article)
     mysql_result = ActiveRecord::Base.connection.execute("
       SELECT af.id, af.name, af.code, af.unit_of_measurement_id, u.name
