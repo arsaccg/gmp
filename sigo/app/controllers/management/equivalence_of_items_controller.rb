@@ -43,11 +43,27 @@ class Management::EquivalenceOfItemsController < ApplicationController
     equivalence.percentage = params[:percentage]
     equivalence.cost_center_id = get_company_cost_center('cost_center')
     equivalence.save
-    saleitembybudget = Itembybudget.find(params[:target_id])
-    saleitembybudget.percentage = saleitembybudget.percentage + params[:percentage].to_f
-    saleitembybudget.save
+
+
     goalitembybudget = Itembybudget.find(params[:sale_id])
-    goalitembybudget.percentage = 100
+    saleitembybudget = Itembybudget.find(params[:target_id])
+
+
+    percentageinnumber = (goalitembybudget.price.to_f*(params[:percentage].to_f/100)).round(2)
+    puts goalitembybudget.price
+    puts percentageinnumber
+
+    targetpercentage = ((100*percentageinnumber)/saleitembybudget.price.to_f).round(2)
+    puts targetpercentage
+
+
+
+
+
+
+    saleitembybudget.percentage = saleitembybudget.percentage + targetpercentage.to_f
+    saleitembybudget.save
+    goalitembybudget.percentage = goalitembybudget.percentage + params[:percentage].to_f
     goalitembybudget.save
     render(partial: 'table_items3', :layout => false)
   end
@@ -65,6 +81,18 @@ class Management::EquivalenceOfItemsController < ApplicationController
     end
     flash[:notice] = "Se ha eliminado correctamente el banco seleccionado."
     render :json => equivalences
+  end
+
+  def get_itembybudget_assigned
+    str_id = params[:itembybudget]
+    @itembybudget = EquivalenceOfItem.where("target_item_by_budget_id = ?",str_id)
+    render :layout => false
+  end
+
+  def get_itembybudget2_assigned
+    str_id = params[:itembybudget]
+    @itembybudget = EquivalenceOfItem.where("sale_item_by_budget_id = ?",str_id)
+    render :layout => false
   end
 
 end
