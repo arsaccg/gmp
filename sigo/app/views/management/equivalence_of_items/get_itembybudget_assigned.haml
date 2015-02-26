@@ -1,0 +1,18 @@
+%table(class="white-table table-bordered table table-condensed")
+  %thead
+    %th Codigo
+    %th Descripcion
+    %th Precio
+    %th Metrado
+  %tbody
+    - @itembybudget.each do |item|
+      - itembybudged = Itembybudget.find(item.sale_item_by_budget_id)
+      %tr
+        %td
+          = itembybudged.order.to_s
+        %td
+          = itembybudged.subbudgetdetail.to_s
+        %td
+          = number_to_currency(number_with_precision((itembybudged.price).to_s, :precision => 2).to_s , :unit=>'S/. ') 
+        %td
+          = number_with_precision(itembybudged.measured, :precision => 2).to_s
