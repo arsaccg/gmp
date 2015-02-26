@@ -697,11 +697,7 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     igv_orden = 0
     igv_amount_porce_orden = 0
     igv_amount_orden = 1
-    if @valuationofequipment.billigv.to_f > 0.0
-      igv_orden = 1
-      igv_amount_orden = 1.18
-      igv_amount_porce_orden = 0.18
-    end
+    
     # Informacion Primaria
     description_serv = @subcontract_equip.contract_description
     # Montos sin IGV
@@ -713,6 +709,12 @@ class Production::ValuationOfEquipmentsController < ApplicationController
     detraccion_total = (@valuationofequipment.totalbill.to_f.round(2)*@valuationofequipment.detraction.to_f/100).round(2)
     descuento_combustible = @valuationofequipment.fuel_discount.to_f
     descuento_otros = @valuationofequipment.other_discount.to_f
+
+    if @valuationofequipment.billigv.to_f > 0.0
+      igv_orden = 1
+      igv_amount_orden = 1 + ((igv_total_facturar/(total_facturar_sin_igv + amortizacion_adelanto_sin_igv))/100)
+      igv_amount_porce_orden = (igv_total_facturar/(total_facturar_sin_igv + amortizacion_adelanto_sin_igv))/100
+    end
 
     # Creacion
     code_str = (OrderOfService.last.code.to_i + 1).to_s.rjust(5, '0') # next_code
