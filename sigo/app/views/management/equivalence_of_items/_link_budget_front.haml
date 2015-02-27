@@ -14,6 +14,7 @@
               %thead
                 %tr
                   %th Partidas Meta
+                  %th Acciones
                   %th Metrado
                   %th Precio
               %tbody
@@ -40,6 +41,11 @@
                       -else
                         %strong
                           = title
+                    %td
+                      -if itembudget.measured.to_f > 0
+                        %center
+                          %a{:href=>"javascript:viewassigment('#{itembudget.id.to_s}')"}
+                            Ver Asignaciones
                     -if itembudget.measured.to_f > 0
                       %td(style="text-align: right;")
                         = number_with_delimiter(number_with_precision itembudget.measured.to_f, :precision => 2)
@@ -55,7 +61,8 @@
             %table(class=" table-bordered table-hover white-table small-font table-condensed " width="100%")
               %thead
                 %tr
-                  %th Partidas Venta 
+                  %th Partidas Venta
+                  %th Acciones
               %tbody
                 - result_credit = get_credit(@saleitembybudgets[0].budget_id)
                 - itemwbs = itemswbs_from_budget(@saleitembybudgets[0].budget_id)
@@ -80,8 +87,13 @@
                       -else
                         %strong
                           = title
+                    %td
+                      -if itembudget.measured.to_f > 0
+                        %center
+                          %a{:href=>"javascript:viewassigment2('#{itembudget.id.to_s}')"}
+                            Ver Asignaciones
       .col-md-8
-        %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="summary-workers" aria-describedby="data-table_info")
+        %table.has-tickbox(class="table table-condensed table-bordered table-striped table-hover dataTable" style="font-size: 12px;" id="partidas-meta" aria-describedby="data-table_info")
           %thead
             %tr
               %th(colspan="2") Partidas Meta Seleccionadas
@@ -110,6 +122,16 @@
               %th Total
               %th Eliminar
           %tbody(id="items_table3")
+    %div(class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          %div(class="modal-header")
+            %button(type="button" class="close" data-dismiss="modal" aria-hidden="true")
+              &times;
+            %h4
+              Asignaciones
+          %div(class="modal-body")
+          %div(class="modal-footer")
   %br
 
   %button.btn.btn-sm.btn-primary.btn-prev#backlist-entity{type: "button"}
@@ -170,5 +192,15 @@
 
       console.log("listo");
     });
-    load_url_ajax("#{management_equivalence_of_items_path}", 'content', null, null, 'GET');
+    $('#partidas-meta').find("tr:gt(0)").remove();
   });
+
+  function viewassigment(id){
+    $('#myModal').modal('show');
+    load_url_ondiv('#{get_itembybudget_assigned_management_equivalence_of_items_path}?itembybudget=' + id, 'modal-body')
+  }
+
+  function viewassigment2(id){
+    $('#myModal').modal('show');
+    load_url_ondiv('#{get_itembybudget2_assigned_management_equivalence_of_items_path}?itembybudget=' + id, 'modal-body')
+  }
