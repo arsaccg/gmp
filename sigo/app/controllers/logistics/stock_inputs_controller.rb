@@ -10,11 +10,11 @@ class Logistics::StockInputsController < ApplicationController
     @purchaseOrders = PurchaseOrder.get_approved_by_company(@company)
 
     # 20150223 Ajuste Masivo (INI) : Update Masivo del Period & Year, según issue_date
-    @StockAll = StockInput.all
-    @StockAll.each do |x|
-      @Stock = StockInput.find(x.id)
-      @Stock.update_attributes(:period => x.issue_date.strftime("%Y%m"), :year => x.issue_date.strftime("%Y"))
-    end
+    #@StockAll = StockInput.all
+    #@StockAll.each do |x|
+    #  @Stock = StockInput.find(x.id)
+    #  @Stock.update_attributes(:period => x.issue_date.strftime("%Y%m"), :year => x.issue_date.strftime("%Y"))
+    #end
     # 20150223 Ajuste Masivo (FIN)
 
     render layout: false

@@ -315,6 +315,9 @@ ArsacLogistica::Application.routes.draw do
     resources :inventories do
       collection do
         post 'show_rows_results'
+        post 'display_articles'
+        post 'display_suppliers'
+        post 'display_responsibles'
       end
       member do
         get 'show_rows_results_pdf'

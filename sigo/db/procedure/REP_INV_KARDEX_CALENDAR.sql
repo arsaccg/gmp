@@ -96,6 +96,7 @@ END IF;
 ##############################################
 # Stock Inputs
 ##############################################
+IF p_responsibles = '' THEN
   SET @sqlIni="
   INSERT INTO  TmpRepInv ( input, warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol, amount, unit_cost )
   SELECT
@@ -175,12 +176,15 @@ END IF;
 
   DEALLOCATE PREPARE stmt;
 
+END IF;
+
   -- Reiniciar Variables 3
   SET @users = 0;
 
 ##############################################
 # Stock Outputs
 ##############################################
+IF p_suppliers = '' THEN
   SET @sqlIni="
   INSERT INTO  TmpRepInv ( input, warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol, amount, unit_cost )
   SELECT
@@ -257,6 +261,7 @@ END IF;
 
   DEALLOCATE PREPARE stmt;
 
+END IF;
 ######################################
 -- 5 Kárdex Movimiento
 ######################################

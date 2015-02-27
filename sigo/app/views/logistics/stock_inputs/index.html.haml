@@ -3,7 +3,7 @@
     .col-xs-12.col-sm-7.col-md-7.col-lg-3
       %h1.page-title.txt-color-blueDark
         %i.fa.fa-pencil-square-o.fa-fw
-        Ingreso a Almacén.
+        Ingreso a Almacén
     - if @purchaseOrders.first != nil
       .col-sm-3{ "style" => "margin-top: 10px;" }
         %a.btn.btn-primary.btn-mini{:onclick => "javascript:load_url_ajax('#{new_logistics_stock_input_path}', 'content', null, null, 'GET')"}
