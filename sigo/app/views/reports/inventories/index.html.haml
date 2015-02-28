@@ -189,6 +189,9 @@
                     %button.btn.btn-sm.btn-warning#btn-export-pdf{'type' => 'button', "rel" => "tooltip", "data-placement" => "top", "data-original-title" => "Exportar a PDF"}
                       %i.fa.fa-file
                         Exportar
+                    %button.btn.btn-sm.btn-info#btn-clear{'type' => 'button'}
+                      %i.fa.fa-refresh
+                        Limpiar
 
   #widget-grid
     //.row#gridInput
@@ -221,17 +224,10 @@
 
     $('#cost_center-select').select2();
     $('#warehouse-select').select2();
-    //$('#supplier-select').select2();
-    //$('#responsible-select').select2();
     $('#year-select').select2();
     $('#period-select').select2();
     $('#format-select').select2();
-    //$('#article-select').select2();
     $('#money-select').select2();
-    //$('#report_inventory_since_date').datepicker();
-    //$('#report_inventory_to_date').datepicker();
-    //$("#report_inventory_since_date").mask('99/99/9999');
-    //$("#report_inventory_to_date").mask('99/99/9999');
 
     $('#article-select').select2({
       placeholder: "Buscar Insumos...",
@@ -471,21 +467,15 @@
     // ********************************************************
     //  Acciones
     // ********************************************************
-    // Search #btn-find #btn-export-pdf
-    $('.btn-sm').click(function(){
-      var _action = 0;
+    function delGridResult() {
+      var gridResult = getGridResult();
+      $('#'+gridResult).html('');
+    }
+
+    function getGridResult() {
       var _report_type = parseInt($("input:radio[name=rad_type_id]:checked").val());
       var _kardex_type = parseInt($("input:radio[name=rad_kardex_type]:checked").val());
-      var _date_type = parseInt($("input:radio[name=rad_date_type]:checked").val());
-      
-      switch (this.id){
-        case "btn-find":
-          _action = 1;
-          break;
-        case "btn-export-pdf":
-          _action = 2;
-          break;
-      }
+
       var gridResult;
       switch (_report_type){
         case 1:
@@ -534,6 +524,46 @@
           }
           break;
       }
+      return gridResult;
+    }
+
+    function ResetFilters() {
+      $('#warehouse-select').select2("val", "");
+      $('#supplier-select').select2("val", "");
+      $('#responsible-select').select2("val", "");
+      $('#year-select').select2("val", "");
+      $('#period-select').select2("val", "");
+      $('#format-select').select2("val", "");
+      $('#article-select').select2("val", "");
+      $("#report_inventory_since_date").val("")
+      $("#report_inventory_to_date").val("");
+    }
+
+    // Search #btn-find #btn-export-pdf
+    $('.btn-sm').click(function(){
+
+      var _action = 0;
+      var _report_type = parseInt($("input:radio[name=rad_type_id]:checked").val());
+      var _kardex_type = parseInt($("input:radio[name=rad_kardex_type]:checked").val());
+      var _date_type = parseInt($("input:radio[name=rad_date_type]:checked").val());
+      
+      switch (this.id){
+        case "btn-find":
+          _action = 1;
+          delGridResult();
+          break;
+        case "btn-export-pdf":
+          _action = 2;
+          break;
+        case "btn-clear":
+          ResetFilters();
+          delGridResult();
+          return true;
+          break;          
+      }
+
+      var gridResult = getGridResult();
+
       // Data Parameters
       data = { authenticity_token: "#{form_authenticity_token}",
                report_action: _action,
@@ -556,7 +586,7 @@
       
       switch (_action){
         case 1:
-          load_items_delivery_order_ajax('#{show_rows_results_reports_inventories_path}', gridResult, data);
+          load_items_inventory_ajax('#{show_rows_results_reports_inventories_path}', gridResult, data);
           $('#' + gridResult + ' tr td a').tooltip('hide');
           break;
         case 2:
