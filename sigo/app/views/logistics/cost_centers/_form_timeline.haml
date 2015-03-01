@@ -28,18 +28,20 @@
                     %label.control-label Fecha Inicio
                     .input-group
                       - if @costCenter.start_date != nil
-                        = text_field(:cost_center, :start_date, class: "form-control", value: @costCenter.start_date.strftime("%d/%m/%Y"))
+                        = text_field(:cost_center, :start_date, class: "form-control", type: "date", value: @costCenter.start_date)
+                        //.strftime("%d/%m/%Y")
                       - else
-                        = text_field(:cost_center, :start_date, class: "form-control")
+                        = text_field(:cost_center, :start_date, class: "form-control", type: "date")
                       %span.input-group-addon
                         %i.fa.fa-calendar
                   %section.col.col-6
                     %label.control-label Fecha Fin
                     .input-group
                       - if @costCenter.end_date != nil
-                        = text_field(:cost_center, :end_date, class: "form-control", value: @costCenter.end_date.strftime("%d/%m/%Y"))
+                        = text_field(:cost_center, :end_date, class: "form-control", type: "date", value: @costCenter.end_date)
+                        //.strftime("%d/%m/%Y"))
                       - else
-                        = text_field(:cost_center, :end_date, class: "form-control")
+                        = text_field(:cost_center, :end_date, class: "form-control", type: "date")
                       %span.input-group-addon
                         %i.fa.fa-calendar
                   = hidden_field_tag "timeline", "1"
@@ -97,14 +99,14 @@
     $("#cost_center_company_id").val($.company_global_id);
     $("#cost_center_code").focus();
 
-    $('#cost_center_start_date').datepicker({
-      format: "dd/mm/yyyy", language: "es", autoclose: true, orientation: "auto right"
-    });
-    $('#cost_center_end_date').datepicker({
-      format: "dd/mm/yyyy", language: "es", autoclose: true, orientation: "auto right"
-    });
-    $("#cost_center_start_date").mask('99/99/9999');
-    $("#cost_center_end_date").mask('99/99/9999');
+    //$('#cost_center_start_date').datepicker({
+    //  format: "dd/mm/yyyy", language: "es", autoclose: true, orientation: "auto right"
+    //});
+    //$('#cost_center_end_date').datepicker({
+    //  format: "dd/mm/yyyy", language: "es", autoclose: true, orientation: "auto right"
+    //});
+    //$("#cost_center_start_date").mask('99/99/9999');
+    //$("#cost_center_end_date").mask('99/99/9999');
 
     if($('form[id^="edit_"]').length > 0) {
       submit_validate($('form[id^="edit_"]'));

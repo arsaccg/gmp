@@ -268,34 +268,34 @@ END IF;
 IF  p_report_type = 5 THEN
   
   CASE  p_kardex_type
-    WHEN 4 THEN
+    WHEN 4 THEN # Normal
       SELECT input, warehouse_id, warehouse_name, year, period, DATE_FORMAT(issue_date, '%d/%m/%Y'), article_id, article_code, article_name, article_symbol, amount, coalesce(unit_cost, 0), coalesce(amount * unit_cost, 0)
       FROM   TmpRepInv a
-      ORDER BY a.warehouse_id, a.article_id, a.year, a.period, a.issue_date, a.input;
-    WHEN 3 THEN
+      ORDER BY a.year, a.period, a.issue_date, a.article_name, a.article_symbol, a.input;
+    WHEN 3 THEN #Diario
       SELECT  input, warehouse_id, warehouse_name, year, period, DATE_FORMAT(issue_date, '%d/%m/%Y'), article_id, article_code, article_name, article_symbol, amount, case when amount = 0 then 0 else total_cost / amount end as total_cost, total_cost
       FROM (
         SELECT input, warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol, SUM(amount) as amount, coalesce(SUM(amount * unit_cost), 0) as total_cost
         FROM   TmpRepInv
         GROUP BY input, warehouse_id, warehouse_name, year, period, issue_date, article_id, article_code, article_name, article_symbol
       ) a
-      ORDER BY a.warehouse_id, a.article_id, a.year, a.period, a.issue_date, a.input;
-    WHEN 2 THEN
+      ORDER BY a.year, a.period, a.issue_date, a.article_name, a.article_symbol, a.input;
+    WHEN 2 THEN #Mensual
       SELECT  input, warehouse_id, warehouse_name, year, period, article_id, article_code, article_name, article_symbol, amount, case when amount = 0 then 0 else total_cost / amount end as total_cost, total_cost
       FROM (
         SELECT  input, warehouse_id, warehouse_name, year, period, article_id, article_code, article_name, article_symbol, SUM(amount) as amount, coalesce(SUM(amount * unit_cost), 0) as total_cost
         FROM   TmpRepInv
         GROUP BY input, warehouse_id, warehouse_name, year, period, article_id, article_code, article_name, article_symbol
       ) a
-      ORDER BY a.warehouse_id, a.article_id, a.year, a.period, a.input;
-    WHEN 1 THEN
+      ORDER BY a.year, a.period, a.article_name, a.article_symbol, a.input;
+    WHEN 1 THEN #Anual
       SELECT  input, warehouse_id, warehouse_name, year, article_id, article_code, article_name, article_symbol, amount, case when amount = 0 then 0 else total_cost / amount end as total_cost, total_cost
       FROM (
         SELECT  input, warehouse_id, warehouse_name, year, article_id, article_code, article_name, article_symbol, SUM(amount) as amount, coalesce(SUM(amount * unit_cost), 0) as total_cost
         FROM   TmpRepInv
         GROUP BY input, warehouse_id, warehouse_name, year, article_id, article_code, article_name, article_symbol
       ) a
-      ORDER BY a.warehouse_id, a.article_id, a.year, a.input;
+      ORDER BY a.year, a.article_name, a.article_symbol, a.input;
   END CASE;
 END IF;
 
@@ -419,7 +419,8 @@ IF  p_report_type = 4 THEN
 
   -- Recuperar Salida del Reporte para todas las opciones
   SELECT warehouse_id, warehouse_name, year, period, DATE_FORMAT(issue_date, '%d/%m/%Y'), article_id, article_code, article_name, article_symbol, i_amount, i_unit_cost, i_total_cost, o_amount, o_unit_cost, o_total_cost
-  FROM   TmpRepInvGroup;
+  FROM   TmpRepInvGroup
+  ORDER BY year, period, issue_date, article_name, article_symbol;
 
 END IF;
 

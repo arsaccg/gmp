@@ -141,7 +141,6 @@ class Reports::InventoriesController < ApplicationController
     #-------------------------------
     @articles = ""
     if params[:article_id] != ""
-      logger.info "PARAMETROS:" + params[:article_id]
       @articles = "," + params[:article_id] + ","
       #params[:article_id].each.with_index(1) do |x, i|
       #  @articles += x.to_s + ","
@@ -152,28 +151,29 @@ class Reports::InventoriesController < ApplicationController
     # Money
     #-------------------------------
     @moneys = ""
-    if params[:money_id] != ""
-      @moneys = ","
-      params[:money_id].each.with_index(1) do |x, i|
-        @moneys += x.to_s + ","
-      end
-    end
+    #if params[:money_id] != ""
+    #  @moneys = ","
+    #  params[:money_id].each.with_index(1) do |x, i|
+    #    @moneys += x.to_s + ","
+    #  end
+    #end
     #-------------------------------
-    #logger.info "PARAMETROS---:"
-
+    #logger.info "PARAMETROS---:" + params[:since_date] 
+    #logger.info "PARAMETROS---:" + params[:to_date] 
+    
     if params[:since_date] != ""
       @since_date = params[:since_date]#Date.strptime(params[:since_date], '%Y%d%m')
     else
-      @since_date = Date.strptime("01/01/1900", '%d/%m/%Y')
+      @since_date = Date.strptime("1900-01-01", '%Y-%m-%d')
     end if
     
     if params[:to_date] != ""
       @to_date = params[:to_date]#Date.strptime(params[:to_date], '%Y%d%m')
     else
-      @to_date = Date.strptime("31/12/2050", '%d/%m/%Y')
+      @to_date = Date.strptime("2050-12-31", '%Y-%m-%d')
     end if
-    @series = params[:series]
-    @document = params[:document]
+    @series = "" #params[:series]
+    @document = "" #params[:document]
 
     @date_type = params[:date_type]
     @report_type = params[:report_type]
@@ -236,7 +236,7 @@ class Reports::InventoriesController < ApplicationController
         Rails.cache.write('articles', @articles)
         Rails.cache.write('moneys', @moneys)
 
-        logger.info "@periods: " + @periods
+        #logger.info "@periods: " + @periods
 
         render :json => nil
     end
@@ -267,7 +267,7 @@ class Reports::InventoriesController < ApplicationController
     @articles = Rails.cache.read('articles')
     @moneys = Rails.cache.read('moneys')
 
-    logger.info "@periods cache: " + Rails.cache.read('periods')
+    #logger.info "@periods cache: " + Rails.cache.read('periods')
 
     case @kardex_type
       when "1"
@@ -307,7 +307,7 @@ class Reports::InventoriesController < ApplicationController
     @articles = Rails.cache.read('articles')
     @moneys = Rails.cache.read('moneys')
 
-    logger.info "@periods cache: " + Rails.cache.read('periods')
+    #logger.info "@periods cache: " + Rails.cache.read('periods')
     
     case @kardex_type
       when "1"
